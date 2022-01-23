@@ -7,8 +7,7 @@
  * Date generated: Jan 20, 2022
  */
 
-import type { AnySchema } from './datamodelutils';
-import type { IR, RA } from './types';
+import type { RA, RR } from './types';
 
 export type Tables = {
   readonly Accession: Accession;
@@ -193,7 +192,8 @@ export type Tables = {
   readonly WorkbenchTemplate: WorkbenchTemplate;
   readonly WorkbenchTemplateMappingItem: WorkbenchTemplateMappingItem;
 };
-export type Accession = AnySchema & {
+export type Accession = {
+  readonly tableName: 'Accession';
   readonly fields: {
     readonly accessionCondition: string | null;
     readonly accessionNumber: string;
@@ -240,7 +240,8 @@ export type Accession = AnySchema & {
     readonly treatmentEvents: RA<TreatmentEvent>;
   };
 };
-export type AccessionAgent = AnySchema & {
+export type AccessionAgent = {
+  readonly tableName: 'AccessionAgent';
   readonly fields: {
     readonly remarks: string | null;
     readonly role: string;
@@ -248,7 +249,7 @@ export type AccessionAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly accession: Accession | null;
     readonly agent: Agent;
@@ -256,10 +257,11 @@ export type AccessionAgent = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly repositoryAgreement: RepositoryAgreement | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AccessionAttachment = AnySchema & {
+export type AccessionAttachment = {
+  readonly tableName: 'AccessionAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -273,17 +275,18 @@ export type AccessionAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AccessionAuthorization = AnySchema & {
+export type AccessionAuthorization = {
+  readonly tableName: 'AccessionAuthorization';
   readonly fields: {
     readonly remarks: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly accession: Accession | null;
     readonly createdByAgent: Agent | null;
@@ -291,10 +294,11 @@ export type AccessionAuthorization = AnySchema & {
     readonly permit: Permit;
     readonly repositoryAgreement: RepositoryAgreement | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AccessionCitation = AnySchema & {
+export type AccessionCitation = {
+  readonly tableName: 'AccessionCitation';
   readonly fields: {
     readonly figureNumber: string | null;
     readonly isFigured: boolean | null;
@@ -305,17 +309,18 @@ export type AccessionCitation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly accession: Accession;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Address = AnySchema & {
+export type Address = {
+  readonly tableName: 'Address';
   readonly fields: {
     readonly address: string | null;
     readonly address2: string | null;
@@ -343,19 +348,20 @@ export type Address = AnySchema & {
     readonly typeOfAddr: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly divisions: RA<Division>;
     readonly insitutions: RA<Institution>;
   };
 };
-export type AddressOfRecord = AnySchema & {
+export type AddressOfRecord = {
+  readonly tableName: 'AddressOfRecord';
   readonly fields: {
     readonly address: string | null;
     readonly address2: string | null;
@@ -368,13 +374,13 @@ export type AddressOfRecord = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly accessions: RA<Accession>;
     readonly exchangeIns: RA<ExchangeIn>;
@@ -383,7 +389,8 @@ export type AddressOfRecord = AnySchema & {
     readonly repositoryAgreements: RA<RepositoryAgreement>;
   };
 };
-export type Agent = AnySchema & {
+export type Agent = {
+  readonly tableName: 'Agent';
   readonly fields: {
     readonly abbreviation: string | null;
     readonly agentType: number;
@@ -421,7 +428,7 @@ export type Agent = AnySchema & {
     readonly verbatimDate2: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collContentContact: Collection | null;
     readonly collTechContact: Collection | null;
@@ -447,7 +454,8 @@ export type Agent = AnySchema & {
     readonly orgMembers: RA<Agent>;
   };
 };
-export type AgentAttachment = AnySchema & {
+export type AgentAttachment = {
+  readonly tableName: 'AgentAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -461,10 +469,11 @@ export type AgentAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AgentGeography = AnySchema & {
+export type AgentGeography = {
+  readonly tableName: 'AgentGeography';
   readonly fields: {
     readonly remarks: string | null;
     readonly role: string | null;
@@ -472,17 +481,18 @@ export type AgentGeography = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly geography: Geography;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AgentSpecialty = AnySchema & {
+export type AgentSpecialty = {
+  readonly tableName: 'AgentSpecialty';
   readonly fields: {
     readonly orderNumber: number;
     readonly specialtyName: string;
@@ -490,16 +500,17 @@ export type AgentSpecialty = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AgentVariant = AnySchema & {
+export type AgentVariant = {
+  readonly tableName: 'AgentVariant';
   readonly fields: {
     readonly country: string | null;
     readonly language: string | null;
@@ -510,16 +521,17 @@ export type AgentVariant = AnySchema & {
     readonly variant: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Appraisal = AnySchema & {
+export type Appraisal = {
+  readonly tableName: 'Appraisal';
   readonly fields: {
     readonly appraisalDate: string;
     readonly appraisalNumber: string;
@@ -530,19 +542,20 @@ export type Appraisal = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly accession: Accession | null;
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type Attachment = AnySchema & {
+export type Attachment = {
+  readonly tableName: 'Attachment';
   readonly fields: {
     readonly attachmentLocation: string | null;
     readonly attachmentStorageConfig: string | null;
@@ -572,7 +585,7 @@ export type Attachment = AnySchema & {
     readonly version: number | null;
     readonly visibility: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly attachmentImageAttribute: AttachmentImageAttribute | null;
     readonly createdByAgent: Agent | null;
@@ -580,7 +593,7 @@ export type Attachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly visibilitySetBy: SpecifyUser | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly accessionAttachments: RA<AccessionAttachment>;
     readonly agentAttachments: RA<AgentAttachment>;
@@ -611,7 +624,8 @@ export type Attachment = AnySchema & {
     readonly treatmentEventAttachments: RA<TreatmentEventAttachment>;
   };
 };
-export type AttachmentImageAttribute = AnySchema & {
+export type AttachmentImageAttribute = {
+  readonly tableName: 'AttachmentImageAttribute';
   readonly fields: {
     readonly creativeCommons: string | null;
     readonly height: number | null;
@@ -634,16 +648,17 @@ export type AttachmentImageAttribute = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly morphBankView: MorphBankView | null;
   };
   readonly toManyDependent: { readonly attachments: RA<Attachment> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AttachmentMetadata = AnySchema & {
+export type AttachmentMetadata = {
+  readonly tableName: 'AttachmentMetadata';
   readonly fields: {
     readonly name: string;
     readonly timestampCreated: string;
@@ -651,32 +666,34 @@ export type AttachmentMetadata = AnySchema & {
     readonly value: string;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly attachment: Attachment | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AttachmentTag = AnySchema & {
+export type AttachmentTag = {
+  readonly tableName: 'AttachmentTag';
   readonly fields: {
     readonly tag: string;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly attachment: Attachment;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AttributeDef = AnySchema & {
+export type AttributeDef = {
+  readonly tableName: 'AttributeDef';
   readonly fields: {
     readonly dataType: number | null;
     readonly fieldName: string | null;
@@ -685,21 +702,22 @@ export type AttributeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
     readonly prepType: PrepType | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectingEventAttrs: RA<CollectingEventAttr>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly preparationAttrs: RA<PreparationAttr>;
   };
 };
-export type Author = AnySchema & {
+export type Author = {
+  readonly tableName: 'Author';
   readonly fields: {
     readonly orderNumber: number;
     readonly remarks: string | null;
@@ -707,17 +725,18 @@ export type Author = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type AutoNumberingScheme = AnySchema & {
+export type AutoNumberingScheme = {
+  readonly tableName: 'AutoNumberingScheme';
   readonly fields: {
     readonly formatName: string | null;
     readonly isNumericOnly: boolean;
@@ -728,19 +747,20 @@ export type AutoNumberingScheme = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collections: RA<Collection>;
     readonly disciplines: RA<Discipline>;
     readonly divisions: RA<Division>;
   };
 };
-export type Borrow = AnySchema & {
+export type Borrow = {
+  readonly tableName: 'Borrow';
   readonly fields: {
     readonly borrowDate: string | null;
     readonly borrowDatePrecision: number | null;
@@ -776,9 +796,10 @@ export type Borrow = AnySchema & {
     readonly borrowMaterials: RA<BorrowMaterial>;
     readonly shipments: RA<Shipment>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type BorrowAgent = AnySchema & {
+export type BorrowAgent = {
+  readonly tableName: 'BorrowAgent';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly remarks: string | null;
@@ -787,17 +808,18 @@ export type BorrowAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly borrow: Borrow;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type BorrowAttachment = AnySchema & {
+export type BorrowAttachment = {
+  readonly tableName: 'BorrowAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -811,10 +833,11 @@ export type BorrowAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type BorrowMaterial = AnySchema & {
+export type BorrowMaterial = {
+  readonly tableName: 'BorrowMaterial';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly description: string | null;
@@ -830,7 +853,7 @@ export type BorrowMaterial = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly borrow: Borrow;
     readonly createdByAgent: Agent | null;
@@ -839,9 +862,10 @@ export type BorrowMaterial = AnySchema & {
   readonly toManyDependent: {
     readonly borrowReturnMaterials: RA<BorrowReturnMaterial>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type BorrowReturnMaterial = AnySchema & {
+export type BorrowReturnMaterial = {
+  readonly tableName: 'BorrowReturnMaterial';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly quantity: number | null;
@@ -851,17 +875,18 @@ export type BorrowReturnMaterial = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent | null;
     readonly borrowMaterial: BorrowMaterial;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectingEvent = AnySchema & {
+export type CollectingEvent = {
+  readonly tableName: 'CollectingEvent';
   readonly fields: {
     readonly endDate: string | null;
     readonly endDatePrecision: number | null;
@@ -923,7 +948,8 @@ export type CollectingEvent = AnySchema & {
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type CollectingEventAttachment = AnySchema & {
+export type CollectingEventAttachment = {
+  readonly tableName: 'CollectingEventAttachment';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly ordinal: number;
@@ -938,10 +964,11 @@ export type CollectingEventAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectingEventAttr = AnySchema & {
+export type CollectingEventAttr = {
+  readonly tableName: 'CollectingEventAttr';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly dblValue: number | null;
@@ -950,17 +977,18 @@ export type CollectingEventAttr = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectingEvent: CollectingEvent;
     readonly createdByAgent: Agent | null;
     readonly definition: AttributeDef;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectingEventAttribute = AnySchema & {
+export type CollectingEventAttribute = {
+  readonly tableName: 'CollectingEventAttribute';
   readonly fields: {
     readonly integer1: number | null;
     readonly integer10: number | null;
@@ -1012,36 +1040,38 @@ export type CollectingEventAttribute = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly hostTaxon: Taxon | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectingEvents: RA<CollectingEvent>;
   };
 };
-export type CollectingEventAuthorization = AnySchema & {
+export type CollectingEventAuthorization = {
+  readonly tableName: 'CollectingEventAuthorization';
   readonly fields: {
     readonly remarks: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectingEvent: CollectingEvent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly permit: Permit;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectingTrip = AnySchema & {
+export type CollectingTrip = {
+  readonly tableName: 'CollectingTrip';
   readonly fields: {
     readonly collectingTripName: string | null;
     readonly cruise: string | null;
@@ -1078,7 +1108,7 @@ export type CollectingTrip = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly agent2: Agent | null;
@@ -1096,7 +1126,8 @@ export type CollectingTrip = AnySchema & {
     readonly collectingTripAuthorizations: RA<CollectingTripAuthorization>;
   };
 };
-export type CollectingTripAttachment = AnySchema & {
+export type CollectingTripAttachment = {
+  readonly tableName: 'CollectingTripAttachment';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly ordinal: number;
@@ -1111,10 +1142,11 @@ export type CollectingTripAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectingTripAttribute = AnySchema & {
+export type CollectingTripAttribute = {
+  readonly tableName: 'CollectingTripAttribute';
   readonly fields: {
     readonly integer1: number | null;
     readonly integer10: number | null;
@@ -1166,33 +1198,35 @@ export type CollectingTripAttribute = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly collectingTrips: RA<CollectingTrip> };
 };
-export type CollectingTripAuthorization = AnySchema & {
+export type CollectingTripAuthorization = {
+  readonly tableName: 'CollectingTripAuthorization';
   readonly fields: {
     readonly remarks: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectingTrip: CollectingTrip | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly permit: Permit;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Collection = AnySchema & {
+export type Collection = {
+  readonly tableName: 'Collection';
   readonly fields: {
     readonly catalogNumFormatName: string;
     readonly code: string | null;
@@ -1219,7 +1253,7 @@ export type Collection = AnySchema & {
     readonly webPortalURI: string | null;
     readonly webSiteURI: string | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly adminContact: Agent | null;
     readonly createdByAgent: Agent | null;
@@ -1227,7 +1261,7 @@ export type Collection = AnySchema & {
     readonly institutionNetwork: Institution | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly contentContacts: RA<Agent>;
     readonly leftSideRelTypes: RA<CollectionRelType>;
@@ -1239,7 +1273,8 @@ export type Collection = AnySchema & {
     readonly userGroups: RA<SpPrincipal>;
   };
 };
-export type CollectionObject = AnySchema & {
+export type CollectionObject = {
+  readonly tableName: 'CollectionObject';
   readonly fields: {
     readonly altCatalogNumber: string | null;
     readonly availability: string | null;
@@ -1340,7 +1375,8 @@ export type CollectionObject = AnySchema & {
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
-export type CollectionObjectAttachment = AnySchema & {
+export type CollectionObjectAttachment = {
+  readonly tableName: 'CollectionObjectAttachment';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly ordinal: number;
@@ -1355,10 +1391,11 @@ export type CollectionObjectAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectionObjectAttr = AnySchema & {
+export type CollectionObjectAttr = {
+  readonly tableName: 'CollectionObjectAttr';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly dblValue: number | null;
@@ -1367,17 +1404,18 @@ export type CollectionObjectAttr = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly definition: AttributeDef;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectionObjectAttribute = AnySchema & {
+export type CollectionObjectAttribute = {
+  readonly tableName: 'CollectionObjectAttribute';
   readonly fields: {
     readonly bottomDistance: number | null;
     readonly collectionMemberId: number;
@@ -1494,18 +1532,19 @@ export type CollectionObjectAttribute = AnySchema & {
     readonly yesNo8: boolean | null;
     readonly yesNo9: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type CollectionObjectCitation = AnySchema & {
+export type CollectionObjectCitation = {
+  readonly tableName: 'CollectionObjectCitation';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly figureNumber: string | null;
@@ -1517,17 +1556,18 @@ export type CollectionObjectCitation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectionObjectProperty = AnySchema & {
+export type CollectionObjectProperty = {
+  readonly tableName: 'CollectionObjectProperty';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly date1: string | null;
@@ -1676,7 +1716,7 @@ export type CollectionObjectProperty = AnySchema & {
     readonly yesNo8: boolean | null;
     readonly yesNo9: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly agent10: Agent | null;
@@ -1702,10 +1742,11 @@ export type CollectionObjectProperty = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectionRelType = AnySchema & {
+export type CollectionRelType = {
+  readonly tableName: 'CollectionRelType';
   readonly fields: {
     readonly name: string | null;
     readonly remarks: string | null;
@@ -1713,17 +1754,18 @@ export type CollectionRelType = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly leftSideCollection: Collection | null;
     readonly modifiedByAgent: Agent | null;
     readonly rightSideCollection: Collection | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CollectionRelationship = AnySchema & {
+export type CollectionRelationship = {
+  readonly tableName: 'CollectionRelationship';
   readonly fields: {
     readonly text1: string | null;
     readonly text2: string | null;
@@ -1731,7 +1773,7 @@ export type CollectionRelationship = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionRelType: CollectionRelType | null;
     readonly createdByAgent: Agent | null;
@@ -1739,10 +1781,11 @@ export type CollectionRelationship = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly rightSide: CollectionObject;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Collector = AnySchema & {
+export type Collector = {
+  readonly tableName: 'Collector';
   readonly fields: {
     readonly isPrimary: boolean;
     readonly orderNumber: number;
@@ -1755,7 +1798,7 @@ export type Collector = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly collectingEvent: CollectingEvent;
@@ -1763,10 +1806,11 @@ export type Collector = AnySchema & {
     readonly division: Division | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CommonNameTx = AnySchema & {
+export type CommonNameTx = {
+  readonly tableName: 'CommonNameTx';
   readonly fields: {
     readonly author: string | null;
     readonly country: string | null;
@@ -1777,16 +1821,17 @@ export type CommonNameTx = AnySchema & {
     readonly variant: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly taxon: Taxon;
   };
   readonly toManyDependent: { readonly citations: RA<CommonNameTxCitation> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type CommonNameTxCitation = AnySchema & {
+export type CommonNameTxCitation = {
+  readonly tableName: 'CommonNameTxCitation';
   readonly fields: {
     readonly figureNumber: string | null;
     readonly isFigured: boolean | null;
@@ -1803,17 +1848,18 @@ export type CommonNameTxCitation = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly commonNameTx: CommonNameTx;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ConservDescription = AnySchema & {
+export type ConservDescription = {
+  readonly tableName: 'ConservDescription';
   readonly fields: {
     readonly backgroundInfo: string | null;
     readonly composition: string | null;
@@ -1833,7 +1879,7 @@ export type ConservDescription = AnySchema & {
     readonly version: number | null;
     readonly width: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject | null;
     readonly createdByAgent: Agent | null;
@@ -1845,9 +1891,10 @@ export type ConservDescription = AnySchema & {
     readonly conservDescriptionAttachments: RA<ConservDescriptionAttachment>;
     readonly events: RA<ConservEvent>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ConservDescriptionAttachment = AnySchema & {
+export type ConservDescriptionAttachment = {
+  readonly tableName: 'ConservDescriptionAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -1861,10 +1908,11 @@ export type ConservDescriptionAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ConservEvent = AnySchema & {
+export type ConservEvent = {
+  readonly tableName: 'ConservEvent';
   readonly fields: {
     readonly advTestingExam: string | null;
     readonly advTestingExamResults: string | null;
@@ -1891,7 +1939,7 @@ export type ConservEvent = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly conservDescription: ConservDescription;
     readonly createdByAgent: Agent | null;
@@ -1903,9 +1951,10 @@ export type ConservEvent = AnySchema & {
   readonly toManyDependent: {
     readonly conservEventAttachments: RA<ConservEventAttachment>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ConservEventAttachment = AnySchema & {
+export type ConservEventAttachment = {
+  readonly tableName: 'ConservEventAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -1919,10 +1968,11 @@ export type ConservEventAttachment = AnySchema & {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Container = AnySchema & {
+export type Container = {
+  readonly tableName: 'Container';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly description: string | null;
@@ -1933,21 +1983,22 @@ export type Container = AnySchema & {
     readonly type: number | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: Container | null;
     readonly storage: Storage | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<Container>;
     readonly collectionObjectKids: RA<CollectionObject>;
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type DNAPrimer = AnySchema & {
+export type DNAPrimer = {
+  readonly tableName: 'DNAPrimer';
   readonly fields: {
     readonly integer1: number | null;
     readonly integer2: number | null;
@@ -1978,17 +2029,18 @@ export type DNAPrimer = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly dnaSequencingRuns: RA<DNASequencingRun>;
   };
 };
-export type DNASequence = AnySchema & {
+export type DNASequence = {
+  readonly tableName: 'DNASequence';
   readonly fields: {
     readonly ambiguousResidues: number | null;
     readonly boldBarcodeId: string | null;
@@ -2023,7 +2075,7 @@ export type DNASequence = AnySchema & {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject | null;
     readonly createdByAgent: Agent | null;
@@ -2041,7 +2093,8 @@ export type DNASequence = AnySchema & {
     readonly pcrPersons: RA<PcrPerson>;
   };
 };
-export type DNASequenceAttachment = AnySchema & {
+export type DNASequenceAttachment = {
+  readonly tableName: 'DNASequenceAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2055,10 +2108,11 @@ export type DNASequenceAttachment = AnySchema & {
     readonly dnaSequence: DNASequence;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DNASequencingRun = AnySchema & {
+export type DNASequencingRun = {
+  readonly tableName: 'DNASequencingRun';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly dryadDOI: string | null;
@@ -2094,7 +2148,7 @@ export type DNASequencingRun = AnySchema & {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly dnaPrimer: DNAPrimer | null;
@@ -2107,9 +2161,10 @@ export type DNASequencingRun = AnySchema & {
     readonly attachments: RA<DNASequencingRunAttachment>;
     readonly citations: RA<DNASequencingRunCitation>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DNASequencingRunAttachment = AnySchema & {
+export type DNASequencingRunAttachment = {
+  readonly tableName: 'DNASequencingRunAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2123,10 +2178,11 @@ export type DNASequencingRunAttachment = AnySchema & {
     readonly dnaSequencingRun: DNASequencingRun;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DNASequencingRunCitation = AnySchema & {
+export type DNASequencingRunCitation = {
+  readonly tableName: 'DNASequencingRunCitation';
   readonly fields: {
     readonly figureNumber: string | null;
     readonly isFigured: boolean | null;
@@ -2143,32 +2199,34 @@ export type DNASequencingRunCitation = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
     readonly sequencingRun: DNASequencingRun;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DataType = AnySchema & {
+export type DataType = {
+  readonly tableName: 'DataType';
   readonly fields: {
     readonly name: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Deaccession = AnySchema & {
+export type Deaccession = {
+  readonly tableName: 'Deaccession';
   readonly fields: {
     readonly date1: string | null;
     readonly date2: string | null;
@@ -2201,7 +2259,7 @@ export type Deaccession = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly agent2: Agent | null;
@@ -2218,7 +2276,8 @@ export type Deaccession = AnySchema & {
     readonly gifts: RA<Gift>;
   };
 };
-export type DeaccessionAgent = AnySchema & {
+export type DeaccessionAgent = {
+  readonly tableName: 'DeaccessionAgent';
   readonly fields: {
     readonly remarks: string | null;
     readonly role: string;
@@ -2226,17 +2285,18 @@ export type DeaccessionAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DeaccessionAttachment = AnySchema & {
+export type DeaccessionAttachment = {
+  readonly tableName: 'DeaccessionAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2250,10 +2310,11 @@ export type DeaccessionAttachment = AnySchema & {
     readonly deaccession: Deaccession;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Determination = AnySchema & {
+export type Determination = {
+  readonly tableName: 'Determination';
   readonly fields: {
     readonly addendum: string | null;
     readonly alternateName: string | null;
@@ -2298,7 +2359,7 @@ export type Determination = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
@@ -2310,9 +2371,10 @@ export type Determination = AnySchema & {
   readonly toManyDependent: {
     readonly determinationCitations: RA<DeterminationCitation>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DeterminationCitation = AnySchema & {
+export type DeterminationCitation = {
+  readonly tableName: 'DeterminationCitation';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly figureNumber: string | null;
@@ -2324,17 +2386,18 @@ export type DeterminationCitation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly determination: Determination;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Discipline = AnySchema & {
+export type Discipline = {
+  readonly tableName: 'Discipline';
   readonly fields: {
     readonly isPaleoContextEmbedded: boolean;
     readonly name: string | null;
@@ -2345,7 +2408,7 @@ export type Discipline = AnySchema & {
     readonly type: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly dataType: DataType;
@@ -2356,7 +2419,7 @@ export type Discipline = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly taxonTreeDef: TaxonTreeDef | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly attributeDefs: RA<AttributeDef>;
     readonly collections: RA<Collection>;
@@ -2366,7 +2429,8 @@ export type Discipline = AnySchema & {
     readonly userGroups: RA<SpPrincipal>;
   };
 };
-export type Disposal = AnySchema & {
+export type Disposal = {
+  readonly tableName: 'Disposal';
   readonly fields: {
     readonly disposalDate: string | null;
     readonly disposalNumber: string;
@@ -2383,7 +2447,7 @@ export type Disposal = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession | null;
@@ -2394,9 +2458,10 @@ export type Disposal = AnySchema & {
     readonly disposalAttachments: RA<DisposalAttachment>;
     readonly disposalPreparations: RA<DisposalPreparation>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DisposalAgent = AnySchema & {
+export type DisposalAgent = {
+  readonly tableName: 'DisposalAgent';
   readonly fields: {
     readonly remarks: string | null;
     readonly role: string;
@@ -2404,17 +2469,18 @@ export type DisposalAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly disposal: Disposal;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DisposalAttachment = AnySchema & {
+export type DisposalAttachment = {
+  readonly tableName: 'DisposalAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2428,10 +2494,11 @@ export type DisposalAttachment = AnySchema & {
     readonly disposal: Disposal;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type DisposalPreparation = AnySchema & {
+export type DisposalPreparation = {
+  readonly tableName: 'DisposalPreparation';
   readonly fields: {
     readonly quantity: number | null;
     readonly remarks: string | null;
@@ -2439,7 +2506,7 @@ export type DisposalPreparation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly disposal: Disposal;
@@ -2447,10 +2514,11 @@ export type DisposalPreparation = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Division = AnySchema & {
+export type Division = {
+  readonly tableName: 'Division';
   readonly fields: {
     readonly abbrev: string | null;
     readonly altName: string | null;
@@ -2465,14 +2533,14 @@ export type Division = AnySchema & {
     readonly uri: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly address: Address | null;
     readonly createdByAgent: Agent | null;
     readonly institution: Institution;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly disciplines: RA<Discipline>;
     readonly members: RA<Agent>;
@@ -2480,7 +2548,8 @@ export type Division = AnySchema & {
     readonly userGroups: RA<SpPrincipal>;
   };
 };
-export type ExchangeIn = AnySchema & {
+export type ExchangeIn = {
+  readonly tableName: 'ExchangeIn';
   readonly fields: {
     readonly contents: string | null;
     readonly descriptionOfMaterial: string | null;
@@ -2509,9 +2578,10 @@ export type ExchangeIn = AnySchema & {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly exchangeInPreps: RA<ExchangeInPrep> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ExchangeInPrep = AnySchema & {
+export type ExchangeInPrep = {
+  readonly tableName: 'ExchangeInPrep';
   readonly fields: {
     readonly comments: string | null;
     readonly descriptionOfMaterial: string | null;
@@ -2523,7 +2593,7 @@ export type ExchangeInPrep = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -2531,10 +2601,11 @@ export type ExchangeInPrep = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ExchangeOut = AnySchema & {
+export type ExchangeOut = {
+  readonly tableName: 'ExchangeOut';
   readonly fields: {
     readonly contents: string | null;
     readonly descriptionOfMaterial: string | null;
@@ -2566,7 +2637,8 @@ export type ExchangeOut = AnySchema & {
   readonly toManyDependent: { readonly exchangeOutPreps: RA<ExchangeOutPrep> };
   readonly toManyIndependent: { readonly shipments: RA<Shipment> };
 };
-export type ExchangeOutPrep = AnySchema & {
+export type ExchangeOutPrep = {
+  readonly tableName: 'ExchangeOutPrep';
   readonly fields: {
     readonly comments: string | null;
     readonly descriptionOfMaterial: string | null;
@@ -2578,7 +2650,7 @@ export type ExchangeOutPrep = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -2586,10 +2658,11 @@ export type ExchangeOutPrep = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Exsiccata = AnySchema & {
+export type Exsiccata = {
+  readonly tableName: 'Exsiccata';
   readonly fields: {
     readonly remarks: string | null;
     readonly schedae: string | null;
@@ -2598,16 +2671,17 @@ export type Exsiccata = AnySchema & {
     readonly title: string;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
   readonly toManyDependent: { readonly exsiccataItems: RA<ExsiccataItem> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ExsiccataItem = AnySchema & {
+export type ExsiccataItem = {
+  readonly tableName: 'ExsiccataItem';
   readonly fields: {
     readonly fascicle: string | null;
     readonly number: string | null;
@@ -2615,17 +2689,18 @@ export type ExsiccataItem = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly exsiccata: Exsiccata;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Extractor = AnySchema & {
+export type Extractor = {
+  readonly tableName: 'Extractor';
   readonly fields: {
     readonly orderNumber: number;
     readonly remarks: string | null;
@@ -2637,17 +2712,18 @@ export type Extractor = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly dnaSequence: DNASequence;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FieldNotebook = AnySchema & {
+export type FieldNotebook = {
+  readonly tableName: 'FieldNotebook';
   readonly fields: {
     readonly description: string | null;
     readonly endDate: string | null;
@@ -2658,7 +2734,7 @@ export type FieldNotebook = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collection: Collection;
     readonly createdByAgent: Agent | null;
@@ -2670,9 +2746,10 @@ export type FieldNotebook = AnySchema & {
     readonly attachments: RA<FieldNotebookAttachment>;
     readonly pageSets: RA<FieldNotebookPageSet>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FieldNotebookAttachment = AnySchema & {
+export type FieldNotebookAttachment = {
+  readonly tableName: 'FieldNotebookAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2686,10 +2763,11 @@ export type FieldNotebookAttachment = AnySchema & {
     readonly fieldNotebook: FieldNotebook;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FieldNotebookPage = AnySchema & {
+export type FieldNotebookPage = {
+  readonly tableName: 'FieldNotebookPage';
   readonly fields: {
     readonly description: string | null;
     readonly pageNumber: string;
@@ -2698,7 +2776,7 @@ export type FieldNotebookPage = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -2712,7 +2790,8 @@ export type FieldNotebookPage = AnySchema & {
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type FieldNotebookPageAttachment = AnySchema & {
+export type FieldNotebookPageAttachment = {
+  readonly tableName: 'FieldNotebookPageAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2726,10 +2805,11 @@ export type FieldNotebookPageAttachment = AnySchema & {
     readonly fieldNotebookPage: FieldNotebookPage;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FieldNotebookPageSet = AnySchema & {
+export type FieldNotebookPageSet = {
+  readonly tableName: 'FieldNotebookPageSet';
   readonly fields: {
     readonly description: string | null;
     readonly endDate: string | null;
@@ -2740,7 +2820,7 @@ export type FieldNotebookPageSet = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -2752,9 +2832,10 @@ export type FieldNotebookPageSet = AnySchema & {
     readonly attachments: RA<FieldNotebookPageSetAttachment>;
     readonly pages: RA<FieldNotebookPage>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FieldNotebookPageSetAttachment = AnySchema & {
+export type FieldNotebookPageSetAttachment = {
+  readonly tableName: 'FieldNotebookPageSetAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -2768,10 +2849,11 @@ export type FieldNotebookPageSetAttachment = AnySchema & {
     readonly fieldNotebookPageSet: FieldNotebookPageSet;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type FundingAgent = AnySchema & {
+export type FundingAgent = {
+  readonly tableName: 'FundingAgent';
   readonly fields: {
     readonly isPrimary: boolean;
     readonly orderNumber: number;
@@ -2781,7 +2863,7 @@ export type FundingAgent = AnySchema & {
     readonly type: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly collectingTrip: CollectingTrip;
@@ -2789,10 +2871,11 @@ export type FundingAgent = AnySchema & {
     readonly division: Division | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type GeoCoordDetail = AnySchema & {
+export type GeoCoordDetail = {
+  readonly tableName: 'GeoCoordDetail';
   readonly fields: {
     readonly errorPolygon: string | null;
     readonly geoRefAccuracy: number | null;
@@ -2818,7 +2901,7 @@ export type GeoCoordDetail = AnySchema & {
     readonly validation: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly geoRefCompiledBy: Agent | null;
@@ -2826,10 +2909,11 @@ export type GeoCoordDetail = AnySchema & {
     readonly locality: Locality | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Geography = AnySchema & {
+export type Geography = {
+  readonly tableName: 'Geography';
   readonly fields: {
     readonly abbrev: string | null;
     readonly centroidLat: number | null;
@@ -2855,7 +2939,7 @@ export type Geography = AnySchema & {
     readonly timestampVersion: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly acceptedGeography: Geography | null;
     readonly createdByAgent: Agent | null;
@@ -2864,14 +2948,15 @@ export type Geography = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly parent: Geography;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly acceptedChildren: RA<Geography>;
     readonly children: RA<Geography>;
     readonly localities: RA<Locality>;
   };
 };
-export type GeographyTreeDef = AnySchema & {
+export type GeographyTreeDef = {
+  readonly tableName: 'GeographyTreeDef';
   readonly fields: {
     readonly fullNameDirection: number | null;
     readonly name: string;
@@ -2880,19 +2965,20 @@ export type GeographyTreeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly disciplines: RA<Discipline>;
     readonly treeDefItems: RA<GeographyTreeDefItem>;
     readonly treeEntries: RA<Geography>;
   };
 };
-export type GeographyTreeDefItem = AnySchema & {
+export type GeographyTreeDefItem = {
+  readonly tableName: 'GeographyTreeDefItem';
   readonly fields: {
     readonly fullNameSeparator: string | null;
     readonly isEnforced: boolean | null;
@@ -2907,20 +2993,21 @@ export type GeographyTreeDefItem = AnySchema & {
     readonly title: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: GeographyTreeDefItem | null;
     readonly treeDef: GeographyTreeDef;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<GeographyTreeDefItem>;
     readonly treeEntries: RA<Geography>;
   };
 };
-export type GeologicTimePeriod = AnySchema & {
+export type GeologicTimePeriod = {
+  readonly tableName: 'GeologicTimePeriod';
   readonly fields: {
     readonly endPeriod: number | null;
     readonly endUncertainty: number | null;
@@ -2942,7 +3029,7 @@ export type GeologicTimePeriod = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly acceptedGeologicTimePeriod: GeologicTimePeriod | null;
     readonly createdByAgent: Agent | null;
@@ -2951,7 +3038,7 @@ export type GeologicTimePeriod = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly parent: GeologicTimePeriod;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly acceptedChildren: RA<GeologicTimePeriod>;
     readonly bioStratsPaleoContext: RA<PaleoContext>;
@@ -2959,7 +3046,8 @@ export type GeologicTimePeriod = AnySchema & {
     readonly chronosStratsPaleoContext: RA<PaleoContext>;
   };
 };
-export type GeologicTimePeriodTreeDef = AnySchema & {
+export type GeologicTimePeriodTreeDef = {
+  readonly tableName: 'GeologicTimePeriodTreeDef';
   readonly fields: {
     readonly fullNameDirection: number | null;
     readonly name: string;
@@ -2968,19 +3056,20 @@ export type GeologicTimePeriodTreeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly disciplines: RA<Discipline>;
     readonly treeDefItems: RA<GeologicTimePeriodTreeDefItem>;
     readonly treeEntries: RA<GeologicTimePeriod>;
   };
 };
-export type GeologicTimePeriodTreeDefItem = AnySchema & {
+export type GeologicTimePeriodTreeDefItem = {
+  readonly tableName: 'GeologicTimePeriodTreeDefItem';
   readonly fields: {
     readonly fullNameSeparator: string | null;
     readonly isEnforced: boolean | null;
@@ -2995,20 +3084,21 @@ export type GeologicTimePeriodTreeDefItem = AnySchema & {
     readonly title: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: GeologicTimePeriodTreeDefItem | null;
     readonly treeDef: GeologicTimePeriodTreeDef;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<GeologicTimePeriodTreeDefItem>;
     readonly treeEntries: RA<GeologicTimePeriod>;
   };
 };
-export type Gift = AnySchema & {
+export type Gift = {
+  readonly tableName: 'Gift';
   readonly fields: {
     readonly contents: string | null;
     readonly date1: string | null;
@@ -3054,9 +3144,10 @@ export type Gift = AnySchema & {
     readonly giftPreparations: RA<GiftPreparation>;
     readonly shipments: RA<Shipment>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type GiftAgent = AnySchema & {
+export type GiftAgent = {
+  readonly tableName: 'GiftAgent';
   readonly fields: {
     readonly date1: string | null;
     readonly remarks: string | null;
@@ -3065,7 +3156,7 @@ export type GiftAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
@@ -3073,10 +3164,11 @@ export type GiftAgent = AnySchema & {
     readonly gift: Gift;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type GiftAttachment = AnySchema & {
+export type GiftAttachment = {
+  readonly tableName: 'GiftAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -3090,10 +3182,11 @@ export type GiftAttachment = AnySchema & {
     readonly gift: Gift;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type GiftPreparation = AnySchema & {
+export type GiftPreparation = {
+  readonly tableName: 'GiftPreparation';
   readonly fields: {
     readonly descriptionOfMaterial: string | null;
     readonly inComments: string | null;
@@ -3104,7 +3197,7 @@ export type GiftPreparation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -3112,10 +3205,11 @@ export type GiftPreparation = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type GroupPerson = AnySchema & {
+export type GroupPerson = {
+  readonly tableName: 'GroupPerson';
   readonly fields: {
     readonly orderNumber: number;
     readonly remarks: string | null;
@@ -3123,7 +3217,7 @@ export type GroupPerson = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly division: Division;
@@ -3131,10 +3225,11 @@ export type GroupPerson = AnySchema & {
     readonly member: Agent;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type InfoRequest = AnySchema & {
+export type InfoRequest = {
+  readonly tableName: 'InfoRequest';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly email: string | null;
@@ -3149,16 +3244,17 @@ export type InfoRequest = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly recordSets: RA<RecordSet> };
 };
-export type Institution = AnySchema & {
+export type Institution = {
+  readonly tableName: 'Institution';
   readonly fields: {
     readonly altName: string | null;
     readonly code: string | null;
@@ -3190,14 +3286,14 @@ export type Institution = AnySchema & {
     readonly uri: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly address: Address | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly storageTreeDef: StorageTreeDef | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly contentContacts: RA<Agent>;
     readonly divisions: RA<Division>;
@@ -3205,7 +3301,8 @@ export type Institution = AnySchema & {
     readonly userGroups: RA<SpPrincipal>;
   };
 };
-export type InstitutionNetwork = AnySchema & {
+export type InstitutionNetwork = {
+  readonly tableName: 'InstitutionNetwork';
   readonly fields: {
     readonly altName: string | null;
     readonly code: string | null;
@@ -3223,19 +3320,20 @@ export type InstitutionNetwork = AnySchema & {
     readonly uri: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly address: Address | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collections: RA<Collection>;
     readonly contacts: RA<Agent>;
   };
 };
-export type Journal = AnySchema & {
+export type Journal = {
+  readonly tableName: 'Journal';
   readonly fields: {
     readonly guid: string | null;
     readonly issn: string | null;
@@ -3247,16 +3345,17 @@ export type Journal = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly institution: Institution;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly referenceWorks: RA<ReferenceWork> };
 };
-export type LatLonPolygon = AnySchema & {
+export type LatLonPolygon = {
+  readonly tableName: 'LatLonPolygon';
   readonly fields: {
     readonly description: string | null;
     readonly isPolyline: boolean;
@@ -3265,7 +3364,7 @@ export type LatLonPolygon = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly locality: Locality | null;
@@ -3273,21 +3372,23 @@ export type LatLonPolygon = AnySchema & {
     readonly visualQuery: SpVisualQuery | null;
   };
   readonly toManyDependent: { readonly points: RA<LatLonPolygonPnt> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LatLonPolygonPnt = AnySchema & {
+export type LatLonPolygonPnt = {
+  readonly tableName: 'LatLonPolygonPnt';
   readonly fields: {
     readonly elevation: number | null;
     readonly latitude: number;
     readonly longitude: number;
     readonly ordinal: number;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: { readonly latLonPolygon: LatLonPolygon };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LithoStrat = AnySchema & {
+export type LithoStrat = {
+  readonly tableName: 'LithoStrat';
   readonly fields: {
     readonly fullName: string | null;
     readonly guid: string | null;
@@ -3307,7 +3408,7 @@ export type LithoStrat = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly acceptedLithoStrat: LithoStrat | null;
     readonly createdByAgent: Agent | null;
@@ -3316,14 +3417,15 @@ export type LithoStrat = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly parent: LithoStrat;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly acceptedChildren: RA<LithoStrat>;
     readonly children: RA<LithoStrat>;
     readonly paleoContexts: RA<PaleoContext>;
   };
 };
-export type LithoStratTreeDef = AnySchema & {
+export type LithoStratTreeDef = {
+  readonly tableName: 'LithoStratTreeDef';
   readonly fields: {
     readonly fullNameDirection: number | null;
     readonly name: string;
@@ -3332,19 +3434,20 @@ export type LithoStratTreeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly disciplines: RA<Discipline>;
     readonly treeDefItems: RA<LithoStratTreeDefItem>;
     readonly treeEntries: RA<LithoStrat>;
   };
 };
-export type LithoStratTreeDefItem = AnySchema & {
+export type LithoStratTreeDefItem = {
+  readonly tableName: 'LithoStratTreeDefItem';
   readonly fields: {
     readonly fullNameSeparator: string | null;
     readonly isEnforced: boolean | null;
@@ -3359,20 +3462,21 @@ export type LithoStratTreeDefItem = AnySchema & {
     readonly title: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: LithoStratTreeDefItem | null;
     readonly treeDef: LithoStratTreeDef;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<LithoStratTreeDefItem>;
     readonly treeEntries: RA<LithoStrat>;
   };
 };
-export type Loan = AnySchema & {
+export type Loan = {
+  readonly tableName: 'Loan';
   readonly fields: {
     readonly contents: string | null;
     readonly currentDueDate: string | null;
@@ -3417,9 +3521,10 @@ export type Loan = AnySchema & {
     readonly loanPreparations: RA<LoanPreparation>;
     readonly shipments: RA<Shipment>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LoanAgent = AnySchema & {
+export type LoanAgent = {
+  readonly tableName: 'LoanAgent';
   readonly fields: {
     readonly remarks: string | null;
     readonly role: string;
@@ -3427,7 +3532,7 @@ export type LoanAgent = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
@@ -3435,10 +3540,11 @@ export type LoanAgent = AnySchema & {
     readonly loan: Loan;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LoanAttachment = AnySchema & {
+export type LoanAttachment = {
+  readonly tableName: 'LoanAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -3452,10 +3558,11 @@ export type LoanAttachment = AnySchema & {
     readonly loan: Loan;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LoanPreparation = AnySchema & {
+export type LoanPreparation = {
+  readonly tableName: 'LoanPreparation';
   readonly fields: {
     readonly descriptionOfMaterial: string | null;
     readonly inComments: string | null;
@@ -3469,7 +3576,7 @@ export type LoanPreparation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -3480,9 +3587,10 @@ export type LoanPreparation = AnySchema & {
   readonly toManyDependent: {
     readonly loanReturnPreparations: RA<LoanReturnPreparation>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LoanReturnPreparation = AnySchema & {
+export type LoanReturnPreparation = {
+  readonly tableName: 'LoanReturnPreparation';
   readonly fields: {
     readonly quantityResolved: number | null;
     readonly quantityReturned: number | null;
@@ -3492,7 +3600,7 @@ export type LoanReturnPreparation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -3500,12 +3608,13 @@ export type LoanReturnPreparation = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly receivedBy: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly disposalPreparations: RA<DisposalPreparation>;
   };
 };
-export type Locality = AnySchema & {
+export type Locality = {
+  readonly tableName: 'Locality';
   readonly fields: {
     readonly datum: string | null;
     readonly elevationAccuracy: number | null;
@@ -3575,7 +3684,8 @@ export type Locality = AnySchema & {
     readonly collectingEvents: RA<CollectingEvent>;
   };
 };
-export type LocalityAttachment = AnySchema & {
+export type LocalityAttachment = {
+  readonly tableName: 'LocalityAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -3589,10 +3699,11 @@ export type LocalityAttachment = AnySchema & {
     readonly locality: Locality;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LocalityCitation = AnySchema & {
+export type LocalityCitation = {
+  readonly tableName: 'LocalityCitation';
   readonly fields: {
     readonly figureNumber: string | null;
     readonly isFigured: boolean | null;
@@ -3603,7 +3714,7 @@ export type LocalityCitation = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
@@ -3611,10 +3722,11 @@ export type LocalityCitation = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LocalityDetail = AnySchema & {
+export type LocalityDetail = {
+  readonly tableName: 'LocalityDetail';
   readonly fields: {
     readonly baseMeridian: string | null;
     readonly drainage: string | null;
@@ -3667,16 +3779,17 @@ export type LocalityDetail = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly locality: Locality | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type LocalityNameAlias = AnySchema & {
+export type LocalityNameAlias = {
+  readonly tableName: 'LocalityNameAlias';
   readonly fields: {
     readonly name: string;
     readonly source: string;
@@ -3684,17 +3797,18 @@ export type LocalityNameAlias = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly locality: Locality;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type MaterialSample = AnySchema & {
+export type MaterialSample = {
+  readonly tableName: 'MaterialSample';
   readonly fields: {
     readonly GGBN_absorbanceRatio260_230: number | null;
     readonly GGBN_absorbanceRatio260_280: number | null;
@@ -3740,7 +3854,7 @@ export type MaterialSample = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly extractor: Agent | null;
@@ -3748,9 +3862,10 @@ export type MaterialSample = AnySchema & {
     readonly preparation: Preparation;
   };
   readonly toManyDependent: { readonly dnaSequences: RA<DNASequence> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type MorphBankView = AnySchema & {
+export type MorphBankView = {
+  readonly tableName: 'MorphBankView';
   readonly fields: {
     readonly developmentState: string | null;
     readonly form: string | null;
@@ -3765,17 +3880,18 @@ export type MorphBankView = AnySchema & {
     readonly viewAngle: string | null;
     readonly viewName: string | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly attachmentImageAttributes: RA<AttachmentImageAttribute>;
   };
 };
-export type OtherIdentifier = AnySchema & {
+export type OtherIdentifier = {
+  readonly tableName: 'OtherIdentifier';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly identifier: string;
@@ -3785,16 +3901,17 @@ export type OtherIdentifier = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PaleoContext = AnySchema & {
+export type PaleoContext = {
+  readonly tableName: 'PaleoContext';
   readonly fields: {
     readonly number1: number | null;
     readonly number2: number | null;
@@ -3817,7 +3934,7 @@ export type PaleoContext = AnySchema & {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly bioStrat: GeologicTimePeriod | null;
     readonly chronosStrat: GeologicTimePeriod | null;
@@ -3827,14 +3944,15 @@ export type PaleoContext = AnySchema & {
     readonly lithoStrat: LithoStrat | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectingEvents: RA<CollectingEvent>;
     readonly collectionObjects: RA<CollectionObject>;
     readonly localities: RA<Locality>;
   };
 };
-export type PcrPerson = AnySchema & {
+export type PcrPerson = {
+  readonly tableName: 'PcrPerson';
   readonly fields: {
     readonly orderNumber: number;
     readonly remarks: string | null;
@@ -3846,17 +3964,18 @@ export type PcrPerson = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent;
     readonly createdByAgent: Agent | null;
     readonly dnaSequence: DNASequence;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Permit = AnySchema & {
+export type Permit = {
+  readonly tableName: 'Permit';
   readonly fields: {
     readonly copyright: string | null;
     readonly endDate: string | null;
@@ -3885,7 +4004,7 @@ export type Permit = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly institution: Institution;
@@ -3902,7 +4021,8 @@ export type Permit = AnySchema & {
     readonly collectingTripAuthorizations: RA<CollectingTripAuthorization>;
   };
 };
-export type PermitAttachment = AnySchema & {
+export type PermitAttachment = {
+  readonly tableName: 'PermitAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -3916,10 +4036,11 @@ export type PermitAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly permit: Permit;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PickList = AnySchema & {
+export type PickList = {
+  readonly tableName: 'PickList';
   readonly fields: {
     readonly fieldName: string | null;
     readonly filterFieldName: string | null;
@@ -3936,16 +4057,17 @@ export type PickList = AnySchema & {
     readonly type: number;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collection: Collection;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly pickListItems: RA<PickListItem> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PickListItem = AnySchema & {
+export type PickListItem = {
+  readonly tableName: 'PickListItem';
   readonly fields: {
     readonly ordinal: number | null;
     readonly timestampCreated: string;
@@ -3954,16 +4076,17 @@ export type PickListItem = AnySchema & {
     readonly value: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly pickList: PickList;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PrepType = AnySchema & {
+export type PrepType = {
+  readonly tableName: 'PrepType';
   readonly fields: {
     readonly isLoanable: boolean;
     readonly name: string;
@@ -3971,16 +4094,17 @@ export type PrepType = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collection: Collection;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly attributeDefs: RA<AttributeDef> };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Preparation = AnySchema & {
+export type Preparation = {
+  readonly tableName: 'Preparation';
   readonly fields: {
     readonly barCode: string | null;
     readonly collectionMemberId: number;
@@ -4054,7 +4178,8 @@ export type Preparation = AnySchema & {
     readonly loanPreparations: RA<LoanPreparation>;
   };
 };
-export type PreparationAttachment = AnySchema & {
+export type PreparationAttachment = {
+  readonly tableName: 'PreparationAttachment';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly ordinal: number;
@@ -4069,10 +4194,11 @@ export type PreparationAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PreparationAttr = AnySchema & {
+export type PreparationAttr = {
+  readonly tableName: 'PreparationAttr';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly dblValue: number | null;
@@ -4081,17 +4207,18 @@ export type PreparationAttr = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly definition: AttributeDef;
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type PreparationAttribute = AnySchema & {
+export type PreparationAttribute = {
+  readonly tableName: 'PreparationAttribute';
   readonly fields: {
     readonly attrDate: string | null;
     readonly collectionMemberId: number;
@@ -4139,15 +4266,16 @@ export type PreparationAttribute = AnySchema & {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly preparations: RA<Preparation> };
 };
-export type PreparationProperty = AnySchema & {
+export type PreparationProperty = {
+  readonly tableName: 'PreparationProperty';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly date1: string | null;
@@ -4296,7 +4424,7 @@ export type PreparationProperty = AnySchema & {
     readonly yesNo8: boolean | null;
     readonly yesNo9: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly agent10: Agent | null;
@@ -4322,10 +4450,11 @@ export type PreparationProperty = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Project = AnySchema & {
+export type Project = {
+  readonly tableName: 'Project';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly endDate: string | null;
@@ -4347,18 +4476,19 @@ export type Project = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly collectionObjects: RA<CollectionObject>;
   };
 };
-export type RecordSet = AnySchema & {
+export type RecordSet = {
+  readonly tableName: 'RecordSet';
   readonly fields: {
     readonly allPermissionLevel: number | null;
     readonly collectionMemberId: number;
@@ -4372,7 +4502,7 @@ export type RecordSet = AnySchema & {
     readonly type: number;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly group: SpPrincipal | null;
@@ -4380,17 +4510,19 @@ export type RecordSet = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly specifyUser: SpecifyUser;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly recordSetItems: RA<RecordSetItem> };
 };
-export type RecordSetItem = AnySchema & {
+export type RecordSetItem = {
+  readonly tableName: 'RecordSetItem';
   readonly fields: { readonly order: number | null; readonly recordId: number };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: { readonly recordSet: RecordSet };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type ReferenceWork = AnySchema & {
+export type ReferenceWork = {
+  readonly tableName: 'ReferenceWork';
   readonly fields: {
     readonly doi: string | null;
     readonly guid: string | null;
@@ -4417,7 +4549,7 @@ export type ReferenceWork = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly containedRFParent: ReferenceWork | null;
     readonly createdByAgent: Agent | null;
@@ -4438,7 +4570,8 @@ export type ReferenceWork = AnySchema & {
     readonly taxonCitations: RA<TaxonCitation>;
   };
 };
-export type ReferenceWorkAttachment = AnySchema & {
+export type ReferenceWorkAttachment = {
+  readonly tableName: 'ReferenceWorkAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -4452,10 +4585,11 @@ export type ReferenceWorkAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type RepositoryAgreement = AnySchema & {
+export type RepositoryAgreement = {
+  readonly tableName: 'RepositoryAgreement';
   readonly fields: {
     readonly dateReceived: string | null;
     readonly endDate: string | null;
@@ -4488,7 +4622,8 @@ export type RepositoryAgreement = AnySchema & {
   };
   readonly toManyIndependent: { readonly accessions: RA<Accession> };
 };
-export type RepositoryAgreementAttachment = AnySchema & {
+export type RepositoryAgreementAttachment = {
+  readonly tableName: 'RepositoryAgreementAttachment';
   readonly fields: {
     readonly ordinal: number | null;
     readonly remarks: string | null;
@@ -4502,10 +4637,11 @@ export type RepositoryAgreementAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly repositoryAgreement: RepositoryAgreement;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Shipment = AnySchema & {
+export type Shipment = {
+  readonly tableName: 'Shipment';
   readonly fields: {
     readonly insuredForAmount: string | null;
     readonly number1: number | null;
@@ -4524,7 +4660,7 @@ export type Shipment = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly borrow: Borrow | null;
     readonly createdByAgent: Agent | null;
@@ -4537,10 +4673,11 @@ export type Shipment = AnySchema & {
     readonly shippedTo: Agent | null;
     readonly shipper: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpAppResource = AnySchema & {
+export type SpAppResource = {
+  readonly tableName: 'SpAppResource';
   readonly fields: {
     readonly allPermissionLevel: number | null;
     readonly description: string | null;
@@ -4553,7 +4690,7 @@ export type SpAppResource = AnySchema & {
     readonly timestampCreated: string;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly group: SpPrincipal | null;
@@ -4561,30 +4698,32 @@ export type SpAppResource = AnySchema & {
     readonly spAppResourceDir: SpAppResourceDir;
     readonly specifyUser: SpecifyUser;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly spAppResourceDatas: RA<SpAppResourceData>;
     readonly spReports: RA<SpReport>;
   };
 };
-export type SpAppResourceData = AnySchema & {
+export type SpAppResourceData = {
+  readonly tableName: 'SpAppResourceData';
   readonly fields: {
     readonly data: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly spAppResource: SpAppResource | null;
     readonly spViewSetObj: SpViewSetObj | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpAppResourceDir = AnySchema & {
+export type SpAppResourceDir = {
+  readonly tableName: 'SpAppResourceDir';
   readonly fields: {
     readonly disciplineType: string | null;
     readonly isPersonal: boolean;
@@ -4593,7 +4732,7 @@ export type SpAppResourceDir = AnySchema & {
     readonly userType: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
@@ -4601,13 +4740,14 @@ export type SpAppResourceDir = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly specifyUser: SpecifyUser | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly spPersistedAppResources: RA<SpAppResource>;
     readonly spPersistedViewSets: RA<SpViewSetObj>;
   };
 };
-export type SpAuditLog = AnySchema & {
+export type SpAuditLog = {
+  readonly tableName: 'SpAuditLog';
   readonly fields: {
     readonly action: number;
     readonly parentRecordId: number | null;
@@ -4619,15 +4759,16 @@ export type SpAuditLog = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly fields: RA<SpAuditLogField> };
 };
-export type SpAuditLogField = AnySchema & {
+export type SpAuditLogField = {
+  readonly tableName: 'SpAuditLogField';
   readonly fields: {
     readonly fieldName: string;
     readonly newValue: string | null;
@@ -4636,16 +4777,17 @@ export type SpAuditLogField = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly spAuditLog: SpAuditLog | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpExportSchema = AnySchema & {
+export type SpExportSchema = {
+  readonly tableName: 'SpExportSchema';
   readonly fields: {
     readonly description: string | null;
     readonly schemaName: string | null;
@@ -4654,19 +4796,20 @@ export type SpExportSchema = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly spExportSchemaItems: RA<SpExportSchemaItem>;
     readonly spExportSchemaMappings: RA<SpExportSchemaMapping>;
   };
 };
-export type SpExportSchemaItem = AnySchema & {
+export type SpExportSchemaItem = {
+  readonly tableName: 'SpExportSchemaItem';
   readonly fields: {
     readonly dataType: string | null;
     readonly description: string | null;
@@ -4676,17 +4819,18 @@ export type SpExportSchemaItem = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly spExportSchema: SpExportSchema;
     readonly spLocaleContainerItem: SpLocaleContainerItem | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpExportSchemaItemMapping = AnySchema & {
+export type SpExportSchemaItemMapping = {
+  readonly tableName: 'SpExportSchemaItemMapping';
   readonly fields: {
     readonly exportedFieldName: string | null;
     readonly extensionItem: boolean | null;
@@ -4696,7 +4840,7 @@ export type SpExportSchemaItemMapping = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly exportSchemaItem: SpExportSchemaItem | null;
@@ -4704,10 +4848,11 @@ export type SpExportSchemaItemMapping = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly queryField: SpQueryField | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpExportSchemaMapping = AnySchema & {
+export type SpExportSchemaMapping = {
+  readonly tableName: 'SpExportSchemaMapping';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly description: string | null;
@@ -4717,19 +4862,20 @@ export type SpExportSchemaMapping = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly mappings: RA<SpExportSchemaItemMapping>;
     readonly spExportSchemas: RA<SpExportSchema>;
     readonly symbiotaInstances: RA<SpSymbiotaInstance>;
   };
 };
-export type SpFieldValueDefault = AnySchema & {
+export type SpFieldValueDefault = {
+  readonly tableName: 'SpFieldValueDefault';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly fieldName: string | null;
@@ -4740,15 +4886,16 @@ export type SpFieldValueDefault = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpLocaleContainer = AnySchema & {
+export type SpLocaleContainer = {
+  readonly tableName: 'SpLocaleContainer';
   readonly fields: {
     readonly aggregator: string | null;
     readonly defaultUI: string | null;
@@ -4764,20 +4911,21 @@ export type SpLocaleContainer = AnySchema & {
     readonly type: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly descs: RA<SpLocaleItemStr>;
     readonly items: RA<SpLocaleContainerItem>;
     readonly names: RA<SpLocaleItemStr>;
   };
 };
-export type SpLocaleContainerItem = AnySchema & {
+export type SpLocaleContainerItem = {
+  readonly tableName: 'SpLocaleContainerItem';
   readonly fields: {
     readonly format: string | null;
     readonly isHidden: boolean;
@@ -4792,20 +4940,21 @@ export type SpLocaleContainerItem = AnySchema & {
     readonly version: number | null;
     readonly webLinkName: string | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly container: SpLocaleContainer;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly descs: RA<SpLocaleItemStr>;
     readonly names: RA<SpLocaleItemStr>;
     readonly spExportSchemaItems: RA<SpExportSchemaItem>;
   };
 };
-export type SpLocaleItemStr = AnySchema & {
+export type SpLocaleItemStr = {
+  readonly tableName: 'SpLocaleItemStr';
   readonly fields: {
     readonly country: string | null;
     readonly language: string;
@@ -4815,7 +4964,7 @@ export type SpLocaleItemStr = AnySchema & {
     readonly variant: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly containerDesc: SpLocaleContainer | null;
     readonly containerName: SpLocaleContainer | null;
@@ -4824,22 +4973,24 @@ export type SpLocaleItemStr = AnySchema & {
     readonly itemName: SpLocaleContainerItem | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpPermission = AnySchema & {
+export type SpPermission = {
+  readonly tableName: 'SpPermission';
   readonly fields: {
     readonly actions: string | null;
     readonly name: string | null;
     readonly permissionClass: string;
     readonly targetId: number | null;
   };
-  readonly toOneDependent: IR<never>;
-  readonly toOneIndependent: IR<never>;
-  readonly toManyDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: RR<never, never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly principals: RA<SpPrincipal> };
 };
-export type SpPrincipal = AnySchema & {
+export type SpPrincipal = {
+  readonly tableName: 'SpPrincipal';
   readonly fields: {
     readonly groupSubClass: string;
     readonly groupType: string | null;
@@ -4851,18 +5002,19 @@ export type SpPrincipal = AnySchema & {
     readonly version: number | null;
     readonly scope: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly permissions: RA<SpPermission>;
     readonly specifyUsers: RA<SpecifyUser>;
   };
 };
-export type SpQuery = AnySchema & {
+export type SpQuery = {
+  readonly tableName: 'SpQuery';
   readonly fields: {
     readonly contextName: string;
     readonly contextTableId: number;
@@ -4880,7 +5032,7 @@ export type SpQuery = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
@@ -4889,7 +5041,8 @@ export type SpQuery = AnySchema & {
   readonly toManyDependent: { readonly fields: RA<SpQueryField> };
   readonly toManyIndependent: { readonly reports: RA<SpReport> };
 };
-export type SpQueryField = AnySchema & {
+export type SpQueryField = {
+  readonly tableName: 'SpQueryField';
   readonly fields: {
     readonly allowNulls: boolean | null;
     readonly alwaysFilter: boolean | null;
@@ -4913,18 +5066,19 @@ export type SpQueryField = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly query: SpQuery | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly mappings: RA<SpExportSchemaItemMapping>;
   };
 };
-export type SpReport = AnySchema & {
+export type SpReport = {
+  readonly tableName: 'SpReport';
   readonly fields: {
     readonly name: string;
     readonly remarks: string | null;
@@ -4934,7 +5088,7 @@ export type SpReport = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly appResource: SpAppResource;
     readonly createdByAgent: Agent | null;
@@ -4943,10 +5097,11 @@ export type SpReport = AnySchema & {
     readonly specifyUser: SpecifyUser;
     readonly workbenchTemplate: WorkbenchTemplate | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpSymbiotaInstance = AnySchema & {
+export type SpSymbiotaInstance = {
+  readonly tableName: 'SpSymbiotaInstance';
   readonly fields: {
     readonly collectionMemberId: number;
     readonly description: string | null;
@@ -4960,16 +5115,17 @@ export type SpSymbiotaInstance = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly schemaMapping: SpExportSchemaMapping | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpTaskSemaphore = AnySchema & {
+export type SpTaskSemaphore = {
+  readonly tableName: 'SpTaskSemaphore';
   readonly fields: {
     readonly context: string | null;
     readonly isLocked: boolean | null;
@@ -4982,7 +5138,7 @@ export type SpTaskSemaphore = AnySchema & {
     readonly usageCount: number | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
@@ -4990,10 +5146,11 @@ export type SpTaskSemaphore = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly owner: SpecifyUser | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpVersion = AnySchema & {
+export type SpVersion = {
+  readonly tableName: 'SpVersion';
   readonly fields: {
     readonly appName: string | null;
     readonly appVersion: string | null;
@@ -5005,15 +5162,16 @@ export type SpVersion = AnySchema & {
     readonly version: number | null;
     readonly workbenchSchemaVersion: string | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type SpViewSetObj = AnySchema & {
+export type SpViewSetObj = {
+  readonly tableName: 'SpViewSetObj';
   readonly fields: {
     readonly description: string | null;
     readonly fileName: string | null;
@@ -5024,18 +5182,19 @@ export type SpViewSetObj = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly spAppResourceDir: SpAppResourceDir;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly spAppResourceDatas: RA<SpAppResourceData>;
   };
 };
-export type SpVisualQuery = AnySchema & {
+export type SpVisualQuery = {
+  readonly tableName: 'SpVisualQuery';
   readonly fields: {
     readonly description: string | null;
     readonly name: string;
@@ -5043,16 +5202,17 @@ export type SpVisualQuery = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly specifyUser: SpecifyUser;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly polygons: RA<LatLonPolygon> };
 };
-export type SpecifyUser = AnySchema & {
+export type SpecifyUser = {
+  readonly tableName: 'SpecifyUser';
   readonly fields: {
     readonly accumMinLoggedIn: number | null;
     readonly email: string | null;
@@ -5068,12 +5228,12 @@ export type SpecifyUser = AnySchema & {
     readonly userType: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly agents: RA<Agent>;
     readonly spAppResourceDirs: RA<SpAppResourceDir>;
@@ -5085,7 +5245,8 @@ export type SpecifyUser = AnySchema & {
     readonly workbenches: RA<Workbench>;
   };
 };
-export type Storage = AnySchema & {
+export type Storage = {
+  readonly tableName: 'Storage';
   readonly fields: {
     readonly abbrev: string | null;
     readonly fullName: string | null;
@@ -5104,7 +5265,7 @@ export type Storage = AnySchema & {
     readonly timestampVersion: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly acceptedStorage: Storage | null;
     readonly createdByAgent: Agent | null;
@@ -5123,7 +5284,8 @@ export type Storage = AnySchema & {
     readonly preparations: RA<Preparation>;
   };
 };
-export type StorageAttachment = AnySchema & {
+export type StorageAttachment = {
+  readonly tableName: 'StorageAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -5137,10 +5299,11 @@ export type StorageAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly storage: Storage;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type StorageTreeDef = AnySchema & {
+export type StorageTreeDef = {
+  readonly tableName: 'StorageTreeDef';
   readonly fields: {
     readonly fullNameDirection: number | null;
     readonly name: string;
@@ -5149,19 +5312,20 @@ export type StorageTreeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly institutions: RA<Institution>;
     readonly treeDefItems: RA<StorageTreeDefItem>;
     readonly treeEntries: RA<Storage>;
   };
 };
-export type StorageTreeDefItem = AnySchema & {
+export type StorageTreeDefItem = {
+  readonly tableName: 'StorageTreeDefItem';
   readonly fields: {
     readonly fullNameSeparator: string | null;
     readonly isEnforced: boolean | null;
@@ -5176,20 +5340,21 @@ export type StorageTreeDefItem = AnySchema & {
     readonly title: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: StorageTreeDefItem | null;
     readonly treeDef: StorageTreeDef;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<StorageTreeDefItem>;
     readonly treeEntries: RA<Storage>;
   };
 };
-export type Taxon = AnySchema & {
+export type Taxon = {
+  readonly tableName: 'Taxon';
   readonly fields: {
     readonly author: string | null;
     readonly citesStatus: string | null;
@@ -5303,7 +5468,8 @@ export type Taxon = AnySchema & {
     readonly hybridChildren2: RA<Taxon>;
   };
 };
-export type TaxonAttachment = AnySchema & {
+export type TaxonAttachment = {
+  readonly tableName: 'TaxonAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -5317,10 +5483,11 @@ export type TaxonAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly taxon: Taxon;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type TaxonAttribute = AnySchema & {
+export type TaxonAttribute = {
+  readonly tableName: 'TaxonAttribute';
   readonly fields: {
     readonly date1: string | null;
     readonly date1Precision: number | null;
@@ -5489,16 +5656,17 @@ export type TaxonAttribute = AnySchema & {
     readonly yesNo82: boolean | null;
     readonly yesNo9: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly agent1: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly taxons: RA<Taxon> };
 };
-export type TaxonCitation = AnySchema & {
+export type TaxonCitation = {
+  readonly tableName: 'TaxonCitation';
   readonly fields: {
     readonly figureNumber: string | null;
     readonly isFigured: boolean | null;
@@ -5515,17 +5683,18 @@ export type TaxonCitation = AnySchema & {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly referenceWork: ReferenceWork;
     readonly taxon: Taxon;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type TaxonTreeDef = AnySchema & {
+export type TaxonTreeDef = {
+  readonly tableName: 'TaxonTreeDef';
   readonly fields: {
     readonly fullNameDirection: number | null;
     readonly name: string;
@@ -5534,19 +5703,20 @@ export type TaxonTreeDef = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly treeDefItems: RA<TaxonTreeDefItem>;
     readonly treeEntries: RA<Taxon>;
   };
 };
-export type TaxonTreeDefItem = AnySchema & {
+export type TaxonTreeDefItem = {
+  readonly tableName: 'TaxonTreeDefItem';
   readonly fields: {
     readonly formatToken: string | null;
     readonly fullNameSeparator: string | null;
@@ -5562,20 +5732,21 @@ export type TaxonTreeDefItem = AnySchema & {
     readonly title: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: TaxonTreeDefItem | null;
     readonly treeDef: TaxonTreeDef;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly children: RA<TaxonTreeDefItem>;
     readonly treeEntries: RA<Taxon>;
   };
 };
-export type TreatmentEvent = AnySchema & {
+export type TreatmentEvent = {
+  readonly tableName: 'TreatmentEvent';
   readonly fields: {
     readonly dateBoxed: string | null;
     readonly dateCleaned: string | null;
@@ -5606,7 +5777,7 @@ export type TreatmentEvent = AnySchema & {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly accession: Accession | null;
     readonly authorizedBy: Agent | null;
@@ -5619,9 +5790,10 @@ export type TreatmentEvent = AnySchema & {
   readonly toManyDependent: {
     readonly treatmentEventAttachments: RA<TreatmentEventAttachment>;
   };
-  readonly toManyIndependent: IR<never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type TreatmentEventAttachment = AnySchema & {
+export type TreatmentEventAttachment = {
+  readonly tableName: 'TreatmentEventAttachment';
   readonly fields: {
     readonly ordinal: number;
     readonly remarks: string | null;
@@ -5635,10 +5807,11 @@ export type TreatmentEventAttachment = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly treatmentEvent: TreatmentEvent;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type VoucherRelationship = AnySchema & {
+export type VoucherRelationship = {
+  readonly tableName: 'VoucherRelationship';
   readonly fields: {
     readonly collectionCode: string | null;
     readonly collectionMemberId: number;
@@ -5662,16 +5835,17 @@ export type VoucherRelationship = AnySchema & {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type Workbench = AnySchema & {
+export type Workbench = {
+  readonly tableName: 'Workbench';
   readonly fields: {
     readonly allPermissionLevel: number | null;
     readonly dbTableId: number | null;
@@ -5695,24 +5869,26 @@ export type Workbench = AnySchema & {
     readonly modifiedByAgent: Agent | null;
     readonly specifyUser: SpecifyUser;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: { readonly workbenchRows: RA<WorkbenchRow> };
 };
-export type WorkbenchDataItem = AnySchema & {
+export type WorkbenchDataItem = {
+  readonly tableName: 'WorkbenchDataItem';
   readonly fields: {
     readonly cellData: string | null;
     readonly rowNumber: number | null;
     readonly validationStatus: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly workbenchRow: WorkbenchRow;
     readonly workbenchTemplateMappingItem: WorkbenchTemplateMappingItem;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type WorkbenchRow = AnySchema & {
+export type WorkbenchRow = {
+  readonly tableName: 'WorkbenchRow';
   readonly fields: {
     readonly bioGeomancerResults: string | null;
     readonly cardImageData: string | null;
@@ -5728,16 +5904,17 @@ export type WorkbenchRow = AnySchema & {
     readonly sgrStatus: number | null;
     readonly uploadStatus: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: { readonly workbench: Workbench };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly workbenchDataItems: RA<WorkbenchDataItem>;
     readonly workbenchRowExportedRelationships: RA<WorkbenchRowExportedRelationship>;
     readonly workbenchRowImages: RA<WorkbenchRowImage>;
   };
 };
-export type WorkbenchRowExportedRelationship = AnySchema & {
+export type WorkbenchRowExportedRelationship = {
+  readonly tableName: 'WorkbenchRowExportedRelationship';
   readonly fields: {
     readonly recordId: number | null;
     readonly relationshipName: string | null;
@@ -5747,28 +5924,30 @@ export type WorkbenchRowExportedRelationship = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly workbenchRow: WorkbenchRow;
   };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type WorkbenchRowImage = AnySchema & {
+export type WorkbenchRowImage = {
+  readonly tableName: 'WorkbenchRowImage';
   readonly fields: {
     readonly attachToTableName: string | null;
     readonly cardImageData: string | null;
     readonly cardImageFullPath: string | null;
     readonly imageOrder: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: { readonly workbenchRow: WorkbenchRow };
-  readonly toManyDependent: IR<never>;
-  readonly toManyIndependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
 };
-export type WorkbenchTemplate = AnySchema & {
+export type WorkbenchTemplate = {
+  readonly tableName: 'WorkbenchTemplate';
   readonly fields: {
     readonly name: string | null;
     readonly remarks: string | null;
@@ -5777,7 +5956,7 @@ export type WorkbenchTemplate = AnySchema & {
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
@@ -5788,7 +5967,8 @@ export type WorkbenchTemplate = AnySchema & {
   };
   readonly toManyIndependent: { readonly workbenches: RA<Workbench> };
 };
-export type WorkbenchTemplateMappingItem = AnySchema & {
+export type WorkbenchTemplateMappingItem = {
+  readonly tableName: 'WorkbenchTemplateMappingItem';
   readonly fields: {
     readonly caption: string | null;
     readonly carryForward: boolean | null;
@@ -5811,13 +5991,13 @@ export type WorkbenchTemplateMappingItem = AnySchema & {
     readonly xCoord: number | null;
     readonly yCoord: number | null;
   };
-  readonly toOneDependent: IR<never>;
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly workbenchTemplate: WorkbenchTemplate;
   };
-  readonly toManyDependent: IR<never>;
+  readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
     readonly workbenchDataItems: RA<WorkbenchDataItem>;
   };
