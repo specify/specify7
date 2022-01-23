@@ -12,7 +12,14 @@ import type {
 import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
-import { Button, Checkbox, LabelForCheckbox, Radio, Textarea } from './basic';
+import {
+  Button,
+  Checkbox,
+  LabelForCheckbox,
+  Radio,
+  Textarea,
+  Ul,
+} from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -286,7 +293,7 @@ export function mappingOptionsMenu({
       optionLabel: (
         <>
           {wbText('matchBehavior')}
-          <ul role="list">
+          <Ul>
             {Object.entries({
               ignoreWhenBlank: {
                 title: wbText('ignoreWhenBlank'),
@@ -316,7 +323,7 @@ export function mappingOptionsMenu({
                 </LabelForCheckbox>
               </li>
             ))}
-          </ul>
+          </Ul>
         </>
       ),
     },

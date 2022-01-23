@@ -10,7 +10,7 @@ import type SpecifyModel from '../../specifymodel';
 import type { IR } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { Button, Link } from '../basic';
+import { Button, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
@@ -74,7 +74,7 @@ export function TreeSelectDialog({
       }
     >
       <nav>
-        <ul role="list">
+        <Ul>
           {Object.entries(trees).map(([tree, model]) => (
             <li key={tree}>
               <Link.Default
@@ -92,7 +92,7 @@ export function TreeSelectDialog({
               </Link.Default>
             </li>
           ))}
-        </ul>
+        </Ul>
       </nav>
     </Dialog>
   );

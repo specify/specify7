@@ -6,7 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RA } from '../types';
-import { Button } from './basic';
+import { Button, Ul } from './basic';
 import icons from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -93,11 +93,11 @@ function DeleteButton<SCHEMA extends AnySchema>({
             }}
           >
             {formsText('deleteBlockedDialogMessage')}
-            <ul>
+            <Ul>
               {blockers.map((blocker, index) => (
                 <li key={index}>{blocker}</li>
               ))}
-            </ul>
+            </Ul>
           </Dialog>
         )
       ) : undefined}

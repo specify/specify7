@@ -25,6 +25,7 @@ import {
   Link,
   Radio,
   Textarea,
+  Ul,
 } from './basic';
 import { TableIcon } from './common';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -132,7 +133,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         }
       >
         {commonText('language')}
-        <ul role="list">
+        <Ul>
           {Object.entries(languages).map(([code, label]) => (
             <li key={code}>
               <Button.LikeLink
@@ -149,7 +150,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               </Button.LikeLink>
             </li>
           ))}
-        </ul>
+        </Ul>
       </Dialog>
     );
   },

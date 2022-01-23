@@ -12,7 +12,7 @@ import type { IR } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import { Button, H2 } from './basic';
+import { Button, H2, Ul } from './basic';
 
 function TableResults({
   tableName,
@@ -54,7 +54,7 @@ function WbUploadedView({
             : wbText('wbUploadedPotentialDescription')}
         </p>
       </div>
-      <ul role="list" className="gap-y-2 flex flex-col flex-1">
+      <Ul className="gap-y-2 flex flex-col flex-1">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}
@@ -62,7 +62,7 @@ function WbUploadedView({
             recordCount={recordCount}
           />
         ))}
-      </ul>
+      </Ul>
       <Button.Simple onClick={handleClose}>{commonText('close')}</Button.Simple>
     </div>
   );

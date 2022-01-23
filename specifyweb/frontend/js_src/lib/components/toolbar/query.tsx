@@ -14,7 +14,7 @@ import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { Button, className, Link } from '../basic';
+import { Button, className, Link, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import DeleteButton from '../deletebutton';
 import { useTitle } from '../hooks';
@@ -159,7 +159,7 @@ function ListOfTables({
   readonly getQueryCreateUrl: (tableName: string) => string;
 }): JSX.Element {
   return (
-    <ul role="list">
+    <Ul>
       {tables.map((tableName, index) => (
         <li key={index}>
           <Link.Default
@@ -171,7 +171,7 @@ function ListOfTables({
           </Link.Default>
         </li>
       ))}
-    </ul>
+    </Ul>
   );
 }
 

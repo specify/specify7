@@ -4,11 +4,12 @@ import ajax from '../ajax';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { getModel } from '../schema';
+import { makeResourceViewUrl } from '../specifyapi';
 import specifyform from '../specifyform';
 import type SpecifyModel from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { Link } from './basic';
+import { Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -73,7 +74,7 @@ function FormsDialog({
       onClose={handleClose}
     >
       <nav>
-        <ul>
+        <Ul>
           {forms.map(({ iconName, title, viewUrl, model }, index) => (
             <li key={index}>
               <Link.Default
@@ -97,7 +98,7 @@ function FormsDialog({
               </Link.Default>
             </li>
           ))}
-        </ul>
+        </Ul>
       </nav>
     </Dialog>
   );

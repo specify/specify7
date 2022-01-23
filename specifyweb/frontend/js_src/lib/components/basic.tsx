@@ -352,5 +352,8 @@ export const Progress = wrap(
   }
 );
 
+// Need to set explicit role as for list without bullets to be announced as a list
+export const Ul = wrap('ul', '', { role: 'list' });
+
 export const H2 = wrap('h2', className.h2);
 /* eslint-enable @typescript-eslint/naming-convention */

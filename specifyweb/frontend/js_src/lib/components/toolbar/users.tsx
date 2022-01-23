@@ -9,7 +9,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Button, Link } from '../basic';
+import { Button, Link, Ul } from '../basic';
 
 function Users({
   onClose: handleClose,
@@ -63,7 +63,7 @@ function Users({
         </>
       }
     >
-      <ul role="list">
+      <Ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
             <Link.Default className="intercept-navigation" href={viewUrl}>
@@ -71,7 +71,7 @@ function Users({
             </Link.Default>
           </li>
         ))}
-      </ul>
+      </Ul>
     </Dialog>
   );
 }

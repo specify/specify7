@@ -8,7 +8,7 @@ import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
-import { Button, className, Submit } from './basic';
+import { Button, className, Submit, Ul } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -190,7 +190,7 @@ function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           onClose={(): void => setShowBlockedDialog(false)}
         >
           <p>{formsText('saveBlockedDialogMessage')}</p>
-          <ul>
+          <Ul>
             {Array.from(model.saveBlockers.blockingResources, (resource) => (
               <li key={resource.cid}>
                 <h3>{resource.specifyModel.getLocalizedName()}</h3>
@@ -214,7 +214,7 @@ function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 </dl>
               </li>
             ))}
-          </ul>
+          </Ul>
         </Dialog>
       ) : undefined}
     </>

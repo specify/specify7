@@ -25,7 +25,7 @@ import {
   goBack,
   mappingPathIsComplete,
 } from '../wbplanviewutils';
-import { Button } from './basic';
+import { Button, Ul } from './basic';
 import { useId } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
@@ -462,13 +462,12 @@ export default function WbPlanViewMapper(props: {
         />
       )}
 
-      <ul
-        role="list"
+      <Ul
         className={`auto-rows-max flex-1 overflow-x-hidden grid
           grid-cols-[theme(spacing.8)_max-content_auto]
           print:grid-cols-[min-content_auto]`}
         tabIndex={-1}
-        ref={listOfMappings}
+        forwardRef={listOfMappings}
         onScroll={repositionSuggestionBox}
         aria-label={wbText('mappings')}
       >
@@ -593,7 +592,7 @@ export default function WbPlanViewMapper(props: {
             />
           );
         })}
-      </ul>
+      </Ul>
 
       <MappingsControlPanel
         showHiddenFields={state.showHiddenFields}

@@ -7,7 +7,7 @@ import * as querystring from '../querystring';
 import router from '../router';
 import type { IR, RA } from '../types';
 import userInfo from '../userinfo';
-import { Button, Form, Input, Link } from './basic';
+import { Button, Form, Input, Link, Ul } from './basic';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
@@ -198,8 +198,7 @@ export function UserTools({
         buttons={commonText('close')}
       >
         <nav>
-          {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-          <ul role="list">
+          <Ul>
             {[
               {
                 task: '/accounts/logout',
@@ -235,7 +234,7 @@ export function UserTools({
                 </Link.Default>
               </li>
             ))}
-          </ul>
+          </Ul>
         </nav>
       </Dialog>
     </>
