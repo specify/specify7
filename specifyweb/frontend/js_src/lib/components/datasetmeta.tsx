@@ -27,7 +27,7 @@ import {
   Textarea,
 } from './basic';
 import { SpecifyUser } from '../datamodel';
-import { SerializedModel, serializeModel } from '../datamodelutils';
+import { SerializedResource, serializeResource } from '../datamodelutils';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -226,14 +226,16 @@ function DataSetName({
 
 const DataSetNameView = createBackboneView(DataSetName);
 
-async function fetchListOfUsers(): Promise<RA<SerializedModel<SpecifyUser>>> {
+async function fetchListOfUsers(): Promise<
+  RA<SerializedResource<SpecifyUser>>
+> {
   const users = new schema.models.SpecifyUser.LazyCollection();
   return users
     .fetch({
       limit: 500,
     })
     .then(({ models }) =>
-      models.filter(({ id }) => id !== userInfo.id).map(serializeModel)
+      models.filter(({ id }) => id !== userInfo.id).map(serializeResource)
     );
 }
 
@@ -247,7 +249,7 @@ function ChangeOwner({
   readonly onChanged: () => void;
 }): JSX.Element {
   const [users, setUsers] = React.useState<
-    RA<SerializedModel<SpecifyUser>> | undefined
+    RA<SerializedResource<SpecifyUser>> | undefined
   >(undefined);
 
   React.useEffect(() => {

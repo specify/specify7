@@ -4,6 +4,9 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import ajax from '../../ajax';
+import type { SpQuery, SpReport } from '../../datamodel';
+import type { SerializedResource } from '../../datamodelutils';
+import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
@@ -25,8 +28,6 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import SaveButton from '../savebutton';
 import { useCachedState } from '../stateCache';
-import { SpQuery, SpReport } from '../../datamodel';
-import { SerializedModel } from '../../datamodelutils';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -54,16 +55,16 @@ function QueryList({
   onEdit: handleEdit,
   getQuerySelectUrl,
 }: {
-  readonly queries: RA<Query>;
-  readonly onEdit?: (query: Query) => void;
-  readonly getQuerySelectUrl?: (query: Query) => string;
+  readonly queries: RA<SerializedResource<SpQuery>>;
+  readonly onEdit?: (query: SerializedResource<SpQuery>) => void;
+  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',
     cacheName: 'listOfQueries',
     bucketType: 'localStorage',
     defaultValue: {
-      sortField: 'dateCreated',
+      sortField: 'timestampCreated',
       ascending: false,
     },
   });
@@ -72,8 +73,8 @@ function QueryList({
 
   const queries = Array.from(unsortedQueries).sort(
     (
-      { name: nameLeft, dateCreated: dateCreatedLeft },
-      { name: nameRight, dateCreated: dateCreatedRight }
+      { name: nameLeft, timestampCreated: dateCreatedLeft },
+      { name: nameRight, timestampCreated: dateCreatedRight }
     ) =>
       sortConfig.sortField === 'name'
         ? compareValues(sortConfig.ascending, nameLeft, nameRight)
@@ -104,13 +105,16 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void =>
                 setSortConfig({
-                  sortField: 'dateCreated',
+                  sortField: 'timestampCreated',
                   ascending: !sortConfig.ascending,
                 })
               }
             >
               {commonText('created')}
-              <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
+              <SortIndicator
+                fieldName="timestampCreated"
+                sortConfig={sortConfig}
+              />
             </Button.LikeLink>
           </th>
           <td />
@@ -126,12 +130,17 @@ function QueryList({
                 }
                 className="intercept-navigation overflow-x-auto"
               >
-                <TableIcon tableName={query.tableName} tableLabel={false} />
+                <TableIcon
+                  tableName={getModelById(
+                    query.contextTableId
+                  ).name.toLowerCase()}
+                  tableLabel={false}
+                />
                 {query.name}
               </Link.Default>
             </td>
             <td>
-              <DateElement date={query.dateCreated} />
+              <DateElement date={query.timestampCreated} />
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
@@ -175,13 +184,6 @@ function ListOfTables({
   );
 }
 
-export type Query = {
-  readonly id: number;
-  readonly name: string;
-  readonly tableName: string;
-  readonly dateCreated: string | undefined;
-};
-
 type ShowQueryListState = State<'ShowQueryListState'>;
 type CreateQueryState = State<'CreateQueryState'>;
 type States = ShowQueryListState | CreateQueryState;
@@ -198,8 +200,8 @@ function QueryToolbarItem({
 }: {
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: string) => string;
-  readonly getQuerySelectUrl?: (query: Query) => string;
-  readonly onEdit?: (query: Query) => void;
+  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+  readonly onEdit?: (query: SerializedResource<SpQuery>) => void;
   readonly spQueryFilter?: IR<unknown>;
   readonly newQueryButtonGenerator?: (state: States) => () => void;
 }): JSX.Element {
@@ -212,9 +214,9 @@ function QueryToolbarItem({
     defaultValue: async () => tablesToShowPromise,
   });
 
-  const [queries, setQueries] = React.useState<RA<Query> | undefined>(
-    undefined
-  );
+  const [queries, setQueries] = React.useState<
+    RA<SerializedResource<SpQuery>> | undefined
+  >(undefined);
 
   const [state, setState] = React.useState<States>({
     type: 'ShowQueryListState',
@@ -225,20 +227,11 @@ function QueryToolbarItem({
     const queryModels = new schema.models.SpQuery.LazyCollection({
       filters: spQueryFilter ?? { specifyuser: userInfo.id },
     });
-    queryModels.fetch({ limit: QUERY_FETCH_LIMIT }).then(({ models }) =>
-      destructorCalled
-        ? undefined
-        : setQueries(
-            models.map((query) => ({
-              id: query.get('id'),
-              name: query.get('name'),
-              tableName: getModelById(
-                query.get('contexttableid')
-              ).name.toLowerCase(),
-              dateCreated: query.get('timestampcreated'),
-            }))
-          )
-    );
+    queryModels
+      .fetch({ limit: QUERY_FETCH_LIMIT })
+      .then(({ models }) =>
+        destructorCalled ? undefined : setQueries(models.map(serializeResource))
+      );
     return (): void => {
       destructorCalled = true;
     };
@@ -321,7 +314,7 @@ const menuItem: MenuItem = {
       getQuerySelectUrl: undefined,
       onEdit: userInfo.isReadOnly
         ? undefined
-        : (query: Query): void => {
+        : (query: SerializedResource<SpQuery>): void => {
             const queryModel = new schema.models.SpQuery.LazyCollection({
               filters: { id: query.id },
             });
@@ -346,7 +339,7 @@ const EditQueryDialog = Backbone.View.extend({
   },
   initialize(options: { readonly spquery: SpecifyResource<SpQuery> }) {
     this.spquery = options.spquery;
-    this.model = getModelById(this.spquery.get('contexttableid'));
+    this.model = getModelById(this.spquery.get('contextTableId'));
   },
   render() {
     specifyform.buildViewByName('Query').then(this._render.bind(this));
@@ -426,7 +419,7 @@ const EditQueryDialog = Backbone.View.extend({
     >`);
 
     const createReport = (): void =>
-      void ajax<SerializedModel<SpReport>>('/report_runner/create/', {
+      void ajax<SerializedResource<SpReport>>('/report_runner/create/', {
         method: 'POST',
         body: {
           queryid: this.spquery.id,

@@ -1,57 +1,81 @@
 import type {
   AnySchema,
   AnyTree,
-  AnyTreeDef,
-  KeysToLowerCase,
-  TableName,
-  UnFetchedRelationships,
+  CommonFields,
+  FilterTablesByEndsWith,
 } from './datamodelutils';
 import type SaveBlockers from './saveblockers';
-import schema from './schema';
 import type { Collection, default as SpecifyModel } from './specifymodel';
-import type { IR, RA, RR } from './types';
+import type { IR, RA } from './types';
 
+/*
+ * TODO: need to improve the typing to handle the following:
+ *  Dynamic references
+ *  Discrimination of union types
+ */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
-  readonly attributes: IR<never> &
-    KeysToLowerCase<
-      UnFetchedRelationships<SCHEMA['toOneIndependent']> &
-        UnFetchedRelationships<SCHEMA['toOneDependent']> &
-        SCHEMA['fields']
-    > & {
-      readonly resource_uri: string;
-      readonly id: number;
-    };
-  readonly toJSON: () => IR<never> &
-    KeysToLowerCase<
-      UnFetchedRelationships<SCHEMA['toOneIndependent']> &
-        SCHEMA['toManyDependent'] &
-        SCHEMA['toOneDependent'] &
-        SCHEMA['fields']
-    > & {
-      readonly resource_uri: string;
-      readonly id: number;
-    };
+  readonly attributes: {
+    readonly [KEY in
+      | keyof CommonFields
+      | keyof SCHEMA['fields']
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent']
+      | keyof SCHEMA['toManyIndependent'] as Lowercase<
+      string & KEY
+    >]: KEY extends keyof CommonFields
+      ? CommonFields[KEY]
+      : KEY extends keyof SCHEMA['fields']
+      ? SCHEMA['fields'][KEY]
+      : KEY extends keyof SCHEMA['toOneDependent']
+      ? string | Exclude<SCHEMA['toOneDependent'][KEY], AnySchema>
+      : KEY extends keyof SCHEMA['toOneIndependent']
+      ? string | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>
+      : KEY extends keyof SCHEMA['toManyIndependent']
+      ? string | Exclude<SCHEMA['toManyIndependent'][KEY][number], AnySchema>
+      : never;
+  };
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly toJSON: () => {
+    readonly [KEY in
+      | keyof CommonFields
+      | keyof SCHEMA['fields']
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent']
+      | keyof SCHEMA['toManyDependent']
+      | keyof SCHEMA['toManyIndependent'] as Lowercase<
+      string & KEY
+    >]: KEY extends keyof CommonFields
+      ? CommonFields[KEY]
+      : KEY extends keyof SCHEMA['fields']
+      ? SCHEMA['fields'][KEY]
+      : KEY extends keyof SCHEMA['toOneDependent']
+      ? SCHEMA['toOneDependent'][KEY]
+      : KEY extends keyof SCHEMA['toOneIndependent']
+      ? string | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>
+      : KEY extends keyof SCHEMA['toManyDependent']
+      ? SCHEMA['toManyDependent'][KEY]
+      : KEY extends keyof SCHEMA['toManyIndependent']
+      ? string | Exclude<SCHEMA['toManyIndependent'][KEY][number], AnySchema>
+      : never;
+  };
   readonly id: number;
   readonly needsSaved: boolean;
   readonly cid: string;
   get: <
     FIELD_NAME extends
       | keyof SCHEMA['fields']
-      | keyof SCHEMA['toOneIndependent']
       | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toManyIndependent']
+      | keyof SCHEMA['toOneIndependent']
       | keyof SCHEMA['toManyDependent']
-      | 'resource_uri'
-      | 'id',
+      | keyof SCHEMA['toManyIndependent']
+      | keyof CommonFields,
     VALUE extends (IR<never> &
-      SCHEMA['toOneIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toManyIndependent'] &
+      SCHEMA['toOneIndependent'] &
       SCHEMA['toManyDependent'] &
-      SCHEMA['fields'] & {
-        readonly resource_uri: string;
-        readonly id: number;
-      })[FIELD_NAME]
+      SCHEMA['toManyIndependent'] &
+      SCHEMA['fields'] &
+      CommonFields)[FIELD_NAME]
   >(
     fieldName: FIELD_NAME
   ) => [VALUE] extends [never]
@@ -66,11 +90,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // Case-insensitive fetch of a -to-one resource
   rget: <
     FIELD_NAME extends
-      | keyof SCHEMA['toOneIndependent']
-      | keyof SCHEMA['toOneDependent'],
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent'],
     VALUE extends (IR<never> &
-      SCHEMA['toOneIndependent'] &
-      SCHEMA['toOneDependent'])[FIELD_NAME]
+      SCHEMA['toOneDependent'] &
+      SCHEMA['toOneIndependent'])[FIELD_NAME]
   >(
     fieldName: FIELD_NAME
   ) => [VALUE] extends [never]
@@ -80,36 +104,30 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       >;
   // Case-insensitive fetch of a -to-many resource
   rgetCollection: <
-    FIELD_NAME extends
-      | keyof SCHEMA['toManyIndependent']
-      | keyof SCHEMA['toManyDependent'],
-    VALUE extends (IR<never> &
-      SCHEMA['toManyIndependent'] &
-      SCHEMA['toManyDependent'])[FIELD_NAME]
+    FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
+      SCHEMA['toManyIndependent']),
+    VALUE extends (SCHEMA['toManyDependent'] &
+      SCHEMA['toManyIndependent'])[FIELD_NAME]
   >(
     fieldName: FIELD_NAME
-  ) => [VALUE] extends [never]
-    ? never
-    : Promise<Collection<SpecifyResource<Exclude<VALUE, null>[number]>>>;
+  ) => Promise<Collection<SpecifyResource<VALUE[number]>>>;
   readonly set: <
-    FIELD_NAME extends
-      | keyof SCHEMA['fields']
-      | keyof SCHEMA['toOneIndependent']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toManyIndependent']
-      | keyof SCHEMA['toManyDependent']
-      | 'resource_uri'
-      | 'id',
-    VALUE extends (IR<never> &
+    FIELD_NAME extends keyof (SCHEMA['fields'] &
+      SCHEMA['toOneDependent'] &
       SCHEMA['toOneIndependent'] &
+      SCHEMA['toManyDependent'] &
+      SCHEMA['toManyIndependent']),
+    VALUE extends (SCHEMA['fields'] &
       SCHEMA['toOneDependent'] & {
+        [KEY in keyof SCHEMA['toOneIndependent']]:
+          | string
+          | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>;
+      } & {
         [KEY in keyof SCHEMA['toManyDependent']]: RA<
           SpecifyResource<SCHEMA['toManyDependent'][KEY][number]>
         >;
-      } & RR<keyof SCHEMA['toManyDependent'], string> &
-      SCHEMA['fields'] & {
-        readonly resource_uri: string;
-        readonly id: number;
+      } & {
+        [KEY in keyof SCHEMA['toManyIndependent']]: string;
       })[FIELD_NAME]
   >(
     fieldName: FIELD_NAME,
@@ -151,11 +169,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   };
 };
 
-const a = new schema.models.SpQuery.LazyCollection({ filters: { id: 1 } });
-a.fetch().then(({ models: [model] }) => {
-  model.set('fields', []);
-});
-
-export type GetTreeDefinition<SCHEMA extends AnyTreeDef> = (
-  tableName: TableName<AnyTree>
-) => Promise<SpecifyResource<SCHEMA>>;
+export type GetTreeDefinition<
+  SCHEMA extends FilterTablesByEndsWith<'TreeDef'>
+> = (
+  tableName: AnyTree['tableName']
+) => Promise<SpecifyResource<SCHEMA>> | null;

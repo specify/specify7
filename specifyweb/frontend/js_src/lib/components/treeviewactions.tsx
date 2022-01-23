@@ -7,14 +7,13 @@ import commonText from '../localization/common';
 import treeText from '../localization/tree';
 import populateForm from '../populateform';
 import ResourceView from '../resourceview';
-import { getModel } from '../schema';
+import schema from '../schema';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
-import { defined } from '../types';
 import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
-import { AnyTree, TableName } from '../datamodelutils';
+import { AnyTree } from '../datamodelutils';
 import SpecifyModel from '../specifymodel';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
@@ -26,7 +25,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   focusedRow,
   ranks,
 }: {
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;
   readonly onRefresh: () => void;
   readonly focusedRow: Row | undefined;
@@ -55,7 +54,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Simple disabled>{commonText('query')}</Button.Simple>
         ) : (
           <Link.LikeButton
-            href={`/specify/query/fromtree/${tableName}/${focusedRow.nodeId}/`}
+            href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
+              focusedRow.nodeId
+            }/`}
             target="_blank"
           >
             {commonText('query')}
@@ -149,7 +150,7 @@ function EditRecord<SCHEMA extends AnyTree>({
   disabled,
 }: {
   readonly nodeId: number | undefined;
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
@@ -184,7 +185,7 @@ function AddChild<SCHEMA extends AnyTree>({
   disabled,
 }: {
   readonly nodeId: number | undefined;
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
@@ -231,7 +232,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 }: {
   readonly id: number;
   readonly addNew: boolean;
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly onClose: () => void;
   readonly onSaved: (addAnother: boolean) => void;
 }): JSX.Element {
@@ -241,10 +242,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   React.useEffect(() => {
     if (content === null) return undefined;
 
-    const model = defined(
-      getModel(tableName)
-    ) as unknown as SpecifyModel<SCHEMA>;
-    // @ts-expect-error
+    const model = schema.models[tableName] as SpecifyModel<AnyTree>;
     const parentNode = new model.Resource({ id });
     let node = parentNode;
     if (addNew) {
@@ -309,7 +307,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   onCancelAction: handleCancelAction,
   onCompleteAction: handleCompleteAction,
 }: {
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly actionRow: Row;
   readonly type: Exclude<Action, 'add' | 'edit'>;
   readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;
@@ -320,7 +318,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   if (!['move', 'merge', 'synonymize', 'unsynonymize'].includes(type))
     throw new Error('Invalid action type');
 
-  const model = defined(getModel(tableName));
+  const model = schema.models[tableName] as SpecifyModel<AnyTree>;
   const treeName = model.getLocalizedName().toLowerCase();
 
   const [showPrompt, setShowPrompt] = React.useState(false);
@@ -328,13 +326,18 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const [error, setError] = React.useState<undefined | string>(undefined);
 
   const action = async (): Promise<number> =>
-    ping(`/api/specify_tree/${tableName}/${actionRow.nodeId}/${type}/`, {
-      method: 'POST',
-      body:
-        type === 'unsynonymize'
-          ? undefined
-          : formData({ target: focusedRow.nodeId.toString() }),
-    });
+    ping(
+      `/api/specify_tree/${tableName.toLowerCase()}/${
+        actionRow.nodeId
+      }/${type}/`,
+      {
+        method: 'POST',
+        body:
+          type === 'unsynonymize'
+            ? undefined
+            : formData({ target: focusedRow.nodeId.toString() }),
+      }
+    );
   const isSynonym = typeof focusedRow.acceptedId !== 'undefined';
   const isSameRecord = focusedRow.nodeId === actionRow.nodeId;
   const disabled =

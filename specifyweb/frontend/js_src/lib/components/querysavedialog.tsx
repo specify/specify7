@@ -18,7 +18,7 @@ async function doSave(
   const clonedQuery = isSaveAs ? query.clone() : query;
   clonedQuery.set('name', name.trim());
 
-  if (isSaveAs) clonedQuery.set('specifyuser', userInfo.resource_uri);
+  if (isSaveAs) clonedQuery.set('specifyUser', userInfo.resource_uri);
   return new Promise((resolve) => {
     clonedQuery.save().then(() => resolve(clonedQuery.id));
   });

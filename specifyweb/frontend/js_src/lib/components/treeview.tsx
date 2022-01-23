@@ -1,20 +1,14 @@
 import * as React from 'react';
 
 import ajax from '../ajax';
-import type { TaxonTreeDefItem } from '../datamodel';
-import {
-  Geography,
-  GeologicTimePeriod,
-  LithoStrat,
-  Storage,
-  Taxon,
-} from '../datamodel';
+import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
-import { getModel } from '../schema';
+import schema from '../schema';
+import type SpecifyModel from '../specifymodel';
 import type { Conformations, Row, Stats } from '../treeviewutils';
 import {
   deserializeConformation,
@@ -24,8 +18,6 @@ import {
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
-import { defined } from '../types';
-import { capitalize } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
 import { Button, className, Input } from './basic';
 import { useId, useTitle } from './hooks';
@@ -34,32 +26,33 @@ import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { AnyTreeDef, TableName } from '../datamodelutils';
 
 function TreeView<
-  SCHEMA extends Geography | Storage | Taxon | GeologicTimePeriod | LithoStrat,
-  TREE_SCHEMA extends AnyTreeDef
+  SCHEMA extends AnyTree,
+  TREE_SCHEMA extends FilterTablesByEndsWith<'TreeDef'>
 >({
   tableName,
   treeDefinition,
   treeDefinitionItems,
 }: {
-  readonly tableName: TableName<SCHEMA>;
+  readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<TREE_SCHEMA>;
-  readonly treeDefinitionItems: RA<SpecifyResource<TaxonTreeDefItem>>;
+  readonly treeDefinitionItems: RA<
+    SpecifyResource<FilterTablesByEndsWith<'TreeDefItem'>>
+  >;
 }): JSX.Element {
-  const table = defined(getModel(tableName));
-  const rankIds = treeDefinitionItems.map((rank) => rank.get('rankid'));
+  const table = schema.models[tableName] as SpecifyModel<AnyTree>;
+  const rankIds = treeDefinitionItems.map((rank) => rank.get('rankId'));
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
     bucketName: 'tree',
-    cacheName: `collapsedRanks${capitalize(tableName)}`,
+    cacheName: `collapsedRanks${tableName}`,
     bucketType: 'localStorage',
     defaultValue: [],
   });
 
   const [rawConformation, setConformation] = useCachedState({
     bucketName: 'tree',
-    cacheName: `conformation${capitalize(tableName)}`,
+    cacheName: `conformation${tableName}`,
     bucketType: 'localStorage',
     defaultValue: undefined,
   });
@@ -85,18 +78,18 @@ function TreeView<
   useTitle(treeText('treeViewTitle')(table.getLocalizedName()));
 
   // Node sort order
-  const sortOrderFieldName = `${capitalize(tableName)}.treeview_sort_field`;
+  const sortOrderFieldName = `${tableName}.treeview_sort_field`;
   const sortField = getPref(sortOrderFieldName, 'name');
-  const baseUrl = `/api/specify_tree/${tableName}/${treeDefinition.id}`;
+  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+    treeDefinition.id
+  }`;
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(`${baseUrl}/${parentId}/${sortField}`),
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getIntPref(
-    `TreeEditor.Rank.Threshold.${capitalize(tableName)}`
-  );
+  const statsThreshold = getIntPref(`TreeEditor.Rank.Threshold.${tableName}`);
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       typeof statsThreshold === 'undefined' || statsThreshold > rankId
@@ -145,14 +138,14 @@ function TreeView<
               Object.fromEntries(
                 models.map((node) => {
                   const rankDefinition = treeDefinitionItems.find(
-                    (rank) => rank.get('rankid') === node.get('rankid')
+                    (rank) => rank.get('rankId') === node.get('rankId')
                   );
                   const rankName =
                     rankDefinition?.get('title') ??
                     rankDefinition?.get('name') ??
                     node.get('name');
                   return [
-                    node.get('fullname'),
+                    node.get('fullName'),
                     { label: rankName, data: node as SpecifyResource<SCHEMA> },
                   ] as const;
                 })
@@ -162,7 +155,7 @@ function TreeView<
           onChange={(_value, { data }): void => {
             void ajax<
               IR<{ readonly rankid: number; readonly id: number } | string>
-            >(`/api/specify_tree/${tableName}/${data.id}/path/`, {
+            >(`/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`, {
               headers: { Accept: 'application/json' },
             }).then(({ data }) =>
               setFocusPath(

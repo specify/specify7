@@ -7,8 +7,8 @@
 import type { IR, RA } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 
-export const capitalize = (string: string): string =>
-  string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalize = <T extends string>(string: T): Capitalize<T> =>
+  (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
 
 /**
  * Finds the point at which the source array begins to have values

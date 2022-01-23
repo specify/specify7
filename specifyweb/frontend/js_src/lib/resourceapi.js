@@ -3,7 +3,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import assert from './assert';
-import api from './specifyapi';
+import api, {makeResourceViewUrl} from './specifyapi';
 import * as querystring from './querystring';
 
 function eventHandlerForToOne(related, field) {
@@ -129,7 +129,7 @@ function eventHandlerForToOne(related, field) {
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return api.makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
+            return makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
         },
         get: function(attribute) {
             // case insensitive

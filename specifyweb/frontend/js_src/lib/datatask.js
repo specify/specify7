@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import schema, {getModel, getModelById} from './schema';
-import api from './specifyapi';
+import {makeResourceViewUrl} from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';
 import OtherCollectionView from './othercollectionview';
@@ -54,7 +54,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 <p>${formsText('emptyRecordSetSecondMessage')}</p>
             `;
 
-            var url = api.makeResourceViewUrl(specifyModel, null, this.model.id);
+            var url = makeResourceViewUrl(specifyModel, null, this.model.id);
             this.$('.recordset-add').attr('href', url);
             return this;
         },

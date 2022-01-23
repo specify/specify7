@@ -1,15 +1,17 @@
 /**
+ *
  * Fetches Specify data model with tree ranks and pick lists, parses it and
  * caches the results for easier usage across WbPlanView
  *
  * @module
  */
 
+// TODO: consider transitioning to using schema.ts now that type support is improved
 import ajax from './ajax';
+import { error } from './assert';
 import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
-import { Tables } from './datamodel';
-import { AnyTreeDef } from './datamodelutils';
+import type { AnyTree, FilterTablesByEndsWith } from './datamodelutils';
 import { getTreeDef } from './domain';
 import type { GetTreeDefinition } from './legacytypes';
 import schema from './schema';
@@ -46,11 +48,11 @@ type DataModelFieldPickList = {
   readonly items: RA<string>;
 };
 
-type DataModelNonRelationship = DataModelFieldPrimer & {
+export type DataModelNonRelationship = DataModelFieldPrimer & {
   readonly isRelationship: false;
 };
 
-type DataModelRelationship = DataModelFieldPrimer & {
+export type DataModelRelationship = DataModelFieldPrimer & {
   readonly isRelationship: true;
   readonly tableName: string;
   readonly type: RelationshipType;
@@ -87,9 +89,13 @@ type DataModelListOfTablesWritable = R<{
 export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
 
 /* Fetches ranks for a particular table */
-const fetchRanks = async (tableName: keyof Tables): Promise<TableRanksInline> =>
-  (getTreeDef as GetTreeDefinition<AnyTreeDef>)(tableName)
-    .then(async (treeDefinition) =>
+const fetchRanks = async (
+  tableName: AnyTree['tableName']
+): Promise<TableRanksInline> =>
+  (getTreeDef as GetTreeDefinition<FilterTablesByEndsWith<'TreeDef'>>)(
+    tableName
+  )
+    ?.then(async (treeDefinition) =>
       treeDefinition.rgetCollection('treeDefItems')
     )
     .then(({ models }) => [
@@ -103,7 +109,7 @@ const fetchRanks = async (tableName: keyof Tables): Promise<TableRanksInline> =>
           rankId: rank.get('rankId') as unknown as number,
         },
       ]),
-    ]);
+    ]) ?? error('Invalid table name');
 
 function handleRelationshipType(
   relationshipType: RelationshipType,
@@ -222,12 +228,6 @@ const fieldHasOverwrite = (
     ([key, action]) => fieldName.endsWith(key) && action === overwriteName
   ) !== -1;
 
-const schemaConfigTableIds = Object.values({
-  spLocaleItemContainer: 503,
-  spLocaleItem: 504,
-  spLocaleItemStr: 505,
-});
-
 /**
  * Schema hash is used for wiping schema cache after schema changes
  *
@@ -237,7 +237,11 @@ const schemaConfigTableIds = Object.values({
  */
 const getSchemaHash = async (): Promise<number> =>
   Promise.all(
-    schemaConfigTableIds.map(async (tableNumber) =>
+    [
+      schema.models.SpLocaleContainerItem.tableId,
+      schema.models.SpLocaleContainerItem.tableId,
+      schema.models.SpLocaleItemStr.tableId,
+    ].map(async (tableNumber) =>
       ajax<{ readonly meta: { readonly total_count: number } }>(
         `/api/specify/spauditlog/?limit=1&tablenum=${tableNumber}`,
         { headers: { Accept: 'application/json' } }
@@ -437,7 +441,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
     };
 
     if (hasRelationshipWithDefinition && hasRelationshipWithDefinitionItem)
-      fetchRanksQueue.push(fetchRanks(tableName as keyof Tables));
+      fetchRanksQueue.push(fetchRanks(tableName as AnyTree['tableName']));
 
     return tables;
   }, {});

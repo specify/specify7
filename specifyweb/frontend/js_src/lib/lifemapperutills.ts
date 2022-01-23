@@ -13,7 +13,7 @@ export const fetchLocalScientificName = async (
         ? resolve(defaultValue)
         : determinations[0]
             .rget('preferredTaxon')
-            .then((preferredTaxon) => preferredTaxon?.get('fullname'))
+            .then((preferredTaxon) => preferredTaxon?.get('fullName'))
             .then((scientificName) =>
               resolve(
                 typeof scientificName === 'string'

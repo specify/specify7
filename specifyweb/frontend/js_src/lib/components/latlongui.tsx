@@ -27,21 +27,24 @@ function Coordinate({
 }: {
   readonly model: SpecifyResource<Locality>;
   readonly coordinateField:
-    | 'Latitude1'
-    | 'Latitude2'
-    | 'Longitude1'
-    | 'Longitude2';
+    | 'latitude1'
+    | 'latitude2'
+    | 'longitude1'
+    | 'longitude2';
   readonly coordinateTextField:
-    | 'Lat1Text'
-    | 'Lat2Text'
-    | 'Long1Text'
-    | 'Long2Text';
+    | 'lat1text'
+    | 'lat2text'
+    | 'long1text'
+    | 'long2text';
   readonly fieldType: 'Lat' | 'Long';
   readonly readOnly: boolean;
   readonly onChange: (parsed: string) => void;
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
-    () => (model.get(coordinateTextField) || model.get(coordinateField)) ?? ''
+    () =>
+      (model.get(coordinateTextField) ||
+        model.get(coordinateField)?.toString()) ??
+      ''
   );
 
   const onChange = (raw: string, formatted: string | undefined) =>
@@ -61,7 +64,7 @@ function Coordinate({
       handleChange(model.get(coordinateTextField))
     );
     model.on(`change: ${coordinateField}`, () =>
-      handleChange(model.get(coordinateField))
+      handleChange(model.get(coordinateField)?.toString() ?? '')
     );
 
     let destructorCalled = false;
@@ -91,8 +94,8 @@ function Coordinate({
 
               model.set(coordinateTextField, target.value);
               model.set(coordinateField, parsed?.asFloat() ?? null);
-              model.set('srclatlongunit', parsed?.soCalledUnit() ?? null);
-              model.set('originallatlongunit', parsed?.soCalledUnit() ?? null);
+              model.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
+              model.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
             }
       }
     />
@@ -126,8 +129,8 @@ function CoordinatePoint({
           )} ${index}`}</span>
           <Coordinate
             model={model}
-            coordinateField={`Latitude${index}`}
-            coordinateTextField={`Lat${index}Text`}
+            coordinateField={`latitude${index}`}
+            coordinateTextField={`lat${index}text`}
             fieldType={`Lat`}
             readOnly={readOnly}
             onChange={setLatitude}
@@ -141,8 +144,8 @@ function CoordinatePoint({
           )} ${index}`}</span>
           <Coordinate
             model={model}
-            coordinateField={`Longitude${index}`}
-            coordinateTextField={`Long${index}Text`}
+            coordinateField={`longitude${index}`}
+            coordinateTextField={`long${index}text`}
             fieldType={`Lat`}
             readOnly={readOnly}
             onChange={setLongitude}
@@ -166,14 +169,16 @@ function LatLongUi({
   readonly readOnly: boolean;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => model.get('latlongtype') ?? 'point'
+    () => model.get('latLongType') ?? 'point'
   );
 
   React.useEffect(() => {
     model.on('change: latlongtype', () =>
       destructorCalled
         ? undefined
-        : setCoordinateType(model.get('latlongtype') ?? 'point')
+        : setCoordinateType(
+            (model.get('latLongType') as CoordinateType) ?? 'point'
+          )
     );
 
     let destructorCalled = false;
@@ -202,7 +207,7 @@ function LatLongUi({
                       ? undefined
                       : ({ target }): void => {
                           setCoordinateType(target.value as CoordinateType);
-                          model.set('latlongtype', target.value);
+                          model.set('latLongType', target.value);
                         }
                   }
                 >

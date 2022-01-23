@@ -1,5 +1,5 @@
 import collectionapi from './collectionapi';
-import type { AnySchema, SerializedModel, TableName } from './datamodelutils';
+import type { AnySchema, SerializedResource } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -66,9 +66,7 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // Java classname of the Specify 6 ORM object.
   public readonly longName: string;
 
-  public readonly name: TableName<SCHEMA>;
-
-  public readonly url: string;
+  public readonly name: SCHEMA['tableName'];
 
   public readonly idFieldName: string;
 
@@ -83,7 +81,7 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   private readonly fieldAliases: RA<FieldAlias>;
 
   public readonly Resource: new (
-    props?: Partial<SerializedModel<SCHEMA>>
+    props?: Partial<SerializedResource<SCHEMA>>
   ) => SpecifyResource<SCHEMA>;
 
   public readonly LazyCollection: CollectionConstructor<SCHEMA>;
@@ -100,8 +98,7 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = this.longName.split('.').slice(-1)[0] as TableName<SCHEMA>;
-    this.url = `/api/specify/${this.name.toLowerCase()}/`;
+    this.name = this.longName.split('.').slice(-1)[0] as SCHEMA['tableName'];
     this.idFieldName = tableDefinition.idFieldName;
     this.view = tableDefinition.view ?? undefined;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;

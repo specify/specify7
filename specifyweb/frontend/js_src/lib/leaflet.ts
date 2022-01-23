@@ -388,7 +388,7 @@ export function getMarkersFromLocalityData({
   readonly iconClass?: string;
 }): MarkerGroups {
   const markers: {
-    -readonly [KEY in keyof MarkerGroups]: MarkerGroups[KEY];
+    readonly [KEY in keyof MarkerGroups]: MarkerGroups[KEY][number][];
   } = {
     marker: [],
     polygon: [],

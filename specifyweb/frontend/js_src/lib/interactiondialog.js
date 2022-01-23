@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import {getModel} from './schema';
-import api from './specifyapi';
+import api, {makeResourceViewUrl} from './specifyapi';
 import RecordSetsDialog from './recordsetsdialog';
 import PrepSelectDialog from './prepselectdialog';
 import * as navigation from './navigation';
@@ -356,8 +356,7 @@ export default RecordSetsDialog.extend({
 
         zeroPrepLoan: function() {
             this.$el.dialog('close');
-            var model = getModel('loan');
-            navigation.go(new model.Resource().viewUrl());
+            navigation.go(makeResourceViewUrl('loan'));
         },
 
         zeroCoPrep: function() {

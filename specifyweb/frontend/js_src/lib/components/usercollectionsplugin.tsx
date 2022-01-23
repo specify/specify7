@@ -70,7 +70,7 @@ function UserCollectionsUi({
                 )
               }
             />
-            {collection.get('collectionname')}
+            {collection.get('collectionName')}
           </LabelForCheckbox>
         ))}
       </Form>

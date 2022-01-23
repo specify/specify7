@@ -1,18 +1,6 @@
+import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import { IR, RA } from './types';
-import {
-  Geography,
-  GeographyTreeDef,
-  GeologicTimePeriod,
-  GeologicTimePeriodTreeDef,
-  LithoStrat,
-  LithoStratTreeDef,
-  Storage,
-  StorageTreeDef,
-  Tables,
-  Taxon,
-  TaxonTreeDef,
-} from './datamodel';
+import type { IR, RA } from './types';
 
 /* The dataModel types types were generated using this code snippet: */
 /* eslint-disable multiline-comment-style*/
@@ -74,6 +62,7 @@ function regenerate() {
           return model;
         },
         {
+          tableName,
           fields: '',
           toOneDependent: '',
           toOneIndependent: '',
@@ -85,7 +74,11 @@ function regenerate() {
         .map(
           ([group, fields]) =>
             `readonly ${group}: ${
-              fields.length === 0 ? 'IR<never>' : `{${fields}}`
+              typeof fields === 'string'
+                ? fields
+                : fields.length === 0
+                ? 'RR<never, never>'
+                : `{${fields}}`
             }`
         )
         .join(';')}}`;
@@ -97,23 +90,64 @@ function regenerate() {
 */
 /* eslint-enable multiline-comment-style*/
 
-export type SerializedModel<SCHEMA extends AnySchema> = UnFetchedRelationships<
-  SCHEMA['toOneIndependent']
-> & {
-  [KEY in keyof SCHEMA['toManyDependent']]: RA<
-    SerializedModel<SCHEMA['toManyDependent'][KEY][number]>
-  >;
-} & SCHEMA['toOneDependent'] &
-  SCHEMA['fields'] & {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    readonly resource_uri: string;
-    readonly id: number;
-  };
+export type AnySchema = {
+  readonly tableName: keyof Tables;
+  readonly fields: IR<unknown>;
+  readonly toOneDependent: IR<AnySchema | null>;
+  readonly toOneIndependent: IR<AnySchema | null>;
+  readonly toManyDependent: IR<RA<AnySchema>>;
+  readonly toManyIndependent: IR<RA<AnySchema>>;
+};
+
+export type ToMany = AnySchema['toManyDependent'];
+
+// All tables that contain independent -to-one called "definitionItem"
+export type AnyTree = Extract<
+  Tables[keyof Tables],
+  {
+    readonly toOneIndependent: {
+      readonly definitionItem: AnySchema;
+    };
+  }
+>;
+
+export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
+  keyof Tables,
+  `${string}${ENDS_WITH}`
+>];
+
+export type CommonFields = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly resource_uri: string;
+  readonly id: number;
+};
+
+export type SerializedResource<SCHEMA extends AnySchema> = {
+  readonly [KEY in
+    | keyof CommonFields
+    | keyof SCHEMA['fields']
+    | keyof SCHEMA['toOneDependent']
+    | keyof SCHEMA['toOneIndependent']
+    | keyof SCHEMA['toManyDependent']
+    | keyof SCHEMA['toManyIndependent']]: KEY extends keyof CommonFields
+    ? CommonFields[KEY]
+    : KEY extends keyof SCHEMA['fields']
+    ? SCHEMA['fields'][KEY]
+    : KEY extends keyof SCHEMA['toOneDependent']
+    ? SCHEMA['toOneDependent'][KEY]
+    : KEY extends keyof SCHEMA['toOneIndependent']
+    ? string | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>
+    : KEY extends keyof SCHEMA['toManyDependent']
+    ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
+    : KEY extends keyof SCHEMA['toManyIndependent']
+    ? string | Exclude<SCHEMA['toManyIndependent'][KEY], AnySchema>
+    : never;
+};
 
 /** Like resource.toJSON(), but keys are converted to camel case */
-export const serializeModel = <SCHEMA extends AnySchema>(
+export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
-): SerializedModel<SCHEMA> =>
+): SerializedResource<SCHEMA> =>
   // @ts-expect-error
   Object.fromEntries(
     Object.entries(resource?.toJSON() ?? resource).map(
@@ -122,63 +156,8 @@ export const serializeModel = <SCHEMA extends AnySchema>(
           ({ name }) => name.toLowerCase() === lowercaseFieldName
         )?.name ?? lowercaseFieldName,
         typeof value === 'object' && value !== null
-          ? serializeModel(value)
+          ? serializeResource(value)
           : value,
       ]
     )
-  );
-
-/** Resolve table name from table schema */
-export type TableName<SCHEMA extends AnySchema> = keyof {
-  [TABLE_NAME in keyof Tables as Tables[TABLE_NAME] extends SCHEMA
-    ? TABLE_NAME
-    : never]: Tables[TABLE_NAME];
-};
-
-/** Replace relationship objects with api URLs */
-export type UnFetchedRelationships<RELATIONSHIPS extends IR<AnySchema | null>> =
-  {
-    [KEY in keyof RELATIONSHIPS]:
-      | string
-      | Exclude<RELATIONSHIPS[KEY], AnySchema>;
-  };
-
-export type AnySchema = {
-  readonly fields: IR<string | number | boolean | null>;
-  readonly toOneDependent: IR<AnySchema | null>;
-  readonly toOneIndependent: IR<AnySchema | null>;
-  readonly toManyDependent: IR<RA<AnySchema>>;
-  readonly toManyIndependent: IR<RA<AnySchema>>;
-};
-
-export type AnyTree = AnySchema &
-  (Geography | Storage | Taxon | GeologicTimePeriod | LithoStrat);
-
-export type AnyTreeDef = AnySchema &
-  (
-    | GeographyTreeDef
-    | GeologicTimePeriodTreeDef
-    | LithoStratTreeDef
-    | StorageTreeDef
-    | TaxonTreeDef
-  );
-
-export type KeysToLowerCase<T extends IR<unknown>> = {
-  [KEY in keyof T as Lowercase<string & KEY>]: T[KEY];
-};
-
-/**
- * Back-end seems to accept keys in lower-case format only, so have to convert
- * them back
- */
-export const keysToLowerCase = <T extends IR<unknown>>(object: T) =>
-  Object.fromEntries(
-    Object.entries(object).map(([key, value]) => [
-      key.toLowerCase(),
-      typeof value === 'object' && value !== null
-        ? Array.isArray(value)
-          ? value.map((item) => keysToLowerCase(item))
-          : keysToLowerCase(value as IR<unknown>)
-        : value,
-    ])
   );

@@ -41,10 +41,6 @@ export default _.extend({}, Backbone.Events, {
             var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
             return $.get(url).promise();
         },
-        makeResourceViewUrl: function(specifyModel, resourceId, recordSetId) {
-            var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
-            return recordSetId == null ? url : querystring.format(url, {recordsetid: recordSetId});
-        },
         getPrepsAvailableForLoanRs: function(recordSetId) {
             return $.get('/interactions/preparations_available_rs/' + recordSetId + '/');
         },
@@ -65,3 +61,10 @@ export default _.extend({}, Backbone.Events, {
             return $.get(uri);
         }
     });
+
+export function makeResourceViewUrl(specifyModel, resourceId = undefined, recordSetId = undefined) {
+  const url = `/specify/view/${specifyModel.name.toLowerCase()}/${resourceId ?? 'new'}/`;
+  return recordSetId == null
+    ? url
+    : querystring.format(url, {recordsetid: recordSetId});
+}

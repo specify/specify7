@@ -202,6 +202,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
               const precision = target.value as Precision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];
+              // @ts-expect-error Typing for dynamic references is not great
               model.set(precisionField, precisionIndex);
               model.saveBlockers.remove(`invaliddate:${dateField}`);
             }}

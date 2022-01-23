@@ -42,7 +42,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
 
           return {
             iconName: (view.getAttribute('iconname') ?? '').toLowerCase(),
-            viewUrl: new model.Resource().viewUrl(),
+            viewUrl: makeResourceViewUrl(modelName),
             title: view.getAttribute('title') ?? '',
             model,
           };

@@ -239,7 +239,9 @@ export class Relationship extends Field {
     | undefined {
     if (!this.isRelationship)
       throw new Error(`${this.dottedName} is not a relationship field`);
-    return getModel(this.relatedModelName as TABLE_NAME);
+    return getModel(this.relatedModelName) as
+      | SpecifyModel<Tables[TABLE_NAME]>
+      | undefined;
   }
 
   // Returns the field of the related model that is the reverse of this field.

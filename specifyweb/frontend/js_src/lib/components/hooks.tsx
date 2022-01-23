@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type { AnySchema, SerializedModel } from '../datamodelutils';
-import { serializeModel } from '../datamodelutils';
+import type { AnySchema, SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
@@ -129,24 +129,40 @@ export function useSaveBlockers<SCHEMA extends AnySchema>({
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
  * easier state tracking
+ *
+ * @example Can detect field changes using React hooks:
+ *   React.useEffect(()=>{}, [model]);
+ * @example Or only certain fields:
+ *   React.useEffect(()=>{}, [model.name, model.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>
+  model: SpecifyResource<SCHEMA>
 ): readonly [
-  SerializedModel<SCHEMA>,
-  (changedResource: SerializedModel<SCHEMA>) => void
+  SerializedResource<SCHEMA>,
+  (
+    newState:
+      | SerializedResource<SCHEMA>
+      | ((
+          previousState: SerializedResource<SCHEMA>
+        ) => SerializedResource<SCHEMA>)
+  ) => void
 ] {
-  const [object, setObject] = React.useState(() => serializeModel(resource));
+  const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
+    () => serializeResource(model)
+  );
 
-  const previousObjectRef = React.useRef<SerializedModel<SCHEMA>>(object);
+  const previousResourceRef =
+    React.useRef<SerializedResource<SCHEMA>>(resource);
   React.useEffect(() => {
-    Object.entries(object)
-      .filter(([key, newValue]) => newValue !== previousObjectRef.current[key])
+    Object.entries(resource)
+      .filter(
+        ([key, newValue]) => newValue !== previousResourceRef.current[key]
+      )
       .forEach(([key, newValue]) =>
-        resource.set<'resource_uri', string>(key, newValue)
+        model.set(key as 'resource_uri', newValue as never)
       );
-    previousObjectRef.current = object;
-  }, [resource, object]);
+    previousResourceRef.current = resource;
+  }, [resource, model]);
 
-  return [object, setObject];
+  return [resource, setResource];
 }

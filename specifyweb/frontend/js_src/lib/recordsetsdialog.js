@@ -7,13 +7,13 @@ import schema, {getModelById} from './schema';
 import FormsDialog from './components/formsdialog';
 import EditResourceDialog from './editresourcedialog';
 import * as navigation from './navigation';
-import * as querystring from './querystring';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import userInfo from './userinfo.ts';
 import {QueryToolbarView} from './components/toolbar/query';
 import {formatNumber} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
+import {makeResourceViewUrl} from "./specifyapi";
 
 
 export default Backbone.View.extend({
@@ -144,10 +144,7 @@ export default Backbone.View.extend({
             }).render();
         },
         gotoForm: function(model, recordset) {
-            // TODO: got to be a better way to get the url
-            var url = querystring.format(new model.Resource().viewUrl(),
-                                        {recordsetid: recordset.id});
-            navigation.go(url);
+            navigation.go(makeResourceViewUrl(model.name, recordset.id));
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();

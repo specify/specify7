@@ -111,12 +111,12 @@ export type SortConfig<FIELD_NAMES extends string> = {
   readonly ascending: boolean;
 };
 
-export function SortIndicator({
+export function SortIndicator<FIELD_NAMES extends string>({
   fieldName,
   sortConfig,
 }: {
   readonly fieldName: string;
-  readonly sortConfig: SortConfig<string>;
+  readonly sortConfig: SortConfig<FIELD_NAMES>;
 }): JSX.Element {
   const isSorted = sortConfig.sortField === fieldName;
   return (
