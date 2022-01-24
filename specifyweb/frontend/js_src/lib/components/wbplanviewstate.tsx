@@ -6,7 +6,6 @@ import ajax from '../ajax';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
-import dataModelStorage from '../wbplanviewmodel';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Checkbox, LabelForCheckbox } from './basic';
@@ -119,7 +118,6 @@ export const stateReducer = generateReducer<
       }
     >
       <ListOfBaseTables
-        listOfTables={dataModelStorage.listOfBaseTables}
         showHiddenTables={state.showHiddenTables}
         handleChange={(baseTableName: string): void =>
           state.dispatch({

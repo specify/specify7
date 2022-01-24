@@ -32,7 +32,7 @@ export type TableConfigOverwrite =
   | 'commonBaseTable'
   /*
    * Remove table from the list of base tables, but still make it available
-   *  mappable through relationships
+   *  through relationships
    */
   | 'hidden'
   /*
@@ -108,15 +108,13 @@ export const fetchingParameters: {
     variant: 'hidden',
     attribute: 'hidden',
     def: 'hidden',
-    property: 'hidden',
     item: 'hidden',
+    property: 'hidden',
   },
 
   /*
    * All required fields are unhidden, unless they are overwritten to "hidden".
-   *   readOnly relationships are removed.
-   * Makes sure that front-end only fields (defined in schemaextras.ts) are
-   *   removed too
+   * ReadOnly relationships are removed.
    */
   fieldOverwrites: {
     // _common overwrites apply to all tables
@@ -143,27 +141,14 @@ export const fetchingParameters: {
     collectionobject: {
       currentdetermination: 'remove',
     },
-    loan: {
-      totalpreps: 'remove',
-      unresolvedpreps: 'remove',
-      unresolveditems: 'remove',
-      resolvedpreps: 'remove',
-      resolveditems: 'remove',
-    },
     loanpreparation: {
       isresolved: 'optional',
     },
     locality: {
       srclatlongunit: 'optional',
     },
-    preparation: {
-      isonloan: 'remove',
-    },
     preptype: {
       isloanable: 'remove',
-    },
-    token: {
-      preferredtaxonof: 'remove',
     },
     geography: {
       fullname: 'remove',

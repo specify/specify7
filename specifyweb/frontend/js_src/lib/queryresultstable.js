@@ -7,19 +7,12 @@ import Backbone from './backbone';
 
 import ScrollResults from './scrollresults';
 import QueryResults from './queryresults';
-import {getTreeDef} from './domain';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import {className} from './components/basic';
+import {getTreeDefinitionItems} from "./treedefinitions";
 
-async function getTreeRanks(tableName){
-    const treeDef = await getTreeDef(tableName);
-    const treeDefItems = await treeDef.rget('treedefitems');
-    await treeDefItems.fetch({limit: 0});
-    return treeDefItems.models;
-}
-
-    function renderHeader(fieldSpec) {
+function renderHeader(fieldSpec) {
         const field = _.last(fieldSpec.joinPath);
         const icon = field && field.model.getIcon();
         let name = field?.getLocalizedName();
@@ -35,22 +28,19 @@ async function getTreeRanks(tableName){
         const div = th.find('div');
         const span = div.find('span');
 
-        // If it is a tree rank, display rank name while fetching rank title
-        span.text(name ?? fieldSpec.treeRank);
-
         if(fieldSpec.treeRank)
-            getTreeRanks(fieldSpec.table.name)
-                .then(treeRanks=>
-                    treeRanks.find(item=>
-                        item.get('name')===fieldSpec.treeRank
-                    )
-                )
-                .then(treeRank=>treeRank.get('title') ?? fieldSpec.treeRank)
-              .then(title=>span.text(title));
+            span.text(
+                getTreeDefinitionItems(fieldSpec.table.name, false).find(
+                    ({ name }) => name === fieldSpec.treeRank
+                ).title ?? fieldSpec.treeRank
+            );
 
         else if (fieldSpec.datePart && fieldSpec.datePart !== 'fullDate')
             span.text(`${name} (${fieldSpec.datePart})`);
 
+        else
+            span.text(name);
+        
         icon && div.prepend($('<img>', {
             src: icon,
             alt: '',

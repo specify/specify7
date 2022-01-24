@@ -62,8 +62,8 @@ export default _.extend({}, Backbone.Events, {
         }
     });
 
-export function makeResourceViewUrl(specifyModel, resourceId = undefined, recordSetId = undefined) {
-  const url = `/specify/view/${specifyModel.name.toLowerCase()}/${resourceId ?? 'new'}/`;
+export function makeResourceViewUrl(tableName, resourceId = undefined, recordSetId = undefined) {
+  const url = `/specify/view/${tableName.toLowerCase()}/${resourceId ?? 'new'}/`;
   return recordSetId == null
     ? url
     : querystring.format(url, {recordsetid: recordSetId});

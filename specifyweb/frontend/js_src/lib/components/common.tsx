@@ -10,8 +10,8 @@ import React from 'react';
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { spanNumber } from '../wbplanviewhelper';
-import dataModelStorage from '../wbplanviewmodel';
 import icons from './icons';
+import { getModel } from '../schema';
 
 const MAX_HUE = 360;
 
@@ -44,7 +44,7 @@ export function TableIcon({
   const resolvedTableLabel =
     tableLabel === false
       ? undefined
-      : tableLabel ?? dataModelStorage.tables[tableName]?.label ?? '';
+      : tableLabel ?? getModel(tableName)?.getLocalizedName() ?? '';
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span

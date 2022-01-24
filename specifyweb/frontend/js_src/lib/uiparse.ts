@@ -2,7 +2,8 @@ import { error } from './assert';
 import dateFormat from './dateformat';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
-import type { JavaType } from './specifyfield';
+import type { JavaType, RelationshipType } from './specifyfield';
+import { Field } from './specifyfield';
 import type { IR, RA, RR } from './types';
 import { hasNativeErrors } from './validationmessages';
 
@@ -52,7 +53,7 @@ type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 
 export const parsers: RR<
   ExtendedJavaType,
-  ExtendedJavaType | Parser | ((field: Field) => Parser)
+  ExtendedJavaType | Parser | ((field: ExtendedField) => Parser)
 > = {
   'java.lang.Boolean': {
     type: 'text',
@@ -171,16 +172,14 @@ export const parsers: RR<
   },
 };
 
-type Field = {
-  readonly length?: number;
-  readonly type: ExtendedJavaType;
-  readonly isRequired?: boolean;
+type ExtendedField = Partial<Omit<Field, 'type'>> & {
+  readonly type: ExtendedJavaType | RelationshipType;
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
 
-export function getParser(field: Field): Parser | undefined {
-  let parser = parsers[field.type];
-  if (typeof parser === 'string') parser = parsers[parser];
+export function getParser(field: ExtendedField): Parser | undefined {
+  let parser = parsers[field.type as ExtendedJavaType];
+  if (typeof parser === 'string') parser = parsers[parser as ExtendedJavaType];
   if (typeof parser === 'function') parser = parser(field);
   if (typeof parser !== 'object') return undefined;
 
@@ -262,7 +261,7 @@ function formatterToParser(formatter: Formatter): Parser {
 }
 
 export function resolveParser(
-  field: Field,
+  field: ExtendedField,
   formatter?: Formatter
 ): Parser | undefined {
   return mergeParsers(
@@ -272,7 +271,7 @@ export function resolveParser(
 }
 
 export function getValidationAttributes(
-  field: Field,
+  field: ExtendedField,
   parser: Parser
 ): IR<string> {
   if (typeof parser === 'undefined') {
@@ -311,7 +310,7 @@ export function getValidationAttributes(
 
 export const addValidationAttributes = (
   input: HTMLInputElement,
-  field: Field,
+  field: ExtendedField,
   parser: Parser
 ): void =>
   Object.entries(getValidationAttributes(field, parser)).forEach(
@@ -374,13 +373,13 @@ export type UiParseResult =
     };
 
 export default function parse(
-  field: Field,
+  field: ExtendedField,
   parser: Parser | undefined,
   input: HTMLInputElement | undefined,
   value: string
 ): UiParseResult {
   if (value.trim() === '')
-    return field.isRequired === true
+    return field.isRequired
       ? {
           value,
           isValid: false,

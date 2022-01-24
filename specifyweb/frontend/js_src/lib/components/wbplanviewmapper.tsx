@@ -12,9 +12,9 @@ import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
+import { defined } from '../types';
 import type { ColumnOptions } from '../uploadplantomappingstree';
 import { reducer } from '../wbplanviewmappingreducer';
-import dataModelStorage from '../wbplanviewmodel';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import {
@@ -43,6 +43,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { getModel } from '../schema';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -300,7 +301,7 @@ export default function WbPlanViewMapper(props: {
         <>
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
           <span title={wbText('baseTable')}>
-            {` (${dataModelStorage.tables[props.baseTableName].label})`}
+            {` (${defined(getModel(props.baseTableName)).getLocalizedName()})`}
           </span>
           <span
             className="flex items-center text-red-600"
@@ -500,7 +501,7 @@ export default function WbPlanViewMapper(props: {
             getMappedFields: getMappedFieldsBind,
             openSelectElement:
               state.openSelectElement?.line === line
-                ? state.openSelectElement
+                ? state.openSelectElement.index
                 : undefined,
             showHiddenFields: state.showHiddenFields,
             autoMapperSuggestions:

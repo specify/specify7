@@ -16,7 +16,6 @@ import * as navigation from './navigation';
 import QueryCbxSearch from './querycbxsearch';
 import QueryFieldSpec from './queryfieldspec';
 import {load} from './initialcontext';
-import {getTreeDef} from './domain';
 import resourceapi from './resourceapi';
 import userInfo from './userinfo';
 import queryText from './localization/query';
@@ -25,7 +24,7 @@ import formsText from './localization/forms';
 import autocomplete from './components/autocomplete';
 import {formatList} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
-import {allTrees} from "./components/toolbar/treerepair";
+import {getTreeDefinitionItems, isTreeModel} from "./treedefinitions";
 
 let typesearches;
 
@@ -35,10 +34,6 @@ export const fetchContext = load(
 ).then((data) => {
   typesearches = data;
 });
-
-function isTreeModel(model) {
-    return allTrees.has(model.specifyModel.name.toLowerCase());
-}
 
 function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, rightSideRels, qcbx) {
     var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
@@ -57,7 +52,7 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
 
     var searchFieldSpec = QueryFieldSpec.fromPath([qcbx.relatedModel.name].concat(searchFieldStr.split('.')));
     var searchField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
-    var qstr = qcbx && isTreeModel(qcbx.model) ? '%' + q : q;
+    var qstr = qcbx && isTreeModel(qcbx.model.specifyModel.name) ? '%' + q : q;
     searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
         'sorttype': 0,
         'isdisplay': false,
@@ -120,7 +115,7 @@ export default Backbone.View.extend({
         }
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
-        if (isTreeModel(this.model)) {
+        if (isTreeModel(this.model.specifyModel.name)) {
             var fieldName = this.$el.attr('name');
             if (fieldName == 'parent') {
                 if (this.model.isNew()) {
@@ -131,12 +126,8 @@ export default Backbone.View.extend({
                         return children.models[0]?.get('rankid') ?? null;
                     });
                 }
-                this.treeRanksPromise = this.getTreeDefinition(this.model)
-                    .pipe(def => def.rget('treedefitems'))
-                    .pipe(items => items.fetch({limit: 0}).pipe(
-                        () => _.sortBy(items.map(item => ({rankid: item.get('rankid'), isenforced: item.get('isenforced')})),
-                                       item => item.rankid)
-                    ));
+                this.treeRanks = getTreeDefinitionItems(this.model.name, false)
+                    .map(rank => ({rankid: rank.rankId, isenforced: rank.isEnforced}));
             } else if (fieldName == 'acceptedParent') {
                 //don't need to do anything. Form system prevents lookups/edits
             } else if (fieldName == 'hybridParent1' || fieldName == 'hybridParent2') {
@@ -145,7 +136,7 @@ export default Backbone.View.extend({
             }
         } else {
             this.lowestChildRankPromise = null;
-            this.treeRanksPromise = null;
+            this.treeRanks = null;
         }
         if (this.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
             var leftRels = new schema.models.CollectionRelType.LazyCollection({
@@ -168,16 +159,9 @@ export default Backbone.View.extend({
             });
         }
     },
-    getTreeDefinition: function(model) {
-        if (model.isNew()) {
-            return getTreeDef(model.specifyModel.name);
-        } else {
-            return model.rget('definition', true);
-        }
-    },
     getSpecialConditions: function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
         var fields = [];
-        if (isTreeModel(this.model)) {
+        if (isTreeModel(this.model.specifyModel.name.name)) {
             var tblId = this.model.specifyModel.tableId;
             var tblName = this.model.specifyModel.name.toLowerCase();
             var descFilterField;
@@ -345,9 +329,9 @@ export default Backbone.View.extend({
     },
     makeQuery: function(searchFieldStrs, value) {
         return new Promise(resolve=>{var siht = this;
-            $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
+            $.when(this.lowestChildRankPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, leftSideRels, rightSideRels) {
                 var queries = _.map(searchFieldStrs, function(s) {
-                    return makeQuery(s, value, treeRanks, lowestChildRank, leftSideRels, rightSideRels, siht);
+                    return makeQuery(s, value, this.treeRanks, lowestChildRank, leftSideRels, rightSideRels, siht);
                 }, siht);
                 if (siht.forceCollection) {
                     console.log('force query collection id to:', siht.forceCollection.id);
@@ -404,8 +388,8 @@ export default Backbone.View.extend({
             noValidation: true
         });
 
-        $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
-            var xtraConditions = self.getSpecialConditions(lowestChildRank, treeRanks, leftSideRels, rightSideRels);
+        $.when(this.lowestChildRankPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, leftSideRels, rightSideRels) {
+            var xtraConditions = self.getSpecialConditions(lowestChildRank, this.treeRanks, leftSideRels, rightSideRels);
             var xtraFilters = [];
             //send special conditions to dialog
             //extremely skimpy. will work only for current known cases

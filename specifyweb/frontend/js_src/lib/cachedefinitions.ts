@@ -8,20 +8,23 @@ import type hot from 'handsontable';
 
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
+import type { SpQuery } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
-import type { R, RA } from './types';
+import type { RA } from './types';
 import type {
-  DataModelListOfTables,
-  DataModelRanks,
   DataModelTables,
   OriginalRelationships,
-  TreeRankData,
 } from './wbplanviewmodelfetcher';
-import { SpQuery } from './datamodel';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
   readonly wbPlanViewUi: {
+    readonly showHiddenTables: boolean;
+    readonly showHiddenFields: boolean;
+    readonly showMappingView: boolean;
+    readonly mappingViewHeight: number;
+  };
+  readonly queryBuilder: {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
     readonly showMappingView: boolean;
@@ -37,14 +40,8 @@ export type CacheDefinitions = {
   readonly wbPlanViewDataModel: {
     // Data on the fields in the tables that are included in wbplanview
     readonly tables: DataModelTables;
-    // List of base tables to be shown on the base table selection screen
-    readonly listOfBaseTables: DataModelListOfTables;
-    // List of tree ranks for each table
-    readonly ranks: DataModelRanks;
-    // The name of the root rank for each table (Life, Storage, Earth, ...)
-    readonly rootRanks: R<[string, TreeRankData]>;
     /*
-     * Preserves the original relationship type for a fields that had it's
+     * Preserves the original relationship type for fields that had it's
      * relationship type changed though aliasRelationshipTypes object.
      */
     readonly originalRelationships: OriginalRelationships;

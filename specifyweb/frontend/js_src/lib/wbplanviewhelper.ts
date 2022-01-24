@@ -4,11 +4,14 @@
  * @module
  */
 
-import type { IR, RA } from './types';
+import type { IR, RA, RR } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
+
+export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
+  (string.charAt(0).toLowerCase() + string.slice(1)) as Uncapitalize<T>;
 
 /**
  * Finds the point at which the source array begins to have values
@@ -95,9 +98,7 @@ export const camelToKebab = (value: string): string =>
 export const camelToHuman = (value: string): string =>
   capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
 
-/**
- * Scale a number from original range into new range
- */
+/** Scale a number from original range into new range */
 export const spanNumber =
   (
     minInput: number,
@@ -108,3 +109,39 @@ export const spanNumber =
   (input: number): number =>
     ((input - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) +
     minOutput;
+
+/** Get Dictionary's key in a case insensitive way */
+// FIXME: use this everywhere
+export const caseInsensitiveHash = <
+  KEY extends string,
+  DICTIONARY extends RR<KEY, unknown>
+>(
+  dictionary: DICTIONARY,
+  searchKey:
+    | KEY
+    | Lowercase<KEY>
+    | Uppercase<KEY>
+    | Capitalize<KEY>
+    | Uncapitalize<KEY>
+): DICTIONARY[KEY] =>
+  Object.entries(dictionary).find(
+    ([key]) => key.toLowerCase() === searchKey.toLowerCase()
+  )?.[1] as DICTIONARY[KEY];
+
+export const sortFunction = <T, V>(
+  mapper: (value: T) => V,
+  reverse = false
+): ((left: T, right: T) => -1 | 0 | 1) =>
+  reverse
+    ? (left: T, right: T): -1 | 0 | 1 =>
+        mapper(left) < mapper(right)
+          ? -1
+          : mapper(left) === mapper(right)
+          ? 0
+          : 1
+    : (left: T, right: T): -1 | 0 | 1 =>
+        mapper(left) > mapper(right)
+          ? -1
+          : mapper(left) === mapper(right)
+          ? 0
+          : 1;

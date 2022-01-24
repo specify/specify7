@@ -2,10 +2,10 @@
 
 import _ from 'underscore';
 
-import { getModel, getModelById } from './schema';
+import {getModel, getModelById} from './schema';
 import {capitalize} from './wbplanviewhelper';
 
-    var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
+var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
     var DATE_PART_RE = /(.*)((NumericDay)|(NumericMonth)|(NumericYear))$/;
 

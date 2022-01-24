@@ -54,7 +54,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 <p>${formsText('emptyRecordSetSecondMessage')}</p>
             `;
 
-            var url = makeResourceViewUrl(specifyModel, null, this.model.id);
+            var url = makeResourceViewUrl(specifyModel.name, null, this.model.id);
             this.$('.recordset-add').attr('href', url);
             return this;
         },

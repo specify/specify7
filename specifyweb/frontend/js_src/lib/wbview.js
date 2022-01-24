@@ -54,6 +54,7 @@ import createBackboneView from './components/reactbackboneextend';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from "./localization/utils";
+import {defined} from "./types";
 
 const metaKeys = [
   'isNew',
@@ -350,7 +351,7 @@ const WBView = Backbone.View.extend({
               this.mappings?.tableNames[mappingCol] ??
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
             const tableLabel =
-              dataModelStorage?.tables?.[tableName]?.label ?? tableName ?? '';
+              getModel(tableName)?.getLocalizedName() ?? tableName ?? '';
             return `<div class="flex gap-x-1 items-center pl-4">
               ${isMapped ? `<img
                 class="w-table-icon h-table-icon"
@@ -445,7 +446,7 @@ const WBView = Backbone.View.extend({
                         .map(([tableName, recordId, label]) => {
                           const tableLabel =
                             label === ''
-                              ? dataModelStorage.tables[tableName].label
+                              ? defined(getModel(tableName)).getLocalizedName()
                               : label;
                           const tableIcon = getIcon(tableName);
 

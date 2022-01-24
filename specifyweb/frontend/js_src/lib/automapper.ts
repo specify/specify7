@@ -17,6 +17,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
 import type { IR, R, RA, Writable } from './types';
+import { defined } from './types';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
   formatReferenceItem,
@@ -28,14 +29,15 @@ import {
   valueIsReferenceItem,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
 import {
   getTableNonRelationshipFields,
   getTableRelationships,
   isCircularRelationship,
   isTooManyInsideOfTooMany,
-  tableIsTree,
 } from './wbplanviewmodelhelper';
+import { getModel } from './schema';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
+import { AnyTree } from './datamodelutils';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
@@ -694,13 +696,15 @@ export default class AutoMapper {
       });
     }
 
-    const tableData = dataModelStorage.tables[tableName];
-    const ranksData = dataModelStorage.ranks[tableName];
+    const ranksData = getTreeDefinitionItems(
+      tableName as AnyTree['tableName'],
+      false
+    );
     const fields = getTableNonRelationshipFields(tableName, false);
-    const label = tableData.label.toLowerCase();
+    const label = defined(getModel(tableName)).getLocalizedName().toLowerCase();
 
     if (typeof ranksData !== 'undefined') {
-      let ranks = Object.keys(ranksData);
+      let ranks = ranksData.map(({ name }) => name).slice(1);
       const pushRankToPath =
         mappingPath.length <= 0 ||
         !valueIsTreeRank(mappingPath[mappingPath.length - 1]);
@@ -978,14 +982,16 @@ export default class AutoMapper {
       rankName: string | undefined
     ): string | undefined =>
       typeof rankName === 'undefined' ? rankName : formatTreeRank(rankName);
-    if (tableIsTree(tableName)) {
+    if (isTreeModel(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
           ? formatTreeRankUndefined(
-              Object.keys(dataModelStorage.ranks[tableName]).find(
-                (rankName) =>
-                  rankName.toLowerCase() ===
-                  getNameFromTreeRankName(mappingPathPart).toLowerCase()
+              defined(
+                getTreeDefinitionItems(tableName as 'Geography', false).find(
+                  ({ name }) =>
+                    name.toLowerCase() ===
+                    getNameFromTreeRankName(mappingPathPart).toLowerCase()
+                )?.name
               )
             ) ?? mappingPathPart
           : mappingPathPart

@@ -4,8 +4,9 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import api from './specifyapi';
-import schema, {getModel} from './schema';
+import schema from './schema';
 import remoteprefs from './remoteprefs';
+import {getDomainResource} from "./treedefinitions";
 
 
 function takeBetween(items, startElem, endElem) {
@@ -44,27 +45,7 @@ function takeBetween(items, startElem, endElem) {
         }
     });
 
-    var treeDefLevels = {
-        geography: 'discipline',
-        geologictimeperiod: 'discipline',
-        lithostrat: 'discipline',
-        storage: 'institution',
-        taxon: 'discipline'
-    };
 
-        export function getDomainResource(level) {
-            const id = schema.domainLevelIds[level];
-            return id == null ? undefined : new (getModel(level).Resource)({ id: id });
-        }
-        export function getTreeDef(treeName) {
-            treeName = treeName.toLowerCase();
-            var level = treeDefLevels[treeName];
-            if (level != null) {
-                return getDomainResource(level).rget(treeName + 'treedef');
-            } else {
-                return null;
-            }
-        }
         export function collectionsInDomain(domainResource) {
             if (domainResource == null) return null;
             var domainLevel = domainResource.specifyModel.name.toLowerCase();

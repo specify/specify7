@@ -45,8 +45,12 @@ export const fetchContext = Promise.all([
     tables.map((tableDefinition) => {
       const model = new SpecifyModel(tableDefinition);
       const modelFields = model.fields as (Field | Relationship)[];
-      const extra = extras[model.name];
-      if (typeof extra !== 'undefined') modelFields.concat(extra(model));
+      const frontEndFields = extras[model.name]?.(model) ?? [];
+      if (frontEndFields.length > 0) {
+        // @ts-expect-error Assigning to read-only value
+        schema.frontEndFields[model.name] = new Set(frontEndFields);
+        modelFields.concat(frontEndFields);
+      }
       return [model.name, model] as const;
     })
   );

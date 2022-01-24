@@ -9,10 +9,11 @@ import React from 'react';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR } from '../types';
-import dataModelStorage from '../wbplanviewmodel';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
 import { Button, H2, Ul } from './basic';
+import { defined } from '../types';
+import { getModel } from '../schema';
 
 function TableResults({
   tableName,
@@ -25,7 +26,7 @@ function TableResults({
     <li className="gap-x-1 flex items-center">
       <TableIcon tableName={tableName.toLowerCase()} />
       <span>
-        {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
+        {`${defined(getModel(tableName)).getLocalizedName()}: ${recordCount}`}
       </span>
     </li>
   );

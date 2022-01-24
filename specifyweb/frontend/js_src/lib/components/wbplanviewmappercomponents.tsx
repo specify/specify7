@@ -4,12 +4,13 @@ import _ from 'underscore';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { getModel } from '../schema';
 import type { IR, RA } from '../types';
+import { defined } from '../types';
 import type {
   ColumnOptions,
   MatchBehaviors,
 } from '../uploadplantomappingstree';
-import dataModelStorage from '../wbplanviewmodel';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import {
@@ -152,7 +153,7 @@ export function MappingView(props: {
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
-  readonly getMappedFields: GetMappedFieldsBind;
+  readonly getMappedFields?: GetMappedFieldsBind;
   readonly showHiddenFields?: boolean;
 }): JSX.Element | null {
   const mappingLineData = getMappingLineData({
@@ -542,7 +543,7 @@ export function MustMatch({
                               tableName={tableName}
                               tableLabel={false}
                             />
-                            {dataModelStorage.tables[tableName].label}
+                            {defined(getModel(tableName)).getLocalizedName()}
                           </label>
                         </td>
                         <td className="justify-center">

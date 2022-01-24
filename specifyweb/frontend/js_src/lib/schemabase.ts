@@ -25,8 +25,12 @@ export type Schema = {
   readonly catalogNumFormatName: string;
   readonly orgHierarchy: RA<string>;
   readonly models: {
-    readonly [tableName in keyof Tables]: SpecifyModel<Tables[tableName]>;
+    readonly [TABLE_NAME in keyof Tables]: SpecifyModel<Tables[TABLE_NAME]>;
   };
+  // Fields that are added on the front-end
+  readonly frontEndFields: Partial<{
+    readonly [TABLE_NAME in keyof Tables]: Set<Tables[TABLE_NAME]['fields']>;
+  }>;
 };
 
 const schemaBase: Writable<Schema> = {
@@ -52,6 +56,7 @@ const schemaBase: Writable<Schema> = {
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
   models: {} as Schema['models'],
+  frontEndFields: undefined!,
 
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [

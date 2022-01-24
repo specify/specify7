@@ -18,12 +18,12 @@ import type {
   AutoMapperSuggestion,
   MappingPath,
   RelationshipType,
-  SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import commonText from './localization/common';
 import wbText from './localization/workbench';
 import type { IR, R, RA, Writable } from './types';
+import { defined } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
@@ -45,10 +45,11 @@ import {
   getMaxToManyValue,
   isCircularRelationship,
   isTooManyInsideOfTooMany,
-  tableIsTree,
 } from './wbplanviewmodelhelper';
 import React from 'react';
 import icons from './components/icons';
+import { getModel } from './schema';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -320,7 +321,7 @@ function getNavigationChildrenTypes(
       relationshipIsToMany(parentRelationshipType) &&
       !valueIsReferenceItem(parentPathElementName),
     childrenAreRanks:
-      tableIsTree(tableName) && !valueIsTreeRank(parentPathElementName),
+      isTreeModel(tableName) && !valueIsTreeRank(parentPathElementName),
   };
 }
 
@@ -452,7 +453,7 @@ export function getMappingLineData({
   // The mapping path
   readonly mappingPath?: MappingPath;
   // Index of custom select element that should be open
-  readonly openSelectElement?: SelectElementPosition;
+  readonly openSelectElement?: number;
   /*
    * {bool} if False, returns data only for the last element of the mapping
    * path
@@ -551,9 +552,10 @@ export function getMappingLineData({
 
       const formattedTreeRankName = formatTreeRank(nextPathElementName);
       const treeRankName = getNameFromTreeRankName(formattedTreeRankName);
+      const treeRanks = getTreeDefinitionItems(tableName as 'Geography', false);
       if (
-        tableIsTree(tableName) &&
-        typeof dataModelStorage.ranks[tableName][treeRankName] !== 'undefined'
+        typeof treeRanks?.find(({ name }) => name === treeRankName) !==
+        'undefined'
       ) {
         nextPathElementName = formattedTreeRankName;
         mappingPath[internalState.mappingPathPosition] = formattedTreeRankName;
@@ -573,7 +575,7 @@ export function getMappingLineData({
 
     navigatorInstancePre({ tableName }) {
       internalState.isOpen =
-        openSelectElement?.index === internalState.mappingPathPosition + 1 ||
+        openSelectElement === internalState.mappingPathPosition + 1 ||
         ['OPENED_LIST', 'BASE_TABLE_SELECTION_LIST'].includes(
           internalState.customSelectType
         );
@@ -595,9 +597,13 @@ export function getMappingLineData({
           internalState.nextMappingPathElement
         );
         const treeRankName = getNameFromTreeRankName(formattedTreeRankName);
+        const treeRanks = getTreeDefinitionItems(
+          tableName as 'Geography',
+          false
+        );
         if (
-          tableIsTree(tableName) &&
-          typeof dataModelStorage.ranks[tableName][treeRankName] !== 'undefined'
+          typeof treeRanks?.find(({ name }) => name === treeRankName) !==
+          'undefined'
         ) {
           internalState.nextMappingPathElement = formattedTreeRankName;
           mappingPath[internalState.mappingPathPosition] =
@@ -665,21 +671,22 @@ export function getMappingLineData({
 
     handleTreeRanks({ tableName }) {
       internalState.customSelectSubtype = 'tree';
-      const tableRanks = dataModelStorage.ranks[tableName];
-
       internalState.resultFields = Object.fromEntries(
-        Object.entries(tableRanks).map(([rankName, { isRequired, title }]) => [
-          formatTreeRank(rankName),
-          {
-            optionLabel: title,
-            isEnabled: true,
-            isRequired: isRequired && !mustMatchPreferences[tableName],
-            isHidden: false,
-            isRelationship: true,
-            isDefault: formatTreeRank(rankName) === internalState.defaultValue,
-            tableName,
-          },
-        ])
+        getTreeDefinitionItems(tableName as 'Geography', false).map(
+          ({ name, isEnforced, title }) => [
+            formatTreeRank(name),
+            {
+              optionLabel: title ?? name,
+              isEnabled: true,
+              isRequired:
+                isEnforced === true && !mustMatchPreferences[tableName],
+              isHidden: false,
+              isRelationship: true,
+              isDefault: formatTreeRank(name) === internalState.defaultValue,
+              tableName,
+            },
+          ]
+        )
       );
     },
 
@@ -760,7 +767,7 @@ export function getMappingLineData({
       return {
         customSelectType: internalState.customSelectType,
         customSelectSubtype: internalState.customSelectSubtype,
-        selectLabel: dataModelStorage.tables[tableName].label,
+        selectLabel: defined(getModel(tableName)).getLocalizedName(),
         fieldsData: internalState.resultFields,
         tableName,
         ...(Boolean(internalState.isOpen)
@@ -807,8 +814,7 @@ export function getMappingLineData({
                 isRelationship: !columnOptionsAreDefault(columnOptions!),
               },
               selectLabel: wbText('mappingOptions'),
-              ...(openSelectElement?.index ===
-              internalState.mappingLineData.length
+              ...(openSelectElement === internalState.mappingLineData.length
                 ? {
                     isOpen: true,
                     handleChange: undefined,

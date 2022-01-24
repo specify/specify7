@@ -6,6 +6,8 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { Locality } from './datamodel';
+import type { AnySchema } from './datamodelutils';
 import { format } from './dataobjformatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
@@ -16,6 +18,7 @@ import {
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
+import { getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
 import {
   formatReferenceItem,
@@ -26,11 +29,8 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
-import dataModelStorage from './wbplanviewmodel';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { Locality } from './datamodel';
-import { AnySchema } from './datamodelutils';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -98,13 +98,16 @@ async function recursiveResourceResolve(
       baseTableName: 'locality',
       mappingPath: pastParts,
     });
-    const tableRanks = Object.entries(dataModelStorage.ranks[treeTableName]);
+    const tableRanks = getTreeDefinitionItems(
+      treeTableName as 'Geography',
+      false
+    );
     const currentRank = tableRanks.find(
-      ([, { rankId }]) => rankId === resource.get('rankId')
+      ({ rankId }) => rankId === resource.get('rankId')
     );
     if (typeof currentRank === 'undefined')
       throw new Error('Failed to fetch tree name');
-    const currentRankName = formatTreeRank(currentRank[0]);
+    const currentRankName = formatTreeRank(currentRank.name);
     return [
       [...pastParts, currentRankName, ...nextPart],
       await resource.rget(nextPart[0]),

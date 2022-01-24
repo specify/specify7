@@ -1,7 +1,11 @@
 import * as React from 'react';
 
 import ajax from '../ajax';
-import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
@@ -26,23 +30,21 @@ import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { sortFunction } from '../wbplanviewhelper';
 
-function TreeView<
-  SCHEMA extends AnyTree,
-  TREE_SCHEMA extends FilterTablesByEndsWith<'TreeDef'>
->({
+function TreeView<SCHEMA extends AnyTree>({
   tableName,
-  treeDefinition,
+  treeDefinitionId,
   treeDefinitionItems,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly treeDefinition: SpecifyResource<TREE_SCHEMA>;
+  readonly treeDefinitionId: number;
   readonly treeDefinitionItems: RA<
-    SpecifyResource<FilterTablesByEndsWith<'TreeDefItem'>>
+    SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const rankIds = treeDefinitionItems.map((rank) => rank.get('rankId'));
+  const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
     bucketName: 'tree',
     cacheName: `collapsedRanks${tableName}`,
@@ -80,9 +82,7 @@ function TreeView<
   // Node sort order
   const sortOrderFieldName = `${tableName}.treeview_sort_field`;
   const sortField = getPref(sortOrderFieldName, 'name');
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
-    treeDefinition.id
-  }`;
+  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${treeDefinitionId}`;
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(`${baseUrl}/${parentId}/${sortField}`),
@@ -138,11 +138,11 @@ function TreeView<
               Object.fromEntries(
                 models.map((node) => {
                   const rankDefinition = treeDefinitionItems.find(
-                    (rank) => rank.get('rankId') === node.get('rankId')
+                    ({ rankId }) => rankId === node.get('rankId')
                   );
                   const rankName =
-                    rankDefinition?.get('title') ??
-                    rankDefinition?.get('name') ??
+                    rankDefinition?.title ??
+                    rankDefinition?.name ??
                     node.get('name');
                   return [
                     node.get('fullName'),
@@ -168,9 +168,7 @@ function TreeView<
                       readonly id: number;
                     } => typeof node === 'object'
                   )
-                  .sort(({ rankid: left }, { rankid: right }) =>
-                    left > right ? 1 : left === right ? 0 : -1
-                  )
+                  .sort(sortFunction(({ rankid }) => rankid))
                   .map(({ id }) => id)
               )
             );
@@ -233,23 +231,23 @@ function TreeView<
                   ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}`}
               >
                 <Button.LikeLink
-                  id={id(rank.get('rankId').toString())}
+                  id={id(rank.rankId.toString())}
                   onClick={
                     typeof collapsedRanks === 'undefined'
                       ? undefined
                       : (): void =>
                           setCollapsedRanks(
-                            collapsedRanks.includes(rank.get('rankId'))
+                            collapsedRanks.includes(rank.rankId)
                               ? collapsedRanks.filter(
-                                  (rankId) => rankId !== rank.get('rankId')
+                                  (rankId) => rankId !== rank.rankId
                                 )
-                              : [...collapsedRanks, rank.get('rankId')]
+                              : [...collapsedRanks, rank.rankId]
                           )
                   }
                 >
                   {pipe(
-                    rank.get('title') ?? rank.get('name'),
-                    collapsedRanks?.includes(rank.get('rankId')) ?? false,
+                    rank.title ?? rank.name,
+                    collapsedRanks?.includes(rank.rankId) ?? false,
                     (name) => name[0]
                   )}
                 </Button.LikeLink>

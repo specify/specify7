@@ -14,6 +14,7 @@ import commonText from './localization/common';
 import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
+import { sortFunction } from './wbplanviewhelper';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -21,10 +22,7 @@ export const sortObjectsByKey = <
 >(
   objects: RA<T>,
   key: KEY
-): RA<T> =>
-  Array.from(objects).sort(({ [key]: keyLeft }, { [key]: keyRight }) =>
-    keyLeft > keyRight ? 1 : keyLeft === keyRight ? 0 : -1
-  );
+): RA<T> => Array.from(objects).sort(sortFunction(({ [key]: value }) => value));
 
 let newStringId = 1;
 const defaultLanguage = 'en';

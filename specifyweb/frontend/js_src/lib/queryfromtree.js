@@ -3,8 +3,8 @@
 import Q from 'q';
 
 import schema, {getModel} from './schema';
-import { getDomainResource } from './domain';
 import QueryFieldSpec from './queryfieldspec';
+import {getDomainResource} from "./treedefinitions";
 
 
 function paleoPathP() {

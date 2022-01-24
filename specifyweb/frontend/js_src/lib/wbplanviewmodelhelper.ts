@@ -24,6 +24,7 @@ import type {
   DataModelRelationship,
 } from './wbplanviewmodelfetcher';
 import type { MappingsTree } from './wbplanviewtreehelper';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 
 const getTableFields = (
   // The name of the table to fetch the fields for
@@ -61,9 +62,6 @@ export const getTableRelationships = (
     relationshipName: string,
     relationshipData: DataModelRelationship
   ][];
-
-export const tableIsTree = (tableName?: string): boolean =>
-  typeof dataModelStorage.ranks[tableName ?? ''] !== 'undefined';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyValue = (
@@ -123,14 +121,13 @@ export function findRequiredMissingFields(
   }
 
   // Handle trees
-  else if (tableIsTree(tableName)) {
-    const keys = Object.keys(dataModelStorage.ranks[tableName]);
+  else if (isTreeModel(tableName)) {
+    const treeRanks = getTreeDefinitionItems(tableName as 'Geography', false);
     const lastPathElement = path.slice(-1)[0];
     const lastPathElementIsRank = valueIsTreeRank(lastPathElement);
 
     if (!lastPathElementIsRank)
-      return keys.reduce((results, rankName) => {
-        const rankData = dataModelStorage.ranks[tableName][rankName];
+      return treeRanks.reduce((results, { name: rankName, isEnforced }) => {
         const complimentedRankName = formatTreeRank(rankName);
         const localPath = [...path, complimentedRankName];
 
@@ -143,7 +140,7 @@ export function findRequiredMissingFields(
             localPath,
             results
           );
-        else if (rankData.isRequired && !mustMatchPreferences[tableName])
+        else if (isEnforced === true && !mustMatchPreferences[tableName])
           results.push(localPath);
 
         return results;

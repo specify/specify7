@@ -84,8 +84,7 @@ const schemaExtras: IR<(model: SpecifyModel) => RA<Field | Relationship>> = {
     return [accessions];
   },
   Accession(model) {
-    const division = defined(model.getRelationship('division'));
-    division.otherSideName = 'accessions';
+    defined(model.getRelationship('division')).otherSideName = 'accessions';
     return [];
   },
   Loan(model) {
@@ -233,80 +232,39 @@ const schemaExtras: IR<(model: SpecifyModel) => RA<Field | Relationship>> = {
     );
     preferredTaxonOf.isHidden = alwaysTrue;
 
-    const parentField = defined(model.getField('parent'));
-    parentField.isRequired = true;
-
-    const isAccepted = defined(model.getField('isaccepted'));
-    isAccepted.readOnly = true;
-
-    const acceptedTaxon = defined(model.getField('acceptedtaxon'));
-    acceptedTaxon.readOnly = true;
-
-    const fullName = defined(model.getField('fullname'));
-    fullName.readOnly = true;
+    defined(model.getField('parent')).isRequired = true;
+    defined(model.getField('isAccepted')).readOnly = true;
+    defined(model.getField('acceptedTaxon')).readOnly = true;
+    defined(model.getField('fullName')).readOnly = true;
 
     return [preferredTaxonOf];
   },
   Geography(model) {
-    const parentField = defined(model.getField('parent'));
-    parentField.isRequired = true;
-
-    const isAccepted = defined(model.getField('isaccepted'));
-    isAccepted.readOnly = true;
-
-    const acceptedGeography = defined(model.getField('acceptedgeography'));
-    acceptedGeography.readOnly = true;
-
-    const fullName = defined(model.getField('fullname'));
-    fullName.readOnly = true;
-
+    defined(model.getField('parent')).isRequired = true;
+    defined(model.getField('isAccepted')).readOnly = true;
+    defined(model.getField('acceptedGeography')).readOnly = true;
+    defined(model.getField('fullName')).readOnly = true;
     return [];
   },
   LithoStrat(model) {
-    const parentField = defined(model.getField('parent'));
-    parentField.isRequired = true;
-
-    const isAccepted = defined(model.getField('isaccepted'));
-    isAccepted.readOnly = true;
-
-    const acceptedLithostrat = defined(model.getField('acceptedlithostrat'));
-    acceptedLithostrat.readOnly = true;
-
-    const fullName = defined(model.getField('fullname'));
-    fullName.readOnly = true;
-
+    defined(model.getField('parent')).isRequired = true;
+    defined(model.getField('isAccepted')).readOnly = true;
+    defined(model.getField('acceptedLithoStrat')).readOnly = true;
+    defined(model.getField('fullName')).readOnly = true;
     return [];
   },
   GeologicTimePeriod(model) {
-    const parentField = defined(model.getField('parent'));
-    parentField.isRequired = true;
-
-    const isAccepted = defined(model.getField('isaccepted'));
-    isAccepted.readOnly = true;
-
-    const acceptedGeologictimeperiod = defined(
-      model.getField('acceptedgeologictimeperiod')
-    );
-    acceptedGeologictimeperiod.readOnly = true;
-
-    const fullName = defined(model.getField('fullname'));
-    fullName.readOnly = true;
-
+    defined(model.getField('parent')).isRequired = true;
+    defined(model.getField('isAccepted')).readOnly = true;
+    defined(model.getField('acceptedGeologictimeperiod')).readOnly = true;
+    defined(model.getField('fullName')).readOnly = true;
     return [];
   },
   Storage(model) {
-    const parentField = defined(model.getField('parent'));
-    parentField.isRequired = true;
-
-    const isAccepted = defined(model.getField('isaccepted'));
-    isAccepted.readOnly = true;
-
-    const acceptedStorage = defined(model.getField('acceptedstorage'));
-    acceptedStorage.readOnly = true;
-
-    const fullName = defined(model.getField('fullname'));
-    fullName.readOnly = true;
-
+    defined(model.getField('parent')).isRequired = true;
+    defined(model.getField('isAccepted')).readOnly = true;
+    defined(model.getField('acceptedStorage')).readOnly = true;
+    defined(model.getField('fullName')).readOnly = true;
     return [];
   },
 };

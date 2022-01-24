@@ -10,9 +10,9 @@
 import React from 'react';
 
 import wbText from '../localization/workbench';
+import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
-import dataModelStorage from '../wbplanviewmodel';
 import {
   TableIcon,
   tableIconEmpty,
@@ -274,7 +274,7 @@ function Option({
       'custom-select-option-selected cursor-auto bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = dataModelStorage.tables?.[tableName]?.label;
+  const tableLabel = getModel(tableName)?.getLocalizedName();
 
   const fullTitle = [
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),

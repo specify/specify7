@@ -20,8 +20,8 @@ import {
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
 import type { DataModelField } from './wbplanviewmodelfetcher';
-import { tableIsTree } from './wbplanviewmodelhelper';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
+import { isTreeModel } from './treedefinitions';
 
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDefinition> {}
@@ -33,7 +33,7 @@ function mappingsTreeToUploadPlanTable(
   wrapIt = true,
   isRoot = false
 ) {
-  if (typeof tableName !== 'undefined' && tableIsTree(tableName))
+  if (typeof tableName !== 'undefined' && isTreeModel(tableName))
     return mappingsTreeToUploadTable(
       tableData as MappingsTree,
       tableName,
@@ -204,7 +204,7 @@ const mappingsTreeToUploadTable = (
   mustMatchPreferences: IR<boolean>,
   isRoot = false
 ): Uploadable =>
-  tableIsTree(tableName)
+  isTreeModel(tableName)
     ? ({
         [tableName in mustMatchPreferences
           ? 'mustMatchTreeRecord'

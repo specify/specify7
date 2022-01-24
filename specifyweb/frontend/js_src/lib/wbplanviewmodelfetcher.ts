@@ -8,17 +8,14 @@
 
 // TODO: consider transitioning to using schema.ts now that type support is improved
 import ajax from './ajax';
-import { error } from './assert';
 import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
-import type { AnyTree, FilterTablesByEndsWith } from './datamodelutils';
-import { getTreeDef } from './domain';
-import type { GetTreeDefinition } from './legacytypes';
+import type { Tables } from './datamodel';
 import schema from './schema';
 import type { Field, Relationship } from './specifyfield';
 import systemInfo from './systeminfo';
 import type { IR, R, RA, Writable } from './types';
-import { camelToHuman, capitalize } from './wbplanviewhelper';
+import { camelToHuman } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   FieldConfigOverwrite,
@@ -30,6 +27,7 @@ import {
   fetchingParameters,
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
+import { isTreeModel } from './treedefinitions';
 
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
@@ -60,56 +58,20 @@ export type DataModelRelationship = DataModelFieldPrimer & {
 };
 
 type DataModelTable = {
-  readonly label: string;
-  readonly fields: R<DataModelField>;
+  // Whether to show in the list of base tables in Workbench Mapper
+  readonly isBaseTable: boolean;
+  /*
+   * If isBaseTable && !isCommonTable, table would be hidden from the list
+   * of base tables, unless showAdvancedTables checkbox is checked
+   */
+  readonly isCommonTable: boolean;
+  readonly fields: IR<DataModelField>;
 };
 
 export type DataModelTables = IR<DataModelTable>;
 
-export type TreeRankData = {
-  readonly isRequired: boolean;
-  readonly title: string;
-  readonly rankId: number;
-};
-
-type TableRanksInline = Readonly<
-  [tableName: string, tableRanks: [string, TreeRankData][]]
->;
-
-export type DataModelRanks = IR<IR<TreeRankData>>;
-
 export type OriginalRelationships = IR<IR<RA<string>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;
-
-type DataModelListOfTablesWritable = R<{
-  readonly label: string;
-  readonly isHidden: boolean;
-}>;
-
-export type DataModelListOfTables = Readonly<DataModelListOfTablesWritable>;
-
-/* Fetches ranks for a particular table */
-const fetchRanks = async (
-  tableName: AnyTree['tableName']
-): Promise<TableRanksInline> =>
-  (getTreeDef as GetTreeDefinition<FilterTablesByEndsWith<'TreeDef'>>)(
-    tableName
-  )
-    ?.then(async (treeDefinition) =>
-      treeDefinition.rgetCollection('treeDefItems')
-    )
-    .then(({ models }) => [
-      tableName,
-      models.map((rank) => [
-        rank.get('name'),
-        {
-          isRequired: false,
-          title: capitalize(rank.get('title') ?? rank.get('name')),
-          // Union types like AnyTreeDef are not handled very well yet
-          rankId: rank.get('rankId') as unknown as number,
-        },
-      ]),
-    ]) ?? error('Invalid table name');
 
 function handleRelationshipType(
   relationshipType: RelationshipType,
@@ -136,9 +98,7 @@ function handleRelationshipField(
   fieldName: string,
   currentTableName: string,
   hiddenTables: Readonly<Set<string>>,
-  originalRelationships: OriginalRelationshipsWritable,
-  hasRelationshipWithDefinition: () => void,
-  hasRelationshipWithDefinitionItem: () => void
+  originalRelationships: OriginalRelationshipsWritable
 ): boolean {
   const relationship = field as Relationship;
 
@@ -153,16 +113,6 @@ function handleRelationshipField(
     fieldName,
     originalRelationships
   );
-
-  if (fieldName === 'definition') {
-    hasRelationshipWithDefinition();
-    return false;
-  }
-
-  if (fieldName === 'definitionitem') {
-    hasRelationshipWithDefinitionItem();
-    return false;
-  }
 
   if (relationship.readOnly || tableHasOverwrite(tableName, 'remove'))
     return false;
@@ -226,7 +176,12 @@ const fieldHasOverwrite = (
   fetchingParameters.fieldOverwrites._common?.[fieldName] === overwriteName ||
   Object.entries(fetchingParameters.endsWithFieldOverwrites).findIndex(
     ([key, action]) => fieldName.endsWith(key) && action === overwriteName
-  ) !== -1;
+  ) !== -1 ||
+  (overwriteName === 'remove' &&
+    (schema.frontEndFields[tableName as keyof Tables]?.has(
+      fieldName as keyof Tables[keyof Tables]['fields']
+    ) ??
+      false));
 
 /**
  * Schema hash is used for wiping schema cache after schema changes
@@ -269,17 +224,6 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
     const tables = cache.get('wbPlanViewDataModel', 'tables', {
       version: cacheVersion,
     });
-    const listOfBaseTables = cache.get(
-      'wbPlanViewDataModel',
-      'listOfBaseTables',
-      { version: cacheVersion }
-    );
-    const ranks = cache.get('wbPlanViewDataModel', 'ranks', {
-      version: cacheVersion,
-    });
-    const rootRanks = cache.get('wbPlanViewDataModel', 'rootRanks', {
-      version: cacheVersion,
-    });
     const originalRelationships = cache.get(
       'wbPlanViewDataModel',
       'originalRelationships',
@@ -288,22 +232,14 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
 
     if (
       typeof tables === 'object' &&
-      typeof listOfBaseTables === 'object' &&
-      typeof ranks === 'object' &&
-      typeof rootRanks === 'object' &&
       typeof originalRelationships === 'object'
     ) {
       dataModelStorage.tables = tables;
-      dataModelStorage.listOfBaseTables = listOfBaseTables;
-      dataModelStorage.ranks = ranks;
-      dataModelStorage.rootRanks = rootRanks;
       dataModelStorage.originalRelationships = originalRelationships;
       return;
     }
   }
 
-  const listOfBaseTables: DataModelListOfTablesWritable = {};
-  const fetchRanksQueue: Promise<TableRanksInline>[] = [];
   const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
@@ -318,26 +254,22 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   );
 
   const tables = Object.values(schema.models).reduce<
-    R<{
-      readonly label: string;
-      fields: R<DataModelField>;
-    }>
+    R<Writable<DataModelTable>>
   >((tables, tableData) => {
     const tableName = tableData.name.toLowerCase();
-    const label = tableData.getLocalizedName();
+
+    const isTreeTable = isTreeModel(tableData.name);
 
     const fields: R<DataModelField> = {};
-    let hasRelationshipWithDefinition = false;
-    let hasRelationshipWithDefinitionItem = false;
 
     if (tableData.system || tableHasOverwrite(tableName, 'remove'))
       return tables;
 
     tableData.fields.forEach((field) => {
-      let fieldName = field.name;
-      const label = field.getLocalizedName() ?? camelToHuman(fieldName);
+      if (isTreeTable && field.isRelationship) return;
 
-      fieldName = fieldName.toLowerCase();
+      const label = field.getLocalizedName() ?? camelToHuman(field.name);
+      const fieldName = field.name.toLowerCase();
 
       if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
 
@@ -377,13 +309,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
           fieldName,
           tableName,
           hiddenTables,
-          originalRelationships,
-          () => {
-            hasRelationshipWithDefinition = true;
-          },
-          () => {
-            hasRelationshipWithDefinitionItem = true;
-          }
+          originalRelationships
         )
       )
         return;
@@ -429,19 +355,14 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         .map(([fieldName]) => [fieldName, fields[fieldName]])
     );
 
-    if (!tableHasOverwrite(tableName, 'hidden') && !hiddenTables.has(tableName))
-      listOfBaseTables[tableName] = {
-        label,
-        isHidden: !tableHasOverwrite(tableName, 'commonBaseTable'),
-      };
+    const isBaseTable =
+      !tableHasOverwrite(tableName, 'hidden') && !hiddenTables.has(tableName);
 
     tables[tableName] = {
-      label,
       fields: orderedFields,
+      isBaseTable,
+      isCommonTable: tableHasOverwrite(tableName, 'commonBaseTable'),
     };
-
-    if (hasRelationshipWithDefinition && hasRelationshipWithDefinitionItem)
-      fetchRanksQueue.push(fetchRanks(tableName as AnyTree['tableName']));
 
     return tables;
   }, {});
@@ -465,81 +386,19 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
 
   await Promise.all(fetchPickListsQueue);
 
-  await Promise.all(fetchRanksQueue)
-    .then((resolved) => {
-      const rootRanks: IR<[string, TreeRankData]> = Object.fromEntries(
-        resolved.map(([tableName, tableRanks]) => [
-          tableName,
-          tableRanks.shift()!,
-        ])
-      );
-
-      const ranks: DataModelRanks = Object.fromEntries(
-        resolved.map(([tableName, tableRanks]) => [
-          tableName,
-          Object.fromEntries(tableRanks),
-        ])
-      );
-
-      // Remove relationships from tree table fields
-      resolved.forEach(
-        ([tableName]) =>
-          (tables[tableName].fields = Object.fromEntries(
-            Object.entries(tables[tableName].fields).filter(
-              ([, { isRelationship }]) => !isRelationship
-            )
-          ))
-      );
-
-      dataModelStorage.tables = cache.set(
-        'wbPlanViewDataModel',
-        'tables',
-        tables,
-        {
-          version: cacheVersion,
-          overwrite: true,
-        }
-      );
-      dataModelStorage.listOfBaseTables = cache.set(
-        'wbPlanViewDataModel',
-        'listOfBaseTables',
-        listOfBaseTables,
-        {
-          version: cacheVersion,
-          overwrite: true,
-        }
-      );
-      dataModelStorage.ranks = cache.set(
-        'wbPlanViewDataModel',
-        'ranks',
-        ranks,
-        {
-          version: cacheVersion,
-          overwrite: true,
-        }
-      );
-      dataModelStorage.rootRanks = cache.set(
-        'wbPlanViewDataModel',
-        'rootRanks',
-        rootRanks,
-        {
-          version: cacheVersion,
-          overwrite: true,
-        }
-      );
-      dataModelStorage.originalRelationships = cache.set(
-        'wbPlanViewDataModel',
-        'originalRelationships',
-        originalRelationships,
-        {
-          version: cacheVersion,
-          overwrite: true,
-        }
-      );
-    })
-    .catch((error) => {
-      throw error;
-    });
+  dataModelStorage.tables = cache.set('wbPlanViewDataModel', 'tables', tables, {
+    version: cacheVersion,
+    overwrite: true,
+  });
+  dataModelStorage.originalRelationships = cache.set(
+    'wbPlanViewDataModel',
+    'originalRelationships',
+    originalRelationships,
+    {
+      version: cacheVersion,
+      overwrite: true,
+    }
+  );
 }
 
 export const dataModelPromise = fetchDataModel().then(() => dataModelStorage);

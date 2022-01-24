@@ -5,7 +5,6 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import template from './templates/queryfield.html';
-import {getTreeDef} from './domain';
 import QueryFieldSpec from './queryfieldspec';
 import QueryFieldInputUI from './queryfieldinput';
 import queryText from './localization/query';
@@ -13,6 +12,7 @@ import commonText from './localization/common';
 import {LANGUAGE} from "./localization/utils";
 import {dateParts} from "./components/internationalization";
 import {legacyNonJsxIcons} from './components/icons';
+import {getTreeDefinitionItems} from "./treedefinitions";
 
 var SORT_ICONS = [legacyNonJsxIcons.stop, legacyNonJsxIcons.chevronUp, legacyNonJsxIcons.chevronDown];
 
@@ -237,27 +237,21 @@ export default Backbone.View.extend({
                         .appendTo(fieldSelect);
                 });
 
-            this.getTreeRanks(this.fieldSpec.table.name)
-                .then(treeRanks=>this.addTreeLevelsToFieldSelect(treeRanks))
-                .catch(()=>{ /* Not a tree table */ })
-                .finally(()=>this.$('.field-select-grp').show())
-        },
-        async getTreeRanks(tableName){
-            const treeDef = await getTreeDef(tableName);
-            const treeDefItems = await treeDef.rget('treedefitems');
-            await treeDefItems.fetch({limit: 0});
-            return treeDefItems.models ?? [];
+            const treeRanks = getTreeDefinitionItems(this.fieldSpec.table.name, false);
+            if(typeof treeRanks === 'object')
+              this.addTreeLevelsToFieldSelect(treeRanks);
+            this.$('.field-select-grp').show();
         },
         addTreeLevelsToFieldSelect: function(tableRanks) {
             const optGroup = $(`<optgroup label="${queryText('treeRanks')}">`).appendTo( this.$('.field-select') );
 
-            tableRanks.map((item)=>{
-                $('<option>', {value: 'treerank-' + item.get('name')})
-                    .text(item.get('title') ?? item.get('name'))
+            tableRanks.map(({name, title})=>{
+                $('<option>', {value: 'treerank-' + name})
+                    .text(title ?? name)
                     .appendTo(optGroup);
                 if (item.specifyModel.name === 'TaxonTreeDefItem') {
-                    $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
-                        .text(queryText('treeRankAuthor')(item.get('title') ?? item.get('name')))
+                    $('<option>', {value: 'treerank-' + name + ' Author'})
+                        .text(queryText('treeRankAuthor')(title ?? name))
                         .appendTo(optGroup);
                 }
             });

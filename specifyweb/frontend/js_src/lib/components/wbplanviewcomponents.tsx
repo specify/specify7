@@ -8,8 +8,10 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { getModel } from '../schema';
 import type { IR, R, RA } from '../types';
-import type { DataModelListOfTables } from '../wbplanviewmodelfetcher';
+import { defined } from '../types';
+import dataModelStorage from '../wbplanviewmodel';
 import { Button } from './basic';
 import type {
   CustomSelectElementOptionProps,
@@ -63,27 +65,30 @@ export type MappingElementProps = {
 );
 
 export function ListOfBaseTables({
-  listOfTables,
   handleChange,
   showHiddenTables,
 }: {
-  readonly listOfTables: DataModelListOfTables;
   readonly handleChange: (newValue: string) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const fieldsData = Object.fromEntries(
-    (showHiddenTables
-      ? Object.entries(listOfTables)
-      : Object.entries(listOfTables).filter(([, { isHidden }]) => !isHidden)
-    ).map(([tableName, { label, isHidden }]) => [
-      tableName,
-      {
-        optionLabel: label,
-        tableName,
-        isRelationship: true,
-        isHidden,
-      },
-    ])
+    Object.entries(dataModelStorage.tables)
+      .filter(
+        ([_tableName, { isBaseTable, isCommonTable }]) =>
+          isBaseTable && (isCommonTable || showHiddenTables)
+      )
+      .map(
+        ([tableName, { isCommonTable }]) =>
+          [
+            tableName,
+            {
+              optionLabel: defined(getModel(tableName)).getLocalizedName(),
+              tableName,
+              isRelationship: true,
+              isHidden: !isCommonTable,
+            },
+          ] as const
+      )
   );
   return (
     <MappingElement

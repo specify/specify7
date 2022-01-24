@@ -62,6 +62,7 @@ export type Collection<RESOURCE extends SpecifyResource<AnySchema>> = {
   readonly remove: (resource: RESOURCE) => void;
 };
 
+// TODO: tighten up schema field types (use literals / enums)
 export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // Java classname of the Specify 6 ORM object.
   public readonly longName: string;
@@ -80,6 +81,7 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   private readonly fieldAliases: RA<FieldAlias>;
 
+  // TODO: make newly created resources have default values for fields
   public readonly Resource: new (
     props?: Partial<SerializedResource<SCHEMA>>
   ) => SpecifyResource<SCHEMA>;

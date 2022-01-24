@@ -8,13 +8,9 @@
  * @module
  */
 
-import type { IR } from './types';
 import type {
-  DataModelListOfTables,
-  DataModelRanks,
   DataModelTables,
   OriginalRelationships,
-  TreeRankData,
 } from './wbplanviewmodelfetcher';
 
 const dataModelStorage: {
@@ -22,9 +18,6 @@ const dataModelStorage: {
   treeSymbol: string;
   pathJoinSymbol: string;
   tables: DataModelTables;
-  listOfBaseTables: DataModelListOfTables;
-  ranks: DataModelRanks;
-  rootRanks: IR<[string, TreeRankData]>;
   originalRelationships: OriginalRelationships;
   currentCollectionId: number | undefined;
 } = {
@@ -42,12 +35,6 @@ const dataModelStorage: {
 
   // Parsed tables and their fields
   tables: undefined!,
-  // Tables that are available as base table
-  listOfBaseTables: undefined!,
-  // Dict of defined ranks for tree tables
-  ranks: undefined!,
-  // Root rank for each tree table
-  rootRanks: undefined!,
   /*
    * A dictionary of [original-relationship-type] > [table-name] > field-name[]
    * records for relationships that had their relationship types changed

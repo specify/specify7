@@ -26,13 +26,14 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
-import { getMaxToManyValue, tableIsTree } from './wbplanviewmodelhelper';
+import { getMaxToManyValue } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import {
   mappingPathsToMappingsTree,
   traverseTree,
 } from './wbplanviewtreehelper';
+import { isTreeModel } from './treedefinitions';
 
 export async function savePlan({
   dataset,
@@ -151,7 +152,7 @@ export function getMustMatchTables({
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): IR<boolean> {
-  const baseTableIsTree = tableIsTree(baseTableName);
+  const baseTableIsTree = isTreeModel(baseTableName);
   const arrayOfMappingPaths = lines.map((line) => line.mappingPath);
   const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
     getMappingLineData({

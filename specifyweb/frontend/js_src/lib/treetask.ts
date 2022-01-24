@@ -1,10 +1,10 @@
-import { getTreeDef } from './domain';
-import type { GetTreeDefinition } from './legacytypes';
+import type { AnyTree } from './datamodelutils';
 import NotFoundView from './notfoundview';
 import router from './router';
-import { setCurrentView } from './specifyapp';
-import { AnyTree, FilterTablesByEndsWith } from './datamodelutils';
 import schema from './schema';
+import { setCurrentView } from './specifyapp';
+import { treeDefinitions } from './treedefinitions';
+import { caseInsensitiveHash } from './wbplanviewhelper';
 
 export default function Routes(): void {
   router.route('tree/:table/', 'tree', async (table: string) =>
@@ -16,26 +16,16 @@ export default function Routes(): void {
         setCurrentView(new NotFoundView());
         return;
       }
-      const treePromise = (
-        getTreeDef as unknown as GetTreeDefinition<
-          FilterTablesByEndsWith<'TreeDef'>
-        >
-      )(tableName);
-      if (treePromise === null) {
-        setCurrentView(new NotFoundView());
-        return;
-      }
-      treePromise.then((treeDefinition) =>
-        treeDefinition.rgetCollection('treeDefItems').then(({ models }) =>
-          setCurrentView(
-            new TreeView({
-              tableName,
-              treeDefinition,
-              treeDefinitionItems: models,
-            })
-          )
-        )
-      );
+      const treeDefinition = caseInsensitiveHash(treeDefinitions, tableName);
+      if (typeof treeDefinition === 'object')
+        setCurrentView(
+          new TreeView({
+            tableName,
+            treeDefinitionId: treeDefinition.definition.id,
+            treeDefinitionItems: treeDefinition.ranks,
+          })
+        );
+      else setCurrentView(new NotFoundView());
     })
   );
 }

@@ -277,19 +277,6 @@ export default function (): void {
   );
 
   runTest(
-    'WbPlanViewModelHelper.tableIsTree',
-    [
-      [['collectionobject'], false],
-      [['non_existent_table'], false],
-      [[''], false],
-      [['taxon'], true],
-      [['geography'], true],
-      [['storage'], true],
-    ],
-    WbPlanViewModelHelper.tableIsTree
-  );
-
-  runTest(
     'WbPlanViewModelHelper.getMaxToManyValue',
     [
       [

@@ -2,12 +2,11 @@ import React from 'react';
 
 import { ping } from '../../ajax';
 import type { AnyTree } from '../../datamodelutils';
-import { getDomainResource } from '../../domain';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
 import { getModel } from '../../schema';
 import type SpecifyModel from '../../specifymodel';
-import type { IR } from '../../types';
+import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
@@ -16,11 +15,6 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-
-const commonTrees = new Set(['geography', 'storage', 'taxon']);
-const treesForPaleo = new Set(['geologictimeperiod', 'lithostrat']);
-export const allTrees = new Set([...commonTrees, ...commonTrees]);
-const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -33,35 +27,16 @@ export function TreeSelectDialog({
   readonly title: string;
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
-  const [trees, setTrees] = React.useState<
-    IR<SpecifyModel<AnyTree>> | undefined
-  >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    Promise.resolve(defined(getDomainResource('discipline')).get('type'))
-      .then((type) => [
-        ...commonTrees,
-        ...(paleoDiscs.has(type) ? treesForPaleo : []),
-      ])
-      .then((trees) =>
-        Object.fromEntries(
-          trees.map((tree) => [
-            tree,
-            defined(getModel(tree)) as unknown as SpecifyModel<AnyTree>,
-          ])
-        )
-      )
-      .then((trees) => (destructorCalled ? undefined : setTrees(trees)))
-      .catch(console.error);
+  const trees = Object.fromEntries(
+    disciplineTrees.map((tree) => [
+      tree,
+      defined(getModel(tree)) as unknown as SpecifyModel<AnyTree>,
+    ])
+  );
 
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
-
-  return typeof trees === 'undefined' || isLoading ? (
+  return isLoading ? (
     <LoadingScreen />
   ) : (
     <Dialog

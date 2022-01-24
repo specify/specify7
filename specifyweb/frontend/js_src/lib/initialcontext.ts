@@ -24,6 +24,7 @@ export default Promise.all([
   import('./uiformatters'),
   import('./weblinkbutton'),
   import('./userinfo'),
+  import('./treedefinitions'),
 ]).then(async (modules) =>
   Promise.all(
     (modules as RA<{ readonly fetchContext: Promise<void> }>).map(
