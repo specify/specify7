@@ -110,14 +110,14 @@ export const className = {
   form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
-  transparentButton: `${niceButton} hover:bg-gray-300 hover:dark:bg-neutral-500
+  transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
-  grayButton: `${niceButton} hover:bg-gray-400 bg-gray-300 text-gray-800
+  grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`,
-  redButton: `${niceButton} hover:bg-red-800 bg-red-700 text-white`,
-  blueButton: `${niceButton} hover:bg-blue-700 bg-blue-600 text-white`,
-  orangeButton: `${niceButton} hover:bg-orange-600 bg-orange-500 text-white`,
-  greenButton: `${niceButton} hover:bg-green-800 bg-green-700 text-white`,
+  redButton: `hover:bg-red-800 bg-red-700 text-white`,
+  blueButton: `hover:bg-blue-700 bg-blue-600 text-white`,
+  orangeButton: `hover:bg-orange-600 bg-orange-500 text-white`,
+  greenButton: `hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `active:bg-brand-300 active:dark:bg-brand-400 bg-gray-300 gap-2
     hover:bg-brand-200 hover:dark:bg-brand:400 inline-flex dark:bg-neutral-500
     dark:text-white justify-center items-center p-2 text-black cursor-pointer`,
@@ -142,6 +142,9 @@ export const Radio = wrap('input', className.radio, { type: 'radio' });
 export const Checkbox = wrap('input', className.checkbox, { type: 'checkbox' });
 export const ErrorMessage = wrap('div', className.errorMessage, {
   role: 'alert',
+});
+export const FormFooter = wrap('div', className.formFooter, {
+  role: 'toolbar',
 });
 export const Form = wrap(
   'form',
@@ -262,22 +265,22 @@ export const Button = {
     type: 'button',
     children: icons[props.icon],
   })),
-  Transparent: wrap('button', className.transparentButton, {
+  Transparent: wrap('button', `${niceButton} ${className.transparentButton}`, {
     type: 'button',
   }),
-  Gray: wrap('button', className.grayButton, {
+  Gray: wrap('button', `${niceButton} ${className.grayButton}`, {
     type: 'button',
   }),
-  Red: wrap('button', className.redButton, {
+  Red: wrap('button', `${niceButton} ${className.redButton}`, {
     type: 'button',
   }),
-  Blue: wrap('button', className.blueButton, {
+  Blue: wrap('button', `${niceButton} ${className.blueButton}`, {
     type: 'button',
   }),
-  Orange: wrap('button', className.orangeButton, {
+  Orange: wrap('button', `${niceButton} ${className.orangeButton}`, {
     type: 'button',
   }),
-  Green: wrap('button', className.greenButton, {
+  Green: wrap('button', `${niceButton} ${className.greenButton}`, {
     type: 'button',
   }),
   DialogClose: DialogCloseButton,
@@ -301,42 +304,42 @@ export const Submit = {
   ),
   Transparent: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.transparentButton,
+    `${niceButton} ${className.transparentButton}`,
     {
       type: 'submit',
     }
   ),
   Gray: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.grayButton,
+    `${niceButton} ${className.grayButton}`,
     {
       type: 'submit',
     }
   ),
   Red: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.redButton,
+    `${niceButton} ${className.redButton}`,
     {
       type: 'submit',
     }
   ),
   Blue: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.blueButton,
+    `${niceButton} ${className.blueButton}`,
     {
       type: 'submit',
     }
   ),
   Orange: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.orangeButton,
+    `${niceButton} ${className.orangeButton}`,
     {
       type: 'submit',
     }
   ),
   Green: wrap<'input', { readonly children?: undefined }>(
     'input',
-    className.greenButton,
+    `${niceButton} ${className.greenButton}`,
     {
       type: 'submit',
     }
@@ -344,6 +347,7 @@ export const Submit = {
 } as const;
 
 export const ContainerFull = wrap('section', className.containerFull);
+export const ContainerBase = wrap('section', className.containerBase);
 export const Progress = wrap(
   'progress',
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
