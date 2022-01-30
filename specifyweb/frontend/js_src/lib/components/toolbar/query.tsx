@@ -1,36 +1,33 @@
-import Backbone from 'backbone';
-import $ from 'jquery';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import ajax from '../../ajax';
+import { error } from '../../assert';
 import type { SpQuery, SpReport } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import populateform from '../../populateform';
 import schema, { getModel, getModelById } from '../../schema';
-import { setCurrentView } from '../../specifyapp';
-import specifyform from '../../specifyform';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import userInfo from '../../userinfo';
-import { Button, className, Link, Ul } from '../basic';
+import { Button, Form, Input, Link, Submit, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
-import DeleteButton from '../deletebutton';
-import { useTitle } from '../hooks';
+import { EditResourceDialog } from '../editresourcedialog';
+import { crash } from '../errorboundary';
+import { useId, useTitle } from '../hooks';
 import icons from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import SaveButton from '../savebutton';
 import { useCachedState } from '../stateCache';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   { headers: { Accept: 'application/xml' } }
 )
   .then(({ data: document }) =>
@@ -186,7 +183,13 @@ function ListOfTables({
 
 type ShowQueryListState = State<'ShowQueryListState'>;
 type CreateQueryState = State<'CreateQueryState'>;
-type States = ShowQueryListState | CreateQueryState;
+type EditQueryState = State<
+  'EditQueryState',
+  {
+    queryModel: SpecifyResource<SpQuery>;
+  }
+>;
+type States = ShowQueryListState | CreateQueryState | EditQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
@@ -194,16 +197,16 @@ function QueryToolbarItem({
   onClose: handleClose,
   getQueryCreateUrl,
   getQuerySelectUrl,
-  onEdit: handleEdit,
   spQueryFilter,
   newQueryButtonGenerator,
+  readOnly,
 }: {
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: string) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-  readonly onEdit?: (query: SerializedResource<SpQuery>) => void;
   readonly spQueryFilter?: IR<unknown>;
   readonly newQueryButtonGenerator?: (state: States) => () => void;
+  readonly readOnly: boolean;
 }): JSX.Element {
   useTitle(commonText('queries'));
 
@@ -231,7 +234,8 @@ function QueryToolbarItem({
       .fetch({ limit: QUERY_FETCH_LIMIT })
       .then(({ models }) =>
         destructorCalled ? undefined : setQueries(models.map(serializeResource))
-      );
+      )
+      .catch(crash);
     return (): void => {
       destructorCalled = true;
     };
@@ -264,7 +268,17 @@ function QueryToolbarItem({
       >
         <QueryList
           queries={queries}
-          onEdit={handleEdit}
+          onEdit={
+            readOnly
+              ? undefined
+              : (queryResource): void =>
+                  setState({
+                    type: 'EditQueryState',
+                    queryModel: new schema.models.SpQuery.Resource(
+                      queryResource
+                    ),
+                  })
+          }
           getQuerySelectUrl={getQuerySelectUrl}
         />
       </Dialog>
@@ -296,6 +310,10 @@ function QueryToolbarItem({
         />
       </Dialog>
     );
+  else if (state.type === 'EditQueryState' && !readOnly)
+    return (
+      <EditQueryDialog queryResource={state.queryModel} onClose={handleClose} />
+    );
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
@@ -312,185 +330,169 @@ const menuItem: MenuItem = {
         ? undefined
         : (tableName: string): string => `/specify/query/new/${tableName}/`,
       getQuerySelectUrl: undefined,
-      onEdit: userInfo.isReadOnly
-        ? undefined
-        : (query: SerializedResource<SpQuery>): void => {
-            const queryModel = new schema.models.SpQuery.LazyCollection({
-              filters: { id: query.id },
-            });
-            queryModel.fetch({ limit: 1 }).then(({ models }) => {
-              setCurrentView(
-                new EditQueryDialog({
-                  spquery: models[0],
-                })
-              );
-            });
-          },
+      readOnly: userInfo.isReadOnly,
     }),
 };
 
 export default menuItem;
 
-const EditQueryDialog = Backbone.View.extend({
-  __name__: 'EditQueryDialog',
-  events: {
-    'click .query-export': 'exportQuery',
-    'click .create-report, .create-label': 'createReport',
-  },
-  initialize(options: { readonly spquery: SpecifyResource<SpQuery> }) {
-    this.spquery = options.spquery;
-    this.model = getModelById(this.spquery.get('contextTableId'));
-  },
-  render() {
-    specifyform.buildViewByName('Query').then(this._render.bind(this));
-    return this;
-  },
-  _render(form: JQuery) {
-    form.find('.specify-form-header:first').remove();
+function EditQueryDialog({
+  queryResource,
+  readOnly,
+  onClose: handleClose,
+}: {
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly readOnly?: boolean;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const [state, setState] = React.useState<
+    'default' | 'dwcaExport' | 'reportExport' | 'labelExport' | 'report'
+  >('default');
 
-    if (!this.spquery.isNew()) {
-      form.append(`
-        <p class="pt-2">${commonText('actions')}</p>
-        <div>
-          <button type="button" class="query-export link">${commonText(
-            'exportQueryForDwca'
-          )}</button>
-          <button type="button" class="create-report link">${commonText(
-            'exportQueryAsReport'
-          )}</button>
-          <button type="button" class="create-label link">${commonText(
-            'exportQueryAsLabel'
-          )}</button>
-        </div>
-      `);
-    }
+  return state === 'default' ? (
+    <EditResourceDialog
+      resource={queryResource}
+      readOnly={readOnly}
+      onSaved={(): void => {
+        navigation.go(`/query/${queryResource.id}/`);
+      }}
+      onClose={handleClose}
+    >
+      {!queryResource.isNew() && (
+        <>
+          <p className="pt-2">${commonText('actions')}</p>
+          <div>
+            <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
+              ${commonText('exportQueryForDwca')}
+            </Button.LikeLink>
+            <button type="button" className="create-report link">
+              ${commonText('exportQueryAsReport')}
+            </button>
+            <button type="button" className="create-label link">
+              ${commonText('exportQueryAsLabel')}
+            </button>
+          </div>
+        </>
+      )}
+    </EditResourceDialog>
+  ) : state === 'dwcaExport' ? (
+    <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
+  ) : state === 'reportExport' || state === 'labelExport' ? (
+    <QueryExport
+      queryResource={queryResource}
+      onClose={handleClose}
+      asLabel={state === 'labelExport'}
+    />
+  ) : (
+    error('Invalid state')
+  );
+}
 
-    const buttons = $(
-      `<div class="${className.formFooter}" role="toolbar">`
-    ).appendTo(form);
+function DwcaQueryExport({
+  queryResource,
+  onClose: handleClose,
+}: {
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const [exported, setExported] = React.useState<string | undefined>(undefined);
 
-    if (!this.readOnly) {
-      const saveButton = new SaveButton({
-        model: this.spquery,
-        form: form[0].querySelector('form')!,
-        onSaved: () => {
-          this.remove();
-          navigation.go(`/query/${this.spquery.id}/`);
-        },
-      });
-      saveButton.render().$el.appendTo(buttons);
-    }
-
-    const label = this.spquery.specifyModel.getLocalizedName();
-    const title = this.spquery.isNew()
-      ? commonText('newResourceTitle')(label)
-      : label;
-
-    if (!this.spquery.isNew() && !this.readOnly) {
-      const deleteButton = new DeleteButton({
-        model: this.spquery,
-        onDeleted: () => this.remove(),
-      });
-      deleteButton.render().$el.appendTo(buttons);
-    }
-
-    populateform(form, this.spquery);
-
-    this.$el.append(form).dialog({
-      modal: true,
-      width: 'auto',
-      title,
-      close: () => this.remove(),
-    });
-  },
-  remove() {
-    this.$el.remove();
-  },
-  createReport(event_: MouseEvent) {
-    const isLabel = (event_.currentTarget as HTMLElement).classList.contains(
-      'create-label'
-    );
-    const nameInput = $(`<input
-        type="text"
-        placeholder="${
-          isLabel ? commonText('labelName') : commonText('reportName')
-        }"
-        size="40"
-    >`);
-
-    const createReport = (): void =>
-      void ajax<SerializedResource<SpReport>>('/report_runner/create/', {
-        method: 'POST',
-        body: {
-          queryid: this.spquery.id,
-          mimetype: isLabel ? 'jrxml/label' : 'jrxml/report',
-          name: nameInput.val(),
-        },
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json',
-        },
-      })
-        .then(async ({ data: reportJson }) => {
-          const report = new schema.models.SpReport.Resource(reportJson);
-          return report.rget('appResource');
-        })
-        .then((appresource) =>
-          navigation.go(`/specify/appresources/${appresource.id}/`)
-        );
-
-    $(`<div>
-        ${
-          isLabel
-            ? commonText('createLabelDialogHeader')
-            : commonText('createReportDialogHeader')
-        }
-    </div>`)
-      .append(nameInput)
-      .dialog({
-        modal: true,
-        width: 'auto',
-        title: isLabel
-          ? commonText('createLabelDialogTitle')
-          : commonText('createReportDialogTitle'),
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          [commonText('create')]() {
-            // @ts-expect-error
-            if (!nameInput.val()?.trim()) return;
-            $(this).dialog('close');
-            createReport();
-          },
-          [commonText('cancel')]() {
-            $(this).dialog('close');
-          },
-        },
-      });
-  },
-  exportQuery() {
-    void ajax(`/export/extract_query/${this.spquery.id}/`, {
+  React.useEffect(() => {
+    ajax(`/export/extract_query/${queryResource.id}/`, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'text/plain' },
-    }).then(({ data: xml }) => {
-      const dialog = $(`<div>
-                    ${commonText('exportQueryForDwcaDialogHeader')}
-                    <textarea cols="120" rows="40" readonly></textarea>
-                </div>`);
-      $('textarea', dialog).text(xml);
-      dialog.dialog({
-        modal: true,
-        width: 'auto',
-        title: commonText('exportQueryForDwcaDialogTitle'),
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          [commonText('close')]() {
-            $(this).dialog('close');
-          },
-        },
-      });
-    });
-  },
-});
+    })
+      .then(({ data: xml }) => setExported(xml))
+      .catch(console.error);
+  }, [queryResource.id]);
+
+  return typeof exported === 'string' ? (
+    <Dialog
+      title={commonText('exportQueryForDwcaDialogTitle')}
+      header={commonText('exportQueryForDwcaDialogHeader')}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      buttons={commonText('close')}
+      onClose={handleClose}
+    >
+      {/* TODO: improve styling */}
+      <textarea cols={120} rows={40} readOnly>
+        {exported}
+      </textarea>
+    </Dialog>
+  ) : (
+    <LoadingScreen />
+  );
+}
+
+function QueryExport({
+  queryResource,
+  onClose: handleClose,
+  asLabel,
+}: {
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly onClose: () => void;
+  readonly asLabel: boolean;
+}): JSX.Element {
+  const id = useId('query-export');
+  const [name, setName] = React.useState<string>('');
+
+  return (
+    <Dialog
+      title={
+        asLabel
+          ? commonText('createLabelDialogTitle')
+          : commonText('createReportDialogTitle')
+      }
+      header={
+        asLabel
+          ? commonText('createLabelDialogHeader')
+          : commonText('createReportDialogHeader')
+      }
+      onClose={handleClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Submit.Blue form={id('form')} value={commonText('create')} />
+        </>
+      }
+    >
+      <Form
+        id={id('form')}
+        onSubmit={(): void => {
+          ajax<SerializedResource<SpReport>>('/report_runner/create/', {
+            method: 'POST',
+            body: {
+              queryid: queryResource.id,
+              mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
+              name: name.trim(),
+            },
+            headers: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              Accept: 'application/json',
+            },
+          })
+            .then(async ({ data: reportJson }) => {
+              const report = new schema.models.SpReport.Resource(reportJson);
+              return report.rget('appResource');
+            })
+            .then((appResource) =>
+              navigation.go(`/specify/appresources/${appResource.id}/`)
+            )
+            .catch(console.error);
+        }}
+      >
+        <Input
+          type="text"
+          placeholder={
+            asLabel ? commonText('labelName') : commonText('reportName')
+          }
+          required
+          value={name}
+          onChange={({ target }): void => setName(target.value)}
+        />
+      </Form>
+    </Dialog>
+  );
+}
