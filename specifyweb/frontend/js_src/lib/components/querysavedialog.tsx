@@ -8,7 +8,7 @@ import userInfo from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { crash } from './errorboundary';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -24,16 +24,16 @@ async function doSave(
   });
 }
 
-function QuerySaveDialog({
+export function QuerySaveDialog({
   isSaveAs,
   query,
   onClose: handleClose,
-  onSave: handleSave,
+  onSaved: handleSaved,
 }: {
   readonly isSaveAs: boolean;
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
-  readonly onSave: (queryId: number) => void;
+  readonly onSaved: (queryId: number) => void;
 }): JSX.Element {
   const id = useId('id');
   const [name, setName] = React.useState<string>(query.get('name'));
@@ -42,7 +42,7 @@ function QuerySaveDialog({
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
     setIsLoading(true);
-    doSave(query, name, isSaveAs).then(handleClose).catch(console.error);
+    doSave(query, name, isSaveAs).then(handleClose).catch(crash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,7 +75,7 @@ function QuerySaveDialog({
         onSubmit={(event): void => {
           event.preventDefault();
           setIsLoading(true);
-          doSave(query, name, isSaveAs).then(handleSave).catch(console.error);
+          doSave(query, name, isSaveAs).then(handleSaved).catch(crash);
         }}
       >
         <Label>
@@ -93,7 +93,3 @@ function QuerySaveDialog({
     </Dialog>
   );
 }
-
-const View = createBackboneView(QuerySaveDialog);
-
-export default View;
