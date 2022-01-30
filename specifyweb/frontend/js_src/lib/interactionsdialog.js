@@ -17,6 +17,7 @@ import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {makeResourceViewUrl} from "./specifyapi";
+import SpecifyModel from "./specifymodel";
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -136,7 +137,7 @@ export default Backbone.View.extend({
             }
             else {
               const form = forms[formIndex];
-              href = makeResourceViewUrl(form['class'].split('.').pop());
+              href = makeResourceViewUrl(SpecifyModel.parseClassName(form['class']));
               className = 'intercept-navigation';
             }
 

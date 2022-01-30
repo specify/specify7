@@ -21,6 +21,7 @@ export function EditResourceDialog<SCHEMA extends AnySchema = AnySchema>({
   onClose: handleClose,
   extraButton,
   readOnly = false,
+  children,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: string;
@@ -33,6 +34,7 @@ export function EditResourceDialog<SCHEMA extends AnySchema = AnySchema>({
     readonly onClick: () => void;
   };
   readonly readOnly?: boolean;
+  readonly children?: React.ReactNode;
 }): JSX.Element {
   const [isLoading, setIsLoading] = React.useState(true);
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -77,7 +79,11 @@ export function EditResourceDialog<SCHEMA extends AnySchema = AnySchema>({
       buttons={
         <FormFooter>
           {!resource.isNew() && !readOnly ? (
-            <DeleteButton model={resource} deletionMessage={deletionMessage} />
+            <DeleteButton
+              model={resource}
+              deletionMessage={deletionMessage}
+              onDeleted={handleClose}
+            />
           ) : undefined}
           {typeof extraButton === 'object' && (
             <Button.Gray onClick={extraButton.onClick}>
@@ -96,6 +102,7 @@ export function EditResourceDialog<SCHEMA extends AnySchema = AnySchema>({
       }
     >
       <div ref={setContainer} />
+      {children}
     </Dialog>
   );
 }

@@ -1,6 +1,6 @@
 import ajax from './ajax';
 import type { AnySchema } from './datamodelutils';
-import fieldFormat from './fieldformat';
+import { fieldFormat } from './fieldformat';
 import type { SpecifyResource } from './legacytypes';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
@@ -96,7 +96,7 @@ export const fetchFormatters: Promise<{
 
 export async function format(
   resource: SpecifyResource<AnySchema> | undefined,
-  formatterName: string
+  formatterName?: string
 ): Promise<string | undefined> {
   if (typeof resource !== 'object') return undefined;
   await resource.fetchIfNotPopulated();

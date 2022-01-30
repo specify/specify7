@@ -15,6 +15,7 @@ import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { WbPlanViewConstructorProps } from './wbplanview';
 import { WbPlanView } from './wbplanview';
+import { crash } from './errorboundary';
 
 /**
  * Entrypoint react component for the workbench mapper
@@ -36,7 +37,7 @@ function WbPlanViewWrapper({
   React.useEffect(() => {
     if (schemaLoaded) return;
 
-    dataModelPromise.then(() => setSchemaLoaded(true)).catch(console.error);
+    dataModelPromise.then(() => setSchemaLoaded(true)).catch(crash);
   }, [schemaLoaded]);
 
   // Reorder headers if needed

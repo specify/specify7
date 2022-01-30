@@ -4,7 +4,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 
-import fieldformat from './fieldformat';
+import {fieldFormat} from './fieldformat';
 import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import SaveBlockers from './saveblockers';
 import queryText from './localization/query';
@@ -23,9 +23,9 @@ var FieldInputUI = Backbone.View.extend({
         initialize: function(options) {
             const isDatePart = typeof options.datePart !== 'undefined';
             this.inputFormatter = (isDatePart || options.isTreeField) ? null :
-                options.field.getUIFormatter();
+                options.field.getUiFormatter();
             this.outputFormatter = (isDatePart || options.isTreeField) ? null :
-                function(value) { return fieldformat(options.field, value); };
+                function(value) { return fieldFormat(options.field, value); };
             this.field = options.isTreeField
               ? {type: 'java.lang.String'}
               : {

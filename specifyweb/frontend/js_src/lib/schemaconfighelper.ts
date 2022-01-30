@@ -15,6 +15,8 @@ import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
 import { sortFunction } from './wbplanviewhelper';
+import { Aggregator, Formatter } from './dataobjformatters';
+import SpecifyModel from './specifymodel';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -93,15 +95,16 @@ export function prepareNewString({
   };
 }
 
+/** Throws away unneeded fields */
 export const formatAggregators = (
-  aggregators: RA<Element>
+  aggregators: RA<Formatter | Aggregator>
 ): IR<DataObjectFormatter> =>
   Object.fromEntries(
-    aggregators.map((formatter) => [
-      formatter.getAttribute('name') ?? '',
+    aggregators.map(({ name = '', title = '', className = '' }) => [
+      name,
       {
-        title: formatter.getAttribute('title') ?? '',
-        className: formatter.getAttribute('class') ?? '',
+        title,
+        className,
       },
     ])
   );
@@ -114,7 +117,7 @@ export const filterFormatters = (
     Object.entries(formatters)
       .filter(
         ([_name, { className }]) =>
-          className.split('.').slice(-1)[0].toLowerCase() === tableName
+          SpecifyModel.parseClassName(className).toLowerCase() === tableName
       )
       .map(([name, { title }]) => [name, title] as const)
   );

@@ -15,6 +15,7 @@ import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { crash } from '../errorboundary';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -59,7 +60,7 @@ export function TreeSelectDialog({
                   setIsLoading(true);
                   Promise.resolve(handleClick(tree))
                     .then(handleClose)
-                    .catch(console.error);
+                    .catch(crash);
                 }}
               >
                 <TableIcon tableName={tree} tableLabel="false" />
@@ -90,7 +91,7 @@ function RepairTree({
     const { tree } = querystring.parse();
     if (typeof tree === 'undefined') return;
     setIsLoading(true);
-    handleClick(tree).then(handleClose).catch(console.error);
+    handleClick(tree).then(handleClose).catch(crash);
   }, []);
   return isLoading ? (
     <LoadingScreen />

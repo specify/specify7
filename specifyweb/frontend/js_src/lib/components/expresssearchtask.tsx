@@ -71,7 +71,7 @@ function TableResults({
       ) : (
         queryResults.map(
           ({ model, caption, tableResults, ajaxUrl, idFieldIndex }) => (
-            <details>
+            <details key={ajaxUrl}>
               <summary
                 className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
         rounded hover:text-white hover:dark:bg-brand-400`}

@@ -2,8 +2,8 @@ import * as React from 'react';
 import _ from 'underscore';
 
 import type { IR, RA } from '../types';
+import type { TagProps } from './basic';
 import { useId } from './hooks';
-import { TagProps } from './basic';
 
 let dataListCount = 0;
 const debounceRate = 300;
@@ -22,7 +22,7 @@ export function Autocomplete<T>({
   ) => Promise<RA<string> | IR<{ readonly label: string; readonly data: T }>>;
   readonly minLength?: number;
   readonly delay?: number;
-  readonly onNewValue?: (value: string);
+  readonly onNewValue?: (value: string) => void;
   readonly onChange: (
     value: string,
     selected: {
@@ -80,7 +80,8 @@ export function Autocomplete<T>({
         onKeyDown: handleKeyDown,
         onChange: ({ target }): void => {
           const data = results[target.value];
-          handleChange(target.value, data);
+          if (typeof data === 'undefined') handleNewValue?.(target.value);
+          else handleChange(target.value, data);
         },
       })}
       <datalist id={id('')} ref={refDataList}>

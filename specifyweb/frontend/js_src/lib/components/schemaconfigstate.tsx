@@ -507,16 +507,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   value: items[itemId].format,
                   values: {
                     '': uiFormatters
-                      .map(({ name, isSystem, isDefault, value }) =>
+                      .map(({ name, isSystem, value }) =>
                         [
                           name,
-                          ...[
-                            value,
-                            isSystem ? commonText('system') : '',
-                            isDefault ? commonText('default') : '',
-                          ]
-                            .filter(Boolean)
-                            .map((value) => `(${value})`),
+                          `${value}${
+                            isSystem ? ` (${commonText('system')})` : ''
+                          }`,
                         ].join(' ')
                       )
                       .sort(),

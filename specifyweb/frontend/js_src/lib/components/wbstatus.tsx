@@ -68,19 +68,23 @@ function WbStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = (): void =>
-      void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
+      ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
-      }).then(({ data: status }) => {
-        if (destructorCalled) return undefined;
-        if (status === null)
-          handleFinished(state.aborted === 'pending' || state.aborted === true);
-        else {
-          dispatch({ type: 'RefreshStatusAction', status });
-          setTimeout(fetchStatus, REFRESH_RATE);
-        }
-        return undefined;
-      });
+      })
+        .then(({ data: status }) => {
+          if (destructorCalled) return undefined;
+          if (status === null)
+            handleFinished(
+              state.aborted === 'pending' || state.aborted === true
+            );
+          else {
+            dispatch({ type: 'RefreshStatusAction', status });
+            setTimeout(fetchStatus, REFRESH_RATE);
+          }
+          return undefined;
+        })
+        .catch(console.error);
     fetchStatus();
     return (): void => {
       destructorCalled = true;

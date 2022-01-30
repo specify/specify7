@@ -3,6 +3,7 @@ import React from 'react';
 import type { BucketType } from '../cache';
 import * as cache from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
+import { crash } from './errorboundary';
 
 type DefaultValue<T> = T | (() => T) | (() => Promise<T>);
 
@@ -60,7 +61,7 @@ export function useCachedState<
       .then((value) =>
         typeof value === 'undefined' ? undefined : setCachedState(value)
       )
-      .catch(console.error);
+      .catch(crash);
   /* eslint-enable no-inline-comments */
 
   return [state, setCachedState];

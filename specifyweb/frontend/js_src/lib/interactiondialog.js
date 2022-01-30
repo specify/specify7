@@ -256,7 +256,7 @@ export default RecordSetsDialog.extend({
 
             var numsCtrl = this.$('textarea.i-action-entry');
             var numEntry = numsCtrl.val();
-            var formatter = this.getSrchFld().getUIFormatter();
+            var formatter = this.getSrchFld().getUiFormatter();
             var nums = this.parseEntry(numEntry, formatter);
 
             var validEntries = _.filter(nums, function(item) {

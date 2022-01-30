@@ -6,7 +6,7 @@ import Backbone from './backbone';
 
 import localizeForm from './localizeform';
 import specifyform from './specifyform';
-import ComboBox from './combobox';
+import ComboBox from './components/combobox';
 import UIField from './uifield';
 import QueryCbx from './querycbx';
 import uiplugins from './specifyplugins';

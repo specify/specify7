@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -36,9 +36,9 @@ const treeText = createDictionary({
     ca: 'Operation failed',
   },
   actionFailedDialogHeader: {
-    'en-us': header('Operation failed'),
-    'ru-ru': header('Операция провалена'),
-    ca: header('Operation failed'),
+    'en-us': 'Operation failed',
+    'ru-ru': 'Операция провалена',
+    ca: 'Operation failed',
   },
   actionFailedDialogMessage: {
     'en-us':

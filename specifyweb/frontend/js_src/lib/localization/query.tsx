@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -97,9 +97,9 @@ const queryText = createDictionary({
     ca: 'Incomplete fields',
   },
   queryDeleteIncompleteDialogHeader: {
-    'en-us': header('Query definition contains incomplete fields'),
-    'ru-ru': header('Определение запроса содержит неполные поля'),
-    ca: header('Query definition contains incomplete fields'),
+    'en-us': 'Query definition contains incomplete fields',
+    'ru-ru': 'Определение запроса содержит неполные поля',
+    ca: 'Query definition contains incomplete fields',
   },
   queryDeleteIncompleteDialogMessage: {
     'en-us': `
@@ -122,9 +122,9 @@ const queryText = createDictionary({
     ca: 'Record Set',
   },
   recordSetToQueryDialogHeader: {
-    'en-us': header('Creating a Record Set from Query'),
-    'ru-ru': header('Создание набор объектов из запроса'),
-    ca: header('Creating a Record Set from Query'),
+    'en-us': 'Creating a Record Set from Query',
+    'ru-ru': 'Создание набор объектов из запроса',
+    ca: 'Creating a Record Set from Query',
   },
   recordSetToQueryDialogMessage: {
     'en-us': 'Generating Record Set...',
@@ -137,9 +137,9 @@ const queryText = createDictionary({
     ca: 'Record Set Created',
   },
   recordSetCreatedDialogHeader: {
-    'en-us': header('Open newly created record set now?'),
-    'ru-ru': header('Открыть только что созданный набор объектов?'),
-    ca: header('Open newly created record set now?'),
+    'en-us': 'Open newly created record set now?',
+    'ru-ru': 'Открыть только что созданный набор объектов?',
+    ca: 'Open newly created record set now?',
   },
   recordSetCreatedDialogMessage: {
     'en-us': 'Open newly created record set now?',
@@ -152,9 +152,9 @@ const queryText = createDictionary({
     ca: 'KML Export',
   },
   unableToExportAsKmlDialogHeader: {
-    'en-us': header('Unable to export to KML'),
-    'ru-ru': header('Невозможно экспортировать в KML'),
-    ca: header('Unable to export to KML'),
+    'en-us': 'Unable to export to KML',
+    'ru-ru': 'Невозможно экспортировать в KML',
+    ca: 'Unable to export to KML',
   },
   unableToExportAsKmlDialogMessage: {
     'en-us': 'Please add latitude and longitude fields to the query.',
@@ -167,30 +167,25 @@ const queryText = createDictionary({
     ca: 'Export Query',
   },
   queryExportStartedDialogHeader: {
-    'en-us': header('Query Export started'),
-    'ru-ru': header('Экспорт запроса запущен'),
-    ca: header('Query Export started'),
+    'en-us': 'Query Export started',
+    'ru-ru': 'Экспорт запроса запущен',
+    ca: 'Query Export started',
   },
   queryExportStartedDialogMessage: {
-    'en-us': (exportFileType: string) => `
+    'en-us': `
       The query has begun executing. You will receive a notification when the
-      results ${exportFileType} file is ready for download.`,
-    'ru-ru': (exportFileType: string) => `
+      results file is ready for download.`,
+    'ru-ru': `
       Запрос начал выполняться. Вы получите уведомление, когда
-      ${exportFileType} файл будет готов к загрузке.`,
-    ca: (exportFileType: string) => `
+      файл будет готов к загрузке.`,
+    ca: `
       The query has begun executing. You will receive a notification when the
-      results ${exportFileType} file is ready for download.`,
+      results file is ready for download.`,
   },
   invalidPicklistValue: {
     'en-us': (value: string) => `${value} (current, invalid value)`,
     'ru-ru': (value: string) => `${value} (текущее, недопустимое значение)`,
     ca: (value: string) => `${value} (current, invalid value)`,
-  },
-  missingRequiredPicklistValue: {
-    'en-us': 'Invalid null selection',
-    'ru-ru': 'Недействительный нулевой выбор',
-    ca: 'Invalid null selection',
   },
   // QueryTask
   queryTaskTitle: {
@@ -299,9 +294,9 @@ const queryText = createDictionary({
   },
   // QueryResultsTable
   results: {
-    'en-us': (count: number | string) => `Results: ${count}`,
-    'ru-ru': (count: number | string) => `Результаты: ${count}`,
-    ca: (count: number | string) => `Results: ${count}`,
+    'en-us': 'Results',
+    'ru-ru': 'Результаты',
+    ca: 'Results',
   },
 });
 

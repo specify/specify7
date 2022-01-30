@@ -2,9 +2,10 @@ import type { Tables } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
-import { getModel } from './schema';
-import schema from './schemabase';
-import { defined, RA } from './types';
+import { fetchContext as fetchSchema, getModel } from './schema';
+import schema, { fetchContext as fetchDomain } from './schemabase';
+import type { RA } from './types';
+import { defined } from './types';
 import {
   caseInsensitiveHash,
   sortFunction,
@@ -41,47 +42,58 @@ const treeScopes = {
 
 const commonTrees = ['geography', 'storage', 'taxon'] as const;
 const treesForPaleo = ['geologictimeperiod', 'lithostrat'] as const;
-const allTrees = [...commonTrees, ...treesForPaleo];
+const allTrees = [...commonTrees, ...treesForPaleo] as const;
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
-const disciplineType = getDomainResource('discipline')?.get('type');
-export const disciplineTrees = [
-  ...commonTrees,
-  ...(paleoDiscs.has(defined(disciplineType ?? undefined))
-    ? treesForPaleo
-    : []),
-];
+export let disciplineTrees: RA<Lowercase<AnyTree['tableName']>> = allTrees;
 
 export const isTreeModel = (tableName: string): boolean =>
   allTrees.includes(tableName.toLowerCase() as typeof allTrees[number]);
 
-export const fetchContext = Promise.all(
-  Object.entries(treeScopes)
-    // TODO: figure out if this optimization is safe
-    /*.filter(([treeName]) =>
-      disciplineTrees.includes(
-        treeName.toLowerCase() as typeof disciplineTrees[number]
-      )
-    )*/
-    .map(async ([treeName, definitionLevel]) =>
-      (
-        getDomainResource(definitionLevel as 'discipline')
-          ?.rget(`${unCapitalize(treeName) as 'geography'}TreeDef`)
-          .then(async (model) =>
-            Promise.all([model, model.rgetCollection('treeDefItems')])
-          )
-          .then(([treeDefinition, { models }]) => ({
-            treeDefinition,
-            ranks: Array.from(models, serializeResource).sort(
-              sortFunction((item) => item.rankId)
-            ),
-          })) ?? Promise.resolve(undefined)
-      ).then((ranks) => [treeName, ranks] as const)
+export const fetchContext = Promise.all([fetchSchema, fetchDomain])
+  .then(() => getDomainResource('discipline')?.fetch())
+  .then((discipline) => {
+    if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
+      disciplineTrees = commonTrees;
+    return undefined;
+  })
+  .then(async () =>
+    Promise.all(
+      Object.entries(treeScopes)
+        // TODO: figure out if this optimization is safe:
+        /*
+         *.filter(([treeName]) =>
+         *disciplineTrees.includes(
+         *treeName.toLowerCase() as typeof disciplineTrees[number]))
+         */
+        .map(async ([treeName, definitionLevel]) => {
+          const domainResource = getDomainResource(
+            definitionLevel as 'discipline'
+          );
+          return typeof domainResource === 'undefined'
+            ? undefined
+            : Promise.resolve(
+                domainResource.rget(
+                  `${unCapitalize(treeName) as 'geography'}TreeDef`
+                )
+              )
+                .then(async (model) =>
+                  Promise.all([model, model.rgetCollection('treeDefItems')])
+                )
+                .then(([treeDefinition, { models }]) => ({
+                  treeDefinition,
+                  ranks: Array.from(models, serializeResource).sort(
+                    sortFunction((item) => item.rankId)
+                  ),
+                }))
+                .then((ranks) => [treeName, ranks] as const);
+        })
     )
-).then((ranks) => {
-  // @ts-expect-error
-  treeDefinitions = Object.fromEntries(ranks);
-  return undefined;
-});
+  )
+  .then((ranks) => {
+    // @ts-expect-error
+    treeDefinitions = Object.fromEntries(ranks.filter(Boolean));
+    return undefined;
+  });
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,

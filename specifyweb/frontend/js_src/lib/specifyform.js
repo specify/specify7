@@ -11,12 +11,13 @@ import formtable from './templates/formtabletemplate.html';
 import formtemplate from './templates/formtemplate.html';
 import attachmentview from './templates/attachmentview.html';
 import {className} from './components/basic';
+import SchemaModel from "./specifymodel";
 
 
 var formCounter = 0;
 
     function getModelFromViewdef(viewdef) {
-        return viewdef.attr('class').split('.').pop();
+        return SchemaModel.parseClassName(viewdef.attr('class'));
     }
 
     function getColumnDef(viewdef) {
@@ -91,7 +92,6 @@ var formCounter = 0;
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable,
                                  mode === 'search' ? 'search' : altview.mode);
 
-        //className.formHeader
         const wrapper = $(`<div data-specify-model="${getModelFromViewdef(actual_viewdef)}">
           <h2 class="${className.formHeader}"></h2>
           <!-- view goes here -->

@@ -13,6 +13,10 @@ export const capitalize = <T extends string>(string: T): Capitalize<T> =>
 export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
   (string.charAt(0).toLowerCase() + string.slice(1)) as Uncapitalize<T>;
 
+/** Type-safe variant of toLowerCase */
+export const toLowerCase = <T extends string>(string: T): Lowercase<T> =>
+  string.toLowerCase() as Lowercase<T>;
+
 /**
  * Finds the point at which the source array begins to have values
  * different from the ones in the search array

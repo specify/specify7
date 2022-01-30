@@ -19,6 +19,7 @@ import { Link } from './basic';
 import { Dialog } from './modaldialog';
 import commonText from '../localization/common';
 import { CollectionObject, Taxon } from '../datamodel';
+import { isResourceOfType } from '../specifymodel';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -130,10 +131,8 @@ export function SpecifyNetworkBadge({
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
   React.useEffect(() => {
-    if (model.specifyModel.name === 'CollectionObject')
-      fetchOccurrenceName(model as SpecifyResource<CollectionObject>)
-        .then(setOccurrenceName)
-        .catch(console.error);
+    if (isResourceOfType(model, 'CollectionObject'))
+      fetchOccurrenceName(model).then(setOccurrenceName).catch(console.error);
   }, [model]);
 
   const messageHandler = React.useCallback(

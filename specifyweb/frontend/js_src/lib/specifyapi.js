@@ -7,16 +7,6 @@ import * as querystring from './querystring';
 
 
 export default _.extend({}, Backbone.Events, {
-        getRows: function(table, options) {
-            table = _.isString(table) ? table : table.name;
-            var url = '/api/specify_rows/' + table.toLowerCase() + '/';
-            var data = {
-                fields: options.fields.join(',').toLowerCase(),
-                limit: options.limit.toString(),
-                distinct: options.distinct ? 'true' : 'false'
-            };
-            return $.get(url, data).promise();
-        },
         queryCbxExtendedSearch: function(templateResource, forceCollection) {
             var url = '/express_search/querycbx/' +
                     templateResource.specifyModel.name.toLowerCase() +

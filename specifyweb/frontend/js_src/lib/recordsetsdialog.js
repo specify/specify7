@@ -5,7 +5,7 @@ import Backbone from './backbone';
 
 import schema, {getModelById} from './schema';
 import FormsDialog from './components/formsdialog';
-import EditResourceDialog from './editresourcedialog';
+import EditResourceDialog from './components/editresourcedialog';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -137,8 +137,13 @@ export default Backbone.View.extend({
                     const recordset = new schema.models.RecordSet.Resource();
                     recordset.set('dbtableid', model.tableId);
                     recordset.set('type', 0);
-                    new EditResourceDialog({ resource: recordset }).render()
-                        .on('savecomplete', this.gotoForm.bind(this, model, recordset));
+                    const view = new EditResourceDialog({
+                      resource: recordset,
+                      onSaved: ()=>{
+                        view.remove();
+                        this.gotoForm(model, recordset)
+                      },
+                    }).render();
                 },
                 onClose: () => dialog.remove(),
             }).render();
@@ -154,9 +159,6 @@ export default Backbone.View.extend({
             const index = this.getIndex(evt, "button.edit");
             const recordSet = this.options.recordSets.at(index);
             this.$el.dialog("close");
-            const button = document.createElement("input");
-            button.setAttribute("type", "button");
-            button.setAttribute("value", commonText("query"));
             const queryEventListener = () => {
                 editView.remove();
                 const view = new QueryToolbarView({
@@ -181,18 +183,12 @@ export default Backbone.View.extend({
                 });
                 view.render();
             };
-            button.addEventListener("click", queryEventListener);
             const editView = new EditResourceDialog({
                 resource: recordSet,
                 deleteWarning: formsText("recordSetDeletionWarning")(recordSet.get("name")),
-                onRendered: () => {
-                    const buttons = editView.el.getElementsByClassName(
-                        "specify-form-buttons"
-                    )[0];
-                    const deleteButton =
-                        buttons.getElementsByClassName("deletebutton")[0] ??
-                        buttons.children[0];
-                    buttons.insertBefore(button, deleteButton);
+                extraButton: {
+                  label: commonText("query"),
+                  onClick: queryEventListener,
                 },
                 onClose: (event) => {
                     window.removeEventListener("click", queryEventListener);

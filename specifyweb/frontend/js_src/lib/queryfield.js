@@ -272,7 +272,7 @@ export default Backbone.View.extend({
         setupDatePartState: function() {
             this.$('.datepart-select')[0].innerHTML = Object.entries({
                 extract: queryText('extract'),
-                fullDate: commonText('fullDate'),
+                fullDate: dateParts.fullDate,
                 year: dateParts.year,
                 month: dateParts.month,
                 day: dateParts.day,

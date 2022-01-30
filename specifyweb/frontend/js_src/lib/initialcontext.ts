@@ -12,7 +12,6 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 
 export default Promise.all([
   import('./attachments'),
-  import('./dataobjformatters'),
   import('./icons'),
   import('./querycbx'),
   import('./querycbxsearch'),

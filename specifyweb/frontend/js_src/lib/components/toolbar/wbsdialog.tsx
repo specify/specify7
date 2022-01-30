@@ -62,9 +62,11 @@ function DsMeta({
   const [dataset, setDataset] = React.useState<Dataset | undefined>(undefined);
 
   React.useEffect(() => {
-    void ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
+    ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
       headers: { Accept: 'application/json' },
-    }).then(({ data }) => (destructorCalled ? undefined : setDataset(data)));
+    })
+      .then(({ data }) => (destructorCalled ? undefined : setDataset(data)))
+      .catch(console.error);
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
@@ -328,7 +330,9 @@ export function WbsDialog({
         `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         { headers: { Accept: 'application/json' } }
-      ).then(({ data }) => setDatasets(data)),
+      )
+        .then(({ data }) => setDatasets(data))
+        .catch(console.error),
     [showTemplates]
   );
 

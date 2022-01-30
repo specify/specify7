@@ -3,9 +3,10 @@ import dateFormat from './dateformat';
 import dayjs from './dayjs';
 import formsText from './localization/forms';
 import type { JavaType, RelationshipType } from './specifyfield';
-import { Field } from './specifyfield';
+import { LiteralField, Relationship } from './specifyfield';
 import type { IR, RA, RR } from './types';
 import { hasNativeErrors } from './validationmessages';
+import { UiFormatter } from './uiformatters';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -172,7 +173,7 @@ export const parsers: RR<
   },
 };
 
-type ExtendedField = Partial<Omit<Field, 'type'>> & {
+type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly type: ExtendedJavaType | RelationshipType;
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
@@ -235,15 +236,7 @@ function mergeParsers(base?: Parser, extra?: Parser): Parser | undefined {
   return Object.keys(merged).length === 0 ? undefined : merged;
 }
 
-type Formatter = {
-  readonly parseRegexp: () => string;
-  readonly pattern: () => null | string;
-  readonly value: () => string;
-  readonly parse: (value: string) => null | Readonly<[string]>;
-  readonly canonicalize: (values: RA<string>) => string;
-};
-
-function formatterToParser(formatter: Formatter): Parser {
+function formatterToParser(formatter: UiFormatter): Parser {
   const regExpString = formatter.parseRegexp();
   const title = formsText('requiredFormat')(
     formatter.pattern() ?? formatter.value()
@@ -262,7 +255,7 @@ function formatterToParser(formatter: Formatter): Parser {
 
 export function resolveParser(
   field: ExtendedField,
-  formatter?: Formatter
+  formatter?: UiFormatter
 ): Parser | undefined {
   return mergeParsers(
     getParser(field),

@@ -105,7 +105,7 @@ export default class SaveBlockers<SCHEMA extends AnySchema> {
     this.refreshValidation(blocker);
   }
 
-  // Don't use this in React components. Prefer getFieldErrors with useValidation
+  // Don't use this in React components. Prefer useSaveBlockers with useValidation
   public linkInput(
     input: Input,
     fieldName: keyof SCHEMA['fields'] & string

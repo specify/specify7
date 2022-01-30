@@ -48,7 +48,7 @@ export default function Notifications(): JSX.Element {
        */
       pullInterval *= INTERVAL_MULTIPLIER;
 
-      void ajax<
+      ajax<
         RA<
           Omit<Notification, 'payload' | 'messageId'> & {
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -60,27 +60,29 @@ export default function Notifications(): JSX.Element {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         { headers: { Accept: 'application/json' } },
         { strict: false }
-      ).then(({ data: notifications }) => {
-        if (destructorCalled) return undefined;
-        setNotifications(
-          notifications.map(
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            ({ message_id, read, timestamp, type, ...rest }) => ({
-              messageId: message_id,
-              read,
-              timestamp,
-              type,
-              payload: rest as IR<string>,
-            })
-          )
-        );
-        // Stop updating if tab is hidden
-        timeout =
-          document.visibilityState === 'hidden'
-            ? undefined
-            : window.setTimeout(doFetch, pullInterval);
-        return undefined;
-      });
+      )
+        .then(({ data: notifications }) => {
+          if (destructorCalled) return undefined;
+          setNotifications(
+            notifications.map(
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              ({ message_id, read, timestamp, type, ...rest }) => ({
+                messageId: message_id,
+                read,
+                timestamp,
+                type,
+                payload: rest as IR<string>,
+              })
+            )
+          );
+          // Stop updating if tab is hidden
+          timeout =
+            document.visibilityState === 'hidden'
+              ? undefined
+              : window.setTimeout(doFetch, pullInterval);
+          return undefined;
+        })
+        .catch(console.error);
     }
 
     doFetch();

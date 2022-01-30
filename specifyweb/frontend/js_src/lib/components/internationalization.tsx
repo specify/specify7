@@ -2,6 +2,7 @@ import React from 'react';
 
 import { LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
+import commonText from '../localization/common';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -110,6 +111,7 @@ const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
   type: 'dateTimeField',
 });
 export const dateParts = {
+  fullDate: commonText('fullDate'),
   day: datePartLocalizer.of('day'),
   month: datePartLocalizer.of('month'),
   year: datePartLocalizer.of('year'),

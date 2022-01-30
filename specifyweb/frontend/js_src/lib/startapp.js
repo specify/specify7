@@ -55,7 +55,6 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
 const tasksPromise = Promise.all([
   import('./welcometask'),
   import('./datatask'),
-  import('./querytask'),
   import('./components/querytask'),
   import('./treetask'),
   import('./components/expresssearchtask'),

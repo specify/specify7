@@ -13,6 +13,7 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
+import { crash } from './errorboundary';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -59,7 +60,6 @@ export type NewSpLocaleItemString = SpLocaleItemStringBase & {
 export type UiFormatter = {
   readonly name: string;
   readonly isSystem: boolean;
-  readonly isDefault: boolean;
   readonly value: string;
 };
 
@@ -274,7 +274,7 @@ export function SchemaConfig({
 
     Promise.all(requests)
       .then(() => handleSave(state.language))
-      .catch(console.error);
+      .catch(crash);
     // eslint-ignore-next-line react-hooks/exhaustive-deps
   }, [state.type]);
 

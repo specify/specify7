@@ -12,6 +12,7 @@ import { Button, className, Submit, Ul } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { crash } from './errorboundary';
 
 function handleFocus(event: FocusEvent): void {
   const target = event.target as HTMLElement;
@@ -22,7 +23,7 @@ function handleFocus(event: FocusEvent): void {
   target.classList.remove('not-touched');
 }
 
-function SaveButton<SCHEMA extends AnySchema = AnySchema>({
+export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   model,
   canAddAnother = true,
   form,
@@ -132,7 +133,7 @@ function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   React.useEffect(() => {
     const callback = (event: SubmitEvent): void =>
-      void handleSubmit(event).catch(console.error);
+      void handleSubmit(event).catch(crash);
     form.addEventListener('submit', callback);
     return (): void => form.removeEventListener('submit', callback);
   }, [form, handleSubmit]);
@@ -146,7 +147,7 @@ function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
           disabled={isSaving}
           onClick={(event): void => {
-            handleSubmit(event, true).catch(console.error);
+            handleSubmit(event, true).catch(crash);
             /*
              * If tried to submit form, unhide field validation errors
              * (pattern mismatch and missing required value)

@@ -396,14 +396,13 @@ export function ChangeBaseTable({
     <ButtonWithConfirmation
       dialogTitle={wbText('goToBaseTableDialogTitle')}
       dialogHeader={wbText('goToBaseTableDialogHeader')}
-      dialogContent={wbText('goToBaseTableDialogMessage')}
-      buttons={(confirm) => (
+      dialogMessage={wbText('goToBaseTableDialogMessage')}
+      dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Orange onClick={confirm}>
             {commonText('changeBaseTable')}
           </Button.Orange>
-          ,
         </>
       )}
       onConfirm={handleClick}
@@ -424,8 +423,8 @@ export function ReRunAutoMapper({
     <ButtonWithConfirmation
       dialogTitle={wbText('reRunAutoMapperDialogTitle')}
       dialogHeader={wbText('reRunAutoMapperDialogHeader')}
-      dialogContent={wbText('reRunAutoMapperDialogMessage')}
-      buttons={(confirm) => (
+      dialogMessage={wbText('reRunAutoMapperDialogMessage')}
+      dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Orange onClick={confirm}>

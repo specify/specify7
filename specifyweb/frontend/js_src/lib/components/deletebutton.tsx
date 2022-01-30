@@ -11,20 +11,20 @@ import icons from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-function DeleteButton<SCHEMA extends AnySchema>({
+export function DeleteButton<SCHEMA extends AnySchema>({
   model,
-  deleteMessage = formsText('deleteConfirmationDialogMessage'),
+  deletionMessage = formsText('deleteConfirmationDialogMessage'),
   onDeleted: handleDeleted,
 }: {
   readonly model: SpecifyResource<SCHEMA>;
-  readonly deleteMessage?: React.ReactNode;
+  readonly deletionMessage?: React.ReactNode;
   readonly onDeleted?: () => void;
 }): JSX.Element {
   const [blockers, setBlockers] = React.useState<RA<string> | undefined>(
     undefined
   );
   React.useEffect(() => {
-    void ajax<RA<string>>(
+    ajax<RA<string>>(
       `/api/delete_blockers/${model.specifyModel.name.toLowerCase()}/${
         model.id
       }/`,
@@ -32,7 +32,9 @@ function DeleteButton<SCHEMA extends AnySchema>({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       }
-    ).then(({ data }) => (destructorCalled ? undefined : setBlockers(data)));
+    )
+      .then(({ data }) => (destructorCalled ? undefined : setBlockers(data)))
+      .catch(console.error);
 
     let destructorCalled = false;
     return (): void => {
@@ -80,7 +82,7 @@ function DeleteButton<SCHEMA extends AnySchema>({
               </>
             }
           >
-            {deleteMessage}
+            {deletionMessage}
           </Dialog>
         ) : (
           <Dialog

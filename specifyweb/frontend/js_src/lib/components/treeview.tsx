@@ -153,30 +153,32 @@ function TreeView<SCHEMA extends AnyTree>({
             );
           }}
           onChange={(_value, { data }): void => {
-            void ajax<
-              IR<{ readonly rankid: number; readonly id: number } | string>
-            >(`/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`, {
-              headers: { Accept: 'application/json' },
-            }).then(({ data }) =>
-              setFocusPath(
-                Object.values(data)
-                  .filter(
-                    (
-                      node
-                    ): node is {
-                      readonly rankid: number;
-                      readonly id: number;
-                    } => typeof node === 'object'
-                  )
-                  .sort(sortFunction(({ rankid }) => rankid))
-                  .map(({ id }) => id)
+            ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(
+              `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
+              {
+                headers: { Accept: 'application/json' },
+              }
+            )
+              .then(({ data }) =>
+                setFocusPath(
+                  Object.values(data)
+                    .filter(
+                      (
+                        node
+                      ): node is {
+                        readonly rankid: number;
+                        readonly id: number;
+                      } => typeof node === 'object'
+                    )
+                    .sort(sortFunction(({ rankid }) => rankid))
+                    .map(({ id }) => id)
+                )
               )
-            );
+              .crash(console.error);
           }}
           renderSearchBox={(inputProps): JSX.Element => (
             <Input
               forwardRef={searchBoxRef}
-              className="tree-search"
               placeholder={treeText('searchTreePlaceholder')}
               title={treeText('searchTreePlaceholder')}
               aria-label={treeText('searchTreePlaceholder')}

@@ -1,8 +1,10 @@
 import $ from 'jquery';
 
+import type { Agent } from './datamodel';
+import type { SerializedModel } from './datamodelutils';
 import { load } from './initialcontext';
 import commonText from './localization/common';
-import type { IR, RA, Writable } from './types';
+import type { RA, Writable } from './types';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 
@@ -19,7 +21,7 @@ export type UserInfo = {
   >;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly resource_uri: string;
-  readonly agent: IR<unknown>;
+  readonly agent: SerializedModel<Agent>;
   readonly name: string;
 };
 

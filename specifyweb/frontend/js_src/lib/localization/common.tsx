@@ -592,9 +592,9 @@ const commonText = createDictionary({
     ca: 'Query XML for DwCA definition',
   },
   exportQueryForDwcaDialogHeader: {
-    'en-us': header('Query XML for DwCA definition'),
-    'ru-ru': header('XML Запроса для определения DwCA'),
-    ca: header('Query XML for DwCA definition'),
+    'en-us': 'Query XML for DwCA definition',
+    'ru-ru': 'XML Запроса для определения DwCA',
+    ca: 'Query XML for DwCA definition',
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query.',
@@ -627,9 +627,9 @@ const commonText = createDictionary({
     ca: 'Labels',
   },
   createLabelDialogHeader: {
-    'en-us': header('Create new label'),
-    'ru-ru': header('Создать новую этикетку'),
-    ca: header('Create new label'),
+    'en-us': 'Create new label',
+    'ru-ru': 'Создать новую этикетку',
+    ca: 'Create new label',
   },
   createReportDialogTitle: {
     'en-us': 'Reports',
@@ -637,9 +637,9 @@ const commonText = createDictionary({
     ca: 'Reports',
   },
   createReportDialogHeader: {
-    'en-us': header('Create new report'),
-    'ru-ru': header('Создать новый отчет'),
-    ca: header('Create new report'),
+    'en-us': 'Create new report',
+    'ru-ru': 'Создать новый отчет',
+    ca: 'Create new report',
   },
   recordSets: {
     'en-us': 'Record Sets',

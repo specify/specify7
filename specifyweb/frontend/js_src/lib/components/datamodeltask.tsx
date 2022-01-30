@@ -60,7 +60,7 @@ function DataModelView({
               <td>{field.type}</td>
               <td>
                 {field.isRelationship ? (
-                  <RelationshipLink relationship={field as Relationship} />
+                  <RelationshipLink relationship={field} />
                 ) : (
                   ''
                 )}

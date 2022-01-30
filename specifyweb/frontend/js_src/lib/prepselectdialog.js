@@ -8,7 +8,7 @@ import * as navigation from './navigation';
 import populateForm from './populateform';
 import api from './specifyapi';
 import ResourceView, {showResource} from './resourceview';
-import fieldFormat from './fieldformat';
+import {fieldFormat} from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';

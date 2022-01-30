@@ -156,7 +156,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 navigation.switchCollection(collection.id);
                 return false;
             }
-            var formatter = schema.models.CollectionObject.getField('catalognumber').getUIFormatter();
+            var formatter = schema.models.CollectionObject.getField('catalognumber').getUiFormatter();
             if (formatter) {
                 var parsed = formatter.parse(catNo);
                 if (!parsed) {

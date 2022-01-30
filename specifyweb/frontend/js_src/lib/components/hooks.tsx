@@ -5,8 +5,11 @@ import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
-import type { R, RA } from '../types';
+import type { IR, R, RA } from '../types';
 import { ignoreValidationErrors } from '../validationmessages';
+import { getValidationAttributes, resolveParser } from '../uiparse';
+import { LiteralField } from '../specifyfield';
+import { defined } from '../types';
 
 const idStore: R<number> = {};
 
@@ -165,4 +168,13 @@ export function useResource<SCHEMA extends AnySchema>(
   }, [resource, model]);
 
   return [resource, setResource];
+}
+
+export function useValidationAttributes(field: LiteralField): IR<string> {
+  const [attributes, setAttributes] = React.useState<IR<string>>({});
+  React.useEffect(() => {
+    const parser = defined(resolveParser(field));
+    setAttributes(getValidationAttributes(field, parser));
+  }, [field]);
+  return attributes;
 }

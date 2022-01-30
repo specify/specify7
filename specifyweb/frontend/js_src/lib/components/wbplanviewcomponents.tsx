@@ -103,22 +103,21 @@ export function ListOfBaseTables({
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
-  readonly buttons: (
-    confirm: () => void
-  ) => Parameters<typeof Dialog>[0]['buttons'];
-  readonly dialogContent: React.ReactNode;
-  readonly onConfirm: () => void;
   readonly dialogTitle: string;
   readonly dialogHeader: string;
+  readonly dialogMessage: React.ReactNode;
+  readonly dialogButtons: (
+    confirm: () => void
+  ) => Parameters<typeof Dialog>[0]['buttons'];
+  readonly onConfirm: () => void;
   readonly showConfirmation?: () => boolean;
-  readonly role?: string;
+  readonly disabled?: boolean;
 }): JSX.Element {
   const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
 
   return (
     <>
       <Button.Simple
-        role={props.role}
         aria-haspopup="dialog"
         onClick={(): void =>
           typeof props.showConfirmation === 'undefined' ||
@@ -126,6 +125,7 @@ export function ButtonWithConfirmation(props: {
             ? setDisplayPrompt(true)
             : props.onConfirm()
         }
+        disabled={props.disabled}
       >
         {props.children}
       </Button.Simple>
@@ -137,12 +137,12 @@ export function ButtonWithConfirmation(props: {
         className={{
           container: dialogClassNames.narrowContainer,
         }}
-        buttons={props.buttons(() => {
+        buttons={props.dialogButtons(() => {
           setDisplayPrompt(false);
           props.onConfirm();
         })}
       >
-        {props.dialogContent}
+        {props.dialogMessage}
       </Dialog>
     </>
   );

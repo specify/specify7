@@ -105,13 +105,15 @@ export function CollectionSelector(): JSX.Element {
   );
 
   React.useEffect(() => {
-    void ajax<Collections>('/context/collection/', {
+    ajax<Collections>('/context/collection/', {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
-    }).then(({ data: collections }) => {
-      if (!destructorCalled) setCollections(collections);
-      return undefined;
-    });
+    })
+      .then(({ data: collections }) => {
+        if (!destructorCalled) setCollections(collections);
+        return undefined;
+      })
+      .catch(console.error);
 
     let destructorCalled = false;
     return (): void => {

@@ -1,11 +1,11 @@
 import type { SpQueryField } from './datamodel';
+import type { SerializedModel } from './datamodelutils';
 import { getModel, getModelById } from './schema';
-import type { Field, Relationship } from './specifyfield';
+import type { LiteralField, Relationship } from './specifyfield';
 import type SpecifyModel from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
 import { capitalize } from './wbplanviewhelper';
-import { SerializedModel } from './datamodelutils';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -32,7 +32,7 @@ function extractDatePart(fieldName: string): {
 class QueryFieldSpec {
   private readonly baseTable: SpecifyModel;
 
-  public joinPath: RA<Field | Relationship> = [];
+  public joinPath: RA<LiteralField | Relationship> = [];
 
   public table: SpecifyModel;
 
@@ -61,7 +61,7 @@ class QueryFieldSpec {
     };
   }
 
-  public getField(): Field | undefined {
+  public getField(): LiteralField | Relationship | undefined {
     return this.joinPath.slice(-1)[0];
   }
 
@@ -110,13 +110,12 @@ class QueryFieldSpec {
     const [baseTableName, ...path] = Array.from(pathIn);
     const rootTable = defined(getModel(baseTableName));
 
-    const joinPath: (Field | Relationship)[] = [];
+    const joinPath: (LiteralField | Relationship)[] = [];
     let node = rootTable;
     path.forEach((fieldName, index) => {
       const field = defined(node.getField(fieldName));
       joinPath.push(field);
-      if (field.isRelationship)
-        node = defined((field as Relationship).getRelatedModel());
+      if (field.isRelationship) node = defined(field.getRelatedModel());
       else if (index + 1 !== path.length)
         throw new Error('bad query field spec path');
     });

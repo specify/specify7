@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import schema from './schema';
-import fieldFormat from './fieldformat';
+import {fieldFormat} from './fieldformat';
 import userInfo from './userinfo';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';

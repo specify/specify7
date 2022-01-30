@@ -308,7 +308,7 @@ function eventHandlerForToOne(related, field) {
         },
         // Duplicate definition for purposes of better typing:
         rgetCollection: function(fieldName, prePop) {
-            return this.getRelated(fieldName, {prePop: prePop});
+            return Promise.resolve(this.getRelated(fieldName, {prePop: prePop}));
         },
         getRelated: function(fieldName, options) {
             options || (options = {
@@ -470,11 +470,11 @@ function eventHandlerForToOne(related, field) {
         fetch: function(options) {
             // cache a reference to the ajax deferred and don't start fetching if we
             // already are.
-            var resource = this;
 
-            if (resource._fetch) return resource._fetch;
-            return resource._fetch = Backbone.Model.prototype.fetch.call(this, options).done(function() {
-                resource._fetch = null;
+            if (this._fetch) return this._fetch;
+            return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
+                this._fetch = null;
+                return this;
             });
         },
         fetchIfNotPopulated: function() {
@@ -486,7 +486,7 @@ function eventHandlerForToOne(related, field) {
             if (resource.isNew()) return $.when(resource);
 
             // fetch and return a deferred.
-            return resource.fetch().pipe(function() { return resource; });
+            return resource.fetch();
         },
         parse: function(_resp) {
             // since we are putting in data, the resourcgfse in now populated
@@ -565,3 +565,6 @@ function eventHandlerForToOne(related, field) {
     });
 
 export default ResourceBase;
+
+export const parseResourceUrl = (resourceUrl) =>
+  /^\/api\/specify\/(\w+)\/(\d+)\/$/.exec(resourceUrl)?.slice(1);

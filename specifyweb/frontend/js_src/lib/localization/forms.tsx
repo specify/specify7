@@ -440,9 +440,9 @@ const formsText = createDictionary({
     ca: 'Pick List',
   },
   addToPickListConfirmationDialogHeader: {
-    'en-us': header('Add to pick list?'),
-    'ru-ru': header('Добавить в список выбора?'),
-    ca: header('Add to pick list?'),
+    'en-us': 'Add to pick list?',
+    'ru-ru': 'Добавить в список выбора?',
+    ca: 'Add to pick list?',
   },
   addToPickListConfirmationDialogMessage: {
     'en-us': (value: string, pickListName: string) =>
@@ -846,6 +846,43 @@ const formsText = createDictionary({
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
     ca: 'Set User Agents',
+  },
+  // AgentTypeComboBox
+  organization: {
+    'en-us': 'Organization',
+    'ru-ru': 'Организация',
+    ca: 'Organization',
+  },
+  person: {
+    'en-us': 'Person',
+    'ru-ru': 'Особа',
+    ca: 'Person',
+  },
+  other: {
+    'en-us': 'Other',
+    'ru-ru': 'Иной',
+    ca: 'Other',
+  },
+  group: {
+    'en-us': 'Group',
+    'ru-ru': 'Группа',
+    ca: 'Group',
+  },
+  // PickListTypeComboBox
+  userDefinedItems: {
+    'en-us': 'User Defined Items',
+    'ru-ru': 'Пользовательские элементы',
+    ca: 'User Defined Items',
+  },
+  entireTable: {
+    'en-us': 'Entire Table',
+    'ru-ru': 'Вся таблица',
+    ca: 'Entire Table',
+  },
+  fieldFromTable: {
+    'en-us': 'Field From Table',
+    'ru-ru': 'Поле из таблицы',
+    ca: 'Field From Table',
   },
 });
 

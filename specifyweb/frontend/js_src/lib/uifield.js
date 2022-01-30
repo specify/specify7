@@ -6,7 +6,7 @@ import Backbone from './backbone';
 
 
 import {format} from './dataobjformatters';
-import fieldformat from './fieldformat';
+import {fieldFormat} from './fieldformat';
 import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
 import dayjs from "./dayjs";
@@ -44,7 +44,7 @@ export default Backbone.View.extend({
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 
-            var formatter = field.getUIFormatter();
+            var formatter = field.getUiFormatter();
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted w-full');
 
@@ -98,7 +98,7 @@ export default Backbone.View.extend({
                       ? format
                       : field.isTemporal()
                       ? (value) => dayjs(value).format('YYYY-MM-DD')
-                      : _.bind(fieldformat, null, field);
+                      : _.bind(fieldFormat, null, field);
 
                     resource.rget(fieldName).pipe(objFormat).done((value)=>{
                         this.el.value = value ?? '';

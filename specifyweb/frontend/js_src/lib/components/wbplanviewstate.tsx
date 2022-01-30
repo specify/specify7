@@ -73,17 +73,19 @@ function TemplateSelection({
       onClose={handleClose}
       onDataSetSelect={(id: number): void => {
         setIsLoading(true);
-        void ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+        ajax<Dataset>(`/api/workbench/dataset/${id}`, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
-        }).then(({ data: { uploadplan, columns, visualorder } }) =>
-          handleSelect(
-            uploadplan,
-            headers.length === 0 && Array.isArray(visualorder)
-              ? visualorder.map((visualCol) => columns[visualCol])
-              : headers
+        })
+          .then(({ data: { uploadplan, columns, visualorder } }) =>
+            handleSelect(
+              uploadplan,
+              headers.length === 0 && Array.isArray(visualorder)
+                ? visualorder.map((visualCol) => columns[visualCol])
+                : headers
+            )
           )
-        );
+          .catch(console.error);
       }}
     />
   );

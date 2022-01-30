@@ -1,7 +1,8 @@
 import React from 'react';
 
 import ajax from '../../ajax';
-import { getAggregators, getFormatters } from '../../dataobjformatters';
+import { fetchFormatters } from '../../dataobjformatters';
+import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import * as navigation from '../../navigation';
@@ -10,7 +11,6 @@ import schema from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
-import * as UiFormatters from '../../uiformatters';
 import { fetchingParameters } from '../../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../../weblinkbutton';
@@ -19,8 +19,10 @@ import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import type {
+  DataObjectFormatter,
   NewSpLocaleItemString,
   SpLocaleItemString,
+  UiFormatter,
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
 
@@ -183,7 +185,48 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
     };
   }, []);
 
-  return typeof languages === 'undefined' || typeof tables === 'undefined' ? (
+  const [formatters, setFormatters] = React.useState<
+    IR<DataObjectFormatter> | undefined
+  >(undefined);
+  const [aggregators, setAggregators] = React.useState<
+    IR<DataObjectFormatter> | undefined
+  >(undefined);
+
+  React.useEffect(() => {
+    void fetchFormatters.then(({ formatters, aggregators }) => {
+      if (destructorCalled) return undefined;
+      setFormatters(formatAggregators(formatters));
+      setAggregators(formatAggregators(aggregators));
+      return undefined;
+    });
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, []);
+
+  const [uiFormatters, setUiFormatters] = React.useState<
+    RA<UiFormatter> | undefined
+  >(undefined);
+  React.useEffect(() => {
+    void fetchUiFormatters
+      .then((formatters) =>
+        Object.entries(formatters)
+          .map(([name, formatter]) => ({
+            name,
+            isSystem: formatter.isSystem,
+            value: formatter.value(),
+          }))
+          .filter(({ value }) => value)
+      )
+      .then(setUiFormatters);
+  }, []);
+
+  return typeof languages === 'undefined' ||
+    typeof tables === 'undefined' ||
+    typeof formatters === 'undefined' ||
+    typeof aggregators === 'undefined' ||
+    typeof uiFormatters === 'undefined' ? (
     <LoadingScreen />
   ) : (
     <SchemaConfig
@@ -194,19 +237,9 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
         ({ name }) => name === defaultTable
       )}
       webLinks={Object.keys(webLinksDefs)}
-      uiFormatters={Array.from(
-        (UiFormatters.getAll() as Document).getElementsByTagName('format'),
-        (format) => ({
-          name: format.getAttribute('name') ?? '',
-          isSystem: format.getAttribute('system') === 'true',
-          isDefault: format.getAttribute('default') === 'true',
-          value: UiFormatters.getByName(
-            format.getAttribute('name') ?? ''
-          )?.value() as string,
-        })
-      ).filter(({ value }) => value)}
-      dataObjFormatters={formatAggregators(getFormatters() as RA<Element>)}
-      dataObjAggregators={formatAggregators(getAggregators() as RA<Element>)}
+      uiFormatters={uiFormatters}
+      dataObjFormatters={formatters}
+      dataObjAggregators={aggregators}
       onClose={handleClose}
       onSave={(language): void => {
         removeUnloadProtect(self);
