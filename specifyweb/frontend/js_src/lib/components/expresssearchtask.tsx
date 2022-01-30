@@ -3,17 +3,18 @@ import React from 'react';
 import ajax from '../ajax';
 import commonText from '../localization/common';
 import QueryFieldSpec from '../queryfieldspec';
-import QueryResultsTable from '../queryresultstable';
 import * as querystring from '../querystring';
 import router from '../router';
 import { getModel } from '../schema';
 import * as app from '../specifyapp';
+import type { Relationship } from '../specifyfield';
 import type SpecifyModel from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { crash } from './errorboundary';
 import { useTitle } from './hooks';
+import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 
 const relatedSearchesPromise = ajax<RA<string>>(
@@ -27,11 +28,18 @@ type FieldSpec = {
   readonly isRelationship: boolean;
 };
 
-type TableResult = {
-  readonly displayOrder: number;
+export type QueryTableResult = {
   readonly fieldSpecs: RA<FieldSpec>;
   readonly results: RA<RA<string | number>>;
   readonly totalCount: number;
+};
+
+type RawQueryTableResult = {
+  readonly model: SpecifyModel;
+  readonly caption: string;
+  readonly idFieldIndex: number;
+  readonly tableResults: QueryTableResult;
+  readonly ajaxUrl: string;
 };
 
 type RelatedTableResult = {
@@ -46,48 +54,61 @@ type RelatedTableResult = {
   readonly totalCount: number;
 };
 
-type View = {
-  readonly results: {
-    readonly fetchMoreWhileAppropriate: () => void;
-  };
-  readonly render: () => { readonly el: HTMLElement };
-  readonly remove: () => void;
-};
-
-// TODO: translate QueryResultsTable to React
 function TableResults({
-  summary,
-  view,
+  header,
+  queryResults,
 }: {
-  readonly summary: string;
-  readonly view: View;
+  readonly header: string;
+  readonly queryResults: RA<RawQueryTableResult> | undefined;
 }): JSX.Element {
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (containerRef.current === null) return undefined;
-    containerRef.current.append(view.render().el);
-    return (): void => {
-      view.remove();
-    };
-  }, [view]);
-
   return (
-    <details
-      onToggle={({ target }): void =>
-        (target as HTMLElement).hasAttribute('open')
-          ? view.results.fetchMoreWhileAppropriate()
-          : undefined
-      }
-    >
-      <summary
-        className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
+    <section className="flex flex-col gap-1">
+      <h3>{header}</h3>
+      {typeof queryResults === 'undefined' ? (
+        <p aria-live="polite">{commonText('running')}</p>
+      ) : Object.keys(queryResults).length === 0 ? (
+        <p aria-live="polite">{commonText('noMatches')}</p>
+      ) : (
+        queryResults.map(
+          ({ model, caption, tableResults, ajaxUrl, idFieldIndex }) => (
+            <details>
+              <summary
+                className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
         rounded hover:text-white hover:dark:bg-brand-400`}
-      >
-        {summary}
-      </summary>
-      <div ref={containerRef} />
-    </details>
+              >
+                {caption}
+              </summary>
+              <QueryResultsTable
+                hasHeader={false}
+                fieldSpecs={tableResults.fieldSpecs.map(
+                  ({ stringId, isRelationship }) =>
+                    QueryFieldSpec.fromStringId(stringId, isRelationship)
+                )}
+                idFieldIndex={idFieldIndex}
+                totalCount={tableResults.totalCount}
+                model={model}
+                label={model.getLocalizedName()}
+                initialData={tableResults.results}
+                fetchResults={async (
+                  offset: number
+                ): Promise<RA<RA<string | number>>> =>
+                  ajax<IR<QueryTableResult>>(
+                    querystring.format(ajaxUrl, {
+                      name: model.name,
+                      offset: offset.toString(),
+                    }),
+                    {
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      headers: { Accept: 'application/json' },
+                    }
+                  ).then(({ data }) => data[model.name].results)
+                }
+              />
+            </details>
+          )
+        )
+      )}
+    </section>
   );
 }
 
@@ -95,17 +116,17 @@ function Results(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
   const [primaryResults, setPrimaryResults] = React.useState<
-    IR<View> | undefined
+    RA<RawQueryTableResult> | undefined
   >(undefined);
   const [secondaryResults, setSecondaryResults] = React.useState<
-    IR<View> | undefined
+    RA<RawQueryTableResult> | undefined
   >(undefined);
 
   React.useEffect(() => {
     const query = querystring.parse().q;
     const ajaxUrl = querystring.format('/express_search/', { q: query });
 
-    ajax<IR<TableResult>>(ajaxUrl, {
+    ajax<IR<QueryTableResult>>(ajaxUrl, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
     })
@@ -114,36 +135,14 @@ function Results(): JSX.Element {
 
         const views = Object.entries(data)
           .filter(([_tableName, { totalCount }]) => totalCount !== 0)
-          .map(([tableName, tableResults]) => {
-            const model = defined(getModel(tableName));
-
-            const view: View = new QueryResultsTable({
-              noHeader: true,
-              model,
-              fieldSpecs: tableResults.fieldSpecs.map(
-                ({ stringId, isRelationship }) =>
-                  QueryFieldSpec.fromStringId(stringId, isRelationship)
-              ),
-              format: true,
-              initialData: tableResults,
-              async fetchResults(offset: number): Promise<TableResult> {
-                const url = querystring.format(ajaxUrl, {
-                  name: model.name,
-                  offset: offset.toString(),
-                });
-                return ajax<IR<TableResult>>(url, {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  headers: { Accept: 'application/json' },
-                }).then(({ data }) => data[model.name]);
-              },
-            });
-
-            const summary = `${model.getLocalizedName()} - ${
-              tableResults.totalCount
-            }`;
-            return [summary, view] as const;
-          });
-        setPrimaryResults(Object.fromEntries(views));
+          .map(([tableName, tableResults]) => ({
+            model: defined(getModel(tableName)),
+            caption: defined(getModel(tableName)).getLocalizedName(),
+            idFieldIndex: 0,
+            tableResults,
+            ajaxUrl,
+          }));
+        setPrimaryResults(views);
 
         return undefined;
       })
@@ -170,36 +169,38 @@ function Results(): JSX.Element {
         const views = results
           .filter(([_ajaxUrl, { totalCount }]) => totalCount !== 0)
           .map(([ajaxUrl, tableResult]) => {
+            let model = defined(getModel(tableResult.definition.root));
+            let idFieldIndex = 0;
             const fieldSpecs = tableResult.definition.fieldSpecs.map(
               ({ stringId, isRelationship }) =>
                 QueryFieldSpec.fromStringId(stringId, isRelationship)
             );
-            let model = defined(getModel(tableResult.definition.root));
-            let linkField = 0;
             if (tableResult.definition.link !== null) {
               const linkFieldSpec = fieldSpecs.pop();
-              linkField = fieldSpecs.length + 1;
-              model = linkFieldSpec.joinPath
-                .slice(-1)[0]
-                .getRelatedModel() as SpecifyModel;
+              idFieldIndex = fieldSpecs.length + 1;
+              model = defined(
+                (
+                  linkFieldSpec?.joinPath.slice(-1)[0] as Relationship
+                ).getRelatedModel()
+              );
             }
 
-            const view: View = new QueryResultsTable({
-              noHeader: true,
+            return {
               model,
-              fieldSpecs,
-              linkField,
-              initialData: tableResult,
+              idFieldIndex,
+              caption: s.localizeFrom(
+                'expresssearch',
+                tableResult.definition.name
+              ),
+              tableResults: {
+                results: tableResult.results,
+                fieldSpecs: tableResult.definition.fieldSpecs,
+                totalCount: tableResult.totalCount,
+              },
               ajaxUrl,
-            });
-            const summary = `${s.localizeFrom(
-              'expresssearch',
-              tableResult.definition.name
-            )} - ${tableResult.totalCount}`;
-
-            return [summary, view] as const;
+            };
           });
-        setSecondaryResults(Object.fromEntries(views));
+        setSecondaryResults(views);
 
         return undefined;
       })
@@ -213,31 +214,14 @@ function Results(): JSX.Element {
 
   return (
     <div className="gap-y-4 flex flex-col">
-      <section className="flex flex-col gap-1">
-        <h3>{commonText('primarySearch')}</h3>
-        {typeof primaryResults === 'undefined' ? (
-          <p aria-live="polite">{commonText('running')}</p>
-        ) : Object.keys(primaryResults).length === 0 ? (
-          <p aria-live="polite">{commonText('noMatches')}</p>
-        ) : (
-          Object.entries(primaryResults).map(([summary, view]) => (
-            <TableResults key={summary} summary={summary} view={view} />
-          ))
-        )}
-      </section>
-
-      <section className="flex flex-col gap-1">
-        <h3>{commonText('secondarySearch')}</h3>
-        {typeof secondaryResults === 'undefined' ? (
-          <p aria-live="polite">{commonText('running')}</p>
-        ) : Object.keys(secondaryResults).length === 0 ? (
-          <p aria-live="polite">{commonText('noMatches')}</p>
-        ) : (
-          Object.entries(secondaryResults).map(([summary, view]) => (
-            <TableResults key={summary} summary={summary} view={view} />
-          ))
-        )}
-      </section>
+      <TableResults
+        header={commonText('primarySearch')}
+        queryResults={primaryResults}
+      />
+      <TableResults
+        header={commonText('secondarySearch')}
+        queryResults={secondaryResults}
+      />
     </div>
   );
 }
