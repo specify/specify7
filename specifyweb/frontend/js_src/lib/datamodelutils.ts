@@ -1,6 +1,9 @@
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import type { IR, RA } from './types';
+import { getModel } from './schema';
+import { defined } from './types';
+import { parseResourceUrl } from './resourceapi';
 
 /* The dataModel types types were generated using this code snippet: */
 /* eslint-disable multiline-comment-style*/
@@ -122,6 +125,10 @@ export type CommonFields = {
   readonly id: number;
 };
 
+export type SerializedModel<SCHEMA extends AnySchema> = KeysToLowerCase<
+  SerializedResource<SCHEMA>
+>;
+
 export type SerializedResource<SCHEMA extends AnySchema> = {
   readonly [KEY in
     | keyof CommonFields
@@ -140,24 +147,32 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     : KEY extends keyof SCHEMA['toManyDependent']
     ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
     : KEY extends keyof SCHEMA['toManyIndependent']
-    ? string | Exclude<SCHEMA['toManyIndependent'][KEY], AnySchema>
+    ? string
     : never;
+};
+
+export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
+  [KEY in keyof DICTIONARY as Lowercase<KEY & string>]: DICTIONARY[KEY];
 };
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
-  // @ts-expect-error
+  serializeModel<SCHEMA>(resource?.toJSON() ?? resource);
+
+const serializeModel = <SCHEMA extends AnySchema>(
+  resource: SerializedModel<SCHEMA>
+): SerializedResource<SCHEMA> =>
   Object.fromEntries(
-    Object.entries(resource?.toJSON() ?? resource).map(
-      ([lowercaseFieldName, value]) => [
-        resource.specifyModel.fields.find(
-          ({ name }) => name.toLowerCase() === lowercaseFieldName
-        )?.name ?? lowercaseFieldName,
-        typeof value === 'object' && value !== null
-          ? serializeResource(value)
-          : value,
-      ]
-    )
-  );
+    Object.entries(resource).map(([lowercaseFieldName, value]) => [
+      defined(getModel(parseResourceUrl(resource.resource_uri)[0])).fields.find(
+        ({ name }) => name.toLowerCase() === lowercaseFieldName
+      )?.name ?? lowercaseFieldName,
+      typeof value === 'object' && value !== null
+        ? Array.isArray(value)
+          ? value.map(serializeResource)
+          : serializeModel(value as SerializedModel<AnySchema>)
+        : value,
+    ])
+  ) as SerializedResource<SCHEMA>;

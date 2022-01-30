@@ -1,5 +1,6 @@
 import collectionapi from './collectionapi';
-import type { AnySchema, SerializedResource } from './datamodelutils';
+import type { AnySchema } from './datamodelutils';
+import { SerializedModel } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -7,13 +8,14 @@ import type { SchemaLocalization } from './schema';
 import { localization } from './schema';
 import schema, { unescape } from './schemabase';
 import {
-  Field,
   type FieldDefinition,
+  LiteralField,
   Relationship,
   type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
+import { Tables } from './datamodel';
 
 type FieldAlias = {
   readonly vname: string;
@@ -40,7 +42,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
       readonly id: number;
       readonly specifyuser: number;
       readonly domainfilter: boolean;
-    } & IR<unknown>
+    } & SCHEMA['fields']
   >;
   readonly domainfilter?: boolean;
 }) => UnFetchedCollection<SpecifyResource<SCHEMA>>;
@@ -58,6 +60,8 @@ export type Collection<RESOURCE extends SpecifyResource<AnySchema>> = {
   readonly getTotalCount: () => Promise<number>;
   readonly toJSON: <V extends IR<unknown>>() => RA<V>;
   readonly models: RESOURCE extends null ? [] : RA<RESOURCE>;
+  readonly isComplete: () => boolean;
+  readonly model: RESOURCE;
   readonly add: (resource: RESOURCE) => void;
   readonly remove: (resource: RESOURCE) => void;
 };
@@ -83,7 +87,7 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   // TODO: make newly created resources have default values for fields
   public readonly Resource: new (
-    props?: Partial<SerializedResource<SCHEMA>>
+    props?: Partial<SerializedModel<SCHEMA>>
   ) => SpecifyResource<SCHEMA>;
 
   public readonly LazyCollection: CollectionConstructor<SCHEMA>;
@@ -94,13 +98,19 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly fields: RA<Field | Relationship>;
+  public readonly fields: RA<LiteralField | Relationship>;
 
   public readonly localization: SchemaLocalization;
 
+  public static parseClassName(className: string): string {
+    return className.split('.').slice(-1)[0];
+  }
+
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = this.longName.split('.').slice(-1)[0] as SCHEMA['tableName'];
+    this.name = SpecifyModel.parseClassName(
+      this.longName
+    ) as SCHEMA['tableName'];
     this.idFieldName = tableDefinition.idFieldName;
     this.view = tableDefinition.view ?? undefined;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
@@ -149,19 +159,12 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.fields = [
       ...tableDefinition.fields.map(
         (fieldDefinition) =>
-          new Field(
-            this.name,
-            this.localization.items[fieldDefinition.name.toLowerCase()] ?? {},
-            fieldDefinition
-          )
+          new LiteralField(this as unknown as SpecifyModel, fieldDefinition)
       ),
       ...tableDefinition.relationships.map(
         (relationshipDefinition) =>
           new Relationship(
-            this.name,
-            this.localization.items[
-              relationshipDefinition.name.toLowerCase()
-            ] ?? {},
+            this as unknown as SpecifyModel,
             relationshipDefinition
           )
       ),
@@ -173,7 +176,9 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * name can be either a dotted name string or an array and will traverse
    * relationships.
    */
-  public getField(unparsedName: string): Field | Relationship | undefined {
+  public getField(
+    unparsedName: string
+  ): LiteralField | Relationship | undefined {
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().split('.');
@@ -197,10 +202,17 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     else throw new Error('Field is not a relationship');
   }
 
+  public getLiteralField(literalName: string): LiteralField | undefined {
+    const field = this.getField(literalName);
+    if (typeof field === 'undefined') return undefined;
+    else if (field.isRelationship) throw new Error('Field is a relationship');
+    else return field;
+  }
+
   public getRelationship(relationshipName: string): Relationship | undefined {
     const relationship = this.getField(relationshipName);
     if (typeof relationship === 'undefined') return undefined;
-    else if (relationship instanceof Relationship) return relationship;
+    else if (relationship.isRelationship) return relationship;
     else throw new Error('Field is not a relationship');
   }
 
@@ -256,4 +268,13 @@ export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       ? undefined
       : [...defined(up.getRelatedModel()?.getScopingPath()), up.name];
   }
+}
+
+// TODO: this won't be needed if typings were to be improved
+/** Checks if SpecifyResource has a desired table name and cast's its type */
+export function isResourceOfType<TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableName: TABLE_NAME
+): resource is SpecifyResource<Tables[TABLE_NAME]> {
+  return resource.specifyModel.name === tableName;
 }

@@ -3,16 +3,17 @@ import React from 'react';
 import ajax from '../ajax';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { getModel } from '../schema';
+import { fetchContext as fetchSchema, getModel } from '../schema';
 import { makeResourceViewUrl } from '../specifyapi';
 import specifyform from '../specifyform';
-import type SpecifyModel from '../specifymodel';
+import SpecifyModel from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { crash } from './errorboundary';
 
 type Entry = {
   iconName: string;
@@ -28,6 +29,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
     headers: { Accept: 'application/xml' },
   }
 ).then(async ({ data }) => {
+  await fetchSchema;
   // I don't think the non-sidebar items are ever used in Sp6.
   const views: RA<Element> = Array.from(
     data.getElementsByTagName('view')
@@ -37,7 +39,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
       specifyform
         .getView(view.getAttribute('view'))
         .then<Entry>((form: { readonly class: string }) => {
-          const modelName = form.class.split('.').slice(-1)[0];
+          const modelName = SpecifyModel.parseClassName(form.class);
           const model = defined(getModel(modelName));
 
           return {
@@ -61,7 +63,7 @@ function FormsDialog({
   const [forms, setForms] = React.useState<Awaited<typeof getFormsPromise>>();
 
   React.useEffect(() => {
-    getFormsPromise.then(setForms).catch(console.error);
+    getFormsPromise.then(setForms).catch(crash);
   }, []);
 
   return typeof forms === 'undefined' ? (

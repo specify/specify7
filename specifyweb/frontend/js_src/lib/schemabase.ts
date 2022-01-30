@@ -56,7 +56,7 @@ const schemaBase: Writable<Schema> = {
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
   models: {} as Schema['models'],
-  frontEndFields: undefined!,
+  frontEndFields: {},
 
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [

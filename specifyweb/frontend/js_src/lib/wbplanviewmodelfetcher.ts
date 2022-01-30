@@ -11,8 +11,8 @@ import ajax from './ajax';
 import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import schema from './schema';
-import type { Field, Relationship } from './specifyfield';
+import schema, { fetchContext as fetchSchema } from './schema';
+import type { Relationship } from './specifyfield';
 import systemInfo from './systeminfo';
 import type { IR, R, RA, Writable } from './types';
 import { camelToHuman } from './wbplanviewhelper';
@@ -28,6 +28,7 @@ import {
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
 import { isTreeModel } from './treedefinitions';
+import { LiteralField } from './specifyfield';
 
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
@@ -93,15 +94,13 @@ function handleRelationshipType(
 }
 
 function handleRelationshipField(
-  field: Field | Relationship,
-  fieldData: Writable<DataModelField>,
+  relationship: Relationship,
+  baseField: DataModelFieldPrimer,
   fieldName: string,
   currentTableName: string,
   hiddenTables: Readonly<Set<string>>,
   originalRelationships: OriginalRelationshipsWritable
-): boolean {
-  const relationship = field as Relationship;
-
+): DataModelRelationship | undefined {
   let foreignName = relationship.otherSideName;
   if (typeof foreignName !== 'undefined')
     foreignName = foreignName.toLowerCase();
@@ -115,15 +114,27 @@ function handleRelationshipField(
   );
 
   if (relationship.readOnly || tableHasOverwrite(tableName, 'remove'))
-    return false;
+    return undefined;
 
-  fieldData.isHidden ||= hiddenTables.has(tableName);
+  return {
+    ...baseField,
+    isRelationship: true,
+    isHidden: baseField.isHidden || hiddenTables.has(tableName),
+    tableName,
+    type: relationshipType,
+    foreignName,
+  };
+}
 
-  fieldData.tableName = tableName;
-  fieldData.type = relationshipType;
-  fieldData.foreignName = foreignName;
-
-  return true;
+function handleLiteralField(
+  field: LiteralField,
+  baseField: DataModelFieldPrimer,
+  fetchPickListsQueue: Promise<void>[]
+): DataModelNonRelationship {
+  const pickListName = field.getPickList();
+  if (pickListName !== null && typeof pickListName !== 'undefined')
+    fetchPickListsQueue.push(fetchPickList(pickListName, baseField));
+  return { ...baseField, isRelationship: false };
 }
 
 const fetchPickList = async (
@@ -211,6 +222,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   if (typeof dataModelStorage.currentCollectionId === 'undefined')
     dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();
 
+  await fetchSchema;
   const schemaHash = await getSchemaHash();
 
   const cacheVersion = [
@@ -290,29 +302,24 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
       if (fieldHasOverwrite(tableName, fieldName, 'optional'))
         isRequired = false;
 
-      // @ts-expect-error
-      const fieldData: DataModelFieldWritable = {
+      const baseField: DataModelFieldPrimer = {
         label,
         isHidden,
         isRequired,
-        isRelationship: field.isRelationship,
       };
 
-      if (!fieldData.isRelationship) {
-        const pickListName = field.getPickList();
-        if (pickListName !== null && typeof pickListName !== 'undefined')
-          fetchPickListsQueue.push(fetchPickList(pickListName, fieldData));
-      } else if (
-        !handleRelationshipField(
-          field,
-          fieldData,
-          fieldName,
-          tableName,
-          hiddenTables,
-          originalRelationships
-        )
-      )
-        return;
+      const fieldData = field.isRelationship
+        ? handleRelationshipField(
+            field,
+            baseField,
+            fieldName,
+            tableName,
+            hiddenTables,
+            originalRelationships
+          )
+        : handleLiteralField(field, baseField, fetchPickListsQueue);
+
+      if (typeof fieldData === 'undefined') return;
 
       // Turn PrepType->name into a fake picklist
       if (tableName === 'preptype' && fieldName === 'name')

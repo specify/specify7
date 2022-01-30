@@ -3,8 +3,7 @@ import type { SchemaLocalization } from './schema';
 import schema, { getModel } from './schema';
 import { unescape } from './schemabase';
 import type SpecifyModel from './specifymodel';
-import type { UIFormatter } from './uiformatters';
-import * as uiformatters from './uiformatters';
+import { type UiFormatter, uiFormatters } from './uiformatters';
 
 export type JavaType =
   // Strings
@@ -69,12 +68,10 @@ export type SchemaModelTableField = {
   readonly type: RelationshipType;
 };
 
-// Define a JS object constructor to represent fields of Specify data objects.
-export class Field {
-  public readonly modelName: keyof Tables;
+abstract class FieldBase {
+  public readonly model: SpecifyModel;
 
-  // Whether the field represents a relationship.
-  public readonly isRelationship: boolean;
+  public readonly isRelationship: boolean = false;
 
   public readonly name: string;
 
@@ -93,25 +90,21 @@ export class Field {
   public readonly localization: SchemaLocalization['items'][string];
 
   public constructor(
-    modelName: keyof Tables,
-    localization: SchemaLocalization['items'][string],
+    model: SpecifyModel,
     fieldDefinition: Omit<FieldDefinition, 'type'> & {
       readonly type: JavaType | RelationshipType;
     }
   ) {
-    this.modelName = modelName;
-    this.isRelationship = relationshipTypes.includes(
-      fieldDefinition.type as RelationshipType
-    );
+    this.model = model;
 
     this.name = fieldDefinition.name;
-    this.dottedName = `${modelName}.${this.name}`;
+    this.dottedName = `${model.name}.${this.name}`;
 
     this.readOnly =
       fieldDefinition.readOnly === true ||
       (this.name === 'guid' &&
-        modelName !== 'Taxon' &&
-        modelName !== 'Geography') ||
+        model.name !== 'Taxon' &&
+        model.name !== 'Geography') ||
       this.name === 'timestampcreated';
 
     this.isRequired = fieldDefinition.required;
@@ -119,7 +112,8 @@ export class Field {
     this.length = fieldDefinition.length;
     this.dbColumn = fieldDefinition.column;
 
-    this.localization = localization;
+    this.localization =
+      this.model.localization.items[fieldDefinition.name.toLowerCase()] ?? {};
   }
 
   // Returns the user friendly name of the field from the schema config.
@@ -144,11 +138,8 @@ export class Field {
   }
 
   // Returns the UIFormatter for the field specified in the schema config.
-  public getUIFormatter(): ReturnType<typeof UIFormatter> | undefined {
-    const format = this.getFormat();
-    return typeof format === 'undefined'
-      ? undefined
-      : uiformatters.getByName(format);
+  public getUiFormatter(): UiFormatter | undefined {
+    return uiFormatters[this.getFormat() ?? ''];
   }
 
   /*
@@ -191,23 +182,25 @@ export class Field {
   }
 }
 
-/*
- * Define a JS object constructor to represent relationship fields of Specify data objects.
- * Extends the Field object.
- */
-export class Relationship extends Field {
+/** Non-relationship field */
+export class LiteralField extends FieldBase {
+  public isRelationship: false = false;
+}
+
+export class Relationship extends FieldBase {
   public otherSideName?: string;
 
   public relatedModelName: keyof Tables;
 
   public dependent: boolean;
 
+  public isRelationship: true = true;
+
   public constructor(
-    modelName: keyof Tables,
-    localization: SchemaLocalization['items'][string],
+    model: SpecifyModel,
     relationshipDefinition: RelationshipDefinition
   ) {
-    super(modelName, localization, {
+    super(model, {
       ...relationshipDefinition,
       indexed: false,
       unique: false,
@@ -224,24 +217,20 @@ export class Relationship extends Field {
    * eg CollectionObject.determinations.
    */
   public isDependent(): boolean {
-    return this.modelName == 'CollectionObject' &&
+    return this.model.name == 'CollectionObject' &&
       this.name == 'collectingEvent'
       ? schema.embeddedCollectingEvent
-      : this.modelName.toLowerCase() == schema.paleoContextChildTable &&
+      : this.model.name.toLowerCase() == schema.paleoContextChildTable &&
         this.name == 'paleoContext'
       ? schema.embeddedPaleoContext
       : this.dependent;
   }
 
   // Returns the related model for relationship fields.
-  public getRelatedModel<TABLE_NAME extends keyof Tables>():
-    | SpecifyModel<Tables[TABLE_NAME]>
-    | undefined {
+  public getRelatedModel(): SpecifyModel | undefined {
     if (!this.isRelationship)
       throw new Error(`${this.dottedName} is not a relationship field`);
-    return getModel(this.relatedModelName) as
-      | SpecifyModel<Tables[TABLE_NAME]>
-      | undefined;
+    return getModel(this.relatedModelName);
   }
 
   // Returns the field of the related model that is the reverse of this field.

@@ -8,7 +8,7 @@ import { error } from './assert';
 import { load } from './initialcontext';
 import schema from './schemabase';
 import extras from './schemaextras';
-import type { Field, Relationship } from './specifyfield';
+import type { LiteralField, Relationship } from './specifyfield';
 import SpecifyModel, { type TableDefinition } from './specifymodel';
 import type { IR, RA } from './types';
 import { AnySchema } from './datamodelutils';
@@ -44,7 +44,7 @@ export const fetchContext = Promise.all([
   schema.models = Object.fromEntries(
     tables.map((tableDefinition) => {
       const model = new SpecifyModel(tableDefinition);
-      const modelFields = model.fields as (Field | Relationship)[];
+      const modelFields = model.fields as (LiteralField | Relationship)[];
       const frontEndFields = extras[model.name]?.(model) ?? [];
       if (frontEndFields.length > 0) {
         // @ts-expect-error Assigning to read-only value
