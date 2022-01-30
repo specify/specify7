@@ -14,6 +14,7 @@ export function Autocomplete<T>({
   minLength = 1,
   delay = debounceRate,
   onChange: handleChange,
+  onNewValue: handleNewValue,
   renderSearchBox,
 }: {
   readonly source: (
@@ -21,6 +22,7 @@ export function Autocomplete<T>({
   ) => Promise<RA<string> | IR<{ readonly label: string; readonly data: T }>>;
   readonly minLength?: number;
   readonly delay?: number;
+  readonly onNewValue?: (value: string);
   readonly onChange: (
     value: string,
     selected: {
@@ -78,7 +80,7 @@ export function Autocomplete<T>({
         onKeyDown: handleKeyDown,
         onChange: ({ target }): void => {
           const data = results[target.value];
-          if (typeof data !== 'undefined') handleChange(target.value, data);
+          handleChange(target.value, data);
         },
       })}
       <datalist id={id('')} ref={refDataList}>
