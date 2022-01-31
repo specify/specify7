@@ -7,7 +7,6 @@ import Backbone from './backbone';
 import specifyform from './specifyform';
 import api from './specifyapi';
 import {format} from './dataobjformatters';
-import whenAll from './whenall';
 import {load} from './initialcontext';
 import commonText from './localization/common';
 
@@ -106,7 +105,7 @@ export default Backbone.View.extend({
     },
         gotResults: function(results) {
             this.results = this.xfilter(results);
-            whenAll(this.results.map(format)).done(this.displayResults.bind(this));
+            Promise.all(this.results.map(format)).then(this.displayResults.bind(this));
         },
     displayResults: function(formattedResults) {
         const items = _.sortBy( formattedResults.map((formatted, i) => ({

@@ -23,10 +23,10 @@ import Papa from 'papaparse';
 
 import {getModel} from './schema';
 import * as app from './specifyapp';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import {NotFoundView} from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import dataModelStorage from './wbplanviewmodel';
 import WBStatus from './components/wbstatus';
@@ -1554,7 +1554,7 @@ const WBView = Backbone.View.extend({
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
         } else {
-          format(resource).done((formatted) =>
+          format(resource).then((formatted) =>
             row.find('.label').text(formatted)
           );
         }

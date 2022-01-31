@@ -22,11 +22,9 @@ async function getPossibleRanks(
     },
   });
   return children.fetch({ limit: 0 }).then(({ models }) =>
+    // Remove ranks after enforced rank
     models
-      .slice(
-        0,
-        models.findIndex((model) => model.get('isExpanded'))
-      )
+      .slice(0, models.findIndex((model) => model.get('isEnforced')) + 1)
       .map((model) => ({
         value: model.url(),
         title: model.get('title') ?? model.get('name'),
@@ -44,23 +42,22 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       : model
           .rgetCollection('children')
           .then(({ models }) =>
-            Math.max(
-              -1,
-              Math.min(...models.map((model) => model.get('rankId')))
-            )
+            models.length === 0
+              ? -1
+              : Math.min(...models.map((model) => model.get('rankId')))
           );
-    model
-      .rget('parent')
-      .then(async (parent) => parent.rget('definitionItem', true))
+    Promise.resolve(model.rget('parent'))
+      .then(async (parent) =>
+        Promise.resolve(parent.rget('definitionItem', true))
+      )
       .then((treeDefinitionItem) =>
         typeof treeDefinitionItem === 'object'
-          ? treeDefinitionItem
-              .rget('treeDef', true)
-              .then(async ({ id }) =>
+          ? Promise.resolve(treeDefinitionItem.rget('treeDef', true)).then(
+              async ({ id }) =>
                 lowestChildRank.then(async (rankId) =>
                   getPossibleRanks(rankId, treeDefinitionItem, id)
                 )
-              )
+            )
           : []
       )
       .then(setItems)
@@ -73,6 +70,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       items={items}
       onAdd={undefined}
       pickList={undefined}
+      // Select next enforced rank by default
+      defaultValue={props.defaultValue ?? items.slice(-1)[0]?.value}
       disabled={props.disabled || props.model.get('parent') === null}
     />
   );

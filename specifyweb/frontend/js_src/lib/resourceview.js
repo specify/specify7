@@ -11,7 +11,7 @@ import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import populateForm from "./populateform";
 import reports from "./reports";
 import * as navigation from "./navigation";
@@ -138,7 +138,7 @@ const ResourceView = Backbone.View.extend({
         self.setFormTitle(title);
         self.trigger('changetitle', self, title);
 
-        format(self.model).done(function(str) {
+        format(self.model).then(function(str) {
             if (_(str).isString()) {
                 $('.view-title', self.header).attr('title', str);
                 self.trigger('changetitle', self, title + ': ' + str);

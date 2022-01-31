@@ -7,13 +7,9 @@ import Backbone from './backbone';
 
 import {format} from './dataobjformatters';
 import {fieldFormat} from './fieldformat';
-import {
-  parseValue,
-  addValidationAttributes,
-  resolveParser
-} from './uiparse';
+import {addValidationAttributes, parseValue, resolveParser} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
-import dayjs from "./dayjs";
+import {dayjs} from "./dayjs";
 
 export default Backbone.View.extend({
         __name__: "UIField",
@@ -104,7 +100,7 @@ export default Backbone.View.extend({
                       ? (value) => dayjs(value).format('YYYY-MM-DD')
                       : _.bind(fieldFormat, null, field);
 
-                    resource.rget(fieldName).pipe(objFormat).done((value)=>{
+                    Promise.resolve(resource.rget(fieldName)).then(objFormat).then((value)=>{
                         this.el.value = value ?? '';
                     });
                 };

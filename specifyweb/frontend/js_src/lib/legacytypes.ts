@@ -89,7 +89,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     VALUE extends (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'])[FIELD_NAME]
   >(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
+    prePopulate?: boolean
   ) => Promise<Collection<SpecifyResource<VALUE[number]>>>;
   readonly set: <
     FIELD_NAME extends keyof (SCHEMA['fields'] &

@@ -5,11 +5,11 @@ import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
+import type { LiteralField } from '../specifyfield';
 import type { IR, R, RA } from '../types';
-import { ignoreValidationErrors } from '../validationmessages';
-import { getValidationAttributes, resolveParser } from '../uiparse';
-import { LiteralField } from '../specifyfield';
 import { defined } from '../types';
+import { getValidationAttributes, resolveParser } from '../uiparse';
+import { isInputTouched } from '../validationmessages';
 
 const idStore: R<number> = {};
 
@@ -97,7 +97,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
     if (!input) return;
     input.setCustomValidity(joined);
 
-    if (joined !== '' && !ignoreValidationErrors(input)) input.reportValidity();
+    if (joined !== '' && isInputTouched(input)) input.reportValidity();
   }
 
   React.useEffect(() => setValidation(message), [message]);

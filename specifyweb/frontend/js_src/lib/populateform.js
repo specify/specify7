@@ -17,11 +17,11 @@ import FormTable from './formtable';
 import IActionItemFormTable from './formtableinteractionitem';
 import SubView from './subview';
 import CheckBox from './checkbox';
-import SpinnerFieldUi from './spinnerui';
-import { readCookie } from './cookies';
-import { userInformation } from './userinfo';
+import {SpinnerFieldUi} from './spinnerui';
+import {readCookie} from './cookies';
+import {userInformation} from './userinfo';
 
-    var MultiView = Backbone.View.extend({
+var MultiView = Backbone.View.extend({
         __name__: "MultiView",
         render: function() {
             var options = this.options;

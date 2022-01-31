@@ -14,7 +14,7 @@ export function validationMessages(
   field.setCustomValidity('');
   if (!hasNativeErrors(field)) updateCustomValidity(field, validationMessages);
 
-  if (!ignoreValidationErrors(field)) field.reportValidity();
+  if (isInputTouched(field)) field.reportValidity();
 }
 
 function updateCustomValidity(field: Input, messages: RA<string>): void {
@@ -43,13 +43,10 @@ export const hasNativeErrors = (
     .filter((type) => !exceptions.includes(type))
     .some((type) => field.validity[type as keyof ValidityState]);
 
-const isInputTouched = (field: Input): boolean =>
+/**
+ * Don't report errors until field is interacted with or form is being submitted
+ */
+export const isInputTouched = (field: Input): boolean =>
   !field.classList.contains(className.notTouchedInput) ||
   field.closest('form')?.classList.contains(className.notSubmittedForm) !==
     true;
-
-/*
- * Don't report errors until field is interacted with or form is being submitted
- */
-export const ignoreValidationErrors = (field: Input): boolean =>
-  !isInputTouched(field) && !hasNativeErrors(field, ['customError', 'valid']);

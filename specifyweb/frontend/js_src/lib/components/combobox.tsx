@@ -25,8 +25,8 @@ export type DefaultComboBoxProps = {
   readonly resource: SpecifyResource<AnySchema>;
   readonly field: LiteralField;
   readonly fieldName: string;
-  readonly pickListName: string;
-  readonly defaultValue: string;
+  readonly pickListName: string | undefined;
+  readonly defaultValue: string | undefined;
   readonly className: string | undefined;
   readonly disabled: boolean;
   readonly readOnly: boolean;
@@ -55,7 +55,8 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   >(undefined);
 
   React.useEffect(() => {
-    getPickListByName(props.pickListName).then(setPickList).catch(crash);
+    if (typeof props.pickListName !== 'undefined')
+      getPickListByName(props.pickListName).then(setPickList).catch(crash);
   }, [props.pickListName]);
 
   const type = pickList?.get('type') ?? 0;

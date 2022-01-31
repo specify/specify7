@@ -14,14 +14,14 @@ import whenAll from './whenall';
 import parseselect from './parseselect';
 import * as navigation from './navigation';
 import QueryCbxSearch from './querycbxsearch';
-import { QueryFieldSpec } from './queryfieldspec';
+import {QueryFieldSpec} from './queryfieldspec';
 import {load} from './initialcontext';
 import resourceapi from './resourceapi';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import formsText from './localization/forms';
-import { autocomplete } from './components/autocomplete';
+import {autocomplete} from './components/autocomplete';
 import {formatList} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
 import {getTreeDefinitionItems, isTreeModel} from "./treedefinitions";
@@ -126,7 +126,7 @@ export default Backbone.View.extend({
                         return children.models[0]?.get('rankid') ?? null;
                     });
                 }
-                this.treeRanks = getTreeDefinitionItems(this.model.name, false)
+                this.treeRanks = getTreeDefinitionItems(this.model.specifyModel.name, false)
                     .map(rank => ({rankid: rank.rankId, isenforced: rank.isEnforced}));
             } else if (fieldName == 'acceptedParent') {
                 //don't need to do anything. Form system prevents lookups/edits
@@ -357,7 +357,7 @@ export default Backbone.View.extend({
             this.model.rget(this.fieldName, true).done((related)=>{
                 this.$('.querycbx-edit, .querycbx-display, .querycbx-clone').prop('disabled', !related);
                 if (related)
-                    this.renderItem(related).done((item)=>
+                    this.renderItem(related).then((item)=>
                         this.$('input').val(item.value)
                     );
                 else
@@ -367,7 +367,7 @@ export default Backbone.View.extend({
         },0);
     },
     renderItem: function (resource) {
-        return format(resource, this.typesearch.attr('dataobjformatter')).pipe(function(formatted) {
+        return format(resource, this.typesearch.attr('dataobjformatter')).then(function(formatted) {
             return { label: formatted, value: formatted, resource: resource };
         });
     },

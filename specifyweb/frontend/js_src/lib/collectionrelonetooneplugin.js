@@ -24,7 +24,7 @@ export default OneToMany.extend({
         if (collectionObjects.length > 0) {
             var co = collectionObjects[0];
             a.attr('href', co.viewUrl());
-            format(co).done(function(text) { a.text(text); });
+            format(co).then(function(text) { a.text(text); });
         } else {
             a.hide();
         }

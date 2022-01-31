@@ -145,7 +145,7 @@ export const sortFunction = <T, V>(
           : 1
     : (left: T, right: T): -1 | 0 | 1 =>
         mapper(left) > mapper(right)
-          ? -1
+          ? 1
           : mapper(left) === mapper(right)
           ? 0
-          : 1;
+          : -1;

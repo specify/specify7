@@ -5,10 +5,10 @@ import _ from 'underscore';
 
 import {format} from './dataobjformatters';
 import * as navigation from './navigation';
-import { UiPlugin } from './uiplugin';
+import {UiPlugin} from './uiplugin';
 import whenAll from './whenall';
 import schema from './schema';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import QueryCbxSearch from './querycbxsearch';
 
 import formsText from './localization/forms';
@@ -126,7 +126,7 @@ export default UiPlugin.extend({
         var label = $('<a>', { class: "sp-rel-plugin-other-side", href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
         format(co).done(function(text) { label.text(text); });
         var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
-        otherColFormatted.done(function(text) { collection.text(text); });
+        otherColFormatted.then(function(text) { collection.text(text); });
         $('<button>', {class: "sp-rel-plugin-remove button", type:'button', title: commonText('remove'), ariaLabel: commonText('remove')})
           .append(legacyNonJsxIcons.trash)
           .appendTo(

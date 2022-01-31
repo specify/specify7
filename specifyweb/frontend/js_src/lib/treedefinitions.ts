@@ -77,10 +77,13 @@ export const fetchContext = Promise.all([fetchSchema, fetchDomain])
                 )
               )
                 .then(async (model) =>
-                  Promise.all([model, model.rgetCollection('treeDefItems')])
+                  Promise.all([
+                    model,
+                    model.rgetCollection('treeDefItems', true),
+                  ])
                 )
                 .then(([treeDefinition, { models }]) => ({
-                  treeDefinition,
+                  definition: treeDefinition,
                   ranks: Array.from(models, serializeResource).sort(
                     sortFunction((item) => item.rankId)
                   ),

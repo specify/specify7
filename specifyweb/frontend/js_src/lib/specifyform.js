@@ -4,20 +4,20 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import specifyformcells from './specifyformcells';
-import { parseSpecifyProperties } from './parsespecifyproperties';
-import { processColumnDefinition } from './processcolumndef';
+import {parseSpecifyProperties} from './parsespecifyproperties';
+import {processColumnDefinition} from './processcolumndef';
 
 import formtable from './templates/formtabletemplate.html';
 import formtemplate from './templates/formtemplate.html';
 import attachmentview from './templates/attachmentview.html';
 import {className} from './components/basic';
-import { SchemaModel } from "./specifymodel";
+import {SpecifyModel} from "./specifymodel";
 
 
 var formCounter = 0;
 
     function getModelFromViewdef(viewdef) {
-        return SchemaModel.parseClassName(viewdef.attr('class'));
+        return SpecifyModel.parseClassName(viewdef.attr('class'));
     }
 
     function getColumnDef(viewdef) {

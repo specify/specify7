@@ -53,18 +53,9 @@ export function PickListComboBox(
     [props.field.name, validationAttributes, props.required, props.resource]
   );
 
+  // Set default value
   React.useEffect(() => {
-    const dump = [
-      props.items,
-      props.resource,
-      props.field.name,
-      props.defaultValue,
-    ];
-    const values = props.items.map(({ value }) => value);
-    if (values.length !== new Set(values).size)
-      console.error('Duplicate picklist entries found', dump);
-
-    if (props.resource.isNew()) {
+    if (props.resource.isNew() && typeof props.defaultValue === 'string') {
       const defaultItem =
         props.items.find(({ value }) => value === props.defaultValue) ??
         props.items.find(({ title }) => title === props.defaultValue);
@@ -72,23 +63,28 @@ export function PickListComboBox(
       else
         console.warn(
           'default value for picklist is not a member of the picklist',
-          dump
+          [props.items, props.resource, props.defaultValue]
         );
     }
+  }, [props.items, props.resource, props.defaultValue, updateValue]);
 
+  // Listen for external changes to the field
+  React.useEffect(() => {
     props.resource.on(`change:${props.field.name.toLowerCase()}`, () =>
       setValue(getValue())
     );
-
     void props.resource.businessRuleMgr.checkField(props.field.name);
-  }, [
-    props.items,
-    props.resource,
-    props.field.name,
-    props.defaultValue,
-    updateValue,
-    getValue,
-  ]);
+  }, [props.resource, props.field.name, getValue]);
+
+  // Warn on duplicates
+  React.useEffect(() => {
+    const values = props.items.map(({ value }) => value);
+    if (values.length !== new Set(values).size)
+      console.error('Duplicate picklist entries found', [
+        props.items,
+        props.resource,
+      ]);
+  }, [props.items, props.resource, updateValue]);
 
   const errors = useSaveBlockers({
     model: props.model,
