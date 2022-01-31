@@ -256,7 +256,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
         isRequired,
       };
 
-      const fieldData = field.isRelationship
+      const fieldData: DataModelField | undefined = field.isRelationship
         ? handleRelationshipField(
             field,
             baseField,
