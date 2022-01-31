@@ -11,8 +11,9 @@ import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { SpQuery } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { RA } from './types';
+import { IR } from './types';
 import type {
-  DataModelTables,
+  DataModelTable,
   OriginalRelationships,
 } from './wbplanviewmodelfetcher';
 
@@ -39,7 +40,7 @@ export type CacheDefinitions = {
   };
   readonly wbPlanViewDataModel: {
     // Data on the fields in the tables that are included in wbplanview
-    readonly tables: DataModelTables;
+    readonly tables: IR<DataModelTable>;
     /*
      * Preserves the original relationship type for fields that had it's
      * relationship type changed though aliasRelationshipTypes object.

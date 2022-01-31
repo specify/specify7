@@ -2,6 +2,7 @@ import ajax from './ajax';
 import type { AnySchema } from './datamodelutils';
 import { fieldFormat } from './fieldformat';
 import type { SpecifyResource } from './legacytypes';
+import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
@@ -129,7 +130,9 @@ export async function format(
           formatter.length > 0
             ? (await format(value, formatter)) ?? ''
             : fieldFormat(
-                defined(resource.specifyModel.getField(fieldName)),
+                defined(
+                  resource.specifyModel.getField(fieldName) as LiteralField
+                ),
                 value as string | undefined
               )
       );

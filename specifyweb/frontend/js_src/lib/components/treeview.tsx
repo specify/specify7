@@ -174,7 +174,7 @@ function TreeView<SCHEMA extends AnyTree>({
                     .map(({ id }) => id)
                 )
               )
-              .crash(console.error);
+              .catch(console.error);
           }}
           renderSearchBox={(inputProps): JSX.Element => (
             <Input

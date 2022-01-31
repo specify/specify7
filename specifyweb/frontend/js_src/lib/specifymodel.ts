@@ -42,7 +42,8 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
       readonly id: number;
       readonly specifyuser: number;
       readonly domainfilter: boolean;
-    } & SCHEMA['fields']
+    } & SCHEMA['fields'] &
+      IR<unknown>
   >;
   readonly domainfilter?: boolean;
 }) => UnFetchedCollection<SpecifyResource<SCHEMA>>;

@@ -9,15 +9,16 @@
  */
 
 import type {
-  DataModelTables,
+  DataModelTable,
   OriginalRelationships,
 } from './wbplanviewmodelfetcher';
+import { IR } from './types';
 
 const dataModelStorage: {
   referenceSymbol: string;
   treeSymbol: string;
   pathJoinSymbol: string;
-  tables: DataModelTables;
+  tables: IR<DataModelTable>;
   originalRelationships: OriginalRelationships;
   currentCollectionId: number | undefined;
 } = {

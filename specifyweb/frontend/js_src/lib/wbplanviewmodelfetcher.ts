@@ -1,7 +1,7 @@
 /**
  *
- * Fetches Specify data model with tree ranks and pick lists, parses it and
- * caches the results for easier usage across WbPlanView
+ * Modifies the front-end data model using config from wbplanviewmodelconfig.ts
+ * and caches it
  *
  * @module
  */
@@ -14,6 +14,7 @@ import type { Tables } from './datamodel';
 import schema, { fetchContext as fetchSchema } from './schema';
 import type { Relationship } from './specifyfield';
 import systemInfo from './systeminfo';
+import { isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -27,8 +28,6 @@ import {
   fetchingParameters,
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
-import { isTreeModel } from './treedefinitions';
-import { LiteralField } from './specifyfield';
 
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
@@ -39,12 +38,6 @@ type DataModelFieldPrimer = {
   readonly tableName?: string;
   readonly type?: RelationshipType;
   readonly foreignName?: string;
-  readonly pickList?: DataModelFieldPickList;
-};
-
-type DataModelFieldPickList = {
-  readonly readOnly: boolean;
-  readonly items: RA<string>;
 };
 
 export type DataModelNonRelationship = DataModelFieldPrimer & {
@@ -58,7 +51,7 @@ export type DataModelRelationship = DataModelFieldPrimer & {
   readonly foreignName?: string;
 };
 
-type DataModelTable = {
+export type DataModelTable = {
   // Whether to show in the list of base tables in Workbench Mapper
   readonly isBaseTable: boolean;
   /*
@@ -68,8 +61,6 @@ type DataModelTable = {
   readonly isCommonTable: boolean;
   readonly fields: IR<DataModelField>;
 };
-
-export type DataModelTables = IR<DataModelTable>;
 
 export type OriginalRelationships = IR<IR<RA<string>>>;
 type OriginalRelationshipsWritable = R<R<string[]>>;
@@ -125,48 +116,6 @@ function handleRelationshipField(
     foreignName,
   };
 }
-
-function handleLiteralField(
-  field: LiteralField,
-  baseField: DataModelFieldPrimer,
-  fetchPickListsQueue: Promise<void>[]
-): DataModelNonRelationship {
-  const pickListName = field.getPickList();
-  if (pickListName !== null && typeof pickListName !== 'undefined')
-    fetchPickListsQueue.push(fetchPickList(pickListName, baseField));
-  return { ...baseField, isRelationship: false };
-}
-
-const fetchPickList = async (
-  pickList: string,
-  fieldData: Writable<DataModelNonRelationship>
-): Promise<void> =>
-  ajax<{
-    readonly objects: [
-      {
-        readonly readonly: boolean;
-        readonly picklistitems: { readonly title: string }[];
-      }
-    ];
-  }>(`/api/specify/picklist/?name=${pickList}&limit=1&domainfilter=true`, {
-    headers: {
-      Accept: 'application/json',
-    },
-  })
-    .then(({ data: { objects } }) => {
-      if (typeof objects?.[0] === 'undefined') return;
-
-      const readOnly = objects[0].readonly;
-      const items = objects[0].picklistitems.map((item) => item.title);
-
-      fieldData.pickList = {
-        readOnly,
-        items,
-      };
-    })
-    .catch((error) => {
-      throw error;
-    });
 
 export const tableHasOverwrite = (
   tableName: string,
@@ -252,7 +201,6 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
     }
   }
 
-  const fetchPickListsQueue: Promise<void>[] = [];
   const originalRelationships: OriginalRelationshipsWritable = {};
 
   const hiddenTables = new Set(
@@ -317,25 +265,9 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
             hiddenTables,
             originalRelationships
           )
-        : handleLiteralField(field, baseField, fetchPickListsQueue);
+        : { ...baseField, isRelationship: false };
 
       if (typeof fieldData === 'undefined') return;
-
-      // Turn PrepType->name into a fake picklist
-      if (tableName === 'preptype' && fieldName === 'name')
-        fetchPickListsQueue.push(
-          fetch('/api/specify/preptype/?domainfilter=true&limit=100')
-            .then(async (response) => response.json())
-            .then(
-              (data: { readonly objects: RA<{ readonly name: string }> }) => {
-                fieldData.pickList = {
-                  readOnly: false,
-                  items: data.objects.map(({ name }) => name),
-                };
-              }
-            )
-            .catch(console.error)
-        );
 
       fields[fieldName] = fieldData;
     });
@@ -390,8 +322,6 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
       ),
     ]);
   });
-
-  await Promise.all(fetchPickListsQueue);
 
   dataModelStorage.tables = cache.set('wbPlanViewDataModel', 'tables', tables, {
     version: cacheVersion,

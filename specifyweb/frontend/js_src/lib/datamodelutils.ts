@@ -1,9 +1,9 @@
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import type { IR, RA } from './types';
-import { getModel } from './schema';
-import { defined } from './types';
 import { parseResourceUrl } from './resourceapi';
+import { getModel } from './schema';
+import type { IR, RA } from './types';
+import { defined } from './types';
 
 /* The dataModel types types were generated using this code snippet: */
 /* eslint-disable multiline-comment-style*/
@@ -166,9 +166,10 @@ const serializeModel = <SCHEMA extends AnySchema>(
 ): SerializedResource<SCHEMA> =>
   Object.fromEntries(
     Object.entries(resource).map(([lowercaseFieldName, value]) => [
-      defined(getModel(parseResourceUrl(resource.resource_uri)[0])).fields.find(
-        ({ name }) => name.toLowerCase() === lowercaseFieldName
-      )?.name ?? lowercaseFieldName,
+      defined(
+        getModel(defined(parseResourceUrl(resource.resource_uri))[0])
+      ).fields.find(({ name }) => name.toLowerCase() === lowercaseFieldName)
+        ?.name ?? lowercaseFieldName,
       typeof value === 'object' && value !== null
         ? Array.isArray(value)
           ? value.map(serializeResource)

@@ -1,10 +1,12 @@
 import React from 'react';
 
 import ajax, { ping } from '../ajax';
+import { getPickLists } from '../picklists';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
+import { crash } from './errorboundary';
 import { useId } from './hooks';
 import { stateReducer } from './schemaconfigstate';
 import type {
@@ -13,7 +15,6 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
-import { crash } from './errorboundary';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -155,22 +156,13 @@ export function SchemaConfig({
       throw new Error('Unable to find table fields');
 
     void Promise.all([
-      // Fetch all picklists
-      ajax<{
-        readonly objects: RA<{
-          readonly id: string;
-          readonly name: string;
-          readonly issystem: boolean;
-        }>;
-      }>(`/api/specify/picklist/?domainfilter=true&limit=0`, {
-        headers: { Accept: 'application/json' },
-      }).then(({ data: { objects } }) =>
+      getPickLists().then((pickLists) =>
         Object.fromEntries(
-          objects.map(({ id, name, issystem }) => [
+          pickLists.map(({ id, name, isSystem }) => [
             id,
             {
               name,
-              isSystem: issystem,
+              isSystem,
             },
           ])
         )
@@ -178,6 +170,7 @@ export function SchemaConfig({
       // Fetch table items and their strings
       ajax<{ readonly objects: RA<SpLocaleItem> }>(
         `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         { headers: { Accept: 'application/json' } }
       )
         .then(({ data: { objects } }) =>

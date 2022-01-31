@@ -68,7 +68,7 @@ function WbStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = (): void =>
-      ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
+      void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })

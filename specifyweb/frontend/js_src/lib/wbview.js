@@ -53,8 +53,9 @@ import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
-import {LANGUAGE} from "./localization/utils";
-import {defined} from "./types";
+import {LANGUAGE} from './localization/utils';
+import {defined} from './types';
+import {getPickLists} from './picklists';
 
 const metaKeys = [
   'isNew',
@@ -234,7 +235,8 @@ const WBView = Backbone.View.extend({
     if (this.refreshInitiatedBy && this.refreshInitiatorAborted)
       this.operationAbortedMessage();
 
-    const initDataModelIntegration = () =>
+    const pickListsPromise = getPickLists();
+    const initDataModelIntegration = pickListsPromise.then((pickLists) =>
       this.hot.batch(() => {
         if (
           !this.isUploaded &&
@@ -268,7 +270,7 @@ const WBView = Backbone.View.extend({
          * Thus, need to run them first
          */
         this.identifyDefaultValues();
-        this.identifyPickLists();
+        this.identifyPickLists(pickLists);
 
         if (this.dataset.rowresults) this.getValidationResults();
 
@@ -289,7 +291,8 @@ const WBView = Backbone.View.extend({
 
         this.hotCommentsContainer =
           document.getElementsByClassName('htComments')[0];
-      });
+      })
+    );
 
     this.initHot().then(() => {
       if (this.dataset.uploadplan) {
@@ -353,15 +356,19 @@ const WBView = Backbone.View.extend({
             const tableLabel =
               getModel(tableName)?.getLocalizedName() ?? tableName ?? '';
             return `<div class="flex gap-x-1 items-center pl-4">
-              ${isMapped ? `<img
+              ${
+                isMapped
+                  ? `<img
                 class="w-table-icon h-table-icon"
                 alt="${tableLabel}"
                 src="${tableIcon}"
-              >` : `<span
+              >`
+                  : `<span
                 class="text-red-600"
                 aria-label="wbText('unmappedColumn')"
                 title="wbText('unmappedColumn')"
-              >${legacyNonJsxIcons.ban}</span>`}
+              >${legacyNonJsxIcons.ban}</span>`
+              }
               <span class="wb-header-name columnSorting">
                 ${this.dataset.columns[physicalCol]}
               </span>
@@ -558,7 +565,7 @@ const WBView = Backbone.View.extend({
   },
   remove() {
     this.hot.destroy();
-    this.hot=undefined;
+    this.hot = undefined;
     this.wbutils.remove();
     this.datasetmeta.remove();
     this.uploadedView?.handleClose();
@@ -624,7 +631,7 @@ const WBView = Backbone.View.extend({
           : { placeholder: this.mappings.defaultValues[index] },
     });
   },
-  identifyPickLists() {
+  identifyPickLists(pickListDefinitions) {
     if (!this.mappings) return;
     const pickLists = Object.fromEntries(
       this.mappings.tableNames
@@ -634,12 +641,23 @@ const WBView = Backbone.View.extend({
             this.mappings.splitMappingPaths[index].mappingPath.slice(-1)[0],
           headerName: this.mappings.splitMappingPaths[index].headerName,
         }))
-        .map(({ tableName, fieldName, headerName }) => ({
-          physicalCol: this.dataset.columns.indexOf(headerName),
-          pickList:
-            dataModelStorage.tables[tableName].fields[fieldName].pickList,
-        }))
-        .filter(({ pickList }) => typeof pickList !== 'undefined')
+        .map(({ tableName, fieldName, headerName }) => {
+          const pickList = getModel(tableName)
+            ?.getField(fieldName)
+            ?.getPickList();
+          const definition = pickListDefinitions.find(
+            ({ name }) => name === pickList
+          );
+          if (typeof definition === 'undefined') return undefined;
+          return {
+            physicalCol: this.dataset.columns.indexOf(headerName),
+            pickList: {
+              readOnly: definition.readOnly,
+              items: definition.pickListItems.map(({ title }) => title),
+            },
+          };
+        })
+        .filter((result) => typeof result === 'undefined')
         .map(Object.values)
     );
     this.hot.updateSettings({

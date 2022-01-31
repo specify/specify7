@@ -2,6 +2,9 @@ import React from 'react';
 
 import { ping } from '../ajax';
 import Backbone from '../backbone';
+import type { SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
@@ -11,11 +14,6 @@ import schema from '../schema';
 import type { RA } from '../types';
 import userInfo from '../userinfo';
 import uniquifyDataSetName from '../wbuniquifyname';
-import { useId, useTitle } from './hooks';
-import { DateElement, formatNumber } from './internationalization';
-import { Dialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import type { Dataset } from './wbplanview';
 import {
   Button,
   Form,
@@ -26,15 +24,18 @@ import {
   Submit,
   Textarea,
 } from './basic';
-import { SpecifyUser } from '../datamodel';
-import { SerializedResource, serializeResource } from '../datamodelutils';
+import { useId, useTitle } from './hooks';
+import { DateElement, formatNumber } from './internationalization';
+import { Dialog, LoadingScreen } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
+import type { Dataset } from './wbplanview';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
   const createdByAgentResource = new schema.models.Agent.Resource({
     id: agentId,
   });
-  return format(createdByAgentResource).then((formattedAgent: string) => (
+  return format(createdByAgentResource).then((formattedAgent) => (
     <Link.Default
       className="intercept-navigation"
       href={createdByAgentResource.viewUrl()}
