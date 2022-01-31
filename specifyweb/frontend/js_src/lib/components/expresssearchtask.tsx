@@ -1,14 +1,14 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import { ajax } from '../ajax';
 import commonText from '../localization/common';
-import QueryFieldSpec from '../queryfieldspec';
+import { QueryFieldSpec } from '../queryfieldspec';
 import * as querystring from '../querystring';
-import router from '../router';
+import { router } from '../router';
 import { getModel } from '../schema';
 import * as app from '../specifyapp';
 import type { Relationship } from '../specifyfield';
-import type SpecifyModel from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined } from '../types';

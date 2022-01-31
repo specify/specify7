@@ -95,7 +95,7 @@ export function Autocomplete<T>({
   );
 }
 
-export default function autocomplete({
+export function autocomplete({
   input,
   source,
   minLength = 1,

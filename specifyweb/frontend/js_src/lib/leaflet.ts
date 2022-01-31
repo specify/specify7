@@ -7,7 +7,7 @@
 import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
-import ajax, { Http } from './ajax';
+import { ajax, Http } from './ajax';
 import { error } from './assert';
 import * as cache from './cache';
 import {

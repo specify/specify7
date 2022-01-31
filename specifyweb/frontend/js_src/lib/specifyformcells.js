@@ -4,8 +4,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import processField from './specifyformfields';
-import parseSpecifyProperties from './parsespecifyproperties';
-import processColumnDef from './processcolumndef';
+import { parseSpecifyProperties } from './parsespecifyproperties';
+import { processColumnDefinition } from './processcolumndef';
 import {className} from './components/basic';
 
 function processCell(formNumber, doingFormTable, mode, cellNode) {
@@ -76,7 +76,7 @@ function processCell(formNumber, doingFormTable, mode, cellNode) {
                 return td;
             },
             panel: function() {
-                var table = processColumnDef(cell.attr('coldef'));
+                var table = processColumnDefinition(cell.attr('coldef'));
                 var rows = cell.children('rows').children('row');
                 var cells = function(row) { return $(row).children('cell'); };
                 _(rows).each(function (row) {

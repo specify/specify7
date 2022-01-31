@@ -4,7 +4,7 @@ import { error } from '../assert';
 import Backbone from '../backbone';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
-import getPickListByName from '../getpicklistbyname';
+import { getPickListByName } from '../getpicklistbyname';
 import type { SpecifyResource } from '../legacytypes';
 import { getFromField, getFromTable, getUserDefined } from '../picklistmixins';
 import type { LiteralField } from '../specifyfield';

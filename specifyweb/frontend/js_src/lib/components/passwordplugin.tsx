@@ -3,7 +3,7 @@ import React from 'react';
 import { formData, Http, ping } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import UIPlugin from '../uiplugin';
+import { UiPlugin } from '../uiplugin';
 import { useId, useTitle } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -112,7 +112,7 @@ function PasswordResetDialog({
 
 const DialogView = createBackboneView(PasswordResetDialog);
 
-export default UIPlugin.extend(
+export default UiPlugin.extend(
   {
     __name__: 'PasswordUIPlugin',
     events: {
@@ -138,7 +138,7 @@ export default UIPlugin.extend(
     },
     remove() {
       this.dialog?.remove();
-      UIPlugin.prototype.remove.call(this);
+      UiPlugin.prototype.remove.call(this);
     },
   },
   { pluginsProvided: ['PasswordUI'] }

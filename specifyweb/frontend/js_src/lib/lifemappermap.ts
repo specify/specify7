@@ -1,4 +1,4 @@
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type { LocalityData } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import {

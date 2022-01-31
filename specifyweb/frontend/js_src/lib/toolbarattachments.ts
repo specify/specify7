@@ -1,6 +1,6 @@
 import { systemAvailable } from './attachments';
 import Backbone from './backbone';
-import icons from './components/icons';
+import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import * as navigation from './navigation';

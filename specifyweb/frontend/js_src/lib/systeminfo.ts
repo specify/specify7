@@ -43,4 +43,4 @@ export const fetchContext = load<SystemInfo>(
   }
 });
 
-export default systemInfo as Readonly<SystemInfo>;
+export const systemInformation: Readonly<SystemInfo> = systemInfo;

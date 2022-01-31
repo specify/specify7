@@ -1,16 +1,16 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import { ajax } from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
-import router from '../router';
+import { router } from '../router';
 import type { IR, RA } from '../types';
-import userInfo from '../userinfo';
 import { Button, Form, Input, Link, Ul } from './basic';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
+import { userInformation } from '../userinfo';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -188,7 +188,7 @@ export function UserTools({
         title={commonText('currentUser')}
         onClick={(): void => setIsOpen(true)}
       >
-        {userInfo.name}
+        {userInformation.name}
       </Button.Simple>
       <Dialog
         isOpen={isOpen}

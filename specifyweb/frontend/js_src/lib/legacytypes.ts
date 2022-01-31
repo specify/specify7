@@ -5,8 +5,8 @@ import type {
   FilterTablesByEndsWith,
 } from './datamodelutils';
 import { SerializedModel } from './datamodelutils';
-import type SaveBlockers from './saveblockers';
-import type { Collection, default as SpecifyModel } from './specifymodel';
+import type { SaveBlockers } from './saveblockers';
+import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
 /*

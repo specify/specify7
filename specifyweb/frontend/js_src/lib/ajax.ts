@@ -1,4 +1,4 @@
-import csrfToken from './csrftoken';
+import { csrfToken } from './csrftoken';
 import { UnhandledErrorView } from './errorview';
 import type { IR, PartialBy, RA } from './types';
 
@@ -43,7 +43,7 @@ export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
  * Logs error messages to the console
  * If object is passed to body, it is stringified and proper HTTP header is set
  */
-export default async function ajax<RESPONSE_TYPE = string>(
+export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   {
     headers: { Accept: accept, ...headers },

@@ -1,6 +1,6 @@
 import schema from './schemabase';
 import { LiteralField, Relationship } from './specifyfield';
-import type SpecifyModel from './specifymodel';
+import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { defined } from './types';
 
@@ -8,7 +8,7 @@ function alwaysTrue(): true {
   return true;
 }
 
-const schemaExtras: IR<
+export const schemaExtras: IR<
   (model: SpecifyModel) => RA<LiteralField | Relationship>
 > = {
   Agent(model) {
@@ -218,5 +218,3 @@ const schemaExtras: IR<
     return [];
   },
 };
-
-export default schemaExtras;

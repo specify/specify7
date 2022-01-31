@@ -7,13 +7,13 @@
  */
 
 // TODO: consider transitioning to using schema.ts now that type support is improved
-import ajax from './ajax';
+import { ajax } from './ajax';
 import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import schema, { fetchContext as fetchSchema } from './schema';
 import type { Relationship } from './specifyfield';
-import systemInfo from './systeminfo';
+import { systemInformation } from './systeminfo';
 import { isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { camelToHuman } from './wbplanviewhelper';
@@ -177,7 +177,7 @@ async function fetchDataModel(ignoreCache = false): Promise<void> {
   const cacheVersion = [
     dataModelFetcherVersion,
     dataModelStorage.currentCollectionId,
-    systemInfo.schema_version,
+    systemInformation.schema_version,
     schemaHash,
   ].join('_');
 

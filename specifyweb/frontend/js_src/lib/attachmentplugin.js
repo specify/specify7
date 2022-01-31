@@ -3,12 +3,12 @@
 import $ from 'jquery';
 
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import * as attachments from './attachments';
 
 import formsText from './localization/forms';
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
         __name__: "AttachmentsPlugin",
         events: {
             'change :file': 'fileSelected',

@@ -23,10 +23,10 @@ import Papa from 'papaparse';
 
 import {getModel} from './schema';
 import * as app from './specifyapp';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import NotFoundView from './notfoundview';
+import { NotFoundView } from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import dataModelStorage from './wbplanviewmodel';
 import WBStatus from './components/wbstatus';
@@ -210,7 +210,7 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       template({
         isUploaded: this.isUploaded,
-        isManager: userInfo.usertype === 'Manager',
+        isManager: userInformation.usertype === 'Manager',
         wbText,
         commonText,
       })

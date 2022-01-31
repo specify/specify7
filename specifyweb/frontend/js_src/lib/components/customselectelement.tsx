@@ -19,7 +19,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from './common';
-import icons from './icons';
+import { icons } from './icons';
 
 type Properties =
   /*

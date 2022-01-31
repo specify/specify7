@@ -4,7 +4,7 @@ import commonText from '../localization/common';
 import type { IR, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
-import icons from './icons';
+import { icons } from './icons';
 import { DialogContext } from './modaldialog';
 
 type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<

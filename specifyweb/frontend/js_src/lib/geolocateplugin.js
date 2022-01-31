@@ -3,12 +3,12 @@
 import $ from 'jquery';
 import Q from 'q';
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import * as querystring from './querystring';
 import schema from './schema';
 import localityText from './localization/locality';
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
     __name__: "GeoLocatePlugin",
     events: {
         'click': 'click'

@@ -2,12 +2,12 @@ import React from 'react';
 
 import { ping } from '../../ajax';
 import commonText from '../../localization/common';
-import userInfo from '../../userinfo';
 import { Button } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { userInformation } from '../../userinfo';
 
 function ForceUpdateFeed({
   onClose: handleClose,
@@ -63,7 +63,7 @@ const View = createBackboneView(ForceUpdateFeed);
 const userTool: UserTool = {
   task: 'force-update-feed',
   title: commonText('updateExportFeed'),
-  enabled: () => userInfo.isadmin,
+  enabled: () => userInformation.isadmin,
   view: ({ onClose }) => new View({ onClose }),
 };
 

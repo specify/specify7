@@ -6,7 +6,7 @@ import Backbone from './backbone';
 
 import localizeForm from './localizeform';
 import specifyform from './specifyform';
-import ComboBox from './components/combobox';
+import ComboBoxView from './components/combobox';
 import UIField from './uifield';
 import QueryCbx from './querycbx';
 import uiplugins from './specifyplugins';
@@ -17,9 +17,9 @@ import FormTable from './formtable';
 import IActionItemFormTable from './formtableinteractionitem';
 import SubView from './subview';
 import CheckBox from './checkbox';
-import SpinnerUI from './spinnerui';
+import SpinnerFieldUi from './spinnerui';
 import { readCookie } from './cookies';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -41,14 +41,14 @@ import userInfo from './userinfo';
     var populateField = function(resource, control) {
         var viewBySelector = {
             ':checkbox': function() {return CheckBox;},
-            '.specify-spinner': function() {return SpinnerUI;},
+            '.specify-spinner': function() {return SpinnerFieldUi;},
             '.specify-querycbx': function() {return QueryCbx;},
             '.specify-uiplugin': function() {
                 var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
                 return uiplugins[init.name] || uiplugins.PluginNotAvailable;
             },
             '.specify-combobox': function() {
-                return ComboBox;
+                return ComboBoxView;
             }
         };
 
@@ -92,7 +92,7 @@ import userInfo from './userinfo';
     };
 
     var populateReportOnSaver = function (resource, control) {
-        var chookie =  userInfo.id + '.sp-print-on-save.' + resource.specifyModel.name + '.' + control.attr('name');
+        var chookie =  userInformation.id + '.sp-print-on-save.' + resource.specifyModel.name + '.' + control.attr('name');
         control.attr('check-cookie', chookie);
         control.prop('checked', readCookie(chookie) === 'true' ? true : false);
     };

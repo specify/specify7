@@ -1,5 +1,7 @@
-import type { AutoMapperConstructorParameters } from '../automapper';
-import AutoMapper from '../automapper';
+import {
+  AutoMapper,
+  type AutoMapperConstructorParameters,
+} from '../automapper';
 import { loadDataModel, runTest } from './testmain';
 
 export default function (): void {

@@ -9,7 +9,7 @@ import EditResourceDialog from './components/editresourcedialog';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import userInfo from './userinfo.ts';
+import { userInformation } from './userinfo';
 import {QueryToolbarView} from './components/toolbar/query';
 import {formatNumber} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
@@ -169,7 +169,7 @@ export default Backbone.View.extend({
                     getQuerySelectUrl: (query) =>
                          `/specify/query/${query.id}/?recordsetid=${recordSet.id}`,
                     spQueryFilter: {
-                        specifyuser: userInfo.id,
+                        specifyuser: userInformation.id,
                         contexttableid: recordSet.get("dbTableId"),
                     },
                     newQueryButtonGenerator: ({ type }) =>

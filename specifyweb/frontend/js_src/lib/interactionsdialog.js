@@ -6,18 +6,18 @@ import Backbone from './backbone';
 import Q from 'q';
 
 
-import ajax from './ajax';
+import {ajax} from './ajax';
 import schema, {getModel} from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import InteractionDialog from './interactiondialog';
 import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {makeResourceViewUrl} from "./specifyapi";
-import SpecifyModel from "./specifymodel";
+import { SpecifyModel } from "./specifymodel";
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -173,7 +173,7 @@ export default Backbone.View.extend({
             if (isRsAction || action.attr('action') == 'RET_LOAN') {
                 var tblId = isRsAction ? 1 : 52;
                 var recordSets = new schema.models.RecordSet.LazyCollection({
-                    filters: { specifyuser: userInfo.id, type: 0, dbtableid: tblId,
+                    filters: { specifyuser: userInformation.id, type: 0, dbtableid: tblId,
                                domainfilter: true, orderby: '-timestampcreated' }
                 });
                 recordSets.fetch({ limit: 5000 }).done(function() {

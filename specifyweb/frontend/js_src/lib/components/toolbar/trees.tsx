@@ -3,7 +3,7 @@ import React from 'react';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import { useTitle } from '../hooks';
-import icons from '../icons';
+import { icons } from '../icons';
 import type { MenuItem } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';

@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import template from './templates/queryfield.html';
-import QueryFieldSpec from './queryfieldspec';
+import { QueryFieldSpec } from './queryfieldspec';
 import QueryFieldInputUI from './queryfieldinput';
 import queryText from './localization/query';
 import commonText from './localization/common';

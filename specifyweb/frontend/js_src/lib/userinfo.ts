@@ -60,4 +60,4 @@ export const fetchContext = load<UserInfo>(
   });
 });
 
-export default userInfo as UserInfo;
+export const userInformation: UserInfo = userInfo;

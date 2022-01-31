@@ -4,12 +4,12 @@ import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import schema from '../../schema';
 import type { IR } from '../../types';
-import userInfo from '../../userinfo';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { Button, Link, Ul } from '../basic';
+import { userInformation } from '../../userinfo';
 
 function Users({
   onClose: handleClose,
@@ -82,7 +82,7 @@ const userTool: UserTool = {
   task: 'users',
   title: commonText('manageUsers'),
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInfo.isadmin,
+  enabled: () => userInformation.isadmin,
 };
 
 export default userTool;

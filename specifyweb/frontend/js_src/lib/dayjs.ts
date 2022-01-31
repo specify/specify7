@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayJs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 /*
@@ -7,7 +7,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
  * maintained
  */
 
-dayjs.extend(advancedFormat);
+dayJs.extend(advancedFormat);
 
 export function getDateInputValue(date: Date): string {
   const local = new Date(date);
@@ -15,4 +15,4 @@ export function getDateInputValue(date: Date): string {
   return local.toJSON().slice(0, 10);
 }
 
-export { default } from 'dayjs';
+export const dayjs = dayJs;

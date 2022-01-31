@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import * as attachments from './attachments';
-import router from './router';
+import { router } from './router';
 import * as app from './specifyapp';
 import schema, {getModel, getModelById} from './schema';
 import populateform from './populateform';

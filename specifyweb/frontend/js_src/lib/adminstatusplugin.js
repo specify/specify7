@@ -1,12 +1,12 @@
 "use strict";
 
 import $ from 'jquery';
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import adminText from './localization/admin';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
         __name__: "AdminStatusPlugin",
         events: {
             'click': 'clicked'
@@ -20,7 +20,7 @@ export default UIPlugin.extend({
         },
         _render: function() {
             this.isAdmin = this.user.get('isadmin');
-            const isCurrentUser = userInfo.id === this.user.id;
+            const isCurrentUser = userInformation.id === this.user.id;
             this.$el.attr(
               'value',
               this.isAdmin ?

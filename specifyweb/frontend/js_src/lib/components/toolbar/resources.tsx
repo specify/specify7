@@ -1,7 +1,7 @@
 import React from 'react';
 
 import commonText from '../../localization/common';
-import userInfo from '../../userinfo';
+import { userInformation } from '../../userinfo';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
@@ -46,7 +46,7 @@ const userTool: UserTool = {
   task: 'resources',
   title: commonText('resources'),
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInfo.isadmin,
+  enabled: () => userInformation.isadmin,
 };
 
 export default userTool;

@@ -10,7 +10,7 @@ import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, Checkbox, H2, Label, LabelForCheckbox } from './basic';
-import icons from './icons';
+import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 

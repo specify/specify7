@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import ajax from '../../ajax';
-import csrfToken from '../../csrftoken';
+import { ajax } from '../../ajax';
+import { csrfToken } from '../../csrftoken';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';

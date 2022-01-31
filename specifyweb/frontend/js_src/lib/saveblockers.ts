@@ -29,7 +29,7 @@ type LinkedField = {
   destructor: () => void;
 };
 
-export default class SaveBlockers<SCHEMA extends AnySchema> {
+export class SaveBlockers<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
 
   public blockers: R<Blocker> = {};

@@ -2,8 +2,8 @@ import Backbone from './backbone';
 import specifyform from './specifyform';
 import type { RA } from './types';
 
-export default Backbone.View.extend({
-  __name__: 'UIPlugin',
+export const UiPlugin = Backbone.View.extend({
+  __name__: 'UiPlugin',
   initialize(options: {
     readonly populateForm: (...args: RA<never>) => unknown;
   }) {

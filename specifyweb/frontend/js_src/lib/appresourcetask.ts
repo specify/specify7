@@ -1,6 +1,4 @@
-'use strict';
-
-import router from './router';
+import { router } from './router';
 
 function appResources(type: 'appResources' | 'viewSets', id?: string) {
   import('./appresources').then((appResourcesModule) => {

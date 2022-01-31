@@ -7,18 +7,18 @@ import Modal from 'react-modal';
 import * as businessRules from './businessrules';
 import {UnhandledErrorView} from './errorview';
 import commonText from './localization/common';
-import csrftoken from './csrftoken';
+import { csrfToken } from './csrftoken';
 import {csrfSafeMethod, ping} from './ajax';
 import * as navigation from './navigation';
-import router from './router';
-import NotFoundView from './notfoundview';
+import { router } from './router';
+import { NotFoundView } from './notfoundview';
 import {setCurrentView} from './specifyapp';
 import {crash} from './components/errorboundary';
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {
     if (!csrfSafeMethod.has(settings.type.toUpperCase()) && !this.crossDomain) {
-      xhr.setRequestHeader('X-CSRFToken', csrftoken);
+      xhr.setRequestHeader('X-CSRFToken', csrfToken);
     }
   },
 });

@@ -2,12 +2,12 @@ import React from 'react';
 
 import { formData, Http, ping } from '../../ajax';
 import commonText from '../../localization/common';
-import userInfo from '../../userinfo';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { userInformation } from '../../userinfo';
 
 const liftGetResource = async (
   name: string,
@@ -160,7 +160,7 @@ const View = createBackboneView(MakeDwca);
 const userTool: UserTool = {
   task: 'make-dwca',
   title: commonText('makeDwca'),
-  enabled: () => userInfo.isadmin,
+  enabled: () => userInformation.isadmin,
   view: ({ onClose }) => new View({ onClose }),
 };
 

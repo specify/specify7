@@ -12,8 +12,7 @@ import * as navigation from '../navigation';
 import resourceApi from '../resourceapi';
 import schema from '../schema';
 import type { RA } from '../types';
-import userInfo from '../userinfo';
-import uniquifyDataSetName from '../wbuniquifyname';
+import { uniquifyDataSetName } from '../wbuniquifyname';
 import {
   Button,
   Form,
@@ -29,6 +28,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { userInformation } from '../userinfo';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);
@@ -236,7 +236,9 @@ async function fetchListOfUsers(): Promise<
       limit: 500,
     })
     .then(({ models }) =>
-      models.filter(({ id }) => id !== userInfo.id).map(serializeResource)
+      models
+        .filter(({ id }) => id !== userInformation.id)
+        .map(serializeResource)
     );
 }
 

@@ -1,4 +1,4 @@
-import icons from './components/icons';
+import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import InteractionsDialog from './interactionsdialog';
 import commonText from './localization/common';

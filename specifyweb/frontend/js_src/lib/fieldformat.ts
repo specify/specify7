@@ -1,13 +1,13 @@
 import { agentTypes } from './components/agenttypecombobox';
-import dateFormat from './dateformat';
-import dayjs from './dayjs';
+import { fullDateFormat } from './dateformat';
+import { dayjs } from './dayjs';
 import type { LiteralField } from './specifyfield';
 import type { IR } from './types';
 
 function formatDate(value: string | undefined): string {
   if (!Boolean(value)) return '';
   const moment = dayjs(value);
-  return moment.isValid() ? moment.format(dateFormat()) : value || '';
+  return moment.isValid() ? moment.format(fullDateFormat()) : value || '';
 }
 
 function formatInt(value: string | undefined): string {

@@ -11,7 +11,7 @@ import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import userInfo from "./userinfo";
+import { userInformation } from './userinfo';
 import populateForm from "./populateform";
 import reports from "./reports";
 import * as navigation from "./navigation";
@@ -169,7 +169,7 @@ function viewSaved(resource, recordSet, options) {
 
 // build and display view for resource
 export function showResource(resource, recordSet, pushUrl) {
-        var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
+        var viewMode = userInformation.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
             className: `${className.container} w-fit overflow-y-auto`,
             populateForm: populateForm,

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import ajax from '../ajax';
+import { ajax } from '../ajax';
 import { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RA } from '../types';
 import { Button, Ul } from './basic';
-import icons from './icons';
+import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 

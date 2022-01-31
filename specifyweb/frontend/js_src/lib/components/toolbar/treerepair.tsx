@@ -5,10 +5,9 @@ import type { AnyTree } from '../../datamodelutils';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
 import { getModel } from '../../schema';
-import type SpecifyModel from '../../specifymodel';
+import type { SpecifyModel } from '../../specifymodel';
 import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
-import userInfo from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
@@ -16,6 +15,7 @@ import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { crash } from '../errorboundary';
+import { userInformation } from '../../userinfo';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -111,7 +111,7 @@ const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInfo.isadmin,
+  enabled: () => userInformation.isadmin,
 };
 
 export default userTool;

@@ -8,7 +8,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import schema from '../schema';
 import type { RA } from '../types';
-import UIPlugin from '../uiplugin';
+import { UiPlugin } from '../uiplugin';
 import { Button, Checkbox, Form, LabelForCheckbox, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -80,7 +80,7 @@ function UserCollectionsUi({
 
 const SetCollectionsView = createBackboneView(UserCollectionsUi);
 
-export default UIPlugin.extend(
+export default UiPlugin.extend(
   {
     __name__: 'UserCollectionsPlugin',
     events: {

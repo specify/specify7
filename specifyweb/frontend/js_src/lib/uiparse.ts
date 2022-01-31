@@ -1,6 +1,6 @@
 import { error } from './assert';
-import dateFormat from './dateformat';
-import dayjs from './dayjs';
+import { fullDateFormat } from './dateformat';
+import { dayjs } from './dayjs';
 import formsText from './localization/forms';
 import type { JavaType, RelationshipType } from './specifyfield';
 import { LiteralField, Relationship } from './specifyfield';
@@ -119,21 +119,21 @@ export const parsers: RR<
 
   'java.sql.Timestamp': () => ({
     type: 'date',
-    minLength: dateFormat().length,
-    maxLength: dateFormat().length,
+    minLength: fullDateFormat().length,
+    maxLength: fullDateFormat().length,
     formatters: [
       formatter.toLowerCase,
       stringGuard((value) =>
-        value === 'today' ? dayjs() : dayjs(value, dateFormat(), true)
+        value === 'today' ? dayjs() : dayjs(value, fullDateFormat(), true)
       ),
     ],
     validators: [
       (value) =>
         (value as any).isValid()
           ? undefined
-          : formsText('requiredFormat')(dateFormat()),
+          : formsText('requiredFormat')(fullDateFormat()),
     ],
-    title: formsText('requiredFormat')(dateFormat()),
+    title: formsText('requiredFormat')(fullDateFormat()),
     parser: (value) => (value as any).format('YYYY-MM-DD'),
   }),
 
@@ -365,7 +365,7 @@ export type UiParseResult =
       readonly reason: string;
     };
 
-export default function parse(
+export function parseValue(
   field: ExtendedField,
   parser: Parser | undefined,
   input: HTMLInputElement | undefined,

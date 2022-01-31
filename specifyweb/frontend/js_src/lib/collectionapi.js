@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import assert from './assert';
+import { assert } from './assert';
 
 
 var Base =  Backbone.Collection.extend({

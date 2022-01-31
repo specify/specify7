@@ -7,7 +7,7 @@ import type { QueryField } from '../querybuilderutils';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { mutateMappingPath } from '../wbplanviewutils';
 import { Button, className } from './basic';
-import icons from './icons';
+import { icons } from './icons';
 import { MappingPathComponent } from './wbplanviewcomponents';
 
 export function QueryLine({

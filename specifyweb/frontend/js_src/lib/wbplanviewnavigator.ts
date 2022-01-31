@@ -47,7 +47,7 @@ import {
   isTooManyInsideOfTooMany,
 } from './wbplanviewmodelhelper';
 import React from 'react';
-import icons from './components/icons';
+import { icons } from './components/icons';
 import { getModel } from './schema';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 

@@ -373,9 +373,7 @@ const table: RA<{
   },
 ];
 
-const encodings = table
+export const encodings = table
   .flatMap((group) => group.encodings.map((encoding) => encoding.labels))
   .flat()
   .sort((left, right) => left.localeCompare(right));
-
-export default encodings;

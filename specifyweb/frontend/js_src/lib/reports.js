@@ -6,14 +6,16 @@ import Backbone from './backbone';
 
 import schema, {getModel, getModelById} from './schema';
 import QueryFieldUI from './queryfield';
-import parsespecifyproperties from './parsespecifyproperties';
+import {
+    parseSpecifyProperties,
+} from './parsespecifyproperties';
 import AttachmentPlugin from './attachmentplugin';
 import * as attachments from './attachments';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-import csrftoken from './csrftoken';
+import { csrfToken } from './csrftoken';
 import populateForm from './populateform';
 import * as navigation from './navigation';
 import {className} from './components/basic';
@@ -38,7 +40,7 @@ var ReportListDialog = Backbone.View.extend({
         'click button.edit': 'editReport',
     },
     initialize: function() {
-        this.options.readOnly ||= !userInfo.isadmin;
+        this.options.readOnly ||= !userInformation.isadmin;
         var appResources = this.options.appResources;
         if (this.options.metaDataFilter) {
             var mdFilter = this.options.metaDataFilter;
@@ -260,7 +262,7 @@ var FixImagesDialog = Backbone.View.extend({
 
 function getRecordSets(reportResources) {
     var contextTableId = reportResources.query ? reportResources.query.get('contexttableid') :
-            parseInt(parsespecifyproperties(reportResources.appResource.get('metadata')).tableid, 10);
+            parseInt(parseSpecifyProperties(reportResources.appResource.get('metadata')).tableid, 10);
 
     if (_.isNaN(contextTableId) || contextTableId === -1) {
         console.error("couldn't determine table id for report", reportResources.report.get('name'));
@@ -269,7 +271,7 @@ function getRecordSets(reportResources) {
 
     var recordSets = new schema.models.RecordSet.LazyCollection({
         filters: {
-            specifyuser: userInfo.id,
+            specifyuser: userInformation.id,
             type: 0,
             domainfilter: true,
             dbtableid: contextTableId
@@ -316,7 +318,7 @@ function addRecordIdFilterToQuery(reportResources) {
         var options = reportResources.reportOptions;
         var newfield = new schema.models.SpQueryField.Resource();
         var samplefield = queryResource.dependentResources.fields.models[0];
-        var tblModel = _.find(schema.models, function(m) {return m.tableId == options.tblId;}); 
+        var tblModel = _.find(schema.models, function(m) {return m.tableId == options.tblId;});
         //newfield.set('allownulls', null);
         newfield.set('alwaysfilter', false);
         newfield.set('columnalias', tblModel.idFieldName);
@@ -346,7 +348,7 @@ function addRecordIdFilterToQuery(reportResources) {
         //newfield.set('version', 0);
         queryResource.dependentResources.fields.models.push(newfield);
         queryResource.dependentResources.fields.length++;
-    }    
+    }
 }
 
 function clearQueryFilters(reportResources) {
@@ -363,7 +365,7 @@ function clearQueryFilters(reportResources) {
     }
 }
 
-    
+
 var ReportParametersDialog = Backbone.View.extend({
     __name__: "ReportParametersDialog",
     initialize: function(options) {
@@ -520,7 +522,7 @@ function runReport(reportResources, recordSetId, _fieldUIs) {
     var form = $('<form action="/report_runner/run/" method="post" ' +
                  'style="display: none;" ' +
                  'target="' + reportWindowContext + '">' +
-                 `<input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}"/>` +
+                 `<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}"/>` +
                  '<textarea name="report"></textarea>' +
                  '<textarea name="query"></textarea>' +
                  '<textarea name="parameters"></textarea>' +

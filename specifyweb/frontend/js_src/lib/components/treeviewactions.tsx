@@ -10,11 +10,11 @@ import ResourceView from '../resourceview';
 import schema from '../schema';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
-import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { AnyTree } from '../datamodelutils';
-import SpecifyModel from '../specifymodel';
+import { SpecifyModel } from '../specifymodel';
+import { userInformation } from '../userinfo';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -163,7 +163,7 @@ function EditRecord<SCHEMA extends AnyTree>({
         onClick={(): void => setIsOpen((state) => !state)}
         aria-pressed={isOpen}
       >
-        {userInfo.isReadOnly ? commonText('view') : commonText('edit')}
+        {userInformation.isReadOnly ? commonText('view') : commonText('edit')}
       </Button.Simple>
       {isOpen && typeof nodeId !== 'undefined' && (
         <EditRecordDialog<SCHEMA>

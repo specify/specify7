@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 import api from './specifyapi';
 import schema from './schema';
-import remoteprefs from './remoteprefs';
+import { remotePrefs } from './remoteprefs';
 import {getDomainResource} from "./treedefinitions";
 
 
@@ -26,18 +26,18 @@ function takeBetween(items, startElem, endElem) {
         // need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
         if (resource.specifyModel.name.toLowerCase() === "collectionobject" && parentResource) {
             const colId = parentResource.get('id');
-            if (remoteprefs["CO_CREATE_COA_" + colId]  === "true") {
+            if (remotePrefs["CO_CREATE_COA_" + colId]  === "true") {
                 const coaModel = resource.specifyModel.getField('collectionobjectattribute').getRelatedModel();
                 const coa = new coaModel.Resource();
                 coa.placeInSameHierarchy(resource);
                 resource.set('collectionobjectattribute', coa);
             }
-            if (remoteprefs["CO_CREATE_PREP_" + colId]  === "true") {
+            if (remotePrefs["CO_CREATE_PREP_" + colId]  === "true") {
                 const prepModel = resource.specifyModel.getField('preparations').getRelatedModel();
                 const prep = new prepModel.Resource();
                 resource.rget('preparations').done(preps => preps.add(prep));
             }
-            if (remoteprefs["CO_CREATE_DET_" + colId]  === "true") {
+            if (remotePrefs["CO_CREATE_DET_" + colId]  === "true") {
                 const detModel = resource.specifyModel.getField('determinations').getRelatedModel();
                 const det = new detModel.Resource();
                 resource.rget('determinations').done(dets => dets.add(det));

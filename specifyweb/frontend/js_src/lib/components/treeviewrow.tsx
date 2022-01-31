@@ -7,7 +7,7 @@ import { mapKey, scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button } from './basic';
 import { useId } from './hooks';
-import icons from './icons';
+import { icons } from './icons';
 import { formatNumber } from './internationalization';
 
 export function TreeRow({

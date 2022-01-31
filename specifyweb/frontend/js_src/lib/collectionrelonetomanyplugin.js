@@ -5,17 +5,17 @@ import _ from 'underscore';
 
 import {format} from './dataobjformatters';
 import * as navigation from './navigation';
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import whenAll from './whenall';
 import schema from './schema';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import QueryCbxSearch from './querycbxsearch';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {legacyNonJsxIcons} from "./components/icons";
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",
     events: {
         'click a.sp-rel-plugin-other-side': 'go',
@@ -142,7 +142,7 @@ export default UIPlugin.extend({
     },
     go: function(evt) {
         evt.preventDefault();
-        const collections = userInfo.available_collections.map(c => c[0]);
+        const collections = userInformation.available_collections.map(c => c[0]);
         if (collections.includes(this.otherCollection.id)) {
             navigation.switchCollection(this.otherCollection.id, $(evt.currentTarget).prop('href'));
         } else {

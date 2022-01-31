@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import api from './specifyapi';
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import {getIcon} from './icons';
 import UIField from './uifield';
 import {load} from './initialcontext';
@@ -27,7 +27,7 @@ export const webLinksDefs = {};
     };
 
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
         __name__: "WebLinkButton",
         render: function() {
             this.inFormTable = this.$el.hasClass('specify-field-in-table');

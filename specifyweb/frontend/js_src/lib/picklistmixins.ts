@@ -1,4 +1,4 @@
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type { PickListInfo, PickListItemSimple } from './components/combobox';
 import type { Tables } from './datamodel';
 import type { AnySchema } from './datamodelutils';

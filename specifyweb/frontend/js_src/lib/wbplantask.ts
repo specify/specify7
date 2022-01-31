@@ -1,7 +1,7 @@
-import ajax, { Http } from './ajax';
+import { ajax, Http } from './ajax';
 import type { Dataset } from './components/wbplanview';
-import NotFoundView from './notfoundview';
-import router from './router';
+import { NotFoundView } from './notfoundview';
+import { router } from './router';
 import * as app from './specifyapp';
 
 export default function () {

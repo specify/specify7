@@ -3,7 +3,7 @@ import '../../css/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import csrfToken from '../csrftoken';
+import { csrfToken } from '../csrftoken';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import {
@@ -15,7 +15,7 @@ import {
   Radio,
   Submit,
 } from './basic';
-import ErrorBoundary from './errorboundary';
+import { ErrorBoundary } from './errorboundary';
 import { useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 

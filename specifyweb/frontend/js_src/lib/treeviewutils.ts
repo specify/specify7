@@ -1,7 +1,7 @@
 import type * as React from 'react';
 import _ from 'underscore';
 
-import ajax from './ajax';
+import { ajax } from './ajax';
 import { transitionDuration } from './components/basic';
 import type { RA, RR } from './types';
 

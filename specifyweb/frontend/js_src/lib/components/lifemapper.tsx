@@ -13,7 +13,7 @@ import {
   formatLifemapperViewPageRequest,
 } from '../lifemapperutills';
 import lifemapperText from '../localization/lifemapper';
-import systemInfo from '../systeminfo';
+import { systemInformation } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { Dialog } from './modaldialog';
@@ -43,7 +43,7 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
       .then((leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',
-          systemInfo,
+          systemInfo: systemInformation,
           // @ts-expect-error
           leafletLayers: Object.fromEntries(
             Object.entries(leafletLayers).map(([groupName, group]) => [

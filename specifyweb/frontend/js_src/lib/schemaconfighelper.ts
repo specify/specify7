@@ -1,4 +1,4 @@
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type {
   DataObjectFormatter,
   ItemType,
@@ -16,7 +16,7 @@ import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
 import { sortFunction } from './wbplanviewhelper';
 import { Aggregator, Formatter } from './dataobjformatters';
-import SpecifyModel from './specifymodel';
+import { SpecifyModel } from './specifymodel';
 
 export const sortObjectsByKey = <
   KEY extends string,

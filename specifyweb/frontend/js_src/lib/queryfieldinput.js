@@ -5,8 +5,12 @@ import Backbone from './backbone';
 
 
 import {fieldFormat} from './fieldformat';
-import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
-import SaveBlockers from './saveblockers';
+import {
+    parseValue,
+    addValidationAttributes,
+    resolveParser
+} from './uiparse';
+import { SaveBlockers } from './saveblockers';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import {formatList} from "./components/internationalization";
@@ -72,7 +76,7 @@ var FieldInputUI = Backbone.View.extend({
             this.parser = this.parserMutator?.(this.parser) ?? this.parser;
             addValidationAttributes(el, this.field, this.parser);
 
-            const parser = uiparse.bind(undefined, this.field, this.parser, el);
+            const parser = parseValue.bind(undefined, this.field, this.parser, el);
             this.handleChange = ()=>{
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
@@ -195,7 +199,7 @@ var Contains = {
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
         const handleChange = ()=>{
-                const parser = uiparse.bind(undefined, {type: 'java.lang.String'}, el);
+                const parser = parseValue.bind(undefined, {type: 'java.lang.String'}, el);
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
                   : [parser(el.value)];
@@ -214,7 +218,7 @@ var Like = {
     types: ['strings', 'catnos'],
     addUIFieldInput: function(el, i) {
          const handleChange = ()=>{
-                const parser = uiparse.bind(undefined, {type: 'java.lang.String'}, el);
+                const parser = parseValue.bind(undefined, {type: 'java.lang.String'}, el);
                 const results = this.listInput
                   ? el.value.split(',').map(parser)
                   : [parser(el.value)];

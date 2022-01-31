@@ -3,11 +3,11 @@ import '../../css/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import csrfToken from '../csrftoken';
+import { csrfToken } from '../csrftoken';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
-import ErrorBoundary from './errorboundary';
+import { ErrorBoundary } from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';

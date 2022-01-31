@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax from '../../ajax';
+import { ajax } from '../../ajax';
 import { fetchFormatters } from '../../dataobjformatters';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import commonText from '../../localization/common';

@@ -2,7 +2,7 @@ import type { PickList } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import schema from './schema';
 
-export default async function getPickListByName(
+export async function getPickListByName(
   pickListName: string
 ): Promise<SpecifyResource<PickList>> {
   const collection = new schema.models.PickList.LazyCollection({

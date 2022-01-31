@@ -9,9 +9,9 @@ import {makeResourceViewUrl} from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';
 import OtherCollectionView from './othercollectionview';
-import NotFoundView from './notfoundview';
-import userInfo from './userinfo';
-import router from './router';
+import { NotFoundView } from './notfoundview';
+import { userInformation } from './userinfo';
+import { router } from './router';
 import * as app from './specifyapp';
 import * as querystring from './querystring';
 
@@ -87,7 +87,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
 
     // begins the process of creating a new resource
     function newResourceView(model) {
-        if (userInfo.isReadOnly) {
+        if (userInformation.isReadOnly) {
             app.setCurrentView(new NotFoundView());
             setTitle(commonText('pageNotFound'));
         } else {

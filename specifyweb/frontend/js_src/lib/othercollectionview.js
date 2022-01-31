@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import * as navigation from './navigation';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import commonText from './localization/common';
 
 
@@ -15,7 +15,7 @@ export default Backbone.View.extend({
             'click a': 'clicked'
         },
     initialize: function({resource, collections}) {
-        const availableCollections = userInfo.available_collections.map(c => c[0]);
+        const availableCollections = userInformation.available_collections.map(c => c[0]);
 
         this.resource = resource;
         this.collections = collections.filter(c => availableCollections.includes(c.id));

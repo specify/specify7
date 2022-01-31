@@ -1,4 +1,4 @@
-import router from './router';
+import { router } from './router';
 import { crash } from './components/errorboundary';
 
 export default function (): void {

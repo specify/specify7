@@ -2,12 +2,12 @@
 
 import $ from 'jquery';
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import template from './templates/pmapplugin.html';
 import Q from 'q';
 import formsText from './localization/forms';
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
     __name__: "PaleolocationMapPlugin",
     events: {
         'click': 'click'

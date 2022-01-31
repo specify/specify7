@@ -4,7 +4,7 @@ import * as latlongutils from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
-import UIPlugin from '../uiplugin';
+import { UiPlugin } from '../uiplugin';
 import createBackboneView from './reactbackboneextend';
 import { Input } from './basic';
 import { Locality } from '../datamodel';
@@ -255,11 +255,11 @@ function LatLongUi({
 
 const View = createBackboneView(LatLongUi);
 
-export default UIPlugin.extend(
+export default UiPlugin.extend(
   {
     __name__: 'LatLongUI',
     initialize() {
-      Reflect.apply(UIPlugin.prototype.initialize, this, arguments);
+      Reflect.apply(UiPlugin.prototype.initialize, this, arguments);
     },
     render() {
       this.model.fetchIfNotPopulated().then(() => {
@@ -274,7 +274,7 @@ export default UIPlugin.extend(
     },
     remove() {
       this.view?.remove();
-      UIPlugin.prototype.remove.call(this);
+      UiPlugin.prototype.remove.call(this);
     },
   },
   { pluginsProvided: ['LatLonUI'] }

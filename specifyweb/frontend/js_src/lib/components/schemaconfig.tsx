@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ajax, { ping } from '../ajax';
+import { ajax, ping } from '../ajax';
 import { getPickLists } from '../picklists';
 import schema from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';

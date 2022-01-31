@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import assert from './assert';
+import { assert } from './assert';
 import api, {makeResourceViewUrl} from './specifyapi';
 import * as querystring from './querystring';
 

@@ -14,7 +14,7 @@ import * as app from './specifyapp';
 import schema from './schema';
 import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
@@ -142,7 +142,7 @@ const ResourceDataView = Backbone.View.extend({
                     $('.mimetype-input input', toolbar).val(this.model.get('mimetype'));
                 }
 
-                if (userInfo.isadmin) {
+                if (userInformation.isadmin) {
                     toolbar.append(
                       `<button type="button" class="load-file button">${adminText('loadFile')}</button>`
                     );
@@ -159,7 +159,7 @@ const ResourceDataView = Backbone.View.extend({
 
                 const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
                 var editor = ace.edit(editArea[0], {
-                    readOnly: !userInfo.isadmin,
+                    readOnly: !userInformation.isadmin,
                 });
                 editor.getSession().setMode(modeForResource(this.model));
                 editor.setValue(this.appresourceData.get('data'));
@@ -193,7 +193,7 @@ const ResourceDataView = Backbone.View.extend({
                     }
                 });
 
-                if(userInfo.isadmin){
+                if(userInformation.isadmin){
                     const saveButton = new SaveButton({
                         model: this.appresourceData,
                         form: this.el,
@@ -206,7 +206,7 @@ const ResourceDataView = Backbone.View.extend({
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
-            userInfo.isadmin && buttonsDiv.prepend(
+            userInformation.isadmin && buttonsDiv.prepend(
                 new DeleteButton({
                     model: this.model,
                     onDeleted: () => navigation.go('/specify/appresources/')
@@ -285,7 +285,7 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (userInfo.isadmin){
+        if (userInformation.isadmin){
             const button = $(`<li role="treeitem">
                 <button
                     type="button"
@@ -304,7 +304,7 @@ const ResourceList = Backbone.View.extend({
             const resource = new this.ResourceModel.Resource({
                 level: 0, // wtf is this for?
                 name: name,
-                specifyuser: userInfo.resource_uri,
+                specifyuser: userInformation.resource_uri,
                 spappresourcedir: directory.get('resource_uri')
             });
             return Q(resource.save()).then(() => resource);
@@ -379,13 +379,13 @@ const AppResourcesView = Backbone.View.extend({
 });
 
 function getStoredToggleState(resourceModel, levelKey) {
-    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInfo.id}`;
+    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInformation.id}`;
     const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
     return !!toggleStates[levelKey];
 }
 
 function setStoredToggleState(resourceModel, levelKey, state) {
-    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInfo.id}`;
+    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInformation.id}`;
     const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
     toggleStates[levelKey] = state;
     window.localStorage.setItem(key, JSON.stringify(toggleStates));

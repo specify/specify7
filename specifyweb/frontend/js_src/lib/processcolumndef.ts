@@ -4,7 +4,7 @@ import $ from 'jquery';
  * Return a table DOM node with <col> defined based on the columnDef attr of a
  * viewdef.
  */
-export default function processColumnDefinition(columnDefinition: string) {
+export function processColumnDefinition(columnDefinition: string) {
   return $(`<table>
   <colgroup>
     ${columnDefinition

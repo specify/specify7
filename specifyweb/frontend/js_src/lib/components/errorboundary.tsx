@@ -71,7 +71,7 @@ export function crash(error: Error): void {
   new View({ children: error.message ?? error.toString() }).render();
 }
 
-export default class ErrorBoundary extends React.Component<
+export class ErrorBoundary extends React.Component<
   { readonly children: JSX.Element | null; readonly silentErrors?: boolean },
   ErrorBoundaryState
 > {

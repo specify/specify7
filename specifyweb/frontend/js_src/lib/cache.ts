@@ -8,7 +8,7 @@
  * @module
  */
 
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type { CacheDefinitions } from './cachedefinitions';
 import { safeToTrim } from './cachedefinitions';
 import type { R, RA } from './types';

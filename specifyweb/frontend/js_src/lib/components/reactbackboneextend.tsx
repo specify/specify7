@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom';
 
 import Backbone from '../backbone';
 import type { IR } from '../types';
-import ErrorBoundary from './errorboundary';
+import { ErrorBoundary } from './errorboundary';
 
 const createBackboneView = <PROPS extends IR<unknown>>(
   Component: (props: PROPS) => JSX.Element | null

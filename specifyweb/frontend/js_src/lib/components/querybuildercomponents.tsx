@@ -12,7 +12,6 @@ import { getModel } from '../schema';
 import schema from '../schemabase';
 import type { RA } from '../types';
 import { defined } from '../types';
-import userInfo from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
@@ -21,6 +20,7 @@ import { dateParts } from './internationalization';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { userInformation } from '../userinfo';
 
 function QueryButton({
   disabled,
@@ -102,7 +102,8 @@ export function SaveQueryButtons({
         />
       )}
       {readOnly ||
-      queryResource.get('specifyUser') !== userInfo.resource_uri ? undefined : (
+      queryResource.get('specifyUser') !==
+        userInformation.resource_uri ? undefined : (
         <QueryButton
           disabled={!saveRequired || fields.length === 0}
           onClick={(): void => handleSave('save')}

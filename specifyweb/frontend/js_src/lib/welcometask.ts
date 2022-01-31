@@ -1,4 +1,4 @@
-import router from './router';
+import { router } from './router';
 import * as app from './specifyapp';
 
 export default function () {

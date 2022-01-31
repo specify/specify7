@@ -1,9 +1,9 @@
-import icons from './components/icons';
+import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import RecordSetsDialog from './recordsetsdialog';
 import schema from './schema';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 
 const menuItem: MenuItem = {
   task: 'recordsets',
@@ -12,7 +12,7 @@ const menuItem: MenuItem = {
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {
-        specifyuser: userInfo.id,
+        specifyuser: userInformation.id,
         type: 0,
         domainfilter: true,
         orderby: '-timestampcreated',
@@ -20,7 +20,7 @@ const menuItem: MenuItem = {
     });
     return new RecordSetsDialog({
       recordSets: recordSets.fetch({ limit: 5000 }),
-      readOnly: userInfo.isReadOnly,
+      readOnly: userInformation.isReadOnly,
       onClose,
     }).render();
   },

@@ -1,4 +1,4 @@
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type { DatasetBrief } from './components/wbplanview';
 import type { RA } from './types';
 
@@ -15,7 +15,7 @@ function addSuffix(name: string, usedNames: RA<string>): string {
   return newName;
 }
 
-export default async function uniquifyDataSetName(
+export async function uniquifyDataSetName(
   name: string,
   currentDataSetId?: number
 ): Promise<string> {

@@ -20,7 +20,7 @@ import type {
 } from './customselectelement';
 import { CustomSelectElement, SuggestionBox } from './customselectelement';
 import { useId } from './hooks';
-import icons from './icons';
+import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
 

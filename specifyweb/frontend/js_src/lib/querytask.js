@@ -7,14 +7,14 @@ import Backbone from './backbone';
 import schema, {getModel} from './schema';
 import QueryFieldUI from './queryfield';
 import template from './templates/querybuilder.html';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import * as app from './specifyapp';
 import queryFromTree from './queryfromtree';
 import * as navigation from './navigation';
 import QueryResultsTable from './components/queryresultstable';
 import EditResourceDialog from './components/editresourcedialog';
 import QuerySaveDialog from './components/querysavedialog';
-import router from './router';
+import { router } from './router';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import * as querystring from "./querystring";
@@ -58,7 +58,7 @@ var QueryBuilder = Backbone.View.extend({
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
             this.query.id == null && this.$('.query-save-as').remove();
-            this.query.get('specifyuser') === userInfo.resource_uri || this.$('.query-save').remove();
+            this.query.get('specifyuser') === userInformation.resource_uri || this.$('.query-save').remove();
 
             this.query.on('saverequired', this.saveRequired, this);
 
@@ -363,7 +363,7 @@ export default function() {
                 await query.fetch().fail(app.handleError);
                 var view = new QueryBuilder({
                     query: query,
-                    readOnly: userInfo.isReadOnly,
+                    readOnly: userInformation.isReadOnly,
                     recordSet: await fetchRecordSet()
                 });
                 view.on('redisplay', showView);
@@ -381,7 +381,7 @@ export default function() {
                 'selectdistinct': false,
                 'countonly': false,
                 'formatauditrecids': false,
-                'specifyuser': userInfo.resource_uri,
+                'specifyuser': userInformation.resource_uri,
                 'isfavorite': true,
                 // ordinal seems to always get set to 32767 by Specify 6
                 // needs to be set for the query to be visible in Specify 6
@@ -392,7 +392,7 @@ export default function() {
 
             var view = new QueryBuilder({
                 query: query,
-                readOnly: userInfo.isReadOnly,
+                readOnly: userInformation.isReadOnly,
                 recordSet,
             });
             view.on('redisplay', function() {
@@ -408,7 +408,7 @@ export default function() {
         });
 
         router.route('query/fromtree/:table/:id/', 'queryFromTree', function(table, nodeId) {
-            queryFromTree(userInfo, table, nodeId).done(function(query) {
+            queryFromTree(userInformation, table, nodeId).done(function(query) {
                 var view = new QueryBuilder({ query: query, readOnly: true });
                 view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
                 app.setCurrentView(view);

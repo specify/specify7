@@ -6,25 +6,25 @@
 
 import React from 'react';
 
-import ajax, { Http } from '../../ajax';
+import { ajax, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
 import type { RA } from '../../types';
-import userInfo from '../../userinfo';
-import uniquifyDataSetName from '../../wbuniquifyname';
+import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
 import { useTitle } from '../hooks';
-import icons from '../icons';
+import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
+import { userInformation } from '../../userinfo';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -167,7 +167,7 @@ function MetadataDialog({
 
   const canImport =
     !showTemplates &&
-    !(userInfo as unknown as { isReadOnly: boolean }).isReadOnly;
+    !(userInformation as unknown as { isReadOnly: boolean }).isReadOnly;
 
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',

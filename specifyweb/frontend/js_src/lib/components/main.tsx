@@ -3,11 +3,10 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
-import router from '../router';
+import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
-import systemInfo from '../systeminfo';
+import { systemInformation } from '../systeminfo';
 import type { RA } from '../types';
-import userInfo from '../userinfo';
 import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
@@ -17,7 +16,8 @@ import {
   UserTools,
 } from './header';
 import { Dialog } from './modaldialog';
-import Notifications from './notifications';
+import { Notifications } from './notifications';
+import { userInformation } from '../userinfo';
 
 export type UserTool = {
   readonly task: string;
@@ -88,7 +88,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   import('./toolbar/forceupdate'),
 ]).then(processMenuItems);
 
-export default function Main({
+export function Main({
   onLoaded: handleLoaded,
 }: {
   readonly onLoaded: () => void;
@@ -100,7 +100,7 @@ export default function Main({
     undefined
   );
   const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    systemInfo.specify6_version !== systemInfo.database_version
+    systemInformation.specify6_version !== systemInformation.database_version
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
@@ -144,8 +144,8 @@ export default function Main({
         >
           <p>
             {commonText('versionMismatchDialogMessage')(
-              systemInfo.specify6_version,
-              systemInfo.database_version
+              systemInformation.specify6_version,
+              systemInformation.database_version
             )}
           </p>
           <p>{commonText('versionMismatchSecondDialogMessage')}</p>
@@ -172,7 +172,7 @@ export default function Main({
               2xl:w-max-[350px]`}
           >
             <div className="gap-x-2 flex items-center justify-end">
-              {userInfo.isauthenticated ? (
+              {userInformation.isauthenticated ? (
                 <UserTools userTools={userTools} />
               ) : (
                 <Link.Default href="/accounts/login/">

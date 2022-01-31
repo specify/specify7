@@ -14,14 +14,14 @@ import whenAll from './whenall';
 import parseselect from './parseselect';
 import * as navigation from './navigation';
 import QueryCbxSearch from './querycbxsearch';
-import QueryFieldSpec from './queryfieldspec';
+import { QueryFieldSpec } from './queryfieldspec';
 import {load} from './initialcontext';
 import resourceapi from './resourceapi';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import formsText from './localization/forms';
-import autocomplete from './components/autocomplete';
+import { autocomplete } from './components/autocomplete';
 import {formatList} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
 import {getTreeDefinitionItems, isTreeModel} from "./treedefinitions";
@@ -111,7 +111,7 @@ export default Backbone.View.extend({
             this.$el.attr('name') === "cataloger"
            )
         {
-            this.model.set('cataloger', userInfo.agent.resource_uri);
+            this.model.set('cataloger', userInformation.agent.resource_uri);
         }
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
@@ -419,7 +419,7 @@ export default Backbone.View.extend({
         event.preventDefault();
         $.when(this.leftSideRelsPromise, this.rightSideRelsPromise).done((leftSideRels, rightSideRels) => {
             const relCollId = this.getRelatedCollectionId(leftSideRels, rightSideRels);
-            const collections = userInfo.available_collections.map(c => c[0]);
+            const collections = userInformation.available_collections.map(c => c[0]);
             if (relCollId && !collections.includes(relCollId)) {
                 const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
                 otherColl.fetch().done(function() {

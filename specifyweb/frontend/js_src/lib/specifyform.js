@@ -4,14 +4,14 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import specifyformcells from './specifyformcells';
-import parseSpecifyProperties from './parsespecifyproperties';
-import processColumnDef from './processcolumndef';
+import { parseSpecifyProperties } from './parsespecifyproperties';
+import { processColumnDefinition } from './processcolumndef';
 
 import formtable from './templates/formtabletemplate.html';
 import formtemplate from './templates/formtemplate.html';
 import attachmentview from './templates/attachmentview.html';
 import {className} from './components/basic';
-import SchemaModel from "./specifymodel";
+import { SchemaModel } from "./specifymodel";
 
 
 var formCounter = 0;
@@ -42,7 +42,7 @@ var formCounter = 0;
     function buildForm(formNumber, viewdef, processCell, isSubView) {
         var rows = viewdef.children('rows').children('row');
         var cellsIn = function(row) { return $(row).children('cell'); };
-        var table = processColumnDef(getColumnDef(viewdef));
+        var table = processColumnDefinition(getColumnDef(viewdef));
 
         _(rows).each(function (row) {
             var tr = $('<tr>').appendTo(table);

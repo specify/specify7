@@ -705,4 +705,4 @@ function definitionsToLowercase(
   return Object.freeze(definitions);
 }
 
-export default definitionsToLowercase(definitions);
+export const autoMapperDefinitions = definitionsToLowercase(definitions);

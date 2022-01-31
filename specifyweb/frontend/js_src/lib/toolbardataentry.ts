@@ -1,5 +1,5 @@
 import FormsDialog from './components/formsdialog';
-import icons from './components/icons';
+import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 

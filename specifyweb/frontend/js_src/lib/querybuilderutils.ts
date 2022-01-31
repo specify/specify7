@@ -2,7 +2,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedModel, SerializedResource } from './datamodelutils';
 import type { DatePart } from './queryfieldspec';
-import QueryFieldSpec from './queryfieldspec';
+import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
 import { getParser } from './uiparse';

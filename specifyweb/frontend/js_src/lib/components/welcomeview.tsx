@@ -3,7 +3,7 @@ import React from 'react';
 import commonText from '../localization/common';
 import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
-import systemInfo from '../systeminfo';
+import { systemInformation } from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { Button, Link } from './basic';
 import { useTitle } from './hooks';
@@ -89,17 +89,26 @@ function AboutSpecify(): JSX.Element {
           <table className="grid-table gap-1 grid-cols-[auto,auto]">
             <tbody>
               {[
-                [welcomeText('version'), systemInfo.version],
-                [welcomeText('specifySixVersion'), systemInfo.specify6_version],
-                [welcomeText('databaseVersion'), systemInfo.database_version],
-                [welcomeText('schemaVersion'), systemInfo.schema_version],
-                [welcomeText('databaseName'), systemInfo.database],
-                [welcomeText('institution'), systemInfo.institution],
-                [welcomeText('discipline'), systemInfo.discipline],
-                [welcomeText('collection'), systemInfo.collection],
+                [welcomeText('version'), systemInformation.version],
+                [
+                  welcomeText('specifySixVersion'),
+                  systemInformation.specify6_version,
+                ],
+                [
+                  welcomeText('databaseVersion'),
+                  systemInformation.database_version,
+                ],
+                [
+                  welcomeText('schemaVersion'),
+                  systemInformation.schema_version,
+                ],
+                [welcomeText('databaseName'), systemInformation.database],
+                [welcomeText('institution'), systemInformation.institution],
+                [welcomeText('discipline'), systemInformation.discipline],
+                [welcomeText('collection'), systemInformation.collection],
                 [
                   welcomeText('isaNumber'),
-                  systemInfo.isa_number ?? commonText('notApplicable'),
+                  systemInformation.isa_number ?? commonText('notApplicable'),
                 ],
                 [welcomeText('browser'), window.navigator.userAgent],
               ].map(([label, value], index) => (

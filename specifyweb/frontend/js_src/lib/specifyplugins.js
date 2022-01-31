@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import formsText from './localization/forms';
 
 var providers = [
@@ -25,7 +25,7 @@ var providers = [
 
 
     var plugins = {
-        PluginNotAvailable: UIPlugin.extend({
+        PluginNotAvailable: UiPlugin.extend({
             __name__: "UnavailablePlugin",
             events: {
                 'click': 'click'

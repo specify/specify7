@@ -2,7 +2,7 @@ import type { SpQueryField } from './datamodel';
 import type { SerializedModel } from './datamodelutils';
 import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
-import type SpecifyModel from './specifymodel';
+import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
 import { capitalize } from './wbplanviewhelper';
@@ -29,7 +29,7 @@ function extractDatePart(fieldName: string): {
       };
 }
 
-class QueryFieldSpec {
+export class QueryFieldSpec {
   private readonly baseTable: SpecifyModel;
 
   public joinPath: RA<LiteralField | Relationship> = [];
@@ -163,5 +163,3 @@ class QueryFieldSpec {
     return fieldSpec;
   }
 }
-
-export default QueryFieldSpec;

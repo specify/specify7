@@ -1,9 +1,8 @@
 import { getBoolPref, getPref } from './remoteprefs';
 
 const DEFAULT_FORMAT = 'YYYY-MM-DD';
-const fullDateFormat = (): string =>
+export const fullDateFormat = (): string =>
   getPref('ui.formatting.scrdateformat', DEFAULT_FORMAT).toUpperCase();
-export default fullDateFormat;
 
 const DEFAULT_MONTH_FORMAT = 'MM/YYYY';
 export const monthFormat = (): string =>

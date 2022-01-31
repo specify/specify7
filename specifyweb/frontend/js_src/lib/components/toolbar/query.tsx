@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import ajax from '../../ajax';
+import { ajax } from '../../ajax';
 import { error } from '../../assert';
 import type { SpQuery, SpReport } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
@@ -12,18 +12,18 @@ import * as navigation from '../../navigation';
 import schema, { getModel, getModelById } from '../../schema';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
-import userInfo from '../../userinfo';
 import { Button, Form, Input, Link, Submit, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import { EditResourceDialog } from '../editresourcedialog';
 import { crash } from '../errorboundary';
 import { useId, useTitle } from '../hooks';
-import icons from '../icons';
+import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
+import { userInformation } from '../../userinfo';
 
 const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -38,7 +38,7 @@ const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
       .filter(
         (tableName) =>
           tableName &&
-          (tableName !== 'spauditlog' || userInfo.usertype === 'Manager')
+          (tableName !== 'spauditlog' || userInformation.usertype === 'Manager')
       )
       .sort()
   )
@@ -228,7 +228,7 @@ function QueryToolbarItem({
   React.useEffect(() => {
     let destructorCalled = false;
     const queryModels = new schema.models.SpQuery.LazyCollection({
-      filters: spQueryFilter ?? { specifyuser: userInfo.id },
+      filters: spQueryFilter ?? { specifyuser: userInformation.id },
     });
     queryModels
       .fetch({ limit: QUERY_FETCH_LIMIT })
@@ -326,11 +326,11 @@ const menuItem: MenuItem = {
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,
-      getQueryCreateUrl: userInfo.isReadOnly
+      getQueryCreateUrl: userInformation.isReadOnly
         ? undefined
         : (tableName: string): string => `/specify/query/new/${tableName}/`,
       getQuerySelectUrl: undefined,
-      readOnly: userInfo.isReadOnly,
+      readOnly: userInformation.isReadOnly,
     }),
 };
 

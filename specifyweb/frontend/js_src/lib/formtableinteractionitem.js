@@ -2,7 +2,7 @@
 
 import FormTable from './formtable';
 import schema from './schema';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 
 
 export default FormTable.extend({
@@ -14,7 +14,7 @@ export default FormTable.extend({
 
             var table = self.collection.related.specifyModel.name.toLowerCase();
             var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: userInfo.id, type: 0, dbtableid: 1,
+                filters: { specifyuser: userInformation.id, type: 0, dbtableid: 1,
                            domainfilter: true, orderby: '-timestampcreated' }
             });
             var interactionresource = self.collection.related;

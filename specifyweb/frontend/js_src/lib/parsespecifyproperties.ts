@@ -1,6 +1,6 @@
 import type { IR } from './types';
 
-export default (props = ''): IR<string> =>
+export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     props
       .split(';')

@@ -6,11 +6,11 @@ import {
   getLocalityDataFromLocalityResource
 } from './localityrecorddataextractor';
 import {formatLocalityData, showLeafletMap} from './leaflet';
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import localityText from './localization/locality';
 import commonText from './localization/common';
 
-export default UIPlugin.extend(
+export default UiPlugin.extend(
   {
     __name__: 'GoogleMapsPlugin',
     events: {

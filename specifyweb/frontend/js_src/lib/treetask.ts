@@ -1,6 +1,6 @@
 import type { AnyTree } from './datamodelutils';
-import NotFoundView from './notfoundview';
-import router from './router';
+import { NotFoundView } from './notfoundview';
+import { router } from './router';
 import schema from './schema';
 import { setCurrentView } from './specifyapp';
 import { treeDefinitions } from './treedefinitions';

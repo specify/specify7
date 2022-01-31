@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import ajax from '../ajax';
+import { ajax } from '../ajax';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
@@ -14,7 +14,7 @@ import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
-import WbPlanViewMapper from './wbplanviewmapper';
+import { WbPlanViewMapper } from './wbplanviewmapper';
 import commonText from '../localization/common';
 
 // States

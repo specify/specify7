@@ -1,7 +1,7 @@
 import Backbone from './backbone';
 import specifyForm from './specifyform';
 
-export default Backbone.View.extend({
+export const SpinnerFieldUi = Backbone.View.extend({
   __name__: 'SpinnerFieldUI',
   events: {
     change: 'change',

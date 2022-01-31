@@ -3,22 +3,22 @@ import React from 'react';
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import queryText from '../localization/query';
-import NotFoundView from '../notfoundview';
+import { NotFoundView } from '../notfoundview';
 import queryFromTree from '../queryfromtree';
 import * as querystring from '../querystring';
-import router from '../router';
+import { router } from '../router';
 import { getModel } from '../schema';
 import schema from '../schemabase';
 import * as app from '../specifyapp';
 import { setCurrentView } from '../specifyapp';
 import { defined } from '../types';
-import userInfo from '../userinfo';
 import dataModelStorage from '../wbplanviewmodel';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
 import { crash } from './errorboundary';
 import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
+import { userInformation } from '../userinfo';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet, setRecordSet] = React.useState<
@@ -60,7 +60,7 @@ function QueryBuilderWrapper({
   ) : (
     <QueryBuilder
       query={query}
-      readOnly={userInfo.isReadOnly}
+      readOnly={userInformation.isReadOnly}
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
@@ -108,7 +108,7 @@ function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
     query.set('selectDistinct', false);
     query.set('countOnly', false);
     query.set('formatAuditRecIds', false);
-    query.set('specifyUser', userInfo.resource_uri);
+    query.set('specifyUser', userInformation.resource_uri);
     query.set('isFavorite', true);
     /*
      * Ordinal seems to always get set to 32767 by Specify 6
@@ -140,7 +140,7 @@ function QueryBuilderFromTree({
 
   React.useEffect(
     // TODO: convert to react
-    () => queryFromTree(userInfo, tableName, nodeId).then(setQuery),
+    () => queryFromTree(userInformation, tableName, nodeId).then(setQuery),
     [tableName, nodeId]
   );
 

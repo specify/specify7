@@ -9,7 +9,7 @@ import type { Action } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import type { Options, TableSynonym } from './automapperdefinitions';
-import AutoMapperDefinitions from './automapperdefinitions';
+import { autoMapperDefinitions } from './automapperdefinitions';
 import type {
   AutoMapperScope,
   MappingPath,
@@ -190,7 +190,7 @@ const isFieldInDontMatch = (
   scope: AutoMapperScope
 ): boolean =>
   tableName !== '' &&
-  AutoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.includes(scope);
+  autoMapperDefinitions.dontMatch[tableName]?.[lastPathPart]?.includes(scope);
 
 const isMappingPathIsInProposedMappings = (
   allowMultipleMappings: boolean,
@@ -223,7 +223,7 @@ const findRankSynonyms = (
   tableName: string,
   targetRankName: string
 ): RA<string> =>
-  AutoMapperDefinitions.rankSynonyms[tableName]
+  autoMapperDefinitions.rankSynonyms[tableName]
     ?.filter(({ rankName }) => targetRankName === rankName)
     .flatMap(({ synonyms }) => synonyms) ?? [];
 
@@ -234,7 +234,7 @@ function handleOrdinalNumbers(header: string): string {
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
-export default class AutoMapper {
+export class AutoMapper {
   // Used to replace any white space characters with space
   private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
 
@@ -390,7 +390,7 @@ export default class AutoMapper {
         })
         /*
          * Remove headers that match the `dontMap` structure in
-         * AutoMapperDefinitions
+         * autoMapperDefinitions
          */
         .filter(({ headerData: { lowercaseHeaderName } }) =>
           Object.entries(AutoMapper.comparisons)
@@ -400,12 +400,12 @@ export default class AutoMapper {
                 [comparisonKey]
               ) =>
                 comparisonKey in
-                (AutoMapperDefinitions.dontMap[scope]?.headers ?? {})
+                (autoMapperDefinitions.dontMap[scope]?.headers ?? {})
             )
             .every(([comparisonKey, comparisonFunction]) =>
               // Loop over each value of a comparison
               Object.values(
-                AutoMapperDefinitions.dontMap[scope]?.headers[
+                autoMapperDefinitions.dontMap[scope]?.headers[
                   comparisonKey as keyof Options
                 ] ?? {}
               ).every(
@@ -542,7 +542,7 @@ export default class AutoMapper {
     Object.entries(this.headersToMap).filter(([, { isMapped }]) => !isMapped);
 
   /*
-   * Goes over `shortcuts` and `synonyms` in AutoMapperDefinitions.tsx and
+   * Goes over `shortcuts` and `synonyms` in autoMapperDefinitions.tsx and
    * tries to find matches. Calls handleDefinitionComparison to make
    * comparison
    *
@@ -564,7 +564,7 @@ export default class AutoMapper {
     if (mode === 'shortcutsAndTableSynonyms' && fieldName !== '') return;
 
     if (mode === 'shortcutsAndTableSynonyms') {
-      const tableDefinitionData = AutoMapperDefinitions.shortcuts[tableName];
+      const tableDefinitionData = autoMapperDefinitions.shortcuts[tableName];
 
       tableDefinitionData?.[this.scope]?.forEach((shortcutData) => {
         const comparisons = shortcutData.headers;
@@ -577,7 +577,7 @@ export default class AutoMapper {
         );
       });
     } else if (mode === 'synonymsAndMatches') {
-      const tableDefinitionData = AutoMapperDefinitions.synonyms[tableName];
+      const tableDefinitionData = autoMapperDefinitions.synonyms[tableName];
 
       const comparisons =
         tableDefinitionData?.[fieldName]?.[this.scope]?.headers;
@@ -603,7 +603,7 @@ export default class AutoMapper {
     mappingPath: MappingPath,
     mode: AutoMapperNode
   ): RA<string> {
-    const tableSynonyms = AutoMapperDefinitions.tableSynonyms[tableName];
+    const tableSynonyms = autoMapperDefinitions.tableSynonyms[tableName];
 
     if (
       mode !== 'shortcutsAndTableSynonyms' ||
@@ -649,7 +649,7 @@ export default class AutoMapper {
     tableName: string,
     fieldName: string
   ): RA<string> =>
-    AutoMapperDefinitions.synonyms[tableName]?.[fieldName]?.[this.scope]
+    autoMapperDefinitions.synonyms[tableName]?.[fieldName]?.[this.scope]
       ?.headers.formattedHeaderFieldSynonym ?? [];
 
   private readonly tableWasIterated = (

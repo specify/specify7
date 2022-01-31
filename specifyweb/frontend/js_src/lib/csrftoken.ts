@@ -1,3 +1,3 @@
 import { readCookie } from './cookies';
 
-export default readCookie('csrftoken');
+export const csrfToken = readCookie('csrftoken');

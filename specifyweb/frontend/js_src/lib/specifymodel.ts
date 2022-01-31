@@ -68,7 +68,7 @@ export type Collection<RESOURCE extends SpecifyResource<AnySchema>> = {
 };
 
 // TODO: tighten up schema field types (use literals / enums)
-export default class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
+export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // Java classname of the Specify 6 ORM object.
   public readonly longName: string;
 

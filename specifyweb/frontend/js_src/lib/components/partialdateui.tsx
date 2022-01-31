@@ -1,17 +1,18 @@
 import React from 'react';
 
-import dateFormat, {
+import {
+  fullDateFormat,
   accessibleDatePickerEnabled,
   accessibleMonthPickerEnabled,
   monthFormat,
 } from '../dateformat';
-import dayjs, { getDateInputValue } from '../dayjs';
+import { dayjs, getDateInputValue } from '../dayjs';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
-import UIPlugin from '../uiplugin';
+import { UiPlugin } from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
 import { SpecifyResource } from '../legacytypes';
@@ -146,7 +147,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
     } else {
       const validationMessage =
         precision === 'full'
-          ? formsText('requiredFormat')(dateFormat())
+          ? formsText('requiredFormat')(fullDateFormat())
           : precision === 'month-year'
           ? formsText('requiredFormat')(monthFormat())
           : formsText('invalidDate');
@@ -185,7 +186,11 @@ function PartialDateUi<SCHEMA extends AnySchema>({
     if (newMoment.isValid()) setMoment(newMoment);
     else
       setMoment(
-        dayjs(value, precision === 'full' ? dateFormat() : monthFormat(), true)
+        dayjs(
+          value,
+          precision === 'full' ? fullDateFormat() : monthFormat(),
+          true
+        )
       );
   }
 
@@ -270,15 +275,15 @@ function PartialDateUi<SCHEMA extends AnySchema>({
                     }
                   : {
                       type: dateType,
-                      placeholder: dateFormat(),
+                      placeholder: fullDateFormat(),
                       // Format parsed date if valid. Else, use raw input
                       value: validDate?.format(inputFullFormat) ?? inputValue,
-                      title: moment?.format(dateFormat()),
+                      title: moment?.format(fullDateFormat()),
                       ...(dateSupported
                         ? {}
                         : {
-                            minLength: dateFormat().length,
-                            maxLength: dateFormat().length,
+                            minLength: fullDateFormat().length,
+                            maxLength: fullDateFormat().length,
                           }),
                     }),
               })}
@@ -300,7 +305,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
 
 const View = createBackboneView(PartialDateUi);
 
-export default UIPlugin.extend(
+export default UiPlugin.extend(
   {
     __name__: 'PartialDateUI',
     render() {
@@ -308,7 +313,7 @@ export default UIPlugin.extend(
         dateType = 'text';
         dateSupported = false;
       }
-      if (!dateSupported) inputFullFormat = dateFormat();
+      if (!dateSupported) inputFullFormat = fullDateFormat();
 
       if (!accessibleMonthPickerEnabled()) {
         monthType = 'text';
@@ -352,7 +357,7 @@ export default UIPlugin.extend(
     },
     remove() {
       this.view.remove();
-      UIPlugin.prototype.remove.call(this);
+      UiPlugin.prototype.remove.call(this);
     },
   },
   { pluginsProvided: ['PartialDateUI'] }

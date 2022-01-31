@@ -4,11 +4,11 @@ import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import userInfo from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { crash } from './errorboundary';
+import { userInformation } from '../userinfo';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -18,7 +18,7 @@ async function doSave(
   const clonedQuery = isSaveAs ? query.clone() : query;
   clonedQuery.set('name', name.trim());
 
-  if (isSaveAs) clonedQuery.set('specifyUser', userInfo.resource_uri);
+  if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
   return new Promise((resolve) => {
     clonedQuery.save().then(() => resolve(clonedQuery.id));
   });

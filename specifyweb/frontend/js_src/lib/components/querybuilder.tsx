@@ -9,7 +9,7 @@ import * as navigation from '../navigation';
 import { reducer } from '../querybuilderreducer';
 import { parseQueryFields } from '../querybuilderutils';
 import schema from '../schemabase';
-import type { default as SpecifyModel } from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
 import { toLowerCase } from '../wbplanviewhelper';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import {
@@ -22,7 +22,7 @@ import {
 } from './basic';
 import { TableIcon } from './common';
 import { useId, useResource } from './hooks';
-import icons from './icons';
+import { icons } from './icons';
 import {
   MakeRecordSetButton,
   QueryExportButtons,

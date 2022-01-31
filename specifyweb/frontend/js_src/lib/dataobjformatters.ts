@@ -1,4 +1,4 @@
-import ajax from './ajax';
+import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
 import { fieldFormat } from './fieldformat';
 import type { SpecifyResource } from './legacytypes';

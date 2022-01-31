@@ -14,7 +14,7 @@
 
 import type { Tables } from './datamodel';
 import { load } from './initialcontext';
-import type SpecifyModel from './specifymodel';
+import type { SpecifyModel } from './specifymodel';
 import type { RA, RR, Writable } from './types';
 
 export type Schema = {

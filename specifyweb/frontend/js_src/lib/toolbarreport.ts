@@ -1,5 +1,5 @@
-import ajax from './ajax';
-import icons from './components/icons';
+import { ajax } from './ajax';
+import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import { ReportsView } from './reports';

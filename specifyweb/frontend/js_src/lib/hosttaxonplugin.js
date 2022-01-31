@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import schema from './schema';
 import QueryCbx from './querycbx';
 
@@ -11,7 +11,7 @@ import QueryCbx from './querycbx';
         '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>'
     );
 
-export default UIPlugin.extend({
+export default UiPlugin.extend({
         __name__: "HostTaxonPlugin",
         render: function() {
             var input = $('<input type="text" name="hosttaxon">');

@@ -1,4 +1,4 @@
-export default function (value: unknown, message: string): void {
+export function assert(value: unknown, message: string): void {
   if (!value) throw new Error(message);
 }
 

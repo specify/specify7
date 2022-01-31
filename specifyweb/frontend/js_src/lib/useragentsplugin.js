@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import UIPlugin from './uiplugin';
+import { UiPlugin } from './uiplugin';
 import schema from './schema';
 import QueryCbx from './querycbx';
 import whenall from './whenall';
@@ -88,7 +88,7 @@ var AgentForDiv = Backbone.View.extend({
         }
     });
 
-    export default UIPlugin.extend({
+    export default UiPlugin.extend({
         __name__: "UserAgentsUIPlugin",
         events: {
             'click': 'click'

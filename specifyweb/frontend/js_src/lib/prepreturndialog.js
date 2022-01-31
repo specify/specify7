@@ -6,7 +6,7 @@ import Backbone from './backbone';
 
 import schema from './schema';
 import {fieldFormat} from './fieldformat';
-import userInfo from './userinfo';
+import { userInformation } from './userinfo';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -244,7 +244,7 @@ export default Backbone.View.extend({
         // this is used to capture the receiving agent and date
         this.dummyLRP = new schema.models.LoanReturnPreparation.Resource({
             returneddate: getDateInputValue(new Date()),
-            receivedby: userInfo.agent.resource_uri
+            receivedby: userInformation.agent.resource_uri
         });
         this.populateForm(form, this.dummyLRP);
 

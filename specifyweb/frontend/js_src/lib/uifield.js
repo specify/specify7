@@ -7,7 +7,11 @@ import Backbone from './backbone';
 
 import {format} from './dataobjformatters';
 import {fieldFormat} from './fieldformat';
-import uiparse, {addValidationAttributes, resolveParser} from './uiparse';
+import {
+  parseValue,
+  addValidationAttributes,
+  resolveParser
+} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
 import dayjs from "./dayjs";
 
@@ -71,7 +75,7 @@ export default Backbone.View.extend({
 
             const parserFunction = this.model.noValidation
                 ? (value)=>({ isValid: true, value, parsed: value })
-                : uiparse.bind(null, field, parser, this.el);
+                : parseValue.bind(null, field, parser, this.el);
 
             const handleChange = ()=>this.inputChanged(parserFunction(this.el.value));
             const isDate = this.el.type === 'date';

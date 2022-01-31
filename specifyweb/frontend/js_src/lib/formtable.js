@@ -7,7 +7,7 @@ import Backbone from './backbone';
 
 
 import specifyform from './specifyform';
-import assert from './assert';
+import { assert } from './assert';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';

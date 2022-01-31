@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import ajax from '../ajax';
+import { ajax } from '../ajax';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -12,7 +12,7 @@ import * as navigation from '../navigation';
 import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
 import schema from '../schema';
-import type SpecifyModel from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
 import type { Conformations, Row, Stats } from '../treeviewutils';
 import {
   deserializeConformation,

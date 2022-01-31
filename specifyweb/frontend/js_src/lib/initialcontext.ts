@@ -1,4 +1,4 @@
-import ajax, { type MimeType } from './ajax';
+import { ajax, type MimeType } from './ajax';
 import type { RA } from './types';
 
 export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
@@ -10,7 +10,7 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
   );
 }
 
-export default Promise.all([
+export const initialContext = Promise.all([
   import('./attachments'),
   import('./icons'),
   import('./querycbx'),

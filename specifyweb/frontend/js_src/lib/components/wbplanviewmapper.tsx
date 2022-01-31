@@ -130,7 +130,7 @@ export const getDefaultMappingState = ({
   mustMatchPreferences,
 });
 
-export default function WbPlanViewMapper(props: {
+export function WbPlanViewMapper(props: {
   readonly readonly: boolean;
   readonly dataset: Dataset;
   readonly removeUnloadProtect: () => void;

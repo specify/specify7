@@ -1,6 +1,6 @@
 import { escapeRegExp } from './escaperegexp';
 import { load } from './initialcontext';
-import SpecifyModel from './specifymodel';
+import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
 export let uiFormatters: IR<UiFormatter>;
