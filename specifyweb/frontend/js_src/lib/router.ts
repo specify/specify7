@@ -1,7 +1,5 @@
-import Backbone from './backbone';
+import Backbone from 'backbone';
 
-const Router = Backbone.Router.extend({
-  __name__: 'SpecifyRouter',
-});
+class SpecifyRouter extends Backbone.Router {}
 
-export const router = new Router() as Backbone.Router;
+export const router = new SpecifyRouter();
