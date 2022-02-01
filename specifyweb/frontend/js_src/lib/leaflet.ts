@@ -25,6 +25,7 @@ import type { IR, RA, RR } from './types';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 import { legacyNonJsxIcons } from './components/icons';
+import { contextUnlockedPromise } from './initialcontext';
 
 const DEFAULT_ZOOM = 5;
 
@@ -55,11 +56,14 @@ const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
   ) as typeof leafletTileServers;
 
 export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
-  ajax<IR<unknown>>(
-    '/context/app.resource?name=leaflet-layers',
-    { headers: { Accept: 'application/json' } },
-    { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-  )
+  contextUnlockedPromise
+    .then(() =>
+      ajax<IR<unknown>>(
+        '/context/app.resource?name=leaflet-layers',
+        { headers: { Accept: 'application/json' } },
+        { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      )
+    )
     .then(({ data, status }) =>
       status === Http.NOT_FOUND ? error('') : parseLayersFromJson(data)
     )

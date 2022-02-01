@@ -28,6 +28,7 @@ import {
   fetchingParameters,
   knownRelationshipTypes,
 } from './wbplanviewmodelconfig';
+import { contextUnlockedPromise } from './initialcontext';
 
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
@@ -167,6 +168,8 @@ const getSchemaHash = async (): Promise<number> =>
 /* Fetches the data model */
 async function fetchDataModel(ignoreCache = false): Promise<void> {
   if (!ignoreCache && typeof dataModelStorage.tables !== 'undefined') return;
+
+  await contextUnlockedPromise;
 
   if (typeof dataModelStorage.currentCollectionId === 'undefined')
     dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();

@@ -3,14 +3,16 @@ import '../../css/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { initialContext } from '../initialcontext';
+import { initialContext, unlockInitialContext } from '../initialcontext';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import startApp from '../startapp';
 import { className } from './basic';
-import { ErrorBoundary, crash } from './errorboundary';
+import { crash, ErrorBoundary } from './errorboundary';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
+
+unlockInitialContext();
 
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');

@@ -9,8 +9,8 @@ import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useTitle, useValidation } from './hooks';
-import { LanguageSelection } from './toolbar/language';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
+import { LanguageSelection } from './toolbar/language';
 
 function Login({
   data,

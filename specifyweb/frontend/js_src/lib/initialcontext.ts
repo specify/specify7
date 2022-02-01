@@ -1,7 +1,18 @@
 import { ajax, type MimeType } from './ajax';
 import type { RA } from './types';
 
+let unlock: () => void;
+
+// Context is unlocked for main entrypoint only
+export const contextUnlockedPromise = new Promise<void>((resolve) => {
+  unlock = resolve;
+});
+
+export const unlockInitialContext = (): void => unlock();
+
 export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
+  await contextUnlockedPromise;
+
   // eslint-disable-next-line no-console
   console.log('initial context:', path);
   // eslint-disable-next-line @typescript-eslint/naming-convention
