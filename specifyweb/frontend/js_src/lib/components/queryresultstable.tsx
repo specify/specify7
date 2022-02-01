@@ -81,7 +81,7 @@ export function QueryResultsTable({
   return (
     <ContainerBase>
       {hasHeader && <h3 aria-live="polite">${`${label}: (${totalCount})`}</h3>}
-      {!countOnly && (
+      {!countOnly && fieldSpecs.length > 0 && (
         <div
           role="table"
           className="grid-table grid-cols-[repeat(var(--cols),auto)] overflow-auto max-h-[75vh]"
