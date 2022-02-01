@@ -172,7 +172,7 @@ const serializeModel = <SCHEMA extends AnySchema>(
         ?.name ?? lowercaseFieldName,
       typeof value === 'object' && value !== null
         ? Array.isArray(value)
-          ? value.map(serializeResource)
+          ? value.map(serializeModel)
           : serializeModel(value as SerializedModel<AnySchema>)
         : value,
     ])

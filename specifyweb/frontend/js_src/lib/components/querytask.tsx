@@ -34,7 +34,7 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
       filters: { id: Number.parseInt(recordSetId) },
     });
     recordSet
-      .fetch()
+      .fetchPromise()
       .then(({ models }) => setRecordSet(models[0]), console.error);
   }, []);
 

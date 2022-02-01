@@ -24,7 +24,7 @@ function Users({
       filters: { orderby: 'name' },
     });
     users
-      .fetch({ limit: 0 })
+      .fetchPromise({ limit: 0 })
       .then(({ models }) =>
         destructorCalled
           ? undefined

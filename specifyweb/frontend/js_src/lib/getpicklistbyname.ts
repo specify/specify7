@@ -9,5 +9,5 @@ export async function getPickListByName(
     filters: { name: pickListName },
     domainfilter: true,
   });
-  return collection.fetch({ limit: 1 }).then(({ models }) => models[0]);
+  return collection.fetchPromise({ limit: 1 }).then(({ models }) => models[0]);
 }

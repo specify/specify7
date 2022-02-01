@@ -119,7 +119,7 @@ class AuditRecordFormatter {
         filters: { id: Number(value) },
       });
       return collection
-        .fetch({ limit: 1 })
+        .fetchPromise({ limit: 1 })
         .then(async ({ models }) =>
           format(models[0]).then(
             (string) => string ?? `${auditingModel.name}:{${value}}`
@@ -273,7 +273,7 @@ function QueryResult({
       filters: { id: result[idFieldIndex] as number },
     });
     collection
-      .fetch({ limit: 1 })
+      .fetchPromise({ limit: 1 })
       .then(({ models }) => setResource(models[0]), crash);
   }, [result, resource, forceResourceLoad, idFieldIndex, model]);
 

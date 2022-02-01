@@ -67,7 +67,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     ? string
     : VALUE;
   // Case-insensitive fetch of a -to-one resource
-  rget: <
+  rgetPromise: <
     FIELD_NAME extends
       | keyof SCHEMA['toOneDependent']
       | keyof SCHEMA['toOneIndependent'],

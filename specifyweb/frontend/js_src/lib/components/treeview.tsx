@@ -134,7 +134,7 @@ function TreeView<SCHEMA extends AnyTree>({
               filters: { name__istartswith: value, orderby: 'name' },
               domainfilter: true,
             });
-            return collection.fetch().then(({ models }) =>
+            return collection.fetchPromise().then(({ models }) =>
               Object.fromEntries(
                 models.map((node) => {
                   const rankDefinition = treeDefinitionItems.find(

@@ -21,7 +21,7 @@ async function getPossibleRanks(
       ...(lowestChildRank > 0 ? { rankid__lt: lowestChildRank } : {}),
     },
   });
-  return children.fetch({ limit: 0 }).then(({ models }) =>
+  return children.fetchPromise({ limit: 0 }).then(({ models }) =>
     // Remove ranks after enforced rank
     models
       .slice(0, models.findIndex((model) => model.get('isEnforced')) + 1)
@@ -46,18 +46,18 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
               ? -1
               : Math.min(...models.map((model) => model.get('rankId')))
           );
-    Promise.resolve(model.rget('parent'))
-      .then(async (parent) =>
-        Promise.resolve(parent.rget('definitionItem', true))
-      )
+    model
+      .rgetPromise('parent')
+      .then(async (parent) => parent.rgetPromise('definitionItem', true))
       .then((treeDefinitionItem) =>
         typeof treeDefinitionItem === 'object'
-          ? Promise.resolve(treeDefinitionItem.rget('treeDef', true)).then(
-              async ({ id }) =>
+          ? treeDefinitionItem
+              .rgetPromise('treeDef', true)
+              .then(async ({ id }) =>
                 lowestChildRank.then(async (rankId) =>
                   getPossibleRanks(rankId, treeDefinitionItem, id)
                 )
-            )
+              )
           : []
       )
       .then(setItems)

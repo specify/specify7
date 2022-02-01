@@ -39,7 +39,7 @@ export const fetchLocalOccurrences = async (
 
     if (typeof currentDetermination === 'undefined') return [];
 
-    const taxonResource = await currentDetermination.rget('taxon');
+    const taxonResource = await currentDetermination.rgetPromise('taxon');
     if (taxonResource === null) return [];
     else taxon = taxonResource;
   } else taxon = model as SpecifyResource<Taxon>;
@@ -159,7 +159,7 @@ export const fetchLocalOccurrences = async (
                   filters: { id: localityId },
                 });
                 locality
-                  .fetch({ limit: 1 })
+                  .fetchPromise({ limit: 1 })
                   .then(({ models }) => resolve(models[0]), console.error);
               }),
               false,

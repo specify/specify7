@@ -232,7 +232,7 @@ async function fetchListOfUsers(): Promise<
 > {
   const users = new schema.models.SpecifyUser.LazyCollection();
   return users
-    .fetch({
+    .fetchPromise({
       limit: 500,
     })
     .then(({ models }) =>

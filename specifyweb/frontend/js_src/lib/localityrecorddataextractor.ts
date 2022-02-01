@@ -110,7 +110,7 @@ async function recursiveResourceResolve(
     const currentRankName = formatTreeRank(currentRank.name);
     return [
       [...pastParts, currentRankName, ...nextPart],
-      await resource.rget(nextPart[0]),
+      await resource.rgetPromise(nextPart[0]),
     ];
   } else if (valueIsReferenceItem(currentPart[0])) {
     return Promise.all<RA<string>>(
@@ -128,7 +128,7 @@ async function recursiveResourceResolve(
       currentPart[0] === 'agent' && currentPart[1] === 'lastname';
     const nextResource = overwriteAgent
       ? await format(resource)
-      : await resource.rget(mappingPathToString(currentPart));
+      : await resource.rgetPromise(mappingPathToString(currentPart));
 
     return recursiveResourceResolve(nextResource, nextPart, filterFunction, [
       ...pastParts,

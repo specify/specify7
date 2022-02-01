@@ -101,7 +101,7 @@ export default UiPlugin.extend(
 
       Promise.all([
         this.user.fetch(),
-        this.allCollections.fetch({ limit: 0 }),
+        this.allCollections.fetchPromise({ limit: 0 }),
       ]).then(() => {
         this.el.textContent = adminText('collections');
         this.user.isNew() &&

@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import { assert } from './assert';
+import {assert} from './assert';
 
 
 var Base =  Backbone.Collection.extend({
@@ -137,6 +137,9 @@ var Base =  Backbone.Collection.extend({
             _(options).has('limit') && ( options.data.limit = options.limit );
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
             return self._fetch.then(function() { self._fetch = null; return self; });
+        },
+        fetchPromise(options){
+            return Promise.resolve(this.fetch(options));
         },
         fetchIfNotPopulated: function() {
             var _this = this;

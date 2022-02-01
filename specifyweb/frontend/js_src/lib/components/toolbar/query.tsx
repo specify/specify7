@@ -231,7 +231,7 @@ function QueryToolbarItem({
       filters: spQueryFilter ?? { specifyuser: userInformation.id },
     });
     queryModels
-      .fetch({ limit: QUERY_FETCH_LIMIT })
+      .fetchPromise({ limit: QUERY_FETCH_LIMIT })
       .then(({ models }) =>
         destructorCalled ? undefined : setQueries(models.map(serializeResource))
       )
@@ -475,7 +475,7 @@ function QueryExport({
           })
             .then(async ({ data: reportJson }) => {
               const report = new schema.models.SpReport.Resource(reportJson);
-              return report.rget('appResource');
+              return report.rgetPromise('appResource');
             })
             .then((appResource) =>
               navigation.go(`/specify/appresources/${appResource.id}/`)

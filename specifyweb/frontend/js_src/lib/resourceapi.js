@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import { assert } from './assert';
+import {assert} from './assert';
 import api, {makeResourceViewUrl} from './specifyapi';
 import * as querystring from './querystring';
 
@@ -305,6 +305,11 @@ function eventHandlerForToOne(related, field) {
         // the field that represents it
         rget: function(fieldName, prePop) {
             return this.getRelated(fieldName, {prePop: prePop});
+        },
+        // TODO: remove the need for this
+        // Like "rget", but returns native promise
+        rgetPromise: function(fieldName, prePop) {
+            return Promise.resolve(this.getRelated(fieldName, {prePop: prePop}));
         },
         // Duplicate definition for purposes of better typing:
         rgetCollection: function(fieldName, prePop) {

@@ -49,10 +49,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
 }) => UnFetchedCollection<SpecifyResource<SCHEMA>>;
 
 export type UnFetchedCollection<RESOURCE extends SpecifyResource<AnySchema>> = {
-  readonly fetch: (filter?: {
-    readonly limit: number;
-  }) => Promise<Collection<RESOURCE>>;
-  readonly fetchIfNotPopulated: (filter?: {
+  readonly fetchPromise: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<RESOURCE>>;
 };

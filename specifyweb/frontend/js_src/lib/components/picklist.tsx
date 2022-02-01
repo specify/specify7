@@ -84,7 +84,7 @@ export function PickListComboBox(
         props.items,
         props.resource,
       ]);
-  }, [props.items, props.resource, updateValue]);
+  }, [props.items, props.resource]);
 
   const errors = useSaveBlockers({
     model: props.model,
@@ -216,7 +216,8 @@ function AddingToPicklist({
           <Button.Green
             onClick={(): void => {
               handleLoading(true);
-              Promise.resolve(pickList.rgetCollection('pickListItems'))
+              pickList
+                .rgetCollection('pickListItems')
                 .then(async (items) => {
                   const item = new schema.models.PickListItem.Resource();
                   item.set('title', value);

@@ -15,7 +15,7 @@ async function getExtraPickLists(): Promise<RA<SerializedResource<PickList>>> {
     },
   });
   const prepTypeItems = await collection
-    .fetch({ limit: 0 })
+    .fetchPromise({ limit: 0 })
     .then(({ models }) =>
       // @ts-expect-error Skipped nullable fields
       models.map<SerializedResource<PickListItem>>((model) => ({
@@ -48,13 +48,11 @@ export async function getPickLists(): Promise<typeof pickLists> {
 
   const extraPickListsPromise = getExtraPickLists();
 
-  return Promise.resolve(collection.fetch({ limit: 0 })).then(
-    async ({ models }) => {
-      pickLists = [
-        ...models.map(serializeResource),
-        ...(await extraPickListsPromise),
-      ];
-      return pickLists;
-    }
-  );
+  return collection.fetchPromise({ limit: 0 }).then(async ({ models }) => {
+    pickLists = [
+      ...models.map(serializeResource),
+      ...(await extraPickListsPromise),
+    ];
+    return pickLists;
+  });
 }

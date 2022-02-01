@@ -71,11 +71,8 @@ export const fetchContext = Promise.all([fetchSchema, fetchDomain])
           );
           return typeof domainResource === 'undefined'
             ? undefined
-            : Promise.resolve(
-                domainResource.rget(
-                  `${unCapitalize(treeName) as 'geography'}TreeDef`
-                )
-              )
+            : domainResource
+                .rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
                 .then(async (model) =>
                   Promise.all([
                     model,

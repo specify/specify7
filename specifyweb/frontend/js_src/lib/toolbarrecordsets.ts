@@ -19,7 +19,7 @@ const menuItem: MenuItem = {
       },
     });
     return new RecordSetsDialog({
-      recordSets: recordSets.fetch({ limit: 5000 }),
+      recordSets: recordSets.fetchPromise({ limit: 5000 }),
       readOnly: userInformation.isReadOnly,
       onClose,
     }).render();
