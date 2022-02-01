@@ -18,11 +18,17 @@ import type {
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
 } from './customselectelement';
-import { CustomSelectElement, SuggestionBox } from './customselectelement';
+import {
+  CustomSelectElement,
+  CustomSelectType,
+  customSelectTypes,
+  SuggestionBox,
+} from './customselectelement';
 import { useId } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
+import { MappingLineData } from '../wbplanviewnavigator';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -43,10 +49,6 @@ type MappingLineBaseProps = {
   readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
   readonly readonly: boolean;
-};
-
-export type MappingPathProps = {
-  readonly mappingLineData: RA<MappingElementProps>;
 };
 
 export type MappingElementProps = {
@@ -181,6 +183,66 @@ export function ValidationButton(props: {
   );
 }
 
+export function getMappingLineProps({
+  mappingLineData,
+  openSelectElement,
+  customSelectType,
+  handleChange,
+  handleOpen,
+  handleClose,
+  handleAutoMapperSuggestionSelection,
+  autoMapperSuggestions,
+}: {
+  readonly mappingLineData: RA<MappingLineData>;
+  // Index of custom select element that should be open
+  readonly openSelectElement?: number;
+  readonly customSelectType: CustomSelectType;
+  readonly handleChange?: (payload: {
+    readonly index: number;
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
+  readonly handleOpen?: (index: number) => void;
+  readonly handleClose?: () => void;
+  readonly handleAutoMapperSuggestionSelection?: (suggestion: string) => void;
+  readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+}): RA<MappingElementProps> {
+  return mappingLineData.map((data, index) => {
+    const isOpen =
+      openSelectElement === index ||
+      // If it doesn't have a preview, than it is always open
+      !customSelectTypes[customSelectType].includes('preview');
+
+    return {
+      ...data,
+      customSelectType,
+      ...(Boolean(isOpen)
+        ? {
+            isOpen: true,
+            handleChange:
+              typeof handleChange === 'function'
+                ? (payload): void =>
+                    handleChange({
+                      index,
+                      ...payload,
+                    })
+                : undefined,
+            handleClose: handleClose?.bind(undefined, index),
+            autoMapperSuggestions,
+            handleAutoMapperSuggestionSelection,
+          }
+        : {
+            isOpen: false,
+            handleOpen: handleOpen?.bind(undefined, index),
+          }),
+    };
+  });
+}
+
 export function MappingLineComponent({
   lineData,
   headerName,
@@ -245,7 +307,9 @@ export function MappingLineComponent({
 
 export function MappingPathComponent({
   mappingLineData,
-}: MappingPathProps): JSX.Element {
+}: {
+  readonly mappingLineData: RA<MappingElementProps>;
+}): JSX.Element {
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (

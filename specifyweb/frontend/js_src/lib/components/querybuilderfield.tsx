@@ -8,7 +8,10 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import { mutateMappingPath } from '../wbplanviewutils';
 import { Button, className } from './basic';
 import { icons } from './icons';
-import { MappingPathComponent } from './wbplanviewcomponents';
+import {
+  getMappingLineProps,
+  MappingPathComponent,
+} from './wbplanviewcomponents';
 
 export function QueryLine({
   baseTableName,
@@ -42,11 +45,14 @@ export function QueryLine({
       lineRef.current?.focus();
   }, [isFocused]);
 
-  const lineData = getMappingLineData({
-    baseTableName,
-    mappingPath: field.mappingPath,
-    generateLastRelationshipData: true,
-    iterate: true,
+  const lineData = getMappingLineProps({
+    mappingLineData: getMappingLineData({
+      baseTableName,
+      mappingPath: field.mappingPath,
+      generateLastRelationshipData: true,
+      iterate: true,
+      showHiddenFields,
+    }),
     customSelectType: 'CLOSED_LIST',
     handleChange: (payload): void =>
       handleChange({
@@ -66,7 +72,6 @@ export function QueryLine({
     // TODO: detect outside click
     handleClose,
     openSelectElement: openedElement,
-    showHiddenFields,
   });
 
   return (

@@ -27,6 +27,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import type { HtmlGeneratorFieldData } from './wbplanviewcomponents';
 import {
   ButtonWithConfirmation,
+  getMappingLineProps,
   MappingPathComponent,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
@@ -121,10 +122,13 @@ export function ValidationResults(props: {
                 mappingPath: fieldPath,
                 iterate: true,
                 generateLastRelationshipData: false,
-                customSelectType: 'PREVIEW_LIST',
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
-              })}
+              }).map((data) => ({
+                ...data,
+                isOpen: true,
+                customSelectType: 'PREVIEW_LIST',
+              }))}
             />
           </Button.Simple>
         ))}
@@ -156,11 +160,16 @@ export function MappingView(props: {
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly showHiddenFields?: boolean;
 }): JSX.Element | null {
-  const mappingLineData = getMappingLineData({
-    baseTableName: props.baseTableName,
-    mappingPath: props.mappingPath,
-    generateLastRelationshipData: true,
-    iterate: true,
+  const mappingLineData = getMappingLineProps({
+    mappingLineData: getMappingLineData({
+      baseTableName: props.baseTableName,
+      mappingPath: props.mappingPath,
+      generateLastRelationshipData: true,
+      iterate: true,
+      getMappedFields: props.getMappedFields,
+      showHiddenFields: props.showHiddenFields,
+      mustMatchPreferences: props.mustMatchPreferences,
+    }),
     customSelectType: 'OPENED_LIST',
     handleChange({ isDoubleClick, ...rest }) {
       if (isDoubleClick) props.handleMapButtonClick?.();
@@ -170,9 +179,6 @@ export function MappingView(props: {
           isDoubleClick,
         });
     },
-    getMappedFields: props.getMappedFields,
-    showHiddenFields: props.showHiddenFields,
-    mustMatchPreferences: props.mustMatchPreferences,
   });
   const mapButtonIsEnabled =
     !props.readonly &&

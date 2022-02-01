@@ -13,14 +13,12 @@ export default function (): void {
             baseTableName: 'collectionobject',
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
             generateLastRelationshipData: true,
-            customSelectType: 'OPENED_LIST',
             showHiddenFields: false,
             iterate: true,
           },
         ],
         JSON.stringify([
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Collection Object',
             fieldsData: {
@@ -123,7 +121,6 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'toMany',
             selectLabel: 'Determination',
             fieldsData: {
@@ -150,7 +147,6 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Determination',
             fieldsData: {
@@ -209,7 +205,6 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'tree',
             selectLabel: 'Taxon',
             fieldsData: {
@@ -353,7 +348,6 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Taxon',
             fieldsData: {

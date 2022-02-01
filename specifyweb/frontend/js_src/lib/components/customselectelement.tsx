@@ -61,7 +61,7 @@ export type CustomSelectType =
   | 'BASE_TABLE_SELECTION_LIST'
   | 'MAPPING_OPTIONS_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
-const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
+export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
   // Used in the mapping view
   OPENED_LIST: [
     'interactive',

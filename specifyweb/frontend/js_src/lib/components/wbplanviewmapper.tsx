@@ -11,9 +11,11 @@ import type { State } from 'typesafe-reducer';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { getModel } from '../schema';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import type { ColumnOptions } from '../uploadplantomappingstree';
+import { columnOptionsAreDefault } from '../wbplanviewlinesgetter';
 import { reducer } from '../wbplanviewmappingreducer';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
@@ -27,10 +29,15 @@ import {
 } from '../wbplanviewutils';
 import { Button, Ul } from './basic';
 import { useId } from './hooks';
+import { icons } from './icons';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
-import type { MappingPathProps } from './wbplanviewcomponents';
-import { MappingLineComponent, ValidationButton } from './wbplanviewcomponents';
+import type { MappingElementProps } from './wbplanviewcomponents';
+import {
+  getMappingLineProps,
+  MappingLineComponent,
+  ValidationButton,
+} from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
 import {
   ChangeBaseTable,
@@ -43,7 +50,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { getModel } from '../schema';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -54,6 +60,8 @@ export type AutoMapperScope =
   | 'autoMapper'
   // Suggestion boxes - used when opening a picklist
   | 'suggestion';
+
+// All mapping path parts are expected to be in lower case
 export type MappingPath = RA<string>;
 export type FullMappingPath = Readonly<
   [...MappingPath, MappingType, string, ColumnOptions]
@@ -84,7 +92,8 @@ export type MappingLine = {
   readonly isFocused?: boolean;
 };
 
-export type AutoMapperSuggestion = MappingPathProps & {
+export type AutoMapperSuggestion = {
+  readonly mappingLineData: RA<MappingElementProps>;
   readonly mappingPath: MappingPath;
 };
 
@@ -480,11 +489,12 @@ export function WbPlanViewMapper(props: {
               index,
             });
 
-          const lineData = getMappingLineData({
-            baseTableName: props.baseTableName,
-            mappingPath,
-            generateLastRelationshipData: true,
-            iterate: true,
+          const openSelectElement =
+            state.openSelectElement?.line === line
+              ? state.openSelectElement.index
+              : undefined;
+
+          const lineData = getMappingLineProps({
             customSelectType: 'CLOSED_LIST',
             handleChange: props.readonly
               ? undefined
@@ -498,41 +508,84 @@ export function WbPlanViewMapper(props: {
                     type: 'AutoMapperSuggestionSelectedAction',
                     suggestion,
                   }),
-            getMappedFields: getMappedFieldsBind,
-            openSelectElement:
-              state.openSelectElement?.line === line
-                ? state.openSelectElement.index
-                : undefined,
-            showHiddenFields: state.showHiddenFields,
+            openSelectElement,
             autoMapperSuggestions:
               (!props.readonly && state.autoMapperSuggestions) || [],
-            mustMatchPreferences: state.mustMatchPreferences,
-            columnOptions,
-            mappingOptionsMenuGenerator: () =>
-              mappingOptionsMenu({
-                id: (suffix) => id(`column-options-${line}-${suffix}`),
-                readonly: props.readonly,
-                columnOptions,
-                onChangeMatchBehaviour: (matchBehavior) =>
-                  dispatch({
-                    type: 'ChangeMatchBehaviorAction',
-                    line,
-                    matchBehavior,
-                  }),
-                onToggleAllowNulls: (allowNull) =>
-                  dispatch({
-                    type: 'ToggleAllowNullsAction',
-                    line,
-                    allowNull,
-                  }),
-                onChangeDefaultValue: (defaultValue) =>
-                  dispatch({
-                    type: 'ChangeDefaultValue',
-                    line,
-                    defaultValue,
-                  }),
-              }),
+            mappingLineData: getMappingLineData({
+              baseTableName: props.baseTableName,
+              mappingPath,
+              generateLastRelationshipData: true,
+              iterate: true,
+              getMappedFields: getMappedFieldsBind,
+              showHiddenFields: state.showHiddenFields,
+              mustMatchPreferences: state.mustMatchPreferences,
+            }),
           });
+
+          // Add column options at the end of the line
+          const fullLineData = mappingPathIsComplete(mappingPath)
+            ? [
+                ...lineData,
+                {
+                  customSelectType: 'MAPPING_OPTIONS_LIST',
+                  customSelectSubtype: 'simple',
+                  fieldsData: mappingOptionsMenu({
+                    id: (suffix) => id(`column-options-${line}-${suffix}`),
+                    readonly: props.readonly,
+                    columnOptions,
+                    onChangeMatchBehaviour: (matchBehavior) =>
+                      dispatch({
+                        type: 'ChangeMatchBehaviorAction',
+                        line,
+                        matchBehavior,
+                      }),
+                    onToggleAllowNulls: (allowNull) =>
+                      dispatch({
+                        type: 'ToggleAllowNullsAction',
+                        line,
+                        allowNull,
+                      }),
+                    onChangeDefaultValue: (defaultValue) =>
+                      dispatch({
+                        type: 'ChangeDefaultValue',
+                        line,
+                        defaultValue,
+                      }),
+                  }),
+                  previewOption: {
+                    optionName: 'mappingOptions',
+                    optionLabel: (
+                      <span
+                        aria-label={wbText('mappingOptions')}
+                        title={wbText('mappingOptions')}
+                      >
+                        {icons.cog}
+                      </span>
+                    ),
+                    tableName: '',
+                    isRelationship: !columnOptionsAreDefault(columnOptions),
+                  },
+                  selectLabel: wbText('mappingOptions'),
+                  ...(openSelectElement === lineData.length
+                    ? {
+                        isOpen: true,
+                        handleChange: undefined,
+                        handleClose: handleClose?.bind(
+                          undefined,
+                          lineData.length
+                        ),
+                      }
+                    : {
+                        isOpen: false,
+                        handleOpen: handleOpen?.bind(
+                          undefined,
+                          lineData.length
+                        ),
+                      }),
+                } as const,
+              ]
+            : lineData;
+
           return (
             <MappingLineComponent
               key={line}
@@ -560,7 +613,7 @@ export function WbPlanViewMapper(props: {
                         type: 'CloseSelectElementAction',
                       });
                   else if (key === 'ArrowRight')
-                    if (openSelectElement + 1 < lineData.length)
+                    if (openSelectElement + 1 < fullLineData.length)
                       handleOpen(openSelectElement + 1);
                     else
                       dispatch({
@@ -570,7 +623,7 @@ export function WbPlanViewMapper(props: {
                   return;
                 }
 
-                if (key === 'ArrowLeft') handleOpen(lineData.length - 1);
+                if (key === 'ArrowLeft') handleOpen(fullLineData.length - 1);
                 else if (key === 'ArrowRight' || key === 'Enter') handleOpen(0);
                 else if (key === 'ArrowUp' && line > 0)
                   dispatch({
@@ -589,7 +642,7 @@ export function WbPlanViewMapper(props: {
                   line,
                 })
               }
-              lineData={lineData}
+              lineData={fullLineData}
             />
           );
         })}

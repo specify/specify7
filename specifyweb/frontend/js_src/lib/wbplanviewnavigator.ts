@@ -6,26 +6,21 @@
  */
 
 import * as cache from './cache';
-import type {
-  CustomSelectSubtype,
-  CustomSelectType,
-} from './components/customselectelement';
+import type { CustomSelectSubtype } from './components/customselectelement';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './components/wbplanviewcomponents';
 import type {
-  AutoMapperSuggestion,
   MappingPath,
   RelationshipType,
 } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import commonText from './localization/common';
-import wbText from './localization/workbench';
+import { getModel } from './schema';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { defined } from './types';
-import type { ColumnOptions } from './uploadplantomappingstree';
-import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -46,10 +41,6 @@ import {
   isCircularRelationship,
   isTooManyInsideOfTooMany,
 } from './wbplanviewmodelhelper';
-import React from 'react';
-import { icons } from './components/icons';
-import { getModel } from './schema';
-import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 
 type FindNextNavigationDirection<RETURN_STRUCTURE> = {
   readonly finished: boolean;
@@ -214,7 +205,7 @@ export function navigator<RETURN_STRUCTURE>({
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  // Used internally to make navigator call itselfmultiple times
+  // Used internally to make navigator call itself multiple times
   readonly recursivePayload?: {
     readonly tableName: string;
     readonly parentTableName: string;
@@ -298,9 +289,7 @@ export function navigator<RETURN_STRUCTURE>({
       config: {},
     });
 
-  return schemaNavigatorResults.length === 0
-    ? callbacks.getFinalData(callbackPayload)
-    : schemaNavigatorResults;
+  return schemaNavigatorResults;
 }
 
 function getNavigationChildrenTypes(
@@ -427,84 +416,54 @@ export function getTableFromMappingPath({
   return tableName;
 }
 
-/**
- * Get data required to build a mapping line from a source mapping path
- * and other options
- */
+export type MappingLineData = Pick<
+  MappingElementProps,
+  'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
+>;
+
+/** Get data required to build a mapping line from a source mapping path */
 export function getMappingLineData({
   baseTableName,
   mappingPath: readonlyMappingPath = ['0'],
-  openSelectElement,
   iterate = false,
   generateLastRelationshipData = true,
-  customSelectType = 'CLOSED_LIST',
-  handleChange,
-  handleOpen,
-  handleClose,
-  handleAutoMapperSuggestionSelection,
   getMappedFields,
-  autoMapperSuggestions,
   showHiddenFields = false,
   mustMatchPreferences = {},
-  columnOptions,
-  mappingOptionsMenuGenerator = undefined,
 }: {
   readonly baseTableName: string;
   // The mapping path
   readonly mappingPath?: MappingPath;
-  // Index of custom select element that should be open
-  readonly openSelectElement?: number;
   /*
-   * {bool} if False, returns data only for the last element of the mapping
+   * If false, returns data only for the last element of the mapping
    * path
    * Else returns data for each mapping path part
    */
   readonly iterate?: boolean;
   /*
-   * {bool} whether to generate data for the last element of the mapping
-   * path if the last element is a relationship
+   * If last mappingPath part is a relationship and
+   * generateLastRelationshipData is true, then the returned array
+   * would include fields of that relationship
    */
   readonly generateLastRelationshipData?: boolean;
-  readonly customSelectType?: CustomSelectType;
-  readonly showHiddenFields?: boolean;
-  readonly handleChange?: (payload: {
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly currentTableName: string;
-    readonly newTableName: string;
-    readonly isDoubleClick: boolean;
-  }) => void;
-  readonly handleOpen?: (index: number) => void;
-  readonly handleClose?: () => void;
-  readonly handleAutoMapperSuggestionSelection?: (suggestion: string) => void;
   readonly getMappedFields?: GetMappedFieldsBind;
-  readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+  readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
-  readonly columnOptions?: ColumnOptions;
-  readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
-}): MappingElementProps[] {
+}): RA<MappingLineData> {
   const internalState: {
     mappingPathPosition: number;
-    mappingLineData: MappingElementProps[];
-    customSelectType: CustomSelectType;
+    mappingLineData: MappingLineData[];
     customSelectSubtype?: CustomSelectSubtype;
-    isOpen?: boolean;
     nextMappingPathElement?: string;
     defaultValue?: string;
     currentMappingPathPart?: string;
     resultFields: R<HtmlGeneratorFieldData>;
     mappedFields: string[];
-    generateMappingOptionsMenu: boolean;
   } = {
     mappingPathPosition: -1,
     mappingLineData: [],
-    customSelectType,
     mappedFields: [],
     resultFields: {},
-    isOpen: false,
-    generateMappingOptionsMenu: false,
   };
 
   const mappingPath: Writable<MappingPath> = Array.from(readonlyMappingPath);
@@ -528,19 +487,7 @@ export function getMappingLineData({
     // Show a default field, even if it is hidden
     fieldName === internalState.defaultValue;
 
-  function fieldIsDefault(
-    fieldName: string,
-    defaultValue: string | undefined,
-    isRelationship: boolean
-  ): boolean {
-    const isDefault = fieldName === defaultValue;
-    if (isDefault)
-      internalState.generateMappingOptionsMenu =
-        !isRelationship && typeof mappingOptionsMenuGenerator !== 'undefined';
-    return isDefault;
-  }
-
-  const callbacks: NavigationCallbacks<MappingElementProps> = {
+  const callbacks: NavigationCallbacks<MappingLineData> = {
     iterate: () => firstIterationRequirement() && secondIterationRequirement(),
 
     getNextPathElement({ tableName }) {
@@ -574,12 +521,6 @@ export function getMappingLineData({
     },
 
     navigatorInstancePre({ tableName }) {
-      internalState.isOpen =
-        openSelectElement === internalState.mappingPathPosition + 1 ||
-        ['OPENED_LIST', 'BASE_TABLE_SELECTION_LIST'].includes(
-          internalState.customSelectType
-        );
-
       internalState.customSelectSubtype = 'simple';
 
       const localMappingPath = mappingPath.slice(
@@ -620,8 +561,6 @@ export function getMappingLineData({
         typeof getMappedFields === 'function'
           ? Object.keys(getMappedFields(localMappingPath))
           : [];
-
-      internalState.generateMappingOptionsMenu = false;
     },
 
     handleToManyChildren({ tableName, parentTableName }) {
@@ -750,11 +689,7 @@ export function getMappingLineData({
                   isRelationship,
                 isRequired: isRequired && !mustMatchPreferences[tableName],
                 isHidden,
-                isDefault: fieldIsDefault(
-                  fieldName,
-                  internalState.defaultValue,
-                  isRelationship
-                ),
+                isDefault: fieldName === internalState.defaultValue,
                 isRelationship,
                 tableName: fieldTableName,
               },
@@ -763,32 +698,11 @@ export function getMappingLineData({
       )),
 
     getInstanceData({ tableName }) {
-      const mappingPathPosition = internalState.mappingPathPosition + 1;
       return {
-        customSelectType: internalState.customSelectType,
         customSelectSubtype: internalState.customSelectSubtype,
         selectLabel: defined(getModel(tableName)).getLocalizedName(),
         fieldsData: internalState.resultFields,
         tableName,
-        ...(Boolean(internalState.isOpen)
-          ? {
-              isOpen: true,
-              handleChange:
-                typeof handleChange === 'function'
-                  ? (payload): void =>
-                      handleChange({
-                        index: mappingPathPosition,
-                        ...payload,
-                      })
-                  : undefined,
-              handleClose: handleClose?.bind(undefined, mappingPathPosition),
-              autoMapperSuggestions,
-              handleAutoMapperSuggestionSelection,
-            }
-          : {
-              isOpen: false,
-              handleOpen: handleOpen?.bind(undefined, mappingPathPosition),
-            }),
       };
     },
 
@@ -799,57 +713,13 @@ export function getMappingLineData({
       return data;
     },
 
-    getFinalData: () =>
-      internalState.generateMappingOptionsMenu
-        ? [
-            ...internalState.mappingLineData,
-            {
-              customSelectType: 'MAPPING_OPTIONS_LIST',
-              customSelectSubtype: 'simple',
-              fieldsData: mappingOptionsMenuGenerator!(),
-              previewOption: {
-                optionName: 'mappingOptions',
-                optionLabel: gear,
-                tableName: '',
-                isRelationship: !columnOptionsAreDefault(columnOptions!),
-              },
-              selectLabel: wbText('mappingOptions'),
-              ...(openSelectElement === internalState.mappingLineData.length
-                ? {
-                    isOpen: true,
-                    handleChange: undefined,
-                    handleClose: handleClose?.bind(
-                      undefined,
-                      internalState.mappingLineData.length
-                    ),
-                    autoMapperSuggestions,
-                    handleAutoMapperSuggestionSelection,
-                  }
-                : {
-                    isOpen: false,
-                    handleOpen: handleOpen?.bind(
-                      undefined,
-                      internalState.mappingLineData.length
-                    ),
-                  }),
-            },
-          ]
-        : internalState.mappingLineData,
+    getFinalData: () => internalState.mappingLineData,
   };
 
-  return navigator<MappingElementProps>({
+  return navigator<MappingLineData>({
     callbacks,
     config: {
       baseTableName,
     },
   });
 }
-
-const gear = React.createElement(
-  'span',
-  {
-    'aria-label': wbText('mappingOptions'),
-    title: wbText('mappingOptions'),
-  },
-  icons.cog
-);

@@ -378,7 +378,6 @@ export async function getAutoMapperSuggestions({
     mappingPath: mappingPathIsComplete(localMappingPath)
       ? localMappingPath
       : localMappingPath.slice(0, -1),
-    customSelectType: 'SUGGESTION_LIST',
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
   });
@@ -424,8 +423,13 @@ export async function getAutoMapperSuggestions({
         baseTableName,
         mappingPath: autoMapperResult,
         iterate: true,
-        customSelectType: 'SUGGESTION_LINE_LIST',
         getMappedFields: getMappedFields.bind(undefined, lines),
-      }).slice(baseMappingPath.length - pathOffset),
+      })
+        .slice(baseMappingPath.length - pathOffset)
+        .map((data) => ({
+          ...data,
+          customSelectType: 'SUGGESTION_LINE_LIST',
+          isOpen: true,
+        })),
     }));
 }
