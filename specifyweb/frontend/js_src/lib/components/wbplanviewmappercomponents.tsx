@@ -124,6 +124,7 @@ export function ValidationResults(props: {
                 generateLastRelationshipData: false,
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
+                generateFieldData: 'selectedOnly',
               }).map((data) => ({
                 ...data,
                 isOpen: true,
@@ -169,6 +170,7 @@ export function MappingView(props: {
       getMappedFields: props.getMappedFields,
       showHiddenFields: props.showHiddenFields,
       mustMatchPreferences: props.mustMatchPreferences,
+      generateFieldData: 'all',
     }),
     customSelectType: 'OPENED_LIST',
     handleChange({ isDoubleClick, ...rest }) {

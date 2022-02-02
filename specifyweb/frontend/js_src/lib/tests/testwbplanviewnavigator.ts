@@ -15,6 +15,7 @@ export default function (): void {
             generateLastRelationshipData: true,
             showHiddenFields: false,
             iterate: true,
+            generateFieldData: 'all',
           },
         ],
         JSON.stringify([

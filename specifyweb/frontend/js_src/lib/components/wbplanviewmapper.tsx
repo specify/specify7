@@ -519,6 +519,7 @@ export function WbPlanViewMapper(props: {
               getMappedFields: getMappedFieldsBind,
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
+              generateFieldData: 'all',
             }),
           });
 

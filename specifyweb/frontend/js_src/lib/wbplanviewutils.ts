@@ -138,10 +138,6 @@ export function deduplicateMappings(
 /**
  * Get list of tables available for must match given current Mapping Paths
  * and merge that list with the current must match config
- *
- * @remarks
- * This is an expensive operation since it runs "getMappingLineData"
- * (with iterate:true) for each line
  */
 export function getMustMatchTables({
   baseTableName,
@@ -159,36 +155,21 @@ export function getMustMatchTables({
       mappingPath,
       baseTableName,
       iterate: true,
-    }).filter((mappingElementData, index, list) => {
-      if (
+      generateFieldData: 'none',
+    }).filter(
+      (mappingElementData, index, list) =>
         // Exclude base table
-        index <= Number(baseTableIsTree) ||
+        index > Number(baseTableIsTree) &&
         // Exclude -to-many
-        mappingElementData.customSelectSubtype === 'toMany'
-      )
-        return false;
-
-      if (typeof list[index - 1] === 'undefined') {
-        if (
-          baseTableName === 'collectionobject' &&
-          list[index].tableName === 'collectingevent'
-        )
-          return false;
-      } else {
+        mappingElementData.customSelectSubtype !== 'toMany' &&
         // Exclude direct child of -to-many
-        if (list[index - 1].customSelectSubtype === 'toMany') return false;
-
+        list[index - 1]?.customSelectSubtype !== 'toMany' &&
         // Exclude embedded collecting event
-        if (
-          schema.embeddedCollectingEvent &&
-          list[index - 1].tableName === 'collectionobject' &&
-          list[index].tableName === 'collectingevent'
-        )
-          return false;
-      }
-
-      return true;
-    })
+        (!schema.embeddedCollectingEvent ||
+          (list[index - 1]?.tableName ?? baseTableName) !==
+            'collectionobject' ||
+          list[index].tableName !== 'collectingevent')
+    )
   );
 
   const tables = arrayOfMappingLineData
@@ -201,13 +182,12 @@ export function getMustMatchTables({
         // Exclude embedded paleo context
         (!schema.embeddedPaleoContext || tableName !== 'paleocontext')
     );
-  const distinctListOfTables = Array.from(new Set(tables));
 
   return {
     ...Object.fromEntries(
-      distinctListOfTables.map((tableName) => [
+      Array.from(new Set(tables), (tableName) => [
         tableName,
-        // Whether to check it by default
+        // Whether "mustMatch" is checked by default
         tableName === 'preptype' && !('preptype' in mustMatchPreferences),
       ])
     ),
@@ -309,10 +289,10 @@ export function mutateMappingPath({
    * current value and next value
    */
   const currentRelationshipType =
-    dataModelStorage.tables[currentTableName]?.fields[mappingPath[index] || '']
+    dataModelStorage.tables[currentTableName]?.[mappingPath[index] || '']
       ?.type ?? '';
   const newRelationshipType =
-    dataModelStorage.tables[newTableName]?.fields[newValue]?.type ?? '';
+    dataModelStorage.tables[newTableName]?.[newValue]?.type ?? '';
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
@@ -380,6 +360,7 @@ export async function getAutoMapperSuggestions({
       : localMappingPath.slice(0, -1),
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
+    generateFieldData: 'all',
   });
 
   // Don't show suggestions if picklist has only one field / no fields
@@ -424,6 +405,7 @@ export async function getAutoMapperSuggestions({
         mappingPath: autoMapperResult,
         iterate: true,
         getMappedFields: getMappedFields.bind(undefined, lines),
+        generateFieldData: 'selectedOnly',
       })
         .slice(baseMappingPath.length - pathOffset)
         .map((data) => ({

@@ -69,15 +69,14 @@ export function generateMappingPathPreview(
     baseTableName,
     mappingPath,
     iterate: true,
+    generateFieldData: 'selectedOnly',
   });
 
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
     ...mappingLineData.map(
       (mappingElementData) =>
-        Object.values(mappingElementData.fieldsData).find(
-          ({ isDefault }) => isDefault
-        )?.optionLabel as string
+        Object.values(mappingElementData.fieldsData)[0]?.optionLabel as string
     ),
   ];
 

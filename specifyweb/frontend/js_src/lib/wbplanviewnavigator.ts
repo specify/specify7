@@ -299,7 +299,7 @@ function getNavigationChildrenTypes(
   tableName: string
 ) {
   const parentRelationshipType: RelationshipType | undefined = (
-    dataModelStorage.tables[parentTableName]?.fields[
+    dataModelStorage.tables[parentTableName]?.[
       parentTableRelationshipName
     ] as DataModelRelationship
   )?.type;
@@ -406,6 +406,7 @@ export function getTableFromMappingPath({
   const tableName = getMappingLineData({
     baseTableName,
     mappingPath: canonicalMappingPath,
+    generateFieldData: 'none',
   }).slice(-1)[0]?.tableName;
 
   if (typeof tableName === 'undefined')
@@ -426,6 +427,7 @@ export function getMappingLineData({
   baseTableName,
   mappingPath: readonlyMappingPath = ['0'],
   iterate = false,
+  generateFieldData = 'all',
   generateLastRelationshipData = true,
   getMappedFields,
   showHiddenFields = false,
@@ -440,6 +442,12 @@ export function getMappingLineData({
    * Else returns data for each mapping path part
    */
   readonly iterate?: boolean;
+  /*
+   * "none" - fieldsData would be an empty object
+   * "selectedOnly" - fieldsData would only have data for the selected field
+   * "all" - fieldsData has data for all files
+   */
+  readonly generateFieldData: 'none' | 'selectedOnly' | 'all';
   /*
    * If last mappingPath part is a relationship and
    * generateLastRelationshipData is true, then the returned array
@@ -511,7 +519,7 @@ export function getMappingLineData({
       return {
         nextPathElementName,
         nextPathElement:
-          dataModelStorage.tables[tableName].fields[nextPathElementName],
+          dataModelStorage.tables[tableName][nextPathElementName],
         nextRealPathElementName:
           valueIsTreeRank(nextPathElementName) ||
           valueIsReferenceItem(nextPathElementName)
@@ -573,29 +581,34 @@ export function getMappingLineData({
         internalState.mappedFields
       );
 
-      for (let index = 1; index <= maxMappedElementNumber; index += 1) {
-        const mappedObjectName = formatReferenceItem(index);
+      if (generateFieldData !== 'none')
+        for (let index = 1; index <= maxMappedElementNumber; index += 1) {
+          const mappedObjectName = formatReferenceItem(index);
+          const isDefault = mappedObjectName === internalState.defaultValue;
+          if (isDefault || generateFieldData === 'all')
+            internalState.resultFields[mappedObjectName] = {
+              optionLabel: mappedObjectName,
+              isEnabled: true,
+              isRequired: false,
+              isHidden: false,
+              isRelationship: true,
+              isDefault,
+              tableName,
+            };
+        }
 
-        internalState.resultFields[mappedObjectName] = {
-          optionLabel: mappedObjectName,
-          isEnabled: true,
-          isRequired: false,
-          isHidden: false,
-          isRelationship: true,
-          isDefault: mappedObjectName === internalState.defaultValue,
-          tableName,
-        };
-      }
+      const isToOne =
+        getModel(parentTableName ?? '')?.getField(
+          internalState.currentMappingPathPart ?? ''
+        )?.type === 'zero-to-one';
 
-      /*
-       * Allow only a single -to-many reference number for `zero-to-one`
-       * relationships
-       */
       if (
-        maxMappedElementNumber < 1 ||
-        !dataModelStorage.originalRelationships['zero-to-one']?.[
-          parentTableName ?? ''
-        ]?.includes(internalState.currentMappingPathPart ?? '')
+        generateFieldData === 'all' &&
+        /*
+         * Allow only a single -to-many reference number for `zero-to-one`
+         * relationships
+         */
+        (maxMappedElementNumber < 1 || !isToOne)
       )
         internalState.resultFields.add = {
           optionLabel: commonText('add'),
@@ -610,23 +623,36 @@ export function getMappingLineData({
 
     handleTreeRanks({ tableName }) {
       internalState.customSelectSubtype = 'tree';
-      internalState.resultFields = Object.fromEntries(
-        getTreeDefinitionItems(tableName as 'Geography', false).map(
-          ({ name, isEnforced, title }) => [
-            formatTreeRank(name),
-            {
-              optionLabel: title ?? name,
-              isEnabled: true,
-              isRequired:
-                isEnforced === true && !mustMatchPreferences[tableName],
-              isHidden: false,
-              isRelationship: true,
-              isDefault: formatTreeRank(name) === internalState.defaultValue,
-              tableName,
-            },
-          ]
-        )
-      );
+      internalState.resultFields =
+        generateFieldData === 'none'
+          ? {}
+          : Object.fromEntries(
+              getTreeDefinitionItems(tableName as 'Geography', false)
+                .map(({ name, isEnforced, title }) => {
+                  const isDefault =
+                    formatTreeRank(name) === internalState.defaultValue;
+                  return isDefault || generateFieldData === 'all'
+                    ? ([
+                        formatTreeRank(name),
+                        {
+                          optionLabel: title ?? name,
+                          isEnabled: true,
+                          isRequired:
+                            isEnforced === true &&
+                            !mustMatchPreferences[tableName],
+                          isHidden: false,
+                          isRelationship: true,
+                          isDefault,
+                          tableName,
+                        } as HtmlGeneratorFieldData,
+                      ] as const)
+                    : undefined;
+                })
+                .filter(
+                  (entry): entry is [string, HtmlGeneratorFieldData] =>
+                    typeof entry !== 'undefined'
+                )
+            );
     },
 
     handleSimpleFields: ({
@@ -634,68 +660,75 @@ export function getMappingLineData({
       parentTableName,
       parentRelationshipType,
     }) =>
-      (internalState.resultFields = Object.fromEntries(
-        Object.entries(dataModelStorage.tables[tableName].fields)
-          .filter(
-            ([
-              fieldName,
-              {
-                isRelationship,
-                type: relationshipType,
-                isHidden,
-                foreignName,
-                tableName: fieldTableName,
-              },
-            ]) =>
-              (!isRelationship ||
-                !isCircularRelationship({
-                  // Skip circular relationships
-                  targetTableName: fieldTableName,
-                  parentTableName,
-                  foreignName,
-                  relationshipKey: fieldName,
-                  currentMappingPathPart: internalState.currentMappingPathPart,
-                  tableName,
-                })) &&
-              /*
-               * Skip -to-many inside -to-many
-               */
-              !isTooManyInsideOfTooMany(
-                relationshipType,
-                parentRelationshipType
-              ) &&
-              // Skip hidden fields when user decided to hide them
-              isFieldVisible(showHiddenFields, isHidden, fieldName)
-          )
-          .map(
-            ([
-              fieldName,
-              {
-                isRelationship,
-                isHidden,
-                isRequired,
-                label,
-                tableName: fieldTableName,
-              },
-            ]) => [
-              fieldName,
-              {
-                optionLabel: label,
-                // Enable field
-                isEnabled:
-                  // If it is not mapped
-                  !internalState.mappedFields.includes(fieldName) ||
-                  // Or is a relationship,
-                  isRelationship,
-                isRequired: isRequired && !mustMatchPreferences[tableName],
-                isHidden,
-                isDefault: fieldName === internalState.defaultValue,
-                isRelationship,
-                tableName: fieldTableName,
-              },
-            ]
-          )
-      )),
+      (internalState.resultFields =
+        generateFieldData === 'none'
+          ? {}
+          : Object.fromEntries(
+              Object.entries(dataModelStorage.tables[tableName])
+                .filter(
+                  ([
+                    fieldName,
+                    {
+                      isRelationship,
+                      type: relationshipType,
+                      isHidden,
+                      foreignName,
+                      tableName: fieldTableName,
+                    },
+                  ]) =>
+                    generateFieldData === 'all' ||
+                    fieldName === internalState.defaultValue ||
+                    ((!isRelationship ||
+                      !isCircularRelationship({
+                        // Skip circular relationships
+                        targetTableName: fieldTableName,
+                        parentTableName,
+                        foreignName,
+                        relationshipKey: fieldName,
+                        currentMappingPathPart:
+                          internalState.currentMappingPathPart,
+                        tableName,
+                      })) &&
+                      /*
+                       * Skip -to-many inside -to-many
+                       */
+                      !isTooManyInsideOfTooMany(
+                        relationshipType,
+                        parentRelationshipType
+                      ) &&
+                      // Skip hidden fields when user decided to hide them
+                      isFieldVisible(showHiddenFields, isHidden, fieldName))
+                )
+                .map(
+                  ([
+                    fieldName,
+                    {
+                      isRelationship,
+                      isHidden,
+                      isRequired,
+                      label,
+                      tableName: fieldTableName,
+                    },
+                  ]) => [
+                    fieldName,
+                    {
+                      optionLabel: label,
+                      // Enable field
+                      isEnabled:
+                        // If it is not mapped
+                        !internalState.mappedFields.includes(fieldName) ||
+                        // Or is a relationship,
+                        isRelationship,
+                      isRequired:
+                        isRequired && !mustMatchPreferences[tableName],
+                      isHidden,
+                      isDefault: fieldName === internalState.defaultValue,
+                      isRelationship,
+                      tableName: fieldTableName,
+                    },
+                  ]
+                )
+            )),
 
     getInstanceData({ tableName }) {
       return {

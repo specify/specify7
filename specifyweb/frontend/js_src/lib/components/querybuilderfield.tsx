@@ -52,6 +52,7 @@ export function QueryLine({
       generateLastRelationshipData: true,
       iterate: true,
       showHiddenFields,
+      generateFieldData: 'all',
     }),
     customSelectType: 'CLOSED_LIST',
     handleChange: (payload): void =>
