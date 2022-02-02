@@ -16,7 +16,7 @@ import dataModelStorage from './wbplanviewmodel';
 
 /**
  * Returns whether relationship is a -to-many
- *	(e.x. one-to-many or many-to-many)
+ *  (e.x. one-to-many or many-to-many)
  *
  */
 export const relationshipIsToMany = (
@@ -127,7 +127,7 @@ export const findDuplicateMappings = (
   return duplicateIndexes;
 };
 
-// Replaces all to-many reference numbers with #1
+// Replaces all -to-many indexes with #1
 export const getCanonicalMappingPath = (
   mappingPath: MappingPath
 ): MappingPath =>
@@ -137,8 +137,15 @@ export const getCanonicalMappingPath = (
       : mappingPathPart
   );
 
+export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
+  mappingPath.filter(
+    (mappingPathPart) =>
+      !valueIsReferenceItem(mappingPathPart) &&
+      !valueIsTreeRank(mappingPathPart)
+  );
+
 /**
- * Rebases -to-many reference numbers to make sure there are no skipped indexes
+ * Rebases -to-many indexes to make sure there are no skipped indexes
  *
  * @example
  * Given this input:

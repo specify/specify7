@@ -115,7 +115,6 @@ export const spanNumber =
     minOutput;
 
 /** Get Dictionary's key in a case insensitive way */
-// FIXME: use this everywhere
 export const caseInsensitiveHash = <
   KEY extends string,
   DICTIONARY extends RR<KEY, unknown>

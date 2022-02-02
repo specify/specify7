@@ -37,13 +37,6 @@ export type CacheDefinitions = {
     // Remembers the chosen overlays (markers/polygons/boundaries/...)
     readonly [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
   };
-  readonly wbPlanViewNavigatorTables: {
-    // eslint-disable-next-line multiline-comment-style, capitalized-comments
-    // prettier-ignore
-    // Output of getMappingLineData()
-    readonly
-    [key in string]: string;
-  };
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
   };

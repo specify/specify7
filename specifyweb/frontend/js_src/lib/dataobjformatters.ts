@@ -71,7 +71,7 @@ export const fetchFormatters: Promise<{
               })
             ).filter(({ fieldName }) => fieldName.length > 0),
           })
-        ).filter(({ fields }) => fields.length === 0);
+        ).filter(({ fields }) => fields.length > 0);
         // External DataObjFormatters are not supported
         if (fields.length === 0) return undefined;
         return {
@@ -132,8 +132,8 @@ export async function format(
 
   return Promise.all(
     fields.map(async ({ fieldName, formatter, separator, fieldFormatter }) => {
-      const formatted = (
-        (await resource.rgetPromise(fieldName)) as Promise<
+      const formatted = await (
+        resource.rgetPromise(fieldName) as Promise<
           string | SpecifyResource<AnySchema> | undefined
         >
       ).then(async (value) =>

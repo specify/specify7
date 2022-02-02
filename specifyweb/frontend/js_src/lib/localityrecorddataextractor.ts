@@ -94,10 +94,7 @@ async function recursiveResourceResolve(
     await resource.fetchIfNotPopulated();
 
   if (valueIsTreeRank(currentPart[0])) {
-    const treeTableName = getTableFromMappingPath({
-      baseTableName: 'locality',
-      mappingPath: pastParts,
-    });
+    const treeTableName = getTableFromMappingPath('locality', pastParts);
     const tableRanks = getTreeDefinitionItems(
       treeTableName as 'Geography',
       false

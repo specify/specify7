@@ -28,7 +28,6 @@ import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
 import {NotFoundView} from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
-import dataModelStorage from './wbplanviewmodel';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
 import {
@@ -56,6 +55,8 @@ import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
 import {defined} from './types';
 import {getPickLists} from './picklists';
+import {crash} from "./components/errorboundary";
+import {getTreeDefinitionItems} from "./treedefinitions";
 
 const metaKeys = [
   'isNew',
@@ -236,7 +237,7 @@ const WBView = Backbone.View.extend({
       this.operationAbortedMessage();
 
     const pickListsPromise = getPickLists();
-    const initDataModelIntegration = pickListsPromise.then((pickLists) =>
+    const initDataModelIntegration = ()=>pickListsPromise.then((pickLists) =>
       this.hot.batch(() => {
         if (
           !this.isUploaded &&
@@ -280,7 +281,7 @@ const WBView = Backbone.View.extend({
           this.hot.updateSettings({
             manualColumnMove: this.dataset.visualorder,
           });
-        this.fetchSortConfig();
+        this.fetchSortConfig().catch(crash);
         this.wbutils.findLocalityColumns();
         this.identifyCoordinateColumns();
         this.identifyTreeRanks();
@@ -307,16 +308,16 @@ const WBView = Backbone.View.extend({
 
           this.mappings.tableNames = this.mappings.splitMappingPaths.map(
             ({ mappingPath }) =>
-              getTableFromMappingPath({
-                baseTableName: this.mappings.baseTableName,
+              getTableFromMappingPath(
+                this.mappings.baseTableName,
                 // Remove field name from mapping path
-                mappingPath: mappingPath.slice(0, -1),
-              })
+                mappingPath.slice(0, -1)
+              )
           );
 
-          initDataModelIntegration();
+          initDataModelIntegration().catch(crash);
         });
-      } else initDataModelIntegration();
+      } else initDataModelIntegration().catch(crash);
     });
 
     this.updateValidationButton();
@@ -353,8 +354,9 @@ const WBView = Backbone.View.extend({
             const tableName =
               this.mappings?.tableNames[mappingCol] ??
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
-            const tableLabel =
-              getModel(tableName)?.getLocalizedName() ?? tableName ?? '';
+            const tableLabel = isMapped
+              ? getModel(tableName)?.getLocalizedName() ?? tableName ?? ''
+              : '';
             return `<div class="flex gap-x-1 items-center pl-4">
               ${
                 isMapped
@@ -657,7 +659,7 @@ const WBView = Backbone.View.extend({
             },
           };
         })
-        .filter((result) => typeof result === 'undefined')
+        .filter((result) => typeof result === 'object')
         .map(Object.values)
     );
     this.hot.updateSettings({
@@ -697,9 +699,8 @@ const WBView = Backbone.View.extend({
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
           mappingGroup,
           physicalCol,
-          rankId: Object.keys(dataModelStorage.ranks[tableName]).indexOf(
-            rankName
-          ),
+          rankId: Object.keys(getTreeDefinitionItems(tableName))
+            .findIndex(({name})=>name === rankName),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
           groupedRanks[mappingGroup] ??= [];
@@ -1458,10 +1459,10 @@ const WBView = Backbone.View.extend({
     const matches = this.uploadResults.ambiguousMatches[physicalRow].find(
       ({ physicalCols }) => physicalCols.includes(physicalCol)
     );
-    const tableName = getTableFromMappingPath({
-      baseTableName: this.mappings.baseTableName,
-      mappingPath: matches.mappingPath,
-    });
+    const tableName = getTableFromMappingPath(
+      this.mappings.baseTableName,
+      matches.mappingPath
+    );
     const model = getModel(tableName);
     const resources = new model.LazyCollection({
       filters: { id__in: matches.ids.join(',') },

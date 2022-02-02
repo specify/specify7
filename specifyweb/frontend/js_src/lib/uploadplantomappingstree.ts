@@ -160,10 +160,10 @@ function handleTreeRecordTypes(
   mappingPath: MappingPath
 ): ReturnType<typeof handleTreeRecord> {
   if ('mustMatchTreeRecord' in uploadPlan) {
-    const tableName = getTableFromMappingPath({
-      baseTableName: mappingPath[0],
-      mappingPath: mappingPath.slice(1),
-    });
+    const tableName = getTableFromMappingPath(
+      mappingPath[0],
+      mappingPath.slice(1)
+    );
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 
@@ -206,10 +206,10 @@ function handleUploadableTypes(
   mappingPath: MappingPath
 ) {
   if ('mustMatchTable' in uploadPlan) {
-    const tableName = getTableFromMappingPath({
-      baseTableName: mappingPath[0],
-      mappingPath: mappingPath.slice(1),
-    });
+    const tableName = getTableFromMappingPath(
+      mappingPath[0],
+      mappingPath.slice(1)
+    );
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
   }
 

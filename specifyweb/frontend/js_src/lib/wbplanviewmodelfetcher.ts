@@ -95,7 +95,7 @@ async function fetchDataModel(): Promise<void> {
 
   dataModelStorage.tables = Object.fromEntries(
     Object.values(schema.models)
-      .filter((tableData) => visibleTables.has(tableData.name.toLowerCase()))
+      .filter((tableData) => visibleTables.has(tableData.name))
       .map((tableData) => {
         const tableName = tableData.name.toLowerCase();
 
@@ -139,14 +139,13 @@ async function fetchDataModel(): Promise<void> {
             if (typeof foreignName === 'string')
               foreignName = foreignName.toLowerCase();
 
-            const tableName = field.relatedModelName.toLowerCase();
-
-            if (field.readOnly || !visibleTables.has(tableName)) return;
+            if (field.readOnly || !visibleTables.has(field.relatedModelName))
+              return;
 
             fields[fieldName] = {
               ...baseField,
               isRelationship: true,
-              tableName,
+              tableName: field.relatedModelName.toLowerCase(),
               type: field.type === 'zero-to-one' ? 'one-to-many' : field.type,
               foreignName,
             };
