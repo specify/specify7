@@ -15,8 +15,7 @@ import { defined } from '../../types';
 import { Button, Form, Input, Link, Submit, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import { EditResourceDialog } from '../editresourcedialog';
-import { crash } from '../errorboundary';
-import { useId, useTitle } from '../hooks';
+import { useAsyncState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
@@ -217,29 +216,20 @@ function QueryToolbarItem({
     defaultValue: async () => tablesToShowPromise,
   });
 
-  const [queries, setQueries] = React.useState<
-    RA<SerializedResource<SpQuery>> | undefined
-  >(undefined);
+  const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
+    React.useCallback(async () => {
+      const queryModels = new schema.models.SpQuery.LazyCollection({
+        filters: spQueryFilter ?? { specifyuser: userInformation.id },
+      });
+      return queryModels
+        .fetchPromise({ limit: QUERY_FETCH_LIMIT })
+        .then(({ models }) => models.map(serializeResource));
+    }, [spQueryFilter])
+  );
 
   const [state, setState] = React.useState<States>({
     type: 'ShowQueryListState',
   });
-
-  React.useEffect(() => {
-    let destructorCalled = false;
-    const queryModels = new schema.models.SpQuery.LazyCollection({
-      filters: spQueryFilter ?? { specifyuser: userInformation.id },
-    });
-    queryModels
-      .fetchPromise({ limit: QUERY_FETCH_LIMIT })
-      .then(({ models }) =>
-        destructorCalled ? undefined : setQueries(models.map(serializeResource))
-      )
-      .catch(crash);
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, [spQueryFilter]);
 
   if (state.type === 'ShowQueryListState') {
     return typeof queries === 'undefined' ? (
@@ -395,16 +385,16 @@ function DwcaQueryExport({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [exported, setExported] = React.useState<string | undefined>(undefined);
-
-  React.useEffect(() => {
-    ajax(`/export/extract_query/${queryResource.id}/`, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'text/plain' },
-    })
-      .then(({ data: xml }) => setExported(xml))
-      .catch(console.error);
-  }, [queryResource.id]);
+  const [exported] = useAsyncState<string>(
+    React.useCallback(
+      async () =>
+        ajax(`/export/extract_query/${queryResource.id}/`, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'text/plain' },
+        }).then(({ data: xml }) => xml),
+      [queryResource.id]
+    )
+  );
 
   return typeof exported === 'string' ? (
     <Dialog

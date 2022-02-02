@@ -135,18 +135,20 @@ export async function format(
 
   return Promise.all(
     fields.map(async ({ fieldName, formatter, separator, fieldFormatter }) => {
-      const formatted = await resource
-        .rgetPromiise(fieldName)
-        .then(async (value) =>
-          formatter.length > 0
-            ? (await format(value, formatter)) ?? ''
-            : fieldFormat(
-                defined(
-                  resource.specifyModel.getField(fieldName) as LiteralField
-                ),
-                value as string | undefined
-              )
-        );
+      const formatted = (
+        (await resource.rgetPromise(fieldName)) as Promise<
+          string | SpecifyResource<AnySchema> | undefined
+        >
+      ).then(async (value) =>
+        formatter.length > 0 && typeof value === 'object'
+          ? (await format(value, formatter)) ?? ''
+          : fieldFormat(
+              defined(
+                resource.specifyModel.getField(fieldName) as LiteralField
+              ),
+              value as string | undefined
+            )
+      );
       return `${separator}${
         typeof fieldFormatter === 'string' && fieldFormatter === ''
           ? ''

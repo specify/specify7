@@ -11,7 +11,6 @@ import type { LiteralField } from '../specifyfield';
 import type { RA } from '../types';
 import { AgentTypeComboBox } from './agenttypecombobox';
 import { DivisionFieldComboBox } from './divisionfieldcombobox';
-import { crash } from './errorboundary';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListTableComboBox } from './picklisttablecombobox';
@@ -19,6 +18,7 @@ import { PickListTypeComboBox } from './picklisttypecombobox';
 import createBackboneView from './reactbackboneextend';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UserTypeComboBox } from './usertypecombobox';
+import { useAsyncState } from './hooks';
 
 export type DefaultComboBoxProps = {
   readonly model: SpecifyResource<AnySchema>;
@@ -50,14 +50,15 @@ export const PickListTypes = {
 } as const;
 
 function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
-  const [pickList, setPickList] = React.useState<
-    SpecifyResource<PickList> | undefined
-  >(undefined);
-
-  React.useEffect(() => {
-    if (typeof props.pickListName !== 'undefined')
-      getPickListByName(props.pickListName).then(setPickList).catch(crash);
-  }, [props.pickListName]);
+  const [pickList] = useAsyncState<SpecifyResource<PickList>>(
+    React.useCallback(
+      () =>
+        typeof props.pickListName === 'string'
+          ? getPickListByName(props.pickListName)
+          : undefined,
+      [props.pickListName]
+    )
+  );
 
   const type = pickList?.get('type') ?? 0;
 
@@ -74,24 +75,20 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       [PickListTypes.FIELDS]: getFromField,
     }[type] ?? error(`unknown picklist type: ${type}`);
 
-  const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(
-    undefined
-  );
-
-  React.useEffect(
-    () =>
-      typeof pickList === 'undefined'
-        ? undefined
-        : void itemsCallback({
-            pickList,
-            limit: Math.max(
-              0,
-              pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
-            ),
-          })
-            .then(setItems)
-            .catch(crash),
-    [itemsCallback, pickList]
+  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
+    React.useCallback(
+      () =>
+        typeof pickList === 'undefined'
+          ? undefined
+          : void itemsCallback({
+              pickList,
+              limit: Math.max(
+                0,
+                pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
+              ),
+            }),
+      [itemsCallback, pickList]
+    )
   );
 
   return typeof pickList === 'object' && typeof items === 'object' ? (

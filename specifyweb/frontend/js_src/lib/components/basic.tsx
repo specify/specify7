@@ -120,7 +120,8 @@ export const className = {
   greenButton: `hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `active:bg-brand-300 active:dark:bg-brand-400 bg-gray-300 gap-2
     hover:bg-brand-200 hover:dark:bg-brand:400 inline-flex dark:bg-neutral-500
-    dark:text-white justify-center items-center p-2 text-black cursor-pointer`,
+    dark:text-white justify-center items-center p-2 text-black cursor-pointer
+    rounded`,
   containerFull: 'flex flex-col gap-4 h-full',
   containerBase: `${baseContainer}`,
   container: `${baseContainer} max-w-[1000px] mx-auto`,

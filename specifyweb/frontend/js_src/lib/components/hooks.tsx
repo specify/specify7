@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type { AnySchema, SerializedResource } from '../datamodelutils';
-import { serializeResource } from '../datamodelutils';
+import type { AnySchema } from '../datamodelutils';
+import { SerializedResource, serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { Input } from '../saveblockers';
@@ -10,6 +10,7 @@ import type { IR, R, RA } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
+import { crash } from './errorboundary';
 
 const idStore: R<number> = {};
 
@@ -113,11 +114,11 @@ export function useValidation<T extends Input = HTMLInputElement>(
 }
 
 /** Hook for getting save blockers for a model's field */
-export function useSaveBlockers<SCHEMA extends AnySchema>({
+export function useSaveBlockers({
   model,
   fieldName,
 }: {
-  readonly model: SpecifyResource<SCHEMA>;
+  readonly model: SpecifyResource<AnySchema>;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>('');
@@ -177,4 +178,29 @@ export function useValidationAttributes(field: LiteralField): IR<string> {
     setAttributes(getValidationAttributes(field, parser));
   }, [field]);
   return attributes;
+}
+
+/** Like React.useState, but initial value is retrieved asynchronously */
+export function useAsyncState<T>(
+  callback: () => undefined | T | Promise<T | undefined>
+): [
+  state: T | undefined,
+  setState: React.Dispatch<React.SetStateAction<T | undefined>>
+] {
+  const [state, setState] = React.useState<T | undefined>(undefined);
+
+  React.useEffect(() => {
+    Promise.resolve(callback())
+      .then((initialState) =>
+        destructorCalled ? undefined : setState(initialState)
+      )
+      .catch(crash);
+
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [callback]);
+
+  return [state, setState];
 }

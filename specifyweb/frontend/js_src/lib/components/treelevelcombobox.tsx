@@ -5,8 +5,8 @@ import type { FilterTablesByEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { crash } from './errorboundary';
 import { PickListComboBox } from './picklist';
+import { useAsyncState } from './hooks';
 
 async function getPossibleRanks(
   lowestChildRank: number,
@@ -33,45 +33,44 @@ async function getPossibleRanks(
 }
 
 export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
-  const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
-  React.useEffect(() => {
-    props.model.on('change:parent', () => {});
-    const model = props.model as SpecifyResource<Taxon>;
-    const lowestChildRank = model.isNew()
-      ? Promise.resolve(-1)
-      : model
-          .rgetCollection('children')
-          .then(({ models }) =>
-            models.length === 0
-              ? -1
-              : Math.min(...models.map((model) => model.get('rankId')))
-          );
-    model
-      .rgetPromise('parent')
-      .then(async (parent) => parent.rgetPromise('definitionItem', true))
-      .then((treeDefinitionItem) =>
-        typeof treeDefinitionItem === 'object'
-          ? treeDefinitionItem
-              .rgetPromise('treeDef', true)
-              .then(async ({ id }) =>
-                lowestChildRank.then(async (rankId) =>
-                  getPossibleRanks(rankId, treeDefinitionItem, id)
+  const [items] = useAsyncState<RA<PickListItemSimple>>(
+    React.useCallback(async () => {
+      props.model.on('change:parent', () => {});
+      const model = props.model as SpecifyResource<Taxon>;
+      const lowestChildRank = model.isNew()
+        ? Promise.resolve(-1)
+        : model
+            .rgetCollection('children')
+            .then(({ models }) =>
+              models.length === 0
+                ? -1
+                : Math.min(...models.map((model) => model.get('rankId')))
+            );
+      return model
+        .rgetPromise('parent')
+        .then(async (parent) => parent.rgetPromise('definitionItem', true))
+        .then((treeDefinitionItem) =>
+          typeof treeDefinitionItem === 'object'
+            ? treeDefinitionItem
+                .rgetPromise('treeDef', true)
+                .then(async ({ id }) =>
+                  lowestChildRank.then(async (rankId) =>
+                    getPossibleRanks(rankId, treeDefinitionItem, id)
+                  )
                 )
-              )
-          : []
-      )
-      .then(setItems)
-      .catch(crash);
-  }, [props.model]);
+            : []
+        );
+    }, [props.model])
+  );
 
   return (
     <PickListComboBox
       {...props}
-      items={items}
+      items={items ?? []}
       onAdd={undefined}
       pickList={undefined}
       // Select next enforced rank by default
-      defaultValue={props.defaultValue ?? items.slice(-1)[0]?.value}
+      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       disabled={props.disabled || props.model.get('parent') === null}
     />
   );

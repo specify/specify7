@@ -6,7 +6,7 @@ import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';
 import { Form, Label, Select } from '../basic';
-import { useTitle } from '../hooks';
+import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -50,21 +50,19 @@ function ChangeLanguage({
 }): JSX.Element {
   useTitle(commonText('changeLanguage'));
 
-  const [languages, setLanguages] = React.useState<undefined | IR<string>>(
-    undefined
-  );
-
-  React.useEffect(() => {
-    ajax<
-      RA<{
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        readonly name_local: string;
-        readonly code: string;
-      }>
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-    >('/context/language/', { headers: { Accept: 'application/json' } })
-      .then(({ data }) =>
-        setLanguages(
+  const [languages] = useAsyncState<IR<string>>(
+    React.useCallback(
+      async () =>
+        ajax<
+          RA<{
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            readonly name_local: string;
+            readonly code: string;
+          }>
+        >('/context/language/', {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) =>
           Object.fromEntries(
             // eslint-disable-next-line @typescript-eslint/naming-convention
             Object.entries(data).map(([code, { name_local }]) => [
@@ -72,10 +70,10 @@ function ChangeLanguage({
               name_local,
             ])
           )
-        )
-      )
-      .catch(console.error);
-  }, []);
+        ),
+      []
+    )
+  );
 
   return typeof languages === 'undefined' ? (
     <LoadingScreen />

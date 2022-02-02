@@ -31,7 +31,7 @@ export function QueryFields({
   readonly showHiddenFields: boolean;
 }): JSX.Element {
   return (
-    <Ul className="spqueryfields">
+    <Ul>
       {fields.map((field, line) => (
         <QueryLine
           key={field.id}
@@ -43,14 +43,16 @@ export function QueryFields({
           onOpen={handleOpen.bind(undefined, line)}
           onClose={handleClose}
           onLineFocus={(target): void =>
-            handleLineFocus(
-              // TODO: check against out of bounds
-              target === 'previous'
-                ? line - 1
-                : target === 'current'
-                ? line
-                : line + 1
-            )
+            (target === 'previous' && line === 0) ||
+            (target === 'current' && line + 1 == fields.length)
+              ? undefined
+              : handleLineFocus(
+                  target === 'previous'
+                    ? line - 1
+                    : target === 'current'
+                    ? line
+                    : line + 1
+                )
           }
           showHiddenFields={showHiddenFields}
           isFocused={openedElement?.line === line}

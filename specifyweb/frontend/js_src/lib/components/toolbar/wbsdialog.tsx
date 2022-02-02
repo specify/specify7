@@ -16,7 +16,7 @@ import { Button, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
-import { useTitle } from '../hooks';
+import { useAsyncState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
@@ -49,9 +49,7 @@ const createEmptyDataSet = async (): Promise<void> =>
     }
   ).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
 
-/**
- * Wrapper for Data Set Meta
- */
+/** Wrapper for Data Set Meta */
 function DsMeta({
   dsId,
   onClose: handleClose,
@@ -59,19 +57,17 @@ function DsMeta({
   readonly dsId: number;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [dataset, setDataset] = React.useState<Dataset | undefined>(undefined);
+  const [dataset] = useAsyncState<Dataset>(
+    React.useCallback(
+      async () =>
+        ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
+      [dsId]
+    )
+  );
 
-  React.useEffect(() => {
-    ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
-      headers: { Accept: 'application/json' },
-    })
-      .then(({ data }) => (destructorCalled ? undefined : setDataset(data)))
-      .catch(console.error);
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, [dsId]);
   return typeof dataset === 'undefined' ? (
     <LoadingScreen />
   ) : (

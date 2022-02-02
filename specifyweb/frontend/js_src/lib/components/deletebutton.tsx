@@ -10,6 +10,7 @@ import { Button, Ul } from './basic';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { useAsyncState } from './hooks';
 
 export function DeleteButton<SCHEMA extends AnySchema>({
   model,
@@ -20,27 +21,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   readonly deletionMessage?: React.ReactNode;
   readonly onDeleted?: () => void;
 }): JSX.Element {
-  const [blockers, setBlockers] = React.useState<RA<string> | undefined>(
-    undefined
-  );
-  React.useEffect(() => {
-    ajax<RA<string>>(
-      `/api/delete_blockers/${model.specifyModel.name.toLowerCase()}/${
-        model.id
-      }/`,
-      {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Accept: 'application/json' },
-      }
+  const [blockers] = useAsyncState<RA<string>>(
+    React.useCallback(
+      async () =>
+        ajax<RA<string>>(
+          `/api/delete_blockers/${model.specifyModel.name.toLowerCase()}/${
+            model.id
+          }/`,
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: { Accept: 'application/json' },
+          }
+        ).then(({ data }) => data),
+      [model]
     )
-      .then(({ data }) => (destructorCalled ? undefined : setBlockers(data)))
-      .catch(console.error);
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, [model]);
+  );
 
   const [isOpen, setIsOpen] = React.useState(false);
 

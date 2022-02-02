@@ -11,6 +11,7 @@ import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { setCurrentOverlay } from '../specifyapp';
 import { userInformation } from '../userinfo';
+import { useAsyncState } from './hooks';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -100,26 +101,16 @@ type Collections = {
 };
 
 export function CollectionSelector(): JSX.Element {
-  const [collections, setCollections] = React.useState<Collections | undefined>(
-    undefined
+  const [collections] = useAsyncState<Collections>(
+    React.useCallback(
+      async () =>
+        ajax<Collections>('/context/collection/', {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
+      []
+    )
   );
-
-  React.useEffect(() => {
-    ajax<Collections>('/context/collection/', {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    })
-      .then(({ data: collections }) => {
-        if (!destructorCalled) setCollections(collections);
-        return undefined;
-      })
-      .catch(console.error);
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
 
   return (
     <select

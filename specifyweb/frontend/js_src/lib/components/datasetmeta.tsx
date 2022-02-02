@@ -23,7 +23,7 @@ import {
   Submit,
   Textarea,
 } from './basic';
-import { useId, useTitle } from './hooks';
+import { useAsyncState, useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -251,20 +251,8 @@ function ChangeOwner({
   readonly onClose: () => void;
   readonly onChanged: () => void;
 }): JSX.Element {
-  const [users, setUsers] = React.useState<
-    RA<SerializedResource<SpecifyUser>> | undefined
-  >(undefined);
-
-  React.useEffect(() => {
-    void fetchListOfUsers().then((users) =>
-      destructorCalled ? undefined : setUsers(users)
-    );
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
+  const [users] =
+    useAsyncState<RA<SerializedResource<SpecifyUser>>>(fetchListOfUsers);
 
   const id = useId('change-data-set-owner');
   const [newOwner, setNewOwner] = React.useState<number | undefined>(undefined);

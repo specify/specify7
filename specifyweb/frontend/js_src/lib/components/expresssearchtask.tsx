@@ -12,8 +12,7 @@ import type { SpecifyModel } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { crash } from './errorboundary';
-import { useTitle } from './hooks';
+import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 
@@ -115,102 +114,86 @@ function TableResults({
 function Results(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
-  const [primaryResults, setPrimaryResults] = React.useState<
-    RA<RawQueryTableResult> | undefined
-  >(undefined);
-  const [secondaryResults, setSecondaryResults] = React.useState<
-    RA<RawQueryTableResult> | undefined
-  >(undefined);
+  const query = querystring.parse().q;
+  const ajaxUrl = querystring.format('/express_search/', { q: query });
 
-  React.useEffect(() => {
-    const query = querystring.parse().q;
-    const ajaxUrl = querystring.format('/express_search/', { q: query });
-
-    ajax<IR<QueryTableResult>>(ajaxUrl, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    })
-      .then(({ data }) => {
-        if (destructorCalled) return undefined;
-
-        const views = Object.entries(data)
-          .filter(([_tableName, { totalCount }]) => totalCount !== 0)
-          .map(([tableName, tableResults]) => ({
-            model: defined(getModel(tableName)),
-            caption: defined(getModel(tableName)).getLocalizedName(),
-            idFieldIndex: 0,
-            tableResults,
-            ajaxUrl,
-          }));
-        setPrimaryResults(views);
-
-        return undefined;
-      })
-      .catch(crash);
-
-    relatedSearchesPromise
-      .then(async (relatedSearches) =>
-        Promise.all(
-          relatedSearches.map(async (tableName) => {
-            const ajaxUrl = querystring.format('/express_search/related/', {
-              q: query,
-              name: tableName,
-            });
-            return ajax<RelatedTableResult>(ajaxUrl, {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              headers: { Accept: 'application/json' },
-            }).then(({ data }) => [ajaxUrl, data] as const);
-          })
-        )
-      )
-      .then((results) => {
-        if (destructorCalled) return undefined;
-
-        const views = results
-          .filter(([_ajaxUrl, { totalCount }]) => totalCount !== 0)
-          .map(([ajaxUrl, tableResult]) => {
-            let model = defined(getModel(tableResult.definition.root));
-            let idFieldIndex = 0;
-            const fieldSpecs = tableResult.definition.fieldSpecs.map(
-              ({ stringId, isRelationship }) =>
-                QueryFieldSpec.fromStringId(stringId, isRelationship)
-            );
-            if (tableResult.definition.link !== null) {
-              const linkFieldSpec = fieldSpecs.pop();
-              idFieldIndex = fieldSpecs.length + 1;
-              model = defined(
-                (
-                  linkFieldSpec?.joinPath.slice(-1)[0] as Relationship
-                ).getRelatedModel()
-              );
-            }
-
-            return {
-              model,
-              idFieldIndex,
-              caption: s.localizeFrom(
-                'expresssearch',
-                tableResult.definition.name
-              ),
-              tableResults: {
-                results: tableResult.results,
-                fieldSpecs: tableResult.definition.fieldSpecs,
-                totalCount: tableResult.totalCount,
-              },
+  const [primaryResults] = useAsyncState<RA<RawQueryTableResult>>(
+    React.useCallback(
+      async () =>
+        ajax<IR<QueryTableResult>>(ajaxUrl, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) =>
+          Object.entries(data)
+            .filter(([_tableName, { totalCount }]) => totalCount !== 0)
+            .map(([tableName, tableResults]) => ({
+              model: defined(getModel(tableName)),
+              caption: defined(getModel(tableName)).getLocalizedName(),
+              idFieldIndex: 0,
+              tableResults,
               ajaxUrl,
-            };
-          });
-        setSecondaryResults(views);
+            }))
+        ),
+      [ajaxUrl]
+    )
+  );
+  const [secondaryResults] = useAsyncState<RA<RawQueryTableResult>>(
+    React.useCallback(
+      async () =>
+        relatedSearchesPromise
+          .then(async (relatedSearches) =>
+            Promise.all(
+              relatedSearches.map(async (tableName) => {
+                const ajaxUrl = querystring.format('/express_search/related/', {
+                  q: query,
+                  name: tableName,
+                });
+                return ajax<RelatedTableResult>(ajaxUrl, {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  headers: { Accept: 'application/json' },
+                }).then(({ data }) => [ajaxUrl, data] as const);
+              })
+            )
+          )
+          .then((results) =>
+            results
+              .filter(([_ajaxUrl, { totalCount }]) => totalCount !== 0)
+              .map(([ajaxUrl, tableResult]) => {
+                let model = defined(getModel(tableResult.definition.root));
+                let idFieldIndex = 0;
+                const fieldSpecs = tableResult.definition.fieldSpecs.map(
+                  ({ stringId, isRelationship }) =>
+                    QueryFieldSpec.fromStringId(stringId, isRelationship)
+                );
+                if (tableResult.definition.link !== null) {
+                  const linkFieldSpec = fieldSpecs.pop();
+                  idFieldIndex = fieldSpecs.length + 1;
+                  model = defined(
+                    (
+                      linkFieldSpec?.joinPath.slice(-1)[0] as Relationship
+                    ).getRelatedModel()
+                  );
+                }
 
-        return undefined;
-      })
-      .catch(crash);
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
+                return {
+                  model,
+                  idFieldIndex,
+                  caption: s.localizeFrom(
+                    'expresssearch',
+                    tableResult.definition.name
+                  ),
+                  tableResults: {
+                    results: tableResult.results,
+                    fieldSpecs: tableResult.definition.fieldSpecs,
+                    totalCount: tableResult.totalCount,
+                  },
+                  ajaxUrl,
+                };
+              })
+          ),
+      [query]
+    )
+  );
 
   return (
     <div className="gap-y-4 flex flex-col">

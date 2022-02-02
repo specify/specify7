@@ -19,24 +19,21 @@ import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
 import { userInformation } from '../userinfo';
+import { useAsyncState } from './hooks';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
-  const [recordSet, setRecordSet] = React.useState<
-    SpecifyResource<RecordSet> | undefined | false
-  >(undefined);
-  React.useEffect(() => {
-    const recordSetId = querystring.parse().recordsetid;
-    if (typeof recordSetId === 'undefined') {
-      setRecordSet(false);
-      return;
-    }
-    const recordSet = new schema.models.RecordSet.LazyCollection({
-      filters: { id: Number.parseInt(recordSetId) },
-    });
-    recordSet
-      .fetchPromise()
-      .then(({ models }) => setRecordSet(models[0]), console.error);
-  }, []);
+  const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
+    React.useCallback(() => {
+      const recordSetId = querystring.parse().recordsetid;
+      if (typeof recordSetId === 'undefined') {
+        return false;
+      }
+      const recordSet = new schema.models.RecordSet.LazyCollection({
+        filters: { id: Number.parseInt(recordSetId) },
+      });
+      return recordSet.fetchPromise().then(({ models }) => models[0]);
+    }, [])
+  );
 
   return recordSet;
 }
@@ -72,12 +69,13 @@ function QueryBuilderById({
 }: {
   readonly queryId: number;
 }): JSX.Element {
-  const [query, setQuery] = React.useState<SpecifyResource<SpQuery>>();
+  const [query] = useAsyncState<SpecifyResource<SpQuery>>(
+    React.useCallback(async () => {
+      const query = new schema.models.SpQuery.Resource({ id: queryId });
+      return Promise.resolve(query.fetch());
+    }, [queryId])
+  );
   const recordSet = useQueryRecordSet();
-  React.useEffect(() => {
-    const query = new schema.models.SpQuery.Resource({ id: queryId });
-    query.fetch().then(setQuery, app.handleError);
-  }, [queryId]);
 
   return typeof query === 'undefined' || typeof recordSet === 'undefined' ? (
     <LoadingScreen />
@@ -134,14 +132,12 @@ function QueryBuilderFromTree({
   readonly tableName: string;
   readonly nodeId: number;
 }): JSX.Element {
-  const [query, setQuery] = React.useState<
-    SpecifyResource<SpQuery> | undefined
-  >(undefined);
-
-  React.useEffect(
-    // TODO: convert to react
-    () => queryFromTree(userInformation, tableName, nodeId).then(setQuery),
-    [tableName, nodeId]
+  const [query] = useAsyncState<SpecifyResource<SpQuery>>(
+    React.useCallback(
+      // TODO: convert to react
+      () => queryFromTree(userInformation, tableName, nodeId),
+      [tableName, nodeId]
+    )
   );
 
   return typeof query === 'undefined' ? (
@@ -154,14 +150,14 @@ function QueryBuilderFromTree({
 const QueryFromTree = createBackboneView(QueryBuilderFromTree);
 
 export default function Routes(): void {
-  router.route('newQuery/:id/', 'storedQuery', (id) =>
+  router.route('query/:id/', 'storedQuery', (id) =>
     app.setCurrentView(new QueryById({ queryId: Number.parseInt(id) }))
   );
-  router.route('newQuery/new/:table/', 'ephemeralQuery', (tableName) =>
+  router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
     app.setCurrentView(new NewQueryView({ tableName }))
   );
   router.route(
-    'newQuery/fromtree/:table/:id/',
+    'query/fromtree/:table/:id/',
     'queryFromTree',
     (tableName, nodeId) =>
       app.setCurrentView(

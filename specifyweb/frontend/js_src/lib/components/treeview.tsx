@@ -24,7 +24,7 @@ import {
 import type { IR, RA } from '../types';
 import { Autocomplete } from './autocomplete';
 import { Button, className, Input } from './basic';
-import { useId, useTitle } from './hooks';
+import { useAsyncState, useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
@@ -98,18 +98,9 @@ function TreeView<SCHEMA extends AnyTree>({
     [baseUrl, statsThreshold]
   );
 
-  const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
-
-  React.useEffect(() => {
-    void getRows('null').then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, [getRows]);
+  const [rows, setRows] = useAsyncState<RA<Row>>(
+    React.useCallback(async () => getRows('null'), [getRows])
+  );
 
   const id = useId('tree-view');
 

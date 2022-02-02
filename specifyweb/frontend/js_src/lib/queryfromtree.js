@@ -3,7 +3,7 @@
 import Q from 'q';
 
 import schema, {getModel} from './schema';
-import { QueryFieldSpec } from './queryfieldspec';
+import {QueryFieldSpec} from './queryfieldspec';
 import {getDomainResource} from "./treedefinitions";
 
 
@@ -286,11 +286,11 @@ var fieldsFor = {
 export default function(user, table, nodeId) {
     const tree = getModel(table);
     const node = new tree.Resource({id: nodeId});
-    return Q([
+    return Promise.resolve(Q([
         paleoPathP(),
         node.rget('fullname'),
         nodeId,
         node.rget('definitionitem', true),
-    ]).spread((...args) => buildQuery(tree, user, ...args));
+    ]).spread((...args) => buildQuery(tree, user, ...args)));
 };
 

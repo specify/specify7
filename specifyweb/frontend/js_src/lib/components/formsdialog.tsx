@@ -13,7 +13,7 @@ import { Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
 
 type Entry = {
   iconName: string;
@@ -53,6 +53,8 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
   );
 });
 
+const getForms = async (): Promise<RA<Entry>> => getFormsPromise;
+
 function FormsDialog({
   onSelected: handleSelected,
   onClose: handleClose,
@@ -60,11 +62,7 @@ function FormsDialog({
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [forms, setForms] = React.useState<Awaited<typeof getFormsPromise>>();
-
-  React.useEffect(() => {
-    getFormsPromise.then(setForms).catch(crash);
-  }, []);
+  const [forms] = useAsyncState(getForms);
 
   return typeof forms === 'undefined' ? (
     <LoadingScreen />

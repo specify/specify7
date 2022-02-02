@@ -14,7 +14,7 @@ import type { IR, RA } from '../../types';
 import { fetchingParameters } from '../../wbplanviewmodelconfig';
 import { tableHasOverwrite } from '../../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../../weblinkbutton';
-import { useTitle } from '../hooks';
+import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -92,98 +92,77 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
 
   useTitle(commonText('schemaConfig'));
 
-  const [languages, setLanguages] = React.useState<IR<string> | undefined>(
-    undefined
-  );
-  const [tables, setTables] = React.useState<IR<SpLocaleContainer> | undefined>(
-    undefined
-  );
-
-  // Fetch languages
-  React.useEffect(() => {
-    ajax<
-      RA<{
-        readonly country: string | null;
-        readonly language: string;
-      }>
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-    >('/context/schema/language/', { headers: { Accept: 'application/json' } })
-      .then(({ data }) =>
-        // Sometimes languages are duplicated. Need to make the list unique
-        Array.from(
-          new Set(
-            data.map(
-              ({ country, language }) =>
-                `${language}${
-                  country === null || country === '' ? '' : `_${country}`
-                }`
+  const [languages] = useAsyncState<IR<string>>(
+    React.useCallback(
+      async () =>
+        ajax<
+          RA<{
+            readonly country: string | null;
+            readonly language: string;
+          }>
+        >('/context/schema/language/', {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        })
+          .then(({ data }) =>
+            // Sometimes languages are duplicated. Need to make the list unique
+            Array.from(
+              new Set(
+                data.map(
+                  ({ country, language }) =>
+                    `${language}${
+                      country === null || country === '' ? '' : `_${country}`
+                    }`
+                )
+              )
             )
           )
-        )
-      )
-      .then((languages) =>
-        // Get translated language names
-        languages.map(
-          (language) =>
-            [
-              language,
-              new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                language.replace('_', '-')
-              ),
-            ] as const
-        )
-      )
-      .then((languages) => {
-        if (destructorCalled) return undefined;
-        setLanguages(Object.fromEntries(languages));
-        return undefined;
-      })
-      .catch(console.error);
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
-
-  // Fetch tables
-  React.useEffect(() => {
-    const excludedTables = new Set(
-      Object.entries(schema.models)
-        .filter(
-          ([tableName, { system }]) =>
-            system ||
-            tableHasOverwrite(tableName.toLowerCase(), 'remove') ||
-            (fetchingParameters.tableOverwrites[tableName] !== 'hidden' &&
-              tableHasOverwrite(tableName.toLowerCase(), 'hidden'))
-        )
-        .map(([tableName]) => tableName.toLowerCase())
-    );
-
-    ajax<{ readonly objects: RA<SpLocaleContainer> }>(
-      '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      { headers: { Accept: 'application/json' } }
+          .then((languages) =>
+            // Get translated language names
+            Object.fromEntries(
+              languages.map(
+                (language) =>
+                  [
+                    language,
+                    new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                      language.replace('_', '-')
+                    ),
+                  ] as const
+              )
+            )
+          ),
+      []
     )
-      .then(({ data: { objects } }) =>
-        // Exclude system tables
-        objects.filter(({ name }) => !excludedTables.has(name))
-      )
-      .then((tables) =>
-        // Index by ID
-        Object.fromEntries(tables.map((table) => [table.id, table]))
-      )
-      .then((tables) => {
-        if (!destructorCalled) setTables(tables);
-        return undefined;
-      })
-      .catch(console.error);
+  );
+  const [tables] = useAsyncState<IR<SpLocaleContainer>>(
+    React.useCallback(async () => {
+      const excludedTables = new Set(
+        Object.entries(schema.models)
+          .filter(
+            ([tableName, { system }]) =>
+              system ||
+              tableHasOverwrite(tableName.toLowerCase(), 'remove') ||
+              (fetchingParameters.tableOverwrites[tableName] !== 'hidden' &&
+                tableHasOverwrite(tableName.toLowerCase(), 'hidden'))
+          )
+          .map(([tableName]) => tableName.toLowerCase())
+      );
 
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
-  }, []);
+      return ajax<{ readonly objects: RA<SpLocaleContainer> }>(
+        '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { headers: { Accept: 'application/json' } }
+      )
+        .then(({ data: { objects } }) =>
+          // Exclude system tables
+          objects.filter(({ name }) => !excludedTables.has(name))
+        )
+        .then((tables) =>
+          // Index by ID
+          Object.fromEntries(tables.map((table) => [table.id, table]))
+        );
+    }, [])
+  );
 
   const [formatters, setFormatters] = React.useState<
     IR<DataObjectFormatter> | undefined
@@ -205,22 +184,21 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
     };
   }, []);
 
-  const [uiFormatters, setUiFormatters] = React.useState<
-    RA<UiFormatter> | undefined
-  >(undefined);
-  React.useEffect(() => {
-    void fetchUiFormatters
-      .then((formatters) =>
-        Object.entries(formatters)
-          .map(([name, formatter]) => ({
-            name,
-            isSystem: formatter.isSystem,
-            value: formatter.value(),
-          }))
-          .filter(({ value }) => value)
-      )
-      .then(setUiFormatters);
-  }, []);
+  const [uiFormatters] = useAsyncState<RA<UiFormatter>>(
+    React.useCallback(
+      async () =>
+        fetchUiFormatters.then((formatters) =>
+          Object.entries(formatters)
+            .map(([name, formatter]) => ({
+              name,
+              isSystem: formatter.isSystem,
+              value: formatter.value(),
+            }))
+            .filter(({ value }) => value)
+        ),
+      []
+    )
+  );
 
   return typeof languages === 'undefined' ||
     typeof tables === 'undefined' ||
