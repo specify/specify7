@@ -11,7 +11,6 @@ import wbText from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, R, RA } from '../types';
 import { defined } from '../types';
-import dataModelStorage from '../wbplanviewmodel';
 import { Button } from './basic';
 import type {
   CustomSelectElementOptionProps,
@@ -29,6 +28,7 @@ import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
 import { MappingLineData } from '../wbplanviewnavigator';
+import { getBaseTables } from '../wbplanviewmodelfetcher';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -74,13 +74,12 @@ export function ListOfBaseTables({
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const fieldsData = Object.fromEntries(
-    Object.entries(dataModelStorage.tables)
+    Object.entries(getBaseTables())
       .filter(
-        ([_tableName, { isBaseTable, isCommonTable }]) =>
-          isBaseTable && (isCommonTable || showHiddenTables)
+        ([_tableName, isCommonTable]) => isCommonTable || showHiddenTables
       )
       .map(
-        ([tableName, { isCommonTable }]) =>
+        ([tableName, isCommonTable]) =>
           [
             tableName,
             {
@@ -214,13 +213,13 @@ export function getMappingLineProps({
   return mappingLineData.map((data, index) => {
     const isOpen =
       openSelectElement === index ||
-      // If it doesn't have a preview, than it is always open
+      // If it doesn't have a preview, then it is always open
       !customSelectTypes[customSelectType].includes('preview');
 
     return {
       ...data,
       customSelectType,
-      ...(Boolean(isOpen)
+      ...(isOpen
         ? {
             isOpen: true,
             handleChange:
@@ -261,7 +260,7 @@ export function MappingLineComponent({
 
   const id = useId('mapping-line');
 
-  const isMapped =
+  const isComplete =
     lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST';
   return (
     <li className="contents" aria-label={headerName} aria-current={isFocused}>
@@ -278,7 +277,7 @@ export function MappingLineComponent({
       </div>
       <div
         className={`flex items-center justify-end max-w-[25vw] p-2 border-t
-          border-t-gray-500 ${isMapped ? '' : 'font-extrabold text-red-600'}`}
+          border-t-gray-500 ${isComplete ? '' : 'font-extrabold text-red-600'}`}
         id={id('header')}
       >
         {headerName}

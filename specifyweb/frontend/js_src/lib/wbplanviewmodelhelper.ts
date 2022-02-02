@@ -34,7 +34,7 @@ const getTableFields = (
   // Whether field is hidden
   filterIsHidden: boolean | -1 = -1
 ): [fieldName: string, fieldData: DataModelField][] =>
-  Object.entries(dataModelStorage.tables[tableName].fields).filter(
+  Object.entries(dataModelStorage.tables[tableName]).filter(
     ([, { isRelationship, isHidden }]) =>
       (filterIsRelationship === -1 ||
         isRelationship === filterIsRelationship) &&
@@ -148,7 +148,7 @@ export function findRequiredMissingFields(
   }
 
   // Handle regular fields and relationships
-  Object.entries(tableData.fields).forEach(([fieldName, fieldData]) => {
+  Object.entries(tableData).forEach(([fieldName, fieldData]) => {
     const localPath = [...path, fieldName];
 
     const isMapped = listOfMappedFields.includes(fieldName);
@@ -162,8 +162,9 @@ export function findRequiredMissingFields(
         )
           previousRelationshipName = localPath.slice(-3)[0];
 
-        const parentRelationshipData = dataModelStorage.tables[parentTableName]
-          .fields[previousRelationshipName] as DataModelRelationship;
+        const parentRelationshipData = dataModelStorage.tables[parentTableName][
+          previousRelationshipName
+        ] as DataModelRelationship;
 
         let currentMappingPathPart = localPath[path.length - 1];
         if (
@@ -220,7 +221,7 @@ export const isCircularRelationshipBackwards = ({
   readonly foreignName?: string;
   readonly relationshipKey?: string;
 }): boolean =>
-  dataModelStorage.tables[parentTableName ?? '']?.fields[foreignName ?? '']
+  dataModelStorage.tables[parentTableName ?? '']?.[foreignName ?? '']
     ?.foreignName === relationshipKey || false;
 
 export const isCircularRelationshipForwards = ({
@@ -232,7 +233,7 @@ export const isCircularRelationshipForwards = ({
   readonly relationshipKey?: string;
   readonly currentMappingPathPart?: string;
 }): boolean =>
-  dataModelStorage.tables[tableName ?? '']?.fields[relationshipKey ?? '']
+  dataModelStorage.tables[tableName ?? '']?.[relationshipKey ?? '']
     ?.foreignName === currentMappingPathPart || false;
 
 export const isCircularRelationship = ({

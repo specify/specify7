@@ -84,12 +84,11 @@ function mappingsTreeToUploadPlanTable(
           false
         );
       else if (
-        typeof dataModelStorage.tables[tableName || '']?.fields[fieldName] !==
+        typeof dataModelStorage.tables[tableName ?? '']?.[fieldName] !==
           'undefined' &&
         typeof tablePlan !== 'undefined'
       ) {
-        const field =
-          dataModelStorage.tables[tableName || '']?.fields[fieldName];
+        const field = dataModelStorage.tables[tableName ?? '']?.[fieldName];
 
         if (field.isRelationship)
           handleRelationshipField(

@@ -11,11 +11,6 @@ import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { SpQuery } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { RA } from './types';
-import { IR } from './types';
-import type {
-  DataModelTable,
-  OriginalRelationships,
-} from './wbplanviewmodelfetcher';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -32,23 +27,21 @@ export type CacheDefinitions = {
     readonly mappingViewHeight: number;
   };
   readonly leaflet: {
-    readonly // Remembers the selected base layer
-    [Property in `currentLayer${LeafletCacheSalt}`]: string;
+    // eslint-disable-next-line multiline-comment-style, capitalized-comments
+    // prettier-ignore
+    // Remembers the selected base layer
+    readonly [Property in `currentLayer${LeafletCacheSalt}`]: string;
   } & {
-    readonly // Remembers the chosen overlays (markers/polygons/boundaries/...)
-    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-  };
-  readonly wbPlanViewDataModel: {
-    // Data on the fields in the tables that are included in wbplanview
-    readonly tables: IR<DataModelTable>;
-    /*
-     * Preserves the original relationship type for fields that had it's
-     * relationship type changed though aliasRelationshipTypes object.
-     */
-    readonly originalRelationships: OriginalRelationships;
+    // eslint-disable-next-line multiline-comment-style, capitalized-comments
+    // prettier-ignore
+    // Remembers the chosen overlays (markers/polygons/boundaries/...)
+    readonly [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
   };
   readonly wbPlanViewNavigatorTables: {
-    readonly // Output of getMappingLineData()
+    // eslint-disable-next-line multiline-comment-style, capitalized-comments
+    // prettier-ignore
+    // Output of getMappingLineData()
+    readonly
     [key in string]: string;
   };
   readonly workbench: {
@@ -74,8 +67,3 @@ export type CacheDefinitions = {
     readonly listOfQueryTables: RA<string>;
   };
 };
-
-export const safeToTrim: RA<keyof CacheDefinitions> = [
-  'wbPlanViewDataModel',
-  'wbPlanViewNavigatorTables',
-];

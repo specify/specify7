@@ -7,22 +7,8 @@
  * @module
  */
 
-import type { RelationshipType } from './components/wbplanviewmapper';
 import schema from './schema';
 import type { IR } from './types';
-
-export const dataModelFetcherVersion = '4';
-
-export const knownRelationshipTypes: Set<string> = new Set([
-  'one-to-one',
-  'one-to-many',
-  'many-to-one',
-  'many-to-many',
-]);
-
-export const aliasRelationshipTypes: IR<RelationshipType> = {
-  'zero-to-one': 'one-to-many',
-};
 
 export type TableConfigOverwrite =
   /*
@@ -42,17 +28,11 @@ export type TableConfigOverwrite =
   | 'remove';
 
 export type FieldConfigOverwrite =
-  /*
-   * Makes a required field optional
-   */
+  // Makes a required field optional
   | 'optional'
-  /*
-   * Removes a field from the mapper
-   */
+  // Removes a field from the mapper
   | 'remove'
-  /*
-   * Hides a field. If it was required, it is made optional
-   */
+  // Hides a field. If it was required, it is made optional
   | 'hidden';
 
 export const fetchingParameters: {
@@ -63,8 +43,8 @@ export const fetchingParameters: {
 } = Object.freeze({
   tableOverwrites: {
     /*
-     * In addition to tables listed below, all tables marked as `system` are
-     * removed
+     * In addition to tables listed below, all tables marked as `system` or
+     * hidden by schema config are removed
      */
     accession: 'commonBaseTable',
     agent: 'commonBaseTable',

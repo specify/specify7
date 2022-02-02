@@ -10,8 +10,7 @@
 
 import { ajax } from './ajax';
 import type { CacheDefinitions } from './cachedefinitions';
-import { safeToTrim } from './cachedefinitions';
-import type { R, RA } from './types';
+import type { R } from './types';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -66,13 +65,13 @@ function initialize(): void {
 function commitToStorage(): void {
   if (typeof localStorage === 'undefined') return;
 
-  trimUnusedCache(
-    Object.entries(buckets).filter(
+  Object.entries(buckets)
+    .filter(
       ([, bucketData]) =>
         bucketData.type === 'localStorage' &&
         Object.keys(bucketData.records).length > 0
     )
-  ).forEach(([bucketName]) => commitBucketToStorage(bucketName));
+    .forEach(([bucketName]) => commitBucketToStorage(bucketName));
 }
 
 /** Commits a single cache bucket to localStorage */
@@ -311,28 +310,6 @@ export function genericSet<T>(
   };
 
   return cacheValue;
-}
-
-const getObjectSize = (objectEntries: RA<[string, BucketData]>): number =>
-  objectEntries.reduce(
-    (total, [{ length }, value]) =>
-      total + length + JSON.stringify(value).length,
-    0
-  ) * 2;
-
-// 5MB
-const CACHE_LIMIT = 5_242_880;
-
-function trimUnusedCache(
-  buckets: RA<[string, BucketData]>
-): RA<[string, BucketData]> {
-  const usedSpace = getObjectSize(buckets);
-  if (usedSpace < CACHE_LIMIT) return buckets;
-  return buckets.filter(([bucketName, bucketData]) => {
-    if (!safeToTrim.includes(bucketName as keyof CacheDefinitions)) return true;
-    sessionStorage.setItem(bucketName, JSON.stringify(bucketData));
-    return false;
-  });
 }
 
 let collectionId: number | undefined = undefined;

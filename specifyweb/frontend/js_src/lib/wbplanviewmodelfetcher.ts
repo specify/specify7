@@ -6,29 +6,18 @@
  * @module
  */
 
-// TODO: consider transitioning to using schema.ts now that type support is improved
-import { ajax } from './ajax';
-import * as cache from './cache';
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import schema, { fetchContext as fetchSchema } from './schema';
-import type { Relationship } from './specifyfield';
-import { systemInformation } from './systeminfo';
 import { isTreeModel } from './treedefinitions';
-import type { IR, R, RA, Writable } from './types';
+import type { IR, R } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import dataModelStorage from './wbplanviewmodel';
 import type {
   FieldConfigOverwrite,
   TableConfigOverwrite,
 } from './wbplanviewmodelconfig';
-import {
-  aliasRelationshipTypes,
-  dataModelFetcherVersion,
-  fetchingParameters,
-  knownRelationshipTypes,
-} from './wbplanviewmodelconfig';
-import { contextUnlockedPromise } from './initialcontext';
+import { fetchingParameters } from './wbplanviewmodelconfig';
 
 export type DataModelField = DataModelNonRelationship | DataModelRelationship;
 
@@ -51,72 +40,6 @@ export type DataModelRelationship = DataModelFieldPrimer & {
   readonly type: RelationshipType;
   readonly foreignName?: string;
 };
-
-export type DataModelTable = {
-  // Whether to show in the list of base tables in Workbench Mapper
-  readonly isBaseTable: boolean;
-  /*
-   * If isBaseTable && !isCommonTable, table would be hidden from the list
-   * of base tables, unless showAdvancedTables checkbox is checked
-   */
-  readonly isCommonTable: boolean;
-  readonly fields: IR<DataModelField>;
-};
-
-export type OriginalRelationships = IR<IR<RA<string>>>;
-type OriginalRelationshipsWritable = R<R<string[]>>;
-
-function handleRelationshipType(
-  relationshipType: RelationshipType,
-  currentTableName: string,
-  relationshipName: string,
-  originalRelationships: OriginalRelationshipsWritable
-): RelationshipType {
-  if (knownRelationshipTypes.has(relationshipType)) return relationshipType;
-  else {
-    if (relationshipType in aliasRelationshipTypes) {
-      originalRelationships[relationshipType] ??= {};
-      originalRelationships[relationshipType][currentTableName] ??= [];
-      originalRelationships[relationshipType][currentTableName].push(
-        relationshipName
-      );
-      return aliasRelationshipTypes[relationshipType];
-    } else throw new Error('Unknown relationship type detected');
-  }
-}
-
-function handleRelationshipField(
-  relationship: Relationship,
-  baseField: DataModelFieldPrimer,
-  fieldName: string,
-  currentTableName: string,
-  hiddenTables: Readonly<Set<string>>,
-  originalRelationships: OriginalRelationshipsWritable
-): DataModelRelationship | undefined {
-  let foreignName = relationship.otherSideName;
-  if (typeof foreignName !== 'undefined')
-    foreignName = foreignName.toLowerCase();
-
-  const tableName = relationship.relatedModelName.toLowerCase();
-  const relationshipType = handleRelationshipType(
-    relationship.type as RelationshipType,
-    currentTableName,
-    fieldName,
-    originalRelationships
-  );
-
-  if (relationship.readOnly || tableHasOverwrite(tableName, 'remove'))
-    return undefined;
-
-  return {
-    ...baseField,
-    isRelationship: true,
-    isHidden: baseField.isHidden || hiddenTables.has(tableName),
-    tableName,
-    type: relationshipType,
-    foreignName,
-  };
-}
 
 export const tableHasOverwrite = (
   tableName: string,
@@ -144,201 +67,107 @@ const fieldHasOverwrite = (
     ) ??
       false));
 
-/**
- * Schema hash is used for wiping schema cache after schema changes
- *
- * @remarks
- * Hash is calculated by summing the total number of records in the
- * SpAuditLog table for Schema Config tables
- */
-const getSchemaHash = async (): Promise<number> =>
-  Promise.all(
-    [
-      schema.models.SpLocaleContainerItem.tableId,
-      schema.models.SpLocaleContainerItem.tableId,
-      schema.models.SpLocaleItemStr.tableId,
-    ].map(async (tableNumber) =>
-      ajax<{ readonly meta: { readonly total_count: number } }>(
-        `/api/specify/spauditlog/?limit=1&tablenum=${tableNumber}`,
-        { headers: { Accept: 'application/json' } }
-      ).then(({ data: { meta } }) => meta.total_count)
-    )
-  ).then((counts) => counts.reduce((sum, count) => sum + count, 0));
-
-/* Fetches the data model */
-async function fetchDataModel(ignoreCache = false): Promise<void> {
-  if (!ignoreCache && typeof dataModelStorage.tables !== 'undefined') return;
-
-  await contextUnlockedPromise;
-
-  if (typeof dataModelStorage.currentCollectionId === 'undefined')
-    dataModelStorage.currentCollectionId = await cache.getCurrentCollectionId();
-
-  await fetchSchema;
-  const schemaHash = await getSchemaHash();
-
-  const cacheVersion = [
-    dataModelFetcherVersion,
-    dataModelStorage.currentCollectionId,
-    systemInformation.schema_version,
-    schemaHash,
-  ].join('_');
-
-  if (!ignoreCache) {
-    const tables = cache.get('wbPlanViewDataModel', 'tables', {
-      version: cacheVersion,
-    });
-    const originalRelationships = cache.get(
-      'wbPlanViewDataModel',
-      'originalRelationships',
-      { version: cacheVersion }
-    );
-
-    if (
-      typeof tables === 'object' &&
-      typeof originalRelationships === 'object'
-    ) {
-      dataModelStorage.tables = tables;
-      dataModelStorage.originalRelationships = originalRelationships;
-      return;
-    }
-  }
-
-  const originalRelationships: OriginalRelationshipsWritable = {};
-
-  const hiddenTables = new Set(
-    Object.values(schema.models)
-      .map(
-        (tableData) =>
-          [tableData.name.toLowerCase(), tableData.isHidden()] as const
+const getVisibleTables = (): Readonly<Set<string>> =>
+  new Set(
+    Object.entries(schema.models)
+      .filter(
+        ([tableName, tableData]) =>
+          !tableData.isHidden() &&
+          !tableData.system &&
+          !tableHasOverwrite(tableName.toLowerCase(), 'remove')
       )
-      .filter(([_tableName, isHidden]) => isHidden)
       .map(([tableName]) => tableName)
   );
 
-  const tables = Object.values(schema.models).reduce<
-    R<Writable<DataModelTable>>
-  >((tables, tableData) => {
-    const tableName = tableData.name.toLowerCase();
+/*
+ * Makes changes to the front-end schema to adapt it for usage in the workbench:
+ *  - Removes/hides tables
+ *  - Removes/hides/unRequires fields
+ *  - Replaces zero-to-one relationship with one-to-many
+ * See more details in WbPlanViewModelConfig.ts
+ */
+async function fetchDataModel(): Promise<void> {
+  if (typeof dataModelStorage.tables !== 'undefined') return;
 
-    const isTreeTable = isTreeModel(tableData.name);
+  await fetchSchema;
 
-    const fields: R<DataModelField> = {};
+  const visibleTables = getVisibleTables();
 
-    if (tableData.system || tableHasOverwrite(tableName, 'remove'))
-      return tables;
+  dataModelStorage.tables = Object.fromEntries(
+    Object.values(schema.models)
+      .filter((tableData) => visibleTables.has(tableData.name.toLowerCase()))
+      .map((tableData) => {
+        const tableName = tableData.name.toLowerCase();
 
-    tableData.fields.forEach((field) => {
-      if (isTreeTable && field.isRelationship) return;
+        const isTreeTable = isTreeModel(tableData.name);
 
-      const label = field.getLocalizedName() ?? camelToHuman(field.name);
-      const fieldName = field.name.toLowerCase();
+        const fields: R<DataModelField> = {};
 
-      if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
+        tableData.fields.forEach((field) => {
+          if (isTreeTable && field.isRelationship) return;
 
-      let isRequired = field.isRequired;
-      let isHidden = field.isHidden();
+          const label = field.getLocalizedName() ?? camelToHuman(field.name);
+          const fieldName = field.name.toLowerCase();
 
-      /*
-       * Required fields should not be hidden, unless they are present in
-       * this list
-       */
-      if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
-        isRequired = false;
-        isHidden = true;
-      }
-      // Un-hide required fields
-      else if (isHidden && isRequired) isHidden = false;
+          if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
 
-      if (fieldHasOverwrite(tableName, fieldName, 'optional'))
-        isRequired = false;
+          let isRequired = field.isRequired;
+          let isHidden = field.isHidden();
 
-      const baseField: DataModelFieldPrimer = {
-        label,
-        isHidden,
-        isRequired,
-      };
+          /*
+           * Required fields should not be hidden, unless they are present in
+           * this list
+           */
+          if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
+            isRequired = false;
+            isHidden = true;
+          }
+          // Un-hide required fields
+          else if (isHidden && isRequired) isHidden = false;
 
-      const fieldData: DataModelField | undefined = field.isRelationship
-        ? handleRelationshipField(
-            field,
-            baseField,
-            fieldName,
-            tableName,
-            hiddenTables,
-            originalRelationships
-          )
-        : { ...baseField, isRelationship: false };
+          if (fieldHasOverwrite(tableName, fieldName, 'optional'))
+            isRequired = false;
 
-      if (typeof fieldData === 'undefined') return;
+          const baseField: DataModelFieldPrimer = {
+            label,
+            isHidden,
+            isRequired,
+          };
 
-      fields[fieldName] = fieldData;
-    });
+          if (field.isRelationship) {
+            let foreignName = field.otherSideName;
+            if (typeof foreignName !== 'undefined')
+              foreignName = foreignName.toLowerCase();
 
-    const orderedFields = Object.fromEntries(
-      Object.entries(fields)
-        .sort(
-          (
-            [, { isRelationship, label }],
-            [
-              ,
-              {
-                isRelationship: secondIsRelationship,
-                label: secondFriendlyName,
-              },
-            ]
-          ) =>
-            isRelationship === secondIsRelationship
-              ? label.localeCompare(secondFriendlyName)
-              : isRelationship
-              ? 1
-              : -1
-        )
-        .map(([fieldName]) => [fieldName, fields[fieldName]])
-    );
+            const tableName = field.relatedModelName.toLowerCase();
 
-    const isBaseTable =
-      !tableHasOverwrite(tableName, 'hidden') && !hiddenTables.has(tableName);
+            if (field.readOnly || !visibleTables.has(tableName)) return;
 
-    tables[tableName] = {
-      fields: orderedFields,
-      isBaseTable,
-      isCommonTable: tableHasOverwrite(tableName, 'commonBaseTable'),
-    };
+            fields[fieldName] = {
+              ...baseField,
+              isRelationship: true,
+              tableName,
+              type: field.type === 'zero-to-one' ? 'one-to-many' : field.type,
+              foreignName,
+            };
+          } else
+            fields[fieldName] = {
+              ...baseField,
+              isRelationship: false,
+            };
+        });
 
-    return tables;
-  }, {});
-
-  // Remove relationships to system tables
-  Object.entries(tables).forEach(([tableName, tableData]) => {
-    tables[tableName].fields = Object.fromEntries([
-      ...Object.entries(tableData.fields).filter(
-        ([, { isRelationship }]) => !isRelationship
-      ),
-      ...(
-        Object.entries(tableData.fields).filter(
-          ([, { isRelationship }]) => isRelationship
-        ) as [fieldName: string, relationshipData: DataModelRelationship][]
-      ).filter(
-        ([, { tableName: relationshipTableName }]) =>
-          typeof tables[relationshipTableName] !== 'undefined'
-      ),
-    ]);
-  });
-
-  dataModelStorage.tables = cache.set('wbPlanViewDataModel', 'tables', tables, {
-    version: cacheVersion,
-    overwrite: true,
-  });
-  dataModelStorage.originalRelationships = cache.set(
-    'wbPlanViewDataModel',
-    'originalRelationships',
-    originalRelationships,
-    {
-      version: cacheVersion,
-      overwrite: true,
-    }
+        return [tableName, fields] as const;
+      })
   );
 }
 
 export const dataModelPromise = fetchDataModel().then(() => dataModelStorage);
+
+export const getBaseTables = (): IR<boolean> =>
+  Object.fromEntries(
+    Array.from(getVisibleTables(), (tableName) => [
+      tableName,
+      tableHasOverwrite(tableName, 'commonBaseTable'),
+    ])
+  );

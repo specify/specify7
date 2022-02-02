@@ -192,6 +192,8 @@ export class Relationship extends FieldBase {
 
   public relatedModelName: keyof Tables;
 
+  public readonly type: RelationshipType;
+
   public dependent: boolean;
 
   public isRelationship: true = true;
@@ -206,6 +208,7 @@ export class Relationship extends FieldBase {
       unique: false,
     });
 
+    this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
     this.relatedModelName = relationshipDefinition.relatedModelName;
     this.dependent = relationshipDefinition.dependent;
