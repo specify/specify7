@@ -33,7 +33,7 @@ function mappingsTreeToUploadPlanTable(
   wrapIt = true,
   isRoot = false
 ) {
-  if (typeof tableName !== 'undefined' && isTreeModel(tableName))
+  if (typeof tableName === 'string' && isTreeModel(tableName))
     return mappingsTreeToUploadTable(
       tableData as MappingsTree,
       tableName,
@@ -84,9 +84,9 @@ function mappingsTreeToUploadPlanTable(
           false
         );
       else if (
-        typeof dataModelStorage.tables[tableName ?? '']?.[fieldName] !==
-          'undefined' &&
-        typeof tablePlan !== 'undefined'
+        typeof dataModelStorage.tables[tableName ?? '']?.[fieldName] ===
+          'object' &&
+        typeof tablePlan === 'object'
       ) {
         const field = dataModelStorage.tables[tableName ?? '']?.[fieldName];
 

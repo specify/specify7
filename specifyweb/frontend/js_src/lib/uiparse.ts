@@ -7,6 +7,7 @@ import { LiteralField, Relationship } from './specifyfield';
 import type { IR, RA, RR } from './types';
 import { hasNativeErrors } from './validationmessages';
 import { UiFormatter } from './uiformatters';
+import { filterArray } from './types';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -184,7 +185,7 @@ export function getParser(field: ExtendedField): Parser | undefined {
   if (typeof parser === 'function') parser = parser(field);
   if (typeof parser !== 'object') return undefined;
 
-  if (parser.type === 'date' && typeof field.datePart !== 'undefined')
+  if (parser.type === 'date' && typeof field.datePart === 'string')
     parser =
       field.datePart === 'fullDate'
         ? {
@@ -215,19 +216,11 @@ function mergeParsers(base?: Parser, extra?: Parser): Parser | undefined {
       ...[
         ...takeMin.map((key) => [
           key,
-          Math.min(
-            ...[base?.[key], extra?.[key]].filter(
-              (value): value is number => typeof value === 'number'
-            )
-          ),
+          Math.min(...filterArray([base?.[key], extra?.[key]])),
         ]),
         ...takeMax.map((key) => [
           key,
-          Math.max(
-            ...[base?.[key], extra?.[key]].filter(
-              (value): value is number => typeof value === 'number'
-            )
-          ),
+          Math.max(...filterArray([base?.[key], extra?.[key]])),
         ]),
       ].filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => typeof value !== 'undefined')
@@ -259,7 +252,7 @@ export function resolveParser(
 ): Parser | undefined {
   return mergeParsers(
     getParser(field),
-    typeof formatter === 'undefined' ? {} : formatterToParser(formatter)
+    typeof formatter === 'object' ? formatterToParser(formatter) : {}
   );
 }
 
@@ -267,10 +260,7 @@ export function getValidationAttributes(
   field: ExtendedField,
   parser: Parser
 ): IR<string> {
-  if (typeof parser === 'undefined') {
-    console.error(formsText('noParser')(field.type));
-    return {};
-  } else
+  if (typeof parser === 'object')
     return {
       ...(parser.required === true ? { required: '' } : {}),
       ...(typeof parser.pattern === 'object'
@@ -299,6 +289,10 @@ export function getValidationAttributes(
           ])
       ),
     };
+  else {
+    console.error(formsText('noParser')(field.type));
+    return {};
+  }
 }
 
 export const addValidationAttributes = (
@@ -315,7 +309,7 @@ function validateAttributes(
   value: string,
   input: HTMLInputElement | undefined
 ): undefined | string {
-  if (typeof input !== 'undefined' && hasNativeErrors(input))
+  if (typeof input === 'object' && hasNativeErrors(input))
     return input.validationMessage;
 
   if (typeof parser.minLength === 'number' && value.length < parser.minLength)

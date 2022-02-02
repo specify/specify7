@@ -177,7 +177,7 @@ export function getMustMatchTables({
     .filter(
       (tableName) =>
         tableName &&
-        typeof dataModelStorage.tables[tableName] !== 'undefined' &&
+        typeof dataModelStorage.tables[tableName] === 'object' &&
         !tableName.endsWith('attribute') &&
         // Exclude embedded paleo context
         (!schema.embeddedPaleoContext || tableName !== 'paleocontext')

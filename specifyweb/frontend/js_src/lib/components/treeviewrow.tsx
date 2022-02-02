@@ -55,14 +55,13 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (typeof focusPath !== 'undefined' && focusPath.length === 0)
-      setFocusedRow(row);
+    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
-  const isExpanded = typeof conformation !== 'undefined';
-  const isLoading = isExpanded && typeof rows === 'undefined';
-  const displayChildren = isExpanded && typeof rows?.[0] !== 'undefined';
+  const isExpanded = Array.isArray(conformation);
+  const isLoading = isExpanded && Array.isArray(rows);
+  const displayChildren = isExpanded && typeof rows?.[0] === 'object';
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
@@ -97,7 +96,7 @@ export function TreeRow({
   React.useEffect(() => {
     if (
       typeof conformation === 'undefined' &&
-      typeof focusPath?.[0] !== 'undefined'
+      typeof focusPath?.[0] === 'number'
     )
       handleChangeConformation([[focusPath[0]]]);
   }, [conformation, focusPath, handleChangeConformation]);
@@ -107,14 +106,14 @@ export function TreeRow({
       handleFocusNode([]);
       // If children are later added, the node would expand because of this line
       handleChangeConformation([]);
-    } else if (typeof conformation === 'object') {
+    } else if (Array.isArray(conformation)) {
       previousConformation.current = conformation;
       handleChangeConformation(undefined);
       handleFocusNode([]);
     } else {
-      if (typeof previousConformation.current === 'undefined')
-        handleChangeConformation([]);
-      else handleChangeConformation(previousConformation.current);
+      if (typeof previousConformation.current === 'object')
+        handleChangeConformation(previousConformation.current);
+      else handleChangeConformation([]);
       handleFocusNode(
         // "0" is a placeholder for id of first child node
         focusChild ? [rows?.[0].nodeId ?? 0] : []
@@ -139,7 +138,7 @@ export function TreeRow({
               className={`border whitespace-nowrap border-transparent aria-handled
               -mb-[12px] -ml-[5px] mt-2 rounded
               ${isFocused ? 'outline outline-blue-500' : ''}
-              ${typeof row.acceptedId === 'undefined' ? '' : 'text-red-600'}`}
+              ${typeof row.acceptedId === 'number' ? 'text-red-600' : ''}`}
               forwardRef={
                 isFocused
                   ? (element: HTMLButtonElement | null): void => {
@@ -157,8 +156,9 @@ export function TreeRow({
                 else if (action === 'toggle') handleToggle(true);
                 else if (action === 'child')
                   if (row.children === 0 || isLoading) return undefined;
-                  else if (typeof rows?.[0] === 'undefined') handleToggle(true);
-                  else handleFocusNode([rows[0].nodeId]);
+                  else if (typeof rows?.[0] === 'object')
+                    handleFocusNode([rows[0].nodeId]);
+                  else handleToggle(true);
                 else handleAction(action);
                 return undefined;
               }}
@@ -194,18 +194,18 @@ export function TreeRow({
               >
                 <span
                   title={
-                    typeof row.acceptedId === 'undefined'
-                      ? undefined
-                      : `${treeText('acceptedName')} ${
+                    typeof row.acceptedId === 'number'
+                      ? `${treeText('acceptedName')} ${
                           row.acceptedName ?? row.acceptedId
                         }`
+                      : undefined
                   }
                   aria-label={
-                    typeof row.acceptedId === 'undefined'
-                      ? undefined
-                      : `${treeText('acceptedName')} ${
+                    typeof row.acceptedId === 'number'
+                      ? `${treeText('acceptedName')} ${
                           row.acceptedName ?? row.acceptedId
                         }`
+                      : undefined
                   }
                 >
                   {row.name}
@@ -246,7 +246,7 @@ export function TreeRow({
               ${
                 // Add left border for empty cell before tree node
                 indexOfAncestor !== -1 &&
-                !(typeof currentNode !== 'undefined' && currentNode.isLastChild)
+                !(typeof currentNode === 'object' && currentNode.isLastChild)
                   ? 'border-l-gray-500'
                   : ''
               }
@@ -281,9 +281,9 @@ export function TreeRow({
               onChangeConformation={(newConformation): void =>
                 handleChangeConformation([
                   ...conformation.filter(([id]) => id !== childRow.nodeId),
-                  ...(typeof newConformation === 'undefined'
-                    ? []
-                    : ([[childRow.nodeId, ...newConformation]] as const)),
+                  ...(typeof newConformation === 'object'
+                    ? ([[childRow.nodeId, ...newConformation]] as const)
+                    : []),
                 ])
               }
               focusPath={
@@ -297,8 +297,9 @@ export function TreeRow({
               }
               onAction={(action): void => {
                 if (action === 'next')
-                  if (typeof rows[index + 1] === 'undefined') return undefined;
-                  else handleFocusNode([rows[index + 1].nodeId]);
+                  if (typeof rows[index + 1] === 'object')
+                    handleFocusNode([rows[index + 1].nodeId]);
+                  else return undefined;
                 else if (action === 'previous' && index !== 0)
                   handleFocusNode([rows[index - 1].nodeId]);
                 else if (action === 'previous' || action === 'parent')

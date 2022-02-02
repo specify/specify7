@@ -171,7 +171,7 @@ export function MakeRecordSetButton({
       {typeof state === 'string' ? (
         state === 'editing' || state === 'saving' ? (
           <>
-            {typeof recordSet !== 'undefined' && (
+            {typeof recordSet === 'object' && (
               <EditResourceDialog
                 resource={recordSet}
                 onSaving={(): void => setState('saving')}
@@ -191,7 +191,7 @@ export function MakeRecordSetButton({
               </Dialog>
             )}
           </>
-        ) : state === 'saved' && typeof recordSet !== 'undefined' ? (
+        ) : state === 'saved' && typeof recordSet === 'object' ? (
           <Dialog
             title={queryText('recordSetCreatedDialogTitle')}
             header={queryText('recordSetCreatedDialogHeader')}

@@ -21,7 +21,7 @@ export function createCookie(
 }
 
 export function readCookie(name: string): string | undefined {
-  if (typeof document !== 'undefined' && document.cookie)
+  if (typeof document === 'object' && document.cookie)
     for (const cookie of document.cookie.split(';')) {
       const trimmed = cookie.trim();
       if (trimmed.startsWith(`${name}=`))

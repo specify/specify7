@@ -232,9 +232,7 @@ function QueryToolbarItem({
   });
 
   if (state.type === 'ShowQueryListState') {
-    return typeof queries === 'undefined' ? (
-      <LoadingScreen />
-    ) : (
+    return Array.isArray(queries) ? (
       <Dialog
         header={commonText('queriesDialogTitle')(queries.length)}
         onClose={handleClose}
@@ -272,14 +270,14 @@ function QueryToolbarItem({
           getQuerySelectUrl={getQuerySelectUrl}
         />
       </Dialog>
+    ) : (
+      <LoadingScreen />
     );
   } else if (
     state.type === 'CreateQueryState' &&
-    typeof getQueryCreateUrl !== 'undefined'
+    typeof getQueryCreateUrl === 'function'
   )
-    return typeof tablesToShow === 'undefined' ? (
-      <LoadingScreen />
-    ) : (
+    return Array.isArray(tablesToShow) ? (
       <Dialog
         onClose={handleClose}
         className={{
@@ -299,6 +297,8 @@ function QueryToolbarItem({
           getQueryCreateUrl={getQueryCreateUrl}
         />
       </Dialog>
+    ) : (
+      <LoadingScreen />
     );
   else if (state.type === 'EditQueryState' && !readOnly)
     return (

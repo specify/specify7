@@ -155,7 +155,7 @@ export class QueryFieldSpec {
 
     const fieldSpec = new QueryFieldSpec(baseTable.name);
     fieldSpec.joinPath =
-      typeof field === 'undefined' ? joinPath : [...joinPath, field];
+      typeof field === 'object' ? [...joinPath, field] : joinPath;
     fieldSpec.table = node;
     fieldSpec.treeRank = typeof field === 'undefined' ? fieldName : undefined;
     fieldSpec.datePart =

@@ -23,6 +23,7 @@ import {
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
+import { filterArray } from './types';
 
 const addBaseTableName = (
   baseTableName: string,
@@ -44,8 +45,8 @@ const matchLocalityPinFields = (
       pathToRelationship,
       matchedPathsToRelationship: Array.from(
         new Set(
-          splitMappingPaths
-            .map(({ mappingPath, canonicalMappingPath }) => {
+          filterArray(
+            splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
               const subArrayPosition = findSubArray(
                 canonicalMappingPath,
                 pathToRelationship
@@ -54,10 +55,7 @@ const matchLocalityPinFields = (
                 ? undefined
                 : mappingPathToString(mappingPath.slice(0, subArrayPosition));
             })
-            .filter(
-              (mappingPath): mappingPath is string =>
-                typeof mappingPath === 'string'
-            )
+          )
         ),
         splitJoinedMappingPath
       ),
@@ -77,34 +75,32 @@ const filterSplitMappingPaths = (
   >,
   splitMappingPaths: SplitMappingPaths
 ): RA<SplitMappingPathWithFieldName> =>
-  matchedLocalityGroups
-    .flatMap(({ matchedPathsToRelationship, pathsToFields }) =>
-      matchedPathsToRelationship.flatMap((mappingPath) =>
-        pathsToFields.flatMap((pathToField) =>
-          splitMappingPaths
-            .filter(
-              (splitMappingPath) =>
-                mappingPathToString(splitMappingPath.canonicalMappingPath) ===
-                mappingPathToString([
-                  ...mappingPath.filter(
-                    (mappingPathPart) => mappingPathPart !== ''
-                  ),
-                  ...pathToField,
-                ])
-            )
-            .map((splitMappingPath) => ({
-              ...splitMappingPath,
-              fieldName: mappingPathToString(
-                splitMappingPath.mappingPath.slice(-pathToField.length)
-              ),
-            }))
+  filterArray(
+    matchedLocalityGroups.flatMap(
+      ({ matchedPathsToRelationship, pathsToFields }) =>
+        matchedPathsToRelationship.flatMap((mappingPath) =>
+          pathsToFields.flatMap((pathToField) =>
+            splitMappingPaths
+              .filter(
+                (splitMappingPath) =>
+                  mappingPathToString(splitMappingPath.canonicalMappingPath) ===
+                  mappingPathToString([
+                    ...mappingPath.filter(
+                      (mappingPathPart) => mappingPathPart !== ''
+                    ),
+                    ...pathToField,
+                  ])
+              )
+              .map((splitMappingPath) => ({
+                ...splitMappingPath,
+                fieldName: mappingPathToString(
+                  splitMappingPath.mappingPath.slice(-pathToField.length)
+                ),
+              }))
+          )
         )
-      )
     )
-    .filter(
-      (splitMappingPath): splitMappingPath is SplitMappingPathWithFieldName =>
-        typeof splitMappingPath !== 'undefined'
-    );
+  );
 
 function groupLocalityColumns(
   splitMappingPaths: RA<SplitMappingPathWithFieldName>

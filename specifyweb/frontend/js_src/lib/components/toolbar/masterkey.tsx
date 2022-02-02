@@ -26,7 +26,9 @@ function MasterKey({
 
   return isLoading ? (
     <LoadingScreen />
-  ) : typeof masterKey === 'undefined' ? (
+  ) : typeof masterKey === 'string' ? (
+    <ShowKey masterKey={masterKey} onClose={handleClose} />
+  ) : (
     <Dialog
       title={commonText('generateMasterKeyDialogTitle')}
       header={commonText('generateMasterKeyDialogHeader')}
@@ -85,8 +87,6 @@ function MasterKey({
         </Label>
       </Form>
     </Dialog>
-  ) : (
-    <ShowKey masterKey={masterKey} onClose={handleClose} />
   );
 }
 

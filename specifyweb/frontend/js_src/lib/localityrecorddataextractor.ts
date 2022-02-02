@@ -82,7 +82,7 @@ async function recursiveResourceResolve(
   if (typeof resource === 'undefined' || resource === null) return [];
 
   if (
-    typeof filterFunction !== 'undefined' &&
+    typeof filterFunction === 'function' &&
     !filterFunction([pastParts, currentPart, nextPart], resource)
   )
     return [];

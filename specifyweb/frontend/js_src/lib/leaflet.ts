@@ -158,7 +158,7 @@ function rememberSelectedBaseLayers(
   const cacheName = `currentLayer${cacheSalt}` as const;
   const currentLayer = cache.get('leaflet', cacheName);
   const baseLayer =
-    (typeof currentLayer !== 'undefined' && currentLayer in layers
+    (typeof currentLayer === 'string' && currentLayer in layers
       ? layers[currentLayer]
       : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
   baseLayer.addTo(map);
@@ -177,7 +177,7 @@ function rememberSelectedOverlays(
     const layerName = Object.entries(layers).find(
       ([_, layerObject]) => layerObject === layer
     )?.[0];
-    if (typeof layerName !== 'undefined')
+    if (typeof layerName === 'string')
       cache.set(
         'leaflet',
         `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
@@ -295,14 +295,14 @@ export function addMarkersToMap(
   });
 
   const layerLabels: Exclude<typeof labels, undefined> =
-    typeof labels === 'undefined'
-      ? {
+    typeof labels === 'object'
+      ? labels
+      : {
           marker: localityText('occurrencePoints'),
           polygon: localityText('occurrencePolygons'),
           polygonBoundary: localityText('polygonBoundaries'),
           errorRadius: localityText('errorRadius'),
-        }
-      : labels;
+        };
   // Add layer groups' checkboxes to the layer control menu
   Object.entries(layerLabels)
     .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
@@ -356,7 +356,7 @@ export const formatLocalityData = (
       )
       .filter(
         (entry): entry is [string, Field<string | number>] =>
-          typeof entry[1] !== 'undefined' && entry[1].value !== ''
+          typeof entry[1] === 'object' && entry[1].value !== ''
       )
       .map(([fieldName, field]) =>
         splitJoinedMappingPath(fieldName).includes('taxon')
@@ -426,7 +426,7 @@ export function getMarkersFromLocalityData({
     return markers;
 
   const icon = new L.Icon.Default();
-  if (typeof iconClass !== 'undefined') icon.options.className = iconClass;
+  if (typeof iconClass === 'string') icon.options.className = iconClass;
 
   const createPoint = (latitude1: number, longitude1: number): L.Marker =>
     L.marker([latitude1, longitude1], {

@@ -332,9 +332,8 @@ export class AutoMapper {
     }),
     findMappingsQueue: generateDispatch<AutoMapperFindMappingsQueueActions>({
       reset: ({ initialValue }) => {
-        typeof initialValue === 'undefined'
-          ? (this.findMappingsQueue = [])
-          : (this.findMappingsQueue = [[initialValue]]);
+        this.findMappingsQueue =
+          typeof initialValue === 'object' ? [[initialValue]] : [];
       },
       initializeLevel: ({ level }) => {
         this.findMappingsQueue[level] ??= [];
@@ -703,7 +702,7 @@ export class AutoMapper {
     const fields = getTableNonRelationshipFields(tableName, false);
     const label = defined(getModel(tableName)).getLocalizedName().toLowerCase();
 
-    if (typeof ranksData !== 'undefined') {
+    if (Array.isArray(ranksData)) {
       let ranks = ranksData.map(({ name }) => name).slice(1);
       const pushRankToPath =
         mappingPath.length <= 0 ||
@@ -981,7 +980,7 @@ export class AutoMapper {
     const formatTreeRankUndefined = (
       rankName: string | undefined
     ): string | undefined =>
-      typeof rankName === 'undefined' ? rankName : formatTreeRank(rankName);
+      typeof rankName === 'string' ? formatTreeRank(rankName) : undefined;
     if (isTreeModel(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)

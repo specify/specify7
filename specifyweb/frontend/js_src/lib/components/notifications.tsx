@@ -112,7 +112,7 @@ export function Notifications(): JSX.Element {
             : '...'
         )}
       </Button.Simple>
-      {typeof notifications !== 'undefined' && (
+      {Array.isArray(notifications) && (
         <Dialog
           isOpen={isOpen}
           header={commonText('notificationsDialogTitle')}

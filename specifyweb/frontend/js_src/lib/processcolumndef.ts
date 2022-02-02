@@ -12,7 +12,7 @@ export function processColumnDefinition(columnDefinition: string) {
       .filter((_, index) => index % 2 === 0)
       .map((definition) => /(\d+)px/.exec(definition)?.[1])
       .map((width) =>
-        typeof width === 'undefined' ? '<col />' : `<col width="${width}px" />`
+        typeof width === 'string' ? `<col width="${width}px" />` : '<col />'
       )
       .join('')}
   </colgroup>

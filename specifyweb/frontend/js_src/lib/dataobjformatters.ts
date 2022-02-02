@@ -5,7 +5,7 @@ import type { SpecifyResource } from './legacytypes';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { contextUnlockedPromise } from './initialcontext';
 
 export type Formatter = {
@@ -50,9 +50,8 @@ export const fetchFormatters: Promise<{
     })
   )
   .then(({ data: definitions }) => ({
-    formatters: Array.from(
-      definitions.getElementsByTagName('format'),
-      (formatter) => {
+    formatters: filterArray(
+      Array.from(definitions.getElementsByTagName('format'), (formatter) => {
         const switchElement = formatter.getElementsByTagName('switch')[0];
         if (typeof switchElement === 'undefined') return undefined;
         const isSingle =
@@ -80,28 +79,26 @@ export const fetchFormatters: Promise<{
           title: formatter.getAttribute('title')?.trim() ?? undefined,
           className: formatter.getAttribute('class')?.trim() ?? undefined,
           isDefault: formatter.getAttribute('default')?.trim() === 'true',
+          fields,
           switchFieldName:
             typeof field === 'string' && !isSingle ? field : undefined,
         };
-      }
-    ).filter(
-      (formatter): formatter is Formatter => typeof formatter !== 'undefined'
+      })
     ),
-    aggregators: Array.from(
-      definitions.getElementsByTagName('aggregator'),
-      (aggregator) => {
-        return {
-          name: aggregator.getAttribute('name')?.trim() ?? undefined,
-          title: aggregator.getAttribute('title')?.trim() ?? undefined,
-          className: aggregator.getAttribute('class')?.trim() ?? undefined,
-          isDefault: aggregator.getAttribute('default')?.trim() === 'true',
-          separator: aggregator.getAttribute('separator') ?? '',
-          format: aggregator.getAttribute('format') ?? '',
-        };
-      }
-    ).filter(
-      (aggregator): aggregator is Aggregator =>
-        typeof aggregator !== 'undefined'
+    aggregators: filterArray(
+      Array.from(
+        definitions.getElementsByTagName('aggregator'),
+        (aggregator) => {
+          return {
+            name: aggregator.getAttribute('name')?.trim() ?? undefined,
+            title: aggregator.getAttribute('title')?.trim() ?? undefined,
+            className: aggregator.getAttribute('class')?.trim() ?? undefined,
+            isDefault: aggregator.getAttribute('default')?.trim() === 'true',
+            separator: aggregator.getAttribute('separator') ?? '',
+            format: aggregator.getAttribute('format') ?? '',
+          };
+        }
+      )
     ),
   }));
 

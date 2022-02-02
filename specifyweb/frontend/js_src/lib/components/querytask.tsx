@@ -25,9 +25,7 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       const recordSetId = querystring.parse().recordsetid;
-      if (typeof recordSetId === 'undefined') {
-        return false;
-      }
+      if (typeof recordSetId === 'undefined') return false;
       const recordSet = new schema.models.RecordSet.LazyCollection({
         filters: { id: Number.parseInt(recordSetId) },
       });

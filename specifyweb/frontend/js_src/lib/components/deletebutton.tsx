@@ -42,7 +42,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   return (
     <>
       <Button.Gray onClick={(): void => setIsOpen(true)}>
-        {typeof blockers === 'object' && blockers.length > 0
+        {Array.isArray(blockers) && blockers.length > 0
           ? icons.exclamation
           : undefined}
         {commonText('delete')}

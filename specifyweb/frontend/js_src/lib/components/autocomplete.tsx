@@ -80,8 +80,8 @@ export function Autocomplete<T>({
         onKeyDown: handleKeyDown,
         onChange: ({ target }): void => {
           const data = results[target.value];
-          if (typeof data === 'undefined') handleNewValue?.(target.value);
-          else handleChange(target.value, data);
+          if (typeof data === 'object') handleChange(target.value, data);
+          else handleNewValue?.(target.value);
         },
       })}
       <datalist id={id('')} ref={refDataList}>

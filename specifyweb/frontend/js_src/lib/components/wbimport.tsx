@@ -462,7 +462,7 @@ function ChooseFile(props: { update: HandleAction }) {
       >
         <span>
           {wbText('filePickerMessage')}
-          {typeof fileName !== 'undefined' && (
+          {typeof fileName === 'string' && (
             <>
               <br />
               <br />

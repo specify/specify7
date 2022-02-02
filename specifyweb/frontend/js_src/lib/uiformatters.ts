@@ -2,6 +2,7 @@ import { escapeRegExp } from './escaperegexp';
 import { load } from './initialcontext';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
+import { filterArray } from './types';
 
 export let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
@@ -9,45 +10,44 @@ export const fetchContext = load<Document>(
   'application/xml'
 ).then((formatters) => {
   uiFormatters = Object.fromEntries(
-    Array.from(formatters.getElementsByTagName('format'), (formatter) => {
-      const external = formatter
-        .getElementsByTagName('external')[0]
-        ?.textContent?.trim();
-      let resolvedFormatter;
-      if (typeof external === 'string') {
-        if (
-          SpecifyModel.parseClassName(external) ===
-          'CatalogNumberUIFieldFormatter'
-        )
-          resolvedFormatter = new CatalogNumberNumeric();
-        else return undefined;
-      } else {
-        const fields = Array.from(
-          formatter.getElementsByTagName('field'),
-          (field) => {
-            const FieldClass =
-              fieldMapper[
-                (field.getAttribute('type') ?? '') as keyof typeof fieldMapper
-              ];
-            if (typeof FieldClass === 'undefined') return undefined;
-            return new FieldClass({
-              size: Number.parseInt(field.getAttribute('size') ?? '1'),
-              value: field.getAttribute('value') ?? ' ',
-              autoIncrement: field.getAttribute('inc') === 'true',
-              byYear: field.getAttribute('byyear') === 'true',
-              pattern: field.getAttribute('pattern') ?? '',
-            });
-          }
-        ).filter((field): field is Field => typeof field === 'object');
-        resolvedFormatter = new UiFormatter(
-          formatter.getAttribute('system') === 'true',
-          fields
-        );
-      }
+    filterArray(
+      Array.from(formatters.getElementsByTagName('format'), (formatter) => {
+        const external = formatter
+          .getElementsByTagName('external')[0]
+          ?.textContent?.trim();
+        let resolvedFormatter;
+        if (typeof external === 'string') {
+          if (
+            SpecifyModel.parseClassName(external) ===
+            'CatalogNumberUIFieldFormatter'
+          )
+            resolvedFormatter = new CatalogNumberNumeric();
+          else return undefined;
+        } else {
+          const fields = filterArray(
+            Array.from(formatter.getElementsByTagName('field'), (field) => {
+              const FieldClass =
+                fieldMapper[
+                  (field.getAttribute('type') ?? '') as keyof typeof fieldMapper
+                ];
+              if (typeof FieldClass === 'undefined') return undefined;
+              return new FieldClass({
+                size: Number.parseInt(field.getAttribute('size') ?? '1'),
+                value: field.getAttribute('value') ?? ' ',
+                autoIncrement: field.getAttribute('inc') === 'true',
+                byYear: field.getAttribute('byyear') === 'true',
+                pattern: field.getAttribute('pattern') ?? '',
+              });
+            })
+          );
+          resolvedFormatter = new UiFormatter(
+            formatter.getAttribute('system') === 'true',
+            fields
+          );
+        }
 
-      return [formatter.getAttribute('name') ?? '', resolvedFormatter];
-    }).filter(
-      (entry): entry is [string, UiFormatter] => typeof entry === 'object'
+        return [formatter.getAttribute('name') ?? '', resolvedFormatter];
+      })
     )
   );
   return uiFormatters;

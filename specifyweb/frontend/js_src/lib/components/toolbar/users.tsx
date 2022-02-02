@@ -32,9 +32,7 @@ function Users({
     }, [])
   );
 
-  return typeof users === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof users === 'object' ? (
     <Dialog
       header={commonText('manageUsersDialogTitle')}
       onClose={handleClose}
@@ -65,6 +63,8 @@ function Users({
         ))}
       </Ul>
     </Dialog>
+  ) : (
+    <LoadingScreen />
   );
 }
 

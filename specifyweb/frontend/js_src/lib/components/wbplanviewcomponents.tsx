@@ -374,9 +374,9 @@ export function MappingElement({
       {...props}
       customSelectOptionGroups={customSelectOptionGroups}
       autoMapperSuggestions={
-        typeof props.autoMapperSuggestions !== 'undefined' &&
+        Array.isArray(props.autoMapperSuggestions) &&
         props.autoMapperSuggestions.length > 0 &&
-        typeof props.handleAutoMapperSuggestionSelection !== 'undefined' ? (
+        typeof props.handleAutoMapperSuggestionSelection === 'function' ? (
           <SuggestionBox
             onSelect={(selection): void =>
               props.handleAutoMapperSuggestionSelection?.(selection)

@@ -189,11 +189,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       const alias = this.fieldAliases.find(
         (alias) => alias.vname.toLowerCase() === splitName[0]
       );
-      if (typeof alias !== 'undefined') field = this.getField(alias.aname);
+      if (typeof alias === 'object') field = this.getField(alias.aname);
     }
 
     if (splitName.length === 1 || typeof field === 'undefined') return field;
-    else if (field instanceof Relationship)
+    else if (field.isRelationship)
       return defined(field.getRelatedModel()).getField(
         splitName.slice(1).join('.')
       );
@@ -251,7 +251,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       .map((fieldName) => this.getField(fieldName))
       .find(
         (field): field is Relationship =>
-          typeof field !== 'undefined' && field.type === 'many-to-one'
+          typeof field === 'object' && field.type === 'many-to-one'
       );
   }
 

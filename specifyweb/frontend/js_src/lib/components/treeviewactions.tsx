@@ -50,9 +50,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     currentAction === 'edit' ? (
     <menu className="contents">
       <li className="contents">
-        {typeof focusedRow === 'undefined' ? (
-          <Button.Simple disabled>{commonText('query')}</Button.Simple>
-        ) : (
+        {typeof focusedRow === 'object' ? (
           <Link.LikeButton
             href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
               focusedRow.nodeId
@@ -61,6 +59,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           >
             {commonText('query')}
           </Link.LikeButton>
+        ) : (
+          <Button.Simple disabled>{commonText('query')}</Button.Simple>
         )}
       </li>
       <li className="contents">
@@ -78,7 +78,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           onRefresh={handleRefresh}
           disabled={
             typeof focusedRow === 'undefined' ||
-            typeof focusedRow.acceptedId !== 'undefined' ||
+            typeof focusedRow.acceptedId === 'number' ||
             // Forbid adding children to the lowest rank
             ranks.slice(-1)[0] === focusedRow.rankId
           }
@@ -115,15 +115,15 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               ? undefined
               : (): void =>
                   setAction(
-                    typeof focusedRow?.acceptedId === 'undefined'
-                      ? 'synonymize'
-                      : 'unsynonymize'
+                    typeof focusedRow?.acceptedId === 'number'
+                      ? 'unsynonymize'
+                      : 'synonymize'
                   )
           }
         >
-          {typeof focusedRow?.acceptedId === 'undefined'
-            ? treeText('synonymize')
-            : treeText('undoSynonymy')}
+          {typeof focusedRow?.acceptedId === 'number'
+            ? treeText('undoSynonymy')
+            : treeText('synonymize')}
         </Button.Simple>
       </li>
     </menu>
@@ -165,7 +165,7 @@ function EditRecord<SCHEMA extends AnyTree>({
       >
         {userInformation.isReadOnly ? commonText('view') : commonText('edit')}
       </Button.Simple>
-      {isOpen && typeof nodeId !== 'undefined' && (
+      {isOpen && typeof nodeId === 'number' && (
         <EditRecordDialog<SCHEMA>
           id={nodeId}
           addNew={false}
@@ -338,7 +338,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
             : formData({ target: focusedRow.nodeId.toString() }),
       }
     );
-  const isSynonym = typeof focusedRow.acceptedId !== 'undefined';
+  const isSynonym = typeof focusedRow.acceptedId === 'number';
   const isSameRecord = focusedRow.nodeId === actionRow.nodeId;
   const disabled =
     type === 'move'

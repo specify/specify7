@@ -179,7 +179,7 @@ export function PickListComboBox(
         />
       )}
       {typeof pendingNewValue === 'string' &&
-        typeof props.pickList !== 'undefined' &&
+        typeof props.pickList === 'object' &&
         typeof props.onAdd === 'function' && (
           <AddingToPicklist
             value={pendingNewValue}

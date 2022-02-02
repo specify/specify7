@@ -20,7 +20,7 @@ const sequenceFromState = (state?: State): number =>
 
 // If the page is reloaded, the sequence needs to be set from the stored state.
 let sequence = sequenceFromState(
-  typeof window === 'undefined' ? undefined : window.history.state
+  typeof window === 'object' ? window.history.state : undefined
 );
 
 type Blocker = {
@@ -97,7 +97,7 @@ Backbone.history.history = Object.setPrototypeOf(
     pushState,
     replaceState,
   },
-  typeof window === 'undefined' ? null! : window.history
+  typeof window === 'object' ? window.history : null!
 );
 
 /*

@@ -45,15 +45,17 @@ export function TableIcon({
     tableLabel === false
       ? undefined
       : tableLabel ?? getModel(tableName)?.getLocalizedName() ?? '';
+  const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
+  const ariaHidden = typeof resolvedTableLabel === 'undefined';
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span
         className="w-table-icon h-table-icon bg-center bg-no-repeat bg-contain"
-        role={typeof resolvedTableLabel === 'undefined' ? undefined : 'img'}
+        role={role}
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}
         aria-label={resolvedTableLabel}
-        aria-hidden={typeof resolvedTableLabel === 'undefined'}
+        aria-hidden={ariaHidden}
       />
     );
 
@@ -63,11 +65,11 @@ export function TableIcon({
   return (
     <span
       style={{ backgroundColor: color }}
-      role={typeof resolvedTableLabel === 'undefined' ? undefined : 'img'}
+      role={role}
       className="w-table-icon h-table-icon flex items-center justify-center text-white rounded"
       title={resolvedTableLabel}
       aria-label={resolvedTableLabel}
-      aria-hidden={typeof resolvedTableLabel === 'undefined'}
+      aria-hidden={ariaHidden}
     >
       {tableName.slice(0, 2).toUpperCase()}
     </span>

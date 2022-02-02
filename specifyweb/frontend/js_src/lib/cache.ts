@@ -56,7 +56,7 @@ let eventListenerIsInitialized = false;
 
 /** Set's an event listener that runs commitToStorage before a page unload */
 function initialize(): void {
-  if (typeof addEventListener !== 'undefined')
+  if (typeof addEventListener === 'function')
     addEventListener('beforeunload', commitToStorage);
   eventListenerIsInitialized = true;
 }
@@ -215,7 +215,7 @@ export function genericGet<T>(
 
   // If cache version is specified, and it doesn't match, clear the record
   if (
-    typeof version !== 'undefined' &&
+    typeof version === 'string' &&
     buckets[bucketName].records[cacheName].version !== version
   ) {
     const { [cacheName]: _deletedCacheRecord, ...rest } =
@@ -293,20 +293,13 @@ export function genericSet<T>(
     records: {},
   };
 
-  if (
-    !overwrite &&
-    typeof buckets[bucketName].records[cacheName] !== 'undefined'
-  )
+  if (!overwrite && typeof buckets[bucketName].records[cacheName] === 'object')
     return buckets[bucketName].records[cacheName].value as T;
 
   buckets[bucketName].records[cacheName] = {
     value: cacheValue,
     useCount: 0,
-    ...(typeof version === 'undefined'
-      ? {}
-      : {
-          version,
-        }),
+    ...(typeof version === 'string' ? { version } : {}),
   };
 
   return cacheValue;
@@ -315,7 +308,7 @@ export function genericSet<T>(
 let collectionId: number | undefined = undefined;
 
 export async function getCurrentCollectionId(): Promise<number> {
-  if (typeof collectionId !== 'undefined') return collectionId;
+  if (typeof collectionId === 'number') return collectionId;
   const { data } = await ajax<{ readonly current: number }>(
     '/context/collection/',
     { headers: { Accept: 'application/json' } }

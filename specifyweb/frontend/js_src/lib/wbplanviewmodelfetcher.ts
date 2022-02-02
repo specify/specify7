@@ -87,7 +87,7 @@ const getVisibleTables = (): Readonly<Set<string>> =>
  * See more details in WbPlanViewModelConfig.ts
  */
 async function fetchDataModel(): Promise<void> {
-  if (typeof dataModelStorage.tables !== 'undefined') return;
+  if (typeof dataModelStorage.tables === 'object') return;
 
   await fetchSchema;
 
@@ -136,7 +136,7 @@ async function fetchDataModel(): Promise<void> {
 
           if (field.isRelationship) {
             let foreignName = field.otherSideName;
-            if (typeof foreignName !== 'undefined')
+            if (typeof foreignName === 'string')
               foreignName = foreignName.toLowerCase();
 
             const tableName = field.relatedModelName.toLowerCase();

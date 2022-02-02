@@ -38,7 +38,7 @@ const startExport = async (
     method: 'POST',
     body: formData({
       definition,
-      ...(typeof metadata === 'undefined' ? {} : { metadata }),
+      ...(typeof metadata === 'string' ? { metadata } : {}),
     }),
   }).then(() => undefined);
 

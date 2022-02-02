@@ -64,9 +64,7 @@ function FormsDialog({
 }): JSX.Element {
   const [forms] = useAsyncState(getForms);
 
-  return typeof forms === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return Array.isArray(forms) ? (
     <Dialog
       header={formsText('formsDialogTitle')}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -101,6 +99,8 @@ function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
+  ) : (
+    <LoadingScreen />
   );
 }
 

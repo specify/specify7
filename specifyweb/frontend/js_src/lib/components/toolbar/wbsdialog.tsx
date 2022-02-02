@@ -68,14 +68,14 @@ function DsMeta({
     )
   );
 
-  return typeof dataset === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof dataset === 'object' ? (
     <DataSetMeta
       dataset={dataset}
       onClose={handleClose}
       onChange={handleClose}
     />
+  ) : (
+    <LoadingScreen />
   );
 }
 
@@ -334,9 +334,7 @@ export function WbsDialog({
 
   React.useEffect(fetchDatasets, [fetchDatasets]);
 
-  return typeof datasets === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return Array.isArray(datasets) ? (
     <MetadataDialog
       datasets={datasets}
       onClose={handleClose}
@@ -344,6 +342,8 @@ export function WbsDialog({
       onDataSetSelect={handleDataSetSelect}
       onChange={fetchDatasets}
     />
+  ) : (
+    <LoadingScreen />
   );
 }
 

@@ -20,7 +20,7 @@ import commonText from './localization/common';
 import { getModel } from './schema';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import {
   formatReferenceItem,
   formatTreeRank,
@@ -171,7 +171,7 @@ function findNextNavigationDirection<RETURN_STRUCTURE>(
     nextTableName = tableName;
     nextParentTableName = parentTableName;
   } else if (
-    typeof nextPathElement !== 'undefined' &&
+    typeof nextPathElement === 'object' &&
     nextPathElement.isRelationship
   ) {
     nextTableName = nextPathElement.tableName;
@@ -225,20 +225,21 @@ export function navigator<RETURN_STRUCTURE>({
   let parentTableRelationshipName = '';
   let parentPathElementName = '';
 
-  if (typeof recursivePayload === 'undefined') {
-    if (typeof baseTableName === 'undefined')
-      throw new Error(
-        'Base table needs to be specified for a navigator to be able' +
-          ' to loop though schema'
-      );
-    tableName = baseTableName;
-  } else
+  if (typeof recursivePayload === 'object')
     ({
       tableName,
       parentTableName,
       parentTableRelationshipName,
       parentPathElementName,
     } = recursivePayload);
+  else {
+    if (typeof baseTableName === 'undefined')
+      throw new Error(
+        'Base table needs to be specified for a navigator to be able' +
+          ' to loop though schema'
+      );
+    tableName = baseTableName;
+  }
 
   /*
    * An object that is shared between navigator, navigatorInstance and
@@ -509,8 +510,7 @@ export function getMappingLineData({
       const treeRankName = getNameFromTreeRankName(formattedTreeRankName);
       const treeRanks = getTreeDefinitionItems(tableName as 'Geography', false);
       if (
-        typeof treeRanks?.find(({ name }) => name === treeRankName) !==
-        'undefined'
+        typeof treeRanks?.find(({ name }) => name === treeRankName) === 'object'
       ) {
         nextPathElementName = formattedTreeRankName;
         mappingPath[internalState.mappingPathPosition] = formattedTreeRankName;
@@ -539,9 +539,7 @@ export function getMappingLineData({
       internalState.nextMappingPathElement =
         mappingPath[internalState.mappingPathPosition + 1];
 
-      if (typeof internalState.nextMappingPathElement === 'undefined')
-        internalState.defaultValue = '0';
-      else {
+      if (typeof internalState.nextMappingPathElement === 'string') {
         const formattedTreeRankName = formatTreeRank(
           internalState.nextMappingPathElement
         );
@@ -551,8 +549,8 @@ export function getMappingLineData({
           false
         );
         if (
-          typeof treeRanks?.find(({ name }) => name === treeRankName) !==
-          'undefined'
+          typeof treeRanks?.find(({ name }) => name === treeRankName) ===
+          'object'
         ) {
           internalState.nextMappingPathElement = formattedTreeRankName;
           mappingPath[internalState.mappingPathPosition] =
@@ -560,7 +558,7 @@ export function getMappingLineData({
         }
 
         internalState.defaultValue = internalState.nextMappingPathElement;
-      }
+      } else internalState.defaultValue = '0';
 
       internalState.currentMappingPathPart =
         mappingPath[internalState.mappingPathPosition];
@@ -574,7 +572,7 @@ export function getMappingLineData({
     handleToManyChildren({ tableName, parentTableName }) {
       internalState.customSelectSubtype = 'toMany';
 
-      if (typeof internalState.nextMappingPathElement !== 'undefined')
+      if (typeof internalState.nextMappingPathElement === 'string')
         internalState.mappedFields.push(internalState.nextMappingPathElement);
 
       const maxMappedElementNumber = getMaxToManyValue(
@@ -627,31 +625,30 @@ export function getMappingLineData({
         generateFieldData === 'none'
           ? {}
           : Object.fromEntries(
-              getTreeDefinitionItems(tableName as 'Geography', false)
-                .map(({ name, isEnforced, title }) => {
-                  const isDefault =
-                    formatTreeRank(name) === internalState.defaultValue;
-                  return isDefault || generateFieldData === 'all'
-                    ? ([
-                        formatTreeRank(name),
-                        {
-                          optionLabel: title ?? name,
-                          isEnabled: true,
-                          isRequired:
-                            isEnforced === true &&
-                            !mustMatchPreferences[tableName],
-                          isHidden: false,
-                          isRelationship: true,
-                          isDefault,
-                          tableName,
-                        } as HtmlGeneratorFieldData,
-                      ] as const)
-                    : undefined;
-                })
-                .filter(
-                  (entry): entry is [string, HtmlGeneratorFieldData] =>
-                    typeof entry !== 'undefined'
+              filterArray(
+                getTreeDefinitionItems(tableName as 'Geography', false).map(
+                  ({ name, isEnforced, title }) => {
+                    const isDefault =
+                      formatTreeRank(name) === internalState.defaultValue;
+                    return isDefault || generateFieldData === 'all'
+                      ? ([
+                          formatTreeRank(name),
+                          {
+                            optionLabel: title ?? name,
+                            isEnabled: true,
+                            isRequired:
+                              isEnforced === true &&
+                              !mustMatchPreferences[tableName],
+                            isHidden: false,
+                            isRelationship: true,
+                            isDefault,
+                            tableName,
+                          } as HtmlGeneratorFieldData,
+                        ] as const)
+                      : undefined;
+                  }
                 )
+              )
             );
     },
 

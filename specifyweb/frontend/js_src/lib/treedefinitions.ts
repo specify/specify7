@@ -69,9 +69,8 @@ export const fetchContext = Promise.all([fetchSchema, fetchDomain])
           const domainResource = getDomainResource(
             definitionLevel as 'discipline'
           );
-          return typeof domainResource === 'undefined'
-            ? undefined
-            : domainResource
+          return typeof domainResource === 'object'
+            ? domainResource
                 .rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
                 .then(async (model) =>
                   Promise.all([
@@ -85,7 +84,8 @@ export const fetchContext = Promise.all([fetchSchema, fetchDomain])
                     sortFunction((item) => item.rankId)
                   ),
                 }))
-                .then((ranks) => [treeName, ranks] as const);
+                .then((ranks) => [treeName, ranks] as const)
+            : undefined;
         })
     )
   )

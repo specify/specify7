@@ -17,6 +17,7 @@ import type {
 } from '../localization/utils';
 import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
 import type { IR, R } from '../types';
+import { filterArray } from '../types';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');
@@ -88,90 +89,89 @@ type Dictionary = IR<Key>;
   const localizationFiles = fs.readdirSync(localizationDirectory);
   const dictionaries = Object.fromEntries(
     Array.from(
-      await Promise.all(
-        localizationFiles.map<Promise<undefined | [string, Dictionary]>>(
-          async (fileName) => {
-            if (!path.extname(fileName).includes('ts')) return undefined;
+      filterArray(
+        await Promise.all(
+          localizationFiles.map<Promise<undefined | [string, Dictionary]>>(
+            async (fileName) => {
+              if (!path.extname(fileName).includes('ts')) return undefined;
 
-            const compiledFilePath = path.join(
-              compiledLocalizationDirectory,
-              fileName
-            );
-            const filePathWithoutExtension = compiledFilePath
-              .split('.')
-              .slice(0, -1)
-              .join('.');
-
-            const dictionaryFile = await import(filePathWithoutExtension);
-            const dictionary = dictionaryFile?.default?.dictionary as
-              | LanguageDictionary
-              | undefined;
-            if (typeof dictionary !== 'object') {
-              warn(`Unable to find a dictionary in ${fileName}`);
-              return undefined;
-            }
-            if (verbose) log(`Found a dictionary in ${fileName}`);
-
-            const filePath = path.join(localizationDirectory, fileName);
-            const fileContent = fs.readFileSync(filePath).toString();
-            const regexMatch = reDictionaryName.exec(fileContent);
-            const dictionaryName = regexMatch?.groups?.dictionaryName;
-
-            if (typeof dictionaryName !== 'string') {
-              error(`Unable to find a dictionary in ${fileName}`);
-              return undefined;
-            }
-
-            if (Object.keys(dictionary).length === 0) {
-              error(
-                `Unable to find any keys in the ${dictionaryName} dictionary`
+              const compiledFilePath = path.join(
+                compiledLocalizationDirectory,
+                fileName
               );
-              return undefined;
+              const filePathWithoutExtension = compiledFilePath
+                .split('.')
+                .slice(0, -1)
+                .join('.');
+
+              const dictionaryFile = await import(filePathWithoutExtension);
+              const dictionary = dictionaryFile?.default?.dictionary as
+                | LanguageDictionary
+                | undefined;
+              if (typeof dictionary !== 'object') {
+                warn(`Unable to find a dictionary in ${fileName}`);
+                return undefined;
+              }
+              if (verbose) log(`Found a dictionary in ${fileName}`);
+
+              const filePath = path.join(localizationDirectory, fileName);
+              const fileContent = fs.readFileSync(filePath).toString();
+              const regexMatch = reDictionaryName.exec(fileContent);
+              const dictionaryName = regexMatch?.groups?.dictionaryName;
+
+              if (typeof dictionaryName !== 'string') {
+                error(`Unable to find a dictionary in ${fileName}`);
+                return undefined;
+              }
+
+              if (Object.keys(dictionary).length === 0) {
+                error(
+                  `Unable to find any keys in the ${dictionaryName} dictionary`
+                );
+                return undefined;
+              }
+
+              const entries = Object.fromEntries(
+                Object.entries(dictionary).map(([key, strings]) => {
+                  languages
+                    .filter((language) => !(language in strings))
+                    .forEach((language) =>
+                      (language === DEFAULT_LANGUAGE ? error : todo)(
+                        [
+                          `${language} localization is missing for key ${key}`,
+                          `in ${dictionaryName}`,
+                        ].join('')
+                      )
+                    );
+
+                  Object.keys(strings)
+                    .filter(
+                      (language) => !languages.includes(language as Language)
+                    )
+                    .forEach((language) =>
+                      warn(
+                        [
+                          `A string for an undefined language ${language} was`,
+                          `found for key ${key} in ${dictionaryName}`,
+                        ].join('')
+                      )
+                    );
+
+                  return [
+                    key,
+                    {
+                      strings,
+                      useCount: 0,
+                    },
+                  ];
+                })
+              );
+
+              return [dictionaryName, entries];
             }
-
-            const entries = Object.fromEntries(
-              Object.entries(dictionary).map(([key, strings]) => {
-                languages
-                  .filter((language) => !(language in strings))
-                  .forEach((language) =>
-                    (language === DEFAULT_LANGUAGE ? error : todo)(
-                      [
-                        `${language} localization is missing for key ${key}`,
-                        `in ${dictionaryName}`,
-                      ].join('')
-                    )
-                  );
-
-                Object.keys(strings)
-                  .filter(
-                    (language) => !languages.includes(language as Language)
-                  )
-                  .forEach((language) =>
-                    warn(
-                      [
-                        `A string for an undefined language ${language} was`,
-                        `found for key ${key} in ${dictionaryName}`,
-                      ].join('')
-                    )
-                  );
-
-                return [
-                  key,
-                  {
-                    strings,
-                    useCount: 0,
-                  },
-                ];
-              })
-            );
-
-            return [dictionaryName, entries];
-          }
+          )
         )
       )
-    ).filter(
-      (content): content is [string, Dictionary] =>
-        typeof content !== 'undefined'
     )
   );
 

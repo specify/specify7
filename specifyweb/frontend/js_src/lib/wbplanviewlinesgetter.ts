@@ -63,14 +63,14 @@ export function getLinesFromHeaders({
   return lines.map((line) => {
     const { headerName } = line;
     const autoMapperMappingPaths = autoMapperResults[headerName];
-    return typeof autoMapperMappingPaths === 'undefined'
-      ? line
-      : {
+    return Array.isArray(autoMapperMappingPaths)
+      ? {
           mappingPath: autoMapperMappingPaths[0],
           mappingType: 'existingHeader',
           headerName,
           columnOptions: defaultColumnOptions,
-        };
+        }
+      : line;
   });
 }
 

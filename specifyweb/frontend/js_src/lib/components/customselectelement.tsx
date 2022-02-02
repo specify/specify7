@@ -11,7 +11,7 @@ import React from 'react';
 
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
-import type { IR, RA, RR } from '../types';
+import { IR, RA, RR } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import {
   TableIcon,
@@ -345,7 +345,7 @@ function OptionGroup({
       role="group"
       aria-label={selectGroupLabel}
     >
-      {typeof selectGroupLabel !== 'undefined' && (
+      {typeof selectGroupLabel === 'undefined' && (
         <header
           aria-hidden={true}
           className="bg-[color:var(--custom-select-b2)] px-1 cursor-auto"
@@ -606,9 +606,7 @@ export function CustomSelectElement({
 
     const fieldNames = inlineOptions
       .map(({ optionLabel }) => optionLabel)
-      .filter(
-        (optionLabel): optionLabel is string => typeof optionLabel === 'string'
-      );
+      .filter((option): option is string => typeof option === 'string');
     optionsShadow =
       !isOpen && has('scroll') && fieldNames.length > 0 ? (
         <ShadowListOfOptions fieldNames={fieldNames} />
@@ -689,7 +687,7 @@ export function CustomSelectElement({
         'custom-select-option-selected'
       )?.[0] as undefined | HTMLElement;
 
-      if (typeof selectedOption !== 'undefined') {
+      if (typeof selectedOption === 'object') {
         // The current line and half a line before it should be visible
         const minGoodOffsetTop = Math.max(
           0,

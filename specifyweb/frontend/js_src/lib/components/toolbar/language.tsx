@@ -75,9 +75,7 @@ function ChangeLanguage({
     )
   );
 
-  return typeof languages === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof languages === 'object' ? (
     <Dialog
       header={commonText('changeLanguage')}
       onClose={handleClose}
@@ -85,6 +83,8 @@ function ChangeLanguage({
     >
       <LanguageSelection languages={languages} />
     </Dialog>
+  ) : (
+    <LoadingScreen />
   );
 }
 

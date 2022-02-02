@@ -452,7 +452,7 @@ export function WbPlanViewMapper(props: {
           mappingPath={state.mappingView}
           showHiddenFields={state.showHiddenFields}
           mapButtonIsEnabled={
-            typeof state.focusedLine !== 'undefined' &&
+            typeof state.focusedLine === 'number' &&
             mappingPathIsComplete(state.mappingView)
           }
           readonly={props.readonly}

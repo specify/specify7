@@ -203,7 +203,7 @@ function QueryResultCell({
 }): JSX.Element {
   const [formatted, setFormatted] = React.useState<string | number | undefined>(
     () =>
-      typeof field !== 'undefined' &&
+      typeof field === 'object' &&
       !field.isRelationship &&
       (typeof fieldSpec.datePart === 'undefined' ||
         fieldSpec.datePart === 'fullDate')

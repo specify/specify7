@@ -61,14 +61,13 @@ function TreeView<SCHEMA extends AnyTree>({
   const conformation = deserializeConformation(rawConformation);
 
   function updateConformation(value: Conformations | undefined): void {
-    if (typeof value === 'undefined') setConformation('');
-    else {
+    if (typeof value === 'object') {
       const encoded = serializeConformation(value);
       navigation.push(
         querystring.format(window.location.href, { conformation: encoded })
       );
       setConformation(encoded);
-    }
+    } else setConformation('');
   }
 
   React.useEffect(() => {
@@ -226,9 +225,8 @@ function TreeView<SCHEMA extends AnyTree>({
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}
                   onClick={
-                    typeof collapsedRanks === 'undefined'
-                      ? undefined
-                      : (): void =>
+                    Array.isArray(collapsedRanks)
+                      ? (): void =>
                           setCollapsedRanks(
                             collapsedRanks.includes(rank.rankId)
                               ? collapsedRanks.filter(
@@ -236,6 +234,7 @@ function TreeView<SCHEMA extends AnyTree>({
                                 )
                               : [...collapsedRanks, rank.rankId]
                           )
+                      : undefined
                   }
                 >
                   {pipe(
@@ -268,9 +267,9 @@ function TreeView<SCHEMA extends AnyTree>({
               onChangeConformation={(newConformation): void =>
                 updateConformation([
                   ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
-                  ...(typeof newConformation === 'undefined'
-                    ? []
-                    : ([[row.nodeId, ...newConformation]] as const)),
+                  ...(typeof newConformation === 'object'
+                    ? ([[row.nodeId, ...newConformation]] as const)
+                    : []),
                 ])
               }
               focusPath={

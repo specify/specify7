@@ -39,7 +39,7 @@ async function getExtraPickLists(): Promise<RA<SerializedResource<PickList>>> {
 }
 
 export async function getPickLists(): Promise<typeof pickLists> {
-  if (typeof pickLists === 'object') return pickLists;
+  if (Array.isArray(pickLists)) return pickLists;
   const collection = new schema.models.PickList.LazyCollection({
     filters: {
       domainfilter: true,

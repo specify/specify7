@@ -78,20 +78,20 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
     React.useCallback(
       () =>
-        typeof pickList === 'undefined'
-          ? undefined
-          : void itemsCallback({
+        typeof pickList === 'object'
+          ? void itemsCallback({
               pickList,
               limit: Math.max(
                 0,
                 pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
               ),
-            }),
+            })
+          : undefined,
       [itemsCallback, pickList]
     )
   );
 
-  return typeof pickList === 'object' && typeof items === 'object' ? (
+  return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
       {...props}
       pickList={pickList}

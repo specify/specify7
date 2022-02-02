@@ -16,14 +16,14 @@ function RelationshipLink({
   readonly relationship: Relationship;
 }): JSX.Element | null {
   const related = relationship.getRelatedModel();
-  return typeof related === 'undefined' ? null : (
+  return typeof related === 'object' ? (
     <Link.Default
       className="intercept-navigation"
       href={`/specify/datamodel/${related.name.toLowerCase()}/`}
     >
       {related.name}
     </Link.Default>
-  );
+  ) : null;
 }
 
 function DataModelView({
@@ -33,23 +33,7 @@ function DataModelView({
 }): JSX.Element {
   const [model] = React.useState<SpecifyModel | undefined>(initialModel);
 
-  return typeof model === 'undefined' ? (
-    <>
-      <H2 className="text-2xl">{formsText('specifySchema')}</H2>
-      <Ul>
-        {Object.entries(schema.models).map(([key, model]) => (
-          <li key={key}>
-            <Link.Default
-              href={`/specify/datamodel/${model.name.toLowerCase()}/`}
-              className="intercept-navigation"
-            >
-              {model.name}
-            </Link.Default>
-          </li>
-        ))}
-      </Ul>
-    </>
-  ) : (
+  return typeof model === 'object' ? (
     <>
       <H2 className="text-2xl">{model.name}</H2>
       <table>
@@ -70,6 +54,22 @@ function DataModelView({
           ))}
         </tbody>
       </table>
+    </>
+  ) : (
+    <>
+      <H2 className="text-2xl">{formsText('specifySchema')}</H2>
+      <Ul>
+        {Object.entries(schema.models).map(([key, model]) => (
+          <li key={key}>
+            <Link.Default
+              href={`/specify/datamodel/${model.name.toLowerCase()}/`}
+              className="intercept-navigation"
+            >
+              {model.name}
+            </Link.Default>
+          </li>
+        ))}
+      </Ul>
     </>
   );
 }

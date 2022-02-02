@@ -41,23 +41,23 @@ const fetchString = async (
     const targetString = objects.find(
       (object) => object.language === language && object.country === country
     );
-    if (typeof targetString === 'undefined') {
-      const defaultString =
-        objects.find(
-          (object) =>
-            object.language === defaultLanguage &&
-            object.country === defaultCountry
-        )?.text ?? '';
-      newStringId += 1;
+    if (typeof targetString === 'object') return targetString;
 
-      return {
-        id: -newStringId,
-        text: defaultString,
-        language,
-        country,
-        parent: url,
-      };
-    } else return targetString;
+    const defaultString =
+      objects.find(
+        (object) =>
+          object.language === defaultLanguage &&
+          object.country === defaultCountry
+      )?.text ?? '';
+    newStringId += 1;
+
+    return {
+      id: -newStringId,
+      text: defaultString,
+      language,
+      country,
+      parent: url,
+    };
   });
 
 export const fetchStrings = async <

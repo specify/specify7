@@ -92,7 +92,7 @@ export async function ajax<RESPONSE_TYPE = string>(
         ? {}
         : { 'X-CSRFToken': csrfToken! }),
       ...headers,
-      ...(typeof accept === 'undefined' ? {} : { Accept: accept }),
+      ...(typeof accept === 'string' ? { Accept: accept } : {}),
     },
   })
     .then(async (response) => Promise.all([response, response.text()]))

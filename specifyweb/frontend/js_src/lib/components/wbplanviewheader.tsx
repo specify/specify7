@@ -23,9 +23,8 @@ export function Layout(props: {
   return (
     <ContainerFull
       onClick={
-        typeof props.handleClick === 'undefined'
-          ? undefined
-          : (event): void =>
+        typeof props.handleClick === 'function'
+          ? (event): void =>
               (event.target as HTMLElement).closest(
                 '.custom-select-closed-list'
               ) === null &&
@@ -35,6 +34,7 @@ export function Layout(props: {
               props.handleClick
                 ? props.handleClick()
                 : undefined
+          : undefined
       }
     >
       <header className="gap-x-2 whitespace-nowrap flex">

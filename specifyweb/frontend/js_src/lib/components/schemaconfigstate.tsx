@@ -532,7 +532,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   },
                   extraComponents: (
                     <>
-                      {typeof currentPickListId !== 'undefined' && (
+                      {typeof currentPickListId === 'string' && (
                         <Link.Icon
                           icon="pencil"
                           title={commonText('edit')}

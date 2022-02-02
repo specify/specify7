@@ -501,7 +501,7 @@ export function MustMatch({
       >
         {wbText('mustMatch')}
       </Button.Simple>
-      {typeof localPreferences !== 'undefined' && (
+      {typeof localPreferences === 'object' && (
         <Dialog
           header={wbText('matchingLogicDialogTitle')}
           onClose={handleDialogClose}
