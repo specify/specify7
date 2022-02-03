@@ -21,42 +21,41 @@ import Q from 'q';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import * as app from './specifyapp';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import {NotFoundView} from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
 import {
-  formatReferenceItem,
   formatTreeRank,
   getNameFromTreeRankName,
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { capitalize, extractDefaultValues } from './wbplanviewhelper';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon } from './icons';
+import {uploadPlanToMappingsTree} from './uploadplantomappingstree';
+import {capitalize, extractDefaultValues} from './wbplanviewhelper';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import { LoadingScreen } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { dataModelPromise } from './wbplanviewmodelfetcher';
-import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
+import {LoadingScreen} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {dataModelPromise} from './wbplanviewmodelfetcher';
+import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
-import { className } from './components/basic';
-import { legacyNonJsxIcons } from './components/icons';
-import { LANGUAGE } from './localization/utils';
-import { defined } from './types';
-import { getPickLists } from './picklists';
-import { crash } from './components/errorboundary';
-import { getTreeDefinitionItems } from './treedefinitions';
+import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined} from './types';
+import {getPickLists} from './picklists';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
 
 const metaKeys = [
   'isNew',

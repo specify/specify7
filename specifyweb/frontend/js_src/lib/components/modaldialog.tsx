@@ -11,8 +11,16 @@ import Modal from 'react-modal';
 import { error } from '../assert';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { Button, className, transitionDuration } from './basic';
+import {
+  Button,
+  className,
+  RawTagProps,
+  Submit,
+  transitionDuration,
+} from './basic';
 import { useId } from './hooks';
+import createBackboneView from './reactbackboneextend';
+import { default as Backbone } from 'backbone';
 
 /*
  * A dummy function
@@ -104,6 +112,7 @@ export function Dialog({
   } = {},
   /* Force dialog to stay on top of all other. Useful for exception messages */
   forceToTop = false,
+  containerRef,
 }: {
   readonly isOpen?: boolean;
   readonly title?: string;
@@ -121,6 +130,7 @@ export function Dialog({
     readonly header?: string;
   };
   readonly forceToTop?: boolean;
+  readonly containerRef?: RawTagProps<'div'>['ref'];
 }): JSX.Element {
   const id = useId('modal');
 
@@ -253,6 +263,7 @@ export function Dialog({
       <div
         className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
           dark:text-neutral-350 ${content}`}
+        ref={containerRef}
       >
         {children}
       </div>
@@ -272,3 +283,75 @@ export function Dialog({
     </Modal>
   );
 }
+
+type ButtonDefinition = {
+  readonly style: Exclude<keyof typeof Submit, 'Fancy'>;
+  readonly type?: 'button' | 'submit';
+  readonly className?: string;
+  readonly form?: string;
+  readonly text: string;
+  readonly onClick: 'dialogClose' | (() => void);
+};
+
+/** Wrapper for using React dialog in Backbone views */
+function LegacyDialogWrapper({
+  content,
+  buttons,
+  ...props
+}: Omit<
+  Parameters<typeof Dialog>[0],
+  'isOpen' | 'children' | 'containerRef' | 'buttons'
+> & {
+  readonly content: HTMLElement | string;
+  readonly buttons: string | undefined | RA<string | ButtonDefinition>;
+}): JSX.Element {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const dialogButtons =
+    typeof buttons === 'object' ? (
+      <>
+        {buttons
+          .map<ButtonDefinition>((button) =>
+            typeof button === 'string'
+              ? {
+                  style: 'Transparent',
+                  text: button,
+                  onClick: 'dialogClose',
+                }
+              : button
+          )
+          .map(
+            ({ type = 'button', style, className, onClick, text }, index) => {
+              const Component =
+                type === 'button' ? Button[style] : Submit[style];
+              return (
+                <Component
+                  key={index}
+                  className={className}
+                  onClick={onClick === 'dialogClose' ? props.onClose : onClick}
+                >
+                  {text}
+                </Component>
+              );
+            }
+          )}
+      </>
+    ) : (
+      buttons
+    );
+  return (
+    <Dialog
+      {...props}
+      isOpen={true}
+      containerRef={containerRef}
+      buttons={dialogButtons}
+    >
+      {content}
+    </Dialog>
+  );
+}
+
+const dialogClass = createBackboneView(LegacyDialogWrapper);
+
+export const dialogView = (
+  props: ConstructorParameters<typeof dialogClass>[0]
+): Backbone.View => new dialogClass(props).render();

@@ -853,9 +853,9 @@ const commonText = createDictionary({
     ca: 'Unsaved changes detected',
   },
   leavePageDialogHeader: {
-    'en-us': header('Are you sure you want to leave this page?'),
-    'ru-ru': header('Вы уверены, что хотите покинуть эту страницу?'),
-    ca: header('Are you sure you want to leave this page?'),
+    'en-us': 'Are you sure you want to leave this page?',
+    'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
+    ca: 'Are you sure you want to leave this page?',
   },
   leave: {
     'en-us': 'Leave',

@@ -7,7 +7,7 @@ import type { IconProps } from './icons';
 import { icons } from './icons';
 import { DialogContext } from './modaldialog';
 
-type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
+export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
   undefined | null
 >;
@@ -36,7 +36,7 @@ export type HtmlElementFromTagName<TAG extends keyof React.ReactHTML> =
     : never;
 
 // Add default className and props to common HTML elements in a type-safe way
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type,max-params
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function wrap<
   TAG extends keyof React.ReactHTML,
   /*
@@ -48,14 +48,9 @@ function wrap<
 >(
   tagName: TAG,
   className: string,
-  initialProps?: TagProps<TAG>,
-  // Define props merge behaviour
-  mergeProps: (props: TagProps<TAG> & EXTRA_PROPS) => TagProps<TAG> = (
-    props
-  ): TagProps<TAG> => ({
-    ...initialProps,
-    ...props,
-  })
+  initialProps?:
+    | TagProps<TAG>
+    | ((props: TagProps<TAG> & EXTRA_PROPS) => TagProps<TAG>)
 ) {
   const wrapped = (props: TagProps<TAG> & EXTRA_PROPS): JSX.Element => {
     // Merge classNames
@@ -63,7 +58,13 @@ function wrap<
       typeof props?.className === 'string'
         ? `${className} ${props.className}`
         : className;
-    const { forwardRef, ref: _, ...mergedProps } = mergeProps(props);
+    const {
+      forwardRef,
+      ref: _,
+      ...mergedProps
+    } = typeof initialProps === 'function'
+      ? initialProps(props)
+      : { ...initialProps, ...props };
     return React.createElement(tagName, {
       ...mergedProps,
       ref: forwardRef,
@@ -150,7 +151,6 @@ export const FormFooter = wrap('div', className.formFooter, {
 export const Form = wrap(
   'form',
   `${className.notSubmittedForm} ${className.form}`,
-  {},
   (props) => ({
     ...props,
     /*
@@ -165,7 +165,7 @@ export const Form = wrap(
     },
   })
 );
-export const Input = wrap('input', className.notTouchedInput, {}, (props) => ({
+export const Input = wrap('input', className.notTouchedInput, (props) => ({
   ...props,
   /*
    * Don't highlight missing required and pattern mismatch fields until focus
@@ -181,7 +181,6 @@ export const Input = wrap('input', className.notTouchedInput, {}, (props) => ({
 export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
   'textarea',
   `${className.notTouchedInput} ${className.textarea}`,
-  {},
   (props) => ({
     ...props,
     /*
@@ -196,28 +195,23 @@ export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
     },
   })
 );
-export const Select = wrap(
-  'select',
-  className.notTouchedInput,
-  {},
-  (props) => ({
-    ...props,
-    /*
-     * Don't highlight missing required and pattern mismatch fields until focus
-     * loss
-     */
-    onBlur(event): void {
-      const select = event.target as HTMLSelectElement;
-      if (select.classList.contains(className.notTouchedInput))
-        select.classList.remove(className.notTouchedInput);
-      props?.onBlur?.(event);
-    },
-  })
-);
+export const Select = wrap('select', className.notTouchedInput, (props) => ({
+  ...props,
+  /*
+   * Don't highlight missing required and pattern mismatch fields until focus
+   * loss
+   */
+  onBlur(event): void {
+    const select = event.target as HTMLSelectElement;
+    if (select.classList.contains(className.notTouchedInput))
+      select.classList.remove(className.notTouchedInput);
+    props?.onBlur?.(event);
+  },
+}));
 
 export const Link = {
   Default: wrap('a', className.link),
-  NewTab: wrap('a', className.link, {}, (props) => ({
+  NewTab: wrap('a', className.link, (props) => ({
     target: '_blank',
     children: (
       <>
@@ -232,7 +226,7 @@ export const Link = {
     ),
   })),
   LikeButton: wrap('a', className.button),
-  Icon: wrap<'a', IconProps>('a', className.link, {}, (props) => ({
+  Icon: wrap<'a', IconProps>('a', className.link, (props) => ({
     ...props,
     children: icons[props.icon],
   })),
@@ -261,7 +255,7 @@ export const Button = {
   LikeLink: wrap('button', className.link, {
     type: 'button',
   }),
-  Icon: wrap<'button', IconProps>('button', className.link, {}, (props) => ({
+  Icon: wrap<'button', IconProps>('button', className.link, (props) => ({
     ...props,
     type: 'button',
     children: icons[props.icon],
@@ -287,63 +281,59 @@ export const Button = {
   DialogClose: DialogCloseButton,
 } as const;
 
+type SubmitProps = {
+  readonly children: string;
+  readonly value?: undefined;
+};
+const submitPropsMerge = ({
+  children,
+  ...props
+}: TagProps<'input'> & SubmitProps): TagProps<'input'> => ({
+  type: 'submit',
+  ...props,
+  value: children,
+});
 export const Submit = {
-  // Don't allow accidentally passing "children" prop
-  Simple: wrap<'input', { readonly children?: undefined }>(
+  // Force passing children by nesting rather than through the [value] attribute
+  Simple: wrap<'input', SubmitProps>(
     'input',
     className.button,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Fancy: wrap<'input', { readonly children?: undefined }>(
+  Fancy: wrap<'input', SubmitProps>(
     'input',
     className.fancyButton,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Transparent: wrap<'input', { readonly children?: undefined }>(
+  Transparent: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.transparentButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Gray: wrap<'input', { readonly children?: undefined }>(
+  Gray: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.grayButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Red: wrap<'input', { readonly children?: undefined }>(
+  Red: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.redButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Blue: wrap<'input', { readonly children?: undefined }>(
+  Blue: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.blueButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Orange: wrap<'input', { readonly children?: undefined }>(
+  Orange: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.orangeButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
-  Green: wrap<'input', { readonly children?: undefined }>(
+  Green: wrap<'input', SubmitProps>(
     'input',
     `${niceButton} ${className.greenButton}`,
-    {
-      type: 'submit',
-    }
+    submitPropsMerge
   ),
 } as const;
 

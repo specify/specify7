@@ -1,4 +1,4 @@
-import { ajax, type MimeType } from './ajax';
+import { type MimeType } from './ajax';
 import type { RA } from './types';
 
 let unlock: () => void;
@@ -15,10 +15,16 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 
   // eslint-disable-next-line no-console
   console.log('initial context:', path);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  return ajax<T>(path, { headers: { Accept: mimeType } }).then(
-    ({ data }) => data
-  );
+  /*
+   * Using async import to avoid circular dependency
+   * TODO: find a better solution
+   */
+  return import('./ajax')
+    .then(async ({ ajax }) =>
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      ajax<T>(path, { headers: { Accept: mimeType } })
+    )
+    .then(({ data }) => data);
 }
 
 export const initialContext = Promise.all([

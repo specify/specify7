@@ -1,8 +1,7 @@
-import $ from 'jquery';
-
 import { isExternalUrl, ping } from './ajax';
 import Backbone from './backbone';
 import commonText from './localization/common';
+import { dialogView } from './components/modaldialog';
 
 /*
  * We introduce a sequence variable that is incremented and passed in
@@ -164,26 +163,26 @@ function defaultConfirmNavigationHandler(
 ): void {
   const { message } = unloadBlockers[unloadBlockers.length - 1];
 
-  $(`<div role="alert">
-        ${commonText('leavePageDialogHeader')}
-        <p>${message}</p>
-    </div>`).dialog({
+  const dialog = dialogView({
     title: commonText('leavePageDialogTitle'),
+    header: commonText('leavePageDialogHeader'),
+    content: message,
     modal: true,
-    width: 350,
-    close() {
-      $(this).remove();
+    onClose() {
+      dialog.remove();
+      cancel?.();
     },
-    buttons: {
-      [commonText('cancel')]() {
-        $(this).dialog('close');
-        cancel?.();
+    buttons: [
+      commonText('cancel'),
+      {
+        text: commonText('leave'),
+        style: 'Red',
+        onClick() {
+          dialog.remove();
+          proceed();
+        },
       },
-      [commonText('leave')]() {
-        $(this).dialog('close');
-        proceed();
-      },
-    },
+    ],
   });
 }
 

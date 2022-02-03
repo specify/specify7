@@ -114,7 +114,7 @@ var MultiView = Backbone.View.extend({
         });
 
         // TODO: remove this once everything is using controlled components
-        Array.from(formi[0].querySelectorAll('input, textarea, select'), (element) =>
+        Array.from(form[0].querySelectorAll('input, textarea, select'), (element) =>
           element.classList.add(className.notTouchedInput)
         );
 
