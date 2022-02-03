@@ -110,9 +110,12 @@ export default Backbone.View.extend({
             this.model.specifyModel.name.toLowerCase() === "collectionobject" &&
             this.$el.attr('name') === "cataloger"
            )
-        {
             this.model.set('cataloger', userInformation.agent.resource_uri);
-        }
+        if (this.model.isNew() &&
+          this.model.specifyModel.name === "LoanReturnPreparation" &&
+          this.$el.attr('name') === "receivedBy"
+        )
+            this.model.set('receivedBy', userInformation.agent.resource_uri);
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
         if (isTreeModel(this.model.specifyModel.name)) {
