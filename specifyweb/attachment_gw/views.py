@@ -1,7 +1,7 @@
 from uuid import uuid4
 from xml.etree import ElementTree
 from os.path import splitext
-import requests, time, hmac, json
+import requests, time, hmac, json, logging
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
@@ -10,6 +10,8 @@ from django.conf import settings
 from django.utils.translation import gettext as _
 
 from specifyweb.specify.views import login_maybe_required, openapi
+
+logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
@@ -157,10 +159,12 @@ def init():
     global server_urls
 
     if settings.WEB_ATTACHMENT_URL in (None, ''):
+        logger.info('Asset server is not configured')
         return
 
     r = requests.get(settings.WEB_ATTACHMENT_URL)
     if r.status_code != 200:
+        logger.error('Failed fetching asset server configuration')
         return
 
     update_time_delta(r)
@@ -168,6 +172,7 @@ def init():
     try:
         urls_xml = ElementTree.fromstring(r.text)
     except:
+        logger.error('Failed parsing the response')
         return
 
     server_urls = {url.attrib['type']: url.text
@@ -175,7 +180,8 @@ def init():
 
     try:
         test_key()
-    except AttachmentError:
+    except AttachmentError as error:
+        logger.error('%s', str(error))
         server_urls = None
 
 def test_key():
@@ -187,9 +193,9 @@ def test_key():
     if r.status_code == 200:
         return
     elif r.status_code == 403:
-        raise AttachmentError(_("Bad attachment key."))
+        raise AttachmentError("Bad attachment key.")
     else:
-        raise AttachmentError(_("Attachment key test failed."))
+        raise AttachmentError("Attachment key test failed.")
 
 init()
 
