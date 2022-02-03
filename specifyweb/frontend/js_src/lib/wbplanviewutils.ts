@@ -17,23 +17,21 @@ import type {
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
 import schema from './schema';
+import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,
-  formatReferenceItem,
-  valueIsReferenceItem,
+  formatToManyIndex,
+  mappingPathToString,
+  relationshipIsToMany,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
-import { getMaxToManyValue } from './wbplanviewmodelhelper';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
-import {
-  mappingPathsToMappingsTree,
-  traverseTree,
-} from './wbplanviewtreehelper';
-import { isTreeModel } from './treedefinitions';
+import { mappingPathsToMappingsTree } from './wbplanviewtreehelper';
 
 export async function savePlan({
   dataset,
@@ -228,15 +226,18 @@ export const getMappingsTree = (
     includeHeaders
   );
 
-/* Get a mappings tree branch given a particular starting mapping path */
-export function getMappedFields(
+export const getMappedFields = (
   lines: RA<MappingLine>,
   // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
-): MappingsTree {
-  const mappingsTree = traverseTree(getMappingsTree(lines), mappingPathFilter);
-  return typeof mappingsTree === 'object' ? mappingsTree : {};
-}
+): RA<string> =>
+  lines
+    .filter((line) =>
+      mappingPathToString(line.mappingPath).startsWith(
+        mappingPathToString(mappingPathFilter)
+      )
+    )
+    .map((line) => line.mappingPath[mappingPathFilter.length]);
 
 export const pathIsMapped = (
   lines: RA<MappingLine>,
@@ -250,16 +251,12 @@ export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath[mappingPath.length - 1] !== '0';
 
 /*
- * The most important function in `wbplanview`
+ * The most important function in WbPlanView
  * It decides how to modify the mapping path when a different picklist
  *  item is selected.
  * It is also responsible for deciding when to spawn a new box to the right
  *  of the current one and whether to reset the mapping path to the right of
- *  the selected box on value changes (e.x the mapping path is preserved
- *  when the old value and the new value have the same relationship type and
- *  are both either from the same table or are -to-many reference numbers
- *  (#1) or are tree ranks ($Kingdom)).
- *
+ *  the selected box on value changes
  */
 export function mutateMappingPath({
   lines,
@@ -267,8 +264,11 @@ export function mutateMappingPath({
   line,
   index,
   newValue,
+  isRelationship,
+  parentTableName,
   currentTableName,
   newTableName,
+  ignoreToMany = false,
 }: {
   readonly lines: RA<MappingLine>;
   readonly mappingView: MappingPath;
@@ -276,8 +276,10 @@ export function mutateMappingPath({
   readonly index: number;
   readonly newValue: string;
   readonly isRelationship: boolean;
+  readonly parentTableName: string;
   readonly currentTableName: string;
   readonly newTableName: string;
+  readonly ignoreToMany?: boolean;
 }): MappingPath {
   // Get mapping path from selected line or mapping view
   let mappingPath = Array.from(
@@ -288,11 +290,13 @@ export function mutateMappingPath({
    * Get relationship type from current picklist to the next one both for
    * current value and next value
    */
-  const currentRelationshipType =
-    dataModelStorage.tables[currentTableName]?.[mappingPath[index] || '']
-      ?.type ?? '';
-  const newRelationshipType =
-    dataModelStorage.tables[newTableName]?.[newValue]?.type ?? '';
+  const isCurrentlyToMany = relationshipIsToMany(
+    dataModelStorage.tables[parentTableName ?? '']?.[mappingPath[index] || '']
+      ?.type ?? ''
+  );
+  const isNewToMany = relationshipIsToMany(
+    dataModelStorage.tables[parentTableName ?? '']?.[newValue]?.type ?? ''
+  );
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
@@ -300,26 +304,25 @@ export function mutateMappingPath({
    * -to-many, a tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =
-    currentRelationshipType === newRelationshipType &&
-    (valueIsReferenceItem(newValue) ||
+    isCurrentlyToMany === isNewToMany &&
+    (valueIsToManyIndex(newValue) ||
       valueIsTreeRank(newValue) ||
       currentTableName === newTableName);
 
-  /*
-   * When `Add` is selected in the list of -to-many indexes, replace it by
-   * creating a new -to-many index
-   */
-  if (newValue === 'add') {
-    const mappedFields = Object.keys(
-      getMappedFields(lines, mappingPath.slice(0, index))
-    );
-    const maxToManyValue = getMaxToManyValue(mappedFields);
-    mappingPath[index] = formatReferenceItem(maxToManyValue + 1);
-  } else if (preserveMappingPathToRight) mappingPath[index] = newValue;
+  if (preserveMappingPathToRight) mappingPath[index] = newValue;
   // Clear mapping path to the right of current box
   else mappingPath = [...mappingPath.slice(0, index), newValue];
 
-  return mappingPath;
+  return isRelationship
+    ? [
+        ...mappingPath.slice(0, index + 1),
+        ...(mappingPath.length > index + 1
+          ? mappingPath.slice(index + 1)
+          : ignoreToMany && isNewToMany
+          ? [formatToManyIndex(1), '0']
+          : ['0']),
+      ]
+    : mappingPath;
 }
 
 // The maximum number of suggestions to show in the suggestions box

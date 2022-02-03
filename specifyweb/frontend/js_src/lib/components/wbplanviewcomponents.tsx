@@ -201,6 +201,7 @@ export function getMappingLineProps({
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
+    readonly parentTableName: string;
     readonly currentTableName: string;
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
@@ -227,6 +228,7 @@ export function getMappingLineProps({
                 ? (payload): void =>
                     handleChange({
                       index,
+                      parentTableName: data.tableName ?? '',
                       ...payload,
                     })
                 : undefined,

@@ -20,13 +20,13 @@ import type { IR, R, RA, Writable } from './types';
 import { defined } from './types';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
-  formatReferenceItem,
+  formatToManyIndex,
   formatTreeRank,
-  getIndexFromReferenceItemName,
   getNameFromTreeRankName,
+  getNumberFromToManyIndex,
   mappingPathToString,
   relationshipIsToMany,
-  valueIsReferenceItem,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import {
@@ -55,7 +55,7 @@ type AutoMapperConstructorBaseParameters = {
   readonly path?: MappingPath;
   /*
    * Offset on a starting path. Used when the last element of mapping path is
-   * a reference index. E.x, if #1 is taken, it would try to change the index
+   * a -to-many index. E.x, if #1 is taken, it would try to change the index
    * to #2
    */
   readonly pathOffset?: number;
@@ -107,64 +107,21 @@ type FindMappingsParameters = {
   readonly parentRelationshipType?: undefined | RelationshipType;
 };
 
-type AutoMapperResultsAddAction = Action<
+type AutoMapperResultsActions = Action<
   'add',
-  {
-    headerName: string;
-    mappingPath: MappingPath;
-  }
+  { headerName: string; mappingPath: MappingPath }
 >;
 
-type AutoMapperResultsActions = AutoMapperResultsAddAction;
-
-type AutoMapperHeadersToMapMapped = Action<
-  'mapped',
-  {
-    headerName: string;
-  }
->;
-
-type AutoMapperHeadersToMapActions = AutoMapperHeadersToMapMapped;
-
-type AutoMapperSearchedTablesReset = Action<'reset'>;
-
-type AutoMapperSearchedTablesAdd = Action<
-  'add',
-  {
-    tableName: string;
-  }
->;
+type AutoMapperHeadersToMapActions = Action<'mapped', { headerName: string }>;
 
 type AutoMapperSearchedTablesActions =
-  | AutoMapperSearchedTablesAdd
-  | AutoMapperSearchedTablesReset;
-
-type AutoMapperFindMappingsQueueEnqueue = Action<
-  'enqueue',
-  {
-    value: FindMappingsParameters;
-    level: number;
-  }
->;
-
-type AutoMapperFindMappingsQueueReset = Action<
-  'reset',
-  {
-    initialValue?: FindMappingsParameters;
-  }
->;
-
-type AutoMapperFindMappingsQueueInitializeLevel = Action<
-  'initializeLevel',
-  {
-    level: number;
-  }
->;
+  | Action<'reset'>
+  | Action<'add', { tableName: string }>;
 
 type AutoMapperFindMappingsQueueActions =
-  | AutoMapperFindMappingsQueueReset
-  | AutoMapperFindMappingsQueueInitializeLevel
-  | AutoMapperFindMappingsQueueEnqueue;
+  | Action<'enqueue', { value: FindMappingsParameters; level: number }>
+  | Action<'reset', { initialValue?: FindMappingsParameters }>
+  | Action<'initializeLevel', { level: number }>;
 
 // Find cases like `Phylum` and remap them to `Phylum > Name`
 const matchBaseRankName = (
@@ -344,7 +301,7 @@ export class AutoMapper {
     }),
   };
 
-  constructor({
+  public constructor({
     headers: rawHeaders,
     baseTable,
     startingTable = baseTable,
@@ -448,7 +405,6 @@ export class AutoMapper {
   /*
    * Makes sure that `findMappings` runs over the schema in correct order
    * since mappings with a shorter mapping path are given higher priority
-   *
    */
   private findMappingsDriver(mode: AutoMapperNode): void {
     const pathMatchesStartingPath = (path: MappingPath, level: string) =>
@@ -613,7 +569,7 @@ export class AutoMapper {
     // Filter out -to-many references from the path for matching
     const filteredPath = mappingPath.reduce<Writable<MappingPath>>(
       (filteredPath, pathPart) => {
-        if (!valueIsReferenceItem(pathPart)) filteredPath.push(pathPart);
+        if (!valueIsToManyIndex(pathPart)) filteredPath.push(pathPart);
 
         return filteredPath;
       },
@@ -666,7 +622,6 @@ export class AutoMapper {
    * Used internally to loop though each field of a particular table and try
    * to match them to unmapped headers. This method iterates over the same
    * table only once if in `synonymsAndMatches` mode.
-   *
    */
   private findMappings(
     {
@@ -679,10 +634,7 @@ export class AutoMapper {
   ): void {
     if (mode === 'synonymsAndMatches') {
       if (
-        /*
-         * Don't iterate over the same table again when in
-         * `synonymsAndMatches` mode
-         */
+        // Don't iterate over the same table again
         this.searchedTables.includes(tableName) ||
         // Don't go beyond the depth limit
         mappingPath.length > AutoMapper.depth
@@ -721,7 +673,7 @@ export class AutoMapper {
 
       this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
 
-      ranks.some((rankName) => {
+      ranks.forEach((rankName) => {
         const stripedRankName = rankName.toLowerCase();
         const finalRankName = formatTreeRank(rankName);
         const rankSynonyms = [
@@ -795,7 +747,7 @@ export class AutoMapper {
 
     this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
 
-    fields.some(([fieldName, fieldData]) => {
+    fields.forEach(([fieldName, fieldData]) => {
       // Search in definitions
       findMappingsInDefinitionsPayload.fieldName = fieldName;
       this.findMappingsInDefinitions(findMappingsInDefinitionsPayload);
@@ -824,13 +776,13 @@ export class AutoMapper {
       const conservativeFieldNames =
         mode === 'synonymsAndMatches' ? fieldNames : headerFieldSynonyms;
 
-      let toManyReferenceNumber;
+      let toManyIndex;
       this.getUnmappedHeaders().some(
         ([
           headerName,
           { lowercaseHeaderName, strippedHeaderName, finalHeaderName },
         ]) =>
-          !(toManyReferenceNumber = false) &&
+          !(toManyIndex = false) &&
           /*
            * Compare each field's name and label to headers
            */
@@ -849,7 +801,7 @@ export class AutoMapper {
                   (strippedHeaderName.startsWith(tableSynonym) &&
                     (strippedHeaderName === `${tableSynonym} ${fieldSynonym}` ||
                       [
-                        // Try extracting -to-many reference number
+                        // Try extracting -to-many index
                         new RegExp(`${tableSynonym} (\\d+) ${fieldSynonym}`),
                         new RegExp(`${tableSynonym} ${fieldSynonym} (\\d+)`),
                       ].some((regularExpression) => {
@@ -859,7 +811,7 @@ export class AutoMapper {
                         if (match === null || typeof match[1] === 'undefined')
                           return false;
 
-                        toManyReferenceNumber = Number(match[1]);
+                        toManyIndex = Number(match[1]);
                         return true;
                       })))
               )
@@ -869,17 +821,17 @@ export class AutoMapper {
             [fieldName],
             headerName,
             tableName,
-            toManyReferenceNumber
+            toManyIndex
           )
       );
     });
 
-    getTableRelationships(tableName, false).some(
+    getTableRelationships(tableName, false).forEach(
       ([relationshipKey, relationshipData]) => {
         const localPath = [...mappingPath, relationshipKey];
 
         if (relationshipIsToMany(relationshipData.type))
-          localPath.push(formatReferenceItem(1));
+          localPath.push(formatToManyIndex(1));
 
         const newDepthLevel = localPath.length;
 
@@ -892,7 +844,7 @@ export class AutoMapper {
 
         let currentMappingPathPart = mappingPath[mappingPath.length - 1];
         if (
-          valueIsReferenceItem(currentMappingPathPart) ||
+          valueIsToManyIndex(currentMappingPathPart) ||
           valueIsTreeRank(currentMappingPathPart)
         )
           currentMappingPathPart = mappingPath[mappingPath.length - 2];
@@ -909,7 +861,7 @@ export class AutoMapper {
               // Skip circular relationships
               targetTableName: relationshipData.tableName,
               parentTableName,
-              foreignName: relationshipData.foreignName,
+              foreignName: relationshipData.foreignName ?? '',
               relationshipKey,
               currentMappingPathPart,
               tableName,
@@ -965,12 +917,12 @@ export class AutoMapper {
     tableName = '',
     /*
      * If of type {int}:
-     *   implants given toManyReferenceNumber into the mapping path
-     *   into the first reference item starting from the right
+     *   implants given toManyIndex into the mapping path
+     *   into the last -to-many box
      * if of type {boolean} and is False:
      *   don't do anything
      */
-    toManyReferenceNumber: number | false = false
+    toManyIndex: number | false = false
   ): boolean {
     /*
      * Since autoMapper and autoMapperDefinitions converts all tree ranks to
@@ -1021,19 +973,19 @@ export class AutoMapper {
 
     // If exact -to-many index was found, insert it into the path
     let changesMade: string | boolean = false;
-    if (toManyReferenceNumber !== false)
+    if (toManyIndex !== false)
       localPath = localPath
         .reverse()
         .map((localPathPart) =>
-          valueIsReferenceItem(localPathPart) && changesMade !== false
-            ? (changesMade = formatReferenceItem(toManyReferenceNumber))
+          valueIsToManyIndex(localPathPart) && changesMade !== false
+            ? (changesMade = formatToManyIndex(toManyIndex))
             : localPathPart
         )
         .reverse();
 
     /*
      * Check if this path is already mapped and if it is, increment
-     * the reference number to make path unique
+     * the -to-many index to make path unique
      */
     while (
       /*
@@ -1053,19 +1005,16 @@ export class AutoMapper {
         this.pathIsMapped
       )
     ) {
-      /*
-       * Increment the last reference number in the mapping path if it
-       * has a reference number in it
-       */
+      // Increment the last -to-many index in the mapping path, if it exists
       if (
         !Object.entries(localPath)
           .reverse()
           .some(
             ([localPathIndex, localPathPart], index) =>
               localPath.length - index > this.pathOffset &&
-              valueIsReferenceItem(localPathPart) &&
-              (localPath[Number(localPathIndex)] = formatReferenceItem(
-                getIndexFromReferenceItemName(localPathPart) + 1
+              valueIsToManyIndex(localPathPart) &&
+              (localPath[Number(localPathIndex)] = formatToManyIndex(
+                getNumberFromToManyIndex(localPathPart) + 1
               ))
           )
       )
@@ -1085,7 +1034,7 @@ export class AutoMapper {
       mappingPath: localPath,
     });
 
-    const pathContainsToManyReferences = mappingPath.some(valueIsReferenceItem);
+    const pathContainsToManyReferences = mappingPath.some(valueIsToManyIndex);
     return !pathContainsToManyReferences && !this.allowMultipleMappings;
   }
 }

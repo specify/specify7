@@ -20,25 +20,6 @@ export type MappingsTreeNode = Record<MappingType, IR<ColumnOptions>>;
 
 export type MappingsTree = NestedRecord<MappingsTreeNode>;
 
-export function traverseTree(
-  mappingsTree: MappingsTree,
-  path: RA<string>
-): MappingsTree | undefined {
-  const step = path[0];
-  if (typeof step === 'undefined') return mappingsTree;
-
-  const next = mappingsTree[step];
-  if (typeof next === 'undefined') return undefined;
-  /*
-   * Next could be MappingsTreeNode here, in which case we should
-   * return undefined if path in not empty, but since MappingsTreeNode is a
-   * record type we can't discriminate it from NestedRecord<T> at
-   * runtime :(
-   */
-  // @ts-expect-error
-  return traverseTree(next, path.slice(1));
-}
-
 type FlatTree = NestedRecord<string>;
 
 /**

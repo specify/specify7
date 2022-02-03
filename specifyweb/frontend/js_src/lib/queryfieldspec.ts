@@ -4,8 +4,13 @@ import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { capitalize } from './wbplanviewhelper';
+import { MappingPath } from './components/wbplanviewmapper';
+import {
+  formatTreeRank,
+  relationshipIsToMany,
+} from './wbplanviewmappinghelper';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -63,6 +68,21 @@ export class QueryFieldSpec {
 
   public getField(): LiteralField | Relationship | undefined {
     return this.joinPath.slice(-1)[0];
+  }
+
+  public toMappingPath(): MappingPath {
+    return filterArray([
+      ...this.joinPath.flatMap((field) => [
+        field.name.toLowerCase(),
+        field.isRelationship && relationshipIsToMany(field.type)
+          ? '#1'
+          : undefined,
+      ]),
+      // TODO: test this part
+      typeof this.treeRank === 'string'
+        ? formatTreeRank(this.treeRank)
+        : undefined,
+    ]);
   }
 
   private isRelationship(): boolean {

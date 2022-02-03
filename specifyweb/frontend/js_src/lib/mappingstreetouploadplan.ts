@@ -15,7 +15,7 @@ import type {
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import {
   getNameFromTreeRankName,
-  valueIsReferenceItem,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -59,7 +59,7 @@ function mappingsTreeToUploadPlanTable(
     (originalTablePlan, [fieldName, fieldData]) => {
       let tablePlan = originalTablePlan;
 
-      if (valueIsReferenceItem(fieldName)) {
+      if (valueIsToManyIndex(fieldName)) {
         if (!isToMany) {
           isToMany = true;
           // @ts-expect-error
@@ -113,7 +113,7 @@ function mappingsTreeToUploadPlanTable(
 
   if (Array.isArray(tablePlan) || !wrapIt) return tablePlan;
 
-  if (valueIsReferenceItem(Object.keys(tableData)[0])) return tablePlan;
+  if (valueIsToManyIndex(Object.keys(tableData)[0])) return tablePlan;
 
   return {
     [!isRoot && mustMatchPreferences[tableName || '']

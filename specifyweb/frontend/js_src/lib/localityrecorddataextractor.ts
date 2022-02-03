@@ -21,11 +21,11 @@ import { deflateLocalityData } from './lifemapperhelper';
 import { getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
 import {
-  formatReferenceItem,
+  formatToManyIndex,
   formatTreeRank,
   mappingPathToString,
   splitJoinedMappingPath,
-  valueIsReferenceItem,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
@@ -46,7 +46,7 @@ function getNextMappingPathPart(
   for (let index = 0; index < mappingPath.length; index += 1)
     if (
       valueIsTreeRank(mappingPath[index]) ||
-      valueIsReferenceItem(mappingPath[index])
+      valueIsToManyIndex(mappingPath[index])
     )
       return splitMappingPath(mappingPath, index + (index === 0 ? 1 : 0));
   return [mappingPath, []];
@@ -109,14 +109,14 @@ async function recursiveResourceResolve(
       [...pastParts, currentRankName, ...nextPart],
       await resource.rgetPromise(nextPart[0]),
     ];
-  } else if (valueIsReferenceItem(currentPart[0])) {
+  } else if (valueIsToManyIndex(currentPart[0])) {
     return Promise.all<RA<string>>(
       Object.values(resource.models)
         .slice(0, MAX_TO_MANY_INDEX)
         .map(async (model, index) =>
           recursiveResourceResolve(model, nextPart, filterFunction, [
             ...pastParts,
-            formatReferenceItem(index + 1),
+            formatToManyIndex(index + 1),
           ])
         )
     ).then((result) => result.flat());

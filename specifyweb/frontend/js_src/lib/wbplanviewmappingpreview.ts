@@ -11,8 +11,8 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { RA } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import {
-  getIndexFromReferenceItemName,
-  valueIsReferenceItem,
+  getNumberFromToManyIndex,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
@@ -50,7 +50,7 @@ const genericTables: Set<string> = new Set(['referencework']);
  */
 const mappingPathSubset = (mappingPath: MappingPath): MappingPath => [
   ...mappingPath
-    .filter((mappingPathPart) => !valueIsReferenceItem(mappingPathPart))
+    .filter((mappingPathPart) => !valueIsToManyIndex(mappingPathPart))
     .reverse(),
   ...Array.from<string>({ length: 3 }).fill(''),
 ];
@@ -82,11 +82,11 @@ export function generateMappingPathPreview(
 
   const toManyLocation = Array.from(mappingPath)
     .reverse()
-    .findIndex((mappingPathPart) => valueIsReferenceItem(mappingPathPart));
+    .findIndex((mappingPathPart) => valueIsToManyIndex(mappingPathPart));
 
   const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
   const toManyIndexNumber = toManyIndex
-    ? getIndexFromReferenceItemName(toManyIndex)
+    ? getNumberFromToManyIndex(toManyIndex)
     : 1;
   const toManyIndexFormatted = toManyIndexNumber > 1 ? toManyIndex : '';
 

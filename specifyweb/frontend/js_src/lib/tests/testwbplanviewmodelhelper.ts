@@ -290,7 +290,7 @@ export default function (): void {
         3,
       ],
     ],
-    WbPlanViewModelHelper.getMaxToManyValue
+    WbPlanViewModelHelper.getMaxToManyIndex
   );
 
   runTest(

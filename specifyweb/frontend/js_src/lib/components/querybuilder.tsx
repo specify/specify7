@@ -90,6 +90,7 @@ export function QueryBuilder({
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
+    readonly parentTableName: string;
     readonly currentTableName: string;
     readonly newTableName: string;
   }): void =>
@@ -158,6 +159,7 @@ export function QueryBuilder({
             baseTableName={toLowerCase(model.name)}
             focusedLineExists={state.fields.length > 0}
             mappingPath={state.mappingView}
+            hideToMany={true}
             showHiddenFields={showHiddenFields}
             mapButtonIsEnabled={
               typeof state.openedElement !== 'undefined' &&
@@ -184,6 +186,9 @@ export function QueryBuilder({
           }
           onChangeField={(line, field): void =>
             dispatch({ type: 'ChangeFieldAction', line, field })
+          }
+          onMappingChange={(line, payload): void =>
+            handleChange({ line, ...payload })
           }
           onOpen={(line, index): void =>
             dispatch({

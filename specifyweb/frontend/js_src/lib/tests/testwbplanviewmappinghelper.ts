@@ -18,7 +18,7 @@ export default function (): void {
   );
 
   runTest(
-    'WbPlanViewMappingHelper.valueIsReferenceItem',
+    'WbPlanViewMappingHelper.valueIsToManyIndex',
     [
       [[`${dataModelStorage.referenceSymbol}1`], true],
       [[`${dataModelStorage.referenceSymbol}2`], true],
@@ -26,7 +26,7 @@ export default function (): void {
       [['collectionobject'], false],
       [[`${dataModelStorage.treeSymbol}Kingdom`], false],
     ],
-    WbPlanViewMappingHelper.valueIsReferenceItem
+    WbPlanViewMappingHelper.valueIsToManyIndex
   );
 
   runTest(
@@ -43,14 +43,14 @@ export default function (): void {
   );
 
   runTest(
-    'WbPlanViewMappingHelper.getIndexFromReferenceItemName',
+    'WbPlanViewMappingHelper.getNumberFromToManyIndex',
     [
       [[`${dataModelStorage.referenceSymbol}1`], 1],
       [[`${dataModelStorage.referenceSymbol}99`], 99],
       [[`${dataModelStorage.referenceSymbol}0`], 0],
       [[`${dataModelStorage.referenceSymbol}00`], 0],
     ],
-    WbPlanViewMappingHelper.getIndexFromReferenceItemName
+    WbPlanViewMappingHelper.getNumberFromToManyIndex
   );
 
   runTest(

@@ -20,6 +20,7 @@ import CheckBox from './checkbox';
 import {SpinnerFieldUi} from './spinnerui';
 import {readCookie} from './cookies';
 import {userInformation} from './userinfo';
+import {className} from "./components/basic";
 
 var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -111,6 +112,12 @@ var MultiView = Backbone.View.extend({
         _.each(form.find('.specify-print-on-save'), function(node) {
             populateReportOnSaver(resource, $(node));
         });
+
+        // TODO: remove this once everything is using controlled components
+        Array.from(formi[0].querySelectorAll('input, textarea, select'), (element) =>
+          element.classList.add(className.notTouchedInput)
+        );
+
         return form;
     };
 

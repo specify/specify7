@@ -10,6 +10,7 @@ export function QueryFields({
   baseTableName,
   fields,
   onChangeField: handleChangeField,
+  onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
   onOpen: handleOpen,
   onClose: handleClose,
@@ -20,6 +21,19 @@ export function QueryFields({
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly fields: RA<QueryField>;
   readonly onChangeField: (line: number, field: QueryField) => void;
+  readonly onMappingChange: (
+    line: number,
+    payload: {
+      readonly index: number;
+      readonly close: boolean;
+      readonly newValue: string;
+      readonly isRelationship: boolean;
+      readonly parentTableName: string;
+      readonly currentTableName: string;
+      readonly newTableName: string;
+      readonly isDoubleClick: boolean;
+    }
+  ) => void;
   readonly onRemoveField: (line: number) => void;
   readonly onOpen: (line: number, index: number) => void;
   readonly onClose: () => void;
@@ -39,6 +53,9 @@ export function QueryFields({
           field={field}
           forReport={false}
           onChange={(newField): void => handleChangeField(line, newField)}
+          onMappingChange={(payload): void =>
+            handleMappingChange(line, payload)
+          }
           onRemove={(): void => handleRemoveField(line)}
           onOpen={handleOpen.bind(undefined, line)}
           onClose={handleClose}

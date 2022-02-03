@@ -5,7 +5,6 @@ import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { mutateMappingPath } from '../wbplanviewutils';
 import { Button, className } from './basic';
 import { icons } from './icons';
 import {
@@ -18,6 +17,7 @@ export function QueryLine({
   field,
   forReport = false,
   onChange: handleChange,
+  onMappingChange: handleMappingChange,
   onRemove: handleRemove,
   onOpen: handleOpen,
   onClose: handleClose,
@@ -30,6 +30,16 @@ export function QueryLine({
   readonly field: QueryField;
   readonly forReport?: boolean;
   readonly onChange: (newField: QueryField) => void;
+  readonly onMappingChange: (payload: {
+    readonly index: number;
+    readonly close: boolean;
+    readonly newValue: string;
+    readonly isRelationship: boolean;
+    readonly parentTableName: string;
+    readonly currentTableName: string;
+    readonly newTableName: string;
+    readonly isDoubleClick: boolean;
+  }) => void;
   readonly onRemove: () => void;
   readonly onOpen: (index: number) => void;
   readonly onClose: () => void;
@@ -49,31 +59,17 @@ export function QueryLine({
     mappingLineData: getMappingLineData({
       baseTableName,
       mappingPath: field.mappingPath,
-      generateLastRelationshipData: true,
       iterate: true,
       showHiddenFields,
       generateFieldData: 'all',
     }),
     customSelectType: 'CLOSED_LIST',
-    handleChange: (payload): void =>
-      handleChange({
-        ...field,
-        mappingPath: mutateMappingPath({
-          lines: [],
-          mappingView: field.mappingPath,
-          line: 'mappingView',
-          index: payload.index,
-          newValue: payload.newValue,
-          isRelationship: payload.isRelationship,
-          currentTableName: payload.currentTableName,
-          newTableName: payload.newTableName,
-        }),
-      }),
+    handleChange: handleMappingChange,
     handleOpen,
     // TODO: detect outside click
     handleClose,
     openSelectElement: openedElement,
-  });
+  }).filter(({ customSelectSubtype }) => customSelectSubtype !== 'toMany');
 
   return (
     <li

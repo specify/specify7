@@ -47,6 +47,7 @@ type ChangeSelectElementValueAction = Action<
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
+    readonly parentTableName: string;
     readonly newTableName: string;
     readonly currentTableName: string;
   }
@@ -97,8 +98,10 @@ export const reducer = generateReducer<MainState, Actions>({
       index: action.index,
       newValue: action.newValue,
       isRelationship: action.isRelationship,
+      parentTableName: action.parentTableName,
       currentTableName: action.currentTableName,
       newTableName: action.newTableName,
+      ignoreToMany: true,
     });
 
     if (action.line === 'mappingView')

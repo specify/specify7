@@ -124,15 +124,16 @@ const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
 export type CustomSelectSubtype =
   // For fields and relationships
   | 'simple'
-  // For reference items
+  // For -to-many indexes
   | 'toMany'
   // For tree ranks
   | 'tree';
 
 type CustomSelectElementIconProps = {
   /*
-   * Whether the option is a relationship (False for fields, true for
-   * relationships, tree ranks and reference items)
+   * Whether the option is a relationship
+   * False for fields
+   * True for relationships, tree ranks and -to-many indexes)
    */
   readonly isRelationship?: boolean;
   // Whether the option is now selected
@@ -345,7 +346,7 @@ function OptionGroup({
       role="group"
       aria-label={selectGroupLabel}
     >
-      {typeof selectGroupLabel === 'undefined' && (
+      {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden={true}
           className="bg-[color:var(--custom-select-b2)] px-1 cursor-auto"
@@ -383,12 +384,12 @@ function OptionGroup({
 
 /**
  * All picklist options are rendered invisibly for every closed picklist to
- * ensure picklist doesn't grow in size when opened and shift all elements
- * to the right of it.
+ * ensure opening picklist doesn't change their width and it turn cause a
+ * layout shift.
  *
  * If whitespace in <Option> is changed, the change would have to be reflected
- * here (replace pr-12 with another value).
- * I don't like this solution, but am not what is a better one. Rendering
+ * here (replace pr-[3.75rem] with another value).
+ * I don't like this solution, but am not sure what is a better one. Rendering
  * a bunch of <Option> with visibility:hidden for each pick list is too expensive
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -399,7 +400,8 @@ const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
 }) {
   return (
     <span
-      className="print:hidden flex flex-col invisible pr-12 overflow-y-scroll border"
+      className={`print:hidden flex flex-col invisible pr-[3.75rem]
+        overflow-y-scroll border`}
       aria-hidden="true"
     >
       {fieldNames.map((fieldName, index) => (
@@ -743,12 +745,14 @@ export function CustomSelectElement({
       onBlur={
         has('interactive')
           ? (event): void => {
-              // If newly focused element is a child, ignore onBlur event
               if (
-                event.relatedTarget &&
-                customSelectElementRef.current?.contains(
-                  event.relatedTarget as Node
-                ) === true
+                // If newly focused element is a child, ignore onBlur event
+                (event.relatedTarget &&
+                  customSelectElementRef.current?.contains(
+                    event.relatedTarget as Node
+                  ) === true) ||
+                // If in development, don't close on outside click
+                process.env.NODE_ENV === 'development'
               )
                 return;
               handleClose?.();

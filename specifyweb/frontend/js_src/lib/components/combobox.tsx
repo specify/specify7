@@ -149,7 +149,7 @@ function ComboBox(props: DefaultComboBoxProps): JSX.Element {
 
   if (pickListName === 'UserType') return <UserTypeComboBox {...props} />;
 
-  if (!Boolean(props.pickListName))
+  if (!Boolean(pickListName))
     throw new Error(
       `can't determine picklist for field ${resource.specifyModel.name}.${field.name}`
     );

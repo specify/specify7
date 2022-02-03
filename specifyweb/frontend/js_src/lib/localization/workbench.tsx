@@ -1096,14 +1096,6 @@ const wbText = createDictionary({
     'ru-ru': 'Показать обзор сопоставлений',
     ca: 'Show Map Explorer',
   },
-  resizeMappingEditorButtonDescription: {
-    'en-us': 'Click and drag up or down to resize the Map Explorer',
-    'ru-ru': whitespaceSensitive(`
-      Щелкните и перетащите вверх или вниз, чтобы изменить размер
-      обозревателя сопоставлений
-    `),
-    ca: 'Click and drag up or down to resize the Map Explorer',
-  },
   mappings: {
     'en-us': 'Mappings',
     'ru-ru': 'Сопоставления',

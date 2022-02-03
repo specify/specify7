@@ -12,9 +12,9 @@ import type {
 import type { IR, RA } from './types';
 import {
   formatTreeRank,
-  getIndexFromReferenceItemName,
+  getNumberFromToManyIndex,
   relationshipIsToMany,
-  valueIsReferenceItem,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import dataModelStorage from './wbplanviewmodel';
@@ -64,15 +64,15 @@ export const getTableRelationships = (
   ][];
 
 /** Returns the max index in the list of -to-many items */
-export const getMaxToManyValue = (
-  // List of reference item values
+export const getMaxToManyIndex = (
+  // List of -to-many indexes
   values: RA<string>
 ): number =>
   values.reduce((max, value) => {
     // Skip `add` values and other possible NaN cases
-    if (!valueIsReferenceItem(value)) return max;
+    if (!valueIsToManyIndex(value)) return max;
 
-    const number = getIndexFromReferenceItemName(value);
+    const number = getNumberFromToManyIndex(value);
 
     if (number > max) return number;
 
@@ -104,7 +104,7 @@ export function findRequiredMissingFields(
   const listOfMappedFields = Object.keys(mappingsTree);
 
   // Handle -to-many references
-  if (valueIsReferenceItem(listOfMappedFields[0])) {
+  if (valueIsToManyIndex(listOfMappedFields[0])) {
     listOfMappedFields.forEach((mappedFieldName) => {
       const localPath = [...path, mappedFieldName];
       if (typeof mappingsTree[mappedFieldName] === 'object')
@@ -157,7 +157,7 @@ export function findRequiredMissingFields(
       if (parentTableName !== '') {
         let previousRelationshipName = localPath.slice(-2)[0];
         if (
-          valueIsReferenceItem(previousRelationshipName) ||
+          valueIsToManyIndex(previousRelationshipName) ||
           valueIsTreeRank(previousRelationshipName)
         )
           previousRelationshipName = localPath.slice(-3)[0];
@@ -168,7 +168,7 @@ export function findRequiredMissingFields(
 
         let currentMappingPathPart = localPath[path.length - 1];
         if (
-          valueIsReferenceItem(currentMappingPathPart) ||
+          valueIsToManyIndex(currentMappingPathPart) ||
           valueIsTreeRank(currentMappingPathPart)
         )
           currentMappingPathPart = localPath[path.length - 2];
@@ -178,7 +178,7 @@ export function findRequiredMissingFields(
           isCircularRelationship({
             targetTableName: fieldData.tableName,
             parentTableName,
-            foreignName: fieldData.foreignName,
+            foreignName: fieldData.foreignName ?? '',
             relationshipKey: fieldName,
             currentMappingPathPart,
             tableName,
@@ -212,30 +212,6 @@ export function findRequiredMissingFields(
   return results;
 }
 
-export const isCircularRelationshipBackwards = ({
-  parentTableName,
-  foreignName,
-  relationshipKey,
-}: {
-  readonly parentTableName?: string;
-  readonly foreignName?: string;
-  readonly relationshipKey?: string;
-}): boolean =>
-  dataModelStorage.tables[parentTableName ?? '']?.[foreignName ?? '']
-    ?.foreignName === relationshipKey || false;
-
-export const isCircularRelationshipForwards = ({
-  tableName,
-  relationshipKey,
-  currentMappingPathPart,
-}: {
-  readonly tableName?: string;
-  readonly relationshipKey?: string;
-  readonly currentMappingPathPart?: string;
-}): boolean =>
-  dataModelStorage.tables[tableName ?? '']?.[relationshipKey ?? '']
-    ?.foreignName === currentMappingPathPart || false;
-
 export const isCircularRelationship = ({
   targetTableName,
   parentTableName,
@@ -244,24 +220,18 @@ export const isCircularRelationship = ({
   currentMappingPathPart,
   tableName,
 }: {
-  readonly targetTableName?: string;
-  readonly parentTableName?: string;
-  readonly foreignName?: string;
-  readonly relationshipKey?: string;
-  readonly currentMappingPathPart?: string;
-  readonly tableName?: string;
+  readonly targetTableName: string;
+  readonly parentTableName: string;
+  readonly foreignName: string;
+  readonly relationshipKey: string;
+  readonly currentMappingPathPart: string;
+  readonly tableName: string;
 }): boolean =>
   targetTableName === parentTableName &&
-  (isCircularRelationshipBackwards({
-    parentTableName,
-    foreignName,
-    relationshipKey,
-  }) ||
-    isCircularRelationshipForwards({
-      tableName,
-      relationshipKey,
-      currentMappingPathPart,
-    }));
+  (dataModelStorage.tables[parentTableName]?.[foreignName]?.foreignName ===
+    relationshipKey ||
+    dataModelStorage.tables[tableName]?.[relationshipKey]?.foreignName ===
+      currentMappingPathPart);
 
 export const isTooManyInsideOfTooMany = (
   type?: RelationshipType,

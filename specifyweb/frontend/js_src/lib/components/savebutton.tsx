@@ -8,7 +8,7 @@ import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
-import { Button, className, Submit, Ul } from './basic';
+import { Button, Submit, Ul } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -74,12 +74,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(() => {
     if (form.id === '') form.id = id('form');
     setFormId(form.id);
-
-    // TODO: remove this once everything is using controlled components
-    Array.from(form.querySelectorAll('input, textarea, select'), (element) =>
-      element.classList.add(className.notTouchedInput)
-    );
-    form.classList.add(className.notSubmittedForm);
 
     form.addEventListener('focusout', handleFocus);
     return (): void => form.removeEventListener('focusout', handleFocus);

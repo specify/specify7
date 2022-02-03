@@ -21,12 +21,12 @@ import Q from 'q';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {getModel} from './schema';
+import { getModel } from './schema';
 import * as app from './specifyapp';
-import {userInformation} from './userinfo';
+import { userInformation } from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import {NotFoundView} from './notfoundview';
+import { NotFoundView } from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
@@ -37,26 +37,26 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import {uploadPlanToMappingsTree} from './uploadplantomappingstree';
-import {capitalize, extractDefaultValues} from './wbplanviewhelper';
-import {getTableFromMappingPath} from './wbplanviewnavigator';
-import {getIcon} from './icons';
+import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
+import { capitalize, extractDefaultValues } from './wbplanviewhelper';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { getIcon } from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import {LoadingScreen} from './components/modaldialog';
-import {format} from './dataobjformatters';
-import {dataModelPromise} from './wbplanviewmodelfetcher';
-import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
+import { LoadingScreen } from './components/modaldialog';
+import { format } from './dataobjformatters';
+import { dataModelPromise } from './wbplanviewmodelfetcher';
+import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
 import createBackboneView from './components/reactbackboneextend';
-import {className} from './components/basic';
-import {legacyNonJsxIcons} from './components/icons';
-import {LANGUAGE} from './localization/utils';
-import {defined} from './types';
-import {getPickLists} from './picklists';
-import {crash} from "./components/errorboundary";
-import {getTreeDefinitionItems} from "./treedefinitions";
+import { className } from './components/basic';
+import { legacyNonJsxIcons } from './components/icons';
+import { LANGUAGE } from './localization/utils';
+import { defined } from './types';
+import { getPickLists } from './picklists';
+import { crash } from './components/errorboundary';
+import { getTreeDefinitionItems } from './treedefinitions';
 
 const metaKeys = [
   'isNew',
@@ -237,63 +237,66 @@ const WBView = Backbone.View.extend({
       this.operationAbortedMessage();
 
     const pickListsPromise = getPickLists();
-    const initDataModelIntegration = ()=>pickListsPromise.then((pickLists) =>
-      this.hot.batch(() => {
-        if (
-          !this.isUploaded &&
-          !(this.mappings?.splitMappingPaths.length > 0)
-        ) {
-          $(`<div>
+    const initDataModelIntegration = () =>
+      pickListsPromise.then((pickLists) =>
+        this.hot.batch(() => {
+          if (
+            !this.isUploaded &&
+            !(this.mappings?.splitMappingPaths.length > 0)
+          ) {
+            $(`<div>
               ${wbText('noUploadPlanDialogHeader')}
               <p>${wbText('noUploadPlanDialogMessage')}</p>
           </div>`).dialog({
-            title: wbText('noUploadPlanDialogTitle'),
-            modal: true,
-            buttons: {
-              [commonText('close')]() {
-                $(this).dialog('close');
+              title: wbText('noUploadPlanDialogTitle'),
+              modal: true,
+              buttons: {
+                [commonText('close')]() {
+                  $(this).dialog('close');
+                },
+                [commonText('create')]: this.openPlan.bind(this),
               },
-              [commonText('create')]: this.openPlan.bind(this),
-            },
-          });
-          this.$('.wb-validate, .wb-data-check')
-            .prop('disabled', true)
-            .prop('title', wbText('wbValidateUnavailable'));
-        } else {
-          this.$('.wb-validate, .wb-data-check').prop('disabled', false);
-          this.$('.wb-show-upload-view')
-            .prop('disabled', false)
-            .prop('title', undefined);
-        }
+            });
+            this.$('.wb-validate, .wb-data-check')
+              .prop('disabled', true)
+              .prop('title', wbText('wbValidateUnavailable'));
+          } else {
+            this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+            this.$('.wb-show-upload-view')
+              .prop('disabled', false)
+              .prop('title', undefined);
+          }
 
-        /*
-         * These methods update HOT's cells settings, which resets meta data
-         * Thus, need to run them first
-         */
-        this.identifyDefaultValues();
-        this.identifyPickLists(pickLists);
+          /*
+           * These methods update HOT's cells settings, which resets meta data
+           * Thus, need to run them first
+           */
+          this.identifyDefaultValues();
+          this.identifyPickLists(pickLists);
 
-        if (this.dataset.rowresults) this.getValidationResults();
+          if (this.dataset.rowresults) this.getValidationResults();
 
-        // The rest goes in order of importance
-        this.identifyMappedHeaders();
-        if (this.dataset.visualorder?.some((column, index) => column !== index))
-          this.hot.updateSettings({
-            manualColumnMove: this.dataset.visualorder,
-          });
-        this.fetchSortConfig().catch(crash);
-        this.wbutils.findLocalityColumns();
-        this.identifyCoordinateColumns();
-        this.identifyTreeRanks();
-        this.wbutils.render();
+          // The rest goes in order of importance
+          this.identifyMappedHeaders();
+          if (
+            this.dataset.visualorder?.some((column, index) => column !== index)
+          )
+            this.hot.updateSettings({
+              manualColumnMove: this.dataset.visualorder,
+            });
+          this.fetchSortConfig().catch(crash);
+          this.wbutils.findLocalityColumns();
+          this.identifyCoordinateColumns();
+          this.identifyTreeRanks();
+          this.wbutils.render();
 
-        this.trigger('loaded');
-        this.hotIsReady = true;
+          this.trigger('loaded');
+          this.hotIsReady = true;
 
-        this.hotCommentsContainer =
-          document.getElementsByClassName('htComments')[0];
-      })
-    );
+          this.hotCommentsContainer =
+            document.getElementsByClassName('htComments')[0];
+        })
+      );
 
     this.initHot().then(() => {
       if (this.dataset.uploadplan) {
@@ -699,8 +702,9 @@ const WBView = Backbone.View.extend({
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
           mappingGroup,
           physicalCol,
-          rankId: Object.keys(getTreeDefinitionItems(tableName))
-            .findIndex(({name})=>name === rankName),
+          rankId: Object.keys(getTreeDefinitionItems(tableName)).findIndex(
+            ({ name }) => name === rankName
+          ),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
           groupedRanks[mappingGroup] ??= [];
@@ -2297,7 +2301,7 @@ const WBView = Backbone.View.extend({
           uploadResult,
           setMetaCallback,
           physicalRow,
-          [...mappingPath, fieldName, formatReferenceItem(toManyIndex + 1)]
+          [...mappingPath, fieldName, formatToManyIndex(toManyIndex + 1)]
         )
       )
     );

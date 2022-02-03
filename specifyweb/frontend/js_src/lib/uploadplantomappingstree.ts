@@ -8,7 +8,7 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { IR, R, RA } from './types';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
-import { formatReferenceItem, formatTreeRank } from './wbplanviewmappinghelper';
+import { formatToManyIndex, formatTreeRank } from './wbplanviewmappinghelper';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 
@@ -115,7 +115,7 @@ const uploadPlanProcessingFunctions = (
       tableName,
       Object.fromEntries(
         Object.values(mappings).map((mapping, index) => [
-          formatReferenceItem(index + 1),
+          formatToManyIndex(index + 1),
           handleUploadTableTable(mapping, headers, mustMatchPreferences, [
             ...mappingPath,
             tableName,

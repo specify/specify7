@@ -12,7 +12,6 @@ export default function (): void {
           {
             baseTableName: 'collectionobject',
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
-            generateLastRelationshipData: true,
             showHiddenFields: false,
             iterate: true,
             generateFieldData: 'all',

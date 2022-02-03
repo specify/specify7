@@ -45,7 +45,7 @@ export function parseQueryFields(
 
       return {
         id,
-        mappingPath: fieldSpec.joinPath.map(({ name }) => name.toLowerCase()),
+        mappingPath: fieldSpec.toMappingPath(),
         sortType: sortTypes[field.sortType],
         filter: 'any',
         startValue: field.startValue ?? '',

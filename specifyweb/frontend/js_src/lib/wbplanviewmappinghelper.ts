@@ -8,8 +8,8 @@ import type {
   FullMappingPath,
   MappingPath,
   MappingType,
-  RelationshipType,
 } from './components/wbplanviewmapper';
+import { RelationshipType } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import dataModelStorage from './wbplanviewmodel';
@@ -21,10 +21,12 @@ import dataModelStorage from './wbplanviewmodel';
  */
 export const relationshipIsToMany = (
   relationshipType?: RelationshipType | ''
-): boolean => (relationshipType ?? '').includes('-to-many');
+): boolean =>
+  (relationshipType ?? '').includes('-to-many') ||
+  relationshipType === 'zero-to-one';
 
-/** Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
-export const valueIsReferenceItem = (value?: string): boolean =>
+/** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
+export const valueIsToManyIndex = (value?: string): boolean =>
   value?.slice(0, dataModelStorage.referenceSymbol.length) ===
     dataModelStorage.referenceSymbol || false;
 
@@ -33,11 +35,10 @@ export const valueIsTreeRank = (value: string): boolean =>
   value?.startsWith(dataModelStorage.treeSymbol) || false;
 
 /**
- * Returns index from a complete reference item value (e.x #1 => 1)
- * Opposite of formatReferenceItem
- *
+ * Returns index from a formatted -to-many index value (e.x #1 => 1)
+ * Opposite of formatToManyIndex
  */
-export const getIndexFromReferenceItemName = (value: string): number =>
+export const getNumberFromToManyIndex = (value: string): number =>
   Number(value.slice(dataModelStorage.referenceSymbol.length));
 
 /**
@@ -50,11 +51,10 @@ export const getNameFromTreeRankName = (value: string): string =>
   value.slice(dataModelStorage.treeSymbol.length);
 
 /**
- * Returns a complete reference item from an index (e.x 1 => #1)
- * Opposite of getIndexFromReferenceItemName
- *
+ * Returns a formatted -to-many index from an index (e.x 1 => #1)
+ * Opposite of getNumberFromToManyIndex
  */
-export const formatReferenceItem = (index: number): string =>
+export const formatToManyIndex = (index: number): string =>
   `${dataModelStorage.referenceSymbol}${index}`;
 
 /**
@@ -132,16 +132,13 @@ export const getCanonicalMappingPath = (
   mappingPath: MappingPath
 ): MappingPath =>
   mappingPath.map((mappingPathPart) =>
-    valueIsReferenceItem(mappingPathPart)
-      ? formatReferenceItem(1)
-      : mappingPathPart
+    valueIsToManyIndex(mappingPathPart) ? formatToManyIndex(1) : mappingPathPart
   );
 
 export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>
-      !valueIsReferenceItem(mappingPathPart) &&
-      !valueIsTreeRank(mappingPathPart)
+      !valueIsToManyIndex(mappingPathPart) && !valueIsTreeRank(mappingPathPart)
   );
 
 /**
@@ -169,18 +166,18 @@ export function deflateMappingPaths(
       let resetToManys = false;
       const newMappingPath = Array.from(mappingPath);
       mappingPath.forEach((mappingPathPart, partIndex) => {
-        if (!valueIsReferenceItem(mappingPathPart)) return;
+        if (!valueIsToManyIndex(mappingPathPart)) return;
         const subPath = mappingPathToString(
           newMappingPath.slice(0, partIndex + 1)
         );
-        if (resetToManys) changes[subPath] = formatReferenceItem(1);
+        if (resetToManys) changes[subPath] = formatToManyIndex(1);
         if (subPath in changes) {
           newMappingPath[partIndex] = changes[subPath];
           return;
         }
 
         const newIndex =
-          getIndexFromReferenceItemName(
+          getNumberFromToManyIndex(
             mappingPaths
               .slice(0, rowIndex)
               .reverse()
@@ -190,11 +187,11 @@ export function deflateMappingPaths(
                   mappingPathToString(mappingPath.slice(0, -1)) ===
                   mappingPathToString(newMappingPath.slice(0, partIndex))
               )
-              ?.slice(-1)[0] ?? formatReferenceItem(0)
+              ?.slice(-1)[0] ?? formatToManyIndex(0)
           ) + 1;
-        if (newIndex >= getIndexFromReferenceItemName(mappingPathPart)) return;
+        if (newIndex >= getNumberFromToManyIndex(mappingPathPart)) return;
         resetToManys = true;
-        const newValue = formatReferenceItem(newIndex);
+        const newValue = formatToManyIndex(newIndex);
         changes[subPath] = newValue;
         newMappingPath[partIndex] = newValue;
       });

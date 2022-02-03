@@ -12,7 +12,6 @@ import type {
   MatchBehaviors,
 } from '../uploadplantomappingstree';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import type { MappingsTree } from '../wbplanviewtreehelper';
 import {
   Button,
   Checkbox,
@@ -35,7 +34,7 @@ import type { MappingPath } from './wbplanviewmapper';
 export type GetMappedFieldsBind = (
   // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
-) => MappingsTree;
+) => RA<string>;
 
 export type PathIsMappedBind = (
   // A mapping path that would be used as a filter
@@ -121,7 +120,6 @@ export function ValidationResults(props: {
                 baseTableName: props.baseTableName,
                 mappingPath: fieldPath,
                 iterate: true,
-                generateLastRelationshipData: false,
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',
@@ -145,6 +143,7 @@ export function MappingView(props: {
   readonly baseTableName: string;
   readonly focusedLineExists: boolean;
   readonly mappingPath: MappingPath;
+  readonly hideToMany: boolean;
   readonly mapButtonIsEnabled: boolean;
   readonly readonly: boolean;
   readonly mustMatchPreferences: IR<boolean>;
@@ -154,6 +153,7 @@ export function MappingView(props: {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
+    readonly parentTableName: string;
     readonly currentTableName: string;
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
@@ -165,7 +165,6 @@ export function MappingView(props: {
     mappingLineData: getMappingLineData({
       baseTableName: props.baseTableName,
       mappingPath: props.mappingPath,
-      generateLastRelationshipData: true,
       iterate: true,
       getMappedFields: props.getMappedFields,
       showHiddenFields: props.showHiddenFields,
@@ -181,13 +180,16 @@ export function MappingView(props: {
           isDoubleClick,
         });
     },
-  });
+  }).filter(
+    ({ customSelectSubtype }) =>
+      !props.hideToMany || customSelectSubtype !== 'toMany'
+  );
   const mapButtonIsEnabled =
     !props.readonly &&
     props.mapButtonIsEnabled &&
-    (Object.entries(
-      mappingLineData[mappingLineData.length - 1]?.fieldsData
-    ).find(([, { isDefault }]) => isDefault)?.[1].isEnabled ??
+    (Object.entries(mappingLineData.slice(-1)[0].fieldsData).find(
+      ([, { isDefault }]) => isDefault
+    )?.[1].isEnabled ??
       false);
 
   // `resize` event listener for the mapping view
@@ -250,14 +252,6 @@ export function MappingView(props: {
           </span>
         </Button.Simple>
       </div>
-      {/* No hero icon alternative for this one: */}
-      <span
-        className="absolute bottom-0 right-0 cursor-pointer pointer-events-none"
-        title={wbText('resizeMappingEditorButtonDescription')}
-        aria-hidden={true}
-      >
-        ⇲
-      </span>
     </section>
   );
 }

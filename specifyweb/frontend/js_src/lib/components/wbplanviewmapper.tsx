@@ -286,6 +286,7 @@ export function WbPlanViewMapper(props: {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
+    readonly parentTableName: string;
     readonly currentTableName: string;
     readonly newTableName: string;
   }): void =>
@@ -305,7 +306,6 @@ export function WbPlanViewMapper(props: {
     <LoadingScreen />
   ) : (
     <Layout
-      readonly={props.readonly}
       title={
         <>
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
@@ -420,9 +420,7 @@ export function WbPlanViewMapper(props: {
         </>
       }
       // Don't close picklists on outside click in development. Useful for debugging
-      handleClick={
-        process.env.NODE_ENV === 'development' ? undefined : handleClose
-      }
+      onClick={process.env.NODE_ENV === 'development' ? undefined : handleClose}
     >
       {!props.readonly && state.validationResults.length > 0 && (
         <ValidationResults
@@ -450,6 +448,7 @@ export function WbPlanViewMapper(props: {
           baseTableName={props.baseTableName}
           focusedLineExists={state.lines.length > 0}
           mappingPath={state.mappingView}
+          hideToMany={false}
           showHiddenFields={state.showHiddenFields}
           mapButtonIsEnabled={
             typeof state.focusedLine === 'number' &&
@@ -514,7 +513,6 @@ export function WbPlanViewMapper(props: {
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
-              generateLastRelationshipData: true,
               iterate: true,
               getMappedFields: getMappedFieldsBind,
               showHiddenFields: state.showHiddenFields,
