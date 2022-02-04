@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-02 22:32+0000\n"
+"POT-Creation-Date: 2022-02-04 17:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: attachment_gw/views.py:134
+#: attachment_gw/views.py:136
 #, python-format
 msgid "Deletion failed: %(reason)s"
 msgstr "Не удалось удалить: %(reason)s"
 
-#: attachment_gw/views.py:190
-msgid "Bad attachment key."
-msgstr "Неверный ключ прикрепления"
-
-#: attachment_gw/views.py:192
-msgid "Attachment key test failed."
-msgstr "Не удалось выполнить проверку ключа прикрепления"
-
 #: businessrules/accessionagent_rules.py:8
 msgid "AccessionAgent -> Agent relationship is required."
-msgstr "Требуется присоединение к отношениям с агентом по присоединению"
+msgstr "Агент присоединя > Aгент отношения является необходимы"
 
 #: context/views.py:593 frontend/views.py:54
 #, fuzzy
@@ -94,22 +86,22 @@ msgstr ""
 #: specify/load_datamodel.py:45
 #, python-format
 msgid "No table with name: %(table_name)r"
-msgstr ""
+msgstr "Нет таблицы с названием: %(table_name)"
 
 #: specify/load_datamodel.py:54
 #, python-brace-format
-msgid "No table with id: %{table_id}d"
-msgstr ""
+msgid "No table with id: %(table_id)d"
+msgstr "Нет таблицы с ID: $(table_id)"
 
 #: specify/load_datamodel.py:104
 #, python-format
 msgid "Field %(field_name)s not in table %(table_name)s. "
-msgstr ""
+msgstr "Поле %(field_name)s отсутствует в таблице %(table_name)s."
 
 #: specify/load_datamodel.py:105
 #, python-format
 msgid "Fields: %(fields)s"
-msgstr ""
+msgstr "Поля: %(fields)s"
 
 #: stored_queries/format.py:93
 msgid "<Formatter not defined.>"
@@ -152,79 +144,10 @@ msgstr "В дереве есть несколько веток с именем '
 #, python-format
 msgid "Missing or unmapped required tree parent rank value for %(value)s."
 msgstr ""
-"Отсутствует или не сопоставлено необходимое значение родительского рангадля "
+"Отсутствует или не сопоставлено необходимое значение родительского ранга для "
 "дерева %(value)s."
 
 #: workbench/upload/upload.py:133
 #, python-format
 msgid "WB Upload of %(data_set_name)s"
 msgstr "Загрузка WB %(data_set_name)s"
-
-#~ msgid "Choose Collection"
-#~ msgstr "Выбрать коллекцию"
-
-#~ msgid "%(title)s | Specify 7"
-#~ msgstr "%(title)s | Specify 7"
-
-#~ msgid "Collection"
-#~ msgstr "Коллекция"
-
-#~ msgid "Select"
-#~ msgstr "Выбрать"
-
-#~ msgid ""
-#~ "The logged in user has not been given access to any collections in this "
-#~ "database. You must <a href=\"/accounts/login/?next=%(next)s\">login</a> "
-#~ "as another user."
-#~ msgstr ""
-#~ "Авторизованному пользователю не был предоставлен доступ ни к одной "
-#~ "коллекции в этой база данных. Вы должны <a href=\"/accounts/login/?next="
-#~ "%(next)s\">войти</a> как другой пользователь."
-
-#~ msgid "Log In"
-#~ msgstr "Вход"
-
-#~ msgid "Language:"
-#~ msgstr "Язык:"
-
-#~ msgid "Username"
-#~ msgstr "Имя пользователя"
-
-#~ msgid "Password"
-#~ msgstr "Пароль"
-
-#~ msgid "Login"
-#~ msgstr "Войти"
-
-#~ msgid "Change Password"
-#~ msgstr "Изменить пароль"
-
-#~ msgid "Old password"
-#~ msgstr "Прежний пароль"
-
-#~ msgid "New password"
-#~ msgstr "Новый пароль"
-
-#~ msgid "Retype new password"
-#~ msgstr "Введите повторно новый пароль"
-
-#~ msgid "Change"
-#~ msgstr "Изменить"
-
-#~ msgid "Skip to Content"
-#~ msgstr "Перейти к содержанию"
-
-#~ msgid "Go to homepage"
-#~ msgstr "Вернуться на домашнюю страницу"
-
-#~ msgid "Current User"
-#~ msgstr "Текущий пользователь"
-
-#~ msgid "Current Collection"
-#~ msgstr "Текущая коллекция"
-
-#~ msgid "Search"
-#~ msgstr "Поиск"
-
-#~ msgid "Specify is loading..."
-#~ msgstr "Загрузка Specify..."

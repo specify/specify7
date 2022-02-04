@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-02 22:32+0000\n"
+"POT-Creation-Date: 2022-02-04 17:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: attachment_gw/views.py:134
+#: attachment_gw/views.py:136
 #, python-format
 msgid "Deletion failed: %(reason)s"
-msgstr ""
-
-#: attachment_gw/views.py:190
-msgid "Bad attachment key."
-msgstr ""
-
-#: attachment_gw/views.py:192
-msgid "Attachment key test failed."
 msgstr ""
 
 #: businessrules/accessionagent_rules.py:8
@@ -90,7 +82,7 @@ msgstr ""
 
 #: specify/load_datamodel.py:54
 #, python-brace-format
-msgid "No table with id: %{table_id}d"
+msgid "No table with id: %(table_id)d"
 msgstr ""
 
 #: specify/load_datamodel.py:104

@@ -4,24 +4,16 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-02 22:32+0000\n"
+"POT-Creation-Date: 2022-02-04 17:31+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: attachment_gw/views.py:134
+#: attachment_gw/views.py:136
 #, python-format
 msgid "Deletion failed: %(reason)s"
 msgstr "Deletion failed: %(reason)s"
-
-#: attachment_gw/views.py:190
-msgid "Bad attachment key."
-msgstr "Bad attachment key."
-
-#: attachment_gw/views.py:192
-msgid "Attachment key test failed."
-msgstr "Attachment key test failed."
 
 #: businessrules/accessionagent_rules.py:8
 msgid "AccessionAgent -> Agent relationship is required."
@@ -88,7 +80,7 @@ msgstr ""
 
 #: specify/load_datamodel.py:54
 #, python-brace-format
-msgid "No table with id: %{table_id}d"
+msgid "No table with id: %(table_id)d"
 msgstr ""
 
 #: specify/load_datamodel.py:104
