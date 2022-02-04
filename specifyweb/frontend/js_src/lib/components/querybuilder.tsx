@@ -167,10 +167,10 @@ export function QueryBuilder({
             }
             readonly={false}
             mustMatchPreferences={{}}
-            handleMapButtonClick={(): void =>
+            onMapButtonClick={(): void =>
               dispatch({ type: 'MappingViewMapAction' })
             }
-            handleMappingViewChange={(payload): void =>
+            onMappingViewChange={(payload): void =>
               handleChange({ line: 'mappingView', ...payload })
             }
           />

@@ -77,13 +77,13 @@ function Values({
 }
 
 export function AddLanguage({
-  handleClose,
-  handleGoBack,
-  handleAddLanguage,
+  onClose: handleClose,
+  onGoBack: handleGoBack,
+  onAddLanguage: handleAddLanguage,
 }: {
-  readonly handleClose: () => void;
-  readonly handleGoBack: () => void;
-  readonly handleAddLanguage: (language: string) => void;
+  readonly onClose: () => void;
+  readonly onGoBack: () => void;
+  readonly onAddLanguage: (language: string) => void;
 }): JSX.Element {
   const id = useId('schema-config-add-language');
   const formRef = React.useRef<HTMLFormElement | null>(null);

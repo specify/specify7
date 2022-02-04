@@ -156,7 +156,7 @@ type CustomSelectElementIconProps = {
 };
 
 export type CustomSelectElementOptionProps = CustomSelectElementIconProps & {
-  readonly handleClick?: (payload: { readonly isDoubleClick: boolean }) => void;
+  readonly onClick?: (payload: { readonly isDoubleClick: boolean }) => void;
   readonly hasIcon?: boolean;
   readonly hasArrow?: boolean;
 };
@@ -174,7 +174,7 @@ type CustomSelectElementOptionGroupProps = {
   // Group's label (shown to the user)
   readonly selectGroupLabel?: string;
   readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
-  readonly handleClick?: (payload: {
+  readonly onClick?: (payload: {
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly newTableName: string;
@@ -196,9 +196,9 @@ type CustomSelectElementPropsBase = {
   readonly role?: string;
   readonly previewOption?: CustomSelectElementDefaultOptionProps;
 
-  readonly handleOpen?: () => void;
+  readonly onOpen?: () => void;
 
-  readonly handleChange?: (payload: {
+  readonly onChange?: (payload: {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
@@ -206,19 +206,19 @@ type CustomSelectElementPropsBase = {
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
-  readonly handleClose?: () => void;
+  readonly onClose?: () => void;
   readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
   readonly autoMapperSuggestions?: JSX.Element;
 };
 
 export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
   readonly isOpen: false;
-  readonly handleOpen?: () => void;
+  readonly onOpen?: () => void;
 };
 
 export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly isOpen: true;
-  readonly handleChange?: (payload: {
+  readonly onChange?: (payload: {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
@@ -226,7 +226,7 @@ export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
-  readonly handleClose?: () => void;
+  readonly onClose?: () => void;
 };
 
 type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
@@ -254,7 +254,7 @@ function Option({
   isRelationship = false,
   isDefault = false,
   tableName = '',
-  handleClick,
+  onClick: handleClick,
   hasIcon = true,
   hasArrow = true,
 }: CustomSelectElementOptionProps): JSX.Element {
@@ -335,7 +335,7 @@ function OptionGroup({
   selectGroupName,
   selectGroupLabel,
   selectOptionsData,
-  handleClick,
+  onClick: handleClick,
   hasIcon,
   hasArrow,
 }: CustomSelectElementOptionGroupProps): JSX.Element {
@@ -359,7 +359,7 @@ function OptionGroup({
           return (
             <Option
               key={optionName}
-              handleClick={({ isDoubleClick }): void =>
+              onClick={({ isDoubleClick }): void =>
                 typeof handleClick === 'function' &&
                 (isDoubleClick || selectionOptionData.isEnabled !== false)
                   ? handleClick({
@@ -427,9 +427,9 @@ export function CustomSelectElement({
   selectLabel = '',
   isOpen,
   tableName,
-  handleChange,
-  handleOpen,
-  handleClose,
+  onChange: handleChange,
+  onOpen: handleOpen,
+  onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
   role,
@@ -590,7 +590,7 @@ export function CustomSelectElement({
 
     unmapOption = showUnmapOption ? (
       <Option
-        handleClick={(): void =>
+        onClick={(): void =>
           handleClick?.({
             close: true,
             newValue: '0',
@@ -629,7 +629,7 @@ export function CustomSelectElement({
         ) => (
           <OptionGroup
             key={index}
-            handleClick={
+            onClick={
               typeof handleClick === 'function'
                 ? (payload): void => handleClick({ close: true, ...payload })
                 : undefined
@@ -848,7 +848,7 @@ export function SuggestionBox({
         },
       }}
       isOpen={true}
-      handleChange={({ newValue }): void => handleSelect(newValue)}
+      onChange={({ newValue }): void => handleSelect(newValue)}
       {...props}
     />
   );

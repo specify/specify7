@@ -18,8 +18,8 @@ import { ErrorBoundary } from './errorboundary';
  * unmounting entire component tree and rendering everything from scratch.
  * This would lead too state loss.
  *
- * Instead, this "hacky" component exposes its setProps callback,
- * and passed them along to the child component
+ * Instead, this "hacky" component exposes its setProps callback to parent
+ * component
  */
 function ForwardProps<PROPS extends IR<unknown>>({
   props: initialProps,

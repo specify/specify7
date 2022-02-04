@@ -59,18 +59,16 @@ export type MappingElementProps = {
       'onFocusAutoMapper' | 'autoMapperSuggestions'
     > & {
       readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
-      readonly handleAutoMapperSuggestionSelection?: (
-        suggestion: string
-      ) => void;
+      readonly onAutoMapperSuggestionSelection?: (suggestion: string) => void;
     })
   | Omit<CustomSelectElementPropsClosed, 'onFocusAutoMapper' | 'fieldNames'>
 );
 
 export function ListOfBaseTables({
-  handleChange,
+  onChange: handleChange,
   showHiddenTables,
 }: {
-  readonly handleChange: (newValue: string) => void;
+  readonly onChange: (newValue: string) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const fieldsData = Object.fromEntries(
@@ -94,7 +92,7 @@ export function ListOfBaseTables({
   return (
     <MappingElement
       isOpen={true}
-      handleChange={({ newValue }): void => handleChange(newValue)}
+      onChange={({ newValue }): void => handleChange(newValue)}
       fieldsData={fieldsData}
       customSelectType="BASE_TABLE_SELECTION_LIST"
       customSelectSubtype="simple"
@@ -186,17 +184,17 @@ export function getMappingLineProps({
   mappingLineData,
   openSelectElement,
   customSelectType,
-  handleChange,
-  handleOpen,
-  handleClose,
-  handleAutoMapperSuggestionSelection,
+  onChange: handleChange,
+  onOpen: handleOpen,
+  onClose: handleClose,
+  onAutoMapperSuggestionSelection: handleAutoMapperSuggestionSelection,
   autoMapperSuggestions,
 }: {
   readonly mappingLineData: RA<MappingLineData>;
   // Index of custom select element that should be open
   readonly openSelectElement?: number;
   readonly customSelectType: CustomSelectType;
-  readonly handleChange?: (payload: {
+  readonly onChange?: (payload: {
     readonly index: number;
     readonly close: boolean;
     readonly newValue: string;
@@ -206,9 +204,9 @@ export function getMappingLineProps({
     readonly newTableName: string;
     readonly isDoubleClick: boolean;
   }) => void;
-  readonly handleOpen?: (index: number) => void;
-  readonly handleClose?: () => void;
-  readonly handleAutoMapperSuggestionSelection?: (suggestion: string) => void;
+  readonly onOpen?: (index: number) => void;
+  readonly onClose?: () => void;
+  readonly onAutoMapperSuggestionSelection?: (suggestion: string) => void;
   readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
 }): RA<MappingElementProps> {
   return mappingLineData.map((data, index) => {
@@ -223,7 +221,7 @@ export function getMappingLineProps({
       ...(isOpen
         ? {
             isOpen: true,
-            handleChange:
+            onChange:
               typeof handleChange === 'function'
                 ? (payload): void =>
                     handleChange({
@@ -232,13 +230,14 @@ export function getMappingLineProps({
                       ...payload,
                     })
                 : undefined,
-            handleClose: handleClose?.bind(undefined, index),
+            onClose: handleClose?.bind(undefined, index),
             autoMapperSuggestions,
-            handleAutoMapperSuggestionSelection,
+            onAutoMapperSuggestionSelection:
+              handleAutoMapperSuggestionSelection,
           }
         : {
             isOpen: false,
-            handleOpen: handleOpen?.bind(undefined, index),
+            onOpen: handleOpen?.bind(undefined, index),
           }),
     };
   });
@@ -378,10 +377,10 @@ export function MappingElement({
       autoMapperSuggestions={
         Array.isArray(props.autoMapperSuggestions) &&
         props.autoMapperSuggestions.length > 0 &&
-        typeof props.handleAutoMapperSuggestionSelection === 'function' ? (
+        typeof props.onAutoMapperSuggestionSelection === 'function' ? (
           <SuggestionBox
             onSelect={(selection): void =>
-              props.handleAutoMapperSuggestionSelection?.(selection)
+              props.onAutoMapperSuggestionSelection?.(selection)
             }
             selectOptionsData={Object.fromEntries(
               props.autoMapperSuggestions.map((autoMapperSuggestion, index) => [

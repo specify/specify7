@@ -147,8 +147,8 @@ export function MappingView(props: {
   readonly mapButtonIsEnabled: boolean;
   readonly readonly: boolean;
   readonly mustMatchPreferences: IR<boolean>;
-  readonly handleMapButtonClick?: () => void;
-  readonly handleMappingViewChange?: (payload: {
+  readonly onMapButtonClick?: () => void;
+  readonly onMappingViewChange?: (payload: {
     readonly index: number;
     readonly close: boolean;
     readonly newValue: string;
@@ -172,10 +172,10 @@ export function MappingView(props: {
       generateFieldData: 'all',
     }),
     customSelectType: 'OPENED_LIST',
-    handleChange({ isDoubleClick, ...rest }) {
-      if (isDoubleClick) props.handleMapButtonClick?.();
+    onChange({ isDoubleClick, ...rest }) {
+      if (isDoubleClick) props.onMapButtonClick?.();
       else
-        props.handleMappingViewChange?.({
+        props.onMappingViewChange?.({
           ...rest,
           isDoubleClick,
         });
@@ -238,7 +238,7 @@ export function MappingView(props: {
           disabled={!isMappable}
           onClick={
             mapButtonIsEnabled && props.focusedLineExists
-              ? props.handleMapButtonClick
+              ? props.onMapButtonClick
               : undefined
           }
           title={wbText('mapButtonDescription')}

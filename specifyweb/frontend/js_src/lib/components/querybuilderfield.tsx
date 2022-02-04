@@ -64,10 +64,10 @@ export function QueryLine({
       generateFieldData: 'all',
     }),
     customSelectType: 'CLOSED_LIST',
-    handleChange: handleMappingChange,
-    handleOpen,
+    onChange: handleMappingChange,
+    onOpen: handleOpen,
     // TODO: detect outside click
-    handleClose,
+    onClose: handleClose,
     openSelectElement: openedElement,
   }).filter(({ customSelectSubtype }) => customSelectSubtype !== 'toMany');
 

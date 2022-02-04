@@ -456,12 +456,12 @@ export function WbPlanViewMapper(props: {
           }
           readonly={props.readonly}
           mustMatchPreferences={state.mustMatchPreferences}
-          handleMapButtonClick={
+          onMapButtonClick={
             props.readonly
               ? undefined
               : (): void => dispatch({ type: 'MappingViewMapAction' })
           }
-          handleMappingViewChange={
+          onMappingViewChange={
             props.readonly
               ? undefined
               : (payload): void =>
@@ -495,12 +495,12 @@ export function WbPlanViewMapper(props: {
 
           const lineData = getMappingLineProps({
             customSelectType: 'CLOSED_LIST',
-            handleChange: props.readonly
+            onChange: props.readonly
               ? undefined
               : (payload): void => handleChange({ line, ...payload }),
-            handleOpen,
-            handleClose,
-            handleAutoMapperSuggestionSelection: props.readonly
+            onOpen: handleOpen,
+            onClose: handleClose,
+            onAutoMapperSuggestionSelection: props.readonly
               ? undefined
               : (suggestion: string): void =>
                   dispatch({
@@ -568,18 +568,12 @@ export function WbPlanViewMapper(props: {
                   ...(openSelectElement === lineData.length
                     ? {
                         isOpen: true,
-                        handleChange: undefined,
-                        handleClose: handleClose?.bind(
-                          undefined,
-                          lineData.length
-                        ),
+                        onChange: undefined,
+                        onClose: handleClose?.bind(undefined, lineData.length),
                       }
                     : {
                         isOpen: false,
-                        handleOpen: handleOpen?.bind(
-                          undefined,
-                          lineData.length
-                        ),
+                        onOpen: handleOpen?.bind(undefined, lineData.length),
                       }),
                 } as const,
               ]

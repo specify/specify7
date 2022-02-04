@@ -121,7 +121,7 @@ export const stateReducer = generateReducer<
     >
       <ListOfBaseTables
         showHiddenTables={state.showHiddenTables}
-        handleChange={(baseTableName: string): void =>
+        onChange={(baseTableName: string): void =>
           state.dispatch({
             type: 'SelectTableAction',
             baseTableName,

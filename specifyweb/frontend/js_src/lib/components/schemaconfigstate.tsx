@@ -161,13 +161,13 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   }) {
     return (
       <AddLanguage
-        handleClose={handleClose}
-        handleGoBack={(): void =>
+        onClose={handleClose}
+        onGoBack={(): void =>
           dispatch({
             type: 'ChangeLanguageAction',
           })
         }
-        handleAddLanguage={(language): void =>
+        onAddLanguage={(language): void =>
           dispatch({
             type: 'ChooseLanguageAction',
             language,
