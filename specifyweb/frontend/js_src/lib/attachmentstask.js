@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import * as attachments from './attachments';
-import { router } from './router';
+import {router} from './router';
 import * as app from './specifyapp';
 import schema, {getModel, getModelById} from './schema';
 import populateform from './populateform';
@@ -64,7 +64,7 @@ export const AttachmentsView = Backbone.View.extend({
             return this.$('.specify-attachment-browser')[0].childElementCount;
         },
         makeThumbnail: function() {
-            var cell = $('<div class="relative min-w-[10] min-h-[10]">');
+            var cell = $('<div class="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">');
 
             var attachment = this.attachments.at(this.index());
             var tableId = attachment.get('tableid');

@@ -10,14 +10,19 @@ import {ajax} from './ajax';
 import schema, {getModel} from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import InteractionDialog from './interactiondialog';
 import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {makeResourceViewUrl} from "./specifyapi";
-import { SpecifyModel } from "./specifymodel";
+import {SpecifyModel} from "./specifymodel";
+import {
+  dialogClassNames,
+  LoadingView,
+  showDialog
+} from "./components/modaldialog";
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -63,20 +68,11 @@ export default Backbone.View.extend({
             'click a.interaction-action': 'interactionActionClick'
         },
         render: function() {
-            let loadingDialog = undefined;
-            if(!isFulfilled){
-                loadingDialog = $(
-                    '<div><div class="progress-bar"></div></div>'
-                ).dialog({
-                    title: commonText('loading'),
-                    modal: true,
-                    dialogClass: 'ui-dialog-no-close',
-                });
-                $('.progress-bar', loadingDialog).progressbar({value: false});
-            }
+            const loadingDialog = isFulfilled
+              ? undefined
+              : new LoadingView().render();
             getFormsPromise.then(fetchedForms=>{
-                isFulfilled=true;
-                loadingDialog?.dialog('destroy');
+                loadingDialog?.remove();
                 this._render(fetchedForms);
             });
             return this;
@@ -94,15 +90,18 @@ export default Backbone.View.extend({
                         .join('')}
                 </ul>`;
 
-                this.$el.dialog({
-                    title: commonText('interactions'),
-                    maxHeight: 400,
-                    modal: true,
-                    close: this.options.onClose,
-                    buttons: [{
-                        text: commonText('close'),
-                        click: function() { $(this).dialog('close'); }
-                    }]
+                this.dialog?.remove();
+                this.dialog = showDialog({
+                    header: commonText('interactions'),
+                    content: this.el,
+                    className: {
+                        container: dialogClassNames.narrowContainer
+                    },
+                    onClose: () => {
+                        this.dialog.remove();
+                        this.options.onClose?.();
+                    },
+                    buttons: commonText('close')
                 });
             } else {
                 const action = interaction_entries
@@ -165,7 +164,7 @@ export default Backbone.View.extend({
         interactionActionClick(event) {
             event.preventDefault();
             const index = this.$('a').filter(".interaction-action").index(event.currentTarget);
-            this.$el.dialog('close');
+            this.dialog.remove();
             this.handleAction(actions[index]);
         },
         handleAction(action){

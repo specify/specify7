@@ -63,7 +63,7 @@ function Login({
         </Label>
         <input type="hidden" name="next" value={nextUrl} />
         <input type="hidden" name="this_is_the_login_form" value="1" />
-        <Submit.Fancy value={commonText('login')} />
+        <Submit.Fancy>{commonText('login')}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

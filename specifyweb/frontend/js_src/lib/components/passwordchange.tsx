@@ -76,7 +76,7 @@ function ChangePassword({
             forwardRef={repeatPasswordRef}
           />
         </Label>
-        <Submit.Fancy value={commonText('changePassword')} />
+        <Submit.Fancy>{commonText('changePassword')}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

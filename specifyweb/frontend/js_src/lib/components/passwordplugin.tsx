@@ -38,7 +38,7 @@ function PasswordResetDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('apply')} />
+          <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
         </>
       }
     >
@@ -127,10 +127,7 @@ export default UiPlugin.extend(
       return this;
     },
     click() {
-      const onClose = () => {
-        this.dialog?.remove();
-        this.dialog = undefined;
-      };
+      const onClose = () => this.dialog?.remove();
       this.dialog = new DialogView({
         modelId: this.model.id,
         onClose,

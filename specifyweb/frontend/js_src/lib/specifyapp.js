@@ -2,8 +2,9 @@
 
 import $ from 'jquery';
 import 'jquery-ui';
-import {ErrorView} from './errorview';
+import {ErrorView} from './components/errorview';
 import {setTitle} from "./components/hooks";
+import {openDialogs} from "./components/modaldialog";
 
 global.jQuery = $;
 
@@ -58,10 +59,12 @@ global.jQuery = $;
          * Close any open dialogs, unless rendering for the first time
          * (e.g, UserTools dialog can be opened by the user before first render)
          * */
-        if(!isFirstRender)
+        if(!isFirstRender){
             $('.ui-dialog:not(.ui-dialog-no-close)')
                 .find('.ui-dialog-content:not(.ui-dialog-persistent)')
                 .dialog('close');
+            Array.from(openDialogs, close=>close());
+        }
         isFirstRender = false;
 
         currentView = view;

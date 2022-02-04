@@ -99,7 +99,7 @@ export function AddLanguage({
           <Button.Transparent onClick={handleGoBack}>
             {commonText('back')}
           </Button.Transparent>
-          <Submit.Blue form={id('form')} value={commonText('add')} />
+          <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
         </>
       }
     >

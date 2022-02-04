@@ -49,9 +49,9 @@ const commonText = createDictionary({
     ca: "No s'ha assignat cap agent",
   },
   noAgentDialogHeader: {
-    'en-us': header('Current user does not have an agent assigned'),
-    'ru-ru': header('Текущему пользователю не назначен агент'),
-    ca: header("L'usuari actual no té cap agent assignat"),
+    'en-us': 'Current user does not have an agent assigned',
+    'ru-ru': 'Текущему пользователю не назначен агент',
+    ca: "L'usuari actual no té cap agent assignat",
   },
   noAgentDialogMessage: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -778,11 +778,9 @@ const commonText = createDictionary({
     ca: 'Server Error',
   },
   backEndErrorDialogHeader: {
-    'en-us': header(
-      'An error occurred communicating with the Specify 7 server.'
-    ),
-    'ru-ru': header('Произошла ошибка связи с сервером Specify 7.'),
-    ca: header('An error occurred communicating with the Specify 7 server.'),
+    'en-us': 'An error occurred communicating with the Specify 7 server.',
+    'ru-ru': 'Произошла ошибка связи с сервером Specify 7.',
+    ca: 'An error occurred communicating with the Specify 7 server.',
   },
   backEndErrorDialogMessage: {
     'en-us': `

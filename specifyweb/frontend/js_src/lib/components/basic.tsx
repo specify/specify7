@@ -339,6 +339,7 @@ export const Submit = {
 
 export const ContainerFull = wrap('section', className.containerFull);
 export const ContainerBase = wrap('section', className.containerBase);
+export const Container = wrap('section', className.container);
 export const Progress = wrap(
   'progress',
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',

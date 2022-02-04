@@ -67,7 +67,6 @@ export const Base =  Backbone.View.extend({
         closeDialog(){
             this.button.ariaPressed = false;
             this.dialog.remove();
-            this.dialog = undefined;
         },
     });
 

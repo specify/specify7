@@ -39,7 +39,7 @@ function UserCollectionsUi({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('close')} />
+          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
         </>
       }
     >

@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -63,9 +63,9 @@ const adminText = createDictionary({
     ca: 'Load file',
   },
   resourceLoadDialogHeader: {
-    'en-us': header('Load resource file'),
-    'ru-ru': header('Загрузить файл ресурсов'),
-    ca: header('Load resource file'),
+    'en-us': 'Load resource file',
+    'ru-ru': 'Загрузить файл ресурсов',
+    ca: 'Load resource file',
   },
   resourceLoadDialogMessage: {
     'en-us': 'Select the file to be loaded into the editor.',
@@ -103,9 +103,9 @@ const adminText = createDictionary({
     ca: 'Create Resource',
   },
   createResourceDialogHeader: {
-    'en-us': header('Create New Resource File'),
-    'ru-ru': header('Создать новый файл ресурсов'),
-    ca: header('Create New Resource File'),
+    'en-us': 'Create New Resource File',
+    'ru-ru': 'Создать новый файл ресурсов',
+    ca: 'Create New Resource File',
   },
   newResourceName: {
     'en-us': 'New Resource Name:',

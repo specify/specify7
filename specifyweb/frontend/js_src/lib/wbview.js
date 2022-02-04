@@ -44,11 +44,10 @@ import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import {LoadingScreen} from './components/modaldialog';
+import {LoadingView} from './components/modaldialog';
 import {format} from './dataobjformatters';
 import {dataModelPromise} from './wbplanviewmodelfetcher';
 import {mappingsTreeToSplitMappingPaths} from './wbplanviewtreehelper';
-import createBackboneView from './components/reactbackboneextend';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
@@ -2585,14 +2584,12 @@ const WBView = Backbone.View.extend({
   },
 });
 
-const BackboneLoadingScreen = createBackboneView(LoadingScreen);
-
 export default function loadDataset(
   id,
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false
 ) {
-  const loadingScreen = new BackboneLoadingScreen().render();
+  const loadingScreen = new LoadingView().render();
 
   $.get(`/api/workbench/dataset/${id}/`)
     .done((dataset) => {

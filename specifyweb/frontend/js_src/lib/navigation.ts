@@ -1,7 +1,7 @@
 import { isExternalUrl, ping } from './ajax';
 import Backbone from './backbone';
 import commonText from './localization/common';
-import { dialogView } from './components/modaldialog';
+import { showDialog } from './components/modaldialog';
 
 /*
  * We introduce a sequence variable that is incremented and passed in
@@ -163,11 +163,10 @@ function defaultConfirmNavigationHandler(
 ): void {
   const { message } = unloadBlockers[unloadBlockers.length - 1];
 
-  const dialog = dialogView({
+  const dialog = showDialog({
     title: commonText('leavePageDialogTitle'),
     header: commonText('leavePageDialogHeader'),
     content: message,
-    modal: true,
     onClose() {
       dialog.remove();
       cancel?.();

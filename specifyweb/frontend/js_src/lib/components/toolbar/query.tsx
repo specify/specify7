@@ -444,7 +444,7 @@ function QueryExport({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('create')} />
+          <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
         </>
       }
     >

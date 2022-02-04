@@ -11,16 +11,9 @@ import * as navigation from './navigation';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import {legacyNonJsxIcons} from "./components/icons";
+import {showDialog} from "./components/modaldialog";
+import commonText from "./localization/common";
 
-var dialog;
-    function makeDialog(el, options) {
-        dialog && dialog.dialog('close');
-        dialog = el.dialog(_.extend({
-            modal: true,
-            width: 500,
-            close: function() { dialog = null; $(this).remove(); }
-        }, options));
-    }
 
 export default RecordSetsDialog.extend({
         __name__: "InteractionDialog",
@@ -320,7 +313,7 @@ export default RecordSetsDialog.extend({
         },
 
         showPrepSelectDlg: function(prepsData, action) {
-            this.$el.dialog('close');
+            this.dialog.remove();
             var ipreps = _.map(prepsData, function(iprepData) {
                 return {catalognumber: iprepData[0],
                         taxon: iprepData[1],
@@ -341,32 +334,30 @@ export default RecordSetsDialog.extend({
         },
 
         loanReturnDone: function(result) {
-            var msg = s.localize("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
+            const msg = s.localize("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
 
-            var huh = $("<p>").append($("<a>").text(msg));
-
-            makeDialog(huh, {
-                title: s.localize("InteractionsTask.LN_RET_TITLE"),
-                maxHeight: 400,
-                buttons: [
-                    {text: s.localize('CLOSE'), click: function() { $(this).dialog('close'); }}
-                ]
+            this.dialog?.remove();
+            this.dialog = showDialog({
+                header: s.localize("InteractionsTask.LN_RET_TITLE"),
+                content: $("<p>").append($("<a>").text(msg)),
+                onClose: () => this.dialog.remove(),
+                buttons: commonText('close'),
             });
         },
 
         zeroPrepLoan: function() {
-            this.$el.dialog('close');
+            this.dialog.remove();
             navigation.go(makeResourceViewUrl('loan'));
         },
 
         zeroCoPrep: function() {
-            this.$el.dialog('close');
+            this.dialog.remove();
             this.availablePrepsReady(false, "unassociated item", "none", [], [], []);
         },
 
         interactionAction: function(selection, isRs, invalidEntries) {
             if (this.options.close) {
-                this.$el.dialog('close');
+                this.dialog.remove();
                 var doneFunc = _.bind(this.loanReturnDone, this);
                 $.post('/interactions/loan_return_all/', {
                     // returnedById: "", // get this from a form maybe

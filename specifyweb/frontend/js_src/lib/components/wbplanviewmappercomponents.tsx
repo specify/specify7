@@ -220,7 +220,7 @@ export function MappingView(props: {
   return (
     <section
       className={`overflow-x-auto relative resize-y
-        max-h-[50vh] min-h-[250px] h-[var(--mapping-view-height)]`}
+        max-h-[50vh] min-h-[theme(spacing.40)] h-[var(--mapping-view-height)]`}
       style={
         {
           '--mapping-view-height': `${mappingViewHeightRef.current ?? ''}px`,

@@ -5,7 +5,6 @@
  */
 
 // eslint-disable-next-line simple-import-sort/imports
-import $ from 'jquery';
 import L from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';
@@ -31,7 +30,7 @@ L.Icon.Default.mergeOptions({
 /* Create a "full screen" button */
 // @ts-expect-error
 L.Control.FullScreen = L.Control.extend({
-  onAdd(map: Readonly<L.Map>) {
+  onAdd() {
     const button = L.DomUtil.create('button') as HTMLImageElement;
     button.title = localityText('toggleFullScreen');
     button.ariaLabel = localityText('toggleFullScreen');
@@ -42,8 +41,12 @@ L.Control.FullScreen = L.Control.extend({
     L.DomEvent.on(button, 'click', (event) => {
       L.DomEvent.stopPropagation(event);
       L.DomEvent.preventDefault(event);
-      toggleFullScreen(map);
       isFullScreen = !isFullScreen;
+      (
+        this as unknown as {
+          readonly options: { readonly callback: (isEnabled: boolean) => void };
+        }
+      ).options.callback(isFullScreen);
       button.parentElement
         ?.getElementsByClassName('leaflet-print-map')[0]
         ?.classList[isFullScreen ? 'remove' : 'add']('hidden');
@@ -93,30 +96,5 @@ L.Control.PrintMap = L.Control.extend({
     L.DomEvent.off(this.button);
   },
 });
-
-const DEFAULT_MAP_SIZE_X = 900;
-const DEFAULT_MAP_SIZE_Y = 600;
-
-function toggleFullScreen(
-  map: Readonly<L.Map>,
-  stateOverwrite: boolean | undefined = undefined
-): void {
-  // @ts-expect-error
-  const dialog = $(map._container.closest('.ui-dialog-content'));
-  const newState =
-    typeof stateOverwrite === 'boolean'
-      ? stateOverwrite
-      : dialog[0].parentElement.style.top !== '0px';
-  const [width, height] = newState
-    ? [window.innerWidth, window.innerHeight]
-    : [DEFAULT_MAP_SIZE_X, DEFAULT_MAP_SIZE_Y];
-  dialog.dialog('option', 'width', width);
-  dialog.dialog('option', 'height', height);
-  map.invalidateSize();
-
-  const container = map.getContainer();
-  if (newState) container.classList.add('leaflet-map-full-screen');
-  else container.classList.remove('leaflet-map-full-screen');
-}
 
 export { default } from 'leaflet';

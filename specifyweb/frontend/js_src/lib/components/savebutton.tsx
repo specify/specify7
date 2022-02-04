@@ -161,9 +161,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         form={formId}
         className={saveBlocked ? 'cursor-not-allowed' : undefined}
         disabled={isSaving || (!saveRequired && !saveBlocked)}
-        value={commonText('save')}
         onClick={(): void => form.classList.remove('not-submitted')}
-      />
+      >
+        {commonText('save')}
+      </SubmitComponent>
       {isSaveConflict ? (
         <Dialog
           title={formsText('saveConflictDialogTitle')}

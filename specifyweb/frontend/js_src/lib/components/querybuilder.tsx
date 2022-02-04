@@ -290,7 +290,7 @@ export function QueryBuilder({
             </LabelForCheckbox>
           ) : undefined}
           <span className="flex-1 -ml-2" />
-          <Submit.Simple value={commonText('query')} />
+          <Submit.Simple>{commonText('query')}</Submit.Simple>
         </div>
       </form>
     </ContainerFull>

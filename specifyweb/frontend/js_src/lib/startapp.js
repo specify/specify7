@@ -5,13 +5,13 @@ import React from 'react';
 import Modal from 'react-modal';
 
 import * as businessRules from './businessrules';
-import {UnhandledErrorView} from './errorview';
+import {UnhandledErrorView} from './components/errorview';
 import commonText from './localization/common';
-import { csrfToken } from './csrftoken';
+import {csrfToken} from './csrftoken';
 import {csrfSafeMethod, ping} from './ajax';
 import * as navigation from './navigation';
-import { router } from './router';
-import { NotFoundView } from './notfoundview';
+import {router} from './router';
+import {NotFoundView} from './notfoundview';
 import {setCurrentView} from './specifyapp';
 import {crash} from './components/errorboundary';
 
@@ -47,7 +47,10 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
         ],
       });
   else {
-    new UnhandledErrorView({ response: jqxhr.responseText }).render();
+    const view = new UnhandledErrorView({
+      response: jqxhr.responseText,
+      onClose: () => view.remove(),
+    }).render();
     console.log({ event, jqxhr, settings, exception });
   }
 }

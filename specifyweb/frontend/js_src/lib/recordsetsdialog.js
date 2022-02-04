@@ -9,11 +9,13 @@ import EditResourceDialog from './components/editresourcedialog';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import {QueryToolbarView} from './components/toolbar/query';
 import {formatNumber} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
 import {makeResourceViewUrl} from "./specifyapi";
+import {showDialog} from "./components/modaldialog";
+import {filterArray} from "./types";
 
 
 export default Backbone.View.extend({
@@ -26,18 +28,26 @@ export default Backbone.View.extend({
             Promise.resolve(this.options.recordSets).then(recordSets=> {
                 this.options.recordSets = recordSets;
                 this.makeTable();
-                this.$el.dialog({
-                    modal: true,
-                    close: (event)=>{
-                        if(typeof event?.originalEvent !== 'undefined')
-                            this.options.onClose?.();
-                    },
-                    title: formsText('recordSetsDialogTitle')(
+                this.dialog?.remove();
+                this.dialog = showDialog({
+                    header: formsText('recordSetsDialogTitle')(
                         this.options.recordSets._totalCount
                     ),
-                    minWidth: 400,
-                    maxHeight: 500,
-                    buttons: this.buttons()
+                    content: this.el,
+                    onClose: () => {
+                        this.dialog.remove();
+                        this.options.onClose?.();
+                    },
+                    buttons: filterArray([
+                        commonText('close'),
+                        this.options.readOnly
+                          ? undefined
+                          : {
+                            text: commonText('new'),
+                            style: 'Blue',
+                            onClick: this.openFormsDialog.bind(this)
+                          },
+                    ]),
                 });
             });
             return this;
@@ -122,14 +132,6 @@ export default Backbone.View.extend({
 
             return entry;
         },
-        buttons: function() {
-            var buttons = this.options.readOnly ? [] : [
-                { text: commonText('new'), click: this.openFormsDialog.bind(this),
-                  title: formsText('createRecordSetButtonDescription') }
-            ];
-            buttons.push({ text: commonText('cancel'), click: function() { $(this).dialog('close'); }});
-            return buttons;
-        },
         openFormsDialog: function() {
             const dialog = new FormsDialog({
                 onSelected: (model)=>{
@@ -158,7 +160,7 @@ export default Backbone.View.extend({
         edit: function(evt) {
             const index = this.getIndex(evt, "button.edit");
             const recordSet = this.options.recordSets.at(index);
-            this.$el.dialog("close");
+            this.dialog.remove();
             const queryEventListener = () => {
                 editView.remove();
                 const view = new QueryToolbarView({

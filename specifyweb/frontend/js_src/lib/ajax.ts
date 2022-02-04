@@ -1,5 +1,5 @@
 import { csrfToken } from './csrftoken';
-import { UnhandledErrorView } from './errorview';
+import { UnhandledErrorView } from './components/errorview';
 import type { IR, PartialBy, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
@@ -128,7 +128,13 @@ export async function ajax<RESPONSE_TYPE = string>(
     .catch((error) => {
       const errorMessage = `Error occurred fetching from ${url}:\n${error.toString()}`;
       console.error(errorMessage);
-      if (strict) new UnhandledErrorView({ response: errorMessage }).render();
+      const handleClose = () => view?.remove();
+      const view = strict
+        ? new UnhandledErrorView({
+            response: errorMessage,
+            onClose: handleClose,
+          })
+        : undefined;
       throw error;
     });
 }

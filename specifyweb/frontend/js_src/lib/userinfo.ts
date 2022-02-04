@@ -1,10 +1,9 @@
-import $ from 'jquery';
-
 import type { Agent } from './datamodel';
 import type { SerializedModel } from './datamodelutils';
 import { load } from './initialcontext';
 import commonText from './localization/common';
 import type { RA, Writable } from './types';
+import { dialogClassNames, showDialog } from './components/modaldialog';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 
@@ -32,24 +31,25 @@ export const fetchContext = load<UserInfo>(
   'application/json'
 ).then((data) => {
   if (data.agent === null) {
-    const dialog: JQuery = $(`<div>
-      ${commonText('noAgentDialogHeader')}
-      <p>${commonText('noAgentDialogMessage')}</p>
-    </div>`).dialog({
-      modal: true,
-      dialogClass: 'ui-dialog-persistent',
+    const dialog = showDialog({
       title: commonText('noAgentDialogTitle'),
-      close: () => {
+      header: commonText('noAgentDialogHeader'),
+      content: commonText('noAgentDialogMessage'),
+      className: {
+        container: `${dialogClassNames.narrowContainer}`,
+      },
+      onClose() {
         window.location.href = '/accounts/logout/';
       },
+      forceToTop: true,
       buttons: [
         {
           text: commonText('logOut'),
-          click: () => dialog.dialog('close'),
+          style: 'Red',
+          onClick: (): void => void dialog.remove(),
         },
       ],
     });
-    dialog[0].classList.add('ui-dialog-persistent');
   }
   Object.entries({
     ...data,

@@ -4,7 +4,6 @@
  * @module
  */
 
-import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import { ajax, Http } from './ajax';
@@ -26,6 +25,8 @@ import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 import { legacyNonJsxIcons } from './components/icons';
 import { contextUnlockedPromise } from './initialcontext';
+import { dialogClassNames, showDialog } from './components/modaldialog';
+import _ from 'underscore';
 
 const DEFAULT_ZOOM = 5;
 
@@ -82,28 +83,23 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
 export async function showLeafletMap({
   localityPoints = [],
   markerClickCallback,
-  leafletMapContainer,
   onClose: handleClose,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-  readonly leafletMapContainer: Readonly<HTMLDivElement>;
   readonly onClose?: () => void;
-}): Promise<L.Map | undefined> {
+}): Promise<{
+  readonly map: L.Map;
+  readonly dialog: ReturnType<typeof showDialog>;
+}> {
   const tileLayers = await leafletTileServersPromise;
 
-  $(leafletMapContainer).dialog({
-    width: 900,
-    height: 600,
-    title: commonText('geoMap'),
-    close() {
-      map.remove();
-      $(this).remove();
-      handleClose?.();
-    },
-  });
-
-  leafletMapContainer.style.overflow = 'hidden';
+  const leafletMapContainer = document.createElement('div');
+  leafletMapContainer.classList.add(
+    'overflow-hidden',
+    'h-full',
+    'min-h-[theme(spacing.80)]'
+  );
 
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
@@ -125,10 +121,26 @@ export async function showLeafletMap({
   );
   controlLayers.addTo(map);
 
-  // Hide controls when print map
+  // Hide controls when printing map
   leafletMapContainer
     .getElementsByClassName('leaflet-control-container')[0]
     ?.classList.add('print:hidden');
+
+  const dialog = showDialog({
+    header: commonText('geoMap'),
+    modal: false,
+    content: leafletMapContainer,
+    className: {
+      container: dialogClassNames.wideContainer,
+    },
+    buttons: commonText('close'),
+    onClose() {
+      map.remove();
+      dialog.remove();
+      handleClose?.();
+    },
+    onResize: _.throttle(() => map.invalidateSize(), 250),
+  });
 
   addMarkersToMap(
     map,
@@ -141,11 +153,20 @@ export async function showLeafletMap({
     )
   );
 
-  addFullScreenButton(map);
+  addFullScreenButton(map, (isEnabled: boolean) =>
+    dialog.updateProps({
+      className: {
+        container: isEnabled
+          ? dialogClassNames.fullScreen
+          : dialogClassNames.wideContainer,
+      },
+    })
+  );
+
   addPrintMapButton(map);
   rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
 
-  return map;
+  return { map, dialog };
 }
 
 export type LeafletCacheSalt = string & ('MainMap' | 'CoMap');
@@ -202,9 +223,12 @@ function rememberSelectedOverlays(
   map.on('overlayremove', handleOverlayEvent);
 }
 
-function addFullScreenButton(map: L.Map): void {
+function addFullScreenButton(
+  map: L.Map,
+  callback: (isEnabled: boolean) => void
+): void {
   // @ts-expect-error
-  new L.Control.FullScreen({ position: 'topleft' }).addTo(map);
+  new L.Control.FullScreen({ position: 'topleft', callback }).addTo(map);
 }
 
 function addPrintMapButton(map: L.Map): void {

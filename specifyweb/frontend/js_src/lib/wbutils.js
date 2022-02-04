@@ -765,7 +765,7 @@ export default Backbone.View.extend({
   showLeafletMap(event) {
 
     if(typeof this.geoMapDialog !== 'undefined'){
-      this.geoMapDialog.dialog('close');
+      this.geoMapDialog.options.onClose();
       return;
     }
     event.target.ariaPressed = true;
@@ -784,7 +784,6 @@ export default Backbone.View.extend({
         selection.visualRows
       );
 
-    const dialog = document.createElement('div');
     showLeafletMap({
       localityPoints,
       markerClickCallback: (localityPoint) => {
@@ -796,13 +795,13 @@ export default Backbone.View.extend({
         // Select entire row
         this.wbview.hot.selectRows(rowNumber);
       },
-      leafletMapContainer: dialog,
+      onClose: () => {
+        this.geoMapDialog = undefined;
+        event.target.ariaPressed = false;
+      },
+    }).then(({dialog})=>{
+      this.geoMapDialog = dialog;
     });
-    this.geoMapDialog = $(dialog);
-    this.geoMapDialog.on('dialogbeforeclose',()=>{
-      this.geoMapDialog=undefined;
-      event.target.ariaPressed = false;
-    })
   },
   showCoordinateConversion() {
     if (typeof this.wbview.coordinateConverterView !== 'undefined') return;

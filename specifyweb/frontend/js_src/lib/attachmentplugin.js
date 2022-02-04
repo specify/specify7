@@ -3,10 +3,11 @@
 import $ from 'jquery';
 
 
-import { UiPlugin } from './uiplugin';
+import {UiPlugin} from './uiplugin';
 import * as attachments from './attachments';
 
 import formsText from './localization/forms';
+import {showDialog} from "./components/modaldialog";
 
 export default UiPlugin.extend({
         __name__: "AttachmentsPlugin",
@@ -49,13 +50,17 @@ export default UiPlugin.extend({
 
             self.progressBar = $('<div>').progressbar();
 
-            self.progressDialog = $(
+            self.progressDialog = showDialog({
+              header: formsText('attachmentUploadDialogTitle'),
+              content: $(
                 '<div>',
                 { 'aria-live': 'polite' }
             )
                 .appendTo(self.el)
-                .append(self.progressBar)
-                .dialog({ modal:true, title: formsText('attachmentUploadDialogTitle') });
+                .append(self.progressBar),
+              buttons: undefined,
+              onClose: undefined,
+            });
 
             attachments.uploadFile(file, function(progressEvt) {
                 self.uploadProgress(progressEvt);

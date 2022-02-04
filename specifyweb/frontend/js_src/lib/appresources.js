@@ -14,12 +14,13 @@ import * as app from './specifyapp';
 import schema from './schema';
 import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from "./components/hooks";
 import {className, darkMode} from './components/basic';
+import {showDialog} from "./components/modaldialog";
 
 function makeUrl(resource) {
     return {
@@ -225,14 +226,14 @@ const ResourceDataView = Backbone.View.extend({
     },
     loadFile() {
         const fileInput = $('<input type="file">');
-        const dialog = $(`<div>
-            ${adminText('resourceLoadDialogHeader')}
-            <p>${adminText('resourceLoadDialogMessage')}</p>
-        </div>`).append(fileInput).dialog({
-            modal: true,
+        const dialog = showDialog({
             title: adminText('resourceLoadDialogTitle'),
-            close: function() { $(this).remove(); },
-            buttons: { [commonText('cancel')]() { $(this).dialog('close'); } }
+            header: adminText('resourceLoadDialogHeader'),
+            content: $('<div>')
+              .append(`<p>${adminText('resourceLoadDialogMessage')}</p>`)
+              .append(fileInput),
+            onClose: ()=>dialog.remove(),
+            buttons: commonText('cancel'),
         });
         fileInput.on('change', () => {
             const file = fileInput[0].files[0];
@@ -240,7 +241,7 @@ const ResourceDataView = Backbone.View.extend({
                 const reader = new FileReader();
                 reader.onload = e => this.appresourceData.set('data', e.target.result);
                 reader.readAsText(file);
-                dialog.dialog('close');
+                dialog.remove();
             }
         });
     }
@@ -322,32 +323,30 @@ const ResourceList = Backbone.View.extend({
 
         const createResource = function(event) {
             event.preventDefault();
-            dialog.dialog('close');
+            dialog.remove();
             thisCreateResource( $('input', this).val() );
         };
 
-        const dialog = $(`<div>
-            ${adminText('createResourceDialogHeader')}
-            <form id="app-resources-new-resource-form" class="not-submitted">
+        const dialog = showDialog({
+            title: adminText('createResourceDialogTitle'),
+            header: adminText('createResourceDialogHeader'),
+            content: $(`<form id="app-resources-new-resource-form" class="not-submitted">
                 <label class="${className.label}">
                     ${adminText('newResourceName')}
                     <input type="text" spellcheck="on" required>
                 </label>
-            </form>
-        </div>`).dialog({
-            title: adminText('createResourceDialogTitle'),
-            width: 350,
-            modal: true,
-            close: function() { $(this).remove(); },
+            </form>`),
+            onClose: ()=>dialog.remove(),
             buttons: [
+                commonText('cancel'),
                 {
                     text: commonText('create'),
-                    click(){ /* Submit form */ },
                     type: 'submit',
                     form: 'app-resources-new-resource-form',
-                },
-                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
-            ]});
+                }
+            ],
+        });
+
         $('form', dialog).submit(createResource);
     }
 });

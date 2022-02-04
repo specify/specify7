@@ -36,7 +36,7 @@ function MasterKey({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('generate')} />
+          <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
         </>
       }
     >

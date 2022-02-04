@@ -89,7 +89,7 @@ export function DataSetMeta({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={commonText('save')} />
+          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
         </>
       }
     >
@@ -277,7 +277,7 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} value={wbText('changeOwner')} />
+          <Submit.Blue form={id('form')}>{wbText('changeOwner')}</Submit.Blue>
         </>
       }
     >

@@ -6,7 +6,7 @@ import {
   getLocalityDataFromLocalityResource
 } from './localityrecorddataextractor';
 import {formatLocalityData, showLeafletMap} from './leaflet';
-import { UiPlugin } from './uiplugin';
+import {UiPlugin} from './uiplugin';
 import localityText from './localization/locality';
 import commonText from './localization/common';
 
@@ -51,15 +51,12 @@ export default UiPlugin.extend(
 
       this.el.ariaPressed = true;
       let fullLocalityData = undefined;
-      const dialog = document.createElement('div');
-
       getLocalityDataFromLocalityResource(
         this.model,
         true
       ).then((localityData) =>
         showLeafletMap({
           localityPoints: [localityData],
-          leafletMapContainer: dialog,
           markerClickCallback: (_, { target: marker }) =>
             (typeof fullLocalityData === 'undefined'
               ? getLocalityDataFromLocalityResource(
@@ -74,14 +71,11 @@ export default UiPlugin.extend(
                   formatLocalityData(localityData, undefined, true)
                 );
             }),
+          onClose(){
+            this.el.ariaPressed = false;
+          },
         })
       );
-
-      this.geoMapDialog = $(dialog);
-      this.geoMapDialog.on('dialogbeforeclose', () => {
-        this.el.ariaPressed = false;
-        this.geoMapDialog = undefined;
-      });
     },
   },
   { pluginsProvided: ['LocalityGoogleEarth'] }

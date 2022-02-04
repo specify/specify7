@@ -68,11 +68,9 @@ function MakeDwca({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue
-            form={id('form')}
-            disabled={isLoading}
-            value={isLoading ? commonText('loading') : commonText('start')}
-          />
+          <Submit.Blue form={id('form')} disabled={isLoading}>
+            {isLoading ? commonText('loading') : commonText('start')}
+          </Submit.Blue>
         </>
       }
     >
