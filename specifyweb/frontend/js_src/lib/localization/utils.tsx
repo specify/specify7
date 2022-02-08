@@ -8,6 +8,10 @@ import type { IR, RA, RR } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
 export const languages = ['en-us', 'ru-ru', 'ca'] as const;
+
+// Catalonian is not yet ready for production
+export const enabledLanguages =
+  process.env.NODE_ENV === 'production' ? ['en-us', 'ru-ru'] : languages;
 export type Language = typeof languages[number];
 export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =

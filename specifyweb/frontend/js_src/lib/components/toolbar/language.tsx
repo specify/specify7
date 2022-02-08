@@ -3,12 +3,14 @@ import * as React from 'react';
 import { ajax } from '../../ajax';
 import { csrfToken } from '../../csrftoken';
 import commonText from '../../localization/common';
-import { LANGUAGE } from '../../localization/utils';
+import type { Language } from '../../localization/utils';
+import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';
 import { Form, Label, Select } from '../basic';
+import { supportLink } from '../errorboundary';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { Dialog, LoadingScreen } from '../modaldialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { parseDjangoDump } from '../splashscreen';
 
@@ -17,8 +19,22 @@ export function LanguageSelection({
 }: {
   readonly languages: IR<string>;
 }): JSX.Element {
+  const [showSupportDialog, setShowSupportDialog] = React.useState(false);
+
   return (
     <Form action="/context/language/" method="post">
+      {showSupportDialog && (
+        <Dialog
+          header={commonText('helpLocalizeSpecify')}
+          onClose={(): void => setShowSupportDialog(false)}
+          buttons={commonText('close')}
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+        >
+          <p>{commonText('helpLocalizeSpecifyDialogMessage')(supportLink)}</p>
+        </Dialog>
+      )}
       <input
         type="hidden"
         name="csrfmiddlewaretoken"
@@ -29,13 +45,20 @@ export function LanguageSelection({
         <Select
           name="language"
           value={LANGUAGE}
-          onChange={({ target }): void => target.closest('form')?.submit()}
+          onChange={({ target }): void =>
+            target.value === 'supportLocalization'
+              ? setShowSupportDialog(true)
+              : target.closest('form')?.submit()
+          }
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
               {nameLocal} ({code})
             </option>
           ))}
+          <option value="supportLocalization">
+            {commonText('helpLocalizeSpecify')}
+          </option>
         </Select>
       </Label>
       <input type="submit" className="sr-only" />
@@ -65,10 +88,9 @@ function ChangeLanguage({
         }).then(({ data }) =>
           Object.fromEntries(
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            Object.entries(data).map(([code, { name_local }]) => [
-              code,
-              name_local,
-            ])
+            Object.entries(data)
+              .filter(([code]) => enabledLanguages.includes(code as Language))
+              .map(([code, { name_local }]) => [code, name_local])
           )
         ),
       []

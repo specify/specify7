@@ -782,32 +782,6 @@ const commonText = createDictionary({
     'ru-ru': 'Произошла ошибка связи с сервером Specify 7.',
     ca: 'An error occurred communicating with the Specify 7 server.',
   },
-  backEndErrorDialogMessage: {
-    'en-us': `
-      Please reload the page and try again.<br>
-      If the issue persists, please contact your IT support, or if this is a
-      Specify Cloud database, contact
-      <a href="mailto:support@specifysoftware.org">
-        support@specifysoftware.org
-      </a>
-    `,
-    'ru-ru': `
-      Пожалуйста, обновите страницу и попробуйте еще раз.<br>
-      Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-      свяжитесь с нами:
-      <a href="mailto:support@specifysoftware.org">
-        support@specifysoftware.org
-      </a>
-    `,
-    ca: `
-      Please reload the page and try again.<br>
-      If the issue persists, please contact your IT support, or if this is a
-      Specify Cloud database, contact
-      <a href="mailto:support@specifysoftware.org">
-        support@specifysoftware.org
-      </a>
-    `,
-  },
   // Search
   expressSearch: {
     'en-us': 'Express Search',
@@ -1051,6 +1025,32 @@ const commonText = createDictionary({
     'en-us': 'Language:',
     'ru-ru': 'Язык:',
     ca: 'Language:',
+  },
+  helpLocalizeSpecify: {
+    'en-us': 'Help Localize Specify 7',
+    'ru-ru': 'Помогти локализовать Specify 7',
+    ca: 'Help Localize Specify 7',
+  },
+  helpLocalizeSpecifyDialogMessage: {
+    'en-us': (emailLink: JSX.Element) => (
+      <>
+        We would be very grateful for your support localizing Specify 7 User
+        Interface. If you are interested, please send an email to {emailLink}
+      </>
+    ),
+    'ru-ru': (emailLink: JSX.Element) => (
+      <>
+        Мы будем очень благодарны за вашу поддержку в локализации
+        пользовательский интерфейс Specify 7. Если вы заинтересованы,
+        пожалуйста, отправьте письмо по адресу {emailLink}
+      </>
+    ),
+    ca: (emailLink: JSX.Element) => (
+      <>
+        We would be very grateful for your support localizing Specify 7 User
+        Interface. If you are interested, please send an email to {emailLink}
+      </>
+    ),
   },
   changeLanguage: {
     'en-us': 'Change Language',
