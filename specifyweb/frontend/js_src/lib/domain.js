@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import api from './specifyapi';
-import schema from './schema';
+import { schema } from './schema';
 import { remotePrefs } from './remoteprefs';
 import {getDomainResource} from "./treedefinitions";
 

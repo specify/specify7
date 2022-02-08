@@ -11,7 +11,7 @@ import 'brace/mode/properties';
 import 'brace/theme/monokai';
 
 import * as app from './specifyapp';
-import schema from './schema';
+import { schema } from './schema';
 import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
 import {userInformation} from './userinfo';

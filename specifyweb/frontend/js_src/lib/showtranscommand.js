@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import UICmd from './uicommand';
-import schema from './schema';
+import { schema } from './schema';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 

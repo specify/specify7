@@ -7,7 +7,7 @@ import Q from 'q';
 
 
 import {ajax} from './ajax';
-import schema, {getModel} from './schema';
+import {schema, getModel} from './schema';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import {userInformation} from './userinfo';

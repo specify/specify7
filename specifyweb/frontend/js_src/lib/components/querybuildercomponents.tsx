@@ -9,7 +9,7 @@ import * as navigation from '../navigation';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns, unParseQueryFields } from '../querybuilderutils';
 import { getModel } from '../schema';
-import schema from '../schemabase';
+import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';

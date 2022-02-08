@@ -7,10 +7,9 @@ import {
   getLocalityDataFromLocalityResource,
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
-import schema from './schema';
+import { schema } from './schema';
 import type { RA } from './types';
 import { dataModelPromise } from './wbplanviewmodelfetcher';
-import { CollectionObject, Locality, Taxon } from './datamodel';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;

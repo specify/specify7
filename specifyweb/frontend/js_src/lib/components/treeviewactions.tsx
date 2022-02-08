@@ -7,7 +7,7 @@ import commonText from '../localization/common';
 import treeText from '../localization/tree';
 import populateForm from '../populateform';
 import ResourceView from '../resourceview';
-import schema from '../schema';
+import { schema } from '../schema';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, Link } from './basic';

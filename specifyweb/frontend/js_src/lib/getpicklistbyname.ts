@@ -1,6 +1,6 @@
 import type { PickList } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import schema from './schema';
+import { schema } from './schema';
 
 export async function getPickListByName(
   pickListName: string

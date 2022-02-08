@@ -6,7 +6,7 @@ import type { Collection, SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import schema from '../schema';
+import { schema } from '../schema';
 import type { RA } from '../types';
 import { UiPlugin } from '../uiplugin';
 import { Button, Checkbox, Form, LabelForCheckbox, Submit } from './basic';

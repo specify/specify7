@@ -2,7 +2,7 @@ import React from 'react';
 
 import formsText from '../localization/forms';
 import { router } from '../router';
-import schema, { getModel } from '../schema';
+import { schema, getModel } from '../schema';
 import * as app from '../specifyapp';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';

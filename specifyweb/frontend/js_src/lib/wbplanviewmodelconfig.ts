@@ -7,7 +7,7 @@
  * @module
  */
 
-import schema from './schema';
+import { schema } from './schema';
 import type { IR } from './types';
 
 export type TableConfigOverwrite =

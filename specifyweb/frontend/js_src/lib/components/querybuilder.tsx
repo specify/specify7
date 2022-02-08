@@ -5,12 +5,12 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import wbText from '../localization/workbench';
-import * as navigation from '../navigation';
 import { reducer } from '../querybuilderreducer';
 import { parseQueryFields } from '../querybuilderutils';
-import schema from '../schemabase';
+import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toLowerCase } from '../wbplanviewhelper';
+import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import {
   Button,

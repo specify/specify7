@@ -7,7 +7,7 @@ import {format} from './dataobjformatters';
 import * as navigation from './navigation';
 import {UiPlugin} from './uiplugin';
 import whenAll from './whenall';
-import schema from './schema';
+import { schema } from './schema';
 import {userInformation} from './userinfo';
 import QueryCbxSearch from './querycbxsearch';
 

@@ -8,7 +8,7 @@ import { defined } from './types';
 /* The dataModel types types were generated using this code snippet: */
 /* eslint-disable multiline-comment-style*/
 /* ;
-import schema from './schema';
+import { schema } from './schema';
 
 const javaTypeToTypeScript = {
   text: 'string',

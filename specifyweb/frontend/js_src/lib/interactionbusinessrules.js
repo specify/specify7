@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'underscore';
-import schema from './schema';
+import { schema } from './schema';
 import api from './specifyapi';
 
 export default {

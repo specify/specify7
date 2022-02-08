@@ -2,7 +2,7 @@ import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import RecordSetsDialog from './recordsetsdialog';
-import schema from './schema';
+import { schema } from './schema';
 import { userInformation } from './userinfo';
 
 const menuItem: MenuItem = {

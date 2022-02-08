@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema, {getModel, getModelById} from './schema';
+import {schema, getModel, getModelById} from './schema';
 import {makeResourceViewUrl} from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';

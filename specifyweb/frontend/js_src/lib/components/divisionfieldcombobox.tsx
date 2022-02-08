@@ -1,6 +1,6 @@
 import React from 'react';
 
-import schema from '../schema';
+import { schema } from '../schema';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';

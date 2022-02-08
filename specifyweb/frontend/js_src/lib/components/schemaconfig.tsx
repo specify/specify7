@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ajax, ping } from '../ajax';
 import { getPickLists } from '../picklists';
-import schema from '../schema';
+import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';

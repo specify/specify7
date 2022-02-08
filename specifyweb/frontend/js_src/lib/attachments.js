@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import {getIcon} from './icons';
-import schema from './schema';
+import { schema } from './schema';
 import commonText from './localization/common';
 import {load} from './initialcontext';
 

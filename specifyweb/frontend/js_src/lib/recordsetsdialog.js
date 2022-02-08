@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import schema, {getModelById} from './schema';
+import {schema, getModelById} from './schema';
 import FormsDialog from './components/formsdialog';
 import EditResourceDialog from './components/editresourcedialog';
 import * as navigation from './navigation';

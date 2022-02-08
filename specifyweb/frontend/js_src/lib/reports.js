@@ -4,18 +4,16 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema, {getModel, getModelById} from './schema';
+import {schema, getModel, getModelById} from './schema';
 import QueryFieldUI from './queryfield';
-import {
-    parseSpecifyProperties,
-} from './parsespecifyproperties';
+import {parseSpecifyProperties,} from './parsespecifyproperties';
 import AttachmentPlugin from './attachmentplugin';
 import * as attachments from './attachments';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-import { csrfToken } from './csrftoken';
+import {csrfToken} from './csrftoken';
 import populateForm from './populateform';
 import * as navigation from './navigation';
 import {className} from './components/basic';

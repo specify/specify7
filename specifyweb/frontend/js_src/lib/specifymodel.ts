@@ -5,8 +5,8 @@ import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
 import type { SchemaLocalization } from './schema';
-import { localization } from './schema';
-import schema, { unescape } from './schemabase';
+import { localization, schema } from './schema';
+import { unescape } from './schemabase';
 import {
   type FieldDefinition,
   LiteralField,

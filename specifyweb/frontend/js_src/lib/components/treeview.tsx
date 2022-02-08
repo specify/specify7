@@ -11,7 +11,7 @@ import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
-import schema from '../schema';
+import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Conformations, Row, Stats } from '../treeviewutils';
 import {

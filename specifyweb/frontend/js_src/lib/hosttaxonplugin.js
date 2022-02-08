@@ -3,7 +3,7 @@
 import $ from 'jquery';
 
 import { UiPlugin } from './uiplugin';
-import schema from './schema';
+import { schema } from './schema';
 import QueryCbx from './querycbx';
 
 

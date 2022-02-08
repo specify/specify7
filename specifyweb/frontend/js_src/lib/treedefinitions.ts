@@ -3,7 +3,8 @@ import type { AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import { fetchContext as fetchSchema, getModel } from './schema';
-import schema, { fetchContext as fetchDomain } from './schemabase';
+import { fetchContext as fetchDomain } from './schemabase';
+import { schema } from './schema';
 import type { RA } from './types';
 import { defined } from './types';
 import {

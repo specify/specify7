@@ -6,10 +6,10 @@
 
 import { error } from './assert';
 import { load } from './initialcontext';
-import schema from './schemabase';
+import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import type { LiteralField, Relationship } from './specifyfield';
-import { type TableDefinition, SpecifyModel } from './specifymodel';
+import { SpecifyModel, type TableDefinition } from './specifymodel';
 import type { IR, RA } from './types';
 import { AnySchema } from './datamodelutils';
 
@@ -41,14 +41,14 @@ export const fetchContext = Promise.all([
 ] as const).then(([tables, data]) => {
   localization = data;
   // @ts-expect-error Assigning to read-only value
-  schema.models = Object.fromEntries(
+  schemaBase.models = Object.fromEntries(
     tables.map((tableDefinition) => {
       const model = new SpecifyModel(tableDefinition);
       const modelFields = model.fields as (LiteralField | Relationship)[];
       const frontEndFields = schemaExtras[model.name]?.(model) ?? [];
       if (frontEndFields.length > 0) {
         // @ts-expect-error Assigning to read-only value
-        schema.frontEndFields[model.name] = new Set(frontEndFields);
+        schemaBase.frontEndFields[model.name] = new Set(frontEndFields);
         modelFields.concat(frontEndFields);
       }
       return [model.name, model] as const;
@@ -56,7 +56,7 @@ export const fetchContext = Promise.all([
   );
 });
 
-export { default } from './schemabase';
+export const schema = schemaBase;
 
 // Returns a schema model object describing the named Specify model.
 export function getModel(name: string): SpecifyModel | undefined {

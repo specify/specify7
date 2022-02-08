@@ -1,6 +1,6 @@
 import type { Tables } from './datamodel';
 import type { SchemaLocalization } from './schema';
-import schema, { getModel } from './schema';
+import { schema, getModel } from './schema';
 import { unescape } from './schemabase';
 import type { SpecifyModel } from './specifymodel';
 import { type UiFormatter, uiFormatters } from './uiformatters';

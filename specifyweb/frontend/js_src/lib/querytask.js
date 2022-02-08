@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema, {getModel} from './schema';
+import {schema, getModel} from './schema';
 import QueryFieldUI from './queryfield';
 import template from './templates/querybuilder.html';
 import { userInformation } from './userinfo';

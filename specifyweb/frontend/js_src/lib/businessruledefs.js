@@ -1,5 +1,5 @@
 "use strict";
-import schema from './schema';
+import { schema } from './schema';
 import interactionBusinessRules from './interactionbusinessrules';
 
 export default Object.freeze({

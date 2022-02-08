@@ -1,7 +1,7 @@
 "use strict";
 
 import FormTable from './formtable';
-import schema from './schema';
+import { schema } from './schema';
 import { userInformation } from './userinfo';
 
 

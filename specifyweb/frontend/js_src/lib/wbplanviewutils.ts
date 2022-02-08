@@ -16,7 +16,7 @@ import type {
 } from './components/wbplanviewmapper';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
-import schema from './schema';
+import { schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';

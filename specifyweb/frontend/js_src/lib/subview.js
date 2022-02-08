@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import schema from './schema';
+import { schema } from './schema';
 import specifyform from './specifyform';
 import QueryCbxSearch from './querycbxsearch';
 import subviewheader from './templates/subviewheader.html';

@@ -5,7 +5,7 @@ import Q from 'q';
 
 import { UiPlugin } from './uiplugin';
 import * as querystring from './querystring';
-import schema from './schema';
+import { schema } from './schema';
 import localityText from './localization/locality';
 
 export default UiPlugin.extend({

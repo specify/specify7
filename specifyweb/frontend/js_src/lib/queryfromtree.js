@@ -2,7 +2,7 @@
 
 import Q from 'q';
 
-import schema, {getModel} from './schema';
+import {schema, getModel} from './schema';
 import {QueryFieldSpec} from './queryfieldspec';
 import {getDomainResource} from "./treedefinitions";
 

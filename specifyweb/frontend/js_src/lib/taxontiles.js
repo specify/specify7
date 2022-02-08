@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import d3 from 'd3';
 
-import schema from './schema';
+import { schema } from './schema';
 import welcomeText from './localization/welcome';
 
 export default function makeTreeMap(container) {

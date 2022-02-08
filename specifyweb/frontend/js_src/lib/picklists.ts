@@ -2,7 +2,7 @@ import { PickListTypes } from './components/combobox';
 import type { PickList, PickListItem } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
-import schema from './schema';
+import { schema } from './schema';
 import type { RA } from './types';
 
 let pickLists: RA<SerializedResource<PickList>> = undefined!;

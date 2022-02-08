@@ -8,7 +8,7 @@
 
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import schema, { fetchContext as fetchSchema } from './schema';
+import { schema, fetchContext as fetchSchema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, R } from './types';
 import { camelToHuman } from './wbplanviewhelper';

@@ -2,7 +2,7 @@ import React from 'react';
 
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import schema from '../../schema';
+import { schema } from '../../schema';
 import type { IR } from '../../types';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';

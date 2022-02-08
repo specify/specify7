@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import schema from './schema';
+import { schema } from './schema';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 

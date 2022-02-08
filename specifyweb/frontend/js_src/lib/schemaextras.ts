@@ -1,4 +1,4 @@
-import schema from './schemabase';
+import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';

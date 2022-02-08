@@ -8,7 +8,7 @@ import queryFromTree from '../queryfromtree';
 import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel } from '../schema';
-import schema from '../schemabase';
+import { schema } from '../schema';
 import * as app from '../specifyapp';
 import { setCurrentView } from '../specifyapp';
 import { defined } from '../types';

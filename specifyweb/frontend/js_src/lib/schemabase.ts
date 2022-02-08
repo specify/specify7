@@ -33,7 +33,7 @@ export type Schema = {
   }>;
 };
 
-const schemaBase: Writable<Schema> = {
+const schema: Writable<Schema> = {
   /*
    * Maps levels in the Specify scoping hierarchy to
    * The database ids of those records for the currently
@@ -79,16 +79,16 @@ const domainLevels = [
 export const fetchContext = load<
   Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
 >('/context/domain.json', 'application/json').then((data) => {
-  schemaBase.domainLevelIds = Object.fromEntries(
+  schema.domainLevelIds = Object.fromEntries(
     domainLevels.map((level) => [level, data[level]])
   ) as Schema['domainLevelIds'];
-  schemaBase.embeddedCollectingEvent = data.embeddedCollectingEvent;
-  schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
-  schemaBase.paleoContextChildTable = data.paleoContextChildTable;
-  schemaBase.catalogNumFormatName = data.catalogNumFormatName;
+  schema.embeddedCollectingEvent = data.embeddedCollectingEvent;
+  schema.embeddedPaleoContext = data.embeddedPaleoContext;
+  schema.paleoContextChildTable = data.paleoContextChildTable;
+  schema.catalogNumFormatName = data.catalogNumFormatName;
 });
 
-export default schemaBase as Schema;
+export const schemaBase: Schema = schema;
 
 // Convenience function for unEscaping strings from schema localization information.
 export const unescape = (string: string): string =>

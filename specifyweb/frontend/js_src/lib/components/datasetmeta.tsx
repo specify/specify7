@@ -10,8 +10,9 @@ import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
 import resourceApi from '../resourceapi';
-import schema from '../schema';
+import { schema } from '../schema';
 import type { RA } from '../types';
+import { userInformation } from '../userinfo';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import {
   Button,
@@ -28,7 +29,6 @@ import { DateElement, formatNumber } from './internationalization';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { userInformation } from '../userinfo';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const agentId = resourceApi.idFromUrl(url);

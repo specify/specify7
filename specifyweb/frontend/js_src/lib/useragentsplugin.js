@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import { UiPlugin } from './uiplugin';
-import schema from './schema';
+import { schema } from './schema';
 import QueryCbx from './querycbx';
 import whenall from './whenall';
 import formsText from './localization/forms';

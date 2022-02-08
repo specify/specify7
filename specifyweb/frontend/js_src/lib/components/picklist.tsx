@@ -6,7 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import queryText from '../localization/query';
-import schema from '../schema';
+import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
 import { Button, Input } from './basic';
