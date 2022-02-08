@@ -1,5 +1,6 @@
+import { UnhandledErrorView } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
-import { UnhandledErrorView } from './components/errorview';
+import commonText from './localization/common';
 import type { IR, PartialBy, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
@@ -128,10 +129,12 @@ export async function ajax<RESPONSE_TYPE = string>(
     .catch((error) => {
       const errorMessage = `Error occurred fetching from ${url}:\n${error.toString()}`;
       console.error(errorMessage);
-      const handleClose = () => view?.remove();
+      const handleClose = (): void => void view?.remove();
       const view = strict
         ? new UnhandledErrorView({
-            response: errorMessage,
+            title: commonText('backEndErrorDialogTitle'),
+            header: commonText('backEndErrorDialogHeader'),
+            children: errorMessage,
             onClose: handleClose,
           })
         : undefined;

@@ -12,7 +12,7 @@ import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Button, Link } from './basic';
+import { Button, Container, H2, Link } from './basic';
 
 type ErrorBoundaryState =
   | {
@@ -24,23 +24,56 @@ type ErrorBoundaryState =
       readonly errorInfo: { componentStack: string };
     };
 
+function ErrorComponent({
+  header,
+  message,
+}: {
+  readonly header: string;
+  readonly message: string;
+}): JSX.Element {
+  return (
+    <Container>
+      <H2>{header}</H2>
+      <p>{message}</p>
+    </Container>
+  );
+}
+
+export const ErrorView = createBackboneView(ErrorComponent);
+
+export const supportLink = (
+  <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">
+    support@specifysoftware.org
+  </Link.NewTab>
+);
+
 function ErrorDialog({
+  title = commonText('errorBoundaryDialogTitle'),
+  header = commonText('errorBoundaryDialogHeader'),
   children,
+  onClose: handleClose,
 }: {
   readonly children: React.ReactNode;
+  readonly title?: string;
+  readonly header?: string;
+  readonly onClose?: () => void;
 }): JSX.Element {
   return (
     <Dialog
-      title={commonText('errorBoundaryDialogTitle')}
-      header={commonText('errorBoundaryDialogHeader')}
+      title={title}
+      header={header}
       buttons={
-        <Button.Red
-          onClick={(): void => {
-            window.location.href = '/';
-          }}
-        >
-          {commonText('close')}
-        </Button.Red>
+        <>
+          <Button.Red onClick={(): void => window.location.assign('/')}>
+            {commonText('close')}
+          </Button.Red>
+          {process.env.NODE_ENV !== 'production' &&
+            typeof handleClose === 'function' && (
+              <Button.Blue onClick={handleClose}>
+                [development] dismiss
+              </Button.Blue>
+            )}
+        </>
       }
       forceToTop={true}
       onClose={undefined}
@@ -48,11 +81,7 @@ function ErrorDialog({
       <p>
         {commonText('errorBoundaryDialogMessage')}
         <br />
-        {commonText('errorBoundaryDialogSecondMessage')(
-          <Link.Default href="mailto:support@specifysoftware.org">
-            support@specifysoftware.org
-          </Link.Default>
-        )}
+        {commonText('errorBoundaryDialogSecondMessage')(supportLink)}
       </p>
       <details className="whitespace-pre-wrap">
         <summary>{commonText('errorMessage')}</summary>
@@ -62,13 +91,15 @@ function ErrorDialog({
   );
 }
 
-const View = createBackboneView(ErrorDialog);
+export const UnhandledErrorView = createBackboneView(ErrorDialog);
 
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   console.error(error);
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
-  new View({ children: error.message ?? error.toString() }).render();
+  new UnhandledErrorView({
+    children: error.message ?? error.toString(),
+  }).render();
 }
 
 export class ErrorBoundary extends React.Component<

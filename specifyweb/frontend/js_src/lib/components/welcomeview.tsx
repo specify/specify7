@@ -9,6 +9,7 @@ import { Button, Link } from './basic';
 import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { supportLink } from './errorboundary';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
 const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
@@ -72,14 +73,7 @@ function AboutSpecify(): JSX.Element {
               www.specifysoftware.org
             </Link.NewTab>
           </p>
-          <p>
-            <Link.NewTab
-              href="mailto:support@specifysoftware.org"
-              rel="noreferrer"
-            >
-              support@specifysoftware.org
-            </Link.NewTab>
-          </p>
+          <p>{supportLink}</p>
         </address>
         <p className="text-justify">{welcomeText('disclosure')}</p>
         <p className="text-justify">{welcomeText('licence')}</p>

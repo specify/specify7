@@ -5,7 +5,6 @@ import React from 'react';
 import Modal from 'react-modal';
 
 import * as businessRules from './businessrules';
-import {UnhandledErrorView} from './components/errorview';
 import commonText from './localization/common';
 import {csrfToken} from './csrftoken';
 import {csrfSafeMethod, ping} from './ajax';
@@ -13,7 +12,7 @@ import * as navigation from './navigation';
 import {router} from './router';
 import {NotFoundView} from './notfoundview';
 import {setCurrentView} from './specifyapp';
-import {crash} from './components/errorboundary';
+import {crash, UnhandledErrorView} from './components/errorboundary';
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {
@@ -40,15 +39,16 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
         buttons: [
           {
             text: commonText('logIn'),
-            click: function () {
-              window.location = '/accounts/login/?next=' + window.location.href;
-            },
+            click: ()=>
+              window.location.assign(`/accounts/login/?next=${window.location.href}`),
           },
         ],
       });
   else {
     const view = new UnhandledErrorView({
-      response: jqxhr.responseText,
+      title: commonText('backEndErrorDialogTitle'),
+      header: commonText('backEndErrorDialogHeader'),
+      children: jqxhr.responseText,
       onClose: () => view.remove(),
     }).render();
     console.log({ event, jqxhr, settings, exception });
