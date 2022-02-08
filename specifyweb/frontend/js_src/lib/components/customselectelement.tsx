@@ -44,7 +44,12 @@ type Properties =
    * handleClick(close: false, value, ...), unless pressed Enter
    */
   | 'handleKeyboardClick'
-  // Has a persistent scroll bar. Otherwise, scroll bar appears as needed
+  /*
+   * Has a persistent scroll bar. Otherwise, scroll bar appears as needed.
+   * For picklists that must maintain same width when open or closed,
+   * scroll bar must be always present to help predict the width of an open
+   * picklist from the closed state.
+   */
   | 'scroll'
   // Has a shadow when open
   | 'shadow'
@@ -57,12 +62,11 @@ export type CustomSelectType =
   | 'CLOSED_LIST'
   | 'PREVIEW_LIST'
   | 'SUGGESTION_LIST'
-  | 'SUGGESTION_LINE_LIST'
   | 'BASE_TABLE_SELECTION_LIST'
-  | 'MAPPING_OPTIONS_LIST';
+  | 'OPTIONS_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
-  // Used in the mapping view
+  // Used in Map Explorer
   OPENED_LIST: [
     'interactive',
     'header',
@@ -79,16 +83,15 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'unmapOption',
     'autoScroll',
     'groupLabels',
-    /*
-     * Scroll bar must be always present to be able to predict the width of
-     * the picklist when it is closed
-     */
     'scroll',
     'shadow',
     'icon',
     'arrow',
   ],
-  // Used inside of mapping validation results dialog
+  /*
+   * Like CLOSED_LIST, but not interactive
+   * Used for displaying validation results and inside of a SUGGESTION_LIST
+   */
   PREVIEW_LIST: ['preview', 'icon'],
   // Used to display a list of AutoMapper suggestions
   SUGGESTION_LIST: [
@@ -98,9 +101,7 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'handleKeyboardClick',
     'shadow',
   ],
-  // Used inside a suggestion line
-  SUGGESTION_LINE_LIST: ['preview', 'icon'],
-  // Used for base table selection
+  // Used for base table selection in mapping view, schema config, et. al.
   BASE_TABLE_SELECTION_LIST: [
     'interactive',
     'autoScroll',
@@ -108,14 +109,17 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'handleKeyboardClick',
     'icon',
   ],
-  // Used for configuring mapping options for a mapping line
-  MAPPING_OPTIONS_LIST: ['interactive', 'preview'],
+  /*
+   * Used for configuring mapping options for a mapping line or filter options
+   * for a query line
+   */
+  OPTIONS_LIST: ['interactive', 'preview', 'shadow', 'scroll'],
 } as const;
 
 const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   OPENED_LIST: '!h-full',
   BASE_TABLE_SELECTION_LIST: 'flex-1',
-  MAPPING_OPTIONS_LIST: 'grid pl-2',
+  OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
   SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
 };
@@ -315,18 +319,19 @@ function Option({
       <span className="flex-1">
         {optionLabel === '0' ? wbText('unmap') : optionLabel}
       </span>
-      {hasArrow && isRelationship ? (
-        <span
-          className="print:hidden"
-          title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
-          aria-label={wbText('relationship')(tableLabel ?? '')}
-          role="img"
-        >
-          {icons.chevronRight}
-        </span>
-      ) : (
-        <span className="print:hidden w-6" />
-      )}
+      {hasArrow &&
+        (isRelationship ? (
+          <span
+            className="print:hidden"
+            title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
+            aria-label={wbText('relationship')(tableLabel ?? '')}
+            role="img"
+          >
+            {icons.chevronRight}
+          </span>
+        ) : (
+          <span className="print:hidden w-6" />
+        ))}
     </span>
   );
 }
@@ -393,23 +398,31 @@ function OptionGroup({
  * a bunch of <Option> with visibility:hidden for each pick list is too expensive
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const ShadowListOfOptions = React.memo(function ShadowListOfOptions({
+function ShadowListOfOptions({
   fieldNames,
+  hasIcon,
+  hasArrow,
 }: {
   readonly fieldNames: RA<string>;
+  readonly hasIcon: boolean;
+  readonly hasArrow: boolean;
 }) {
+  const gap = 0.25;
+  const paddingRight =
+    gap * 2 + (hasIcon ? gap + 1.25 : 0) + (hasArrow ? gap + 1.5 : 0);
   return (
     <span
-      className={`print:hidden flex flex-col invisible pr-[3.75rem]
-        overflow-y-scroll border`}
+      className={`print:hidden flex flex-col invisible overflow-y-scroll border
+        -mt-2`}
       aria-hidden="true"
+      style={{ paddingRight: `${paddingRight}rem` }}
     >
       {fieldNames.map((fieldName, index) => (
         <span key={index}>{fieldName}</span>
       ))}
     </span>
   );
-});
+}
 
 const defaultDefaultOption = {
   optionName: '0',
@@ -549,7 +562,7 @@ export function CustomSelectElement({
               : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                  dark:!border-solid`
-              : customSelectType === 'MAPPING_OPTIONS_LIST' &&
+              : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
               : 'bg-white dark:bg-neutral-600'
@@ -611,7 +624,11 @@ export function CustomSelectElement({
       .filter((option): option is string => typeof option === 'string');
     optionsShadow =
       !isOpen && has('scroll') && fieldNames.length > 0 ? (
-        <ShadowListOfOptions fieldNames={fieldNames} />
+        <ShadowListOfOptions
+          fieldNames={fieldNames}
+          hasIcon={has('icon')}
+          hasArrow={has('arrow')}
+        />
       ) : undefined;
   }
 

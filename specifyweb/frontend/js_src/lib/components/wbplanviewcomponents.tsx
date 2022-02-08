@@ -261,8 +261,7 @@ export function MappingLineComponent({
 
   const id = useId('mapping-line');
 
-  const isComplete =
-    lineData.slice(-1)[0].customSelectType === 'MAPPING_OPTIONS_LIST';
+  const isComplete = lineData.slice(-1)[0].customSelectType === 'OPTIONS_LIST';
   return (
     <li className="contents" aria-label={headerName} aria-current={isFocused}>
       <div className="print:hidden border-t-gray-500 py-2 border-t">
@@ -316,9 +315,9 @@ export function MappingPathComponent({
         <React.Fragment key={index}>
           <MappingElement {...mappingDetails} role="listitem" />
           {index + 1 !== mappingLineData.length &&
-            mappingLineData[index + 1]?.customSelectType !==
-              'MAPPING_OPTIONS_LIST' &&
-            mappingElementDivider}
+          mappingLineData[index + 1]?.customSelectType !== 'OPTIONS_LIST'
+            ? mappingElementDivider
+            : undefined}
         </React.Fragment>
       ))}
     </>
@@ -332,7 +331,7 @@ const fieldGroupLabels = {
   hiddenFields: wbText('hiddenFields'),
 } as const;
 
-const mappingElementDivider = (
+export const mappingElementDivider = (
   <span className="print:px-1 flex items-center px-2" aria-label=",">
     {icons.arrowRight}
   </span>
