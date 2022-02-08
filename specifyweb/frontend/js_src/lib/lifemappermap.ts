@@ -1,4 +1,5 @@
 import { ajax } from './ajax';
+import type { CollectionObject, Taxon } from './datamodel';
 import type { LocalityData } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import {
@@ -151,16 +152,14 @@ export const fetchLocalOccurrences = async (
               localityData[index],
             ])
           ),
-          fetchMoreData: async (): Promise<LocalityData | false> =>
-            getLocalityDataFromLocalityResource(
-              await new Promise<SpecifyResource<Locality>>((resolve) => {
-                const locality = new schema.models.Locality.LazyCollection({
-                  filters: { id: localityId },
-                });
-                locality
-                  .fetchPromise({ limit: 1 })
-                  .then(({ models }) => resolve(models[0]), console.error);
-              }),
+          fetchMoreData: async (): Promise<LocalityData | false> => {
+            const locality = new schema.models.Locality.LazyCollection({
+              filters: { id: localityId },
+            });
+            return getLocalityDataFromLocalityResource(
+              await locality
+                .fetchPromise({ limit: 1 })
+                .then(({ models }) => models[0]),
               false,
               (mappingPathParts, resource) =>
                 (typeof resource?.specifyModel?.name !== 'string' ||
@@ -169,7 +168,8 @@ export const fetchLocalOccurrences = async (
                     (resource.specifyModel.name !== 'CollectingEvent' ||
                       resource.id === collectingEventId))) &&
                 defaultRecordFilterFunction(mappingPathParts, resource)
-            ),
+            );
+          },
         };
       }
     )

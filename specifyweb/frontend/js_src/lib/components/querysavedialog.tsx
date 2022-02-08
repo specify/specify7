@@ -6,7 +6,7 @@ import commonText from '../localization/common';
 import queryText from '../localization/query';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { crash } from './errorboundary';
 import { userInformation } from '../userinfo';
 
@@ -19,9 +19,7 @@ async function doSave(
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
-  return new Promise((resolve) => {
-    clonedQuery.save().then(() => resolve(clonedQuery.id));
-  });
+  return Promise.resolve(clonedQuery.save()).then(() => clonedQuery.id);
 }
 
 export function QuerySaveDialog({
@@ -56,6 +54,9 @@ export function QuerySaveDialog({
           ? queryText('saveClonedQueryDialogHeader')
           : queryText('saveQueryDialogHeader')
       }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
       onClose={handleClose}
       buttons={
         <>

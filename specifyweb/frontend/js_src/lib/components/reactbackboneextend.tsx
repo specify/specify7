@@ -51,8 +51,9 @@ const createBackboneView = <PROPS extends IR<unknown>>(
       private setProps: (newProps: PROPS) => void;
 
       public constructor(options?: PROPS & { readonly el?: HTMLElement }) {
-        super();
-        this.options = (options ?? {}) as PROPS;
+        const { el, ...rest } = options ?? {};
+        super({ el });
+        this.options = (rest ?? {}) as PROPS;
 
         // Initial value
         this.setProps = (): void => error('setProps callback is not forwarded');

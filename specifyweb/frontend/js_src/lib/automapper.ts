@@ -254,7 +254,10 @@ export class AutoMapper {
 
   private searchedTables: string[] = [];
 
-  // Used to enforce higher priority for closer mappings
+  /*
+   * Used to enforce higher priority for closer mappings
+   * (breadth-first-search)
+   */
   private findMappingsQueue: FindMappingsParameters[][] = [];
 
   private readonly dispatch: {
@@ -405,6 +408,7 @@ export class AutoMapper {
   /*
    * Makes sure that `findMappings` runs over the schema in correct order
    * since mappings with a shorter mapping path are given higher priority
+   * (breadth-first search)
    */
   private findMappingsDriver(mode: AutoMapperNode): void {
     const pathMatchesStartingPath = (path: MappingPath, level: string) =>

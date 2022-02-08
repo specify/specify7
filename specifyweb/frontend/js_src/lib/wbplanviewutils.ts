@@ -413,7 +413,7 @@ export async function getAutoMapperSuggestions({
         .slice(baseMappingPath.length - pathOffset)
         .map((data) => ({
           ...data,
-          customSelectType: 'SUGGESTION_LINE_LIST',
+          customSelectType: 'PREVIEW_LIST',
           isOpen: true,
         })),
     }));

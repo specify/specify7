@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
+import { enabledLanguages } from '../localization/utils';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { ErrorBoundary } from './errorboundary';
@@ -20,7 +21,7 @@ function Login({
     readonly formErrors: RA<string>;
     readonly inputErrors: RA<string>;
     readonly passwordErrors: RA<string>;
-    readonly languages: RA<Readonly<[coode: Language, name: string]>>;
+    readonly languages: RA<Readonly<[code: Language, name: string]>>;
     readonly csrfToken: string;
   };
   readonly nextUrl: string;
@@ -33,7 +34,11 @@ function Login({
 
   return (
     <SplashScreen>
-      <LanguageSelection languages={Object.fromEntries(data.languages)} />
+      <LanguageSelection
+        languages={Object.fromEntries(
+          data.languages.filter(([code]) => enabledLanguages.includes(code))
+        )}
+      />
       <Form method="post">
         <input
           type="hidden"

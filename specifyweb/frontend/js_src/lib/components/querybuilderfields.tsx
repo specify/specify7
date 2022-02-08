@@ -15,6 +15,7 @@ export function QueryFields({
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
+  onLineMove: handleLineMove,
   openedElement,
   showHiddenFields,
 }: {
@@ -38,6 +39,7 @@ export function QueryFields({
   readonly onOpen: (line: number, index: number) => void;
   readonly onClose: () => void;
   readonly onLineFocus: (line: number) => void;
+  readonly onLineMove: (line: number, direction: 'up' | 'down') => void;
   readonly openedElement?: {
     readonly line: number;
     readonly index?: number;
@@ -46,12 +48,11 @@ export function QueryFields({
 }): JSX.Element {
   return (
     <Ul>
-      {fields.map((field, line) => (
+      {fields.map((field, line, { length }) => (
         <QueryLine
           key={field.id}
           baseTableName={baseTableName}
           field={field}
-          forReport={false}
           onChange={(newField): void => handleChangeField(line, newField)}
           onMappingChange={(payload): void =>
             handleMappingChange(line, payload)
@@ -61,7 +62,7 @@ export function QueryFields({
           onClose={handleClose}
           onLineFocus={(target): void =>
             (target === 'previous' && line === 0) ||
-            (target === 'current' && line + 1 == fields.length)
+            (target === 'next' && line + 1 >= fields.length)
               ? undefined
               : handleLineFocus(
                   target === 'previous'
@@ -71,9 +72,19 @@ export function QueryFields({
                     : line + 1
                 )
           }
+          onMoveUp={
+            line === 0 ? undefined : (): void => handleLineMove(line, 'up')
+          }
+          onMoveDown={
+            line + 1 === length
+              ? undefined
+              : (): void => handleLineMove(line, 'down')
+          }
           showHiddenFields={showHiddenFields}
           isFocused={openedElement?.line === line}
-          openedElement={openedElement?.index}
+          openedElement={
+            openedElement?.line === line ? openedElement?.index : undefined
+          }
         />
       ))}
     </Ul>

@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {
-  fullDateFormat,
   accessibleDatePickerEnabled,
   accessibleMonthPickerEnabled,
+  fullDateFormat,
   monthFormat,
 } from '../dateformat';
 import { dayjs, getDateInputValue } from '../dayjs';
@@ -11,7 +11,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RR } from '../types';
 import { defined } from '../types';
-import { getValidationAttributes, resolveParser } from '../uiparse';
+import { getParser, getValidationAttributes } from '../uiparse';
 import { UiPlugin } from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
@@ -34,8 +34,7 @@ function isInputSupported(type: string): boolean {
  */
 
 const inputTypeYearAttributes = getValidationAttributes(
-  { type: 'year' },
-  defined(resolveParser({ type: 'year' }))
+  defined(getParser({ type: 'year' }))
 );
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;
@@ -125,7 +124,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
      * since "moment" is still undefined
      */
     if (refIsFirstRender.current)
-      return () => {
+      return (): void => {
         refIsFirstRender.current = false;
       };
 

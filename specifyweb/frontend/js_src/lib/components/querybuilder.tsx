@@ -21,8 +21,7 @@ import {
   Submit,
 } from './basic';
 import { TableIcon } from './common';
-import { useId, useResource } from './hooks';
-import { icons } from './icons';
+import { useResource, useUnloadProtect } from './hooks';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
@@ -60,11 +59,11 @@ export function QueryBuilder({
     bucketType: 'localStorage',
     defaultValue: false,
   });
-  const [showMappingView = true, setShowMappingView] = useCachedState({
+  const [showQueryDefinition = true, setShowQueryDefinition] = useCachedState({
     bucketName: 'queryBuilder',
-    cacheName: 'showMappingView',
+    cacheName: 'showQueryDefinition',
     bucketType: 'localStorage',
-    defaultValue: false,
+    defaultValue: true,
   });
 
   React.useEffect(() => {
@@ -73,16 +72,10 @@ export function QueryBuilder({
     );
   }, [queryResource]);
 
-  const id = useId('query-builder');
-  const removeUnloadProtect = (): void =>
-    navigation.removeUnloadProtect(id('unload-protect'));
-  React.useEffect(() => {
-    navigation.addUnloadProtect(
-      id('unload-protect'),
-      queryText('queryUnloadProtectDialogMessage')
-    );
-    return removeUnloadProtect;
-  }, [id, state.saveRequired]);
+  const setHasUnloadProtect = useUnloadProtect(
+    state.saveRequired,
+    queryText('queryUnloadProtectDialogMessage')
+  );
 
   const handleChange = (payload: {
     readonly line: 'mappingView' | number;
@@ -99,6 +92,31 @@ export function QueryBuilder({
       ...payload,
     });
 
+  const mapButtonEnabled =
+    state.fields.length > 0 && mappingPathIsComplete(state.mappingView);
+  const handleAddField = (): void =>
+    dispatch({
+      type: 'ChangeFieldsAction',
+      fields: [
+        ...state.fields,
+        {
+          id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
+          mappingPath: state.mappingView,
+          sortType: undefined,
+          filter: 'any',
+          startValue: '',
+          endValue: '',
+          details: { type: 'regularField' },
+          isNot: false,
+          // If mapping path is not unique, don't display the field
+          isDisplay: state.fields.every(
+            ({ mappingPath }) =>
+              mappingPathToString(mappingPath) !==
+              mappingPathToString(state.mappingView)
+          ),
+        },
+      ],
+    });
   return (
     <ContainerFull>
       <form className="contents">
@@ -114,13 +132,13 @@ export function QueryBuilder({
           </H2>
           <span className="flex-1 ml-2" />
           <Button.Simple
-            className={showMappingView ? '' : 'active'}
-            onClick={(): void => setShowMappingView(!showMappingView)}
-            aria-pressed={!showMappingView}
+            className={showQueryDefinition ? '' : 'active'}
+            onClick={(): void => setShowQueryDefinition(!showQueryDefinition)}
+            aria-pressed={!showQueryDefinition}
           >
-            {showMappingView
-              ? wbText('hideMappingEditor')
-              : wbText('showMappingEditor')}
+            {showQueryDefinition
+              ? queryText('hideDefinition')
+              : queryText('editQuery')}
           </Button.Simple>
           <QueryExportButtons
             baseTableName={toLowerCase(model.name)}
@@ -137,10 +155,9 @@ export function QueryBuilder({
           {!queryResource.isNew() && (
             <Button.Simple
               disabled={!state.saveRequired}
-              onClick={(): void => {
-                removeUnloadProtect();
-                window.location.reload();
-              }}
+              onClick={(): void =>
+                setHasUnloadProtect(false, () => window.location.reload())
+              }
             >
               {queryText('abandonChanges')}
             </Button.Simple>
@@ -151,146 +168,148 @@ export function QueryBuilder({
             queryResource={queryResource}
             fields={state.fields}
             saveRequired={state.saveRequired}
-            removeUnloadProtect={removeUnloadProtect}
+            setHasUnloadProtect={setHasUnloadProtect}
           />
         </header>
-        {showMappingView && (
-          <MappingView
-            baseTableName={toLowerCase(model.name)}
-            focusedLineExists={state.fields.length > 0}
-            mappingPath={state.mappingView}
-            hideToMany={true}
-            showHiddenFields={showHiddenFields}
-            mapButtonIsEnabled={
-              typeof state.openedElement !== 'undefined' &&
-              mappingPathIsComplete(state.mappingView)
-            }
-            readonly={false}
-            mustMatchPreferences={{}}
-            onMapButtonClick={(): void =>
-              dispatch({ type: 'MappingViewMapAction' })
-            }
-            onMappingViewChange={(payload): void =>
-              handleChange({ line: 'mappingView', ...payload })
-            }
-          />
-        )}
-        <QueryFields
-          baseTableName={toLowerCase(model.name)}
-          fields={state.fields}
-          onRemoveField={(line): void =>
-            dispatch({
-              type: 'ChangeFieldsAction',
-              fields: state.fields.filter((_, index) => index !== line),
-            })
-          }
-          onChangeField={(line, field): void =>
-            dispatch({ type: 'ChangeFieldAction', line, field })
-          }
-          onMappingChange={(line, payload): void =>
-            handleChange({ line, ...payload })
-          }
-          onOpen={(line, index): void =>
-            dispatch({
-              type: 'ChangeOpenedElementAction',
-              line,
-              index,
-            })
-          }
-          onClose={(): void =>
-            dispatch({
-              type: 'ChangeOpenedElementAction',
-              line: state.openedElement.line,
-              index: undefined,
-            })
-          }
-          onLineFocus={(line): void =>
-            state.openedElement.line === line
-              ? undefined
-              : dispatch({
-                  type: 'ChangeOpenedElementAction',
-                  line,
-                  index: undefined,
-                })
-          }
-          openedElement={state.openedElement}
-          showHiddenFields={showHiddenFields}
-        />
-        <div role="toolbar" className="flex flex-wrap gap-2">
-          <Button.Simple
-            title={queryText('newButtonDescription')}
-            aria-label={commonText('new')}
-            onClick={(): void =>
-              dispatch({
-                type: 'ChangeFieldsAction',
-                fields: [
-                  ...state.fields,
-                  {
-                    id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
-                    mappingPath: ['0'],
-                    sortType: undefined,
-                    filter: 'any',
-                    startValue: '',
-                    endValue: '',
-                    details: undefined,
-                    isNot: false,
-                    isDisplay: true,
-                  },
-                ],
-              })
-            }
-          >
-            {icons.plus}
-          </Button.Simple>
-          <LabelForCheckbox>
-            <Checkbox
-              checked={query.countOnly ?? false}
-              onChange={({ target }): void =>
-                setQuery({
-                  ...query,
-                  countOnly: target.checked,
-                })
-              }
-            />
-            {queryText('countOnly')}
-          </LabelForCheckbox>
-          <LabelForCheckbox>
-            <Checkbox
-              checked={query.selectDistinct ?? false}
-              onChange={({ target }): void =>
-                setQuery({
-                  ...query,
-                  selectDistinct: target.checked,
-                })
-              }
-            />
-            {queryText('distinct')}
-          </LabelForCheckbox>
-          <LabelForCheckbox>
-            <Checkbox
-              checked={showHiddenFields}
-              onChange={({ target }): void =>
-                setShowHiddenFields(target.checked)
-              }
-            />
-            {wbText('revealHiddenFormFields')}
-          </LabelForCheckbox>
-          {query.contextTableId === schema.models.SpAuditLog.tableId ? (
-            <LabelForCheckbox>
-              <Checkbox
-                checked={query.formatAuditRecIds ?? false}
-                onChange={({ target }): void =>
-                  setQuery({
-                    ...query,
-                    formatAuditRecIds: target.checked,
-                  })
-                }
-              />
-              {queryText('format')}
-            </LabelForCheckbox>
-          ) : undefined}
-          <span className="flex-1 -ml-2" />
-          <Submit.Simple>{commonText('query')}</Submit.Simple>
+        <div className="flex-1 overflow-y-auto">
+          <div className="gap-y-4 flex flex-col">
+            {showQueryDefinition && (
+              <div className="gap-y-4 min-h-[50%] flex flex-col">
+                <MappingView
+                  baseTableName={toLowerCase(model.name)}
+                  mappingPath={state.mappingView}
+                  hideToMany={true}
+                  showHiddenFields={showHiddenFields}
+                  mapButton={
+                    <Button.Simple
+                      className="flex-col justify-center p-2"
+                      disabled={!mapButtonEnabled}
+                      onClick={handleAddField}
+                      title={queryText('newButtonDescription')}
+                    >
+                      {commonText('add')}
+                      <span
+                        className={`text-green-500 ${
+                          mapButtonEnabled ? '' : 'invisible'
+                        }`}
+                        aria-hidden="true"
+                      >
+                        &#8594;
+                      </span>
+                    </Button.Simple>
+                  }
+                  mustMatchPreferences={{}}
+                  onDoubleClick={mapButtonEnabled ? handleAddField : undefined}
+                  onMappingViewChange={(payload): void =>
+                    handleChange({ line: 'mappingView', ...payload })
+                  }
+                />
+                <QueryFields
+                  baseTableName={toLowerCase(model.name)}
+                  fields={state.fields}
+                  onRemoveField={(line): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields: state.fields.filter((_, index) => index !== line),
+                    })
+                  }
+                  onChangeField={(line, field): void =>
+                    dispatch({ type: 'ChangeFieldAction', line, field })
+                  }
+                  onMappingChange={(line, payload): void =>
+                    handleChange({ line, ...payload })
+                  }
+                  onOpen={(line, index): void =>
+                    dispatch({
+                      type: 'ChangeOpenedElementAction',
+                      line,
+                      index,
+                    })
+                  }
+                  onClose={(): void =>
+                    dispatch({
+                      type: 'ChangeOpenedElementAction',
+                      line: state.openedElement.line,
+                      index: undefined,
+                    })
+                  }
+                  onLineFocus={(line): void =>
+                    state.openedElement.line === line
+                      ? undefined
+                      : dispatch({
+                          type: 'FocusLineAction',
+                          line,
+                        })
+                  }
+                  onLineMove={(line, direction): void =>
+                    dispatch({
+                      type: 'LineMoveAction',
+                      line,
+                      direction,
+                    })
+                  }
+                  openedElement={state.openedElement}
+                  showHiddenFields={showHiddenFields}
+                />
+              </div>
+            )}
+            <div role="toolbar" className="flex flex-wrap gap-2">
+              {showQueryDefinition && (
+                <LabelForCheckbox>
+                  <Checkbox
+                    checked={showHiddenFields}
+                    onChange={({ target }): void =>
+                      setShowHiddenFields(target.checked)
+                    }
+                  />
+                  {wbText('revealHiddenFormFields')}
+                </LabelForCheckbox>
+              )}
+              <span className="flex-1 -ml-2" />
+              <LabelForCheckbox>
+                <Checkbox
+                  // TODO: replace checkbox with a button
+                  checked={query.countOnly ?? false}
+                  onChange={({ target }): void =>
+                    setQuery({
+                      ...query,
+                      countOnly: target.checked,
+                    })
+                  }
+                />
+                {queryText('countOnly')}
+              </LabelForCheckbox>
+              <LabelForCheckbox>
+                <Checkbox
+                  // TODO: replace checkbox with a button
+                  checked={query.selectDistinct ?? false}
+                  onChange={({ target }): void =>
+                    setQuery({
+                      ...query,
+                      selectDistinct: target.checked,
+                    })
+                  }
+                />
+                {queryText('distinct')}
+              </LabelForCheckbox>
+              {query.contextTableId === schema.models.SpAuditLog.tableId ? (
+                <LabelForCheckbox>
+                  <Checkbox
+                    checked={query.formatAuditRecIds ?? false}
+                    onChange={({ target }): void =>
+                      setQuery({
+                        ...query,
+                        formatAuditRecIds: target.checked,
+                      })
+                    }
+                  />
+                  {queryText('format')}
+                </LabelForCheckbox>
+              ) : undefined}
+              <Submit.Simple>{commonText('query')}</Submit.Simple>
+            </div>
+            <div className="bg-red-800" style={{ height: '1000px' }} />
+          </div>
         </div>
       </form>
     </ContainerFull>

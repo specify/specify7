@@ -1,28 +1,22 @@
+import type { CollectionObject } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import { snServer } from './lifemapperconfig';
 import type { IR, RA } from './types';
-import { CollectionObject } from './datamodel';
 
 export const fetchLocalScientificName = async (
   model: SpecifyResource<CollectionObject>,
   defaultValue = ''
 ): Promise<string> =>
-  new Promise((resolve) => {
-    model.rgetCollection('determinations').then(({ models: determinations }) =>
-      determinations.length === 0
-        ? resolve(defaultValue)
-        : determinations[0]
-            .rgetPromise('preferredTaxon')
-            .then((preferredTaxon) => preferredTaxon?.get('fullName'))
-            .then((scientificName) =>
-              resolve(
-                typeof scientificName === 'string'
-                  ? scientificName
-                  : defaultValue
-              )
-            )
-    );
-  });
+  model.rgetCollection('determinations').then(({ models: determinations }) =>
+    determinations.length === 0
+      ? defaultValue
+      : determinations[0]
+          .rgetPromise('preferredTaxon')
+          .then((preferredTaxon) => preferredTaxon?.get('fullName'))
+          .then((scientificName) =>
+            typeof scientificName === 'string' ? scientificName : defaultValue
+          )
+  );
 
 export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,

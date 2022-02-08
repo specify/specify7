@@ -61,14 +61,17 @@ export function SaveQueryButtons({
   fields,
   saveRequired,
   queryResource,
-  removeUnloadProtect,
+  setHasUnloadProtect,
 }: {
   readonly readOnly: boolean;
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
-  readonly removeUnloadProtect: () => void;
+  readonly setHasUnloadProtect: (
+    isEnabled: boolean,
+    callback: () => void
+  ) => void;
 }): JSX.Element {
   const [showDialog, setShowDialog] = React.useState<false | 'save' | 'saveAs'>(
     false
@@ -78,13 +81,10 @@ export function SaveQueryButtons({
 
   const handleSave = (newState: typeof showDialog): void =>
     setShowDialog((oldState) => {
-      if (
-        (newState === 'save' || newState === 'saveAs') &&
-        oldState === false
-      ) {
-        removeUnloadProtect();
-        queryResource.set('fields', unParseQueryFields(baseTableName, fields));
-      }
+      if ((newState === 'save' || newState === 'saveAs') && oldState === false)
+        setHasUnloadProtect(false, () =>
+          queryResource.set('fields', unParseQueryFields(baseTableName, fields))
+        );
       return newState;
     });
 
@@ -94,10 +94,11 @@ export function SaveQueryButtons({
         <QuerySaveDialog
           isSaveAs={showDialog === 'saveAs'}
           onClose={(): void => setShowDialog(false)}
-          onSaved={(queryId: number): void => {
-            removeUnloadProtect();
-            navigation.go(`/specify/query/${queryId}/`);
-          }}
+          onSaved={(queryId: number): void =>
+            setHasUnloadProtect(false, () =>
+              navigation.go(`/specify/query/${queryId}/`)
+            )
+          }
           query={queryResource}
         />
       )}

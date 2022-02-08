@@ -5,9 +5,9 @@ import formsText from './localization/forms';
 import type { JavaType, RelationshipType } from './specifyfield';
 import { LiteralField, Relationship } from './specifyfield';
 import type { IR, RA, RR } from './types';
+import { filterArray } from './types';
 import { hasNativeErrors } from './validationmessages';
 import { UiFormatter } from './uiformatters';
-import { filterArray } from './types';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -31,8 +31,8 @@ const validators: IR<(value: unknown) => undefined | string> = {
       : formsText('inputTypeNumber'),
 } as const;
 
-type Parser = Partial<{
-  readonly type: 'text' | 'number' | 'date';
+export type Parser = Partial<{
+  readonly type: 'text' | 'number' | 'date' | 'checkbox';
   readonly minLength: number;
   readonly maxLength: number;
   readonly min: number;
@@ -57,12 +57,11 @@ export const parsers: RR<
   ExtendedJavaType,
   ExtendedJavaType | Parser | ((field: ExtendedField) => Parser)
 > = {
+  // TODO: test validation of boolean fields
   'java.lang.Boolean': {
-    type: 'text',
+    type: 'checkbox',
     pattern: /\s+(?:true|false|yes|no)\s+/i,
     title: formsText('illegalBool'),
-    minLength: 2,
-    maxLength: 5,
     formatters: [formatter.toLowerCase],
     parser: stringGuard((value) => ['yes', 'true'].includes(value)),
   },
@@ -256,52 +255,46 @@ export function resolveParser(
   );
 }
 
-export function getValidationAttributes(
-  field: ExtendedField,
-  parser: Parser
-): IR<string> {
-  if (typeof parser === 'object')
-    return {
-      ...(parser.required === true ? { required: '' } : {}),
-      ...(typeof parser.pattern === 'object'
-        ? {
-            pattern: parser.pattern.toString().replaceAll(/^\/\^?|\$?\/$/g, ''),
-          }
-        : {}),
-      ...Object.fromEntries(
-        [
-          'minLength',
-          'maxLength',
-          'min',
-          'max',
-          'step',
-          'title',
-          'placeholder',
-          'type',
-        ]
-          .filter(
-            (attribute) =>
-              typeof parser[attribute as keyof Parser] !== 'undefined'
-          )
-          .map((attribute) => [
-            attribute,
-            `${parser[attribute as keyof Parser] as string}`,
-          ])
-      ),
-    };
-  else {
-    console.error(formsText('noParser')(field.type));
-    return {};
-  }
-}
+export const getValidationAttributes = (parser: Parser): IR<string> =>
+  typeof parser === 'object'
+    ? {
+        ...(parser.required === true ? { required: '' } : {}),
+        ...(typeof parser.pattern === 'object'
+          ? {
+              pattern: parser.pattern
+                .toString()
+                .replaceAll(/^\/\^?|\$?\/$/g, ''),
+            }
+          : {}),
+        ...Object.fromEntries(
+          [
+            'minLength',
+            'maxLength',
+            'min',
+            'max',
+            'step',
+            'title',
+            'placeholder',
+            'type',
+          ]
+            .filter(
+              (attribute) =>
+                typeof parser[attribute as keyof Parser] !== 'undefined'
+            )
+            .map((attribute) => [
+              attribute,
+              `${parser[attribute as keyof Parser] as string}`,
+            ])
+        ),
+      }
+    : {};
 
 export const addValidationAttributes = (
   input: HTMLInputElement,
-  field: ExtendedField,
   parser: Parser
 ): void =>
-  Object.entries(getValidationAttributes(field, parser)).forEach(
-    ([key, value]) => input.setAttribute(key, value)
+  Object.entries(getValidationAttributes(parser)).forEach(([key, value]) =>
+    input.setAttribute(key, value)
   );
 
 function validateAttributes(

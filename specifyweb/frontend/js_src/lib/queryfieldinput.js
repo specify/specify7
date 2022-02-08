@@ -5,12 +5,8 @@ import Backbone from './backbone';
 
 
 import {fieldFormat} from './fieldformat';
-import {
-    parseValue,
-    addValidationAttributes,
-    resolveParser
-} from './uiparse';
-import { SaveBlockers } from './saveblockers';
+import {addValidationAttributes, parseValue, resolveParser} from './uiparse';
+import {SaveBlockers} from './saveblockers';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import {formatList} from "./components/internationalization";
@@ -74,7 +70,7 @@ var FieldInputUI = Backbone.View.extend({
                   this.inputFormatter ?? undefined
             );
             this.parser = this.parserMutator?.(this.parser) ?? this.parser;
-            addValidationAttributes(el, this.field, this.parser);
+            addValidationAttributes(el, this.parser);
 
             const parser = parseValue.bind(undefined, this.field, this.parser, el);
             this.handleChange = ()=>{

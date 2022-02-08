@@ -35,9 +35,9 @@ const queryText = createDictionary({
     ca: 'Select Op...',
   },
   any: {
-    'en-us': 'any',
-    'ru-ru': 'любой',
-    ca: 'any',
+    'en-us': 'Any',
+    'ru-ru': 'Любой',
+    ca: 'Any',
   },
   startValue: {
     'en-us': 'Start Value',
@@ -202,9 +202,9 @@ const queryText = createDictionary({
       `Query on ${recordSetName}: ${queryName}`,
   },
   newButtonDescription: {
-    'en-us': 'New Field',
-    'ru-ru': 'Новое поле',
-    ca: 'New Field',
+    'en-us': 'Add New Field',
+    'ru-ru': 'Добавить новое поле',
+    ca: 'Add New Field',
   },
   countOnly: {
     'en-us': 'Count',
@@ -262,6 +262,16 @@ const queryText = createDictionary({
     'ru-ru': 'Сортировать',
     ca: 'Sort',
   },
+  ascendingSort: {
+    'en-us': 'Ascending Sort',
+    'ru-ru': 'Сортировка по возрастанию',
+    ca: 'Ascending Sort',
+  },
+  descendingSort: {
+    'en-us': 'Descending Sort',
+    'ru-ru': 'Сортировка по убыванию',
+    ca: 'Descending Sort',
+  },
   negate: {
     'en-us': 'Negate',
     'ru-ru': 'Отрицать',
@@ -297,6 +307,111 @@ const queryText = createDictionary({
     'en-us': 'Results',
     'ru-ru': 'Результаты',
     ca: 'Results',
+  },
+  editQuery: {
+    'en-us': 'Edit Query',
+    'ru-ru': 'Показать определение запроса',
+    ca: 'Edit Query',
+  },
+  hideDefinition: {
+    'en-us': 'Hide Definition',
+    'ru-ru': 'Скрыть определение',
+    ca: 'Hide Definition',
+  },
+  aggregated: {
+    'en-us': '(aggregated)',
+    'ru-ru': '(совокупный)',
+    ca: '(aggregated)',
+  },
+  formatted: {
+    'en-us': '(aggregated)',
+    'ru-ru': '(отформатирован)',
+    ca: '(aggregated)',
+  },
+  filter: {
+    'en-us': 'Filter',
+    'ru-ru': 'Фильтр',
+    ca: 'Filter',
+  },
+  like: {
+    'en-us': 'Like',
+    'ru-ru': 'Подобно',
+    ca: 'Like',
+  },
+  equal: {
+    'en-us': 'Equal',
+    'ru-ru': 'Равный',
+    ca: 'Equal',
+  },
+  greaterThan: {
+    'en-us': 'Greater than',
+    'ru-ru': 'Больше чем',
+    ca: 'Greater than',
+  },
+  lessThan: {
+    'en-us': 'Less than',
+    'ru-ru': 'Меньше чем',
+    ca: 'Less than',
+  },
+  greaterOrEqualTo: {
+    'en-us': 'Greater or Equal to',
+    'ru-ru': 'Больше или равно',
+    ca: 'Greater or equal to',
+  },
+  lessOrEqualTo: {
+    'en-us': 'Less or Equal to',
+    'ru-ru': 'Меньше или равно',
+    ca: 'Less or equal to',
+  },
+  true: {
+    'en-us': 'True',
+    'ru-ru': 'Истинный',
+    ca: 'True',
+  },
+  false: {
+    'en-us': 'False',
+    'ru-ru': 'Ложь',
+    ca: 'False',
+  },
+  trueOrNull: {
+    'en-us': 'True or Null',
+    'ru-ru': 'Истина или Ноль',
+    ca: 'True or Null',
+  },
+  falseOrNull: {
+    'en-us': 'False or Null',
+    'ru-ru': 'Ложь или Нуль',
+    ca: 'False or Null',
+  },
+  between: {
+    'en-us': 'Between',
+    'ru-ru': 'Между',
+    ca: 'Between',
+  },
+  in: {
+    'en-us': 'In',
+    'ru-ru': 'В',
+    ca: 'In',
+  },
+  contains: {
+    'en-us': 'Contains',
+    'ru-ru': 'Содержит',
+    ca: 'Contains',
+  },
+  empty: {
+    'en-us': 'Empty',
+    'ru-ru': 'Пустой',
+    ca: 'Empty',
+  },
+  datePart: {
+    'en-us': 'Date Part',
+    'ru-ru': 'Дата',
+    ca: 'Date Part',
+  },
+  and: {
+    'en-us': 'and',
+    'ru-ru': 'и',
+    ca: 'and',
   },
 });
 

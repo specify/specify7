@@ -23,7 +23,7 @@ export type CacheDefinitions = {
   readonly queryBuilder: {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
-    readonly showMappingView: boolean;
+    readonly showQueryDefinition: boolean;
     readonly mappingViewHeight: number;
   };
   readonly leaflet: {

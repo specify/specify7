@@ -1,3 +1,5 @@
+import { State } from 'typesafe-reducer';
+import { QueryFieldFilter } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedModel, SerializedResource } from './datamodelutils';
@@ -9,12 +11,6 @@ import { getParser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
-type DateField = {
-  type: 'dateField';
-  datePart: DatePart;
-};
-
-// TODO: find a better icon for sortType=undefined
 const sortTypes = [undefined, 'ascending', 'descending'];
 
 export type QueryField = {
@@ -22,11 +18,18 @@ export type QueryField = {
   readonly id: number;
   readonly mappingPath: MappingPath;
   readonly sortType: typeof sortTypes[number];
-  // TODO: replace with "keyof"
-  readonly filter: string;
+  readonly filter: QueryFieldFilter;
   readonly startValue: string;
   readonly endValue: string;
-  readonly details: DateField | undefined;
+  readonly details:
+    | State<'regularField'>
+    | State<
+        'dateField',
+        {
+          type: 'dateField';
+          datePart: DatePart;
+        }
+      >;
   readonly isNot: boolean;
   readonly isDisplay: boolean;
 };
@@ -56,7 +59,7 @@ export function parseQueryFields(
                 type: 'dateField',
                 datePart: fieldSpec.datePart ?? 'fullDate',
               }
-            : undefined,
+            : { type: 'regularField' },
         isNot,
         isDisplay,
       };

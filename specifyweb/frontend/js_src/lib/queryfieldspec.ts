@@ -87,13 +87,14 @@ export class QueryFieldSpec {
 
   private isRelationship(): boolean {
     return (
-      this.treeRank === undefined && this.getField()?.isRelationship === true
+      typeof this.treeRank === 'undefined' &&
+      this.getField()?.isRelationship === true
     );
   }
 
   private makeTableList(): string {
     const path = (
-      typeof this.treeRank !== undefined ||
+      typeof this.treeRank !== 'undefined' ||
       this.joinPath.length === 0 ||
       this.isRelationship()
         ? this.joinPath

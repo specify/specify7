@@ -57,7 +57,6 @@ export default Backbone.View.extend({
             else
                 addValidationAttributes(
                     this.el,
-                    field,
                     parser,
                 );
 

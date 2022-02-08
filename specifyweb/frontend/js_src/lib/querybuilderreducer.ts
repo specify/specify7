@@ -4,7 +4,7 @@ import { generateReducer } from 'typesafe-reducer';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { QueryField } from './querybuilderutils';
 import type { RA } from './types';
-import { mappingPathIsComplete, mutateMappingPath } from './wbplanviewutils';
+import { mutateMappingPath } from './wbplanviewutils';
 
 export type MainState = State<
   'MainState',
@@ -18,48 +18,32 @@ export type MainState = State<
     readonly saveRequired: boolean;
   }
 >;
-type ChangeOpenedElementAction = Action<
-  'ChangeOpenedElementAction',
-  {
-    readonly line: number;
-    readonly index: number | undefined;
-  }
->;
-type SaveRequiredAction = Action<'SaveRequiredAction'>;
-type ChangeFieldsAction = Action<
-  'ChangeFieldsAction',
-  {
-    readonly fields: RA<QueryField>;
-  }
->;
-type ChangeFieldAction = Action<
-  'ChangeFieldAction',
-  {
-    readonly line: number;
-    readonly field: QueryField;
-  }
->;
-type ChangeSelectElementValueAction = Action<
-  'ChangeSelectElementValueAction',
-  {
-    readonly line: number | 'mappingView';
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly newTableName: string;
-    readonly currentTableName: string;
-  }
->;
-type MappingViewMapAction = Action<'MappingViewMapAction'>;
 type Actions =
-  | ChangeOpenedElementAction
-  | SaveRequiredAction
-  | ChangeFieldsAction
-  | ChangeFieldAction
-  | ChangeSelectElementValueAction
-  | MappingViewMapAction;
+  | Action<
+      'ChangeOpenedElementAction',
+      { line: number; index: number | undefined }
+    >
+  | Action<'FocusLineAction', { readonly line: number }>
+  | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
+  | Action<'SaveRequiredAction'>
+  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
+  | Action<
+      'ChangeFieldAction',
+      { readonly line: number; readonly field: QueryField }
+    >
+  | Action<
+      'ChangeSelectElementValueAction',
+      {
+        readonly line: number | 'mappingView';
+        readonly index: number;
+        readonly close: boolean;
+        readonly newValue: string;
+        readonly isRelationship: boolean;
+        readonly parentTableName: string;
+        readonly newTableName: string;
+        readonly currentTableName: string;
+      }
+    >;
 
 export const reducer = generateReducer<MainState, Actions>({
   ChangeOpenedElementAction: ({ action, state }) => ({
@@ -68,6 +52,37 @@ export const reducer = generateReducer<MainState, Actions>({
       line: action.line,
       index: action.index,
     },
+  }),
+  FocusLineAction: ({ action, state }) =>
+    state.openedElement.line === action.line
+      ? state
+      : {
+          ...state,
+          openedElement: {
+            line: action.line,
+            index: undefined,
+          },
+        },
+  LineMoveAction: ({ state, action }) => ({
+    ...state,
+    openedElement: {
+      line: action.direction === 'up' ? action.line - 1 : action.line + 1,
+      index: undefined,
+    },
+    fields:
+      action.direction === 'up'
+        ? [
+            ...state.fields.slice(0, action.line - 1),
+            state.fields[action.line],
+            state.fields[action.line - 1],
+            ...state.fields.slice(action.line + 1),
+          ]
+        : [
+            ...state.fields.slice(0, action.line),
+            state.fields[action.line + 1],
+            state.fields[action.line],
+            ...state.fields.slice(action.line + 2),
+          ],
   }),
   SaveRequiredAction: ({ state }) => ({
     ...state,
@@ -82,7 +97,10 @@ export const reducer = generateReducer<MainState, Actions>({
     ...state,
     fields: [
       ...state.fields.slice(0, action.line),
-      action.field,
+      {
+        ...action.field,
+        isNot: action.field.isNot && action.field.filter !== 'any',
+      },
       ...state.fields.slice(action.line + 1),
     ],
     saveRequired: true,
@@ -126,31 +144,6 @@ export const reducer = generateReducer<MainState, Actions>({
       },
       autoMapperSuggestions: undefined,
       saveRequired: true,
-      mappingsAreValidated: false,
-    };
-  },
-  MappingViewMapAction: ({ state }) => {
-    const mappingViewPath = state.mappingView;
-    const focusedLine = state.openedElement.line;
-    if (
-      !mappingPathIsComplete(mappingViewPath) ||
-      typeof focusedLine === 'undefined' ||
-      focusedLine >= state.fields.length
-    )
-      return state;
-
-    return {
-      ...state,
-      fields: [
-        ...state.fields.slice(0, focusedLine),
-        {
-          ...state.fields[focusedLine],
-          mappingPath: mappingViewPath,
-        },
-        ...state.fields.slice(focusedLine + 1),
-      ],
-      changesMade: true,
-      mappingsAreValidated: false,
     };
   },
 });

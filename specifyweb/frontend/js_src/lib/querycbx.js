@@ -26,6 +26,8 @@ import {formatList} from "./components/internationalization";
 import {legacyNonJsxIcons} from "./components/icons";
 import {getTreeDefinitionItems, isTreeModel} from "./treedefinitions";
 
+// TODO: rewrite to React
+
 let typesearches;
 
 export const fetchContext = load(

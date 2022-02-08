@@ -50,7 +50,8 @@ const commonContainer = `rounded resize overflow-y-hidden max-w-[90%]
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
-  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]`,
+  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]
+    md:max-w-[50%]`,
   normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
   wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
   flexContent: 'flex flex-col gap-y-2',
@@ -71,6 +72,7 @@ export const DialogContext = React.createContext<(() => void) | undefined>(() =>
 );
 DialogContext.displayName = 'DialogContext';
 
+// TODO: disable outside click detection while resizing the dialog
 export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it
