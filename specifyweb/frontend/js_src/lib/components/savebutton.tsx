@@ -5,11 +5,10 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import * as navigation from '../navigation';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 import { Button, Submit, Ul } from './basic';
-import { useId } from './hooks';
+import { useId, useUnloadProtect } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { crash } from './errorboundary';
@@ -42,14 +41,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 }): JSX.Element {
   const id = useId('save-button');
   const [saveRequired, setSaveRequired] = React.useState(model.isNew());
-  React.useEffect(() => {
-    if (!saveRequired)
-      navigation.addUnloadProtect(
-        id('unload-protect'),
-        formsText('unsavedFormUnloadProtect')
-      );
-    return (): void => navigation.removeUnloadProtect(id('unload-protect'));
-  }, [id, saveRequired]);
+  useUnloadProtect(saveRequired, formsText('unsavedFormUnloadProtect'));
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {

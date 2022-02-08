@@ -1,9 +1,9 @@
+import { dialogClassNames, showDialog } from './components/modaldialog';
 import type { Agent } from './datamodel';
 import type { SerializedModel } from './datamodelutils';
 import { load } from './initialcontext';
 import commonText from './localization/common';
 import type { RA, Writable } from './types';
-import { dialogClassNames, showDialog } from './components/modaldialog';
 
 export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 
@@ -38,9 +38,7 @@ export const fetchContext = load<UserInfo>(
       className: {
         container: `${dialogClassNames.narrowContainer}`,
       },
-      onClose() {
-        window.location.href = '/accounts/logout/';
-      },
+      onClose: (): void => window.location.assign('/accounts/logout/'),
       forceToTop: true,
       buttons: [
         {

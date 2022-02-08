@@ -1,7 +1,7 @@
 import { isExternalUrl, ping } from './ajax';
 import Backbone from './backbone';
-import commonText from './localization/common';
 import { showDialog } from './components/modaldialog';
+import commonText from './localization/common';
 
 /*
  * We introduce a sequence variable that is incremented and passed in
@@ -203,7 +203,7 @@ export function navigate(
   const cont = (): void => {
     clearUnloadProtect();
 
-    if (isExternalUrl(url)) window.location.href = url;
+    if (isExternalUrl(url)) window.location.assign(url);
     else {
       const origin =
         window.location.origin ||
@@ -241,10 +241,11 @@ export function switchCollection(
     void ping('/context/collection/', {
       method: 'POST',
       body: collection.toString(),
-    }).then(() => {
-      if (typeof nextUrl === 'string') window.location.href = nextUrl;
-      else window.location.reload();
-    });
+    }).then(() =>
+      typeof nextUrl === 'string'
+        ? window.location.assign(nextUrl)
+        : window.location.reload()
+    );
   if (unloadBlockers.length > 0) confirmNavigation(cont, cancelCallback);
   else cont();
 }

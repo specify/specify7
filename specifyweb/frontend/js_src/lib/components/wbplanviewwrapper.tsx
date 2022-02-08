@@ -7,9 +7,8 @@
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import * as navigation from '../navigation';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
-import { useAsyncState, useId, useTitle } from './hooks';
+import { useAsyncState, useTitle, useUnloadProtect } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { WbPlanViewConstructorProps } from './wbplanview';
@@ -25,10 +24,9 @@ import { WbPlanView } from './wbplanview';
 function WbPlanViewWrapper({
   dataset,
 }: WbPlanViewConstructorProps): JSX.Element {
-  const id = useId('wbplanview-wrapper');
   useTitle(dataset.name);
 
-  const [schemaLoaded] = useAsyncState<boolean>(
+  const [schemaLoaded = false] = useAsyncState<boolean>(
     React.useCallback(async () => dataModelPromise.then(() => true), [])
   );
 
@@ -37,16 +35,20 @@ function WbPlanViewWrapper({
     dataset.visualorder === null
       ? dataset.columns
       : dataset.visualorder.map((physicalCol) => dataset.columns[physicalCol]);
-  return Boolean(schemaLoaded) ? (
+
+  const setHasUnloadProtect = useUnloadProtect(
+    false,
+    wbText('unloadProtectMessage')
+  );
+
+  return schemaLoaded ? (
     <WbPlanView
       dataset={dataset}
       uploadPlan={dataset.uploadplan}
       headers={headers}
       readonly={dataset.uploadresult?.success ?? false}
-      removeUnloadProtect={(): void => navigation.removeUnloadProtect(id(''))}
-      setUnloadProtect={(): void =>
-        navigation.addUnloadProtect(id(''), wbText('unloadProtectMessage'))
-      }
+      removeUnloadProtect={(): void => setHasUnloadProtect(false)}
+      setUnloadProtect={(): void => setHasUnloadProtect(true)}
     />
   ) : (
     <LoadingScreen />

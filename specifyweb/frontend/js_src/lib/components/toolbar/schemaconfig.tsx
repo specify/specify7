@@ -199,6 +199,11 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
     )
   );
 
+  const setHasUnloadProtect = useUnloadProtect(
+    false,
+    commonText('unsavedSchemaUnloadProtect')
+  );
+
   return typeof languages === 'undefined' ||
     typeof tables === 'undefined' ||
     typeof formatters === 'undefined' ||
@@ -219,21 +224,18 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
       dataObjAggregators={aggregators}
       onClose={handleClose}
       onSave={(language): void => {
-        removeUnloadProtect(self);
-        // Reload the page after schema changes
-        window.location.href = `/specify/task/schema-config/?language=${language}`;
+        setHasUnloadProtect(false, () =>
+          // Reload the page after schema changes
+          window.location.assign(
+            `/specify/task/schema-config/?language=${language}`
+          )
+        );
       }}
-      removeUnloadProtect={(): void => removeUnloadProtect(self)}
-      setUnloadProtect={(): void => setUnloadProtect(self)}
+      removeUnloadProtect={(): void => setHasUnloadProtect(false)}
+      setUnloadProtect={(): void => setHasUnloadProtect(true)}
     />
   );
 }
-
-const setUnloadProtect = (self: unknown): void =>
-  navigation.addUnloadProtect(self, commonText('unsavedSchemaUnloadProtect'));
-
-const removeUnloadProtect = (self: unknown): void =>
-  navigation.removeUnloadProtect(self);
 
 const View = createBackboneView(SchemaConfigWrapper);
 

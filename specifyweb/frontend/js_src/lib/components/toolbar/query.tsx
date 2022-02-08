@@ -406,10 +406,7 @@ function DwcaQueryExport({
       buttons={commonText('close')}
       onClose={handleClose}
     >
-      {/* TODO: improve styling */}
-      <textarea cols={120} rows={40} readOnly>
-        {exported}
-      </textarea>
+      <Textarea readOnly className="min-h-[60vh]" value={exported} />
     </Dialog>
   ) : (
     <LoadingScreen />

@@ -9,17 +9,15 @@ import wbText from './localization/workbench';
 import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 
-const formatUniqueifiedHeader = (
+function formatUniqueifiedHeader(
   headers: RA<string>,
   header: string,
   initialIndex: number
-): string =>
-  `${header} (${
-    initialIndex +
-    (Array.from(Array.from({ length: 2 ** 10 }), (_, index) => index).find(
-      (index) => !headers.includes(`${header} (${initialIndex + index})`)
-    ) ?? 2 ** 10 + Math.floor(Math.random() * 2 ** 11))
-  })`;
+): string {
+  let index = initialIndex;
+  while (headers.includes(`${header} (${index})`)) index += 1;
+  return `${header} (${index})`;
+}
 
 export const uniquifyHeaders = (
   headers: RA<string>,

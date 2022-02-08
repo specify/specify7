@@ -8,9 +8,10 @@ import type { Input } from '../saveblockers';
 import type { LiteralField } from '../specifyfield';
 import type { IR, R, RA } from '../types';
 import { defined } from '../types';
-import { getValidationAttributes, resolveParser } from '../uiparse';
+import { getParser, getValidationAttributes } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { crash } from './errorboundary';
+import * as navigation from '../navigation';
 
 const idStore: R<number> = {};
 
@@ -174,8 +175,8 @@ export function useResource<SCHEMA extends AnySchema>(
 export function useValidationAttributes(field: LiteralField): IR<string> {
   const [attributes, setAttributes] = React.useState<IR<string>>({});
   React.useEffect(() => {
-    const parser = defined(resolveParser(field));
-    setAttributes(getValidationAttributes(field, parser));
+    const parser = defined(getParser(field));
+    setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;
 }
@@ -203,4 +204,29 @@ export function useAsyncState<T>(
   }, [callback]);
 
   return [state, setState];
+}
+
+export function useUnloadProtect(
+  isEnabled: boolean,
+  message: string
+): (isEnabled: boolean, callback?: () => void) => void {
+  const [hasUnloadProtect, setHasUnloadProtect] = React.useState(isEnabled);
+  React.useEffect(() => setHasUnloadProtect(isEnabled), [isEnabled]);
+
+  React.useEffect(() => {
+    if (!hasUnloadProtect) return;
+    const id = {};
+    navigation.addUnloadProtect(id, message);
+    return (): void => navigation.removeUnloadProtect(id);
+  }, [hasUnloadProtect, message]);
+
+  const callbackRef = React.useRef<(() => void) | undefined>(undefined);
+  if (typeof callbackRef.current === 'function') {
+    callbackRef.current();
+    callbackRef.current = undefined;
+  }
+  return (isEnabled, callback) => {
+    setHasUnloadProtect(isEnabled);
+    callbackRef.current = callback;
+  };
 }

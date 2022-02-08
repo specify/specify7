@@ -489,7 +489,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               />
               {commonText('required')}
             </LabelForCheckbox>
-            <fieldset>
+            <fieldset className="flex flex-col gap-1">
               <legend>{commonText('fieldFormat')}</legend>
               {Object.entries<{
                 label: string;
