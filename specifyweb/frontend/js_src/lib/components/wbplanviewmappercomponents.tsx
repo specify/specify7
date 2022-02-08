@@ -141,13 +141,11 @@ const defaultMappingViewHeight = 300;
 
 export function MappingView(props: {
   readonly baseTableName: string;
-  readonly focusedLineExists: boolean;
   readonly mappingPath: MappingPath;
   readonly hideToMany: boolean;
-  readonly mapButtonIsEnabled: boolean;
-  readonly readonly: boolean;
+  readonly mapButton: JSX.Element;
   readonly mustMatchPreferences: IR<boolean>;
-  readonly onMapButtonClick?: () => void;
+  readonly onDoubleClick?: () => void;
   readonly onMappingViewChange?: (payload: {
     readonly index: number;
     readonly close: boolean;
@@ -173,7 +171,7 @@ export function MappingView(props: {
     }),
     customSelectType: 'OPENED_LIST',
     onChange({ isDoubleClick, ...rest }) {
-      if (isDoubleClick) props.onMapButtonClick?.();
+      if (isDoubleClick) props.onDoubleClick?.();
       else
         props.onMappingViewChange?.({
           ...rest,
@@ -184,14 +182,6 @@ export function MappingView(props: {
     ({ customSelectSubtype }) =>
       !props.hideToMany || customSelectSubtype !== 'toMany'
   );
-  const mapButtonIsEnabled =
-    !props.readonly &&
-    props.mapButtonIsEnabled &&
-    (Object.entries(mappingLineData.slice(-1)[0].fieldsData).find(
-      ([, { isDefault }]) => isDefault
-    )?.[1].isEnabled ??
-      false);
-
   // `resize` event listener for the mapping view
   const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
   const mappingViewParentRef = React.useCallback<
@@ -215,8 +205,6 @@ export function MappingView(props: {
     return (): void => resizeObserver.disconnect();
   }, []);
 
-  const isMappable = mapButtonIsEnabled && props.focusedLineExists;
-
   return (
     <section
       className={`overflow-x-auto relative resize-y
@@ -233,24 +221,7 @@ export function MappingView(props: {
         <div className="gap-x-1 flex-nowrap flex" role="list">
           <MappingPathComponent mappingLineData={mappingLineData} />
         </div>
-        <Button.Simple
-          className="flex-col justify-center p-2"
-          disabled={!isMappable}
-          onClick={
-            mapButtonIsEnabled && props.focusedLineExists
-              ? props.onMapButtonClick
-              : undefined
-          }
-          title={wbText('mapButtonDescription')}
-        >
-          {wbText('map')}
-          <span
-            className={`text-green-500 ${isMappable ? '' : 'invisible'}`}
-            aria-hidden="true"
-          >
-            &#8594;
-          </span>
-        </Button.Simple>
+        {props.mapButton}
       </div>
     </section>
   );

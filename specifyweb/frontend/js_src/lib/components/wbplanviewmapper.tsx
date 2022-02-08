@@ -302,6 +302,12 @@ export function WbPlanViewMapper(props: {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const mapButtonEnabled =
+    !props.readonly &&
+    state.lines.length > 0 &&
+    typeof state.focusedLine === 'number' &&
+    mappingPathIsComplete(state.mappingView);
+
   return isLoading ? (
     <LoadingScreen />
   ) : (
@@ -446,18 +452,30 @@ export function WbPlanViewMapper(props: {
       {state.showMappingView && (
         <MappingView
           baseTableName={props.baseTableName}
-          focusedLineExists={state.lines.length > 0}
           mappingPath={state.mappingView}
           hideToMany={false}
           showHiddenFields={state.showHiddenFields}
-          mapButtonIsEnabled={
-            typeof state.focusedLine === 'number' &&
-            mappingPathIsComplete(state.mappingView)
+          mapButton={
+            <Button.Simple
+              className="flex-col justify-center p-2"
+              disabled={!mapButtonEnabled}
+              onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
+              title={wbText('mapButtonDescription')}
+            >
+              {wbText('map')}
+              <span
+                className={`text-green-500 ${
+                  mapButtonEnabled ? '' : 'invisible'
+                }`}
+                aria-hidden="true"
+              >
+                &#8594;
+              </span>
+            </Button.Simple>
           }
-          readonly={props.readonly}
           mustMatchPreferences={state.mustMatchPreferences}
-          onMapButtonClick={
-            props.readonly
+          onDoubleClick={
+            mapButtonEnabled
               ? undefined
               : (): void => dispatch({ type: 'MappingViewMapAction' })
           }
@@ -526,7 +544,7 @@ export function WbPlanViewMapper(props: {
             ? [
                 ...lineData,
                 {
-                  customSelectType: 'MAPPING_OPTIONS_LIST',
+                  customSelectType: 'OPTIONS_LIST',
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
