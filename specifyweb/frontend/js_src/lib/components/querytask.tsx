@@ -4,11 +4,10 @@ import type { RecordSet, SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import queryText from '../localization/query';
 import { NotFoundView } from '../notfoundview';
-import queryFromTree from '../queryfromtree';
+import { queryFromTree } from '../queryfromtree';
 import * as querystring from '../querystring';
 import { router } from '../router';
-import { getModel } from '../schema';
-import { schema } from '../schema';
+import { getModel, schema } from '../schema';
 import * as app from '../specifyapp';
 import { setCurrentView } from '../specifyapp';
 import { defined } from '../types';
@@ -20,6 +19,8 @@ import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
+import { AnyTree } from '../datamodelutils';
+import { SpecifyModel } from '../specifymodel';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -84,35 +85,39 @@ function QueryBuilderById({
 
 const QueryById = createBackboneView(QueryBuilderById);
 
+export function createQuery(
+  name: string,
+  model: SpecifyModel
+): SpecifyResource<SpQuery> {
+  const query = new schema.models.SpQuery.Resource();
+  query.set('name', name);
+  query.set('contextName', model.name);
+  query.set('contextTableId', model.tableId);
+  query.set('selectDistinct', false);
+  query.set('countOnly', false);
+  query.set('formatAuditRecIds', false);
+  query.set('specifyUser', userInformation.resource_uri);
+  query.set('isFavorite', true);
+  /*
+   * Ordinal seems to always get set to 32767 by Specify 6
+   * needs to be set for the query to be visible in Specify 6
+   */
+  query.set('ordinal', 32_767);
+  return query;
+}
+
 function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
-  const [query, setQuery] = React.useState<
-    SpecifyResource<SpQuery> | undefined
-  >(undefined);
+  const [query] = useAsyncState<SpecifyResource<SpQuery>>(
+    React.useCallback(() => {
+      const model = getModel(tableName);
+      if (typeof model === 'undefined') {
+        setCurrentView(new NotFoundView());
+        return undefined;
+      }
+      return createQuery(queryText('newQueryName'), model);
+    }, [tableName])
+  );
   const recordSet = useQueryRecordSet();
-
-  React.useEffect(() => {
-    const query = new schema.models.SpQuery.Resource();
-    const model = getModel(tableName);
-    if (typeof model === 'undefined') {
-      setCurrentView(new NotFoundView());
-      return;
-    }
-
-    query.set('name', queryText('newQueryName'));
-    query.set('contextName', model.name);
-    query.set('contextTableId', model.tableId);
-    query.set('selectDistinct', false);
-    query.set('countOnly', false);
-    query.set('formatAuditRecIds', false);
-    query.set('specifyUser', userInformation.resource_uri);
-    query.set('isFavorite', true);
-    /*
-     * Ordinal seems to always get set to 32767 by Specify 6
-     * needs to be set for the query to be visible in Specify 6
-     */
-    query.set('ordinal', 32_767);
-    setQuery(query);
-  }, [tableName]);
 
   return typeof query === 'undefined' || typeof recordSet === 'undefined' ? (
     <LoadingScreen />
@@ -127,13 +132,13 @@ function QueryBuilderFromTree({
   tableName,
   nodeId,
 }: {
-  readonly tableName: string;
+  readonly tableName: AnyTree['tableName'];
   readonly nodeId: number;
 }): JSX.Element {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
       // TODO: convert to react
-      () => queryFromTree(userInformation, tableName, nodeId),
+      () => queryFromTree(tableName, nodeId),
       [tableName, nodeId]
     )
   );
@@ -154,13 +159,14 @@ export default function Routes(): void {
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
     app.setCurrentView(new NewQueryView({ tableName }))
   );
+  // TODO: test this:
   router.route(
     'query/fromtree/:table/:id/',
     'queryFromTree',
     (tableName, nodeId) =>
       app.setCurrentView(
         new QueryFromTree({
-          tableName,
+          tableName: tableName as AnyTree['tableName'],
           nodeId: Number.parseInt(nodeId),
         })
       )
