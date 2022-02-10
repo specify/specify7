@@ -193,7 +193,7 @@ export const parseLocalityPinFields = (
   return filteredMappingPaths;
 };
 
-export async function getLocalityDataFromLocalityResource(
+export async function fetchLocalityDataFromLocalityResource(
   localityResource: SpecifyResource<Locality>,
   // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,

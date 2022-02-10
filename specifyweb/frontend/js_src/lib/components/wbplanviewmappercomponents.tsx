@@ -11,7 +11,7 @@ import type {
   ColumnOptions,
   MatchBehaviors,
 } from '../uploadplantomappingstree';
-import { getMappingLineData } from '../wbplanviewnavigator';
+import { getMappingLineData, MappingLineData } from '../wbplanviewnavigator';
 import {
   Button,
   Checkbox,
@@ -142,7 +142,9 @@ const defaultMappingViewHeight = 300;
 export function MappingView(props: {
   readonly baseTableName: string;
   readonly mappingPath: MappingPath;
-  readonly hideToMany: boolean;
+  readonly lineDataMutator?: (
+    lineData: RA<MappingLineData>
+  ) => RA<MappingLineData>;
   readonly mapButton: JSX.Element;
   readonly mustMatchPreferences: IR<boolean>;
   readonly onDoubleClick?: () => void;
@@ -178,10 +180,8 @@ export function MappingView(props: {
           isDoubleClick,
         });
     },
-  }).filter(
-    ({ customSelectSubtype }) =>
-      !props.hideToMany || customSelectSubtype !== 'toMany'
-  );
+  });
+  const lineData = props.lineDataMutator?.(mappingLineData) ?? mappingLineData;
   // `resize` event listener for the mapping view
   const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
   const mappingViewParentRef = React.useCallback<
@@ -219,7 +219,7 @@ export function MappingView(props: {
     >
       <div className="flex-nowrap gap-x-8 w-max flex h-full">
         <div className="gap-x-1 flex-nowrap flex" role="list">
-          <MappingPathComponent mappingLineData={mappingLineData} />
+          <MappingPathComponent mappingLineData={lineData} />
         </div>
         {props.mapButton}
       </div>

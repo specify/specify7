@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax, ping } from '../ajax';
-import { getPickLists } from '../picklists';
+import { fetchPickLists } from '../picklists';
 import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
@@ -15,6 +15,7 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
+import { serializeResource } from '../datamodelutils';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -156,9 +157,9 @@ export function SchemaConfig({
       throw new Error('Unable to find table fields');
 
     void Promise.all([
-      getPickLists().then((pickLists) =>
+      fetchPickLists().then((pickLists) =>
         Object.fromEntries(
-          pickLists.map(({ id, name, isSystem }) => [
+          pickLists.map(serializeResource).map(({ id, name, isSystem }) => [
             id,
             {
               name,

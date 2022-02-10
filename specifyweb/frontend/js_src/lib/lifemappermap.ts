@@ -5,7 +5,7 @@ import type { SpecifyResource } from './legacytypes';
 import {
   defaultRecordFilterFunction,
   formatLocalityDataObject,
-  getLocalityDataFromLocalityResource,
+  fetchLocalityDataFromLocalityResource,
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
 import { schema } from './schema';
@@ -156,7 +156,7 @@ export const fetchLocalOccurrences = async (
             const locality = new schema.models.Locality.LazyCollection({
               filters: { id: localityId },
             });
-            return getLocalityDataFromLocalityResource(
+            return fetchLocalityDataFromLocalityResource(
               await locality
                 .fetchPromise({ limit: 1 })
                 .then(({ models }) => models[0]),

@@ -11,9 +11,9 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { Link, Ul } from './basic';
 import { TableIcon } from './common';
+import { useAsyncState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { useAsyncState } from './hooks';
 
 type Entry = {
   iconName: string;
@@ -53,7 +53,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
   );
 });
 
-const getForms = async (): Promise<RA<Entry>> => getFormsPromise;
+const fetchForms = async (): Promise<RA<Entry>> => getFormsPromise;
 
 function FormsDialog({
   onSelected: handleSelected,
@@ -62,7 +62,7 @@ function FormsDialog({
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [forms] = useAsyncState(getForms);
+  const [forms] = useAsyncState(fetchForms);
 
   return Array.isArray(forms) ? (
     <Dialog

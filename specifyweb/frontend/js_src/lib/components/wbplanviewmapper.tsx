@@ -20,7 +20,7 @@ import { reducer } from '../wbplanviewmappingreducer';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import {
-  getAutoMapperSuggestions,
+  fetchAutoMapperSuggestions,
   getMappedFields,
   getMappingsTree,
   getMustMatchTables,
@@ -235,7 +235,7 @@ export function WbPlanViewMapper(props: {
     )
       return undefined;
 
-    getAutoMapperSuggestions({
+    fetchAutoMapperSuggestions({
       lines: state.lines,
       line: state.openSelectElement.line,
       index: state.openSelectElement.index,

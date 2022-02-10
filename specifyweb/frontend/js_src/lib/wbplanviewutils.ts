@@ -248,7 +248,7 @@ export const pathIsMapped = (
   );
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
-  mappingPath[mappingPath.length - 1] !== '0';
+  mappingPath.slice(-1)[0] !== '0';
 
 /*
  * The most important function in WbPlanView
@@ -333,7 +333,7 @@ const MAX_SUGGESTIONS_COUNT = 3;
  * The autoMapper suggestions are shown only if the current box doesn't have
  * a value selected
  */
-export async function getAutoMapperSuggestions({
+export async function fetchAutoMapperSuggestions({
   lines,
   line,
   index,

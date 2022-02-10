@@ -307,7 +307,7 @@ export function genericSet<T>(
 
 let collectionId: number | undefined = undefined;
 
-export async function getCurrentCollectionId(): Promise<number> {
+export async function fetchCurrentCollectionId(): Promise<number> {
   if (typeof collectionId === 'number') return collectionId;
   const { data } = await ajax<{ readonly current: number }>(
     '/context/collection/',

@@ -8,7 +8,7 @@ import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
 import { useAsyncState } from './hooks';
 
-async function getPossibleRanks(
+async function fetchPossibleRanks(
   lowestChildRank: number,
   parentTreeDefItem: SpecifyResource<FilterTablesByEndsWith<'TreeDefItem'>>,
   treeDefinitionId: number
@@ -55,7 +55,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                 .rgetPromise('treeDef', true)
                 .then(async ({ id }) =>
                   lowestChildRank.then(async (rankId) =>
-                    getPossibleRanks(rankId, treeDefinitionItem, id)
+                    fetchPossibleRanks(rankId, treeDefinitionItem, id)
                   )
                 )
             : []

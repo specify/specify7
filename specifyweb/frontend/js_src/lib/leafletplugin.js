@@ -3,7 +3,7 @@
 import $ from 'jquery';
 
 import {
-  getLocalityDataFromLocalityResource
+  fetchLocalityDataFromLocalityResource
 } from './localityrecorddataextractor';
 import {formatLocalityData, showLeafletMap} from './leaflet';
 import {UiPlugin} from './uiplugin';
@@ -51,7 +51,7 @@ export default UiPlugin.extend(
 
       this.el.ariaPressed = true;
       let fullLocalityData = undefined;
-      getLocalityDataFromLocalityResource(
+      fetchLocalityDataFromLocalityResource(
         this.model,
         true
       ).then((localityData) =>
@@ -59,7 +59,7 @@ export default UiPlugin.extend(
           localityPoints: [localityData],
           markerClickCallback: (_, { target: marker }) =>
             (typeof fullLocalityData === 'undefined'
-              ? getLocalityDataFromLocalityResource(
+              ? fetchLocalityDataFromLocalityResource(
                   this.model
                 )
               : Promise.resolve(fullLocalityData)
