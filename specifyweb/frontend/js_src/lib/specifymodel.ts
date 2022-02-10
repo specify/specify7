@@ -155,17 +155,29 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.localization = localization[this.name.toLowerCase()] ?? { items: [] };
 
     this.fields = [
-      ...tableDefinition.fields.map(
-        (fieldDefinition) =>
-          new LiteralField(this as unknown as SpecifyModel, fieldDefinition)
-      ),
-      ...tableDefinition.relationships.map(
-        (relationshipDefinition) =>
-          new Relationship(
-            this as unknown as SpecifyModel,
-            relationshipDefinition
-          )
-      ),
+      ...tableDefinition.fields
+        .map(
+          (fieldDefinition) =>
+            new LiteralField(this as unknown as SpecifyModel, fieldDefinition)
+        )
+        .sort((left, right) =>
+          left.getLocalizedName()?.localeCompare(right.getLocalizedName() ?? '')
+            ? 1
+            : -1
+        ),
+      ...tableDefinition.relationships
+        .map(
+          (relationshipDefinition) =>
+            new Relationship(
+              this as unknown as SpecifyModel,
+              relationshipDefinition
+            )
+        )
+        .sort((left, right) =>
+          left.getLocalizedName()?.localeCompare(right.getLocalizedName() ?? '')
+            ? 1
+            : -1
+        ),
     ];
   }
 
@@ -276,3 +288,13 @@ export function isResourceOfType<TABLE_NAME extends keyof Tables>(
 ): resource is SpecifyResource<Tables[TABLE_NAME]> {
   return resource.specifyModel.name === tableName;
 }
+
+// If this is true, then you can use {domainfilter:true} when fetching that model
+export const hasHierarchyField = (model: SpecifyModel): boolean =>
+  [
+    'collectionObject',
+    'collection',
+    'discipline',
+    'division',
+    'institution',
+  ].some((fieldName) => model.fields.some(({ name }) => name === fieldName));

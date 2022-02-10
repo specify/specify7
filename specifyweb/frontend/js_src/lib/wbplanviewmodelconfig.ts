@@ -87,8 +87,8 @@ export const fetchingParameters: {
     authorization: 'hidden',
     variant: 'hidden',
     attribute: 'hidden',
-    def: 'hidden',
-    item: 'hidden',
+    def: 'remove',
+    item: 'remove',
     property: 'hidden',
   },
 

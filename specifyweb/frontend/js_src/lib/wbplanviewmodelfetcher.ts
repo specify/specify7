@@ -3,12 +3,14 @@
  * Modifies the front-end data model using config from wbplanviewmodelconfig.ts
  * and caches it
  *
+ * TODO: consider converting everything fieldNames to camelCase
+ *
  * @module
  */
 
 import type { RelationshipType } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import { schema, fetchContext as fetchSchema } from './schema';
+import { fetchContext as fetchSchema, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, R } from './types';
 import { camelToHuman } from './wbplanviewhelper';
@@ -76,7 +78,7 @@ const getVisibleTables = (): Readonly<Set<string>> =>
           !tableData.system &&
           !tableHasOverwrite(tableName.toLowerCase(), 'remove')
       )
-      .map(([tableName]) => tableName)
+      .map(([tableName]) => tableName.toLowerCase())
   );
 
 /*
@@ -95,7 +97,7 @@ async function fetchDataModel(): Promise<void> {
 
   dataModelStorage.tables = Object.fromEntries(
     Object.values(schema.models)
-      .filter((tableData) => visibleTables.has(tableData.name))
+      .filter((tableData) => visibleTables.has(tableData.name.toLowerCase()))
       .map((tableData) => {
         const tableName = tableData.name.toLowerCase();
 
@@ -139,7 +141,10 @@ async function fetchDataModel(): Promise<void> {
             if (typeof foreignName === 'string')
               foreignName = foreignName.toLowerCase();
 
-            if (field.readOnly || !visibleTables.has(field.relatedModelName))
+            if (
+              field.readOnly ||
+              !visibleTables.has(field.relatedModelName.toLowerCase())
+            )
               return;
 
             fields[fieldName] = {
