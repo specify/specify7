@@ -79,7 +79,7 @@ export function Dialog({
    * allows for smooth dialog close animation
    */
   isOpen = true,
-  title,
+  title: initialTitle,
   header,
   buttons,
   children,
@@ -211,6 +211,9 @@ export function Dialog({
     ),
     []
   );
+
+  // Don't show dialog title if it is identical to dialog header
+  const title = initialTitle === header ? undefined : initialTitle;
 
   return (
     <Modal

@@ -303,9 +303,6 @@ export function getMappingLineData({
                 key,
                 {
                   optionLabel,
-                  isEnabled: true,
-                  isRequired: false,
-                  isHidden: false,
                   isRelationship: true,
                   isDefault,
                   tableName,
@@ -325,17 +322,12 @@ export function getMappingLineData({
         generateFieldData === 'none'
           ? []
           : getTreeDefinitionItems(tableName as 'Geography', false).map(
-              ({ name, isEnforced, title }) =>
+              ({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? [
                       formatTreeRank(name),
                       {
                         optionLabel: title ?? name,
-                        isEnabled: true,
-                        isRequired:
-                          isEnforced === true &&
-                          !mustMatchPreferences[tableName],
-                        isHidden: false,
                         isRelationship: true,
                         isDefault: name === defaultValue,
                         tableName,
@@ -362,7 +354,7 @@ export function getMappingLineData({
                   fieldName === internalState.defaultValue) &&
                 (!field.isRelationship ||
                   !isCircularRelationship({
-                    targetTableName: tableName,
+                    targetTableName: field.tableName,
                     parentTableName,
                     foreignName: field.foreignName ?? '',
                     relationshipKey: fieldName,

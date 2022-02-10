@@ -667,9 +667,9 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
-      className={`[z-index:2] cursor-pointer h-fit rounded
+      className={`cursor-pointer h-fit rounded overflow-x-hidden
         bg-[color:var(--custom-select-b1)] border border-brand-300 flex-1
-        overflow-x-hidden
+        ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'shadow-md max-h-[theme(spacing.64)]' : ''}
         ${
@@ -698,9 +698,11 @@ export function CustomSelectElement({
       // List is open
       listOfOptionsRef.current !== null &&
       // And this type of picklist has auto scroll enabled
-      has('autoScroll') &&
+      has('autoScroll')
+      // TODO: test why this was needed
+      /* &&*/
       // And default value has changed
-      previousDefaultOption.current?.optionName !== defaultOption.optionName
+      // previousDefaultOption.current?.optionName !== defaultOption.optionName
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'
@@ -814,6 +816,7 @@ export function CustomSelectElement({
                     : 0;
 
               if (typeof newIndex === 'number') {
+                event.preventDefault();
                 const newValue = inlineOptions[newIndex]?.optionName ?? '0';
                 if (!close && has('handleKeyboardClick'))
                   setSelectedValue(newValue);

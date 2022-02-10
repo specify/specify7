@@ -7,7 +7,6 @@
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import { ajax, Http } from './ajax';
-import { error } from './assert';
 import * as cache from './cache';
 import {
   leafletLayersEndpoint,
@@ -66,15 +65,15 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
       )
     )
     .then(({ data, status }) =>
-      status === Http.NOT_FOUND ? error('') : parseLayersFromJson(data)
+      status === Http.NOT_FOUND
+        ? ajax<IR<unknown>>(
+            leafletLayersEndpoint,
+            { headers: { Accept: 'application/json' } },
+            { strict: false }
+          ).then(({ data }) => data)
+        : data
     )
-    .catch(async () =>
-      ajax<IR<unknown>>(
-        leafletLayersEndpoint,
-        { headers: { Accept: 'application/json' } },
-        { strict: false }
-      ).then(({ data }) => parseLayersFromJson(data))
-    )
+    .then(parseLayersFromJson)
     .catch((error) => {
       console.error(error);
       return leafletTileServers;
