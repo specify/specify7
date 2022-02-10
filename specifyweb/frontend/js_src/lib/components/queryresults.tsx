@@ -319,6 +319,8 @@ function QueryResult({
 }
 
 // TODO: consider merging this
+// TODO: add picklist support
+// TODO: revert b1c8ab7b
 export function QueryResults({
   model,
   fieldSpecs,

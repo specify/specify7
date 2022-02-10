@@ -34,7 +34,7 @@ function isInputSupported(type: string): boolean {
  */
 
 const inputTypeYearAttributes = getValidationAttributes(
-  defined(resolveParser({ type: 'year' }))
+  defined(resolveParser({}, { type: 'year' }))
 );
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;

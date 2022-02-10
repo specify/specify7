@@ -108,8 +108,7 @@ export function QueryLine({
       mappingPathIsComplete(field.mappingPath)
     ) {
       parser = defined(
-        resolveParser({
-          ...dataModelField,
+        resolveParser(dataModelField, {
           datePart:
             field.details.type === 'dateField'
               ? field.details.datePart

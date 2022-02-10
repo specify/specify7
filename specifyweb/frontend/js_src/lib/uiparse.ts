@@ -55,7 +55,7 @@ type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 
 export const parsers: RR<
   ExtendedJavaType,
-  ExtendedJavaType | Parser | ((field: ExtendedField) => Parser)
+  ExtendedJavaType | Parser | (() => Parser)
 > = {
   // TODO: test validation of boolean fields
   'java.lang.Boolean': {
@@ -178,23 +178,27 @@ type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
 
-export function resolveParser(field: ExtendedField): Parser | undefined {
-  let parser = parsers[field.type as ExtendedJavaType];
+export function resolveParser(
+  field: Partial<LiteralField | Relationship>,
+  extras?: Partial<ExtendedField>
+): Parser | undefined {
+  const fullField = { ...field, ...extras };
+  let parser = parsers[fullField.type as ExtendedJavaType];
   if (typeof parser === 'string') parser = parsers[parser];
-  if (typeof parser === 'function') parser = parser(field);
+  if (typeof parser === 'function') parser = parser();
   if (typeof parser !== 'object') return undefined;
 
   if (
     parser.type === 'date' &&
-    typeof field.datePart === 'string' &&
-    field.datePart !== 'fullDate'
+    typeof fullField.datePart === 'string' &&
+    fullField.datePart !== 'fullDate'
   )
-    parser = parsers[field.datePart] as Parser;
+    parser = parsers[fullField.datePart] as Parser;
 
   const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {
-    required: field.isRequired === true,
-    maxLength: field.length,
+    required: fullField.isRequired,
+    maxLength: fullField.length,
     ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
   });
 }
