@@ -556,13 +556,14 @@ function eventHandlerForToOne(related, field) {
     }, {
         fromUri: function(uri, options) {
             options || (options = {noBusinessRules: false});
-            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
-            assert(!_(match).isNull(), "Bad resource uri: " + uri);
-            assert(match[1] === this.specifyModel.name.toLowerCase());
-            return new this({ id: parseInt(match[2], 10) }, options);
+            var match = parseResourceUrl(uri);
+            if(typeof match === 'undefined' || match.length !== 2)
+                throw new Error(`Bad resource URI: ${uri}`);
+            assert(match[0] === this.specifyModel.name.toLowerCase());
+            return new this({ id: parseInt(match[1], 10) }, options);
         },
         idFromUrl: function(url) {
-            //assiming urls are constructed by ResourceBase.url method
+            // Assuming urls are constructed by ResourceBase.url method
             var urlChunks = url.split('/');
             return urlChunks[urlChunks.length - 2];
         }
@@ -572,4 +573,4 @@ function eventHandlerForToOne(related, field) {
 export default ResourceBase;
 
 export const parseResourceUrl = (resourceUrl) =>
-  /^\/api\/specify\/(\w+)\/(\d+)\/$/.exec(resourceUrl)?.slice(1);
+  /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/.exec(resourceUrl)?.slice(1);

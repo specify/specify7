@@ -141,7 +141,11 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     : KEY extends keyof SCHEMA['fields']
     ? SCHEMA['fields'][KEY]
     : KEY extends keyof SCHEMA['toOneDependent']
-    ? SCHEMA['toOneDependent'][KEY]
+    ?
+        | Partial<
+            SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
+          >
+        | Exclude<SCHEMA['toOneDependent'][KEY], AnySchema>
     : KEY extends keyof SCHEMA['toOneIndependent']
     ? string | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>
     : KEY extends keyof SCHEMA['toManyDependent']
@@ -159,20 +163,26 @@ export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
-  serializeModel<SCHEMA>(resource?.toJSON() ?? resource);
+  serializeModel<SCHEMA>(
+    resource?.toJSON() ?? resource,
+    resource?.specifyModel.name
+  );
 
 const serializeModel = <SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA>
+  resource: SerializedModel<SCHEMA>,
+  tableName?: keyof Tables
 ): SerializedResource<SCHEMA> =>
   Object.fromEntries(
     Object.entries(resource).map(([lowercaseFieldName, value]) => [
       defined(
-        getModel(defined(parseResourceUrl(resource.resource_uri))[0])
+        getModel(
+          defined(tableName ?? parseResourceUrl(resource.resource_uri)?.[0])
+        )
       ).fields.find(({ name }) => name.toLowerCase() === lowercaseFieldName)
         ?.name ?? lowercaseFieldName,
       typeof value === 'object' && value !== null
         ? Array.isArray(value)
-          ? value.map(serializeModel)
+          ? value.map((value) => serializeModel(value))
           : serializeModel(value as SerializedModel<AnySchema>)
         : value,
     ])

@@ -1,10 +1,9 @@
 import type {
   AnySchema,
-  AnyTree,
   CommonFields,
-  FilterTablesByEndsWith,
+  SerializedModel,
+  SerializedResource,
 } from './datamodelutils';
-import { SerializedModel } from './datamodelutils';
 import type { SaveBlockers } from './saveblockers';
 import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
@@ -15,26 +14,6 @@ import type { IR, RA } from './types';
  *  Discrimination of union types
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
-  readonly attributes: {
-    readonly [KEY in
-      | keyof CommonFields
-      | keyof SCHEMA['fields']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent']
-      | keyof SCHEMA['toManyIndependent'] as Lowercase<
-      string & KEY
-    >]: KEY extends keyof CommonFields
-      ? CommonFields[KEY]
-      : KEY extends keyof SCHEMA['fields']
-      ? SCHEMA['fields'][KEY]
-      : KEY extends keyof SCHEMA['toOneDependent']
-      ? string | Exclude<SCHEMA['toOneDependent'][KEY], AnySchema>
-      : KEY extends keyof SCHEMA['toOneIndependent']
-      ? string | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>
-      : KEY extends keyof SCHEMA['toManyIndependent']
-      ? string | Exclude<SCHEMA['toManyIndependent'][KEY][number], AnySchema>
-      : never;
-  };
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly toJSON: () => SerializedModel<SCHEMA>;
   readonly id: number;
@@ -93,26 +72,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     prePopulate?: boolean
   ) => Promise<Collection<SpecifyResource<VALUE[number]>>>;
   readonly set: <
-    FIELD_NAME extends keyof (SCHEMA['fields'] &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'] &
-      SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent']),
-    VALUE extends (SCHEMA['fields'] & {
-      [KEY in keyof SCHEMA['toOneDependent']]:
-        | Partial<SerializedModel<Exclude<SCHEMA['toOneDependent'][KEY], null>>>
-        | Exclude<SCHEMA['toOneDependent'][KEY], AnySchema>;
-    } & {
-      [KEY in keyof SCHEMA['toOneIndependent']]:
-        | string
-        | Exclude<SCHEMA['toOneIndependent'][KEY], AnySchema>;
-    } & {
-      [KEY in keyof SCHEMA['toManyDependent']]: RA<
-        Partial<SerializedModel<SCHEMA['toManyDependent'][KEY][number]>>
-      >;
-    } & {
-      [KEY in keyof SCHEMA['toManyIndependent']]: string;
-    })[FIELD_NAME]
+    FIELD_NAME extends keyof SerializedResource<SCHEMA>,
+    VALUE extends SerializedResource<SCHEMA>[FIELD_NAME]
   >(
     fieldName: FIELD_NAME,
     value: VALUE
@@ -153,9 +114,3 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     readonly checkField: (fieldName: string) => Promise<void>;
   };
 };
-
-export type GetTreeDefinition<
-  SCHEMA extends FilterTablesByEndsWith<'TreeDef'>
-> = (
-  tableName: AnyTree['tableName']
-) => Promise<SpecifyResource<SCHEMA>> | null;
