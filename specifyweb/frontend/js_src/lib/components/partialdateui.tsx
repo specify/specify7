@@ -11,7 +11,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RR } from '../types';
 import { defined } from '../types';
-import { getParser, getValidationAttributes } from '../uiparse';
+import { getValidationAttributes, resolveParser } from '../uiparse';
 import { UiPlugin } from '../uiplugin';
 import { dateParts } from './internationalization';
 import createBackboneView from './reactbackboneextend';
@@ -34,7 +34,7 @@ function isInputSupported(type: string): boolean {
  */
 
 const inputTypeYearAttributes = getValidationAttributes(
-  defined(getParser({ type: 'year' }))
+  defined(resolveParser({ type: 'year' }))
 );
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;

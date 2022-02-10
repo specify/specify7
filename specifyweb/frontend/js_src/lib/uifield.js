@@ -48,7 +48,7 @@ export default Backbone.View.extend({
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted w-full');
 
-            const parser = resolveParser(field, formatter ?? undefined);
+            const parser = resolveParser(field) ?? {};
 
             if(field.readOnly){
               this.el.readonly = true;
@@ -70,7 +70,7 @@ export default Backbone.View.extend({
 
             const parserFunction = this.model.noValidation
                 ? (value)=>({ isValid: true, value, parsed: value })
-                : parseValue.bind(null, field, parser, this.el);
+                : parseValue.bind(null, parser, this.el);
 
             const handleChange = ()=>this.inputChanged(parserFunction(this.el.value));
             const isDate = this.el.type === 'date';

@@ -8,7 +8,7 @@ import type { Input } from '../saveblockers';
 import type { LiteralField } from '../specifyfield';
 import type { IR, R, RA } from '../types';
 import { defined } from '../types';
-import { getParser, getValidationAttributes } from '../uiparse';
+import { getValidationAttributes, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { crash } from './errorboundary';
 import * as navigation from '../navigation';
@@ -67,7 +67,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
   // If need access to the underlying inputRef, can use this prop
   readonly inputRef: React.MutableRefObject<T | null>;
   // Can set validation message via this callback
-  readonly setValidation: (message: string) => void;
+  readonly setValidation: (message: string | RA<string>) => void;
 } {
   const inputRef = React.useRef<T | null>(null);
 
@@ -175,7 +175,7 @@ export function useResource<SCHEMA extends AnySchema>(
 export function useValidationAttributes(field: LiteralField): IR<string> {
   const [attributes, setAttributes] = React.useState<IR<string>>({});
   React.useEffect(() => {
-    const parser = defined(getParser(field));
+    const parser = defined(resolveParser(field));
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;

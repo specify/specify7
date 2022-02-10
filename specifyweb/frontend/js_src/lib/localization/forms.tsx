@@ -791,45 +791,10 @@ const formsText = createDictionary({
     'ru-ru': (format: string) => `Обязательный формат: ${format}.`,
     ca: (format: string) => `Required Format: ${format}.`,
   },
-  noParser: {
-    'en-us': (type: string) => `No parser for type ${type}`,
-    'ru-ru': (type: string) => `Нет парсера для типа ${type}`,
-    ca: (type: string) => `No parser for type ${type}`,
-  },
   inputTypeNumber: {
     'en-us': `Value must be a number`,
     'ru-ru': `Значение должно быть числом`,
     ca: `Value must be a number`,
-  },
-  minimumLength: {
-    'en-us': (number: number) =>
-      `Minimum length for this field is ${number} characters`,
-    'ru-ru': (number: number) =>
-      `Минимальная длина этого поля ${number} символов`,
-    ca: (number: number) =>
-      `Minimum length for this field is ${number} characters`,
-  },
-  maximumLength: {
-    'en-us': (number: number) =>
-      `Value can not be longer than ${number} characters`,
-    'ru-ru': (number: number) =>
-      `Значение не может быть длиннее чем ${number} символов`,
-    ca: (number: number) => `Value can not be longer than ${number} characters`,
-  },
-  minimumNumber: {
-    'en-us': (number: number) => `Number must be smaller than ${number}`,
-    'ru-ru': (number: number) => `Число должно быть меньше ${number}`,
-    ca: (number: number) => `Number must be smaller than ${number}`,
-  },
-  maximumNumber: {
-    'en-us': (number: number) => `Value must be greater than ${number}`,
-    'ru-ru': (number: number) => `Число должно быть больше ${number}`,
-    ca: (number: number) => `Value must be greater than ${number}`,
-  },
-  wrongStep: {
-    'en-us': (step: number) => `Value must be a multiple of ${step}`,
-    'ru-ru': (step: number) => `Число должно быть кратным ${step}`,
-    ca: (step: number) => `Value must be a multiple of ${step}`,
   },
   // UserAgentsPlugin
   setAgents: {

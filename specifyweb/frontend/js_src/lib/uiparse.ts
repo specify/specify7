@@ -26,7 +26,7 @@ const validators: IR<(value: unknown) => undefined | string> = {
   number: (value) =>
     typeof value === 'number' &&
     !Number.isNaN(value) &&
-    Number.isSafeInteger(value)
+    (!Number.isInteger(value) || Number.isSafeInteger(value))
       ? undefined
       : formsText('inputTypeNumber'),
 } as const;
@@ -178,48 +178,48 @@ type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
 
-export function getParser(field: ExtendedField): Parser | undefined {
+export function resolveParser(field: ExtendedField): Parser | undefined {
   let parser = parsers[field.type as ExtendedJavaType];
-  if (typeof parser === 'string') parser = parsers[parser as ExtendedJavaType];
+  if (typeof parser === 'string') parser = parsers[parser];
   if (typeof parser === 'function') parser = parser(field);
   if (typeof parser !== 'object') return undefined;
 
-  if (parser.type === 'date' && typeof field.datePart === 'string')
-    parser =
-      field.datePart === 'fullDate'
-        ? {
-            ...parser,
-            type: 'text',
-          }
-        : (parsers[field.datePart] as Parser);
+  if (
+    parser.type === 'date' &&
+    typeof field.datePart === 'string' &&
+    field.datePart !== 'fullDate'
+  )
+    parser = parsers[field.datePart] as Parser;
 
+  const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {
     required: field.isRequired === true,
     maxLength: field.length,
+    ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
   });
 }
 
-function mergeParsers(base?: Parser, extra?: Parser): Parser | undefined {
+function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
   const concat = ['formatters', 'validators'] as const;
   const takeMin = ['max', 'step', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
   const merged = Object.fromEntries(
     [
-      ...Object.entries(base ?? {}),
-      ...Object.entries(extra ?? {}),
+      ...Object.entries(base),
+      ...Object.entries(extra),
       ...concat.map((key) => [
         key,
-        [...(base?.[key] ?? []), ...(extra?.[key] ?? [])],
+        [...(base[key] ?? []), ...(extra[key] ?? [])],
       ]),
       ...[
         ...takeMin.map((key) => [
           key,
-          Math.min(...filterArray([base?.[key], extra?.[key]])),
+          Math.min(...filterArray([base[key], extra[key]])),
         ]),
         ...takeMax.map((key) => [
           key,
-          Math.max(...filterArray([base?.[key], extra?.[key]])),
+          Math.max(...filterArray([base[key], extra[key]])),
         ]),
       ].filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => typeof value !== 'undefined')
@@ -245,20 +245,12 @@ function formatterToParser(formatter: UiFormatter): Parser {
   };
 }
 
-export function resolveParser(
-  field: ExtendedField,
-  formatter?: UiFormatter
-): Parser | undefined {
-  return mergeParsers(
-    getParser(field),
-    typeof formatter === 'object' ? formatterToParser(formatter) : {}
-  );
-}
-
 export const getValidationAttributes = (parser: Parser): IR<string> =>
   typeof parser === 'object'
     ? {
-        ...(parser.required === true ? { required: '' } : {}),
+        ...(parser.required === true
+          ? { required: true as unknown as string }
+          : {}),
         ...(typeof parser.pattern === 'object'
           ? {
               pattern: parser.pattern
@@ -297,69 +289,24 @@ export const addValidationAttributes = (
     input.setAttribute(key, value)
   );
 
-function validateAttributes(
-  parser: Parser,
-  value: string,
-  input: HTMLInputElement | undefined
-): undefined | string {
-  if (typeof input === 'object' && hasNativeErrors(input))
-    return input.validationMessage;
-
-  if (typeof parser.minLength === 'number' && value.length < parser.minLength)
-    return formsText('minimumLength')(parser.minLength);
-
-  if (typeof parser.minLength === 'number' && value.length < parser.minLength)
-    return formsText('maximumLength')(parser.minLength);
-
-  if (
-    typeof parser.min === 'number' &&
-    !Number.isNaN(Number.parseInt(value)) &&
-    Number.parseInt(value) < parser.min
-  )
-    return formsText('minimumNumber')(parser.min);
-
-  if (
-    typeof parser.max === 'number' &&
-    !Number.isNaN(Number.parseInt(value)) &&
-    Number.parseInt(value) > parser.max
-  )
-    return formsText('maximumNumber')(parser.max);
-
-  if (
-    typeof parser.step === 'number' &&
-    !Number.isNaN(Number.parseFloat(value)) &&
-    (Number.parseFloat(value) / parser.step) % 1 !== 0
-  )
-    return formsText('wrongStep')(parser.step);
-
-  if (typeof parser.pattern === 'object' && parser.pattern.exec(value) === null)
-    return (
-      parser.title ?? formsText('requiredFormat')(parser.pattern.toString())
-    );
-
-  return undefined;
-}
-
-export type UiParseResult =
-  | {
-      readonly value: string;
-      readonly parsed: unknown;
-      readonly isValid: true;
-    }
-  | {
-      readonly value: string;
-      readonly isValid: false;
-      readonly reason: string;
-    };
+export type ValidParseResult = {
+  readonly value: string;
+  readonly parsed: unknown;
+  readonly isValid: true;
+};
+export type InvalidParseResult = {
+  readonly value: string;
+  readonly isValid: false;
+  readonly reason: string;
+};
 
 export function parseValue(
-  field: ExtendedField,
-  parser: Parser | undefined,
+  parser: Parser,
   input: HTMLInputElement | undefined,
   value: string
-): UiParseResult {
+): ValidParseResult | InvalidParseResult {
   if (value.trim() === '')
-    return field.isRequired
+    return parser.required === true
       ? {
           value,
           isValid: false,
@@ -371,14 +318,10 @@ export function parseValue(
           parsed: null,
         };
 
-  if (typeof parser === 'undefined')
-    return {
-      value,
-      isValid: false,
-      reason: formsText('noParser')(field.type),
-    };
-
-  let errorMessage = validateAttributes(parser, value.trim(), input);
+  let errorMessage =
+    typeof input === 'object' && hasNativeErrors(input)
+      ? input.validationMessage
+      : undefined;
   let formattedValue: unknown;
 
   if (typeof errorMessage === 'undefined') {
@@ -387,9 +330,9 @@ export function parseValue(
       value.trim()
     );
 
-    (parser.validators ?? []).some(
-      (validator) => (errorMessage = validator(formattedValue))
-    );
+    (parser.validators ?? []).some((validator) => {
+      errorMessage = validator(formattedValue);
+    });
   }
 
   return typeof errorMessage === 'string'
