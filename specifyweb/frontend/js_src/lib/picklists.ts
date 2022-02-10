@@ -1,44 +1,52 @@
 import { PickListTypes } from './components/combobox';
-import type { PickList, PickListItem } from './datamodel';
-import type { SerializedResource } from './datamodelutils';
-import { serializeResource } from './datamodelutils';
+import type { PickList } from './datamodel';
+import type { SpecifyResource } from './legacytypes';
+import formsText from './localization/forms';
+import { createPickListItem, fetchPickListItems } from './picklistmixins';
 import { schema } from './schema';
 import type { RA } from './types';
 
-let pickLists: RA<SerializedResource<PickList>> = undefined!;
+/**
+ * Make sure to only use this value after calling (await fetchPickLists())
+ */
+export let pickLists: RA<SpecifyResource<PickList>> = undefined!;
+
+export const agentTypes = [
+  formsText('organization'),
+  formsText('person'),
+  formsText('other'),
+  formsText('group'),
+] as const;
 
 /** Get front-end only pick lists */
-async function getExtraPickLists(): Promise<RA<SerializedResource<PickList>>> {
-  const collection = new schema.models.PrepType.LazyCollection({
-    filters: {
-      domainfilter: true,
-    },
-  });
-  const prepTypeItems = await collection
-    .fetchPromise({ limit: 0 })
-    .then(({ models }) =>
-      // @ts-expect-error Skipped nullable fields
-      models.map<SerializedResource<PickListItem>>((model) => ({
-        value: model.get('name'),
-        title: model.get('name'),
-        timestampCreated: new Date().toJSON(),
-      }))
-    );
+async function fetchExtraPickLists(): Promise<RA<SpecifyResource<PickList>>> {
+  const prepType = new schema.models.PickList.Resource();
+  prepType.set('name', 'preptype');
+  prepType.set('tableName', 'PickListItem');
+  prepType.set('readOnly', false);
+  prepType.set('isSystem', true);
+  prepType.set('type', PickListTypes.RECORDS);
+  prepType.set('timestampCreated', new Date().toJSON());
 
-  // @ts-expect-error Skipped nullable fields
-  const prepType: SerializedResource<PickList> = {
-    name: 'preptype',
-    readOnly: false,
-    isSystem: true,
-    type: PickListTypes.TABLE,
-    timestampCreated: new Date().toJSON(),
-    pickListItems: prepTypeItems,
-  };
+  prepType.set('pickListItems', await fetchPickListItems(prepType));
 
-  return [prepType];
+  const agentType = new schema.models.PickList.Resource();
+  agentType.set('name', 'AgentTypeComboBox');
+  agentType.set('readOnly', true);
+  agentType.set('isSystem', true);
+  agentType.set('type', PickListTypes.TABLE);
+  agentType.set('timestampCreated', new Date().toJSON());
+  agentType.set(
+    'pickListItems',
+    agentTypes.map((title, index) =>
+      createPickListItem(index.toString(), title)
+    )
+  );
+
+  return [prepType, agentType];
 }
 
-export async function getPickLists(): Promise<typeof pickLists> {
+export async function fetchPickLists(): Promise<typeof pickLists> {
   if (Array.isArray(pickLists)) return pickLists;
   const collection = new schema.models.PickList.LazyCollection({
     filters: {
@@ -46,13 +54,10 @@ export async function getPickLists(): Promise<typeof pickLists> {
     },
   });
 
-  const extraPickListsPromise = getExtraPickLists();
+  const extraPickListsPromise = fetchExtraPickLists();
 
   return collection.fetchPromise({ limit: 0 }).then(async ({ models }) => {
-    pickLists = [
-      ...models.map(serializeResource),
-      ...(await extraPickListsPromise),
-    ];
+    pickLists = [...models, ...(await extraPickListsPromise)];
     return pickLists;
   });
 }

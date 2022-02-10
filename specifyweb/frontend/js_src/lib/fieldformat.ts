@@ -1,4 +1,4 @@
-import { agentTypes } from './components/agenttypecombobox';
+import { agentTypes } from './picklists';
 import { fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import type { LiteralField } from './specifyfield';
@@ -31,6 +31,7 @@ export function fieldFormat(
   if (field.getFormat() === 'CatalogNumberNumeric')
     return Number.isNaN(asInt) ? value ?? '' : asInt.toString();
 
+  // TODO: format items in all pick lists
   if (field.name === 'agentType' && field.model.name === 'Agent')
     return agentTypes[asInt] ?? '';
 

@@ -1,15 +1,13 @@
 import React from 'react';
 
-import { error } from '../assert';
 import Backbone from '../backbone';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
-import { getPickListByName } from '../getpicklistbyname';
+import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { getFromField, getFromTable, getUserDefined } from '../picklistmixins';
+import { fetchPickList } from '../picklistmixins';
 import type { LiteralField } from '../specifyfield';
 import type { RA } from '../types';
-import { AgentTypeComboBox } from './agenttypecombobox';
 import { DivisionFieldComboBox } from './divisionfieldcombobox';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
@@ -19,6 +17,7 @@ import createBackboneView from './reactbackboneextend';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UserTypeComboBox } from './usertypecombobox';
 import { useAsyncState } from './hooks';
+import { error } from '../assert';
 
 export type DefaultComboBoxProps = {
   readonly model: SpecifyResource<AnySchema>;
@@ -38,11 +37,6 @@ export type PickListItemSimple = {
   readonly title: string;
 };
 
-export type PickListInfo = {
-  readonly pickList: SpecifyResource<PickList>;
-  readonly limit: number;
-};
-
 export const PickListTypes = {
   TABLE: 0,
   RECORDS: 1,
@@ -54,42 +48,34 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     React.useCallback(
       () =>
         typeof props.pickListName === 'string'
-          ? getPickListByName(props.pickListName)
+          ? fetchPickList(props.pickListName).then((pickList) =>
+              typeof pickList === 'undefined'
+                ? error('Unable to find pick list', props)
+                : pickList
+            )
           : undefined,
       [props.pickListName]
     )
   );
 
-  const type = pickList?.get('type') ?? 0;
-
-  // This type has to be readOnly
-  const readOnly = props.readOnly ?? type === PickListTypes.RECORDS;
-
-  const itemsCallback =
-    {
-      // Items in PickListItems table
-      [PickListTypes.TABLE]: getUserDefined,
-      // Items are objects from a table
-      [PickListTypes.RECORDS]: getFromTable,
-      // Items are fields from a table
-      [PickListTypes.FIELDS]: getFromField,
-    }[type] ?? error(`unknown picklist type: ${type}`);
-
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
     React.useCallback(
       () =>
         typeof pickList === 'object'
-          ? void itemsCallback({
-              pickList,
-              limit: Math.max(
-                0,
-                pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
-              ),
-            })
+          ? serializeResource(pickList).pickListItems.map(
+              ({ title, value }) => ({
+                title: title ?? value,
+                value: value ?? title,
+              })
+            )
           : undefined,
-      [itemsCallback, pickList]
+      [pickList]
     )
   );
+
+  // This type has to be readOnly
+  const readOnly =
+    pickList?.get('type') === PickListTypes.RECORDS || props.readOnly;
 
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
@@ -115,12 +101,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
 function ComboBox(props: DefaultComboBoxProps): JSX.Element {
   const { resource, field, fieldName, model } = props;
 
-  if (resource.specifyModel.name === 'Agent' && field.name === 'agentType')
-    return <AgentTypeComboBox {...props} />;
-  else if (
-    resource.specifyModel.name === 'PickList' &&
-    fieldName === 'typesCBX'
-  )
+  if (resource.specifyModel.name === 'PickList' && fieldName === 'typesCBX')
     return <PickListTypeComboBox {...props} />;
   else if (
     resource.specifyModel.name === 'PickList' &&

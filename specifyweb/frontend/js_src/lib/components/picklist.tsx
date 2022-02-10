@@ -23,7 +23,7 @@ import { Dialog, LoadingScreen } from './modaldialog';
 export function PickListComboBox(
   props: Omit<DefaultComboBoxProps, 'readOnly'> & {
     readonly items: RA<PickListItemSimple>;
-    // This is undefined for front-end only picklists (e.g AgentTypeComboBox)
+    // This may be undefined for front-end only picklists
     readonly pickList: SpecifyResource<PickList> | undefined;
     // Pick list is considered read only if onAdd is undefined
     readonly onAdd?: (value: string) => void;
@@ -43,7 +43,6 @@ export function PickListComboBox(
     (value: string): void =>
       void props.resource.set(
         props.field.name,
-        // @ts-expect-error Dynamic reference
         value === '' && props.required
           ? null
           : validationAttributes.type === 'number'
@@ -169,6 +168,7 @@ export function PickListComboBox(
           renderSearchBox={(inputProps): JSX.Element => (
             <Input
               forwardRef={validationRef}
+              name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
               disabled={props.disabled}
               required={props.required}

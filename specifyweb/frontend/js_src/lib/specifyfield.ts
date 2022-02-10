@@ -1,6 +1,6 @@
 import type { Tables } from './datamodel';
 import type { SchemaLocalization } from './schema';
-import { schema, getModel } from './schema';
+import { getModel, schema } from './schema';
 import { unescape } from './schemabase';
 import type { SpecifyModel } from './specifymodel';
 import { type UiFormatter, uiFormatters } from './uiformatters';
@@ -147,7 +147,9 @@ abstract class FieldBase {
    * by the schema configuration.
    */
   public getPickList(): string | undefined {
-    return this.localization.picklistname ?? undefined;
+    if (this.model.name === 'Agent' && this.name === 'agentType')
+      return 'AgentTypeComboBox';
+    else return this.localization.picklistname ?? undefined;
   }
 
   // Returns the weblink definition name if any is assigned to the field.
