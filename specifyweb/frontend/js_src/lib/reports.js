@@ -4,8 +4,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import {schema, getModel, getModelById} from './schema';
-import QueryFieldUI from './queryfield';
+import {getModel, getModelById, schema} from './schema';
+import {QueryLineView} from './components/querybuilderfield';
 import {parseSpecifyProperties,} from './parsespecifyproperties';
 import AttachmentPlugin from './attachmentplugin';
 import * as attachments from './attachments';
@@ -18,6 +18,8 @@ import populateForm from './populateform';
 import * as navigation from './navigation';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
+
+// TODO: rewrite to React
 
 var title = commonText('reports');
 
@@ -463,7 +465,7 @@ var QueryParamsDialog = Backbone.View.extend({
         this.model = getModel(this.query.get('contextname'));
 
         var makeFieldUI = (function(spqueryfield) {
-            return new QueryFieldUI({
+            return new QueryLineView({
                 forReport: true,
                 parentView: this,
                 model: this.model,

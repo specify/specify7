@@ -62,7 +62,7 @@ export function QueryFields({
           onClose={handleClose}
           onLineFocus={(target): void =>
             (target === 'previous' && line === 0) ||
-            (target === 'next' && line + 1 >= fields.length)
+            (target === 'next' && line + 1 >= length)
               ? undefined
               : handleLineFocus(
                   target === 'previous'

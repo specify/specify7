@@ -4,9 +4,11 @@ import type { AnyTree } from '../datamodelutils';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryFieldSpec } from '../queryfieldspec';
+import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { getTreeDefinitionItems } from '../treedefinitions';
 import type { RA } from '../types';
+import { defined } from '../types';
 import { ContainerBase } from './basic';
 import { TableIcon } from './common';
 import { crash } from './errorboundary';
@@ -22,17 +24,26 @@ function TableHeaderCell({
   const tableName = field?.model.name;
   const name = field?.getLocalizedName() ?? field?.name ?? '';
 
-  const label =
-    typeof fieldSpec.treeRank === 'string'
-      ? getTreeDefinitionItems(
-          fieldSpec.table.name as AnyTree['tableName'],
-          false
-        ).find(({ name }) => name === fieldSpec.treeRank)?.title ??
-        fieldSpec.treeRank
-      : typeof fieldSpec.datePart === 'string' &&
-        fieldSpec.datePart !== 'fullDate'
-      ? `${name} (${dateParts[fieldSpec.datePart]})`
-      : name;
+  let label;
+  if (Array.isArray(fieldSpec.treeRank)) {
+    const rankLabel =
+      getTreeDefinitionItems(
+        fieldSpec.table.name as AnyTree['tableName'],
+        false
+      ).find(
+        ({ name }) =>
+          name.toLowerCase() === fieldSpec.treeRank?.[0].toLowerCase()
+      )?.title ?? fieldSpec.treeRank[0];
+    const fieldLabel = defined(
+      defined(getModel(fieldSpec.table.name)).getField(fieldSpec.treeRank[1])
+    ).getLocalizedName();
+    label = [rankLabel, fieldLabel].join(' ');
+  } else if (
+    typeof fieldSpec.datePart === 'string' &&
+    fieldSpec.datePart !== 'fullDate'
+  )
+    label = `${name} (${dateParts[fieldSpec.datePart]})`;
+  else label = name;
 
   return (
     <div

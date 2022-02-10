@@ -4,11 +4,17 @@ import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
+import { mutateLineData } from '../querybuilderutils';
+import type { DatePart } from '../queryfieldspec';
 import { getModel } from '../schema';
-import type { RA } from '../types';
+import type { LiteralField } from '../specifyfield';
 import { defined, filterArray } from '../types';
-import { getParser, Parser } from '../uiparse';
-import { getMappingLineData } from '../wbplanviewnavigator';
+import type { Parser } from '../uiparse';
+import { resolveParser } from '../uiparse';
+import {
+  getMappingLineData,
+  getTableFromMappingPath,
+} from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, className } from './basic';
 import type {
@@ -17,20 +23,17 @@ import type {
 } from './customselectelement';
 import { icons } from './icons';
 import { dateParts } from './internationalization';
-import type { QueryFieldType } from './querybuilderfieldinput';
-import {
+import type {
   QueryFieldFilter,
-  queryFieldFilters,
-  QueryLineFilter,
+  QueryFieldType,
 } from './querybuilderfieldinput';
-import type { MappingElementProps } from './wbplanviewcomponents';
+import { queryFieldFilters, QueryLineFilter } from './querybuilderfieldinput';
 import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
 } from './wbplanviewcomponents';
-import { LiteralField } from '../specifyfield';
-import { DatePart } from '../queryfieldspec';
+import createBackboneView from './reactbackboneextend';
 
 export function QueryLine({
   baseTableName,
@@ -77,40 +80,48 @@ export function QueryLine({
       lineRef.current?.focus();
   }, [isFocused]);
 
-  const [lineProps, setLineProps] = React.useState<RA<MappingElementProps>>([]);
-  const [parser, setParser] = React.useState<Parser | undefined>(undefined);
+  const [fieldMeta, setFieldMeta] = React.useState<{
+    readonly fieldType: QueryFieldType | undefined;
+    readonly pickListName: string | undefined;
+    readonly parser: Parser | undefined;
+  }>({ fieldType: undefined, pickListName: undefined, parser: undefined });
   const previousField = React.useRef<LiteralField | undefined>(undefined);
 
   React.useEffect(() => {
-    const lineData = getMappingLineData({
-      baseTableName,
-      mappingPath: field.mappingPath,
-      iterate: true,
-      showHiddenFields,
-      generateFieldData: 'all',
-    });
-
     let details = field.details;
     let filter = field.filter;
     let fieldType: QueryFieldType | undefined = undefined;
-    if (mappingPathIsComplete(field.mappingPath)) {
-      const tableName = defined(lineData.slice(-1)[0].tableName);
-      const dataModelField = defined(
-        getModel(tableName)?.getLiteralField(field.mappingPath.slice(-1)[0])
-      );
-      const parser = defined(
-        getParser({
+    let parser;
+    let pickListName = undefined;
+
+    const tableName =
+      mappingPathIsComplete(field.mappingPath) &&
+      !field.mappingPath.slice(-1)[0].startsWith('_')
+        ? getTableFromMappingPath(baseTableName, field.mappingPath)
+        : undefined;
+    const dataModelField = getModel(tableName ?? '')?.getField(
+      field.mappingPath.slice(-1)[0]
+    );
+    if (
+      typeof dataModelField === 'object' &&
+      !dataModelField.isRelationship &&
+      mappingPathIsComplete(field.mappingPath)
+    ) {
+      parser = defined(
+        resolveParser({
           ...dataModelField,
           datePart:
             field.details.type === 'dateField'
               ? field.details.datePart
               : undefined,
+          isRequired: true,
         })
       );
-      if (dataModelField !== previousField.current) setParser(parser);
-      previousField.current = dataModelField;
-      if (parser.type === 'date')
-        details ??= { type: 'dateField', datePart: 'fullDate' };
+      pickListName = dataModelField.getPickList();
+      if (parser.type === 'date' && details.type !== 'dateField')
+        details = { type: 'dateField', datePart: 'fullDate' };
+      else if (parser.type !== 'date' && details.type !== 'regularField')
+        details = { type: 'regularField' };
       fieldType =
         tableName === 'CollectionObject' &&
         field.mappingPath.slice(-1)[0] === 'catalogNumber'.toLowerCase()
@@ -119,11 +130,16 @@ export function QueryLine({
       if (queryFieldFilters[filter].types?.includes(fieldType) === false)
         filter = 'any';
     } else {
-      setParser(undefined);
-      previousField.current = undefined;
-      details = { type: 'regularField' };
+      parser = undefined;
       filter = 'any';
+      if (details.type !== 'regularField') details = { type: 'regularField' };
     }
+
+    if (dataModelField !== previousField.current)
+      setFieldMeta({ parser, fieldType, pickListName });
+
+    previousField.current =
+      dataModelField?.isRelationship === true ? undefined : dataModelField;
 
     if (field.details !== details || field.filter !== filter)
       handleChange({
@@ -131,130 +147,104 @@ export function QueryLine({
         details,
         filter,
       });
+  }, [baseTableName, field, handleChange]);
 
-    const filteredLineData = filterArray(
-      lineData.map((mappingElementProps, index) =>
-        mappingElementProps.customSelectSubtype === 'toMany'
-          ? undefined
-          : {
-              ...mappingElementProps,
-              fieldsData: {
-                ...(lineData[index - 1]?.customSelectSubtype === 'toMany'
-                  ? {
-                      _aggregated: {
-                        optionLabel: queryText('aggregated'),
-                        tableName: mappingElementProps.tableName,
-                        isRelationship: false,
-                        isDefault: field.mappingPath[index] === '_aggregated',
-                      },
-                    }
-                  : mappingElementProps?.customSelectSubtype === 'simple' &&
-                    index !== 0
-                  ? {
-                      _formatted: {
-                        optionLabel: queryText('formatted'),
-                        tableName: mappingElementProps.tableName,
-                        isRelationship: false,
-                        isDefault: field.mappingPath[index] === '_formatted',
-                      },
-                    }
-                  : {}),
-                ...mappingElementProps.fieldsData,
-              },
-            }
-      )
-    );
-
-    const fieldOptionsByIndex = {
-      [filteredLineData.length]:
-        field.details.type === 'dateField' ? 'datePart' : undefined,
-      [filteredLineData.length + (field.details.type === 'dateField' ? 1 : 0)]:
-        'filter',
-    } as const;
-    const fieldOptions = filterArray([
-      field.details.type === 'dateField'
-        ? {
-            fieldsData: Object.fromEntries(
-              Object.entries(dateParts).map(([partName, optionLabel]) => [
-                partName,
-                {
-                  optionLabel,
-                  isDefault:
-                    field.details.type === 'dateField' &&
-                    field.details.datePart === partName,
-                },
-              ])
-            ),
-            selectLabel: queryText('datePart'),
-            customSelectSubtype: 'simple' as CustomSelectSubtype,
-          }
-        : undefined,
-      {
-        customSelectSubtype: 'simple' as CustomSelectSubtype,
-        selectLabel: queryText('filter'),
-        fieldsData: Object.fromEntries(
-          filterArray(
-            Object.entries(queryFieldFilters).map(
-              ([filterName, { label, types }]) =>
-                !Array.isArray(types) ||
-                (typeof fieldType === 'string' && types.includes(fieldType))
-                  ? [
-                      filterName,
-                      {
-                        optionLabel: label,
-                        isDefault: filterName === field.filter,
-                      },
-                    ]
-                  : undefined
-            )
-          )
-        ),
-      },
-    ]);
-
-    const lineProps = getMappingLineProps({
-      mappingLineData: [...filteredLineData, ...fieldOptions],
-      customSelectType: 'CLOSED_LIST',
-      onChange: (payload) => {
-        if (fieldOptionsByIndex[payload.index] === 'datePart')
-          handleChange({
-            ...field,
-            details: {
-              type: 'dateField',
-              datePart: payload.newValue as DatePart,
-            },
-          });
-        else if (fieldOptionsByIndex[payload.index] === 'filter')
-          handleChange({
-            ...field,
-            filter: payload.newValue as QueryFieldFilter,
-          });
-        else handleMappingChange(payload);
-      },
-      onOpen: handleOpen,
-      // TODO: detect outside click
-      onClose: handleClose,
-      openSelectElement: openedElement,
-    }).map((elementProps, index) =>
-      typeof fieldOptionsByIndex[index] === 'string'
-        ? {
-            ...elementProps,
-            customSelectType: 'OPTIONS_LIST' as CustomSelectType,
-          }
-        : elementProps
-    );
-
-    setLineProps(lineProps);
-  }, [
+  const lineData = getMappingLineData({
     baseTableName,
-    field,
+    mappingPath: field.mappingPath,
+    iterate: true,
     showHiddenFields,
-    handleMappingChange,
-    handleOpen,
-    handleClose,
-    openedElement,
-    handleChange,
+    generateFieldData: 'all',
+  });
+
+  // TODO: test queries on tree ranks and tree fields
+  // TODO: test formatters and aggregators
+  // TODO: add _aggreagators and _formatters to mapping view
+  // TODO: autoscroll on added field
+  const filteredLineData = mutateLineData(lineData, field.mappingPath);
+
+  const fieldOptionsByIndex = {
+    [filteredLineData.length]:
+      field.details.type === 'dateField' ? 'datePart' : undefined,
+    [filteredLineData.length + (field.details.type === 'dateField' ? 1 : 0)]:
+      'filter',
+  } as const;
+
+  const fieldOptions = filterArray([
+    field.details.type === 'dateField'
+      ? {
+          fieldsData: Object.fromEntries(
+            Object.entries(dateParts).map(([partName, optionLabel]) => [
+              partName,
+              {
+                optionLabel,
+                isDefault:
+                  field.details.type === 'dateField' &&
+                  field.details.datePart === partName,
+              },
+            ])
+          ),
+          selectLabel: queryText('datePart'),
+          customSelectSubtype: 'simple' as CustomSelectSubtype,
+        }
+      : undefined,
+    {
+      customSelectSubtype: 'simple' as CustomSelectSubtype,
+      selectLabel: queryText('filter'),
+      fieldsData: Object.fromEntries(
+        filterArray(
+          Object.entries(queryFieldFilters).map(
+            ([filterName, { label, types }]) =>
+              !Array.isArray(types) ||
+              (typeof fieldMeta.fieldType === 'string' &&
+                types.includes(fieldMeta.fieldType))
+                ? [
+                    filterName,
+                    {
+                      optionLabel: label,
+                      isDefault: filterName === field.filter,
+                    },
+                  ]
+                : undefined
+          )
+        )
+      ),
+    },
   ]);
+
+  const lineProps = getMappingLineProps({
+    mappingLineData: [...filteredLineData, ...fieldOptions],
+    customSelectType: 'CLOSED_LIST',
+    onChange: (payload) => {
+      if (fieldOptionsByIndex[payload.index] === 'datePart')
+        handleChange({
+          ...field,
+          details: {
+            type: 'dateField',
+            datePart: payload.newValue as DatePart,
+          },
+        });
+      else if (fieldOptionsByIndex[payload.index] === 'filter')
+        handleChange({
+          ...field,
+          filter: payload.newValue as QueryFieldFilter,
+        });
+      else handleMappingChange(payload);
+    },
+    onOpen: handleOpen,
+    // TODO: detect outside click
+    onClose: handleClose,
+    openSelectElement: openedElement,
+  }).map((elementProps, index) =>
+    typeof fieldOptionsByIndex[index] === 'string'
+      ? {
+          ...elementProps,
+          customSelectType: 'OPTIONS_LIST' as CustomSelectType,
+        }
+      : elementProps
+  );
+
+  const isFieldComplete = mappingPathIsComplete(field.mappingPath);
 
   return (
     <li
@@ -318,14 +308,9 @@ export function QueryLine({
                   title={queryText('negate')}
                   aria-label={queryText('negate')}
                   // TODO: remove extra classNames
-                  className={`
-                    aria-handled
-                    ${field.isNot ? className.redButton : ''}
-                    op-negate
-                    field-state-hide
-                    operation-state-show
-                    datepart-state-hide
-                  `}
+                  className={`aria-handled ${
+                    field.isNot ? className.redButton : ''
+                  }`}
                   onClick={(): void =>
                     handleChange({
                       ...field,
@@ -341,11 +326,17 @@ export function QueryLine({
               {index + 1 !== length && mappingElementDivider}
             </React.Fragment>
           ))}
-        {typeof parser === 'object' && (
+        {typeof fieldMeta.parser === 'object' && (
           <QueryLineFilter
             field={field}
-            parser={parser}
-            onChange={handleChange}
+            parser={fieldMeta.parser}
+            pickListName={fieldMeta.pickListName}
+            onChange={(startValue): void =>
+              handleChange({
+                ...field,
+                startValue,
+              })
+            }
           />
         )}
       </div>
@@ -355,6 +346,7 @@ export function QueryLine({
           aria-label={queryText('showButtonDescription')}
           className={`
             aria-handled
+            ${isFieldComplete ? '' : 'invisible'}
             ${field.isDisplay ? className.greenButton : ''}
           `}
           onClick={(): void =>
@@ -368,6 +360,7 @@ export function QueryLine({
           {icons.check}
         </Button.Simple>
         <Button.Simple
+          className={isFieldComplete ? '' : 'invisible'}
           title={
             field.sortType === 'ascending'
               ? queryText('ascendingSort')
@@ -420,3 +413,5 @@ export function QueryLine({
     </li>
   );
 }
+
+export const QueryLineView = createBackboneView(QueryLine);

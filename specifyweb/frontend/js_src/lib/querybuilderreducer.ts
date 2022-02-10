@@ -5,6 +5,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { QueryField } from './querybuilderutils';
 import type { RA } from './types';
 import { mutateMappingPath } from './wbplanviewutils';
+import { Tables } from './datamodel';
 
 export type MainState = State<
   'MainState',
@@ -16,6 +17,7 @@ export type MainState = State<
       readonly index: number | undefined;
     };
     readonly saveRequired: boolean;
+    readonly baseTableName: Lowercase<keyof Tables>;
   }
 >;
 type Actions =

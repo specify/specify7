@@ -1,26 +1,25 @@
 import React from 'react';
 
 import type { RecordSet, SpQuery } from '../datamodel';
+import type { AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import queryText from '../localization/query';
 import { NotFoundView } from '../notfoundview';
+import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel, schema } from '../schema';
 import * as app from '../specifyapp';
 import { setCurrentView } from '../specifyapp';
+import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
-import dataModelStorage from '../wbplanviewmodel';
+import { userInformation } from '../userinfo';
 import { dataModelPromise } from '../wbplanviewmodelfetcher';
-import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
-import { userInformation } from '../userinfo';
-import { useAsyncState } from './hooks';
-import { AnyTree } from '../datamodelutils';
-import { SpecifyModel } from '../specifymodel';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -44,14 +43,14 @@ function QueryBuilderWrapper({
   query: SpecifyResource<SpQuery>;
   recordSet?: SpecifyResource<RecordSet> | false;
 }) {
-  const [isLoading, setIsLoading] = React.useState(
-    typeof dataModelStorage.tables === 'undefined'
+  const [dataModelLoading = true] = useAsyncState(async () =>
+    dataModelPromise.then(() => false)
   );
-  React.useEffect(() => {
-    dataModelPromise.then(() => setIsLoading(false)).catch(crash);
-  }, []);
+  const [pickListsLoading = true] = useAsyncState(async () =>
+    fetchPickLists().then(() => false)
+  );
 
-  return isLoading ? (
+  return dataModelLoading || pickListsLoading ? (
     <LoadingScreen />
   ) : (
     <QueryBuilder
@@ -71,7 +70,7 @@ function QueryBuilderById({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
-      return Promise.resolve(query.fetch());
+      return query.fetch();
     }, [queryId])
   );
   const recordSet = useQueryRecordSet();
@@ -138,7 +137,7 @@ function QueryBuilderFromTree({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
       // TODO: convert to react
-      () => queryFromTree(tableName, nodeId),
+      async () => queryFromTree(tableName, nodeId),
       [tableName, nodeId]
     )
   );

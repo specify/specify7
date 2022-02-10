@@ -83,6 +83,7 @@ export function QuerySaveDialog({
           {queryText('queryName')}
           <Input
             type="text"
+            name="queryName"
             autoComplete="on"
             spellCheck="true"
             required

@@ -6,7 +6,7 @@ import commonText from '../localization/common';
 import queryText from '../localization/query';
 import wbText from '../localization/workbench';
 import { reducer } from '../querybuilderreducer';
-import { parseQueryFields } from '../querybuilderutils';
+import { mutateLineData, parseQueryFields } from '../querybuilderutils';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toLowerCase } from '../wbplanviewhelper';
@@ -16,6 +16,7 @@ import {
   Button,
   Checkbox,
   ContainerFull,
+  Form,
   H2,
   LabelForCheckbox,
   Submit,
@@ -51,6 +52,7 @@ export function QueryBuilder({
     mappingView: ['0'],
     openedElement: { line: 1, index: undefined },
     saveRequired: queryResource.isNew(),
+    baseTableName: toLowerCase(model.name),
   });
 
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
@@ -92,8 +94,7 @@ export function QueryBuilder({
       ...payload,
     });
 
-  const mapButtonEnabled =
-    state.fields.length > 0 && mappingPathIsComplete(state.mappingView);
+  const mapButtonEnabled = mappingPathIsComplete(state.mappingView);
   const handleAddField = (): void =>
     dispatch({
       type: 'ChangeFieldsAction',
@@ -119,7 +120,7 @@ export function QueryBuilder({
     });
   return (
     <ContainerFull>
-      <form className="contents">
+      <Form className="contents">
         <header className="gap-x-2 whitespace-nowrap flex items-center">
           <TableIcon tableName={model.name} />
           <H2 className="overflow-x-auto">
@@ -141,13 +142,13 @@ export function QueryBuilder({
               : queryText('editQuery')}
           </Button.Simple>
           <QueryExportButtons
-            baseTableName={toLowerCase(model.name)}
+            baseTableName={state.baseTableName}
             fields={state.fields}
             queryResource={queryResource}
           />
           {!readOnly && (
             <MakeRecordSetButton
-              baseTableName={toLowerCase(model.name)}
+              baseTableName={state.baseTableName}
               fields={state.fields}
               queryResource={queryResource}
             />
@@ -164,7 +165,7 @@ export function QueryBuilder({
           )}
           <SaveQueryButtons
             readOnly={readOnly}
-            baseTableName={toLowerCase(model.name)}
+            baseTableName={state.baseTableName}
             queryResource={queryResource}
             fields={state.fields}
             saveRequired={state.saveRequired}
@@ -175,37 +176,8 @@ export function QueryBuilder({
           <div className="gap-y-4 flex flex-col">
             {showQueryDefinition && (
               <div className="gap-y-4 min-h-[50%] flex flex-col">
-                <MappingView
-                  baseTableName={toLowerCase(model.name)}
-                  mappingPath={state.mappingView}
-                  hideToMany={true}
-                  showHiddenFields={showHiddenFields}
-                  mapButton={
-                    <Button.Simple
-                      className="flex-col justify-center p-2"
-                      disabled={!mapButtonEnabled}
-                      onClick={handleAddField}
-                      title={queryText('newButtonDescription')}
-                    >
-                      {commonText('add')}
-                      <span
-                        className={`text-green-500 ${
-                          mapButtonEnabled ? '' : 'invisible'
-                        }`}
-                        aria-hidden="true"
-                      >
-                        &#8594;
-                      </span>
-                    </Button.Simple>
-                  }
-                  mustMatchPreferences={{}}
-                  onDoubleClick={mapButtonEnabled ? handleAddField : undefined}
-                  onMappingViewChange={(payload): void =>
-                    handleChange({ line: 'mappingView', ...payload })
-                  }
-                />
                 <QueryFields
-                  baseTableName={toLowerCase(model.name)}
+                  baseTableName={state.baseTableName}
                   fields={state.fields}
                   onRemoveField={(line): void =>
                     dispatch({
@@ -250,6 +222,38 @@ export function QueryBuilder({
                   }
                   openedElement={state.openedElement}
                   showHiddenFields={showHiddenFields}
+                />
+                <MappingView
+                  // TODO: display date part choose in mapping view
+                  baseTableName={state.baseTableName}
+                  mappingPath={state.mappingView}
+                  lineDataMutator={(lineData) =>
+                    mutateLineData(lineData, state.mappingView)
+                  }
+                  showHiddenFields={showHiddenFields}
+                  mapButton={
+                    <Button.Simple
+                      className="flex-col justify-center p-2"
+                      disabled={!mapButtonEnabled}
+                      onClick={handleAddField}
+                      title={queryText('newButtonDescription')}
+                    >
+                      {commonText('add')}
+                      <span
+                        className={`text-green-500 ${
+                          mapButtonEnabled ? '' : 'invisible'
+                        }`}
+                        aria-hidden="true"
+                      >
+                        &#8594;
+                      </span>
+                    </Button.Simple>
+                  }
+                  mustMatchPreferences={{}}
+                  onDoubleClick={mapButtonEnabled ? handleAddField : undefined}
+                  onMappingViewChange={(payload): void =>
+                    handleChange({ line: 'mappingView', ...payload })
+                  }
                 />
               </div>
             )}
@@ -311,7 +315,7 @@ export function QueryBuilder({
             <div className="bg-red-800" style={{ height: '1000px' }} />
           </div>
         </div>
-      </form>
+      </Form>
     </ContainerFull>
   );
 }

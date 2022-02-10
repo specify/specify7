@@ -98,7 +98,7 @@ export function crash(error: Error): void {
   console.error(error);
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
   new UnhandledErrorView({
-    children: error.message ?? error.toString(),
+    children: error.message ?? error.responseText ?? error.toString(),
   }).render();
 }
 

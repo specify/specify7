@@ -1,10 +1,18 @@
 import React from 'react';
 
+import { serializeResource } from '../datamodelutils';
+import commonText from '../localization/common';
 import queryText from '../localization/query';
+import { fetchPickList } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';
-import { getValidationAttributes, Parser } from '../uiparse';
-import { Input } from './basic';
+import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
+import { getValidationAttributes, parseValue } from '../uiparse';
+import { hasNativeErrors } from '../validationmessages';
+import { mappingPathToString } from '../wbplanviewmappinghelper';
+import { Input, Select } from './basic';
+import type { PickListItemSimple } from './combobox';
+import { useAsyncState, useValidation } from './hooks';
 
 export type QueryFieldType = 'text' | 'number' | 'date' | 'id' | 'checkbox';
 export type QueryFieldFilter =
@@ -25,27 +33,118 @@ export type QueryFieldFilter =
   | 'falseOrNull';
 
 function QueryInputField({
+  currentValue,
+  parser,
+  // Used only to help browsers with autocomplete
+  fieldName,
+  label = commonText('searchQuery'),
+  pickListItems,
+  listInput = false,
+  onChange: handleChange,
+}: {
+  readonly currentValue: string;
+  readonly fieldName: string;
+  readonly parser: Parser;
+  readonly label?: string;
+  readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly listInput?: boolean;
+  readonly onChange: (newValue: string) => void;
+}): JSX.Element {
+  const [value, setValue] = React.useState(currentValue);
+  React.useEffect(() => setValue(currentValue), [currentValue]);
+
+  const { validationRef, setValidation } = useValidation<
+    HTMLInputElement | HTMLSelectElement
+  >();
+  const validationAttributes = getValidationAttributes(parser);
+  const extractValues = (target: HTMLInputElement | HTMLSelectElement) =>
+    listInput
+      ? Array.from(target.querySelectorAll('option'))
+          .filter(({ selected }) => selected)
+          .map(({ value }) => value)
+      : [target.value];
+  const commonProps = {
+    forwardRef: validationRef,
+    autoComplete: 'on',
+    name: fieldName,
+    title: label,
+    'aria-label': label,
+    onChange: ({
+      target,
+    }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void =>
+      setValue(extractValues(target).join(',')),
+    onBlur: ({
+      target,
+    }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+      const input = target as HTMLInputElement;
+
+      if (hasNativeErrors(input)) return;
+
+      const parseResults = extractValues(target).map((value) =>
+        parseValue(parser, input, value)
+      );
+      const errorMessages = parseResults
+        .filter((result): result is InvalidParseResult => !result.isValid)
+        .map(({ reason }) => reason);
+      if (errorMessages.length > 0) {
+        setValidation(errorMessages);
+        return;
+      }
+
+      const validResults = parseResults as RA<ValidParseResult>;
+      const parsed = validResults.some(
+        ({ parsed }) => typeof parsed === 'object'
+      )
+        ? input.value
+        : validResults
+            .filter(({ parsed }) => parsed !== null)
+            .map(({ parsed }) => (parsed as number | string).toString())
+            .join(', ');
+      handleChange(parsed);
+    },
+  };
+
+  return Array.isArray(pickListItems) ? (
+    <Select
+      {...commonProps}
+      required={Boolean(validationAttributes.required)}
+      multiple={listInput}
+      value={listInput ? value.split(',').map((value) => value.trim()) : value}
+      size={listInput ? 4 : 1}
+    >
+      {pickListItems.map(({ title, value }) => (
+        <option key={value} value={value}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  ) : (
+    // TODO: handle paste for dateField fullDate
+    <Input {...commonProps} {...validationAttributes} value={value} />
+  );
+}
+
+function SingleField({
   field,
   parser,
-  fieldName = 'startValue',
+  pickListItems,
+  label = commonText('searchQuery'),
   onChange: handleChange,
 }: {
   readonly field: QueryField;
   readonly parser: Parser;
-  readonly fieldName?: 'startValue' | 'endValue';
-  readonly onChange: (newField: QueryField) => void;
+  readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly label?: string;
+  readonly onChange: (newValue: string) => void;
 }): JSX.Element {
-  // TODO: handle paste for dateField fullDate
   return (
-    <Input
-      {...getValidationAttributes(parser)}
-      value={fieldName}
-      onChange={({ target }): void =>
-        handleChange({
-          ...field,
-          [fieldName]: target.value,
-        })
-      }
+    <QueryInputField
+      currentValue={field.startValue}
+      parser={parser}
+      label={label}
+      pickListItems={pickListItems}
+      fieldName={mappingPathToString(field.mappingPath)}
+      onChange={handleChange}
     />
   );
 }
@@ -53,144 +152,235 @@ function QueryInputField({
 function Between({
   field,
   parser,
+  pickListItems,
   onChange: handleChange,
 }: {
   readonly field: QueryField;
   readonly parser: Parser;
-  readonly onChange: (newField: QueryField) => void;
+  readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly onChange: (newValue: string) => void;
 }): JSX.Element {
+  const [values, setValues] = React.useState(field.startValue.split(','));
+  const updateValues = (index: 0 | 1, newValue: string) => {
+    const newValues = [
+      index === 0 ? newValue : values[0],
+      index === 1 ? newValue : values[1],
+    ];
+    handleChange(newValues.join(','));
+    setValues(newValues);
+  };
   return (
     <>
       <QueryInputField
-        field={field}
+        currentValue={values[0] ?? ''}
         parser={parser}
-        fieldName="startValue"
-        onChange={handleChange}
+        pickListItems={pickListItems}
+        label={queryText('startValue')}
+        fieldName={mappingPathToString(field.mappingPath)}
+        onChange={updateValues.bind(undefined, 0)}
       />
+      {queryText('and')}
       <QueryInputField
-        field={field}
+        currentValue={values[1] ?? ''}
         parser={parser}
-        fieldName="endValue"
-        onChange={handleChange}
+        pickListItems={pickListItems}
+        label={queryText('endValue')}
+        fieldName={mappingPathToString(field.mappingPath)}
+        onChange={updateValues.bind(undefined, 1)}
       />
     </>
   );
 }
 
-// The order of elements here matters
+function mutateParser(parser: Parser): Parser {
+  if (typeof parser.pattern === 'object') {
+    // If a pattern is set, modify it to allow for comma separators
+    const pattern = parser.pattern
+      .toString()
+      .replaceAll(/^\/\^\(?|\)?\$\/$/g, '');
+    // Pattern with whitespace
+    const escaped = `\\s*(?:${pattern})\\s*`;
+    return {
+      ...parser,
+      pattern: new RegExp(`|${escaped}(?:,${escaped})*`),
+    };
+  } else return parser;
+}
+
+function In({
+  field,
+  parser,
+  pickListItems,
+  onChange: handleChange,
+}: {
+  readonly field: QueryField;
+  readonly parser: Parser;
+  readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly onChange: (newValue: string) => void;
+}): JSX.Element {
+  return (
+    <QueryInputField
+      currentValue={field.startValue}
+      parser={mutateParser(parser)}
+      pickListItems={pickListItems}
+      label={queryText('startValue')}
+      fieldName={mappingPathToString(field.mappingPath)}
+      listInput={true}
+      onChange={handleChange}
+    />
+  );
+}
+
+/*
+ * TODO: test all combination of data types and filters
+ *       (including pick lists)
+ * TODO: handle errors on invalid filter conditions
+ * TODO: properly handle pick lists
+ * The order of elements here matters
+ */
 export const queryFieldFilters: RR<
   QueryFieldFilter,
   {
     label: string;
+    renderPickList: boolean;
     types?: RA<QueryFieldType>;
-    component?: typeof QueryInputField;
-
-    negation?: string;
-    format: boolean;
+    component?: typeof SingleField;
   }
 > = {
   any: {
     label: queryText('any'),
-    format: false,
+    renderPickList: false,
   },
   like: {
     label: queryText('like'),
+    renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
-    format: false,
+    component: SingleField,
   },
   equal: {
     label: queryText('equal'),
-    component: QueryInputField,
-    negation: '≠',
-    format: true,
+    renderPickList: true,
+    component: SingleField,
   },
   greater: {
+    // TODO: figure out if these filters makes sense for pickLists
     label: queryText('greaterThan'),
-    component: QueryInputField,
-    negation: '≯',
+    renderPickList: false,
     types: ['number', 'date', 'id'],
-    format: true,
+    component: SingleField,
   },
   less: {
     label: queryText('lessThan'),
-    component: QueryInputField,
-    negation: '≮',
+    renderPickList: false,
     types: ['number', 'date', 'id'],
-    format: true,
+    component: SingleField,
   },
   greaterOrEqual: {
     label: queryText('greaterOrEqualTo'),
-    component: QueryInputField,
-    negation: '≱',
+    renderPickList: false,
     types: ['number', 'date', 'id'],
-    format: true,
+    component: SingleField,
   },
   lessOrEqual: {
     label: queryText('lessOrEqualTo'),
-    component: QueryInputField,
-    negation: '≰',
+    renderPickList: false,
     types: ['number', 'date', 'id'],
-    format: true,
+    component: SingleField,
   },
   true: {
     label: queryText('true'),
-    negation: 'Not True',
+    renderPickList: false,
     types: ['checkbox'],
-    format: false,
   },
   false: {
     label: queryText('false'),
-    negation: 'Not False',
+    renderPickList: false,
     types: ['checkbox'],
-    format: false,
   },
   between: {
     label: queryText('between'),
+    renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
-    format: false,
     component: Between,
   },
   in: {
     label: queryText('in'),
+    renderPickList: true,
     types: ['text', 'number', 'date', 'id'],
-    format: false,
+    component: In,
   },
   contains: {
     label: queryText('contains'),
-    component: QueryInputField,
+    renderPickList: false,
+    component: SingleField,
     types: ['text', 'number', 'date', 'id'],
-    format: false,
   },
   empty: {
     label: queryText('empty'),
-    negation: 'Not Empty',
-    format: false,
+    renderPickList: false,
   },
   trueOrNull: {
     label: queryText('trueOrNull'),
-    negation: 'False',
+    renderPickList: false,
     types: ['checkbox'],
-    format: false,
   },
   falseOrNull: {
     label: queryText('falseOrNull'),
-    negation: 'True',
+    renderPickList: false,
     types: ['checkbox'],
-    format: false,
   },
 };
 
 export function QueryLineFilter({
   field,
   parser,
+  pickListName,
   onChange: handleChange,
 }: {
   readonly field: QueryField;
   readonly parser: Parser;
-  readonly onChange: (newField: QueryField) => void;
+  readonly pickListName?: string;
+  readonly onChange: (newValue: string) => void;
 }): JSX.Element | null {
+  const [pickListItems] = useAsyncState(
+    React.useCallback(
+      () =>
+        typeof pickListName === 'string'
+          ? fetchPickList(pickListName).then((pickList) =>
+              typeof pickList === 'object'
+                ? serializeResource(pickList).pickListItems.map(
+                    ({ title, value }) => ({
+                      title: title ?? value,
+                      value: value ?? title,
+                    })
+                  )
+                : undefined
+            )
+          : undefined,
+      [pickListName]
+    )
+  );
+
+  const previousFilter = React.useRef<typeof field.filter>(field.filter);
+  // TODO: debug this part
+  // When going from "in" to another filter type, throw away all but first value
+  React.useEffect(() => {
+    if (field.filter !== 'in' && previousFilter.current === 'in')
+      handleChange(field.startValue.split(',')[0]);
+    previousFilter.current = field.filter;
+  }, [handleChange, field]);
+
   const Component = queryFieldFilters[field.filter].component;
   return typeof Component === 'undefined' ? null : (
-    <Component field={field} onChange={handleChange} parser={parser} />
+    <Component
+      field={field}
+      onChange={handleChange}
+      parser={parser}
+      pickListItems={
+        queryFieldFilters[field.filter].renderPickList
+          ? pickListItems
+          : undefined
+      }
+    />
   );
 }

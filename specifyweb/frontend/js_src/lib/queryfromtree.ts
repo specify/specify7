@@ -30,16 +30,23 @@ function makeField(
   fieldSpec.treeRank =
     typeof rankName === 'string' ? `${rankName} ID` : undefined;
 
-  return new schema.models.SpQueryField.Resource()
-    .setFromObject({
-      sortType: flippedSortTypes.none,
-      isDisplay: true,
-      isNot: false,
-      startValue: '',
-      operStart: 1,
-    })
-    .setFromObject(fieldSpec.toSpQueryAttributes())
-    .setFromObject(options);
+  const attributes = fieldSpec.toSpQueryAttributes();
+  const field = new schema.models.SpQueryField.Resource()
+    .set('sortType', flippedSortTypes.none)
+    .set('isDisplay', true)
+    .set('isNot', false)
+    .set('startValue', '')
+    .set('operStart', 1)
+    .set('tableList', attributes.tableList)
+    .set('stringId', attributes.stringId)
+    .set('fieldName', attributes.fieldName)
+    .set('isRelFld', attributes.isRelFld);
+
+  Object.entries(options).forEach(([key, value]) =>
+    field.set(key as keyof SpQueryField['fields'], value)
+  );
+
+  return field;
 }
 
 const defaultFields: RR<
