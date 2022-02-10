@@ -11,6 +11,7 @@ import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toLowerCase } from '../wbplanviewhelper';
 import { mappingPathToString } from '../wbplanviewmappinghelper';
+import { getMappingLineData } from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import {
   Button,
@@ -30,6 +31,7 @@ import {
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
 import { useCachedState } from './stateCache';
+import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 export function QueryBuilder({
@@ -225,12 +227,23 @@ export function QueryBuilder({
                 />
                 <MappingView
                   // TODO: display date part choose in mapping view
-                  baseTableName={state.baseTableName}
-                  mappingPath={state.mappingView}
-                  lineDataMutator={(lineData) =>
-                    mutateLineData(lineData, state.mappingView)
-                  }
-                  showHiddenFields={showHiddenFields}
+                  mappingElementProps={getMappingLineProps({
+                    mappingLineData: mutateLineData(
+                      getMappingLineData({
+                        baseTableName: state.baseTableName,
+                        mappingPath: state.mappingView,
+                        iterate: true,
+                        showHiddenFields,
+                        generateFieldData: 'all',
+                      }),
+                      state.mappingView
+                    ),
+                    customSelectType: 'OPENED_LIST',
+                    onChange({ isDoubleClick, ...rest }) {
+                      if (isDoubleClick && mapButtonEnabled) handleAddField();
+                      else handleChange({ line: 'mappingView', ...rest });
+                    },
+                  })}
                   mapButton={
                     <Button.Simple
                       className="flex-col justify-center p-2"
@@ -248,11 +261,6 @@ export function QueryBuilder({
                         &#8594;
                       </span>
                     </Button.Simple>
-                  }
-                  mustMatchPreferences={{}}
-                  onDoubleClick={mapButtonEnabled ? handleAddField : undefined}
-                  onMappingViewChange={(payload): void =>
-                    handleChange({ line: 'mappingView', ...payload })
                   }
                 />
               </div>

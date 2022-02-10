@@ -28,7 +28,7 @@ function makeField(
   const pathArray = [schema.models.CollectionObject.name, ...path.split('.')];
   const fieldSpec = QueryFieldSpec.fromPath(pathArray);
   fieldSpec.treeRank =
-    typeof rankName === 'string' ? `${rankName} ID` : undefined;
+    typeof rankName === 'string' ? [rankName, 'id'] : undefined;
 
   const attributes = fieldSpec.toSpQueryAttributes();
   const field = new schema.models.SpQueryField.Resource()

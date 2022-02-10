@@ -3,7 +3,7 @@ import type { State } from 'typesafe-reducer';
 import type { QueryFieldFilter } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
-import type { SerializedModel, SerializedResource } from './datamodelutils';
+import type { SerializedResource } from './datamodelutils';
 import queryText from './localization/query';
 import type { DatePart } from './queryfieldspec';
 import { QueryFieldSpec } from './queryfieldspec';
@@ -73,7 +73,7 @@ export function parseQueryFields(
 export const unParseQueryFields = (
   baseTableName: Lowercase<keyof Tables>,
   fields: RA<QueryField>
-): RA<Partial<SerializedModel<SpQueryField>>> =>
+): RA<SerializedResource<SpQueryField>> =>
   fields
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map((field, index) => {
@@ -85,15 +85,13 @@ export const unParseQueryFields = (
       const attributes = fieldSpec.toSpQueryAttributes();
 
       return {
-        tablelist: attributes.tableList,
-        stringid: attributes.stringId,
-        fieldname: attributes.fieldName,
-        isrelfld: attributes.isRelFld,
-        sorttype: sortTypes.indexOf(field.sortType),
+        ...attributes,
+        sortType: sortTypes.indexOf(field.sortType),
         position: index,
-        startvalue: field.startValue,
+        startValue: field.startValue,
         endvalue: field.endValue,
-      };
+        // TODO: add missing nullable fields here
+      } as unknown as SerializedResource<SpQueryField>;
     });
 
 export function hasLocalityColumns(fields: RA<QueryField>): boolean {

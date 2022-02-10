@@ -451,10 +451,24 @@ export function WbPlanViewMapper(props: {
       )}
       {state.showMappingView && (
         <MappingView
-          baseTableName={props.baseTableName}
-          mappingPath={state.mappingView}
-          hideToMany={false}
-          showHiddenFields={state.showHiddenFields}
+          mappingElementProps={getMappingLineProps({
+            mappingLineData: getMappingLineData({
+              baseTableName: props.baseTableName,
+              mappingPath: state.mappingView,
+              iterate: true,
+              getMappedFields: getMappedFieldsBind,
+              showHiddenFields: state.showHiddenFields,
+              mustMatchPreferences: state.mustMatchPreferences,
+              generateFieldData: 'all',
+            }),
+            customSelectType: 'OPENED_LIST',
+            onChange({ isDoubleClick, ...rest }) {
+              if (isDoubleClick && mapButtonEnabled)
+                dispatch({ type: 'MappingViewMapAction' });
+              else if (!props.readonly)
+                handleChange({ line: 'mappingView', ...rest });
+            },
+          })}
           mapButton={
             <Button.Simple
               className="flex-col justify-center p-2"
@@ -473,19 +487,6 @@ export function WbPlanViewMapper(props: {
               </span>
             </Button.Simple>
           }
-          mustMatchPreferences={state.mustMatchPreferences}
-          onDoubleClick={
-            mapButtonEnabled
-              ? undefined
-              : (): void => dispatch({ type: 'MappingViewMapAction' })
-          }
-          onMappingViewChange={
-            props.readonly
-              ? undefined
-              : (payload): void =>
-                  handleChange({ line: 'mappingView', ...payload })
-          }
-          getMappedFields={getMappedFieldsBind}
         />
       )}
 

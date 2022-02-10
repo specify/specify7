@@ -235,7 +235,6 @@ function In({
  * TODO: test all combination of data types and filters
  *       (including pick lists)
  * TODO: handle errors on invalid filter conditions
- * TODO: properly handle pick lists
  * The order of elements here matters
  */
 export const queryFieldFilters: RR<
@@ -362,7 +361,6 @@ export function QueryLineFilter({
   );
 
   const previousFilter = React.useRef<typeof field.filter>(field.filter);
-  // TODO: debug this part
   // When going from "in" to another filter type, throw away all but first value
   React.useEffect(() => {
     if (field.filter !== 'in' && previousFilter.current === 'in')

@@ -10,9 +10,9 @@ import React from 'react';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
+import { Button, Container, H2, Link } from './basic';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Button, Container, H2, Link } from './basic';
 
 type ErrorBoundaryState =
   | {
@@ -96,9 +96,13 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   console.error(error);
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   new UnhandledErrorView({
-    children: error.message ?? error.responseText ?? error.toString(),
+    children:
+      error.message ??
+      // "error.responseText" is for jQuery exceptions
+      (error as unknown as { readonly responseText: string }).responseText ??
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      error.toString(),
   }).render();
 }
 

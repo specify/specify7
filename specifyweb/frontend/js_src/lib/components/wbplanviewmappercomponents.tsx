@@ -11,7 +11,7 @@ import type {
   ColumnOptions,
   MatchBehaviors,
 } from '../uploadplantomappingstree';
-import { getMappingLineData, MappingLineData } from '../wbplanviewnavigator';
+import { getMappingLineData } from '../wbplanviewnavigator';
 import {
   Button,
   Checkbox,
@@ -23,10 +23,12 @@ import {
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import type { HtmlGeneratorFieldData } from './wbplanviewcomponents';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from './wbplanviewcomponents';
 import {
   ButtonWithConfirmation,
-  getMappingLineProps,
   MappingPathComponent,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
@@ -140,48 +142,9 @@ const mappingViewResizeThrottle = 150;
 const defaultMappingViewHeight = 300;
 
 export function MappingView(props: {
-  readonly baseTableName: string;
-  readonly mappingPath: MappingPath;
-  readonly lineDataMutator?: (
-    lineData: RA<MappingLineData>
-  ) => RA<MappingLineData>;
+  readonly mappingElementProps: RA<MappingElementProps>;
   readonly mapButton: JSX.Element;
-  readonly mustMatchPreferences: IR<boolean>;
-  readonly onDoubleClick?: () => void;
-  readonly onMappingViewChange?: (payload: {
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly currentTableName: string;
-    readonly newTableName: string;
-    readonly isDoubleClick: boolean;
-  }) => void;
-  readonly getMappedFields?: GetMappedFieldsBind;
-  readonly showHiddenFields?: boolean;
 }): JSX.Element | null {
-  const mappingLineData = getMappingLineProps({
-    mappingLineData: getMappingLineData({
-      baseTableName: props.baseTableName,
-      mappingPath: props.mappingPath,
-      iterate: true,
-      getMappedFields: props.getMappedFields,
-      showHiddenFields: props.showHiddenFields,
-      mustMatchPreferences: props.mustMatchPreferences,
-      generateFieldData: 'all',
-    }),
-    customSelectType: 'OPENED_LIST',
-    onChange({ isDoubleClick, ...rest }) {
-      if (isDoubleClick) props.onDoubleClick?.();
-      else
-        props.onMappingViewChange?.({
-          ...rest,
-          isDoubleClick,
-        });
-    },
-  });
-  const lineData = props.lineDataMutator?.(mappingLineData) ?? mappingLineData;
   // `resize` event listener for the mapping view
   const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
   const mappingViewParentRef = React.useCallback<
@@ -219,7 +182,7 @@ export function MappingView(props: {
     >
       <div className="flex-nowrap gap-x-8 w-max flex h-full">
         <div className="gap-x-1 flex-nowrap flex" role="list">
-          <MappingPathComponent mappingLineData={lineData} />
+          <MappingPathComponent mappingLineData={props.mappingElementProps} />
         </div>
         {props.mapButton}
       </div>
