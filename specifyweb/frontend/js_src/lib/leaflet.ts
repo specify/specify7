@@ -305,8 +305,8 @@ export function addMarkersToMap(
   // Sort markers by layer groups
   markers.forEach((markers) =>
     Object.entries(markers).forEach(([markerGroupName, markers]) =>
-      (markers as Marker[]).forEach((marker) => {
-        layerGroups[markerGroupName as MarkerLayerName].addLayer(marker);
+      (markers as RA<Marker>).forEach((marker) => {
+        layerGroups[markerGroupName].addLayer(marker);
         groupsWithMarkers.add(markerGroupName);
       })
     )
@@ -317,20 +317,18 @@ export function addMarkersToMap(
     [preferredOverlay]: true,
   });
 
-  const layerLabels: Exclude<typeof labels, undefined> =
-    typeof labels === 'object'
-      ? labels
-      : {
-          marker: localityText('occurrencePoints'),
-          polygon: localityText('occurrencePolygons'),
-          polygonBoundary: localityText('polygonBoundaries'),
-          errorRadius: localityText('errorRadius'),
-        };
+  const defaultLabels = {
+    marker: localityText('occurrencePoints'),
+    polygon: localityText('occurrencePolygons'),
+    polygonBoundary: localityText('polygonBoundaries'),
+    errorRadius: localityText('errorRadius'),
+  };
+
   // Add layer groups' checkboxes to the layer control menu
-  Object.entries(layerLabels)
+  Object.entries(labels ?? defaultLabels)
     .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
     .forEach(([key, label]) =>
-      controlLayers.addOverlay(layerGroups[key as MarkerLayerName], label)
+      controlLayers.addOverlay(layerGroups[key], label ?? defaultLabels[key])
     );
 }
 

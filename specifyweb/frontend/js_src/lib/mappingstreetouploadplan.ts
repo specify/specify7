@@ -5,6 +5,7 @@
  * @module
  */
 
+import { isTreeModel } from './treedefinitions';
 import type { IR, R, Writable } from './types';
 import type {
   ColumnDefinition,
@@ -21,7 +22,6 @@ import {
 import dataModelStorage from './wbplanviewmodel';
 import type { DataModelField } from './wbplanviewmodelfetcher';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
-import { isTreeModel } from './treedefinitions';
 
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDefinition> {}

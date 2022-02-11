@@ -3,6 +3,8 @@
  *
  * @module
  *
+ * TODO: make this file more type safe
+ *
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
@@ -66,8 +68,7 @@ const excludeUnknownMatchingOptions = (matchingOptions: ColumnOptions) =>
     Object.entries(defaultColumnOptions).map(([optionName, defaultValue]) => [
       optionName,
       optionName in matchingOptions
-        ? // @ts-expect-error
-          matchingOptions[optionName]
+        ? matchingOptions[optionName]
         : defaultValue,
     ])
   ) as ColumnOptions;
@@ -128,7 +129,7 @@ const uploadPlanProcessingFunctions = (
 const handleTreeRankFields = (
   treeRankFields: IR<ColumnDefinition>,
   headers: RA<string>
-) =>
+): IR<unknown> =>
   Object.fromEntries(
     Object.entries(treeRankFields).map(([fieldName, headerName]) =>
       uploadPlanProcessingFunctions(headers, {}, []).wbcols([
@@ -138,7 +139,10 @@ const handleTreeRankFields = (
     )
   );
 
-const handleTreeRecord = (uploadPlan: TreeRecord, headers: RA<string>) =>
+const handleTreeRecord = (
+  uploadPlan: TreeRecord,
+  headers: RA<string>
+): IR<IR<unknown>> =>
   Object.fromEntries(
     Object.entries(uploadPlan.ranks).map(([rankName, rankData]) => [
       formatTreeRank(rankName),
@@ -175,7 +179,7 @@ const handleUploadTableTable = (
   headers: RA<string>,
   mustMatchPreferences: IR<boolean>,
   mappingPath: MappingPath
-) =>
+): MappingsTree =>
   Object.fromEntries(
     Object.entries(uploadPlan).reduce(
       // @ts-expect-error
@@ -204,7 +208,7 @@ function handleUploadableTypes(
   headers: RA<string>,
   mustMatchPreferences: R<boolean>,
   mappingPath: MappingPath
-) {
+): MappingsTree {
   if ('mustMatchTable' in uploadPlan) {
     const tableName = getTableFromMappingPath(
       mappingPath[0],
@@ -227,6 +231,7 @@ const handleUploadable = (
   mustMatchPreferences: IR<boolean>,
   mappingPath: MappingPath
 ): MappingsTree =>
+  // @ts-expect-error
   'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan
     ? handleTreeRecordTypes(
         uploadPlan,

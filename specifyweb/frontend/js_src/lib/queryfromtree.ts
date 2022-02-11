@@ -43,7 +43,7 @@ function makeField(
     .set('isRelFld', attributes.isRelFld);
 
   Object.entries(options).forEach(([key, value]) =>
-    field.set(key as keyof SpQueryField['fields'], value)
+    field.set(key as keyof SpQueryField['fields'], value ?? null)
   );
 
   return field;

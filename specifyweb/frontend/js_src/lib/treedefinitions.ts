@@ -2,9 +2,8 @@ import type { Tables } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
-import { fetchContext as fetchSchema, getModel } from './schema';
+import { fetchContext as fetchSchema, getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
-import { schema } from './schema';
 import type { RA } from './types';
 import { defined } from './types';
 import {
@@ -30,6 +29,14 @@ export let treeDefinitions: {
     readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
   };
 } = undefined!;
+
+export const setupForTests = () =>
+  import('./tests/fixtures/wbplanviewmodel.json').then(({ ranks }) => {
+    Object.entries(ranks).forEach(([treeName, treeRanks]) => {
+      // @ts-expect-error
+      treeDefinitions[treeName] = treeRanks;
+    });
+  });
 
 const treeScopes = {
   /* eslint-disable @typescript-eslint/naming-convention */

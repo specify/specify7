@@ -161,7 +161,8 @@ export function useResource<SCHEMA extends AnySchema>(
   React.useEffect(() => {
     Object.entries(resource)
       .filter(
-        ([key, newValue]) => newValue !== previousResourceRef.current[key]
+        ([key, newValue]) =>
+          (newValue as unknown) !== previousResourceRef.current[key]
       )
       .forEach(([key, newValue]) =>
         model.set(key as 'resource_uri', newValue as never)
