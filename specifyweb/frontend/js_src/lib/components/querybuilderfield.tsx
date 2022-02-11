@@ -7,7 +7,6 @@ import type { QueryField } from '../querybuilderutils';
 import { mutateLineData } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
 import { getModel } from '../schema';
-import type { LiteralField } from '../specifyfield';
 import { defined, filterArray } from '../types';
 import type { Parser } from '../uiparse';
 import { resolveParser } from '../uiparse';
@@ -28,12 +27,12 @@ import type {
   QueryFieldType,
 } from './querybuilderfieldinput';
 import { queryFieldFilters, QueryLineFilter } from './querybuilderfieldinput';
+import createBackboneView from './reactbackboneextend';
 import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
 } from './wbplanviewcomponents';
-import createBackboneView from './reactbackboneextend';
 
 export function QueryLine({
   baseTableName,
@@ -85,7 +84,6 @@ export function QueryLine({
     readonly pickListName: string | undefined;
     readonly parser: Parser | undefined;
   }>({ fieldType: undefined, pickListName: undefined, parser: undefined });
-  const previousField = React.useRef<LiteralField | undefined>(undefined);
 
   React.useEffect(() => {
     let details = field.details;
@@ -107,20 +105,20 @@ export function QueryLine({
       !dataModelField.isRelationship &&
       mappingPathIsComplete(field.mappingPath)
     ) {
+      pickListName = dataModelField.getPickList();
+
+      if (dataModelField.isTemporal() && details.type !== 'dateField')
+        details = { type: 'dateField', datePart: 'fullDate' };
+      else if (!dataModelField.isTemporal() && details.type !== 'regularField')
+        details = { type: 'regularField' };
+
       parser = defined(
         resolveParser(dataModelField, {
-          datePart:
-            field.details.type === 'dateField'
-              ? field.details.datePart
-              : undefined,
+          datePart: details.type === 'dateField' ? details.datePart : undefined,
           isRequired: true,
         })
       );
-      pickListName = dataModelField.getPickList();
-      if (parser.type === 'date' && details.type !== 'dateField')
-        details = { type: 'dateField', datePart: 'fullDate' };
-      else if (parser.type !== 'date' && details.type !== 'regularField')
-        details = { type: 'regularField' };
+
       fieldType =
         tableName === 'CollectionObject' &&
         field.mappingPath.slice(-1)[0] === 'catalogNumber'.toLowerCase()
@@ -134,11 +132,7 @@ export function QueryLine({
       if (details.type !== 'regularField') details = { type: 'regularField' };
     }
 
-    if (dataModelField !== previousField.current)
-      setFieldMeta({ parser, fieldType, pickListName });
-
-    previousField.current =
-      dataModelField?.isRelationship === true ? undefined : dataModelField;
+    setFieldMeta({ parser, fieldType, pickListName });
 
     if (field.details !== details || field.filter !== filter)
       handleChange({
@@ -156,10 +150,10 @@ export function QueryLine({
     generateFieldData: 'all',
   });
 
-  // TODO: test queries on tree ranks and tree fields
-  // TODO: test formatters and aggregators
-  // TODO: add _aggreagators and _formatters to mapping view
-  // TODO: autoscroll on added field
+  /*
+   * TODO: test queries on tree ranks and tree fields
+   * TODO: test formatters and aggregators
+   */
   const filteredLineData = mutateLineData(lineData, field.mappingPath);
 
   const fieldOptionsByIndex = {
@@ -231,7 +225,6 @@ export function QueryLine({
       else handleMappingChange(payload);
     },
     onOpen: handleOpen,
-    // TODO: detect outside click
     onClose: handleClose,
     openSelectElement: openedElement,
   }).map((elementProps, index) =>
@@ -269,7 +262,7 @@ export function QueryLine({
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
         onClick={(): void => handleLineFocus('current')}
-        // TODO: deduplicate this logic here and in mapping view
+        // Same key bindings as in WbPlanView
         onKeyDown={({ key }): void => {
           if (typeof openedElement === 'number') {
             if (key === 'ArrowLeft')
@@ -306,7 +299,6 @@ export function QueryLine({
                 <Button.Simple
                   title={queryText('negate')}
                   aria-label={queryText('negate')}
-                  // TODO: remove extra classNames
                   className={`aria-handled ${
                     field.isNot ? className.redButton : ''
                   }`}

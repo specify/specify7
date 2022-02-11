@@ -121,7 +121,20 @@ export function QueryBuilder({
       ],
     });
   return (
-    <ContainerFull>
+    <ContainerFull
+      onClick={(event): void =>
+        (event.target as HTMLElement).closest('.custom-select-closed-list') ===
+          null &&
+        (event.target as HTMLElement).closest('.custom-select-options-list') ===
+          null
+          ? dispatch({
+              type: 'ChangeOpenedElementAction',
+              line: state.openedElement.line,
+              index: undefined,
+            })
+          : undefined
+      }
+    >
       <Form className="contents">
         <header className="gap-x-2 whitespace-nowrap flex items-center">
           <TableIcon tableName={model.name} />
@@ -226,7 +239,6 @@ export function QueryBuilder({
                   showHiddenFields={showHiddenFields}
                 />
                 <MappingView
-                  // TODO: display date part choose in mapping view
                   mappingElementProps={getMappingLineProps({
                     mappingLineData: mutateLineData(
                       getMappingLineData({

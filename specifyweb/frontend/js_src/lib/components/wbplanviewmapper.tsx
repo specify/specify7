@@ -425,8 +425,7 @@ export function WbPlanViewMapper(props: {
           )}
         </>
       }
-      // Don't close picklists on outside click in development. Useful for debugging
-      onClick={process.env.NODE_ENV === 'development' ? undefined : handleClose}
+      onClick={handleClose}
     >
       {!props.readonly && state.validationResults.length > 0 && (
         <ValidationResults
@@ -610,6 +609,7 @@ export function WbPlanViewMapper(props: {
                   line,
                 })
               }
+              // Same key bindings as in QueryBuilder
               onKeyDown={(key): void => {
                 const openSelectElement =
                   state.openSelectElement?.line === line

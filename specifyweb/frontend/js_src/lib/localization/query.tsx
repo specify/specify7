@@ -324,9 +324,9 @@ const queryText = createDictionary({
     ca: '(aggregated)',
   },
   formatted: {
-    'en-us': '(aggregated)',
+    'en-us': '(formatted)',
     'ru-ru': '(отформатирован)',
-    ca: '(aggregated)',
+    ca: '(formatted)',
   },
   filter: {
     'en-us': 'Filter',

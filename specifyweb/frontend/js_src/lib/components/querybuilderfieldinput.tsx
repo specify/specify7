@@ -234,7 +234,6 @@ function In({
 /*
  * TODO: test all combination of data types and filters
  *       (including pick lists)
- * TODO: handle errors on invalid filter conditions
  * The order of elements here matters
  */
 export const queryFieldFilters: RR<
@@ -262,7 +261,6 @@ export const queryFieldFilters: RR<
     component: SingleField,
   },
   greater: {
-    // TODO: figure out if these filters makes sense for pickLists
     label: queryText('greaterThan'),
     renderPickList: false,
     types: ['number', 'date', 'id'],

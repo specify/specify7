@@ -699,10 +699,6 @@ export function CustomSelectElement({
       listOfOptionsRef.current !== null &&
       // And this type of picklist has auto scroll enabled
       has('autoScroll')
-      // TODO: test why this was needed
-      /* &&*/
-      // And default value has changed
-      // previousDefaultOption.current?.optionName !== defaultOption.optionName
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'

@@ -28,7 +28,7 @@ export function Layout(props: {
                 '.custom-select-closed-list'
               ) === null &&
               (event.target as HTMLElement).closest(
-                '.custom-select-mapping-options-list'
+                '.custom-select-options-list'
               ) === null
                 ? props.onClick?.()
                 : undefined

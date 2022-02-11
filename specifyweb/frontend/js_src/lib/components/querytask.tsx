@@ -136,7 +136,6 @@ function QueryBuilderFromTree({
 }): JSX.Element {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
-      // TODO: convert to react
       async () => queryFromTree(tableName, nodeId),
       [tableName, nodeId]
     )

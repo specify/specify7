@@ -8,9 +8,8 @@ import queryText from './localization/query';
 import type { DatePart } from './queryfieldspec';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
-import { defined, filterArray } from './types';
+import { filterArray } from './types';
 import type { Parser } from './uiparse';
-import { resolveParser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
@@ -48,8 +47,6 @@ export function parseQueryFields(
         field.stringId,
         field.isRelFld ?? false
       );
-      const parser = resolveParser(defined(fieldSpec.getField())) ?? {};
-
       return {
         id,
         mappingPath: fieldSpec.toMappingPath(),
@@ -58,7 +55,7 @@ export function parseQueryFields(
         startValue: field.startValue ?? '',
         endValue: field.endValue ?? '',
         details:
-          parser.type === 'date'
+          fieldSpec.getField()?.isTemporal() === true
             ? {
                 type: 'dateField',
                 datePart: fieldSpec.datePart ?? 'fullDate',
