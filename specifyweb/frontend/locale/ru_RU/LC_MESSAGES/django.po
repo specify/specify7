@@ -86,12 +86,12 @@ msgstr ""
 #: specify/load_datamodel.py:45
 #, python-format
 msgid "No table with name: %(table_name)r"
-msgstr "Нет таблицы с названием: %(table_name)"
+msgstr "Нет таблицы с названием: %(table_name)r"
 
 #: specify/load_datamodel.py:54
 #, python-brace-format
 msgid "No table with id: %(table_id)d"
-msgstr "Нет таблицы с ID: $(table_id)"
+msgstr "Нет таблицы с ID: $(table_id)d"
 
 #: specify/load_datamodel.py:104
 #, python-format
