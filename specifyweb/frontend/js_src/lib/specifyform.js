@@ -7,12 +7,8 @@ import specifyformcells from './specifyformcells';
 import {parseSpecifyProperties} from './parsespecifyproperties';
 import {processColumnDefinition} from './processcolumndef';
 
-import formtable from './templates/formtabletemplate.html';
-import formtemplate from './templates/formtemplate.html';
-import attachmentview from './templates/attachmentview.html';
 import {className} from './components/basic';
 import {SpecifyModel} from "./specifymodel";
-
 
 var formCounter = 0;
 
@@ -26,7 +22,19 @@ var formCounter = 0;
 
     function buildFormTable(formNumber, formViewdef, processCell) {
         var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
-        var table = $(formtable({ formNumber: formNumber }));
+        const table = $(`<table className="specify-formtable text-center">
+            <thead>
+            <tr>
+                <!-- labels go here -->
+            </tr>
+            </thead>
+            <tbody className="specify-view-content-container">
+            <tr className="specify-view-content"
+                id="specify-view-${formNumber}">
+                <!-- cells go here -->
+            </tr>
+            </tbody>
+        </table>`);
         var headerRow = table.find('thead tr');
         var bodyRow = table.find('tbody tr');
 
@@ -50,11 +58,11 @@ var formCounter = 0;
             _(cellsIn(row)).chain().map(processCell).each(appendToTr);
         });
 
-        return $(formtemplate({
-            formNumber: formNumber,
-            tagName: isSubView ? 'div' : 'form',
-            className
-        })).find('.specify-view-content').append(table).end();
+        const tagName = isSubView ? 'div' : 'form';
+        return $(`<div class="specify-view-content-container">
+          <${tagName} class="specify-view-content ${className.notSubmittedForm}" id="specify-view-${formNumber}">
+          </${tagName}>
+        </div>`).find('.specify-view-content').append(table).end();
     }
 
     function buildView(view, defaultType, mode, isSubView) {
@@ -113,10 +121,19 @@ var formCounter = 0;
         getView: getView,
 
         buildViewByName: function (viewName, defaultType, mode, isSubView=false) {
-            if (viewName === "ObjectAttachment") {
-                return $.when($(attachmentview({className})));
-            }
-            return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode, isSubView); });
+            if (viewName === "ObjectAttachment")
+                return $.when($(`<div data-specify-model="ObjectAttachmentIFace">
+                  <h2 class="${className.formHeader}"></h2>
+                  <button
+                    type="button"
+                    class="button specify-uiplugin specify-field"
+                    data-specify-initialize="name=AttachmentPlugin;"
+                  >
+                    plugin
+                  </button>
+                </div>`));
+            else
+                return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode, isSubView); });
         },
 
         buildSubView: function (node, mode) {
