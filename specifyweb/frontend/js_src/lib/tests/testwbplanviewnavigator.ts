@@ -1,9 +1,7 @@
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewNavigator.getMappingLineData',
     [

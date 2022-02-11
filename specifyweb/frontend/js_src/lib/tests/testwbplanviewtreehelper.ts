@@ -1,11 +1,9 @@
-import type { RA } from '../types';
 import type { MappingPath } from '../components/wbplanviewmapper';
+import type { RA } from '../types';
 import * as WbPlanViewTreeHelper from '../wbplanviewtreehelper';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewTreeHelper.deepMergeObject',
     [

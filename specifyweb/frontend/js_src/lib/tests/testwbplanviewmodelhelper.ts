@@ -2,11 +2,9 @@ import dataModelStorage from '../wbplanviewmodel';
 import * as WbPlanViewModelHelper from '../wbplanviewmodelhelper';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import mappingsTree1 from './fixtures/mappingstree.1.json';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewModelHelper.getTableNonRelationshipFields',
     [

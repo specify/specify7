@@ -1,9 +1,7 @@
 import * as WbPlanViewHelper from '../wbplanviewhelper';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewHelper.findArrayDivergencePoint',
     [

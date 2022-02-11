@@ -4,11 +4,9 @@ import type { UploadPlan } from '../uploadplantomappingstree';
 import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewLinesGetter.getLinesFromHeaders',
     [

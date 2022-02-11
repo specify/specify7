@@ -292,7 +292,7 @@ type Dictionary = IR<Key>;
             ? value
             : typeof value === 'object'
             ? JSON.stringify(value)
-            : value.toString();
+            : (value ?? '').toString();
         compoundDictionaries[language as Language] ??= {};
         compoundDictionaries[language as Language]![valueString] ??= [];
         compoundDictionaries[language as Language]![valueString].push([
@@ -304,7 +304,7 @@ type Dictionary = IR<Key>;
     return compoundDictionaries;
   }, {});
   Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
-    Object.entries(valueDictionary)
+    Object.entries(valueDictionary ?? {})
       .filter(([_valueString, instances]) => instances.length > 1)
       .forEach(([valueString, instances]) => {
         warn(

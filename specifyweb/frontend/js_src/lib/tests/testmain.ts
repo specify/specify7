@@ -1,5 +1,6 @@
 import QUnit from 'qunit';
 
+import { getTreeDefinitionItems, setupForTests } from '../treedefinitions';
 import type { RA } from '../types';
 import dataModelStorage from '../wbplanviewmodel';
 import dataModel from './fixtures/wbplanviewmodel.json';
@@ -22,20 +23,21 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   QUnit.module(moduleName);
   inputOutputSet.forEach(([input, output], index) =>
     QUnit.test(`#${index}`, () =>
-      QUnit.assert.deepEqual(output, testFunction(...input))
+      QUnit.assert.deepEqual(testFunction(...input), output)
     )
   );
 }
 
-export function loadDataModel(): void {
-  if (typeof dataModelStorage.tables === 'undefined')
-    Object.entries(dataModel).forEach(([key, value]) => {
-      // @ts-expect-error Data model is loaded from a JSON file
-      dataModelStorage[key] = value;
-    });
-}
+async function runTests(): Promise<void> {
+  await setupForTests();
 
-function runTests(): void {
+  Object.entries(dataModel).forEach(([key, value]) => {
+    // @ts-expect-error Data model is loaded from a JSON file
+    dataModelStorage[key] = value;
+  });
+
+  console.log(getTreeDefinitionItems('Geography', false));
+
   testLatLongUtils();
   testMappingsTreeToUploadPlan();
   testUploadPlanToMappingsTree();
