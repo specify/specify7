@@ -5,11 +5,9 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import wbText from '../localization/workbench';
-import { reducer } from '../querybuilderreducer';
-import { mutateLineData, parseQueryFields } from '../querybuilderutils';
-import { schema } from '../schema';
+import { getInitialState, reducer } from '../querybuilderreducer';
+import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
-import { toLowerCase } from '../wbplanviewhelper';
 import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
@@ -30,10 +28,16 @@ import {
   SaveQueryButtons,
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
+import { QueryResultsWrapper } from './queryresultstable';
 import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
+// TODO: test using sp7 queries in sp6 and vice versa
+// TODO: autorun query if opened without definition visible
+// TODO: update getMappingPathPreview to handle _any and _formatted
+// TODO: integrate sorting with column headers
+// TODO: handle trying to query with imcomplete fields
 export function QueryBuilder({
   query: queryResource,
   readOnly,
@@ -47,15 +51,15 @@ export function QueryBuilder({
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
 
-  const [state, dispatch] = React.useReducer(reducer, {
-    type: 'MainState',
-    // TODO: add default values for resources
-    fields: parseQueryFields(query.fields ?? []),
-    mappingView: ['0'],
-    openedElement: { line: 1, index: undefined },
-    saveRequired: queryResource.isNew(),
-    baseTableName: toLowerCase(model.name),
-  });
+  const [state, dispatch] = React.useReducer(
+    reducer,
+    {
+      query,
+      queryResource,
+      model,
+    },
+    getInitialState
+  );
 
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
     bucketName: 'queryBuilder',
@@ -70,8 +74,17 @@ export function QueryBuilder({
     defaultValue: true,
   });
 
+  // UnHide query definition if there are no fields
+  React.useEffect(
+    () =>
+      !showQueryDefinition && state.fields.length === 0
+        ? setShowQueryDefinition(true)
+        : undefined,
+    [showQueryDefinition, state.fields.length, setShowQueryDefinition]
+  );
+
   React.useEffect(() => {
-    queryResource.on('saverequired', () =>
+    queryResource.once('saverequired', () =>
       dispatch({ type: 'SaveRequiredAction' })
     );
   }, [queryResource]);
@@ -80,21 +93,6 @@ export function QueryBuilder({
     state.saveRequired,
     queryText('queryUnloadProtectDialogMessage')
   );
-
-  const handleChange = (payload: {
-    readonly line: 'mappingView' | number;
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly currentTableName: string;
-    readonly newTableName: string;
-  }): void =>
-    dispatch({
-      type: 'ChangeSelectElementValueAction',
-      ...payload,
-    });
 
   const mapButtonEnabled = mappingPathIsComplete(state.mappingView);
   const handleAddField = (): void =>
@@ -108,7 +106,6 @@ export function QueryBuilder({
           sortType: undefined,
           filter: 'any',
           startValue: '',
-          endValue: '',
           details: { type: 'regularField' },
           isNot: false,
           // If mapping path is not unique, don't display the field
@@ -120,22 +117,45 @@ export function QueryBuilder({
         },
       ],
     });
+
+  function runQuery(mode: 'regular' | 'distinct' | 'count'): void {
+    if (state.fields.length === 0) return;
+    setQuery({
+      ...query,
+      fields: unParseQueryFields(state.baseTableName, state.fields),
+      selectDistinct: mode === 'distinct',
+      countOnly: mode === 'count',
+    });
+    setTimeout(() => dispatch({ type: 'RunQuery' }), 0);
+  }
+
   return (
     <ContainerFull
-      onClick={(event): void =>
-        (event.target as HTMLElement).closest('.custom-select-closed-list') ===
-          null &&
-        (event.target as HTMLElement).closest('.custom-select-options-list') ===
-          null
-          ? dispatch({
-              type: 'ChangeOpenedElementAction',
-              line: state.openedElement.line,
-              index: undefined,
-            })
-          : undefined
+      onClick={
+        typeof state.openedElement.index === 'undefined'
+          ? undefined
+          : (event): void =>
+              (event.target as HTMLElement).closest(
+                '.custom-select-closed-list'
+              ) === null &&
+              (event.target as HTMLElement).closest(
+                '.custom-select-options-list'
+              ) === null
+                ? dispatch({
+                    type: 'ChangeOpenedElementAction',
+                    line: state.openedElement.line,
+                    index: undefined,
+                  })
+                : undefined
       }
     >
-      <Form className="contents">
+      <Form
+        className="contents"
+        onSubmit={(event): void => {
+          event.preventDefault();
+          runQuery('regular');
+        }}
+      >
         <header className="gap-x-2 whitespace-nowrap flex items-center">
           <TableIcon tableName={model.name} />
           <H2 className="overflow-x-auto">
@@ -149,7 +169,12 @@ export function QueryBuilder({
           <span className="flex-1 ml-2" />
           <Button.Simple
             className={showQueryDefinition ? '' : 'active'}
-            onClick={(): void => setShowQueryDefinition(!showQueryDefinition)}
+            disabled={showQueryDefinition && state.fields.length === 0}
+            onClick={(): void => {
+              const newState = !showQueryDefinition;
+              setShowQueryDefinition(newState);
+              if (!newState) runQuery('regular');
+            }}
             aria-pressed={!showQueryDefinition}
           >
             {showQueryDefinition
@@ -204,7 +229,11 @@ export function QueryBuilder({
                     dispatch({ type: 'ChangeFieldAction', line, field })
                   }
                   onMappingChange={(line, payload): void =>
-                    handleChange({ line, ...payload })
+                    dispatch({
+                      type: 'ChangeSelectElementValueAction',
+                      line,
+                      ...payload,
+                    })
                   }
                   onOpen={(line, index): void =>
                     dispatch({
@@ -244,16 +273,21 @@ export function QueryBuilder({
                       getMappingLineData({
                         baseTableName: state.baseTableName,
                         mappingPath: state.mappingView,
-                        iterate: true,
                         showHiddenFields,
                         generateFieldData: 'all',
+                        scope: 'queryBuilder',
                       }),
                       state.mappingView
                     ),
                     customSelectType: 'OPENED_LIST',
                     onChange({ isDoubleClick, ...rest }) {
                       if (isDoubleClick && mapButtonEnabled) handleAddField();
-                      else handleChange({ line: 'mappingView', ...rest });
+                      else
+                        dispatch({
+                          type: 'ChangeSelectElementValueAction',
+                          line: 'mappingView',
+                          ...rest,
+                        });
                     },
                   })}
                   mapButton={
@@ -290,49 +324,30 @@ export function QueryBuilder({
                 </LabelForCheckbox>
               )}
               <span className="flex-1 -ml-2" />
-              <LabelForCheckbox>
-                <Checkbox
-                  // TODO: replace checkbox with a button
-                  checked={query.countOnly ?? false}
-                  onChange={({ target }): void =>
-                    setQuery({
-                      ...query,
-                      countOnly: target.checked,
-                    })
-                  }
-                />
+              <Button.Simple
+                disabled={state.fields.length === 0}
+                onClick={(): void => runQuery('count')}
+              >
                 {queryText('countOnly')}
-              </LabelForCheckbox>
-              <LabelForCheckbox>
-                <Checkbox
-                  // TODO: replace checkbox with a button
-                  checked={query.selectDistinct ?? false}
-                  onChange={({ target }): void =>
-                    setQuery({
-                      ...query,
-                      selectDistinct: target.checked,
-                    })
-                  }
-                />
+              </Button.Simple>
+              <Button.Simple
+                disabled={state.fields.length === 0}
+                onClick={(): void => runQuery('distinct')}
+              >
                 {queryText('distinct')}
-              </LabelForCheckbox>
-              {query.contextTableId === schema.models.SpAuditLog.tableId ? (
-                <LabelForCheckbox>
-                  <Checkbox
-                    checked={query.formatAuditRecIds ?? false}
-                    onChange={({ target }): void =>
-                      setQuery({
-                        ...query,
-                        formatAuditRecIds: target.checked,
-                      })
-                    }
-                  />
-                  {queryText('format')}
-                </LabelForCheckbox>
-              ) : undefined}
-              <Submit.Simple>{commonText('query')}</Submit.Simple>
+              </Button.Simple>
+              <Submit.Simple disabled={state.fields.length === 0}>
+                {commonText('query')}
+              </Submit.Simple>
             </div>
-            <div className="bg-red-800" style={{ height: '1000px' }} />
+            <QueryResultsWrapper
+              baseTableName={state.baseTableName}
+              model={model}
+              queryResource={queryResource}
+              fields={state.fields}
+              queryRunCount={state.queryRunCount}
+              recordSetId={recordSet?.id}
+            />
           </div>
         </div>
       </Form>

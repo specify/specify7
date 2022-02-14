@@ -159,14 +159,15 @@ export function useResource<SCHEMA extends AnySchema>(
   const previousResourceRef =
     React.useRef<SerializedResource<SCHEMA>>(resource);
   React.useEffect(() => {
-    Object.entries(resource)
-      .filter(
-        ([key, newValue]) =>
-          (newValue as unknown) !== previousResourceRef.current[key]
-      )
-      .forEach(([key, newValue]) =>
-        model.set(key as 'resource_uri', newValue as never)
-      );
+    const changes = Object.entries(resource).filter(
+      ([key, newValue]) =>
+        (newValue as unknown) !== previousResourceRef.current[key]
+    );
+    if (changes.length === 0) return;
+
+    changes.forEach(([key, newValue]) =>
+      model.set(key as 'resource_uri', newValue as never)
+    );
     previousResourceRef.current = resource;
   }, [resource, model]);
 

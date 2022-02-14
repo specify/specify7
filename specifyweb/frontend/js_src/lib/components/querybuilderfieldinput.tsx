@@ -28,6 +28,7 @@ export type QueryFieldFilter =
   | 'between'
   | 'in'
   | 'contains'
+  | 'startsWith'
   | 'empty'
   | 'trueOrNull'
   | 'falseOrNull';
@@ -234,11 +235,12 @@ function In({
 /*
  * TODO: test all combination of data types and filters
  *       (including pick lists)
- * The order of elements here matters
+ * TODO: test "any" and find out use of don't care
  */
 export const queryFieldFilters: RR<
   QueryFieldFilter,
   {
+    id: number;
     label: string;
     renderPickList: boolean;
     types?: RA<QueryFieldType>;
@@ -246,82 +248,104 @@ export const queryFieldFilters: RR<
   }
 > = {
   any: {
+    id: 8,
     label: queryText('any'),
     renderPickList: false,
   },
   like: {
+    id: 0,
     label: queryText('like'),
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: SingleField,
   },
   equal: {
+    id: 1,
     label: queryText('equal'),
     renderPickList: true,
     component: SingleField,
   },
   greater: {
+    id: 2,
     label: queryText('greaterThan'),
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
   },
   less: {
+    id: 3,
     label: queryText('lessThan'),
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
   },
   greaterOrEqual: {
+    id: 4,
     label: queryText('greaterOrEqualTo'),
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
   },
   lessOrEqual: {
+    id: 5,
     label: queryText('lessOrEqualTo'),
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
   },
   true: {
+    id: 6,
     label: queryText('true'),
     renderPickList: false,
     types: ['checkbox'],
   },
   false: {
+    id: 7,
     label: queryText('false'),
     renderPickList: false,
     types: ['checkbox'],
   },
   between: {
+    id: 9,
     label: queryText('between'),
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: Between,
   },
   in: {
+    id: 10,
     label: queryText('in'),
     renderPickList: true,
     types: ['text', 'number', 'date', 'id'],
     component: In,
   },
   contains: {
+    id: 11,
     label: queryText('contains'),
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
   },
+  startsWith: {
+    id: 15,
+    label: queryText('startsWith'),
+    renderPickList: false,
+    component: SingleField,
+    types: ['text', 'number', 'date', 'id'],
+  },
   empty: {
+    id: 12,
     label: queryText('empty'),
     renderPickList: false,
   },
   trueOrNull: {
+    id: 13,
     label: queryText('trueOrNull'),
     renderPickList: false,
     types: ['checkbox'],
   },
   falseOrNull: {
+    id: 14,
     label: queryText('falseOrNull'),
     renderPickList: false,
     types: ['checkbox'],

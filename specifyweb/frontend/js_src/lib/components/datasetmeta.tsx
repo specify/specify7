@@ -267,7 +267,7 @@ function ChangeOwner({
       onClose={handleChanged}
       buttons={commonText('close')}
     >
-      <p>${wbText('dataSetOwnerChangedDialogMessage')}</p>
+      <p>{wbText('dataSetOwnerChangedDialogMessage')}</p>
     </Dialog>
   ) : (
     <Dialog

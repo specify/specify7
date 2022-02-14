@@ -51,6 +51,7 @@ export function QueryFields({
       {fields.map((field, line, { length }) => (
         <QueryLine
           key={field.id}
+          fieldHash={`${line}_${length}`}
           baseTableName={baseTableName}
           field={field}
           onChange={(newField): void => handleChangeField(line, newField)}

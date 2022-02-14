@@ -285,7 +285,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 if (action === 'next')
                   if (typeof rows[index + 1] === 'undefined') return undefined;
                   else setFocusPath([rows[index + 1].nodeId]);
-                else if (action === 'previous' && index !== 0)
+                else if (action === 'previous' && index > 0)
                   setFocusPath([rows[index - 1].nodeId]);
                 else if (action === 'previous' || action === 'parent')
                   setFocusPath([]);

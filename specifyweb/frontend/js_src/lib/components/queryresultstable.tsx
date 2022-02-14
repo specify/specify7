@@ -1,8 +1,13 @@
 import React from 'react';
 
+import { ajax } from '../ajax';
+import type { SpQuery, Tables } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
+import type { QueryField } from '../querybuilderutils';
+import { queryFieldsToFieldSpecs } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -12,6 +17,7 @@ import { defined } from '../types';
 import { ContainerBase } from './basic';
 import { TableIcon } from './common';
 import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
 import { dateParts } from './internationalization';
 import { QueryResults } from './queryresults';
 
@@ -67,8 +73,6 @@ const isScrolledBottom = (scrollable: HTMLElement): boolean =>
 export function QueryResultsTable({
   model,
   label = queryText('results'),
-  countOnly = false,
-  hasHeader,
   idFieldIndex,
   fetchResults,
   totalCount,
@@ -77,30 +81,34 @@ export function QueryResultsTable({
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
-  readonly countOnly?: boolean;
-  readonly hasHeader: boolean;
   readonly idFieldIndex: number | undefined;
-  readonly fetchResults: (offset: number) => Promise<RA<RA<string | number>>>;
+  readonly fetchResults: (
+    offset: number
+  ) => Promise<RA<RA<string | number | null>>>;
   readonly totalCount: number;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly initialData: RA<RA<string | number>>;
+  readonly initialData: RA<RA<string | number | null>> | undefined;
 }): JSX.Element {
   const [isFetching, setIsFetching] = React.useState(false);
-  const [results, setResults] =
-    React.useState<RA<RA<string | number>>>(initialData);
+  const [results, setResults] = React.useState<
+    RA<RA<string | number | null>> | undefined
+  >(initialData);
+  React.useEffect(() => setResults(initialData), [initialData]);
 
   return (
     <ContainerBase>
-      {hasHeader && <h3 aria-live="polite">${`${label}: (${totalCount})`}</h3>}
-      {!countOnly && fieldSpecs.length > 0 && (
+      {<h3>{`${label}: (${totalCount})`}</h3>}
+      {typeof results === 'object' && fieldSpecs.length > 0 && (
         <div
           role="table"
-          className="grid-table grid-cols-[repeat(var(--cols),auto)] overflow-auto max-h-[75vh]"
+          className={`grid-table grid-cols-[repeat(var(--cols),auto)]
+            overflow-auto max-h-[75vh] border-b border-gray-500`}
           style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
           onScroll={
             isFetching || results.length === totalCount
-              ? ({ target }): void => {
-                  if (!isScrolledBottom(target as HTMLElement)) return;
+              ? undefined
+              : ({ target }): void => {
+                  if (isScrolledBottom(target as HTMLElement)) return;
                   setIsFetching(true);
                   fetchResults(results.length)
                     .then((newResults) =>
@@ -109,7 +117,6 @@ export function QueryResultsTable({
                     .then(() => setIsFetching(false))
                     .catch(crash);
                 }
-              : undefined
           }
         >
           <div role="rowgroup">
@@ -138,5 +145,90 @@ export function QueryResultsTable({
         </div>
       )}
     </ContainerBase>
+  );
+}
+
+export function QueryResultsWrapper({
+  baseTableName,
+  model,
+  queryRunCount,
+  queryResource,
+  fields,
+  recordSetId,
+}: {
+  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly model: SpecifyModel;
+  readonly queryRunCount: number;
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly fields: RA<QueryField>;
+  readonly recordSetId: number | undefined;
+}): JSX.Element | null {
+  const fetchResults = React.useCallback(
+    async (offset: number) => {
+      return ajax<{ readonly results: RA<RA<string | number | null>> }>(
+        '/stored_query/ephemeral/',
+        {
+          method: 'POST',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+          body: {
+            ...queryResource.toJSON(),
+            recordsetid: recordSetId,
+            limit: 40,
+            offset,
+          },
+        }
+      ).then(({ data }) => data.results);
+    },
+    [queryResource, recordSetId]
+  );
+
+  const [payload] = useAsyncState(
+    React.useCallback(async () => {
+      if (queryRunCount === 0) return undefined;
+
+      const totalCount = ajax<{ readonly count: number }>(
+        '/stored_query/ephemeral/',
+        {
+          method: 'POST',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+          body: {
+            ...queryResource.toJSON(),
+            recordsetid: recordSetId,
+            countonly: true,
+          },
+        }
+      ).then(({ data }) => data.count);
+
+      const displayedFields = fields.filter((field) => field.isDisplay);
+      const initialData =
+        queryResource.get('countOnly') === true || displayedFields.length === 0
+          ? undefined
+          : fetchResults(0);
+      const fieldSpecs = queryFieldsToFieldSpecs(
+        baseTableName,
+        displayedFields
+      ).map(([_field, fieldSpec]) => fieldSpec);
+
+      return {
+        fieldSpecs,
+        totalCount: await totalCount,
+        initialData: await initialData,
+      };
+    }, [queryRunCount])
+  );
+
+  return typeof payload === 'undefined' ? null : (
+    <QueryResultsTable
+      model={model}
+      idFieldIndex={
+        queryResource.get('selectDistinct') === true ? undefined : 0
+      }
+      fetchResults={fetchResults}
+      totalCount={payload.totalCount}
+      fieldSpecs={payload.fieldSpecs}
+      initialData={payload.initialData}
+    />
   );
 }

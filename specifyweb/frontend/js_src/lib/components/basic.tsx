@@ -83,8 +83,10 @@ const reduceMotion =
     : false;
 export const transitionDuration = reduceMotion ? 0 : 100;
 
-// TODO: make a react hook that listens for updates
-// TODO: allow overwriting this in the UI
+/*
+ * TODO: make a react hook that listens for updates
+ * TODO: allow overwriting this in the UI
+ */
 export const darkMode =
   typeof window === 'object'
     ? window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -292,6 +294,12 @@ const submitPropsMerge = ({
   type: 'submit',
   ...props,
   value: children,
+  onClick(event) {
+    (event.target as HTMLInputElement)
+      .closest('form')
+      ?.classList.remove(className.notSubmittedForm);
+    props.onClick?.(event);
+  },
 });
 export const Submit = {
   // Force passing children by nesting rather than through the [value] attribute

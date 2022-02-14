@@ -78,7 +78,6 @@ function TableResults({
                 {caption}
               </summary>
               <QueryResultsTable
-                hasHeader={false}
                 fieldSpecs={tableResults.fieldSpecs.map(
                   ({ stringId, isRelationship }) =>
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
@@ -125,7 +124,7 @@ function Results(): JSX.Element {
           headers: { Accept: 'application/json' },
         }).then(({ data }) =>
           Object.entries(data)
-            .filter(([_tableName, { totalCount }]) => totalCount !== 0)
+            .filter(([_tableName, { totalCount }]) => totalCount > 0)
             .map(([tableName, tableResults]) => ({
               model: defined(getModel(tableName)),
               caption: defined(getModel(tableName)).getLocalizedName(),
@@ -157,7 +156,7 @@ function Results(): JSX.Element {
           )
           .then((results) =>
             results
-              .filter(([_ajaxUrl, { totalCount }]) => totalCount !== 0)
+              .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
                 let model = defined(getModel(tableResult.definition.root));
                 let idFieldIndex = 0;

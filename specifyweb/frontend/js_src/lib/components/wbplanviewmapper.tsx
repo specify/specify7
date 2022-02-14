@@ -454,7 +454,6 @@ export function WbPlanViewMapper(props: {
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath: state.mappingView,
-              iterate: true,
               getMappedFields: getMappedFieldsBind,
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
@@ -531,7 +530,6 @@ export function WbPlanViewMapper(props: {
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
-              iterate: true,
               getMappedFields: getMappedFieldsBind,
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,

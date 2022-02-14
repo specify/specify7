@@ -11,7 +11,7 @@ import 'brace/mode/properties';
 import 'brace/theme/monokai';
 
 import * as app from './specifyapp';
-import { schema } from './schema';
+import {schema} from './schema';
 import SaveButton from './components/savebutton';
 import DeleteButton from './components/deletebutton';
 import {userInformation} from './userinfo';
@@ -330,7 +330,7 @@ const ResourceList = Backbone.View.extend({
         const dialog = showDialog({
             title: adminText('createResourceDialogTitle'),
             header: adminText('createResourceDialogHeader'),
-            content: $(`<form id="app-resources-new-resource-form" class="not-submitted">
+            content: $(`<form id="app-resources-new-resource-form" class="${className.notSubmittedForm}">
                 <label class="${className.label}">
                     ${adminText('newResourceName')}
                     <input type="text" spellcheck="on" required>

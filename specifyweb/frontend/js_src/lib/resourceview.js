@@ -19,6 +19,8 @@ import {setCurrentView} from "./specifyapp";
 import {setTitle} from "./components/hooks";
 import {className} from './components/basic';
 
+// TODO: convert to React
+
 var NO_ADD_ANOTHER = [
     'Gift',
     'Borrow',

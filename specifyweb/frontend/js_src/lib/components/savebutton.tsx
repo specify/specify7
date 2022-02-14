@@ -7,7 +7,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
-import { Button, Submit, Ul } from './basic';
+import { Button, className, Submit, Ul } from './basic';
 import { useId, useUnloadProtect } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -141,7 +141,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
              * Can't do this inside of onsubmit handler, because
              * onsubmit is only called on valid forms
              */
-            form.classList.remove('not-submitted');
+            form.classList.remove(className.notSubmittedForm);
           }}
         >
           {saveRequired
@@ -153,7 +153,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         form={formId}
         className={saveBlocked ? 'cursor-not-allowed' : undefined}
         disabled={isSaving || (!saveRequired && !saveBlocked)}
-        onClick={(): void => form.classList.remove('not-submitted')}
+        onClick={(): void => form.classList.remove(className.notSubmittedForm)}
       >
         {commonText('save')}
       </SubmitComponent>

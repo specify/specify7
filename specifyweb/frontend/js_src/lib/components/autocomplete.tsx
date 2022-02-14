@@ -132,7 +132,7 @@ export function autocomplete({
         const entries = Object.entries(values);
 
         // Don't delete previous autocomplete results if no new results returned
-        if (dataList.childElementCount !== 0 && entries.length === 0)
+        if (dataList.childElementCount > 0 && entries.length === 0)
           return undefined;
 
         if (input.value === lastValue) return undefined;

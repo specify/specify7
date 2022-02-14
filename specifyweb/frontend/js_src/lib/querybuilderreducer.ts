@@ -2,12 +2,17 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { SpQuery, Tables } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
+import type { SpecifyResource } from './legacytypes';
 import type { QueryField } from './querybuilderutils';
+import { parseQueryFields } from './querybuilderutils';
+import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
+import { toLowerCase } from './wbplanviewhelper';
 import { mutateMappingPath } from './wbplanviewutils';
-import { Tables } from './datamodel';
 
-export type MainState = State<
+type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
@@ -16,11 +21,36 @@ export type MainState = State<
       readonly line: number;
       readonly index: number | undefined;
     };
+    readonly queryRunCount: number;
     readonly saveRequired: boolean;
     readonly baseTableName: Lowercase<keyof Tables>;
   }
 >;
+
+export const getInitialState = ({
+  query,
+  queryResource,
+  model,
+}: {
+  readonly query: SerializedResource<SpQuery>;
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly model: SpecifyModel;
+}): MainState => ({
+  type: 'MainState',
+  fields: parseQueryFields(query.fields ?? []),
+  mappingView: ['0'],
+  queryRunCount: 0,
+  openedElement: { line: 1, index: undefined },
+  saveRequired: queryResource.isNew(),
+  /*
+   * This value never changes. It is part of the state to be accessible by
+   * the reducer
+   */
+  baseTableName: toLowerCase(model.name),
+});
+
 type Actions =
+  | Action<'RunQuery'>
   | Action<
       'ChangeOpenedElementAction',
       { line: number; index: number | undefined }
@@ -48,6 +78,10 @@ type Actions =
     >;
 
 export const reducer = generateReducer<MainState, Actions>({
+  RunQuery: ({ state }) => ({
+    ...state,
+    queryRunCount: state.queryRunCount + 1,
+  }),
   ChangeOpenedElementAction: ({ action, state }) => ({
     ...state,
     openedElement: {

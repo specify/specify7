@@ -252,10 +252,10 @@ const queryText = createDictionary({
     'ru-ru': 'Поле действительное и будет сохранено. Нажмите, чтобы раскрить',
     ca: 'Field is valid and will be saved. Click to expand',
   },
-  anyInline: {
-    'en-us': '(any)',
-    'ru-ru': '(любое)',
-    ca: '(any)',
+  anyRank: {
+    'en-us': '(any rank)',
+    'ru-ru': '(любой ранг)',
+    ca: '(any rank)',
   },
   sort: {
     'en-us': 'Sort',
@@ -412,6 +412,11 @@ const queryText = createDictionary({
     'en-us': 'and',
     'ru-ru': 'и',
     ca: 'and',
+  },
+  startsWith: {
+    'en-us': 'Starts With',
+    'ru-ru': 'Начинается с',
+    ca: 'Starts With',
   },
 });
 

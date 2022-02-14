@@ -121,7 +121,6 @@ export function ValidationResults(props: {
               mappingLineData={getMappingLineData({
                 baseTableName: props.baseTableName,
                 mappingPath: fieldPath,
-                iterate: true,
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',

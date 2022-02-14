@@ -1,6 +1,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { QueryFieldFilter } from './components/querybuilderfieldinput';
+import { queryFieldFilters } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
@@ -8,9 +9,10 @@ import queryText from './localization/query';
 import type { DatePart } from './queryfieldspec';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
-import { filterArray } from './types';
+import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
+import { formatTreeRank } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
@@ -28,7 +30,6 @@ export type QueryField = {
   readonly sortType: typeof sortTypes[number];
   readonly filter: QueryFieldFilter;
   readonly startValue: string;
-  readonly endValue: string;
   readonly details:
     | State<'regularField'>
     | State<'dateField', { datePart: DatePart }>;
@@ -51,9 +52,17 @@ export function parseQueryFields(
         id,
         mappingPath: fieldSpec.toMappingPath(),
         sortType: sortTypes[field.sortType],
-        filter: 'any',
+        filter: defined(
+          // Back-end treats "equal" with blank startValue as "any"
+          Object.entries(queryFieldFilters).find(
+            ([_, { id }]) =>
+              (id === queryFieldFilters.any.id &&
+                field.operStart === queryFieldFilters.equal.id &&
+                field.startValue === '') ||
+              id === field.operStart
+          )
+        )[0],
         startValue: field.startValue ?? '',
-        endValue: field.endValue ?? '',
         details:
           fieldSpec.getField()?.isTemporal() === true
             ? {
@@ -67,29 +76,44 @@ export function parseQueryFields(
     });
 }
 
+export const queryFieldsToFieldSpecs = (
+  baseTableName: Lowercase<keyof Tables>,
+  fields: RA<QueryField>
+): RA<Readonly<[QueryField, QueryFieldSpec]>> =>
+  fields
+    .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
+    .map((field) => [
+      field,
+      QueryFieldSpec.fromPath([baseTableName, ...field.mappingPath]),
+    ]);
+
 export const unParseQueryFields = (
   baseTableName: Lowercase<keyof Tables>,
   fields: RA<QueryField>
 ): RA<SerializedResource<SpQueryField>> =>
-  fields
-    .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-    .map((field, index) => {
-      const fieldSpec = QueryFieldSpec.fromPath([
-        baseTableName,
-        ...field.mappingPath,
-      ]);
-
+  queryFieldsToFieldSpecs(baseTableName, fields).map(
+    ([field, fieldSpec], index) => {
       const attributes = fieldSpec.toSpQueryAttributes();
-
       return {
         ...attributes,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         startValue: field.startValue,
-        endvalue: field.endValue,
+        operStart: defined(
+          // Back-end treats "equal" with blank startValue as "any"
+          Object.entries(queryFieldFilters).find(
+            ([name, { id }]) =>
+              (field.startValue === '' &&
+                field.filter === 'any' &&
+                id === queryFieldFilters.equal.id) ||
+              name === field.filter
+          )
+        )[1].id,
+        isDisplay: field.isDisplay,
         // TODO: add missing nullable fields here
       } as unknown as SerializedResource<SpQueryField>;
-    });
+    }
+  );
 
 export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   const fieldNames = new Set(
@@ -111,26 +135,31 @@ export const mutateLineData = (
         : {
             ...mappingElementProps,
             fieldsData: {
-              ...(lineData[index - 1]?.customSelectSubtype === 'toMany'
+              ...(mappingElementProps.customSelectSubtype === 'tree'
                 ? {
-                    _aggregated: {
-                      optionLabel: queryText('aggregated'),
+                    [formatTreeRank('_any')]: {
+                      optionLabel: queryText('anyRank'),
+                      isRelationship: true,
+                      isDefault: mappingPath[index] === formatTreeRank('_any'),
                       tableName: mappingElementProps.tableName,
-                      isRelationship: false,
-                      isDefault: mappingPath[index] === '_aggregated',
                     },
                   }
-                : mappingElementProps?.customSelectSubtype === 'simple' &&
-                  index !== 0
-                ? {
+                : {}),
+              ...(lineData[index - 1]?.customSelectSubtype === 'tree' ||
+              // TODO: test if this condition is needed
+              index === 0
+                ? {}
+                : {
                     _formatted: {
-                      optionLabel: queryText('formatted'),
+                      optionLabel:
+                        mappingElementProps?.customSelectSubtype === 'simple'
+                          ? queryText('formatted')
+                          : queryText('aggregated'),
                       tableName: mappingElementProps.tableName,
                       isRelationship: false,
                       isDefault: mappingPath[index] === '_formatted',
                     },
-                  }
-                : {}),
+                  }),
               ...mappingElementProps.fieldsData,
             },
           }

@@ -84,7 +84,7 @@ class AuditRecordFormatter {
 
   public setRequiredResourceFields(
     resource: SpecifyResource<SpAuditLog>,
-    resultRow: RA<string | number>
+    resultRow: RA<string | number | null>
   ): void {
     if (isResourceOfType(resource, 'SpAuditLog'))
       this.fieldsToSet
@@ -96,7 +96,7 @@ class AuditRecordFormatter {
 
   public async format(
     field: LiteralField | Relationship,
-    result: RA<string | number>,
+    result: RA<string | number | null>,
     resource: SpecifyResource<SpAuditLog>,
     value: string
   ): Promise<string> {
@@ -130,7 +130,7 @@ class AuditRecordFormatter {
 
   private getAuditLogForeignKeyModel(
     fieldName: keyof SpAuditLog['fields'],
-    result: RA<string | number>,
+    result: RA<string | number | null>,
     resource: SpecifyResource<SpAuditLog>
   ): SpecifyModel | undefined {
     if (
@@ -176,7 +176,7 @@ class AuditRecordFormatter {
 
   /** Get definition of a field that the audit record describes */
   private getAuditedField(
-    result: RA<string | number>,
+    result: RA<string | number | null>,
     resource: SpecifyResource<SpAuditLog>
   ): LiteralField | Relationship | undefined {
     const auditedFieldName =
@@ -198,17 +198,19 @@ function QueryResultCell({
   getFormattedValue,
 }: {
   readonly fieldSpec: QueryFieldSpec;
-  readonly value: string | number;
+  readonly value: string | number | null;
   readonly getFormattedValue?: () => Promise<string>;
 }): JSX.Element {
+  const field = fieldSpec.getField();
+
   const [formatted, setFormatted] = React.useState<string | number | undefined>(
     () =>
       typeof field === 'object' &&
       !field.isRelationship &&
       (typeof fieldSpec.datePart === 'undefined' ||
         fieldSpec.datePart === 'fullDate')
-        ? fieldFormat(field, value.toString())
-        : value
+        ? fieldFormat(field, (value ?? '').toString())
+        : value ?? ''
   );
 
   React.useEffect(
@@ -216,7 +218,6 @@ function QueryResultCell({
     [value]
   );
 
-  const field = fieldSpec.getField();
   return (
     <span
       role="cell"
@@ -239,7 +240,7 @@ function QueryResult({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly idFieldIndex: number | undefined;
-  readonly result: RA<string | number>;
+  readonly result: RA<string | number | null>;
   readonly forceResourceLoad: boolean;
   readonly auditRecordFormatter: AuditRecordFormatter;
 }): JSX.Element {
@@ -277,26 +278,28 @@ function QueryResult({
       .then(({ models }) => setResource(models[0]), crash);
   }, [result, resource, forceResourceLoad, idFieldIndex, model]);
 
-  const cells = result.map((value, index) => (
-    <QueryResultCell
-      key={index}
-      value={value}
-      fieldSpec={fieldSpecs[index]}
-      getFormattedValue={
-        value.toString().length > 0 &&
-        auditRecordFormatter.active &&
-        typeof resource === 'object'
-          ? (): Promise<string> =>
-              auditRecordFormatter.format(
-                defined(fieldSpecs[index].getField()),
-                result,
-                resource as SpecifyResource<SpAuditLog>,
-                value.toString()
-              )
-          : undefined
-      }
-    />
-  ));
+  const cells = result
+    .filter((_value, index) => index !== idFieldIndex)
+    .map((value, index) => (
+      <QueryResultCell
+        key={index}
+        value={value}
+        fieldSpec={fieldSpecs[index]}
+        getFormattedValue={
+          (value ?? '').toString().length > 0 &&
+          auditRecordFormatter.active &&
+          typeof resource === 'object'
+            ? (): Promise<string> =>
+                auditRecordFormatter.format(
+                  defined(fieldSpecs[index].getField()),
+                  result,
+                  resource as SpecifyResource<SpAuditLog>,
+                  (value ?? '').toString()
+                )
+            : undefined
+        }
+      />
+    ));
   const className = `query-result sticky even:[--bg:transparent]
     odd:[--bg:theme(colors.gray.100)]
     odd:dark:[--bg:theme(colors.neutral.700)]`;
@@ -330,7 +333,7 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly idFieldIndex: number | undefined;
-  readonly results: RA<RA<string | number>>;
+  readonly results: RA<RA<string | number | null>>;
 }): JSX.Element {
   const auditRecordFormatter = new AuditRecordFormatter(fieldSpecs);
   const forceResourceLoad =

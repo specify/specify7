@@ -300,7 +300,7 @@ export function TreeRow({
                   if (typeof rows[index + 1] === 'object')
                     handleFocusNode([rows[index + 1].nodeId]);
                   else return undefined;
-                else if (action === 'previous' && index !== 0)
+                else if (action === 'previous' && index > 0)
                   handleFocusNode([rows[index - 1].nodeId]);
                 else if (action === 'previous' || action === 'parent')
                   handleFocusNode([]);

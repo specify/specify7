@@ -9,7 +9,7 @@ import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import { schema, getModel, getModelById } from '../../schema';
+import { getModel, getModelById, schema } from '../../schema';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
@@ -350,16 +350,16 @@ function EditQueryDialog({
     >
       {!queryResource.isNew() && (
         <>
-          <p className="pt-2">${commonText('actions')}</p>
+          <p className="pt-2">{commonText('actions')}</p>
           <div>
             <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-              ${commonText('exportQueryForDwca')}
+              {commonText('exportQueryForDwca')}
             </Button.LikeLink>
             <button type="button" className="create-report link">
-              ${commonText('exportQueryAsReport')}
+              {commonText('exportQueryAsReport')}
             </button>
             <button type="button" className="create-label link">
-              ${commonText('exportQueryAsLabel')}
+              {commonText('exportQueryAsLabel')}
             </button>
           </div>
         </>

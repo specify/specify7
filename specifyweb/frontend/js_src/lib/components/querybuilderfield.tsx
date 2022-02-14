@@ -37,6 +37,7 @@ import {
 export function QueryLine({
   baseTableName,
   field,
+  fieldHash,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
   onRemove: handleRemove,
@@ -51,6 +52,7 @@ export function QueryLine({
 }: {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly field: QueryField;
+  readonly fieldHash: string;
   readonly onChange: (newField: QueryField) => void;
   readonly onMappingChange: (payload: {
     readonly index: number;
@@ -126,7 +128,9 @@ export function QueryLine({
           : parser.type ?? 'text';
       if (queryFieldFilters[filter].types?.includes(fieldType) === false)
         filter = 'any';
-    } else {
+    }
+    // TODO: define parser and fieldType for (formatted) and (aggregated)
+    else {
       parser = undefined;
       filter = 'any';
       if (details.type !== 'regularField') details = { type: 'regularField' };
@@ -140,18 +144,23 @@ export function QueryLine({
         details,
         filter,
       });
-  }, [baseTableName, field, handleChange]);
+  }, [
+    baseTableName,
+    field,
+    // Since handleChange changes at each render, fieldHash is used instead
+    fieldHash,
+  ]);
 
   const lineData = getMappingLineData({
     baseTableName,
     mappingPath: field.mappingPath,
-    iterate: true,
     showHiddenFields,
     generateFieldData: 'all',
+    scope: 'queryBuilder',
   });
 
   /*
-   * TODO: test queries on tree ranks and tree fields
+   * TODO: test queries on tree ranks and tree fields (and (any))
    * TODO: test formatters and aggregators
    */
   const filteredLineData = mutateLineData(lineData, field.mappingPath);

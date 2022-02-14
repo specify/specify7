@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ajax } from '../../ajax';
 import { fetchFormatters } from '../../dataobjformatters';
-import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import * as querystring from '../../querystring';
@@ -10,8 +9,8 @@ import { schema } from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
-import { fetchingParameters } from '../../wbplanviewmodelconfig';
-import { tableHasOverwrite } from '../../wbplanviewmodelfetcher';
+import { fetchContext as fetchUiFormatters } from '../../uiformatters';
+import { getTableOverwrite } from '../../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../../weblinkbutton';
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import type { UserTool } from '../main';
@@ -139,10 +138,7 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
         Object.entries(schema.models)
           .filter(
             ([tableName, { system }]) =>
-              system ||
-              tableHasOverwrite(tableName.toLowerCase(), 'remove') ||
-              (fetchingParameters.tableOverwrites[tableName] !== 'hidden' &&
-                tableHasOverwrite(tableName.toLowerCase(), 'hidden'))
+              system || getTableOverwrite(tableName.toLowerCase()) === 'remove'
           )
           .map(([tableName]) => tableName.toLowerCase())
       );
