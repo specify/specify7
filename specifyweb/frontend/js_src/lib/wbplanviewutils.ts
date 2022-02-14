@@ -152,7 +152,6 @@ export function getMustMatchTables({
     getMappingLineData({
       mappingPath,
       baseTableName,
-      iterate: true,
       generateFieldData: 'none',
     }).filter(
       (mappingElementData, index, list) =>
@@ -364,7 +363,7 @@ export async function fetchAutoMapperSuggestions({
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
     generateFieldData: 'all',
-  });
+  }).slice(-1);
 
   // Don't show suggestions if picklist has only one field / no fields
   if (
@@ -406,7 +405,6 @@ export async function fetchAutoMapperSuggestions({
       mappingLineData: getMappingLineData({
         baseTableName,
         mappingPath: autoMapperResult,
-        iterate: true,
         getMappedFields: getMappedFields.bind(undefined, lines),
         generateFieldData: 'selectedOnly',
       })

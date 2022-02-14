@@ -68,7 +68,6 @@ export function generateMappingPathPreview(
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
-    iterate: true,
     generateFieldData: 'selectedOnly',
   });
 

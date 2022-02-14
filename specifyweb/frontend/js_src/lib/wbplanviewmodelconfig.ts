@@ -30,7 +30,9 @@ export type TableConfigOverwrite =
 export type FieldConfigOverwrite =
   // Makes a required field optional
   | 'optional'
-  // Removes a field from the mapper
+  // Removes a field from the mapper (but not from Query Builder)
+  | 'readOnly'
+  // Removes a field from the mapper and Query Builder
   | 'remove'
   // Hides a field. If it was required, it is made optional
   | 'hidden';
@@ -112,14 +114,14 @@ export const fetchingParameters: {
       isprimary: 'hidden',
       ishybrid: 'hidden',
       isaccepted: 'hidden',
-      fullname: 'remove',
+      fullname: 'readOnly',
     },
     agent: {
-      catalogerof: 'remove',
+      catalogerof: 'readOnly',
       agenttype: 'optional',
     },
     collectionobject: {
-      currentdetermination: 'remove',
+      currentdetermination: 'readOnly',
     },
     loanpreparation: {
       isresolved: 'optional',
@@ -128,17 +130,14 @@ export const fetchingParameters: {
       srclatlongunit: 'optional',
     },
     preptype: {
-      isloanable: 'remove',
-    },
-    geography: {
-      fullname: 'remove',
+      isloanable: 'readOnly',
     },
     determination: {
-      preferredtaxon: 'remove',
+      preferredtaxon: 'readOnly',
       iscurrent: 'hidden',
     },
     taxon: {
-      isaccepted: 'remove',
+      isaccepted: 'readOnly',
     },
   },
 
@@ -148,6 +147,6 @@ export const fetchingParameters: {
    * endsWithFieldOverwrites are checked against fields in all tables.
    */
   endsWithFieldOverwrites: {
-    precision: 'remove',
+    precision: 'readOnly',
   },
 });

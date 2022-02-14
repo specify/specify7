@@ -178,25 +178,22 @@ export type MappingLineData = Pick<
   'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
 >;
 
-/** Get data required to build a mapping line from a source mapping path */
+/**
+ * Get data required to build a mapping line from a source mapping path
+ * Handles circular dependencies and must match tables
+ */
 export function getMappingLineData({
   baseTableName,
   mappingPath,
-  iterate = false,
   generateFieldData = 'all',
   getMappedFields,
   showHiddenFields = false,
   mustMatchPreferences = {},
+  scope = 'queryBuilder',
 }: {
   readonly baseTableName: string;
   // The mapping path
   readonly mappingPath: MappingPath;
-  /*
-   * If false, returns data only for the last element of the mapping
-   * path
-   * Else returns data for each mapping path part
-   */
-  readonly iterate?: boolean;
   /*
    * "none" - fieldsData would be an empty object
    * "selectedOnly" - fieldsData would only have data for the selected field
@@ -206,6 +203,8 @@ export function getMappingLineData({
   readonly getMappedFields?: GetMappedFieldsBind;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
+  // WbPlanView has readOnly fields removed
+  readonly scope?: 'queryBuilder' | 'wbPlanView';
 }): RA<MappingLineData> {
   const internalState: {
     position: number;
@@ -248,11 +247,7 @@ export function getMappingLineData({
 
   const callbacks: NavigationCallbacks = {
     getNextDirection() {
-      if (
-        (!iterate && internalState.position !== lastPartIndex) ||
-        internalState.position > lastPartIndex
-      )
-        return undefined;
+      if (internalState.position > lastPartIndex) return undefined;
 
       internalState.position += 1;
       const nextPart = mappingPath[internalState.position];
@@ -291,25 +286,27 @@ export function getMappingLineData({
       commitInstanceData(
         'toMany',
         tableName,
-        [
-          ...Array.from({ length: maxMappedElementNumber }, (_, index) => [
-            formatToManyIndex(index + 1),
-          ]),
-          ...additional,
-        ].map(([key, optionLabel = key]) => {
-          const isDefault = key === internalState.defaultValue;
-          return isDefault || generateFieldData === 'all'
-            ? [
-                key,
-                {
-                  optionLabel,
-                  isRelationship: true,
-                  isDefault,
-                  tableName,
-                },
-              ]
-            : undefined;
-        })
+        generateFieldData === 'none'
+          ? []
+          : [
+              ...Array.from({ length: maxMappedElementNumber }, (_, index) => [
+                formatToManyIndex(index + 1),
+              ]),
+              ...additional,
+            ].map(([key, optionLabel = key]) => {
+              const isDefault = key === internalState.defaultValue;
+              return isDefault || generateFieldData === 'all'
+                ? [
+                    key,
+                    {
+                      optionLabel,
+                      isRelationship: true,
+                      isDefault,
+                      tableName,
+                    },
+                  ]
+                : undefined;
+            })
       );
     },
 
@@ -363,7 +360,8 @@ export function getMappingLineData({
                     tableName,
                   })) &&
                 !isTooManyInsideOfTooMany(field.type, parentRelationshipType) &&
-                isFieldVisible(showHiddenFields, field.isHidden, fieldName)
+                isFieldVisible(showHiddenFields, field.isHidden, fieldName) &&
+                (scope === 'queryBuilder' || !field.isReadOnly)
                   ? [
                       fieldName,
                       {

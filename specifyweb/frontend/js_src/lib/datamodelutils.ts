@@ -168,22 +168,43 @@ export const serializeResource = <SCHEMA extends AnySchema>(
     resource?.specifyModel.name
   );
 
-const serializeModel = <SCHEMA extends AnySchema>(
+const specialFields = new Set(['id', 'resource_uri']);
+
+function serializeModel<SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA>,
   tableName?: keyof Tables
-): SerializedResource<SCHEMA> =>
-  Object.fromEntries(
-    Object.entries(resource).map(([lowercaseFieldName, value]) => [
-      defined(
-        getModel(
-          defined(tableName ?? parseResourceUrl(resource.resource_uri)?.[0])
-        )
-      ).fields.find(({ name }) => name.toLowerCase() === lowercaseFieldName)
-        ?.name ?? lowercaseFieldName,
-      typeof value === 'object' && value !== null
-        ? Array.isArray(value)
-          ? value.map((value) => serializeModel(value))
-          : serializeModel(value as SerializedModel<AnySchema>)
-        : value,
-    ])
+): SerializedResource<SCHEMA> {
+  const model = defined(
+    getModel(defined(tableName ?? parseResourceUrl(resource.resource_uri)?.[0]))
+  );
+  const fields = model.fields.map(({ name }) => name);
+
+  return Object.fromEntries(
+    Object.entries(resource).map(([lowercaseFieldName, value]) => {
+      let camelFieldName = fields.find(
+        (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
+      );
+      if (typeof camelFieldName === 'undefined') {
+        camelFieldName = lowercaseFieldName;
+        if (!specialFields.has(lowercaseFieldName))
+          console.warn(
+            `Trying to serialize unknown field ${lowercaseFieldName} for table ${model.name}`,
+            resource
+          );
+      }
+      if (typeof value === 'object' && value !== null) {
+        const field = model.getField(lowercaseFieldName);
+        const tableName =
+          typeof field === 'undefined' || !field.isRelationship
+            ? undefined
+            : field.relatedModelName;
+        return [
+          camelFieldName,
+          Array.isArray(value)
+            ? value.map((value) => serializeModel(value, tableName))
+            : serializeModel(value as SerializedModel<AnySchema>, tableName),
+        ];
+      } else return [camelFieldName, value];
+    })
   ) as SerializedResource<SCHEMA>;
+}

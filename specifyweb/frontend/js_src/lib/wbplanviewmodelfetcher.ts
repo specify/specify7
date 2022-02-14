@@ -3,7 +3,7 @@
  * Modifies the front-end data model using config from wbplanviewmodelconfig.ts
  * and caches it
  *
- * TODO: consider converting everything fieldNames to camelCase
+ * TODO: consider converting all fieldNames and tableNames to camelCase
  *
  * @module
  */
@@ -27,6 +27,7 @@ type DataModelFieldPrimer = {
   readonly label: string;
   readonly isHidden: boolean;
   readonly isRequired: boolean;
+  readonly isReadOnly: boolean;
   readonly tableName?: string;
   readonly type?: RelationshipType;
   readonly foreignName?: string;
@@ -43,31 +44,28 @@ export type DataModelRelationship = DataModelFieldPrimer & {
   readonly foreignName?: string;
 };
 
-export const tableHasOverwrite = (
-  tableName: string,
-  overwriteName: TableConfigOverwrite
-): boolean =>
-  fetchingParameters.tableOverwrites[tableName] === overwriteName ||
-  Object.entries(fetchingParameters.endsWithTableOverwrites).findIndex(
-    ([label, action]) => tableName.endsWith(label) && action === overwriteName
-  ) !== -1;
+export const getTableOverwrite = (
+  tableName: string
+): TableConfigOverwrite | undefined =>
+  fetchingParameters.tableOverwrites[tableName] ??
+  Object.entries(fetchingParameters.endsWithTableOverwrites).find(([label]) =>
+    tableName.endsWith(label)
+  )?.[1];
 
-const fieldHasOverwrite = (
+const getFieldOverwrite = (
   tableName: string,
-  fieldName: string,
-  overwriteName: FieldConfigOverwrite
-): boolean =>
-  fetchingParameters.fieldOverwrites[tableName]?.[fieldName] ===
-    overwriteName ||
-  fetchingParameters.fieldOverwrites._common?.[fieldName] === overwriteName ||
-  Object.entries(fetchingParameters.endsWithFieldOverwrites).findIndex(
-    ([key, action]) => fieldName.endsWith(key) && action === overwriteName
-  ) !== -1 ||
-  (overwriteName === 'remove' &&
-    (schema.frontEndFields[tableName as keyof Tables]?.has(
-      fieldName as keyof Tables[keyof Tables]['fields']
-    ) ??
-      false));
+  fieldName: string
+): FieldConfigOverwrite | undefined =>
+  fetchingParameters.fieldOverwrites[tableName]?.[fieldName] ??
+  fetchingParameters.fieldOverwrites._common?.[fieldName] ??
+  Object.entries(fetchingParameters.endsWithFieldOverwrites).find(([key]) =>
+    fieldName.endsWith(key)
+  )?.[1] ??
+  (schema.frontEndFields[tableName as keyof Tables]?.has(
+    fieldName as keyof Tables[keyof Tables]['fields']
+  ) === true
+    ? 'remove'
+    : undefined);
 
 const getVisibleTables = (): Readonly<Set<string>> =>
   new Set(
@@ -76,7 +74,7 @@ const getVisibleTables = (): Readonly<Set<string>> =>
         ([tableName, tableData]) =>
           !tableData.isHidden() &&
           !tableData.system &&
-          !tableHasOverwrite(tableName.toLowerCase(), 'remove')
+          getTableOverwrite(tableName.toLowerCase()) !== 'remove'
       )
       .map(([tableName]) => tableName.toLowerCase())
   );
@@ -111,29 +109,24 @@ async function fetchDataModel(): Promise<void> {
           const label = field.getLocalizedName() ?? camelToHuman(field.name);
           const fieldName = field.name.toLowerCase();
 
-          if (fieldHasOverwrite(tableName, fieldName, 'remove')) return;
+          const fieldOverwrite = getFieldOverwrite(tableName, fieldName);
 
-          let isRequired = field.isRequired;
+          let isRequired = fieldOverwrite !== 'optional' && field.isRequired;
           let isHidden = field.isHidden();
 
-          /*
-           * Required fields should not be hidden, unless they are present in
-           * this list
-           */
-          if (fieldHasOverwrite(tableName, fieldName, 'hidden')) {
+          // Overwritten hidden fields are made not required
+          if (fieldOverwrite === 'hidden') {
             isRequired = false;
             isHidden = true;
           }
-          // Un-hide required fields
+          // Other required fields are unhidden
           else if (isHidden && isRequired) isHidden = false;
-
-          if (fieldHasOverwrite(tableName, fieldName, 'optional'))
-            isRequired = false;
 
           const baseField: DataModelFieldPrimer = {
             label,
             isHidden,
             isRequired,
+            isReadOnly: field.readOnly || fieldOverwrite === 'readOnly',
           };
 
           if (field.isRelationship) {
@@ -141,10 +134,7 @@ async function fetchDataModel(): Promise<void> {
             if (typeof foreignName === 'string')
               foreignName = foreignName.toLowerCase();
 
-            if (
-              field.readOnly ||
-              !visibleTables.has(field.relatedModelName.toLowerCase())
-            )
+            if (!visibleTables.has(field.relatedModelName.toLowerCase()))
               return;
 
             fields[fieldName] = {
@@ -172,6 +162,6 @@ export const getBaseTables = (): IR<boolean> =>
   Object.fromEntries(
     Array.from(getVisibleTables(), (tableName) => [
       tableName,
-      tableHasOverwrite(tableName, 'commonBaseTable'),
+      getTableOverwrite(tableName) === 'commonBaseTable',
     ])
   );
