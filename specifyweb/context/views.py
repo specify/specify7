@@ -46,11 +46,36 @@ def users_collections(cursor, user_id):
 
 def set_users_collections(cursor, user, collectionids):
     with transaction.atomic():
-        cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [user.id])
-        cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
-                       'select spprincipalid from specifyuser_spprincipal)')
 
-        for collectionid in collectionids:
+        # Delete the principals for the user for all collections not
+        # in collectionids. (I think the principal represents the
+        # user's capacity wrt to a collection.)
+
+        # First delete the mappings from the user to the principals.
+        cursor.execute("delete specifyuser_spprincipal "
+                       "from specifyuser_spprincipal "
+                       "join spprincipal using (spprincipalid) "
+                       "where specifyuserid = %s and usergroupscopeid not in %s",
+                       [user.id, collectionids])
+
+        # Next delete the joins from the principals to any permissions.
+        cursor.execute("delete from spprincipal_sppermission where spprincipalid not in ("
+                       "select spprincipalid from specifyuser_spprincipal)")
+
+        # Finally delete all the principals that aren't connected to
+        # any user. This should just be the ones where the mappings
+        # were deleted above.
+        cursor.execute("delete from spprincipal where grouptype is null and spprincipalid not in ("
+                       "select spprincipalid from specifyuser_spprincipal)")
+
+        # Now to add any new principals. Which ones alerady exist?
+        cursor.execute("select usergroupscopeid from spprincipal "
+                       "join specifyuser_spprincipal using (spprincipalid) "
+                       "where grouptype is null and specifyuserid = %s",
+                       [user.id])
+        already_exist = set(r[0] for r in cursor.fetchall())
+
+        for collectionid in set(collectionids) - already_exist:
             principal = Spprincipal.objects.create(
                 groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
                 grouptype=None,
