@@ -22,9 +22,9 @@ import queryText from './localization/query';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import {autocomplete} from './components/autocomplete';
-import {formatList} from "./components/internationalization";
-import {legacyNonJsxIcons} from "./components/icons";
-import {getTreeDefinitionItems, isTreeModel} from "./treedefinitions";
+import {formatList} from './components/internationalization';
+import {legacyNonJsxIcons} from './components/icons';
+import {getTreeDefinitionItems, isTreeModel} from './treedefinitions';
 
 // TODO: rewrite to React
 

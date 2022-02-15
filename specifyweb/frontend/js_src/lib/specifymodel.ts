@@ -1,7 +1,6 @@
 import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
-import type { AnySchema } from './datamodelutils';
-import type { SerializedModel } from './datamodelutils';
+import type { AnySchema, SerializedModel } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -11,9 +10,9 @@ import { unescape } from './schemabase';
 import { getTableOverwrite } from './schemaoverrides';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
   Relationship,
+  type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';

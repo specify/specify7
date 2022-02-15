@@ -8,7 +8,7 @@ import {parseSpecifyProperties} from './parsespecifyproperties';
 import {processColumnDefinition} from './processcolumndef';
 
 import {className} from './components/basic';
-import {SpecifyModel} from "./specifymodel";
+import {SpecifyModel} from './specifymodel';
 
 var formCounter = 0;
 

@@ -12,7 +12,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {getDateInputValue} from './dayjs';
 import {className} from './components/basic';
-import {legacyNonJsxIcons} from "./components/icons";
+import {legacyNonJsxIcons} from './components/icons';
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');

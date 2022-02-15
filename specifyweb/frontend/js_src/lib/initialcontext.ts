@@ -1,4 +1,4 @@
-import { type MimeType } from './ajax';
+import type { MimeType } from './ajax';
 import type { RA } from './types';
 
 let unlock: () => void;

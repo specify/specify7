@@ -3,16 +3,16 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import {schema, getModel} from './schema';
+import {getModel, schema} from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
-import api from './specifyapi';
+import {getInteractionsForPrepIds} from './specifyapi';
 import ResourceView, {showResource} from './resourceview';
 import {fieldFormat} from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {legacyNonJsxIcons} from "./components/icons";
+import {legacyNonJsxIcons} from './components/icons';
 
 export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -182,7 +182,7 @@ export default PrepDialog.extend({
                         _.bind(this.prepIactionDlg, this)(m, single[0].key);
                     }
                 }, this);
-                api.getInteractionsForPrepIds(prepId).done(over);
+                getInteractionsForPrepIds(prepId).then(over);
             }
         },
 

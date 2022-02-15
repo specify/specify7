@@ -17,7 +17,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from './components/basic';
 import template from './templates/attachmentbrowser.html';
-import {legacyNonJsxIcons} from "./components/icons";
+import {legacyNonJsxIcons} from './components/icons';
 
 
 export const AttachmentsView = Backbone.View.extend({

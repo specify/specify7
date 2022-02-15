@@ -1224,6 +1224,11 @@ const commonText = createDictionary({
     'ru-ru': 'Страна',
     ca: 'País',
   },
+  transactions: {
+    'en-us': 'Transactions',
+    'ru-ru': 'Транзакции',
+    ca: 'Transactions',
+  },
 });
 
 export default commonText;

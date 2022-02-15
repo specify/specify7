@@ -18,9 +18,9 @@ import {userInformation} from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
-import {setTitle} from "./components/hooks";
+import {setTitle} from './components/hooks';
 import {className, darkMode} from './components/basic';
-import {showDialog} from "./components/modaldialog";
+import {showDialog} from './components/modaldialog';
 
 function makeUrl(resource) {
     return {

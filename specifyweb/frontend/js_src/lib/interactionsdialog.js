@@ -16,13 +16,13 @@ import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {makeResourceViewUrl} from "./specifyapi";
-import {SpecifyModel} from "./specifymodel";
+import {makeResourceViewUrl} from './specifyapi';
+import {SpecifyModel} from './specifymodel';
 import {
   dialogClassNames,
   LoadingView,
   showDialog
-} from "./components/modaldialog";
+} from './components/modaldialog';
 
 var interaction_entries, actions, isFulfilled=false;
 

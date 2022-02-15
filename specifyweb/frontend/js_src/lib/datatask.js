@@ -17,8 +17,8 @@ import * as querystring from './querystring';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {showResource} from "./resourceview";
-import {setTitle} from "./components/hooks";
+import {showResource} from './resourceview';
+import {setTitle} from './components/hooks';
 
 var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 

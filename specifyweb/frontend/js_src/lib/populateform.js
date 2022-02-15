@@ -20,7 +20,7 @@ import CheckBox from './checkbox';
 import {SpinnerFieldUi} from './spinnerui';
 import {readCookie} from './cookies';
 import {userInformation} from './userinfo';
-import {className} from "./components/basic";
+import {className} from './components/basic';
 
 var MultiView = Backbone.View.extend({
         __name__: "MultiView",

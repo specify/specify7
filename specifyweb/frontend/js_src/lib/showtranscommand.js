@@ -9,7 +9,7 @@ import { schema } from './schema';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
-var title =  "Transactions";
+var title = commonText('transactions');
 
 var dialog;
 function makeDialog(el, options) {

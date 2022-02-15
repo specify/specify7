@@ -3,11 +3,13 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import api from './specifyapi';
-import { UiPlugin } from './uiplugin';
+import {getTreePath} from './specifyapi';
+import {UiPlugin} from './uiplugin';
 import {getIcon} from './icons';
 import UIField from './uifield';
 import {load} from './initialcontext';
+
+// TODO: convert to React
 
 export const webLinksDefs = {};
     export const fetchContext = load('/context/app.resource?name=WebLinks', 'application/xml').then((xml)=>{
@@ -19,7 +21,7 @@ export const webLinksDefs = {};
 
     var specialResourcesFields = {
         Taxon: function(resource) {
-            return api.getTreePath(resource).pipe(function(path) {
+            return getTreePath(resource).then(function(path) {
                 return { genus: path && path.Genus && path.Genus.name,
                          species: path && path.Species && path.Species.name };
             });

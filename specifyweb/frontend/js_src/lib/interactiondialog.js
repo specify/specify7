@@ -4,15 +4,19 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import {getModel} from './schema';
-import api, {makeResourceViewUrl} from './specifyapi';
+import {
+  getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanRs,
+  makeResourceViewUrl
+} from './specifyapi';
 import RecordSetsDialog from './recordsetsdialog';
 import PrepSelectDialog from './prepselectdialog';
 import * as navigation from './navigation';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
-import {legacyNonJsxIcons} from "./components/icons";
-import {showDialog} from "./components/modaldialog";
-import commonText from "./localization/common";
+import {legacyNonJsxIcons} from './components/icons';
+import {showDialog} from './components/modaldialog';
+import commonText from './localization/common';
 
 
 export default RecordSetsDialog.extend({
@@ -371,11 +375,11 @@ export default RecordSetsDialog.extend({
                 var action = this.options.action;
                 if (isRs) {
                     var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
-                    api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady);
+                    getPrepsAvailableForLoanRs(selection.get('id')).then(prepsReady);
                 } else {
                     var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
                     if (selection.length > 0) {
-                        api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
+                        getPrepsAvailableForLoanCoIds('CatalogNumber', ids).then(prepsReadeye);
                     } else {
                         prepsReadeye([]);
                     }

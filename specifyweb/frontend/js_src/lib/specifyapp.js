@@ -3,8 +3,8 @@
 import $ from 'jquery';
 import 'jquery-ui';
 import {ErrorView} from './components/errorboundary';
-import {setTitle} from "./components/hooks";
-import {openDialogs} from "./components/modaldialog";
+import {setTitle} from './components/hooks';
+import {openDialogs} from './components/modaldialog';
 
 global.jQuery = $;
 

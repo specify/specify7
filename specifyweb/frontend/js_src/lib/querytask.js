@@ -17,7 +17,7 @@ import QuerySaveDialog from './components/querysavedialog';
 import { router } from './router';
 import queryText from './localization/query';
 import commonText from './localization/common';
-import * as querystring from "./querystring";
+import * as querystring from './querystring';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 

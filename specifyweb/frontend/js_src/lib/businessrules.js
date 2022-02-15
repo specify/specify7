@@ -9,7 +9,7 @@ import treeBusinessRules from './treebusinessrules';
 import rules from './businessruledefs';
 
 import formsText from './localization/forms';
-import {formatList} from "./components/internationalization";
+import {formatList} from './components/internationalization';
 
 var enabled = true;
 

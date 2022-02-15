@@ -10,8 +10,8 @@ import RecordSelector from './recordselector';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {className} from "./components/basic";
-import {legacyNonJsxIcons} from "./components/icons";
+import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
 
 export const Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",

@@ -1,4 +1,3 @@
-import { ajax } from './ajax';
 import { error } from './assert';
 import type { PickListItemSimple } from './components/combobox';
 import { PickListTypes } from './components/combobox';
@@ -8,12 +7,11 @@ import { serializeResource } from './datamodelutils';
 import { format } from './dataobjformatters';
 import type { SpecifyResource } from './legacytypes';
 import { fetchPickLists } from './picklists';
-import * as queryString from './querystring';
 import { getModel, schema } from './schema';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
-import {fetchRows} from './specifyapi';
+import { fetchRows } from './specifyapi';
 
 export function createPickListItem(
   // It's weird that value can be null, but that's what data model says

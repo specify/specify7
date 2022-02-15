@@ -11,7 +11,7 @@ import { assert } from './assert';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {legacyNonJsxIcons} from "./components/icons";
+import {legacyNonJsxIcons} from './components/icons';
 
 const CONTRACT = `<td class="contract">
         <button

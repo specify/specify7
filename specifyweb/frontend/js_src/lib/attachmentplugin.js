@@ -7,7 +7,7 @@ import {UiPlugin} from './uiplugin';
 import * as attachments from './attachments';
 
 import formsText from './localization/forms';
-import {showDialog} from "./components/modaldialog";
+import {showDialog} from './components/modaldialog';
 
 export default UiPlugin.extend({
         __name__: "AttachmentsPlugin",

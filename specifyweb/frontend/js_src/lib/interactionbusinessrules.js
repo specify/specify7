@@ -1,8 +1,8 @@
 "use strict";
 
 import _ from 'underscore';
-import { schema } from './schema';
-import api from './specifyapi';
+import {schema} from './schema';
+import {getPrepAvailability} from './specifyapi';
 
 export default {
         previousReturned: [],
@@ -31,7 +31,7 @@ export default {
                 var prepId = pmod.Resource.fromUri(prepuri).id;
                 var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
                 var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
-                api.getPrepAvailability(prepId, iprepId, iprepName).done(function(available) {
+                getPrepAvailability(prepId, iprepId, iprepName).then(function(available) {
                     if (typeof available != 'undefined' && Number(available[0])  < interactionprep.get('quantity')) {
                         interactionprep.set('quantity', Number(available[0]));
                     }

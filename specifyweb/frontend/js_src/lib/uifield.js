@@ -9,7 +9,7 @@ import {format} from './dataobjformatters';
 import {fieldFormat} from './fieldformat';
 import {addValidationAttributes, parseValue, resolveParser} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
-import {dayjs} from "./dayjs";
+import {dayjs} from './dayjs';
 
 export default Backbone.View.extend({
         __name__: "UIField",

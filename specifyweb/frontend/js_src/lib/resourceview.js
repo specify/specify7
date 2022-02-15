@@ -12,11 +12,11 @@ import DeleteButton from './components/deletebutton';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {userInformation} from './userinfo';
-import populateForm from "./populateform";
-import reports from "./reports";
-import * as navigation from "./navigation";
-import {setCurrentView} from "./specifyapp";
-import {setTitle} from "./components/hooks";
+import populateForm from './populateform';
+import reports from './reports';
+import * as navigation from './navigation';
+import {setCurrentView} from './specifyapp';
+import {setTitle} from './components/hooks';
 import {className} from './components/basic';
 
 // TODO: convert to React

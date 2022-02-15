@@ -13,7 +13,7 @@ import QueryCbxSearch from './querycbxsearch';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {legacyNonJsxIcons} from "./components/icons";
+import {legacyNonJsxIcons} from './components/icons';
 
 export default UiPlugin.extend({
     __name__: "CollectionRelOneToManyPlugin",

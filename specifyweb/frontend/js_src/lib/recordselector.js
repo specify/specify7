@@ -12,8 +12,8 @@ import collectionapi from './collectionapi';
 import * as querystring from './querystring';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {className} from "./components/basic";
-import {legacyNonJsxIcons} from "./components/icons";
+import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
 
 // TODO: convert to React
 var emptyTemplate = `<p>${formsText('noData')}</p>`;

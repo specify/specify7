@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import specifyform from './specifyform';
-import api from './specifyapi';
+import {queryCbxExtendedSearch} from './specifyapi';
 import {format} from './dataobjformatters';
 import {load} from './initialcontext';
 import commonText from './localization/common';
@@ -66,7 +66,7 @@ export default Backbone.View.extend({
         },
         search: function() {
             this.$('.querycbx-search-results').empty();
-            api.queryCbxExtendedSearch(this.model, this.forceCollection).done(this.gotResults.bind(this));
+            queryCbxExtendedSearch(this.model, this.forceCollection?.id).then(this.gotResults.bind(this));
         },
     xfilter: function(results) {
         //apply special conditions.

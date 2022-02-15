@@ -11,11 +11,11 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {userInformation} from './userinfo';
 import {QueryToolbarView} from './components/toolbar/query';
-import {formatNumber} from "./components/internationalization";
-import {legacyNonJsxIcons} from "./components/icons";
-import {makeResourceViewUrl} from "./specifyapi";
-import {showDialog} from "./components/modaldialog";
-import {filterArray} from "./types";
+import {formatNumber} from './components/internationalization';
+import {legacyNonJsxIcons} from './components/icons';
+import {makeResourceViewUrl} from './specifyapi';
+import {showDialog} from './components/modaldialog';
+import {filterArray} from './types';
 
 
 export default Backbone.View.extend({
