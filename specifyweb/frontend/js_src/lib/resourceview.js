@@ -84,7 +84,7 @@ const ResourceView = Backbone.View.extend({
         self.$el.empty();
         self.header = self.options.noHeader ? null : $(viewheader({
             formsText,
-            viewTitle: self.model.specifyModel.getLocalizedName(),
+            viewTitle: self.model.specifyModel.label,
             recordsetInfo: self.recordsetInfo,
             recordsetName: self.recordSet && self.recordSet.get('name'),
             prevUrl: self.prev && self.prev.viewUrl(),
@@ -96,7 +96,7 @@ const ResourceView = Backbone.View.extend({
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);
-            self.$el.attr('aria-label', self.model.specifyModel.getLocalizedName());
+            self.$el.attr('aria-label', self.model.specifyModel.label);
             self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                 form.find('.specify-form-header').remove();
 
@@ -132,7 +132,7 @@ const ResourceView = Backbone.View.extend({
     setTitle: function () {
         var self = this;
 
-        const resourceLabel = self.model.specifyModel.getLocalizedName();
+        const resourceLabel = self.model.specifyModel.label;
         var title = self.model.isNew() ?
           commonText('newResourceTitle')(resourceLabel) :
           resourceLabel;

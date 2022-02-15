@@ -101,7 +101,7 @@ export default Backbone.View.extend({
                     >
                         <img
                             src="${model.getIcon()}"
-                            alt="${model.getLocalizedName()}"
+                            alt="${model.label}"
                             class="w-table-icon"
                         >
                         ${recordSet.get('name')} 

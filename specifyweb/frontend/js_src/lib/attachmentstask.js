@@ -7,7 +7,7 @@ import Backbone from './backbone';
 import * as attachments from './attachments';
 import {router} from './router';
 import * as app from './specifyapp';
-import {schema, getModel, getModelById} from './schema';
+import {getModel, getModelById, schema} from './schema';
 import populateform from './populateform';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
@@ -71,16 +71,16 @@ export const AttachmentsView = Backbone.View.extend({
             var title = attachment.get('title');
 
             var model = tableId != null && getModelById(tableId);
-            var icon = model ? (model.system ? "/images/system.png" : model.getIcon()) :
+            var icon = model ? (model.isSystem ? "/images/system.png" : model.getIcon()) :
                 schema.models.Attachment.getIcon();
 
             $('<button>', {
                 class: 'specify-attachment-dataobj-icon absolute left-0 top-0',
-                title: model.getLocalizedName(),
+                title: model.label,
             }).append($('<img>', {
                 'class': "w-table-icon",
                 src: icon,
-                alt: model.getLocalizedName()
+                alt: model.label
             })).appendTo(cell);
 
             attachments.getThumbnail(attachment, 123).done((img)=>
@@ -129,7 +129,7 @@ export const AttachmentsView = Backbone.View.extend({
                 _.each(self.attachmentCollections, function(collection, key) {
                     var count = counts[i++];
                     var name = key === 'all' ? "All" : key === 'unused' ? "Unused" :
-                            getModelById(parseInt(key)).getLocalizedName();
+                            getModelById(parseInt(key)).label;
 
                     var parent = _(['all', 'unused']).contains(key) ? self.$('select') : tables;
 
@@ -190,7 +190,7 @@ export const AttachmentsView = Backbone.View.extend({
                 var dialog = self.dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',
                     position: { my: "top", at: "top+20", of: self.$('.specify-attachment-browser') },
-                    title:  resource.specifyModel.getLocalizedName(),
+                    title:  resource.specifyModel.label,
                     close: function() { $(this).remove(); self.dialog = null; }
                 });
 

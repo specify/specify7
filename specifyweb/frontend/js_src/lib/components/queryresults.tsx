@@ -149,7 +149,7 @@ class AuditRecordFormatter {
     } else if (['newValue', 'oldValue'].includes(fieldName)) {
       const auditedField = this.getAuditedField(result, resource);
       if (auditedField?.isRelationship === true)
-        return getModel(auditedField.relatedModelName);
+        return auditedField.relatedModel;
     }
     return undefined;
   }
@@ -160,8 +160,8 @@ class AuditRecordFormatter {
     model: SpecifyModel
   ): string {
     return ['tableNum', 'parentTableNum'].includes(field.name.toLowerCase())
-      ? model.getLocalizedName()
-      : model.getField(value.toLowerCase())?.getLocalizedName() ?? value;
+      ? model.label
+      : model.getField(value.toLowerCase())?.label ?? value;
   }
 
   /**

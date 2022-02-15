@@ -477,7 +477,7 @@ export function MustMatch({
                               tableName={tableName}
                               tableLabel={false}
                             />
-                            {defined(getModel(tableName)).getLocalizedName()}
+                            {defined(getModel(tableName)).label}
                           </label>
                         </td>
                         <td className="justify-center">

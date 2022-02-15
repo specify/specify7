@@ -42,7 +42,7 @@ export default RecordSetsDialog.extend({
 
         dlgTitle: function() {
             var tblName = this.options.close ? 'loan' : this.options.action.table;
-            var tblTitle = getModel(tblName).getLocalizedName();
+            var tblTitle = getModel(tblName).label;
             if (this.options.interactionresource) {
                 return formsText('addItems');
             } else {
@@ -138,7 +138,7 @@ export default RecordSetsDialog.extend({
             this.$el.append(breaker);
             this.$el.append($(`<button class="i-action-enter link" type="button">
                 <span class="icon icon-open">${legacyNonJsxIcons.minusCircle}</span>
-                ${formsText('entryCaption')(this.getSrchFld().getLocalizedName())}
+                ${formsText('entryCaption')(this.getSrchFld().label)}
             </button>`));
             this.makeEntryUI();
             var noPrepCap = this.getNoPrepCaption();

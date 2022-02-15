@@ -40,7 +40,7 @@ export default Backbone.View.extend({
             var remote = _.isNull(resource) || resource != this.model;
 
             var readOnly = !this.$el.hasClass('for-search-form') &&
-                    (remote || field.isRelationship || field.readOnly || this.$el.prop('readonly'));
+                    (remote || field.isRelationship || field.isReadOnly || this.$el.prop('readonly'));
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 
@@ -50,7 +50,7 @@ export default Backbone.View.extend({
 
             const parser = resolveParser(field) ?? {};
 
-            if(field.readOnly){
+            if(field.isReadOnly){
               this.el.readonly = true;
               this.el.tabIndex = -1;
             }

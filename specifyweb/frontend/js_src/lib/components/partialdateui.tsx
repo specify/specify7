@@ -352,7 +352,7 @@ export default UiPlugin.extend(
       if (!this.label.textContent)
         this.label.textContent = this.model.specifyModel
           .getField(this.init.df)
-          .getLocalizedName();
+          .label;
     },
     remove() {
       this.view.remove();

@@ -279,7 +279,7 @@ function Option({
       'custom-select-option-selected cursor-auto bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = getModel(tableName)?.getLocalizedName();
+  const tableLabel = getModel(tableName)?.label;
 
   const fullTitle = [
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),

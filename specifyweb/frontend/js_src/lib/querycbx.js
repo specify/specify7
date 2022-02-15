@@ -5,7 +5,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 
-import { schema } from './schema';
+import {schema} from './schema';
 import specifyform from './specifyform';
 import template from './templates/querycbx.html';
 import ResourceView from './resourceview';
@@ -285,7 +285,7 @@ export default Backbone.View.extend({
         var field = this.model.specifyModel.getField(this.fieldName);
         this.fieldName = field.name; // the name from the form might be an alias.
 
-        this.readOnly = control.prop('readonly') || field.readOnly;
+        this.readOnly = control.prop('readonly') || field.isReadOnly;
         this.inFormTable = control.hasClass('specify-field-in-table');
         if (this.readOnly || this.inFormTable) {
             this.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
@@ -303,7 +303,7 @@ export default Backbone.View.extend({
         var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
-        this.relatedModel || (this.relatedModel = field.getRelatedModel());
+        this.relatedModel || (this.relatedModel = field.relatedModel);
         this.typesearch || (this.typesearch = lookupTypeSearch(init.name));
 
         var selectStmt = this.typesearch.text();
@@ -311,7 +311,7 @@ export default Backbone.View.extend({
         var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(',').map($.trim), mapper);
         var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
         var fieldTitles = searchFields.map(
-            f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
+            f => (f.model === this.relatedModel ? '' : f.model.label + " / ") + f.label);
         control.attr('title', queryText('queryBoxDescription')(formatList(fieldTitles)));
 
         if (!this.readOnly) {

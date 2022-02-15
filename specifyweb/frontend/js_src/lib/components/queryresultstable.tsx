@@ -28,7 +28,7 @@ function TableHeaderCell({
 }): JSX.Element {
   const field = fieldSpec.getField();
   const tableName = field?.model.name;
-  const name = field?.getLocalizedName() ?? field?.name ?? '';
+  const name = field?.label ?? field?.name ?? '';
 
   let label;
   if (Array.isArray(fieldSpec.treeRank)) {
@@ -42,7 +42,7 @@ function TableHeaderCell({
       )?.title ?? fieldSpec.treeRank[0];
     const fieldLabel = defined(
       defined(getModel(fieldSpec.table.name)).getField(fieldSpec.treeRank[1])
-    ).getLocalizedName();
+    ).label;
     label = [rankLabel, fieldLabel].join(' ');
   } else if (
     typeof fieldSpec.datePart === 'string' &&

@@ -254,9 +254,9 @@ export default Backbone.View.extend({
             $('<table>').append(`
                 <tr>
                     <td></td>
-                    <th scope="col" class="text-center">${schema.models.CollectionObject.getField('catalognumber').getLocalizedName()}</th>
-                    <th scope="col" class="text-center">${schema.models.Determination.getField('taxon').getLocalizedName()}</th>
-                    <th scope="col" class="text-center">${schema.models.Preparation.getField('preptype').getLocalizedName()}</th>
+                    <th scope="col" class="text-center">${schema.models.CollectionObject.getField('catalognumber').label}</th>
+                    <th scope="col" class="text-center">${schema.models.Determination.getField('taxon').label}</th>
+                    <th scope="col" class="text-center">${schema.models.Preparation.getField('preptype').label}</th>
                     <th scope="col" class="text-center">${formsText('unresolved')}</th>
                     <th scope="col" class="text-center">${formsText('return')}</th>
                     <th scope="col" class="text-center" colspan="2">${formsText('resolve')}</th>
@@ -290,7 +290,7 @@ export default Backbone.View.extend({
         this.$el.dialog({
             modal: true,
             close: function() { $(this).remove(); },
-            title: schema.models.LoanPreparation.getLocalizedName(),
+            title: schema.models.LoanPreparation.label,
             maxHeight: 700,
             width: 600,
             buttons: buttons

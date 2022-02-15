@@ -29,7 +29,6 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
-import { dataModelPromise } from './wbplanviewmodelfetcher';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
 
 const splitMappingPath = (
@@ -199,9 +198,6 @@ export async function fetchLocalityDataFromLocalityResource(
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {
-  // Needed by generateMappingPathPreview
-  await dataModelPromise;
-
   const filteredMappingPaths = parseLocalityPinFields(quickFetch);
 
   const results = await Promise.all(

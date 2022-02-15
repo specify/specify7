@@ -5,10 +5,7 @@
  * @module
  */
 
-import type {
-  MappingPath,
-  RelationshipType,
-} from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import type { IR, RA } from './types';
 import {
   formatTreeRank,
@@ -17,51 +14,11 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
-import type {
-  DataModelField,
-  DataModelNonRelationship,
-  DataModelRelationship,
-} from './wbplanviewmodelfetcher';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
-
-const getTableFields = (
-  // The name of the table to fetch the fields for
-  tableName: string,
-  // Whether fields are relationships
-  filterIsRelationship: boolean | -1 = -1,
-  // Whether field is hidden
-  filterIsHidden: boolean | -1 = -1
-): [fieldName: string, fieldData: DataModelField][] =>
-  Object.entries(dataModelStorage.tables[tableName]).filter(
-    ([, { isRelationship, isHidden }]) =>
-      (filterIsRelationship === -1 ||
-        isRelationship === filterIsRelationship) &&
-      (filterIsHidden === -1 || isHidden === filterIsHidden)
-  );
-
-export const getTableNonRelationshipFields = (
-  // The name of the table to fetch the fields for
-  tableName: string,
-  // Whether field is hidden
-  filterIsHidden: boolean | -1 = -1
-): [fieldName: string, fieldData: DataModelNonRelationship][] =>
-  getTableFields(tableName, false, filterIsHidden) as [
-    relationshipName: string,
-    relationshipData: DataModelNonRelationship
-  ][];
-
-export const getTableRelationships = (
-  // The name of the table to fetch relationships fields for
-  tableName: string,
-  // Whether field is hidden
-  filterIsHidden: boolean | -1 = -1
-): [fieldName: string, fieldData: DataModelRelationship][] =>
-  getTableFields(tableName, true, filterIsHidden) as [
-    relationshipName: string,
-    relationshipData: DataModelRelationship
-  ][];
+import { getModel } from './schema';
+import { Tables } from './datamodel';
+import { Relationship, RelationshipType } from './specifyfield';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -82,7 +39,7 @@ export const getMaxToManyIndex = (
 /** Iterates over the mappingsTree to find required fields that are missing */
 export function findRequiredMissingFields(
   // Name of the current base table
-  tableName: string,
+  tableName: keyof Tables,
   /*
    * Result of running mappings.getMappingsTree() - an object with
    * information about now mapped fields
@@ -97,7 +54,7 @@ export function findRequiredMissingFields(
   // Used internally in a recursion. Save results
   results: MappingPath[] = []
 ): MappingPath[] {
-  const tableData = dataModelStorage.tables[tableName];
+  const model = getModel(tableName);
 
   if (typeof mappingsTree === 'undefined') return results;
 
@@ -147,63 +104,63 @@ export function findRequiredMissingFields(
       }, results);
   }
 
-  // Handle regular fields and relationships
-  Object.entries(tableData).forEach(([fieldName, fieldData]) => {
-    const localPath = [...path, fieldName];
+  const parentTable = getModel(parentTableName);
+  model?.relationships.forEach((relationship) => {
+    const localPath = [...path, relationship.name];
+    const isMapped = listOfMappedFields.includes(relationship.name);
 
-    const isMapped = listOfMappedFields.includes(fieldName);
+    if (typeof parentTable === 'object') {
+      let previousRelationshipName = localPath.slice(-2)[0];
+      if (
+        valueIsToManyIndex(previousRelationshipName) ||
+        valueIsTreeRank(previousRelationshipName)
+      )
+        previousRelationshipName = localPath.slice(-3)[0];
 
-    if (fieldData.isRelationship) {
-      if (parentTableName !== '') {
-        let previousRelationshipName = localPath.slice(-2)[0];
-        if (
-          valueIsToManyIndex(previousRelationshipName) ||
-          valueIsTreeRank(previousRelationshipName)
-        )
-          previousRelationshipName = localPath.slice(-3)[0];
+      const parentRelationship = parentTable?.getRelationship(
+        previousRelationshipName
+      );
 
-        const parentRelationshipData = dataModelStorage.tables[parentTableName][
-          previousRelationshipName
-        ] as DataModelRelationship;
+      let currentMappingPathPart = localPath[path.length - 1];
+      if (
+        valueIsToManyIndex(currentMappingPathPart) ||
+        valueIsTreeRank(currentMappingPathPart)
+      )
+        currentMappingPathPart = localPath[path.length - 2];
 
-        let currentMappingPathPart = localPath[path.length - 1];
-        if (
-          valueIsToManyIndex(currentMappingPathPart) ||
-          valueIsTreeRank(currentMappingPathPart)
-        )
-          currentMappingPathPart = localPath[path.length - 2];
-
-        if (
+      if (
+        (typeof parentRelationship === 'object' &&
           // Disable circular relationships
-          isCircularRelationship({
-            targetTableName: fieldData.tableName,
-            parentTableName,
-            foreignName: fieldData.foreignName ?? '',
-            relationshipKey: fieldName,
-            currentMappingPathPart,
-            tableName,
-          }) ||
-          // Skip -to-many inside -to-many
-          (relationshipIsToMany(parentRelationshipData.type) &&
-            relationshipIsToMany(fieldData.type))
-        )
-          return;
-      }
+          isCircularRelationship(parentRelationship, relationship)) ||
+        // Skip -to-many inside -to-many
+        (relationshipIsToMany(parentRelationship.type) &&
+          relationshipIsToMany(relationship.type))
+      )
+        return;
+    }
 
-      if (isMapped)
-        findRequiredMissingFields(
-          fieldData.tableName,
-          mappingsTree[fieldName] as MappingsTree,
-          mustMatchPreferences,
-          tableName,
-          localPath,
-          results
-        );
-      else if (fieldData.isRequired && !mustMatchPreferences[tableName])
-        results.push(localPath);
-    } else if (
+    if (isMapped)
+      findRequiredMissingFields(
+        relationship.relatedModel.name,
+        mappingsTree[relationship.name] as MappingsTree,
+        mustMatchPreferences,
+        tableName,
+        localPath,
+        results
+      );
+    else if (
+      relationship.overrides.isRequired &&
+      !mustMatchPreferences[tableName]
+    )
+      results.push(localPath);
+  });
+
+  model.fields.forEach((field) => {
+    const localPath = [...path, field.name];
+    const isMapped = listOfMappedFields.includes(field.name);
+    if (
       !isMapped &&
-      fieldData.isRequired &&
+      field.overrides.isRequired &&
       !mustMatchPreferences[tableName]
     )
       results.push(localPath);
@@ -212,26 +169,14 @@ export function findRequiredMissingFields(
   return results;
 }
 
-export const isCircularRelationship = ({
-  targetTableName,
-  parentTableName,
-  foreignName,
-  relationshipKey,
-  currentMappingPathPart,
-  tableName,
-}: {
-  readonly targetTableName: string;
-  readonly parentTableName: string;
-  readonly foreignName: string;
-  readonly relationshipKey: string;
-  readonly currentMappingPathPart: string;
-  readonly tableName: string;
-}): boolean =>
-  targetTableName === parentTableName &&
-  (dataModelStorage.tables[parentTableName]?.[foreignName]?.foreignName ===
-    relationshipKey ||
-    dataModelStorage.tables[tableName]?.[relationshipKey]?.foreignName ===
-      currentMappingPathPart);
+export const isCircularRelationship = (
+  parentRelationship: Relationship,
+  relationship: Relationship
+): boolean =>
+  (parentRelationship.relatedModel === relationship.model &&
+    parentRelationship.otherSideName === relationship.name) ||
+  (relationship.relatedModel === parentRelationship.model &&
+    relationship.otherSideName === parentRelationship.name);
 
 export const isTooManyInsideOfTooMany = (
   type?: RelationshipType,

@@ -74,7 +74,7 @@ const AppResourcePage = Backbone.View.extend({
             if (selected != null) {
                 new ResourceDataView({model: selected}).render().$el.appendTo(this.el);
             } else {
-                $(`<p class="m-auto">${this.options.ResourceModel.getLocalizedName()} not found.</p>`).appendTo(this.el);
+                $(`<p class="m-auto">${this.options.ResourceModel.label} not found.</p>`).appendTo(this.el);
             }
         }
         return this;
@@ -292,7 +292,7 @@ const ResourceList = Backbone.View.extend({
                     type="button"
                     class="link"
                 >
-                    ${commonText('newResourceTitle')(this.ResourceModel.getLocalizedName())}
+                    ${commonText('newResourceTitle')(this.ResourceModel.label)}
                 </button>
             </li>`);
             button.on('click',this.openNameDialog.bind(this));
@@ -360,7 +360,7 @@ const AppResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $(`<h2 class="${className.h2}">`).text(this.options.ResourceModel.getLocalizedName()),
+            $(`<h2 class="${className.h2}">`).text(this.options.ResourceModel.label),
             $('<ul role="tree" class="ml-4">')
                 .append(new GlobalResourcesView(this.options).render().el)
                 .append(new DisciplinesView(this.options).render().el)
@@ -780,7 +780,7 @@ const UserResourcesView = Backbone.View.extend({
 });
 
 function appResourcesTask(ResourceModel, id) {
-    setTitle(ResourceModel.getLocalizedName());
+    setTitle(ResourceModel.label);
 
     const resourceDirs = new schema.models.SpAppResourceDir.LazyCollection();
     const disciplines = new schema.models.Discipline.LazyCollection();

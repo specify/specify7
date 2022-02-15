@@ -13,7 +13,7 @@ export function PickListTableComboBox(
     if (props.resource.get('type') !== PickListTypes.TABLE) return [];
     return Object.entries(schema.models).map(([tableName, tableData]) => ({
       value: tableName,
-      title: tableData.getLocalizedName() ?? tableName,
+      title: tableData.label ?? tableName,
     }));
   }, [props.resource]);
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);

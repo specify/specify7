@@ -39,14 +39,14 @@ function regenerate() {
             isRequired,
             isRelationship,
             dependent,
-            relatedModelName,
+            relatedModel,
             type,
             name,
           }
         ) => {
           const field = `readonly ${name}:${
             isRelationship
-              ? `${type.endsWith('-to-many') ? 'RA<' : ''}${relatedModelName}${
+              ? `${type.endsWith('-to-many') ? 'RA<' : ''}${relatedModel.name}${
                   type.endsWith('-to-many') ? '>' : ''
                 }`
               : javaTypeToTypeScript[type]
@@ -101,6 +101,13 @@ export type AnySchema = {
   readonly toManyDependent: IR<RA<AnySchema>>;
   readonly toManyIndependent: IR<RA<AnySchema>>;
 };
+
+export type TableFields<SCHEMA extends AnySchema> =
+  | keyof SCHEMA['fields']
+  | keyof SCHEMA['toOneDependent']
+  | keyof SCHEMA['toOneIndependent']
+  | keyof SCHEMA['toManyDependent']
+  | keyof SCHEMA['toManyIndependent'];
 
 export type ToMany = AnySchema['toManyDependent'];
 
@@ -197,7 +204,7 @@ function serializeModel<SCHEMA extends AnySchema>(
         const tableName =
           typeof field === 'undefined' || !field.isRelationship
             ? undefined
-            : field.relatedModelName;
+            : field.relatedModel.name;
         return [
           camelFieldName,
           Array.isArray(value)

@@ -137,8 +137,9 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
       const excludedTables = new Set(
         Object.entries(schema.models)
           .filter(
-            ([tableName, { system }]) =>
-              system || getTableOverwrite(tableName.toLowerCase()) === 'remove'
+            ([tableName, { isSystem }]) =>
+              isSystem ||
+              getTableOverwrite(tableName.toLowerCase()) === 'remove'
           )
           .map(([tableName]) => tableName.toLowerCase())
       );

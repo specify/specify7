@@ -19,7 +19,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'querycbx'], ($, _, api,
             control = div.find 'input'
             ok !(control.prop 'readonly'), 'input is not readonly'
 
-            expectedSearchField = getModel('Agent').getField('lastname').getLocalizedName()
+            expectedSearchField = getModel('Agent').getField('lastname').label
             equal control.attr('title'), "Searches: #{ expectedSearchField }", 'tooltip is correct'
 
     test1()

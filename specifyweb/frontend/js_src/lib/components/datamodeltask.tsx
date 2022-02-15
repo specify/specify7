@@ -15,7 +15,7 @@ function RelationshipLink({
 }: {
   readonly relationship: Relationship;
 }): JSX.Element | null {
-  const related = relationship.getRelatedModel();
+  const related = relationship.relatedModel;
   return typeof related === 'object' ? (
     <Link.Default
       className="intercept-navigation"

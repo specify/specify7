@@ -85,7 +85,7 @@ function TableResults({
                 idFieldIndex={idFieldIndex}
                 totalCount={tableResults.totalCount}
                 model={model}
-                label={model.getLocalizedName()}
+                label={model.label}
                 initialData={tableResults.results}
                 fetchResults={async (
                   offset: number
@@ -127,7 +127,7 @@ function Results(): JSX.Element {
             .filter(([_tableName, { totalCount }]) => totalCount > 0)
             .map(([tableName, tableResults]) => ({
               model: defined(getModel(tableName)),
-              caption: defined(getModel(tableName)).getLocalizedName(),
+              caption: defined(getModel(tableName)).label,
               idFieldIndex: 0,
               tableResults,
               ajaxUrl,
@@ -168,9 +168,8 @@ function Results(): JSX.Element {
                   const linkFieldSpec = fieldSpecs.pop();
                   idFieldIndex = fieldSpecs.length + 1;
                   model = defined(
-                    (
-                      linkFieldSpec?.joinPath.slice(-1)[0] as Relationship
-                    ).getRelatedModel()
+                    (linkFieldSpec?.joinPath.slice(-1)[0] as Relationship)
+                      .relatedModel
                   );
                 }
 

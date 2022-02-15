@@ -13,7 +13,9 @@ import type {
   AutoMapperScope,
   MappingPath,
 } from './components/wbplanviewmapper';
-import type { IR, RA, RR } from './types';
+import type { Tables } from './datamodel';
+import type { AnyTree, TableFields } from './datamodelutils';
+import type { RA, RR } from './types';
 
 /*
  * AutoMapper does 2 passes though the schema whenever it is asked to map
@@ -26,7 +28,6 @@ import type { IR, RA, RR } from './types';
 /**
  * A structure for defining matching rules
  * NOTE: All values must use lower case exclusively!
- *
  */
 export type Options = {
   // Regex match (header.match(regex) !== null)
@@ -74,24 +75,20 @@ type AutoMapperDefinitions = {
    *   Table Synonyms, it's `synonyms` and matches would also
    *   be checked in the first pass
    */
-  readonly tableSynonyms: IR<
-    /*
-     * TableName (case-insensitive)
-     * Described earlier in the file
-     */
-    RA<TableSynonym>
-  >;
+  readonly tableSynonyms: Partial<RR<keyof Tables, RA<TableSynonym>>>;
 
   /*
    * Rank synonyms are used to when the same tree rank can have
    * different name depending on the discipline
    */
-  readonly rankSynonyms: IR<
-    // TableName (case-insensitive)
-    {
-      rankName: string;
-      synonyms: RA<string>;
-    }[]
+  readonly rankSynonyms: Partial<
+    RR<
+      AnyTree['tableName'],
+      RA<{
+        readonly rankName: string;
+        readonly synonyms: RA<string>;
+      }>
+    >
   >;
 
   /*
@@ -103,16 +100,13 @@ type AutoMapperDefinitions = {
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  readonly dontMatch: IR<
-    // TableName (case-insensitive)
-    IR<
-      /*
-       * FieldName (case-insensitive)
-       * Defined in wbplanviewmapper.tsx
-       */
-      RA<AutoMapperScope>
-    >
-  >;
+  readonly dontMatch: {
+    readonly [TABLE_NAME in keyof Tables]?: {
+      readonly [FIELD_NAME in TableFields<
+        Tables[TABLE_NAME]
+      >]?: RA<AutoMapperScope>;
+    };
+  };
 
   /*
    * Don't map headers that match the regex
@@ -123,7 +117,6 @@ type AutoMapperDefinitions = {
    */
   readonly dontMap: Partial<
     RR<
-      // Defined in wbplanviewmapper.tsx
       AutoMapperScope,
       // Described earlier in the file
       { headers: Options }
@@ -139,21 +132,21 @@ type AutoMapperDefinitions = {
    * Shortcut is followed only if header matched the comparisons
    *   and a path to tableName from baseTableName
    */
-  readonly shortcuts: IR<
-    // TableName (case-insensitive)
-    Partial<
-      RR<
-        // Defined in wbplanviewmapper.tsx
-        AutoMapperScope,
-        {
-          /*
-           * Mapping path that is to be appended to the current path
-           * when shortcut is followed
-           */
-          mappingPath: MappingPath;
-          // Described earlier in the file
-          headers: Options;
-        }[]
+  readonly shortcuts: Partial<
+    RR<
+      keyof Tables,
+      Partial<
+        RR<
+          AutoMapperScope,
+          RA<{
+            /*
+             * Mapping path that is to be appended to the current path
+             * when shortcut is followed
+             */
+            readonly mappingPath: MappingPath;
+            readonly headers: Options;
+          }>
+        >
       >
     >
   >;
@@ -167,13 +160,10 @@ type AutoMapperDefinitions = {
    * Synonym is used only if header matched the comparisons and
    *   and there exists a path from tableName to baseTableName
    */
-  readonly synonyms: IR<
-    // TableName (case-insensitive)
-    IR<
-      // FieldName (case-insensitive)
-      Partial<
+  readonly synonyms: {
+    readonly [TABLE_NAME in keyof Tables]?: {
+      readonly [FIELD_NAME in TableFields<Tables[TABLE_NAME]>]?: Partial<
         RR<
-          // Defined in wbplanviewmapper.tsx
           AutoMapperScope,
           {
             headers: Options & {
@@ -193,12 +183,12 @@ type AutoMapperDefinitions = {
             };
           }
         >
-      >
-    >
-  >;
+      >;
+    };
+  };
 };
 
-const definitions: AutoMapperDefinitions = {
+export const autoMapperDefinitions: AutoMapperDefinitions = {
   tableSynonyms: {
     Agent: [
       {
@@ -368,7 +358,7 @@ const definitions: AutoMapperDefinitions = {
     },
   },
   synonyms: {
-    DnaSequence: {
+    DNASequence: {
       genbankAccessionNumber: {
         autoMapper: {
           headers: {
@@ -454,7 +444,7 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      stationfieldnumber: {
+      stationFieldNumber: {
         autoMapper: {
           headers: {
             regex: [
@@ -465,7 +455,7 @@ const definitions: AutoMapperDefinitions = {
       },
     },
     Accession: {
-      accessionnumber: {
+      accessionNumber: {
         autoMapper: {
           headers: {
             regex: [/^acc(?:ession)?\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/],
@@ -529,7 +519,7 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      latlongmethod: {
+      latLongMethod: {
         autoMapper: {
           headers: {
             contains: ['lat/long method'],
@@ -541,7 +531,7 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      localityname: {
+      localityName: {
         autoMapper: {
           headers: {
             string: ['localitynum', 'locality'],
@@ -553,7 +543,7 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      namedplace: {
+      namedPlace: {
         autoMapper: {
           headers: {
             contains: ['named place'],
@@ -600,29 +590,13 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      altcatalognumber: {
+      altCatalogNumber: {
         autoMapper: {
           headers: {
             regex: [
               /^alt(?:ernative)?\.? (?:specimen|cat(?:alogu?e?)?)\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
             ],
             string: ['altcatno'],
-          },
-        },
-      },
-    },
-    Geography: {
-      state: {
-        autoMapper: {
-          headers: {
-            contains: ['state'],
-          },
-        },
-      },
-      continent: {
-        autoMapper: {
-          headers: {
-            contains: ['continent'],
           },
         },
       },
@@ -664,45 +638,3 @@ const definitions: AutoMapperDefinitions = {
     },
   },
 };
-
-/*
- * Method that converts all table names and field names in definitions to
- * lower case
- */
-function definitionsToLowercase(
-  definitions: AutoMapperDefinitions
-): AutoMapperDefinitions {
-  const keysToLowerCase = (object: object, levels = 1): object =>
-    Object.fromEntries(
-      Object.entries(object).map(([key, value]) => [
-        key.toLowerCase(),
-        levels > 1 ? keysToLowerCase(value, levels - 1) : value,
-      ])
-    );
-
-  /*
-   * Specify how deep to go into each branch when converting to lowerCase
-   */
-  const structureDepth: [
-    structureName: keyof typeof definitions,
-    depth: number
-  ][] = [
-    ['tableSynonyms', 1],
-    ['rankSynonyms', 1],
-    ['dontMatch', 1 + 1],
-    ['shortcuts', 1],
-    ['synonyms', 1 + 1],
-  ];
-  structureDepth.forEach(
-    ([structureName, depth]) =>
-      // @ts-expect-error
-      (definitions[structureName] = keysToLowerCase(
-        definitions[structureName],
-        depth
-      ))
-  );
-
-  return Object.freeze(definitions);
-}
-
-export const autoMapperDefinitions = definitionsToLowercase(definitions);

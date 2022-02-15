@@ -57,7 +57,7 @@ export function EditResourceDialog<SCHEMA extends AnySchema = AnySchema>({
       defined(container ?? undefined).append(formElement);
       setForm(formElement);
 
-      const resourceLabel = resource.specifyModel.getLocalizedName();
+      const resourceLabel = resource.specifyModel.label;
       setTitle(
         resource.isNew()
           ? commonText('newResourceTitle')(resourceLabel)

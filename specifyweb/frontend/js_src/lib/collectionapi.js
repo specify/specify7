@@ -53,7 +53,7 @@ var Base =  Backbone.Collection.extend({
         collection.related = options.related;
 
         assert(collection.field.model === collection.model.specifyModel, "field doesn't belong to model");
-        assert(collection.field.getRelatedModel() === collection.related.specifyModel, "field is not to related resource");
+        assert(collection.field.relatedModel === collection.related.specifyModel, "field is not to related resource");
     }
 
     collectionapi.Dependent = Base.extend({

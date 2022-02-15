@@ -72,7 +72,9 @@ export type FullMappingPath = Readonly<
  *  future if we would want to add new mapping types
  *
  */
+// TODO: remove this
 export type MappingType = 'existingHeader';
+// TODO: remove this
 export type RelationshipType =
   | 'one-to-one'
   | 'one-to-many'
@@ -316,7 +318,7 @@ export function WbPlanViewMapper(props: {
         <>
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
           <span title={wbText('baseTable')}>
-            {` (${defined(getModel(props.baseTableName)).getLocalizedName()})`}
+            {` (${defined(getModel(props.baseTableName)).label})`}
           </span>
           <span
             className="flex items-center text-red-600"

@@ -44,13 +44,13 @@ define(['underscore', 'schema'], function(_, schema) {
 
         test('model.getLocalizedName', function() {
             var model = getModel('collectionobject');
-            var name = model.getLocalizedName();
+            var name = model.label;
             ok(_(name).isString(), 'name is string: ' + name);
         });
 
         test('field.getLocalizedName', function() {
             var field = getModel('collectionobject').getField('cataloger');
-            var name = field.getLocalizedName();
+            var name = field.label;
             ok(_(name).isString(), 'name is string: ' + name);
         });
 
@@ -67,7 +67,6 @@ define(['underscore', 'schema'], function(_, schema) {
             ok(!field.isRequired, 'catalognumber is not required');
             equal(field.type, 'java.lang.String', 'catalognumber is String');
             ok(_.isUndefined(field.otherSideName), 'catalognumber has no othersidename');
-            throws(function() { field.getRelatedModel(); }, 'getRelatedModel throws error');
         });
 
         test('relationship field attributes', function () {
@@ -78,7 +77,6 @@ define(['underscore', 'schema'], function(_, schema) {
             equal(field.name.toLowerCase(), 'collectingevent', 'names match');
             equal(field.type, 'many-to-one', 'is many-to-one field');
             equal(field.otherSideName.toLowerCase(), 'collectionobjects', 'othersidename matches');
-            equal(field.getRelatedModel(), getModel('collectingevent'), 'getRelatedModel works');
         });
 
         test('field sets for models get confused', function() {

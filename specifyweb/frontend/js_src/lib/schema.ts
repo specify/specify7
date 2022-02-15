@@ -5,13 +5,13 @@
  */
 
 import { error } from './assert';
+import type { AnySchema } from './datamodelutils';
 import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
-import type { LiteralField, Relationship } from './specifyfield';
-import { SpecifyModel, type TableDefinition } from './specifymodel';
+import { LiteralField, Relationship } from './specifyfield';
+import { type TableDefinition, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
-import { AnySchema } from './datamodelutils';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -32,6 +32,19 @@ export type SchemaLocalization = {
 // The schema config / localization information is loaded dynamically.
 export let localization: IR<SchemaLocalization> = undefined!;
 
+const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
+  fields: FIELD_TYPE[],
+  frontEndFields: RA<FIELD_TYPE>
+): RA<FIELD_TYPE> => [
+  ...fields.sort((left, right) =>
+    left.label?.localeCompare(right.label ?? '') ? 1 : -1
+  ),
+  ...frontEndFields.map((field) => {
+    field.overrides.isReadOnly = true;
+    return field;
+  }),
+];
+
 export const fetchContext = Promise.all([
   load<RA<TableDefinition>>('/context/datamodel.json', 'application/json'),
   load<IR<SchemaLocalization>>(
@@ -42,17 +55,33 @@ export const fetchContext = Promise.all([
   localization = data;
   // @ts-expect-error Assigning to read-only value
   schemaBase.models = Object.fromEntries(
-    tables.map((tableDefinition) => {
-      const model = new SpecifyModel(tableDefinition);
-      const modelFields = model.fields as (LiteralField | Relationship)[];
-      const frontEndFields = schemaExtras[model.name]?.(model) ?? [];
-      if (frontEndFields.length > 0) {
-        // @ts-expect-error Assigning to read-only value
-        schemaBase.frontEndFields[model.name] = new Set(frontEndFields);
-        modelFields.concat(frontEndFields);
-      }
-      return [model.name, model] as const;
-    })
+    tables
+      .map((tableDefinition) => {
+        const model = new SpecifyModel(tableDefinition);
+        return [tableDefinition, model] as const;
+      })
+      .map(([tableDefinition, model]) => {
+        const [frontEndFields, frontEndRelationships] = schemaExtras[
+          model.name
+        ]?.(model) ?? [[], []];
+
+        model.literalFields = processFields(
+          tableDefinition.fields.map(
+            (fieldDefinition) => new LiteralField(model, fieldDefinition)
+          ),
+          frontEndFields
+        );
+        model.relationships = processFields(
+          tableDefinition.relationships.map(
+            (relationshipDefinition) =>
+              new Relationship(model, relationshipDefinition)
+          ),
+          frontEndRelationships
+        );
+        model.fields = [...model.literalFields, ...model.relationships];
+
+        return [model.name, model] as const;
+      })
   );
 });
 

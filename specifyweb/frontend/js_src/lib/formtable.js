@@ -108,7 +108,7 @@ export default Backbone.View.extend({
             assert(this.field.isDependent(), "formtable is only for dependent fields");
             assert(this.collection.field === this.field.getReverse(), "collection doesn't represent field");
 
-            this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
+            this.title = this.field ? this.field.label : this.collection.model.specifyModel.label;
 
             this.collection.on('add remove destroy', this.reRender, this);
 

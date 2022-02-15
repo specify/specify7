@@ -22,7 +22,7 @@ export const Base =  Backbone.View.extend({
             var self = this;
             self.populateForm = options.populateForm;
             self.field = options.field;
-            self.relatedModel = self.field.getRelatedModel();
+            self.relatedModel = self.field.relatedModel;
 
             self.related = self.options.model || self.options.collection;
             self.model = self.options.parentResource || self.options.collection.parent;
@@ -38,7 +38,7 @@ export const Base =  Backbone.View.extend({
             this.button = $('<button>', {
                 type: 'button',
                 class: 'button',
-                title: self.field.getLocalizedName()
+                title: self.field.label
             }).appendTo(self.el)[0];
 
             if (self.$el.hasClass('specify-subview-in-table'))
@@ -49,7 +49,7 @@ export const Base =  Backbone.View.extend({
                     src="${self.icon}"
                     alt=""
                 >
-                <span class="sr-only">${self.field.getLocalizedName()}</span>
+                <span class="sr-only">${self.field.label}</span>
                 <span class="specify-subview-button-count bg-white bg-neutral-800 border-gray-500 font-bold p-1 rounded"></span>`;
         },
         setCount: function (c) {
@@ -98,7 +98,7 @@ export const Base =  Backbone.View.extend({
             }).on('renderdone', (recordSelector)=>{
                 self.dialog = $('<div>').append(recordSelector.el).dialog({
                     width: 'auto',
-                    title: self.field.getLocalizedName(),
+                    title: self.field.label,
                     close: this.closeDialog.bind(this)
                 });
             }).render();
@@ -146,7 +146,7 @@ export const Base =  Backbone.View.extend({
                 }
             }
 
-            var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
+            var title = (self.related.isNew() ? "New " : "") + self.relatedModel.label;
 
             if (!self.readOnly) {
                 $(`<button type="button">${commonText('remove')}</button>`)

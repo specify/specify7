@@ -319,7 +319,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
     throw new Error('Invalid action type');
 
   const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const treeName = model.getLocalizedName().toLowerCase();
+  const treeName = model.label.toLowerCase();
 
   const [showPrompt, setShowPrompt] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);

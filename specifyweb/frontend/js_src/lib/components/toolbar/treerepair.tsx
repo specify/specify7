@@ -64,7 +64,7 @@ export function TreeSelectDialog({
                 }}
               >
                 <TableIcon tableName={tree} tableLabel="false" />
-                {model.getLocalizedName()}
+                {model.label}
               </Link.Default>
             </li>
           ))}

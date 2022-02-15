@@ -113,7 +113,7 @@ export default Backbone.View.extend({
             if (entry.attr('label')) {
                 return s.localizeFrom('resources', entry.attr('label'));
             } else if (entry.attr('table')) {
-                return getModel(entry.attr('table')).getLocalizedName();
+                return getModel(entry.attr('table')).label;
             } else if (isActionEntry(entry)) {
                 return entry.attr('action');
             } else {

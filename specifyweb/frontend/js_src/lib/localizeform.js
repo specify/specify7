@@ -21,7 +21,7 @@ export default function(formNode) {
         if (typeof model === 'undefined') return;
 
         $('.specify-form-header', form).prepend(
-            $('<h2>').text(model.getLocalizedName())
+            $('<h2>').text(model.label)
         );
 
         var fillinLabel = function() {
@@ -66,7 +66,7 @@ export default function(formNode) {
             }
 
             var field = model.getField(fieldname);
-            field && setText(field.getLocalizedName());
+            field && setText(field.label);
             var title = field && field.getLocalizedDesc();
             if(title && title !== label.text())
               label.attr('title', title);
@@ -96,7 +96,7 @@ export default function(formNode) {
 
         $('.specify-subview-header', form).each(function() {
             var fieldname = $(this).parent().data('specify-field-name');
-            var label = model.getField(fieldname).getLocalizedName();
+            var label = model.getField(fieldname).label;
             $('.specify-subview-title', this).text(label);
         });
     };

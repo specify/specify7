@@ -27,18 +27,18 @@ function takeBetween(items, startElem, endElem) {
         if (resource.specifyModel.name.toLowerCase() === "collectionobject" && parentResource) {
             const colId = parentResource.get('id');
             if (remotePrefs["CO_CREATE_COA_" + colId]  === "true") {
-                const coaModel = resource.specifyModel.getField('collectionobjectattribute').getRelatedModel();
+                const coaModel = resource.specifyModel.getField('collectionobjectattribute').relatedModel;
                 const coa = new coaModel.Resource();
                 coa.placeInSameHierarchy(resource);
                 resource.set('collectionobjectattribute', coa);
             }
             if (remotePrefs["CO_CREATE_PREP_" + colId]  === "true") {
-                const prepModel = resource.specifyModel.getField('preparations').getRelatedModel();
+                const prepModel = resource.specifyModel.getField('preparations').relatedModel;
                 const prep = new prepModel.Resource();
                 resource.rget('preparations').done(preps => preps.add(prep));
             }
             if (remotePrefs["CO_CREATE_DET_" + colId]  === "true") {
-                const detModel = resource.specifyModel.getField('determinations').getRelatedModel();
+                const detModel = resource.specifyModel.getField('determinations').relatedModel;
                 const det = new detModel.Resource();
                 resource.rget('determinations').done(dets => dets.add(det));
             }
@@ -59,7 +59,7 @@ function takeBetween(items, startElem, endElem) {
                     return [domainResource];
                 });
             }
-            var path = takeBetween(schema.orgHierarchy, 'collection', domainLevel);
+            var path = takeBetween(schema.orgHierarchy, 'Collection', domainLevel).map(level=>level.toLowerCase());
             var filter = {};
             filter[path.join('__')] = domainResource.id;
             var collections = new schema.models.Collection.LazyCollection({ filters: filter });

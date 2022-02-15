@@ -44,7 +44,7 @@ export function TableIcon({
   const resolvedTableLabel =
     tableLabel === false
       ? undefined
-      : tableLabel ?? getModel(tableName)?.getLocalizedName() ?? '';
+      : tableLabel ?? getModel(tableName)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = typeof resolvedTableLabel === 'undefined';
   if (tableIconSource !== '/images/unknown.png')

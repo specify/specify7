@@ -7,9 +7,7 @@
 import React from 'react';
 
 import wbText from '../localization/workbench';
-import { dataModelPromise } from '../wbplanviewmodelfetcher';
-import { useAsyncState, useTitle, useUnloadProtect } from './hooks';
-import { LoadingScreen } from './modaldialog';
+import { useTitle, useUnloadProtect } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { WbPlanViewConstructorProps } from './wbplanview';
 import { WbPlanView } from './wbplanview';
@@ -26,10 +24,6 @@ function WbPlanViewWrapper({
 }: WbPlanViewConstructorProps): JSX.Element {
   useTitle(dataset.name);
 
-  const [schemaLoaded = false] = useAsyncState<boolean>(
-    React.useCallback(async () => dataModelPromise.then(() => true), [])
-  );
-
   // Reorder headers if needed
   const headers =
     dataset.visualorder === null
@@ -41,7 +35,7 @@ function WbPlanViewWrapper({
     wbText('unloadProtectMessage')
   );
 
-  return schemaLoaded ? (
+  return (
     <WbPlanView
       dataset={dataset}
       uploadPlan={dataset.uploadplan}
@@ -50,8 +44,6 @@ function WbPlanViewWrapper({
       removeUnloadProtect={(): void => setHasUnloadProtect(false)}
       setUnloadProtect={(): void => setHasUnloadProtect(true)}
     />
-  ) : (
-    <LoadingScreen />
   );
 }
 

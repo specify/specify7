@@ -1,21 +1,23 @@
 import collectionapi from './collectionapi';
+import type { Tables } from './datamodel';
 import type { AnySchema } from './datamodelutils';
-import { SerializedModel } from './datamodelutils';
+import type { SerializedModel } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { localization, schema } from './schema';
 import { unescape } from './schemabase';
+import { getTableOverwrite } from './schemaoverrides';
 import {
   type FieldDefinition,
+  type RelationshipDefinition,
   LiteralField,
   Relationship,
-  type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
-import { Tables } from './datamodel';
+import { camelToHuman } from './wbplanviewhelper';
 
 type FieldAlias = {
   readonly vname: string;
@@ -73,7 +75,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly idFieldName: string;
 
-  public readonly system: boolean;
+  public readonly isSystem: boolean;
+
+  public readonly isHidden: boolean;
+
+  public readonly overrides: {
+    readonly isSystem: boolean;
+    readonly isHidden: boolean;
+    readonly isCommon: boolean;
+  };
 
   public readonly tableId: number;
 
@@ -96,9 +106,19 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly fields: RA<LiteralField | Relationship>;
+  // All table non-relationship fields
+  public literalFields: RA<LiteralField> = [];
+
+  // All table relationships
+  public relationships: RA<Relationship> = [];
+
+  // All table literal fields and relationships
+  public fields: RA<LiteralField | Relationship> = [];
 
   public readonly localization: SchemaLocalization;
+
+  // Localized name from the schema localization
+  public readonly label: string;
 
   public static parseClassName(className: string): string {
     return className.split('.').slice(-1)[0];
@@ -113,7 +133,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.view = tableDefinition.view ?? undefined;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
-    this.system = tableDefinition.system;
+    this.isSystem = tableDefinition.system;
     this.fieldAliases = tableDefinition.fieldAliases;
 
     // A Backbone model resource for accessing the API for items of this type.
@@ -154,31 +174,19 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     this.localization = localization[this.name.toLowerCase()] ?? { items: [] };
 
-    this.fields = [
-      ...tableDefinition.fields
-        .map(
-          (fieldDefinition) =>
-            new LiteralField(this as unknown as SpecifyModel, fieldDefinition)
-        )
-        .sort((left, right) =>
-          left.getLocalizedName()?.localeCompare(right.getLocalizedName() ?? '')
-            ? 1
-            : -1
-        ),
-      ...tableDefinition.relationships
-        .map(
-          (relationshipDefinition) =>
-            new Relationship(
-              this as unknown as SpecifyModel,
-              relationshipDefinition
-            )
-        )
-        .sort((left, right) =>
-          left.getLocalizedName()?.localeCompare(right.getLocalizedName() ?? '')
-            ? 1
-            : -1
-        ),
-    ];
+    this.label =
+      typeof this.localization.name === 'string'
+        ? unescape(this.localization.name)
+        : camelToHuman(this.name);
+
+    this.isHidden = this.localization.ishidden === 1;
+
+    const tableOverride = getTableOverwrite(this.name);
+    this.overrides = {
+      isHidden: this.isHidden ?? tableOverride === 'hidden',
+      isSystem: this.isSystem ?? tableOverride === 'system',
+      isCommon: tableOverride === 'commonBaseTable',
+    };
   }
 
   /**
@@ -206,9 +214,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     if (splitName.length === 1 || typeof field === 'undefined') return field;
     else if (field.isRelationship)
-      return defined(field.getRelatedModel()).getField(
-        splitName.slice(1).join('.')
-      );
+      return defined(field.relatedModel).getField(splitName.slice(1).join('.'));
     else throw new Error('Field is not a relationship');
   }
 
@@ -226,17 +232,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     else throw new Error('Field is not a relationship');
   }
 
-  /**
-   * Try and return the localized name from the schema localization. If there is no
-   * localization information just return the name.
-   */
-  public getLocalizedName(): string {
-    const name = this.localization.name;
-    return name === null || typeof name === 'undefined'
-      ? this.name
-      : unescape(name);
-  }
-
   public getFormat(): string | undefined {
     return this.localization.format ?? undefined;
   }
@@ -247,10 +242,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public getIcon(): string {
     return getIcon(this.name.toLowerCase());
-  }
-
-  public isHidden(): boolean {
-    return this.localization.ishidden === 1;
   }
 
   /**
@@ -272,11 +263,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * scoping hierarchy.
    */
   public getScopingPath(): RA<string> | undefined {
-    if (this.name.toLowerCase() === schema.orgHierarchy.slice(-1)[0]) return [];
+    if (this.name === schema.orgHierarchy.slice(-1)[0]) return [];
     const up = this.getScopingRelationship();
     return typeof up === 'undefined'
       ? undefined
-      : [...defined(up.getRelatedModel()?.getScopingPath()), up.name];
+      : [...defined(up.relatedModel?.getScopingPath()), up.name.toLowerCase()];
   }
 }
 
@@ -297,4 +288,6 @@ export const hasHierarchyField = (model: SpecifyModel): boolean =>
     'discipline',
     'division',
     'institution',
-  ].some((fieldName) => model.fields.some(({ name }) => name === fieldName));
+  ].some((fieldName) =>
+    model.relationships.some(({ name }) => name === fieldName)
+  );

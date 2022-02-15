@@ -181,7 +181,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           <Ul>
             {Array.from(model.saveBlockers.blockingResources, (resource) => (
               <li key={resource.cid}>
-                <h3>{resource.specifyModel.getLocalizedName()}</h3>
+                <h3>{resource.specifyModel.label}</h3>
                 <dl>
                   {Object.entries(resource.saveBlockers.blockers).map(
                     ([key, blocker]) => (
@@ -192,7 +192,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                                 resource.specifyModel.getField(
                                   blocker.fieldName
                                 )
-                              ).getLocalizedName()
+                              ).label
                             : camelToHuman(key)}
                         </dt>
                         <dd>{blocker.reason}</dd>

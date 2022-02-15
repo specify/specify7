@@ -2,8 +2,12 @@ import type { Tables } from './datamodel';
 import type { SchemaLocalization } from './schema';
 import { getModel, schema } from './schema';
 import { unescape } from './schemabase';
+import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaoverrides';
 import type { SpecifyModel } from './specifymodel';
+import { isTreeModel } from './treedefinitions';
+import { defined } from './types';
 import { type UiFormatter, uiFormatters } from './uiformatters';
+import { camelToHuman } from './wbplanviewhelper';
 
 export type JavaType =
   // Strings
@@ -56,18 +60,6 @@ export type RelationshipDefinition = {
   readonly readOnly?: boolean;
 };
 
-export type SchemaModelTableField = {
-  readonly name: string;
-  readonly getLocalizedName: () => string | null;
-  readonly getPickList: () => string | null | undefined;
-  readonly isRequired: boolean;
-  readonly isHidden: () => number;
-  readonly isRelationship: boolean;
-  readonly length: number | undefined;
-  readonly readOnly: boolean;
-  readonly type: RelationshipType;
-};
-
 abstract class FieldBase {
   public readonly model: SpecifyModel;
 
@@ -77,9 +69,20 @@ abstract class FieldBase {
 
   public readonly dottedName: string;
 
-  public readOnly: boolean;
+  public isHidden: boolean;
 
-  public isRequired: boolean;
+  public readonly isReadOnly: boolean;
+
+  public readonly isRequired: boolean;
+
+  public overrides: {
+    readonly type: JavaType | RelationshipType;
+    readonly isRequired: boolean;
+    // If relatedModel isHidden, this is set to true
+    isHidden: boolean;
+    // If relatedModel isSystem, this is set to true
+    isReadOnly: boolean;
+  };
 
   public readonly type: JavaType | RelationshipType;
 
@@ -88,6 +91,9 @@ abstract class FieldBase {
   public readonly dbColumn?: string;
 
   public readonly localization: SchemaLocalization['items'][string];
+
+  // User friendly name of the field from the schema config.
+  public readonly label: string;
 
   public constructor(
     model: SpecifyModel,
@@ -100,31 +106,63 @@ abstract class FieldBase {
     this.name = fieldDefinition.name;
     this.dottedName = `${model.name}.${this.name}`;
 
-    this.readOnly =
-      fieldDefinition.readOnly === true ||
-      (this.name === 'guid' &&
-        model.name !== 'Taxon' &&
-        model.name !== 'Geography') ||
-      this.name === 'timestampcreated';
+    const globalFieldOverride = getGlobalFieldOverwrite(model.name, this.name);
 
-    this.isRequired = fieldDefinition.required;
+    this.isReadOnly =
+      globalFieldOverride === 'readOnly' || fieldDefinition.readOnly === true;
+
+    this.isRequired =
+      globalFieldOverride === 'required'
+        ? true
+        : globalFieldOverride === 'optional'
+        ? false
+        : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.dbColumn = fieldDefinition.column;
 
     this.localization =
-      this.model.localization.items[fieldDefinition.name.toLowerCase()] ?? {};
+      this.model.localization.items[this.name.toLowerCase()] ?? {};
+
+    this.label =
+      typeof this.localization.name === 'string'
+        ? unescape(this.localization.name)
+        : camelToHuman(this.name);
+
+    this.isHidden = this.localization.ishidden;
+
+    // Apply overrides
+    const fieldOverwrite = getFieldOverwrite(
+      this.model.name.toLowerCase(),
+      this.name.toLowerCase()
+    );
+
+    let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
+    let isHidden = this.isHidden;
+
+    // Overwritten hidden fields are made not required
+    if (fieldOverwrite === 'hidden') {
+      isRequired = false;
+      isHidden = true;
+    }
+    // Other required fields are unhidden
+    else if (isHidden && isRequired) isHidden = false;
+
+    this.overrides = {
+      isHidden,
+      isRequired,
+      type: this.type === 'zero-to-one' ? 'one-to-many' : this.type,
+      isReadOnly:
+        this.isReadOnly ||
+        fieldOverwrite === 'readOnly' ||
+        (this.isRelationship && isTreeModel(this.model.name.toLowerCase())),
+    };
   }
 
-  // Returns the user friendly name of the field from the schema config.
-  public getLocalizedName(): string | undefined {
-    const name = this.localization.name;
-    return name === null || typeof name === 'undefined'
-      ? undefined
-      : unescape(name);
-  }
-
-  // Returns the description of the field from the schema config.
+  /*
+   * TODO: make sure this is is displayed on forms in mouseovers
+   * Returns the description of the field from the schema config.
+   */
   public getLocalizedDesc(): string | undefined {
     const description = this.localization.desc;
     return description === null || typeof description === 'undefined'
@@ -147,9 +185,9 @@ abstract class FieldBase {
    * by the schema configuration.
    */
   public getPickList(): string | undefined {
-    if (this.model.name === 'Agent' && this.name === 'agentType')
-      return 'AgentTypeComboBox';
-    else return this.localization.picklistname ?? undefined;
+    return this.model.name === 'Agent' && this.name === 'agentType'
+      ? 'AgentTypeComboBox'
+      : this.localization.picklistname ?? undefined;
   }
 
   // Returns the weblink definition name if any is assigned to the field.
@@ -163,11 +201,6 @@ abstract class FieldBase {
    */
   public isRequiredBySchemaLocalization(): boolean {
     return this.localization.isrequired;
-  }
-
-  // Returns true if the field is marked hidden in the schema configuration.
-  public isHidden(): boolean {
-    return this.localization.ishidden;
   }
 
   // Returns true if the field represents a time value.
@@ -186,13 +219,21 @@ abstract class FieldBase {
 
 /** Non-relationship field */
 export class LiteralField extends FieldBase {
+  public declare overrides: FieldBase['overrides'] & {
+    readonly type: JavaType;
+  };
+
   public isRelationship: false = false;
 }
 
 export class Relationship extends FieldBase {
+  public declare overrides: FieldBase['overrides'] & {
+    readonly type: Exclude<RelationshipType, 'zero-to-one'>;
+  };
+
   public otherSideName?: string;
 
-  public relatedModelName: keyof Tables;
+  public readonly relatedModel: SpecifyModel;
 
   public readonly type: RelationshipType;
 
@@ -212,8 +253,13 @@ export class Relationship extends FieldBase {
 
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
-    this.relatedModelName = relationshipDefinition.relatedModelName;
     this.dependent = relationshipDefinition.dependent;
+    this.relatedModel = defined(
+      getModel(relationshipDefinition.relatedModelName)
+    );
+
+    this.overrides.isHidden ||= this.relatedModel.overrides.isHidden;
+    this.overrides.isReadOnly ||= this.relatedModel.overrides.isSystem;
   }
 
   /*
@@ -231,18 +277,10 @@ export class Relationship extends FieldBase {
       : this.dependent;
   }
 
-  // Returns the related model for relationship fields.
-  public getRelatedModel(): SpecifyModel | undefined {
-    if (!this.isRelationship)
-      throw new Error(`${this.dottedName} is not a relationship field`);
-    return getModel(this.relatedModelName);
-  }
-
   // Returns the field of the related model that is the reverse of this field.
   public getReverse(): Relationship | undefined {
-    const relModel = this.getRelatedModel();
     return this.otherSideName
-      ? relModel?.getRelationship(this.otherSideName)
+      ? this.relatedModel.getRelationship(this.otherSideName)
       : undefined;
   }
 }

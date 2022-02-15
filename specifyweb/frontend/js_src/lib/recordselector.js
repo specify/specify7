@@ -251,7 +251,7 @@ export default Backbone.View.extend({
                 this.options.readOnly ||
                 specifyform.subViewMode(this.subformNode) === 'view';
 
-            this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
+            this.title = this.field ? this.field.label : this.collection.model.specifyModel.label;
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
             this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;
             this.urlParam = options.urlParam || this.$el.data('url-param');
@@ -393,7 +393,7 @@ export default Backbone.View.extend({
                     <p>${formsText('removeRecordDialogMessage')}</p>
                 </div>`).dialog({
                     modal: true,
-                    title: resource.specifyModel.getLocalizedName(),
+                    title: resource.specifyModel.label,
                     buttons: {
                         [commonText('remove')]: function() {
                             _this.collection.remove(resource);

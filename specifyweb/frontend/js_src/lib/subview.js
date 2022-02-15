@@ -23,7 +23,7 @@ export default Backbone.View.extend({
             this.populateForm = options.populateForm;
             this.field = options.field;
             this.parentResource = options.parentResource;
-            this.title = this.field.getLocalizedName();
+            this.title = this.field.label;
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
 
             this.parentResource.on('change:' + this.field.name.toLowerCase(),
@@ -71,7 +71,7 @@ export default Backbone.View.extend({
             return self;
         },
         add: function() {
-            var relatedModel = this.field.getRelatedModel();
+            var relatedModel = this.field.relatedModel;
 
             if (this.field.isDependent()) {
                 this.model = new relatedModel.Resource();

@@ -1,7 +1,7 @@
 import type { FullMappingPath } from '../components/wbplanviewmapper';
 import * as WbPlanViewMappingHelper from '../wbplanviewmappinghelper';
-import dataModelStorage from '../wbplanviewmodel';
 import { runTest } from './testmain';
+import { schema } from '../schema';
 
 export default function (): void {
   runTest(
@@ -18,11 +18,11 @@ export default function (): void {
   runTest(
     'WbPlanViewMappingHelper.valueIsToManyIndex',
     [
-      [[`${dataModelStorage.referenceSymbol}1`], true],
-      [[`${dataModelStorage.referenceSymbol}2`], true],
-      [[`${dataModelStorage.referenceSymbol}999`], true],
+      [[`${schema.referenceSymbol}1`], true],
+      [[`${schema.referenceSymbol}2`], true],
+      [[`${schema.referenceSymbol}999`], true],
       [['collectionobject'], false],
-      [[`${dataModelStorage.treeSymbol}Kingdom`], false],
+      [[`${schema.treeSymbol}Kingdom`], false],
     ],
     WbPlanViewMappingHelper.valueIsToManyIndex
   );
@@ -30,12 +30,12 @@ export default function (): void {
   runTest(
     'WbPlanViewMappingHelper.valueIsTreeRank',
     [
-      [[`${dataModelStorage.referenceSymbol}1`], false],
-      [[`${dataModelStorage.referenceSymbol}2`], false],
-      [[`${dataModelStorage.referenceSymbol}999`], false],
+      [[`${schema.referenceSymbol}1`], false],
+      [[`${schema.referenceSymbol}2`], false],
+      [[`${schema.referenceSymbol}999`], false],
       [['collectionobject'], false],
-      [[`${dataModelStorage.treeSymbol}Kingdom`], true],
-      [[`${dataModelStorage.treeSymbol}County`], true],
+      [[`${schema.treeSymbol}Kingdom`], true],
+      [[`${schema.treeSymbol}County`], true],
     ],
     WbPlanViewMappingHelper.valueIsTreeRank
   );
@@ -43,10 +43,10 @@ export default function (): void {
   runTest(
     'WbPlanViewMappingHelper.getNumberFromToManyIndex',
     [
-      [[`${dataModelStorage.referenceSymbol}1`], 1],
-      [[`${dataModelStorage.referenceSymbol}99`], 99],
-      [[`${dataModelStorage.referenceSymbol}0`], 0],
-      [[`${dataModelStorage.referenceSymbol}00`], 0],
+      [[`${schema.referenceSymbol}1`], 1],
+      [[`${schema.referenceSymbol}99`], 99],
+      [[`${schema.referenceSymbol}0`], 0],
+      [[`${schema.referenceSymbol}00`], 0],
     ],
     WbPlanViewMappingHelper.getNumberFromToManyIndex
   );
@@ -54,8 +54,8 @@ export default function (): void {
   runTest(
     'WbPlanViewMappingHelper.getNameFromTreeRankName',
     [
-      [[`${dataModelStorage.treeSymbol}Kingdom`], 'Kingdom'],
-      [[`${dataModelStorage.treeSymbol}County`], 'County'],
+      [[`${schema.treeSymbol}Kingdom`], 'Kingdom'],
+      [[`${schema.treeSymbol}County`], 'County'],
     ],
     WbPlanViewMappingHelper.getNameFromTreeRankName
   );

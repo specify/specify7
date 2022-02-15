@@ -16,7 +16,7 @@ import type {
 } from './components/wbplanviewmapper';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
-import { schema } from './schema';
+import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
@@ -28,7 +28,6 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import { mappingPathsToMappingsTree } from './wbplanviewtreehelper';
@@ -170,14 +169,13 @@ export function getMustMatchTables({
   );
 
   const tables = arrayOfMappingLineData
-    .map((mappingElementData) => mappingElementData.tableName ?? '')
+    .map(({ tableName }) => tableName ?? '')
     .filter(
       (tableName) =>
-        tableName &&
-        typeof dataModelStorage.tables[tableName] === 'object' &&
-        !tableName.endsWith('attribute') &&
-        // Exclude embedded paleo context
-        (!schema.embeddedPaleoContext || tableName !== 'paleocontext')
+        typeof getModel(tableName) === 'undefined' ||
+        (!tableName.endsWith('attribute') &&
+          // Exclude embedded paleo context
+          (!schema.embeddedPaleoContext || tableName !== 'paleocontext'))
     );
 
   return {
@@ -289,12 +287,11 @@ export function mutateMappingPath({
    * Get relationship type from current picklist to the next one both for
    * current value and next value
    */
-  const isCurrentlyToMany = relationshipIsToMany(
-    dataModelStorage.tables[parentTableName ?? '']?.[mappingPath[index] || '']
-      ?.type ?? ''
+  const isCurrentToMany = relationshipIsToMany(
+    getModel(parentTableName ?? '')?.getField(mappingPath[index] ?? '')?.type
   );
   const isNewToMany = relationshipIsToMany(
-    dataModelStorage.tables[parentTableName ?? '']?.[newValue]?.type ?? ''
+    getModel(parentTableName ?? '')?.getField(newValue)?.type
   );
 
   /*
@@ -303,7 +300,7 @@ export function mutateMappingPath({
    * -to-many, a tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =
-    isCurrentlyToMany === isNewToMany &&
+    isCurrentToMany === isNewToMany &&
     (valueIsToManyIndex(newValue) ||
       valueIsTreeRank(newValue) ||
       currentTableName === newTableName);

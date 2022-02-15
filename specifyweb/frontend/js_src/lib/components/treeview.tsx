@@ -76,7 +76,7 @@ function TreeView<SCHEMA extends AnyTree>({
       updateConformation(deserializeConformation(conformation));
   }, []);
 
-  useTitle(treeText('treeViewTitle')(table.getLocalizedName()));
+  useTitle(treeText('treeViewTitle')(table.label));
 
   // Node sort order
   const sortOrderFieldName = `${tableName}.treeview_sort_field`;
@@ -116,7 +116,7 @@ function TreeView<SCHEMA extends AnyTree>({
   ) : (
     <section className={className.containerFull}>
       <header className="flex flex-wrap items-center gap-2">
-        <h2>{table.getLocalizedName()}</h2>
+        <h2>{table.label}</h2>
         {/* A react component that is also a TypeScript generic */}
         <Autocomplete<SpecifyResource<SCHEMA>>
           source={async (value) => {

@@ -111,7 +111,7 @@ export class QueryFieldSpec {
     ) as RA<Relationship>;
 
     const rest = path.map((field) => {
-      const relatedModel = defined(field.getRelatedModel());
+      const relatedModel = field.relatedModel;
       return relatedModel.name.toLowerCase() === field.name.toLowerCase()
         ? relatedModel.tableId.toString()
         : `${relatedModel.tableId}-${field.name.toLowerCase()}`;
@@ -162,7 +162,7 @@ export class QueryFieldSpec {
       }
       const field = defined(node.getField(fieldName));
       joinPath.push(field);
-      if (field.isRelationship) node = defined(field.getRelatedModel());
+      if (field.isRelationship) node = defined(field.relatedModel);
       else if (index + 1 !== path.length)
         throw new Error('Bad query field spec path');
       return true;

@@ -2,7 +2,7 @@
 
 import Backbone from './backbone';
 import Q from 'q';
-import { createCookie } from './cookies';
+import {createCookie} from './cookies';
 
 export default Backbone.View.extend({
     __name__: "CheckBox",
@@ -23,7 +23,7 @@ export default Backbone.View.extend({
             return;
         }
 
-        field.readOnly && this.$el.prop('disabled', true);
+        field.isReadOnly && this.$el.prop('disabled', true);
 
         var fieldName = field.name.toLowerCase();
 

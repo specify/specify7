@@ -229,7 +229,7 @@ function eventHandlerForToOne(related, field) {
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
             const field = this.specifyModel.getField(fieldName);
-            const relatedModel = field.getRelatedModel();
+            const relatedModel = field.relatedModel;
 
             switch (field.type) {
             case 'one-to-many':
@@ -361,7 +361,7 @@ function eventHandlerForToOne(related, field) {
             }
 
             var _this = this;
-            var related = field.getRelatedModel();
+            var related = field.relatedModel;
             switch (field.type) {
             case 'one-to-one':
             case 'many-to-one':

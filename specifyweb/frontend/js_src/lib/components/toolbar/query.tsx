@@ -172,7 +172,7 @@ function ListOfTables({
             className="intercept-navigation"
           >
             <TableIcon tableName={tableName} tableLabel={false} />
-            {defined(getModel(tableName)).getLocalizedName()}
+            {defined(getModel(tableName)).label}
           </Link.Default>
         </li>
       ))}

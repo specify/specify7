@@ -420,7 +420,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
     dialogEntry: function(recordSet) {
         const model = getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
-        const img = $('<img>', {src: icon, alt: model.getLocalizedName()});
+        const img = $('<img>', {src: icon, alt: model.label});
         var link = $(`<button class="link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(
             $('<td>').append(img),

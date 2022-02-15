@@ -9,10 +9,10 @@ import type {
   MappingPath,
   MappingType,
 } from './components/wbplanviewmapper';
-import { RelationshipType } from './specifyfield';
+import { JavaType, RelationshipType } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
-import dataModelStorage from './wbplanviewmodel';
+import { schema } from './schema';
 
 /**
  * Returns whether relationship is a -to-many
@@ -20,26 +20,26 @@ import dataModelStorage from './wbplanviewmodel';
  *
  */
 export const relationshipIsToMany = (
-  relationshipType?: RelationshipType | ''
+  relationshipType?: RelationshipType | JavaType | ''
 ): boolean =>
   (relationshipType ?? '').includes('-to-many') ||
   relationshipType === 'zero-to-one';
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
 export const valueIsToManyIndex = (value?: string): boolean =>
-  value?.slice(0, dataModelStorage.referenceSymbol.length) ===
-    dataModelStorage.referenceSymbol || false;
+  value?.slice(0, schema.referenceSymbol.length) === schema.referenceSymbol ||
+  false;
 
 /** Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const valueIsTreeRank = (value: string): boolean =>
-  value?.startsWith(dataModelStorage.treeSymbol) || false;
+  value?.startsWith(schema.treeSymbol) || false;
 
 /**
  * Returns index from a formatted -to-many index value (e.x #1 => 1)
  * Opposite of formatToManyIndex
  */
 export const getNumberFromToManyIndex = (value: string): number =>
-  Number(value.slice(dataModelStorage.referenceSymbol.length));
+  Number(value.slice(schema.referenceSymbol.length));
 
 /**
  * Returns tree rank name from a complete tree rank name
@@ -48,14 +48,14 @@ export const getNumberFromToManyIndex = (value: string): number =>
  *
  */
 export const getNameFromTreeRankName = (value: string): string =>
-  value.slice(dataModelStorage.treeSymbol.length);
+  value.slice(schema.treeSymbol.length);
 
 /**
  * Returns a formatted -to-many index from an index (e.x 1 => #1)
  * Opposite of getNumberFromToManyIndex
  */
 export const formatToManyIndex = (index: number): string =>
-  `${dataModelStorage.referenceSymbol}${index}`;
+  `${schema.referenceSymbol}${index}`;
 
 /**
  * Returns a complete tree rank name from a tree rank name
@@ -64,13 +64,13 @@ export const formatToManyIndex = (index: number): string =>
  *
  */
 export const formatTreeRank = (rankName: string): string =>
-  `${dataModelStorage.treeSymbol}${rankName}`;
+  `${schema.treeSymbol}${rankName}`;
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(dataModelStorage.pathJoinSymbol);
+  mappingPath.join(schema.pathJoinSymbol);
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(dataModelStorage.pathJoinSymbol);
+  string.split(schema.pathJoinSymbol);
 
 export type SplitMappingPath = {
   readonly mappingPath: MappingPath;

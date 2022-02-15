@@ -2,8 +2,6 @@ import QUnit from 'qunit';
 
 import { getTreeDefinitionItems, setupForTests } from '../treedefinitions';
 import type { RA } from '../types';
-import dataModelStorage from '../wbplanviewmodel';
-import dataModel from './fixtures/wbplanviewmodel.json';
 import testAutoMapper from './testautomapper';
 import testLatLongUtils from './testlatlongutils';
 import testMappingsTreeToUploadPlan from './testmappingstreetouploadplan';
@@ -30,11 +28,6 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 
 async function runTests(): Promise<void> {
   await setupForTests();
-
-  Object.entries(dataModel).forEach(([key, value]) => {
-    // @ts-expect-error Data model is loaded from a JSON file
-    dataModelStorage[key] = value;
-  });
 
   console.log(getTreeDefinitionItems('Geography', false));
 

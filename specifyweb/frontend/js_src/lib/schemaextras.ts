@@ -4,12 +4,10 @@ import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { defined } from './types';
 
-function alwaysTrue(): true {
-  return true;
-}
-
 export const schemaExtras: IR<
-  (model: SpecifyModel) => RA<LiteralField | Relationship>
+  (
+    model: SpecifyModel
+  ) => Readonly<[fields: RA<LiteralField>, relationships: RA<Relationship>]>
 > = {
   Agent(model) {
     const catalogerOf = new Relationship(model, {
@@ -20,8 +18,8 @@ export const schemaExtras: IR<
       relatedModelName: 'CollectionObject',
       dependent: false,
     });
-    catalogerOf.isHidden = alwaysTrue;
-    return [catalogerOf];
+    catalogerOf.isHidden = true;
+    return [[], [catalogerOf]];
   },
   Collection(model) {
     const collectionObjects = new Relationship(model, {
@@ -32,8 +30,8 @@ export const schemaExtras: IR<
       relatedModelName: 'CollectionObject',
       dependent: false,
     });
-    collectionObjects.isHidden = alwaysTrue;
-    return [collectionObjects];
+    collectionObjects.isHidden = true;
+    return [[], [collectionObjects]];
   },
   CollectionObject(model) {
     const currentDetermination = new Relationship(model, {
@@ -45,7 +43,7 @@ export const schemaExtras: IR<
       readOnly: true,
       dependent: false,
     });
-    currentDetermination.isHidden = alwaysTrue;
+    currentDetermination.isHidden = true;
 
     const collection = defined(model.getRelationship('collection'));
     collection.otherSideName = 'collectionObjects';
@@ -55,7 +53,7 @@ export const schemaExtras: IR<
       schema.catalogNumFormatName ||
       LiteralField.prototype.getFormat.call(catalognumber);
 
-    return [currentDetermination];
+    return [[], [currentDetermination]];
   },
   Division(model) {
     const accessions = new Relationship(model, {
@@ -66,12 +64,12 @@ export const schemaExtras: IR<
       relatedModelName: 'Accession',
       dependent: false,
     });
-    accessions.isHidden = alwaysTrue;
-    return [accessions];
+    accessions.isHidden = true;
+    return [[], [accessions]];
   },
   Accession(model) {
     defined(model.getRelationship('division')).otherSideName = 'accessions';
-    return [];
+    return [[], []];
   },
   Loan(model) {
     const totalPreps = new LiteralField(model, {
@@ -82,7 +80,7 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    totalPreps.isHidden = alwaysTrue;
+    totalPreps.isHidden = true;
 
     const totalItems = new LiteralField(model, {
       name: 'totalItems',
@@ -92,7 +90,7 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    totalItems.isHidden = alwaysTrue;
+    totalItems.isHidden = true;
 
     const unresolvedPreps = new LiteralField(model, {
       name: 'unresolvedPreps',
@@ -102,7 +100,7 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    unresolvedPreps.isHidden = alwaysTrue;
+    unresolvedPreps.isHidden = true;
 
     const unresolvedItems = new LiteralField(model, {
       name: 'unresolvedItems',
@@ -112,7 +110,7 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    unresolvedItems.isHidden = alwaysTrue;
+    unresolvedItems.isHidden = true;
 
     const resolvedPreps = new LiteralField(model, {
       name: 'resolvedPreps',
@@ -122,7 +120,7 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    resolvedPreps.isHidden = alwaysTrue;
+    resolvedPreps.isHidden = true;
 
     const resolvedItems = new LiteralField(model, {
       name: 'resolvedItems',
@@ -132,15 +130,18 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    resolvedItems.isHidden = alwaysTrue;
+    resolvedItems.isHidden = true;
 
     return [
-      totalPreps,
-      totalItems,
-      unresolvedPreps,
-      unresolvedItems,
-      resolvedPreps,
-      resolvedItems,
+      [
+        totalPreps,
+        totalItems,
+        unresolvedPreps,
+        unresolvedItems,
+        resolvedPreps,
+        resolvedItems,
+      ],
+      [],
     ];
   },
   PrepType(model) {
@@ -152,8 +153,8 @@ export const schemaExtras: IR<
       relatedModelName: 'Preparation',
       dependent: false,
     });
-    preparations.isHidden = alwaysTrue;
-    return [preparations];
+    preparations.isHidden = true;
+    return [[], [preparations]];
   },
   Preparation(model) {
     const isOnLoan = new LiteralField(model, {
@@ -164,12 +165,12 @@ export const schemaExtras: IR<
       indexed: false,
       unique: false,
     });
-    isOnLoan.isHidden = alwaysTrue;
+    isOnLoan.isHidden = true;
 
     const preptype = defined(model.getRelationship('preptype'));
     preptype.otherSideName = 'preparations';
 
-    return [isOnLoan];
+    return [[isOnLoan], []];
   },
   Taxon(model) {
     const preferredTaxonOf = new Relationship(model, {
@@ -180,41 +181,8 @@ export const schemaExtras: IR<
       relatedModelName: 'Determination',
       dependent: false,
     });
-    preferredTaxonOf.isHidden = alwaysTrue;
+    preferredTaxonOf.isHidden = true;
 
-    defined(model.getField('parent')).isRequired = true;
-    defined(model.getField('isAccepted')).readOnly = true;
-    defined(model.getField('acceptedTaxon')).readOnly = true;
-    defined(model.getField('fullName')).readOnly = true;
-
-    return [preferredTaxonOf];
-  },
-  Geography(model) {
-    defined(model.getField('parent')).isRequired = true;
-    defined(model.getField('isAccepted')).readOnly = true;
-    defined(model.getField('acceptedGeography')).readOnly = true;
-    defined(model.getField('fullName')).readOnly = true;
-    return [];
-  },
-  LithoStrat(model) {
-    defined(model.getField('parent')).isRequired = true;
-    defined(model.getField('isAccepted')).readOnly = true;
-    defined(model.getField('acceptedLithoStrat')).readOnly = true;
-    defined(model.getField('fullName')).readOnly = true;
-    return [];
-  },
-  GeologicTimePeriod(model) {
-    defined(model.getField('parent')).isRequired = true;
-    defined(model.getField('isAccepted')).readOnly = true;
-    defined(model.getField('acceptedGeologictimeperiod')).readOnly = true;
-    defined(model.getField('fullName')).readOnly = true;
-    return [];
-  },
-  Storage(model) {
-    defined(model.getField('parent')).isRequired = true;
-    defined(model.getField('isAccepted')).readOnly = true;
-    defined(model.getField('acceptedStorage')).readOnly = true;
-    defined(model.getField('fullName')).readOnly = true;
-    return [];
+    return [[], [preferredTaxonOf]];
   },
 };

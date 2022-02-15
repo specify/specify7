@@ -8,18 +8,18 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { getModel } from '../schema';
+import { schema } from '../schema';
 import type { IR, R, RA } from '../types';
-import { defined } from '../types';
+import type { MappingLineData } from '../wbplanviewnavigator';
 import { Button } from './basic';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,
   CustomSelectElementPropsOpenBase,
+  CustomSelectType,
 } from './customselectelement';
 import {
   CustomSelectElement,
-  CustomSelectType,
   customSelectTypes,
   SuggestionBox,
 } from './customselectelement';
@@ -27,8 +27,6 @@ import { useId } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
-import { MappingLineData } from '../wbplanviewnavigator';
-import { getBaseTables } from '../wbplanviewmodelfetcher';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -72,19 +70,22 @@ export function ListOfBaseTables({
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const fieldsData = Object.fromEntries(
-    Object.entries(getBaseTables())
+    Object.entries(schema.models)
       .filter(
-        ([_tableName, isCommonTable]) => isCommonTable || showHiddenTables
+        ([_tableName, { overrides }]) =>
+          !overrides.isSystem &&
+          !overrides.isHidden &&
+          (overrides.isCommon || showHiddenTables)
       )
       .map(
-        ([tableName, isCommonTable]) =>
+        ([tableName, { label, overrides }]) =>
           [
             tableName,
             {
-              optionLabel: defined(getModel(tableName)).getLocalizedName(),
+              optionLabel: label,
               tableName,
               isRelationship: true,
-              isHidden: !isCommonTable,
+              isHidden: !overrides.isCommon,
             },
           ] as const
       )

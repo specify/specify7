@@ -35,7 +35,7 @@ export default UiPlugin.extend({
         });
     },
     openPaleoMap: function (data) {
-        const form = this.model.specifyModel.getLocalizedName();
+        const form = this.model.specifyModel.label;
         if (data == null) {
             $(`<div>
                 ${formsText('noCoordinatesDialogHeader')(form)}

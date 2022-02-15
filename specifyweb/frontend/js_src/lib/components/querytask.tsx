@@ -15,7 +15,6 @@ import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { dataModelPromise } from '../wbplanviewmodelfetcher';
 import { useAsyncState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
@@ -43,14 +42,11 @@ function QueryBuilderWrapper({
   query: SpecifyResource<SpQuery>;
   recordSet?: SpecifyResource<RecordSet> | false;
 }) {
-  const [dataModelLoading = true] = useAsyncState(async () =>
-    dataModelPromise.then(() => false)
-  );
   const [pickListsLoading = true] = useAsyncState(async () =>
     fetchPickLists().then(() => false)
   );
 
-  return dataModelLoading || pickListsLoading ? (
+  return pickListsLoading ? (
     <LoadingScreen />
   ) : (
     <QueryBuilder

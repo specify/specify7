@@ -178,12 +178,12 @@ var enabled = true;
 
     var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
         const fieldName = parentFldInfo ?
-          parentFldInfo.getLocalizedName() :
+          parentFldInfo.label :
           formsText('database');
         return fldInfo.length > 1 ?
             formsText('valuesOfMustBeUniqueToField')(
               fieldName,
-              formatList(fldInfo.map(fld=>fld.getLocalizedName())),
+              formatList(fldInfo.map(fld=>fld.label)),
             ) :
             formsText('valueMustBeUniqueToField')(fieldName);
     };
@@ -198,7 +198,7 @@ var enabled = true;
                 if (_.isNull(v) || typeof v == 'undefined')  {
                     return null;
                 } else {
-                    return _.isString(v) ? valueFieldInfo[idx].getRelatedModel().Resource.fromUri(v).id : v.id;
+                    return _.isString(v) ? valueFieldInfo[idx].relatedModel.Resource.fromUri(v).id : v.id;
                 }
             } else {
                 return undefined;
@@ -241,7 +241,7 @@ var enabled = true;
 
         if (toOneField != null) {
             var haveLocalColl = (resource.collection && resource.collection.related &&
-                                 toOneFieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
+                                 toOneFieldInfo.relatedModel === resource.collection.related.specifyModel);
 
             var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });

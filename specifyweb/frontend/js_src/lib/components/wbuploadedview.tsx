@@ -26,7 +26,7 @@ function TableResults({
     <li className="gap-x-1 flex items-center">
       <TableIcon tableName={tableName} />
       <span>
-        {`${defined(getModel(tableName)).getLocalizedName()}: ${recordCount}`}
+        {`${defined(getModel(tableName)).label}: ${recordCount}`}
       </span>
     </li>
   );

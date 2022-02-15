@@ -19,9 +19,10 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
 import type { DataModelField } from './wbplanviewmodelfetcher';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
+import { defined } from './types';
+import { getModel } from './schema';
 
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDefinition> {}
@@ -55,9 +56,13 @@ function mappingsTreeToUploadPlanTable(
 
   let isToMany = false;
 
+  const model = getModel(tableName ?? '');
+
   tablePlan = Object.entries(tableData).reduce(
     (originalTablePlan, [fieldName, fieldData]) => {
       let tablePlan = originalTablePlan;
+
+      const field = model?.getField(fieldName);
 
       if (valueIsToManyIndex(fieldName)) {
         if (!isToMany) {
@@ -83,13 +88,7 @@ function mappingsTreeToUploadPlanTable(
           mustMatchPreferences,
           false
         );
-      else if (
-        typeof dataModelStorage.tables[tableName ?? '']?.[fieldName] ===
-          'object' &&
-        typeof tablePlan === 'object'
-      ) {
-        const field = dataModelStorage.tables[tableName ?? '']?.[fieldName];
-
+      else if (typeof field === 'object' && typeof tablePlan === 'object') {
         if (field.isRelationship)
           handleRelationshipField(
             fieldData,

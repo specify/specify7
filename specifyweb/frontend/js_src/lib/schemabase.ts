@@ -23,14 +23,13 @@ export type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
-  readonly orgHierarchy: RA<string>;
+  readonly orgHierarchy: RA<keyof Tables>;
   readonly models: {
     readonly [TABLE_NAME in keyof Tables]: SpecifyModel<Tables[TABLE_NAME]>;
   };
-  // Fields that are added on the front-end
-  readonly frontEndFields: Partial<{
-    readonly [TABLE_NAME in keyof Tables]: Set<Tables[TABLE_NAME]['fields']>;
-  }>;
+  readonly referenceSymbol: string;
+  readonly treeSymbol: string;
+  readonly pathJoinSymbol: string;
 };
 
 const schema: Writable<Schema> = {
@@ -56,16 +55,25 @@ const schema: Writable<Schema> = {
   paleoContextChildTable: undefined!,
   catalogNumFormatName: undefined!,
   models: {} as Schema['models'],
-  frontEndFields: {},
 
   // The scoping hierarchy of Specify objects.
   orgHierarchy: [
-    'collectionobject',
-    'collection',
-    'discipline',
-    'division',
-    'institution',
-  ],
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution',
+  ] as const,
+
+  // Prefix for -to-many indexes
+  referenceSymbol: '#',
+  // Prefix for tree ranks
+  treeSymbol: '$',
+  /*
+   * A symbol that is used to join multiple mapping path elements together when
+   * there is a need to represent a mapping path as a string
+   */
+  pathJoinSymbol: '.',
 };
 
 const domainLevels = [
@@ -81,7 +89,7 @@ export const fetchContext = load<
 >('/context/domain.json', 'application/json').then((data) => {
   schema.domainLevelIds = Object.fromEntries(
     domainLevels.map((level) => [level, data[level]])
-  ) as Schema['domainLevelIds'];
+  );
   schema.embeddedCollectingEvent = data.embeddedCollectingEvent;
   schema.embeddedPaleoContext = data.embeddedPaleoContext;
   schema.paleoContextChildTable = data.paleoContextChildTable;

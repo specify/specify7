@@ -52,9 +52,9 @@ export default PrepDialog.extend({
             return `<thead>
                 <tr>
                     <td></td>
-                    <th scope="col">${this.colobjModel.getField('catalognumber').getLocalizedName()}</th>
-                    <th scope="col">${this.detModel.getField('taxon').getLocalizedName()}</th>
-                    <th scope="col">${this.prepModel.getField('preptype').getLocalizedName()}</th>
+                    <th scope="col">${this.colobjModel.getField('catalognumber').label}</th>
+                    <th scope="col">${this.detModel.getField('taxon').label}</th>
+                    <th scope="col">${this.prepModel.getField('preptype').label}</th>
                     <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
                     <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
                     <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
@@ -110,7 +110,7 @@ export default PrepDialog.extend({
 
         prepInteractionAnchor: function(model, interaction) {
             return $('<a/>', {
-                html: model.getLocalizedName() + ": " + interaction.visibleKey,
+                html: model.label + ": " + interaction.visibleKey,
                 click: _.bind(this.prepIactionDlg, this, model, interaction.key)
             });
         },

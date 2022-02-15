@@ -10,7 +10,6 @@ import {
 } from './localityrecorddataextractor';
 import { schema } from './schema';
 import type { RA } from './types';
-import { dataModelPromise } from './wbplanviewmodelfetcher';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -23,8 +22,6 @@ export type OccurrenceData = {
 export const fetchLocalOccurrences = async (
   model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
-  await dataModelPromise;
-
   const LIMIT = 10_000;
 
   let taxon: SpecifyResource<Taxon>;
@@ -51,8 +48,6 @@ export const fetchLocalOccurrences = async (
     sorttype: 0,
     isnot: false,
   };
-
-  await dataModelPromise;
 
   const {
     data: { results },

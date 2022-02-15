@@ -144,7 +144,7 @@ export async function queryFromTree(
 
   const model = schema.models.CollectionObject;
   const query = createQuery(
-    `${model.getLocalizedName()} in ${
+    `${model.label} in ${
       node.get('fullName') ?? node.get('name')
     }`,
     model as unknown as SpecifyModel

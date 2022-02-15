@@ -10,13 +10,12 @@ import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './components/wbplanviewcomponents';
-import type {
-  MappingPath,
-  RelationshipType,
-} from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import commonText from './localization/common';
 import { getModel } from './schema';
+import type { Relationship } from './specifyfield';
+import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
@@ -29,18 +28,14 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
-import type { DataModelRelationship } from './wbplanviewmodelfetcher';
 import {
   getMaxToManyIndex,
   isCircularRelationship,
-  isTooManyInsideOfTooMany,
 } from './wbplanviewmodelhelper';
 
 type NavigationCallbackPayload = {
-  readonly tableName: string;
-  readonly parentRelationshipType: RelationshipType;
-  readonly parentTableName: string;
+  readonly model: SpecifyModel;
+  readonly parentRelationship?: Relationship;
 };
 
 type NavigatorCallbackFunction<RETURN_TYPE> = (
@@ -49,7 +44,7 @@ type NavigatorCallbackFunction<RETURN_TYPE> = (
 
 type NavigationCallbacks = {
   // Should return undefined if next element does not exist
-  readonly getNextDirection: (tableName: string) =>
+  readonly getNextDirection: (model: SpecifyModel) =>
     | {
         // The name of the next path element
         readonly fieldName: string;
@@ -87,43 +82,31 @@ export function navigator({
   readonly callbacks: NavigationCallbacks;
   // Used internally to make navigator call itself multiple times
   readonly recursivePayload?: {
-    readonly tableName: string;
-    readonly parentTableName: string;
+    readonly model: SpecifyModel;
     readonly parentPartName: string;
-    readonly parentFieldName: string;
+    readonly parentRelationship?: Relationship;
   };
   readonly baseTableName?: string;
 }): void {
-  if (typeof dataModelStorage.tables === 'undefined')
-    throw new Error('WbPlanView Data Model is not initialized');
-
   const {
-    tableName = defined(baseTableName),
-    parentTableName = '',
-    parentFieldName = '',
+    model = defined(getModel(defined(baseTableName))),
+    parentRelationship = undefined,
     parentPartName = '',
   } = recursivePayload ?? {};
 
-  const next = callbacks.getNextDirection(tableName);
+  const next = callbacks.getNextDirection(model);
   if (typeof next === 'undefined') return;
 
-  const parentRelationshipType: RelationshipType | undefined = (
-    dataModelStorage.tables[parentTableName]?.[
-      parentFieldName
-    ] as DataModelRelationship
-  )?.type;
-
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationshipType) &&
+    relationshipIsToMany(parentRelationship?.type) &&
     !valueIsToManyIndex(parentPartName);
 
   const childrenAreRanks =
-    isTreeModel(tableName) && !valueIsTreeRank(parentPartName);
+    isTreeModel(model.name) && !valueIsTreeRank(parentPartName);
 
   const callbackPayload = {
-    tableName,
-    parentRelationshipType,
-    parentTableName,
+    model,
+    parentRelationship,
   };
 
   if (childrenAreToManyElements)
@@ -133,26 +116,20 @@ export function navigator({
 
   const isSpecial =
     valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
-  const nextField = dataModelStorage.tables[tableName][next.partName];
+  const nextField = model.getField(next.partName);
 
   const nextTableName = isSpecial
-    ? tableName
+    ? model
     : nextField?.isRelationship ?? false
-    ? nextField?.tableName ?? ''
-    : '';
-  const nextParentTableName = isSpecial
-    ? parentTableName
-    : nextField?.isRelationship ?? false
-    ? tableName
-    : '';
+    ? nextField?.model
+    : undefined;
 
-  if (nextTableName !== '')
+  if (typeof nextTableName === 'object' && nextField?.isRelationship !== false)
     navigator({
       callbacks,
       recursivePayload: {
-        tableName: nextTableName,
-        parentTableName: nextParentTableName,
-        parentFieldName: next.fieldName,
+        model: nextTableName,
+        parentRelationship: nextField,
         parentPartName: next.partName,
       },
     });
@@ -168,9 +145,9 @@ export function getTableFromMappingPath(
       getGenericMappingPath(mappingPath).join('.')
     )
   );
-  return field.isRelationship
-    ? field.relatedModelName.toLowerCase()
-    : field.model.name.toLowerCase();
+  return (
+    field.isRelationship ? field.relatedModel : field.model
+  ).name.toLowerCase();
 }
 
 export type MappingLineData = Pick<
@@ -230,14 +207,14 @@ export function getMappingLineData({
 
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
-    tableName: string,
+    model: SpecifyModel,
     fieldsData: RA<[string, HtmlGeneratorFieldData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
-      selectLabel: defined(getModel(tableName)).getLocalizedName(),
+      selectLabel: model.label,
       fieldsData: Object.fromEntries(filterArray(fieldsData)),
-      tableName,
+      tableName: model.name,
     });
 
   const lastPartIndex =
@@ -268,15 +245,12 @@ export function getMappingLineData({
       };
     },
 
-    handleToManyChildren({ tableName, parentTableName }) {
+    handleToManyChildren({ model, parentRelationship }) {
       const maxMappedElementNumber = getMaxToManyIndex(
         internalState.mappedFields
       );
 
-      const isToOne =
-        getModel(parentTableName ?? '')?.getField(
-          mappingPath[internalState.position - 1] ?? ''
-        )?.type === 'zero-to-one';
+      const isToOne = parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
@@ -285,7 +259,7 @@ export function getMappingLineData({
 
       commitInstanceData(
         'toMany',
-        tableName,
+        model,
         generateFieldData === 'none'
           ? []
           : [
@@ -302,7 +276,7 @@ export function getMappingLineData({
                       optionLabel,
                       isRelationship: true,
                       isDefault,
-                      tableName,
+                      tableName: model.name,
                     },
                   ]
                 : undefined;
@@ -310,15 +284,15 @@ export function getMappingLineData({
       );
     },
 
-    handleTreeRanks({ tableName }) {
+    handleTreeRanks({ model }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
       commitInstanceData(
         'tree',
-        tableName,
+        model,
         generateFieldData === 'none'
           ? []
-          : getTreeDefinitionItems(tableName as 'Geography', false).map(
+          : getTreeDefinitionItems(model.name as 'Geography', false).map(
               ({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? [
@@ -327,7 +301,7 @@ export function getMappingLineData({
                         optionLabel: title ?? name,
                         isRelationship: true,
                         isDefault: name === defaultValue,
-                        tableName,
+                        tableName: model.name,
                       },
                     ]
                   : undefined
@@ -335,52 +309,45 @@ export function getMappingLineData({
       );
     },
 
-    handleSimpleFields: ({
-      tableName,
-      parentTableName,
-      parentRelationshipType,
-    }) =>
+    handleSimpleFields: ({ model, parentRelationship }) =>
       commitInstanceData(
         'simple',
-        tableName,
+        model,
         generateFieldData === 'none'
           ? []
-          : Object.entries(dataModelStorage.tables[tableName]).map(
-              ([fieldName, field]) =>
-                (generateFieldData === 'all' ||
-                  fieldName === internalState.defaultValue) &&
-                (!field.isRelationship ||
-                  !isCircularRelationship({
-                    targetTableName: field.tableName,
-                    parentTableName,
-                    foreignName: field.foreignName ?? '',
-                    relationshipKey: fieldName,
-                    currentMappingPathPart:
-                      mappingPath[internalState.position - 1],
-                    tableName,
-                  })) &&
-                !isTooManyInsideOfTooMany(field.type, parentRelationshipType) &&
-                isFieldVisible(showHiddenFields, field.isHidden, fieldName) &&
-                (scope === 'queryBuilder' || !field.isReadOnly)
-                  ? [
-                      fieldName,
-                      {
-                        optionLabel: field.label,
-                        // Enable field
-                        isEnabled:
-                          // If it is not mapped
-                          !internalState.mappedFields.includes(fieldName) ||
-                          // Or is a relationship,
-                          field.isRelationship,
-                        isRequired:
-                          field.isRequired && !mustMatchPreferences[tableName],
-                        isHidden: field.isHidden,
-                        isDefault: fieldName === internalState.defaultValue,
-                        isRelationship: field.isRelationship,
-                        tableName: field.tableName,
-                      },
-                    ]
-                  : undefined
+          : model.fields.map((field) =>
+              (generateFieldData === 'all' ||
+                field.name === internalState.defaultValue) &&
+              (!field.isRelationship ||
+                typeof parentRelationship === 'undefined' ||
+                (!isCircularRelationship(parentRelationship, field) &&
+                  !(
+                    relationshipIsToMany(field.type) &&
+                    relationshipIsToMany(parentRelationship.type)
+                  ))) &&
+              isFieldVisible(showHiddenFields, field.isHidden, field.name) &&
+              (scope === 'queryBuilder' || !field.isReadOnly)
+                ? [
+                    field.name,
+                    {
+                      optionLabel: field.label,
+                      // Enable field
+                      isEnabled:
+                        // If it is not mapped
+                        !internalState.mappedFields.includes(field.name) ||
+                        // Or is a relationship,
+                        field.isRelationship,
+                      isRequired:
+                        field.isRequired && !mustMatchPreferences[model.name],
+                      isHidden: field.isHidden,
+                      isDefault: field.name === internalState.defaultValue,
+                      isRelationship: field.isRelationship,
+                      tableName: field.isRelationship
+                        ? field.relatedModel.name
+                        : undefined,
+                    },
+                  ]
+                : undefined
             )
       ),
   };

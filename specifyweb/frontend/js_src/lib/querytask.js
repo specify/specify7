@@ -54,7 +54,7 @@ var QueryBuilder = Backbone.View.extend({
                 : queryText('queryTaskTitle')(this.query.get('name'));
             this.$el.append(template({ queryText, commonText, className, legacyNonJsxIcons, cid: this.cid }));
             this.$('.querybuilder-header h2').text(title);
-            this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.getLocalizedName());
+            this.$('.querybuilder-header img').attr('src', this.model.getIcon()).attr('alt',this.model.label);
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
             this.query.id == null && this.$('.query-save-as').remove();
@@ -261,7 +261,7 @@ var QueryBuilder = Backbone.View.extend({
                         .map(function(f) { return {spec: f.fieldSpec, isdisplay: f.spqueryfield.get('isdisplay')};})
                         .map(function(f){
                             var field = _.last(f.spec.joinPath);
-                            var name = f.spec.treeRank || field.getLocalizedName();
+                            var name = f.spec.treeRank || field.label;
                             if (f.spec.datePart &&  f.spec.datePart !== 'fullDate') {
                                 name += ' (' + f.spec.datePart + ')';
                             }
