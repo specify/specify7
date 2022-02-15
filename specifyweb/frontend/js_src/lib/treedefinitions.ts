@@ -32,7 +32,7 @@ export let treeDefinitions: {
 
 // TODO: setup mock calls for testing
 export const setupForTests = () =>
-  import('./tests/fixtures/treedefinitions.json').then(({ ranks }) => {
+  import('./tests/fixtures/treedefinitions.json').then((ranks) => {
     Object.entries(ranks).forEach(([treeName, treeRanks]) => {
       // @ts-expect-error
       treeDefinitions[treeName] = treeRanks;

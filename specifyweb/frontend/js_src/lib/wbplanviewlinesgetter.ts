@@ -13,6 +13,7 @@ import type { IR, RA } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
+import { Tables } from './datamodel';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -30,23 +31,22 @@ export const columnOptionsAreDefault = (
 export function getLinesFromHeaders({
   headers = [],
   runAutoMapper,
-  baseTableName = '',
+  baseTableName = undefined,
 }: {
   readonly headers?: RA<string>;
 } & (
   | {
       readonly runAutoMapper: true;
-      readonly baseTableName: string;
+      readonly baseTableName: keyof Tables;
     }
   | {
       readonly runAutoMapper: false;
-      readonly baseTableName?: string;
+      readonly baseTableName?: keyof Tables;
     }
 )): RA<MappingLine> {
   const lines = headers.map(
     (headerName): MappingLine => ({
       mappingPath: ['0'],
-      mappingType: 'existingHeader',
       headerName,
       columnOptions: defaultColumnOptions,
     })
@@ -66,7 +66,6 @@ export function getLinesFromHeaders({
     return Array.isArray(autoMapperMappingPaths)
       ? {
           mappingPath: autoMapperMappingPaths[0],
-          mappingType: 'existingHeader',
           headerName,
           columnOptions: defaultColumnOptions,
         }
@@ -78,7 +77,7 @@ export function getLinesFromUploadPlan(
   originalHeaders: RA<string> = [],
   uploadPlan: UploadPlan
 ): {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 } {

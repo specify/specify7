@@ -31,6 +31,7 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import { mappingPathsToMappingsTree } from './wbplanviewtreehelper';
+import { Tables } from './datamodel';
 
 export async function savePlan({
   dataset,
@@ -39,7 +40,7 @@ export async function savePlan({
   mustMatchPreferences,
 }: {
   readonly dataset: Dataset;
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): Promise<void> {
@@ -141,7 +142,7 @@ export function getMustMatchTables({
   lines,
   mustMatchPreferences,
 }: {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): IR<boolean> {
@@ -204,10 +205,8 @@ export function getMappingPaths(
 ): RA<MappingPath | FullMappingPath> {
   return lines
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-    .map(({ mappingPath, mappingType, headerName, columnOptions }) =>
-      includeHeaders
-        ? [...mappingPath, mappingType, headerName, columnOptions]
-        : mappingPath
+    .map(({ mappingPath, headerName, columnOptions }) =>
+      includeHeaders ? [...mappingPath, headerName, columnOptions] : mappingPath
     );
 }
 
@@ -287,12 +286,13 @@ export function mutateMappingPath({
    * Get relationship type from current picklist to the next one both for
    * current value and next value
    */
-  const isCurrentToMany = relationshipIsToMany(
-    getModel(parentTableName ?? '')?.getField(mappingPath[index] ?? '')?.type
-  );
-  const isNewToMany = relationshipIsToMany(
-    getModel(parentTableName ?? '')?.getField(newValue)?.type
-  );
+  const model = getModel(parentTableName ?? '');
+  const currentField = model?.getField(mappingPath[index] ?? '');
+  const isCurrentToMany =
+    currentField?.isRelationship === true && relationshipIsToMany(currentField);
+  const newField = model?.getField(newValue);
+  const isNewToMany =
+    newField?.isRelationship === true && relationshipIsToMany(newField);
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
@@ -336,7 +336,7 @@ export async function fetchAutoMapperSuggestions({
   baseTableName,
 }: SelectElementPosition & {
   readonly lines: RA<MappingLine>;
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
 }): Promise<RA<AutoMapperSuggestion>> {
   const localMappingPath = Array.from(lines[line].mappingPath);
 
@@ -347,8 +347,7 @@ export async function fetchAutoMapperSuggestions({
      */
     localMappingPath.length - 1 !== index ||
     // Or if header is a new column
-    mappingPathIsComplete(localMappingPath) ||
-    lines[line].mappingType !== 'existingHeader'
+    mappingPathIsComplete(localMappingPath)
   )
     return [];
 

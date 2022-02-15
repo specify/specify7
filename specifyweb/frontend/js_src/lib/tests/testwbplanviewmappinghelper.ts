@@ -5,17 +5,6 @@ import { schema } from '../schema';
 
 export default function (): void {
   runTest(
-    'WbPlanViewMappingHelper.relationshipIsToMany',
-    [
-      [['one-to-many'], true],
-      [['many-to-many'], true],
-      [['one-to-one'], false],
-      [['many-to-one'], false],
-    ],
-    WbPlanViewMappingHelper.relationshipIsToMany
-  );
-
-  runTest(
     'WbPlanViewMappingHelper.valueIsToManyIndex',
     [
       [[`${schema.referenceSymbol}1`], true],
@@ -109,7 +98,6 @@ export default function (): void {
             'collectionobject',
             'collector',
             'firstname',
-            'existingHeader',
             'Collector Name',
             {
               matchBehavior: 'ignoreWhenBlank',
@@ -120,7 +108,6 @@ export default function (): void {
         ],
         {
           mappingPath: ['collectionobject', 'collector', 'firstname'],
-          mappingType: 'existingHeader',
           headerName: 'Collector Name',
           columnOptions: {
             matchBehavior: 'ignoreWhenBlank',

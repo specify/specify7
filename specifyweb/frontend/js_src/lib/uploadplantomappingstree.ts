@@ -8,7 +8,10 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
+import { getModel } from './schema';
 import type { IR, R, RA } from './types';
+import { defined } from './types';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import { formatToManyIndex, formatTreeRank } from './wbplanviewmappinghelper';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
@@ -84,16 +87,13 @@ const uploadPlanProcessingFunctions = (
       value: object
     ] => [
       key,
-      {
-        existingHeader:
-          typeof value === 'string'
-            ? {
-                [value]: defaultColumnOptions,
-              }
-            : {
-                [value.column]: excludeUnknownMatchingOptions(value),
-              },
-      },
+      typeof value === 'string'
+        ? {
+            [value]: defaultColumnOptions,
+          }
+        : {
+            [value.column]: excludeUnknownMatchingOptions(value),
+          },
     ],
     static: ([key, value]: [string, string]): [key: string, value: object] => [
       key,
@@ -254,7 +254,7 @@ export function uploadPlanToMappingsTree(
   headers: RA<string>,
   uploadPlan: UploadPlan
 ): {
-  baseTableName: string;
+  baseTableName: keyof Tables;
   mappingsTree: MappingsTree;
   mustMatchPreferences: IR<boolean>;
 } {
@@ -266,7 +266,7 @@ export function uploadPlanToMappingsTree(
   const mustMatchPreferences: IR<boolean> = {};
 
   return {
-    baseTableName: uploadPlan.baseTableName,
+    baseTableName: defined(getModel(uploadPlan.baseTableName)).name,
     mappingsTree: handleUploadable(
       uploadPlan.uploadable,
       headers,

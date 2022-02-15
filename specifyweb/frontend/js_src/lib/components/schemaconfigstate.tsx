@@ -447,7 +447,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 readOnly={true}
                 value={javaTypeToHuman(
                   items[itemId].dataModel.type,
-                  items[itemId].dataModel.relatedModel.name
+                  items[itemId].dataModel.relatedModelName
                 )}
               />
             </Label>

@@ -90,7 +90,7 @@ export default function (): void {
               'Collector 4 Middle Initial',
               'Collector 4 Last Name',
             ],
-            baseTable: 'collectionobject',
+            baseTable: 'CollectionObject',
             scope: 'autoMapper',
           },
         ],

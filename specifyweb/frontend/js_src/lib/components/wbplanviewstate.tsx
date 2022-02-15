@@ -3,6 +3,8 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
+import type { Tables } from '../datamodel';
+import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplantomappingstree';
@@ -15,7 +17,6 @@ import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
-import commonText from '../localization/common';
 
 // States
 
@@ -32,7 +33,7 @@ export type MappingState = State<
   'MappingState',
   {
     changesMade: boolean;
-    baseTableName: string;
+    baseTableName: keyof Tables;
     lines: RA<MappingLine>;
     mustMatchPreferences: IR<boolean>;
   }
@@ -121,7 +122,7 @@ export const stateReducer = generateReducer<
     >
       <ListOfBaseTables
         showHiddenTables={state.showHiddenTables}
-        onChange={(baseTableName: string): void =>
+        onChange={(baseTableName: keyof Tables): void =>
           state.dispatch({
             type: 'SelectTableAction',
             baseTableName,

@@ -5,8 +5,10 @@
  * @module
  */
 
+import { getModel } from './schema';
+import type { Relationship } from './specifyfield';
 import { isTreeModel } from './treedefinitions';
-import type { IR, R, Writable } from './types';
+import type { IR, R } from './types';
 import type {
   ColumnDefinition,
   TreeRecordVariety,
@@ -19,13 +21,12 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import type { DataModelField } from './wbplanviewmodelfetcher';
 import type { MappingsTree, MappingsTreeNode } from './wbplanviewtreehelper';
-import { defined } from './types';
-import { getModel } from './schema';
 
 interface UploadPlanNode
   extends R<string | boolean | UploadPlanNode | ColumnDefinition> {}
+
+// TODO: make this file type safe
 
 function mappingsTreeToUploadPlanTable(
   tableData: object,
@@ -90,13 +91,7 @@ function mappingsTreeToUploadPlanTable(
         );
       else if (typeof field === 'object' && typeof tablePlan === 'object') {
         if (field.isRelationship)
-          handleRelationshipField(
-            fieldData,
-            field,
-            fieldName,
-            tablePlan,
-            mustMatchPreferences
-          );
+          handleRelationship(fieldData, field, tablePlan, mustMatchPreferences);
         else
           tablePlan[
             Object.entries(fieldData)[0][0] === 'newStaticColumn'
@@ -121,10 +116,9 @@ function mappingsTreeToUploadPlanTable(
   };
 }
 
-function handleRelationshipField(
+function handleRelationship(
   fieldData: object,
-  field: Writable<DataModelField>,
-  fieldName: string,
+  relationship: Relationship,
   tablePlan: {
     wbcols: UploadPlanNode;
     static: UploadPlanNode;
@@ -133,26 +127,28 @@ function handleRelationshipField(
   },
   mustMatchPreferences: IR<boolean>
 ): void {
-  const mappingTable = field.tableName;
-  if (typeof mappingTable === 'undefined')
-    throw new Error('Mapping Table is not defined');
+  const isToOne =
+    relationship.type === 'one-to-one' || relationship.type === 'many-to-one';
 
-  const isToOne = field.type === 'one-to-one' || field.type === 'many-to-one';
-
-  if (isToOne && typeof tablePlan.toOne[fieldName] === 'undefined')
-    tablePlan.toOne[fieldName] = mappingsTreeToUploadPlanTable(
-      fieldData,
-      mappingTable,
-      mustMatchPreferences
-    ) as UploadPlanNode;
+  if (
+    isToOne &&
+    typeof tablePlan.toOne[relationship.name.toLowerCase()] === 'undefined'
+  )
+    tablePlan.toOne[relationship.name.toLowerCase()] =
+      mappingsTreeToUploadPlanTable(
+        fieldData,
+        relationship.relatedModel.name,
+        mustMatchPreferences
+      ) as UploadPlanNode;
   else {
     tablePlan.toMany ??= {};
-    tablePlan.toMany[fieldName] ??= mappingsTreeToUploadPlanTable(
-      fieldData,
-      mappingTable,
-      mustMatchPreferences,
-      false
-    ) as UploadPlanNode;
+    tablePlan.toMany[relationship.name.toLowerCase()] ??=
+      mappingsTreeToUploadPlanTable(
+        fieldData,
+        relationship.relatedModel.name,
+        mustMatchPreferences,
+        false
+      ) as UploadPlanNode;
   }
 }
 

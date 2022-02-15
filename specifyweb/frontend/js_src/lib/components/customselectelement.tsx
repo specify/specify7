@@ -20,6 +20,7 @@ import {
   tableIconUndefined,
 } from './common';
 import { icons } from './icons';
+import { Tables } from '../datamodel';
 
 type Properties =
   /*
@@ -144,7 +145,7 @@ type CustomSelectElementIconProps = {
   // eslint-disable-next-line react/no-unused-prop-types
   readonly isDefault?: boolean;
   // The name of the table this option represents
-  readonly tableName?: string;
+  readonly tableName?: keyof Tables;
   // The name of the option. Would be used as a label (visible to the user)
   readonly optionLabel?: string | JSX.Element;
   // The value of the title HTML attribute
@@ -196,7 +197,7 @@ type CustomSelectElementPropsBase = {
   readonly customSelectType: CustomSelectType;
   readonly customSelectSubtype?: CustomSelectSubtype;
   readonly isOpen: boolean;
-  readonly tableName?: string;
+  readonly tableName?: keyof Tables;
   readonly role?: string;
   readonly previewOption?: CustomSelectElementDefaultOptionProps;
 
@@ -242,12 +243,13 @@ export function Icon({
   isRelationship = false,
   isPreview = false,
   isEnabled = true,
-  tableName = '',
+  tableName = undefined,
   optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element {
   if (optionLabel === '0') return tableIconUndefined;
   if (!isRelationship && (isPreview || !isEnabled)) return tableIconSelected;
-  else if (!isRelationship || tableName === '') return tableIconEmpty;
+  else if (!isRelationship || typeof tableName === 'undefined')
+    return tableIconEmpty;
   else return <TableIcon tableName={tableName} />;
 }
 

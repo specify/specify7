@@ -10,7 +10,6 @@ import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
-import { getTableOverwrite } from '../../wbplanviewmodelfetcher';
 import { webLinksDefs } from '../../weblinkbutton';
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import type { UserTool } from '../main';
@@ -136,11 +135,7 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
     React.useCallback(async () => {
       const excludedTables = new Set(
         Object.entries(schema.models)
-          .filter(
-            ([tableName, { isSystem }]) =>
-              isSystem ||
-              getTableOverwrite(tableName.toLowerCase()) === 'remove'
-          )
+          .filter(([_tableName, { overrides }]) => overrides.isSystem)
           .map(([tableName]) => tableName.toLowerCase())
       );
 

@@ -7,12 +7,11 @@
 import type {
   FullMappingPath,
   MappingPath,
-  MappingType,
 } from './components/wbplanviewmapper';
-import { JavaType, RelationshipType } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
 import { schema } from './schema';
+import { Relationship } from './specifyfield';
 
 /**
  * Returns whether relationship is a -to-many
@@ -20,10 +19,9 @@ import { schema } from './schema';
  *
  */
 export const relationshipIsToMany = (
-  relationshipType?: RelationshipType | JavaType | ''
+  relationship: Relationship | undefined
 ): boolean =>
-  (relationshipType ?? '').includes('-to-many') ||
-  relationshipType === 'zero-to-one';
+  relationship.type.includes('-to-many') || relationship.type === 'zero-to-one';
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
 export const valueIsToManyIndex = (value?: string): boolean =>
@@ -74,7 +72,6 @@ export const splitJoinedMappingPath = (string: string): MappingPath =>
 
 export type SplitMappingPath = {
   readonly mappingPath: MappingPath;
-  readonly mappingType: MappingType;
   readonly headerName: string;
   readonly columnOptions: ColumnOptions;
 };
@@ -82,8 +79,7 @@ export type SplitMappingPath = {
 export const splitFullMappingPathComponents = (
   fullMappingPath: FullMappingPath
 ): SplitMappingPath => ({
-  mappingPath: fullMappingPath.slice(0, -3) as MappingPath,
-  mappingType: fullMappingPath[fullMappingPath.length - 3] as MappingType,
+  mappingPath: fullMappingPath.slice(0, -2) as MappingPath,
   headerName: fullMappingPath[fullMappingPath.length - 2] as string,
   columnOptions: fullMappingPath[fullMappingPath.length - 1] as ColumnOptions,
 });

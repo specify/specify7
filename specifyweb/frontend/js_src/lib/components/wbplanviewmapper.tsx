@@ -50,6 +50,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { Tables } from '../datamodel';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -63,23 +64,7 @@ export type AutoMapperScope =
 
 // All mapping path parts are expected to be in lower case
 export type MappingPath = RA<string>;
-export type FullMappingPath = Readonly<
-  [...MappingPath, MappingType, string, ColumnOptions]
->;
-/*
- * MappingType remains here from the time when we had `NewHeader` and
- *  `NewStaticHeader`. Also, it is not removed as it might be useful in the
- *  future if we would want to add new mapping types
- *
- */
-// TODO: remove this
-export type MappingType = 'existingHeader';
-// TODO: remove this
-export type RelationshipType =
-  | 'one-to-one'
-  | 'one-to-many'
-  | 'many-to-one'
-  | 'many-to-many';
+export type FullMappingPath = Readonly<[...MappingPath, string, ColumnOptions]>;
 
 export type SelectElementPosition = {
   readonly line: number;
@@ -87,7 +72,6 @@ export type SelectElementPosition = {
 };
 
 export type MappingLine = {
-  readonly mappingType: MappingType;
   readonly headerName: string;
   readonly mappingPath: MappingPath;
   readonly columnOptions: ColumnOptions;
@@ -146,7 +130,7 @@ export function WbPlanViewMapper(props: {
   readonly dataset: Dataset;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
     lines: RA<MappingLine>,

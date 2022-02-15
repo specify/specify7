@@ -252,7 +252,6 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           [...state.lines.map(({ headerName }) => headerName), newHeaderName],
           [state.lines.length]
         ).slice(-1)[0],
-        mappingType: 'existingHeader',
         mappingPath: ['0'],
         columnOptions: defaultColumnOptions,
       },

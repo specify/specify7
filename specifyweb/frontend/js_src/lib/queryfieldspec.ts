@@ -80,9 +80,7 @@ export class QueryFieldSpec {
         ? formatTreeRank('_any')
         : undefined,
       field.name.toLowerCase(),
-      field.isRelationship && relationshipIsToMany(field.type)
-        ? '#1'
-        : undefined,
+      field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
     ]);
     if (Array.isArray(this.treeRank)) {
       const [rankName, fieldName] = this.treeRank;

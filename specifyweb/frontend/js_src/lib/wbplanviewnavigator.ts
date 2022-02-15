@@ -12,6 +12,7 @@ import type {
 } from './components/wbplanviewcomponents';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
+import type { Tables } from './datamodel';
 import commonText from './localization/common';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
@@ -98,7 +99,7 @@ export function navigator({
   if (typeof next === 'undefined') return;
 
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationship?.type) &&
+    relationshipIsToMany(parentRelationship) &&
     !valueIsToManyIndex(parentPartName);
 
   const childrenAreRanks =
@@ -168,7 +169,7 @@ export function getMappingLineData({
   mustMatchPreferences = {},
   scope = 'queryBuilder',
 }: {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   // The mapping path
   readonly mappingPath: MappingPath;
   /*
@@ -322,8 +323,8 @@ export function getMappingLineData({
                 typeof parentRelationship === 'undefined' ||
                 (!isCircularRelationship(parentRelationship, field) &&
                   !(
-                    relationshipIsToMany(field.type) &&
-                    relationshipIsToMany(parentRelationship.type)
+                    relationshipIsToMany(field) &&
+                    relationshipIsToMany(parentRelationship)
                   ))) &&
               isFieldVisible(showHiddenFields, field.isHidden, field.name) &&
               (scope === 'queryBuilder' || !field.isReadOnly)

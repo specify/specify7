@@ -7,7 +7,6 @@
 import type {
   FullMappingPath,
   MappingPath,
-  MappingType,
 } from './components/wbplanviewmapper';
 import type { IR, R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
@@ -16,7 +15,7 @@ import { splitFullMappingPathComponents } from './wbplanviewmappinghelper';
 
 interface NestedRecord<T> extends R<T | NestedRecord<T>> {}
 
-export type MappingsTreeNode = Record<MappingType, IR<ColumnOptions>>;
+export type MappingsTreeNode = IR<ColumnOptions>;
 
 export type MappingsTree = NestedRecord<MappingsTreeNode>;
 
@@ -69,7 +68,7 @@ export const deepMergeObject = (base: any, merge: object): IR<unknown> =>
  * if
  *   array is [
  *     'accession', 'accession agents', '#1, 'agent', 'first name',
- *     'existingHeader', 'Agent 1 First Name'
+ *     'Agent 1 First Name'
  *   ]
  *   hasHeaders is True
  * then result is
@@ -179,7 +178,7 @@ const mappingsTreeToMappingPaths = (
         );
       else
         result.push([
-          ...(path as [...string[], MappingType]),
+          ...(path as string[]),
           treeNodeName,
           // @ts-expect-error
           treeNode as ColumnOptions,

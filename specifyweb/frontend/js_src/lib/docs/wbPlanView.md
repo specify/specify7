@@ -87,125 +87,101 @@ Example:
 ```json5
 {
   // Field name
-  "enddate": {
-    /*
-     * This is always 'existingHeader' (artifact from the previous
-     * implementation of new header addition)
-     */
-    "existingHeader": {
-      // The name of the column in the Data Set
-      "Field Number": {
-        // 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever'
-        "matchBehavior": "ignoreNever",
-        // boolean
-        "nullAllowed": true,
-        // null | string
-        "default": null
-      }
-    }
-  },
-  "method": {
-    "existingHeader": {
-      "Collecting Event Gear": {
-        "matchBehavior": "ignoreNever",
-        "nullAllowed": true,
-        "default": null
-      }
-    }
-  },
-  "locality": {
-    "localityname": {
-      "existingHeader": {
-        "Locality": {
-          "matchBehavior": "ignoreNever",
-          "nullAllowed": true,
-          "default": null
-        }
-      }
+  enddate: {
+    // The name of the column in the Data Set
+    'Field Number': {
+      // 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever'
+      matchBehavior: 'ignoreNever',
+      // boolean
+      nullAllowed: true,
+      // null | string
+      default: null,
     },
-    "latitude1": {
-      "existingHeader": {
-        "Latitude1": {
-          "matchBehavior": "ignoreNever",
-          "nullAllowed": true,
-          "default": null
-        }
-      }
+  },
+  method: {
+    'Collecting Event Gear': {
+      matchBehavior: 'ignoreNever',
+      nullAllowed: true,
+      default: null,
     },
-    "longitude1": {
-      "existingHeader": {
-        "Longitude1": {
-          "matchBehavior": "ignoreNever",
-          "nullAllowed": true,
-          "default": null
-        }
-      }
+  },
+  locality: {
+    localityname: {
+      Locality: {
+        matchBehavior: 'ignoreNever',
+        nullAllowed: true,
+        default: null,
+      },
+    },
+    latitude1: {
+      Latitude1: {
+        matchBehavior: 'ignoreNever',
+        nullAllowed: true,
+        default: null,
+      },
+    },
+    longitude1: {
+      Longitude1: {
+        matchBehavior: 'ignoreNever',
+        nullAllowed: true,
+        default: null,
+      },
     },
     // Relationship Name
-    "geography": {
+    geography: {
       // Rank names begin with '$'
-      "$Continent": {
-        "name": {
-          "existingHeader": {
-            "Continent": {
-              "matchBehavior": "ignoreNever",
-              "nullAllowed": true,
-              "default": null
-            }
-          }
-        }
+      $Continent: {
+        name: {
+          Continent: {
+            matchBehavior: 'ignoreNever',
+            nullAllowed: true,
+            default: null,
+          },
+        },
       },
-      "$Country": {
-        "name": {
-          "existingHeader": {
-            "Country": {
-              "matchBehavior": "ignoreNever",
-              "nullAllowed": true,
-              "default": null
-            }
-          }
-        }
+      $Country: {
+        name: {
+          Country: {
+            matchBehavior: 'ignoreNever',
+            nullAllowed: true,
+            default: null,
+          },
+        },
       },
-      "$State": {
-        "name": {
-          "existingHeader": {
-            "State": {
-              "matchBehavior": "ignoreNever",
-              "nullAllowed": true,
-              "default": null
-            }
-          }
-        }
+      $State: {
+        name: {
+          State: {
+            matchBehavior: 'ignoreNever',
+            nullAllowed: true,
+            default: null,
+          },
+        },
       },
-      "$County": {
-        "name": {
-          "existingHeader": {
-            "County": {
-              "matchBehavior": "ignoreNever",
-              "nullAllowed": true,
-              "default": null
-            }
-          }
-        }
-      }
-    }
+      $County: {
+        name: {
+          County: {
+            matchBehavior: 'ignoreNever',
+            nullAllowed: true,
+            default: null,
+          },
+        },
+      },
+    },
   },
-  "collectors": {
+  collectors: {
     // To-many reference number. 1-based index. The number itself has no meaning
-    "#1": {
-      "agent": {
-        "email": {
-          "existingHeader": {
-            "Collectors Email": {
-              "matchBehavior": "ignoreNever",
-              "nullAllowed": true,
-              "default": null
-            }
-          }
-        }
-      }
-    }
-  }
+    '#1': {
+      agent: {
+        email: {
+          'Collectors Email': {
+            matchBehavior: 'ignoreNever',
+            nullAllowed: true,
+            default: null,
+          },
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -227,7 +203,6 @@ Branches of `MappingsTree` separated into an array of tuples:
   ],
   [
     "method",
-    "existingHeader",
     "Collecting Event Gear",
     {
       "matchBehavior": "ignoreNever",
@@ -238,7 +213,6 @@ Branches of `MappingsTree` separated into an array of tuples:
   [
     "locality",
     "localityname",
-    "existingHeader",
     "Locality",
     {
       "matchBehavior": "ignoreNever",
@@ -249,7 +223,6 @@ Branches of `MappingsTree` separated into an array of tuples:
   [
     "locality",
     "latitude1",
-    "existingHeader",
     "Latitude1",
     {
       "matchBehavior": "ignoreNever",
@@ -260,7 +233,6 @@ Branches of `MappingsTree` separated into an array of tuples:
   [
     "locality",
     "longitude1",
-    "existingHeader",
     "Longitude1",
     {
       "matchBehavior": "ignoreNever",
@@ -273,7 +245,6 @@ Branches of `MappingsTree` separated into an array of tuples:
     "geography",
     "$Continent",
     "name",
-    "existingHeader",
     "Continent",
     {
       "matchBehavior": "ignoreNever",
@@ -286,7 +257,6 @@ Branches of `MappingsTree` separated into an array of tuples:
     "geography",
     "$Country",
     "name",
-    "existingHeader",
     "Country",
     {
       "matchBehavior": "ignoreNever",
@@ -299,7 +269,6 @@ Branches of `MappingsTree` separated into an array of tuples:
     "geography",
     "$State",
     "name",
-    "existingHeader",
     "State",
     {
       "matchBehavior": "ignoreNever",
@@ -312,7 +281,6 @@ Branches of `MappingsTree` separated into an array of tuples:
     "geography",
     "$County",
     "name",
-    "existingHeader",
     "County",
     {
       "matchBehavior": "ignoreNever",
@@ -325,7 +293,6 @@ Branches of `MappingsTree` separated into an array of tuples:
     "#1",
     "agent",
     "email",
-    "existingHeader",
     "Collectors Email",
     {
       "matchBehavior": "ignoreNever",
@@ -344,7 +311,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
 [
   {
     "mappingPath": ["enddate"],
-    "mappingType": "existingHeader",
     "headerName": "Field Number",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -354,7 +320,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["method"],
-    "mappingType": "existingHeader",
     "headerName": "Collecting Event Gear",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -364,7 +329,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "localityname"],
-    "mappingType": "existingHeader",
     "headerName": "Locality",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -374,7 +338,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "latitude1"],
-    "mappingType": "existingHeader",
     "headerName": "Latitude1",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -384,7 +347,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "longitude1"],
-    "mappingType": "existingHeader",
     "headerName": "Longitude1",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -394,7 +356,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "geography", "$Continent", "name"],
-    "mappingType": "existingHeader",
     "headerName": "Continent",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -404,7 +365,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "geography", "$Country", "name"],
-    "mappingType": "existingHeader",
     "headerName": "Country",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -414,7 +374,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "geography", "$State", "name"],
-    "mappingType": "existingHeader",
     "headerName": "State",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -424,7 +383,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["locality", "geography", "$County", "name"],
-    "mappingType": "existingHeader",
     "headerName": "County",
     "columnOptions": {
       "matchBehavior": "ignoreNever",
@@ -434,7 +392,6 @@ Array of tuples (`MappingPaths`) converted into array of objects:
   },
   {
     "mappingPath": ["collectors", "#1", "agent", "email"],
-    "mappingType": "existingHeader",
     "headerName": "Collectors Email",
     "columnOptions": {
       "matchBehavior": "ignoreNever",

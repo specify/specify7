@@ -18,7 +18,7 @@ import type { MappingsTree } from './wbplanviewtreehelper';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import { getModel } from './schema';
 import { Tables } from './datamodel';
-import { Relationship, RelationshipType } from './specifyfield';
+import { Relationship } from './specifyfield';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -54,7 +54,7 @@ export function findRequiredMissingFields(
   // Used internally in a recursion. Save results
   results: MappingPath[] = []
 ): MappingPath[] {
-  const model = getModel(tableName);
+  const model = defined(getModel(tableName));
 
   if (typeof mappingsTree === 'undefined') return results;
 
@@ -133,8 +133,8 @@ export function findRequiredMissingFields(
           // Disable circular relationships
           isCircularRelationship(parentRelationship, relationship)) ||
         // Skip -to-many inside -to-many
-        (relationshipIsToMany(parentRelationship.type) &&
-          relationshipIsToMany(relationship.type))
+        (relationshipIsToMany(parentRelationship) &&
+          relationshipIsToMany(relationship))
       )
         return;
     }
@@ -177,8 +177,3 @@ export const isCircularRelationship = (
     parentRelationship.otherSideName === relationship.name) ||
   (relationship.relatedModel === parentRelationship.model &&
     relationship.otherSideName === parentRelationship.name);
-
-export const isTooManyInsideOfTooMany = (
-  type?: RelationshipType,
-  parentType?: RelationshipType
-): boolean => relationshipIsToMany(type) && relationshipIsToMany(parentType);

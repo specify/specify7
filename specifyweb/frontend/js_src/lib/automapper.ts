@@ -819,7 +819,7 @@ export class AutoMapper {
       .forEach((relationship) => {
         const localPath = [...mappingPath, relationship.name];
 
-        if (relationshipIsToMany(relationship.type))
+        if (relationshipIsToMany(relationship))
           localPath.push(formatToManyIndex(1));
 
         const newDepthLevel = localPath.length;
@@ -842,8 +842,8 @@ export class AutoMapper {
             ((mode !== 'synonymsAndMatches' &&
               isCircularRelationship(parentRelationship, relationship)) ||
               // Skip -to-many inside -to-many
-              (relationshipIsToMany(relationship.type) &&
-                relationshipIsToMany(parentRelationship.type))))
+              (relationshipIsToMany(relationship) &&
+                relationshipIsToMany(parentRelationship))))
         )
           return;
 

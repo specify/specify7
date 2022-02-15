@@ -6,6 +6,7 @@
 
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { schema } from '../schema';
@@ -36,7 +37,7 @@ export type HtmlGeneratorFieldData = {
   readonly isHidden?: boolean;
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
-  readonly tableName?: string;
+  readonly tableName?: keyof Tables;
 };
 
 type MappingLineBaseProps = {
@@ -66,7 +67,7 @@ export function ListOfBaseTables({
   onChange: handleChange,
   showHiddenTables,
 }: {
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: (newTable: keyof Tables) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const fieldsData = Object.fromEntries(
@@ -93,7 +94,7 @@ export function ListOfBaseTables({
   return (
     <MappingElement
       isOpen={true}
-      onChange={({ newValue }): void => handleChange(newValue)}
+      onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
       fieldsData={fieldsData}
       customSelectType="BASE_TABLE_SELECTION_LIST"
       customSelectSubtype="simple"

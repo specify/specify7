@@ -6,7 +6,7 @@ import { format } from '../dataobjformatters';
 import { fieldFormat } from '../fieldformat';
 import type { SpecifyResource } from '../legacytypes';
 import type { QueryFieldSpec } from '../queryfieldspec';
-import { getModel, getModelById } from '../schema';
+import { getModelById } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import { isResourceOfType } from '../specifymodel';

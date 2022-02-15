@@ -18,6 +18,7 @@ import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from './wbplanviewlinesgetter';
+import { Tables } from './datamodel';
 
 // Actions
 type OpenBaseTableSelectionAction = Action<
@@ -30,7 +31,7 @@ type OpenBaseTableSelectionAction = Action<
 type SelectTableAction = Action<
   'SelectTableAction',
   {
-    baseTableName: string;
+    baseTableName: keyof Tables;
     headers: RA<string>;
   }
 >;
