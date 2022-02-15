@@ -3,10 +3,10 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import api from './specifyapi';
-import { schema } from './schema';
+import {globalEvents} from './specifyapi';
+import {schema} from './schema';
+import {getDomainResource} from './treedefinitions';
 import { remotePrefs } from './remoteprefs';
-import {getDomainResource} from "./treedefinitions";
 
 
 function takeBetween(items, startElem, endElem) {
@@ -16,7 +16,7 @@ function takeBetween(items, startElem, endElem) {
     }
 
 
-    api.on('newresource', function(resource) {
+    globalEvents.on('newresource', function(resource) {
         const domainField = resource.specifyModel.getScopingRelationship();
         const parentResource = domainField && getDomainResource(domainField.name);
         if (parentResource && !resource.get(domainField.name)) {

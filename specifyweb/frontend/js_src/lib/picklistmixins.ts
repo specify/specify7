@@ -13,6 +13,7 @@ import { getModel, schema } from './schema';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
+import {fetchRows} from './specifyapi';
 
 export function createPickListItem(
   // It's weird that value can be null, but that's what data model says
@@ -93,31 +94,6 @@ async function fetchFromTable(
     )
   );
 }
-
-// TODO: move this back into specifyApi.ts
-const fetchRows = async <SCHEMA extends AnySchema>(
-  table: SCHEMA['tableName'],
-  {
-    fields,
-    limit,
-    distinct,
-  }: {
-    readonly fields: RA<keyof SCHEMA['fields']>;
-    readonly limit: number;
-    readonly distinct: boolean;
-  }
-): Promise<RA<RA<string>>> =>
-  ajax<RA<RA<string>>>(
-    queryString.format(`/api/specify_rows/${table.toLowerCase()}/`, {
-      fields: fields.join(',').toLowerCase(),
-      limit: limit.toString(),
-      distinct: distinct ? 'true' : 'false',
-    }),
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    }
-  ).then(({ data }) => data);
 
 /** From field picklist */
 async function fetchFromField(

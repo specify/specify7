@@ -3,7 +3,7 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import {assert} from './assert';
-import api, {makeResourceViewUrl} from './specifyapi';
+import {globalEvents, makeResourceViewUrl} from './specifyapi';
 import * as querystring from './querystring';
 
 function eventHandlerForToOne(related, field) {
@@ -83,8 +83,8 @@ function eventHandlerForToOne(related, field) {
                 }
             });
 
-            api.trigger('initresource', this);
-            this.isNew() && api.trigger('newresource', this);
+            globalEvents.trigger('initresource', this);
+            this.isNew() && globalEvents.trigger('newresource', this);
         },
         clone: function() {
             var self = this;

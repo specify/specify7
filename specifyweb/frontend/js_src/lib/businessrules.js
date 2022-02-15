@@ -3,8 +3,8 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Q from 'q';
-import api from './specifyapi';
-import { SaveBlockers } from './saveblockers';
+import {globalEvents} from './specifyapi';
+import {SaveBlockers} from './saveblockers';
 import treeBusinessRules from './treebusinessrules';
 import rules from './businessruledefs';
 
@@ -13,7 +13,7 @@ import {formatList} from "./components/internationalization";
 
 var enabled = true;
 
-    api.on('initresource', function(resource) {
+    globalEvents.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
     });
 
