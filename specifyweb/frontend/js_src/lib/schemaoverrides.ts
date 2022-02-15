@@ -195,14 +195,14 @@ export const getTableOverwrite = (
   )?.[1];
 
 export const getGlobalFieldOverwrite = (
-  tableName: string,
+  tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
   globalFieldOverrides[tableName as 'Accession']?.[fieldName as 'text1'] ??
   globalFieldOverrides.common?.[fieldName];
 
 export const getFieldOverwrite = (
-  tableName: string,
+  tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
   fieldOverwrites[tableName as 'Accession']?.[fieldName as 'text1'] ??

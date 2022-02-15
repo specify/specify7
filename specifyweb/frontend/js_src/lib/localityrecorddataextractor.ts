@@ -93,7 +93,7 @@ async function recursiveResourceResolve(
     await resource.fetchIfNotPopulated();
 
   if (valueIsTreeRank(currentPart[0])) {
-    const treeTableName = getTableFromMappingPath('locality', pastParts);
+    const treeTableName = getTableFromMappingPath('Locality', pastParts);
     const tableRanks = getTreeDefinitionItems(
       treeTableName as 'Geography',
       false
@@ -226,7 +226,7 @@ export function formatLocalityDataObject(
           [
             mappingPathToString(['locality', ...mappingPath]),
             {
-              headerName: generateMappingPathPreview('locality', mappingPath),
+              headerName: generateMappingPathPreview('Locality', mappingPath),
               value: fieldValue?.toString() ?? '',
             },
           ] as const

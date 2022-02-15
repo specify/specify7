@@ -6,7 +6,7 @@ import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
-import { capitalize } from './wbplanviewhelper';
+import { capitalize, toLowerCase } from './wbplanviewhelper';
 import {
   formatTreeRank,
   getNameFromTreeRankName,
@@ -14,6 +14,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
+import { Tables } from './datamodel';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -49,8 +50,8 @@ export class QueryFieldSpec {
   public treeRank: Readonly<[rankName: string, fieldName: string]> | undefined =
     undefined;
 
-  public constructor(baseTableName: string) {
-    this.baseTable = defined(getModel(baseTableName));
+  public constructor(baseTable: SpecifyModel) {
+    this.baseTable = baseTable;
     this.table = this.baseTable;
   }
 
@@ -119,7 +120,7 @@ export class QueryFieldSpec {
 
   private makeStringId(tableList: string): {
     readonly tableList: string;
-    readonly tableName: string;
+    readonly tableName: Lowercase<keyof Tables>;
     readonly fieldName: string;
   } {
     let fieldName = Array.isArray(this.treeRank)
@@ -136,7 +137,7 @@ export class QueryFieldSpec {
       fieldName += `Numeric${capitalize(this.datePart)}`;
     return {
       tableList,
-      tableName: this.table.name.toLowerCase(),
+      tableName: toLowerCase(this.table.name),
       fieldName,
     };
   }
@@ -144,7 +145,7 @@ export class QueryFieldSpec {
   public static fromPath(pathIn: RA<string>): QueryFieldSpec {
     const [baseTableName, ...path] = Array.from(pathIn);
     const rootTable = defined(getModel(baseTableName));
-    const fieldSpec = new QueryFieldSpec(baseTableName);
+    const fieldSpec = new QueryFieldSpec(defined(getModel(baseTableName)));
 
     const joinPath: (LiteralField | Relationship)[] = [];
     let node = rootTable;
@@ -198,7 +199,7 @@ export class QueryFieldSpec {
     const { fieldName, datePart } = extractDatePart(fullFieldName);
     const field = node.getField(fieldName);
 
-    const fieldSpec = new QueryFieldSpec(baseTable.name);
+    const fieldSpec = new QueryFieldSpec(baseTable);
     fieldSpec.joinPath =
       typeof field === 'object' ? [...joinPath, field] : joinPath;
     fieldSpec.table = node;

@@ -16,6 +16,7 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
+import { Tables } from './datamodel';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide: Set<string> = new Set(['name', 'fullname', 'localityname']);
@@ -62,7 +63,7 @@ const formatResponse = (fields: RA<string | RA<string>>): string =>
     .join(' ');
 
 export function generateMappingPathPreview(
-  baseTableName: string,
+  baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
   const mappingLineData = getMappingLineData({

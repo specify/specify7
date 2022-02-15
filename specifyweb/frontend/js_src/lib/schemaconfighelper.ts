@@ -17,6 +17,7 @@ import type { IR, RA } from './types';
 import { sortFunction } from './wbplanviewhelper';
 import { Aggregator, Formatter } from './dataobjformatters';
 import { SpecifyModel } from './specifymodel';
+import { Tables } from './datamodel';
 
 export const sortObjectsByKey = <
   KEY extends string,
@@ -111,7 +112,7 @@ export const formatAggregators = (
 
 export const filterFormatters = (
   formatters: IR<DataObjectFormatter>,
-  tableName: string
+  tableName: keyof Tables
 ): IR<string> =>
   Object.fromEntries(
     Object.entries(formatters)

@@ -9,9 +9,10 @@
 
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
-import { IR, RA, RR } from '../types';
+import type { IR, RA, RR } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import {
   TableIcon,
@@ -20,7 +21,6 @@ import {
   tableIconUndefined,
 } from './common';
 import { icons } from './icons';
-import { Tables } from '../datamodel';
 
 type Properties =
   /*
@@ -182,7 +182,7 @@ type CustomSelectElementOptionGroupProps = {
   readonly onClick?: (payload: {
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly newTableName: string;
+    readonly newTableName: keyof Tables | undefined;
     readonly isDoubleClick: boolean;
   }) => void;
   readonly hasIcon?: boolean;
@@ -207,8 +207,8 @@ type CustomSelectElementPropsBase = {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly currentTableName: string;
-    readonly newTableName: string;
+    readonly currentTableName: keyof Tables | undefined;
+    readonly newTableName: keyof Tables | undefined;
     readonly isDoubleClick: boolean;
   }) => void;
   readonly onClose?: () => void;
@@ -227,8 +227,8 @@ export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly currentTableName: string;
-    readonly newTableName: string;
+    readonly currentTableName: keyof Tables | undefined;
+    readonly newTableName: keyof Tables | undefined;
     readonly isDoubleClick: boolean;
   }) => void;
   readonly onClose?: () => void;
@@ -259,7 +259,7 @@ function Option({
   isEnabled = true,
   isRelationship = false,
   isDefault = false,
-  tableName = '',
+  tableName = undefined,
   onClick: handleClick,
   hasIcon = true,
   hasArrow = true,
@@ -281,7 +281,7 @@ function Option({
       'custom-select-option-selected cursor-auto bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = getModel(tableName)?.label;
+  const tableLabel = getModel(tableName ?? '')?.label;
 
   const fullTitle = [
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
@@ -325,7 +325,11 @@ function Option({
         (isRelationship ? (
           <span
             className="print:hidden"
-            title={tableLabel ? wbText('relationship')(tableLabel) : undefined}
+            title={
+              typeof tableLabel === 'string'
+                ? wbText('relationship')(tableLabel)
+                : undefined
+            }
             aria-label={wbText('relationship')(tableLabel ?? '')}
             role="img"
           >
@@ -373,7 +377,7 @@ function OptionGroup({
                       newValue: optionName,
                       isRelationship:
                         selectionOptionData.isRelationship ?? false,
-                      newTableName: selectionOptionData.tableName ?? '',
+                      newTableName: selectionOptionData.tableName,
                       isDoubleClick,
                     })
                   : undefined
@@ -399,7 +403,6 @@ function OptionGroup({
  * I don't like this solution, but am not sure what is a better one. Rendering
  * a bunch of <Option> with visibility:hidden for each pick list is too expensive
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ShadowListOfOptions({
   fieldNames,
   hasIcon,
@@ -408,7 +411,7 @@ function ShadowListOfOptions({
   readonly fieldNames: RA<string>;
   readonly hasIcon: boolean;
   readonly hasArrow: boolean;
-}) {
+}): JSX.Element {
   const gap = 0.25;
   const paddingRight =
     gap * 2 + (hasIcon ? gap + 1.25 : 0) + (hasArrow ? gap + 1.5 : 0);
@@ -429,7 +432,7 @@ function ShadowListOfOptions({
 const defaultDefaultOption = {
   optionName: '0',
   optionLabel: '0',
-  tableName: '',
+  tableName: undefined,
   isRelationship: false,
   isRequired: false,
   isHidden: false,
@@ -504,7 +507,8 @@ export function CustomSelectElement({
     has('unmapOption') &&
     defaultOption.optionName !== '0';
 
-  if (showUnmapOption) inlineOptions = [defaultDefaultOption, ...inlineOptions];
+  if (showUnmapOption && typeof defaultDefaultOption === 'string')
+    inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
   const handleClick = has('interactive')
     ? ({
@@ -516,12 +520,12 @@ export function CustomSelectElement({
         readonly close: boolean;
         readonly newValue: string;
         readonly isRelationship: boolean;
-        readonly newTableName: string;
+        readonly newTableName: keyof Tables | undefined;
         readonly isDoubleClick: boolean;
       }): void =>
         isDoubleClick || close || newValue !== defaultOption.optionName
           ? handleChange?.({
-              currentTableName: defaultOption.tableName ?? '',
+              currentTableName: defaultOption.tableName,
               newValue,
               isDoubleClick,
               close,
@@ -610,7 +614,7 @@ export function CustomSelectElement({
             close: true,
             newValue: '0',
             isRelationship: false,
-            newTableName: '0',
+            newTableName: undefined,
             isDoubleClick: false,
           })
         }
@@ -824,7 +828,7 @@ export function CustomSelectElement({
                     newValue,
                     isRelationship:
                       inlineOptions[newIndex]?.isRelationship ?? false,
-                    newTableName: inlineOptions[newIndex]?.tableName ?? '0',
+                    newTableName: inlineOptions[newIndex]?.tableName,
                     isDoubleClick: false,
                   });
               }

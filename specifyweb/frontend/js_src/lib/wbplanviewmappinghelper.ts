@@ -8,10 +8,10 @@ import type {
   FullMappingPath,
   MappingPath,
 } from './components/wbplanviewmapper';
+import { schema } from './schema';
+import type { Relationship } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplantomappingstree';
-import { schema } from './schema';
-import { Relationship } from './specifyfield';
 
 /**
  * Returns whether relationship is a -to-many
@@ -21,7 +21,8 @@ import { Relationship } from './specifyfield';
 export const relationshipIsToMany = (
   relationship: Relationship | undefined
 ): boolean =>
-  relationship.type.includes('-to-many') || relationship.type === 'zero-to-one';
+  relationship?.type.includes('-to-many') === true ||
+  relationship?.type === 'zero-to-one';
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
 export const valueIsToManyIndex = (value?: string): boolean =>

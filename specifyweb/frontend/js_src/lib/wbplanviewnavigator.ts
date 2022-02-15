@@ -137,7 +137,7 @@ export function navigator({
 }
 
 export function getTableFromMappingPath(
-  baseTableName: string,
+  baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
   if (mappingPath.length === 0) return baseTableName;

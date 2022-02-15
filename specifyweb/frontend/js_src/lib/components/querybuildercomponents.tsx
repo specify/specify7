@@ -63,7 +63,7 @@ export function SaveQueryButtons({
   setHasUnloadProtect,
 }: {
   readonly readOnly: boolean;
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -131,7 +131,7 @@ export function MakeRecordSetButton({
   queryResource,
   fields,
 }: {
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
 }): JSX.Element {
@@ -222,7 +222,7 @@ export function QueryExportButtons({
   fields,
   queryResource,
 }: {
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
 }): JSX.Element {

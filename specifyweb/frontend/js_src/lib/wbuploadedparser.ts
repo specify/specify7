@@ -7,6 +7,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA, RR } from './types';
+import { Tables } from './datamodel';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates
@@ -25,7 +26,7 @@ type TreeInfo = {
  */
 type ReportInfo = {
   // The name of the table a record relates to
-  readonly tableName: string;
+  readonly tableName: keyof Tables;
   // The columns from the data set a record relates to
   readonly columns: RA<string>;
   readonly treeInfo: TreeInfo | null;

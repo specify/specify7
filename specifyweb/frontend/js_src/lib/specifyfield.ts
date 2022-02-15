@@ -132,10 +132,7 @@ abstract class FieldBase {
     this.isHidden = this.localization.ishidden;
 
     // Apply overrides
-    const fieldOverwrite = getFieldOverwrite(
-      this.model.name.toLowerCase(),
-      this.name.toLowerCase()
-    );
+    const fieldOverwrite = getFieldOverwrite(this.model.name, this.name);
 
     let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
@@ -155,7 +152,7 @@ abstract class FieldBase {
       isReadOnly:
         this.isReadOnly ||
         fieldOverwrite === 'readOnly' ||
-        (this.isRelationship && isTreeModel(this.model.name.toLowerCase())),
+        (this.isRelationship && isTreeModel(this.model.name)),
     };
   }
 

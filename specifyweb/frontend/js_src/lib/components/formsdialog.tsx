@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { fetchContext as fetchSchema, getModel } from '../schema';
@@ -16,7 +17,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 type Entry = {
-  iconName: string;
+  iconName: keyof Tables | undefined;
   viewUrl: string;
   title: string;
   model: SpecifyModel;
@@ -43,7 +44,9 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
           const model = defined(getModel(modelName));
 
           return {
-            iconName: (view.getAttribute('iconname') ?? '').toLowerCase(),
+            iconName:
+              (view.getAttribute('iconname') as keyof Tables | null) ??
+              undefined,
             viewUrl: makeResourceViewUrl(modelName),
             title: view.getAttribute('title') ?? '',
             model,
@@ -91,7 +94,9 @@ function FormsDialog({
                     : undefined
                 }
               >
-                <TableIcon tableName={iconName} tableLabel={false} />
+                {typeof iconName === 'string' && (
+                  <TableIcon tableName={iconName} tableLabel={false} />
+                )}
                 {title}
               </Link.Default>
             </li>

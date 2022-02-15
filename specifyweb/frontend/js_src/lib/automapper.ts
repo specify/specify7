@@ -106,7 +106,7 @@ type AutoMapperHeadersToMapActions = Action<'mapped', { headerName: string }>;
 
 type AutoMapperSearchedTablesActions =
   | Action<'reset'>
-  | Action<'add', { tableName: string }>;
+  | Action<'add', { tableName: keyof Tables }>;
 
 type AutoMapperFindMappingsQueueActions =
   | Action<'enqueue', { value: FindMappingsParameters; level: number }>

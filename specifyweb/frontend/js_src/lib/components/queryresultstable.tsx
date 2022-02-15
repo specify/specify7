@@ -156,7 +156,7 @@ export function QueryResultsWrapper({
   fields,
   recordSetId,
 }: {
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;

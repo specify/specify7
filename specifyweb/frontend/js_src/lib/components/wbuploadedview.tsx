@@ -6,28 +6,27 @@
 
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import type { IR } from '../types';
+import { getModel } from '../schema';
+import type { RR } from '../types';
 import { defined } from '../types';
+import { Button, H2, Ul } from './basic';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import { Button, H2, Ul } from './basic';
-import { getModel } from '../schema';
 
 function TableResults({
   tableName,
   recordCount,
 }: {
-  readonly tableName: string;
+  readonly tableName: keyof Tables;
   readonly recordCount: number;
 }): JSX.Element {
   return (
     <li className="gap-x-1 flex items-center">
       <TableIcon tableName={tableName} />
-      <span>
-        {`${defined(getModel(tableName)).label}: ${recordCount}`}
-      </span>
+      <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
     </li>
   );
 }
@@ -37,7 +36,7 @@ function WbUploadedView({
   onClose: handleClose,
   isUploaded,
 }: {
-  readonly recordCounts: IR<number>;
+  readonly recordCounts: RR<keyof Tables, number>;
   readonly onClose: () => void;
   readonly isUploaded: boolean;
 }): JSX.Element {

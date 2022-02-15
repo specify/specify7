@@ -49,13 +49,13 @@ const treeScopes = {
   /* eslint-enable @typescript-eslint/naming-convention */
 } as const;
 
-const commonTrees = ['geography', 'storage', 'taxon'] as const;
-const treesForPaleo = ['geologictimeperiod', 'lithostrat'] as const;
+const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
+const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 const allTrees = [...commonTrees, ...treesForPaleo] as const;
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
-export let disciplineTrees: RA<Lowercase<AnyTree['tableName']>> = allTrees;
+export let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 
-export const isTreeModel = (tableName: string): boolean =>
+export const isTreeModel = (tableName: keyof Tables): boolean =>
   allTrees.includes(tableName.toLowerCase() as typeof allTrees[number]);
 
 export const fetchContext = Promise.all([fetchSchema, fetchDomain])

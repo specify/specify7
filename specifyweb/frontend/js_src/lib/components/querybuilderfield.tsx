@@ -50,7 +50,7 @@ export function QueryLine({
   openedElement,
   showHiddenFields,
 }: {
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly field: QueryField;
   readonly fieldHash: string;
   readonly onChange: (newField: QueryField) => void;
@@ -59,9 +59,9 @@ export function QueryLine({
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly currentTableName: string;
-    readonly newTableName: string;
+    readonly parentTableName: keyof Tables | undefined;
+    readonly currentTableName: keyof Tables | undefined;
+    readonly newTableName: keyof Tables | undefined;
     readonly isDoubleClick: boolean;
   }) => void;
   readonly onRemove?: () => void;

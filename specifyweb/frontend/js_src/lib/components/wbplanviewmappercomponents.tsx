@@ -2,10 +2,11 @@ import React from 'react';
 import _ from 'underscore';
 
 import * as cache from '../cache';
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
-import type { IR, RA } from '../types';
+import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
 import type {
   ColumnOptions,
@@ -78,7 +79,7 @@ export function MappingsControlPanel({
 }
 
 export function ValidationResults(props: {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly validationResults: RA<MappingPath>;
   readonly onSave: () => void;
   readonly onDismissValidation: () => void;
@@ -412,7 +413,7 @@ export function MustMatch({
 }): JSX.Element {
   const id = useId('wbplanview-must-match');
   const [localPreferences, setLocalPreferences] = React.useState<
-    IR<boolean> | undefined
+    RR<keyof Tables, boolean> | undefined
   >(undefined);
 
   const handleDialogClose = (): void => {

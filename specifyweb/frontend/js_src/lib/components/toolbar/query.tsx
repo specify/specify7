@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { ajax } from '../../ajax';
 import { error } from '../../assert';
 import type { SpQuery, SpReport } from '../../datamodel';
+import type { Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
@@ -11,7 +12,8 @@ import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import { getModel, getModelById, schema } from '../../schema';
 import type { IR, RA } from '../../types';
-import { defined } from '../../types';
+import { defined, filterArray } from '../../types';
+import { userInformation } from '../../userinfo';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import { EditResourceDialog } from '../editresourcedialog';
@@ -22,23 +24,23 @@ import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
-import { userInformation } from '../../userinfo';
 
-const tablesToShowPromise: Promise<RA<string>> = ajax<Document>(
+const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   '/static/config/querybuilder.xml',
   // eslint-disable-next-line @typescript-eslint/naming-convention
   { headers: { Accept: 'application/xml' } }
 )
   .then(({ data: document }) =>
-    Array.from(
-      document.querySelectorAll('database > table'),
-      (table) => table.getAttribute('name')?.toLowerCase() ?? ''
+    filterArray(
+      Array.from(document.querySelectorAll('database > table'), (table) =>
+        getModel(table.getAttribute('name') ?? '')
+      )
     )
       .filter(
-        (tableName) =>
-          tableName &&
-          (tableName !== 'spauditlog' || userInformation.usertype === 'Manager')
+        (model) =>
+          model.name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
       )
+      .map(({ name }) => name)
       .sort()
   )
   .catch((error) => {
@@ -127,9 +129,7 @@ function QueryList({
                 className="intercept-navigation overflow-x-auto"
               >
                 <TableIcon
-                  tableName={getModelById(
-                    query.contextTableId
-                  ).name.toLowerCase()}
+                  tableName={getModelById(query.contextTableId).name}
                   tableLabel={false}
                 />
                 {query.name}
@@ -160,8 +160,8 @@ function ListOfTables({
   tables,
   getQueryCreateUrl,
 }: {
-  readonly tables: RA<string>;
-  readonly getQueryCreateUrl: (tableName: string) => string;
+  readonly tables: RA<keyof Tables>;
+  readonly getQueryCreateUrl: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
     <Ul>
@@ -201,7 +201,7 @@ function QueryToolbarItem({
   readOnly,
 }: {
   readonly onClose: () => void;
-  readonly getQueryCreateUrl?: (tableName: string) => string;
+  readonly getQueryCreateUrl?: (tableName: keyof Tables) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
   readonly spQueryFilter?: IR<unknown>;
   readonly newQueryButtonGenerator?: (state: States) => () => void;
@@ -318,7 +318,8 @@ const menuItem: MenuItem = {
       onClose,
       getQueryCreateUrl: userInformation.isReadOnly
         ? undefined
-        : (tableName: string): string => `/specify/query/new/${tableName}/`,
+        : (tableName: keyof Tables): string =>
+            `/specify/query/new/${tableName.toLowerCase()}/`,
       getQuerySelectUrl: undefined,
       readOnly: userInformation.isReadOnly,
     }),

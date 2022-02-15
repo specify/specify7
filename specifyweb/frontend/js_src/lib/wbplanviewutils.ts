@@ -164,8 +164,8 @@ export function getMustMatchTables({
         // Exclude embedded collecting event
         (!schema.embeddedCollectingEvent ||
           (list[index - 1]?.tableName ?? baseTableName) !==
-            'collectionobject' ||
-          list[index].tableName !== 'collectingevent')
+            'CollectionObject' ||
+          list[index].tableName !== 'CollectingEvent')
     )
   );
 
@@ -176,7 +176,7 @@ export function getMustMatchTables({
         typeof getModel(tableName) === 'undefined' ||
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
-          (!schema.embeddedPaleoContext || tableName !== 'paleocontext'))
+          (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
     );
 
   return {
@@ -184,7 +184,7 @@ export function getMustMatchTables({
       Array.from(new Set(tables), (tableName) => [
         tableName,
         // Whether "mustMatch" is checked by default
-        tableName === 'preptype' && !('preptype' in mustMatchPreferences),
+        tableName === 'PrepType' && !('preptype' in mustMatchPreferences),
       ])
     ),
     ...mustMatchPreferences,
@@ -272,9 +272,9 @@ export function mutateMappingPath({
   readonly index: number;
   readonly newValue: string;
   readonly isRelationship: boolean;
-  readonly parentTableName: string;
-  readonly currentTableName: string;
-  readonly newTableName: string;
+  readonly parentTableName: keyof Tables | undefined;
+  readonly currentTableName: keyof Tables | undefined;
+  readonly newTableName: keyof Tables | undefined;
   readonly ignoreToMany?: boolean;
 }): MappingPath {
   // Get mapping path from selected line or mapping view

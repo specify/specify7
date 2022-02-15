@@ -9,7 +9,6 @@ import type { QueryField } from './querybuilderutils';
 import { parseQueryFields } from './querybuilderutils';
 import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
-import { toLowerCase } from './wbplanviewhelper';
 import { mutateMappingPath } from './wbplanviewutils';
 
 type MainState = State<
@@ -23,7 +22,7 @@ type MainState = State<
     };
     readonly queryRunCount: number;
     readonly saveRequired: boolean;
-    readonly baseTableName: Lowercase<keyof Tables>;
+    readonly baseTableName: keyof Tables;
   }
 >;
 
@@ -46,7 +45,7 @@ export const getInitialState = ({
    * This value never changes. It is part of the state to be accessible by
    * the reducer
    */
-  baseTableName: toLowerCase(model.name),
+  baseTableName: model.name,
 });
 
 type Actions =
@@ -71,9 +70,9 @@ type Actions =
         readonly close: boolean;
         readonly newValue: string;
         readonly isRelationship: boolean;
-        readonly parentTableName: string;
-        readonly newTableName: string;
-        readonly currentTableName: string;
+        readonly parentTableName: keyof Tables | undefined;
+        readonly newTableName: keyof Tables | undefined;
+        readonly currentTableName: keyof Tables | undefined;
       }
     >;
 

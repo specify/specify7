@@ -19,7 +19,7 @@ export function QueryFields({
   openedElement,
   showHiddenFields,
 }: {
-  readonly baseTableName: Lowercase<keyof Tables>;
+  readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly onChangeField: (line: number, field: QueryField) => void;
   readonly onMappingChange: (
@@ -29,9 +29,9 @@ export function QueryFields({
       readonly close: boolean;
       readonly newValue: string;
       readonly isRelationship: boolean;
-      readonly parentTableName: string;
-      readonly currentTableName: string;
-      readonly newTableName: string;
+      readonly parentTableName: keyof Tables | undefined;
+      readonly currentTableName: keyof Tables | undefined;
+      readonly newTableName: keyof Tables | undefined;
       readonly isDoubleClick: boolean;
     }
   ) => void;

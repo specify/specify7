@@ -1,3 +1,4 @@
+import type { Tables } from '../datamodel';
 import { mappingsTreeToUploadPlan } from '../mappingstreetouploadplan';
 import type { MappingsTree } from '../wbplanviewtreehelper';
 import mappingsTree1 from './fixtures/mappingstree.1.json';
@@ -10,7 +11,7 @@ export default function (): void {
     [
       [
         [
-          mappingsTree1.baseTableName,
+          mappingsTree1.baseTableName as keyof Tables,
           mappingsTree1.mappingsTree as unknown as MappingsTree,
           mappingsTree1.mustMatchPreferences,
         ],

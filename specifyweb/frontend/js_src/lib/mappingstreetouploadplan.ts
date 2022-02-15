@@ -5,6 +5,7 @@
  * @module
  */
 
+import type { Tables } from './datamodel';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { isTreeModel } from './treedefinitions';
@@ -30,7 +31,7 @@ interface UploadPlanNode
 
 function mappingsTreeToUploadPlanTable(
   tableData: object,
-  tableName: string | undefined,
+  tableName: keyof Tables | undefined,
   mustMatchPreferences: IR<boolean>,
   wrapIt = true,
   isRoot = false
@@ -155,15 +156,14 @@ function handleRelationship(
 export const extractHeaderNameFromHeaderStructure = (
   headerStructure: MappingsTreeNode
 ): ColumnDefinition =>
-  Object.entries(Object.values(headerStructure)[0]).map(
-    ([headerName, headerOptions]) =>
-      JSON.stringify(headerOptions) === JSON.stringify(defaultColumnOptions)
-        ? headerName
-        : {
-            ...defaultColumnOptions,
-            column: headerName,
-            ...headerOptions,
-          }
+  Object.entries(headerStructure).map(([headerName, headerOptions]) =>
+    JSON.stringify(headerOptions) === JSON.stringify(defaultColumnOptions)
+      ? headerName
+      : {
+          ...defaultColumnOptions,
+          column: headerName,
+          ...headerOptions,
+        }
   )[0];
 
 const rankMappedFieldsToTreeRecordRanks = (
@@ -194,7 +194,7 @@ const mappingsTreeToUploadPlanTree = (
 
 const mappingsTreeToUploadTable = (
   mappingsTree: Readonly<MappingsTree>,
-  tableName: string,
+  tableName: keyof Tables,
   mustMatchPreferences: IR<boolean>,
   isRoot = false
 ): Uploadable =>
@@ -219,7 +219,7 @@ const mappingsTreeToUploadTable = (
  * Inverse of uploadPlanToMappingsTree
  */
 export const mappingsTreeToUploadPlan = (
-  baseTableName: string,
+  baseTableName: keyof Tables,
   mappingsTree: Readonly<MappingsTree>,
   mustMatchPreferences: IR<boolean>
 ): UploadPlan => ({

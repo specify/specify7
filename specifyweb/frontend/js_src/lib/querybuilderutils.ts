@@ -77,7 +77,7 @@ export function parseQueryFields(
 }
 
 export const queryFieldsToFieldSpecs = (
-  baseTableName: Lowercase<keyof Tables>,
+  baseTableName: keyof Tables,
   fields: RA<QueryField>
 ): RA<Readonly<[QueryField, QueryFieldSpec]>> =>
   fields
@@ -88,7 +88,7 @@ export const queryFieldsToFieldSpecs = (
     ]);
 
 export const unParseQueryFields = (
-  baseTableName: Lowercase<keyof Tables>,
+  baseTableName: keyof Tables,
   fields: RA<QueryField>
 ): RA<SerializedResource<SpQueryField>> =>
   queryFieldsToFieldSpecs(baseTableName, fields).map(

@@ -8,6 +8,7 @@ import type { MappingLine } from './components/wbplanviewmapper';
 import wbText from './localization/workbench';
 import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
+import { Tables } from './datamodel';
 
 function formatUniqueifiedHeader(
   headers: RA<string>,
@@ -45,7 +46,7 @@ export const uniquifyHeaders = (
     );
 
 export function renameNewlyCreatedHeaders(
-  baseTableName: string,
+  baseTableName: keyof Tables,
   headers: RA<string>,
   lines: RA<MappingLine>
 ): RA<MappingLine> {

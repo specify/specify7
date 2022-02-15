@@ -12,6 +12,7 @@ import commonText from '../localization/common';
 import { spanNumber } from '../wbplanviewhelper';
 import { icons } from './icons';
 import { getModel } from '../schema';
+import { Tables } from '../datamodel';
 
 const MAX_HUE = 360;
 
@@ -37,7 +38,7 @@ export function TableIcon({
   tableName,
   tableLabel,
 }: {
-  readonly tableName: string;
+  readonly tableName: keyof Tables;
   readonly tableLabel?: string | false;
 }): JSX.Element {
   const tableIconSource = getIcon(tableName);

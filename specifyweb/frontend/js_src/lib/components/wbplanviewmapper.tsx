@@ -9,6 +9,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import * as cache from '../cache';
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
@@ -50,7 +51,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { Tables } from '../datamodel';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -64,6 +64,7 @@ export type AutoMapperScope =
 
 // All mapping path parts are expected to be in lower case
 export type MappingPath = RA<string>;
+// TODO: phase out usages of FullMappingPath
 export type FullMappingPath = Readonly<[...MappingPath, string, ColumnOptions]>;
 
 export type SelectElementPosition = {
@@ -266,21 +267,6 @@ export function WbPlanViewMapper(props: {
       });
   }
 
-  const handleChange = (payload: {
-    readonly line: 'mappingView' | number;
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly currentTableName: string;
-    readonly newTableName: string;
-  }): void =>
-    dispatch({
-      type: 'ChangeSelectElementValueAction',
-      ...payload,
-    });
-
   const handleClose = (): void =>
     dispatch({
       type: 'CloseSelectElementAction',
@@ -450,7 +436,11 @@ export function WbPlanViewMapper(props: {
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
               else if (!props.readonly)
-                handleChange({ line: 'mappingView', ...rest });
+                dispatch({
+                  type: 'ChangeSelectElementValueAction',
+                  line: 'mappingView',
+                  ...rest,
+                });
             },
           })}
           mapButton={
@@ -500,7 +490,12 @@ export function WbPlanViewMapper(props: {
             customSelectType: 'CLOSED_LIST',
             onChange: props.readonly
               ? undefined
-              : (payload): void => handleChange({ line, ...payload }),
+              : (payload): void =>
+                  dispatch({
+                    type: 'ChangeSelectElementValueAction',
+                    line,
+                    ...payload,
+                  }),
             onOpen: handleOpen,
             onClose: handleClose,
             onAutoMapperSuggestionSelection: props.readonly
@@ -563,7 +558,7 @@ export function WbPlanViewMapper(props: {
                         {icons.cog}
                       </span>
                     ),
-                    tableName: '',
+                    tableName: undefined,
                     isRelationship: !columnOptionsAreDefault(columnOptions),
                   },
                   selectLabel: wbText('mappingOptions'),

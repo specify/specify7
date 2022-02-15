@@ -8,14 +8,14 @@ import { getModel } from '../../schema';
 import type { SpecifyModel } from '../../specifymodel';
 import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
+import { userInformation } from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
+import { crash } from '../errorboundary';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { crash } from '../errorboundary';
-import { userInformation } from '../../userinfo';
 
 export function TreeSelectDialog({
   onClose: handleClose,

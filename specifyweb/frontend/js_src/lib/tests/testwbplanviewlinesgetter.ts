@@ -5,6 +5,7 @@ import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
 import { runTest } from './testmain';
+import { Tables } from '../datamodel';
 
 export default function (): void {
   runTest(
@@ -156,7 +157,7 @@ export default function (): void {
               'Subspecies Author',
             ],
             runAutoMapper: false,
-            baseTableName: 'collectionobject',
+            baseTableName: 'CollectionObject',
           },
         ],
         [
@@ -262,7 +263,7 @@ export default function (): void {
       [
         [uploadPlan1.headers, uploadPlan1.uploadPlan as unknown as UploadPlan],
         wbPlanViewLines1 as {
-          readonly baseTableName: string;
+          readonly baseTableName: keyof Tables;
           readonly lines: RA<MappingLine>;
           readonly mustMatchPreferences: IR<boolean>;
         },

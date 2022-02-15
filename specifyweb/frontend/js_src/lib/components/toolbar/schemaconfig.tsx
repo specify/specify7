@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../ajax';
+import type { Tables } from '../../datamodel';
 import { fetchFormatters } from '../../dataobjformatters';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
@@ -45,7 +46,7 @@ export type SpLocaleContainer = CommonTableFields & {
   readonly ishidden: boolean;
   readonly issystem: boolean;
   // Readonly isuiformatter: null;
-  readonly name: string;
+  readonly name: keyof Tables;
   readonly picklistname: string | null;
   /*
    * Readonly schematype: 0 | 1;

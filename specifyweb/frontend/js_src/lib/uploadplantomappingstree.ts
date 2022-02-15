@@ -62,7 +62,7 @@ export type TreeRecordVariety =
 export type Uploadable = UploadTableVariety | TreeRecordVariety;
 
 export type UploadPlan = {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly uploadable: Uploadable;
 };
 
@@ -165,7 +165,7 @@ function handleTreeRecordTypes(
 ): ReturnType<typeof handleTreeRecord> {
   if ('mustMatchTreeRecord' in uploadPlan) {
     const tableName = getTableFromMappingPath(
-      mappingPath[0],
+      mappingPath[0] as keyof Tables,
       mappingPath.slice(1)
     );
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;
@@ -211,7 +211,7 @@ function handleUploadableTypes(
 ): MappingsTree {
   if ('mustMatchTable' in uploadPlan) {
     const tableName = getTableFromMappingPath(
-      mappingPath[0],
+      mappingPath[0] as keyof Tables,
       mappingPath.slice(1)
     );
     mustMatchPreferences[tableName || mappingPath.slice(-1)[0]] = true;

@@ -24,6 +24,7 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
+import { Tables } from './datamodel';
 
 const modifyLine = (
   state: MappingState,
@@ -91,9 +92,9 @@ export type ChangeSelectElementValueAction = Action<
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly newTableName: string;
-    readonly currentTableName: string;
+    readonly parentTableName: keyof Tables | undefined;
+    readonly newTableName: keyof Tables | undefined;
+    readonly currentTableName: keyof Tables | undefined;
   }
 >;
 

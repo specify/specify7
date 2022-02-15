@@ -24,9 +24,10 @@ import {
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
 import { filterArray } from './types';
+import { Tables } from './datamodel';
 
 const addBaseTableName = (
-  baseTableName: string,
+  baseTableName: keyof Tables,
   splitMappingPaths: RA<SplitMappingPath>
 ): RA<SplitMappingPath> =>
   splitMappingPaths.map(({ mappingPath, ...rest }) => ({
@@ -172,7 +173,7 @@ const addCanonicalMappingPaths = (
   }));
 
 export const findLocalityColumnsInDataSet = (
-  baseTableName: string,
+  baseTableName: keyof Tables,
   splitMappingPaths: RA<SplitMappingPath>
 ): RA<IR<string>> =>
   findLocalityColumns(

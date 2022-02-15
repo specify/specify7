@@ -8,7 +8,7 @@ export default function (): void {
       [
         [
           {
-            baseTableName: 'collectionobject',
+            baseTableName: 'CollectionObject',
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
             showHiddenFields: false,
             generateFieldData: 'all',

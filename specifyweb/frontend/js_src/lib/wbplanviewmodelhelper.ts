@@ -6,7 +6,12 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
+import { getModel } from './schema';
+import type { Relationship } from './specifyfield';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
+import { defined } from './types';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
@@ -15,10 +20,6 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import type { MappingsTree } from './wbplanviewtreehelper';
-import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
-import { getModel } from './schema';
-import { Tables } from './datamodel';
-import { Relationship } from './specifyfield';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (

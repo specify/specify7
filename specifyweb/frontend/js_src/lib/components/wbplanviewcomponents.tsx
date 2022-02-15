@@ -53,14 +53,11 @@ type MappingLineBaseProps = {
 export type MappingElementProps = {
   readonly fieldsData: IR<HtmlGeneratorFieldData>;
 } & (
-  | (Omit<
-      CustomSelectElementPropsOpenBase,
-      'onFocusAutoMapper' | 'autoMapperSuggestions'
-    > & {
+  | (Omit<CustomSelectElementPropsOpenBase, 'autoMapperSuggestions'> & {
       readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
       readonly onAutoMapperSuggestionSelection?: (suggestion: string) => void;
     })
-  | Omit<CustomSelectElementPropsClosed, 'onFocusAutoMapper' | 'fieldNames'>
+  | Omit<CustomSelectElementPropsClosed, 'fieldNames'>
 );
 
 export function ListOfBaseTables({
@@ -201,9 +198,9 @@ export function getMappingLineProps({
     readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
-    readonly parentTableName: string;
-    readonly currentTableName: string;
-    readonly newTableName: string;
+    readonly parentTableName: keyof Tables | undefined;
+    readonly currentTableName: keyof Tables | undefined;
+    readonly newTableName: keyof Tables | undefined;
     readonly isDoubleClick: boolean;
   }) => void;
   readonly onOpen?: (index: number) => void;
@@ -228,7 +225,7 @@ export function getMappingLineProps({
                 ? (payload): void =>
                     handleChange({
                       index,
-                      parentTableName: data.tableName ?? '',
+                      parentTableName: data.tableName,
                       ...payload,
                     })
                 : undefined,
