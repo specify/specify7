@@ -350,9 +350,9 @@ export default UiPlugin.extend(
 
       this.label = this.$el.parents().last().find(`label[for="${this.id}"]`)[0];
       if (!this.label.textContent)
-        this.label.textContent = this.model.specifyModel
-          .getField(this.init.df)
-          .label;
+        this.label.textContent = this.model.specifyModel.getField(
+          this.init.df
+        ).label;
     },
     remove() {
       this.view.remove();

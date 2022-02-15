@@ -1,5 +1,6 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField } from './datamodel';
+import { Tables } from './datamodel';
 import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -14,7 +15,6 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { Tables } from './datamodel';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -30,7 +30,7 @@ function extractDatePart(fieldName: string): {
   return Array.isArray(match)
     ? {
         fieldName: match[1],
-        datePart: match[2].replace('Numeric', '').toLowerCase() as DatePart,
+        datePart: match[2].replace('Numeric', '') as DatePart,
       }
     : {
         fieldName,
@@ -80,12 +80,12 @@ export class QueryFieldSpec {
       isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
         ? formatTreeRank('_any')
         : undefined,
-      field.name.toLowerCase(),
+      field.name,
       field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
     ]);
     if (Array.isArray(this.treeRank)) {
       const [rankName, fieldName] = this.treeRank;
-      path.push(formatTreeRank(rankName), fieldName.toLowerCase());
+      path.push(formatTreeRank(rankName), fieldName);
     }
 
     if (this.joinPath.slice(-1)[0].isRelationship) path.push('_formatted');

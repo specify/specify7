@@ -19,6 +19,7 @@ export const schemaExtras: IR<
       dependent: false,
     });
     catalogerOf.isHidden = true;
+    catalogerOf.overrides.isHidden = true;
     return [[], [catalogerOf]];
   },
   Collection(model) {
@@ -31,6 +32,7 @@ export const schemaExtras: IR<
       dependent: false,
     });
     collectionObjects.isHidden = true;
+    collectionObjects.overrides.isHidden = true;
     return [[], [collectionObjects]];
   },
   CollectionObject(model) {
@@ -44,11 +46,12 @@ export const schemaExtras: IR<
       dependent: false,
     });
     currentDetermination.isHidden = true;
+    currentDetermination.overrides.isHidden = true;
 
     const collection = defined(model.getRelationship('collection'));
     collection.otherSideName = 'collectionObjects';
 
-    const catalognumber = defined(model.getField('catalognumber'));
+    const catalognumber = defined(model.getLiteralField('catalogNumber'));
     catalognumber.getFormat = (): string | undefined =>
       schema.catalogNumFormatName ||
       LiteralField.prototype.getFormat.call(catalognumber);
@@ -65,6 +68,7 @@ export const schemaExtras: IR<
       dependent: false,
     });
     accessions.isHidden = true;
+    accessions.overrides.isHidden = true;
     return [[], [accessions]];
   },
   Accession(model) {
@@ -81,6 +85,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     totalPreps.isHidden = true;
+    totalPreps.overrides.isHidden = true;
 
     const totalItems = new LiteralField(model, {
       name: 'totalItems',
@@ -91,6 +96,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     totalItems.isHidden = true;
+    totalItems.overrides.isHidden = true;
 
     const unresolvedPreps = new LiteralField(model, {
       name: 'unresolvedPreps',
@@ -101,6 +107,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     unresolvedPreps.isHidden = true;
+    unresolvedPreps.overrides.isHidden = true;
 
     const unresolvedItems = new LiteralField(model, {
       name: 'unresolvedItems',
@@ -111,6 +118,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     unresolvedItems.isHidden = true;
+    unresolvedItems.overrides.isHidden = true;
 
     const resolvedPreps = new LiteralField(model, {
       name: 'resolvedPreps',
@@ -121,6 +129,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     resolvedPreps.isHidden = true;
+    resolvedPreps.overrides.isHidden = true;
 
     const resolvedItems = new LiteralField(model, {
       name: 'resolvedItems',
@@ -131,6 +140,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     resolvedItems.isHidden = true;
+    resolvedItems.overrides.isHidden = true;
 
     return [
       [
@@ -154,6 +164,7 @@ export const schemaExtras: IR<
       dependent: false,
     });
     preparations.isHidden = true;
+    preparations.overrides.isHidden = true;
     return [[], [preparations]];
   },
   Preparation(model) {
@@ -166,6 +177,7 @@ export const schemaExtras: IR<
       unique: false,
     });
     isOnLoan.isHidden = true;
+    isOnLoan.overrides.isHidden = true;
 
     const preptype = defined(model.getRelationship('preptype'));
     preptype.otherSideName = 'preparations';
@@ -181,6 +193,7 @@ export const schemaExtras: IR<
       relatedModelName: 'Determination',
       dependent: false,
     });
+    preferredTaxonOf.isHidden = true;
     preferredTaxonOf.isHidden = true;
 
     return [[], [preferredTaxonOf]];

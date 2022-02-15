@@ -471,14 +471,7 @@ export class AutoMapper {
           Object.values(comparisons[comparisonKey as keyof Options]!).some(
             (comparisonValue) =>
               comparisonFunction?.(lowercaseHeaderName, comparisonValue) &&
-              this.makeMapping(
-                path,
-                getNewPathPart().map((pathPart) =>
-                  valueIsTreeRank(pathPart) ? pathPart : pathPart.toLowerCase()
-                ),
-                headerKey,
-                tableName
-              )
+              this.makeMapping(path, getNewPathPart(), headerKey, tableName)
           )
         )
     );

@@ -5,13 +5,14 @@
  */
 
 import { error } from './assert';
-import type { AnySchema } from './datamodelutils';
+import type { AnySchema, AnyTree } from './datamodelutils';
 import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
-import { type TableDefinition, SpecifyModel } from './specifymodel';
+import { SpecifyModel, type TableDefinition } from './specifymodel';
 import type { IR, RA } from './types';
+import { isTreeModel } from './treedefinitions';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -87,7 +88,10 @@ export const fetchContext = Promise.all([
 
 export const schema = schemaBase;
 
-// Returns a schema model object describing the named Specify model.
+/**
+ * Returns a schema model object describing the named Specify model
+ * Can wrap this function call in defined() to cast result to SpecifyModel
+ */
 export function getModel(name: string): SpecifyModel | undefined {
   const lowerCase = name.toLowerCase();
   return Object.values(schema.models as unknown as IR<SpecifyModel>).find(
@@ -95,9 +99,16 @@ export function getModel(name: string): SpecifyModel | undefined {
   );
 }
 
-/*
+export function getTreeModel(name: string): SpecifyModel<AnyTree> | undefined {
+  const model = getModel(name);
+  if (typeof model === 'object' && !isTreeModel(model.name))
+    throw new Error('Not a tree model');
+  return model as unknown as SpecifyModel<AnyTree> | undefined;
+}
+
+/**
  * Looks up a schema model object describing Specify model using the Specify
- * tableId integer.
+ * tableId integer
  */
 export const getModelById = <SCHEMA extends AnySchema>(
   tableId: number

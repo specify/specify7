@@ -11,6 +11,7 @@ import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
 import type { RA } from '../../types';
+import { userInformation } from '../../userinfo';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, Link } from '../basic';
 import type { SortConfig } from '../common';
@@ -24,7 +25,6 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
-import { userInformation } from '../../userinfo';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -161,9 +161,7 @@ function MetadataDialog({
     else handleChange();
   }, [showMeta, handleChange]);
 
-  const canImport =
-    !showTemplates &&
-    !(userInformation as unknown as { isReadOnly: boolean }).isReadOnly;
+  const canImport = !showTemplates && !userInformation.isReadOnly;
 
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',

@@ -108,9 +108,7 @@ class AuditRecordFormatter {
     if (typeof auditingModel === 'undefined') return value;
 
     if (
-      ['tableNum', 'parentTableNum', 'fieldName'].includes(
-        field.name.toLowerCase()
-      ) &&
+      ['tableNum', 'parentTableNum', 'fieldName'].includes(field.name) &&
       !field.isRelationship
     ) {
       return AuditRecordFormatter.localize(field, value, auditingModel);
@@ -159,9 +157,9 @@ class AuditRecordFormatter {
     value: string,
     model: SpecifyModel
   ): string {
-    return ['tableNum', 'parentTableNum'].includes(field.name.toLowerCase())
+    return ['tableNum', 'parentTableNum'].includes(field.name)
       ? model.label
-      : model.getField(value.toLowerCase())?.label ?? value;
+      : model.getField(value)?.label ?? value;
   }
 
   /**

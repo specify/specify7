@@ -6,7 +6,7 @@ import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
-import { getModel, schema } from './schema';
+import { getTreeModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
@@ -137,16 +137,14 @@ export async function queryFromTree(
   tableName: AnyTree['tableName'],
   nodeId: number
 ): Promise<SpecifyResource<SpQuery>> {
-  const tree = defined(getModel(tableName)) as unknown as SpecifyModel<AnyTree>;
+  const tree = defined(getTreeModel(tableName));
   const node = new tree.Resource({ id: nodeId });
   await node.fetchIfNotPopulated();
   const treeDefinitionItem = await node.rgetPromise('definitionItem', true);
 
   const model = schema.models.CollectionObject;
   const query = createQuery(
-    `${model.label} in ${
-      node.get('fullName') ?? node.get('name')
-    }`,
+    `${model.label} in ${node.get('fullName') ?? node.get('name')}`,
     model as unknown as SpecifyModel
   );
 

@@ -139,16 +139,14 @@ export function navigator({
 export function getTableFromMappingPath(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
-): string {
+): keyof Tables {
   if (mappingPath.length === 0) return baseTableName;
   const field = defined(
     defined(getModel(baseTableName)).getField(
       getGenericMappingPath(mappingPath).join('.')
     )
   );
-  return (
-    field.isRelationship ? field.relatedModel : field.model
-  ).name.toLowerCase();
+  return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
 export type MappingLineData = Pick<
@@ -326,8 +324,12 @@ export function getMappingLineData({
                     relationshipIsToMany(field) &&
                     relationshipIsToMany(parentRelationship)
                   ))) &&
-              isFieldVisible(showHiddenFields, field.isHidden, field.name) &&
-              (scope === 'queryBuilder' || !field.isReadOnly)
+              isFieldVisible(
+                showHiddenFields,
+                field.overrides.isHidden,
+                field.name
+              ) &&
+              (scope === 'queryBuilder' || !field.overrides.isReadOnly)
                 ? [
                     field.name,
                     {
@@ -339,8 +341,9 @@ export function getMappingLineData({
                         // Or is a relationship,
                         field.isRelationship,
                       isRequired:
-                        field.isRequired && !mustMatchPreferences[model.name],
-                      isHidden: field.isHidden,
+                        field.overrides.isRequired &&
+                        !mustMatchPreferences[model.name],
+                      isHidden: field.overrides.isHidden,
                       isDefault: field.name === internalState.defaultValue,
                       isRelationship: field.isRelationship,
                       tableName: field.isRelationship

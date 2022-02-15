@@ -1,11 +1,9 @@
 import React from 'react';
 
 import { ping } from '../../ajax';
-import type { AnyTree } from '../../datamodelutils';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
-import { getModel } from '../../schema';
-import type { SpecifyModel } from '../../specifymodel';
+import { getTreeModel } from '../../schema';
 import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
@@ -31,10 +29,7 @@ export function TreeSelectDialog({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const trees = Object.fromEntries(
-    disciplineTrees.map((tree) => [
-      tree,
-      defined(getModel(tree)) as unknown as SpecifyModel<AnyTree>,
-    ])
+    disciplineTrees.map((tree) => [tree, defined(getTreeModel(tree))])
   );
 
   return isLoading ? (

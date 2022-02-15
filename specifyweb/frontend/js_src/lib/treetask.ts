@@ -1,18 +1,15 @@
-import type { AnyTree } from './datamodelutils';
 import { NotFoundView } from './notfoundview';
 import { router } from './router';
-import { schema } from './schema';
+import { getModel } from './schema';
 import { setCurrentView } from './specifyapp';
-import { treeDefinitions } from './treedefinitions';
+import { isTreeModel, treeDefinitions } from './treedefinitions';
 import { caseInsensitiveHash } from './wbplanviewhelper';
 
 export default function Routes(): void {
   router.route('tree/:table/', 'tree', async (table: string) =>
     import('./components/treeview').then(({ default: TreeView }) => {
-      const tableName = Object.keys(schema.models).find(
-        (tableName) => tableName.toLowerCase() === table
-      ) as AnyTree['tableName'] | undefined;
-      if (typeof tableName === 'undefined') {
+      const tableName = getModel(table)?.name;
+      if (typeof tableName === 'undefined' || !isTreeModel(tableName)) {
         setCurrentView(new NotFoundView());
         return;
       }

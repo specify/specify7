@@ -19,6 +19,7 @@ import type {
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import {
   getNameFromTreeRankName,
+  relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
@@ -128,11 +129,8 @@ function handleRelationship(
   },
   mustMatchPreferences: IR<boolean>
 ): void {
-  const isToOne =
-    relationship.type === 'one-to-one' || relationship.type === 'many-to-one';
-
   if (
-    isToOne &&
+    !relationshipIsToMany(relationship) &&
     typeof tablePlan.toOne[relationship.name.toLowerCase()] === 'undefined'
   )
     tablePlan.toOne[relationship.name.toLowerCase()] =

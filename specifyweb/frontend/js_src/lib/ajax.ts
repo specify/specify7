@@ -40,17 +40,22 @@ export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
  *
  * @remarks
  * Automatically adds CSRF token to non GET requests
- * Validates response as JSON if JSON is expected in the response
- * Casts response to the correct typescript type
- * Logs error messages to the console
- * If object is passed to body, it is stringified and proper HTTP header is set
+ * Casts response to correct typescript type
  */
-export async function ajax<RESPONSE_TYPE = string>(
+export const ajax = async <RESPONSE_TYPE = string>(
   url: string,
   {
+    /*
+     * Validates and parses response as JSON if 'Accept' header is 'application/json'
+     * Validates and parses response as XML if 'Accept' header is 'application/xml'
+     */
     headers: { Accept: accept, ...headers },
     ...options
   }: Omit<RequestInit, 'body' | 'headers'> & {
+    /*
+     * If object is passed to body, it is stringified and proper HTTP header is set
+     * Can wrap request body object in formData() to encode body as form data
+     */
     body?: string | RA<unknown> | IR<unknown> | FormData;
     headers: IR<string> & { Accept?: MimeType };
   },
@@ -63,12 +68,15 @@ export async function ajax<RESPONSE_TYPE = string>(
      * If you want to manually handle some error, add that error code here
      */
     readonly expectedResponseCodes?: RA<number>;
-    // If strict, spawn a modal error message dialog on crash
+    /*
+     * If strict, spawn a modal error message dialog on crash
+     * In either case, error messages are logged to the console
+     */
     readonly strict?: boolean;
   } = {}
 ): Promise<{
   /*
-   * Parsed response (parser is selected based the value of options.headers.Accept:
+   * Parsed response (parser is selected based on the value of options.headers.Accept:
    *   - application/json - json
    *   - application/xml - xml
    *   - else - string
@@ -76,8 +84,8 @@ export async function ajax<RESPONSE_TYPE = string>(
   readonly data: RESPONSE_TYPE;
   // One of expectedResponseCodes
   readonly status: number;
-}> {
-  return fetch(url, {
+}> =>
+  fetch(url, {
     ...options,
     body:
       typeof options.body === 'object' && !(options.body instanceof FormData)
@@ -141,7 +149,6 @@ export async function ajax<RESPONSE_TYPE = string>(
         : undefined;
       throw error;
     });
-}
 
 /**
  * A wrapper for "ajax" for when response data is not needed

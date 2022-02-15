@@ -2,12 +2,16 @@ import { error } from './assert';
 import { fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import formsText from './localization/forms';
-import type { JavaType, RelationshipType } from './specifyfield';
-import { LiteralField, Relationship } from './specifyfield';
+import type {
+  JavaType,
+  LiteralField,
+  Relationship,
+  RelationshipType,
+} from './specifyfield';
 import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
+import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
-import { UiFormatter } from './uiformatters';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -253,7 +257,8 @@ export const getValidationAttributes = (parser: Parser): IR<string> =>
   typeof parser === 'object'
     ? {
         ...(parser.required === true
-          ? { required: true as unknown as string }
+          ? // A hack to make these attributes work both for JSX and native
+            { required: true as unknown as string }
           : {}),
         ...(typeof parser.pattern === 'object'
           ? {

@@ -123,7 +123,7 @@ export function QueryLine({
 
       fieldType =
         tableName === 'CollectionObject' &&
-        field.mappingPath.slice(-1)[0] === 'catalogNumber'.toLowerCase()
+        dataModelField.name === 'catalogNumber'
           ? 'id'
           : parser.type ?? 'text';
       if (queryFieldFilters[filter].types?.includes(fieldType) === false)

@@ -30,7 +30,7 @@ export function PickListComboBox(
   }
 ): JSX.Element {
   const getValue = React.useCallback(() => {
-    const value = props.resource.get(props.field.name) as unknown;
+    const value = props.resource.get(props.field.name);
     return typeof value === 'object'
       ? (value as SpecifyResource<AnySchema>)?.url() ?? null
       : (value as string | number)?.toString() ?? null;

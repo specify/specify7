@@ -55,8 +55,10 @@ const allTrees = [...commonTrees, ...treesForPaleo] as const;
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 export let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 
-export const isTreeModel = (tableName: keyof Tables): boolean =>
-  allTrees.includes(tableName.toLowerCase() as typeof allTrees[number]);
+export const isTreeModel = (
+  tableName: keyof Tables
+): tableName is AnyTree['tableName'] =>
+  allTrees.includes(tableName as typeof allTrees[number]);
 
 export const fetchContext = Promise.all([fetchSchema, fetchDomain])
   .then(() => getDomainResource('discipline')?.fetch())

@@ -28,13 +28,13 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 }
 
 export const initialContext = Promise.all([
+  import('./schemabase'),
+  import('./schema'),
+  import('./remoteprefs'),
   import('./attachments'),
   import('./icons'),
   import('./querycbx'),
   import('./querycbxsearch'),
-  import('./remoteprefs'),
-  import('./schema'),
-  import('./schemabase'),
   import('./stringlocalization'),
   import('./systeminfo'),
   import('./uiformatters'),

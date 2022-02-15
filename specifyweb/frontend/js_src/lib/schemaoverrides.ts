@@ -9,7 +9,6 @@
 
 import type { Tables } from './datamodel';
 import type { TableFields } from './datamodelutils';
-import { schema } from './schema';
 import type { IR, RR } from './types';
 
 export type TableConfigOverwrite =
@@ -41,12 +40,6 @@ export type FieldConfigOverwrite =
   | 'hidden';
 
 const tableOverwrites: RR<keyof Tables, TableConfigOverwrite> = {
-  // Remove hierarchy tables
-  ...Object.fromEntries(
-    schema.orgHierarchy
-      .filter((tableName) => tableName !== 'CollectionObject')
-      .map((tableName) => [tableName, 'system'])
-  ),
   Accession: 'commonBaseTable',
   Agent: 'commonBaseTable',
   Borrow: 'commonBaseTable',
@@ -71,6 +64,10 @@ const tableOverwrites: RR<keyof Tables, TableConfigOverwrite> = {
   CollectingEventAttr: 'system',
   CollectionObjectAttr: 'system',
   LatLonPolygonPnt: 'system',
+  Collection: 'system',
+  Discipline: 'system',
+  Division: 'system',
+  Institution: 'system',
 };
 
 /*
@@ -86,11 +83,8 @@ const endsWithTableOverwrites: IR<TableConfigOverwrite> = {
   Property: 'hidden',
 };
 
-/*
- * All required fields are unhidden, unless they are overwritten to "hidden".
- * ReadOnly relationships are removed.
- */
-const fieldOverwrites: {
+// These field overrides apply to entire front-end
+const globalFieldOverrides: {
   readonly [TABLE_NAME in keyof Tables]?: {
     readonly [FIELD_NAME in TableFields<
       Tables[TABLE_NAME]
@@ -99,45 +93,6 @@ const fieldOverwrites: {
 } & {
   readonly common: IR<FieldConfigOverwrite>;
 } = {
-  // Common overwrites apply to fields in all tables
-  common: {
-    timestampCreated: 'hidden',
-    timestampModified: 'hidden',
-    createdByAgent: 'hidden',
-    modifiedByAgent: 'hidden',
-    collectionMemberId: 'hidden',
-    rankId: 'hidden',
-    definition: 'hidden',
-    definitionItem: 'hidden',
-    orderNumber: 'hidden',
-    isPrimary: 'hidden',
-    isHybrid: 'hidden',
-    isAccepted: 'hidden',
-    fullName: 'readOnly',
-  },
-  Agent: {
-    agentType: 'optional',
-  },
-  LoanPreparation: {
-    isResolved: 'optional',
-  },
-  Locality: {
-    srcLatLongUnit: 'optional',
-  },
-  PrepType: {
-    isLoanable: 'readOnly',
-  },
-  Determination: {
-    preferredTaxon: 'readOnly',
-    isCurrent: 'hidden',
-  },
-  Taxon: {
-    isAccepted: 'readOnly',
-  },
-};
-
-// These field overrides apply to entire front-end
-const globalFieldOverrides: typeof fieldOverwrites = {
   common: {
     timestampCreated: 'readOnly',
   },
@@ -174,6 +129,50 @@ const globalFieldOverrides: typeof fieldOverwrites = {
     isAccepted: 'readOnly',
     acceptedStorage: 'readOnly',
     fullName: 'readOnly',
+  },
+};
+
+/*
+ * All required fields are unhidden, unless they are overwritten to "hidden".
+ * ReadOnly relationships are removed.
+ *
+ * These apply to Query Builder, Workbench, Leaflet and Specify Network
+ */
+const fieldOverwrites: typeof globalFieldOverrides = {
+  // Common overwrites apply to fields in all tables
+  common: {
+    timestampCreated: 'hidden',
+    timestampModified: 'hidden',
+    createdByAgent: 'hidden',
+    modifiedByAgent: 'hidden',
+    collectionMemberId: 'hidden',
+    rankId: 'hidden',
+    definition: 'hidden',
+    definitionItem: 'hidden',
+    orderNumber: 'hidden',
+    isPrimary: 'hidden',
+    isHybrid: 'hidden',
+    isAccepted: 'hidden',
+    fullName: 'readOnly',
+  },
+  Agent: {
+    agentType: 'optional',
+  },
+  LoanPreparation: {
+    isResolved: 'optional',
+  },
+  Locality: {
+    srcLatLongUnit: 'optional',
+  },
+  PrepType: {
+    isLoanable: 'readOnly',
+  },
+  Determination: {
+    preferredTaxon: 'readOnly',
+    isCurrent: 'hidden',
+  },
+  Taxon: {
+    isAccepted: 'readOnly',
   },
 };
 

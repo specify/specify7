@@ -76,7 +76,6 @@ abstract class FieldBase {
   public readonly isRequired: boolean;
 
   public overrides: {
-    readonly type: JavaType | RelationshipType;
     readonly isRequired: boolean;
     // If relatedModel isHidden, this is set to true
     isHidden: boolean;
@@ -148,7 +147,6 @@ abstract class FieldBase {
     this.overrides = {
       isHidden,
       isRequired,
-      type: this.type === 'zero-to-one' ? 'one-to-many' : this.type,
       isReadOnly:
         this.isReadOnly ||
         fieldOverwrite === 'readOnly' ||
@@ -216,18 +214,10 @@ abstract class FieldBase {
 
 /** Non-relationship field */
 export class LiteralField extends FieldBase {
-  public declare overrides: FieldBase['overrides'] & {
-    readonly type: JavaType;
-  };
-
   public isRelationship: false = false;
 }
 
 export class Relationship extends FieldBase {
-  public declare overrides: FieldBase['overrides'] & {
-    readonly type: Exclude<RelationshipType, 'zero-to-one'>;
-  };
-
   public otherSideName?: string;
 
   public readonly relatedModel: SpecifyModel;
