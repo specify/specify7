@@ -64,7 +64,6 @@ export type AutoMapperScope =
 
 // All mapping path parts are expected to be in lower case
 export type MappingPath = RA<string>;
-// TODO: phase out usages of FullMappingPath
 export type FullMappingPath = Readonly<[...MappingPath, string, ColumnOptions]>;
 
 export type SelectElementPosition = {
@@ -249,7 +248,7 @@ export function WbPlanViewMapper(props: {
   const validate = (): RA<MappingPath> =>
     findRequiredMissingFields(
       props.baseTableName,
-      getMappingsTree(state.lines, true),
+      getMappingsTree(state.lines),
       state.mustMatchPreferences
     );
 

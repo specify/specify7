@@ -10,9 +10,9 @@ import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
-import { SpecifyModel, type TableDefinition } from './specifymodel';
-import type { IR, RA } from './types';
+import { type TableDefinition, SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
+import type { IR, RA } from './types';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -54,36 +54,35 @@ export const fetchContext = Promise.all([
   ),
 ] as const).then(([tables, data]) => {
   localization = data;
-  // @ts-expect-error Assigning to read-only value
-  schemaBase.models = Object.fromEntries(
-    tables
-      .map((tableDefinition) => {
-        const model = new SpecifyModel(tableDefinition);
-        return [tableDefinition, model] as const;
-      })
-      .map(([tableDefinition, model]) => {
-        const [frontEndFields, frontEndRelationships] = schemaExtras[
-          model.name
-        ]?.(model) ?? [[], []];
+  tables
+    .map((tableDefinition) => {
+      const model = new SpecifyModel(tableDefinition);
+      // @ts-expect-error Assigning to readOnly props
+      schemaBase.models[model.name] = model;
+      return [tableDefinition, model] as const;
+    })
+    .forEach(([tableDefinition, model]) => {
+      const [frontEndFields, frontEndRelationships, callback] = schemaExtras[
+        model.name
+      ]?.(model) ?? [[], []];
 
-        model.literalFields = processFields(
-          tableDefinition.fields.map(
-            (fieldDefinition) => new LiteralField(model, fieldDefinition)
-          ),
-          frontEndFields
-        );
-        model.relationships = processFields(
-          tableDefinition.relationships.map(
-            (relationshipDefinition) =>
-              new Relationship(model, relationshipDefinition)
-          ),
-          frontEndRelationships
-        );
-        model.fields = [...model.literalFields, ...model.relationships];
+      model.literalFields = processFields(
+        tableDefinition.fields.map(
+          (fieldDefinition) => new LiteralField(model, fieldDefinition)
+        ),
+        frontEndFields
+      );
+      model.relationships = processFields(
+        tableDefinition.relationships.map(
+          (relationshipDefinition) =>
+            new Relationship(model, relationshipDefinition)
+        ),
+        frontEndRelationships
+      );
+      model.fields = [...model.literalFields, ...model.relationships];
 
-        return [model.name, model] as const;
-      })
-  );
+      callback?.();
+    });
 });
 
 export const schema = schemaBase;

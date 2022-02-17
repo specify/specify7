@@ -6,15 +6,20 @@
 import type jQuery from 'jquery';
 import React from 'react';
 import Draggable from 'react-draggable';
-import type { Props } from 'react-modal';
+import type {Props} from 'react-modal';
 import Modal from 'react-modal';
 
-import { error } from '../assert';
 import commonText from '../localization/common';
-import type { RA } from '../types';
-import type { RawTagProps } from './basic';
-import { Button, className, Submit, transitionDuration } from './basic';
-import { useId } from './hooks';
+import type {RA} from '../types';
+import {
+  Button,
+  className,
+  DialogContext,
+  RawTagProps,
+  Submit,
+  transitionDuration
+} from './basic';
+import {useId} from './hooks';
 import createBackboneView from './reactbackboneextend';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
@@ -66,11 +71,6 @@ const topIndex = 10_000;
 const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
-
-export const DialogContext = React.createContext<(() => void) | undefined>(() =>
-  error('DialogContext can only be used by <Dialog> buttons')
-);
-DialogContext.displayName = 'DialogContext';
 
 // TODO: disable outside click detection while resizing the dialog
 export function Dialog({

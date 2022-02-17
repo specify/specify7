@@ -7,7 +7,13 @@ import { defined } from './types';
 export const schemaExtras: IR<
   (
     model: SpecifyModel
-  ) => Readonly<[fields: RA<LiteralField>, relationships: RA<Relationship>]>
+  ) => Readonly<
+    [
+      fields: RA<LiteralField>,
+      relationships: RA<Relationship>,
+      callback?: () => void
+    ]
+  >
 > = {
   Agent(model) {
     const catalogerOf = new Relationship(model, {
@@ -48,15 +54,19 @@ export const schemaExtras: IR<
     currentDetermination.isHidden = true;
     currentDetermination.overrides.isHidden = true;
 
-    const collection = defined(model.getRelationship('collection'));
-    collection.otherSideName = 'collectionObjects';
+    return [
+      [],
+      [currentDetermination],
+      () => {
+        const collection = defined(model.getRelationship('collection'));
+        collection.otherSideName = 'collectionObjects';
 
-    const catalognumber = defined(model.getLiteralField('catalogNumber'));
-    catalognumber.getFormat = (): string | undefined =>
-      schema.catalogNumFormatName ||
-      LiteralField.prototype.getFormat.call(catalognumber);
-
-    return [[], [currentDetermination]];
+        const catalognumber = defined(model.getLiteralField('catalogNumber'));
+        catalognumber.getFormat = (): string | undefined =>
+          schema.catalogNumFormatName ||
+          LiteralField.prototype.getFormat.call(catalognumber);
+      },
+    ];
   },
   Division(model) {
     const accessions = new Relationship(model, {
@@ -71,10 +81,13 @@ export const schemaExtras: IR<
     accessions.overrides.isHidden = true;
     return [[], [accessions]];
   },
-  Accession(model) {
-    defined(model.getRelationship('division')).otherSideName = 'accessions';
-    return [[], []];
-  },
+  Accession: (model) => [
+    [],
+    [],
+    () => {
+      defined(model.getRelationship('division')).otherSideName = 'accessions';
+    },
+  ],
   Loan(model) {
     const totalPreps = new LiteralField(model, {
       name: 'totalPreps',
@@ -179,10 +192,14 @@ export const schemaExtras: IR<
     isOnLoan.isHidden = true;
     isOnLoan.overrides.isHidden = true;
 
-    const preptype = defined(model.getRelationship('preptype'));
-    preptype.otherSideName = 'preparations';
-
-    return [[isOnLoan], []];
+    return [
+      [isOnLoan],
+      [],
+      () => {
+        const preptype = defined(model.getRelationship('preptype'));
+        preptype.otherSideName = 'preparations';
+      },
+    ];
   },
   Taxon(model) {
     const preferredTaxonOf = new Relationship(model, {

@@ -5000,6 +5000,7 @@ export type SpPrincipal = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
+    // This is a -to-one relationship with collection, discipline or division
     readonly scope: number | null;
   };
   readonly toOneDependent: RR<never, never>;

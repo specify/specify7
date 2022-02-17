@@ -1,6 +1,6 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField } from './datamodel';
-import { Tables } from './datamodel';
+import type { Tables } from './datamodel';
 import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -126,8 +126,7 @@ export class QueryFieldSpec {
     let fieldName = Array.isArray(this.treeRank)
       ? this.treeRank[0] === '_any'
         ? this.treeRank[1]
-        : // TODO: this won't be needed if back-end string id parser is updated
-        this.treeRank[1] === 'name'
+        : this.treeRank[1] === 'name'
         ? this.treeRank[0]
         : this.treeRank.join(' ')
       : this.joinPath.length > 0

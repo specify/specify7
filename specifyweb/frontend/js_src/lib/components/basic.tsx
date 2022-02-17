@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { error } from '../assert';
 import commonText from '../localization/common';
 import type { IR, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
 import { icons } from './icons';
-import { DialogContext } from './modaldialog';
 
 export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
@@ -233,6 +233,11 @@ export const Link = {
     children: icons[props.icon],
   })),
 } as const;
+
+export const DialogContext = React.createContext<(() => void) | undefined>(() =>
+  error('DialogContext can only be used by <Dialog> buttons')
+);
+DialogContext.displayName = 'DialogContext';
 
 function DialogCloseButton({
   component: ButtonComponent = Button.Transparent,

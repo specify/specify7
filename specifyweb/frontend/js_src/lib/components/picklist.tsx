@@ -13,12 +13,9 @@ import { Button, Input } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from './combobox';
 import { crash } from './errorboundary';
-import {
-  useSaveBlockers,
-  useValidation,
-  useValidationAttributes,
-} from './hooks';
+import { useValidation } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { useSaveBlockers, useValidationAttributes } from './resource';
 
 export function PickListComboBox(
   props: Omit<DefaultComboBoxProps, 'readOnly'> & {

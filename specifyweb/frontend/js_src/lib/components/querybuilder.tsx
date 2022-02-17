@@ -21,7 +21,7 @@ import {
   Submit,
 } from './basic';
 import { TableIcon } from './common';
-import { useResource, useUnloadProtect } from './hooks';
+import { useUnloadProtect } from './hooks';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
@@ -29,15 +29,18 @@ import {
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
 import { QueryResultsWrapper } from './queryresultstable';
+import { useResource } from './resource';
 import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
-// TODO: test using sp7 queries in sp6 and vice versa
-// TODO: autorun query if opened without definition visible
-// TODO: update getMappingPathPreview to handle _any and _formatted
-// TODO: integrate sorting with column headers
-// TODO: handle trying to query with imcomplete fields
+/*
+ * TODO: test using sp7 queries in sp6 and vice versa
+ * TODO: autorun query if opened without definition visible
+ * TODO: update getMappingPathPreview to handle _any and _formatted
+ * TODO: integrate sorting with column headers
+ * TODO: handle trying to query with imcomplete fields
+ */
 export function QueryBuilder({
   query: queryResource,
   readOnly,

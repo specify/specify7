@@ -287,7 +287,7 @@ function QueryResult({
           (value ?? '').toString().length > 0 &&
           auditRecordFormatter.active &&
           typeof resource === 'object'
-            ? (): Promise<string> =>
+            ? async (): Promise<string> =>
                 auditRecordFormatter.format(
                   defined(fieldSpecs[index].getField()),
                   result,
@@ -319,9 +319,10 @@ function QueryResult({
   );
 }
 
-// TODO: consider merging this
-// TODO: add picklist support
-// TODO: revert b1c8ab7b
+/*
+ * TODO: add picklist support
+ * TODO: revert b1c8ab7b
+ */
 export function QueryResults({
   model,
   fieldSpecs,

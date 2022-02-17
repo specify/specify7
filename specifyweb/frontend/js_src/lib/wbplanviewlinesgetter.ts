@@ -9,11 +9,11 @@
 import type { AutoMapperResults } from './automapper';
 import { AutoMapper } from './automapper';
 import type { MappingLine } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
 import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
 import { mappingsTreeToSplitMappingPaths } from './wbplanviewtreehelper';
-import { Tables } from './datamodel';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',

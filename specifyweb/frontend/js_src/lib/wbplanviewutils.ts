@@ -14,6 +14,7 @@ import type {
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
 import { getModel, schema } from './schema';
@@ -31,7 +32,6 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 import type { MappingsTree } from './wbplanviewtreehelper';
 import { mappingPathsToMappingsTree } from './wbplanviewtreehelper';
-import { Tables } from './datamodel';
 
 export async function savePlan({
   dataset,
@@ -61,7 +61,7 @@ export async function savePlan({
 
   const uploadPlan = mappingsTreeToUploadPlan(
     baseTableName,
-    getMappingsTree(renamedMappedLines, true),
+    getMappingsTree(renamedMappedLines),
     getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
   );
 
@@ -191,36 +191,18 @@ export function getMustMatchTables({
   };
 }
 
-export function getMappingPaths(
-  lines: RA<MappingLine>,
-  includeHeaders: true
-): RA<FullMappingPath>;
-export function getMappingPaths(
-  lines: RA<MappingLine>,
-  includeHeaders?: false
-): RA<MappingPath>;
-export function getMappingPaths(
-  lines: RA<MappingLine>,
-  includeHeaders = false
-): RA<MappingPath | FullMappingPath> {
+function getMappingPaths(lines: RA<MappingLine>): RA<FullMappingPath> {
   return lines
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-    .map(({ mappingPath, headerName, columnOptions }) =>
-      includeHeaders ? [...mappingPath, headerName, columnOptions] : mappingPath
-    );
+    .map(({ mappingPath, headerName, columnOptions }) => [
+      ...mappingPath,
+      headerName,
+      columnOptions,
+    ]);
 }
 
-export const getMappingsTree = (
-  lines: RA<MappingLine>,
-  includeHeaders = false
-): MappingsTree =>
-  mappingPathsToMappingsTree(
-    // Overloading does not seem to work nicely with dynamic types
-    includeHeaders
-      ? getMappingPaths(lines, true)
-      : getMappingPaths(lines, false),
-    includeHeaders
-  );
+export const getMappingsTree = (lines: RA<MappingLine>): MappingsTree =>
+  mappingPathsToMappingsTree(getMappingPaths(lines), true);
 
 export const getMappedFields = (
   lines: RA<MappingLine>,

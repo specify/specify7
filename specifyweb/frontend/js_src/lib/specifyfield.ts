@@ -54,7 +54,7 @@ export type RelationshipDefinition = {
   readonly dependent: boolean;
   readonly name: string;
   readonly otherSideName?: string;
-  readonly relatedModelName: keyof Tables;
+  readonly relatedModelName: keyof Tables | 'UserGroupScope';
   readonly required: boolean;
   readonly type: RelationshipType;
   readonly readOnly?: boolean;
@@ -155,7 +155,7 @@ abstract class FieldBase {
   }
 
   /*
-   * TODO: make sure this is is displayed on forms in mouseovers
+   * TODO: make sure this is displayed on forms in mouseovers
    * Returns the description of the field from the schema config.
    */
   public getLocalizedDesc(): string | undefined {
@@ -241,9 +241,13 @@ export class Relationship extends FieldBase {
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
     this.dependent = relationshipDefinition.dependent;
-    this.relatedModel = defined(
-      getModel(relationshipDefinition.relatedModelName)
-    );
+    const relatedModelName =
+      model.name === 'SpPrincipal' &&
+      relationshipDefinition.name === 'scope' &&
+      relationshipDefinition.relatedModelName === 'UserGroupScope'
+        ? 'Division'
+        : relationshipDefinition.relatedModelName;
+    this.relatedModel = defined(getModel(relatedModelName));
 
     this.overrides.isHidden ||= this.relatedModel.overrides.isHidden;
     this.overrides.isReadOnly ||= this.relatedModel.overrides.isSystem;

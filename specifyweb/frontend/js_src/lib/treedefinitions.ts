@@ -2,7 +2,7 @@ import type { Tables } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
-import { fetchContext as fetchSchema, getModel, schema } from './schema';
+import { getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
 import type { RA } from './types';
 import { defined } from './types';
@@ -31,7 +31,7 @@ export let treeDefinitions: {
 } = undefined!;
 
 // TODO: setup mock calls for testing
-export const setupForTests = () =>
+export const setupForTests = async () =>
   import('./tests/fixtures/treedefinitions.json').then((ranks) => {
     Object.entries(ranks).forEach(([treeName, treeRanks]) => {
       // @ts-expect-error
@@ -60,7 +60,10 @@ export const isTreeModel = (
 ): tableName is AnyTree['tableName'] =>
   allTrees.includes(tableName as typeof allTrees[number]);
 
-export const fetchContext = Promise.all([fetchSchema, fetchDomain])
+export const fetchContext = Promise.all([
+  import('./schema').then(async ({ fetchContext }) => fetchContext),
+  fetchDomain,
+])
   .then(() => getDomainResource('discipline')?.fetch())
   .then((discipline) => {
     if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
