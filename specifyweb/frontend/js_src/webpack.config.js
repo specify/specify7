@@ -177,9 +177,7 @@ module.exports = (_env, argv)=>({
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: "/static/js/",
-        filename: argv.mode === 'development'
-            ? "[name].bundle.js"
-            : "[name].[contenthash].bundle.js",
+        filename: "[name].[contenthash].bundle.js",
         environment: {
             arrowFunction: true,
             const: true,
