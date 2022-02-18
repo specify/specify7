@@ -20,6 +20,7 @@ import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
 import { getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
+import { filterArray } from './types';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -166,26 +167,24 @@ export const parseLocalityPinFields = (
 
   const treeRanks = findRanksInMappings(mappingPaths);
 
-  const filteredMappingPaths = mappingPaths.reduce<MappingPath[]>(
-    (mappingPaths, mappingPath, index) => {
+  const filteredMappingPaths = filterArray(
+    mappingPaths.map((mappingPath, index) => {
       const { groupName, treeRankLocation } = treeRanks[index];
       if (treeRankLocation === -1) {
-        mappingPaths.push(mappingPath);
+        return mappingPath;
       } else if (
         mappingPaths.every(
           (existingGroupName) =>
             !mappingPathToString(existingGroupName).startsWith(groupName)
         )
       )
-        mappingPaths.push([
+        return [
           ...splitJoinedMappingPath(groupName),
           mappingPath[treeRankLocation],
           'fullname',
-        ]);
-
-      return mappingPaths;
-    },
-    []
+        ];
+      else return undefined;
+    })
   );
 
   parsedLocalityPinFields[Number(quickFetch)] = filteredMappingPaths;

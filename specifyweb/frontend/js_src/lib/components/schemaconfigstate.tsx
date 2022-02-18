@@ -13,6 +13,7 @@ import {
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
+import { split } from '../wbplanviewhelper';
 import {
   Button,
   Checkbox,
@@ -239,18 +240,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     },
   }) {
     const sortedItems = sortObjectsByKey(Object.values(items), 'name');
-    const fields = sortedItems.filter((item) => !item.dataModel.isRelationship);
-    const relationships = sortedItems.filter(
-      (item) => item.dataModel.isRelationship
+    const [fields, relationships] = split(
+      sortedItems,
+      (items) => items.dataModel.isRelationship
     );
-    const systemPickLists = Object.values(table.dataModel.pickLists)
-      .filter(({ isSystem }) => isSystem)
-      .map(({ name }) => name)
-      .sort();
-    const userPickLists = Object.values(table.dataModel.pickLists)
-      .filter(({ isSystem }) => !isSystem)
-      .map(({ name }) => name)
-      .sort();
+    const [userPickLists, systemPickLists] = split(
+      Object.values(table.dataModel.pickLists),
+      ({ isSystem }) => isSystem
+    ).map((group) => group.map(({ name }) => name).sort());
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];

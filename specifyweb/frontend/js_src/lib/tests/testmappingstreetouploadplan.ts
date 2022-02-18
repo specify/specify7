@@ -1,6 +1,5 @@
 import type { Tables } from '../datamodel';
 import { mappingsTreeToUploadPlan } from '../mappingstreetouploadplan';
-import type { MappingsTree } from '../wbplanviewtreehelper';
 import mappingsTree1 from './fixtures/mappingstree.1.json';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import { runTest } from './testmain';

@@ -6,6 +6,7 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
@@ -16,6 +17,7 @@ import {
   getLocalityData,
 } from './leafletutils';
 import type { IR, R, RA } from './types';
+import { filterArray } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
   findSubArray,
@@ -23,8 +25,6 @@ import {
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
-import { filterArray } from './types';
-import { Tables } from './datamodel';
 
 const addBaseTableName = (
   baseTableName: keyof Tables,
@@ -235,28 +235,23 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
   );
 
   return Object.fromEntries(
-    localityDataEntries
-      .reduce<[string, Field<string | number>][]>(
-        (filteredEntries, { mappingPath, field }, index) => {
+    filterArray(
+      localityDataEntries
+        .map(({ mappingPath, field }, index) => {
           const mappingPathString = mappingPathToString(mappingPath);
           const { treeRankLocation, groupName } = treeRanks[index];
           if (treeRankLocation === -1)
-            filteredEntries.push([mappingPathString, field]);
+            return [mappingPathString, field] as const;
           else if (
             treeRanks.findIndex(
               (treeRank) => treeRank.groupName === groupName
             ) === index
           )
-            filteredEntries.push([
-              mappingPathString,
-              aggregatedTreeRanks[groupName],
-            ]);
-
-          return filteredEntries;
-        },
-        []
-      )
-      .reverse()
+            return [mappingPathString, aggregatedTreeRanks[groupName]] as const;
+          else return undefined;
+        })
+        .reverse()
+    )
   );
 }
 

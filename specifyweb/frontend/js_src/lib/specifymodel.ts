@@ -8,10 +8,9 @@ import type { SchemaLocalization } from './schema';
 import { localization, schema } from './schema';
 import { unescape } from './schemabase';
 import { getTableOverwrite } from './schemaoverrides';
+import type { LiteralField, Relationship } from './specifyfield';
 import {
   type FieldDefinition,
-  LiteralField,
-  Relationship,
   type RelationshipDefinition,
 } from './specifyfield';
 import type { IR, RA } from './types';

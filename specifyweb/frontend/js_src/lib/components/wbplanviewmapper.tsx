@@ -15,7 +15,7 @@ import wbText from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import type { ColumnOptions } from '../uploadplantomappingstree';
+import type { ColumnOptions } from '../uploadplanparser';
 import { columnOptionsAreDefault } from '../wbplanviewlinesgetter';
 import { reducer } from '../wbplanviewmappingreducer';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
@@ -23,7 +23,6 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import {
   fetchAutoMapperSuggestions,
   getMappedFields,
-  getMappingsTree,
   getMustMatchTables,
   goBack,
   mappingPathIsComplete,
@@ -64,7 +63,6 @@ export type AutoMapperScope =
 
 // All mapping path parts are expected to be in lower case
 export type MappingPath = RA<string>;
-export type FullMappingPath = Readonly<[...MappingPath, string, ColumnOptions]>;
 
 export type SelectElementPosition = {
   readonly line: number;
@@ -248,7 +246,9 @@ export function WbPlanViewMapper(props: {
   const validate = (): RA<MappingPath> =>
     findRequiredMissingFields(
       props.baseTableName,
-      getMappingsTree(state.lines),
+      state.lines
+        .map(({ mappingPath }) => mappingPath)
+        .filter((mappingPath) => mappingPathIsComplete(mappingPath)),
       state.mustMatchPreferences
     );
 

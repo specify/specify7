@@ -11,15 +11,14 @@ import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
+import { group } from './wbplanviewhelper';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
   relationshipIsToMany,
   valueIsToManyIndex,
-  valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import type { MappingsTree } from './wbplanviewtreehelper';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -41,93 +40,57 @@ export const getMaxToManyIndex = (
 export function findRequiredMissingFields(
   // Name of the current base table
   tableName: keyof Tables,
-  /*
-   * Result of running mappings.getMappingsTree() - an object with
-   * information about now mapped fields
-   */
-  mappingsTree?: MappingsTree,
+  mappings: RA<MappingPath>,
   // If a table is set as must match, all of it's fields are optional
-  mustMatchPreferences: IR<boolean> = {},
+  mustMatchPreferences: IR<boolean>,
   // Used internally in a recursion. Previous table name
-  parentTableName = '',
+  parentRelationship: Relationship | undefined = undefined,
   // Used internally in a recursion. Current mapping path
-  path: MappingPath = [],
-  // Used internally in a recursion. Save results
-  results: MappingPath[] = []
+  path: MappingPath = []
 ): MappingPath[] {
   const model = defined(getModel(tableName));
 
-  if (typeof mappingsTree === 'undefined') return results;
+  if (typeof mappings === 'undefined') return [];
 
-  const listOfMappedFields = Object.keys(mappingsTree);
+  const indexedMappings = group(
+    mappings.map((line) => [line[0], line.slice(1)] as const)
+  );
 
   // Handle -to-many references
-  if (valueIsToManyIndex(listOfMappedFields[0])) {
-    listOfMappedFields.forEach((mappedFieldName) => {
-      const localPath = [...path, mappedFieldName];
-      if (typeof mappingsTree[mappedFieldName] === 'object')
-        findRequiredMissingFields(
-          tableName,
-          mappingsTree[mappedFieldName] as MappingsTree,
-          mustMatchPreferences,
-          parentTableName,
-          localPath,
-          results
-        );
-    });
-    return results;
-  }
-
+  if (valueIsToManyIndex(mappings[0][0]))
+    return Object.entries(indexedMappings).flatMap(([index, mappings]) =>
+      findRequiredMissingFields(
+        tableName,
+        mappings,
+        mustMatchPreferences,
+        parentRelationship,
+        [...path, index]
+      )
+    );
   // Handle trees
-  else if (isTreeModel(tableName)) {
-    const treeRanks = getTreeDefinitionItems(tableName as 'Geography', false);
-    const lastPathElement = path.slice(-1)[0];
-    const lastPathElementIsRank = valueIsTreeRank(lastPathElement);
+  else if (isTreeModel(tableName))
+    return getTreeDefinitionItems(tableName as 'Geography', false).flatMap(
+      ({ name: rankName, isEnforced }) => {
+        const formattedRankName = formatTreeRank(rankName);
+        const localPath = [...path, formattedRankName];
 
-    if (!lastPathElementIsRank)
-      return treeRanks.reduce((results, { name: rankName, isEnforced }) => {
-        const complimentedRankName = formatTreeRank(rankName);
-        const localPath = [...path, complimentedRankName];
-
-        if (listOfMappedFields.includes(complimentedRankName))
-          findRequiredMissingFields(
+        if (formattedRankName in indexedMappings)
+          return findRequiredMissingFields(
             tableName,
-            mappingsTree[complimentedRankName] as MappingsTree,
+            indexedMappings[formattedRankName],
             mustMatchPreferences,
-            parentTableName,
-            localPath,
-            results
+            parentRelationship,
+            localPath
           );
         else if (isEnforced === true && !mustMatchPreferences[tableName])
-          results.push(localPath);
+          return [localPath];
+        else return [];
+      }
+    );
 
-        return results;
-      }, results);
-  }
-
-  const parentTable = getModel(parentTableName);
-  model?.relationships.forEach((relationship) => {
-    const localPath = [...path, relationship.name];
-    const isMapped = listOfMappedFields.includes(relationship.name);
-
-    if (typeof parentTable === 'object') {
-      let previousRelationshipName = localPath.slice(-2)[0];
-      if (
-        valueIsToManyIndex(previousRelationshipName) ||
-        valueIsTreeRank(previousRelationshipName)
-      )
-        previousRelationshipName = localPath.slice(-3)[0];
-
-      const parentRelationship = parentTable?.getRelationship(
-        previousRelationshipName
-      );
-
-      let currentMappingPathPart = localPath[path.length - 1];
-      if (
-        valueIsToManyIndex(currentMappingPathPart) ||
-        valueIsTreeRank(currentMappingPathPart)
-      )
-        currentMappingPathPart = localPath[path.length - 2];
+  return [
+    ...model.relationships.flatMap((relationship) => {
+      const localPath = [...path, relationship.name];
 
       if (
         (typeof parentRelationship === 'object' &&
@@ -137,37 +100,33 @@ export function findRequiredMissingFields(
         (relationshipIsToMany(parentRelationship) &&
           relationshipIsToMany(relationship))
       )
-        return;
-    }
+        return [];
 
-    if (isMapped)
-      findRequiredMissingFields(
-        relationship.relatedModel.name,
-        mappingsTree[relationship.name] as MappingsTree,
-        mustMatchPreferences,
-        tableName,
-        localPath,
-        results
-      );
-    else if (
-      relationship.overrides.isRequired &&
-      !mustMatchPreferences[tableName]
-    )
-      results.push(localPath);
-  });
-
-  model.fields.forEach((field) => {
-    const localPath = [...path, field.name];
-    const isMapped = listOfMappedFields.includes(field.name);
-    if (
-      !isMapped &&
-      field.overrides.isRequired &&
-      !mustMatchPreferences[tableName]
-    )
-      results.push(localPath);
-  });
-
-  return results;
+      if (relationship.name in indexedMappings)
+        return findRequiredMissingFields(
+          relationship.relatedModel.name,
+          indexedMappings[relationship.name],
+          mustMatchPreferences,
+          relationship,
+          localPath
+        );
+      else if (
+        relationship.overrides.isRequired &&
+        !mustMatchPreferences[tableName]
+      )
+        return [localPath];
+      else return [];
+    }),
+    ...filterArray(
+      model.fields.map((field) =>
+        !(field.name in indexedMappings) &&
+        field.overrides.isRequired &&
+        !mustMatchPreferences[tableName]
+          ? [...path, field.name]
+          : undefined
+      )
+    ),
+  ];
 }
 
 export const isCircularRelationship = (

@@ -131,7 +131,8 @@ export const caseInsensitiveHash = <
     ([key]) => key.toLowerCase() === searchKey.toLowerCase()
   )?.[1] as DICTIONARY[KEY];
 
-export const sortFunction = <T, V>(
+/** Generate a sort function for Array.prototype.sort */
+export const sortFunction = <T, V extends boolean | number>(
   mapper: (value: T) => V,
   reverse = false
 ): ((left: T, right: T) => -1 | 0 | 1) =>
@@ -148,3 +149,30 @@ export const sortFunction = <T, V>(
           : mapper(left) === mapper(right)
           ? 0
           : -1;
+
+/** Split array in half according to a discriminator function */
+export const split = <ITEM>(
+  array: RA<ITEM>,
+  discriminator: (item: ITEM, index: number) => boolean
+): Readonly<[left: RA<ITEM>, right: RA<ITEM>]> =>
+  array
+    .map((item, index) => [item, discriminator(item, index)] as const)
+    .reduce<Readonly<[left: RA<ITEM>, right: RA<ITEM>]>>(
+      ([left, right], [item, isRight]) => [
+        [...left, ...(isRight ? [] : [item])],
+        [...right, ...(isRight ? [item] : [])],
+      ],
+      [[], []]
+    );
+
+/** Convert an array of [key,value] tuples to a Dict[key, value[]]*/
+export const group = <KEY extends PropertyKey, VALUE>(
+  entries: RA<Readonly<[key: KEY, value: VALUE]>>
+): RR<KEY, RA<VALUE>> =>
+  entries.reduce<RR<KEY, RA<VALUE>>>(
+    (grouped, [key, value]) => ({
+      ...grouped,
+      [key]: [...(grouped[key] ?? []), value],
+    }),
+    {}
+  );

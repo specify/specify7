@@ -15,8 +15,9 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
-import type { MatchBehaviors } from './uploadplantomappingstree';
+import type { MatchBehaviors } from './uploadplanparser';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import {
@@ -24,7 +25,6 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
-import { Tables } from './datamodel';
 
 const modifyLine = (
   state: MappingState,

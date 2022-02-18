@@ -7,7 +7,7 @@ import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import type { IR, RA } from '../types';
-import type { UploadPlan } from '../uploadplantomappingstree';
+import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Checkbox, LabelForCheckbox } from './basic';

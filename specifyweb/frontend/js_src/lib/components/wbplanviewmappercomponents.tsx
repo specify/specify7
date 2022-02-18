@@ -8,10 +8,7 @@ import wbText from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
-import type {
-  ColumnOptions,
-  MatchBehaviors,
-} from '../uploadplantomappingstree';
+import type { ColumnOptions, MatchBehaviors } from '../uploadplanparser';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import {
   Button,

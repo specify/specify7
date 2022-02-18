@@ -1,11 +1,11 @@
-import type { IR, RA } from '../types';
 import type { MappingLine } from '../components/wbplanviewmapper';
-import type { UploadPlan } from '../uploadplantomappingstree';
+import type { Tables } from '../datamodel';
+import type { IR, RA } from '../types';
+import type { UploadPlan } from '../uploadplanparser';
 import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
 import { runTest } from './testmain';
-import { Tables } from '../datamodel';
 
 export default function (): void {
   runTest(

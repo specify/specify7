@@ -1,7 +1,6 @@
-import type { FullMappingPath } from '../components/wbplanviewmapper';
+import { schema } from '../schema';
 import * as WbPlanViewMappingHelper from '../wbplanviewmappinghelper';
 import { runTest } from './testmain';
-import { schema } from '../schema';
 
 export default function (): void {
   runTest(
@@ -87,36 +86,5 @@ export default function (): void {
       ],
     ],
     WbPlanViewMappingHelper.findDuplicateMappings
-  );
-
-  runTest(
-    'WbPlanViewMappingHelper.splitFullMappingPathComponents',
-    [
-      [
-        [
-          [
-            'collectionobject',
-            'collector',
-            'firstname',
-            'Collector Name',
-            {
-              matchBehavior: 'ignoreWhenBlank',
-              nullAllowed: false,
-              default: null,
-            },
-          ] as FullMappingPath,
-        ],
-        {
-          mappingPath: ['collectionobject', 'collector', 'firstname'],
-          headerName: 'Collector Name',
-          columnOptions: {
-            matchBehavior: 'ignoreWhenBlank',
-            nullAllowed: false,
-            default: null,
-          },
-        },
-      ],
-    ],
-    WbPlanViewMappingHelper.splitFullMappingPathComponents
   );
 }

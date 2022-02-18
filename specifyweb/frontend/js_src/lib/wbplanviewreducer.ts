@@ -12,13 +12,13 @@ import type {
   MappingState,
   WbPlanViewStates,
 } from './components/wbplanviewstate';
+import type { Tables } from './datamodel';
 import type { RA } from './types';
-import type { UploadPlan } from './uploadplantomappingstree';
+import type { UploadPlan } from './uploadplanparser';
 import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from './wbplanviewlinesgetter';
-import { Tables } from './datamodel';
 
 // Actions
 type OpenBaseTableSelectionAction = Action<

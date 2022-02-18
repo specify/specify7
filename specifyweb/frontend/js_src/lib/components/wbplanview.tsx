@@ -7,7 +7,7 @@
 import React from 'react';
 
 import type { RA } from '../types';
-import type { UploadPlan } from '../uploadplantomappingstree';
+import type { UploadPlan } from '../uploadplanparser';
 import { reducer } from '../wbplanviewreducer';
 import type { UploadResult } from '../wbuploadedparser';
 import { stateReducer } from './wbplanviewstate';

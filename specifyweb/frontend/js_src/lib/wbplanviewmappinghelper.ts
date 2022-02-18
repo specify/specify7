@@ -4,14 +4,11 @@
  * @module
  */
 
-import type {
-  FullMappingPath,
-  MappingPath,
-} from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import { schema } from './schema';
 import type { Relationship } from './specifyfield';
 import type { R, RA } from './types';
-import type { ColumnOptions } from './uploadplantomappingstree';
+import type { ColumnOptions } from './uploadplanparser';
 
 /**
  * Returns whether relationship is a -to-many
@@ -72,18 +69,10 @@ export const splitJoinedMappingPath = (string: string): MappingPath =>
   string.split(schema.pathJoinSymbol);
 
 export type SplitMappingPath = {
-  readonly mappingPath: MappingPath;
   readonly headerName: string;
+  readonly mappingPath: MappingPath;
   readonly columnOptions: ColumnOptions;
 };
-
-export const splitFullMappingPathComponents = (
-  fullMappingPath: FullMappingPath
-): SplitMappingPath => ({
-  mappingPath: fullMappingPath.slice(0, -2) as MappingPath,
-  headerName: fullMappingPath[fullMappingPath.length - 2] as string,
-  columnOptions: fullMappingPath[fullMappingPath.length - 1] as ColumnOptions,
-});
 
 /** Find the index of a subArray in array. On failure returns -1 */
 export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>

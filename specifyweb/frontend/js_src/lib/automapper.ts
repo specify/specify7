@@ -21,7 +21,7 @@ import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { findArrayDivergencePoint } from './wbplanviewhelper';
 import {
   formatToManyIndex,
@@ -550,13 +550,10 @@ export class AutoMapper {
       return [];
 
     // Filter out -to-many references from the path for matching
-    const filteredPath = mappingPath.reduce<Writable<MappingPath>>(
-      (filteredPath, pathPart) => {
-        if (!valueIsToManyIndex(pathPart)) filteredPath.push(pathPart);
-
-        return filteredPath;
-      },
-      []
+    const filteredPath = filterArray(
+      mappingPath.map((pathPart) =>
+        valueIsToManyIndex(pathPart) ? undefined : pathPart
+      )
     );
 
     const filteredPathString = mappingPathToString(filteredPath);
@@ -565,21 +562,16 @@ export class AutoMapper {
       ...filteredPath,
     ]);
 
-    return tableSynonyms.reduce<string[]>(
-      (tableSynonyms, tableSynonym: TableSynonym) => {
+    return filterArray(
+      tableSynonyms.flatMap((tableSynonym: TableSynonym) => {
         const mappingPathString = mappingPathToString(
           tableSynonym.mappingPathFilter
         );
-
-        if (
-          filteredPathString.endsWith(mappingPathString) ||
+        return filteredPathString.endsWith(mappingPathString) ||
           filteredPathWithBaseTableString === mappingPathString
-        )
-          tableSynonyms.push(...tableSynonym.synonyms);
-
-        return tableSynonyms;
-      },
-      []
+          ? tableSynonym.synonyms
+          : undefined;
+      })
     );
   }
 

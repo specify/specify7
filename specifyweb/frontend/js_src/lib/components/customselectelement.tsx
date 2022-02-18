@@ -13,6 +13,7 @@ import type { Tables } from '../datamodel';
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
+import { filterArray } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
 import {
   TableIcon,
@@ -283,13 +284,11 @@ function Option({
 
   const tableLabel = getModel(tableName ?? '')?.label;
 
-  const fullTitle = [
+  const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
     isRelationship ? `(${wbText('relationshipInline')})` : '',
     isDefault ? `(${wbText('selected')})` : '',
-  ]
-    .filter((part) => part)
-    .join(' ');
+  ]).join(' ');
 
   return (
     // Keyboard events are handled by the parent

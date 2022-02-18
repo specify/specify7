@@ -9,17 +9,16 @@ import { AutoMapper } from './automapper';
 import type { Dataset } from './components/wbplanview';
 import type {
   AutoMapperSuggestion,
-  FullMappingPath,
   MappingLine,
   MappingPath,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import { mappingsTreeToUploadPlan } from './mappingstreetouploadplan';
 import * as navigation from './navigation';
 import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
+import { uploadPlanBuilder } from './uploadplanbuilder';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
   findDuplicateMappings,
@@ -30,8 +29,6 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import type { MappingsTree } from './wbplanviewtreehelper';
-import { mappingPathsToMappingsTree } from './wbplanviewtreehelper';
 
 export async function savePlan({
   dataset,
@@ -44,13 +41,13 @@ export async function savePlan({
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): Promise<void> {
-  const renamedMappedLines = renameNewlyCreatedHeaders(
+  const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
     dataset.columns,
     lines
   );
 
-  const newlyAddedHeaders = renamedMappedLines
+  const newlyAddedHeaders = renamedLines
     .filter(
       ({ headerName, mappingPath }) =>
         mappingPath.length > 0 &&
@@ -59,9 +56,9 @@ export async function savePlan({
     )
     .map(({ headerName }) => headerName);
 
-  const uploadPlan = mappingsTreeToUploadPlan(
+  const uploadPlan = uploadPlanBuilder(
     baseTableName,
-    getMappingsTree(renamedMappedLines),
+    renamedLines,
     getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
   );
 
@@ -117,9 +114,10 @@ export function deduplicateMappings(
   lines: RA<MappingLine>,
   focusedLine: number | false
 ): RA<MappingLine> {
-  const mappingPaths = getMappingPaths(lines);
   const duplicateMappingIndexes = findDuplicateMappings(
-    mappingPaths,
+    lines
+      .map(({ mappingPath }) => mappingPath)
+      .filter((mappingPath) => mappingPathIsComplete(mappingPath)),
     focusedLine
   );
 
@@ -191,18 +189,17 @@ export function getMustMatchTables({
   };
 }
 
-function getMappingPaths(lines: RA<MappingLine>): RA<FullMappingPath> {
-  return lines
-    .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-    .map(({ mappingPath, headerName, columnOptions }) => [
-      ...mappingPath,
-      headerName,
-      columnOptions,
-    ]);
-}
-
 export const getMappingsTree = (lines: RA<MappingLine>): MappingsTree =>
-  mappingPathsToMappingsTree(getMappingPaths(lines), true);
+  mappingPathsToMappingsTree(
+    lines
+      .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
+      .map(({ mappingPath, headerName, columnOptions }) => [
+        ...mappingPath,
+        headerName,
+        columnOptions,
+      ]),
+    true
+  );
 
 export const getMappedFields = (
   lines: RA<MappingLine>,

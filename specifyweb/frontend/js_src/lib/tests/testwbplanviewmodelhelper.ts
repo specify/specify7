@@ -1,9 +1,8 @@
+import type { Tables } from '../datamodel';
+import { schema } from '../schema';
 import * as WbPlanViewModelHelper from '../wbplanviewmodelhelper';
-import type { MappingsTree } from '../wbplanviewtreehelper';
 import mappingsTree1 from './fixtures/mappingstree.1.json';
 import { runTest } from './testmain';
-import { schema } from '../schema';
-import { Tables } from '../datamodel';
 
 export default function (): void {
   runTest(

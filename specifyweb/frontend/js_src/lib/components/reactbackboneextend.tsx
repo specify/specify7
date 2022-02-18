@@ -5,7 +5,7 @@
  * @module
  */
 
-import { default as Backbone, type View } from 'backbone';
+import { type View, default as Backbone } from 'backbone';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -87,8 +87,13 @@ const createBackboneView = <PROPS extends IR<unknown>>(
         return this;
       }
 
-      public updateProps(newProps: Partial<PROPS>): void {
-        this.options = { ...this.options, ...newProps };
+      public updateProps(
+        newProps: Partial<PROPS> | ((oldProps: PROPS) => PROPS)
+      ): void {
+        this.options =
+          typeof newProps === 'function'
+            ? newProps(this.options)
+            : { ...this.options, ...newProps };
         this.setProps(this.options);
       }
     },
