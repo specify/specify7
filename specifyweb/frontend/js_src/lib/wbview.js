@@ -21,12 +21,12 @@ import Q from 'q';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import { getModel } from './schema';
+import {getModel} from './schema';
 import * as app from './specifyapp';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import {NotFoundView} from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
@@ -36,24 +36,28 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { parseUploadPlan } from './uploadplanparser';
-import { capitalize, extractDefaultValues } from './wbplanviewhelper';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon } from './icons';
+import {parseUploadPlan} from './uploadplanparser';
+import {
+  capitalize,
+  extractDefaultValues,
+  mappedFind,
+} from './wbplanviewhelper';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
 import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import { LoadingView } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { className } from './components/basic';
-import { legacyNonJsxIcons } from './components/icons';
-import { LANGUAGE } from './localization/utils';
-import { defined } from './types';
-import { fetchPickLists } from './picklists';
-import { crash } from './components/errorboundary';
-import { getTreeDefinitionItems } from './treedefinitions';
-import { serializeResource } from './datamodelutils';
+import {LoadingView} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {className} from './components/basic';
+import {legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined} from './types';
+import {fetchPickLists} from './picklists';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
+import {serializeResource} from './datamodelutils';
 
 const metaKeys = [
   'isNew',
@@ -2142,20 +2146,20 @@ const WBView = Backbone.View.extend({
           )
         )
         .map(({ headerName }) => headerName);
-    let columns;
-    mappingPathFilter.some((_, index) => {
-      columns = this.mappings.lines
-        .filter(({ mappingPath }) =>
-          mappingPathToString(mappingPath).startsWith(
-            mappingPathToString(
-              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
+    return (
+      mappedFind(mappingPathFilter, (_, index) => {
+        const columns = this.mappings.lines
+          .filter(({ mappingPath }) =>
+            mappingPathToString(mappingPath).startsWith(
+              mappingPathToString(
+                mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
+              )
             )
           )
-        )
-        .map(({ headerName }) => headerName);
-      return columns.length > 0;
-    });
-    return columns;
+          .map(({ headerName }) => headerName);
+        return columns.length > 0 ? undefined : columns;
+      }) ?? []
+    );
   },
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810

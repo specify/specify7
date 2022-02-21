@@ -54,25 +54,15 @@ export function findArrayDivergencePoint<T>(
 
   if (sourceLength === 0 || sourceLength < searchLength) return -1;
 
-  let returnValue = undefined;
+  return (
+    mappedFind(Object.entries(source), ([index, sourceValue]) => {
+      const searchValue = search[Number(index)];
 
-  Object.entries(source).some(([index, sourceValue]) => {
-    const searchValue = search[Number(index)];
-
-    if (typeof searchValue === 'undefined') {
-      returnValue = Number(index);
-      return true;
-    }
-
-    if (sourceValue !== searchValue) {
-      returnValue = -1;
-      return true;
-    }
-
-    return false;
-  });
-
-  return returnValue ?? searchLength - 1;
+      if (typeof searchValue === 'undefined') return Number(index);
+      else if (sourceValue === searchValue) return undefined;
+      else return -1;
+    }) ?? searchLength - 1
+  );
 }
 
 export const extractDefaultValues = (
@@ -176,3 +166,16 @@ export const group = <KEY extends PropertyKey, VALUE>(
     }),
     {}
   );
+
+// Find a value in an array, and return it's mapped variant
+export function mappedFind<ITEM, RETURN_TYPE>(
+  array: RA<ITEM>,
+  callback: (item: ITEM, index: number) => RETURN_TYPE | undefined
+): RETURN_TYPE | undefined {
+  let value = undefined;
+  array.some((item, index) => {
+    value = callback(item, index);
+    return typeof value !== 'undefined';
+  });
+  return value;
+}

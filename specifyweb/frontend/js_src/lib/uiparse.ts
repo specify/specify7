@@ -339,9 +339,9 @@ export function parseValue(
       value.trim()
     );
 
-    (parser.validators ?? []).some((validator) => {
-      errorMessage = validator(formattedValue);
-    });
+    errorMessage = mappedFind(parser.validators ?? [], (validator) =>
+      validator(formattedValue)
+    );
   }
 
   return typeof errorMessage === 'string'
