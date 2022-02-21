@@ -7,7 +7,7 @@
 import type { IR, RA, RR } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 
-export const languages = ['en-us', 'ru-ru', 'ca'] as const;
+export const languages = ['en-us', 'ru-ru', 'ca', 'es-es'] as const;
 
 // Catalonian is not yet ready for production
 export const enabledLanguages =

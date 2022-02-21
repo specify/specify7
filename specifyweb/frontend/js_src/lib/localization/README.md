@@ -63,9 +63,8 @@
 - When writing multi-line strings, keep in mind that some values are going to be
   used in whitespace sensitive contexts. Most common example is the "title"
   attribute of a button. Another example is the cell comment text in the
-  Workbench. In such cases, wrap the string in a 
-  whitespaceSensitive function call and use the `<br>` HTML tags
-  for new lines.
+  Workbench. In such cases, wrap the string in a whitespaceSensitive function
+  call and use the `<br>` HTML tags for new lines.
 
   Incorrect example:
 
@@ -88,22 +87,23 @@
     ever since the 1500s
   `),
   ```
-  
+
 ## Localization Utils
 
 ### Copy strings from existing language into new language
 
-1. Paste whole dictionary file content into an HTML <textbox>
-2. Assign the `textbox` variable to the HTML Textbox element
-3. Modify the following RegEx to suite the task
-   
-   In it's current form, it would copy 'en-us' strings and
-   insert them after 'ru-ru' strings under a name of 'ca'.
+1. Create and open an HTML page with a <textarea> element
+2. Paste whole dictionary file content into textarea
+3. Assign the `textarea` variable to the HTML Textbox element
+4. Modify the following RegEx to suite the task
+
+   In it's current form, it would copy 'en-us' strings and insert them at the
+   end under a name of 'es-es'.
 
    ```javascript
    textarea.value = textarea.value.replaceAll(
-     /(?<key>\w+):\s{\s+'en-us':(\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?:[\s\S]*?)['"`)]\s*\)?),\s+'ru-ru':(\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?:[\s\S]*?)['"`)]\s*\)?),/g,
-     "$1: {\n    'en-us':$2,\n    'ru-ru':$3,\n    ca:$2,"
+     /(?<key>\w+):\s{\s+'en-us':([\s\S]+?(?=['`\)],\n)['`\)],\n)([\s\S]+?(?=\},\n))\},/g,
+     "$1: {\n    'en-us':$2$3  'es-es':$2  },"
    );
    ```
 
@@ -111,9 +111,10 @@
 
 ### Extract serialized strings from dictionary
 
-1. Paste whole dictionary file content into an HTML <textbox>
-2. Assign the `textbox` JS variable to the HTML Textbox element
-3. Run this code in the DevTools console:
+1. Create and open an HTML page with a <textarea> element
+2. Paste whole dictionary file content into textarea
+3. Assign the `textarea` variable to the HTML Textbox element
+4. Run this code in the DevTools console:
 
    ```javascript
    dictionary = Object.fromEntries(
@@ -121,8 +122,7 @@
        textarea.value.matchAll(
          /(?<key>\w+):\s{\s+'en-us':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<enUS>[\s\S]*?)['"`)]\s*\)?,\s+'ru-ru':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<ruRU>[\s\S]*?)['"`)]\s*\)?,/g
        ),
-       ({groups: {key, ...strings}})=>[key, strings]
+       ({ groups: { key, ...strings } }) => [key, strings]
      )
    );
    ```
-   
