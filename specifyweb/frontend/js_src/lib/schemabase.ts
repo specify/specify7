@@ -29,6 +29,7 @@ export type Schema = {
   };
   readonly referenceSymbol: string;
   readonly treeSymbol: string;
+  readonly fieldPartSeparator: string;
   readonly pathJoinSymbol: string;
 };
 
@@ -69,6 +70,8 @@ const schema: Writable<Schema> = {
   referenceSymbol: '#',
   // Prefix for tree ranks
   treeSymbol: '$',
+  // Separator for partial fields (date parts in Query Builder)
+  fieldPartSeparator: '_',
   /*
    * A symbol that is used to join multiple mapping path elements together when
    * there is a need to represent a mapping path as a string

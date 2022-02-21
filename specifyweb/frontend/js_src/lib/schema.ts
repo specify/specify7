@@ -87,6 +87,11 @@ export const fetchContext = Promise.all([
 
 export const schema = schemaBase;
 
+// Leak schema object when in development for easier debugging
+if (process.env.NODE_ENV !== 'production')
+  // @ts-expect-error Creating a global value
+  window._schema = schema;
+
 /**
  * Returns a schema model object describing the named Specify model
  * Can wrap this function call in defined() to cast result to SpecifyModel

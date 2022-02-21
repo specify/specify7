@@ -3,8 +3,7 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../ajax';
 import { error } from '../../assert';
-import type { SpQuery, SpReport } from '../../datamodel';
-import type { Tables } from '../../datamodel';
+import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';

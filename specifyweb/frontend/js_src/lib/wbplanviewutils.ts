@@ -189,18 +189,6 @@ export function getMustMatchTables({
   };
 }
 
-export const getMappingsTree = (lines: RA<MappingLine>): MappingsTree =>
-  mappingPathsToMappingsTree(
-    lines
-      .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
-      .map(({ mappingPath, headerName, columnOptions }) => [
-        ...mappingPath,
-        headerName,
-        columnOptions,
-      ]),
-    true
-  );
-
 export const getMappedFields = (
   lines: RA<MappingLine>,
   // A mapping path that would be used as a filter
@@ -237,7 +225,7 @@ export function mutateMappingPath({
   lines,
   mappingView,
   line,
-  index,
+  index: originalIndex,
   newValue,
   isRelationship,
   parentTableName,
@@ -254,12 +242,28 @@ export function mutateMappingPath({
   readonly parentTableName: keyof Tables | undefined;
   readonly currentTableName: keyof Tables | undefined;
   readonly newTableName: keyof Tables | undefined;
+  /*
+   * If false, allows to choose the index for the -to-many mapping
+   * (in WbPlanView). Else, #1 is selected automatically (in QueryBuilder)
+   */
   readonly ignoreToMany?: boolean;
 }): MappingPath {
   // Get mapping path from selected line or mapping view
   let mappingPath = Array.from(
     line === 'mappingView' ? mappingView : lines[line].mappingPath
   );
+
+  /*
+   * If ignoring -to-many, originalIndex needs to be corrected since -to-many
+   * boxes were not rendered
+   */
+  const index = ignoreToMany
+    ? mappingPath.reduce(
+        (index, part, partIndex) =>
+          index >= partIndex && valueIsToManyIndex(part) ? index + 1 : index,
+        originalIndex
+      )
+    : originalIndex;
 
   /*
    * Get relationship type from current picklist to the next one both for

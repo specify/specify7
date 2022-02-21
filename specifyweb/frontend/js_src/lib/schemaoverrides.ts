@@ -39,7 +39,7 @@ export type FieldConfigOverwrite =
   // Hides a field. If it was required, it is made optional
   | 'hidden';
 
-const tableOverwrites: RR<keyof Tables, TableConfigOverwrite> = {
+const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   Accession: 'commonBaseTable',
   Agent: 'commonBaseTable',
   Borrow: 'commonBaseTable',
@@ -93,6 +93,7 @@ const globalFieldOverrides: {
 } & {
   readonly common: IR<FieldConfigOverwrite>;
 } = {
+  // Common overwrites apply to fields in all tables
   common: {
     timestampCreated: 'readOnly',
   },
@@ -139,7 +140,6 @@ const globalFieldOverrides: {
  * These apply to Query Builder, Workbench, Leaflet and Specify Network
  */
 const fieldOverwrites: typeof globalFieldOverrides = {
-  // Common overwrites apply to fields in all tables
   common: {
     timestampCreated: 'hidden',
     timestampModified: 'hidden',
@@ -181,8 +181,15 @@ const fieldOverwrites: typeof globalFieldOverrides = {
  *  instead of fieldName===key.
  * endsWithFieldOverwrites are checked against fields in all tables.
  */
-const endsWithFieldOverwrites: IR<FieldConfigOverwrite> = {
-  precision: 'readOnly',
+const endsWithFieldOverwrites: Partial<
+  RR<keyof Tables | 'common', IR<FieldConfigOverwrite>>
+> = {
+  common: {
+    precision: 'readOnly',
+  },
+  Attachment: {
+    Attachments: 'hidden',
+  },
 };
 
 export const getTableOverwrite = (
@@ -206,6 +213,9 @@ export const getFieldOverwrite = (
 ): FieldConfigOverwrite | undefined =>
   fieldOverwrites[tableName as 'Accession']?.[fieldName as 'text1'] ??
   fieldOverwrites.common?.[fieldName] ??
-  Object.entries(endsWithFieldOverwrites).find(([key]) =>
+  Object.entries(endsWithFieldOverwrites[tableName] ?? {}).find(([key]) =>
+    fieldName.endsWith(key)
+  )?.[1] ??
+  Object.entries(endsWithFieldOverwrites.common ?? {}).find(([key]) =>
     fieldName.endsWith(key)
   )?.[1];

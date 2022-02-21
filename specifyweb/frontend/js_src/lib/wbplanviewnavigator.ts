@@ -74,7 +74,7 @@ type NavigationCallbacks = {
  * with only one instance at a time (you can't fork the mapping path to visit
  * fields from multiple relationships at once)
  */
-export function navigator({
+function navigator({
   callbacks,
   recursivePayload = undefined,
   baseTableName,
@@ -117,19 +117,21 @@ export function navigator({
 
   const isSpecial =
     valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
-  const nextField = model.getField(next.partName);
+  const nextField = isSpecial
+    ? parentRelationship
+    : model.getField(next.fieldName);
 
-  const nextTableName = isSpecial
+  const nextTable = isSpecial
     ? model
-    : nextField?.isRelationship ?? false
-    ? nextField?.model
+    : typeof nextField === 'object' && nextField.isRelationship
+    ? nextField.relatedModel
     : undefined;
 
-  if (typeof nextTableName === 'object' && nextField?.isRelationship !== false)
+  if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
       callbacks,
       recursivePayload: {
-        model: nextTableName,
+        model: nextTable,
         parentRelationship: nextField,
         parentPartName: next.partName,
       },
@@ -207,7 +209,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     model: SpecifyModel,
-    fieldsData: RA<[string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<Readonly<[string, HtmlGeneratorFieldData]> | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
