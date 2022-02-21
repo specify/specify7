@@ -376,6 +376,11 @@ export function getMappingLineData({
                             isDefault:
                               formatPartialField(field.name, datePart) ===
                               internalState.defaultValue,
+                            isEnabled:
+                              fieldData.isEnabled &&
+                              !internalState.mappedFields.includes(
+                                formatPartialField(field.name, datePart)
+                              ),
                           },
                         ] as const
                     )

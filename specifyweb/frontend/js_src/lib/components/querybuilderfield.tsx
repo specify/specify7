@@ -7,6 +7,7 @@ import type { QueryField } from '../querybuilderutils';
 import { mutateLineData } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
 import { getModel, schema } from '../schema';
+import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import type { Parser } from '../uiparse';
 import { resolveParser } from '../uiparse';
@@ -36,6 +37,7 @@ import {
   MappingElement,
   mappingElementDivider,
 } from './wbplanviewcomponents';
+import type { MappingPath } from './wbplanviewmapper';
 
 export function QueryLine({
   baseTableName,
@@ -52,6 +54,7 @@ export function QueryLine({
   isFocused,
   openedElement,
   showHiddenFields,
+  getMappedFields,
 }: {
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
@@ -76,6 +79,7 @@ export function QueryLine({
   readonly isFocused: boolean;
   readonly openedElement: number | undefined;
   readonly showHiddenFields: boolean;
+  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -155,6 +159,7 @@ export function QueryLine({
     showHiddenFields,
     generateFieldData: 'all',
     scope: 'queryBuilder',
+    getMappedFields,
   });
 
   /*

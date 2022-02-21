@@ -10,7 +10,7 @@ import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
 import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { mappingPathIsComplete } from '../wbplanviewutils';
+import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
   Button,
   Checkbox,
@@ -131,6 +131,8 @@ export function QueryBuilder({
     });
     setTimeout(() => dispatch({ type: 'RunQuery' }), 0);
   }
+
+  const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
 
   return (
     <ContainerFull
@@ -269,6 +271,7 @@ export function QueryBuilder({
                   }
                   openedElement={state.openedElement}
                   showHiddenFields={showHiddenFields}
+                  getMappedFields={getMappedFieldsBind}
                 />
                 <MappingView
                   mappingElementProps={getMappingLineProps({
@@ -279,6 +282,7 @@ export function QueryBuilder({
                         showHiddenFields,
                         generateFieldData: 'all',
                         scope: 'queryBuilder',
+                        getMappedFields: getMappedFieldsBind,
                       }),
                       state.mappingView
                     ),

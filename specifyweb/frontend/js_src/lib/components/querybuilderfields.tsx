@@ -5,6 +5,7 @@ import type { QueryField } from '../querybuilderutils';
 import type { RA } from '../types';
 import { Ul } from './basic';
 import { QueryLine } from './querybuilderfield';
+import type { MappingPath } from './wbplanviewmapper';
 
 export function QueryFields({
   baseTableName,
@@ -18,6 +19,7 @@ export function QueryFields({
   onLineMove: handleLineMove,
   openedElement,
   showHiddenFields,
+  getMappedFields,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -45,6 +47,7 @@ export function QueryFields({
     readonly index?: number;
   };
   readonly showHiddenFields: boolean;
+  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
 }): JSX.Element {
   return (
     <Ul>
@@ -86,6 +89,7 @@ export function QueryFields({
           openedElement={
             openedElement?.line === line ? openedElement?.index : undefined
           }
+          getMappedFields={getMappedFields}
         />
       ))}
     </Ul>

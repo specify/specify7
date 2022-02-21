@@ -190,7 +190,7 @@ export function getMustMatchTables({
 }
 
 export const getMappedFields = (
-  lines: RA<MappingLine>,
+  lines: RA<{ readonly mappingPath: MappingPath }>,
   // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ): RA<string> =>
