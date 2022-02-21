@@ -1,4 +1,5 @@
 import { PickListTypes } from './components/combobox';
+import { months } from './components/internationalization';
 import type { PickList } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import formsText from './localization/forms';
@@ -43,7 +44,20 @@ async function fetchExtraPickLists(): Promise<RA<SpecifyResource<PickList>>> {
     )
   );
 
-  return [prepType, agentType];
+  const monthsPickList = new schema.models.PickList.Resource();
+  agentType.set('name', 'MonthsComboBox');
+  agentType.set('readOnly', true);
+  agentType.set('isSystem', true);
+  agentType.set('type', PickListTypes.TABLE);
+  agentType.set('timestampCreated', new Date().toJSON());
+  agentType.set(
+    'pickListItems',
+    months.map((title, index) =>
+      createPickListItem((index + 1).toString(), title)
+    )
+  );
+
+  return [prepType, agentType, monthsPickList];
 }
 
 export async function fetchPickLists(): Promise<typeof pickLists> {

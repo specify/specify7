@@ -1,8 +1,8 @@
 import React from 'react';
 
+import commonText from '../localization/common';
 import { LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
-import commonText from '../localization/common';
 import { capitalize } from '../wbplanviewhelper';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
@@ -62,8 +62,9 @@ declare namespace Intl {
     public constructor(
       locales?: string | RA<string>,
       options?: {
-        readonly dateStyle: 'full' | 'long' | 'medium' | 'short';
-        readonly timeStyle: 'full' | 'long' | 'medium' | 'short';
+        readonly dateStyle?: 'full' | 'long' | 'medium' | 'short';
+        readonly timeStyle?: 'full' | 'long' | 'medium' | 'short';
+        readonly month?: 'long' | 'short';
       }
     );
 
@@ -75,6 +76,15 @@ const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
   timeStyle: 'long',
 });
+
+function getMonthNames(monthFormat: 'long' | 'short'): RA<string> {
+  const months = new Intl.DateTimeFormat(LANGUAGE, { month: monthFormat });
+  return Array.from({ length: 12 }, (_, month) =>
+    months.format(new Date(0, month, 2, 0, 0, 0))
+  );
+}
+// Localized month names
+export const months = getMonthNames('long');
 
 export function DateElement({
   date,

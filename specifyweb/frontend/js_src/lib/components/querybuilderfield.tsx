@@ -116,7 +116,10 @@ export function QueryLine({
       !dataModelField.isRelationship &&
       mappingPathIsComplete(field.mappingPath)
     ) {
-      pickListName = dataModelField.getPickList();
+      pickListName =
+        dataModelField.isTemporal() && datePart === 'month'
+          ? 'MonthsComboBox'
+          : dataModelField.getPickList();
 
       parser = defined(
         resolveParser(dataModelField, {

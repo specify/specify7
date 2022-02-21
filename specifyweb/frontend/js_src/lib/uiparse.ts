@@ -12,6 +12,7 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
+import { mappedFind } from './wbplanviewhelper';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
