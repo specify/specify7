@@ -6,6 +6,7 @@
  */
 
 import type { CustomSelectSubtype } from './components/customselectelement';
+import { dateParts } from './components/internationalization';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -21,11 +22,14 @@ import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
 import {
+  formatPartialField,
   formatToManyIndex,
   formatTreeRank,
   getGenericMappingPath,
   getNameFromTreeRankName,
+  parsePartialField,
   relationshipIsToMany,
+  valueIsPartialField,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
@@ -143,9 +147,12 @@ export function getTableFromMappingPath(
   mappingPath: MappingPath
 ): keyof Tables {
   if (mappingPath.length === 0) return baseTableName;
+  const fieldName = valueIsPartialField(mappingPath.slice(-1)[0])
+    ? parsePartialField(mappingPath.slice(-1)[0])[0]
+    : mappingPath.slice(-1)[0];
   const field = defined(
     defined(getModel(baseTableName)).getField(
-      getGenericMappingPath(mappingPath).join('.')
+      getGenericMappingPath([...mappingPath.slice(0, -1), fieldName]).join('.')
     )
   );
   return (field.isRelationship ? field.relatedModel : field.model).name;
@@ -316,45 +323,64 @@ export function getMappingLineData({
         model,
         generateFieldData === 'none'
           ? []
-          : model.fields.map((field) =>
-              (generateFieldData === 'all' ||
-                field.name === internalState.defaultValue) &&
-              (!field.isRelationship ||
-                typeof parentRelationship === 'undefined' ||
-                (!isCircularRelationship(parentRelationship, field) &&
-                  !(
-                    relationshipIsToMany(field) &&
-                    relationshipIsToMany(parentRelationship)
-                  ))) &&
-              isFieldVisible(
-                showHiddenFields,
-                field.overrides.isHidden,
-                field.name
-              ) &&
-              (scope === 'queryBuilder' || !field.overrides.isReadOnly)
-                ? [
-                    field.name,
-                    {
-                      optionLabel: field.label,
-                      // Enable field
-                      isEnabled:
-                        // If it is not mapped
-                        !internalState.mappedFields.includes(field.name) ||
-                        // Or is a relationship,
-                        field.isRelationship,
-                      isRequired:
-                        field.overrides.isRequired &&
-                        !mustMatchPreferences[model.name],
-                      isHidden: field.overrides.isHidden,
-                      isDefault: field.name === internalState.defaultValue,
-                      isRelationship: field.isRelationship,
-                      tableName: field.isRelationship
-                        ? field.relatedModel.name
-                        : undefined,
-                    },
-                  ]
-                : undefined
-            )
+          : model.fields
+              .filter(
+                (field) =>
+                  (generateFieldData === 'all' ||
+                    field.name === internalState.defaultValue) &&
+                  (!field.isRelationship ||
+                    typeof parentRelationship === 'undefined' ||
+                    (!isCircularRelationship(parentRelationship, field) &&
+                      !(
+                        relationshipIsToMany(field) &&
+                        relationshipIsToMany(parentRelationship)
+                      ))) &&
+                  isFieldVisible(
+                    showHiddenFields,
+                    field.overrides.isHidden,
+                    field.name
+                  ) &&
+                  (scope === 'queryBuilder' || !field.overrides.isReadOnly)
+              )
+              .flatMap((field) => {
+                const fieldData = {
+                  optionLabel: field.label,
+                  // Enable field
+                  isEnabled:
+                    // If it is not mapped
+                    !internalState.mappedFields.includes(field.name) ||
+                    // Or is a relationship
+                    field.isRelationship,
+                  // All fields are optional in the query builder
+                  isRequired:
+                    scope !== 'queryBuilder' &&
+                    field.overrides.isRequired &&
+                    !mustMatchPreferences[model.name],
+                  isHidden: field.overrides.isHidden,
+                  isDefault: field.name === internalState.defaultValue,
+                  isRelationship: field.isRelationship,
+                  tableName: field.isRelationship
+                    ? field.relatedModel.name
+                    : undefined,
+                };
+                return scope === 'queryBuilder' && field.isTemporal()
+                  ? Object.entries(dateParts).map(
+                      ([datePart, label]) =>
+                        [
+                          formatPartialField(field.name, datePart),
+                          {
+                            ...fieldData,
+                            optionLabel: `${fieldData.optionLabel}${
+                              datePart === 'fullDate' ? '' : ` (${label})`
+                            }`,
+                            isDefault:
+                              formatPartialField(field.name, datePart) ===
+                              internalState.defaultValue,
+                          },
+                        ] as const
+                    )
+                  : [[field.name, fieldData]];
+              })
       ),
   };
 

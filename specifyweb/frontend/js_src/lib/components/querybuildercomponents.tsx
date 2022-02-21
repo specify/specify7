@@ -16,7 +16,6 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
 import { EditResourceDialog } from './editresourcedialog';
-import { dateParts } from './internationalization';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
@@ -282,16 +281,9 @@ export function QueryExportButtons({
                 '/stored_query/exportkml/',
                 fields
                   .filter(({ isDisplay }) => isDisplay)
-                  .map(({ mappingPath, details }) => {
-                    const mappingPathPreview = generateMappingPathPreview(
-                      baseTableName,
-                      mappingPath
-                    );
-                    return details?.type === 'dateField' &&
-                      details.datePart !== 'fullDate'
-                      ? `${mappingPathPreview} (${dateParts[details.datePart]})`
-                      : mappingPathPreview;
-                  })
+                  .map(({ mappingPath }) =>
+                    generateMappingPathPreview(baseTableName, mappingPath)
+                  )
               )
             : setState('warning')
         }

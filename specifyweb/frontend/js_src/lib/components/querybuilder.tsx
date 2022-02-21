@@ -37,7 +37,8 @@ import { MappingView } from './wbplanviewmappercomponents';
 /*
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: autorun query if opened without definition visible
- * TODO: update getMappingPathPreview to handle _any and _formatted
+ * TODO: update getMappingPathPreview to handle anyTreeRank and formattedEntry
+ * TODO: don't allow mapping to any field for tree ranks
  * TODO: integrate sorting with column headers
  * TODO: handle trying to query with imcomplete fields
  */
@@ -109,7 +110,6 @@ export function QueryBuilder({
           sortType: undefined,
           filter: 'any',
           startValue: '',
-          details: { type: 'regularField' },
           isNot: false,
           // If mapping path is not unique, don't display the field
           isDisplay: state.fields.every(

@@ -6,10 +6,14 @@ import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
 import { mutateLineData } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
-import { getModel } from '../schema';
+import { getModel, schema } from '../schema';
 import { defined, filterArray } from '../types';
 import type { Parser } from '../uiparse';
 import { resolveParser } from '../uiparse';
+import {
+  parsePartialField,
+  valueIsPartialField,
+} from '../wbplanviewmappinghelper';
 import {
   getMappingLineData,
   getTableFromMappingPath,
@@ -21,7 +25,6 @@ import type {
   CustomSelectType,
 } from './customselectelement';
 import { icons } from './icons';
-import { dateParts } from './internationalization';
 import type {
   QueryFieldFilter,
   QueryFieldType,
@@ -88,20 +91,22 @@ export function QueryLine({
   }>({ fieldType: undefined, pickListName: undefined, parser: undefined });
 
   React.useEffect(() => {
-    let details = field.details;
     let filter = field.filter;
     let fieldType: QueryFieldType | undefined = undefined;
     let parser;
     let pickListName = undefined;
 
+    const [fieldName, datePart] = valueIsPartialField(
+      field.mappingPath.slice(-1)[0] ?? ''
+    )
+      ? parsePartialField<DatePart>(field.mappingPath.slice(-1)[0])
+      : [field.mappingPath.slice(-1)[0], undefined];
     const tableName =
       mappingPathIsComplete(field.mappingPath) &&
-      !field.mappingPath.slice(-1)[0].startsWith('_')
+      !fieldName.startsWith(schema.fieldPartSeparator)
         ? getTableFromMappingPath(baseTableName, field.mappingPath)
         : undefined;
-    const dataModelField = getModel(tableName ?? '')?.getField(
-      field.mappingPath.slice(-1)[0]
-    );
+    const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
     if (
       typeof dataModelField === 'object' &&
       !dataModelField.isRelationship &&
@@ -109,14 +114,9 @@ export function QueryLine({
     ) {
       pickListName = dataModelField.getPickList();
 
-      if (dataModelField.isTemporal() && details.type !== 'dateField')
-        details = { type: 'dateField', datePart: 'fullDate' };
-      else if (!dataModelField.isTemporal() && details.type !== 'regularField')
-        details = { type: 'regularField' };
-
       parser = defined(
         resolveParser(dataModelField, {
-          datePart: details.type === 'dateField' ? details.datePart : undefined,
+          datePart,
           isRequired: true,
         })
       );
@@ -133,15 +133,13 @@ export function QueryLine({
     else {
       parser = undefined;
       filter = 'any';
-      if (details.type !== 'regularField') details = { type: 'regularField' };
     }
 
     setFieldMeta({ parser, fieldType, pickListName });
 
-    if (field.details !== details || field.filter !== filter)
+    if (field.filter !== filter)
       handleChange({
         ...field,
-        details,
         filter,
       });
   }, [
@@ -166,30 +164,10 @@ export function QueryLine({
   const filteredLineData = mutateLineData(lineData, field.mappingPath);
 
   const fieldOptionsByIndex = {
-    [filteredLineData.length]:
-      field.details.type === 'dateField' ? 'datePart' : undefined,
-    [filteredLineData.length + (field.details.type === 'dateField' ? 1 : 0)]:
-      'filter',
+    [filteredLineData.length]: 'filter',
   } as const;
 
   const fieldOptions = filterArray([
-    field.details.type === 'dateField'
-      ? {
-          fieldsData: Object.fromEntries(
-            Object.entries(dateParts).map(([partName, optionLabel]) => [
-              partName,
-              {
-                optionLabel,
-                isDefault:
-                  field.details.type === 'dateField' &&
-                  field.details.datePart === partName,
-              },
-            ])
-          ),
-          selectLabel: queryText('datePart'),
-          customSelectSubtype: 'simple' as CustomSelectSubtype,
-        }
-      : undefined,
     {
       customSelectSubtype: 'simple' as CustomSelectSubtype,
       selectLabel: queryText('filter'),
@@ -218,15 +196,7 @@ export function QueryLine({
     mappingLineData: [...filteredLineData, ...fieldOptions],
     customSelectType: 'CLOSED_LIST',
     onChange: (payload) => {
-      if (fieldOptionsByIndex[payload.index] === 'datePart')
-        handleChange({
-          ...field,
-          details: {
-            type: 'dateField',
-            datePart: payload.newValue as DatePart,
-          },
-        });
-      else if (fieldOptionsByIndex[payload.index] === 'filter')
+      if (fieldOptionsByIndex[payload.index] === 'filter')
         handleChange({
           ...field,
           filter: payload.newValue as QueryFieldFilter,

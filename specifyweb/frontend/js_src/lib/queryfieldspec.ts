@@ -1,6 +1,5 @@
 import type { MappingPath } from './components/wbplanviewmapper';
-import type { SpQueryField } from './datamodel';
-import type { Tables } from './datamodel';
+import type { SpQueryField, Tables } from './datamodel';
 import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -9,9 +8,14 @@ import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { capitalize, toLowerCase } from './wbplanviewhelper';
 import {
+  anyTreeRank,
+  formatPartialField,
+  formattedEntry,
   formatTreeRank,
   getNameFromTreeRankName,
+  parsePartialField,
   relationshipIsToMany,
+  valueIsPartialField,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
@@ -76,9 +80,9 @@ export class QueryFieldSpec {
   }
 
   public toMappingPath(): MappingPath {
-    const path = this.joinPath.flatMap((field) => [
+    let path = this.joinPath.flatMap((field) => [
       isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
-        ? formatTreeRank('_any')
+        ? formatTreeRank(anyTreeRank)
         : undefined,
       field.name,
       field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
@@ -86,9 +90,16 @@ export class QueryFieldSpec {
     if (Array.isArray(this.treeRank)) {
       const [rankName, fieldName] = this.treeRank;
       path.push(formatTreeRank(rankName), fieldName);
-    }
-
-    if (this.joinPath.slice(-1)[0].isRelationship) path.push('_formatted');
+    } else if (this.joinPath.slice(-1)[0].isRelationship)
+      path.push(formattedEntry);
+    else if (this.joinPath.slice(-1)[0].isTemporal())
+      path = [
+        ...path.slice(0, -1),
+        formatPartialField(
+          defined(path.slice(-1)[0]),
+          this.datePart ?? 'fullDate'
+        ),
+      ];
 
     return filterArray(path);
   }
@@ -124,7 +135,7 @@ export class QueryFieldSpec {
     readonly fieldName: string;
   } {
     let fieldName = Array.isArray(this.treeRank)
-      ? this.treeRank[0] === '_any'
+      ? this.treeRank[0] === anyTreeRank
         ? this.treeRank[1]
         : this.treeRank[1] === 'name'
         ? this.treeRank[0]
@@ -148,8 +159,13 @@ export class QueryFieldSpec {
 
     const joinPath: (LiteralField | Relationship)[] = [];
     let node = rootTable;
-    path.every((fieldName, index) => {
-      if (fieldName === '_formatted') return false;
+    path.every((rawFieldName, index) => {
+      const [fieldName, datePart] =
+        index + 1 === path.length && valueIsPartialField(rawFieldName)
+          ? parsePartialField<DatePart>(rawFieldName)
+          : [rawFieldName, undefined];
+
+      if (fieldName === formattedEntry) return false;
       else if (valueIsToManyIndex(fieldName)) return true;
       else if (valueIsTreeRank(fieldName)) {
         fieldSpec.treeRank = [
@@ -159,6 +175,9 @@ export class QueryFieldSpec {
         return false;
       }
       const field = defined(node.getField(fieldName));
+
+      if (field.isTemporal()) fieldSpec.datePart = datePart ?? 'fullDate';
+
       joinPath.push(field);
       if (field.isRelationship) node = defined(field.relatedModel);
       else if (index + 1 !== path.length)

@@ -53,6 +53,10 @@ export const getNameFromTreeRankName = (value: string): string =>
 export const formatToManyIndex = (index: number): string =>
   `${schema.referenceSymbol}${index}`;
 
+// Meta fields
+export const anyTreeRank = `${schema.fieldPartSeparator}any`;
+export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
+
 /**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
@@ -61,6 +65,22 @@ export const formatToManyIndex = (index: number): string =>
  */
 export const formatTreeRank = (rankName: string): string =>
   `${schema.treeSymbol}${rankName}`;
+
+// Match fields names like startDate_fullDate, but not _formatted
+export const valueIsPartialField = (value: string): boolean =>
+  value.includes(schema.fieldPartSeparator) &&
+  !value.startsWith(schema.fieldPartSeparator);
+
+export const formatPartialField = (fieldName: string, part: string): string =>
+  `${fieldName}${schema.fieldPartSeparator}${part}`;
+
+export function parsePartialField<PART extends string>(
+  value: string
+): Readonly<[fieldName: string, part: PART]> {
+  const split = value.split(schema.fieldPartSeparator);
+  if (split.length !== 2) throw new Error('failed to parse partial field');
+  return split as [string, PART];
+}
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
   mappingPath.join(schema.pathJoinSymbol);

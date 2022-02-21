@@ -1,18 +1,20 @@
-import type { State } from 'typesafe-reducer';
-
 import type { QueryFieldFilter } from './components/querybuilderfieldinput';
 import { queryFieldFilters } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import queryText from './localization/query';
-import type { DatePart } from './queryfieldspec';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
-import { formatTreeRank } from './wbplanviewmappinghelper';
+import {
+  anyTreeRank,
+  formatPartialField,
+  formattedEntry,
+  formatTreeRank,
+} from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
@@ -30,9 +32,6 @@ export type QueryField = {
   readonly sortType: typeof sortTypes[number];
   readonly filter: QueryFieldFilter;
   readonly startValue: string;
-  readonly details:
-    | State<'regularField'>
-    | State<'dateField', { datePart: DatePart }>;
   readonly isNot: boolean;
   readonly isDisplay: boolean;
   readonly parser?: Parser;
@@ -48,9 +47,18 @@ export function parseQueryFields(
         field.stringId,
         field.isRelFld ?? false
       );
+      const mappingPath = fieldSpec.toMappingPath();
+      const fieldName =
+        fieldSpec.getField()?.isTemporal() === true
+          ? formatPartialField(
+              mappingPath.slice(-1)[0],
+              fieldSpec.datePart ?? 'fullDate'
+            )
+          : mappingPath.slice(-1)[0];
+
       return {
         id,
-        mappingPath: fieldSpec.toMappingPath(),
+        mappingPath: [...mappingPath.slice(0, -1), fieldName],
         sortType: sortTypes[field.sortType],
         filter: defined(
           // Back-end treats "equal" with blank startValue as "any"
@@ -63,13 +71,6 @@ export function parseQueryFields(
           )
         )[0],
         startValue: field.startValue ?? '',
-        details:
-          fieldSpec.getField()?.isTemporal() === true
-            ? {
-                type: 'dateField',
-                datePart: fieldSpec.datePart ?? 'fullDate',
-              }
-            : { type: 'regularField' },
         isNot,
         isDisplay,
       };
@@ -137,10 +138,11 @@ export const mutateLineData = (
             fieldsData: {
               ...(mappingElementProps.customSelectSubtype === 'tree'
                 ? {
-                    [formatTreeRank('_any')]: {
+                    [formatTreeRank(anyTreeRank)]: {
                       optionLabel: queryText('anyRank'),
                       isRelationship: true,
-                      isDefault: mappingPath[index] === formatTreeRank('_any'),
+                      isDefault:
+                        mappingPath[index] === formatTreeRank(anyTreeRank),
                       tableName: mappingElementProps.tableName,
                     },
                   }
@@ -150,14 +152,14 @@ export const mutateLineData = (
               index === 0
                 ? {}
                 : {
-                    _formatted: {
+                    [formattedEntry]: {
                       optionLabel:
                         mappingElementProps?.customSelectSubtype === 'simple'
                           ? queryText('formatted')
                           : queryText('aggregated'),
                       tableName: mappingElementProps.tableName,
                       isRelationship: false,
-                      isDefault: mappingPath[index] === '_formatted',
+                      isDefault: mappingPath[index] === formattedEntry,
                     },
                   }),
               ...mappingElementProps.fieldsData,
