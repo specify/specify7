@@ -358,11 +358,14 @@ export function MappingElement({
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)
       .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
-      .map(([groupName, groupFields]) => [
+      .map(([groupName, groupFields], _index, { length }) => [
         groupName,
         {
+          // Don't show group labels if there is only one group
           selectGroupLabel:
-            fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+            length === 1
+              ? undefined
+              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
           selectOptionsData: groupFields,
         },
       ])

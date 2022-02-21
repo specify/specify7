@@ -37,8 +37,6 @@ type Properties =
   | 'unmapOption'
   // Autoscroll the list to selected value when created/opened
   | 'autoScroll'
-  // Has option group labels
-  | 'groupLabels'
   // Has tabIndex of 0
   | 'tabIndex'
   /*
@@ -73,7 +71,6 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'interactive',
     'header',
     'autoScroll',
-    'groupLabels',
     'tabIndex',
     'icon',
     'arrow',
@@ -84,7 +81,6 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'preview',
     'unmapOption',
     'autoScroll',
-    'groupLabels',
     'scroll',
     'shadow',
     'icon',
@@ -96,13 +92,7 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
    */
   PREVIEW_LIST: ['preview', 'icon'],
   // Used to display a list of AutoMapper suggestions
-  SUGGESTION_LIST: [
-    'interactive',
-    'groupLabels',
-    'tabIndex',
-    'handleKeyboardClick',
-    'shadow',
-  ],
+  SUGGESTION_LIST: ['interactive', 'tabIndex', 'handleKeyboardClick', 'shadow'],
   // Used for base table selection in mapping view, schema config, et. al.
   BASE_TABLE_SELECTION_LIST: [
     'interactive',
@@ -190,8 +180,6 @@ type CustomSelectElementOptionGroupProps = {
   readonly hasArrow?: boolean;
 };
 
-type CustomSelectElementOptionGroups = IR<CustomSelectElementOptionGroupProps>;
-
 type CustomSelectElementPropsBase = {
   // The label to use for the element
   readonly selectLabel?: string;
@@ -213,7 +201,7 @@ type CustomSelectElementPropsBase = {
     readonly isDoubleClick: boolean;
   }) => void;
   readonly onClose?: () => void;
-  readonly customSelectOptionGroups?: CustomSelectElementOptionGroups;
+  readonly customSelectOptionGroups?: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
 };
 
@@ -236,7 +224,7 @@ export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
 };
 
 type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
-  readonly customSelectOptionGroups: CustomSelectElementOptionGroups;
+  readonly customSelectOptionGroups: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
 };
 
@@ -659,9 +647,7 @@ export function CustomSelectElement({
             selectGroupName={selectGroupName}
             {...selectGroupData}
             selectGroupLabel={
-              has('groupLabels') && customSelectSubtype === 'simple'
-                ? selectGroupLabel
-                : undefined
+              customSelectSubtype === 'simple' ? selectGroupLabel : undefined
             }
             hasIcon={has('icon')}
             hasArrow={has('arrow')}
