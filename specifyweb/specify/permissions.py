@@ -10,7 +10,7 @@ enforcer = casbin.Enforcer("/home/ben/perm_model.conf", "/home/ben/perm_policy.c
 class AccessDeniedException(Exception):
     pass
 
-def enforce(agent, resources, action):
+def enforce(collection, agent, resources, action):
     if not resources: return
 
     try:
@@ -18,7 +18,7 @@ def enforce(agent, resources, action):
     except ObjectDoesNotExist:
         raise AccessDeniedException(f"agent {agent} is not a Specify user")
 
-    perm_requests = [(subject, resource, action) for resource in resources]
+    perm_requests = [(subject, str(collection.id), resource, action) for resource in resources]
     results = [(r, *enforcer.enforce_ex(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
@@ -26,11 +26,11 @@ def enforce(agent, resources, action):
     if denials:
         raise AccessDeniedException(denials)
 
-def check_table_permissions(agent, obj, action):
+def check_table_permissions(collection, agent, obj, action):
     name = obj.specify_model.name.lower()
-    enforce(agent, [f'/table/{name}'], action)
+    enforce(collection, agent, [f'/table/{name}'], action)
 
-def check_field_permissions(agent, obj, fields, action):
+def check_field_permissions(collection, agent, obj, fields, action):
     table = obj.specify_model.name.lower()
-    enforce(agent, [f'/field/{table}/{field}' for field in fields], action)
+    enforce(collection, agent, [f'/field/{table}/{field}' for field in fields], action)
 
