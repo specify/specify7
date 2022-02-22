@@ -53,7 +53,7 @@ import {format} from './dataobjformatters';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
-import {defined} from './types';
+import {defined, filterArray} from './types';
 import {fetchPickLists} from './picklists';
 import {crash} from './components/errorboundary';
 import {getTreeDefinitionItems} from './treedefinitions';
@@ -105,7 +105,7 @@ const WBView = Backbone.View.extend({
     this.mappings /* :
       | undefined
       | {
-        baseTableName: string;
+        baseTable: SpecifyModel;
         mustMatchTables: Set<keyof Tables>;
         lines: RA<SplitMappingsPath>;
         tableNames: RA<string>; // tableName of each column
@@ -297,14 +297,11 @@ const WBView = Backbone.View.extend({
 
     this.initHot().then(() => {
       if (this.dataset.uploadplan) {
-        this.mappings = parseUploadPlan(
-          this.dataset.columns,
-          this.dataset.uploadplan
-        );
+        this.mappings = parseUploadPlan(this.dataset.uploadplan);
 
         this.mappings.tableNames = this.mappings.lines.map(({ mappingPath }) =>
           getTableFromMappingPath(
-            this.mappings.baseTableName,
+            this.mappings.baseTable.name,
             // Remove field name from mapping path
             mappingPath.slice(0, -1)
           )
@@ -629,31 +626,34 @@ const WBView = Backbone.View.extend({
   identifyPickLists(pickListDefinitions) {
     if (!this.mappings) return;
     const pickLists = Object.fromEntries(
-      this.mappings.tableNames
-        .map((tableName, index) => ({
-          tableName,
-          fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
-          headerName: this.mappings.lines[index].headerName,
-        }))
-        .map(({ tableName, fieldName, headerName }) => {
-          const pickList = getModel(tableName)
-            ?.getField(fieldName)
-            ?.getPickList();
-          const definition = pickListDefinitions.find(
-            (definition) => definition.get('name') === pickList
-          );
-          if (typeof definition === 'undefined') return undefined;
-          const serialized = serializeResource(definition);
-          return {
-            physicalCol: this.dataset.columns.indexOf(headerName),
-            pickList: {
-              readOnly: serialized.readOnly,
-              items: serialized.pickListItems.map(({ title }) => title),
-            },
-          };
-        })
-        .filter((result) => typeof result === 'object')
-        .map(Object.values)
+      filterArray(
+        this.mappings.tableNames
+          .map((tableName, index) => ({
+            tableName,
+            fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
+            headerName: this.mappings.lines[index].headerName,
+          }))
+          .map(({ tableName, fieldName, headerName }) => {
+            const pickList = getModel(tableName)
+              ?.getField(fieldName)
+              ?.getPickList();
+            const definition =
+              typeof pickList === 'string'
+                ? pickListDefinitions.find(
+                    (definition) => definition.get('name') === pickList
+                  )
+                : undefined;
+            if (typeof definition === 'undefined') return undefined;
+            const serialized = serializeResource(definition);
+            return {
+              physicalCol: this.dataset.columns.indexOf(headerName),
+              pickList: {
+                readOnly: serialized.readOnly,
+                items: serialized.pickListItems.map(({ title }) => title),
+              },
+            };
+          })
+      ).map(Object.values)
     );
     this.hot.updateSettings({
       cells: (_physicalRow, physicalCol, _property) =>
@@ -1455,7 +1455,7 @@ const WBView = Backbone.View.extend({
       ({ physicalCols }) => physicalCols.includes(physicalCol)
     );
     const tableName = getTableFromMappingPath(
-      this.mappings.baseTableName,
+      this.mappings.baseTable.name,
       matches.mappingPath
     );
     const model = getModel(tableName);

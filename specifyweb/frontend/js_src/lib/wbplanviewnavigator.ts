@@ -174,7 +174,7 @@ export function getMappingLineData({
   getMappedFields,
   showHiddenFields = false,
   mustMatchPreferences = {},
-  scope = 'queryBuilder',
+  scope = 'wbPlanView',
 }: {
   readonly baseTableName: keyof Tables;
   // The mapping path

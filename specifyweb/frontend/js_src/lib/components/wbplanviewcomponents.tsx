@@ -94,7 +94,7 @@ export function ListOfBaseTables({
       onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
       fieldsData={fieldsData}
       customSelectType="BASE_TABLE_SELECTION_LIST"
-      customSelectSubtype="simple"
+      customSelectSubtype="tree"
     />
   );
 }

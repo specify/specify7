@@ -535,8 +535,8 @@ export default Backbone.View.extend({
   findLocalityColumns() {
     this.localityColumns = this.wbview.mappings
       ? findLocalityColumnsInDataSet(
-          this.wbview.mappings.baseTableName,
-          this.wbview.mappings.splitMappingPaths
+          this.wbview.mappings.baseTable.name,
+          this.wbview.mappings.lines
         )
       : [];
 
