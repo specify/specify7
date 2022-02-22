@@ -9,7 +9,7 @@ from django.db.models.deletion import Collector
 from django.db import router
 
 from .specify_jar import specify_jar
-from . import api, models
+from . import api, models, permissions
 
 
 def login_maybe_required(view):
@@ -30,6 +30,16 @@ def apply_access_control(view):
         if request.method != "GET" and request.specify_readonly:
             return http.HttpResponseForbidden()
         return view(request, *args, **kwargs)
+    return wrapped
+
+def check_for_permissions_violation(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        try:
+            return view(request, *args, **kwargs)
+        except permissions.AccessDeniedException as e:
+            raise
+            #return http.HttpResponseBadRequest(e)
     return wrapped
 
 class HttpResponseConflict(http.HttpResponse):
@@ -53,6 +63,7 @@ def api_view(dispatch_func):
     @login_maybe_required
     @cache_control(private=True, max_age=2)
     @apply_access_control
+    @check_for_permissions_violation
     def view(request, *args, **kwargs):
         """RESTful API endpoint for most Specify datamodel resources.
         <model> is the table from the Specify datamodel. <id> is the

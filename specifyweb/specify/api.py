@@ -17,6 +17,7 @@ from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
+from .permissions import check_table_permissions, check_field_permissions
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
@@ -336,7 +337,7 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     data = cleanData(model, data, agent)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
-    set_fields_from_data(obj, data, False)
+    set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
     try:
@@ -345,39 +346,33 @@ def create_obj(collection, agent, model, data, parent_obj=None):
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
+        check_table_permissions(agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
-def should_audit(field):
-    if field.name == 'timestampmodified':
-        return False
-    else:
-        return True
-    
 def fld_change_info(obj, field, val):
-    if should_audit(field):
+    if field.name != 'timestampmodified':
         value = prepare_value(field, val)
         if isinstance(field, FloatField) or isinstance(field, DecimalField):
-            value = value and float(value)
+            value = None if value is None else float(value)
         old_value = getattr(obj, field.name)
         if str(old_value) != str(value):
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
         else:
             return None
-    
-def set_fields_from_data(obj, data, audit):
+
+def set_fields_from_data(obj, data):
      """Where 'obj' is a Django model instance and 'data' is a dict,
      set all fields provided by data that are not related object fields.
      """
-     dirty_flds = [] 
+     dirty_flds = []
      for field_name, val in list(data.items()):
          field = obj._meta.get_field(field_name)
          if not field.is_relation:
-             if audit:
-                 fld_change = fld_change_info(obj, field, val)
-                 if fld_change is not None:
-                     dirty_flds.append(fld_change)
+             fld_change = fld_change_info(obj, field, val)
+             if fld_change is not None:
+                 dirty_flds.append(fld_change)
              setattr(obj, field_name, prepare_value(field, val))
      return dirty_flds
 
@@ -426,7 +421,7 @@ def reorder_fields_for_embedding(cls, data):
         yield (key, data[key])
 
 
-def handle_fk_fields(collection, agent, obj, data, checkchanges = False):
+def handle_fk_fields(collection, agent, obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -485,7 +480,7 @@ def handle_fk_fields(collection, agent, obj, data, checkchanges = False):
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
-        if checkchanges and str(old_related_id) != str(new_related_id):
+        if str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
 
     return dependents_to_delete, dirty
@@ -533,6 +528,7 @@ def handle_to_many(collection, agent, obj, data):
         # TODO: Check versions for optimistic locking.
         to_delete = getattr(obj, field_name).exclude(id__in=ids)
         for rel_obj in to_delete:
+            check_table_permissions(agent, rel_obj, "delete")
             auditlog.remove(rel_obj, agent, obj)
         to_delete.delete()
 
@@ -554,6 +550,7 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
+    check_table_permissions(agent, obj, "delete")
     auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
@@ -562,7 +559,7 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
     for dep in dependents_to_delete:
       delete_obj(agent, dep, parent_obj=obj)
 
-      
+
 @transaction.atomic
 def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
@@ -572,10 +569,13 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
+    check_table_permissions(agent, obj, "update")
+
     data = cleanData(obj.__class__, data, agent)
-    fk_info = handle_fk_fields(collection, agent, obj, data, auditlog.isAuditingFlds())
-    dependents_to_delete = fk_info[0]
-    dirty = fk_info[1] + set_fields_from_data(obj, data, auditlog.isAuditingFlds())
+    dependents_to_delete, fk_dirty = handle_fk_fields(collection, agent, obj, data)
+    dirty = fk_dirty + set_fields_from_data(obj, data)
+
+    check_field_permissions(agent, obj, [d['field_name'] for d in dirty], "update")
 
     try:
         obj._meta.get_field('modifiedbyagent')
