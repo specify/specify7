@@ -3,6 +3,7 @@
  *
  * @module
  */
+import { error } from './assert';
 
 // Record
 export type R<V> = Record<string, V>;
@@ -15,7 +16,7 @@ export type RA<V> = readonly V[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
 export function defined<T>(value: T | undefined): T {
-  if (typeof value === 'undefined') throw new Error('Value is not defined');
+  if (typeof value === 'undefined') error('Value is not defined');
   else return value;
 }
 

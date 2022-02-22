@@ -7,6 +7,7 @@
 
 import React from 'react';
 
+import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import type { IR } from '../types';
@@ -98,6 +99,7 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
+  breakpoint();
   console.error(error);
   new UnhandledErrorView({
     children:
