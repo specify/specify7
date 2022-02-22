@@ -7,7 +7,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
-from . import api, models
+from . import api, models, permissions
 from .specify_jar import specify_jar
 
 
@@ -31,6 +31,16 @@ def apply_access_control(view):
         return view(request, *args, **kwargs)
     return wrapped
 
+def check_for_permissions_violation(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        try:
+            return view(request, *args, **kwargs)
+        except permissions.AccessDeniedException as e:
+            raise
+            #return http.HttpResponseBadRequest(e)
+    return wrapped
+
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
@@ -52,6 +62,7 @@ def api_view(dispatch_func):
     @login_maybe_required
     @cache_control(private=True, max_age=2)
     @apply_access_control
+    @check_for_permissions_violation
     def view(request, *args, **kwargs):
         """RESTful API endpoint for most Specify datamodel resources.
         <model> is the table from the Specify datamodel. <id> is the

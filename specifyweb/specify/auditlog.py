@@ -51,7 +51,7 @@ class AuditLog(object):
     
     def log_action(self, action, obj, agent, parent_record, dirty_flds):
         log_obj = self._log(action, obj, agent, parent_record)
-        if log_obj is not None:
+        if log_obj is not None and self.isAuditingFlds():
             for vals in dirty_flds:
                 self._log_fld_update(vals, log_obj, agent)
         return log_obj
