@@ -80,18 +80,20 @@ export class QueryFieldSpec {
   }
 
   public toMappingPath(): MappingPath {
-    let path = this.joinPath.flatMap((field) => [
-      isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
-        ? formatTreeRank(anyTreeRank)
-        : undefined,
-      field.name,
-      field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
-    ]);
+    let path = filterArray(
+      this.joinPath.flatMap((field) => [
+        isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
+          ? formatTreeRank(anyTreeRank)
+          : undefined,
+        field.name,
+        field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
+      ])
+    );
     if (Array.isArray(this.treeRank)) {
       const [rankName, fieldName] = this.treeRank;
-      path.push(formatTreeRank(rankName), fieldName);
+      path = [...path, formatTreeRank(rankName), fieldName];
     } else if (this.joinPath.slice(-1)[0].isRelationship)
-      path.push(formattedEntry);
+      path = [...path, formattedEntry];
     else if (this.joinPath.slice(-1)[0].isTemporal())
       path = [
         ...path.slice(0, -1),
@@ -101,7 +103,7 @@ export class QueryFieldSpec {
         ),
       ];
 
-    return filterArray(path);
+    return path;
   }
 
   private isRelationship(): boolean {

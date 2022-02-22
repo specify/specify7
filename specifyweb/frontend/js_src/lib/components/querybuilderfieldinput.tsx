@@ -32,6 +32,7 @@ export type QueryFieldFilter =
   | 'empty'
   | 'trueOrNull'
   | 'falseOrNull';
+export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set(['equal', 'in']);
 
 function QueryInputField({
   currentValue,

@@ -11,7 +11,6 @@ import type { Parser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
 import {
   anyTreeRank,
-  formatPartialField,
   formattedEntry,
   formatTreeRank,
 } from './wbplanviewmappinghelper';
@@ -47,18 +46,10 @@ export function parseQueryFields(
         field.stringId,
         field.isRelFld ?? false
       );
-      const mappingPath = fieldSpec.toMappingPath();
-      const fieldName =
-        fieldSpec.getField()?.isTemporal() === true
-          ? formatPartialField(
-              mappingPath.slice(-1)[0],
-              fieldSpec.datePart ?? 'fullDate'
-            )
-          : mappingPath.slice(-1)[0];
 
       return {
         id,
-        mappingPath: [...mappingPath.slice(0, -1), fieldName],
+        mappingPath: fieldSpec.toMappingPath(),
         sortType: sortTypes[field.sortType],
         filter: defined(
           // Back-end treats "equal" with blank startValue as "any"

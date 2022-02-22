@@ -98,7 +98,6 @@ export function QueryBuilder({
     queryText('queryUnloadProtectDialogMessage')
   );
 
-  const mapButtonEnabled = mappingPathIsComplete(state.mappingView);
   const handleAddField = (): void =>
     dispatch({
       type: 'ChangeFieldsAction',
@@ -133,6 +132,11 @@ export function QueryBuilder({
   }
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
+  const mapButtonEnabled =
+    mappingPathIsComplete(state.mappingView) &&
+    !getMappedFieldsBind(state.mappingView.slice(0, -1)).includes(
+      state.mappingView.slice(-1)[0]
+    );
 
   return (
     <ContainerFull

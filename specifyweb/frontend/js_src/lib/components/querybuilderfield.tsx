@@ -30,7 +30,11 @@ import type {
   QueryFieldFilter,
   QueryFieldType,
 } from './querybuilderfieldinput';
-import { queryFieldFilters, QueryLineFilter } from './querybuilderfieldinput';
+import {
+  filtersWithDefaultValue,
+  queryFieldFilters,
+  QueryLineFilter,
+} from './querybuilderfieldinput';
 import createBackboneView from './reactbackboneextend';
 import {
   getMappingLineProps,
@@ -171,9 +175,7 @@ export function QueryLine({
    */
   const filteredLineData = mutateLineData(lineData, field.mappingPath);
 
-  const fieldOptionsByIndex = {
-    [filteredLineData.length]: 'filter',
-  } as const;
+  const filterBoxIndex = filteredLineData.length;
 
   const fieldOptions = filterArray([
     {
@@ -204,18 +206,27 @@ export function QueryLine({
     mappingLineData: [...filteredLineData, ...fieldOptions],
     customSelectType: 'CLOSED_LIST',
     onChange: (payload) => {
-      if (fieldOptionsByIndex[payload.index] === 'filter')
+      const newFilter = payload.newValue as QueryFieldFilter;
+      if (filterBoxIndex === payload.index) {
+        const startValue =
+          field.filter === 'any' &&
+          filtersWithDefaultValue.has(newFilter) &&
+          field.startValue === '' &&
+          typeof fieldMeta.parser?.value === 'string'
+            ? fieldMeta.parser.value
+            : field.startValue;
         handleChange({
           ...field,
-          filter: payload.newValue as QueryFieldFilter,
+          startValue,
+          filter: newFilter,
         });
-      else handleMappingChange(payload);
+      } else handleMappingChange(payload);
     },
     onOpen: handleOpen,
     onClose: handleClose,
     openSelectElement: openedElement,
   }).map((elementProps, index) =>
-    typeof fieldOptionsByIndex[index] === 'string'
+    filterBoxIndex === index
       ? {
           ...elementProps,
           customSelectType: 'OPTIONS_LIST' as CustomSelectType,

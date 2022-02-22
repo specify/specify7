@@ -54,6 +54,8 @@ export type Parser = Partial<{
   // Format the value after validating it
   readonly parser: (value: unknown) => unknown;
   readonly required: boolean;
+  // Default value
+  readonly value: string;
 }>;
 
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
@@ -153,6 +155,7 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: new Date().getFullYear().toString(),
   },
 
   month: {
@@ -162,6 +165,7 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: new Date().getMonth().toString(),
   },
 
   day: {
@@ -171,6 +175,7 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: new Date().getDate().toString(),
   },
 
   text: {
@@ -188,8 +193,10 @@ export function resolveParser(
   extras?: Partial<ExtendedField>
 ): Parser | undefined {
   const fullField = { ...field, ...extras };
-  let parser = parsers[fullField.type as ExtendedJavaType];
-  if (typeof parser === 'string') parser = parsers[parser];
+  const fieldType = fullField.type as ExtendedJavaType;
+  let parser = parsers[fieldType];
+  if (typeof parser === 'string')
+    parser = parsers[parser];
   if (typeof parser === 'function') parser = parser();
   if (typeof parser !== 'object') return undefined;
 
@@ -258,7 +265,7 @@ export const getValidationAttributes = (parser: Parser): IR<string> =>
   typeof parser === 'object'
     ? {
         ...(parser.required === true
-          ? // A hack to make these attributes work both for JSX and native
+          ? // A hack to make these attributes work both in JSX and native
             { required: true as unknown as string }
           : {}),
         ...(typeof parser.pattern === 'object'

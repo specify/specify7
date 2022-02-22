@@ -1,6 +1,6 @@
-import { agentTypes } from './picklists';
 import { fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
+import { agentTypes } from './picklists';
 import type { LiteralField } from './specifyfield';
 import type { IR } from './types';
 
