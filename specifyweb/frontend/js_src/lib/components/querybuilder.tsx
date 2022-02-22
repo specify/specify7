@@ -71,21 +71,6 @@ export function QueryBuilder({
     bucketType: 'localStorage',
     defaultValue: false,
   });
-  const [showQueryDefinition = true, setShowQueryDefinition] = useCachedState({
-    bucketName: 'queryBuilder',
-    cacheName: 'showQueryDefinition',
-    bucketType: 'localStorage',
-    defaultValue: true,
-  });
-
-  // UnHide query definition if there are no fields
-  React.useEffect(
-    () =>
-      !showQueryDefinition && state.fields.length === 0
-        ? setShowQueryDefinition(true)
-        : undefined,
-    [showQueryDefinition, state.fields.length, setShowQueryDefinition]
-  );
 
   React.useEffect(() => {
     queryResource.once('saverequired', () =>
@@ -176,20 +161,6 @@ export function QueryBuilder({
               : queryText('queryTaskTitle')(query.name)}
           </H2>
           <span className="flex-1 ml-2" />
-          <Button.Simple
-            className={showQueryDefinition ? '' : 'active'}
-            disabled={showQueryDefinition && state.fields.length === 0}
-            onClick={(): void => {
-              const newState = !showQueryDefinition;
-              setShowQueryDefinition(newState);
-              if (!newState) runQuery('regular');
-            }}
-            aria-pressed={!showQueryDefinition}
-          >
-            {showQueryDefinition
-              ? queryText('hideDefinition')
-              : queryText('editQuery')}
-          </Button.Simple>
           <QueryExportButtons
             baseTableName={state.baseTableName}
             fields={state.fields}
@@ -223,117 +194,113 @@ export function QueryBuilder({
         </header>
         <div className="flex-1 overflow-y-auto">
           <div className="gap-y-4 flex flex-col">
-            {showQueryDefinition && (
-              <div className="gap-y-4 min-h-[50%] flex flex-col">
-                <QueryFields
-                  baseTableName={state.baseTableName}
-                  fields={state.fields}
-                  onRemoveField={(line): void =>
-                    dispatch({
-                      type: 'ChangeFieldsAction',
-                      fields: state.fields.filter((_, index) => index !== line),
-                    })
-                  }
-                  onChangeField={(line, field): void =>
-                    dispatch({ type: 'ChangeFieldAction', line, field })
-                  }
-                  onMappingChange={(line, payload): void =>
-                    dispatch({
-                      type: 'ChangeSelectElementValueAction',
-                      line,
-                      ...payload,
-                    })
-                  }
-                  onOpen={(line, index): void =>
-                    dispatch({
-                      type: 'ChangeOpenedElementAction',
-                      line,
-                      index,
-                    })
-                  }
-                  onClose={(): void =>
-                    dispatch({
-                      type: 'ChangeOpenedElementAction',
-                      line: state.openedElement.line,
-                      index: undefined,
-                    })
-                  }
-                  onLineFocus={(line): void =>
-                    state.openedElement.line === line
-                      ? undefined
-                      : dispatch({
-                          type: 'FocusLineAction',
-                          line,
-                        })
-                  }
-                  onLineMove={(line, direction): void =>
-                    dispatch({
-                      type: 'LineMoveAction',
-                      line,
-                      direction,
-                    })
-                  }
-                  openedElement={state.openedElement}
-                  showHiddenFields={showHiddenFields}
-                  getMappedFields={getMappedFieldsBind}
-                />
-                <MappingView
-                  mappingElementProps={getMappingLineProps({
-                    mappingLineData: mutateLineData(
-                      getMappingLineData({
-                        baseTableName: state.baseTableName,
-                        mappingPath: state.mappingView,
-                        showHiddenFields,
-                        generateFieldData: 'all',
-                        scope: 'queryBuilder',
-                        getMappedFields: getMappedFieldsBind,
-                      }),
-                      state.mappingView
-                    ),
-                    customSelectType: 'OPENED_LIST',
-                    onChange({ isDoubleClick, ...rest }) {
-                      if (isDoubleClick && mapButtonEnabled) handleAddField();
-                      else
-                        dispatch({
-                          type: 'ChangeSelectElementValueAction',
-                          line: 'mappingView',
-                          ...rest,
-                        });
-                    },
-                  })}
-                  mapButton={
-                    <Button.Simple
-                      className="flex-col justify-center p-2"
-                      disabled={!mapButtonEnabled}
-                      onClick={handleAddField}
-                      title={queryText('newButtonDescription')}
+            <div className="gap-y-4 min-h-[50%] flex flex-col">
+              <QueryFields
+                baseTableName={state.baseTableName}
+                fields={state.fields}
+                onRemoveField={(line): void =>
+                  dispatch({
+                    type: 'ChangeFieldsAction',
+                    fields: state.fields.filter((_, index) => index !== line),
+                  })
+                }
+                onChangeField={(line, field): void =>
+                  dispatch({ type: 'ChangeFieldAction', line, field })
+                }
+                onMappingChange={(line, payload): void =>
+                  dispatch({
+                    type: 'ChangeSelectElementValueAction',
+                    line,
+                    ...payload,
+                  })
+                }
+                onOpen={(line, index): void =>
+                  dispatch({
+                    type: 'ChangeOpenedElementAction',
+                    line,
+                    index,
+                  })
+                }
+                onClose={(): void =>
+                  dispatch({
+                    type: 'ChangeOpenedElementAction',
+                    line: state.openedElement.line,
+                    index: undefined,
+                  })
+                }
+                onLineFocus={(line): void =>
+                  state.openedElement.line === line
+                    ? undefined
+                    : dispatch({
+                        type: 'FocusLineAction',
+                        line,
+                      })
+                }
+                onLineMove={(line, direction): void =>
+                  dispatch({
+                    type: 'LineMoveAction',
+                    line,
+                    direction,
+                  })
+                }
+                openedElement={state.openedElement}
+                showHiddenFields={showHiddenFields}
+                getMappedFields={getMappedFieldsBind}
+              />
+              <MappingView
+                mappingElementProps={getMappingLineProps({
+                  mappingLineData: mutateLineData(
+                    getMappingLineData({
+                      baseTableName: state.baseTableName,
+                      mappingPath: state.mappingView,
+                      showHiddenFields,
+                      generateFieldData: 'all',
+                      scope: 'queryBuilder',
+                      getMappedFields: getMappedFieldsBind,
+                    }),
+                    state.mappingView
+                  ),
+                  customSelectType: 'OPENED_LIST',
+                  onChange({ isDoubleClick, ...rest }) {
+                    if (isDoubleClick && mapButtonEnabled) handleAddField();
+                    else
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line: 'mappingView',
+                        ...rest,
+                      });
+                  },
+                })}
+                mapButton={
+                  <Button.Simple
+                    className="flex-col justify-center p-2"
+                    disabled={!mapButtonEnabled}
+                    onClick={handleAddField}
+                    title={queryText('newButtonDescription')}
+                  >
+                    {commonText('add')}
+                    <span
+                      className={`text-green-500 ${
+                        mapButtonEnabled ? '' : 'invisible'
+                      }`}
+                      aria-hidden="true"
                     >
-                      {commonText('add')}
-                      <span
-                        className={`text-green-500 ${
-                          mapButtonEnabled ? '' : 'invisible'
-                        }`}
-                        aria-hidden="true"
-                      >
-                        &#8594;
-                      </span>
-                    </Button.Simple>
+                      &#8594;
+                    </span>
+                  </Button.Simple>
+                }
+              />
+            </div>
+            <div role="toolbar" className="flex flex-wrap gap-2">
+              <LabelForCheckbox>
+                <Checkbox
+                  checked={showHiddenFields}
+                  onChange={({ target }): void =>
+                    setShowHiddenFields(target.checked)
                   }
                 />
-              </div>
-            )}
-            <div role="toolbar" className="flex flex-wrap gap-2">
-              {showQueryDefinition && (
-                <LabelForCheckbox>
-                  <Checkbox
-                    checked={showHiddenFields}
-                    onChange={({ target }): void =>
-                      setShowHiddenFields(target.checked)
-                    }
-                  />
-                  {wbText('revealHiddenFormFields')}
-                </LabelForCheckbox>
-              )}
+                {wbText('revealHiddenFormFields')}
+              </LabelForCheckbox>
               <span className="flex-1 -ml-2" />
               <Button.Simple
                 disabled={state.fields.length === 0}

@@ -376,12 +376,6 @@ const queryText = createDictionary({
     ca: 'Edit Query',
     'es-es': 'Edit Query',
   },
-  hideDefinition: {
-    'en-us': 'Hide Definition',
-    'ru-ru': 'Скрыть определение',
-    ca: 'Hide Definition',
-    'es-es': 'Hide Definition',
-  },
   aggregated: {
     'en-us': '(aggregated)',
     'ru-ru': '(совокупный)',
