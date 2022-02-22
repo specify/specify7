@@ -17,7 +17,8 @@ import {
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
-const sortTypes = [undefined, 'ascending', 'descending'];
+export type SortTypes = undefined | 'ascending' | 'descending';
+export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
 export const flippedSortTypes = {
   none: 0,
   ascending: 1,
@@ -25,10 +26,13 @@ export const flippedSortTypes = {
 } as const;
 
 export type QueryField = {
-  // Used as a React [key] prop only in order to optimize rendering
+  /*
+   * Used only as a React [key] prop in order to optimize rendering when query
+   * lines move
+   */
   readonly id: number;
   readonly mappingPath: MappingPath;
-  readonly sortType: typeof sortTypes[number];
+  readonly sortType: SortTypes;
   readonly filter: QueryFieldFilter;
   readonly startValue: string;
   readonly isNot: boolean;

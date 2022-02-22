@@ -55,6 +55,7 @@ function ErrorDialog({
   title = commonText('errorBoundaryDialogTitle'),
   header = commonText('errorBoundaryDialogHeader'),
   children,
+  // Error dialog is only closable in Development
   onClose: handleClose,
 }: {
   readonly children: React.ReactNode;
@@ -101,13 +102,15 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 export function crash(error: Error): void {
   breakpoint();
   console.error(error);
-  new UnhandledErrorView({
+  const handleClose = () => view.remove();
+  const view = new UnhandledErrorView({
     children:
       error.message ??
       // "error.responseText" is for jQuery exceptions
       (error as unknown as { readonly responseText: string }).responseText ??
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
       error.toString(),
+    onClose: handleClose,
   }).render();
 }
 

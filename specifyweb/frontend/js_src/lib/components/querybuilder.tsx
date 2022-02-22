@@ -8,8 +8,6 @@ import wbText from '../localization/workbench';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
-import { scrollIntoView } from '../treeviewutils';
-import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
@@ -20,6 +18,7 @@ import {
   H2,
   LabelForCheckbox,
   Submit,
+  transitionDuration,
 } from './basic';
 import { TableIcon } from './common';
 import { useUnloadProtect } from './hooks';
@@ -37,11 +36,23 @@ import { MappingView } from './wbplanviewmappercomponents';
 
 /*
  * TODO: test using sp7 queries in sp6 and vice versa
- * TODO: autorun query if opened without definition visible
  * TODO: update getMappingPathPreview to handle anyTreeRank and formattedEntry
  * TODO: don't allow mapping to any field for tree ranks
- * TODO: integrate sorting with column headers
- * TODO: handle trying to query with imcomplete fields
+ * TODO: handle trying to query with incomplete fields
+ * TODO: new query table list empty
+ * TODO: pick lists in query results
+ * TODO: OR filters
+ * TODO: creating record set out of a subset of results
+ * TODO: changing sort settings by clicking on header names
+ * TODO: make sure formatters are used in query results
+ * TODO: don't display groupHeaders for base table selection table
+ * TODO: no query results case handle in query table?
+ * TODO: shift+click for selected rows
+ * TODO: see results in form view
+ * TODO: navigate between selected results
+ * TODO: test query reports
+ * TODO: make "in" field box longer? or auto grow in size
+ * TODO: once done, deploy to test server
  */
 export function QueryBuilder({
   query: queryResource,
@@ -96,21 +107,19 @@ export function QueryBuilder({
           filter: 'any',
           startValue: '',
           isNot: false,
-          // If mapping path is not unique, don't display the field
-          isDisplay: state.fields.every(
-            ({ mappingPath }) =>
-              mappingPathToString(mappingPath) !==
-              mappingPathToString(state.mappingView)
-          ),
+          isDisplay: true,
         },
       ],
     });
 
-  function runQuery(mode: 'regular' | 'distinct' | 'count'): void {
-    if (state.fields.length === 0) return;
+  function runQuery(
+    mode: 'regular' | 'distinct' | 'count',
+    fields: typeof state.fields = state.fields
+  ): void {
+    if (fields.length === 0) return;
     setQuery({
       ...query,
-      fields: unParseQueryFields(state.baseTableName, state.fields),
+      fields: unParseQueryFields(state.baseTableName, fields),
       selectDistinct: mode === 'distinct',
       countOnly: mode === 'count',
     });
@@ -127,12 +136,11 @@ export function QueryBuilder({
   // Scroll down to query results when pressed the "Query" button
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    if (
-      state.queryRunCount !== 0 &&
-      containerRef.current !== null &&
-      containerRef.current.lastChild !== null
-    )
-      scrollIntoView(containerRef.current.lastChild as HTMLElement);
+    if (state.queryRunCount !== 0 && containerRef.current !== null)
+      (containerRef.current as HTMLElement).scrollTo({
+        top: containerRef.current.clientHeight,
+        behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+      });
   }, [state.queryRunCount]);
 
   return (
@@ -345,6 +353,18 @@ export function QueryBuilder({
             fields={state.fields}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            onSortChange={(index, sortType): void => {
+              dispatch({
+                type: 'ChangeFieldAction',
+                line: index,
+                field: { ...state.fields[index], sortType },
+              });
+              runQuery('regular', [
+                ...state.fields.slice(0, index),
+                { ...state.fields[index], sortType },
+                ...state.fields.slice(index + 1),
+              ]);
+            }}
           />
         </div>
       </Form>

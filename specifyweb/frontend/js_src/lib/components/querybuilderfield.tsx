@@ -4,7 +4,7 @@ import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
-import { mutateLineData } from '../querybuilderutils';
+import { mutateLineData, sortTypes } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
 import { getModel, schema } from '../schema';
 import type { RA } from '../types';
@@ -368,11 +368,9 @@ export function QueryLine({
             handleChange({
               ...field,
               sortType:
-                field.sortType === 'ascending'
-                  ? 'descending'
-                  : field.sortType === 'descending'
-                  ? undefined
-                  : 'ascending',
+                sortTypes[
+                  (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
+                ],
             })
           }
         >

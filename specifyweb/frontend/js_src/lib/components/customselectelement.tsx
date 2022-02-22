@@ -16,6 +16,7 @@ import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
+import { transitionDuration } from './basic';
 import {
   TableIcon,
   tableIconEmpty,
@@ -685,7 +686,11 @@ export function CustomSelectElement({
     undefined | CustomSelectElementDefaultOptionProps
   >(undefined);
   React.useEffect(() => {
+    const optionChanged =
+      Object.values(defaultOption).join('') !==
+      Object.values(previousDefaultOption.current ?? {}).join('');
     if (
+      optionChanged &&
       /* Auto scroll the list to selected option if: */
       // List is open
       listOfOptionsRef.current !== null &&
@@ -714,25 +719,22 @@ export function CustomSelectElement({
           minGoodOffsetTop > listOfOptionsRef.current.scrollTop ||
           listOfOptionsRef.current.scrollTop > maxGoodOffsetTop
         )
-          scrollIntoView(selectedOption, 'nearest');
-        /*
-         * Make selected option appear at the middle of the list, if possible
-         */
-        /*
-         * ListOfOptionsRef.current.scrollTop =
-         *   minGoodOffsetTop === 0
-         *     ? 0
-         *     : Math.floor(
-         *         minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
-         *       );
-         */
+          /*
+           * Make selected option appear at the middle of the list, if possible
+           */
+          selectedOption.scrollTo({
+            top:
+              minGoodOffsetTop === 0
+                ? 0
+                : Math.floor(
+                    minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
+                  ),
+            behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+          });
+        scrollIntoView(selectedOption, 'nearest');
       }
-    }
-    if (
-      Object.values(defaultOption).join('') !==
-      Object.values(previousDefaultOption.current ?? {}).join('')
-    )
       previousDefaultOption.current = defaultOption;
+    }
   }, [defaultOption, has]);
 
   const customSelectElementRef = React.useRef<HTMLElement>(null);

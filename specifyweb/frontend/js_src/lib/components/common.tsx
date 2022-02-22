@@ -7,12 +7,12 @@
 
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
+import { getModel } from '../schema';
 import { spanNumber } from '../wbplanviewhelper';
 import { icons } from './icons';
-import { getModel } from '../schema';
-import { Tables } from '../datamodel';
 
 const MAX_HUE = 360;
 

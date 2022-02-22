@@ -7,15 +7,15 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
-import { queryFieldsToFieldSpecs } from '../querybuilderutils';
+import { queryFieldsToFieldSpecs, sortTypes } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { getTreeDefinitionItems } from '../treedefinitions';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { ContainerBase } from './basic';
-import { TableIcon } from './common';
+import { Button, ContainerBase } from './basic';
+import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { dateParts } from './internationalization';
@@ -23,8 +23,12 @@ import { QueryResults } from './queryresults';
 
 function TableHeaderCell({
   fieldSpec,
+  sortConfig,
+  onSortChange: handleSortChange,
 }: {
   readonly fieldSpec: QueryFieldSpec;
+  readonly sortConfig: QueryField['sortType'];
+  readonly onSortChange: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
   const field = fieldSpec.getField();
   const tableName = field?.model.name;
@@ -51,6 +55,12 @@ function TableHeaderCell({
     label = `${name} (${dateParts[fieldSpec.datePart]})`;
   else label = name;
 
+  const content = (
+    <>
+      {tableName && <TableIcon tableName={tableName} />}
+      {label}
+    </>
+  );
   return (
     <div
       role="columnheader"
@@ -58,8 +68,30 @@ function TableHeaderCell({
             border-gray-500 p-1 [inset-block-start:_0] sticky"
     >
       <div className="contents">
-        {tableName && <TableIcon tableName={tableName} />}
-        {label}
+        {typeof handleSortChange === 'function' ? (
+          <Button.LikeLink
+            onClick={(): void =>
+              handleSortChange?.(
+                sortTypes[
+                  (sortTypes.indexOf(sortConfig) + 1) % sortTypes.length
+                ]
+              )
+            }
+          >
+            {content}
+            {typeof sortConfig === 'string' && (
+              <SortIndicator
+                fieldName={'field'}
+                sortConfig={{
+                  sortField: 'field',
+                  ascending: sortConfig === 'ascending',
+                }}
+              />
+            )}
+          </Button.LikeLink>
+        ) : (
+          content
+        )}
       </div>
     </div>
   );
@@ -78,6 +110,8 @@ export function QueryResultsTable({
   totalCount,
   fieldSpecs,
   initialData,
+  sortConfig,
+  onSortChange: handleSortChange,
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
@@ -88,6 +122,11 @@ export function QueryResultsTable({
   readonly totalCount: number;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly initialData: RA<RA<string | number | null>> | undefined;
+  readonly sortConfig?: RA<QueryField['sortType']>;
+  readonly onSortChange?: (
+    fieldIndex: number,
+    direction: 'ascending' | 'descending' | undefined
+  ) => void;
 }): JSX.Element {
   const [isFetching, setIsFetching] = React.useState(false);
   const [results, setResults] = React.useState<
@@ -122,7 +161,14 @@ export function QueryResultsTable({
           <div role="rowgroup">
             <div role="row">
               {fieldSpecs.map((fieldSpec, index) => (
-                <TableHeaderCell key={index} fieldSpec={fieldSpec} />
+                <TableHeaderCell
+                  key={index}
+                  fieldSpec={fieldSpec}
+                  sortConfig={sortConfig?.[index]}
+                  onSortChange={(sortType): void =>
+                    handleSortChange?.(index, sortType)
+                  }
+                />
               ))}
             </div>
           </div>
@@ -157,6 +203,7 @@ export function QueryResultsWrapper({
   queryResource,
   fields,
   recordSetId,
+  onSortChange: handleSortChange,
 }: {
   readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
@@ -164,6 +211,10 @@ export function QueryResultsWrapper({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
+  readonly onSortChange?: (
+    fieldIndex: number,
+    direction: 'ascending' | 'descending' | undefined
+  ) => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (offset: number) => {
@@ -185,9 +236,11 @@ export function QueryResultsWrapper({
     [queryResource, recordSetId]
   );
 
+  const previousRunCount = React.useRef(0);
   const [payload] = useAsyncState(
     React.useCallback(async () => {
-      if (queryRunCount === 0) return undefined;
+      if (previousRunCount.current === queryRunCount) return undefined;
+      previousRunCount.current = queryRunCount;
 
       const totalCount = ajax<{ readonly count: number }>(
         '/stored_query/ephemeral/',
@@ -218,7 +271,14 @@ export function QueryResultsWrapper({
         totalCount: await totalCount,
         initialData: await initialData,
       };
-    }, [queryRunCount])
+    }, [
+      baseTableName,
+      fetchResults,
+      fields,
+      queryResource,
+      queryRunCount,
+      recordSetId,
+    ])
   );
 
   return typeof payload === 'undefined' ? (
@@ -235,6 +295,8 @@ export function QueryResultsWrapper({
       totalCount={payload.totalCount}
       fieldSpecs={payload.fieldSpecs}
       initialData={payload.initialData}
+      sortConfig={fields.map((field) => field.sortType)}
+      onSortChange={handleSortChange}
     />
   );
 }
