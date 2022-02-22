@@ -116,7 +116,10 @@ def resource_dispatch(request, model, id):
                             content_type='application/json')
 
     elif request.method == 'DELETE':
-        delete_resource(request.specify_user_agent, model, id, version)
+        delete_resource(request.specify_collection,
+                        request.specify_user_agent,
+                        model, id, version)
+
         resp = HttpResponse('', status=204)
 
     else:
@@ -346,7 +349,7 @@ def create_obj(collection, agent, model, data, parent_obj=None):
         logger.warn("autonumbering overflow: %s", e)
 
     if obj.id is not None: # was the object actually saved?
-        check_table_permissions(agent, obj, "create")
+        check_table_permissions(collection, agent, obj, "create")
         auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
@@ -528,19 +531,19 @@ def handle_to_many(collection, agent, obj, data):
         # TODO: Check versions for optimistic locking.
         to_delete = getattr(obj, field_name).exclude(id__in=ids)
         for rel_obj in to_delete:
-            check_table_permissions(agent, rel_obj, "delete")
+            check_table_permissions(collection, agent, rel_obj, "delete")
             auditlog.remove(rel_obj, agent, obj)
         to_delete.delete()
 
 @transaction.atomic
-def delete_resource(agent, name, id, version):
+def delete_resource(collection, agent, name, id, version):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(agent, obj, version)
+    return delete_obj(collection, agent, obj, version)
 
-def delete_obj(agent, obj, version=None, parent_obj=None):
+def delete_obj(collection, agent, obj, version=None, parent_obj=None):
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -550,14 +553,14 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
-    check_table_permissions(agent, obj, "delete")
+    check_table_permissions(collection, agent, obj, "delete")
     auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(agent, dep, parent_obj=obj)
+      delete_obj(collection, agent, dep, parent_obj=obj)
 
 
 @transaction.atomic
@@ -569,13 +572,13 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
-    check_table_permissions(agent, obj, "update")
+    check_table_permissions(collection, agent, obj, "update")
 
     data = cleanData(obj.__class__, data, agent)
     dependents_to_delete, fk_dirty = handle_fk_fields(collection, agent, obj, data)
     dirty = fk_dirty + set_fields_from_data(obj, data)
 
-    check_field_permissions(agent, obj, [d['field_name'] for d in dirty], "update")
+    check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
     try:
         obj._meta.get_field('modifiedbyagent')
@@ -588,7 +591,7 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
-        delete_obj(agent, dep, parent_obj=obj)
+        delete_obj(collection, agent, dep, parent_obj=obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
