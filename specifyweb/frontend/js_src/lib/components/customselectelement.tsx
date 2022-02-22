@@ -12,6 +12,7 @@ import React from 'react';
 import type { Tables } from '../datamodel';
 import wbText from '../localization/workbench';
 import { getModel } from '../schema';
+import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
@@ -713,15 +714,18 @@ export function CustomSelectElement({
           minGoodOffsetTop > listOfOptionsRef.current.scrollTop ||
           listOfOptionsRef.current.scrollTop > maxGoodOffsetTop
         )
-          /*
-           * Make selected option appear at the middle of the list, if possible
-           */
-          listOfOptionsRef.current.scrollTop =
-            minGoodOffsetTop === 0
-              ? 0
-              : Math.floor(
-                  minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
-                );
+          scrollIntoView(selectedOption, 'nearest');
+        /*
+         * Make selected option appear at the middle of the list, if possible
+         */
+        /*
+         * ListOfOptionsRef.current.scrollTop =
+         *   minGoodOffsetTop === 0
+         *     ? 0
+         *     : Math.floor(
+         *         minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
+         *       );
+         */
       }
     }
     if (

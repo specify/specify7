@@ -8,6 +8,7 @@ import wbText from '../localization/workbench';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
+import { scrollIntoView } from '../treeviewutils';
 import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
@@ -123,6 +124,17 @@ export function QueryBuilder({
       state.mappingView.slice(-1)[0]
     );
 
+  // Scroll down to query results when pressed the "Query" button
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (
+      state.queryRunCount !== 0 &&
+      containerRef.current !== null &&
+      containerRef.current.lastChild !== null
+    )
+      scrollIntoView(containerRef.current.lastChild as HTMLElement);
+  }, [state.queryRunCount]);
+
   return (
     <ContainerFull
       onClick={
@@ -198,6 +210,7 @@ export function QueryBuilder({
               ? 'grid-rows-[100%]'
               : 'grid-rows-[100%_100%]'
           }`}
+          ref={containerRef}
         >
           <div className="flex-basis-[100%] flex-shrink-0 flex flex-col gap-y-4">
             <div className="gap-y-4 min-h-[50%] flex flex-col flex-1">

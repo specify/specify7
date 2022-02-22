@@ -134,15 +134,16 @@ export const serializeConformation = (
 
 const throttleRate = 250;
 export const scrollIntoView = _.throttle(function scrollIntoView(
-  element: HTMLElement
+  element: HTMLElement,
+  mode: 'nearest' | 'center' = 'center'
 ): void {
   if (transitionDuration === 0) element.scrollIntoView(false);
   else
     try {
       element.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
+        block: mode,
+        inline: mode,
       });
     } catch {
       element.scrollIntoView(false);

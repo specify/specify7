@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import type { QueryField } from '../querybuilderutils';
+import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Ul } from './basic';
 import { QueryLine } from './querybuilderfield';
@@ -49,8 +50,27 @@ export function QueryFields({
   readonly showHiddenFields: boolean;
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
 }): JSX.Element {
+  const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
+  const isFirstRenderRef = React.useRef(true);
+  React.useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
+    if (
+      fieldsContainerRef.current !== null &&
+      fieldsContainerRef.current.lastChild !== null &&
+      fieldsContainerRef.current.clientHeight !==
+        fieldsContainerRef.current.scrollHeight
+    )
+      scrollIntoView(
+        fieldsContainerRef.current.lastChild as HTMLElement,
+        'nearest'
+      );
+  }, [fields.length]);
+
   return (
-    <Ul className="overflow-y-auto">
+    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
         <QueryLine
           key={field.id}

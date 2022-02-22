@@ -20,6 +20,10 @@ type MainState = State<
       readonly line: number;
       readonly index: number | undefined;
     };
+    /*
+     * This is incremented each time the query is run
+     * It is used to trigger React.useEffect and React.useCallback hooks
+     */
     readonly queryRunCount: number;
     readonly saveRequired: boolean;
     readonly baseTableName: keyof Tables;

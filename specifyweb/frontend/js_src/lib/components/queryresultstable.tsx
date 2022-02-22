@@ -141,14 +141,12 @@ export function QueryResultsTable({
 
 export function QueryResultsLoading(): JSX.Element {
   return (
-    <div>
-      <img
-        src="/static/img/specify128spinner.gif"
-        alt={commonText('loading')}
-        className="w-10"
-        aria-live="polite"
-      />
-    </div>
+    <img
+      src="/static/img/specify128spinner.gif"
+      alt={commonText('loading')}
+      className="w-10"
+      aria-live="polite"
+    />
   );
 }
 
