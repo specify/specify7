@@ -192,9 +192,58 @@ export function QueryBuilder({
             setHasUnloadProtect={setHasUnloadProtect}
           />
         </header>
-        <div className="flex-1 overflow-y-auto">
-          <div className="gap-y-4 flex flex-col">
-            <div className="gap-y-4 min-h-[50%] flex flex-col">
+        <div
+          className={`gap-y-4 grid flex-1 overflow-y-auto px-4 -mx-4 ${
+            state.queryRunCount === 0
+              ? 'grid-rows-[100%]'
+              : 'grid-rows-[100%_100%]'
+          }`}
+        >
+          <div className="flex-basis-[100%] flex-shrink-0 flex flex-col gap-y-4">
+            <div className="gap-y-4 min-h-[50%] flex flex-col flex-1">
+              <MappingView
+                mappingElementProps={getMappingLineProps({
+                  mappingLineData: mutateLineData(
+                    getMappingLineData({
+                      baseTableName: state.baseTableName,
+                      mappingPath: state.mappingView,
+                      showHiddenFields,
+                      generateFieldData: 'all',
+                      scope: 'queryBuilder',
+                      getMappedFields: getMappedFieldsBind,
+                    }),
+                    state.mappingView
+                  ),
+                  customSelectType: 'OPENED_LIST',
+                  onChange({ isDoubleClick, ...rest }) {
+                    if (isDoubleClick && mapButtonEnabled) handleAddField();
+                    else
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line: 'mappingView',
+                        ...rest,
+                      });
+                  },
+                })}
+                mapButton={
+                  <Button.Simple
+                    className="flex-col justify-center p-2"
+                    disabled={!mapButtonEnabled}
+                    onClick={handleAddField}
+                    title={queryText('newButtonDescription')}
+                  >
+                    {commonText('add')}
+                    <span
+                      className={`text-green-500 ${
+                        mapButtonEnabled ? '' : 'invisible'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      &#8594;
+                    </span>
+                  </Button.Simple>
+                }
+              />
               <QueryFields
                 baseTableName={state.baseTableName}
                 fields={state.fields}
@@ -247,49 +296,6 @@ export function QueryBuilder({
                 showHiddenFields={showHiddenFields}
                 getMappedFields={getMappedFieldsBind}
               />
-              <MappingView
-                mappingElementProps={getMappingLineProps({
-                  mappingLineData: mutateLineData(
-                    getMappingLineData({
-                      baseTableName: state.baseTableName,
-                      mappingPath: state.mappingView,
-                      showHiddenFields,
-                      generateFieldData: 'all',
-                      scope: 'queryBuilder',
-                      getMappedFields: getMappedFieldsBind,
-                    }),
-                    state.mappingView
-                  ),
-                  customSelectType: 'OPENED_LIST',
-                  onChange({ isDoubleClick, ...rest }) {
-                    if (isDoubleClick && mapButtonEnabled) handleAddField();
-                    else
-                      dispatch({
-                        type: 'ChangeSelectElementValueAction',
-                        line: 'mappingView',
-                        ...rest,
-                      });
-                  },
-                })}
-                mapButton={
-                  <Button.Simple
-                    className="flex-col justify-center p-2"
-                    disabled={!mapButtonEnabled}
-                    onClick={handleAddField}
-                    title={queryText('newButtonDescription')}
-                  >
-                    {commonText('add')}
-                    <span
-                      className={`text-green-500 ${
-                        mapButtonEnabled ? '' : 'invisible'
-                      }`}
-                      aria-hidden="true"
-                    >
-                      &#8594;
-                    </span>
-                  </Button.Simple>
-                }
-              />
             </div>
             <div role="toolbar" className="flex flex-wrap gap-2">
               <LabelForCheckbox>
@@ -318,15 +324,15 @@ export function QueryBuilder({
                 {commonText('query')}
               </Submit.Simple>
             </div>
-            <QueryResultsWrapper
-              baseTableName={state.baseTableName}
-              model={model}
-              queryResource={queryResource}
-              fields={state.fields}
-              queryRunCount={state.queryRunCount}
-              recordSetId={recordSet?.id}
-            />
           </div>
+          <QueryResultsWrapper
+            baseTableName={state.baseTableName}
+            model={model}
+            queryResource={queryResource}
+            fields={state.fields}
+            queryRunCount={state.queryRunCount}
+            recordSetId={recordSet?.id}
+          />
         </div>
       </Form>
     </ContainerFull>

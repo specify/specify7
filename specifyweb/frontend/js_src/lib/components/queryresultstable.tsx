@@ -96,13 +96,13 @@ export function QueryResultsTable({
   React.useEffect(() => setResults(initialData), [initialData]);
 
   return (
-    <ContainerBase>
+    <ContainerBase className="overflow-hidden">
       {<h3>{`${label}: (${totalCount})`}</h3>}
       {typeof results === 'object' && fieldSpecs.length > 0 && (
         <div
           role="table"
           className={`grid-table grid-cols-[repeat(var(--cols),auto)]
-            overflow-auto max-h-[75vh] border-b border-gray-500`}
+            overflow-auto max-h-[75vh] border-b border-gray-500 auto-rows-min`}
           style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
           onScroll={
             isFetching || results.length === totalCount
@@ -134,17 +134,21 @@ export function QueryResultsTable({
           />
         </div>
       )}
-      {isFetching && (
-        <div>
-          <img
-            src="/static/img/specify128spinner.gif"
-            alt={commonText('loading')}
-            className="w-10"
-            aria-live="polite"
-          />
-        </div>
-      )}
+      {isFetching && <QueryResultsLoading />}
     </ContainerBase>
+  );
+}
+
+export function QueryResultsLoading(): JSX.Element {
+  return (
+    <div>
+      <img
+        src="/static/img/specify128spinner.gif"
+        alt={commonText('loading')}
+        className="w-10"
+        aria-live="polite"
+      />
+    </div>
   );
 }
 
@@ -219,7 +223,11 @@ export function QueryResultsWrapper({
     }, [queryRunCount])
   );
 
-  return typeof payload === 'undefined' ? null : (
+  return typeof payload === 'undefined' ? (
+    queryRunCount === 0 ? null : (
+      <QueryResultsLoading />
+    )
+  ) : (
     <QueryResultsTable
       model={model}
       idFieldIndex={

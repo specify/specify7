@@ -50,7 +50,7 @@ export function QueryFields({
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
 }): JSX.Element {
   return (
-    <Ul>
+    <Ul className="overflow-y-auto">
       {fields.map((field, line, { length }) => (
         <QueryLine
           key={field.id}
