@@ -32,7 +32,10 @@ export type QueryFieldFilter =
   | 'empty'
   | 'trueOrNull'
   | 'falseOrNull';
-export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set(['equal', 'in']);
+export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
+  'equal',
+  'in',
+]);
 
 function QueryInputField({
   currentValue,
@@ -61,9 +64,11 @@ function QueryInputField({
   const validationAttributes = getValidationAttributes(parser);
   const extractValues = (target: HTMLInputElement | HTMLSelectElement) =>
     listInput
-      ? Array.from(target.querySelectorAll('option'))
-          .filter(({ selected }) => selected)
-          .map(({ value }) => value)
+      ? pickListItems
+        ? Array.from(target.querySelectorAll('option'))
+            .filter(({ selected }) => selected)
+            .map(({ value }) => value)
+        : target.value.split(',')
       : [target.value];
   const commonProps = {
     forwardRef: validationRef,

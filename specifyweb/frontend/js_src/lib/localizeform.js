@@ -29,7 +29,7 @@ export default function(formNode) {
             const setText = (text) => {
               label.text(text);
               if(text.trim().length===0)
-                this.setAttribute('aria-hidden','true');
+                $(this)[0].setAttribute('aria-hidden','true');
             }
             if (label.text().trim()) {
                 // the label was hard coded in the form

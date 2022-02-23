@@ -261,7 +261,8 @@ export function QueryLine({
         tabIndex={0}
         onClick={(): void => handleLineFocus('current')}
         // Same key bindings as in WbPlanView
-        onKeyDown={({ key }): void => {
+        onKeyDown={({ target, key }): void => {
+          if ((target as HTMLElement).closest('input, select') !== null) return;
           if (typeof openedElement === 'number') {
             if (key === 'ArrowLeft')
               if (openedElement > 0) handleOpen(openedElement - 1);

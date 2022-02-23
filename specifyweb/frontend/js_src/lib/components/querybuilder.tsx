@@ -35,24 +35,19 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * TODO: long mapping editor line causes overflow
- * TODO: fix "any" tree rank handling in MappingView
+ * TODO: default value for fullDate
  * TODO: test using sp7 queries in sp6 and vice versa
- * TODO: don't allow mapping to any field for tree ranks
- * TODO: handle trying to query with incomplete fields
  * TODO: new query table list empty
- * TODO: pick lists in query results
  * TODO: OR filters
- * TODO: creating record set out of a subset of results
- * TODO: make sure formatters are used in query results
- * TODO: don't display groupHeaders for base table selection table
- * TODO: no query results case handle in query table?
+ * TODO: test query reports
+ * TODO: once done, deploy to test server
+ * Query Results:
+ * TODO: navigate between selected results
  * TODO: shift+click for selected rows
  * TODO: see results in form view
- * TODO: navigate between selected results
- * TODO: test query reports
- * TODO: make "in" field box longer? or auto grow in size
- * TODO: once done, deploy to test server
+ * TODO: pick lists in query results
+ * TODO: creating record set out of a subset of results
+ * TODO: make sure formatters are used in query results
  */
 export function QueryBuilder({
   query: queryResource,
@@ -112,11 +107,15 @@ export function QueryBuilder({
       ],
     });
 
+  const isEmpty = state.fields.some(({ mappingPath }) =>
+    mappingPathIsComplete(mappingPath)
+  );
+
   function runQuery(
     mode: 'regular' | 'distinct' | 'count',
     fields: typeof state.fields = state.fields
   ): void {
-    if (fields.length === 0) return;
+    if (!isEmpty) return;
     setQuery({
       ...query,
       fields: unParseQueryFields(state.baseTableName, fields),
@@ -330,18 +329,18 @@ export function QueryBuilder({
               </LabelForCheckbox>
               <span className="flex-1 -ml-2" />
               <Button.Simple
-                disabled={state.fields.length === 0}
+                disabled={!isEmpty}
                 onClick={(): void => runQuery('count')}
               >
                 {queryText('countOnly')}
               </Button.Simple>
               <Button.Simple
-                disabled={state.fields.length === 0}
+                disabled={!isEmpty}
                 onClick={(): void => runQuery('distinct')}
               >
                 {queryText('distinct')}
               </Button.Simple>
-              <Submit.Simple disabled={state.fields.length === 0}>
+              <Submit.Simple disabled={!isEmpty}>
                 {commonText('query')}
               </Submit.Simple>
             </div>

@@ -77,14 +77,13 @@ export function SaveQueryButtons({
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
 
-  const handleSave = (newState: typeof showDialog): void =>
-    setShowDialog((oldState) => {
-      if ((newState === 'save' || newState === 'saveAs') && oldState === false)
-        setHasUnloadProtect(false, () =>
-          queryResource.set('fields', unParseQueryFields(baseTableName, fields))
-        );
-      return newState;
-    });
+  function handleSave(newState: typeof showDialog): void {
+    if (newState === 'save' || newState === 'saveAs')
+      setHasUnloadProtect(false, () =>
+        queryResource.set('fields', unParseQueryFields(baseTableName, fields))
+      );
+    setShowDialog(newState);
+  }
 
   return (
     <>

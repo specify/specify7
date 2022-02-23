@@ -4,6 +4,7 @@ import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { LiteralField } from '../specifyfield';
+import type { Relationship } from '../specifyfield';
 import type { IR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
@@ -68,7 +69,9 @@ export function useSaveBlockers({
   return errors;
 }
 
-export function useValidationAttributes(field: LiteralField): IR<string> {
+export function useValidationAttributes(
+  field: LiteralField | Relationship
+): IR<string> {
   const [attributes, setAttributes] = React.useState<IR<string>>({});
   React.useEffect(() => {
     const parser = defined(resolveParser(field));

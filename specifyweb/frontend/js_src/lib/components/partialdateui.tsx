@@ -4,6 +4,7 @@ import type { AnySchema } from '../datamodelutils';
 import {
   accessibleDatePickerEnabled,
   accessibleMonthPickerEnabled,
+  databaseDateFormat,
   fullDateFormat,
   monthFormat,
 } from '../dateformat';
@@ -46,13 +47,12 @@ const reversePrecision: RR<number, Precision> = {
 };
 type Precision = keyof typeof precisions;
 
-const databaseFormat = 'YYYY-MM-DD';
 // These may be reassigned after remotePrefs are loaded:
 let dateType = 'date';
 let monthType = 'month';
 let dateSupported = isInputSupported('date');
 let monthSupported = isInputSupported('month');
-let inputFullFormat = databaseFormat;
+let inputFullFormat = databaseDateFormat;
 let inputMonthFormat = 'YYYY-MM';
 
 function PartialDateUi<SCHEMA extends AnySchema>({
@@ -95,7 +95,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
 
       const value = model.get(dateField);
       setMoment(
-        value === null ? undefined : dayjs(value, databaseFormat, true)
+        value === null ? undefined : dayjs(value, databaseDateFormat, true)
       );
     }
 
@@ -135,14 +135,12 @@ function PartialDateUi<SCHEMA extends AnySchema>({
       // @ts-expect-error
       model.set(precisionField, null);
       model.saveBlockers.remove(`invaliddate:${dateField}`);
-      console.log('setting date to null');
     } else if (moment.isValid()) {
-      const value = moment.format(databaseFormat);
+      const value = moment.format(databaseDateFormat);
       // @ts-expect-error
       model.set(dateField, value);
       // @ts-expect-error
       model.set(precisionField, precisions[precision]);
-      console.log('setting date to', value);
       model.saveBlockers.remove(`invaliddate:${dateField}`);
     } else {
       const validationMessage =

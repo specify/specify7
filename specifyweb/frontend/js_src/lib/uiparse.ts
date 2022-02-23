@@ -1,5 +1,5 @@
 import { error } from './assert';
-import { fullDateFormat } from './dateformat';
+import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import formsText from './localization/forms';
 import type {
@@ -141,7 +141,8 @@ export const parsers: RR<
           : formsText('requiredFormat')(fullDateFormat()),
     ],
     title: formsText('requiredFormat')(fullDateFormat()),
-    parser: (value) => (value as any).format('YYYY-MM-DD'),
+    parser: (value) => (value as any).format(databaseDateFormat),
+    value: dayjs().format(databaseDateFormat),
   }),
 
   'java.util.Calendar': 'java.sql.Timestamp',
@@ -195,10 +196,9 @@ export function resolveParser(
   const fullField = { ...field, ...extras };
   const fieldType = fullField.type as ExtendedJavaType;
   let parser = parsers[fieldType];
-  if (typeof parser === 'string')
-    parser = parsers[parser];
+  if (typeof parser === 'string') parser = parsers[parser];
   if (typeof parser === 'function') parser = parser();
-  if (typeof parser !== 'object') return undefined;
+  if (typeof parser !== 'object') parser = {};
 
   if (
     parser.type === 'date' &&
