@@ -10,22 +10,13 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './components/toolbar/schemaconfig';
+import type { Tables } from './datamodel';
+import type { Aggregator, Formatter } from './dataobjformatters';
 import commonText from './localization/common';
 import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
-import type { IR, RA } from './types';
-import { sortFunction } from './wbplanviewhelper';
-import { Aggregator, Formatter } from './dataobjformatters';
 import { SpecifyModel } from './specifymodel';
-import { Tables } from './datamodel';
-
-export const sortObjectsByKey = <
-  KEY extends string,
-  T extends Record<KEY, unknown>
->(
-  objects: RA<T>,
-  key: KEY
-): RA<T> => Array.from(objects).sort(sortFunction(({ [key]: value }) => value));
+import type { IR, RA } from './types';
 
 let newStringId = 1;
 const defaultLanguage = 'en';

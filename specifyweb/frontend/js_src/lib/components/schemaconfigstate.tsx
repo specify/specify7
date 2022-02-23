@@ -9,11 +9,10 @@ import {
   getItemType,
   isFormatterAvailable,
   javaTypeToHuman,
-  sortObjectsByKey,
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
-import { split } from '../wbplanviewhelper';
+import { sortObjectsByKey, split } from '../wbplanviewhelper';
 import {
   Button,
   Checkbox,

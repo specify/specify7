@@ -141,13 +141,13 @@ export const fetchRows = async <SCHEMA extends AnySchema>(
 
 export function makeResourceViewUrl(
   tableName: keyof Tables,
-  resourceId: number | undefined,
-  recordSetId: number | undefined
-) {
+  resourceId?: number,
+  recordSetId?: number
+): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${
     resourceId ?? 'new'
   }/`;
   return typeof recordSetId === 'number'
-    ? queryString.format(url, { recordsetid: recordSetId })
+    ? queryString.format(url, { recordsetid: recordSetId.toString() })
     : url;
 }

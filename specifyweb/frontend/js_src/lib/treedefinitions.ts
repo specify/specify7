@@ -8,7 +8,7 @@ import type { RA } from './types';
 import { defined } from './types';
 import {
   caseInsensitiveHash,
-  sortFunction,
+  sortObjectsByKey,
   unCapitalize,
 } from './wbplanviewhelper';
 
@@ -94,8 +94,9 @@ export const fetchContext = Promise.all([
                 )
                 .then(([treeDefinition, { models }]) => ({
                   definition: treeDefinition,
-                  ranks: Array.from(models, serializeResource).sort(
-                    sortFunction((item) => item.rankId)
+                  ranks: sortObjectsByKey(
+                    Array.from(models, serializeResource),
+                    'rankId'
                   ),
                 }))
                 .then((ranks) => [treeName, ranks] as const)

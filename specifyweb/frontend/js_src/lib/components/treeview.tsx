@@ -22,6 +22,7 @@ import {
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
+import { sortObjectsByKey } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
 import { Button, className, Input } from './basic';
 import { useAsyncState, useId, useTitle } from './hooks';
@@ -30,7 +31,6 @@ import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { sortFunction } from '../wbplanviewhelper';
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -151,17 +151,17 @@ function TreeView<SCHEMA extends AnyTree>({
             )
               .then(({ data }) =>
                 setFocusPath(
-                  Object.values(data)
-                    .filter(
+                  sortObjectsByKey(
+                    Object.values(data).filter(
                       (
                         node
                       ): node is {
                         readonly rankid: number;
                         readonly id: number;
                       } => typeof node === 'object'
-                    )
-                    .sort(sortFunction(({ rankid }) => rankid))
-                    .map(({ id }) => id)
+                    ),
+                    'rankid'
+                  ).map(({ id }) => id)
                 )
               )
               .catch(console.error);

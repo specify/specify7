@@ -217,7 +217,7 @@ export async function fetchLocalityDataFromLocalityResource(
 }
 
 export function formatLocalityDataObject(
-  results: RA<[MappingPath, string | null]>
+  results: RA<Readonly<[MappingPath, string | null]>>
 ): LocalityData | false {
   const rawLocalityData = Object.fromEntries(
     results

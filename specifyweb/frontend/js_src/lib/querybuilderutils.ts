@@ -8,7 +8,7 @@ import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
-import { sortFunction } from './wbplanviewhelper';
+import { sortObjectsByKey } from './wbplanviewhelper';
 import { anyTreeRank, formatTreeRank } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
@@ -39,9 +39,8 @@ export type QueryField = {
 export function parseQueryFields(
   queryFields: RA<SerializedResource<SpQueryField>>
 ): RA<QueryField> {
-  return Array.from(queryFields)
-    .sort(sortFunction(({ position }) => position))
-    .map(({ id, isNot, isDisplay, ...field }) => {
+  return sortObjectsByKey(Array.from(queryFields), 'position').map(
+    ({ id, isNot, isDisplay, ...field }) => {
       const fieldSpec = QueryFieldSpec.fromStringId(
         field.stringId,
         field.isRelFld ?? false
@@ -65,7 +64,8 @@ export function parseQueryFields(
         isNot,
         isDisplay,
       };
-    });
+    }
+  );
 }
 
 export const queryFieldsToFieldSpecs = (

@@ -118,8 +118,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // Localized name from the schema localization
   public readonly label: string;
 
-  public static parseClassName(className: string): string {
-    return className.split('.').slice(-1)[0];
+  public static parseClassName(className: string): keyof Tables {
+    return className.split('.').slice(-1)[0] as keyof Tables;
   }
 
   public constructor(tableDefinition: TableDefinition) {

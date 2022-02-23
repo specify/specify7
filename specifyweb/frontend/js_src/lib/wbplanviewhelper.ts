@@ -122,23 +122,30 @@ export const caseInsensitiveHash = <
   )?.[1] as DICTIONARY[KEY];
 
 /** Generate a sort function for Array.prototype.sort */
-export const sortFunction = <T, V extends boolean | number>(
-  mapper: (value: T) => V,
-  reverse = false
-): ((left: T, right: T) => -1 | 0 | 1) =>
-  reverse
-    ? (left: T, right: T): -1 | 0 | 1 =>
-        mapper(left) < mapper(right)
-          ? -1
-          : mapper(left) === mapper(right)
-          ? 0
-          : 1
-    : (left: T, right: T): -1 | 0 | 1 =>
-        mapper(left) > mapper(right)
-          ? 1
-          : mapper(left) === mapper(right)
-          ? 0
-          : -1;
+export const sortFunction =
+  <T, V extends boolean | number | string>(
+    mapper: (value: T) => V,
+    reverse = false
+  ): ((left: T, right: T) => -1 | 0 | 1) =>
+  (left: T, right: T): -1 | 0 | 1 => {
+    const [leftValue, rightValue] = reverse
+      ? [mapper(left), mapper(right)]
+      : [mapper(right), mapper(left)];
+    if (leftValue === rightValue) return 0;
+    return typeof leftValue === 'string' && typeof rightValue === 'string'
+      ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
+      : leftValue < rightValue
+      ? 1
+      : -1;
+  };
+
+export const sortObjectsByKey = <
+  KEY extends string | number | symbol,
+  T extends Record<KEY, boolean | number | string>
+>(
+  objects: RA<T>,
+  key: KEY
+): RA<T> => Array.from(objects).sort(sortFunction(({ [key]: value }) => value));
 
 /** Split array in half according to a discriminator function */
 export const split = <ITEM>(
