@@ -167,9 +167,8 @@ export function MappingView(props: {
 
   return (
     <section
-      className={`overflow-x-auto relative resize-y
-        max-h-[50vh] min-h-[theme(spacing.40)] h-[var(--mapping-view-height)]
-        flex-shrink-0`}
+      className={`overflow-x-auto resize-y
+        max-h-[50vh] min-h-[theme(spacing.40)] h-[var(--mapping-view-height)]`}
       style={
         {
           '--mapping-view-height': `${mappingViewHeightRef.current ?? ''}px`,
@@ -178,8 +177,8 @@ export function MappingView(props: {
       aria-label={wbText('mappingEditor')}
       ref={mappingViewParentRef}
     >
-      <div className="flex-nowrap gap-x-8 w-max flex h-full">
-        <div className="gap-x-1 flex-nowrap flex" role="list">
+      <div className="gap-x-8 w-max flex h-full">
+        <div className="gap-x-1 flex" role="list">
           <MappingPathComponent mappingLineData={props.mappingElementProps} />
         </div>
         {props.mapButton}

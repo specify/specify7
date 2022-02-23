@@ -326,6 +326,20 @@ export function getMappingLineData({
         generateFieldData === 'none'
           ? []
           : [
+              // TODO: test if this is allowed on a base table
+              scope === 'queryBuilder'
+                ? [
+                    formattedEntry,
+                    {
+                      optionLabel: relationshipIsToMany(parentRelationship)
+                        ? queryText('aggregated')
+                        : queryText('formatted'),
+                      tableName: model.name,
+                      isRelationship: false,
+                      isDefault: internalState.defaultValue === formattedEntry,
+                    },
+                  ]
+                : undefined,
               ...model.fields
                 .filter(
                   (field) =>
@@ -389,20 +403,6 @@ export function getMappingLineData({
                       )
                     : ([[field.name, fieldData]] as const);
                 }),
-              // TODO: test if this is allowed on a base table
-              scope === 'queryBuilder'
-                ? [
-                    formattedEntry,
-                    {
-                      optionLabel: relationshipIsToMany(parentRelationship)
-                        ? queryText('aggregated')
-                        : queryText('formatted'),
-                      tableName: model.name,
-                      isRelationship: false,
-                      isDefault: internalState.defaultValue === formattedEntry,
-                    },
-                  ]
-                : undefined,
             ]
       ),
   };

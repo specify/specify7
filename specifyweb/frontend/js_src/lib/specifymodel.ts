@@ -181,8 +181,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     const tableOverride = getTableOverwrite(this.name);
     this.overrides = {
-      isHidden: this.isHidden ?? tableOverride === 'hidden',
-      isSystem: this.isSystem ?? tableOverride === 'system',
+      isHidden: this.isHidden || tableOverride === 'hidden',
+      isSystem: this.isSystem || tableOverride === 'system',
       isCommon: tableOverride === 'commonBaseTable',
     };
   }
