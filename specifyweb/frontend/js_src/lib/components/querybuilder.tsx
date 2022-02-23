@@ -36,14 +36,12 @@ import { MappingView } from './wbplanviewmappercomponents';
 
 /*
  * TODO: test using sp7 queries in sp6 and vice versa
- * TODO: update getMappingPathPreview to handle anyTreeRank and formattedEntry
  * TODO: don't allow mapping to any field for tree ranks
  * TODO: handle trying to query with incomplete fields
  * TODO: new query table list empty
  * TODO: pick lists in query results
  * TODO: OR filters
  * TODO: creating record set out of a subset of results
- * TODO: changing sort settings by clicking on header names
  * TODO: make sure formatters are used in query results
  * TODO: don't display groupHeaders for base table selection table
  * TODO: no query results case handle in query table?

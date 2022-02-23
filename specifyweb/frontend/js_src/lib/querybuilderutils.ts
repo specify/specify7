@@ -9,11 +9,7 @@ import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { sortFunction } from './wbplanviewhelper';
-import {
-  anyTreeRank,
-  formattedEntry,
-  formatTreeRank,
-} from './wbplanviewmappinghelper';
+import { anyTreeRank, formatTreeRank } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
@@ -142,22 +138,6 @@ export const mutateLineData = (
                     },
                   }
                 : {}),
-              ...(lineData[index - 1]?.customSelectSubtype === 'tree' ||
-              // TODO: test if this condition is needed
-              index === 0
-                ? {}
-                : {
-                    [formattedEntry]: {
-                      optionLabel:
-                        mappingElementProps?.customSelectSubtype === 'simple'
-                          ? queryText('formatted')
-                          : queryText('aggregated'),
-                      tableName: mappingElementProps.tableName,
-                      isRelationship: false,
-                      isDefault: mappingPath[index] === formattedEntry,
-                    },
-                  }),
-              ...mappingElementProps.fieldsData,
             },
           }
     )

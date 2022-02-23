@@ -15,6 +15,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import type { Tables } from './datamodel';
 import commonText from './localization/common';
+import queryText from './localization/query';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -23,6 +24,7 @@ import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
 import {
   formatPartialField,
+  formattedEntry,
   formatToManyIndex,
   formatTreeRank,
   getGenericMappingPath,
@@ -323,69 +325,85 @@ export function getMappingLineData({
         model,
         generateFieldData === 'none'
           ? []
-          : model.fields
-              .filter(
-                (field) =>
-                  (generateFieldData === 'all' ||
-                    field.name === internalState.defaultValue) &&
-                  (!field.isRelationship ||
-                    typeof parentRelationship === 'undefined' ||
-                    (!isCircularRelationship(parentRelationship, field) &&
-                      !(
-                        relationshipIsToMany(field) &&
-                        relationshipIsToMany(parentRelationship)
-                      ))) &&
-                  isFieldVisible(
-                    showHiddenFields,
-                    field.overrides.isHidden,
-                    field.name
-                  ) &&
-                  (scope === 'queryBuilder' || !field.overrides.isReadOnly)
-              )
-              .flatMap((field) => {
-                const fieldData = {
-                  optionLabel: field.label,
-                  // Enable field
-                  isEnabled:
-                    // If it is not mapped
-                    !internalState.mappedFields.includes(field.name) ||
-                    // Or is a relationship
-                    field.isRelationship,
-                  // All fields are optional in the query builder
-                  isRequired:
-                    scope !== 'queryBuilder' &&
-                    field.overrides.isRequired &&
-                    !mustMatchPreferences[model.name],
-                  isHidden: field.overrides.isHidden,
-                  isDefault: field.name === internalState.defaultValue,
-                  isRelationship: field.isRelationship,
-                  tableName: field.isRelationship
-                    ? field.relatedModel.name
-                    : undefined,
-                };
-                return scope === 'queryBuilder' && field.isTemporal()
-                  ? Object.entries(dateParts).map(
-                      ([datePart, label]) =>
-                        [
-                          formatPartialField(field.name, datePart),
-                          {
-                            ...fieldData,
-                            optionLabel: `${fieldData.optionLabel}${
-                              datePart === 'fullDate' ? '' : ` (${label})`
-                            }`,
-                            isDefault:
-                              formatPartialField(field.name, datePart) ===
-                              internalState.defaultValue,
-                            isEnabled:
-                              fieldData.isEnabled &&
-                              !internalState.mappedFields.includes(
-                                formatPartialField(field.name, datePart)
-                              ),
-                          },
-                        ] as const
-                    )
-                  : [[field.name, fieldData]];
-              })
+          : [
+              ...model.fields
+                .filter(
+                  (field) =>
+                    (generateFieldData === 'all' ||
+                      field.name === internalState.defaultValue) &&
+                    (!field.isRelationship ||
+                      typeof parentRelationship === 'undefined' ||
+                      (!isCircularRelationship(parentRelationship, field) &&
+                        !(
+                          relationshipIsToMany(field) &&
+                          relationshipIsToMany(parentRelationship)
+                        ))) &&
+                    isFieldVisible(
+                      showHiddenFields,
+                      field.overrides.isHidden,
+                      field.name
+                    ) &&
+                    (scope === 'queryBuilder' || !field.overrides.isReadOnly)
+                )
+                .flatMap((field) => {
+                  const fieldData = {
+                    optionLabel: field.label,
+                    // Enable field
+                    isEnabled:
+                      // If it is not mapped
+                      !internalState.mappedFields.includes(field.name) ||
+                      // Or is a relationship
+                      field.isRelationship,
+                    // All fields are optional in the query builder
+                    isRequired:
+                      scope !== 'queryBuilder' &&
+                      field.overrides.isRequired &&
+                      !mustMatchPreferences[model.name],
+                    isHidden: field.overrides.isHidden,
+                    isDefault: field.name === internalState.defaultValue,
+                    isRelationship: field.isRelationship,
+                    tableName: field.isRelationship
+                      ? field.relatedModel.name
+                      : undefined,
+                  };
+                  return scope === 'queryBuilder' && field.isTemporal()
+                    ? Object.entries(dateParts).map(
+                        ([datePart, label]) =>
+                          [
+                            formatPartialField(field.name, datePart),
+                            {
+                              ...fieldData,
+                              optionLabel: `${fieldData.optionLabel}${
+                                datePart === 'fullDate' ? '' : ` (${label})`
+                              }`,
+                              isDefault:
+                                formatPartialField(field.name, datePart) ===
+                                internalState.defaultValue,
+                              isEnabled:
+                                fieldData.isEnabled &&
+                                !internalState.mappedFields.includes(
+                                  formatPartialField(field.name, datePart)
+                                ),
+                            },
+                          ] as const
+                      )
+                    : ([[field.name, fieldData]] as const);
+                }),
+              // TODO: test if this is allowed on a base table
+              scope === 'queryBuilder'
+                ? [
+                    formattedEntry,
+                    {
+                      optionLabel: relationshipIsToMany(parentRelationship)
+                        ? queryText('aggregated')
+                        : queryText('formatted'),
+                      tableName: model.name,
+                      isRelationship: false,
+                      isDefault: internalState.defaultValue === formattedEntry,
+                    },
+                  ]
+                : undefined,
+            ]
       ),
   };
 

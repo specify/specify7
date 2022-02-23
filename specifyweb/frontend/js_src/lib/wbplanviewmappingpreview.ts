@@ -8,15 +8,17 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import type { RA } from './types';
+import type { Tables } from './datamodel';
+import { filterArray } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import {
+  anyTreeRank,
+  formatTreeRank,
   getNumberFromToManyIndex,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import { Tables } from './datamodel';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide: Set<string> = new Set(['name', 'fullname', 'localityname']);
@@ -56,12 +58,6 @@ const mappingPathSubset = (mappingPath: MappingPath): MappingPath => [
   ...Array.from<string>({ length: 3 }).fill(''),
 ];
 
-const formatResponse = (fields: RA<string | RA<string>>): string =>
-  fields
-    .flat()
-    .filter((field) => field)
-    .join(' ');
-
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
@@ -88,7 +84,7 @@ export function generateMappingPathPreview(
   const toManyIndexNumber = toManyIndex
     ? getNumberFromToManyIndex(toManyIndex)
     : 1;
-  const toManyIndexFormatted = toManyIndexNumber > 1 ? toManyIndex : '';
+  const toManyIndexFormatted = toManyIndexNumber > 1 ? toManyIndex : undefined;
 
   const [databaseFieldName, databaseTableOrRankName, databaseParentTableName] =
     mappingPathSubset([baseTableName, ...mappingPath]);
@@ -99,30 +95,31 @@ export function generateMappingPathPreview(
   ] = mappingPathSubset(fieldLabels);
 
   const fieldNameFormatted = fieldsToHide.has(databaseFieldName)
-    ? ''
+    ? undefined
     : fieldName;
   const fieldIsGeneric =
     (genericFields.has(databaseFieldName) &&
-      fieldNameFormatted.split(' ').length === 1) ||
-    (fieldNameFormatted.split(' ').length === 1 &&
+      fieldNameFormatted?.split(' ').length === 1) ||
+    (fieldNameFormatted?.split(' ').length === 1 &&
       !nonGenericFields.has(databaseFieldName));
   const tableNameNonEmpty =
-    fieldNameFormatted === ''
+    typeof fieldNameFormatted === 'undefined'
       ? tableOrRankName || fieldName
       : fieldIsGeneric
       ? tableOrRankName
-      : '';
+      : undefined;
   const tableNameFormatted = tablesToHide.has(databaseTableOrRankName)
     ? parentTableName || tableNameNonEmpty
     : genericTables.has(databaseTableOrRankName)
     ? [parentTableName, tableNameNonEmpty]
     : tableNameNonEmpty;
 
-  return formatResponse([
-    valueIsTreeRank(databaseTableOrRankName)
+  return filterArray([
+    valueIsTreeRank(databaseTableOrRankName) &&
+    databaseTableOrRankName !== formatTreeRank(anyTreeRank)
       ? tableOrRankName
       : tableNameFormatted,
     fieldNameFormatted,
     toManyIndexFormatted,
-  ]);
+  ]).join(' ');
 }

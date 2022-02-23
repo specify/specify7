@@ -136,15 +136,17 @@ async function recursiveResourceResolve(
 
 const resultsIntoPairs = (
   results: RA<string | null | MappingPath>
-): RA<[MappingPath, string | null]> =>
-  results
-    .map((element, index) =>
-      index % 2 === 0 ? ([element, results[index + 1]] as const) : undefined
+): RA<Readonly<[MappingPath, string | null]>> =>
+  filterArray(
+    results.map((element, index) =>
+      index % 2 === 0
+        ? ([
+            element as MappingPath,
+            results[index + 1] as string | null,
+          ] as const)
+        : undefined
     )
-    .filter(
-      (pair): pair is [MappingPath, string | null] =>
-        typeof pair !== 'undefined'
-    );
+  );
 
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
