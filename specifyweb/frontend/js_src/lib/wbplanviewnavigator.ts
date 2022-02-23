@@ -23,6 +23,7 @@ import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
 import {
+  anyTreeRank,
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
@@ -164,6 +165,8 @@ export type MappingLineData = Pick<
   MappingElementProps,
   'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
 >;
+
+const queryBuilderTreeFields = new Set(['name', 'author']);
 
 /**
  * Get data required to build a mapping line from a source mapping path
@@ -357,7 +360,12 @@ export function getMappingLineData({
                       field.overrides.isHidden,
                       field.name
                     ) &&
-                    (scope === 'queryBuilder' || !field.overrides.isReadOnly)
+                    (scope === 'queryBuilder' || !field.overrides.isReadOnly) &&
+                    (!isTreeModel(model.name) ||
+                      (!field.isRelationship &&
+                        (mappingPath[internalState.position - 1] ==
+                          formatTreeRank(anyTreeRank) ||
+                          queryBuilderTreeFields.has(field.name))))
                 )
                 .flatMap((field) => {
                   const fieldData = {

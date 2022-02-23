@@ -127,7 +127,6 @@ export const mutateLineData = (
         : {
             ...mappingElementProps,
             fieldsData: {
-              ...mappingElementProps.fieldsData,
               ...(mappingElementProps.customSelectSubtype === 'tree'
                 ? {
                     [formatTreeRank(anyTreeRank)]: {
@@ -139,6 +138,7 @@ export const mutateLineData = (
                     },
                   }
                 : {}),
+              ...mappingElementProps.fieldsData,
             },
           }
     )
