@@ -121,8 +121,24 @@ function QueryInputField({
       ))}
     </Select>
   ) : (
-    // TODO: handle paste for dateField fullDate
-    <Input {...commonProps} {...validationAttributes} value={value} />
+    // This allows <input> to grow in size as needed
+    <span
+      data-value={value}
+      /* The :after pseudo element sets the width */
+      className={`relative after:invisible after:content-[attr(data-value)]
+        after:leading-[0px] min-w-[theme(spacing.40)] after:block after:px-1`}
+    >
+      {/* This invisible input is used to set the height */}
+      <Input type="text" className="invisible w-0" />
+      {/* TODO: handle paste for dateField fullDate */}
+      <Input
+        {...commonProps}
+        {...validationAttributes}
+        value={value}
+        // This is the actual input that is visible to user
+        className="absolute inset-0"
+      />
+    </span>
   );
 }
 
