@@ -2,23 +2,19 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
-import type { AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
 import { queryFieldsToFieldSpecs, sortTypes } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
-import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
-import { getTreeDefinitionItems } from '../treedefinitions';
 import type { RA } from '../types';
-import { defined } from '../types';
+import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, ContainerBase } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
-import { dateParts } from './internationalization';
 import { QueryResults } from './queryresults';
 
 function TableHeaderCell({
@@ -32,33 +28,14 @@ function TableHeaderCell({
 }): JSX.Element {
   const field = fieldSpec.getField();
   const tableName = field?.model.name;
-  const name = field?.label ?? field?.name ?? '';
-
-  let label;
-  if (Array.isArray(fieldSpec.treeRank)) {
-    const rankLabel =
-      getTreeDefinitionItems(
-        fieldSpec.table.name as AnyTree['tableName'],
-        false
-      ).find(
-        ({ name }) =>
-          name.toLowerCase() === fieldSpec.treeRank?.[0].toLowerCase()
-      )?.title ?? fieldSpec.treeRank[0];
-    const fieldLabel = defined(
-      defined(getModel(fieldSpec.table.name)).getField(fieldSpec.treeRank[1])
-    ).label;
-    label = [rankLabel, fieldLabel].join(' ');
-  } else if (
-    typeof fieldSpec.datePart === 'string' &&
-    fieldSpec.datePart !== 'fullDate'
-  )
-    label = `${name} (${dateParts[fieldSpec.datePart]})`;
-  else label = name;
 
   const content = (
     <>
       {tableName && <TableIcon tableName={tableName} />}
-      {label}
+      {generateMappingPathPreview(
+        fieldSpec.baseTable.name,
+        fieldSpec.toMappingPath()
+      )}
     </>
   );
   return (
@@ -236,12 +213,9 @@ export function QueryResultsWrapper({
     [queryResource, recordSetId]
   );
 
-  const previousRunCount = React.useRef(0);
   const [payload] = useAsyncState(
     React.useCallback(async () => {
-      if (previousRunCount.current === queryRunCount) return undefined;
-      previousRunCount.current = queryRunCount;
-
+      if (queryRunCount === 0) return undefined;
       const totalCount = ajax<{ readonly count: number }>(
         '/stored_query/ephemeral/',
         {
@@ -271,14 +245,7 @@ export function QueryResultsWrapper({
         totalCount: await totalCount,
         initialData: await initialData,
       };
-    }, [
-      baseTableName,
-      fetchResults,
-      fields,
-      queryResource,
-      queryRunCount,
-      recordSetId,
-    ])
+    }, [baseTableName, fetchResults, queryResource, queryRunCount, recordSetId])
   );
 
   return typeof payload === 'undefined' ? (

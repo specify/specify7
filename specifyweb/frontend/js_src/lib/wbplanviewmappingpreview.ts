@@ -66,6 +66,7 @@ export function generateMappingPathPreview(
     baseTableName,
     mappingPath,
     generateFieldData: 'selectedOnly',
+    scope: 'queryBuilder',
   });
 
   const fieldLabels = [

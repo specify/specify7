@@ -7,7 +7,6 @@ import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel } from '../schema';
 import * as app from '../specifyapp';
-import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
@@ -167,10 +166,10 @@ function Results(): JSX.Element {
                 if (tableResult.definition.link !== null) {
                   const linkFieldSpec = fieldSpecs.pop();
                   idFieldIndex = fieldSpecs.length + 1;
-                  model = defined(
-                    (linkFieldSpec?.joinPath.slice(-1)[0] as Relationship)
-                      .relatedModel
-                  );
+                  const relationship = defined(linkFieldSpec?.getField());
+                  if (!relationship.isRelationship)
+                    throw new Error('Unable to extract relationship');
+                  model = relationship.relatedModel;
                 }
 
                 return {

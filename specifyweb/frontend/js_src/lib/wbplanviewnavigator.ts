@@ -201,11 +201,13 @@ export function getMappingLineData({
     mappingLineData: MappingLineData[];
     mappedFields: string[];
     defaultValue: string;
+    parsedDefaultValue: Readonly<[fieldName: string, part: string | undefined]>;
   } = {
     position: -1,
     mappingLineData: [],
     mappedFields: [],
     defaultValue: '0',
+    parsedDefaultValue: ['0', undefined],
   };
 
   const isFieldVisible = (
@@ -216,7 +218,7 @@ export function getMappingLineData({
     showHiddenFields ||
     !isHidden ||
     // Show a default field, even if it is hidden
-    fieldName === internalState.defaultValue;
+    fieldName === internalState.parsedDefaultValue[0];
 
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
@@ -241,6 +243,9 @@ export function getMappingLineData({
 
       internalState.position += 1;
       const nextPart = mappingPath[internalState.position];
+      internalState.parsedDefaultValue = valueIsPartialField(nextPart)
+        ? parsePartialField(nextPart)
+        : [nextPart, undefined];
       internalState.defaultValue = nextPart;
 
       const localMappingPath = mappingPath.slice(0, internalState.position);
@@ -330,7 +335,9 @@ export function getMappingLineData({
           ? []
           : [
               // TODO: test if this is allowed on a base table
-              scope === 'queryBuilder'
+              scope === 'queryBuilder' &&
+              (generateFieldData === 'all' ||
+                internalState.defaultValue === formattedEntry)
                 ? [
                     formattedEntry,
                     {
@@ -347,7 +354,7 @@ export function getMappingLineData({
                 .filter(
                   (field) =>
                     (generateFieldData === 'all' ||
-                      field.name === internalState.defaultValue) &&
+                      field.name === internalState.parsedDefaultValue[0]) &&
                     (!field.isRelationship ||
                       typeof parentRelationship === 'undefined' ||
                       (!isCircularRelationship(parentRelationship, field) &&
@@ -389,26 +396,33 @@ export function getMappingLineData({
                       : undefined,
                   };
                   return scope === 'queryBuilder' && field.isTemporal()
-                    ? Object.entries(dateParts).map(
-                        ([datePart, label]) =>
-                          [
-                            formatPartialField(field.name, datePart),
-                            {
-                              ...fieldData,
-                              optionLabel: `${fieldData.optionLabel}${
-                                datePart === 'fullDate' ? '' : ` (${label})`
-                              }`,
-                              isDefault:
-                                formatPartialField(field.name, datePart) ===
-                                internalState.defaultValue,
-                              isEnabled:
-                                fieldData.isEnabled &&
-                                !internalState.mappedFields.includes(
-                                  formatPartialField(field.name, datePart)
-                                ),
-                            },
-                          ] as const
-                      )
+                    ? Object.entries(dateParts)
+                        .map(
+                          ([datePart, label]) =>
+                            [
+                              formatPartialField(field.name, datePart),
+                              {
+                                ...fieldData,
+                                optionLabel: `${fieldData.optionLabel}${
+                                  datePart === 'fullDate' ? '' : ` (${label})`
+                                }`,
+                                isDefault:
+                                  field.name ===
+                                    internalState.parsedDefaultValue[0] &&
+                                  datePart ===
+                                    internalState.parsedDefaultValue[1],
+                                isEnabled:
+                                  fieldData.isEnabled &&
+                                  !internalState.mappedFields.includes(
+                                    formatPartialField(field.name, datePart)
+                                  ),
+                              },
+                            ] as const
+                        )
+                        .filter(
+                          ([_fieldName, fieldData]) =>
+                            generateFieldData === 'all' || fieldData.isDefault
+                        )
                     : ([[field.name, fieldData]] as const);
                 }),
             ]

@@ -358,7 +358,7 @@ export async function fetchAutoMapperSuggestions({
     mappingLineData.length === 1 &&
     mappingLineData[0].customSelectSubtype === 'toMany'
   ) {
-    baseMappingPath.push('#1');
+    baseMappingPath.push(formatToManyIndex(1));
     pathOffset = 1;
   }
 

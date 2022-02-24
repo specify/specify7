@@ -11,6 +11,7 @@ import {
   anyTreeRank,
   formatPartialField,
   formattedEntry,
+  formatToManyIndex,
   formatTreeRank,
   getNameFromTreeRankName,
   parsePartialField,
@@ -43,9 +44,9 @@ function extractDatePart(fieldName: string): {
 }
 
 export class QueryFieldSpec {
-  private readonly baseTable: SpecifyModel;
+  public readonly baseTable: SpecifyModel;
 
-  public joinPath: RA<LiteralField | Relationship> = [];
+  private joinPath: RA<LiteralField | Relationship> = [];
 
   public table: SpecifyModel;
 
@@ -86,15 +87,20 @@ export class QueryFieldSpec {
           ? formatTreeRank(anyTreeRank)
           : undefined,
         field.name,
-        field.isRelationship && relationshipIsToMany(field) ? '#1' : undefined,
+        field.isRelationship && relationshipIsToMany(field)
+          ? formatToManyIndex(1)
+          : undefined,
       ])
     );
     if (Array.isArray(this.treeRank)) {
       const [rankName, fieldName] = this.treeRank;
       path = [...path, formatTreeRank(rankName), fieldName];
-    } else if (this.joinPath.slice(-1)[0].isRelationship)
+    } else if (
+      this.joinPath.slice(-1)[0]?.isRelationship ||
+      this.joinPath.length === 0
+    )
       path = [...path, formattedEntry];
-    else if (this.joinPath.slice(-1)[0].isTemporal())
+    else if (this.joinPath.slice(-1)[0]?.isTemporal())
       path = [
         ...path.slice(0, -1),
         formatPartialField(
@@ -162,6 +168,9 @@ export class QueryFieldSpec {
     const joinPath: (LiteralField | Relationship)[] = [];
     let node = rootTable;
     path.every((rawFieldName, index) => {
+      if (rawFieldName === formattedEntry) return false;
+      else if (rawFieldName === anyTreeRank) return true;
+
       const [fieldName, datePart] =
         index + 1 === path.length && valueIsPartialField(rawFieldName)
           ? parsePartialField<DatePart>(rawFieldName)
