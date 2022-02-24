@@ -9,10 +9,10 @@ import type { RA, RR } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
 import { getValidationAttributes, parseValue } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
-import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { Input, Select } from './basic';
 import type { PickListItemSimple } from './combobox';
 import { useAsyncState, useValidation } from './hooks';
+import { mappingElementDivider } from './wbplanviewcomponents';
 
 export type QueryFieldType = 'text' | 'number' | 'date' | 'id' | 'checkbox';
 export type QueryFieldFilter =
@@ -39,9 +39,9 @@ export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
 
 function QueryInputField({
   currentValue,
-  parser,
   // Used only to help browsers with autocomplete
   fieldName,
+  parser,
   label = commonText('searchQuery'),
   pickListItems,
   listInput = false,
@@ -62,7 +62,9 @@ function QueryInputField({
     HTMLInputElement | HTMLSelectElement
   >();
   const validationAttributes = getValidationAttributes(parser);
-  const extractValues = (target: HTMLInputElement | HTMLSelectElement) =>
+  const extractValues = (
+    target: HTMLInputElement | HTMLSelectElement
+  ): RA<string> =>
     listInput
       ? pickListItems
         ? Array.from(target.querySelectorAll('option'))
@@ -131,7 +133,7 @@ function QueryInputField({
       data-value={value}
       /* The :after pseudo element sets the width */
       className={`relative after:invisible after:content-[attr(data-value)]
-        after:leading-[0px] min-w-[theme(spacing.40)] after:block after:px-1`}
+        after:leading-[0px] min-w-[theme(spacing.40)] after:block after:px-2`}
     >
       {/* This invisible input is used to set the height */}
       <Input type="text" className="invisible w-0" />
@@ -148,42 +150,46 @@ function QueryInputField({
 }
 
 function SingleField({
-  field,
+  filter,
   parser,
   pickListItems,
+  fieldName,
   label = commonText('searchQuery'),
   onChange: handleChange,
 }: {
-  readonly field: QueryField;
+  readonly filter: QueryField['filters'][number];
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly label?: string;
+  readonly fieldName: string;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element {
   return (
     <QueryInputField
-      currentValue={field.startValue}
+      currentValue={filter.startValue}
       parser={parser}
       label={label}
       pickListItems={pickListItems}
-      fieldName={mappingPathToString(field.mappingPath)}
+      fieldName={fieldName}
       onChange={handleChange}
     />
   );
 }
 
 function Between({
-  field,
+  filter,
+  fieldName,
   parser,
   pickListItems,
   onChange: handleChange,
 }: {
-  readonly field: QueryField;
+  readonly filter: QueryField['filters'][number];
+  readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element {
-  const [values, setValues] = React.useState(field.startValue.split(','));
+  const [values, setValues] = React.useState(filter.startValue.split(','));
   const updateValues = (index: 0 | 1, newValue: string) => {
     const newValues = [
       index === 0 ? newValue : values[0],
@@ -199,7 +205,7 @@ function Between({
         parser={parser}
         pickListItems={pickListItems}
         label={queryText('startValue')}
-        fieldName={mappingPathToString(field.mappingPath)}
+        fieldName={fieldName}
         onChange={updateValues.bind(undefined, 0)}
       />
       {queryText('and')}
@@ -208,7 +214,7 @@ function Between({
         parser={parser}
         pickListItems={pickListItems}
         label={queryText('endValue')}
-        fieldName={mappingPathToString(field.mappingPath)}
+        fieldName={fieldName}
         onChange={updateValues.bind(undefined, 1)}
       />
     </>
@@ -231,23 +237,25 @@ function mutateParser(parser: Parser): Parser {
 }
 
 function In({
-  field,
+  filter,
+  fieldName,
   parser,
   pickListItems,
   onChange: handleChange,
 }: {
-  readonly field: QueryField;
+  readonly filter: QueryField['filters'][number];
+  readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element {
   return (
     <QueryInputField
-      currentValue={field.startValue}
+      currentValue={filter.startValue}
       parser={mutateParser(parser)}
       pickListItems={pickListItems}
       label={queryText('startValue')}
-      fieldName={mappingPathToString(field.mappingPath)}
+      fieldName={fieldName}
       listInput={true}
       onChange={handleChange}
     />
@@ -375,12 +383,14 @@ export const queryFieldFilters: RR<
 };
 
 export function QueryLineFilter({
-  field,
+  filter,
+  fieldName,
   parser,
   pickListName,
   onChange: handleChange,
 }: {
-  readonly field: QueryField;
+  readonly filter: QueryField['filters'][number];
+  readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListName?: string;
   readonly onChange: (newValue: string) => void;
@@ -404,25 +414,29 @@ export function QueryLineFilter({
     )
   );
 
-  const previousFilter = React.useRef<typeof field.filter>(field.filter);
+  const previousFilter = React.useRef<QueryFieldFilter>(filter.type);
   // When going from "in" to another filter type, throw away all but first value
   React.useEffect(() => {
-    if (field.filter !== 'in' && previousFilter.current === 'in')
-      handleChange(field.startValue.split(',')[0]);
-    previousFilter.current = field.filter;
-  }, [handleChange, field]);
+    if (filter.type !== 'in' && previousFilter.current === 'in')
+      handleChange(filter.startValue.split(',')[0]);
+    previousFilter.current = filter.type;
+  }, [handleChange, filter]);
 
-  const Component = queryFieldFilters[field.filter].component;
+  const Component = queryFieldFilters[filter.type].component;
   return typeof Component === 'undefined' ? null : (
-    <Component
-      field={field}
-      onChange={handleChange}
-      parser={parser}
-      pickListItems={
-        queryFieldFilters[field.filter].renderPickList
-          ? pickListItems
-          : undefined
-      }
-    />
+    <React.Fragment>
+      {mappingElementDivider}
+      <Component
+        filter={filter}
+        onChange={handleChange}
+        parser={parser}
+        fieldName={fieldName}
+        pickListItems={
+          queryFieldFilters[filter.type].renderPickList
+            ? pickListItems
+            : undefined
+        }
+      />
+    </React.Fragment>
   );
 }

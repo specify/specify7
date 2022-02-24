@@ -496,6 +496,12 @@ const queryText = createDictionary({
     ca: 'Starts With',
     'es-es': 'Starts With',
   },
+  or: {
+    'en-us': 'or',
+    'ru-ru': 'или',
+    ca: 'or',
+    'es-es': 'or',
+  },
 });
 
 export default queryText;

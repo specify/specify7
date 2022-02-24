@@ -6,7 +6,7 @@ import _ from 'underscore';
 import {globalEvents} from './specifyapi';
 import {schema} from './schema';
 import {getDomainResource} from './treedefinitions';
-import { remotePrefs } from './remoteprefs';
+import {remotePrefs} from './remoteprefs';
 
 
 function takeBetween(items, startElem, endElem) {
@@ -48,13 +48,13 @@ function takeBetween(items, startElem, endElem) {
 
         export function collectionsInDomain(domainResource) {
             if (domainResource == null) return null;
-            var domainLevel = domainResource.specifyModel.name.toLowerCase();
-            if (domainLevel === 'collectionobject') {
+            const domainLevel = domainResource.specifyModel.name;
+            if (domainLevel === 'CollectionObject') {
                 return domainResource.rget('collection', true).pipe(function(collection) {
                     return [collection];
                 });
             }
-            if (domainLevel === 'collection') {
+            if (domainLevel === 'Collection') {
                 return domainResource.fetchIfNotPopulated().pipe(function() {
                     return [domainResource];
                 });

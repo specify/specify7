@@ -447,6 +447,7 @@ export function WbPlanViewMapper(props: {
               className="flex-col justify-center p-2"
               disabled={!mapButtonEnabled}
               onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
+              aria-label={wbText('map')}
               title={wbText('mapButtonDescription')}
             >
               {wbText('map')}

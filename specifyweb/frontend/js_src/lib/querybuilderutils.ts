@@ -8,8 +8,12 @@ import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
-import { sortObjectsByKey } from './wbplanviewhelper';
-import { anyTreeRank, formatTreeRank } from './wbplanviewmappinghelper';
+import { group, sortObjectsByKey } from './wbplanviewhelper';
+import {
+  anyTreeRank,
+  formatTreeRank,
+  mappingPathToString,
+} from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
@@ -29,43 +33,57 @@ export type QueryField = {
   readonly id: number;
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
-  readonly filter: QueryFieldFilter;
-  readonly startValue: string;
-  readonly isNot: boolean;
   readonly isDisplay: boolean;
   readonly parser?: Parser;
+  readonly filters: RA<{
+    readonly type: QueryFieldFilter;
+    readonly startValue: string;
+    readonly isNot: boolean;
+  }>;
 };
 
 export function parseQueryFields(
   queryFields: RA<SerializedResource<SpQueryField>>
 ): RA<QueryField> {
-  return sortObjectsByKey(Array.from(queryFields), 'position').map(
-    ({ id, isNot, isDisplay, ...field }) => {
-      const fieldSpec = QueryFieldSpec.fromStringId(
-        field.stringId,
-        field.isRelFld ?? false
-      );
+  return Object.values(
+    group(
+      sortObjectsByKey(Array.from(queryFields), 'position').map(
+        ({ id, isNot, isDisplay, ...field }) => {
+          const fieldSpec = QueryFieldSpec.fromStringId(
+            field.stringId,
+            field.isRelFld ?? false
+          );
 
-      return {
-        id,
-        mappingPath: fieldSpec.toMappingPath(),
-        sortType: sortTypes[field.sortType],
-        filter: defined(
-          // Back-end treats "equal" with blank startValue as "any"
-          Object.entries(queryFieldFilters).find(
-            ([_, { id }]) =>
-              (id === queryFieldFilters.any.id &&
-                field.operStart === queryFieldFilters.equal.id &&
-                field.startValue === '') ||
-              id === field.operStart
-          )
-        )[0],
-        startValue: field.startValue ?? '',
-        isNot,
-        isDisplay,
-      };
-    }
-  );
+          return [
+            mappingPathToString(fieldSpec.toMappingPath()),
+            {
+              id,
+              mappingPath: fieldSpec.toMappingPath(),
+              sortType: sortTypes[field.sortType],
+              filter: {
+                type: defined(
+                  // Back-end treats "equal" with blank startValue as "any"
+                  Object.entries(queryFieldFilters).find(
+                    ([_, { id }]) =>
+                      (id === queryFieldFilters.any.id &&
+                        field.operStart === queryFieldFilters.equal.id &&
+                        field.startValue === '') ||
+                      id === field.operStart
+                  )
+                )[0],
+                isNot,
+                startValue: field.startValue ?? '',
+              },
+              isDisplay,
+            },
+          ] as const;
+        }
+      )
+    )
+  ).map((groupedFields) => ({
+    ...groupedFields[0],
+    filters: groupedFields.map(({ filter }) => filter),
+  }));
 }
 
 export const queryFieldsToFieldSpecs = (
@@ -83,27 +101,40 @@ export const unParseQueryFields = (
   baseTableName: keyof Tables,
   fields: RA<QueryField>
 ): RA<SerializedResource<SpQueryField>> =>
-  queryFieldsToFieldSpecs(baseTableName, fields).map(
+  queryFieldsToFieldSpecs(baseTableName, fields).flatMap(
     ([field, fieldSpec], index) => {
       const attributes = fieldSpec.toSpQueryAttributes();
-      return {
+      const commonData = {
         ...attributes,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
-        startValue: field.startValue,
-        operStart: defined(
-          // Back-end treats "equal" with blank startValue as "any"
-          Object.entries(queryFieldFilters).find(
-            ([name, { id }]) =>
-              (field.startValue === '' &&
-                field.filter === 'any' &&
-                id === queryFieldFilters.equal.id) ||
-              name === field.filter
-          )
-        )[1].id,
         isDisplay: field.isDisplay,
-        // TODO: add missing nullable fields here
-      } as unknown as SerializedResource<SpQueryField>;
+      };
+      const hasFilters = field.filters.some(({ type }) => type !== 'any');
+      return field.filters
+        .filter((filter, index) =>
+          // Filter out duplicate or redundant "any"
+          hasFilters ? filter.type !== 'any' : index === 0
+        )
+        .map(
+          ({ type, startValue, isNot }) =>
+            ({
+              ...commonData,
+              operStart: defined(
+                // Back-end treats "equal" with blank startValue as "any"
+                Object.entries(queryFieldFilters).find(
+                  ([name, { id }]) =>
+                    (startValue === '' &&
+                      type === 'any' &&
+                      id === queryFieldFilters.equal.id) ||
+                    name === type
+                )
+              )[1].id,
+              startValue,
+              isNot,
+              // TODO: add missing nullable fields here
+            } as unknown as SerializedResource<SpQueryField>)
+        );
     }
   );
 

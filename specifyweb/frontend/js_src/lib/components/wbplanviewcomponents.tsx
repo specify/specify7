@@ -330,8 +330,9 @@ const fieldGroupLabels = {
   hiddenFields: wbText('hiddenFields'),
 } as const;
 
+export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
 export const mappingElementDivider = (
-  <span className="print:px-1 flex items-center px-2" aria-label=",">
+  <span className={mappingElementDividerClassName} aria-label=",">
     {icons.arrowRight}
   </span>
 );

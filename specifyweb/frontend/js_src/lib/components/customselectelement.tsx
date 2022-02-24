@@ -427,6 +427,8 @@ const defaultDefaultOption = {
   isHidden: false,
 };
 
+export const customSelectElementBackground = 'bg-white dark:bg-neutral-600';
+
 export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
@@ -560,7 +562,7 @@ export function CustomSelectElement({
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
-              : 'bg-white dark:bg-neutral-600'
+              : customSelectElementBackground
           }
         ${isOpen ? '[z-index:3] rounded-b-none' : ''}`}
         role="button"

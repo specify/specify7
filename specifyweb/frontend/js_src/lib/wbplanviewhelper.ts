@@ -166,12 +166,13 @@ export const split = <ITEM>(
 export const group = <KEY extends PropertyKey, VALUE>(
   entries: RA<Readonly<[key: KEY, value: VALUE]>>
 ): RR<KEY, RA<VALUE>> =>
-  entries.reduce<RR<KEY, RA<VALUE>>>(
+  entries.reduce(
     (grouped, [key, value]) => ({
       ...grouped,
       [key]: [...(grouped[key] ?? []), value],
     }),
-    {}
+    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+    {} as RR<KEY, RA<VALUE>>
   );
 
 // Find a value in an array, and return it's mapped variant

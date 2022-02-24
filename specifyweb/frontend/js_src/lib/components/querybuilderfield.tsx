@@ -12,6 +12,7 @@ import { defined, filterArray } from '../types';
 import type { Parser } from '../uiparse';
 import { resolveParser } from '../uiparse';
 import {
+  mappingPathToString,
   parsePartialField,
   valueIsPartialField,
 } from '../wbplanviewmappinghelper';
@@ -20,12 +21,9 @@ import {
   getTableFromMappingPath,
 } from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
-import { Button, className } from './basic';
-import type {
-  CustomSelectSubtype,
-  CustomSelectType,
-} from './customselectelement';
-import { icons } from './icons';
+import { Button, className, Select } from './basic';
+import { customSelectElementBackground } from './customselectelement';
+import { iconClassName, icons } from './icons';
 import type {
   QueryFieldFilter,
   QueryFieldType,
@@ -40,9 +38,11 @@ import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
+  mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 
+// TODO: split this component into smaller components
 export function QueryLine({
   baseTableName,
   field,
@@ -99,11 +99,6 @@ export function QueryLine({
   }>({ fieldType: undefined, pickListName: undefined, parser: undefined });
 
   React.useEffect(() => {
-    let filter = field.filter;
-    let fieldType: QueryFieldType | undefined = undefined;
-    let parser;
-    let pickListName = undefined;
-
     const [fieldName, datePart] = valueIsPartialField(
       field.mappingPath.slice(-1)[0] ?? ''
     )
@@ -115,15 +110,20 @@ export function QueryLine({
         ? getTableFromMappingPath(baseTableName, field.mappingPath)
         : undefined;
     const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
-    if (
+
+    let pickListName;
+    let fieldType: QueryFieldType | undefined = undefined;
+    let parser = undefined;
+    const hasParser =
       typeof dataModelField === 'object' &&
       !dataModelField.isRelationship &&
-      mappingPathIsComplete(field.mappingPath)
-    ) {
+      mappingPathIsComplete(field.mappingPath);
+    // TODO: define parser and fieldType for (formatted) and (aggregated)
+    if (hasParser) {
       pickListName =
-        dataModelField.isTemporal() && datePart === 'month'
+        dataModelField?.isTemporal() && datePart === 'month'
           ? 'MonthsComboBox'
-          : dataModelField.getPickList();
+          : dataModelField?.getPickList();
 
       parser = defined(
         resolveParser(dataModelField, {
@@ -137,21 +137,34 @@ export function QueryLine({
         dataModelField.name === 'catalogNumber'
           ? 'id'
           : parser.type ?? 'text';
-      if (queryFieldFilters[filter].types?.includes(fieldType) === false)
-        filter = 'any';
     }
-    // TODO: define parser and fieldType for (formatted) and (aggregated)
-    else {
-      parser = undefined;
-      filter = 'any';
-    }
+
+    const newFilters = hasParser
+      ? field.filters.map((filter) => {
+          const filterType =
+            typeof fieldType === 'undefined' ||
+            queryFieldFilters[filter.type].types?.includes(fieldType) === false
+              ? 'any'
+              : filter.type;
+          return filterType === 'any' && filter.type !== 'any'
+            ? ({
+                type: 'any',
+                isNot: false,
+                startValue: '',
+              } as const)
+            : filter;
+        })
+      : [];
 
     setFieldMeta({ parser, fieldType, pickListName });
 
-    if (field.filter !== filter)
+    if (
+      field.filters.length === newFilters.length &&
+      field.filters.some((filter, index) => filter !== newFilters[index])
+    )
       handleChange({
         ...field,
-        filter,
+        filters: newFilters,
       });
   }, [
     baseTableName,
@@ -175,64 +188,27 @@ export function QueryLine({
    */
   const filteredLineData = mutateLineData(lineData, field.mappingPath);
 
-  const filterBoxIndex = filteredLineData.length;
-
-  const fieldOptions = filterArray([
-    {
-      customSelectSubtype: 'simple' as CustomSelectSubtype,
-      selectLabel: queryText('filter'),
-      fieldsData: Object.fromEntries(
-        filterArray(
-          Object.entries(queryFieldFilters).map(
-            ([filterName, { label, types }]) =>
-              !Array.isArray(types) ||
-              (typeof fieldMeta.fieldType === 'string' &&
-                types.includes(fieldMeta.fieldType))
-                ? [
-                    filterName,
-                    {
-                      optionLabel: label,
-                      isDefault: filterName === field.filter,
-                    },
-                  ]
-                : undefined
-          )
-        )
-      ),
-    },
-  ]);
-
-  const lineProps = getMappingLineProps({
-    mappingLineData: [...filteredLineData, ...fieldOptions],
+  const mappingLineProps = getMappingLineProps({
+    mappingLineData: filteredLineData,
     customSelectType: 'CLOSED_LIST',
-    onChange: (payload) => {
-      const newFilter = payload.newValue as QueryFieldFilter;
-      if (filterBoxIndex === payload.index) {
-        const startValue =
-          field.filter === 'any' &&
-          filtersWithDefaultValue.has(newFilter) &&
-          field.startValue === '' &&
-          typeof fieldMeta.parser?.value === 'string'
-            ? fieldMeta.parser.value
-            : field.startValue;
-        handleChange({
-          ...field,
-          startValue,
-          filter: newFilter,
-        });
-      } else handleMappingChange(payload);
-    },
+    onChange: handleMappingChange,
     onOpen: handleOpen,
     onClose: handleClose,
     openSelectElement: openedElement,
-  }).map((elementProps, index) =>
-    filterBoxIndex === index
-      ? {
-          ...elementProps,
-          customSelectType: 'OPTIONS_LIST' as CustomSelectType,
-        }
-      : elementProps
-  );
+  });
+
+  const handleFilterChange = (
+    index: number,
+    filter: QueryField['filters'][number] | undefined
+  ): void =>
+    handleChange({
+      ...field,
+      filters: filterArray([
+        ...field.filters.slice(0, index),
+        filter,
+        ...field.filters.slice(index + 1),
+      ]),
+    });
 
   const isFieldComplete = mappingPathIsComplete(field.mappingPath);
 
@@ -253,9 +229,9 @@ export function QueryLine({
       )}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        className={`flex-1 print:gap-1 flex flex-wrap items-center gap-2 ${
-          isFocused ? 'bg-gray-300 dark:bg-neutral-700 rounded' : ''
-        }`}
+        className={`flex-1 print:gap-1 flex flex-wrap items-center gap-2
+          items-baseline
+          ${isFocused ? 'bg-gray-300 dark:bg-neutral-700 rounded' : ''}`}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
@@ -268,67 +244,142 @@ export function QueryLine({
               if (openedElement > 0) handleOpen(openedElement - 1);
               else handleClose();
             else if (key === 'ArrowRight')
-              if (openedElement + 1 < lineProps.length)
+              if (openedElement + 1 < mappingLineProps.length)
                 handleOpen(openedElement + 1);
               else handleClose();
 
             return;
           }
 
-          if (key === 'ArrowLeft') handleOpen(lineProps.length - 1);
+          if (key === 'ArrowLeft') handleOpen(mappingLineProps.length - 1);
           else if (key === 'ArrowRight' || key === 'Enter') handleOpen(0);
           else if (key === 'ArrowUp') handleLineFocus('previous');
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
         ref={lineRef}
       >
-        {lineProps
-          .filter(({ customSelectType }) => customSelectType !== 'OPTIONS_LIST')
-          .map((mappingDetails, index) => (
+        <div className="flex flex-wrap gap-2">
+          {mappingLineProps.map((mappingDetails, index, { length }) => (
             <React.Fragment key={index}>
               <MappingElement {...mappingDetails} role="listitem" />
-              {index + 1 !== lineProps.length && mappingElementDivider}
+              {index + 1 === length ? undefined : mappingElementDivider}
             </React.Fragment>
           ))}
-        {lineProps
-          .filter(({ customSelectType }) => customSelectType === 'OPTIONS_LIST')
-          .map((mappingDetails, index, { length }) => (
-            <React.Fragment key={index}>
-              {index + 1 === length && field.filter !== 'any' ? (
+        </div>
+        <div className="flex flex-col gap-2">
+          {field.filters.map((filter, index) => (
+            <div className="flex flex-wrap gap-2" key={index}>
+              {index === 0 ? (
+                <React.Fragment>
+                  {mappingElementDivider}
+                  <Button.Simple
+                    title={queryText('or')}
+                    aria-label={queryText('or')}
+                    className={`
+                    aria-handled
+                    ${isFieldComplete ? '' : 'invisible'}
+                    ${field.filters.length > 1 ? className.blueButton : ''}
+                  `}
+                    onClick={(): void =>
+                      handleFilterChange(field.filters.length, {
+                        type: 'any',
+                        isNot: false,
+                        startValue: '',
+                      })
+                    }
+                    aria-pressed={field.filters.length > 1}
+                  >
+                    {icons.plus}
+                  </Button.Simple>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <span className={mappingElementDividerClassName}>
+                    <span
+                      className={`uppercase flex items-center justify-center
+                        ${iconClassName}`}
+                    >
+                      {queryText('or')}
+                    </span>
+                  </span>
+                  <Button.Simple
+                    className={`${className.redButton} print:hidden`}
+                    title={commonText('remove')}
+                    aria-label={commonText('remove')}
+                    onClick={(): void => handleFilterChange(index, undefined)}
+                  >
+                    {icons.trash}
+                  </Button.Simple>
+                </React.Fragment>
+              )}
+              {field.filters[index].type === 'any' ? undefined : (
                 <Button.Simple
                   title={queryText('negate')}
                   aria-label={queryText('negate')}
                   className={`aria-handled ${
-                    field.isNot ? className.redButton : ''
+                    field.filters[index].isNot ? className.redButton : ''
                   }`}
                   onClick={(): void =>
-                    handleChange({
-                      ...field,
-                      isNot: !field.isNot,
+                    handleFilterChange(index, {
+                      ...field.filters[index],
+                      isNot: !field.filters[index].isNot,
                     })
                   }
-                  aria-pressed={field.isNot}
+                  aria-pressed={field.filters[index].isNot}
                 >
                   {icons.ban}
                 </Button.Simple>
-              ) : undefined}
-              <MappingElement {...mappingDetails} role="listitem" />
-              {index + 1 !== length && mappingElementDivider}
-            </React.Fragment>
+              )}
+              <Select
+                aria-label={queryText('filter')}
+                title={queryText('filter')}
+                value={filter.type}
+                className={customSelectElementBackground}
+                onChange={({ target }): void => {
+                  const newFilter = (target as HTMLSelectElement)
+                    .value as QueryFieldFilter;
+                  const startValue =
+                    filter.type === 'any' &&
+                    filtersWithDefaultValue.has(newFilter) &&
+                    filter.startValue === '' &&
+                    typeof fieldMeta.parser?.value === 'string'
+                      ? fieldMeta.parser.value
+                      : filter.startValue;
+                  handleFilterChange(index, {
+                    ...field.filters[index],
+                    type: newFilter,
+                    startValue,
+                  });
+                }}
+              >
+                {Object.entries(queryFieldFilters).map(
+                  ([filterName, { label, types }]) =>
+                    !Array.isArray(types) ||
+                    (typeof fieldMeta.fieldType === 'string' &&
+                      types.includes(fieldMeta.fieldType)) ? (
+                      <option key={filterName} value={filterName}>
+                        {label}
+                      </option>
+                    ) : undefined
+                )}
+              </Select>
+              {typeof fieldMeta.parser === 'object' && (
+                <QueryLineFilter
+                  filter={field.filters[index]}
+                  fieldName={mappingPathToString(field.mappingPath)}
+                  parser={fieldMeta.parser}
+                  pickListName={fieldMeta.pickListName}
+                  onChange={(startValue): void =>
+                    handleFilterChange(index, {
+                      ...field.filters[index],
+                      startValue,
+                    })
+                  }
+                />
+              )}
+            </div>
           ))}
-        {typeof fieldMeta.parser === 'object' && (
-          <QueryLineFilter
-            field={field}
-            parser={fieldMeta.parser}
-            pickListName={fieldMeta.pickListName}
-            onChange={(startValue): void =>
-              handleChange({
-                ...field,
-                startValue,
-              })
-            }
-          />
-        )}
+        </div>
       </div>
       <div className="contents print:hidden">
         <Button.Simple

@@ -22,6 +22,7 @@ import {
 } from './basic';
 import { TableIcon } from './common';
 import { useUnloadProtect } from './hooks';
+import { icons } from './icons';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
@@ -41,6 +42,7 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: OR filters
  * TODO: test query reports
  * TODO: once done, deploy to test server
+ * TODO: adapt UI for printing
  * Query Results:
  * TODO: navigate between selected results
  * TODO: shift+click for selected rows
@@ -99,9 +101,13 @@ export function QueryBuilder({
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
           mappingPath: state.mappingView,
           sortType: undefined,
-          filter: 'any',
-          startValue: '',
-          isNot: false,
+          filters: [
+            {
+              type: 'any',
+              startValue: '',
+              isNot: false,
+            },
+          ],
           isDisplay: true,
         },
       ],
@@ -248,20 +254,13 @@ export function QueryBuilder({
               })}
               mapButton={
                 <Button.Simple
-                  className="flex-col justify-center p-2"
+                  className="justify-center p-2"
                   disabled={!mapButtonEnabled}
                   onClick={handleAddField}
+                  aria-label={commonText('add')}
                   title={queryText('newButtonDescription')}
                 >
-                  {commonText('add')}
-                  <span
-                    className={`text-green-500 ${
-                      mapButtonEnabled ? '' : 'invisible'
-                    }`}
-                    aria-hidden="true"
-                  >
-                    &#8594;
-                  </span>
+                  {icons.plus}
                 </Button.Simple>
               }
             />

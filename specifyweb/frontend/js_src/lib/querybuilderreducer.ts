@@ -136,10 +136,7 @@ export const reducer = generateReducer<MainState, Actions>({
     ...state,
     fields: [
       ...state.fields.slice(0, action.line),
-      {
-        ...action.field,
-        isNot: action.field.isNot && action.field.filter !== 'any',
-      },
+      action.field,
       ...state.fields.slice(action.line + 1),
     ],
     saveRequired: true,
