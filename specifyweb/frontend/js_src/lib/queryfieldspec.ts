@@ -189,9 +189,6 @@ export class QueryFieldSpec {
 
     fieldSpec.joinPath = joinPath;
     fieldSpec.table = node;
-    fieldSpec.datePart = joinPath.slice(-1)[0]?.isTemporal()
-      ? 'fullDate'
-      : undefined;
     return fieldSpec;
   }
 

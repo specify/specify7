@@ -39,7 +39,6 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: default value for fullDate
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: new query table list empty
- * TODO: OR filters
  * TODO: test query reports
  * TODO: once done, deploy to test server
  * TODO: adapt UI for printing
