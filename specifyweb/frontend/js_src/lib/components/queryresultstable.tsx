@@ -19,30 +19,33 @@ import { QueryResults } from './queryresults';
 
 function TableHeaderCell({
   fieldSpec,
+  ariaLabel,
   sortConfig,
   onSortChange: handleSortChange,
 }: {
-  readonly fieldSpec: QueryFieldSpec;
+  readonly fieldSpec: QueryFieldSpec | undefined;
+  readonly ariaLabel?: string;
   readonly sortConfig: QueryField['sortType'];
-  readonly onSortChange: (sortType: QueryField['sortType']) => void;
+  readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  const field = fieldSpec.getField();
-  const tableName = field?.model.name;
+  const tableName = fieldSpec?.getField()?.model.name;
 
-  const content = (
-    <>
-      {tableName && <TableIcon tableName={tableName} />}
-      {generateMappingPathPreview(
-        fieldSpec.baseTable.name,
-        fieldSpec.toMappingPath()
-      )}
-    </>
-  );
+  const content =
+    typeof fieldSpec === 'object' ? (
+      <>
+        {tableName && <TableIcon tableName={tableName} />}
+        {generateMappingPathPreview(
+          fieldSpec.baseTable.name,
+          fieldSpec.toMappingPath()
+        )}
+      </>
+    ) : undefined;
   return (
     <div
       role="columnheader"
       className="w-full min-w-max bg-brand-100 dark:bg-brand-500 border-b
-            border-gray-500 p-1 [inset-block-start:_0] sticky"
+        border-gray-500 p-1 [inset-block-start:_0] sticky [z-index:2]"
+      aria-label={ariaLabel}
     >
       <div className="contents">
         {typeof handleSortChange === 'function' ? (
@@ -111,14 +114,25 @@ export function QueryResultsTable({
   >(initialData);
   React.useEffect(() => setResults(initialData), [initialData]);
 
+  const [selectedRows, setSelectedRows] = React.useState<Set<number>>(
+    new Set()
+  );
+  const lastSelectedRow = React.useRef<number | undefined>(undefined);
+  React.useEffect(() => setSelectedRows(new Set()), [totalCount]);
+
   return (
     <ContainerBase className="overflow-hidden">
       {<h3>{`${label}: (${totalCount})`}</h3>}
       {typeof results === 'object' && fieldSpecs.length > 0 && (
         <div
           role="table"
-          className={`grid-table grid-cols-[repeat(var(--cols),auto)]
-            overflow-auto max-h-[75vh] border-b border-gray-500 auto-rows-min`}
+          className={`grid-table overflow-auto max-h-[75vh] border-b
+             border-gray-500 auto-rows-min
+            ${
+              typeof idFieldIndex === 'number'
+                ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
+                : `grid-cols-[repeat(var(--cols),auto)]`
+            }`}
           style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
           onScroll={
             isFetching || results.length === totalCount
@@ -137,6 +151,24 @@ export function QueryResultsTable({
         >
           <div role="rowgroup">
             <div role="row">
+              {typeof idFieldIndex === 'number' && (
+                <>
+                  <TableHeaderCell
+                    key="select-record"
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('selectRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
+                  />
+                  <TableHeaderCell
+                    key="view-record"
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('viewRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
+                  />
+                </>
+              )}
               {fieldSpecs.map((fieldSpec, index) => (
                 <TableHeaderCell
                   key={index}
@@ -154,6 +186,33 @@ export function QueryResultsTable({
             fieldSpecs={fieldSpecs}
             idFieldIndex={idFieldIndex}
             results={results}
+            selectedRows={selectedRows}
+            onSelected={(id, isSelected, isShiftClick): void => {
+              if (typeof idFieldIndex !== 'number') return;
+              const rowIndex = results.findIndex(
+                (row) => row[idFieldIndex] === id
+              );
+              const range =
+                isShiftClick && typeof lastSelectedRow.current === 'number'
+                  ? Array.from(
+                      {
+                        length:
+                          Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                      },
+                      (_, index) =>
+                        Math.min(lastSelectedRow.current!, rowIndex) + index
+                    )
+                  : [rowIndex];
+              setSelectedRows(
+                new Set([
+                  ...Array.from(selectedRows).filter(
+                    (id) => isSelected || !range.includes(id)
+                  ),
+                  ...(isSelected ? range : []),
+                ])
+              );
+              lastSelectedRow.current = rowIndex;
+            }}
           />
         </div>
       )}

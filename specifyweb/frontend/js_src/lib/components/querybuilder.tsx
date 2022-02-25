@@ -36,6 +36,7 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
+ * TODO: uniqueness not enforced for _formatted
  * TODO: default value for fullDate
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: new query table list empty

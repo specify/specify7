@@ -5,9 +5,13 @@
  */
 
 import type { LayersControlEventHandlerFn } from 'leaflet';
+import _ from 'underscore';
 
 import { ajax, Http } from './ajax';
 import * as cache from './cache';
+import { legacyNonJsxIcons } from './components/icons';
+import { dialogClassNames, showDialog } from './components/modaldialog';
+import { contextUnlockedPromise } from './initialcontext';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -22,10 +26,6 @@ import localityText from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { capitalize } from './wbplanviewhelper';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
-import { legacyNonJsxIcons } from './components/icons';
-import { contextUnlockedPromise } from './initialcontext';
-import { dialogClassNames, showDialog } from './components/modaldialog';
-import _ from 'underscore';
 
 const DEFAULT_ZOOM = 5;
 
@@ -57,7 +57,7 @@ const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
 
 export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
   contextUnlockedPromise
-    .then(() =>
+    .then(async () =>
       ajax<IR<unknown>>(
         '/context/app.resource?name=leaflet-layers',
         { headers: { Accept: 'application/json' } },
@@ -298,7 +298,7 @@ export function addMarkersToMap(
           L.FeatureGroup
         ]
     )
-  ) as RR<MarkerLayerName, L.FeatureGroup>;
+  );
 
   const groupsWithMarkers = new Set<string>();
 
@@ -393,7 +393,7 @@ export const formatLocalityData = (
             target="_blank"
             title="${commonText('opensInNewTab')}"
           >
-            ${localityText('viewRecord')}
+            ${commonText('viewRecord')}
             <span
               title="${commonText('opensInNewTab')}"
               aria-label="${commonText('opensInNewTab')}"

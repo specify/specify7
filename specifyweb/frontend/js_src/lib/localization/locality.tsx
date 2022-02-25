@@ -52,12 +52,6 @@ const localityText = createDictionary({
     ca: 'Polygons',
     'es-es': 'Polygons',
   },
-  viewRecord: {
-    'en-us': 'View Record',
-    'ru-ru': 'Открыть запись',
-    ca: 'View Record',
-    'es-es': 'View Record',
-  },
   // GeoLocate
   geoLocate: {
     'en-us': 'GEOLocate',

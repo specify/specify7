@@ -1484,6 +1484,18 @@ const commonText = createDictionary({
     ca: 'Transactions',
     'es-es': 'Transactions',
   },
+  viewRecord: {
+    'en-us': 'View Record',
+    'ru-ru': 'Открыть запись',
+    ca: 'View Record',
+    'es-es': 'View Record',
+  },
+  selectRecord: {
+    'en-us': 'Select Record',
+    'ru-ru': 'Выбрать Элемент',
+    ca: 'Select Record',
+    'es-es': 'Select Record',
+  },
 });
 
 export default commonText;

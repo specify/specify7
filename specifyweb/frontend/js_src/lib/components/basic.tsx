@@ -214,6 +214,7 @@ export const Select = wrap('select', className.notTouchedInput, (props) => ({
 export const Link = {
   Default: wrap('a', className.link),
   NewTab: wrap('a', className.link, (props) => ({
+    ...props,
     target: '_blank',
     children: (
       <>

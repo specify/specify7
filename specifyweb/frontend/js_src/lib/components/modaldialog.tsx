@@ -6,20 +6,20 @@
 import type jQuery from 'jquery';
 import React from 'react';
 import Draggable from 'react-draggable';
-import type {Props} from 'react-modal';
+import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
 import commonText from '../localization/common';
-import type {RA} from '../types';
+import type { RA } from '../types';
+import type { RawTagProps } from './basic';
 import {
   Button,
   className,
   DialogContext,
-  RawTagProps,
   Submit,
-  transitionDuration
+  transitionDuration,
 } from './basic';
-import {useId} from './hooks';
+import { useId } from './hooks';
 import createBackboneView from './reactbackboneextend';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
@@ -72,7 +72,10 @@ const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-// TODO: disable outside click detection while resizing the dialog
+/*
+ * TODO: disable outside click detection while resizing the dialog
+ * TODO: reset scrollTop if title and header changed
+ */
 export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it

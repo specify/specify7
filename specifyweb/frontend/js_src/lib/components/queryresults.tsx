@@ -12,6 +12,7 @@ import type { SpecifyModel } from '../specifymodel';
 import { isResourceOfType } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
+import { Input, Link } from './basic';
 import { crash } from './errorboundary';
 
 type FieldToSet = {
@@ -190,6 +191,9 @@ class AuditRecordFormatter {
   }
 }
 
+const className = `border-gray-500 border-r bg-[color:var(--bg)] first:border-l
+  p-1 min-h-[theme(spacing.8)]`;
+
 function QueryResultCell({
   fieldSpec,
   value,
@@ -217,11 +221,7 @@ function QueryResultCell({
   );
 
   return (
-    <span
-      role="cell"
-      className="border-gray-500 border-r
-     bg-[color:var(--bg)] first:border-l p-1 min-h-[theme(spacing.8)]"
-    >
+    <span role="cell" className={className}>
       {formatted}
     </span>
   );
@@ -234,6 +234,8 @@ function QueryResult({
   result,
   forceResourceLoad,
   auditRecordFormatter,
+  isSelected,
+  onSelected: handleSelected,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -241,6 +243,8 @@ function QueryResult({
   readonly result: RA<string | number | null>;
   readonly forceResourceLoad: boolean;
   readonly auditRecordFormatter: AuditRecordFormatter;
+  readonly isSelected: boolean;
+  readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
   const [resource, setResource] = React.useState<
     SpecifyResource<AnySchema> | undefined | false
@@ -298,22 +302,40 @@ function QueryResult({
         }
       />
     ));
-  const className = `query-result sticky even:[--bg:transparent]
-    odd:[--bg:theme(colors.gray.100)]
-    odd:dark:[--bg:theme(colors.neutral.700)]`;
 
-  return typeof resource === 'object' ? (
-    <a
-      href={resource?.viewUrl()}
-      target="_blank"
+  const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
+  return (
+    <div
       role="row"
-      className={`${className} link`}
-      rel="noreferrer"
+      className={`query-result sticky even:[--bg:transparent]
+        odd:[--bg:theme(colors.gray.100)]
+        odd:dark:[--bg:theme(colors.neutral.700)]`}
+      onClick={
+        typeof handleSelected === 'function'
+          ? ({ target, shiftKey }): void =>
+              ['INPUT', 'A'].includes((target as HTMLElement).tagName)
+                ? undefined
+                : handleSelected?.(!isSelected, shiftKey)
+          : undefined
+      }
     >
-      {cells}
-    </a>
-  ) : (
-    <div role="row" className={className}>
+      {typeof handleSelected === 'function' && (
+        <span role="cell" className={`${className} sticky`}>
+          <Input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(): void => undefined}
+            onClick={({ shiftKey }): void =>
+              handleSelected?.(!isSelected, shiftKey)
+            }
+          />
+        </span>
+      )}
+      {typeof viewUrl === 'string' && (
+        <span role="cell" className={`${className} sticky`}>
+          <Link.NewTab href={viewUrl} role="row" rel="noreferrer" />
+        </span>
+      )}
       {cells}
     </div>
   );
@@ -328,11 +350,19 @@ export function QueryResults({
   fieldSpecs,
   idFieldIndex,
   results,
+  selectedRows,
+  onSelected: handleSelected,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly idFieldIndex: number | undefined;
   readonly results: RA<RA<string | number | null>>;
+  readonly selectedRows: Set<number>;
+  readonly onSelected?: (
+    id: number,
+    isSelected: boolean,
+    isShiftClick: boolean
+  ) => void;
 }): JSX.Element {
   const auditRecordFormatter = new AuditRecordFormatter(fieldSpecs);
   const forceResourceLoad =
@@ -349,6 +379,18 @@ export function QueryResults({
           result={result}
           forceResourceLoad={forceResourceLoad}
           auditRecordFormatter={auditRecordFormatter}
+          isSelected={selectedRows.has(index)}
+          onSelected={
+            typeof handleSelected === 'function' &&
+            typeof idFieldIndex === 'number'
+              ? (isSelected, isShiftClick): void =>
+                  handleSelected(
+                    result[idFieldIndex] as number,
+                    isSelected,
+                    isShiftClick
+                  )
+              : undefined
+          }
         />
       ))}
     </div>
