@@ -14,7 +14,6 @@ import type {
   AutoMapperScope,
   MappingPath,
 } from './components/wbplanviewmapper';
-import type { PathIsMappedBind } from './components/wbplanviewmappercomponents';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import { getModel } from './schema';
@@ -68,7 +67,7 @@ type AutoMapperConstructorCheckExistingParameters =
      * Whether to check if the field is already mapped (outside AutoMapper,
      * in the mapping tree)
      */
-    readonly pathIsMapped: PathIsMappedBind;
+    readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
   };
 
 type AutoMapperConstructorDontCheckExistingParameters =
@@ -77,7 +76,7 @@ type AutoMapperConstructorDontCheckExistingParameters =
      * Whether to check if the field is already mapped (outside AutoMapper,
      * in the mapping tree)
      */
-    readonly pathIsMapped?: PathIsMappedBind;
+    readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
   };
 
 export type AutoMapperConstructorParameters =
@@ -161,11 +160,11 @@ const isMappingPathIsInProposedMappings = (
 const isMappingPathInMappingsTree = (
   checkForExistingMappings: boolean,
   localPath: MappingPath,
-  pathIsMapped?: PathIsMappedBind
-) =>
+  getMappedFields?: (mappingPath: MappingPath) => RA<string>
+): boolean =>
   checkForExistingMappings &&
-  typeof pathIsMapped === 'function' &&
-  pathIsMapped(localPath);
+  getMappedFields?.(localPath.slice(0, -1)).includes(localPath.slice(-1)[0]) ===
+    true;
 
 const findRankSynonyms = (
   tableName: AnyTree['tableName'],
@@ -229,7 +228,7 @@ export class AutoMapper {
 
   private readonly startingPath: MappingPath = [];
 
-  private readonly pathIsMapped?: PathIsMappedBind;
+  private readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 
   private readonly headersToMap: IR<{
     isMapped: boolean;
@@ -303,7 +302,7 @@ export class AutoMapper {
     path = [],
     pathOffset = 0,
     scope = 'autoMapper',
-    pathIsMapped,
+    getMappedFields,
   }: AutoMapperConstructorParameters) {
     // Strip extra characters to increase mapping success
     this.headersToMap = Object.fromEntries(
@@ -380,7 +379,7 @@ export class AutoMapper {
     this.baseTable = baseTable;
     this.startingTable = startingTable;
     this.startingPath = path;
-    this.pathIsMapped = pathIsMapped;
+    this.getMappedFields = getMappedFields;
   }
 
   /*
@@ -953,7 +952,7 @@ export class AutoMapper {
       isMappingPathInMappingsTree(
         this.checkForExistingMappings,
         localPath,
-        this.pathIsMapped
+        this.getMappedFields
       )
     ) {
       // Increment the last -to-many index in the mapping path, if it exists

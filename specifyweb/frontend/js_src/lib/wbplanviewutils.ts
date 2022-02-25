@@ -202,14 +202,6 @@ export const getMappedFields = (
     )
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
-export const pathIsMapped = (
-  lines: RA<MappingLine>,
-  mappingPath: MappingPath
-): boolean =>
-  Object.keys(getMappedFields(lines, mappingPath.slice(0, -1))).includes(
-    mappingPath.slice(-1)[0]
-  );
-
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath.slice(-1)[0] !== '0';
 
@@ -372,7 +364,7 @@ export async function fetchAutoMapperSuggestions({
     path: baseMappingPath,
     pathOffset,
     scope: 'suggestion',
-    pathIsMapped: pathIsMapped.bind(undefined, lines),
+    getMappedFields: getMappedFields.bind(undefined, lines),
   }).map()[lines[line].headerName];
 
   if (typeof autoMapperResults === 'undefined') return [];

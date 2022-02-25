@@ -229,8 +229,8 @@ export function QueryLine({
       )}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        className={`flex-1 print:gap-1 flex flex-wrap items-center gap-2
-          items-baseline
+        className={`flex-1 print:gap-1 flex flex-wrap gap-2
+          ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
           ${isFocused ? 'bg-gray-300 dark:bg-neutral-700 rounded' : ''}`}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
@@ -258,7 +258,11 @@ export function QueryLine({
         }}
         ref={lineRef}
       >
-        <div className="flex flex-wrap gap-2">
+        <div
+          className={
+            field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
+          }
+        >
           {mappingLineProps.map((mappingDetails, index, { length }) => (
             <React.Fragment key={index}>
               <MappingElement {...mappingDetails} role="listitem" />
@@ -266,9 +270,18 @@ export function QueryLine({
             </React.Fragment>
           ))}
         </div>
-        <div className="flex flex-col gap-2">
+        <div
+          className={
+            field.filters.length > 1 ? 'flex flex-col gap-2' : 'contents'
+          }
+        >
           {field.filters.map((filter, index) => (
-            <div className="flex flex-wrap gap-2" key={index}>
+            <div
+              className={
+                field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
+              }
+              key={index}
+            >
               {index === 0 ? (
                 <React.Fragment>
                   {mappingElementDivider}

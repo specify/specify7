@@ -36,8 +36,6 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * TODO: uniqueness not enforced for _formatted
- * TODO: default value for fullDate
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: new query table list empty
  * TODO: test query reports
@@ -45,7 +43,6 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: adapt UI for printing
  * Query Results:
  * TODO: navigate between selected results
- * TODO: shift+click for selected rows
  * TODO: see results in form view
  * TODO: pick lists in query results
  * TODO: creating record set out of a subset of results

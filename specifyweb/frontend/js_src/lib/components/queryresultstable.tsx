@@ -14,7 +14,6 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, ContainerBase } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
-import { useAsyncState } from './hooks';
 import { QueryResults } from './queryresults';
 
 function TableHeaderCell({
@@ -272,40 +271,52 @@ export function QueryResultsWrapper({
     [queryResource, recordSetId]
   );
 
-  const [payload] = useAsyncState(
-    React.useCallback(async () => {
-      if (queryRunCount === 0) return undefined;
-      const totalCount = ajax<{ readonly count: number }>(
-        '/stored_query/ephemeral/',
-        {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          body: {
-            ...queryResource.toJSON(),
-            recordsetid: recordSetId,
-            countonly: true,
-          },
-        }
-      ).then(({ data }) => data.count);
+  const [payload, setPayload] = React.useState<
+    | {
+        readonly fieldSpecs: RA<QueryFieldSpec>;
+        readonly totalCount: number;
+        readonly initialData: RA<RA<string | number | null>> | undefined;
+      }
+    | undefined
+  >(undefined);
+  React.useEffect(() => {
+    if (queryRunCount === 0) return;
+    setPayload(undefined);
 
-      const displayedFields = fields.filter((field) => field.isDisplay);
-      const initialData =
-        queryResource.get('countOnly') === true || displayedFields.length === 0
-          ? undefined
-          : fetchResults(0);
-      const fieldSpecs = queryFieldsToFieldSpecs(
-        baseTableName,
-        displayedFields
-      ).map(([_field, fieldSpec]) => fieldSpec);
+    const totalCount = ajax<{ readonly count: number }>(
+      '/stored_query/ephemeral/',
+      {
+        method: 'POST',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { Accept: 'application/json' },
+        body: {
+          ...queryResource.toJSON(),
+          recordsetid: recordSetId,
+          countonly: true,
+        },
+      }
+    ).then(({ data }) => data.count);
 
-      return {
-        fieldSpecs,
-        totalCount: await totalCount,
-        initialData: await initialData,
-      };
-    }, [baseTableName, fetchResults, queryResource, queryRunCount, recordSetId])
-  );
+    const displayedFields = fields.filter((field) => field.isDisplay);
+    const initialData =
+      queryResource.get('countOnly') === true || displayedFields.length === 0
+        ? undefined
+        : fetchResults(0);
+    const fieldSpecs = queryFieldsToFieldSpecs(
+      baseTableName,
+      displayedFields
+    ).map(([_field, fieldSpec]) => fieldSpec);
+
+    Promise.all([totalCount, initialData])
+      .then(([totalCount, initialData]) =>
+        setPayload({
+          fieldSpecs,
+          totalCount,
+          initialData,
+        })
+      )
+      .catch(crash);
+  }, [baseTableName, fetchResults, queryResource, queryRunCount, recordSetId]);
 
   return typeof payload === 'undefined' ? (
     queryRunCount === 0 ? null : (

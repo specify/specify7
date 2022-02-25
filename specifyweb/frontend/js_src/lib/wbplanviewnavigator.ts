@@ -12,7 +12,6 @@ import type {
   MappingElementProps,
 } from './components/wbplanviewcomponents';
 import type { MappingPath } from './components/wbplanviewmapper';
-import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
 import type { Tables } from './datamodel';
 import commonText from './localization/common';
 import queryText from './localization/query';
@@ -190,7 +189,7 @@ export function getMappingLineData({
    * "all" - fieldsData has data for all files
    */
   readonly generateFieldData: 'none' | 'selectedOnly' | 'all';
-  readonly getMappedFields?: GetMappedFieldsBind;
+  readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
   // WbPlanView has readOnly fields removed
@@ -347,6 +346,8 @@ export function getMappingLineData({
                       tableName: model.name,
                       isRelationship: false,
                       isDefault: internalState.defaultValue === formattedEntry,
+                      isEnabled:
+                        !internalState.mappedFields.includes(formattedEntry),
                     },
                   ]
                 : undefined,

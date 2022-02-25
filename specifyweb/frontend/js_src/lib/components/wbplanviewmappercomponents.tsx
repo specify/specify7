@@ -31,16 +31,6 @@ import {
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 
-export type GetMappedFieldsBind = (
-  // A mapping path that would be used as a filter
-  mappingPathFilter: MappingPath
-) => RA<string>;
-
-export type PathIsMappedBind = (
-  // A mapping path that would be used as a filter
-  mappingPathFilter: MappingPath
-) => boolean;
-
 export function MappingsControlPanel({
   showHiddenFields,
   onToggleHiddenFields: handleToggleHiddenFields,
@@ -80,7 +70,7 @@ export function ValidationResults(props: {
   readonly validationResults: RA<MappingPath>;
   readonly onSave: () => void;
   readonly onDismissValidation: () => void;
-  readonly getMappedFields: GetMappedFieldsBind;
+  readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
   readonly onValidationResultClick: (mappingPath: MappingPath) => void;
   readonly mustMatchPreferences: IR<boolean>;
 }): JSX.Element | null {
