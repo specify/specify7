@@ -5,6 +5,7 @@ import type { SpQuery, Tables } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
+import { fetchPickList, getPickListItems } from '../picklistmixins';
 import populateForm from '../populateform';
 import type { QueryField } from '../querybuilderutils';
 import { queryFieldsToFieldSpecs, sortTypes } from '../querybuilderutils';
@@ -16,6 +17,7 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, ContainerBase } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryResults } from './queryresults';
 
@@ -173,6 +175,33 @@ export function QueryResultsTable({
   >(initialData);
   React.useEffect(() => setResults(initialData), [initialData]);
 
+  const [pickListItems] = useAsyncState(
+    React.useCallback(
+      async () =>
+        Promise.all(
+          fieldSpecs
+            .map((fieldSpec) => fieldSpec.getField()?.getPickList())
+            .map((pickListName) =>
+              typeof pickListName === 'string'
+                ? fetchPickList(pickListName)
+                : undefined
+            )
+        ).then((pickLists) =>
+          pickLists.map((pickList) =>
+            typeof pickList === 'object'
+              ? Object.fromEntries(
+                  getPickListItems(pickList).map(({ value, title }) => [
+                    value,
+                    title,
+                  ])
+                )
+              : undefined
+          )
+        ),
+      [fieldSpecs]
+    )
+  );
+
   const [selectedRows, setSelectedRows] = React.useState<Set<number>>(
     new Set()
   );
@@ -193,102 +222,106 @@ export function QueryResultsTable({
           />
         ) : undefined}
       </div>
-      {typeof results === 'object' && fieldSpecs.length > 0 && (
-        <div
-          role="table"
-          className={`grid-table overflow-auto max-h-[75vh] border-b
+      {typeof results === 'object' &&
+        fieldSpecs.length > 0 &&
+        Array.isArray(pickListItems) && (
+          <div
+            role="table"
+            className={`grid-table overflow-auto max-h-[75vh] border-b
              border-gray-500 auto-rows-min
             ${
               typeof idFieldIndex === 'number'
                 ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
                 : `grid-cols-[repeat(var(--cols),auto)]`
             }`}
-          style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
-          onScroll={
-            isFetching || results.length === totalCount
-              ? undefined
-              : ({ target }): void => {
-                  if (isScrolledBottom(target as HTMLElement)) return;
-                  setIsFetching(true);
-                  fetchResults(results.length)
-                    .then((newResults) =>
-                      setResults([...results, ...newResults])
-                    )
-                    .then(() => setIsFetching(false))
-                    .catch(crash);
-                }
-          }
-        >
-          <div role="rowgroup">
-            <div role="row">
-              {typeof idFieldIndex === 'number' && (
-                <>
-                  <TableHeaderCell
-                    key="select-record"
-                    fieldSpec={undefined}
-                    ariaLabel={commonText('selectRecord')}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                  <TableHeaderCell
-                    key="view-record"
-                    fieldSpec={undefined}
-                    ariaLabel={commonText('viewRecord')}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                </>
-              )}
-              {fieldSpecs.map((fieldSpec, index) => (
-                <TableHeaderCell
-                  key={index}
-                  fieldSpec={fieldSpec}
-                  sortConfig={sortConfig?.[index]}
-                  onSortChange={
-                    typeof handleSortChange === 'function'
-                      ? (sortType): void => handleSortChange?.(index, sortType)
-                      : undefined
+            style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
+            onScroll={
+              isFetching || results.length === totalCount
+                ? undefined
+                : ({ target }): void => {
+                    if (isScrolledBottom(target as HTMLElement)) return;
+                    setIsFetching(true);
+                    fetchResults(results.length)
+                      .then((newResults) =>
+                        setResults([...results, ...newResults])
+                      )
+                      .then(() => setIsFetching(false))
+                      .catch(crash);
                   }
-                />
-              ))}
+            }
+          >
+            <div role="rowgroup">
+              <div role="row">
+                {typeof idFieldIndex === 'number' && (
+                  <>
+                    <TableHeaderCell
+                      key="select-record"
+                      fieldSpec={undefined}
+                      ariaLabel={commonText('selectRecord')}
+                      sortConfig={undefined}
+                      onSortChange={undefined}
+                    />
+                    <TableHeaderCell
+                      key="view-record"
+                      fieldSpec={undefined}
+                      ariaLabel={commonText('viewRecord')}
+                      sortConfig={undefined}
+                      onSortChange={undefined}
+                    />
+                  </>
+                )}
+                {fieldSpecs.map((fieldSpec, index) => (
+                  <TableHeaderCell
+                    key={index}
+                    fieldSpec={fieldSpec}
+                    sortConfig={sortConfig?.[index]}
+                    onSortChange={
+                      typeof handleSortChange === 'function'
+                        ? (sortType): void =>
+                            handleSortChange?.(index, sortType)
+                        : undefined
+                    }
+                  />
+                ))}
+              </div>
             </div>
+            <QueryResults
+              model={model}
+              fieldSpecs={fieldSpecs}
+              idFieldIndex={idFieldIndex}
+              results={results}
+              selectedRows={selectedRows}
+              pickListItems={pickListItems}
+              onSelected={(id, isSelected, isShiftClick): void => {
+                if (typeof idFieldIndex !== 'number') return;
+                const rowIndex = results.findIndex(
+                  (row) => row[idFieldIndex] === id
+                );
+                const ids = (
+                  isShiftClick && typeof lastSelectedRow.current === 'number'
+                    ? Array.from(
+                        {
+                          length:
+                            Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                        },
+                        (_, index) =>
+                          Math.min(lastSelectedRow.current!, rowIndex) + index
+                      )
+                    : [rowIndex]
+                ).map((rowIndex) => results[rowIndex][idFieldIndex] as number);
+                setSelectedRows(
+                  new Set([
+                    ...Array.from(selectedRows).filter(
+                      (id) => isSelected || !ids.includes(id)
+                    ),
+                    ...(isSelected ? ids : []),
+                  ])
+                );
+                lastSelectedRow.current = rowIndex;
+              }}
+            />
           </div>
-          <QueryResults
-            model={model}
-            fieldSpecs={fieldSpecs}
-            idFieldIndex={idFieldIndex}
-            results={results}
-            selectedRows={selectedRows}
-            onSelected={(id, isSelected, isShiftClick): void => {
-              if (typeof idFieldIndex !== 'number') return;
-              const rowIndex = results.findIndex(
-                (row) => row[idFieldIndex] === id
-              );
-              const ids = (
-                isShiftClick && typeof lastSelectedRow.current === 'number'
-                  ? Array.from(
-                      {
-                        length:
-                          Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                      },
-                      (_, index) =>
-                        Math.min(lastSelectedRow.current!, rowIndex) + index
-                    )
-                  : [rowIndex]
-              ).map((rowIndex) => results[rowIndex][idFieldIndex] as number);
-              setSelectedRows(
-                new Set([
-                  ...Array.from(selectedRows).filter(
-                    (id) => isSelected || !ids.includes(id)
-                  ),
-                  ...(isSelected ? ids : []),
-                ])
-              );
-              lastSelectedRow.current = rowIndex;
-            }}
-          />
-        </div>
-      )}
+        )}
       {isFetching && <QueryResultsLoading />}
     </ContainerBase>
   );

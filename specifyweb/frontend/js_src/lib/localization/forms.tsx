@@ -1024,6 +1024,49 @@ const formsText = createDictionary({
     ca: 'Field From Table',
     'es-es': 'Field From Table',
   },
+  // Audit log actions
+  insert: {
+    'en-us': 'Insert',
+    'ru-ru': 'Создано',
+    ca: 'Insert',
+    'es-es': 'Insert',
+  },
+  update: {
+    'en-us': 'Update',
+    'ru-ru': 'Обновлено',
+    ca: 'Update',
+    'es-es': 'Update',
+  },
+  delete: {
+    'en-us': 'Delete',
+    'ru-ru': 'Удалено',
+    ca: 'Delete',
+    'es-es': 'Delete',
+  },
+  treeMerge: {
+    'en-us': 'Tree Merge',
+    'ru-ru': 'Слияние узлов дерева',
+    ca: 'Tree Merge',
+    'es-es': 'Tree Merge',
+  },
+  treeMove: {
+    'en-us': 'Tree Move',
+    'ru-ru': 'Перемещение узла дерева',
+    ca: 'Tree Move',
+    'es-es': 'Tree Move',
+  },
+  treeSynonymize: {
+    'en-us': 'Tree Synonymize',
+    'ru-ru': 'Синонимизированный узел дерева',
+    ca: 'Tree Synonymize',
+    'es-es': 'Tree Synonymize',
+  },
+  treeUnsynonymize: {
+    'en-us': 'Tree Unsynonymize',
+    'ru-ru': 'Отменено синонимизацию узла дерева',
+    ca: 'Tree Unsynonymize',
+    'es-es': 'Tree Unsynonymize',
+  },
 });
 
 export default formsText;

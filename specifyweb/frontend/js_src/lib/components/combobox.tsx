@@ -1,14 +1,15 @@
 import React from 'react';
 
+import { error } from '../assert';
 import Backbone from '../backbone';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
-import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { fetchPickList } from '../picklistmixins';
+import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { LiteralField } from '../specifyfield';
 import type { RA } from '../types';
 import { DivisionFieldComboBox } from './divisionfieldcombobox';
+import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListTableComboBox } from './picklisttablecombobox';
@@ -16,8 +17,6 @@ import { PickListTypeComboBox } from './picklisttypecombobox';
 import createBackboneView from './reactbackboneextend';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UserTypeComboBox } from './usertypecombobox';
-import { useAsyncState } from './hooks';
-import { error } from '../assert';
 
 export type DefaultComboBoxProps = {
   readonly model: SpecifyResource<AnySchema>;
@@ -61,14 +60,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
     React.useCallback(
       () =>
-        typeof pickList === 'object'
-          ? serializeResource(pickList).pickListItems.map(
-              ({ title, value }) => ({
-                title: title ?? value,
-                value: value ?? title,
-              })
-            )
-          : undefined,
+        typeof pickList === 'object' ? getPickListItems(pickList) : undefined,
       [pickList]
     )
   );

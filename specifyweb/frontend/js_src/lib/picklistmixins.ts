@@ -8,10 +8,10 @@ import { format } from './dataobjformatters';
 import type { SpecifyResource } from './legacytypes';
 import { fetchPickLists } from './picklists';
 import { getModel, schema } from './schema';
+import { fetchRows } from './specifyapi';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
-import { fetchRows } from './specifyapi';
 
 export function createPickListItem(
   // It's weird that value can be null, but that's what data model says
@@ -71,6 +71,17 @@ export async function fetchPickList(
 
   return pickList;
 }
+
+export const getPickListItems = (
+  pickList: SpecifyResource<PickList>
+): RA<{
+  readonly value: string;
+  readonly title: string;
+}> =>
+  serializeResource(pickList).pickListItems.map(({ value, title }) => ({
+    value: value ?? title,
+    title: title ?? value,
+  }));
 
 /** From table picklist */
 async function fetchFromTable(

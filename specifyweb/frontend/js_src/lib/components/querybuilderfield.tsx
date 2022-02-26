@@ -122,7 +122,7 @@ export function QueryLine({
     if (hasParser) {
       pickListName =
         dataModelField?.isTemporal() && datePart === 'month'
-          ? 'MonthsComboBox'
+          ? '_Months'
           : dataModelField?.getPickList();
 
       parser = defined(

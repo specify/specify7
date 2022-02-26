@@ -1,10 +1,12 @@
 import type { Tables } from './datamodel';
+import { frontEndPickLists } from './picklists';
 import type { SchemaLocalization } from './schema';
 import { getModel, schema } from './schema';
 import { unescape } from './schemabase';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaoverrides';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
+import type { IR } from './types';
 import { defined } from './types';
 import { type UiFormatter, uiFormatters } from './uiformatters';
 import { camelToHuman } from './wbplanviewhelper';
@@ -180,9 +182,10 @@ abstract class FieldBase {
    * by the schema configuration.
    */
   public getPickList(): string | undefined {
-    return this.model.name === 'Agent' && this.name === 'agentType'
-      ? 'AgentTypeComboBox'
-      : this.localization.picklistname ?? undefined;
+    return (
+      this.localization.picklistname ??
+      (frontEndPickLists as IR<IR<string>>)[this.model.name]?.[this.name]
+    );
   }
 
   // Returns the weblink definition name if any is assigned to the field.

@@ -42,11 +42,10 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: once done, deploy to test server
  * TODO: adapt UI for printing
  * Query Results:
- * TODO: navigate between selected results
- * TODO: see results in form view
  * TODO: pick lists in query results
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results
+ * TODO: allow editing records in query results
  */
 export function QueryBuilder({
   query: queryResource,

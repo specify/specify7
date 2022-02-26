@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { serializeResource } from '../datamodelutils';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import { fetchPickList } from '../picklistmixins';
+import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
@@ -401,12 +400,7 @@ export function QueryLineFilter({
         typeof pickListName === 'string'
           ? fetchPickList(pickListName).then((pickList) =>
               typeof pickList === 'object'
-                ? serializeResource(pickList).pickListItems.map(
-                    ({ title, value }) => ({
-                      title: title ?? value,
-                      value: value ?? title,
-                    })
-                  )
+                ? getPickListItems(pickList)
                 : undefined
             )
           : undefined,

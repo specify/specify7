@@ -10,7 +10,7 @@ import { getModelById } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import { isResourceOfType } from '../specifymodel';
-import type { RA } from '../types';
+import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Input, Link } from './basic';
 import { crash } from './errorboundary';
@@ -63,11 +63,8 @@ class AuditRecordFormatter {
   }
 
   private needsFormatting(): boolean {
-    return (
-      this.hasField('SpAuditLog', 'parentRecordId') ||
-      this.hasField('SpAuditLog', 'recordId') ||
-      this.hasField('SpAuditLogField', 'oldValue') ||
-      this.hasField('SpAuditLogField', 'newValue')
+    return this.fieldSpecs.some(({ table }) =>
+      ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
     );
   }
 
@@ -108,12 +105,9 @@ class AuditRecordFormatter {
     );
     if (typeof auditingModel === 'undefined') return value;
 
-    if (
-      ['tableNum', 'parentTableNum', 'fieldName'].includes(field.name) &&
-      !field.isRelationship
-    ) {
-      return AuditRecordFormatter.localize(field, value, auditingModel);
-    } else {
+    if (field.name === 'fieldName' && !field.isRelationship)
+      return auditingModel.getField(value)?.label ?? value;
+    else {
       const collection = new auditingModel.LazyCollection({
         filters: { id: Number(value) },
       });
@@ -144,33 +138,13 @@ class AuditRecordFormatter {
       const tableNumber = fieldName.startsWith('parent')
         ? resource.get('parentTableNum')
         : resource.get('tableNum');
-      return getModelById(AuditRecordFormatter.parseTableId(tableNumber ?? -1));
+      return getModelById(tableNumber ?? -1);
     } else if (['newValue', 'oldValue'].includes(fieldName)) {
       const auditedField = this.getAuditedField(result, resource);
       if (auditedField?.isRelationship === true)
         return auditedField.relatedModel;
     }
     return undefined;
-  }
-
-  private static localize(
-    field: LiteralField,
-    value: string,
-    model: SpecifyModel
-  ): string {
-    return ['tableNum', 'parentTableNum'].includes(field.name)
-      ? model.label
-      : model.getField(value)?.label ?? value;
-  }
-
-  /**
-   * Extract table ID from formatted name
-   *
-   * @example
-   * parseTableId('Discipline [24]');  // 24
-   */
-  private static parseTableId(tableNameWithId: string | number): number {
-    return Number.parseInt(/\d+/.exec(tableNameWithId.toString())?.[0] ?? '-1');
   }
 
   /** Get definition of a field that the audit record describes */
@@ -186,7 +160,7 @@ class AuditRecordFormatter {
       ]?.toString();
     if (typeof auditedFieldName === 'undefined') return undefined;
     const tableNumber = resource.get('tableNum');
-    const model = getModelById(AuditRecordFormatter.parseTableId(tableNumber));
+    const model = getModelById(tableNumber);
     return model?.getField(auditedFieldName);
   }
 }
@@ -198,19 +172,23 @@ function QueryResultCell({
   fieldSpec,
   value,
   getFormattedValue,
+  pickListItems,
 }: {
   readonly fieldSpec: QueryFieldSpec;
   readonly value: string | number | null;
   readonly getFormattedValue?: () => Promise<string>;
+  readonly pickListItems: IR<string> | undefined;
 }): JSX.Element {
   const field = fieldSpec.getField();
 
   const [formatted, setFormatted] = React.useState<string | number | undefined>(
     () =>
-      typeof field === 'object' &&
-      !field.isRelationship &&
-      (typeof fieldSpec.datePart === 'undefined' ||
-        fieldSpec.datePart === 'fullDate')
+      typeof pickListItems === 'object'
+        ? pickListItems[value as string] ?? value
+        : typeof field === 'object' &&
+          !field.isRelationship &&
+          (typeof fieldSpec.datePart === 'undefined' ||
+            fieldSpec.datePart === 'fullDate')
         ? fieldFormat(field, (value ?? '').toString())
         : value ?? ''
   );
@@ -236,6 +214,7 @@ function QueryResult({
   auditRecordFormatter,
   isSelected,
   onSelected: handleSelected,
+  pickListItems,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -245,13 +224,14 @@ function QueryResult({
   readonly auditRecordFormatter: AuditRecordFormatter;
   readonly isSelected: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
+  readonly pickListItems: RA<IR<string> | undefined>;
 }): JSX.Element {
   const [resource, setResource] = React.useState<
     SpecifyResource<AnySchema> | undefined | false
   >(
     forceResourceLoad
       ? undefined
-      : () => {
+      : (): SpecifyResource<AnySchema> | false => {
           if (typeof idFieldIndex === 'undefined') return false;
           const resource = new model.Resource({
             id: result[idFieldIndex],
@@ -288,6 +268,7 @@ function QueryResult({
         value={value}
         fieldSpec={fieldSpecs[index]}
         getFormattedValue={
+          typeof pickListItems[index] === 'undefined' &&
           (value ?? '').toString().length > 0 &&
           auditRecordFormatter.active &&
           typeof resource === 'object'
@@ -300,6 +281,7 @@ function QueryResult({
                 )
             : undefined
         }
+        pickListItems={pickListItems[index]}
       />
     ));
 
@@ -352,6 +334,7 @@ export function QueryResults({
   results,
   selectedRows,
   onSelected: handleSelected,
+  pickListItems,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -363,6 +346,7 @@ export function QueryResults({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
+  readonly pickListItems: RA<IR<string> | undefined>;
 }): JSX.Element {
   const auditRecordFormatter = new AuditRecordFormatter(fieldSpecs);
   const forceResourceLoad =
@@ -394,6 +378,7 @@ export function QueryResults({
                   )
               : undefined
           }
+          pickListItems={pickListItems}
         />
       ))}
     </div>
