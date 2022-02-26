@@ -202,9 +202,6 @@ class ObjectFormatter(object):
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 
-        if specify_field is Spauditlog_model.get_field('tableNum') or specify_field is Spauditlog_model.get_field('parentTableNum'):
-            return case(self.get_tablenum_cases(), field)
-
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
 
@@ -212,22 +209,7 @@ class ObjectFormatter(object):
            and self.catalog_number_is_numeric():
             return cast(field, types.Numeric(65)) # 65 is the mysql max precision
 
-        if specify_field is Agent_model.get_field('agentType'):
-            return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
-
-        if specify_field is Spauditlog_model.get_field('action'):
-            return case({0: 'Insert [0]', 1: 'Update [1]', 2: 'Delete [2]', 3: 'Tree Merge [3]', 4: 'Tree Move [4]', 5: 'Tree Synonymize [5]', 6: 'Tree Unsynonymize [6]'}, field)
-
-
         return field
-
-    def get_tablenum_cases(self):
-        serious_cases = {}
-        for t in models.models_by_tableid:
-            model = models.models_by_tableid[t]
-            serious_cases[t] = str(getattr(model, model._id)).split('.')[0] + ' [' + str(t) + ']' #wtfiw++; but should use the "title"
-        return serious_cases
-
 
 def get_date_format():
     match = re.search(r'ui\.formatting\.scrdateformat=(.+)', get_remote_prefs())
