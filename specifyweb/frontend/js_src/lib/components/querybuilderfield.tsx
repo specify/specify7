@@ -288,11 +288,10 @@ export function QueryLine({
                   <Button.Simple
                     title={queryText('or')}
                     aria-label={queryText('or')}
-                    className={`
-                    aria-handled
-                    ${isFieldComplete ? '' : 'invisible'}
-                    ${field.filters.length > 1 ? className.blueButton : ''}
-                  `}
+                    className={`aria-handled print:hidden
+                      ${isFieldComplete ? '' : 'invisible'}
+                      ${field.filters.length > 1 ? className.blueButton : ''}
+                    `}
                     onClick={(): void =>
                       handleFilterChange(field.filters.length, {
                         type: 'any',

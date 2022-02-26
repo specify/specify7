@@ -315,7 +315,12 @@ function QueryResult({
       )}
       {typeof viewUrl === 'string' && (
         <span role="cell" className={`${className} sticky`}>
-          <Link.NewTab href={viewUrl} role="row" rel="noreferrer" />
+          <Link.NewTab
+            className="print:hidden"
+            href={viewUrl}
+            role="row"
+            rel="noreferrer"
+          />
         </span>
       )}
       {cells}

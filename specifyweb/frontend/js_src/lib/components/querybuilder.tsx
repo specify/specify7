@@ -40,9 +40,7 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: new query table list empty
  * TODO: test query reports
  * TODO: once done, deploy to test server
- * TODO: adapt UI for printing
  * Query Results:
- * TODO: pick lists in query results
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results
  * TODO: allow editing records in query results
