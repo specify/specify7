@@ -15,13 +15,13 @@ import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
-import { EditResourceDialog } from '../editresourcedialog';
 import { useAsyncState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { ResourceDialog } from '../resourcedialog';
 import { useCachedState } from '../stateCache';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
@@ -340,7 +340,7 @@ function EditQueryDialog({
   >('default');
 
   return state === 'default' ? (
-    <EditResourceDialog
+    <ResourceDialog
       resource={queryResource}
       readOnly={readOnly}
       onSaved={(): void => {
@@ -364,7 +364,7 @@ function EditQueryDialog({
           </div>
         </>
       )}
-    </EditResourceDialog>
+    </ResourceDialog>
   ) : state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (

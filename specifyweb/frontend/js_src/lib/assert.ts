@@ -1,7 +1,7 @@
 import type { RA } from './types';
 
-export function assert(value: unknown, message: string): void {
-  if (!Boolean(value)) error(message);
+export function assert(value: unknown, message?: string): void {
+  if (!Boolean(value)) error(message ?? 'Assertion failed');
 }
 
 /**

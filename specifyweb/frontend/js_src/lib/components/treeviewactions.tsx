@@ -1,20 +1,19 @@
 import * as React from 'react';
 
 import { formData, ping } from '../ajax';
-import type Backbone from '../backbone';
+import type { AnySchema, AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import treeText from '../localization/tree';
-import populateForm from '../populateform';
-import ResourceView from '../resourceview';
 import { schema } from '../schema';
+import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
-import { Button, Link } from './basic';
-import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
-import { AnyTree } from '../datamodelutils';
-import { SpecifyModel } from '../specifymodel';
 import { userInformation } from '../userinfo';
+import { Button, Link } from './basic';
+import { useAsyncState } from './hooks';
+import { Dialog, LoadingScreen } from './modaldialog';
+import { ResourceDialog } from './resourcedialog';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -235,67 +234,30 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly tableName: SCHEMA['tableName'];
   readonly onClose: () => void;
   readonly onSaved: (addAnother: boolean) => void;
-}): JSX.Element {
-  const [title, setTitle] = React.useState('');
-  const [content, setContent] = React.useState<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (content === null) return undefined;
-
-    const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-    const parentNode = new model.Resource({ id });
-    let node = parentNode;
-    if (addNew) {
-      node = new model.Resource();
-      node.set('parent', parentNode.url());
-    }
-
-    // TODO: convert to React
-    let view: Backbone.View | undefined = new ResourceView({
-      populateForm,
-      el: content,
-      model: node,
-      mode: 'edit',
-      noHeader: true,
-    })
-      .render()
-      .on(
-        'saved',
-        (
-          _model: SpecifyResource<SCHEMA>,
-          { addAnother }: { readonly addAnother: boolean }
-        ) => {
-          handleClose();
-          handleSaved(addAnother);
-          view?.remove();
-          view = undefined;
-        }
-      )
-      .on('deleted', () => {
-        handleClose();
-        view?.remove();
-        view = undefined;
-      })
-      .on('changetitle', (_resource: SpecifyResource<SCHEMA>, title: string) =>
-        setTitle(title)
-      );
-
-    return (): void => {
-      view?.remove();
-      view = undefined;
-    };
-  }, [content, tableName, addNew]);
-
-  return (
-    <Dialog
-      header={title}
-      onClose={handleClose}
-      buttons={undefined}
-      className={{ container: dialogClassNames.wideContainer }}
-    >
-      <div ref={setContent} />
-    </Dialog>
+}): JSX.Element | null {
+  const [resource] = useAsyncState<SpecifyResource<AnySchema>>(
+    React.useCallback(() => {
+      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
+      const parentNode = new model.Resource({ id });
+      let node = parentNode;
+      if (addNew) {
+        node = new model.Resource();
+        node.set('parent', parentNode.url());
+      }
+      return node;
+    }, [id, tableName, addNew])
   );
+
+  return typeof resource === 'object' ? (
+    <ResourceDialog
+      resource={resource}
+      onSaved={(addAnother): void => {
+        handleClose();
+        handleSaved(addAnother);
+      }}
+      onClose={handleClose}
+    />
+  ) : null;
 }
 
 function ActiveAction<SCHEMA extends AnyTree>({

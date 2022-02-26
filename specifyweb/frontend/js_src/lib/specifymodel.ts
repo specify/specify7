@@ -93,7 +93,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   // TODO: make newly created resources have default values for fields
   public readonly Resource: new (
-    props?: Partial<SerializedModel<SCHEMA>>
+    props?: Partial<SerializedModel<SCHEMA>>,
+    options?: { readonly noBusinessRules: boolean }
   ) => SpecifyResource<SCHEMA>;
 
   public readonly LazyCollection: CollectionConstructor<SCHEMA>;

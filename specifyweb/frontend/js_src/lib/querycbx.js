@@ -8,7 +8,7 @@ import Backbone from './backbone';
 import {schema} from './schema';
 import specifyform from './specifyform';
 import template from './templates/querycbx.html';
-import ResourceView from './resourceview';
+import ResourceView from './components/resourceview';
 import {format} from './dataobjformatters';
 import whenAll from './whenall';
 import parseselect from './parseselect';
@@ -487,11 +487,11 @@ export default Backbone.View.extend({
             model: related,
             mode: this.readOnly ? 'view' : 'edit',
             noAddAnother: true,
-            noHeader: true
+            noHeader: true,
+            onChangeTitle: this.changeDialogTitle.bind(this),
         }).render()
             .on('saved', this.resourceSaved, this)
-            .on('deleted', this.resourceDeleted, this)
-            .on('changetitle', this.changeDialogTitle, this);
+            .on('deleted', this.resourceDeleted, this);
 
         this.dialog.dialog({
             position: { my: "left top", at: "left+20 top+20", of: $('main') },

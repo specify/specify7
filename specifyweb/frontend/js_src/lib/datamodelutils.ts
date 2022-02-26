@@ -126,9 +126,20 @@ export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
   `${string}${ENDS_WITH}`
 >];
 
+export type RecordSetInfo = {
+  readonly index: number;
+  readonly next: string | null;
+  readonly previous: string | null;
+  readonly recordsetid: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly total_count: number;
+};
+
 export type CommonFields = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly resource_uri: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly recordset_info?: RecordSetInfo;
   readonly id: number;
 };
 

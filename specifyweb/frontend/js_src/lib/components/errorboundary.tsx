@@ -10,7 +10,6 @@ import React from 'react';
 import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
-import type { IR } from '../types';
 import { Button, Container, H2, Link } from './basic';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -150,14 +149,3 @@ export class ErrorBoundary extends React.Component<
     );
   }
 }
-
-export const silenceErrors = <PROPS extends IR<unknown>>(
-  Component: (props: PROPS) => JSX.Element | null
-): typeof Component =>
-  function SilenceErrors(props: PROPS): JSX.Element {
-    return (
-      <ErrorBoundary silentErrors={true}>
-        <Component {...props} />
-      </ErrorBoundary>
-    );
-  };

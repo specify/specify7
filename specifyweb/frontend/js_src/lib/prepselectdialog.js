@@ -7,7 +7,7 @@ import {getModel, schema} from './schema';
 import * as navigation from './navigation';
 import populateForm from './populateform';
 import {getInteractionsForPrepIds} from './specifyapi';
-import ResourceView, {showResource} from './resourceview';
+import ResourceView, {showResource} from './components/resourceview';
 import {fieldFormat} from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';

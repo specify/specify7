@@ -2,6 +2,7 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
+import type { CollectionObject, Taxon } from '../datamodel';
 import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -12,14 +13,13 @@ import {
   fetchOccurrenceName,
   formatLifemapperViewPageRequest,
 } from '../lifemapperutills';
+import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
+import { isResourceOfType } from '../specifymodel';
 import { systemInformation } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { Dialog } from './modaldialog';
-import commonText from '../localization/common';
-import { CollectionObject, Taxon } from '../datamodel';
-import { isResourceOfType } from '../specifymodel';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -122,18 +122,20 @@ type OutgoingMessage =
   | PointDataAction;
 
 export function SpecifyNetworkBadge({
-  model,
+  resource,
 }: {
-  readonly model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+  readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
   const [hasFailure, setHasFailure] = React.useState(false);
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
   React.useEffect(() => {
-    if (isResourceOfType(model, 'CollectionObject'))
-      fetchOccurrenceName(model).then(setOccurrenceName).catch(console.error);
-  }, [model]);
+    if (isResourceOfType(resource, 'CollectionObject'))
+      fetchOccurrenceName(resource)
+        .then(setOccurrenceName)
+        .catch(console.error);
+  }, [resource]);
 
   const messageHandler = React.useCallback(
     (event: MessageEvent<IncomingMessage>): void => {
@@ -145,12 +147,12 @@ export function SpecifyNetworkBadge({
         state: {
           sendMessage: (message: OutgoingMessage) =>
             (event.source as Window | null)?.postMessage(message, snServer),
-          model,
+          model: resource,
           occurrences,
         },
       });
     },
-    [model]
+    [resource]
   );
 
   return (
@@ -166,7 +168,7 @@ export function SpecifyNetworkBadge({
       </Dialog>
       <Link.Default
         href={formatLifemapperViewPageRequest(
-          (model as SpecifyResource<CollectionObject>).get('guid') ?? '',
+          (resource as SpecifyResource<CollectionObject>).get('guid') ?? '',
           occurrenceName
         )}
         target="_blank"

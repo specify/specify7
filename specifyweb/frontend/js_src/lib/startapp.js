@@ -67,7 +67,6 @@ const tasksPromise = Promise.all([
   import('./wbimporttask'),
   import('./wbplantask'),
   import('./appresourcetask'),
-  import('./components/lifemapperwrapper'),
 ]).then((tasks) => () => tasks.forEach(({ default: task }) => task()));
 
 router

@@ -3,9 +3,9 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import {schema, getModelById} from './schema';
+import {getModelById, schema} from './schema';
 import FormsDialog from './components/formsdialog';
-import EditResourceDialog from './components/editresourcedialog';
+import EditResourceDialog from './components/resourcedialog';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -139,7 +139,7 @@ export default Backbone.View.extend({
                     const recordset = new schema.models.RecordSet.Resource();
                     recordset.set('dbtableid', model.tableId);
                     recordset.set('type', 0);
-                    const view = new EditResourceDialog({
+                    const view = new ResourceDialog({
                       resource: recordset,
                       onSaved: ()=>{
                         view.remove();
@@ -185,7 +185,7 @@ export default Backbone.View.extend({
                 });
                 view.render();
             };
-            const editView = new EditResourceDialog({
+            const editView = new ResourceDialog({
                 resource: recordSet,
                 deleteWarning: formsText("recordSetDeletionWarning")(recordSet.get("name")),
                 extraButton: {

@@ -1176,10 +1176,10 @@ const commonText = createDictionary({
     'es-es': 'Deleted',
   },
   resourceDeletedDialogHeader: {
-    'en-us': header('Item deleted'),
-    'ru-ru': header('Удалено'),
-    ca: header('Item deleted'),
-    'es-es': header('Item deleted'),
+    'en-us': 'Item deleted',
+    'ru-ru': 'Удалено',
+    ca: 'Item deleted',
+    'es-es': 'Item deleted',
   },
   resourceDeletedDialogMessage: {
     'en-us': 'Item was deleted successfully.',

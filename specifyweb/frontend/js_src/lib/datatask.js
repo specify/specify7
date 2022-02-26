@@ -4,20 +4,20 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import {schema, getModel, getModelById} from './schema';
+import {getModel, getModelById, schema} from './schema';
 import {makeResourceViewUrl} from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';
 import OtherCollectionView from './othercollectionview';
-import { NotFoundView } from './notfoundview';
-import { userInformation } from './userinfo';
-import { router } from './router';
+import {NotFoundView} from './notfoundview';
+import {userInformation} from './userinfo';
+import {router} from './router';
 import * as app from './specifyapp';
 import * as querystring from './querystring';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {showResource} from './resourceview';
+import {showResource} from './components/resourceview';
 import {setTitle} from './components/hooks';
 
 var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;

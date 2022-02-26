@@ -4,17 +4,17 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import {schema, getModel} from './schema';
+import {getModel, schema} from './schema';
 import QueryFieldUI from './queryfield';
 import template from './templates/querybuilder.html';
-import { userInformation } from './userinfo';
+import {userInformation} from './userinfo';
 import * as app from './specifyapp';
 import queryFromTree from './queryfromtree';
 import * as navigation from './navigation';
 import QueryResultsTable from './components/queryresultstable';
-import EditResourceDialog from './components/editresourcedialog';
+import ResourceDialog from './components/resourcedialog';
 import QuerySaveDialog from './components/querysavedialog';
-import { router } from './router';
+import {router} from './router';
 import queryText from './localization/query';
 import commonText from './localization/common';
 import * as querystring from './querystring';
@@ -201,7 +201,7 @@ var QueryBuilder = Backbone.View.extend({
             recordset.set('dbtableid', this.model.tableId);
             recordset.set('fromQuery', this.query.toJSON());
             recordset.url = '/stored_query/make_recordset/';
-            new EditResourceDialog({resource: recordset}).render()
+            new ResourceDialog({resource: recordset}).render()
                 .on('saving', function() { dialog.dialog('open'); })
                 .on('savecomplete', function() {
                     dialog.html(`

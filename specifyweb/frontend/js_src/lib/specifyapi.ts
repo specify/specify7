@@ -141,7 +141,7 @@ export const fetchRows = async <SCHEMA extends AnySchema>(
 
 export function makeResourceViewUrl(
   tableName: keyof Tables,
-  resourceId?: number,
+  resourceId?: number | 'new',
   recordSetId?: number
 ): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${

@@ -5,6 +5,7 @@ import Backbone from './backbone';
 import {assert} from './assert';
 import {globalEvents, makeResourceViewUrl} from './specifyapi';
 import * as querystring from './querystring';
+import {resourceFromUri} from "./components/resource";
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -555,12 +556,9 @@ function eventHandlerForToOne(related, field) {
         }
     }, {
         fromUri: function(uri, options) {
-            options || (options = {noBusinessRules: false});
-            var match = parseResourceUrl(uri);
-            if(typeof match === 'undefined' || match.length !== 2)
-                throw new Error(`Bad resource URI: ${uri}`);
-            assert(match[0] === this.specifyModel.name.toLowerCase());
-            return new this({ id: parseInt(match[1], 10) }, options);
+            const model = resourceFromUri(uri, options);
+            assert(model.specifyModel === this.specifyModel);
+            return model;
         },
         idFromUrl: function(url) {
             // Assuming urls are constructed by ResourceBase.url method
@@ -571,6 +569,3 @@ function eventHandlerForToOne(related, field) {
     });
 
 export default ResourceBase;
-
-export const parseResourceUrl = (resourceUrl) =>
-  /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/.exec(resourceUrl)?.slice(1);

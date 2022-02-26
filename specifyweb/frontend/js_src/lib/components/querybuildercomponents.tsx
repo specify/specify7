@@ -15,9 +15,9 @@ import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
-import { EditResourceDialog } from './editresourcedialog';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
+import { EditResourceDialog } from './resourcedialog';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 
 function QueryButton({
@@ -170,7 +170,7 @@ export function MakeRecordSetButton({
         state === 'editing' || state === 'saving' ? (
           <>
             {typeof recordSet === 'object' && (
-              <EditResourceDialog
+              <ResourceDialog
                 resource={recordSet}
                 onSaving={(): void => setState('saving')}
                 onSaved={(): void => setState('saved')}
