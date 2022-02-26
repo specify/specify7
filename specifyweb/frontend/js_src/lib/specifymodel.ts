@@ -85,7 +85,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly tableId: number;
 
-  public readonly view?: string;
+  public readonly view: string;
 
   public readonly searchDialog?: string;
 
@@ -129,7 +129,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       this.longName
     ) as SCHEMA['tableName'];
     this.idFieldName = tableDefinition.idFieldName;
-    this.view = tableDefinition.view ?? undefined;
+    this.view = tableDefinition.view ?? this.name.toLowerCase();
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;

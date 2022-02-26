@@ -68,8 +68,8 @@ function TableResults({
         <p aria-live="polite">{commonText('noMatches')}</p>
       ) : (
         queryResults.map(
-          ({ model, caption, tableResults, ajaxUrl, idFieldIndex }) => (
-            <details key={ajaxUrl}>
+          ({ model, caption, tableResults, ajaxUrl, idFieldIndex }, index) => (
+            <details key={index}>
               <summary
                 className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
         rounded hover:text-white hover:dark:bg-brand-400`}

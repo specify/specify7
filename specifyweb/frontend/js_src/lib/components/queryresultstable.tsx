@@ -5,15 +5,18 @@ import type { SpQuery, Tables } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
+import populateForm from '../populateform';
 import type { QueryField } from '../querybuilderutils';
 import { queryFieldsToFieldSpecs, sortTypes } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
+import RecordSelector from '../recordselector';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, ContainerBase } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
+import { Dialog } from './modaldialog';
 import { QueryResults } from './queryresults';
 
 function TableHeaderCell({
@@ -46,33 +49,90 @@ function TableHeaderCell({
         border-gray-500 p-1 [inset-block-start:_0] sticky [z-index:2]"
       aria-label={ariaLabel}
     >
-      <div className="contents">
-        {typeof handleSortChange === 'function' ? (
-          <Button.LikeLink
-            onClick={(): void =>
-              handleSortChange?.(
-                sortTypes[
-                  (sortTypes.indexOf(sortConfig) + 1) % sortTypes.length
-                ]
-              )
-            }
-          >
-            {content}
-            {typeof sortConfig === 'string' && (
-              <SortIndicator
-                fieldName={'field'}
-                sortConfig={{
-                  sortField: 'field',
-                  ascending: sortConfig === 'ascending',
-                }}
-              />
-            )}
-          </Button.LikeLink>
-        ) : (
-          content
-        )}
-      </div>
+      {typeof handleSortChange === 'function' ? (
+        <Button.LikeLink
+          onClick={(): void =>
+            handleSortChange?.(
+              sortTypes[(sortTypes.indexOf(sortConfig) + 1) % sortTypes.length]
+            )
+          }
+        >
+          {content}
+          {typeof sortConfig === 'string' && (
+            <SortIndicator
+              fieldName={'field'}
+              sortConfig={{
+                sortField: 'field',
+                ascending: sortConfig === 'ascending',
+              }}
+            />
+          )}
+        </Button.LikeLink>
+      ) : (
+        content
+      )}
     </div>
+  );
+}
+
+function ViewRecords({
+  model,
+  results,
+  selectedRows,
+  idFieldIndex,
+}: {
+  readonly model: SpecifyModel;
+  readonly results: RA<RA<string | number | null>>;
+  readonly selectedRows: Set<number>;
+  readonly idFieldIndex: number;
+}): JSX.Element {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (!isOpen) return undefined;
+    const ids =
+      selectedRows.size === 0
+        ? results.map((row) => row[idFieldIndex])
+        : Array.from(selectedRows);
+    const collection = new model.LazyCollection({
+      filters: { id__in: ids.join(',') },
+    });
+    const element = document.createElement('div');
+    element.dataset.specifyViewname = model.view;
+    const view = new RecordSelector({
+      populateForm,
+      field: undefined,
+      collection,
+      readOnly: false,
+      noHeader: false,
+      el: element,
+    })
+      .on('renderdone', () => {
+        if (destructorCalled) view.remove();
+        else containerRef.current?.append(view.el);
+      })
+      .render();
+
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+      view.remove();
+    };
+  }, [model, idFieldIndex, isOpen]);
+  return (
+    <>
+      <Button.Simple onClick={(): void => setIsOpen(true)}>
+        {commonText('viewRecords')}
+      </Button.Simple>
+      <Dialog
+        isOpen={isOpen}
+        header={model.label}
+        buttons={commonText('close')}
+        onClose={(): void => setIsOpen(false)}
+      >
+        <div ref={containerRef} />
+      </Dialog>
+    </>
   );
 }
 
@@ -121,7 +181,18 @@ export function QueryResultsTable({
 
   return (
     <ContainerBase className="overflow-hidden">
-      {<h3>{`${label}: (${totalCount})`}</h3>}
+      <div className="gap-x-2 flex items-center">
+        <h3>{`${label}: (${totalCount})`}</h3>
+        <div className="flex-1 -ml-2" />
+        {typeof idFieldIndex === 'number' && Array.isArray(results) ? (
+          <ViewRecords
+            selectedRows={selectedRows}
+            results={results}
+            model={model}
+            idFieldIndex={idFieldIndex}
+          />
+        ) : undefined}
+      </div>
       {typeof results === 'object' && fieldSpecs.length > 0 && (
         <div
           role="table"
@@ -173,8 +244,10 @@ export function QueryResultsTable({
                   key={index}
                   fieldSpec={fieldSpec}
                   sortConfig={sortConfig?.[index]}
-                  onSortChange={(sortType): void =>
-                    handleSortChange?.(index, sortType)
+                  onSortChange={
+                    typeof handleSortChange === 'function'
+                      ? (sortType): void => handleSortChange?.(index, sortType)
+                      : undefined
                   }
                 />
               ))}
@@ -191,7 +264,7 @@ export function QueryResultsTable({
               const rowIndex = results.findIndex(
                 (row) => row[idFieldIndex] === id
               );
-              const range =
+              const ids = (
                 isShiftClick && typeof lastSelectedRow.current === 'number'
                   ? Array.from(
                       {
@@ -201,13 +274,14 @@ export function QueryResultsTable({
                       (_, index) =>
                         Math.min(lastSelectedRow.current!, rowIndex) + index
                     )
-                  : [rowIndex];
+                  : [rowIndex]
+              ).map((rowIndex) => results[rowIndex][idFieldIndex] as number);
               setSelectedRows(
                 new Set([
                   ...Array.from(selectedRows).filter(
-                    (id) => isSelected || !range.includes(id)
+                    (id) => isSelected || !ids.includes(id)
                   ),
-                  ...(isSelected ? range : []),
+                  ...(isSelected ? ids : []),
                 ])
               );
               lastSelectedRow.current = rowIndex;

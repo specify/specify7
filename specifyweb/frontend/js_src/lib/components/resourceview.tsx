@@ -259,37 +259,31 @@ export function ResourceView({
   );
   React.useEffect(() => {
     if (containerRef.current === null) return;
-    specifyForm
-      .buildViewByName(
-        resource.specifyModel.view ?? resource.specifyModel.name,
-        'form',
-        mode
-      )
-      .then(
-        (form) => {
-          setState('main');
+    specifyForm.buildViewByName(resource.specifyModel.view, 'form', mode).then(
+      (form) => {
+        setState('main');
 
-          form.find('.specify-form-header:first').remove();
+        form.find('.specify-form-header:first').remove();
 
-          populateForm(form, resource);
-          const formElement = form[0] as HTMLFormElement;
-          defined(containerRef.current ?? undefined).append(formElement);
-          setForm(formElement);
+        populateForm(form, resource);
+        const formElement = form[0] as HTMLFormElement;
+        defined(containerRef.current ?? undefined).append(formElement);
+        setForm(formElement);
 
-          const resourceLabel = resource.specifyModel.label;
-          setTitle(
-            resource.isNew()
-              ? commonText('newResourceTitle')(resourceLabel)
-              : resourceLabel
-          );
-          return undefined;
-        },
-        (error) => {
-          if (error.status !== 404) return;
-          error.errorHandled = true;
-          setState('noDefinition');
-        }
-      );
+        const resourceLabel = resource.specifyModel.label;
+        setTitle(
+          resource.isNew()
+            ? commonText('newResourceTitle')(resourceLabel)
+            : resourceLabel
+        );
+        return undefined;
+      },
+      (error) => {
+        if (error.status !== 404) return;
+        error.errorHandled = true;
+        setState('noDefinition');
+      }
+    );
   }, [resource]);
 
   if (state === 'main') {
@@ -309,13 +303,12 @@ export function ResourceView({
             <DeleteButton
               model={resource}
               deletionMessage={deletionMessage}
-              onDeleted={(): void =>{
+              onDeleted={(): void => {
                 handleDeleted?.(
                   recordSetInfo?.nextUrl ?? recordSetInfo?.previousUrl
                 );
                 handleClose();
-              }
-              }
+              }}
             />
           ) : undefined}
           {typeof extraButton === 'object' && (

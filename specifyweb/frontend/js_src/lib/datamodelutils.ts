@@ -1,6 +1,6 @@
+import { parseResourceUrl } from './components/resource';
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import { parseResourceUrl } from './resourceapi';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined } from './types';

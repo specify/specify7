@@ -283,7 +283,7 @@ export default Backbone.View.extend({
             return this.current;
         },
         render: function() {
-            if (this.lazy && this.collection.related.isNew()) return this; // not sure this is the best answer.
+            if (this.lazy && this.collection.related?.isNew()) return this; // not sure this is the best answer.
             var _this = this;
             (this.lazy ? this.collection.fetchIfNotPopulated() : $.when(null)).done(function() {
                 _this._render();
@@ -409,7 +409,7 @@ export default Backbone.View.extend({
         add: function() {
             if (this.dependent) {
                 var newResource = new this.collection.model();
-                if (this.field && !this.collection.related.isNew()) {
+                if (this.field && !this.collection.related?.isNew()) {
                     newResource.set(this.field.otherSideName, this.collection.related.url());
                 }
                 this.collection.add(newResource);

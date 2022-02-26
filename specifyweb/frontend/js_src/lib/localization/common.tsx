@@ -1490,6 +1490,12 @@ const commonText = createDictionary({
     ca: 'View Record',
     'es-es': 'View Record',
   },
+  viewRecords: {
+    'en-us': 'View Records',
+    'ru-ru': 'Открыть записи',
+    ca: 'View Records',
+    'es-es': 'View Records',
+  },
   selectRecord: {
     'en-us': 'Select Record',
     'ru-ru': 'Выбрать Элемент',

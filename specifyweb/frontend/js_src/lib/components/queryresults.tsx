@@ -379,7 +379,10 @@ export function QueryResults({
           result={result}
           forceResourceLoad={forceResourceLoad}
           auditRecordFormatter={auditRecordFormatter}
-          isSelected={selectedRows.has(index)}
+          isSelected={
+            typeof idFieldIndex === 'number' &&
+            selectedRows.has(results[index][idFieldIndex] as number)
+          }
           onSelected={
             typeof handleSelected === 'function' &&
             typeof idFieldIndex === 'number'
