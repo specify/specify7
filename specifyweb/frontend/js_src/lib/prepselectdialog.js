@@ -5,9 +5,8 @@ import _ from 'underscore';
 
 import {getModel, schema} from './schema';
 import * as navigation from './navigation';
-import populateForm from './populateform';
 import {getInteractionsForPrepIds} from './specifyapi';
-import ResourceView, {showResource} from './components/resourceview';
+import {ResourceViewBackbone, showResource} from './components/resourceview';
 import {fieldFormat} from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
@@ -218,12 +217,13 @@ export default PrepDialog.extend({
 
                 var resourceModel = irec.models[0];
 
-                new ResourceView({
-                    populateForm: populateForm,
+                const view = new ResourceViewBackbone({
                     el: this.dialog,
-                    model: resourceModel,
+                    resource: resourceModel,
                     mode: 'view',
-                    noHeader: false
+                    canAddAnother: true,
+                    hasHeader: true,
+                    onClose: ()=>view.remove(),
                 }).render();
 
                 var _this = _self;

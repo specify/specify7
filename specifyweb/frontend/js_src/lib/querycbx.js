@@ -8,7 +8,7 @@ import Backbone from './backbone';
 import {schema} from './schema';
 import specifyform from './specifyform';
 import template from './templates/querycbx.html';
-import ResourceView from './components/resourceview';
+import {ResourceViewBackbone} from './components/resourceview';
 import {format} from './dataobjformatters';
 import whenAll from './whenall';
 import parseselect from './parseselect';
@@ -481,17 +481,17 @@ export default Backbone.View.extend({
         this.$el.find(buttonsQuery).attr('aria-pressed',true);
         this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
-        new ResourceView({
-            populateForm: this.populateForm,
+        const dialog = new ResourceViewBackbone({
             el: this.dialog,
-            model: related,
+            resource: related,
             mode: this.readOnly ? 'view' : 'edit',
             noAddAnother: true,
             noHeader: true,
             onChangeTitle: this.changeDialogTitle.bind(this),
-        }).render()
-            .on('saved', this.resourceSaved, this)
-            .on('deleted', this.resourceDeleted, this);
+            onSaved: this.resourceSaved.bind(this, related),
+            onDeleted: this.resourceDeleted.bind(this),
+            onClose: ()=>dialog.remove(),
+        }).render();
 
         this.dialog.dialog({
             position: { my: "left top", at: "left+20 top+20", of: $('main') },

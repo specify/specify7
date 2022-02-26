@@ -5,7 +5,6 @@ import Backbone from './backbone';
 
 import {getModelById, schema} from './schema';
 import FormsDialog from './components/formsdialog';
-import EditResourceDialog from './components/resourcedialog';
 import * as navigation from './navigation';
 import formsText from './localization/forms';
 import commonText from './localization/common';

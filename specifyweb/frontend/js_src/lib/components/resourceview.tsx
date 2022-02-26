@@ -159,7 +159,6 @@ function ViewHeader({
   );
 }
 
-// FIXME: event trigger 'deleted' 'saved' 'rendered' (check others too)
 export function ResourceView({
   resource,
   recordSet,
@@ -170,9 +169,9 @@ export function ResourceView({
   extraButton,
   deletionMessage,
   onSaving: handleSaving,
-  onSaved: handleSaved,
   onClose: handleClose,
-  onDeleted: handleDeleted = handleClose,
+  onSaved: handleSaved,
+  onDeleted: handleDeleted,
   className,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
@@ -188,7 +187,7 @@ export function ResourceView({
   readonly deletionMessage?: string;
   readonly onChangeTitle?: (newTitle: string) => void;
   readonly onSaving?: () => void;
-  readonly onSaved: (payload: {
+  readonly onSaved?: (payload: {
     readonly addAnother: boolean;
     readonly newResource: SpecifyResource<AnySchema> | undefined;
     readonly wasNew: boolean;
@@ -310,10 +309,12 @@ export function ResourceView({
             <DeleteButton
               model={resource}
               deletionMessage={deletionMessage}
-              onDeleted={(): void =>
-                handleDeleted(
+              onDeleted={(): void =>{
+                handleDeleted?.(
                   recordSetInfo?.nextUrl ?? recordSetInfo?.previousUrl
-                )
+                );
+                handleClose();
+              }
               }
             />
           ) : undefined}
@@ -331,10 +332,11 @@ export function ResourceView({
                 const reporterOnSave = form?.getElementsByClassName(
                   'specify-print-on-save'
                 )[0] as HTMLInputElement | undefined;
-                handleSaved({
+                handleSaved?.({
                   ...payload,
                   reporterOnSave: reporterOnSave?.checked === true,
                 });
+                handleClose();
               }}
               canAddAnother={
                 canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
@@ -359,6 +361,8 @@ export function ResourceView({
       <LoadingScreen />
     );
 }
+
+export const ResourceViewBackbone = createBackboneView(ResourceView);
 
 export function ResourceViewComponent({
   resource,
@@ -414,7 +418,7 @@ export function ResourceViewComponent({
   );
 }
 
-const ResourceViewBackbone = createBackboneView(ResourceViewComponent);
+const ViewResource = createBackboneView(ResourceViewComponent);
 
 export function showResource(
   resource: SpecifyResource<AnySchema>,
@@ -422,7 +426,7 @@ export function showResource(
   pushUrl = false
 ): void {
   const handleClose = (): void => void view.remove();
-  const view = new ResourceViewBackbone({
+  const view = new ViewResource({
     resource,
     recordSet,
     pushUrl,
