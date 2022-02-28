@@ -5,13 +5,14 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
 import { router } from '../router';
+import { setCurrentOverlay } from '../specifyapp';
 import type { IR, RA } from '../types';
+import { userInformation } from '../userinfo';
+import { sortFunction } from '../wbplanviewhelper';
 import { Button, Form, Input, Link, Ul } from './basic';
+import { useAsyncState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { setCurrentOverlay } from '../specifyapp';
-import { userInformation } from '../userinfo';
-import { useAsyncState } from './hooks';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -124,11 +125,13 @@ export function CollectionSelector(): JSX.Element {
         })
       }
     >
-      {collections?.available.map(([id, name]) => (
-        <option key={id} value={id}>
-          {name}
-        </option>
-      ))}
+      {Array.from(collections?.available ?? [])
+        .sort(sortFunction(([_id, name]) => name))
+        .map(([id, name]) => (
+          <option key={id} value={id}>
+            {name}
+          </option>
+        ))}
     </select>
   );
 }
