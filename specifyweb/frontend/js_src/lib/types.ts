@@ -33,3 +33,9 @@ export type PartialBy<
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
+
+// "typeof value === 'function'" does not narrow the type in some cases
+export const isFunction = <T>(
+  value: T
+): value is T & ((...args: RA<unknown>) => unknown) =>
+  typeof value === 'function';

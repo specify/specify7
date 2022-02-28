@@ -29,23 +29,32 @@ const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   // eslint-disable-next-line @typescript-eslint/naming-convention
   { headers: { Accept: 'application/xml' } }
 )
-  .then(({ data: document }) =>
-    filterArray(
-      Array.from(document.querySelectorAll('database > table'), (table) =>
-        getModel(table.getAttribute('name') ?? '')
+  .then(({ data: document }) => {
+    return Array.from(
+      new Set(
+        filterArray(
+          Array.from(document.querySelectorAll('database > table'), (table) =>
+            getModel(table.getAttribute('name') ?? '')
+          )
+        )
+          .filter(
+            ({ name }) =>
+              name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
+          )
+          .map(({ name }) => name)
+          .sort()
       )
-    )
-      .filter(
-        (model) =>
-          model.name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
-      )
-      .map(({ name }) => name)
-      .sort()
-  )
+    );
+  })
   .catch((error) => {
     console.error(error);
     return [];
   });
+
+const defaultSortConfig = {
+  sortField: 'timestampCreated',
+  ascending: false,
+} as const;
 
 function QueryList({
   queries: unsortedQueries,
@@ -60,10 +69,7 @@ function QueryList({
     bucketName: 'sortConfig',
     cacheName: 'listOfQueries',
     bucketType: 'localStorage',
-    defaultValue: {
-      sortField: 'timestampCreated',
-      ascending: false,
-    },
+    defaultValue: defaultSortConfig,
   });
 
   if (typeof sortConfig === 'undefined') return null;
@@ -191,6 +197,8 @@ type States = ShowQueryListState | CreateQueryState | EditQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
+const fetchDefaultValue = async () => tablesToShowPromise;
+
 function QueryToolbarItem({
   onClose: handleClose,
   getQueryCreateUrl,
@@ -212,7 +220,7 @@ function QueryToolbarItem({
     bucketName: 'common',
     cacheName: 'listOfQueryTables',
     bucketType: 'sessionStorage',
-    defaultValue: async () => tablesToShowPromise,
+    defaultValue: fetchDefaultValue,
   });
 
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(

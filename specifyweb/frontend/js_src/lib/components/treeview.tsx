@@ -32,6 +32,8 @@ import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
 
+const defaultCacheValue = [] as const;
+
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinitionId,
@@ -49,7 +51,7 @@ function TreeView<SCHEMA extends AnyTree>({
     bucketName: 'tree',
     cacheName: `collapsedRanks${tableName}`,
     bucketType: 'localStorage',
-    defaultValue: [],
+    defaultValue: defaultCacheValue,
   });
 
   const [rawConformation, setConformation] = useCachedState({

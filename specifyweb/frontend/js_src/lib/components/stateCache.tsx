@@ -3,9 +3,10 @@ import React from 'react';
 import type { BucketType } from '../cache';
 import * as cache from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
+import { isFunction } from '../types';
 import { crash } from './errorboundary';
 
-type DefaultValue<T> = T | (() => T) | (() => Promise<T>);
+type DefaultValue<T> = T | (() => Promise<T>);
 
 /**
  * Like React.useState, but initial value is read from localStorage
@@ -51,18 +52,17 @@ export function useCachedState<
     [bucketName, cacheName, bucketType]
   );
 
-  /* eslint-disable no-inline-comments */
-  if (typeof state === 'undefined')
-    (typeof defaultValue === 'function'
-      ? // @ts-expect-error
-        Promise.resolve(defaultValue())
-      : Promise.resolve(defaultValue)
-    )
-      .then((value) =>
-        typeof value === 'undefined' ? undefined : setCachedState(value)
+  React.useEffect(() => {
+    if (typeof state === 'undefined')
+      (isFunction(defaultValue)
+        ? Promise.resolve(defaultValue())
+        : Promise.resolve(defaultValue)
       )
-      .catch(crash);
-  /* eslint-enable no-inline-comments */
+        .then((value) =>
+          typeof value === 'undefined' ? undefined : setCachedState(value)
+        )
+        .catch(crash);
+  }, [state, defaultValue, setCachedState]);
 
   return [state, setCachedState];
 }

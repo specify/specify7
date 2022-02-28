@@ -139,6 +139,11 @@ function TableHeader({
   );
 }
 
+const defaultSearchConfig = {
+  sortField: 'dateCreated',
+  ascending: false,
+} as const;
+
 function MetadataDialog({
   datasets: unsortedDatasets,
   showTemplates,
@@ -167,10 +172,7 @@ function MetadataDialog({
     bucketName: 'sortConfig',
     cacheName: 'listOfDataSets',
     bucketType: 'localStorage',
-    defaultValue: {
-      sortField: 'dateCreated',
-      ascending: false,
-    },
+    defaultValue: defaultSearchConfig,
   });
 
   if (typeof sortConfig === 'undefined') return null;

@@ -36,14 +36,15 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * TODO: test using sp7 queries in sp6 and vice versa
- * TODO: new query table list empty
  * TODO: test query reports
  * TODO: once done, deploy to test server
  * Query Results:
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results
  * TODO: allow editing records in query results
+ * Compatability:
+ * TODO: test using sp7 queries in sp6 and vice versa
+ * TODO: test using queries with OR conditions in Sp6
  */
 export function QueryBuilder({
   query: queryResource,
