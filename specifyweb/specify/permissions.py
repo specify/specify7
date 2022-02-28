@@ -4,8 +4,49 @@ logger = logging.getLogger(__name__)
 from django.core.exceptions import ObjectDoesNotExist
 
 import casbin
+from casbin import persist
 
-enforcer = casbin.Enforcer("/home/ben/perm_model.conf", "/home/ben/perm_policy.csv")
+model = casbin.Enforcer.new_model(text="""
+[request_definition]
+r = sub, dom, obj, act
+
+[policy_definition]
+p = sub, dom, obj, act, eft
+
+[role_definition]
+g = _, _, _
+
+[policy_effect]
+e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
+
+[matchers]
+m = ((r.sub == p.sub && r.dom == p.dom) || g(r.sub, p.sub, r.dom)) && keyMatch(r.obj, p.obj) && r.act == p.act
+""")
+
+policy = """
+p, abentley, 4, /table/*, read, allow
+p, abentley, 4, /table/*, update, allow
+p, abentley, 4, /table/*, create, allow
+p, abentley, 4, /field/collectingevent/remarks, update, allow
+p, abentley, 4, /field/determination/remarks, update, allow
+
+p, fullaccess, 4, /field/*, update, allow
+#p, fullaccess, 4, /field/determination/remarks, update, deny
+
+g, abentley, fullaccess, 4
+g, abentley, groupA, 4
+
+
+"""
+
+class SpAdapter(persist.Adapter):
+    def load_policy(self, model):
+        for line in policy.splitlines():
+            persist.load_policy_line(line, model)
+
+adapter = SpAdapter()
+
+enforcer = casbin.Enforcer(model, adapter)
 
 class AccessDeniedException(Exception):
     pass
