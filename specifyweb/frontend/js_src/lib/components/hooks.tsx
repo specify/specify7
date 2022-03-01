@@ -110,7 +110,11 @@ export function useValidation<T extends Input = HTMLInputElement>(
 
 /** Like React.useState, but initial value is retrieved asynchronously */
 export function useAsyncState<T>(
-  callback: () => undefined | T | Promise<T | undefined>
+  /*
+   * Callback can call "refreshState" asynchronously to trigger another call to
+   * "callback"
+   */
+  callback: (refreshState: () => void) => undefined | T | Promise<T | undefined>
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
@@ -118,11 +122,13 @@ export function useAsyncState<T>(
   const [state, setState] = React.useState<T | undefined>(undefined);
 
   React.useEffect(() => {
-    Promise.resolve(callback())
-      .then((initialState) =>
-        destructorCalled ? undefined : setState(initialState)
-      )
-      .catch(crash);
+    const refreshState = () =>
+      void Promise.resolve(callback(refreshState))
+        .then((initialState) =>
+          destructorCalled ? undefined : setState(initialState)
+        )
+        .catch(crash);
+    refreshState();
 
     let destructorCalled = false;
     return (): void => {

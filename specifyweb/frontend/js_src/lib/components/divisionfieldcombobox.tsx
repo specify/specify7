@@ -3,8 +3,8 @@ import React from 'react';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListComboBox } from './picklist';
 import { useAsyncState } from './hooks';
+import { PickListComboBox } from './picklist';
 
 export function DivisionFieldComboBox(
   props: DefaultComboBoxProps
@@ -24,7 +24,7 @@ export function DivisionFieldComboBox(
   return (
     <PickListComboBox
       {...props}
-      items={items ?? []}
+      items={items}
       fieldName="division"
       onAdd={undefined}
       pickList={undefined}

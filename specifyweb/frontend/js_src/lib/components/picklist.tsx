@@ -19,7 +19,7 @@ import { useSaveBlockers, useValidationAttributes } from './resource';
 
 export function PickListComboBox(
   props: Omit<DefaultComboBoxProps, 'readOnly'> & {
-    readonly items: RA<PickListItemSimple>;
+    readonly items: RA<PickListItemSimple> | undefined;
     // This may be undefined for front-end only picklists
     readonly pickList: SpecifyResource<PickList> | undefined;
     // Pick list is considered read only if onAdd is undefined
@@ -51,7 +51,11 @@ export function PickListComboBox(
 
   // Set default value
   React.useEffect(() => {
-    if (props.resource.isNew() && typeof props.defaultValue === 'string') {
+    if (
+      props.resource.isNew() &&
+      typeof props.defaultValue === 'string' &&
+      Array.isArray(props.items)
+    ) {
       const defaultItem =
         props.items.find(({ value }) => value === props.defaultValue) ??
         props.items.find(({ title }) => title === props.defaultValue);
@@ -74,7 +78,7 @@ export function PickListComboBox(
 
   // Warn on duplicates
   React.useEffect(() => {
-    const values = props.items.map(({ value }) => value);
+    const values = props.items?.map(({ value }) => value) ?? [];
     if (values.length !== new Set(values).size)
       console.error('Duplicate picklist entries found', [
         props.items,
@@ -96,7 +100,7 @@ export function PickListComboBox(
   React.useEffect(() => {
     if (
       typeof pendingNewValue === 'string' &&
-      props.items.some(({ value }) => value === pendingNewValue)
+      props.items?.some(({ value }) => value === pendingNewValue)
     )
       updateValue(pendingNewValue);
   }, [props.items, pendingNewValue, updateValue]);
@@ -110,7 +114,27 @@ export function PickListComboBox(
   }
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const isExistingValue = props.items.some((item) => item.value === value);
+  const isExistingValue =
+    props.items?.some((item) => item.value === value) ?? true;
+
+  const autocompleteItems = React.useMemo(
+    () =>
+      Object.fromEntries(
+        props.items
+          ?.filter(({ value }) => Boolean(value))
+          .map(
+            (item) =>
+              [
+                item.value,
+                {
+                  label: item.title,
+                  data: undefined,
+                },
+              ] as const
+          ) ?? []
+      ),
+    [props.items]
+  );
 
   return (
     <>
@@ -122,10 +146,11 @@ export function PickListComboBox(
           {...validationAttributes}
           required={props.required}
           onChange={({ target }): void =>
-            props.items.some(({ value }) => value === target.value)
+            props.items?.some(({ value }) => value === target.value)
               ? updateValue(target.value)
               : undefined
           }
+          disabled={props.disabled || typeof props.items === 'undefined'}
         >
           {isExistingValue ? undefined : value === null ? (
             props.required ? undefined : (
@@ -136,7 +161,7 @@ export function PickListComboBox(
               {queryText('invalidPicklistValue')(value)}
             </option>
           )}
-          {props.items.map(({ title, value }) => (
+          {props.items?.map(({ title, value }) => (
             <option key={value} value={value}>
               {title}
             </option>
@@ -144,22 +169,7 @@ export function PickListComboBox(
         </select>
       ) : (
         <Autocomplete<undefined>
-          source={async () =>
-            Object.fromEntries(
-              props.items
-                .filter(({ value }) => Boolean(value))
-                .map(
-                  (item) =>
-                    [
-                      item.value,
-                      {
-                        label: item.title,
-                        data: undefined,
-                      },
-                    ] as const
-                )
-            )
-          }
+          source={autocompleteItems}
           onNewValue={addNewValue}
           onChange={updateValue}
           renderSearchBox={(inputProps): JSX.Element => (
@@ -167,7 +177,7 @@ export function PickListComboBox(
               forwardRef={validationRef}
               name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
-              disabled={props.disabled}
+              disabled={props.disabled || typeof props.items === 'undefined'}
               required={props.required}
               {...validationAttributes}
               {...inputProps}

@@ -9,6 +9,8 @@ let dataListCount = 0;
 const debounceRate = 300;
 const defaultLimit = 100;
 
+type Items<T> = RA<string> | IR<{ readonly label: string; readonly data: T }>;
+
 export function Autocomplete<T>({
   source,
   minLength = 1,
@@ -17,9 +19,7 @@ export function Autocomplete<T>({
   onNewValue: handleNewValue,
   renderSearchBox,
 }: {
-  readonly source: (
-    value: string
-  ) => Promise<RA<string> | IR<{ readonly label: string; readonly data: T }>>;
+  readonly source: Items<T> | ((value: string) => Promise<Items<T>>);
   readonly minLength?: number;
   readonly delay?: number;
   readonly onNewValue?: (value: string) => void;
@@ -38,35 +38,43 @@ export function Autocomplete<T>({
   >({});
   const refDataList = React.useRef<HTMLDataListElement | null>(null);
 
+  const updateResults = React.useCallback(function updateResults(
+    values: Items<T>
+  ): void {
+    const entries = Object.entries(values);
+    setResults((oldResults) =>
+      // Don't delete previous autocomplete results if no new results returned
+      Object.keys(oldResults).length > 0 && entries.length === 0
+        ? oldResults
+        : Array.isArray(values)
+        ? Object.fromEntries(
+            entries.map((value) => [
+              value,
+              {
+                label: value,
+                data: value,
+              },
+            ])
+          )
+        : values
+    );
+
+    return undefined;
+  },
+  []);
+
+  // Update source array on changes if statically supplied
+  React.useEffect(() => {
+    if (Array.isArray(source)) updateResults(source);
+  }, [source, updateResults]);
+
   function onKeyDown({ target }: React.KeyboardEvent): void {
+    if (typeof source !== 'function') return;
+
     const input = target as HTMLInputElement;
     if (input.value.length < minLength) return;
 
-    void source(input.value)
-      .then((values) => {
-        const entries = Object.entries(values);
-
-        // Don't delete previous autocomplete results if no new results returned
-        if (Object.keys(results).length > 0 && entries.length === 0)
-          return undefined;
-
-        setResults(
-          Array.isArray(values)
-            ? Object.fromEntries(
-                entries.map((value) => [
-                  value,
-                  {
-                    label: value,
-                    data: value,
-                  },
-                ])
-              )
-            : values
-        );
-
-        return undefined;
-      })
-      .catch(console.error);
+    void source(input.value).then(updateResults).catch(console.error);
   }
 
   const handleKeyDown = React.useCallback(_.debounce(onKeyDown, delay), []);
