@@ -364,3 +364,28 @@ export function parseValue(
         parsed: parser.parser?.(formattedValue) ?? formattedValue,
       };
 }
+
+/** Modify the parser to be able to parse multiple values separated by commas */
+export function pluralizeParser(rawParser: Parser): Parser {
+  const { minLength, maxLength, ...parser } = rawParser;
+  if (typeof parser.pattern === 'object') {
+    // If a pattern is set, modify it to allow for comma separators
+    const pattern = parser.pattern
+      .toString()
+      .replaceAll(/^\/\^\(?|\)?\$\/$/g, '');
+    // Pattern with whitespace
+    const escaped = `\\s*(?:${pattern})\\s*`;
+    return {
+      ...parser,
+      pattern: new RegExp(`|${escaped}(?:,${escaped})*`),
+    };
+  } else
+    return {
+      ...parser,
+      pattern: new RegExp(
+        `^.{${minLength ?? 0},${
+          typeof maxLength === 'number' ? maxLength : ''
+        }$`
+      ),
+    };
+}

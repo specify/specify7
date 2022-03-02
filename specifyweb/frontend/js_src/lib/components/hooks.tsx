@@ -77,8 +77,12 @@ export function useValidation<T extends Input = HTMLInputElement>(
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    const handleChange = (): void =>
-      input.validity.customError ? input.setCustomValidity('') : undefined;
+    function handleChange(): void {
+      if (input.validity.customError) {
+        validationMessageRef.current = '';
+        input.setCustomValidity('');
+      }
+    }
 
     input.addEventListener('input', handleChange);
     return (): void => input.removeEventListener('input', handleChange);

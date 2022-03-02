@@ -6,7 +6,11 @@ import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
-import { getValidationAttributes, parseValue } from '../uiparse';
+import {
+  getValidationAttributes,
+  parseValue,
+  pluralizeParser,
+} from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
 import { Input, Select } from './basic';
 import type { PickListItemSimple } from './combobox';
@@ -65,12 +69,13 @@ function QueryInputField({
     target: HTMLInputElement | HTMLSelectElement
   ): RA<string> =>
     listInput
-      ? pickListItems
+      ? Array.isArray(pickListItems)
         ? Array.from(target.querySelectorAll('option'))
             .filter(({ selected }) => selected)
             .map(({ value }) => value)
         : target.value.split(',')
       : [target.value];
+
   const commonProps = {
     forwardRef: validationRef,
     autoComplete: 'on',
@@ -88,9 +93,10 @@ function QueryInputField({
 
       if (hasNativeErrors(input)) return;
 
-      const parseResults = extractValues(target).map((value) =>
-        parseValue(parser, input, value)
-      );
+      const parseResults = extractValues(target)
+        .map((value) => value.trim())
+        .filter(Boolean)
+        .map((value) => parseValue(parser, input, value));
       const errorMessages = parseResults
         .filter((result): result is InvalidParseResult => !result.isValid)
         .map(({ reason }) => reason);
@@ -220,21 +226,6 @@ function Between({
   );
 }
 
-function mutateParser(parser: Parser): Parser {
-  if (typeof parser.pattern === 'object') {
-    // If a pattern is set, modify it to allow for comma separators
-    const pattern = parser.pattern
-      .toString()
-      .replaceAll(/^\/\^\(?|\)?\$\/$/g, '');
-    // Pattern with whitespace
-    const escaped = `\\s*(?:${pattern})\\s*`;
-    return {
-      ...parser,
-      pattern: new RegExp(`|${escaped}(?:,${escaped})*`),
-    };
-  } else return parser;
-}
-
 function In({
   filter,
   fieldName,
@@ -251,7 +242,7 @@ function In({
   return (
     <QueryInputField
       currentValue={filter.startValue}
-      parser={mutateParser(parser)}
+      parser={pluralizeParser(parser)}
       pickListItems={pickListItems}
       label={queryText('startValue')}
       fieldName={fieldName}
