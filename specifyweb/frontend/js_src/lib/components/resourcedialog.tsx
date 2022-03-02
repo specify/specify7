@@ -32,7 +32,6 @@ export function ResourceDialog<SCHEMA extends AnySchema = AnySchema>({
   const [title, setTitle] = React.useState('');
   return (
     <Dialog
-      modal={true}
       header={title}
       onClose={handleClose}
       buttons={undefined}

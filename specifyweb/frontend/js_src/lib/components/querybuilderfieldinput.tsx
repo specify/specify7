@@ -271,15 +271,19 @@ export const queryFieldFilters: RR<
   {
     id: number;
     label: string;
+    // If true, show pick list item titles. Else, show free input
     renderPickList: boolean;
     types?: RA<QueryFieldType>;
     component?: typeof SingleField;
+    // Whether empty "startValue" is equivalent to "(any)"
+    resetToAny: boolean;
   }
 > = {
   any: {
     id: 8,
     label: queryText('any'),
     renderPickList: false,
+    resetToAny: false,
   },
   like: {
     id: 0,
@@ -287,12 +291,14 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: SingleField,
+    resetToAny: true,
   },
   equal: {
     id: 1,
     label: queryText('equal'),
     renderPickList: true,
     component: SingleField,
+    resetToAny: true,
   },
   greater: {
     id: 2,
@@ -300,6 +306,7 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
+    resetToAny: true,
   },
   less: {
     id: 3,
@@ -307,6 +314,7 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
+    resetToAny: true,
   },
   greaterOrEqual: {
     id: 4,
@@ -314,6 +322,7 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
+    resetToAny: true,
   },
   lessOrEqual: {
     id: 5,
@@ -321,18 +330,21 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
+    resetToAny: true,
   },
   true: {
     id: 6,
     label: queryText('true'),
     renderPickList: false,
     types: ['checkbox'],
+    resetToAny: false,
   },
   false: {
     id: 7,
     label: queryText('false'),
     renderPickList: false,
     types: ['checkbox'],
+    resetToAny: false,
   },
   between: {
     id: 9,
@@ -340,6 +352,7 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: Between,
+    resetToAny: true,
   },
   in: {
     id: 10,
@@ -347,6 +360,7 @@ export const queryFieldFilters: RR<
     renderPickList: true,
     types: ['text', 'number', 'date', 'id'],
     component: In,
+    resetToAny: true,
   },
   contains: {
     id: 11,
@@ -354,6 +368,7 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
+    resetToAny: true,
   },
   startsWith: {
     id: 15,
@@ -361,23 +376,27 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
+    resetToAny: true,
   },
   empty: {
     id: 12,
     label: queryText('empty'),
     renderPickList: false,
+    resetToAny: false,
   },
   trueOrNull: {
     id: 13,
     label: queryText('trueOrNull'),
     renderPickList: false,
     types: ['checkbox'],
+    resetToAny: false,
   },
   falseOrNull: {
     id: 14,
     label: queryText('falseOrNull'),
     renderPickList: false,
     types: ['checkbox'],
+    resetToAny: false,
   },
 };
 

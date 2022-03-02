@@ -1,13 +1,14 @@
 import React from 'react';
 
 import { ping } from '../ajax';
-import type { RecordSet, SpQuery, Tables } from '../datamodel';
+import type { RecordSet, SpQuery, SpQueryField, Tables } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import * as navigation from '../navigation';
 import type { QueryField } from '../querybuilderutils';
-import { hasLocalityColumns, unParseQueryFields } from '../querybuilderutils';
+import { hasLocalityColumns } from '../querybuilderutils';
 import { getModel, schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
@@ -55,14 +56,13 @@ function QueryButton({
 
 export function SaveQueryButtons({
   readOnly,
-  baseTableName,
   fields,
   saveRequired,
   queryResource,
   setHasUnloadProtect,
+  getQueryFieldRecords,
 }: {
   readonly readOnly: boolean;
-  readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -70,6 +70,7 @@ export function SaveQueryButtons({
     isEnabled: boolean,
     callback: () => void
   ) => void;
+  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
 }): JSX.Element {
   const [showDialog, setShowDialog] = React.useState<false | 'save' | 'saveAs'>(
     false
@@ -79,7 +80,7 @@ export function SaveQueryButtons({
 
   function handleSave(newState: typeof showDialog): void {
     if (newState === 'save' || newState === 'saveAs')
-      queryResource.set('fields', unParseQueryFields(baseTableName, fields));
+      queryResource.set('fields', getQueryFieldRecords());
     setShowDialog(newState);
   }
 
@@ -217,10 +218,12 @@ export function QueryExportButtons({
   baseTableName,
   fields,
   queryResource,
+  getQueryFieldRecords,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
+  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -230,7 +233,7 @@ export function QueryExportButtons({
   );
 
   function doQueryExport(url: string, captions?: RA<string>): void {
-    queryResource.set('fields', unParseQueryFields(baseTableName, fields));
+    queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
     setState('creating');
     void ping(url, {

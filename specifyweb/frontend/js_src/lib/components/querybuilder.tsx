@@ -36,13 +36,16 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * TODO: test query reports
- * TODO: once done, deploy to test server
  * Query Results:
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results
  * TODO: allow editing records in query results
- * Compatability:
+ * TODO: rewrite record selector to react
+ * TODO: make query scrollable even while viewing the resutls
+ * TODO: <select> multiple higliht code contrast in light mode
+ * To Test:
+ * TODO: test "any" filters in sp6 and sp7
+ * TODO: test query reports
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: test using queries with OR conditions in Sp6
  */
@@ -58,6 +61,7 @@ export function QueryBuilder({
   readonly recordSet?: SpecifyResource<RecordSet>;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
+  const [originalQueryFields] = React.useState(query.fields);
 
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -112,6 +116,11 @@ export function QueryBuilder({
     mappingPathIsComplete(mappingPath)
   );
 
+  const getQueryFieldRecords = (
+    fields: typeof state.fields = state.fields
+  ): ReturnType<typeof unParseQueryFields> =>
+    unParseQueryFields(state.baseTableName, fields, originalQueryFields);
+
   function runQuery(
     mode: 'regular' | 'distinct' | 'count',
     fields: typeof state.fields = state.fields
@@ -119,11 +128,11 @@ export function QueryBuilder({
     if (!isEmpty) return;
     setQuery({
       ...query,
-      fields: unParseQueryFields(state.baseTableName, fields),
+      fields: getQueryFieldRecords(fields),
       selectDistinct: mode === 'distinct',
       countOnly: mode === 'count',
     });
-    setTimeout(() => dispatch({ type: 'RunQuery' }), 0);
+    setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
   }
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
@@ -185,6 +194,7 @@ export function QueryBuilder({
             baseTableName={state.baseTableName}
             fields={state.fields}
             queryResource={queryResource}
+            getQueryFieldRecords={getQueryFieldRecords}
           />
           {!readOnly && (
             <MakeRecordSetButton
@@ -205,11 +215,11 @@ export function QueryBuilder({
           )}
           <SaveQueryButtons
             readOnly={readOnly}
-            baseTableName={state.baseTableName}
             queryResource={queryResource}
             fields={state.fields}
             saveRequired={state.saveRequired}
             setHasUnloadProtect={setHasUnloadProtect}
+            getQueryFieldRecords={getQueryFieldRecords}
           />
         </header>
         <div

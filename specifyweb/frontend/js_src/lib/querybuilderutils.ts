@@ -3,17 +3,12 @@ import { queryFieldFilters } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import queryText from './localization/query';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
-import { defined, filterArray } from './types';
+import { defined } from './types';
 import type { Parser } from './uiparse';
 import { group, sortObjectsByKey } from './wbplanviewhelper';
-import {
-  anyTreeRank,
-  formatTreeRank,
-  mappingPathToString,
-} from './wbplanviewmappinghelper';
+import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
@@ -54,6 +49,13 @@ export function parseQueryFields(
             field.isRelFld ?? false
           );
 
+          // Back-end treats empty startValue as any for many filters
+          const resetToAny =
+            field.startValue === '' &&
+            Object.values(queryFieldFilters).find(
+              ({ id }) => id == field.operStart
+            )?.resetToAny === true;
+
           return [
             mappingPathToString(fieldSpec.toMappingPath()),
             {
@@ -61,16 +63,13 @@ export function parseQueryFields(
               mappingPath: fieldSpec.toMappingPath(),
               sortType: sortTypes[field.sortType],
               filter: {
-                type: defined(
-                  // Back-end treats "equal" with blank startValue as "any"
-                  Object.entries(queryFieldFilters).find(
-                    ([_, { id }]) =>
-                      (id === queryFieldFilters.any.id &&
-                        field.operStart === queryFieldFilters.equal.id &&
-                        field.startValue === '') ||
-                      id === field.operStart
-                  )
-                )[0],
+                type: resetToAny
+                  ? 'any'
+                  : defined(
+                      Object.entries(queryFieldFilters).find(
+                        ([_, { id }]) => id === field.operStart
+                      )
+                    )[0],
                 isNot,
                 startValue: field.startValue ?? '',
               },
@@ -99,17 +98,34 @@ export const queryFieldsToFieldSpecs = (
 
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
+  fields: RA<QueryField>,
+  originalQueryFields: RA<SerializedResource<SpQueryField>>
 ): RA<SerializedResource<SpQueryField>> =>
   queryFieldsToFieldSpecs(baseTableName, fields).flatMap(
     ([field, fieldSpec], index) => {
-      const attributes = fieldSpec.toSpQueryAttributes();
       const commonData = {
-        ...attributes,
+        ...fieldSpec.toSpQueryAttributes(),
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,
       };
+      /*
+       * For some filters, empty startValue is treated as "any" by Specify 6.
+       * For user convenience, Query Builder tries to reuse the original
+       * filter type if both original and new filter represents "any"
+       */
+      const originalField = originalQueryFields.find(
+        ({ stringId }) => stringId === commonData.stringId
+      );
+      const originalAnyFilter =
+        typeof originalField === 'object' &&
+        originalField.startValue === '' &&
+        Object.values(queryFieldFilters).find(
+          ({ id }) => id === originalField.operStart
+        )?.resetToAny === true
+          ? originalField.operStart
+          : undefined;
+
       const hasFilters = field.filters.some(({ type }) => type !== 'any');
       return field.filters
         .filter((filter, index) =>
@@ -120,16 +136,15 @@ export const unParseQueryFields = (
           ({ type, startValue, isNot }) =>
             ({
               ...commonData,
-              operStart: defined(
-                // Back-end treats "equal" with blank startValue as "any"
-                Object.entries(queryFieldFilters).find(
-                  ([name, { id }]) =>
-                    (startValue === '' &&
-                      type === 'any' &&
-                      id === queryFieldFilters.equal.id) ||
-                    name === type
-                )
-              )[1].id,
+              operStart:
+                startValue === ''
+                  ? originalAnyFilter
+                  : defined(
+                      // Back-end treats "equal" with blank startValue as "any"
+                      Object.entries(queryFieldFilters).find(
+                        ([name]) => name === type
+                      )
+                    )[1].id,
               startValue,
               isNot,
               // TODO: add missing nullable fields here
