@@ -7,7 +7,7 @@ import ResourceBase from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { localization, schema } from './schema';
 import { unescape } from './schemabase';
-import { getTableOverwrite } from './schemaoverrides';
+import { getTableOverwrite, modelViews } from './schemaoverrides';
 import type { LiteralField, Relationship } from './specifyfield';
 import {
   type FieldDefinition,
@@ -129,7 +129,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       this.longName
     ) as SCHEMA['tableName'];
     this.idFieldName = tableDefinition.idFieldName;
-    this.view = tableDefinition.view ?? this.name.toLowerCase();
+    this.view = tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;

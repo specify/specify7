@@ -64,12 +64,6 @@ const queryText = createDictionary({
     ca: 'Add values one by one, or as comma-separated list:',
     'es-es': 'Add values one by one, or as comma-separated list:',
   },
-  saveQueryDialogTitle: {
-    'en-us': 'Save query as...',
-    'ru-ru': 'Сохранить запрос как...',
-    ca: 'Save query as...',
-    'es-es': 'Save query as...',
-  },
   saveQueryDialogHeader: {
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
@@ -83,10 +77,10 @@ const queryText = createDictionary({
     'es-es': 'Enter a name for the new query.',
   },
   saveClonedQueryDialogHeader: {
-    'en-us': 'Clone Query',
-    'ru-ru': 'Клонировать запрос',
-    ca: 'Clone Query',
-    'es-es': 'Clone Query',
+    'en-us': 'Save query as...',
+    'ru-ru': 'Сохранить запрос как...',
+    ca: 'Save query as...',
+    'es-es': 'Save query as...',
   },
   saveClonedQueryDialogMessage: {
     'en-us': `

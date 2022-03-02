@@ -9,7 +9,8 @@
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import { filterArray } from './types';
+import { getModel } from './schema';
+import { defined, filterArray } from './types';
 import { camelToHuman } from './wbplanviewhelper';
 import {
   anyTreeRank,
@@ -71,9 +72,12 @@ export function generateMappingPathPreview(
 
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
-    ...mappingLineData.map(
-      (mappingElementData) =>
-        Object.values(mappingElementData.fieldsData)[0]?.optionLabel as string
+    ...mappingLineData.map((mappingElementData) =>
+      Object.keys(mappingElementData.fieldsData)[0] ===
+      formatTreeRank(anyTreeRank)
+        ? defined(getModel(defined(mappingElementData.tableName))).label
+        : (Object.values(mappingElementData.fieldsData)[0]
+            ?.optionLabel as string)
     ),
   ];
 
@@ -116,9 +120,10 @@ export function generateMappingPathPreview(
     : tableNameNonEmpty;
 
   return filterArray([
-    valueIsTreeRank(databaseTableOrRankName) &&
-    databaseTableOrRankName !== formatTreeRank(anyTreeRank)
-      ? tableOrRankName
+    valueIsTreeRank(databaseTableOrRankName)
+      ? databaseTableOrRankName === formatTreeRank(anyTreeRank)
+        ? parentTableName
+        : tableOrRankName
       : tableNameFormatted,
     fieldNameFormatted,
     toManyIndexFormatted,

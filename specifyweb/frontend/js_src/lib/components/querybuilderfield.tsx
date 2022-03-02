@@ -186,10 +186,10 @@ export function QueryLine({
    * TODO: test queries on tree ranks and tree fields (and (any))
    * TODO: test formatters and aggregators
    */
-  const filteredLineData = mutateLineData(lineData, field.mappingPath);
+  const filteredLineData = mutateLineData(lineData);
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: filteredLineData,
+    mappingLineData: lineData,
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,

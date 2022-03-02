@@ -148,29 +148,8 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
 }
 
 export const mutateLineData = (
-  lineData: RA<MappingLineData>,
-  mappingPath: MappingPath
+  lineData: RA<MappingLineData>
 ): RA<MappingLineData> =>
-  filterArray(
-    lineData.map((mappingElementProps, index) =>
-      mappingElementProps.customSelectSubtype === 'toMany'
-        ? undefined
-        : {
-            ...mappingElementProps,
-            fieldsData: {
-              ...(mappingElementProps.customSelectSubtype === 'tree'
-                ? {
-                    [formatTreeRank(anyTreeRank)]: {
-                      optionLabel: queryText('anyRank'),
-                      isRelationship: true,
-                      isDefault:
-                        mappingPath[index] === formatTreeRank(anyTreeRank),
-                      tableName: mappingElementProps.tableName,
-                    },
-                  }
-                : {}),
-              ...mappingElementProps.fieldsData,
-            },
-          }
-    )
+  lineData.filter(
+    ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
   );

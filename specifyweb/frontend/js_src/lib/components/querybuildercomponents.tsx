@@ -17,7 +17,7 @@ import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
-import { EditResourceDialog } from './resourcedialog';
+import { ResourceDialog } from './resourcedialog';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 
 function QueryButton({
@@ -79,9 +79,7 @@ export function SaveQueryButtons({
 
   function handleSave(newState: typeof showDialog): void {
     if (newState === 'save' || newState === 'saveAs')
-      setHasUnloadProtect(false, () =>
-        queryResource.set('fields', unParseQueryFields(baseTableName, fields))
-      );
+      queryResource.set('fields', unParseQueryFields(baseTableName, fields));
     setShowDialog(newState);
   }
 

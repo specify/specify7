@@ -233,8 +233,7 @@ export function QueryBuilder({
                     generateFieldData: 'all',
                     scope: 'queryBuilder',
                     getMappedFields: getMappedFieldsBind,
-                  }),
-                  state.mappingView
+                  })
                 ),
                 customSelectType: 'OPENED_LIST',
                 onChange({ isDoubleClick, ...rest }) {

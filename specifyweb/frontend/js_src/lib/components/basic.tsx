@@ -163,6 +163,13 @@ export const Form = wrap(
       const form = event.target as HTMLFormElement;
       if (form.classList.contains(className.notSubmittedForm))
         form.classList.remove(className.notSubmittedForm);
+      /*
+       * If container has a <form>, and it summons a dialog (with uses a React
+       * Portal) which renders anoter <form>, the child <form>, while not being
+       * in the same DOM hierarchy, would still have it's onSubmit event bubble
+       * (because React Portals resolve event bubbles).
+       */
+      if (typeof props?.onSubmit === 'function') event.stopPropagation();
       props?.onSubmit?.(event);
     },
   })

@@ -66,6 +66,7 @@ function QueryBuilderById({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
+      // TODO: handle resource fetch 404 better
       return query.fetch();
     }, [queryId])
   );

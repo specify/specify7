@@ -83,6 +83,7 @@ export class QueryFieldSpec {
   public toMappingPath(): MappingPath {
     let path = filterArray(
       this.joinPath.flatMap((field) => [
+        // Handle Taxon->Name
         isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
           ? formatTreeRank(anyTreeRank)
           : undefined,
@@ -99,7 +100,10 @@ export class QueryFieldSpec {
       this.joinPath.slice(-1)[0]?.isRelationship ||
       this.joinPath.length === 0
     )
-      path = [...path, formattedEntry];
+      // Handle Locality->Geography
+      path = isTreeModel(this.table.name)
+        ? [...path, formatTreeRank(anyTreeRank), formattedEntry]
+        : [...path, formattedEntry];
     else if (this.joinPath.slice(-1)[0]?.isTemporal())
       path = [
         ...path.slice(0, -1),
@@ -144,8 +148,10 @@ export class QueryFieldSpec {
   } {
     let fieldName = Array.isArray(this.treeRank)
       ? this.treeRank[0] === anyTreeRank
-        ? this.treeRank[1]
-        : this.treeRank[1] === 'name'
+        ? this.treeRank[1] === formattedEntry
+          ? ''
+          : this.treeRank[1]
+        : this.treeRank[1] === formattedEntry
         ? this.treeRank[0]
         : this.treeRank.join(' ')
       : this.joinPath.length > 0
@@ -181,7 +187,7 @@ export class QueryFieldSpec {
       else if (valueIsTreeRank(fieldName)) {
         fieldSpec.treeRank = [
           getNameFromTreeRankName(fieldName),
-          defined(path[index + 1]).toLowerCase(),
+          defined(path[index + 1]),
         ];
         return false;
       }
@@ -228,7 +234,10 @@ export class QueryFieldSpec {
     const fieldSpec = new QueryFieldSpec(baseTable);
     fieldSpec.joinPath =
       typeof field === 'object' ? [...joinPath, field] : joinPath;
-    fieldSpec.table = node;
+    fieldSpec.table =
+      typeof field === 'object' && field.isRelationship
+        ? field.relatedModel
+        : node;
     if (typeof field === 'undefined') {
       /*
        * This is really ugly

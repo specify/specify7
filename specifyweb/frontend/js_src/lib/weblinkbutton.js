@@ -80,7 +80,7 @@ export default UiPlugin.extend({
         setLink: function() {
             var a = this.$('a');
             var inFormTable = this.inFormTable;
-            this.buildUrl().done(function(url) {
+            this.buildUrl().then(function(url) {
                 a.attr('href', url);
                 const isInternal = a[0].hostname === window.location.hostname;
                 if (!isInternal) {
@@ -107,13 +107,13 @@ export default UiPlugin.extend({
             });
 
             var getSpecialFields =
-                    specialResourcesFields[this.model.specifyModel.name] ||
-                    function() { return $.when({}); };
+                    specialResourcesFields[this.model.specifyModel.name] ??
+                    function() { return Promise.resolve({}); };
 
             var data = this.model.toJSON();
             _.extend(args, data, { _this: data[this.fieldName] });
 
-            return getSpecialFields(this.model).pipe(function(specialFields) {
+            return getSpecialFields(this.model).then(function(specialFields) {
                 _.extend(args, specialFields);
                 return _.template(template)(args);
             });

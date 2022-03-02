@@ -4,10 +4,10 @@ import { formData, Http, ping } from '../ajax';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { UiPlugin } from '../uiplugin';
+import { Button, Form, Input, Label, Submit } from './basic';
 import { useId, useTitle } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { Button, Form, Input, Label, Submit } from './basic';
 
 export const MIN_PASSWORD_LENGTH = 6;
 

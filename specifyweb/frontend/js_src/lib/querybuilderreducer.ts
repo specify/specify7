@@ -53,7 +53,7 @@ export const getInitialState = ({
 });
 
 type Actions =
-  | Action<'RunQuery'>
+  | Action<'RunQueryAction'>
   | Action<
       'ChangeOpenedElementAction',
       { line: number; index: number | undefined }
@@ -81,7 +81,7 @@ type Actions =
     >;
 
 export const reducer = generateReducer<MainState, Actions>({
-  RunQuery: ({ state }) => ({
+  RunQueryAction: ({ state }) => ({
     ...state,
     queryRunCount: state.queryRunCount + 1,
   }),

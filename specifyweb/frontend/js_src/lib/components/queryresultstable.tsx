@@ -123,7 +123,10 @@ function ViewRecords({
   }, [model, idFieldIndex, isOpen]);
   return (
     <>
-      <Button.Simple onClick={(): void => setIsOpen(true)}>
+      <Button.Simple
+        onClick={(): void => setIsOpen(true)}
+        disabled={results.length === 0}
+      >
         {commonText('viewRecords')}
       </Button.Simple>
       <Dialog

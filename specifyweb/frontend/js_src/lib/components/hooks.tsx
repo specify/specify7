@@ -153,13 +153,15 @@ export function useUnloadProtect(
     return (): void => navigation.removeUnloadProtect(id);
   }, [hasUnloadProtect, message]);
 
-  const callbackRef = React.useRef<(() => void) | undefined>(undefined);
-  if (typeof callbackRef.current === 'function') {
-    callbackRef.current();
-    callbackRef.current = undefined;
+  const [callback, setCallback] = React.useState<(() => void) | undefined>(
+    undefined
+  );
+  if (typeof callback === 'function') {
+    callback();
+    setCallback(undefined);
   }
   return (isEnabled, callback) => {
     setHasUnloadProtect(isEnabled);
-    callbackRef.current = callback;
+    setCallback(callback);
   };
 }

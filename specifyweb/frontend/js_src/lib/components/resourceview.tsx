@@ -286,9 +286,17 @@ export function ResourceView({
     );
   }, [resource]);
 
-  if (state === 'main') {
+  if (state === 'noDefinition')
+    return (
+      <section role="alert">
+        <H2>{formsText('missingFormDefinitionPageHeader')}</H2>
+        <p>{formsText('missingFormDefinitionPageContent')}</p>
+      </section>
+    );
+  else {
     const content = (
       <>
+        {state === 'loading' && <LoadingScreen />}
         {hasHeader && typeof recordSetInfo === 'object' ? (
           <ViewHeader
             {...recordSetInfo}
@@ -344,15 +352,7 @@ export function ResourceView({
     ) : (
       content
     );
-  } else
-    return state === 'noDefinition' ? (
-      <section role="alert">
-        <H2>{formsText('missingFormDefinitionPageHeader')}</H2>
-        <p>{formsText('missingFormDefinitionPageContent')}</p>
-      </section>
-    ) : (
-      <LoadingScreen />
-    );
+  }
 }
 
 export const ResourceViewBackbone = createBackboneView(ResourceView);

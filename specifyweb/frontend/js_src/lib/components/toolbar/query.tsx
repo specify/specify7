@@ -29,8 +29,8 @@ const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   // eslint-disable-next-line @typescript-eslint/naming-convention
   { headers: { Accept: 'application/xml' } }
 )
-  .then(({ data: document }) => {
-    return Array.from(
+  .then(({ data: document }) =>
+    Array.from(
       new Set(
         filterArray(
           Array.from(document.querySelectorAll('database > table'), (table) =>
@@ -44,8 +44,8 @@ const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
           .map(({ name }) => name)
           .sort()
       )
-    );
-  })
+    )
+  )
   .catch((error) => {
     console.error(error);
     return [];
@@ -357,20 +357,18 @@ function EditQueryDialog({
       onClose={handleClose}
     >
       {!queryResource.isNew() && (
-        <>
-          <p className="pt-2">{commonText('actions')}</p>
-          <div>
-            <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-              {commonText('exportQueryForDwca')}
-            </Button.LikeLink>
-            <button type="button" className="create-report link">
-              {commonText('exportQueryAsReport')}
-            </button>
-            <button type="button" className="create-label link">
-              {commonText('exportQueryAsLabel')}
-            </button>
-          </div>
-        </>
+        <div className="flex flex-col">
+          <p>{commonText('actions')}</p>
+          <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
+            {commonText('exportQueryForDwca')}
+          </Button.LikeLink>
+          <Button.LikeLink onClick={(): void => setState('reportExport')}>
+            {commonText('exportQueryAsReport')}
+          </Button.LikeLink>
+          <Button.LikeLink onClick={(): void => setState('labelExport')}>
+            {commonText('exportQueryAsLabel')}
+          </Button.LikeLink>
+        </div>
       )}
     </ResourceDialog>
   ) : state === 'dwcaExport' ? (

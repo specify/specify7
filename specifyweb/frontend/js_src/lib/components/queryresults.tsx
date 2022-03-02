@@ -166,7 +166,7 @@ class AuditRecordFormatter {
 }
 
 const className = `border-gray-500 border-r bg-[color:var(--bg)] first:border-l
-  p-1 min-h-[theme(spacing.8)]`;
+  p-1`;
 
 function QueryResultCell({
   fieldSpec,
@@ -328,10 +328,6 @@ function QueryResult({
   );
 }
 
-/*
- * TODO: add picklist support
- * TODO: revert b1c8ab7b
- */
 export function QueryResults({
   model,
   fieldSpecs,

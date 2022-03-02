@@ -2,9 +2,9 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
+import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { Button, Form, Input, Label, Submit } from './basic';
 
 export function PickList({
   label,
@@ -62,7 +62,7 @@ function Values({
   return (
     <>
       {Array.isArray(values)
-        ? (values as RA<string>).map((value) => (
+        ? values.map((value) => (
             <option key={value} value={value}>
               {value}
             </option>

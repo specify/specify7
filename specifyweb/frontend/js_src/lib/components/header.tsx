@@ -39,7 +39,7 @@ export function HeaderItems({
       if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
       else setActiveTask(routeMappings[route] ?? undefined);
     });
-  }, []);
+  }, [menuItems]);
 
   return (
     <nav

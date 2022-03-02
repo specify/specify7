@@ -192,6 +192,11 @@ const endsWithFieldOverwrites: Partial<
   },
 };
 
+// Overwrite SpecifyModel.view
+export const modelViews: Partial<RR<keyof Tables, string>> = {
+  SpQuery: 'Query',
+};
+
 export const getTableOverwrite = (
   tableName: keyof Tables
 ): TableConfigOverwrite | undefined =>

@@ -309,20 +309,40 @@ export function getMappingLineData({
         model,
         generateFieldData === 'none'
           ? []
-          : getTreeDefinitionItems(model.name as 'Geography', false).map(
-              ({ name, title }) =>
-                name === defaultValue || generateFieldData === 'all'
-                  ? [
-                      formatTreeRank(name),
-                      {
-                        optionLabel: title ?? name,
-                        isRelationship: true,
-                        isDefault: name === defaultValue,
-                        tableName: model.name,
-                      },
-                    ]
-                  : undefined
-            )
+          : [
+              scope === 'queryBuilder' &&
+              (generateFieldData === 'all' ||
+                internalState.defaultValue === formatTreeRank(anyTreeRank))
+                ? [
+                    formatTreeRank(anyTreeRank),
+                    {
+                      optionLabel: queryText('anyRank'),
+                      isRelationship: true,
+                      isDefault:
+                        internalState.defaultValue ===
+                        formatTreeRank(anyTreeRank),
+                      isEnabled: !internalState.mappedFields.includes(
+                        formatTreeRank(anyTreeRank)
+                      ),
+                      tableName: model.name,
+                    },
+                  ]
+                : undefined,
+              ...getTreeDefinitionItems(model.name as 'Geography', false).map(
+                ({ name, title }) =>
+                  name === defaultValue || generateFieldData === 'all'
+                    ? ([
+                        formatTreeRank(name),
+                        {
+                          optionLabel: title ?? name,
+                          isRelationship: true,
+                          isDefault: name === defaultValue,
+                          tableName: model.name,
+                        },
+                      ] as const)
+                    : undefined
+              ),
+            ]
       );
     },
 
@@ -333,7 +353,6 @@ export function getMappingLineData({
         generateFieldData === 'none'
           ? []
           : [
-              // TODO: test if this is allowed on a base table
               scope === 'queryBuilder' &&
               (generateFieldData === 'all' ||
                 internalState.defaultValue === formattedEntry)
@@ -368,7 +387,9 @@ export function getMappingLineData({
                       field.overrides.isHidden,
                       field.name
                     ) &&
+                    // Display read only fields in query builder only
                     (scope === 'queryBuilder' || !field.overrides.isReadOnly) &&
+                    // Hide most fields for non "any" tree ranks in query builder
                     (!isTreeModel(model.name) ||
                       (!field.isRelationship &&
                         (mappingPath[internalState.position - 1] ==

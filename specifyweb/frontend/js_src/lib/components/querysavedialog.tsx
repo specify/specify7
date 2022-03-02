@@ -4,11 +4,11 @@ import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
+import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
+import { crash } from './errorboundary';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
-import { crash } from './errorboundary';
-import { userInformation } from '../userinfo';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -48,7 +48,6 @@ export function QuerySaveDialog({
     <LoadingScreen />
   ) : (
     <Dialog
-      title={queryText('saveQueryDialogTitle')}
       header={
         isSaveAs
           ? queryText('saveClonedQueryDialogHeader')
