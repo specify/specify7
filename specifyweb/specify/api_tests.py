@@ -104,7 +104,7 @@ class SimpleApiTests(ApiTests):
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
                 'collection': api.uri_for_model('collection', self.collection.id),
                 'catalognumber': 'foobar'})
-        api.delete_resource(self.agent, 'collectionobject', obj.id, obj.version)
+        api.delete_resource(self.collection, self.agent, 'collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
 
 class RecordSetTests(ApiTests):
@@ -279,7 +279,7 @@ class VersionCtrlApiTests(ApiTests):
         obj.version += 1
         obj.save()
         with self.assertRaises(api.StaleObjectException) as cm:
-            api.delete_resource(self.agent, 'collectionobject', data['id'], data['version'])
+            api.delete_resource(self.collection, self.agent, 'collectionobject', data['id'], data['version'])
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 1)
 
     def test_missing_version(self):
