@@ -17,7 +17,7 @@ from specifyweb.specify.datamodel import Table, datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
-from .uploadable import ScopedUploadable, Row, Disambiguation, AuditLog
+from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
@@ -171,11 +171,7 @@ def do_upload(
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     cache: Dict = {}
-    _auditlog: AuditLog
-    if no_commit:
-        _auditlog = NopLog()
-    else:
-        _auditlog = auditlog
+    _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -183,7 +179,7 @@ def do_upload(
         for i, row in enumerate(rows):
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditlog, cache)
+                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
@@ -209,7 +205,7 @@ def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: 
     while True:
         try:
             with savepoint("row validation"):
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, NopLog())
+                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, Auditor(collection, None))
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break

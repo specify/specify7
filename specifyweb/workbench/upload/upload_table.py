@@ -9,7 +9,7 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, AuditLog
+from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, Auditor
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, ParseFailures, PropagatedFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
@@ -89,12 +89,12 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditlog, cache)
+            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -104,7 +104,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundToManyRecord] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId, auditlog, cache)
+                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -123,7 +123,7 @@ class ScopedUploadTable(NamedTuple):
             toOne=toOne,
             toMany=toMany,
             uploadingAgentId=uploadingAgentId,
-            auditlog=auditlog,
+            auditor=auditor,
             cache=cache,
         )
 
@@ -136,8 +136,8 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditlog, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundOneToOneTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
@@ -149,8 +149,8 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: AuditLog, cache: Optional[Dict]=None) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditlog, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundMustMatchTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
@@ -163,7 +163,7 @@ class BoundUploadTable(NamedTuple):
     scopingAttrs: Dict[str, int]
     disambiguation: Optional[int]
     uploadingAgentId: Optional[int]
-    auditlog: AuditLog
+    auditor: Auditor
     cache: Optional[Dict]
 
     def is_one_to_one(self) -> bool:
@@ -362,10 +362,10 @@ class BoundUploadTable(NamedTuple):
             except (BusinessRuleException, IntegrityError) as e:
                 return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
-        self.auditlog.insert(uploaded, self.uploadingAgentId, None)
+        self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
         toManyResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditlog, self.cache, records)
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, records)
             for fieldname, records in
             sorted(self.toMany.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
@@ -380,7 +380,7 @@ class BoundUploadTable(NamedTuple):
             if parsedField.add_to_picklist is not None:
                 a = parsedField.add_to_picklist
                 pli = a.picklist.picklistitems.create(value=a.value, title=a.value, createdbyagent_id=self.uploadingAgentId)
-                self.auditlog.insert(pli, self.uploadingAgentId, None)
+                self.auditor.insert(pli, self.uploadingAgentId, None)
                 added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.column, value=a.value, id=pli.id))
         return added_picklist_items
 
@@ -418,7 +418,7 @@ def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) 
     return FilterPack(filters, excludes)
 
 
-def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], auditlog: AuditLog, cache: Optional[Dict], records) -> List[UploadResult]:
+def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict], records) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -431,7 +431,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
             static={**record.static, fk_field: parent_id},
             toMany={},
             uploadingAgentId=uploadingAgentId,
-            auditlog=auditlog,
+            auditor=auditor,
             cache=cache,
         ).force_upload_row()
         for record in records

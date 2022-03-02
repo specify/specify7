@@ -10,7 +10,7 @@ from specifyweb.specify.tree_extras import validate_tree_numbering
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify import auditcodes
 
-from ..uploadable import Exclude
+from ..uploadable import Exclude, Auditor
 from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, NoMatch, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
@@ -748,7 +748,7 @@ class UploadTests(UploadTestsBase):
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, auditlog)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([{
@@ -773,7 +773,7 @@ class UploadTests(UploadTestsBase):
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, auditlog)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([
@@ -975,7 +975,7 @@ class UploadTests(UploadTestsBase):
             }
         ).apply_scoping(self.collection)
         row = next(reader)
-        bt = tree_record.bind(self.collection, row, None, auditlog)
+        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
 
@@ -1024,7 +1024,7 @@ class UploadTests(UploadTestsBase):
         #     parent=state,
         # )
 
-        bt = tree_record.bind(self.collection, row, None, auditlog)
+        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual(
@@ -1035,7 +1035,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(state.id, matched.id)
         self.assertEqual(set(['State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(self.collection, row, None, auditlog)
+        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
@@ -1045,7 +1045,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        bt = tree_record.bind(self.collection, row, None, auditlog)
+        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual([], to_upload)
@@ -1053,7 +1053,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.id, matched.id)
         self.assertEqual(set(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(self.collection, row, None, auditlog)
+        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region',], treeInfo=TreeInfo('County', 'Hendry Co.'))
