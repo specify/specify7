@@ -12,6 +12,7 @@ import {
   pluralizeParser,
 } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
+import { omit } from '../wbplanviewhelper';
 import { Input, Select } from './basic';
 import type { PickListItemSimple } from './combobox';
 import { useAsyncState, useValidation } from './hooks';
@@ -114,6 +115,12 @@ function QueryInputField({
             .filter(({ parsed }) => parsed !== null)
             .map(({ parsed }) => (parsed as number | string).toString())
             .join(', ');
+      /*
+       * HandleChange() would update "value" only if that value has changed
+       * since last call, which does not happen if previous value was invalid.
+       * Thus, need to also call setValue()
+       */
+      setValue(parsed);
       handleChange(parsed);
     },
   };
@@ -262,139 +269,175 @@ export const queryFieldFilters: RR<
   {
     id: number;
     label: string;
+    description: string | undefined;
     // If true, show pick list item titles. Else, show free input
     renderPickList: boolean;
     types?: RA<QueryFieldType>;
     component?: typeof SingleField;
     // Whether empty "startValue" is equivalent to "(any)"
     resetToAny: boolean;
+    // Whether to do front-end validation
+    hasParser: boolean;
   }
 > = {
   any: {
     id: 8,
     label: queryText('any'),
+    description: undefined,
     renderPickList: false,
     resetToAny: false,
+    hasParser: false,
   },
   like: {
     id: 0,
     label: queryText('like'),
+    description: queryText('likeDescription'),
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: SingleField,
     resetToAny: true,
+    hasParser: false,
   },
   equal: {
     id: 1,
     label: queryText('equal'),
+    description: undefined,
     renderPickList: true,
     component: SingleField,
     resetToAny: true,
+    hasParser: true,
+    types: ['text', 'number', 'date', 'id'],
   },
   greater: {
     id: 2,
     label: queryText('greaterThan'),
+    description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
     resetToAny: true,
+    hasParser: true,
   },
   less: {
     id: 3,
     label: queryText('lessThan'),
+    description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
     resetToAny: true,
+    hasParser: true,
   },
   greaterOrEqual: {
     id: 4,
     label: queryText('greaterOrEqualTo'),
+    description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
     resetToAny: true,
+    hasParser: true,
   },
   lessOrEqual: {
     id: 5,
     label: queryText('lessOrEqualTo'),
+    description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
     resetToAny: true,
+    hasParser: true,
   },
   true: {
     id: 6,
     label: queryText('true'),
+    description: undefined,
     renderPickList: false,
     types: ['checkbox'],
     resetToAny: false,
+    hasParser: true,
   },
   false: {
     id: 7,
     label: queryText('false'),
+    description: undefined,
     renderPickList: false,
     types: ['checkbox'],
     resetToAny: false,
+    hasParser: true,
   },
   between: {
     id: 9,
     label: queryText('between'),
+    description: undefined,
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: Between,
     resetToAny: true,
+    hasParser: true,
   },
   in: {
     id: 10,
     label: queryText('in'),
+    description: queryText('inDescription'),
     renderPickList: true,
     types: ['text', 'number', 'date', 'id'],
     component: In,
     resetToAny: true,
+    hasParser: true,
   },
   contains: {
     id: 11,
     label: queryText('contains'),
+    description: undefined,
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
     resetToAny: true,
+    hasParser: false,
   },
   startsWith: {
     id: 15,
     label: queryText('startsWith'),
+    description: undefined,
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
     resetToAny: true,
+    hasParser: false,
   },
   empty: {
     id: 12,
     label: queryText('empty'),
+    description: undefined,
     renderPickList: false,
     resetToAny: false,
+    hasParser: false,
   },
   trueOrNull: {
     id: 13,
     label: queryText('trueOrNull'),
+    description: undefined,
     renderPickList: false,
     types: ['checkbox'],
     resetToAny: false,
+    hasParser: true,
   },
   falseOrNull: {
     id: 14,
     label: queryText('falseOrNull'),
+    description: undefined,
     renderPickList: false,
     types: ['checkbox'],
     resetToAny: false,
+    hasParser: true,
   },
 };
 
 export function QueryLineFilter({
   filter,
   fieldName,
-  parser,
+  parser: originalParser,
   pickListName,
   onChange: handleChange,
 }: {
@@ -419,12 +462,33 @@ export function QueryLineFilter({
   );
 
   const previousFilter = React.useRef<QueryFieldFilter>(filter.type);
-  // When going from "in" to another filter type, throw away all but first value
+  /*
+   * When going from "in" to another filter type, throw away all but first one
+   * or two values
+   */
   React.useEffect(() => {
+    const valueLength = filter.type === 'between' ? 2 : 1;
     if (filter.type !== 'in' && previousFilter.current === 'in')
-      handleChange(filter.startValue.split(',')[0]);
+      handleChange(
+        filter.startValue.split(',').slice(0, valueLength).join(',')
+      );
     previousFilter.current = filter.type;
   }, [handleChange, filter]);
+
+  const parser = queryFieldFilters[filter.type].hasParser
+    ? originalParser
+    : ({
+        ...omit(originalParser, [
+          'pattern',
+          'min',
+          'max',
+          'step',
+          'formatters',
+          'parser',
+          'validators',
+        ]),
+        type: 'text',
+      } as const);
 
   const Component = queryFieldFilters[filter.type].component;
   return typeof Component === 'undefined' ? null : (

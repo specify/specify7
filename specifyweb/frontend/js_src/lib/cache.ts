@@ -11,6 +11,7 @@
 import { ajax } from './ajax';
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
+import { omit } from './wbplanviewhelper';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -218,10 +219,10 @@ export function genericGet<T>(
     typeof version === 'string' &&
     buckets[bucketName].records[cacheName].version !== version
   ) {
-    const { [cacheName]: _deletedCacheRecord, ...rest } =
-      buckets[bucketName].records;
     console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
-    buckets[bucketName].records = rest;
+    buckets[bucketName].records = omit(buckets[bucketName].records, [
+      cacheName,
+    ]);
     if (typeof defaultValue === 'undefined') return undefined;
     genericSet(bucketName, cacheName, defaultValue, {
       ...defaultSetOptions,

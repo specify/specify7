@@ -136,7 +136,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
       }
     })
     .catch((error) => {
-      const errorMessage = `Error occurred fetching from ${url}:\n${error.toString()}`;
+      const errorMessage = `Error occurred fetching from ${url}:\n${error.stack}`;
       console.error(errorMessage);
       const handleClose = (): void => void view?.remove();
       const view = strict
@@ -145,7 +145,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
             header: commonText('backEndErrorDialogHeader'),
             children: errorMessage,
             onClose: handleClose,
-          })
+          }).render()
         : undefined;
       throw error;
     });

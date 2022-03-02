@@ -209,7 +209,8 @@ export function resolveParser(
 
   const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {
-    required: fullField.isRequired,
+    // Don't make checkboxes required
+    required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
     ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
   });
@@ -254,7 +255,10 @@ function formatterToParser(formatter: UiFormatter): Parser {
     pattern: regExpString === null ? undefined : new RegExp(regExpString),
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
-    validators: [(value) => (value === null ? title : undefined)],
+    validators: [
+      (value) =>
+        typeof value === 'undefined' || value === null ? title : undefined,
+    ],
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),

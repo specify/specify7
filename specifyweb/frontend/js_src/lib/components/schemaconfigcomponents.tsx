@@ -16,7 +16,7 @@ export function PickList({
 }: {
   readonly label?: string;
   readonly value: string | null;
-  readonly groups: IR<RA<string> | IR<string>>;
+  readonly groups: IR<RA<Readonly<[string, string]>> | IR<string>>;
   readonly disabled?: boolean;
   readonly onChange: (value: string | null) => void;
   readonly className?: string;
@@ -57,19 +57,19 @@ export function PickList({
 function Values({
   values,
 }: {
-  readonly values: RA<string> | IR<string>;
+  readonly values: RA<Readonly<[string, string]>> | IR<string>;
 }): JSX.Element {
   return (
     <>
       {Array.isArray(values)
-        ? values.map((value) => (
+        ? values.map(([value, label]) => (
             <option key={value} value={value}>
-              {value}
+              {label}
             </option>
           ))
-        : Object.entries(values).map(([key, value]) => (
-            <option key={key} value={key}>
-              {value || key}
+        : Object.entries(values).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label || value}
             </option>
           ))}
     </>

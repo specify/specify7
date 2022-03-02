@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ajax, ping } from '../ajax';
+import { serializeResource } from '../datamodelutils';
 import { fetchPickLists } from '../picklists';
 import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
@@ -15,7 +16,6 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
-import { serializeResource } from '../datamodelutils';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;
@@ -90,7 +90,7 @@ export function SchemaConfig({
   readonly tables: IR<SpLocaleContainer>;
   readonly defaultLanguage: string | undefined;
   readonly defaultTable: SpLocaleContainer | undefined;
-  readonly webLinks: RA<string>;
+  readonly webLinks: RA<Readonly<[string, string]>>;
   readonly uiFormatters: RA<UiFormatter>;
   readonly dataObjFormatters: IR<DataObjectFormatter>;
   readonly dataObjAggregators: IR<DataObjectFormatter>;

@@ -21,7 +21,7 @@ import {
   transitionDuration,
 } from './basic';
 import { TableIcon } from './common';
-import { useUnloadProtect } from './hooks';
+import { useTitle, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import {
   MakeRecordSetButton,
@@ -36,6 +36,7 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
+ * TODO: Mapping Editor: selected row remove checkmark
  * Query Results:
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results
@@ -48,7 +49,11 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: test query reports
  * TODO: test using sp7 queries in sp6 and vice versa
  * TODO: test using queries with OR conditions in Sp6
+ * TODO: test queries on tree ranks and tree fields (and (any))
+ * TODO: test formatters and aggregators
+ *
  */
+
 export function QueryBuilder({
   query: queryResource,
   readOnly,
@@ -61,7 +66,7 @@ export function QueryBuilder({
   readonly recordSet?: SpecifyResource<RecordSet>;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
-  const [originalQueryFields] = React.useState(query.fields);
+  const [originalQueryFields] = React.useState(query.fields ?? []);
 
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -151,6 +156,8 @@ export function QueryBuilder({
         behavior: transitionDuration === 0 ? 'auto' : 'smooth',
       });
   }, [state.queryRunCount]);
+
+  useTitle(query.name);
 
   return (
     <ContainerFull

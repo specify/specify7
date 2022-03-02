@@ -88,6 +88,12 @@ export const header = (header: string): string =>
     ? ''
     : `<h2 class="font-semibold text-black dark:text-white">${header}</h2>`;
 
+/**
+ * Make whitespace insensitive string suitable to go into a
+ * whitespace sensitive place (e.g [title] attribute)
+ *
+ * New lines are ignored. To provide an explicit new line, use <br>
+ */
 export const whitespaceSensitive = (string: string): string =>
   string
     .trim()

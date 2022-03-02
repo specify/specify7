@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary } from './utils';
+import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -394,6 +394,16 @@ const queryText = createDictionary({
     ca: 'Like',
     'es-es': 'Like',
   },
+  likeDescription: {
+    'en-us': whitespaceSensitive(`Use "%" to match any number of
+      characters.<br>Use "_" to match a single character`),
+    'ru-ru': whitespaceSensitive(`Используйте «%» для соответствия любому
+      количеству символов.<br>Используйте «_» для соответствия одному символу`),
+    ca: whitespaceSensitive(`Use "%" to match any number of
+      characters.<br>Use "_" to match a single character`),
+    'es-es': whitespaceSensitive(`Use "%" to match any number of
+      characters.<br>Use "_" to match a single character`),
+  },
   equal: {
     'en-us': 'Equal',
     'ru-ru': 'Равный',
@@ -459,6 +469,12 @@ const queryText = createDictionary({
     'ru-ru': 'В',
     ca: 'In',
     'es-es': 'In',
+  },
+  inDescription: {
+    'en-us': 'A comma-separated list of values',
+    'ru-ru': 'Список значений, разделенных запятыми',
+    ca: 'A comma-separated list of values',
+    'es-es': 'A comma-separated list of values',
   },
   contains: {
     'en-us': 'Contains',

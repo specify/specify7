@@ -12,10 +12,12 @@ declare global {
 
   // Prevent Object.entries() from widening the key type to string
   interface ObjectConstructor {
+    // Object
     entries<DICTIONARY extends IR<unknown>>(
       object: DICTIONARY
     ): [keyof DICTIONARY & string, DICTIONARY[keyof DICTIONARY]][];
 
+    // Array
     entries<ITEM>(array: RA<ITEM>): [string, ITEM][];
 
     // Prevent Object.fromEntries() from widening the key type to string

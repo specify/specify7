@@ -129,8 +129,8 @@ export const sortFunction =
   ): ((left: T, right: T) => -1 | 0 | 1) =>
   (left: T, right: T): -1 | 0 | 1 => {
     const [leftValue, rightValue] = reverse
-      ? [mapper(left), mapper(right)]
-      : [mapper(right), mapper(left)];
+      ? [mapper(right), mapper(left)]
+      : [mapper(left), mapper(right)];
     if (leftValue === rightValue) return 0;
     return typeof leftValue === 'string' && typeof rightValue === 'string'
       ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
@@ -187,3 +187,19 @@ export function mappedFind<ITEM, RETURN_TYPE>(
   });
   return value;
 }
+
+export const omit = <
+  DICTIONARY extends IR<unknown>,
+  OMIT extends keyof DICTIONARY
+>(
+  object: DICTIONARY,
+  toOmit: RA<OMIT>
+): {
+  readonly [KEY in keyof DICTIONARY as KEY extends OMIT
+    ? never
+    : KEY]: DICTIONARY[KEY];
+} =>
+  // @ts-expect-error
+  Object.fromEntries(
+    Object.entries(object).filter(([key]) => !toOmit.includes(key as OMIT))
+  );

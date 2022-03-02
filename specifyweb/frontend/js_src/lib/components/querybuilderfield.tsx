@@ -182,14 +182,8 @@ export function QueryLine({
     getMappedFields,
   });
 
-  /*
-   * TODO: test queries on tree ranks and tree fields (and (any))
-   * TODO: test formatters and aggregators
-   */
-  const filteredLineData = mutateLineData(lineData);
-
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: lineData,
+    mappingLineData: mutateLineData(lineData),
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,
@@ -343,8 +337,14 @@ export function QueryLine({
                 </Button.Simple>
               )}
               <Select
-                aria-label={queryText('filter')}
-                title={queryText('filter')}
+                aria-label={
+                  queryFieldFilters[field.filters[index].type].description ??
+                  queryText('filter')
+                }
+                title={
+                  queryFieldFilters[field.filters[index].type].description ??
+                  queryText('filter')
+                }
                 value={filter.type}
                 className={customSelectElementBackground}
                 onChange={({ target }): void => {

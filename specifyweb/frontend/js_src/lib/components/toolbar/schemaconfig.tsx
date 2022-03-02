@@ -211,7 +211,9 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
-      webLinks={Object.keys(webLinksDefs)}
+      webLinks={Object.keys(webLinksDefs).map(
+        (value) => [value, value] as const
+      )}
       uiFormatters={uiFormatters}
       dataObjFormatters={formatters}
       dataObjAggregators={aggregators}

@@ -101,12 +101,13 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 export function crash(error: Error): void {
   breakpoint();
   console.error(error);
-  const handleClose = () => view.remove();
+  const handleClose = (): void => void view.remove();
   const view = new UnhandledErrorView({
     children:
       error.message ??
       // "error.responseText" is for jQuery exceptions
       (error as unknown as { readonly responseText: string }).responseText ??
+      error.stack ??
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
       error.toString(),
     onClose: handleClose,

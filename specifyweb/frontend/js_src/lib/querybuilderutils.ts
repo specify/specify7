@@ -137,7 +137,7 @@ export const unParseQueryFields = (
             ({
               ...commonData,
               operStart:
-                startValue === ''
+                startValue === '' && typeof originalAnyFilter === 'number'
                   ? originalAnyFilter
                   : defined(
                       // Back-end treats "equal" with blank startValue as "any"

@@ -11,8 +11,8 @@ import {
   javaTypeToHuman,
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
-import type { IR, RA } from '../types';
-import { sortObjectsByKey, split } from '../wbplanviewhelper';
+import type { IR, RA, RR } from '../types';
+import { sortFunction, sortObjectsByKey, split } from '../wbplanviewhelper';
 import {
   Button,
   Checkbox,
@@ -100,7 +100,7 @@ type StateWithParameters = States & {
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
-    readonly webLinks: RA<string>;
+    readonly webLinks: RA<Readonly<[string, string]>>;
     readonly uiFormatters: RA<UiFormatter>;
     readonly dataObjFormatters: IR<DataObjectFormatter>;
     readonly dataObjAggregators: IR<DataObjectFormatter>;
@@ -199,7 +199,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           </Button.Transparent>
         }
       >
-        <ul role="list" className="max-h-80">
+        <Ul className="max-h-80">
           {sortedTables.map((table) => (
             <li key={table.id}>
               <Link.Default
@@ -211,7 +211,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               </Link.Default>
             </li>
           ))}
-        </ul>
+        </Ul>
       </Dialog>
     );
   },
@@ -246,7 +246,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const [userPickLists, systemPickLists] = split(
       Object.values(table.dataModel.pickLists),
       ({ isSystem }) => isSystem
-    ).map((group) => group.map(({ name }) => name).sort());
+    ).map((group) =>
+      group
+        .map(({ name }) => name)
+        .sort()
+        .map((name) => [name, name] as const)
+    );
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];
@@ -487,12 +492,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </LabelForCheckbox>
             <fieldset className="flex flex-col gap-1">
               <legend>{commonText('fieldFormat')}</legend>
-              {Object.entries<{
-                label: string;
-                value: string | null;
-                values: IR<RA<string>> | undefined;
-                extraComponents?: JSX.Element;
-              }>({
+              {Object.entries<
+                RR<
+                  ItemType,
+                  {
+                    label: string;
+                    value: string | null;
+                    values:
+                      | IR<RA<Readonly<[key: string, value: string]>>>
+                      | undefined;
+                    extraComponents?: JSX.Element;
+                  }
+                >
+              >({
                 none: {
                   label: commonText('none'),
                   value: null,
@@ -503,15 +515,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   value: items[itemId].format,
                   values: {
                     '': uiFormatters
-                      .map(({ name, isSystem, value }) =>
-                        [
-                          name,
-                          `${value}${
-                            isSystem ? ` (${commonText('system')})` : ''
-                          }`,
-                        ].join(' ')
+                      .map(
+                        ({ name, isSystem, value }) =>
+                          [
+                            name,
+                            `${name} ${value}${
+                              isSystem ? ` (${commonText('system')})` : ''
+                            }`,
+                          ] as const
                       )
-                      .sort(),
+                      .sort(sortFunction((value) => value[1])),
                   },
                 },
                 webLink: {
@@ -561,9 +574,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                         dispatch({
                           type: 'ChangeFieldFormatAction',
                           format: key as ItemType,
-                          value: values
-                            ? Object.values(values)[0][0]! ?? null
-                            : null,
+                          value:
+                            typeof values === 'object'
+                              ? Object.values(values)[0][0][0]! ?? null
+                              : null,
                         })
                       }
                     />
@@ -575,13 +589,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       label={label}
                       value={value}
                       groups={values}
-                      disabled={
-                        !isFormatterAvailable(items[itemId], key as ItemType)
-                      }
+                      disabled={!isFormatterAvailable(items[itemId], key)}
                       onChange={(value): void =>
                         dispatch({
                           type: 'ChangeFieldFormatAction',
-                          format: key as ItemType,
+                          format: key,
                           value,
                         })
                       }

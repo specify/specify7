@@ -19,7 +19,7 @@ import type {
   UploadPlan,
   UploadTable,
 } from './uploadplanparser';
-import { group, split, toLowerCase } from './wbplanviewhelper';
+import { group, omit, split, toLowerCase } from './wbplanviewhelper';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
@@ -69,9 +69,8 @@ function toUploadTable(
     lines,
     ({ mappingPath }) => mappingPath.length === 1
   );
-  const [toOne, toMany] = split(
-    relationships,
-    ({ mappingPath }) => valueIsToManyIndex(mappingPath[1])
+  const [toOne, toMany] = split(relationships, ({ mappingPath }) =>
+    valueIsToManyIndex(mappingPath[1])
   ).map((group) => indexMappings(group));
 
   return {
@@ -102,14 +101,16 @@ function toUploadTable(
       toMany.map(([fieldName, lines]) => {
         return [
           fieldName,
-          indexMappings(lines).map(([_index, lines]) => {
-            const { toMany: _, ...rest } = toUploadTable(
-              defined(model.getRelationship(fieldName)).relatedModel,
-              lines,
-              mustMatchPreferences
-            );
-            return rest;
-          }),
+          indexMappings(lines).map(([_index, lines]) =>
+            omit(
+              toUploadTable(
+                defined(model.getRelationship(fieldName)).relatedModel,
+                lines,
+                mustMatchPreferences
+              ),
+              ['toMany']
+            )
+          ),
         ] as const;
       })
     ),
