@@ -4,10 +4,14 @@ import logging
 import os
 import re
 import xml.dom.minidom
-from collections import namedtuple
+
+from collections import namedtuple, defaultdict
 from datetime import datetime
+from functools import reduce
+
 from django.conf import settings
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+from sqlalchemy import sql
 
 from . import models
 from .format import ObjectFormatter
@@ -496,16 +500,30 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
+    predicates_by_stringid = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field = fs.add_to_query(query, formatauditobjs=formatauditobjs)
+        query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
             query = query.add_columns(query.objectformatter.fieldformat(fs, field))
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
+
+        if predicate is not None:
+            predicates_by_stringid[fs.fieldspec.to_stringid()].append(predicate)
+
+    implicit_ors = [
+        reduce(sql.or_, ps)
+        for ps in predicates_by_stringid.values()
+        if ps
+    ]
+
+    if implicit_ors:
+        where = reduce(sql.and_, implicit_ors)
+        query = query.filter(where)
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs

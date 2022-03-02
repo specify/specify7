@@ -183,7 +183,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             return False
         else:
             return self.get_field().name.lower() in ['oldvalue','newvalue']
-                    
+
     def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
         no_filter = op_num is None
         #print "############################################################################"
@@ -223,7 +223,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
-                _, other_field = value.add_to_query(query.reset_joinpoint())
+                _, other_field, _ = value.add_to_query(query.reset_joinpoint())
                 uiformatter = None
                 value = other_field
             else:
@@ -232,7 +232,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
             op = QueryOps(uiformatter).by_op_num(op_num)
             f = op(orm_field, value)
-            query = query.filter(sql.not_(f) if negate else f)
+            predicate = sql.not_(f) if negate else f
+        else:
+            predicate = None
 
         query = query.reset_joinpoint()
-        return query, orm_field
+        return query, orm_field, predicate
