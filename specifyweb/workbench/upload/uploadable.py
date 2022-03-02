@@ -2,6 +2,7 @@ from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union, Set
 from typing_extensions import Protocol, Literal
 
 from .upload_result import UploadResult, ParseFailures
+from .auditor import Auditor
 
 class Uploadable(Protocol):
     def apply_scoping(self, collection) -> "ScopedUploadable":
@@ -38,7 +39,7 @@ class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditlog: "AuditLog", cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
     def get_treedefs(self) -> Set:
@@ -84,6 +85,3 @@ class BoundUploadable(Protocol):
     def force_upload_row(self) -> UploadResult:
         ...
 
-class AuditLog(Protocol):
-    def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
-        ...

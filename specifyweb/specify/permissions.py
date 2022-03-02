@@ -30,6 +30,11 @@ p, abentley, 4, /table/*, create, allow
 p, abentley, 4, /field/collectingevent/remarks, update, allow
 p, abentley, 4, /field/determination/remarks, update, allow
 
+p, testuser, *, /table/*, create, allow
+p, testuser, *, /table/*, update, allow
+p, testuser, *, /table/*, delete, allow
+p, testuser, *, /field/*, update, allow
+
 p, fullaccess, 4, /field/*, update, allow
 #p, fullaccess, 4, /field/determination/remarks, update, deny
 
