@@ -20,7 +20,7 @@ from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
-from .permissions import check_table_permissions, check_field_permissions, table_permissions_checker
+from .permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
 ReadPermChecker = Callable[[Any], None]
 
@@ -832,6 +832,8 @@ class RowsForm(forms.Form):
     limit = forms.IntegerField(required=False)
 
 def rows(request, model_name: str) -> HttpResponse:
+    enforce(request.specify_collection, request.specify_user_agent, [f'/table/{model_name.lower()}'], "read")
+
     form = RowsForm(request.GET)
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
