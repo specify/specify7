@@ -8,8 +8,10 @@ from django import http
 from django.db.models.deletion import Collector
 from django.db import router
 
+from specifyweb import permissions
+
 from .specify_jar import specify_jar
-from . import api, models, permissions
+from . import api, models
 
 
 def login_maybe_required(view):

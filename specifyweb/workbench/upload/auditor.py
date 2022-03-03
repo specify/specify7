@@ -2,7 +2,7 @@ import logging
 from typing import Any, NamedTuple, Optional, Union
 
 from specifyweb.specify.auditlog import AuditLog
-from specifyweb.specify.permissions import check_table_permissions
+from specifyweb.permissions import check_table_permissions
 from specifyweb.specify import models
 
 Agent = getattr(models, 'Agent')
