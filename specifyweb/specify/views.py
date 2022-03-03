@@ -7,7 +7,8 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
-from . import api, models, permissions
+from specifyweb import permissions
+from . import api, models
 from .specify_jar import specify_jar
 
 

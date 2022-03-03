@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 from django.core.exceptions import ObjectDoesNotExist
 
-import casbin
+import casbin # type: ignore
 from casbin import persist
 
 model = casbin.Enforcer.new_model(text="""
