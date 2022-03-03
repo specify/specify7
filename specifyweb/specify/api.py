@@ -1,3 +1,6 @@
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Union
+from typing_extensions import TypedDict
+
 from urllib.parse import urlencode
 import json
 import re
@@ -22,6 +25,12 @@ from .permissions import check_table_permissions, check_field_permissions
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
+def get_model(name: str):
+    """Fetch an ORM model from the module dynamically so that
+    the typechecker doesn't complain.
+    """
+    return getattr(models, name.capitalize())
+
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
@@ -38,7 +47,7 @@ class JsonEncoder(json.JSONEncoder):
             return obj.decode()
         return json.JSONEncoder.default(self, obj)
 
-def toJson(obj):
+def toJson(obj: Any) -> str:
     return json.dumps(obj, cls=JsonEncoder)
 
 class RecordSetException(Exception):
@@ -75,7 +84,7 @@ class HttpResponseCreated(HttpResponse):
     """
     status_code = 201
 
-def resource_dispatch(request, model, id):
+def resource_dispatch(request, model, id) -> HttpResponse:
     """Handles requests related to individual resources.
 
     Determines the client's version of the resource.
@@ -158,7 +167,7 @@ class GetCollectionForm(forms.Form):
         offset = self.cleaned_data['offset']
         return 0 if offset is None else offset
 
-def collection_dispatch(request, model):
+def collection_dispatch(request, model) -> HttpResponse:
     """Handles requests related to collections of resources.
 
     Dispatches on the request type.
@@ -191,10 +200,10 @@ def collection_dispatch(request, model):
 
     return resp
 
-def get_model_or_404(name):
+def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
     try:
-        return getattr(models, name.capitalize())
+        return get_model(name)
     except AttributeError as e:
         raise Http404(e)
 
@@ -207,7 +216,7 @@ def get_object_or_404(model, *args, **kwargs):
         model = get_model_or_404(model)
     return get_object(model, *args, **kwargs)
 
-def get_resource(name, id, recordsetid=None):
+def get_resource(name, id: int, recordsetid=None) -> Dict:
     """Return a dict of the fields from row 'id' in model 'name'.
 
     If given a recordset id, the data will be suplemented with
@@ -219,19 +228,28 @@ def get_resource(name, id, recordsetid=None):
         data['recordset_info'] = get_recordset_info(obj, recordsetid)
     return data
 
-def get_recordset_info(obj, recordsetid):
+RecordSetInfo = TypedDict('RecordSetInfo', {
+    'recordsetid': int,
+    'total_count': int,
+    'index': int,
+    'previous': Optional[str],
+    'next': Optional[str],
+})
+
+def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
     """Return a dict of info about how the resource 'obj' is related to
     the recordset with id 'recordsetid'.
     """
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
-    rsis = models.Recordsetitem.objects.filter(
+    Recordsetitem = get_model('Recordsetitem')
+    rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
 
     # Get the one which points to the resource 'obj'.
     try:
         rsi = rsis.get(recordid=obj.id)
-    except models.Recordsetitem.DoesNotExist:
+    except Recordsetitem.DoesNotExist:
         return None
 
     # Querysets for the recordset items before and after the one in question.
@@ -240,12 +258,12 @@ def get_recordset_info(obj, recordsetid):
 
     # Build URIs for the previous and the next recordsetitem, if present.
     try:
-        prev = uri_for_model(obj.__class__, prev_rsis[0].recordid)
+        prev: Optional[str] = uri_for_model(obj.__class__, prev_rsis[0].recordid)
     except IndexError:
         prev = None
 
     try:
-        next = uri_for_model(obj.__class__, next_rsis[0].recordid)
+        next: Optional[str] = uri_for_model(obj.__class__, next_rsis[0].recordid)
     except IndexError:
         next = None
 
@@ -258,7 +276,7 @@ def get_recordset_info(obj, recordsetid):
         }
 
 @transaction.atomic
-def post_resource(collection, agent, name, data, recordsetid=None):
+def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]=None):
     """Create a new resource in the database.
 
     collection - the collection the client is logged into.
@@ -271,9 +289,10 @@ def post_resource(collection, agent, name, data, recordsetid=None):
 
     if recordsetid is not None:
         # add the resource to the record set
+        Recordset = get_model('Recordset')
         try:
-            recordset = models.Recordset.objects.get(id=recordsetid)
-        except models.Recordset.DoesNotExist as e:
+            recordset = Recordset.objects.get(id=recordsetid)
+        except Recordset.DoesNotExist as e:
             raise RecordSetException(e)
 
         if recordset.dbtableid != obj.specify_model.tableId:
@@ -285,7 +304,7 @@ def post_resource(collection, agent, name, data, recordsetid=None):
         recordset.recordsetitems.create(recordid=obj.id)
     return obj
 
-def set_field_if_exists(obj, field, value):
+def set_field_if_exists(obj, field: str, value) -> None:
     """Where 'obj' is a Django model instance, a resource object, check
     if a field named 'field' exists and set it to 'value' if so. Do nothing otherwise.
     """
@@ -297,7 +316,7 @@ def set_field_if_exists(obj, field, value):
     if f.concrete:
         setattr(obj, field, value)
 
-def cleanData(model, data, agent):
+def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
     cleaned = {}
@@ -311,7 +330,7 @@ def cleanData(model, data, agent):
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             cleaned[field_name] = data[field_name]
-    if model is models.Agent and not agent.specifyuser.is_admin():
+    if model is get_model('Agent') and not agent.specifyuser.is_admin():
         # only admins can set the user field on agents
         try:
             del cleaned['specifyuser']
@@ -319,7 +338,7 @@ def cleanData(model, data, agent):
             pass
 
     # guid should only be updatable for taxon and geography
-    if model not in (models.Taxon, models.Geography):
+    if model not in (get_model('Taxon'), get_model('Geography')):
         try:
             del cleaned['guid']
         except KeyError:
@@ -332,7 +351,7 @@ def cleanData(model, data, agent):
         pass
     return cleaned
 
-def create_obj(collection, agent, model, data, parent_obj=None):
+def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, str):
@@ -354,18 +373,19 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     handle_to_many(collection, agent, obj, data)
     return obj
 
-def fld_change_info(obj, field, val):
+FieldChangeInfo = TypedDict('FieldChangeInfo', {'field_name': str, 'old_value': Any, 'new_value': Any})
+
+def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
     if field.name != 'timestampmodified':
         value = prepare_value(field, val)
         if isinstance(field, FloatField) or isinstance(field, DecimalField):
             value = None if value is None else float(value)
         old_value = getattr(obj, field.name)
-        if str(old_value) != str(value):
+        if str(old_value) != str(value): # ugh
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
-        else:
-            return None
+    return None
 
-def set_fields_from_data(obj, data):
+def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      """Where 'obj' is a Django model instance and 'data' is a dict,
      set all fields provided by data that are not related object fields.
      """
@@ -379,43 +399,43 @@ def set_fields_from_data(obj, data):
              setattr(obj, field_name, prepare_value(field, val))
      return dirty_flds
 
-def is_dependent_field(obj, field_name):
+def is_dependent_field(obj, field_name: str) -> bool:
     return (
         obj.specify_model.get_field(field_name).dependent
 
-        or (obj.__class__ is models.Collectionobject and
+        or (obj.__class__ is get_model('Collectionobject') and
             field_name == 'collectingevent' and
             obj.collection.isembeddedcollectingevent)
 
         or (field_name == 'paleocontext' and (
 
-            (obj.__class__ is models.Collectionobject and
+            (obj.__class__ is get_model('Collectionobject') and
              obj.collection.discipline.paleocontextchildtable == "collectionobject" and
              obj.collection.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is models.Collectingevent and
+            or (obj.__class__ is get_model('Collectingevent') and
                 obj.discipline.paleocontextchildtable == "collectingevent" and
                 obj.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is models.Locality and
+            or (obj.__class__ is get_model('Locality') and
                 obj.discipline.paleocontextchildtable == "locality" and
                 obj.discipline.ispaleocontextembedded))))
 
-def get_related_or_none(obj, field_name):
+def get_related_or_none(obj, field_name: str) -> Any:
     try:
         return getattr(obj, field_name)
     except ObjectDoesNotExist:
         return None
 
-def reorder_fields_for_embedding(cls, data):
+def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[str, Any]]:
     """For objects which can have embedded collectingevent or
     paleocontext, we have to make sure the domain field gets set
     first so that is_dependent_field will work.
     """
     put_first = {
-        models.Collectionobject: 'collection',
-        models.Collectingevent: 'discipline',
-        models.Locality: 'discipline',
+        get_model('Collectionobject'): 'collection',
+        get_model('Collectingevent'): 'discipline',
+        get_model('Locality'): 'discipline',
     }.get(cls, None)
 
     if put_first in data:
@@ -424,13 +444,13 @@ def reorder_fields_for_embedding(cls, data):
         yield (key, data[key])
 
 
-def handle_fk_fields(collection, agent, obj, data):
+def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List, List[FieldChangeInfo]]:
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
-    dirty = []
+    dirty: List[FieldChangeInfo] = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
         if not field.many_to_one: continue
@@ -458,7 +478,7 @@ def handle_fk_fields(collection, agent, obj, data):
             assert fk_id is not None
             setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
             new_related_id = fk_id
-            
+
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
             assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
@@ -479,7 +499,7 @@ def handle_fk_fields(collection, agent, obj, data):
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
                 dependents_to_delete.append(old_related)
-            new_related_id = rel_obj.id    
+            new_related_id = rel_obj.id
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
@@ -488,7 +508,7 @@ def handle_fk_fields(collection, agent, obj, data):
 
     return dependents_to_delete, dirty
 
-def handle_to_many(collection, agent, obj, data):
+def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     """For every key in the dict 'data' which is a *-to-many field in the
     Django model instance 'obj', if nested data is provided, use it to
     update the set of related objects.
@@ -536,14 +556,14 @@ def handle_to_many(collection, agent, obj, data):
         to_delete.delete()
 
 @transaction.atomic
-def delete_resource(collection, agent, name, id, version):
+def delete_resource(collection, agent, name, id, version) -> None:
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
     return delete_obj(collection, agent, obj, version)
 
-def delete_obj(collection, agent, obj, version=None, parent_obj=None):
+def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -564,10 +584,10 @@ def delete_obj(collection, agent, obj, version=None, parent_obj=None):
 
 
 @transaction.atomic
-def put_resource(collection, agent, name, id, version, data):
+def put_resource(collection, agent, name: str, id, version, data: Dict[str, Any]):
     return update_obj(collection, agent, name, id, version, data)
 
-def update_obj(collection, agent, name, id, version, data, parent_obj=None):
+def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], parent_obj=None):
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
@@ -595,7 +615,7 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     handle_to_many(collection, agent, obj, data)
     return obj
 
-def bump_version(obj, version):
+def bump_version(obj, version) -> None:
     """Implements the optimistic locking mechanism.
 
     If the Django model resource 'obj' has a version field and it
@@ -623,25 +643,25 @@ def bump_version(obj, version):
         raise StaleObjectException("%s object %d is out of date" % (obj.__class__.__name__, obj.id))
     obj.version = version + 1
 
-def prepare_value(field, val):
+def prepare_value(field, val: Any) -> Any:
     if isinstance(field, DateTimeField) and isinstance(val, str):
         return val.replace('T', ' ')
     return val
 
-def parse_uri(uri):
+def parse_uri(uri: str) -> Tuple[str, str]:
     """Return the model name and id from a resource or collection URI."""
     match = URI_RE.match(uri)
-    if match is not None:
-        groups = match.groups()
-        return (groups[0], groups[2])
+    assert match is not None, f"Bad URI: {uri}"
+    groups = match.groups()
+    return groups[0], groups[2]
 
-def obj_to_data(obj):
+def obj_to_data(obj) -> Dict[str, Any]:
     """Return a (potentially nested) dictionary of the fields of the
     Django model instance 'obj'.
     """
     # Get regular and *-to-one fields.
     fields = obj._meta.get_fields()
-    if isinstance(obj, models.Specifyuser):
+    if isinstance(obj, get_model('Specifyuser')):
         # block out password field from users table
         fields = [f for f in fields if f.name != 'password']
 
@@ -655,15 +675,16 @@ def obj_to_data(obj):
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
     # Special cases
-    if isinstance(obj, models.Preparation):
+    # TODO: move these into a "calculated fields" system
+    if isinstance(obj, get_model('Preparation')):
         data['isonloan'] = obj.isonloan()
-    elif isinstance(obj, models.Specifyuser):
+    elif isinstance(obj, get_model('Specifyuser')):
         data['isadmin'] = obj.is_admin()
-    elif isinstance(obj, models.Collectionobject):
+    elif isinstance(obj, get_model('Collectionobject')):
         dets = data['determinations']
         currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []
         data['currentdetermination'] = currDets[0] if len(currDets) > 0 else None;
-    elif isinstance(obj, models.Loan):
+    elif isinstance(obj, get_model('Loan')):
         preps = data['loanpreparations']
         items = 0
         quantities = 0
@@ -685,7 +706,7 @@ def obj_to_data(obj):
         data['resolvedItems'] = quantities - unresolvedQuantities
     return data
 
-def to_many_to_data(obj, rel):
+def to_many_to_data(obj, rel) -> Union[str, List[Dict[str, Any]]]:
     """Return the URI or nested data of the 'rel' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
@@ -699,7 +720,7 @@ def to_many_to_data(obj, rel):
     collection_uri = uri_for_model(rel.related_model)
     return collection_uri + '?' + urlencode([(rel.field.name.lower(), str(obj.id))])
 
-def field_to_val(obj, field):
+def field_to_val(obj, field) -> Any:
     """Return the value or nested data or URI for the given field which should
     be either a regular field or a *-to-one field.
     """
@@ -714,7 +735,18 @@ def field_to_val(obj, field):
     else:
         return getattr(obj, field.name)
 
-def get_collection(logged_in_collection, model, control_params=GetCollectionForm.defaults, params={}):
+CollectionPayloadMeta = TypedDict('CollectionPayloadMeta', {
+    'limit': int,
+    'offset': int,
+    'total_count': int
+})
+
+CollectionPayload = TypedDict('CollectionPayload', {
+    'objects': List[Dict[str, Any]],
+    'meta': CollectionPayloadMeta
+})
+
+def get_collection(logged_in_collection, model, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
     if isinstance(model, str):
@@ -748,7 +780,7 @@ def get_collection(logged_in_collection, model, control_params=GetCollectionForm
     except FieldError as e:
         raise OrderByError(e)
 
-def objs_to_data(objs, offset=0, limit=20):
+def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
@@ -765,7 +797,7 @@ def objs_to_data(objs, offset=0, limit=20):
                      'offset': offset,
                      'total_count': total_count}}
 
-def uri_for_model(model, id=None):
+def uri_for_model(model, id=None) -> str:
     """Given a Django model and optionally an id, return a URI
     for the collection or resource (if an id is given).
     """
@@ -777,16 +809,16 @@ def uri_for_model(model, id=None):
     return uri
 
 class RowsForm(forms.Form):
-    fields = forms.CharField(required=True)
+    fields = forms.CharField(required=True) # type: ignore
     distinct = forms.CharField(required=False)
     limit = forms.IntegerField(required=False)
 
-def rows(request, model_name):
+def rows(request, model_name: str) -> HttpResponse:
     form = RowsForm(request.GET)
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
     try:
-        model = getattr(models, model_name.capitalize())
+        model = get_model(model_name)
     except AttributeError as e:
         raise Http404(e)
     query = model.objects.all()
