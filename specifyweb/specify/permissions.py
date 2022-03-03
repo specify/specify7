@@ -1,3 +1,5 @@
+from typing import Any, Callable
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -80,3 +82,7 @@ def check_field_permissions(collection, agent, obj, fields, action):
     table = obj.specify_model.name.lower()
     enforce(collection, agent, [f'/field/{table}/{field}' for field in fields], action)
 
+def table_permissions_checker(collection, agent, action) -> Callable[[Any], None]:
+    def checker(obj) -> None:
+        check_table_permissions(collection, agent, obj, action)
+    return checker

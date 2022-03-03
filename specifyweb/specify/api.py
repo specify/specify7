@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Iterable, Union
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, NamedTuple, Callable
 from typing_extensions import TypedDict
 
 from urllib.parse import urlencode
@@ -20,7 +20,9 @@ from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
-from .permissions import check_table_permissions, check_field_permissions
+from .permissions import check_table_permissions, check_field_permissions, table_permissions_checker
+
+ReadPermChecker = Callable[[Any], None]
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
@@ -104,9 +106,11 @@ def resource_dispatch(request, model, id) -> HttpResponse:
         except KeyError:
             version = None
 
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
     # Dispatch on the request type.
     if request.method == 'GET':
-        data = get_resource(model, id, request.GET.get('recordsetid', None))
+        data = get_resource(model, id, checker, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'PUT':
@@ -121,7 +125,7 @@ def resource_dispatch(request, model, id) -> HttpResponse:
                            request.specify_user_agent,
                            model, id, version, data)
 
-        resp = HttpResponse(toJson(obj_to_data(obj)),
+        resp = HttpResponse(toJson(_obj_to_data(obj, checker)),
                             content_type='application/json')
 
     elif request.method == 'DELETE':
@@ -192,7 +196,9 @@ def collection_dispatch(request, model) -> HttpResponse:
                             model, json.load(request),
                             request.GET.get('recordsetid', None))
 
-        resp = HttpResponseCreated(toJson(obj_to_data(obj)),
+        checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+        resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
                                    content_type='application/json')
     else:
         # Unhandled request type.
@@ -216,14 +222,14 @@ def get_object_or_404(model, *args, **kwargs):
         model = get_model_or_404(model)
     return get_object(model, *args, **kwargs)
 
-def get_resource(name, id: int, recordsetid=None) -> Dict:
+def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> Dict:
     """Return a dict of the fields from row 'id' in model 'name'.
 
     If given a recordset id, the data will be suplemented with
     data about the resource's relationship to the given record set.
     """
     obj = get_object_or_404(name, id=int(id))
-    data = obj_to_data(obj)
+    data = _obj_to_data(obj, checker)
     if recordsetid is not None:
         data['recordset_info'] = get_recordset_info(obj, recordsetid)
     return data
@@ -448,6 +454,10 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
+
+    # This function looks at arbitrary related objects so it needs to be able to check read permissions
+    read_checker = table_permissions_checker(collection, agent, "read")
+
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
     dirty: List[FieldChangeInfo] = []
@@ -500,7 +510,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
             if dependent and old_related and old_related.id != rel_obj.id:
                 dependents_to_delete.append(old_related)
             new_related_id = rel_obj.id
-            data[field_name] = obj_to_data(rel_obj)
+            data[field_name] = _obj_to_data(rel_obj, read_checker)
         else:
             raise Exception('bad foreign key field in data')
         if str(old_related_id) != str(new_related_id):
@@ -656,20 +666,28 @@ def parse_uri(uri: str) -> Tuple[str, str]:
     return groups[0], groups[2]
 
 def obj_to_data(obj) -> Dict[str, Any]:
+    "Wrapper for backwards compat w/ other modules that use this function."
+    # TODO: Such functions should be audited for whether they should apply
+    # read permisions enforcement.
+    return _obj_to_data(obj, lambda o: None)
+
+def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
     """Return a (potentially nested) dictionary of the fields of the
     Django model instance 'obj'.
     """
+    perm_checker(obj)
+
     # Get regular and *-to-one fields.
     fields = obj._meta.get_fields()
     if isinstance(obj, get_model('Specifyuser')):
         # block out password field from users table
         fields = [f for f in fields if f.name != 'password']
 
-    data = dict((field.name, field_to_val(obj, field))
+    data = dict((field.name, field_to_val(obj, field, perm_checker))
                 for field in fields
                 if not (field.auto_created or field.one_to_many or field.many_to_many))
     # Get *-to-many fields.
-    data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro))
+    data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro, perm_checker))
                      for ro in obj._meta.get_fields()
                      if ro.one_to_many))
     # Add a meta data field with the resource's URI.
@@ -706,7 +724,7 @@ def obj_to_data(obj) -> Dict[str, Any]:
         data['resolvedItems'] = quantities - unresolvedQuantities
     return data
 
-def to_many_to_data(obj, rel) -> Union[str, List[Dict[str, Any]]]:
+def to_many_to_data(obj, rel, checker: ReadPermChecker) -> Union[str, List[Dict[str, Any]]]:
     """Return the URI or nested data of the 'rel' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
@@ -715,12 +733,12 @@ def to_many_to_data(obj, rel) -> Union[str, List[Dict[str, Any]]]:
     field = parent_model.get_field(field_name)
     if field is not None and field.dependent:
         objs = getattr(obj, field_name)
-        return [obj_to_data(o) for o in objs.all()]
+        return [_obj_to_data(o, checker) for o in objs.all()]
 
     collection_uri = uri_for_model(rel.related_model)
     return collection_uri + '?' + urlencode([(rel.field.name.lower(), str(obj.id))])
 
-def field_to_val(obj, field) -> Any:
+def field_to_val(obj, field, checker: ReadPermChecker) -> Any:
     """Return the value or nested data or URI for the given field which should
     be either a regular field or a *-to-one field.
     """
@@ -728,7 +746,7 @@ def field_to_val(obj, field) -> Any:
         if is_dependent_field(obj, field.name):
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
-            return obj_to_data(related_obj)
+            return _obj_to_data(related_obj, checker)
         related_id = getattr(obj, field.name + '_id')
         if related_id is None: return None
         return uri_for_model(field.related_model, related_id)
@@ -780,7 +798,7 @@ def get_collection(logged_in_collection, model, control_params=GetCollectionForm
     except FieldError as e:
         raise OrderByError(e)
 
-def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
+def objs_to_data(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
@@ -792,7 +810,7 @@ def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     else:
         objs = objs[offset:offset + limit]
 
-    return {'objects': [obj_to_data(o) for o in objs],
+    return {'objects': [_obj_to_data(o, checker) for o in objs],
             'meta': {'limit': limit,
                      'offset': offset,
                      'total_count': total_count}}
