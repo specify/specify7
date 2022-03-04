@@ -8,7 +8,7 @@ from django import http
 from django.db.models.deletion import Collector
 from django.db import router
 
-from specifyweb import permissions
+from specifyweb.permissions import permissions
 
 from .specify_jar import specify_jar
 from . import api, models

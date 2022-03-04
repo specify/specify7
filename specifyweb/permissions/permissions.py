@@ -1,29 +1,13 @@
-from typing import Any, Callable
+from typing import Any, Callable, Tuple, List
 
 import logging
 logger = logging.getLogger(__name__)
 
+from django.db import connection
 from django.core.exceptions import ObjectDoesNotExist
 
-import casbin # type: ignore
-from casbin import persist
+from . import models
 
-model = casbin.Enforcer.new_model(text="""
-[request_definition]
-r = sub, dom, obj, act
-
-[policy_definition]
-p = sub, dom, obj, act, eft
-
-[role_definition]
-g = _, _, _
-
-[policy_effect]
-e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
-
-[matchers]
-m = ((r.sub == p.sub && r.dom == p.dom) || g(r.sub, p.sub, r.dom)) && keyMatch(r.obj, p.obj) && r.act == p.act
-""")
 
 policy = """
 p, abentley, 4, /table/*, read, allow
@@ -46,33 +30,65 @@ g, abentley, groupA, 4
 
 """
 
-class SpAdapter(persist.Adapter):
-    def load_policy(self, model):
-        for line in policy.splitlines():
-            persist.load_policy_line(line, model)
-
-adapter = SpAdapter()
-
-enforcer = casbin.Enforcer(model, adapter)
 
 class AccessDeniedException(Exception):
     pass
 
-def enforce(collection, agent, resources, action):
+def enforce(collection, agent, resources: List[str], action: str) -> None:
     if not resources: return
 
-    try:
-        subject = agent.specifyuser.name
-    except ObjectDoesNotExist:
+    userid = agent.specifyuser_id
+
+    if userid is None:
         raise AccessDeniedException(f"agent {agent} is not a Specify user")
 
-    perm_requests = [(subject, str(collection.id), resource, action) for resource in resources]
-    results = [(r, *enforcer.enforce_ex(*r)) for r in perm_requests]
+    perm_requests = [(collection.id, userid, resource, action) for resource in resources]
+    results = [(r, *enforce_single(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
     denials = [(r, reason) for r, allowed, reason in results if not allowed]
     if denials:
         raise AccessDeniedException(denials)
+
+def enforce_single(collectionid: int , userid: int, resource: str, action: str) -> Tuple[bool, Any]:
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    select *
+    from spuserpolicy
+    where (collection_id = %(collectionid)s or collection_id is null)
+    and (specifyuser_id = %(userid)s or specifyuser_id is null)
+    and %(resource)s like resource
+    and %(action)s like action
+    """, {
+        'collectionid': collectionid,
+        'userid': userid,
+        'resource': resource,
+        'action': action
+    })
+
+    ups = cursor.fetchall()
+
+    cursor.execute("""
+    select *
+    from spuserrole ur
+    join sprole r on r.id = ur.role_id
+    join sprolepolicy rp on rp.role_id = r.id
+    where ur.specifyuser_id = %(userid)s
+    and collection_id = %(collectionid)s
+    and %(resource)s like resource
+    and %(action)s like action
+    """, {
+        'collectionid': collectionid,
+        'userid': userid,
+        'resource': resource,
+        'action': action
+    })
+
+    rps = cursor.fetchall()
+
+    return (bool(ups) or bool(rps)), ups + rps
+
 
 def check_table_permissions(collection, agent, obj, action):
     name = obj.specify_model.name.lower()
