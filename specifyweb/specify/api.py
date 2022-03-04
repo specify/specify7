@@ -16,7 +16,7 @@ from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist, FloatField, DecimalField
 # from django.utils.deprecation import CallableBool
 
-from specifyweb.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
+from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
 from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
