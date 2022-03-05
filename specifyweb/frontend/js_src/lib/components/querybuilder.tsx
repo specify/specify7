@@ -37,6 +37,7 @@ import { MappingView } from './wbplanviewmappercomponents';
 
 /*
  * TODO: Mapping Editor: selected row remove checkmark
+ * TODO: ability to query tree relationships
  * Query Results:
  * TODO: creating record set out of a subset of results
  * TODO: make sure formatters are used in query results

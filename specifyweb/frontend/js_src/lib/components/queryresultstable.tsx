@@ -2,13 +2,19 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
+import { keysToLowerCase } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import { fetchPickList, getPickListItems } from '../picklistmixins';
+import { fetchPickList } from '../picklistmixins';
 import populateForm from '../populateform';
 import type { QueryField } from '../querybuilderutils';
-import { queryFieldsToFieldSpecs, sortTypes } from '../querybuilderutils';
+import {
+  addAuditLogFields,
+  queryFieldsToFieldSpecs,
+  sortTypes,
+  unParseQueryFields,
+} from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import RecordSelector from '../recordselector';
 import type { SpecifyModel } from '../specifymodel';
@@ -81,12 +87,10 @@ function ViewRecords({
   model,
   results,
   selectedRows,
-  idFieldIndex,
 }: {
   readonly model: SpecifyModel;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
-  readonly idFieldIndex: number;
 }): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -94,7 +98,7 @@ function ViewRecords({
     if (!isOpen) return undefined;
     const ids =
       selectedRows.size === 0
-        ? results.map((row) => row[idFieldIndex])
+        ? results.map((row) => row[queryIdField])
         : Array.from(selectedRows);
     const collection = new model.LazyCollection({
       filters: { id__in: ids.join(',') },
@@ -120,7 +124,7 @@ function ViewRecords({
       destructorCalled = true;
       view.remove();
     };
-  }, [model, idFieldIndex, isOpen]);
+  }, [model, isOpen]);
   return (
     <>
       <Button.Simple
@@ -149,7 +153,7 @@ const isScrolledBottom = (scrollable: HTMLElement): boolean =>
 export function QueryResultsTable({
   model,
   label = queryText('results'),
-  idFieldIndex,
+  hasIdField,
   fetchResults,
   totalCount,
   fieldSpecs,
@@ -159,7 +163,7 @@ export function QueryResultsTable({
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
-  readonly idFieldIndex: number | undefined;
+  readonly hasIdField: boolean;
   readonly fetchResults: (
     offset: number
   ) => Promise<RA<RA<string | number | null>>>;
@@ -178,9 +182,10 @@ export function QueryResultsTable({
   >(initialData);
   React.useEffect(() => setResults(initialData), [initialData]);
 
-  const [pickListItems] = useAsyncState(
+  const [pickListsLoaded] = useAsyncState(
     React.useCallback(
       async () =>
+        // Fetch all pick lists so that they are accessible synchronously later
         Promise.all(
           fieldSpecs
             .map((fieldSpec) => fieldSpec.getField()?.getPickList())
@@ -189,18 +194,7 @@ export function QueryResultsTable({
                 ? fetchPickList(pickListName)
                 : undefined
             )
-        ).then((pickLists) =>
-          pickLists.map((pickList) =>
-            typeof pickList === 'object'
-              ? Object.fromEntries(
-                  getPickListItems(pickList).map(({ value, title }) => [
-                    value,
-                    title,
-                  ])
-                )
-              : undefined
-          )
-        ),
+        ).then(() => true),
       [fieldSpecs]
     )
   );
@@ -216,115 +210,110 @@ export function QueryResultsTable({
       <div className="gap-x-2 flex items-center">
         <h3>{`${label}: (${totalCount})`}</h3>
         <div className="flex-1 -ml-2" />
-        {typeof idFieldIndex === 'number' && Array.isArray(results) ? (
+        {hasIdField && Array.isArray(results) ? (
           <ViewRecords
             selectedRows={selectedRows}
             results={results}
             model={model}
-            idFieldIndex={idFieldIndex}
           />
         ) : undefined}
       </div>
-      {typeof results === 'object' &&
-        fieldSpecs.length > 0 &&
-        Array.isArray(pickListItems) && (
-          <div
-            role="table"
-            className={`grid-table overflow-auto max-h-[75vh] border-b
+      {typeof results === 'object' && fieldSpecs.length > 0 && pickListsLoaded && (
+        <div
+          role="table"
+          className={`grid-table overflow-auto max-h-[75vh] border-b
              border-gray-500 auto-rows-min
             ${
-              typeof idFieldIndex === 'number'
+              hasIdField
                 ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
                 : `grid-cols-[repeat(var(--cols),auto)]`
             }`}
-            style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
-            onScroll={
-              isFetching || results.length === totalCount
-                ? undefined
-                : ({ target }): void => {
-                    if (isScrolledBottom(target as HTMLElement)) return;
-                    setIsFetching(true);
-                    fetchResults(results.length)
-                      .then((newResults) =>
-                        setResults([...results, ...newResults])
-                      )
-                      .then(() => setIsFetching(false))
-                      .catch(crash);
-                  }
-            }
-          >
-            <div role="rowgroup">
-              <div role="row">
-                {typeof idFieldIndex === 'number' && (
-                  <>
-                    <TableHeaderCell
-                      key="select-record"
-                      fieldSpec={undefined}
-                      ariaLabel={commonText('selectRecord')}
-                      sortConfig={undefined}
-                      onSortChange={undefined}
-                    />
-                    <TableHeaderCell
-                      key="view-record"
-                      fieldSpec={undefined}
-                      ariaLabel={commonText('viewRecord')}
-                      sortConfig={undefined}
-                      onSortChange={undefined}
-                    />
-                  </>
-                )}
-                {fieldSpecs.map((fieldSpec, index) => (
+          style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
+          onScroll={
+            isFetching || results.length === totalCount
+              ? undefined
+              : ({ target }): void => {
+                  if (isScrolledBottom(target as HTMLElement)) return;
+                  setIsFetching(true);
+                  fetchResults(results.length)
+                    .then((newResults) =>
+                      setResults([...results, ...newResults])
+                    )
+                    .then(() => setIsFetching(false))
+                    .catch(crash);
+                }
+          }
+        >
+          <div role="rowgroup">
+            <div role="row">
+              {hasIdField && (
+                <>
                   <TableHeaderCell
-                    key={index}
-                    fieldSpec={fieldSpec}
-                    sortConfig={sortConfig?.[index]}
-                    onSortChange={
-                      typeof handleSortChange === 'function'
-                        ? (sortType): void =>
-                            handleSortChange?.(index, sortType)
-                        : undefined
-                    }
+                    key="select-record"
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('selectRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
                   />
-                ))}
-              </div>
+                  <TableHeaderCell
+                    key="view-record"
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('viewRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
+                  />
+                </>
+              )}
+              {fieldSpecs.map((fieldSpec, index) => (
+                <TableHeaderCell
+                  key={index}
+                  fieldSpec={fieldSpec}
+                  sortConfig={sortConfig?.[index]}
+                  onSortChange={
+                    typeof handleSortChange === 'function'
+                      ? (sortType): void => handleSortChange?.(index, sortType)
+                      : undefined
+                  }
+                />
+              ))}
             </div>
-            <QueryResults
-              model={model}
-              fieldSpecs={fieldSpecs}
-              idFieldIndex={idFieldIndex}
-              results={results}
-              selectedRows={selectedRows}
-              pickListItems={pickListItems}
-              onSelected={(id, isSelected, isShiftClick): void => {
-                if (typeof idFieldIndex !== 'number') return;
-                const rowIndex = results.findIndex(
-                  (row) => row[idFieldIndex] === id
-                );
-                const ids = (
-                  isShiftClick && typeof lastSelectedRow.current === 'number'
-                    ? Array.from(
-                        {
-                          length:
-                            Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                        },
-                        (_, index) =>
-                          Math.min(lastSelectedRow.current!, rowIndex) + index
-                      )
-                    : [rowIndex]
-                ).map((rowIndex) => results[rowIndex][idFieldIndex] as number);
-                setSelectedRows(
-                  new Set([
-                    ...Array.from(selectedRows).filter(
-                      (id) => isSelected || !ids.includes(id)
-                    ),
-                    ...(isSelected ? ids : []),
-                  ])
-                );
-                lastSelectedRow.current = rowIndex;
-              }}
-            />
           </div>
-        )}
+          <QueryResults
+            model={model}
+            fieldSpecs={fieldSpecs}
+            hasIdField={hasIdField}
+            results={results}
+            selectedRows={selectedRows}
+            onSelected={(id, isSelected, isShiftClick): void => {
+              if (hasIdField) return;
+              const rowIndex = results.findIndex(
+                (row) => row[queryIdField] === id
+              );
+              const ids = (
+                isShiftClick && typeof lastSelectedRow.current === 'number'
+                  ? Array.from(
+                      {
+                        length:
+                          Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                      },
+                      (_, index) =>
+                        Math.min(lastSelectedRow.current!, rowIndex) + index
+                    )
+                  : [rowIndex]
+              ).map((rowIndex) => results[rowIndex][queryIdField] as number);
+              setSelectedRows(
+                new Set([
+                  ...Array.from(selectedRows).filter(
+                    (id) => isSelected || !ids.includes(id)
+                  ),
+                  ...(isSelected ? ids : []),
+                ])
+              );
+              lastSelectedRow.current = rowIndex;
+            }}
+          />
+        </div>
+      )}
       {isFetching && <QueryResultsLoading />}
     </ContainerBase>
   );
@@ -340,6 +329,9 @@ export function QueryResultsLoading(): JSX.Element {
     />
   );
 }
+
+/** Record ID column index in Query Results when not in distinct mode */
+export const queryIdField = 0;
 
 export function QueryResultsWrapper({
   baseTableName,
@@ -369,16 +361,21 @@ export function QueryResultsWrapper({
           method: 'POST',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
-          body: {
+          body: keysToLowerCase({
             ...queryResource.toJSON(),
-            recordsetid: recordSetId,
+            fields: unParseQueryFields(
+              baseTableName,
+              addAuditLogFields(baseTableName, fields),
+              []
+            ),
+            recordSetId,
             limit: 40,
             offset,
-          },
+          }),
         }
       ).then(({ data }) => data.results);
     },
-    [queryResource, recordSetId]
+    [fields, baseTableName, queryResource, recordSetId]
   );
 
   const [payload, setPayload] = React.useState<
@@ -393,21 +390,24 @@ export function QueryResultsWrapper({
     if (queryRunCount === 0) return;
     setPayload(undefined);
 
+    const allFields = addAuditLogFields(baseTableName, fields);
+
     const totalCount = ajax<{ readonly count: number }>(
       '/stored_query/ephemeral/',
       {
         method: 'POST',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
-        body: {
+        body: keysToLowerCase({
           ...queryResource.toJSON(),
-          recordsetid: recordSetId,
-          countonly: true,
-        },
+          fields: unParseQueryFields(baseTableName, allFields, []),
+          recordSetId,
+          countOnly: true,
+        }),
       }
     ).then(({ data }) => data.count);
 
-    const displayedFields = fields.filter((field) => field.isDisplay);
+    const displayedFields = allFields.filter((field) => field.isDisplay);
     const initialData =
       queryResource.get('countOnly') === true || displayedFields.length === 0
         ? undefined
@@ -426,7 +426,14 @@ export function QueryResultsWrapper({
         })
       )
       .catch(crash);
-  }, [baseTableName, fetchResults, queryResource, queryRunCount, recordSetId]);
+  }, [
+    fields,
+    baseTableName,
+    fetchResults,
+    queryResource,
+    queryRunCount,
+    recordSetId,
+  ]);
 
   return typeof payload === 'undefined' ? (
     queryRunCount === 0 ? null : (
@@ -435,9 +442,7 @@ export function QueryResultsWrapper({
   ) : (
     <QueryResultsTable
       model={model}
-      idFieldIndex={
-        queryResource.get('selectDistinct') === true ? undefined : 0
-      }
+      hasIdField={queryResource.get('selectDistinct') !== true}
       fetchResults={fetchResults}
       totalCount={payload.totalCount}
       fieldSpecs={payload.fieldSpecs}

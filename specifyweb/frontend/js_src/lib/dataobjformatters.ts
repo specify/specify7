@@ -1,12 +1,12 @@
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
-import { fieldFormat } from './fieldformat';
+import { contextUnlockedPromise } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
-import { contextUnlockedPromise } from './initialcontext';
+import { fieldFormat, resolveParser } from './uiparse';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -43,7 +43,7 @@ export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise
-  .then(() =>
+  .then(async () =>
     ajax<Document>('/context/app.resource?name=DataObjFormatters', {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/xml' },
@@ -136,16 +136,20 @@ export async function format(
         resource.rgetPromise(fieldName) as Promise<
           string | SpecifyResource<AnySchema> | undefined
         >
-      ).then(async (value) =>
-        formatter.length > 0 && typeof value === 'object'
-          ? (await format(value, formatter)) ?? ''
-          : fieldFormat(
-              defined(
-                resource.specifyModel.getField(fieldName) as LiteralField
-              ),
-              value as string | undefined
-            )
-      );
+      ).then(async (value) => {
+        if (formatter.length > 0 && typeof value === 'object')
+          return (await format(value, formatter)) ?? '';
+        else {
+          const field = defined(
+            resource.specifyModel.getField(fieldName) as LiteralField
+          );
+          return fieldFormat(
+            field,
+            defined(resolveParser(field)),
+            value as string | undefined
+          );
+        }
+      });
       return `${separator}${
         typeof fieldFormatter === 'string' && fieldFormatter === ''
           ? ''

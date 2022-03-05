@@ -1,206 +1,111 @@
 import React from 'react';
 
-import type { SpAuditLog, Tables } from '../datamodel';
+import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
-import { fieldFormat } from '../fieldformat';
 import type { SpecifyResource } from '../legacytypes';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
-import type { LiteralField, Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
-import { isResourceOfType } from '../specifymodel';
-import type { IR, RA } from '../types';
-import { defined } from '../types';
+import type { RA } from '../types';
+import { fieldFormat } from '../uiparse';
 import { Input, Link } from './basic';
-import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
+import { queryIdField } from './queryresultstable';
 
-type FieldToSet = {
-  readonly name: 'parentTableNum' | 'tableNum';
-  readonly index: number;
-};
+const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
+  fieldSpecs.some(({ table }) =>
+    ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
+  );
 
-class AuditRecordFormatter {
-  private readonly fieldSpecs: RA<QueryFieldSpec>;
-
-  public readonly active: boolean;
-
-  private readonly fieldsToSet: RA<FieldToSet>;
-
-  public constructor(fieldSpecs: RA<QueryFieldSpec>) {
-    this.fieldSpecs = fieldSpecs;
-    this.active = this.needsFormatting();
-    this.fieldsToSet = this.buildFieldsToSet();
-  }
-
-  private buildFieldsToSet(): RA<FieldToSet> {
-    return this.fieldSpecs
-      .map((fieldSpec, index) => ({
-        name:
-          fieldSpec.table.name === 'SpAuditLog' &&
-          ['parentTableNum', 'tableNum'].includes(
-            fieldSpec.getField()?.name ?? ''
-          )
-            ? fieldSpec.getField()?.name
-            : undefined,
-        index,
-      }))
-      .filter(
-        (fieldToSet): fieldToSet is FieldToSet =>
-          typeof fieldToSet.name === 'string'
-      );
-  }
-
-  private hasField<TABLE_NAME extends 'SpAuditLog' | 'SpAuditLogField'>(
-    tableName: TABLE_NAME,
-    fieldName: keyof Tables[TABLE_NAME]['fields']
-  ): boolean {
-    return this.fieldSpecs.some(
-      (fieldSpec) =>
-        tableName === fieldSpec.table.name &&
-        fieldName === fieldSpec.getField()?.name
-    );
-  }
-
-  private needsFormatting(): boolean {
-    return this.fieldSpecs.some(({ table }) =>
-      ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
-    );
-  }
-
-  public hasRequiredFields(): boolean {
-    return (
-      (!this.hasField('SpAuditLog', 'parentRecordId') ||
-        this.hasField('SpAuditLog', 'parentTableNum')) &&
-      (!this.hasField('SpAuditLog', 'recordId') ||
-        this.hasField('SpAuditLog', 'tableNum')) &&
-      ((!this.hasField('SpAuditLogField', 'oldValue') &&
-        !this.hasField('SpAuditLogField', 'newValue')) ||
-        this.hasField('SpAuditLogField', 'fieldName'))
-    );
-  }
-
-  public setRequiredResourceFields(
-    resource: SpecifyResource<SpAuditLog>,
-    resultRow: RA<string | number | null>
-  ): void {
-    if (isResourceOfType(resource, 'SpAuditLog'))
-      this.fieldsToSet
-        .filter(({ name }) => typeof resource.get(name) !== 'number')
-        .forEach(({ name, index }) =>
-          resource.set(name, resultRow[index + 1] as number)
-        );
-  }
-
-  public async format(
-    field: LiteralField | Relationship,
-    result: RA<string | number | null>,
-    resource: SpecifyResource<SpAuditLog>,
-    value: string
-  ): Promise<string> {
-    const auditingModel = this.getAuditLogForeignKeyModel(
-      field.name as keyof SpAuditLog['fields'],
-      result,
-      resource
-    );
-    if (typeof auditingModel === 'undefined') return value;
-
-    if (field.name === 'fieldName' && !field.isRelationship)
-      return auditingModel.getField(value)?.label ?? value;
-    else {
-      const collection = new auditingModel.LazyCollection({
-        filters: { id: Number(value) },
-      });
-      return collection
-        .fetchPromise({ limit: 1 })
-        .then(async ({ models }) =>
-          format(models[0]).then(
-            (string) => string ?? `${auditingModel.name}:{${value}}`
-          )
-        );
-    }
-  }
-
-  private getAuditLogForeignKeyModel(
-    fieldName: keyof SpAuditLog['fields'],
-    result: RA<string | number | null>,
-    resource: SpecifyResource<SpAuditLog>
-  ): SpecifyModel | undefined {
-    if (
-      [
-        'recordId',
-        'parentRecordId',
-        'tableNum',
-        'parentTableNum',
-        'fieldName',
-      ].includes(fieldName)
-    ) {
-      const tableNumber = fieldName.startsWith('parent')
-        ? resource.get('parentTableNum')
-        : resource.get('tableNum');
-      return getModelById(tableNumber ?? -1);
-    } else if (['newValue', 'oldValue'].includes(fieldName)) {
-      const auditedField = this.getAuditedField(result, resource);
-      if (auditedField?.isRelationship === true)
-        return auditedField.relatedModel;
-    }
-    return undefined;
-  }
-
-  /** Get definition of a field that the audit record describes */
-  private getAuditedField(
-    result: RA<string | number | null>,
-    resource: SpecifyResource<SpAuditLog>
-  ): LiteralField | Relationship | undefined {
-    const auditedFieldName =
-      result[
-        this.fieldSpecs.findIndex(
-          (fieldSpec) => fieldSpec.getField()?.name === 'fieldName'
-        ) ?? -1
-      ]?.toString();
-    if (typeof auditedFieldName === 'undefined') return undefined;
-    const tableNumber = resource.get('tableNum');
-    const model = getModelById(tableNumber);
-    return model?.getField(auditedFieldName);
-  }
+async function resourceToLink(
+  model: SpecifyModel,
+  id: number
+): Promise<JSX.Element | string> {
+  const resource = new model.Resource({ id });
+  return resource
+    .fetchPromise()
+    .then(async (resource) => format(resource))
+    .then((string) => (
+      <Link.NewTab href={resource.viewUrl()}>{string ?? id}</Link.NewTab>
+    ))
+    .catch((error) => {
+      if (error.status === Http.NOT_FOUND) return id.toString();
+      else throw error;
+    });
 }
 
-const className = `border-gray-500 border-r bg-[color:var(--bg)] first:border-l
-  p-1`;
+function getAuditRecordFormatter(
+  fieldSpecs: RA<QueryFieldSpec>,
+  hasIdField: boolean
+):
+  | undefined
+  | ((
+      resultRow: RA<string | number | null>
+    ) => Promise<RA<string | JSX.Element>>) {
+  if (!needAuditLogFormatting(fieldSpecs)) return undefined;
+  // Assumes queryIdField is 0
+  const fields = [
+    // Offset the indexes for the ID field
+    ...(hasIdField ? [undefined] : []),
+    ...fieldSpecs
+      .map((fieldSpec) => fieldSpec.getField())
+      .map((field) => (field?.isRelationship === false ? field : undefined)),
+  ];
+
+  const modelId = fields.findIndex((field) => field?.name === 'tableNum');
+  if (modelId === -1) return undefined;
+  const model = getModelById(modelId);
+
+  const parentModelId = fields.findIndex(
+    (field) => field?.name === 'parentTableNum'
+  );
+  if (parentModelId === -1) return undefined;
+  const parentModel = getModelById(parentModelId);
+
+  return async (resultRow): Promise<RA<string | JSX.Element>> =>
+    Promise.all(
+      resultRow.map(async (value, index) => {
+        if (value === null || value === '') return '';
+        const stringValue = value.toString();
+        if (fields[index]?.name === 'fieldName')
+          return model.getField(stringValue)?.label ?? stringValue;
+        else if (fields[index]?.name === 'recordId')
+          return resourceToLink(model, Number(value));
+        else if (fields[index]?.name === 'parentRecordId')
+          return resourceToLink(parentModel, Number(value));
+        else return stringValue;
+      })
+    );
+}
+
+const cellClassName = `border-gray-500 border-r bg-[color:var(--bg)] p-1
+  first:border-l`;
 
 function QueryResultCell({
   fieldSpec,
   value,
-  getFormattedValue,
-  pickListItems,
 }: {
-  readonly fieldSpec: QueryFieldSpec;
-  readonly value: string | number | null;
-  readonly getFormattedValue?: () => Promise<string>;
-  readonly pickListItems: IR<string> | undefined;
+  readonly fieldSpec: QueryFieldSpec | undefined;
+  readonly value: JSX.Element | string | number | null;
 }): JSX.Element {
-  const field = fieldSpec.getField();
+  const field = fieldSpec?.getField();
 
-  const [formatted, setFormatted] = React.useState<string | number | undefined>(
+  const [formatted] = React.useState<string | number | undefined | JSX.Element>(
     () =>
-      typeof pickListItems === 'object'
-        ? pickListItems[value as string] ?? value
-        : typeof field === 'object' &&
-          !field.isRelationship &&
-          (typeof fieldSpec.datePart === 'undefined' ||
-            fieldSpec.datePart === 'fullDate')
-        ? fieldFormat(field, (value ?? '').toString())
+      typeof value !== 'object' &&
+      typeof field === 'object' &&
+      !field.isRelationship &&
+      typeof fieldSpec === 'object'
+        ? fieldFormat(field, fieldSpec.parser, (value ?? '').toString())
         : value ?? ''
   );
 
-  React.useEffect(
-    () => void getFormattedValue?.().then(setFormatted).catch(crash),
-    [value]
-  );
-
   return (
-    <span role="cell" className={className}>
-      {formatted}
+    <span role="cell" className={cellClassName}>
+      {typeof fieldSpec === 'undefined' || typeof value === 'object'
+        ? value
+        : formatted}
     </span>
   );
 }
@@ -208,82 +113,50 @@ function QueryResultCell({
 function QueryResult({
   model,
   fieldSpecs,
-  idFieldIndex,
+  hasIdField,
   result,
-  forceResourceLoad,
-  auditRecordFormatter,
+  recordFormatter,
   isSelected,
   onSelected: handleSelected,
-  pickListItems,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly idFieldIndex: number | undefined;
+  readonly hasIdField: boolean;
   readonly result: RA<string | number | null>;
-  readonly forceResourceLoad: boolean;
-  readonly auditRecordFormatter: AuditRecordFormatter;
+  readonly recordFormatter?: (
+    result: RA<string | number | null>
+  ) => Promise<RA<string | JSX.Element>>;
   readonly isSelected: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
-  readonly pickListItems: RA<IR<string> | undefined>;
 }): JSX.Element {
-  const [resource, setResource] = React.useState<
+  const [resource] = React.useState<
     SpecifyResource<AnySchema> | undefined | false
-  >(
-    forceResourceLoad
-      ? undefined
-      : (): SpecifyResource<AnySchema> | false => {
-          if (typeof idFieldIndex === 'undefined') return false;
-          const resource = new model.Resource({
-            id: result[idFieldIndex],
-          });
-          auditRecordFormatter.setRequiredResourceFields(
-            resource as SpecifyResource<SpAuditLog>,
-            result
-          );
-          return resource;
-        }
+  >((): SpecifyResource<AnySchema> | false => {
+    if (typeof hasIdField === 'undefined') return false;
+    return new model.Resource({
+      id: result[queryIdField],
+    });
+  });
+  const [formattedValues] = useAsyncState(
+    React.useCallback(
+      () => recordFormatter?.(result),
+      [result, recordFormatter]
+    )
   );
 
-  React.useEffect(() => {
-    if (
-      typeof resource !== 'undefined' ||
-      !forceResourceLoad ||
-      typeof idFieldIndex === 'undefined'
-    )
-      return;
-
-    const collection = new model.LazyCollection({
-      filters: { id: result[idFieldIndex] as number },
-    });
-    collection
-      .fetchPromise({ limit: 1 })
-      .then(({ models }) => setResource(models[0]), crash);
-  }, [result, resource, forceResourceLoad, idFieldIndex, model]);
-
-  const cells = result
-    .filter((_value, index) => index !== idFieldIndex)
-    .map((value, index) => (
+  const cells = result.map((value, index) =>
+    index === queryIdField ? undefined : (
       <QueryResultCell
         key={index}
-        value={value}
-        fieldSpec={fieldSpecs[index]}
-        getFormattedValue={
-          typeof pickListItems[index] === 'undefined' &&
-          (value ?? '').toString().length > 0 &&
-          auditRecordFormatter.active &&
-          typeof resource === 'object'
-            ? async (): Promise<string> =>
-                auditRecordFormatter.format(
-                  defined(fieldSpecs[index].getField()),
-                  result,
-                  resource as SpecifyResource<SpAuditLog>,
-                  (value ?? '').toString()
-                )
+        value={formattedValues?.[index] ?? value}
+        fieldSpec={
+          typeof formattedValues?.[index] === 'undefined'
+            ? fieldSpecs[index]
             : undefined
         }
-        pickListItems={pickListItems[index]}
       />
-    ));
+    )
+  );
 
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
   return (
@@ -302,7 +175,7 @@ function QueryResult({
       }
     >
       {typeof handleSelected === 'function' && (
-        <span role="cell" className={`${className} sticky`}>
+        <span role="cell" className={`${cellClassName} sticky`}>
           <Input
             type="checkbox"
             checked={isSelected}
@@ -314,7 +187,7 @@ function QueryResult({
         </span>
       )}
       {typeof viewUrl === 'string' && (
-        <span role="cell" className={`${className} sticky`}>
+        <span role="cell" className={`${cellClassName} sticky`}>
           <Link.NewTab
             className="print:hidden"
             href={viewUrl}
@@ -331,15 +204,14 @@ function QueryResult({
 export function QueryResults({
   model,
   fieldSpecs,
-  idFieldIndex,
+  hasIdField,
   results,
   selectedRows,
   onSelected: handleSelected,
-  pickListItems,
 }: {
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly idFieldIndex: number | undefined;
+  readonly hasIdField: boolean;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
   readonly onSelected?: (
@@ -347,12 +219,8 @@ export function QueryResults({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
-  readonly pickListItems: RA<IR<string> | undefined>;
 }): JSX.Element {
-  const auditRecordFormatter = new AuditRecordFormatter(fieldSpecs);
-  const forceResourceLoad =
-    auditRecordFormatter.active && !auditRecordFormatter.hasRequiredFields();
-
+  const recordFormatter = getAuditRecordFormatter(fieldSpecs, hasIdField);
   return (
     <div role="rowgroup">
       {results.map((result, index) => (
@@ -360,26 +228,23 @@ export function QueryResults({
           key={index}
           model={model}
           fieldSpecs={fieldSpecs}
-          idFieldIndex={idFieldIndex}
+          hasIdField={hasIdField}
           result={result}
-          forceResourceLoad={forceResourceLoad}
-          auditRecordFormatter={auditRecordFormatter}
+          recordFormatter={recordFormatter}
           isSelected={
-            typeof idFieldIndex === 'number' &&
-            selectedRows.has(results[index][idFieldIndex] as number)
+            hasIdField &&
+            selectedRows.has(results[index][queryIdField] as number)
           }
           onSelected={
-            typeof handleSelected === 'function' &&
-            typeof idFieldIndex === 'number'
+            typeof handleSelected === 'function' && hasIdField
               ? (isSelected, isShiftClick): void =>
                   handleSelected(
-                    result[idFieldIndex] as number,
+                    result[queryIdField] as number,
                     isSelected,
                     isShiftClick
                   )
               : undefined
           }
-          pickListItems={pickListItems}
         />
       ))}
     </div>

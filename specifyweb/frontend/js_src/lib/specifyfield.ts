@@ -174,7 +174,9 @@ abstract class FieldBase {
 
   // Returns the UIFormatter for the field specified in the schema config.
   public getUiFormatter(): UiFormatter | undefined {
-    return uiFormatters[this.getFormat() ?? ''];
+    return this.isRelationship
+      ? undefined
+      : uiFormatters[this.getFormat() ?? ''];
   }
 
   /*

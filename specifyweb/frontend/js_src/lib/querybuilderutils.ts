@@ -37,6 +37,7 @@ export type QueryField = {
   }>;
 };
 
+/** Convert SpQueryField to internal QueryField representation */
 export function parseQueryFields(
   queryFields: RA<SerializedResource<SpQueryField>>
 ): RA<QueryField> {
@@ -96,6 +97,64 @@ export const queryFieldsToFieldSpecs = (
       QueryFieldSpec.fromPath([baseTableName, ...field.mappingPath]),
     ]);
 
+const auditLogMappingPaths = [
+  ['parentRecordId'],
+  ['parentTableNum'],
+  ['recordId'],
+  ['tableNum'],
+  ['fields', 'oldValue'],
+  ['fields', 'newValue'],
+  ['fields', 'fieldName'],
+];
+
+/** Add audit log fields required to format audit log results (if missing) */
+export const addAuditLogFields = (
+  baseTableName: keyof Tables,
+  fields: RA<QueryField>
+): RA<QueryField> =>
+  baseTableName === 'SpAuditLog'
+    ? [
+        ...fields.map((field) => ({
+          ...field,
+          // Force display audit log fields
+          isDisplay:
+            field.isDisplay ||
+            auditLogMappingPaths.some(
+              (mappingPath) =>
+                mappingPathToString(field.mappingPath) ===
+                mappingPathToString(mappingPath)
+            ),
+        })),
+        // Add missing audit log fields
+        ...auditLogMappingPaths
+          .filter((mappingPath) =>
+            fields.every(
+              (field) =>
+                mappingPathToString(field.mappingPath) !==
+                mappingPathToString(mappingPath)
+            )
+          )
+          .map(
+            (mappingPath) =>
+              ({
+                id: 0,
+                mappingPath,
+                sortType: undefined,
+                isDisplay: true,
+                parser: undefined,
+                filters: [
+                  {
+                    type: 'any',
+                    startValue: '',
+                    isNot: false,
+                  },
+                ],
+              } as const)
+          ),
+      ]
+    : fields;
+
+/** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
   fields: RA<QueryField>,

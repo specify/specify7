@@ -436,7 +436,7 @@ export function showResource(
           // @ts-expect-error Non-standard property
           reloadResource.recordsetid = resource.recordsetid;
           reloadResource
-            .fetch()
+            .fetchPromise()
             .then(() => showResource(reloadResource, recordSet));
         }
       }

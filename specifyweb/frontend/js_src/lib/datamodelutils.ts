@@ -226,3 +226,17 @@ function serializeModel<SCHEMA extends AnySchema>(
     })
   ) as SerializedResource<SCHEMA>;
 }
+
+export const keysToLowerCase = <OBJECT extends IR<unknown>>(
+  resource: OBJECT
+): KeysToLowerCase<OBJECT> =>
+  Object.fromEntries(
+    Object.entries(resource).map(([key, value]) => [
+      key.toLowerCase(),
+      Array.isArray(value)
+        ? value.map(keysToLowerCase)
+        : typeof value === 'object' && value !== null
+        ? keysToLowerCase(value as IR<unknown>)
+        : value,
+    ])
+  ) as unknown as KeysToLowerCase<OBJECT>;

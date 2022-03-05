@@ -100,7 +100,7 @@ export default UiPlugin.extend(
       }
 
       Promise.all([
-        this.user.fetch(),
+        this.user.fetchPromise(),
         this.allCollections.fetchPromise({ limit: 0 }),
       ]).then(() => {
         this.el.textContent = adminText('collections');

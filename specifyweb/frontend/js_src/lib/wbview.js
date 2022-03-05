@@ -54,10 +54,10 @@ import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
 import {defined, filterArray} from './types';
-import {fetchPickLists} from './picklists';
 import {crash} from './components/errorboundary';
 import {getTreeDefinitionItems} from './treedefinitions';
 import {serializeResource} from './datamodelutils';
+import {fetchPickList} from './picklistmixins';
 
 const metaKeys = [
   'isNew',
@@ -236,9 +236,8 @@ const WBView = Backbone.View.extend({
     if (this.refreshInitiatedBy && this.refreshInitiatorAborted)
       this.operationAbortedMessage();
 
-    const pickListsPromise = fetchPickLists();
     const initDataModelIntegration = () =>
-      pickListsPromise.then((pickLists) =>
+      this.fetchPickLists().then((pickLists) =>
         this.hot.batch(() => {
           if (!this.isUploaded && !(this.mappings?.lines.length > 0)) {
             $(`<div>
@@ -623,38 +622,38 @@ const WBView = Backbone.View.extend({
           : { placeholder: this.mappings.defaultValues[index] },
     });
   },
-  identifyPickLists(pickListDefinitions) {
-    if (!this.mappings) return;
-    const pickLists = Object.fromEntries(
-      filterArray(
-        this.mappings.tableNames
-          .map((tableName, index) => ({
-            tableName,
-            fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
-            headerName: this.mappings.lines[index].headerName,
-          }))
-          .map(({ tableName, fieldName, headerName }) => {
-            const pickList = getModel(tableName)
-              ?.getField(fieldName)
-              ?.getPickList();
-            const definition =
-              typeof pickList === 'string'
-                ? pickListDefinitions.find(
-                    (definition) => definition.get('name') === pickList
-                  )
-                : undefined;
-            if (typeof definition === 'undefined') return undefined;
-            const serialized = serializeResource(definition);
-            return {
-              physicalCol: this.dataset.columns.indexOf(headerName),
-              pickList: {
-                readOnly: serialized.readOnly,
-                items: serialized.pickListItems.map(({ title }) => title),
-              },
-            };
-          })
-      ).map(Object.values)
+  async fetchPickLists(){
+    if (!this.mappings) return [];
+    return Promise.all(
+      this.mappings.tableNames
+        .map((tableName, index) => ({
+          tableName,
+          fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
+          headerName: this.mappings.lines[index].headerName,
+        }))
+        .map(async ({ tableName, fieldName, headerName }) => {
+          const pickList = getModel(tableName)
+            ?.getField(fieldName)
+            ?.getPickList();
+          const definition =
+            typeof pickList === 'string'
+              ? await fetchPickList(pickList)
+              : undefined;
+          if (typeof definition === 'undefined') return undefined;
+          const serialized = serializeResource(definition);
+          return {
+            physicalCol: this.dataset.columns.indexOf(headerName),
+            pickList: {
+              readOnly: serialized.readOnly,
+              items: serialized.pickListItems.map(({ title }) => title),
+            },
+          };
+        })
+    ).then((items) =>
+      Object.fromEntries(filterArray(items).map(Object.values))
     );
+  },
+  identifyPickLists(pickLists) {
     this.hot.updateSettings({
       cells: (_physicalRow, physicalCol, _property) =>
         physicalCol in pickLists

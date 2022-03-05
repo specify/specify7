@@ -1,7 +1,10 @@
 import { error } from './assert';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
+import commonText from './localization/common';
 import formsText from './localization/forms';
+import queryText from './localization/query';
+import { getPickList, getPickListItems } from './picklistmixins';
 import type {
   JavaType,
   LiteralField,
@@ -12,7 +15,7 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
-import { mappedFind } from './wbplanviewhelper';
+import { mappedFind, omit } from './wbplanviewhelper';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -51,8 +54,10 @@ export type Parser = Partial<{
   readonly formatters: RA<typeof formatter[string]>;
   // Validate the value
   readonly validators: RA<typeof validators[string]>;
-  // Format the value after validating it
+  // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
+  // Format the value for printing
+  readonly printFormatter: (value: unknown) => string;
   readonly required: boolean;
   // Default value
   readonly value: string;
@@ -71,6 +76,12 @@ export const parsers: RR<
     title: formsText('illegalBool'),
     formatters: [formatter.toLowerCase],
     parser: stringGuard((value) => ['yes', 'true'].includes(value)),
+    printFormatter: (value) =>
+      typeof value === 'undefined'
+        ? ''
+        : Boolean(value)
+        ? queryText('yes')
+        : commonText('no'),
   },
 
   'java.lang.Byte': {
@@ -321,6 +332,31 @@ export type InvalidParseResult = {
   readonly reason: string;
 };
 
+/** Modify the parser to be able to parse multiple values separated by commas */
+export function pluralizeParser(rawParser: Parser): Parser {
+  const { minLength, maxLength, ...parser } = rawParser;
+  if (typeof parser.pattern === 'object') {
+    // If a pattern is set, modify it to allow for comma separators
+    const pattern = parser.pattern
+      .toString()
+      .replaceAll(/^\/\^\(?|\)?\$\/$/g, '');
+    // Pattern with whitespace
+    const escaped = `\\s*(?:${pattern})\\s*`;
+    return {
+      ...parser,
+      pattern: new RegExp(`|${escaped}(?:,${escaped})*`),
+    };
+  } else
+    return {
+      ...parser,
+      pattern: new RegExp(
+        `^.{${minLength ?? 0},${
+          typeof maxLength === 'number' ? maxLength : ''
+        }$`
+      ),
+    };
+}
+
 export function parseValue(
   parser: Parser,
   input: HTMLInputElement | undefined,
@@ -369,27 +405,51 @@ export function parseValue(
       };
 }
 
-/** Modify the parser to be able to parse multiple values separated by commas */
-export function pluralizeParser(rawParser: Parser): Parser {
-  const { minLength, maxLength, ...parser } = rawParser;
-  if (typeof parser.pattern === 'object') {
-    // If a pattern is set, modify it to allow for comma separators
-    const pattern = parser.pattern
-      .toString()
-      .replaceAll(/^\/\^\(?|\)?\$\/$/g, '');
-    // Pattern with whitespace
-    const escaped = `\\s*(?:${pattern})\\s*`;
-    return {
-      ...parser,
-      pattern: new RegExp(`|${escaped}(?:,${escaped})*`),
-    };
-  } else
-    return {
-      ...parser,
-      pattern: new RegExp(
-        `^.{${minLength ?? 0},${
-          typeof maxLength === 'number' ? maxLength : ''
-        }$`
-      ),
-    };
+/**
+ * Format value for output
+ *
+ * @remarks
+ * Parses the value
+ * Formats it
+ * Runs UI formatter if needed
+ * Finds pickList item if available
+ */
+export function fieldFormat(
+  field: LiteralField,
+  parser: Parser,
+  value: string | undefined
+): string {
+  // Find Pick List Item Title
+  const pickListName = field.getPickList();
+  if (typeof pickListName === 'string') {
+    const pickList = getPickList(pickListName);
+    if (typeof pickList === 'object') {
+      const items = getPickListItems(pickList);
+      const item = items.find((item) => item.value === value);
+      if (typeof item === 'object') return item.title;
+    }
+  }
+
+  const resolvedParser = parser ?? resolveParser(field);
+
+  if (typeof resolvedParser === 'object') {
+    const parseResults = parseValue(
+      omit(resolvedParser, ['required']),
+      undefined,
+      value ?? ''
+    );
+    if (parseResults.isValid)
+      return (
+        resolvedParser.printFormatter?.(parseResults.parsed) ??
+        (parseResults.parsed as string)
+      );
+    else
+      console.error('Failed to parse value for field', {
+        field,
+        resolvedParser,
+        parseResults,
+      });
+  } else console.error('Failed to resolve parsed for field', { field });
+
+  return value ?? '';
 }

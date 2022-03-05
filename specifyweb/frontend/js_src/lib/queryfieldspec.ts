@@ -1,11 +1,13 @@
 import type { MappingPath } from './components/wbplanviewmapper';
-import type { SpQueryField, Tables } from './datamodel';
+import type { SpQueryField } from './datamodel';
 import { getModel, getModelById } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
+import type { Parser } from './uiparse';
+import { resolveParser } from './uiparse';
 import { capitalize, toLowerCase } from './wbplanviewhelper';
 import {
   anyTreeRank,
@@ -52,8 +54,9 @@ export class QueryFieldSpec {
 
   public datePart: DatePart | undefined = undefined;
 
-  public treeRank: Readonly<[rankName: string, fieldName: string]> | undefined =
-    undefined;
+  public treeRank: string | undefined = undefined;
+
+  public parser: Parser = {};
 
   public constructor(baseTable: SpecifyModel) {
     this.baseTable = baseTable;
@@ -64,15 +67,21 @@ export class QueryFieldSpec {
     SpQueryField['fields'],
     'tableList' | 'stringId' | 'fieldName' | 'isRelFld'
   > {
-    const { tableList, tableName, fieldName } = this.makeStringId(
-      this.makeTableList()
-    );
+    const fieldName = filterArray([
+      this.treeRank,
+      `${this.getField()?.name ?? ''}${
+        typeof this.datePart === 'string' && this.datePart !== 'fullDate'
+          ? `Numeric${capitalize(this.datePart)}`
+          : ''
+      }`,
+    ]).join(' ');
+    const tableList = this.makeTableList();
 
     return {
       tableList,
-      stringId: [tableList, tableName, fieldName].join('.'),
+      stringId: [tableList, toLowerCase(this.table.name), fieldName].join('.'),
       fieldName,
-      isRelFld: this.isRelationship(),
+      isRelFld: this.getField()?.isRelationship === true,
     };
   }
 
@@ -83,28 +92,30 @@ export class QueryFieldSpec {
   public toMappingPath(): MappingPath {
     let path = filterArray(
       this.joinPath.flatMap((field) => [
-        // Handle Taxon->Name
-        isTreeModel(field.model.name) && !Array.isArray(this.treeRank)
-          ? formatTreeRank(anyTreeRank)
-          : undefined,
         field.name,
         field.isRelationship && relationshipIsToMany(field)
           ? formatToManyIndex(1)
           : undefined,
       ])
     );
-    if (Array.isArray(this.treeRank)) {
-      const [rankName, fieldName] = this.treeRank;
-      path = [...path, formatTreeRank(rankName), fieldName];
-    } else if (
-      this.joinPath.slice(-1)[0]?.isRelationship ||
-      this.joinPath.length === 0
-    )
-      // Handle Locality->Geography
-      path = isTreeModel(this.table.name)
-        ? [...path, formatTreeRank(anyTreeRank), formattedEntry]
-        : [...path, formattedEntry];
-    else if (this.joinPath.slice(-1)[0]?.isTemporal())
+
+    /*
+     * Replace Taxon with Taxon->(formatted)
+     * Replace (empty) with (formatted)
+     */
+    if (this.getField()?.isRelationship === true || this.joinPath.length === 0)
+      path = [...path, formattedEntry];
+
+    // Insert rank name (or anyRank) into the path
+    if (typeof this.treeRank === 'string')
+      path = [
+        ...path.slice(0, -1),
+        formatTreeRank(this.treeRank),
+        path.slice(-1)[0],
+      ];
+
+    // Format date field
+    if (this.getField()?.isTemporal() === true)
       path = [
         ...path.slice(0, -1),
         formatPartialField(
@@ -116,54 +127,17 @@ export class QueryFieldSpec {
     return path;
   }
 
-  private isRelationship(): boolean {
-    return (
-      typeof this.treeRank === 'undefined' &&
-      this.getField()?.isRelationship === true
-    );
-  }
-
   private makeTableList(): string {
-    const path = (
-      Array.isArray(this.treeRank) ||
-      this.joinPath.length === 0 ||
-      this.isRelationship()
-        ? this.joinPath
-        : this.joinPath.slice(0, -1)
-    ) as RA<Relationship>;
-
-    const rest = path.map((field) => {
-      const relatedModel = field.relatedModel;
-      return relatedModel.name.toLowerCase() === field.name.toLowerCase()
-        ? relatedModel.tableId.toString()
-        : `${relatedModel.tableId}-${field.name.toLowerCase()}`;
-    });
+    const rest = filterArray(
+      this.joinPath.map((field) =>
+        field.isRelationship
+          ? field.relatedModel.name.toLowerCase() === field.name.toLowerCase()
+            ? field.relatedModel.tableId.toString()
+            : `${field.relatedModel.tableId}-${field.name.toLowerCase()}`
+          : undefined
+      )
+    );
     return [this.baseTable.tableId, ...rest].join(',');
-  }
-
-  private makeStringId(tableList: string): {
-    readonly tableList: string;
-    readonly tableName: Lowercase<keyof Tables>;
-    readonly fieldName: string;
-  } {
-    let fieldName = Array.isArray(this.treeRank)
-      ? this.treeRank[0] === anyTreeRank
-        ? this.treeRank[1] === formattedEntry
-          ? ''
-          : this.treeRank[1]
-        : this.treeRank[1] === formattedEntry
-        ? this.treeRank[0]
-        : this.treeRank.join(' ')
-      : this.joinPath.length > 0
-      ? defined(this.getField()).name
-      : '';
-    if (typeof this.datePart === 'string' && this.datePart !== 'fullDate')
-      fieldName += `Numeric${capitalize(this.datePart)}`;
-    return {
-      tableList,
-      tableName: toLowerCase(this.table.name),
-      fieldName,
-    };
   }
 
   public static fromPath(pathIn: RA<string>): QueryFieldSpec {
@@ -174,9 +148,6 @@ export class QueryFieldSpec {
     const joinPath: (LiteralField | Relationship)[] = [];
     let node = rootTable;
     path.every((rawFieldName, index) => {
-      if (rawFieldName === formattedEntry) return false;
-      else if (rawFieldName === anyTreeRank) return true;
-
       const [fieldName, datePart] =
         index + 1 === path.length && valueIsPartialField(rawFieldName)
           ? parsePartialField<DatePart>(rawFieldName)
@@ -185,11 +156,8 @@ export class QueryFieldSpec {
       if (fieldName === formattedEntry) return false;
       else if (valueIsToManyIndex(fieldName)) return true;
       else if (valueIsTreeRank(fieldName)) {
-        fieldSpec.treeRank = [
-          getNameFromTreeRankName(fieldName),
-          defined(path[index + 1]),
-        ];
-        return false;
+        fieldSpec.treeRank = getNameFromTreeRankName(fieldName);
+        return true;
       }
       const field = defined(node.getField(fieldName));
 
@@ -204,6 +172,13 @@ export class QueryFieldSpec {
 
     fieldSpec.joinPath = joinPath;
     fieldSpec.table = node;
+
+    const field = fieldSpec.getField();
+    fieldSpec.parser =
+      field?.isRelationship === false
+        ? resolveParser(field, { datePart: fieldSpec.datePart }) ?? {}
+        : {};
+
     return fieldSpec;
   }
 
@@ -219,17 +194,17 @@ export class QueryFieldSpec {
 
     const baseTable = getModelById(Number.parseInt(baseTableId));
 
-    let node = baseTable;
+    let model = baseTable;
     const joinPath = path.map((element) => {
       const [tableId, fieldName] = element.split('-');
       const table = getModelById(Number.parseInt(tableId));
-      const field = defined(node.getField(fieldName ?? table.name));
-      node = table;
+      const field = defined(model.getField(fieldName ?? table.name));
+      model = table;
       return field;
     });
 
     const { fieldName, datePart } = extractDatePart(fullFieldName);
-    const field = node.getField(fieldName);
+    const field = model.getField(fieldName);
 
     const fieldSpec = new QueryFieldSpec(baseTable);
     fieldSpec.joinPath =
@@ -237,24 +212,47 @@ export class QueryFieldSpec {
     fieldSpec.table =
       typeof field === 'object' && field.isRelationship
         ? field.relatedModel
-        : node;
-    if (typeof field === 'undefined') {
+        : model;
+
+    if (isTreeModel(fieldSpec.table.name)) {
       /*
-       * This is really ugly
-       * Field names and rank names are represented identically in string id
-       * If rank also has a field name, they are separated by a space,
-       * except, rank name itself can contain a space too
+       * Parses such cases:
+       * Kingdom Author (becomes Kingdom->Author)
+       * Kingdom (becomes Kingdom->fullName)
+       * Author (becomes AnyRank->Author)
+       * (empty) (becomes AnyRank->Formatted)
        */
       const parts = fieldName.split(' ');
+      const parsedField = fieldSpec.table.getField(parts.slice(-1)[0]);
+      fieldSpec.joinPath = filterArray([
+        ...fieldSpec.joinPath,
+        // If no field provided, use fullName
+        fieldSpec.joinPath.slice(-1)[0]?.isRelationship
+          ? defined(fieldSpec.table.getField('fullName'))
+          : typeof field === 'undefined'
+          ? parsedField
+          : undefined,
+      ]);
+      /*
+       * If no field passed, entire fieldName string is a rank name
+       * If no rank passed, use anyTreeRank
+       */
       fieldSpec.treeRank =
-        parts.length === 1
-          ? [parts[0], 'name']
-          : typeof node.getField(parts.slice(-1)[0]) === 'object'
-          ? [parts.slice(0, -1).join(' '), parts.slice(-1)[0]]
-          : [fieldName, 'name'];
+        typeof parsedField === 'object'
+          ? parts.slice(0, -1).join(' ') || anyTreeRank
+          : typeof field === 'object'
+          ? anyTreeRank
+          : fieldName;
     }
+
+    const newField = fieldSpec.getField();
+    fieldSpec.parser =
+      newField?.isRelationship === false
+        ? resolveParser(newField, { datePart: fieldSpec.datePart }) ?? {}
+        : {};
     fieldSpec.datePart =
-      field?.isTemporal() === true ? datePart ?? 'fullDate' : undefined;
+      newField?.isTemporal() === true ? datePart ?? 'fullDate' : undefined;
+
     return fieldSpec;
   }
 }

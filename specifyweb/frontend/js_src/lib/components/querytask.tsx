@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Http } from '../ajax';
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -66,8 +67,11 @@ function QueryBuilderById({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
-      // TODO: handle resource fetch 404 better
-      return query.fetch();
+      return query.fetchPromise().catch((error) => {
+        if (error.status === Http.NOT_FOUND) setCurrentView(new NotFoundView());
+        else throw error;
+        return undefined;
+      });
     }, [queryId])
   );
   const recordSet = useQueryRecordSet();

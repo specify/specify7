@@ -158,12 +158,12 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
             }
             var formatter = schema.models.CollectionObject.getField('catalognumber').getUiFormatter();
             if (formatter) {
-                var parsed = formatter.parse(catNo);
-                if (!parsed) {
+                const formatted = formatter.format(catNo);
+                if (typeof formatted === 'undefined') {
                     console.log("bad catalog number:", catNo);
                     return true;
                 }
-                catNo = formatter.canonicalize(parsed);
+                catNo = formatted;
             }
             var coLookup = new schema.models.CollectionObject.LazyCollection({
                 filters: { catalognumber: catNo },

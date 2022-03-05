@@ -6,7 +6,7 @@ import type { AnySchema, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import { format } from './dataobjformatters';
 import type { SpecifyResource } from './legacytypes';
-import { fetchPickLists } from './picklists';
+import { fetchPickLists, pickLists } from './picklists';
 import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';
 import { hasHierarchyField } from './specifymodel';
@@ -59,9 +59,7 @@ export async function fetchPickListItems(
 export async function fetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
-  const pickList = await fetchPickLists().then((pickLists) =>
-    pickLists.find((item) => item.get('name') === pickListName)
-  );
+  const pickList = await fetchPickLists().then(() => getPickList(pickListName));
 
   if (typeof pickList === 'undefined') return undefined;
 
@@ -71,6 +69,15 @@ export async function fetchPickList(
 
   return pickList;
 }
+
+/**
+ * Like fetchPickList, but synchronous, and works only with already fetched
+ * pick lists
+ */
+export const getPickList = (
+  pickListName: string
+): undefined | SpecifyResource<PickList> =>
+  pickLists.find((item) => item.get('name') === pickListName);
 
 export const getPickListItems = (
   pickList: SpecifyResource<PickList>

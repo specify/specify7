@@ -79,7 +79,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     value: VALUE
   ) => SpecifyResource<SCHEMA>;
   readonly save: () => Promise<void>;
-  readonly fetch: () => Promise<SpecifyResource<SCHEMA>>;
+  readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
   readonly fetchIfNotPopulated: () => Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;
   readonly destroy: () => Promise<void>;

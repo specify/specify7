@@ -494,6 +494,12 @@ function eventHandlerForToOne(related, field) {
             // fetch and return a deferred.
             return resource.fetch();
         },
+        fetchPromise(options){
+            return new Promise((resolve,reject)=>this.fetch(options).done(resolve).fail(jqxhr=>{
+                jqxhr.errorHandled = true;
+                reject(jqxhr);
+            }));
+        },
         parse: function(_resp) {
             // since we are putting in data, the resourcgfse in now populated
             this.populated = true;

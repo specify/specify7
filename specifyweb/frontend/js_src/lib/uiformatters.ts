@@ -84,6 +84,13 @@ export class UiFormatter {
     return this.fields.some((field) => field.canAutonumber());
   }
 
+  public format(value: string): string | undefined {
+    const parsed = this.parse(value);
+    return typeof parsed === 'undefined'
+      ? undefined
+      : this.canonicalize(parsed);
+  }
+
   public canonicalize(values: RA<string>): string {
     return this.fields
       .map((field, index) => field.canonicalize(values[index]))

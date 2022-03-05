@@ -64,7 +64,7 @@ export const fetchContext = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
-  .then(() => getDomainResource('discipline')?.fetch())
+  .then(() => getDomainResource('discipline')?.fetchPromise())
   .then((discipline) => {
     if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
       disciplineTrees = commonTrees;

@@ -165,7 +165,7 @@ export type MappingLineData = Pick<
   'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
 >;
 
-const queryBuilderTreeFields = new Set(['name', 'author']);
+const queryBuilderTreeFields = new Set(['fullName', 'author']);
 
 /**
  * Get data required to build a mapping line from a source mapping path
@@ -354,7 +354,11 @@ export function getMappingLineData({
           ? []
           : [
               scope === 'queryBuilder' &&
-              (generateFieldData === 'all' ||
+              ((generateFieldData === 'all' &&
+                (!isTreeModel(model.name) ||
+                  mappingPath[internalState.position - 1] ==
+                    formatTreeRank(anyTreeRank) ||
+                  queryBuilderTreeFields.has(formattedEntry))) ||
                 internalState.defaultValue === formattedEntry)
                 ? [
                     formattedEntry,
@@ -390,11 +394,11 @@ export function getMappingLineData({
                     // Display read only fields in query builder only
                     (scope === 'queryBuilder' || !field.overrides.isReadOnly) &&
                     // Hide most fields for non "any" tree ranks in query builder
-                    (!isTreeModel(model.name) ||
-                      (!field.isRelationship &&
-                        (mappingPath[internalState.position - 1] ==
-                          formatTreeRank(anyTreeRank) ||
-                          queryBuilderTreeFields.has(field.name))))
+                    (scope !== 'queryBuilder' ||
+                      !isTreeModel(model.name) ||
+                      mappingPath[internalState.position - 1] ==
+                        formatTreeRank(anyTreeRank) ||
+                      queryBuilderTreeFields.has(field.name))
                 )
                 .flatMap((field) => {
                   const fieldData = {

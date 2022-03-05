@@ -9,7 +9,7 @@ import type { QueryField } from './querybuilderutils';
 import { parseQueryFields } from './querybuilderutils';
 import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
-import { mutateMappingPath } from './wbplanviewutils';
+import { mappingPathIsComplete, mutateMappingPath } from './wbplanviewutils';
 
 type MainState = State<
   'MainState',
@@ -97,6 +97,11 @@ export const reducer = generateReducer<MainState, Actions>({
       ? state
       : {
           ...state,
+          mappingView: mappingPathIsComplete(
+            state.fields[action.line].mappingPath
+          )
+            ? state.fields[action.line].mappingPath
+            : state.mappingView,
           openedElement: {
             line: action.line,
             index: undefined,

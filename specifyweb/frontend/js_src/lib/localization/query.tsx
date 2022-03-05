@@ -512,6 +512,12 @@ const queryText = createDictionary({
     ca: 'or',
     'es-es': 'or',
   },
+  yes: {
+    'en-us': 'Yes',
+    'ru-ru': 'Да',
+    ca: 'Yes',
+    'es-es': 'Yes',
+  },
 });
 
 export default queryText;
