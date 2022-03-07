@@ -179,13 +179,16 @@ def collection_dispatch(request, model) -> HttpResponse:
     Determines the logged-in user and collection from the request.
     De/Encodes structured data as JSON.
     """
+
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
     if request.method == 'GET':
         control_params = GetCollectionForm(request.GET)
         if not control_params.is_valid():
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
         try:
-            data = get_collection(request.specify_collection, model,
+            data = get_collection(request.specify_collection, model, checker,
                                   control_params.cleaned_data, request.GET)
         except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
@@ -196,8 +199,6 @@ def collection_dispatch(request, model) -> HttpResponse:
                             request.specify_user_agent,
                             model, json.load(request),
                             request.GET.get('recordsetid', None))
-
-        checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
                                    content_type='application/json')
@@ -765,7 +766,7 @@ CollectionPayload = TypedDict('CollectionPayload', {
     'meta': CollectionPayloadMeta
 })
 
-def get_collection(logged_in_collection, model, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
+def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
     if isinstance(model, str):
@@ -795,7 +796,7 @@ def get_collection(logged_in_collection, model, control_params=GetCollectionForm
         except FieldError as e:
             raise OrderByError(e)
     try:
-        return objs_to_data(objs, control_params['offset'], control_params['limit'])
+        return objs_to_data(objs, checker, control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
 
