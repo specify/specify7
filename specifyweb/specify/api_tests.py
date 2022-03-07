@@ -5,9 +5,18 @@ from django.db.models import Max
 from django.db import connection
 
 from specifyweb.specify import api, models
+from specifyweb.permissions.models import UserPolicy
 
 class MainSetupTearDown:
     def setUp(self):
+        # Make all users superusers for testing purposes.
+        UserPolicy.objects.create(
+            collection=None,
+            specifyuser=None,
+            resource='%',
+            action='%',
+        )
+
         self.institution = models.Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -68,9 +77,11 @@ class MainSetupTearDown:
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 
+skip_perms_check = lambda x: None
+
 class SimpleApiTests(ApiTests):
     def test_get_collection(self):
-        data = api.get_collection(self.collection, 'collectionobject')
+        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
         self.assertEqual(data['meta']['total_count'], len(self.collectionobjects))
         self.assertEqual(len(data['objects']), len(self.collectionobjects))
         ids = [obj['id'] for obj in data['objects']]
@@ -78,7 +89,7 @@ class SimpleApiTests(ApiTests):
             self.assertTrue(co.id in ids)
 
     def test_get_resouce(self):
-        data = api.get_resource('institution', self.institution.id)
+        data = api.get_resource('institution', self.institution.id, skip_perms_check)
         self.assertEqual(data['id'], self.institution.id)
         self.assertEqual(data['name'], self.institution.name)
 
@@ -93,7 +104,7 @@ class SimpleApiTests(ApiTests):
         self.assertEqual(obj.createdbyagent, self.agent)
 
     def test_update_object(self):
-        data = api.get_resource('collection', self.collection.id)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
         data['collectionname'] = 'New Name'
         api.update_obj(self.collection, self.agent, 'collection',
                        data['id'], data['version'], data)
@@ -160,20 +171,20 @@ class RecordSetTests(ApiTests):
         self.assertEqual(counts, set([0]))
 
     def test_get_resource_with_recordset_info(self):
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
         self.assertFalse(hasattr(data, 'recordset_info'))
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
         self.assertEqual(data['recordset_info'], None)
 
         self.recordset.recordsetitems.create(recordid=self.collectionobjects[0].id)
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
         self.assertEqual(data['recordset_info']['recordsetid'], self.recordset.id)
 
 
     def test_update_object(self):
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check, self.recordset.id)
         self.assertEqual(data['recordset_info'], None)
 
         obj = api.update_obj(self.collection, self.agent, 'collectionobject',
@@ -209,7 +220,7 @@ class RecordSetTests(ApiTests):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        rsis = api.get_collection(self.collection, 'recordsetitem', params={
+        rsis = api.get_collection(self.collection, 'recordsetitem', skip_perms_check, params={
             'recordset': self.recordset.id})
 
         result_ids = [rsi['recordid'] for rsi in rsis['objects']]
@@ -233,13 +244,13 @@ class RecordSetTests(ApiTests):
 
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
-        data = api.get_resource('collectingevent', self.collectingevent.id)
+        data = api.get_resource('collectingevent', self.collectingevent.id, skip_perms_check)
         self.assertEqual(data['collectionobjects'],
                          api.uri_for_model('collectionobject') +
                          '?collectingevent=%d' % self.collectingevent.id)
 
     def test_get_to_many_uris_with_special_othersidename(self):
-        data = api.get_resource('agent', self.agent.id)
+        data = api.get_resource('agent', self.agent.id, skip_perms_check)
 
         # This one is actually a regular othersidename
         self.assertEqual(data['collectors'],
@@ -254,28 +265,28 @@ class ApiRelatedFieldsTests(ApiTests):
 
 class VersionCtrlApiTests(ApiTests):
     def test_bump_version(self):
-        data = api.get_resource('collection', self.collection.id)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
         data['collectionname'] = 'New Name'
         obj = api.update_obj(self.collection, self.agent, 'collection',
                              data['id'], data['version'], data)
         self.assertEqual(obj.version, data['version'] + 1)
 
     def test_update_object(self):
-        data = api.get_resource('collection', self.collection.id)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
         data['collectionname'] = 'New Name'
         self.collection.version += 1
         self.collection.save()
         with self.assertRaises(api.StaleObjectException) as cm:
             api.update_obj(self.collection, self.agent, 'collection',
                            data['id'], data['version'], data)
-        data = api.get_resource('collection', self.collection.id)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
         self.assertNotEqual(data['collectionname'], 'New Name')
 
     def test_delete_object(self):
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
                 'collection': api.uri_for_model('collection', self.collection.id),
                 'catalognumber': 'foobar'})
-        data = api.get_resource('collectionobject', obj.id)
+        data = api.get_resource('collectionobject', obj.id, skip_perms_check)
         obj.version += 1
         obj.save()
         with self.assertRaises(api.StaleObjectException) as cm:
@@ -283,7 +294,7 @@ class VersionCtrlApiTests(ApiTests):
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 1)
 
     def test_missing_version(self):
-        data = api.get_resource('collection', self.collection.id)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
         data['collectionname'] = 'New Name'
         self.collection.version += 1
         self.collection.save()
@@ -296,7 +307,7 @@ class InlineApiTests(ApiTests):
         for i in range(3):
             self.collectionobjects[0].determinations.create(
                 iscurrent=False, number1=i)
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
         self.assertTrue(isinstance(data['determinations'], list))
         self.assertEqual(len(data['determinations']), 3)
         ids = [d['id'] for d in data['determinations']]
@@ -307,7 +318,7 @@ class InlineApiTests(ApiTests):
         dets = [self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
                 for i in range(3)]
 
-        data = api.get_collection(self.collection, 'collectionobject')
+        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
         for obj in data['objects']:
             self.assertTrue(isinstance(obj['determinations'], list))
             if obj['id'] == self.collectionobjects[0].id:
@@ -328,7 +339,7 @@ class InlineApiTests(ApiTests):
             self.collectionobjects[0].preparations.create(
                 collectionmemberid=self.collection.id,
                 preptype=preptype)
-        data = api.get_collection(self.collection, 'collectionobject')
+        data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
         co = next(obj for obj in data['objects'] if obj['id'] == self.collectionobjects[0].id)
         self.assertTrue(isinstance(co['preparations'], list))
         self.assertEqual(co['preparations'][0]['preparationattachments'], [])
@@ -337,7 +348,7 @@ class InlineApiTests(ApiTests):
         self.collectionobjects[0].collectionobjectattribute = \
             models.Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
         self.collectionobjects[0].save()
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
         self.assertTrue(isinstance(data['collectionobjectattribute'], dict))
         self.assertEqual(data['collectionobjectattribute']['id'],
                          self.collectionobjects[0].collectionobjectattribute.id)
@@ -366,7 +377,7 @@ class InlineApiTests(ApiTests):
         coa = models.Collectionobjectattribute.objects.create(
             collectionmemberid=self.collection.id)
 
-        coa_data = api.get_resource('collectionobjectattribute', coa.id)
+        coa_data = api.get_resource('collectionobjectattribute', coa.id, skip_perms_check)
         co_data = {
             'collection': api.uri_for_model('collection', self.collection.id),
             'collectionobjectattribute': coa_data,
@@ -381,7 +392,7 @@ class InlineApiTests(ApiTests):
             number1=1,
             remarks='original value')
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
         data['determinations'][0]['remarks'] = 'changed value'
         data['determinations'].append({
                 'number1': 2,
@@ -404,7 +415,7 @@ class InlineApiTests(ApiTests):
                 collectionmemberid=self.collection.id,
                 number1=i)
 
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, skip_perms_check)
         even_dets = [d for d in data['determinations'] if d['number1'] % 2 == 0]
         for d in even_dets: data['determinations'].remove(d)
 
