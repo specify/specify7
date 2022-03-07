@@ -33,7 +33,7 @@ class UserRole(models.Model):
         db_table = "spuserrole"
 
 class RolePolicy(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='policies')
     resource = models.CharField(max_length=1024)
     action = models.CharField(max_length=1024)
 
