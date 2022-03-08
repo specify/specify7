@@ -70,7 +70,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME,
     prePopulate?: boolean
-  ) => Promise<Collection<SpecifyResource<VALUE[number]>>>;
+  ) => Promise<Collection<VALUE[number]>>;
   readonly set: <
     FIELD_NAME extends keyof SerializedResource<SCHEMA>,
     VALUE extends SerializedResource<SCHEMA>[FIELD_NAME]

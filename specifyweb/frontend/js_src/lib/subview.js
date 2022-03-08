@@ -3,14 +3,16 @@
 import $ from 'jquery';
 import Backbone from './backbone';
 
-import { schema } from './schema';
+import {schema} from './schema';
 import specifyform from './specifyform';
 import QueryCbxSearch from './querycbxsearch';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {legacyNonJsxIcons} from './components/icons';
+import {className} from './components/basic';
 
+// TODO: rewrite to React
 export default Backbone.View.extend({
         __name__: "Subview",
         initialize: function(options) {
@@ -34,6 +36,7 @@ export default Backbone.View.extend({
             self.el.innerHTML = '<fieldset class="py-3"></fieldset>';
             const section = $(self.el.children[0]);
             var header = $(subviewheader({
+                className,
                 formsText,
                 commonText,
                 title: self.title,

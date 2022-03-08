@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 import {getModel} from './schema';
 import * as stringLocalization from './stringlocalization';
+import {className} from './components/basic';
 
 
 function localize(s) {
@@ -94,7 +95,7 @@ export default function(formNode) {
             });
         }
 
-        $('.specify-subview-header', form).each(function() {
+        $(`.${className.subViewHeader}`, form).each(function() {
             var fieldname = $(this).parent().data('specify-field-name');
             var label = model.getField(fieldname).label;
             $('.specify-subview-title', this).text(label);

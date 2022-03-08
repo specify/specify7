@@ -11,7 +11,6 @@ import UIField from './uifield';
 import QueryCbx from './querycbx';
 import uiplugins from './specifyplugins';
 import * as uicommands from './specifycommands';
-import RecordSelector from './recordselector';
 import * as SubViewButton from './subviewbutton';
 import FormTable from './formtable';
 import IActionItemFormTable from './formtableinteractionitem';
@@ -21,6 +20,7 @@ import {SpinnerFieldUi} from './spinnerui';
 import {readCookie} from './cookies';
 import {userInformation} from './userinfo';
 import {className} from './components/basic';
+import {RecordSelectorView} from './components/recordselectorutils';
 
 var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -32,7 +32,7 @@ var MultiView = Backbone.View.extend({
             specifyform.buildSubView(this.$el).done(function(form) {
                 var View = form.hasClass('specify-form-type-formtable')
                     ? (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)
-                    : RecordSelector;
+                    : RecordSelectorView;
                 new View(options).render();
             });
             return this;
@@ -65,7 +65,7 @@ var MultiView = Backbone.View.extend({
             console.error("undefined relationship:", resource.specifyModel.name, fieldName);
             return null;
         }
-        var viewOptions = { el: node, field: field, populateForm: populateForm };
+        var viewOptions = { el: node, subformNode: node, field: field, populateForm: populateForm };
         return resource.rget(fieldName).done(function(related) {
             var View;
             switch (field.type) {

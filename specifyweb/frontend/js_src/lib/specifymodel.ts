@@ -46,22 +46,47 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
       IR<unknown>
   >;
   readonly domainfilter?: boolean;
-}) => UnFetchedCollection<SpecifyResource<SCHEMA>>;
+}) => UnFetchedCollection<SCHEMA>;
 
-export type UnFetchedCollection<RESOURCE extends SpecifyResource<AnySchema>> = {
+export type UnFetchedCollection<SCHEMA extends AnySchema> = {
   readonly fetchPromise: (filter?: {
     readonly limit: number;
-  }) => Promise<Collection<RESOURCE>>;
+  }) => Promise<Collection<SCHEMA>>;
 };
 
-export type Collection<RESOURCE extends SpecifyResource<AnySchema>> = {
+export type Collection<SCHEMA extends AnySchema> = {
+  readonly field?: Relationship;
+  readonly related?: SpecifyResource<AnySchema>;
   readonly getTotalCount: () => Promise<number>;
   readonly toJSON: <V extends IR<unknown>>() => RA<V>;
-  readonly models: RESOURCE extends null ? [] : RA<RESOURCE>;
+  readonly models: SCHEMA extends null ? [] : RA<SpecifyResource<SCHEMA>>;
   readonly isComplete: () => boolean;
-  readonly model: RESOURCE;
-  readonly add: (resource: RESOURCE) => void;
-  readonly remove: (resource: RESOURCE) => void;
+  readonly model: {
+    readonly specifyModel: SpecifyModel<SCHEMA>;
+  };
+  readonly add: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly remove: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly fetchIfNotFetching: (filter?: {
+    readonly limit: number;
+  }) => Promise<Collection<SCHEMA>>;
+  readonly fetchPromise: (filter?: {
+    readonly limit: number;
+  }) => Promise<Collection<SCHEMA>>;
+  readonly fetchIfNotPopulated: (filter?: {
+    readonly limit: number;
+  }) => Promise<Collection<SCHEMA>>;
+  readonly on: (
+    eventName: string,
+    callback: (...args: RA<never>) => void
+  ) => void;
+  readonly once: (
+    eventName: string,
+    callback: (...args: RA<never>) => void
+  ) => void;
+  readonly off: (
+    eventName?: string,
+    callback?: (...args: RA<never>) => void
+  ) => void;
 };
 
 // TODO: tighten up schema field types (use literals / enums)
@@ -94,7 +119,10 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   // TODO: make newly created resources have default values for fields
   public readonly Resource: new (
     props?: Partial<SerializedModel<SCHEMA>>,
-    options?: { readonly noBusinessRules: boolean }
+    options?: Partial<{
+      readonly noBusinessRules: boolean;
+      readonly noValidation: boolean;
+    }>
   ) => SpecifyResource<SCHEMA>;
 
   public readonly LazyCollection: CollectionConstructor<SCHEMA>;

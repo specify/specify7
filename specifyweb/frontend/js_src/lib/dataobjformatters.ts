@@ -160,7 +160,7 @@ export async function format(
 }
 
 export async function aggregate(
-  collection: Collection<SpecifyResource<AnySchema>>
+  collection: Collection<AnySchema>
 ): Promise<string> {
   const { aggregators } = await fetchFormatters;
 

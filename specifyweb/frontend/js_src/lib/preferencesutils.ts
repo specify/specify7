@@ -79,7 +79,6 @@ export function setPref<
 }
 
 let appResourceId: undefined | number = undefined;
-let lastSyncTime = Date.now();
 // Sync at most every 5s
 const syncTimeout = 5 * 1000;
 let syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -111,13 +110,15 @@ const fetchAppResourceId = async (): Promise<number> =>
     }
   ).then(({ data }) => data);
 
-const syncPreferences = async (): Promise<void> =>
-  (typeof appResourceId === 'number'
-    ? Promise.resolve(appResourceId)
-    : fetchAppResourceId().then((id) => {
-        appResourceId = id;
-        return id;
-      })
+async function syncPreferences(): Promise<void> {
+  isSyncPending = false;
+  return (
+    typeof appResourceId === 'number'
+      ? Promise.resolve(appResourceId)
+      : fetchAppResourceId().then((id) => {
+          appResourceId = id;
+          return id;
+        })
   )
     .then(async (appResourceId) =>
       ping(
@@ -131,7 +132,7 @@ const syncPreferences = async (): Promise<void> =>
           },
         },
         {
-          // TODO: test if Http.CONFLICT can be returned
+          // TODO: test if Http.CONFLICT is ever returned
           expectedResponseCodes: [Http.OK, Http.CONFLICT],
         }
       )
@@ -140,12 +141,10 @@ const syncPreferences = async (): Promise<void> =>
       status === Http.CONFLICT ? fetchPreferences() : undefined
     )
     .then(() => {
-      if (isSyncPending) syncPreferences();
-      else {
-        isSyncing = false;
-        lastSyncTime = Date.now();
-      }
+      if (isSyncPending) syncPreferences().catch(crash);
+      else isSyncing = false;
     });
+}
 
 function handlePreferencesUpdate(data: typeof preferences): void {
   preferences = data;
@@ -167,4 +166,5 @@ const fetchPreferences = async (): Promise<typeof preferences> =>
     }
   ).then(({ data, status }) => (status === Http.NOT_FOUND ? {} : data));
 
-export const fetchContext = fetchPreferences.then(handlePreferencesUpdate);
+export const fetchContext = async (): Promise<void> =>
+  fetchPreferences().then(handlePreferencesUpdate);

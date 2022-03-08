@@ -159,15 +159,20 @@ function ViewHeader({
   );
 }
 
+export type FormType = 'form' | 'formtable';
+
 export function ResourceView({
   resource,
   recordSet,
   mode,
+  type = 'form',
+  viewName,
   canAddAnother,
   hasHeader,
   onChangeTitle: handleChangeTitle,
   extraButton,
   deletionMessage,
+  hasButtons = true,
   onSaving: handleSaving,
   onClose: handleClose,
   onSaved: handleSaved,
@@ -177,6 +182,8 @@ export function ResourceView({
   readonly resource: SpecifyResource<AnySchema>;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly mode: 'edit' | 'view';
+  readonly type?: FormType;
+  readonly viewName?: string;
   readonly canAddAnother: boolean;
   readonly hasHeader: boolean;
   // TODO: remove this once RecordSetsDialog is converted to React
@@ -186,6 +193,7 @@ export function ResourceView({
   };
   readonly deletionMessage?: string;
   readonly onChangeTitle?: (newTitle: string) => void;
+  readonly hasButtons?: boolean;
   readonly onSaving?: () => void;
   readonly onSaved?: (payload: {
     readonly addAnother: boolean;
@@ -259,8 +267,15 @@ export function ResourceView({
   );
   React.useEffect(() => {
     if (containerRef.current === null) return;
-    specifyForm.buildViewByName(resource.specifyModel.view, 'form', mode).then(
-      (form) => {
+    Promise.all([
+      specifyForm.buildViewByName(
+        viewName ?? resource.specifyModel.view,
+        type,
+        mode
+      ),
+      resource.fetchIfNotPopulated(),
+    ]).then(
+      ([form]) => {
         setState('main');
 
         form.find('.specify-form-header:first').remove();
@@ -306,45 +321,48 @@ export function ResourceView({
           />
         ) : undefined}
         <div ref={containerRef} />
-        <FormFooter>
-          {!resource.isNew() && mode === 'edit' ? (
-            <DeleteButton
-              model={resource}
-              deletionMessage={deletionMessage}
-              onDeleted={(): void => {
-                handleDeleted?.(
-                  recordSetInfo?.nextUrl ?? recordSetInfo?.previousUrl
-                );
-                handleClose();
-              }}
-            />
-          ) : undefined}
-          {typeof extraButton === 'object' && (
-            <Button.Gray onClick={extraButton.onClick}>
-              {extraButton.label}
-            </Button.Gray>
-          )}
-          {mode === 'edit' && form !== undefined ? (
-            <SaveButton
-              model={resource}
-              form={form}
-              onSaving={handleSaving}
-              onSaved={(payload): void => {
-                const reporterOnSave = form?.getElementsByClassName(
-                  'specify-print-on-save'
-                )[0] as HTMLInputElement | undefined;
-                handleSaved?.({
-                  ...payload,
-                  reporterOnSave: reporterOnSave?.checked === true,
-                });
-                handleClose();
-              }}
-              canAddAnother={
-                canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-              }
-            />
-          ) : undefined}
-        </FormFooter>
+        {hasButtons && (
+          <FormFooter>
+            {!resource.isNew() && mode === 'edit' ? (
+              <DeleteButton
+                model={resource}
+                deletionMessage={deletionMessage}
+                onDeleted={(): void => {
+                  handleDeleted?.(
+                    recordSetInfo?.nextUrl ?? recordSetInfo?.previousUrl
+                  );
+                  handleClose();
+                }}
+              />
+            ) : undefined}
+            {typeof extraButton === 'object' && (
+              <Button.Gray onClick={extraButton.onClick}>
+                {extraButton.label}
+              </Button.Gray>
+            )}
+            {mode === 'edit' && form !== undefined ? (
+              <SaveButton
+                model={resource}
+                form={form}
+                onSaving={handleSaving}
+                onSaved={(payload): void => {
+                  const reporterOnSave = form?.getElementsByClassName(
+                    'specify-print-on-save'
+                  )[0] as HTMLInputElement | undefined;
+                  handleSaved?.({
+                    ...payload,
+                    reporterOnSave: reporterOnSave?.checked === true,
+                  });
+                  handleClose();
+                }}
+                canAddAnother={
+                  canAddAnother &&
+                  !NO_ADD_ANOTHER.has(resource.specifyModel.name)
+                }
+              />
+            ) : undefined}
+          </FormFooter>
+        )}
       </>
     );
     return hasHeader ? (

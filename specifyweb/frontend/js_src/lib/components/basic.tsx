@@ -98,6 +98,7 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   inline-flex items-center`;
 const baseContainer = `bg-gray-200 dark:bg-neutral-800 flex flex-col gap-2
     p-4 shadow-md shadow-gray-500 rounded`;
+const subViewHeader = 'specify-subview-header';
 export const className = {
   root: `flex flex-col h-screen overflow-hidden bg-white dark:bg-neutral-900
     text-neutral-900 dark:text-neutral-200`,
@@ -134,6 +135,9 @@ export const className = {
   formLabel: 'specify-form-label text-right',
   formFooter:
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
+  // TODO: get rid of usages of this:
+  subViewHeader,
+  subFormHeader: `${subViewHeader} gap-x-2 flex font-bold border-border-gray-500`,
   queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
     flex gap-x-2 rounded dark:border-none`,
   h2: 'font-semibold text-black dark:text-white',
@@ -150,6 +154,7 @@ export const ErrorMessage = wrap('div', className.errorMessage, {
 export const FormFooter = wrap('div', className.formFooter, {
   role: 'toolbar',
 });
+export const SubFormHeader = wrap('div', className.subFormHeader);
 export const Form = wrap(
   'form',
   `${className.notSubmittedForm} ${className.form}`,

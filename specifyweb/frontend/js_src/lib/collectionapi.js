@@ -141,6 +141,11 @@ var Base =  Backbone.Collection.extend({
         fetchPromise(options){
             return Promise.resolve(this.fetch(options));
         },
+        fetchIfNotFetching(options){
+            return Boolean(self._fetch)
+              ? Promise.resolve()
+              : this.fetchPromise(options);
+        },
         fetchIfNotPopulated: function() {
             var _this = this;
             return (this._neverFetched ? this.fetch() : $.when(null)).pipe(function() {

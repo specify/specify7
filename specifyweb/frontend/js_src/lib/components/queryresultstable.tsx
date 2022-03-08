@@ -2,12 +2,12 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import { fetchPickList } from '../picklistmixins';
-import populateForm from '../populateform';
 import type { QueryField } from '../querybuilderutils';
 import {
   addAuditLogFields,
@@ -16,9 +16,9 @@ import {
   unParseQueryFields,
 } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
-import RecordSelector from '../recordselector';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
+import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, ContainerBase } from './basic';
 import { SortIndicator, TableIcon } from './common';
@@ -26,6 +26,7 @@ import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryResults } from './queryresults';
+import { RecordSelector } from './recordselector';
 
 function TableHeaderCell({
   fieldSpec,
@@ -87,44 +88,30 @@ function ViewRecords({
   model,
   results,
   selectedRows,
+  onFetchMore: handleFetchMore,
 }: {
   readonly model: SpecifyModel;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
+  readonly onFetchMore: (() => void) | undefined;
 }): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [records, setRecords] = React.useState<
+    RA<SpecifyResource<AnySchema>> | undefined
+  >(undefined);
   React.useEffect(() => {
-    if (!isOpen) return undefined;
+    if (!isOpen) return;
     const ids =
       selectedRows.size === 0
-        ? results.map((row) => row[queryIdField])
+        ? (results.map((row) => row[queryIdField]) as RA<number>)
         : Array.from(selectedRows);
-    const collection = new model.LazyCollection({
-      filters: { id__in: ids.join(',') },
-    });
-    const element = document.createElement('div');
-    element.dataset.specifyViewname = model.view;
-    const view = new RecordSelector({
-      populateForm,
-      field: undefined,
-      collection,
-      readOnly: false,
-      noHeader: false,
-      el: element,
-    })
-      .on('renderdone', () => {
-        if (destructorCalled) view.remove();
-        else containerRef.current?.append(view.el);
-      })
-      .render();
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-      view.remove();
-    };
-  }, [model, isOpen]);
+    const indexedRecords = Object.fromEntries(
+      records?.map((record) => [record.id, record]) ?? []
+    );
+    setRecords(
+      ids.map((id) => indexedRecords[id] ?? new model.Resource({ id }))
+    );
+  }, [results, isOpen, records, model, selectedRows]);
   return (
     <>
       <Button.Simple
@@ -139,7 +126,25 @@ function ViewRecords({
         buttons={commonText('close')}
         onClose={(): void => setIsOpen(false)}
       >
-        <div ref={containerRef} />
+        {typeof records === 'object' && (
+          <RecordSelector
+            model={model}
+            isDependent={false}
+            records={records}
+            isReadOnly={userInformation.isReadOnly}
+            hasHeader={false}
+            onAdd={undefined}
+            onSlide={(index): void =>
+              index + 1 === records.length ? handleFetchMore?.() : undefined
+            }
+            onDelete={(index): void =>
+              setRecords([
+                ...records.slice(0, index),
+                ...records.slice(index + 1),
+              ])
+            }
+          />
+        )}
       </Dialog>
     </>
   );
@@ -204,6 +209,13 @@ export function QueryResultsTable({
   );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   React.useEffect(() => setSelectedRows(new Set()), [totalCount]);
+  const fetchMore = (): void =>
+    Array.isArray(results)
+      ? void fetchResults(results.length)
+          .then((newResults) => setResults([...results, ...newResults]))
+          .then(() => setIsFetching(false))
+          .catch(crash)
+      : undefined;
 
   return (
     <ContainerBase className="overflow-hidden">
@@ -215,10 +227,11 @@ export function QueryResultsTable({
             selectedRows={selectedRows}
             results={results}
             model={model}
+            onFetchMore={isFetching ? undefined : fetchMore}
           />
         ) : undefined}
       </div>
-      {typeof results === 'object' && fieldSpecs.length > 0 && pickListsLoaded && (
+      {Array.isArray(results) && fieldSpecs.length > 0 && pickListsLoaded && (
         <div
           role="table"
           className={`grid-table overflow-auto max-h-[75vh] border-b
@@ -235,12 +248,7 @@ export function QueryResultsTable({
               : ({ target }): void => {
                   if (isScrolledBottom(target as HTMLElement)) return;
                   setIsFetching(true);
-                  fetchResults(results.length)
-                    .then((newResults) =>
-                      setResults([...results, ...newResults])
-                    )
-                    .then(() => setIsFetching(false))
-                    .catch(crash);
+                  fetchMore();
                 }
           }
         >

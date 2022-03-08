@@ -6,13 +6,14 @@ import Backbone from './backbone';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
-import RecordSelector from './recordselector';
+import {RecordSelectorView} from './components/recordselectorutils';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 
+// TODO: rewrite to React
 export const Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
         events: {
@@ -88,20 +89,18 @@ export const Base =  Backbone.View.extend({
             var self = this;
             if (self.readOnly && self.collection.length < 1) return;
 
-            new RecordSelector({
-                populateForm: this.populateForm,
+            const view = new RecordSelectorView({
                 field: self.field,
                 collection: self.collection,
-                subformNode: self.$el,
-                readOnly: self.readOnly,
-                noHeader: true
-            }).on('renderdone', (recordSelector)=>{
-                self.dialog = $('<div>').append(recordSelector.el).dialog({
-                    width: 'auto',
-                    title: self.field.label,
-                    close: this.closeDialog.bind(this)
-                });
+                subformNode: self.el,
+                isReadOnly: self.readOnly,
+                hasHeader: false
             }).render();
+            self.dialog = $('<div>').append(view.el).dialog({
+                width: 'auto',
+                title: self.field.label,
+                close: this.closeDialog.bind(this)
+            })
         }
     });
 

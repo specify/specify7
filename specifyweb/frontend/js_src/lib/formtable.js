@@ -7,11 +7,14 @@ import Backbone from './backbone';
 
 
 import specifyform from './specifyform';
-import { assert } from './assert';
+import {assert} from './assert';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {legacyNonJsxIcons} from './components/icons';
+import {className} from './components/basic';
+
+// TODO: convert to React
 
 const CONTRACT = `<td class="contract">
         <button
@@ -95,7 +98,7 @@ const CONTRACT = `<td class="contract">
 export default Backbone.View.extend({
         __name__: "FormTableView",
         events: {
-            'click .specify-subview-header button.specify-add-related': 'add'
+            [`click .${className.subViewHeader} button.specify-add-related`]: 'add'
         },
         initialize: function(options) {
             // options = {
@@ -138,6 +141,7 @@ export default Backbone.View.extend({
             this.lastRender = this.collection.pluck('cid');
 
             var header = $(subviewheader({
+                className,
                 formsText,
                 commonText,
                 title: this.title,

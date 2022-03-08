@@ -555,10 +555,10 @@ const formsText = createDictionary({
   },
   // RecordSelector
   removeRecordDialogHeader: {
-    'en-us': header('Remove dependent record'),
-    'ru-ru': header('Удалить зависимую запись'),
-    ca: header('Remove dependent record'),
-    'es-es': header('Remove dependent record'),
+    'en-us': 'Remove dependent record',
+    'ru-ru': 'Удалить зависимую запись',
+    ca: 'Remove dependent record',
+    'es-es': 'Remove dependent record',
   },
   removeRecordDialogMessage: {
     'en-us': 'Are you sure you want to remove this record?',
