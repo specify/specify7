@@ -127,10 +127,12 @@ export function MakeRecordSetButton({
   baseTableName,
   queryResource,
   fields,
+  getQueryFieldRecords,
 }: {
   readonly baseTableName: keyof Tables;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
+  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
 }): JSX.Element {
   const [state, setState] = React.useState<
     undefined | 'editing' | 'saving' | 'saved'
@@ -149,10 +151,7 @@ export function MakeRecordSetButton({
         disabled={fields.length === 0}
         onClick={(): void => {
           setState('editing');
-          queryResource.set(
-            'fields',
-            unParseQueryFields(baseTableName, fields)
-          );
+          queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new schema.models.RecordSet.Resource();
           recordSet.set('dbTableId', defined(getModel(baseTableName)).tableId);

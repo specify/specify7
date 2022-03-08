@@ -208,6 +208,7 @@ export function QueryBuilder({
               baseTableName={state.baseTableName}
               fields={state.fields}
               queryResource={queryResource}
+              getQueryFieldRecords={getQueryFieldRecords}
             />
           )}
           {!queryResource.isNew() && (

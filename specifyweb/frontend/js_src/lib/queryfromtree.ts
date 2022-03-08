@@ -26,9 +26,9 @@ function makeField(
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
   const pathArray = [schema.models.CollectionObject.name, ...path.split('.')];
+  if (typeof rankName === 'string') pathArray.push('id');
   const fieldSpec = QueryFieldSpec.fromPath(pathArray);
-  fieldSpec.treeRank =
-    typeof rankName === 'string' ? [rankName, 'id'] : undefined;
+  fieldSpec.treeRank = rankName;
 
   const attributes = fieldSpec.toSpQueryAttributes();
   const field = new schema.models.SpQueryField.Resource()
@@ -43,7 +43,10 @@ function makeField(
     .set('isRelFld', attributes.isRelFld);
 
   Object.entries(options).forEach(([key, value]) =>
-    field.set(key as keyof SpQueryField['fields'], value ?? null)
+    field.set(
+      key as keyof SpQueryField['fields'],
+      (value as string | undefined) ?? null
+    )
   );
 
   return field;

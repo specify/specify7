@@ -416,7 +416,7 @@ export function parseValue(
  */
 export function fieldFormat(
   field: LiteralField,
-  parser: Parser,
+  parser: Parser | undefined,
   value: string | undefined
 ): string {
   // Find Pick List Item Title

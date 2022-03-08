@@ -81,7 +81,7 @@ function TableResults({
                   ({ stringId, isRelationship }) =>
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
                 )}
-                idFieldIndex={idFieldIndex}
+                hasIdField={true}
                 totalCount={tableResults.totalCount}
                 model={model}
                 label={model.label}

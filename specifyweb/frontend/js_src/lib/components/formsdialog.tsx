@@ -40,7 +40,9 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
       specifyform
         .getView(view.getAttribute('view'))
         .then<Entry>((form: { readonly class: string }) => {
-          const modelName = SpecifyModel.parseClassName(form.class);
+          const modelName = SpecifyModel.parseClassName(
+            form.class
+          ) as keyof Tables;
           const model = defined(getModel(modelName));
 
           return {

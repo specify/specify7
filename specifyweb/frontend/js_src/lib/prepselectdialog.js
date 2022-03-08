@@ -7,11 +7,11 @@ import {getModel, schema} from './schema';
 import * as navigation from './navigation';
 import {getInteractionsForPrepIds} from './specifyapi';
 import {ResourceViewBackbone, showResource} from './components/resourceview';
-import {fieldFormat} from './fieldformat';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {legacyNonJsxIcons} from './components/icons';
+import {fieldFormat} from "./uiparse";
 
 export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -73,7 +73,7 @@ export default PrepDialog.extend({
             }
             var entry = $('<tr>').append(
                 $('<td>').append($('<input>').attr('type', 'checkbox').attr('title',formsText('selectAll')).attr('aria-label',formsText('selectAll'))),
-                $('<td>').append(fieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
+                $('<td>').append(fieldFormat(this.colobjModel.getLiteralField('catalognumber'), undefined, iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
                 $('<td>').append($('<input type="number">')

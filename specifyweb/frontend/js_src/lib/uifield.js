@@ -6,8 +6,12 @@ import Backbone from './backbone';
 
 
 import {format} from './dataobjformatters';
-import {fieldFormat} from './fieldformat';
-import {addValidationAttributes, parseValue, resolveParser} from './uiparse';
+import {
+  addValidationAttributes,
+  fieldFormat,
+  parseValue,
+  resolveParser
+} from './uiparse';
 import {handleDatePaste} from './components/partialdateui';
 import {dayjs} from './dayjs';
 
@@ -97,7 +101,7 @@ export default Backbone.View.extend({
                       ? format
                       : field.isTemporal()
                       ? (value) => dayjs(value).format('YYYY-MM-DD')
-                      : _.bind(fieldFormat, null, field);
+                      : fieldFormat.bind(undefined, field, undefined);
 
                     Promise.resolve(resource.rget(fieldName)).then(objFormat).then((value)=>{
                         this.el.value = value ?? '';

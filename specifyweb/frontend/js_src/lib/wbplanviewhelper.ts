@@ -209,4 +209,5 @@ export const f = {
   void: (): void => undefined,
   // Call first argument
   call: <T>(function_: (...args: RA<never>) => T): T => function_(),
+  array: (): RA<never> => [],
 } as const;

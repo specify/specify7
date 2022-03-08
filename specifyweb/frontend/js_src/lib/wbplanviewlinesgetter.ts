@@ -13,6 +13,7 @@ import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplanparser';
 import { parseUploadPlan } from './uploadplanparser';
+import { f } from './wbplanviewhelper';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -58,6 +59,7 @@ export function getLinesFromHeaders({
     headers,
     baseTable: baseTableName,
     scope: 'autoMapper',
+    getMappedFields: f.array,
   }).map();
 
   return lines.map((line) => {

@@ -4,19 +4,19 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import { schema } from './schema';
-import {fieldFormat} from './fieldformat';
-import { userInformation } from './userinfo';
+import {schema} from './schema';
+import {userInformation} from './userinfo';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {getDateInputValue} from './dayjs';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
+import {fieldFormat} from "./uiparse";
 
 function formatCatNo(catNo) {
-    const field = schema.models.CollectionObject.getField('catalognumber');
-    return fieldFormat(field, catNo);
+    const field = schema.models.CollectionObject.getLiteralField('catalognumber');
+    return fieldFormat(field, undefined, catNo);
 }
 
 function localize(key, fallback) {

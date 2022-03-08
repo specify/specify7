@@ -48,7 +48,6 @@ const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
   })),
   import('../toolbarattachments'),
   import('./toolbar/wbsdialog'),
-  import('./toolbar/preferences'),
 ]).then(processMenuItems);
 
 function processMenuItems<T extends UserTool | MenuItem>(
@@ -79,7 +78,6 @@ function processMenuItems<T extends UserTool | MenuItem>(
 }
 
 const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
-  import('./toolbar/language'),
   import('./toolbar/schemaconfig'),
   import('./toolbar/masterkey'),
   import('./toolbar/users'),
@@ -87,6 +85,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   import('./toolbar/resources'),
   import('./toolbar/dwca'),
   import('./toolbar/forceupdate'),
+  import('./toolbar/preferences'),
 ]).then(processMenuItems);
 
 export function Main({
