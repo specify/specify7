@@ -40,7 +40,6 @@ import { MappingView } from './wbplanviewmappercomponents';
  * TODO: ability to query tree relationships
  * Query Results:
  * TODO: creating record set out of a subset of results
- * TODO: make sure formatters are used in query results
  * TODO: allow editing records in query results
  * TODO: rewrite record selector to react
  * TODO: make query scrollable even while viewing the resutls

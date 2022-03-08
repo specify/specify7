@@ -203,3 +203,10 @@ export const omit = <
   Object.fromEntries(
     Object.entries(object).filter(([key]) => !toOmit.includes(key as OMIT))
   );
+
+export const f = {
+  // Return undefined
+  void: (): void => undefined,
+  // Call first argument
+  call: <T>(function_: (...args: RA<never>) => T): T => function_(),
+} as const;

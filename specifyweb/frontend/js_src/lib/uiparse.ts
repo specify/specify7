@@ -23,14 +23,14 @@ const stringGuard =
       ? formatter(value)
       : error('Value is not a string');
 
-const formatter: IR<(value: unknown) => unknown> = {
+export const formatter: IR<(value: unknown) => unknown> = {
   trim: stringGuard((value) => value.trim()),
   toLowerCase: stringGuard((value) => value.toLowerCase()),
   int: stringGuard(Number.parseInt),
   float: stringGuard(Number.parseFloat),
 } as const;
 
-const validators: IR<(value: unknown) => undefined | string> = {
+export const validators: IR<(value: unknown) => undefined | string> = {
   number: (value) =>
     typeof value === 'number' &&
     !Number.isNaN(value) &&

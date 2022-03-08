@@ -1502,6 +1502,12 @@ const commonText = createDictionary({
     ca: 'Select Record',
     'es-es': 'Select Record',
   },
+  preferences: {
+    'en-us': 'Preferences',
+    'ru-ru': 'Настройки',
+    ca: 'Preferences',
+    'es-es': 'Preferences',
+  },
 });
 
 export default commonText;

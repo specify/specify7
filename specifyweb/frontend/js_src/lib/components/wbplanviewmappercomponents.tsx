@@ -5,6 +5,7 @@ import * as cache from '../cache';
 import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
+import { getPrefDefinition } from '../preferencesutils';
 import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
@@ -126,14 +127,15 @@ export function ValidationResults(props: {
 }
 
 const mappingViewResizeThrottle = 150;
-const defaultMappingViewHeight = 300;
 
 export function MappingView(props: {
   readonly mappingElementProps: RA<MappingElementProps>;
   readonly mapButton: JSX.Element;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
-  const mappingViewHeightRef = React.useRef<number>(defaultMappingViewHeight);
+  const mappingViewHeightRef = React.useRef<number>(
+    getPrefDefinition('workBench', 'items', 'wbPlanView').defaultValue
+  );
   const mappingViewParentRef = React.useCallback<
     (mappingViewParent: HTMLElement | null) => void
   >((mappingViewParent) => {

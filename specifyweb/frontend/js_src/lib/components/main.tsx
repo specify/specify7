@@ -7,6 +7,7 @@ import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
 import { systemInformation } from '../systeminfo';
 import type { RA } from '../types';
+import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
@@ -17,7 +18,6 @@ import {
 } from './header';
 import { Dialog } from './modaldialog';
 import { Notifications } from './notifications';
-import { userInformation } from '../userinfo';
 
 export type UserTool = {
   readonly task: string;
@@ -48,6 +48,7 @@ const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
   })),
   import('../toolbarattachments'),
   import('./toolbar/wbsdialog'),
+  import('./toolbar/preferences'),
 ]).then(processMenuItems);
 
 function processMenuItems<T extends UserTool | MenuItem>(

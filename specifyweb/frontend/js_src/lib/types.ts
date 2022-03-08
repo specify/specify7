@@ -39,3 +39,24 @@ export const isFunction = <T>(
   value: T
 ): value is T & ((...args: RA<unknown>) => unknown) =>
   typeof value === 'function';
+
+/**
+ * Makes sure object extends a certain type
+ *
+ * @remarks
+ * Call this function with a generic parameter of desired type.
+ * The function returns another function which accepts an "as const" object.
+ * If that object does not extend the type given specified the first function
+ * a type error is thrown.
+ *
+ * The function has to return a function because typescript does not allow to
+ * explicitly specify first generic, but leave the second imlplicit.
+ *
+ * The function is needed as `const value: SomeType = {...} as const;` would
+ * cast the value to `SomeType` and lose the information from the `as const`
+ * assertion.
+ */
+export const ensure =
+  <T>() =>
+  <V extends T>(value: V): V extends T ? V : never =>
+    value as V extends T ? V : never;

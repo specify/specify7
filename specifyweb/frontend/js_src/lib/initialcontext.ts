@@ -28,6 +28,7 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 }
 
 export const initialContext = Promise.all([
+  import('./preferencesutils'),
   import('./schemabase'),
   import('./schema'),
   import('./remoteprefs'),

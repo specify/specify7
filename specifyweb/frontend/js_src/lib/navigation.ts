@@ -99,6 +99,9 @@ Backbone.history.history = Object.setPrototypeOf(
   typeof window === 'object' ? window.history : null!
 );
 
+// @ts-expect-error
+export const history = Backbone.history.history as typeof window.history;
+
 /*
  * Make the Backbone routing mechanisms ignore queryparams in urls
  * this gets rid of all that *splat cruft in the routes.

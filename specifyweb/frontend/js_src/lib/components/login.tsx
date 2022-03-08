@@ -5,13 +5,13 @@ import ReactDOM from 'react-dom';
 
 import commonText from '../localization/common';
 import type { Language } from '../localization/utils';
-import { enabledLanguages } from '../localization/utils';
+import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
-import { LanguageSelection } from './toolbar/language';
+import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 
 function Login({
   data,
@@ -38,6 +38,8 @@ function Login({
         languages={Object.fromEntries(
           data.languages.filter(([code]) => enabledLanguages.includes(code))
         )}
+        value={LANGUAGE}
+        onChange={handleLanguageChange}
       />
       <Form method="post">
         <input

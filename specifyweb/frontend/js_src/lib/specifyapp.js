@@ -83,6 +83,9 @@ global.jQuery = $;
 
     let currentOverlay;
     export function setCurrentOverlay(view){
+        // If view is already shown, don't make it an overlay
+        if(view === currentView)
+            return;
         currentOverlay?.remove();
         view.render();
         currentOverlay=view;
