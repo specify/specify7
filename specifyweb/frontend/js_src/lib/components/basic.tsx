@@ -137,7 +137,7 @@ export const className = {
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
   // TODO: get rid of usages of this:
   subViewHeader,
-  subFormHeader: `${subViewHeader} gap-x-2 flex font-bold border-border-gray-500`,
+  subFormHeader: `${subViewHeader} gap-x-2 flex font-bold border-b border-gray-500`,
   queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
     flex gap-x-2 rounded dark:border-none`,
   h2: 'font-semibold text-black dark:text-white',

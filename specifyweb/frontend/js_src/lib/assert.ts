@@ -11,10 +11,10 @@ export function assert(value: unknown, message?: string): void {
  * There is a proposal for fixing this:
  * https://github.com/tc39/proposal-throw-expressions
  */
-export function error(message: string, ...rest: RA<unknown>): never {
+export function error(message: string | Error, ...rest: RA<unknown>): never {
   if (rest.length > 0) console.error('Error details: ', ...rest);
   breakpoint();
-  throw new Error(message);
+  throw message instanceof Error ? message : new Error(message);
 }
 
 /**

@@ -419,6 +419,8 @@ export function fieldFormat(
   parser: Parser | undefined,
   value: string | undefined
 ): string {
+  if (typeof value === 'undefined' || value === null) return '';
+
   // Find Pick List Item Title
   const pickListName = field.getPickList();
   if (typeof pickListName === 'string') {
@@ -436,7 +438,7 @@ export function fieldFormat(
     const parseResults = parseValue(
       omit(resolvedParser, ['required']),
       undefined,
-      value ?? ''
+      value
     );
     if (parseResults.isValid)
       return (
@@ -451,5 +453,5 @@ export function fieldFormat(
       });
   } else console.error('Failed to resolve parsed for field', { field });
 
-  return value ?? '';
+  return value;
 }

@@ -1,6 +1,6 @@
-import { UnhandledErrorView } from './components/errorboundary';
+import { error } from './assert';
+import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
-import commonText from './localization/common';
 import type { IR, PartialBy, RA } from './types';
 
 // These HTTP methods do not require CSRF protection
@@ -100,7 +100,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
         : {}),
       ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
         ? {}
-        : { 'X-CSRFToken': csrfToken! }),
+        : { 'X-CSRFToken': csrfToken }),
       ...headers,
       ...(typeof accept === 'string' ? { Accept: accept } : {}),
     },
@@ -112,8 +112,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
           try {
             return { data: JSON.parse(text), status };
           } catch {
-            console.error('Invalid response', text);
-            throw new TypeError(`Failed parsing JSON response:\n${text}`);
+            throw { message: 'Failed parsing JSON response:', response: text };
           }
         } else if (ok && accept === 'application/xml') {
           try {
@@ -122,33 +121,20 @@ export const ajax = async <RESPONSE_TYPE = string>(
               status,
             };
           } catch {
-            console.error('Invalid response', text);
-            throw new TypeError(`Failed parsing XML response:\n${text}`);
+            throw { message: 'Failed parsing XML response:', response: text };
           }
         } else return { data: text, status };
       } else {
         console.error('Invalid response', text);
-        throw new Error(
-          `Invalid response code ${status}. Expected one of [${expectedResponseCodes.join(
+        throw {
+          message: `Invalid response code ${status}. Expected one of [${expectedResponseCodes.join(
             ', '
-          )}]. Response:\n${text}`
-        );
+          )}]. Response:`,
+          response: text,
+        };
       }
     })
-    .catch((error) => {
-      const errorMessage = `Error occurred fetching from ${url}:\n${error.stack}`;
-      console.error(errorMessage);
-      const handleClose = (): void => void view?.remove();
-      const view = strict
-        ? new UnhandledErrorView({
-            title: commonText('backEndErrorDialogTitle'),
-            header: commonText('backEndErrorDialogHeader'),
-            children: errorMessage,
-            onClose: handleClose,
-          }).render()
-        : undefined;
-      throw error;
-    });
+    .catch((error_) => error(handleAjaxError(error_, url, strict)));
 
 /**
  * A wrapper for "ajax" for when response data is not needed

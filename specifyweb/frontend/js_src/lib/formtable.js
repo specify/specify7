@@ -115,7 +115,7 @@ export default Backbone.View.extend({
 
             this.collection.on('add remove destroy', this.reRender, this);
 
-            this.readOnly = specifyform.subViewMode(this.$el) === 'view';
+            this.readOnly = specifyform.subViewMode(this.el) === 'view';
         },
         render: function() {
             var mode = this.readOnly ? 'view' : 'edit';

@@ -162,6 +162,7 @@ const fetchPreferences = async (): Promise<typeof preferences> =>
       },
     },
     {
+      // TODO: test what does the parser on 404
       expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
     }
   ).then(({ data, status }) => (status === Http.NOT_FOUND ? {} : data));

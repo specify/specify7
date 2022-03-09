@@ -301,7 +301,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
   );
 }
 
-const View = createBackboneView(PartialDateUi);
+const View = createBackboneView(PartialDateUi, false);
 
 export default UiPlugin.extend(
   {
@@ -342,7 +342,6 @@ export default UiPlugin.extend(
         readOnly: Boolean(this.$el.prop('disabled')),
         inputId: this.id,
       }).render();
-      this.view.el.classList.remove('contents');
 
       this.$el.replaceWith(this.view.el);
       this.setElement(this.view.el);

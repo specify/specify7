@@ -33,7 +33,7 @@ export const Base =  Backbone.View.extend({
         },
         render: function() {
             var self = this;
-            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
+            self.readOnly = specifyform.subViewMode(self.el) === 'view';
             self.$el.empty();
 
             this.button = $('<button>', {
@@ -127,7 +127,7 @@ export const Base =  Backbone.View.extend({
         },
         buildDialog: function(dialogForm) {
             var self = this;
-            var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
+            var formReadOnly = specifyform.getFormMode(dialogForm[0]) === 'view';
 
             dialogForm.find('.specify-form-header:first').remove();
             var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(dialogForm);

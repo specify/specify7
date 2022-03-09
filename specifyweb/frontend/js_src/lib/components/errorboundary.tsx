@@ -150,3 +150,87 @@ export class ErrorBoundary extends React.Component<
     );
   }
 }
+
+export function handleAjaxError(
+  error: unknown,
+  url: string,
+  strict: boolean
+): Error {
+  const errorObject: React.ReactNode[] = [
+    <p>
+      Error occurred fetching from <code>{url}</code>
+    </p>,
+  ];
+  const errorMessage: string[] = [`Error occurred fetching from ${url}`];
+
+  if (typeof error === 'object' && error !== null) {
+    if (error instanceof Error) {
+      errorObject.push(
+        <>
+          <p>Stack:</p>
+          <pre>{error.stack}</pre>
+        </>
+      );
+      errorMessage.push(`Error: ${error.message}`);
+      console.error(error);
+    } else if ('message' in error && 'response' in error) {
+      const { message, response } = error as {
+        readonly message: string;
+        readonly response: string;
+      };
+      errorObject.push(
+        <>
+          <p>{message}</p>
+          {formatErrorResponse(response)}
+        </>
+      );
+      errorMessage.push(message);
+    } else errorObject.push(<p>{error.toString()}</p>);
+  }
+
+  const handleClose = (): void => void view?.remove();
+  const view = strict
+    ? new UnhandledErrorView({
+        title: commonText('backEndErrorDialogTitle'),
+        header: commonText('backEndErrorDialogHeader'),
+        children: (
+          <div className="gap-y-2 flex flex-col flex-1">{errorObject}</div>
+        ),
+        onClose: handleClose,
+      }).render()
+    : undefined;
+  throw new Error(errorMessage.join('\n'));
+}
+
+function formatErrorResponse(error: string): JSX.Element {
+  try {
+    const json = JSON.parse(error);
+    return <pre>{JSON.stringify(json, null, 2)}</pre>;
+  } catch {
+    // Failed parsing error message as JSON
+  }
+  try {
+    const htmlElement = document.createElement('html');
+    htmlElement.innerHTML = error;
+    htmlElement.remove();
+    return <ErrorIframe>{error}</ErrorIframe>;
+  } catch {
+    // Failed parsing error message as HTML
+  }
+  // Output raw error message
+  return <pre>{error}</pre>;
+}
+
+function ErrorIframe({ children: error }: { children: string }): JSX.Element {
+  const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
+  React.useEffect(() => {
+    if (iframeRef.current === null) return;
+    const iframeDocument =
+      iframeRef.current.contentDocument ??
+      iframeRef.current.contentWindow?.document;
+    if (typeof iframeDocument === 'undefined') return;
+    iframeDocument.body.innerHTML = error;
+  }, [error]);
+
+  return <iframe className="flex-1" ref={iframeRef} />;
+}

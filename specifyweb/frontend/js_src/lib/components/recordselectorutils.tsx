@@ -105,15 +105,17 @@ function IntegratedRecordSelector({
   subformNode,
   htmlElement = subformNode,
   isReadOnly = false,
+  hasHeader = true,
   collection,
   ...rest
 }: Omit<
   Parameters<typeof CollectionToRecordSelector>[0],
-  'sliderPosition' | 'formType' | 'viewName' | 'isReadOnly'
+  'sliderPosition' | 'formType' | 'viewName' | 'isReadOnly' | 'hasHeader'
 > & {
   subformNode: HTMLElement;
   htmlElement?: HTMLElement;
   isReadOnly?: boolean;
+  hasHeader?: boolean;
 }): JSX.Element {
   return (
     <CollectionToRecordSelector
@@ -133,9 +135,13 @@ function IntegratedRecordSelector({
       }
       formType={specifyform.getSubViewType(subformNode)}
       viewName={htmlElement.dataset['specify-viewname']}
+      hasHeader={hasHeader}
       {...rest}
     />
   );
 }
 
-export const RecordSelectorView = createBackboneView(IntegratedRecordSelector);
+export const RecordSelectorView = createBackboneView(
+  IntegratedRecordSelector,
+  false
+);

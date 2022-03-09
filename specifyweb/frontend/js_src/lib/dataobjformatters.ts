@@ -146,7 +146,8 @@ export async function format(
           return fieldFormat(
             field,
             defined(resolveParser(field)),
-            value as string | undefined
+            value as string | undefined,
+            false
           );
         }
       });

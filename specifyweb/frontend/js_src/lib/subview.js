@@ -26,7 +26,7 @@ export default Backbone.View.extend({
             this.field = options.field;
             this.parentResource = options.parentResource;
             this.title = this.field.label;
-            this.readOnly = specifyform.subViewMode(this.$el) === 'view';
+            this.readOnly = specifyform.subViewMode(this.el) === 'view';
 
             this.parentResource.on('change:' + this.field.name.toLowerCase(),
                                    this.resourceChanged, this);

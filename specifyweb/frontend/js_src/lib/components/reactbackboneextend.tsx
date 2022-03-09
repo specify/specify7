@@ -40,7 +40,8 @@ function ForwardProps<PROPS extends IR<unknown>>({
 }
 
 const createBackboneView = <PROPS extends IR<unknown>>(
-  Component: (props: PROPS) => JSX.Element | null
+  Component: (props: PROPS) => JSX.Element | null,
+  makeParentContents = true
 ): new (props?: PROPS & { readonly el?: HTMLElement }) => View & {
   readonly updateProps: (newProps: Partial<PROPS>) => void;
 } =>
@@ -65,7 +66,7 @@ const createBackboneView = <PROPS extends IR<unknown>>(
       }
 
       public render(): this {
-        this.el.classList.add('contents');
+        if (makeParentContents) this.el.classList.add('contents');
         ReactDOM.render(
           <React.StrictMode>
             <ErrorBoundary>

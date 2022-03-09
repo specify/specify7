@@ -65,7 +65,7 @@ var MultiView = Backbone.View.extend({
             console.error("undefined relationship:", resource.specifyModel.name, fieldName);
             return null;
         }
-        var viewOptions = { el: node, subformNode: node, field: field, populateForm: populateForm };
+        var viewOptions = { el: node[0], subformNode: node[0], field: field, populateForm: populateForm };
         return resource.rget(fieldName).done(function(related) {
             var View;
             switch (field.type) {

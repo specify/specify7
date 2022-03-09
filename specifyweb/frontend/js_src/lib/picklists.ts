@@ -11,7 +11,7 @@ import type { RA } from './types';
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
  */
-export let pickLists: RA<SpecifyResource<PickList>> = undefined!;
+export let pickLists: RA<SpecifyResource<PickList>> = [];
 
 export const agentTypes = [
   formsText('organization'),

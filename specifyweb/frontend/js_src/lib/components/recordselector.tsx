@@ -34,8 +34,8 @@ function Buttons({
         </Button.LikeLink>
       )}
       {typeof handleAdd === 'function' && (
-        <Button.LikeLink onClick={handleDelete}>
-          {commonText('new')}
+        <Button.LikeLink onClick={handleAdd}>
+          {commonText('add')}
         </Button.LikeLink>
       )}
       {typeof handleVisit === 'function' && (
@@ -100,6 +100,9 @@ function Slider({
             max={max}
             step="1"
             value={value}
+            onChange={({ target }): void =>
+              handleChange(Number.parseInt(target.value))
+            }
           />
         </label>
         <span>/</span>
@@ -276,7 +279,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
           : undefined
       }
       onDelete={typeof records[index] === 'object' ? handleRemove : undefined}
-      onAdd={handleAdd}
+      onAdd={typeof handleAdded === 'function' ? handleAdd : undefined}
     />
   );
 
@@ -320,9 +323,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
           isDependent={isDependent}
         />
       )}
-      {records.length === 0 ? (
-        <p>{formsText('noData')}</p>
-      ) : (
+      {typeof records[index] === 'object' ? (
         <ResourceView
           resource={records[index]}
           mode={isDependent && !isReadOnly ? 'edit' : 'view'}
@@ -333,6 +334,8 @@ export function RecordSelector<SCHEMA extends AnySchema>({
           canAddAnother={false}
           onClose={f.void}
         />
+      ) : (
+        <p>{formsText('noData')}</p>
       )}
       {sliderPosition === 'bottom' && slider}
       {!hasHeader && <FormFooter>{buttons}</FormFooter>}
