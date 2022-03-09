@@ -48,3 +48,45 @@ export function usePref<
 
   return [pref, updatePref] as const;
 }
+
+export function usePrefRef<
+  CATEGORY extends keyof PreferenceTypes,
+  SUBCATEGORY extends keyof PreferenceTypes[CATEGORY],
+  ITEM extends keyof PreferenceTypes[CATEGORY][SUBCATEGORY]
+>(
+  category: CATEGORY,
+  subcategory: SUBCATEGORY,
+  item: ITEM
+): Readonly<
+  [
+    pref: Readonly<
+      React.MutableRefObject<PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]>
+    >,
+    setPref: (newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]) => void
+  ]
+> {
+  const pref = React.useRef<PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]>(
+    getPrefValue(category, subcategory, item)
+  );
+
+  React.useEffect(() => {
+    function handleUpdate(): void {
+      pref.current = getPrefValue(category, subcategory, item);
+    }
+
+    prefUpdateListeners.add(handleUpdate);
+    return (): void => void prefUpdateListeners.delete(handleUpdate);
+  }, [category, subcategory, item]);
+
+  const updatePref = React.useCallback(
+    function updatePref(
+      newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]
+    ): void {
+      if (newPref == pref.current) return;
+      setPref(category, subcategory, item, newPref);
+    },
+    [category, subcategory, item]
+  );
+
+  return [pref, updatePref] as const;
+}

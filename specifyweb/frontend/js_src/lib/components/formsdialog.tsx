@@ -6,7 +6,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { fetchContext as fetchSchema, getModel } from '../schema';
 import { makeResourceViewUrl } from '../specifyapi';
-import specifyform from '../specifyform';
+import { getView } from '../specifyform';
 import { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
@@ -37,9 +37,8 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
   ).filter((item) => item.getAttribute('sidebar') === 'true');
   return Promise.all(
     views.map((view) =>
-      specifyform
-        .getView(view.getAttribute('view'))
-        .then<Entry>((form: { readonly class: string }) => {
+      getView(view.getAttribute('view')).then<Entry>(
+        (form: { readonly class: string }) => {
           const modelName = SpecifyModel.parseClassName(
             form.class
           ) as keyof Tables;
@@ -53,7 +52,8 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
             title: view.getAttribute('title') ?? '',
             model,
           };
-        })
+        }
+      )
     )
   );
 });

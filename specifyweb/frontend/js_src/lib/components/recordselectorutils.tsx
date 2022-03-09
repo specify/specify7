@@ -65,7 +65,11 @@ function CollectionToRecordSelector<SCHEMA extends AnySchema>({
 
   // Listen for changes to collection
   React.useEffect(() => {
-    const updateRecords = (): void => setRecords(collection.models);
+    /*
+     * Wrapped in Array.from to copy the array, since collection.models get's
+     * mutated
+     */
+    const updateRecords = (): void => setRecords(Array.from(collection.models));
     collection.on('add remove destroy', updateRecords);
     return (): void => collection.off('add remove destroy', updateRecords);
   }, [collection]);
@@ -81,10 +85,13 @@ function CollectionToRecordSelector<SCHEMA extends AnySchema>({
       onAdd={(resource): void => {
         collection.add(resource);
         handleAdd?.(resource);
+        // Updates the state to trigger a reRender
+        setRecords(Array.from(collection.models));
       }}
       onDelete={(index): void => {
         collection.remove(records[index]);
         handleDelete?.(index);
+        setRecords(Array.from(collection.models));
       }}
       onSlide={(index: number): void => {
         if (

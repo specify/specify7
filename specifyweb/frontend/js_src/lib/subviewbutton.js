@@ -121,9 +121,9 @@ export const Base =  Backbone.View.extend({
             var self = this;
             if (self.readOnly && !self.related) return;
 
-            specifyform.buildSubView(self.$el).done(function(dialogForm) {
-                self.buildDialog(dialogForm);
-            });
+            specifyform.buildSubView(self.$el).then((dialogForm)=>
+                self.buildDialog(dialogForm)
+            );
         },
         buildDialog: function(dialogForm) {
             var self = this;

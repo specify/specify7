@@ -59,7 +59,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly related?: SpecifyResource<AnySchema>;
   readonly getTotalCount: () => Promise<number>;
   readonly toJSON: <V extends IR<unknown>>() => RA<V>;
-  readonly models: SCHEMA extends null ? [] : RA<SpecifyResource<SCHEMA>>;
+  readonly models: RA<SpecifyResource<SCHEMA>>;
   readonly isComplete: () => boolean;
   readonly model: {
     readonly specifyModel: SpecifyModel<SCHEMA>;

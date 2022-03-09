@@ -220,7 +220,11 @@ export function QueryResultsTable({
   return (
     <ContainerBase className="overflow-hidden">
       <div className="gap-x-2 flex items-center">
-        <h3>{`${label}: (${totalCount})`}</h3>
+        <h3>{`${label}: (${
+          selectedRows.size === 0
+            ? totalCount
+            : `${selectedRows.size}/${totalCount}`
+        })`}</h3>
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) ? (
           <ViewRecords

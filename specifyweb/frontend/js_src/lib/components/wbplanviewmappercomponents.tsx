@@ -1,11 +1,8 @@
 import React from 'react';
-import _ from 'underscore';
 
-import * as cache from '../cache';
 import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { getPrefDefinition } from '../preferencesutils';
 import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
@@ -22,6 +19,7 @@ import {
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { usePrefRef } from './preferenceshooks';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -126,36 +124,33 @@ export function ValidationResults(props: {
   );
 }
 
-const mappingViewResizeThrottle = 150;
-
 export function MappingView(props: {
   readonly mappingElementProps: RA<MappingElementProps>;
   readonly mapButton: JSX.Element;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
-  const mappingViewHeightRef = React.useRef<number>(
-    getPrefDefinition('workBench', 'items', 'wbPlanView').defaultValue
+  const [mappingViewHeight, setMappingViewHeight] = usePrefRef(
+    'workBench',
+    'items',
+    'wbPlanView'
   );
   const mappingViewParentRef = React.useCallback<
     (mappingViewParent: HTMLElement | null) => void
-  >((mappingViewParent) => {
-    if (typeof ResizeObserver === 'undefined' || mappingViewParent === null)
-      return undefined;
+  >(
+    (mappingViewParent) => {
+      if (typeof ResizeObserver === 'undefined' || mappingViewParent === null)
+        return undefined;
 
-    const resizeObserver = new ResizeObserver(
-      _.throttle(() => {
-        const height = mappingViewParent.offsetHeight;
-        mappingViewHeightRef.current = height;
-        cache.set('wbPlanViewUi', 'mappingViewHeight', height, {
-          overwrite: true,
-        });
-      }, mappingViewResizeThrottle)
-    );
+      const resizeObserver = new ResizeObserver(() =>
+        setMappingViewHeight(mappingViewParent.offsetHeight)
+      );
 
-    resizeObserver.observe(mappingViewParent);
+      resizeObserver.observe(mappingViewParent);
 
-    return (): void => resizeObserver.disconnect();
-  }, []);
+      return (): void => resizeObserver.disconnect();
+    },
+    [setMappingViewHeight]
+  );
 
   return (
     <section
@@ -163,7 +158,7 @@ export function MappingView(props: {
         max-h-[50vh] min-h-[theme(spacing.40)] h-[var(--mapping-view-height)]`}
       style={
         {
-          '--mapping-view-height': `${mappingViewHeightRef.current ?? ''}px`,
+          '--mapping-view-height': `${mappingViewHeight.current ?? ''}px`,
         } as React.CSSProperties
       }
       aria-label={wbText('mappingEditor')}

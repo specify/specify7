@@ -178,6 +178,7 @@ export function ResourceView({
   onSaved: handleSaved,
   onDeleted: handleDeleted,
   className,
+  isSubView,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly recordSet?: SpecifyResource<RecordSet>;
@@ -204,11 +205,13 @@ export function ResourceView({
   readonly onClose: () => void;
   readonly onDeleted?: (nextResource: string | undefined) => void;
   readonly className?: string;
+  readonly isSubView: boolean;
 }): JSX.Element | null {
   const [state, setState] = React.useState<'loading' | 'main' | 'noDefinition'>(
     'loading'
   );
 
+  // Fetch record set info
   const [recordSetInfo] = useAsyncState(
     React.useCallback(() => {
       const info = resource.get('recordset_info');
@@ -238,6 +241,7 @@ export function ResourceView({
     }, [resource])
   );
 
+  // Update title when resource changes
   const [title, setTitle] = React.useState(resource.specifyModel.label);
   React.useEffect(() => {
     function updateTitle(): void {
@@ -261,6 +265,7 @@ export function ResourceView({
     updateTitle();
   }, [resource]);
 
+  // Build the view
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [form, setForm] = React.useState<HTMLFormElement | undefined>(
     undefined
@@ -271,7 +276,8 @@ export function ResourceView({
       specifyForm.buildViewByName(
         viewName ?? resource.specifyModel.view,
         type,
-        mode
+        mode,
+        isSubView
       ),
       resource.fetchIfNotPopulated(),
     ]).then(
@@ -282,7 +288,7 @@ export function ResourceView({
 
         populateForm(form, resource);
         const formElement = form[0] as HTMLFormElement;
-        defined(containerRef.current ?? undefined).append(formElement);
+        defined(containerRef.current ?? undefined).replaceChildren(formElement);
         setForm(formElement);
 
         const resourceLabel = resource.specifyModel.label;
@@ -311,7 +317,7 @@ export function ResourceView({
   else {
     const content = (
       <>
-        {state === 'loading' && <LoadingScreen />}
+        {state === 'loading' && hasHeader ? <LoadingScreen /> : undefined}
         {hasHeader && typeof recordSetInfo === 'object' ? (
           <ViewHeader
             {...recordSetInfo}
@@ -425,6 +431,7 @@ export function ResourceViewComponent({
           : setIsDeleted(true)
       }
       onClose={handleClose}
+      isSubView={false}
     />
   );
 }

@@ -29,7 +29,7 @@ var MultiView = Backbone.View.extend({
             var collectionName = this.options.collection && this.options.collection.__name__;
             var iActionCollections =  ["LoanPreparationDependentCollection", "GiftPreparationDependentCollection"];
             // The form has to actually be built to tell if it is a formtable.
-            specifyform.buildSubView(this.$el).done(function(form) {
+            specifyform.buildSubView(this.$el).then(function(form) {
                 var View = form.hasClass('specify-form-type-formtable')
                     ? (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)
                     : RecordSelectorView;

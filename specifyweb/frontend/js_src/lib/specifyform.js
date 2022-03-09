@@ -9,7 +9,10 @@ import {processColumnDefinition} from './processcolumndef';
 
 import {className} from './components/basic';
 import {SpecifyModel} from './specifymodel';
+import {ajax, Http} from "./ajax";
+import * as queryString from './querystring';
 
+// TODO: rewrite to React
 var formCounter = 0;
 
     function getModelFromViewdef(viewdef) {
@@ -112,17 +115,28 @@ var formCounter = 0;
         return wrapper;
     }
 
-    function getView(name) {
-        return $.getJSON('/context/view.json', {name: name});
-    }
+    // This prevents form flickering in Record Set when switching records
+    const views = {};
+    export const getView = async (name) =>
+      name in views
+        ? Promise.resolve(views[name])
+        : ajax(queryString.format('/context/view.json', {name: name}),{
+            headers: {Accept: 'application/json'},
+        }, {
+            expectedResponseCodes: [Http.OK, Http.NOT_FOUND]
+        }).then(({data, status})=>{
+            if(status === Http.NOT_FOUND)
+                throw Http.NOT_FOUND;
+            views[name] = data;
+            return data;
+        });
 
     var specifyform = {
         parseSpecifyProperties: parseSpecifyProperties,
-        getView: getView,
 
         buildViewByName: function (viewName, defaultType, mode, isSubView=false) {
             if (viewName === "ObjectAttachment")
-                return $.when($(`<div data-specify-model="ObjectAttachmentIFace">
+                return Promise.resolve($(`<div data-specify-model="ObjectAttachmentIFace">
                   <h2 class="${className.formHeader}"></h2>
                   <button
                     type="button"
@@ -133,7 +147,8 @@ var formCounter = 0;
                   </button>
                 </div>`));
             else
-                return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode, isSubView); });
+                return getView(viewName)
+                  .then(function(view) { return buildView(view, defaultType, mode, isSubView); });
         },
 
         buildSubView: function (node, mode) {
@@ -142,14 +157,12 @@ var formCounter = 0;
             var viewName = node.data('specify-viewname');
             var buildView = specifyform.buildViewByName(viewName, defaultType, mode, true);
 
-            return buildView.pipe(function(form) {
+            return buildView.then(function(form) {
                 form.find('.specify-form-header:first, .specify-form-footer button').remove();
                 return form;
-            }).fail(jqxhr => {
-                if (jqxhr.status === 404) {
-                    jqxhr.errorHandled = true;
+            }).catch(error => {
+                if(error === Http.NOT_FOUND)
                     console.error('form not found for subview:', viewName, defaultType, mode);
-                }
             });
         },
 

@@ -59,7 +59,7 @@ export async function fetchPickListItems(
 export async function fetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
-  const pickList = await fetchPickLists().then(() => getPickList(pickListName));
+  const pickList = await fetchPickLists().then(() => pickLists[pickListName]);
 
   if (typeof pickList === 'undefined') return undefined;
 
@@ -69,15 +69,6 @@ export async function fetchPickList(
 
   return pickList;
 }
-
-/**
- * Like fetchPickList, but synchronous, and works only with already fetched
- * pick lists
- */
-export const getPickList = (
-  pickListName: string
-): undefined | SpecifyResource<PickList> =>
-  pickLists.find((item) => item.get('name') === pickListName);
 
 export const getPickListItems = (
   pickList: SpecifyResource<PickList>

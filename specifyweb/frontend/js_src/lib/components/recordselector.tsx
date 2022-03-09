@@ -28,14 +28,14 @@ function Buttons({
 }): JSX.Element {
   return (
     <>
-      {typeof handleDelete === 'function' && (
-        <Button.LikeLink onClick={handleAdd}>
-          {commonText('delete')}
-        </Button.LikeLink>
-      )}
       {typeof handleAdd === 'function' && (
         <Button.LikeLink onClick={handleAdd}>
           {commonText('add')}
+        </Button.LikeLink>
+      )}
+      {typeof handleDelete === 'function' && (
+        <Button.LikeLink onClick={handleDelete}>
+          {commonText('delete')}
         </Button.LikeLink>
       )}
       {typeof handleVisit === 'function' && (
@@ -49,21 +49,18 @@ function Buttons({
 
 function Slider({
   value,
-  max,
+  count,
   onChange: handleChange,
 }: {
   readonly value: number;
-  readonly max: number;
+  readonly count: number;
   readonly onChange: (newValue: number) => void;
 }): JSX.Element {
-  React.useEffect(
-    () => (value > max ? handleChange(max) : undefined),
-    [max, value]
-  );
+  const [isBlank, setIsBlank] = React.useState<boolean>(false);
   return (
     <div
       className={`gap-x-2 print:hidden flex justify-center ${
-        max > 1 ? '' : 'invisible'
+        count === 0 ? 'invisible' : ''
       }`}
     >
       <Button.Simple
@@ -91,28 +88,36 @@ function Slider({
             after:content-[attr(data-value)]`}
           data-value={value}
         >
-          <span className="sr-only">{formsText('currentRecord')(max)}</span>
+          <span className="sr-only">{formsText('currentRecord')(count)}</span>
           <Input
             type="number"
             className="no-arrows dark:bg-neutral-600 absolute top-0 left-0 w-full h-full font-bold bg-white border-0"
             min="1"
-            // TODO: test if this inhibits input:
-            max={max}
+            max={count}
             step="1"
-            value={value}
-            onChange={({ target }): void =>
-              handleChange(Number.parseInt(target.value))
-            }
+            // Convert 0-based indexing to 1-based
+            value={isBlank ? '' : value + 1}
+            onChange={({ target }): void => {
+              setIsBlank(target.value.length === 0);
+              if (target.value.length > 0) {
+                const value = Math.max(
+                  0,
+                  Math.min(count - 1, Number.parseInt(target.value) - 1)
+                );
+                handleChange(value);
+              }
+            }}
+            onBlur={(): void => setIsBlank(false)}
           />
         </label>
         <span>/</span>
-        <span>{max}</span>
+        <span>{count}</span>
       </div>
       <Button.Simple
         className="button dark:bg-neutral-500 px-4 bg-white"
         aria-label={formsText('nextRecord')}
         title={formsText('nextRecord')}
-        disabled={value == max}
+        disabled={value + 1 == count}
         onClick={(): void => handleChange(value + 1)}
       >
         &gt;
@@ -121,8 +126,8 @@ function Slider({
         className="button"
         aria-label={formsText('lastRecord')}
         title={formsText('lastRecord')}
-        disabled={value == max}
-        onClick={(): void => handleChange(max)}
+        disabled={value + 1 == count}
+        onClick={(): void => handleChange(count - 1)}
       >
         ≫
       </Button.Simple>
@@ -266,7 +271,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
   }
 
   const slider = (
-    <Slider value={index} max={records.length} onChange={updateIndex} />
+    <Slider value={index} count={records.length} onChange={updateIndex} />
   );
 
   const title = field?.label ?? model?.label;
@@ -333,6 +338,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
           hasButtons={false}
           canAddAnother={false}
           onClose={f.void}
+          isSubView={true}
         />
       ) : (
         <p>{formsText('noData')}</p>

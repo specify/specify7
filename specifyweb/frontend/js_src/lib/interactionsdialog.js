@@ -3,13 +3,12 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-import Q from 'q';
 
 
 import {ajax} from './ajax';
-import {schema, getModel} from './schema';
+import {getModel, schema} from './schema';
 import {getIcon} from './icons';
-import specifyform from './specifyform';
+import {getView} from './specifyform';
 import {userInformation} from './userinfo';
 import InteractionDialog from './interactiondialog';
 import * as s from './stringlocalization';
@@ -39,8 +38,8 @@ var interaction_entries, actions, isFulfilled=false;
 
         actions.forEach(actionEntry => actionEntry.table = getTableForObjToCreate(actionEntry));
 
-        return Q.all(views.map(
-          view => Q(specifyform.getView(view.attr('view'))).then(form => form)
+        return Promise.all(views.map(
+          view => getView(view.attr('view')).then(form => form)
         ));
     });
 

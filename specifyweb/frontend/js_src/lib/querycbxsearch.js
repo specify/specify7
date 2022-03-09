@@ -32,7 +32,7 @@ export default Backbone.View.extend({
         },
         render: function() {
             var dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
-            specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(_.bind(this.makeDialog, this));
+            specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').then(_.bind(this.makeDialog, this));
             return this;
         },
         makeDialog: function(form) {

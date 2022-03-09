@@ -2,7 +2,6 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import Q from 'q';
 import Backbone from './backbone';
 
 
@@ -119,14 +118,14 @@ export default Backbone.View.extend({
         },
         render: function() {
             var mode = this.readOnly ? 'view' : 'edit';
-            Q([
+            Promise.all([
                 specifyform.buildSubView(this.$el),
                 specifyform.buildViewByName(this.collection.model.specifyModel.view, null, mode, true)
-            ]).spread(function(subform, expandedForm) {
+            ]).then(([subform, expandedForm]) => {
                 this.subform = subform;
                 this.expandedForm = expandedForm;
                 this._render();
-            }.bind(this));
+            });
             return this;
         },
         reRender: function() {

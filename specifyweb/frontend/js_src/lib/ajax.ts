@@ -112,7 +112,10 @@ export const ajax = async <RESPONSE_TYPE = string>(
           try {
             return { data: JSON.parse(text), status };
           } catch {
-            throw { message: 'Failed parsing JSON response:', response: text };
+            throw {
+              statusText: 'Failed parsing JSON response:',
+              responseText: text,
+            };
           }
         } else if (ok && accept === 'application/xml') {
           try {
@@ -121,16 +124,19 @@ export const ajax = async <RESPONSE_TYPE = string>(
               status,
             };
           } catch {
-            throw { message: 'Failed parsing XML response:', response: text };
+            throw {
+              statusText: 'Failed parsing XML response:',
+              responseText: text,
+            };
           }
         } else return { data: text, status };
       } else {
         console.error('Invalid response', text);
         throw {
-          message: `Invalid response code ${status}. Expected one of [${expectedResponseCodes.join(
+          statusText: `Invalid response code ${status}. Expected one of [${expectedResponseCodes.join(
             ', '
           )}]. Response:`,
-          response: text,
+          responseText: text,
         };
       }
     })

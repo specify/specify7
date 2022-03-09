@@ -4,14 +4,14 @@ import type { PickList, PickListItem, Tables } from './datamodel';
 import type { SerializedResource, TableFields } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import formsText from './localization/forms';
-import { createPickListItem, fetchPickListItems } from './picklistmixins';
+import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
-import type { RA } from './types';
+import type { IR, RA } from './types';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
  */
-export let pickLists: RA<SpecifyResource<PickList>> = [];
+export let pickLists: IR<SpecifyResource<PickList>> = [];
 
 export const agentTypes = [
   formsText('organization'),
@@ -35,9 +35,6 @@ export const frontEndPickLists: {
     readonly [FIELD_NAME in TableFields<Tables[TABLE_NAME]>]?: string;
   };
 } = {
-  Preparation: {
-    prepType: '_prepType',
-  },
   Agent: {
     agentType: '_AgentTypeComboBox',
   },
@@ -63,17 +60,7 @@ function definePicklist(
 }
 
 /** Create front-end only pick lists */
-async function fetchExtraPickLists(): Promise<RA<SpecifyResource<PickList>>> {
-  const prepType = new schema.models.PickList.Resource();
-  prepType.set('name', '_prepType');
-  prepType.set('tableName', 'PrepType');
-  prepType.set('readOnly', false);
-  prepType.set('isSystem', true);
-  prepType.set('type', PickListTypes.RECORDS);
-  prepType.set('timestampCreated', new Date().toJSON());
-
-  prepType.set('pickListItems', await fetchPickListItems(prepType));
-
+function getExtraPickLists(): RA<SpecifyResource<PickList>> {
   const agentType = definePicklist(
     '_AgentTypeComboBox',
     agentTypes.map((title, index) =>
@@ -99,21 +86,23 @@ async function fetchExtraPickLists(): Promise<RA<SpecifyResource<PickList>>> {
     )
   );
 
-  return [prepType, agentType, month, auditLogAction, tables];
+  return [agentType, month, auditLogAction, tables];
 }
 
 export async function fetchPickLists(): Promise<typeof pickLists> {
-  if (Array.isArray(pickLists)) return pickLists;
+  if (Object.keys(pickLists).length > 0) return pickLists;
   const collection = new schema.models.PickList.LazyCollection({
     filters: {
       domainfilter: true,
     },
   });
 
-  const extraPickListsPromise = fetchExtraPickLists();
-
   return collection.fetchPromise({ limit: 0 }).then(async ({ models }) => {
-    pickLists = [...models, ...(await extraPickListsPromise)];
+    pickLists = Object.fromEntries(
+      [...models, ...getExtraPickLists()].map(
+        (pickList) => [pickList.get('name'), pickList] as const
+      )
+    );
     return pickLists;
   });
 }

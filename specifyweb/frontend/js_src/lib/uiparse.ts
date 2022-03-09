@@ -4,7 +4,8 @@ import { dayjs } from './dayjs';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import queryText from './localization/query';
-import { getPickList, getPickListItems } from './picklistmixins';
+import { getPickListItems } from './picklistmixins';
+import { pickLists } from './picklists';
 import type {
   JavaType,
   LiteralField,
@@ -417,19 +418,19 @@ export function parseValue(
 export function fieldFormat(
   field: LiteralField,
   parser: Parser | undefined,
-  value: string | undefined
+  value: string | number | null | undefined
 ): string {
   if (typeof value === 'undefined' || value === null) return '';
 
   // Find Pick List Item Title
   const pickListName = field.getPickList();
-  if (typeof pickListName === 'string') {
-    const pickList = getPickList(pickListName);
-    if (typeof pickList === 'object') {
-      const items = getPickListItems(pickList);
-      const item = items.find((item) => item.value === value);
-      if (typeof item === 'object') return item.title;
-    }
+  if (
+    typeof pickListName === 'string' &&
+    typeof pickLists[pickListName] === 'object'
+  ) {
+    const items = getPickListItems(pickLists[pickListName]);
+    const item = items.find((item) => item.value === value);
+    if (typeof item === 'object') return item.title;
   }
 
   const resolvedParser = parser ?? resolveParser(field);
@@ -438,7 +439,7 @@ export function fieldFormat(
     const parseResults = parseValue(
       omit(resolvedParser, ['required']),
       undefined,
-      value
+      value.toString()
     );
     if (parseResults.isValid)
       return (
@@ -453,5 +454,5 @@ export function fieldFormat(
       });
   } else console.error('Failed to resolve parsed for field', { field });
 
-  return value;
+  return value.toString();
 }

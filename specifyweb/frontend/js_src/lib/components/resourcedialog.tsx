@@ -48,6 +48,7 @@ export function ResourceDialog<SCHEMA extends AnySchema = AnySchema>({
         mode={readOnly ? 'view' : 'edit'}
         canAddAnother={true}
         hasHeader={false}
+        isSubView={false}
       />
       {children}
     </Dialog>

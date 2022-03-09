@@ -99,17 +99,12 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
+  const [errorObject, errorMessage] = formatError(error);
+  console.error(errorMessage);
   breakpoint();
-  console.error(error);
   const handleClose = (): void => void view.remove();
   const view = new UnhandledErrorView({
-    children:
-      error.message ??
-      // "error.responseText" is for jQuery exceptions
-      (error as unknown as { readonly responseText: string }).responseText ??
-      error.stack ??
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      error.toString(),
+    children: errorObject,
     onClose: handleClose,
   }).render();
 }
@@ -151,17 +146,19 @@ export class ErrorBoundary extends React.Component<
   }
 }
 
-export function handleAjaxError(
+function formatError(
   error: unknown,
-  url: string,
-  strict: boolean
-): Error {
+  url?: string
+): Readonly<[errorObject: JSX.Element, errorMessage: string]> {
   const errorObject: React.ReactNode[] = [
-    <p>
-      Error occurred fetching from <code>{url}</code>
-    </p>,
+    typeof error === 'string' && (
+      <p>
+        Error occurred fetching from <code>{url}</code>
+      </p>
+    ),
   ];
-  const errorMessage: string[] = [`Error occurred fetching from ${url}`];
+  const errorMessage: string[] =
+    typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
 
   if (typeof error === 'object' && error !== null) {
     if (error instanceof Error) {
@@ -173,33 +170,43 @@ export function handleAjaxError(
       );
       errorMessage.push(`Error: ${error.message}`);
       console.error(error);
-    } else if ('message' in error && 'response' in error) {
-      const { message, response } = error as {
-        readonly message: string;
-        readonly response: string;
+    } else if ('statusText' in error && 'responseText' in error) {
+      const { statusText, responseText } = error as {
+        readonly statusText: string;
+        readonly responseText: string;
       };
       errorObject.push(
         <>
-          <p>{message}</p>
-          {formatErrorResponse(response)}
+          <p>{statusText}</p>
+          {formatErrorResponse(responseText)}
         </>
       );
-      errorMessage.push(message);
+      errorMessage.push(statusText);
     } else errorObject.push(<p>{error.toString()}</p>);
   }
 
+  return [
+    <div className="gap-y-2 flex flex-col flex-1">{errorObject}</div>,
+    errorMessage.join('\n'),
+  ] as const;
+}
+
+export function handleAjaxError(
+  error: unknown,
+  url: string,
+  strict: boolean
+): Error {
+  const [errorObject, errorMessage] = formatError(error, url);
   const handleClose = (): void => void view?.remove();
   const view = strict
     ? new UnhandledErrorView({
         title: commonText('backEndErrorDialogTitle'),
         header: commonText('backEndErrorDialogHeader'),
-        children: (
-          <div className="gap-y-2 flex flex-col flex-1">{errorObject}</div>
-        ),
+        children: errorObject,
         onClose: handleClose,
       }).render()
     : undefined;
-  throw new Error(errorMessage.join('\n'));
+  throw new Error(errorMessage);
 }
 
 function formatErrorResponse(error: string): JSX.Element {
