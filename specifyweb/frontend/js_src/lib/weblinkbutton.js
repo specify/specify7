@@ -8,6 +8,7 @@ import {UiPlugin} from './uiplugin';
 import {getIcon} from './icons';
 import UIField from './uifield';
 import {load} from './initialcontext';
+import {serializeResource} from "./datamodelutils";
 
 // TODO: convert to React
 
@@ -110,8 +111,14 @@ export default UiPlugin.extend({
                     specialResourcesFields[this.model.specifyModel.name] ??
                     function() { return Promise.resolve({}); };
 
-            var data = this.model.toJSON();
-            _.extend(args, data, { _this: data[this.fieldName] });
+            args = {
+                ...args,
+                // Lower case variants
+                ...this.model.toJSON(),
+                // Camel case variants
+                ...serializeResource(this.model),
+            };
+            args._this = args[this.fieldName];
 
             return getSpecialFields(this.model).then(function(specialFields) {
                 _.extend(args, specialFields);
