@@ -8,29 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from . import models
 
-
-policy = """
-p, abentley, 4, /table/*, read, allow
-p, abentley, 4, /table/*, update, allow
-p, abentley, 4, /table/*, create, allow
-p, abentley, 4, /field/collectingevent/remarks, update, allow
-p, abentley, 4, /field/determination/remarks, update, allow
-
-p, testuser, *, /table/*, create, allow
-p, testuser, *, /table/*, update, allow
-p, testuser, *, /table/*, delete, allow
-p, testuser, *, /field/*, update, allow
-
-p, fullaccess, 4, /field/*, update, allow
-#p, fullaccess, 4, /field/determination/remarks, update, deny
-
-g, abentley, fullaccess, 4
-g, abentley, groupA, 4
-
-
-"""
-
-
 class AccessDeniedException(Exception):
     pass
 
