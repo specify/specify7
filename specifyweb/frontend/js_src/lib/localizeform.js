@@ -18,7 +18,7 @@ function localize(s) {
 
 export default function(formNode) {
         var form = $(formNode);
-        const model = getModel(form.data('specify-model'));
+        const model = getModel(form.data('specify-model') ?? '');
         if (typeof model === 'undefined') return;
 
         $('.specify-form-header', form).prepend(

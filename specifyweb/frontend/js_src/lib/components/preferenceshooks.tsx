@@ -1,26 +1,28 @@
 import React from 'react';
 
-import type { PreferenceTypes } from '../preferencesutils';
+import type { Preferences } from '../preferences';
 import { getPrefValue, setPref } from '../preferencesutils';
 
 export const prefUpdateListeners = new Set<() => void>();
 
 export function usePref<
-  CATEGORY extends keyof PreferenceTypes,
-  SUBCATEGORY extends keyof PreferenceTypes[CATEGORY],
-  ITEM extends keyof PreferenceTypes[CATEGORY][SUBCATEGORY]
+  CATEGORY extends keyof Preferences,
+  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
 ): Readonly<
   [
-    pref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM],
-    setPref: (newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]) => void
+    pref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
+    setPref: (
+      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+    ) => void
   ]
 > {
   const [pref, setLocalPref] = React.useState<
-    PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]
+    Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
   >(getPrefValue(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
@@ -38,7 +40,7 @@ export function usePref<
 
   const updatePref = React.useCallback(
     function updatePref(
-      newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]
+      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
     ): void {
       if (newPref == currentPref.current) return;
       setPref(category, subcategory, item, newPref);
@@ -50,9 +52,9 @@ export function usePref<
 }
 
 export function usePrefRef<
-  CATEGORY extends keyof PreferenceTypes,
-  SUBCATEGORY extends keyof PreferenceTypes[CATEGORY],
-  ITEM extends keyof PreferenceTypes[CATEGORY][SUBCATEGORY]
+  CATEGORY extends keyof Preferences,
+  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
@@ -60,14 +62,18 @@ export function usePrefRef<
 ): Readonly<
   [
     pref: Readonly<
-      React.MutableRefObject<PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]>
+      React.MutableRefObject<
+        Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+      >
     >,
-    setPref: (newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]) => void
+    setPref: (
+      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+    ) => void
   ]
 > {
-  const pref = React.useRef<PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]>(
-    getPrefValue(category, subcategory, item)
-  );
+  const pref = React.useRef<
+    Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+  >(getPrefValue(category, subcategory, item));
 
   React.useEffect(() => {
     function handleUpdate(): void {
@@ -80,7 +86,7 @@ export function usePrefRef<
 
   const updatePref = React.useCallback(
     function updatePref(
-      newPref: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]
+      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
     ): void {
       if (newPref == pref.current) return;
       setPref(category, subcategory, item, newPref);

@@ -87,7 +87,7 @@ function ErrorDialog({
         <br />
         {commonText('errorBoundaryDialogSecondMessage')(supportLink)}
       </p>
-      <details className="whitespace-pre-wrap">
+      <details className="flex-1 whitespace-pre-wrap">
         <summary>{commonText('errorMessage')}</summary>
         {children}
       </details>
@@ -186,7 +186,7 @@ function formatError(
   }
 
   return [
-    <div className="gap-y-2 flex flex-col flex-1">{errorObject}</div>,
+    <div className="gap-y-2 flex flex-col h-full">{errorObject}</div>,
     errorMessage.join('\n'),
   ] as const;
 }
@@ -239,5 +239,5 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
     iframeDocument.body.innerHTML = error;
   }, [error]);
 
-  return <iframe className="flex-1" ref={iframeRef} />;
+  return <iframe className="h-full" ref={iframeRef} />;
 }

@@ -68,7 +68,7 @@ export class QueryFieldSpec {
     'tableList' | 'stringId' | 'fieldName' | 'isRelFld'
   > {
     const fieldName = filterArray([
-      this.treeRank,
+      this.treeRank === anyTreeRank ? undefined : this.treeRank,
       `${this.getField()?.name ?? ''}${
         typeof this.datePart === 'string' && this.datePart !== 'fullDate'
           ? `Numeric${capitalize(this.datePart)}`

@@ -31,7 +31,7 @@ export function PickListComboBox(
     return typeof value === 'object'
       ? (value as SpecifyResource<AnySchema>)?.url() ?? null
       : (value as string | number)?.toString() ?? null;
-  }, [props.resource, props.field.name]);
+  }, [props.resource, props.field?.name]);
 
   const [value, setValue] = React.useState<string | null>(getValue);
 

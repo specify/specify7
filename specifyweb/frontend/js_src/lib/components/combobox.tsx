@@ -6,8 +6,11 @@ import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
+import { schema } from '../schema';
 import type { LiteralField } from '../specifyfield';
+import type { Relationship } from '../specifyfield';
 import type { RA } from '../types';
+import { defined } from '../types';
 import { DivisionFieldComboBox } from './divisionfieldcombobox';
 import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
@@ -21,7 +24,7 @@ import { UserTypeComboBox } from './usertypecombobox';
 export type DefaultComboBoxProps = {
   readonly model: SpecifyResource<AnySchema>;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly field: LiteralField;
+  readonly field: LiteralField | Relationship;
   readonly fieldName: string;
   readonly pickListName: string | undefined;
   readonly defaultValue: string | undefined;
@@ -109,7 +112,12 @@ function ComboBox(props: DefaultComboBoxProps): JSX.Element {
     resource.specifyModel.name === 'Accession' &&
     fieldName === 'divisionCBX'
   )
-    return <DivisionFieldComboBox {...props} />;
+    return (
+      <DivisionFieldComboBox
+        {...props}
+        field={defined(schema.models.Accession.getRelationship('division'))}
+      />
+    );
   else if (fieldName === 'definitionItem')
     return <TreeLevelComboBox {...props} />;
 

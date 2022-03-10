@@ -438,26 +438,24 @@ export function QueryLineFilter({
   filter,
   fieldName,
   parser: originalParser,
-  pickListName,
   onChange: handleChange,
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
   readonly parser: Parser;
-  readonly pickListName?: string;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element | null {
   const [pickListItems] = useAsyncState(
     React.useCallback(
       () =>
-        typeof pickListName === 'string'
-          ? fetchPickList(pickListName).then((pickList) =>
+        typeof parser.pickListName === 'string'
+          ? fetchPickList(parser.pickListName).then((pickList) =>
               typeof pickList === 'object'
                 ? getPickListItems(pickList)
                 : undefined
             )
           : undefined,
-      [pickListName]
+      [originalParser.pickListName]
     )
   );
 

@@ -234,11 +234,13 @@ export function Icon({
   isRelationship = false,
   isPreview = false,
   isEnabled = true,
+  isDefault = false,
   tableName = undefined,
   optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element {
   if (optionLabel === '0') return tableIconUndefined;
-  if (!isRelationship && (isPreview || !isEnabled)) return tableIconSelected;
+  else if (!isRelationship && (isPreview || !isEnabled))
+    return tableIconSelected;
   else if (!isRelationship || typeof tableName === 'undefined')
     return tableIconEmpty;
   else return <TableIcon tableName={tableName} />;
@@ -257,9 +259,10 @@ function Option({
 }: CustomSelectElementOptionProps): JSX.Element {
   const classes = ['p-1 flex items-center gap-x-1'];
 
-  if (!isEnabled && !isRelationship)
+  if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      'cursor-not-allowed text-gray-500 bg-[color:var(--custom-select-b1)]'
+      'cursor-not-allowed text-gray-500',
+      'bg-[color:var(--custom-select-b1)]'
     );
   else
     classes.push(
@@ -269,7 +272,8 @@ function Option({
 
   if (isDefault)
     classes.push(
-      'custom-select-option-selected cursor-auto bg-[color:var(--custom-select-accent)]'
+      'custom-select-option-selected cursor-auto',
+      'bg-[color:var(--custom-select-accent)]'
     );
 
   const tableLabel = getModel(tableName ?? '')?.label;
@@ -295,8 +299,8 @@ function Option({
       }
       aria-selected={isDefault}
       role="option"
-      aria-disabled={!isEnabled}
-      aria-current={!isEnabled}
+      aria-disabled={!isEnabled || isDefault}
+      aria-current={isDefault}
       aria-atomic="true"
     >
       {hasIcon && (
@@ -304,6 +308,7 @@ function Option({
           optionLabel={optionLabel}
           isRelationship={isRelationship}
           isEnabled={isEnabled}
+          isDefault={isDefault}
           tableName={tableName}
         />
       )}
@@ -361,7 +366,9 @@ function OptionGroup({
               key={optionName}
               onClick={({ isDoubleClick }): void =>
                 typeof handleClick === 'function' &&
-                (isDoubleClick || selectionOptionData.isEnabled !== false)
+                (isDoubleClick ||
+                  (selectionOptionData.isEnabled !== false &&
+                    selectionOptionData.isDefault !== true))
                   ? handleClick({
                       newValue: optionName,
                       isRelationship:

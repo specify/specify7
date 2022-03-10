@@ -108,6 +108,11 @@ function ViewRecords({
     const indexedRecords = Object.fromEntries(
       records?.map((record) => [record.id, record]) ?? []
     );
+    if (
+      ids.length === records?.length &&
+      ids.every((id) => id in indexedRecords)
+    )
+      return;
     setRecords(
       ids.map((id) => indexedRecords[id] ?? new model.Resource({ id }))
     );
@@ -192,13 +197,11 @@ export function QueryResultsTable({
       async () =>
         // Fetch all pick lists so that they are accessible synchronously later
         Promise.all(
-          fieldSpecs
-            .map((fieldSpec) => fieldSpec.getField()?.getPickList())
-            .map((pickListName) =>
-              typeof pickListName === 'string'
-                ? fetchPickList(pickListName)
-                : undefined
-            )
+          fieldSpecs.map((fieldSpec) =>
+            typeof fieldSpec.parser.pickListName === 'string'
+              ? fetchPickList(fieldSpec.parser.pickListName)
+              : undefined
+          )
         ).then(() => true),
       [fieldSpecs]
     )
@@ -297,7 +300,7 @@ export function QueryResultsTable({
             results={results}
             selectedRows={selectedRows}
             onSelected={(id, isSelected, isShiftClick): void => {
-              if (hasIdField) return;
+              if (!hasIdField) return;
               const rowIndex = results.findIndex(
                 (row) => row[queryIdField] === id
               );
@@ -390,17 +393,19 @@ export function QueryResultsWrapper({
     [fields, baseTableName, queryResource, recordSetId]
   );
 
-  const [payload, setPayload] = React.useState<
-    | {
-        readonly fieldSpecs: RA<QueryFieldSpec>;
-        readonly totalCount: number;
-        readonly initialData: RA<RA<string | number | null>> | undefined;
-      }
-    | undefined
+  /*
+   * Need to store all props in a state so that query field edits do not affect
+   * the query results until query is reRun
+   */
+  const [props, setProps] = React.useState<
+    Parameters<typeof QueryResultsTable>[0] | undefined
   >(undefined);
+
+  const previousQueryRunCount = React.useRef(queryRunCount);
   React.useEffect(() => {
-    if (queryRunCount === 0) return;
-    setPayload(undefined);
+    if (queryRunCount === previousQueryRunCount.current) return;
+    previousQueryRunCount.current = queryRunCount;
+    setProps(undefined);
 
     const allFields = addAuditLogFields(baseTableName, fields);
 
@@ -431,10 +436,15 @@ export function QueryResultsWrapper({
 
     Promise.all([totalCount, initialData])
       .then(([totalCount, initialData]) =>
-        setPayload({
-          fieldSpecs,
+        setProps({
+          model,
+          hasIdField: queryResource.get('selectDistinct') !== true,
+          fetchResults,
           totalCount,
+          fieldSpecs,
           initialData,
+          sortConfig: fields.map((field) => field.sortType),
+          onSortChange: handleSortChange,
         })
       )
       .catch(crash);
@@ -447,20 +457,11 @@ export function QueryResultsWrapper({
     recordSetId,
   ]);
 
-  return typeof payload === 'undefined' ? (
+  return typeof props === 'undefined' ? (
     queryRunCount === 0 ? null : (
       <QueryResultsLoading />
     )
   ) : (
-    <QueryResultsTable
-      model={model}
-      hasIdField={queryResource.get('selectDistinct') !== true}
-      fetchResults={fetchResults}
-      totalCount={payload.totalCount}
-      fieldSpecs={payload.fieldSpecs}
-      initialData={payload.initialData}
-      sortConfig={fields.map((field) => field.sortType)}
-      onSortChange={handleSortChange}
-    />
+    <QueryResultsTable {...props} />
   );
 }

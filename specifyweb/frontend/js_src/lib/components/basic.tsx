@@ -63,12 +63,11 @@ function wrap<
       ref: _,
       ...mergedProps
     } = typeof initialProps === 'function'
-      ? initialProps(props)
-      : { ...initialProps, ...props };
+      ? initialProps({ ...props, className: fullClassName })
+      : { ...initialProps, ...props, className: fullClassName };
     return React.createElement(tagName, {
       ...mergedProps,
       ref: forwardRef,
-      className: fullClassName,
     });
   };
   // Use capitalized tagName as a devTool's component name
@@ -211,6 +210,18 @@ export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
 );
 export const Select = wrap('select', className.notTouchedInput, (props) => ({
   ...props,
+  /*
+   * Required fields have blue background. Selected <option> in a select
+   * multiple also has blue background. Those clash. Need to make required
+   * select background slightly lighter
+   */
+  className: `${props.className ?? ''}${
+    props.required === true &&
+    (props.multiple === true ||
+      (typeof props.size === 'number' && props.size > 1))
+      ? ' bg-blue-100 dark:bg-blue-900'
+      : ''
+  }`,
   /*
    * Don't highlight missing required and pattern mismatch fields until focus
    * loss

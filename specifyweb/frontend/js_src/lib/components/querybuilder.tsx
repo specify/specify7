@@ -8,6 +8,7 @@ import wbText from '../localization/workbench';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
+import { isTreeModel } from '../treedefinitions';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
@@ -16,6 +17,7 @@ import {
   ContainerFull,
   Form,
   H2,
+  Input,
   LabelForCheckbox,
   Submit,
   transitionDuration,
@@ -36,20 +38,14 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * TODO: Mapping Editor: selected row remove checkmark
- * TODO: ability to query tree relationships
  * Query Results:
+ * TODO: query results editing & deleting & view in new tab
  * TODO: creating record set out of a subset of results
  * TODO: make query scrollable even while viewing the resutls
- * TODO: <select> multiple higliht code contrast in light mode
  * To Test:
  * TODO: test "any" filters in sp6 and sp7
  * TODO: test query reports
  * TODO: test using sp7 queries in sp6 and vice versa
- * TODO: test using queries with OR conditions in Sp6
- * TODO: test queries on tree ranks and tree fields (and (any))
- * TODO: test formatters and aggregators
- *
  */
 
 export function QueryBuilder({
@@ -125,14 +121,13 @@ export function QueryBuilder({
     unParseQueryFields(state.baseTableName, fields, originalQueryFields);
 
   function runQuery(
-    mode: 'regular' | 'distinct' | 'count',
+    mode: 'regular' | 'count',
     fields: typeof state.fields = state.fields
   ): void {
     if (!isEmpty) return;
     setQuery({
       ...query,
       fields: getQueryFieldRecords(fields),
-      selectDistinct: mode === 'distinct',
       countOnly: mode === 'count',
     });
     setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
@@ -337,17 +332,31 @@ export function QueryBuilder({
                 {wbText('revealHiddenFormFields')}
               </LabelForCheckbox>
               <span className="flex-1 -ml-2" />
+              {/*
+               * Query Distinct for trees is disabled because of
+               * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
+               */}
+              {!isTreeModel(model.name) && (
+                <LabelForCheckbox>
+                  <Input
+                    type="checkbox"
+                    disabled={!isEmpty}
+                    checked={query.selectDistinct ?? false}
+                    onClick={(): void =>
+                      setQuery({
+                        ...query,
+                        selectDistinct: !(query.selectDistinct ?? false),
+                      })
+                    }
+                  />
+                  {queryText('distinct')}
+                </LabelForCheckbox>
+              )}
               <Button.Simple
                 disabled={!isEmpty}
                 onClick={(): void => runQuery('count')}
               >
                 {queryText('countOnly')}
-              </Button.Simple>
-              <Button.Simple
-                disabled={!isEmpty}
-                onClick={(): void => runQuery('distinct')}
-              >
-                {queryText('distinct')}
               </Button.Simple>
               <Submit.Simple disabled={!isEmpty}>
                 {commonText('query')}

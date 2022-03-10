@@ -131,8 +131,8 @@ export function MappingView(props: {
   // `resize` event listener for the mapping view
   const [mappingViewHeight, setMappingViewHeight] = usePrefRef(
     'workBench',
-    'items',
-    'wbPlanView'
+    'wbPlanView',
+    'mappingViewHeight'
   );
   const mappingViewParentRef = React.useCallback<
     (mappingViewParent: HTMLElement | null) => void

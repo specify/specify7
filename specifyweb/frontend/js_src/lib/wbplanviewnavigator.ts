@@ -198,7 +198,7 @@ export function getMappingLineData({
   const internalState: {
     position: number;
     mappingLineData: MappingLineData[];
-    mappedFields: string[];
+    mappedFields: RA<string>;
     defaultValue: string;
     parsedDefaultValue: Readonly<[fieldName: string, part: string | undefined]>;
   } = {
@@ -248,10 +248,7 @@ export function getMappingLineData({
       internalState.defaultValue = nextPart;
 
       const localMappingPath = mappingPath.slice(0, internalState.position);
-      internalState.mappedFields = [
-        ...(getMappedFields?.(localMappingPath) ?? []),
-        internalState.defaultValue,
-      ];
+      internalState.mappedFields = getMappedFields?.(localMappingPath) ?? [];
 
       return {
         partName: nextPart,
@@ -263,9 +260,10 @@ export function getMappingLineData({
     },
 
     handleToManyChildren({ model, parentRelationship }) {
-      const maxMappedElementNumber = getMaxToManyIndex(
-        internalState.mappedFields
-      );
+      const maxMappedElementNumber = getMaxToManyIndex([
+        ...internalState.mappedFields,
+        internalState.defaultValue,
+      ]);
 
       const isToOne = parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;

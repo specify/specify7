@@ -4,6 +4,7 @@ import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
+import queryText from '../localization/query';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -36,8 +37,7 @@ async function resourceToLink(
 }
 
 function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>,
-  hasIdField: boolean
+  fieldSpecs: RA<QueryFieldSpec>
 ):
   | undefined
   | ((
@@ -45,13 +45,11 @@ function getAuditRecordFormatter(
     ) => Promise<RA<string | JSX.Element>>) {
   if (!needAuditLogFormatting(fieldSpecs)) return undefined;
   // Assumes queryIdField is 0
-  const fields = [
-    // Offset the indexes for the ID field
-    ...(hasIdField ? [undefined] : []),
-    ...fieldSpecs
+  const fields = Array.from(
+    fieldSpecs
       .map((fieldSpec) => fieldSpec.getField())
-      .map((field) => (field?.isRelationship === false ? field : undefined)),
-  ];
+      .map((field) => (field?.isRelationship === false ? field : undefined))
+  );
 
   const modelId = fields.findIndex((field) => field?.name === 'tableNum');
   if (modelId === -1) return undefined;
@@ -80,7 +78,7 @@ function getAuditRecordFormatter(
 }
 
 const cellClassName = `border-gray-500 border-r bg-[color:var(--bg)] p-1
-  first:border-l`;
+  first:border-l min-h-[theme(spacing.8)]`;
 
 function QueryResultCell({
   fieldSpec,
@@ -102,8 +100,18 @@ function QueryResultCell({
   );
 
   return (
-    <span role="cell" className={cellClassName}>
-      {typeof fieldSpec === 'undefined' || typeof value === 'object'
+    <span
+      role="cell"
+      className={`${cellClassName} ${
+        value === null ? 'text-gray-700 dark:text-neutral-500;' : ''
+      }`}
+      title={
+        typeof value === 'string' && value !== formatted ? value : undefined
+      }
+    >
+      {value === null
+        ? queryText('nullInline')
+        : typeof fieldSpec === 'undefined' || typeof value === 'object'
         ? value
         : formatted}
     </span>
@@ -132,7 +140,7 @@ function QueryResult({
   const [resource] = React.useState<
     SpecifyResource<AnySchema> | undefined | false
   >((): SpecifyResource<AnySchema> | false => {
-    if (typeof hasIdField === 'undefined') return false;
+    if (!hasIdField) return false;
     return new model.Resource({
       id: result[queryIdField],
     });
@@ -144,8 +152,9 @@ function QueryResult({
     )
   );
 
-  const cells = result.map((value, index) =>
-    index === queryIdField ? undefined : (
+  const cells = result
+    .filter((_, index) => !hasIdField || index !== queryIdField)
+    .map((value, index) => (
       <QueryResultCell
         key={index}
         value={formattedValues?.[index] ?? value}
@@ -155,8 +164,7 @@ function QueryResult({
             : undefined
         }
       />
-    )
-  );
+    ));
 
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
   return (
@@ -220,7 +228,7 @@ export function QueryResults({
     isShiftClick: boolean
   ) => void;
 }): JSX.Element {
-  const recordFormatter = getAuditRecordFormatter(fieldSpecs, hasIdField);
+  const recordFormatter = getAuditRecordFormatter(fieldSpecs);
   return (
     <div role="rowgroup">
       {results.map((result, index) => (

@@ -94,9 +94,8 @@ export function QueryLine({
 
   const [fieldMeta, setFieldMeta] = React.useState<{
     readonly fieldType: QueryFieldType | undefined;
-    readonly pickListName: string | undefined;
     readonly parser: Parser | undefined;
-  }>({ fieldType: undefined, pickListName: undefined, parser: undefined });
+  }>({ fieldType: undefined, parser: undefined });
 
   React.useEffect(() => {
     const [fieldName, datePart] = valueIsPartialField(
@@ -111,7 +110,6 @@ export function QueryLine({
         : undefined;
     const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
 
-    let pickListName;
     let fieldType: QueryFieldType | undefined = undefined;
     let parser = undefined;
     const hasParser =
@@ -120,11 +118,6 @@ export function QueryLine({
       mappingPathIsComplete(field.mappingPath);
     // TODO: define parser and fieldType for (formatted) and (aggregated)
     if (hasParser) {
-      pickListName =
-        dataModelField?.isTemporal() && datePart === 'month'
-          ? '_Months'
-          : dataModelField?.getPickList();
-
       parser = defined(
         resolveParser(dataModelField, {
           datePart,
@@ -156,7 +149,7 @@ export function QueryLine({
         })
       : [];
 
-    setFieldMeta({ parser, fieldType, pickListName });
+    setFieldMeta({ parser, fieldType });
 
     if (
       field.filters.length === newFilters.length &&
@@ -380,7 +373,6 @@ export function QueryLine({
                   filter={field.filters[index]}
                   fieldName={mappingPathToString(field.mappingPath)}
                   parser={fieldMeta.parser}
-                  pickListName={fieldMeta.pickListName}
                   onChange={(startValue): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],

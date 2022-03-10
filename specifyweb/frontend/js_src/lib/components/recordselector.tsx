@@ -331,7 +331,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
       {typeof records[index] === 'object' ? (
         <ResourceView
           resource={records[index]}
-          mode={isDependent && !isReadOnly ? 'edit' : 'view'}
+          mode={isReadOnly ? 'view' : 'edit'}
           viewName={viewName}
           type={formType}
           hasHeader={false}

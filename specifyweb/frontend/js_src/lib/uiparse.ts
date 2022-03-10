@@ -62,6 +62,8 @@ export type Parser = Partial<{
   readonly required: boolean;
   // Default value
   readonly value: string;
+  // This is different from field.getPickList() for date fields
+  readonly pickListName: string;
 }>;
 
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
@@ -222,6 +224,12 @@ export function resolveParser(
   const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {
     // Don't make checkboxes required
+    pickListName:
+      typeof fullField.datePart === 'string'
+        ? fullField.datePart === 'month'
+          ? '_Months'
+          : undefined
+        : field.getPickList?.(),
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
     ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
@@ -423,7 +431,7 @@ export function fieldFormat(
   if (typeof value === 'undefined' || value === null) return '';
 
   // Find Pick List Item Title
-  const pickListName = field.getPickList();
+  const pickListName = parser?.pickListName ?? field.getPickList();
   if (
     typeof pickListName === 'string' &&
     typeof pickLists[pickListName] === 'object'

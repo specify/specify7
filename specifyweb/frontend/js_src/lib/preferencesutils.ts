@@ -19,14 +19,15 @@ export const getPrefDefinition = <
   preferenceDefinitions[category].subCategories[subcategory].items[item];
 
 export const getPrefValue = <
-  CATEGORY extends keyof PreferenceTypes,
-  SUBCATEGORY extends keyof PreferenceTypes[CATEGORY],
-  ITEM extends keyof PreferenceTypes[CATEGORY][SUBCATEGORY]
+  CATEGORY extends keyof Preferences,
+  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
-): PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM] =>
+): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] =>
+  // @ts-expect-error
   preferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
@@ -39,24 +40,15 @@ let preferences: {
   };
 } = {};
 
-export type PreferenceTypes = {
-  [CATEGORY in string & keyof Preferences]: {
-    [SUBCATEGORY in string & keyof Preferences[CATEGORY]['subCategories']]: {
-      [ITEM in string &
-        keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
-    };
-  };
-};
-
 export function setPref<
-  CATEGORY extends keyof PreferenceTypes,
-  SUBCATEGORY extends keyof PreferenceTypes[CATEGORY],
-  ITEM extends keyof PreferenceTypes[CATEGORY][SUBCATEGORY]
+  CATEGORY extends keyof Preferences,
+  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM,
-  value: PreferenceTypes[CATEGORY][SUBCATEGORY][ITEM]
+  value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 ): void {
   const prefs = preferences as any;
   prefs[category] ??= {};
