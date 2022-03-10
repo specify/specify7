@@ -6,6 +6,8 @@ services:
     volumes:
       - "database:/var/lib/mysql"
       - "./seed-database:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3306"
     command: --max_allowed_packet=1073741824
     environment:
       - MYSQL_ROOT_PASSWORD=root
