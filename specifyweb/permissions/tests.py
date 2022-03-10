@@ -7,6 +7,7 @@ from specifyweb.specify.api_tests import ApiTests
 class PermissionsApiTest(ApiTests):
     def test_set_user_policies(self) -> None:
         c = Client()
+        c.force_login(self.specifyuser)
         response = c.put(
             f'/permissions/user_policies/{self.collection.id}/{self.specifyuser.id}/',
             data=[
@@ -24,6 +25,7 @@ class PermissionsApiTest(ApiTests):
 
     def test_create_get_delete_role(self) -> None:
         c = Client()
+        c.force_login(self.specifyuser)
         response = c.post(
             f'/permissions/roles/{self.collection.id}/',
             data={
@@ -58,6 +60,7 @@ class PermissionsApiTest(ApiTests):
 
     def test_set_role_policies(self) -> None:
         c = Client()
+        c.force_login(self.specifyuser)
         response = c.post(
             f'/permissions/roles/{self.collection.id}/',
             data={
@@ -102,6 +105,7 @@ class PermissionsApiTest(ApiTests):
         }
 
         c = Client()
+        c.force_login(self.specifyuser)
 
         # create a role
         response = c.post(

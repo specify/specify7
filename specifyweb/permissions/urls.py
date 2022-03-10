@@ -7,4 +7,5 @@ urlpatterns = [
     path('user_roles/<int:collectionid>/<int:userid>/', views.user_roles),
     path('role/<int:roleid>/', views.role),
     path('roles/<int:collectionid>/', views.roles),
+    path('registry/', views.PolicyRegistry.as_view()),
 ]

@@ -5,13 +5,22 @@ from typing import Dict
 from django import http
 from django.db import transaction
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from specifyweb.specify.views import openapi
 
 from . import models
+from .permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, registry
 
+class PolicyRegistry(LoginRequiredMixin, View):
+    def get(self, request):
+        return http.JsonResponse(registry, safe=False)
 
-class UserPolicies(View):
+class PoliciesUserPT(PermissionTarget):
+    resource = "/permissions/policies/user"
+    update = PermissionTargetAction()
+
+class UserPolicies(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
         data = [
             {'resource': p.resource, 'action': p.action}
@@ -22,6 +31,8 @@ class UserPolicies(View):
         return http.JsonResponse(data, safe=False)
 
     def put(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.update])
+
         data = json.loads(request.body)
 
         with transaction.atomic():
@@ -90,7 +101,12 @@ user_policies = openapi(schema={
     }
 })(UserPolicies.as_view())
 
-class UserRoles(View):
+class UserRolesPT(PermissionTarget):
+    resource = "/permissions/user/roles"
+    update = PermissionTargetAction()
+
+
+class UserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
         data = [
             serialize_role(ur.role)
@@ -102,6 +118,8 @@ class UserRoles(View):
         return http.JsonResponse(data, safe=False)
 
     def put(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.update])
+
         data = json.loads(request.body)
 
         with transaction.atomic():
@@ -190,8 +208,14 @@ def serialize_role(role: models.Role) -> Dict:
         ]
     }
 
+class RolePT(PermissionTarget):
+    resource = "/permissions/roles/"
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
 
-class Role(View):
+
+class Role(LoginRequiredMixin, View):
     def get(self, request, roleid: int) -> http.HttpResponse:
         r = models.Role.objects.get(id=roleid)
         return http.JsonResponse(serialize_role(r), safe=False)
@@ -201,6 +225,8 @@ class Role(View):
 
         with transaction.atomic():
             r = models.Role.objects.get(id=roleid)
+            check_permission_targets(r.collection_id, request.specify_user.id, [RolePT.update])
+
             r.name = data['name']
             r.save()
 
@@ -213,7 +239,9 @@ class Role(View):
         return http.HttpResponse('', status=204)
 
     def delete(self, request, roleid: int) -> http.HttpResponse:
-        models.Role.objects.get(id=roleid).delete()
+        r = models.Role.objects.get(id=roleid)
+        check_permission_targets(r.collection_id, request.specify_user.id, [RolePT.delete])
+        r.delete()
         return http.HttpResponse('', status=204)
 
 role = openapi(schema={
@@ -288,13 +316,15 @@ role = openapi(schema={
     }
 })(Role.as_view())
 
-class Roles(View):
+class Roles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
         rs = models.Role.objects.filter(collection_id=collectionid)
         data = [serialize_role(r) for r in rs]
         return http.JsonResponse(data, safe=False)
 
     def post(self, request, collectionid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [RolePT.create])
+
         data = json.loads(request.body)
 
         with transaction.atomic():
