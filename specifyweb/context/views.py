@@ -407,15 +407,32 @@ def system_info(request):
     return HttpResponse(json.dumps(info), content_type='application/json')
 
 PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
+PATH_GROUP_RE_EXTENDED = re.compile(r'<([^:]+):([^>]+)>')
 
 def parse_pattern(pattern):
     p_str = str(pattern.pattern)
     params = []
+
+    # Match old style django path params.
+    # eg r'^properties/(?P<name>.+).properties$'
     for match in PATH_GROUP_RE.finditer(p_str):
         p_str = p_str.replace(match.group(0), "{%s}" % match.group(1), 1)
-        params.append(match.group(1))
+        params.append((match.group(1), "string"))
+
+    # Match new style django path params w/ types.
+    # eg 'user_policies/<int:collectionid>/<int:userid>/'
+    for match in PATH_GROUP_RE_EXTENDED.finditer(p_str):
+        p_str = p_str.replace(match.group(0), "{%s}" % match.group(2), 1)
+        params.append((match.group(2), parse_type(match.group(1))))
 
     return p_str.strip('^$'), params
+
+def parse_type(django_type):
+    "Map django url param types to openAPI types."
+    return {
+        'int': 'integer',
+        'str': 'string',
+    }.get(django_type, "string")
 
 # most tags are generated automatically based on the URL, but here are some
 # exceptions:
@@ -529,10 +546,10 @@ def get_endpoints(
                         'in': 'path',
                         'required': True,
                         'schema': {
-                            'type': 'string'
+                            'type': api_type
                         }
                     }
-                    for param in preparams + params
+                    for param, api_type in preparams + params
                 ],
                 'get': {
                     **({
