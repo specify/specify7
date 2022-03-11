@@ -9,9 +9,9 @@ urlpatterns = [
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
     url(r'^specify_schema/(?P<model>\w+)/$', schema.view),
-    url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource),
-    url(r'^specify/(?P<model>\w+)/$', views.collection),
-    url(r'^specify_rows/(?P<model>\w+)/$', views.rows),
+    url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
+    url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
+    url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 

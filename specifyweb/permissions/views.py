@@ -209,7 +209,7 @@ def serialize_role(role: models.Role) -> Dict:
     }
 
 class RolePT(PermissionTarget):
-    resource = "/permissions/roles/"
+    resource = "/permissions/roles"
     create = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
