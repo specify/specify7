@@ -12,6 +12,8 @@ from django.views.decorators.http import require_GET, require_POST, \
 
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, check_table_permissions
 from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
 from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
 from ..specify.views import login_maybe_required
@@ -39,6 +41,8 @@ def run(request):
     """Executes the named 'report' using the given 'query' and 'parameters' as POST parameters.
     Returns the result as a PDF.
     """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [ReportsPT.execute])
+
     if settings.REPORT_RUNNER_HOST == '':
         raise ReportException(_("Report service is not configured."))
 
@@ -99,6 +103,7 @@ def get_reports_by_tbl(request, tbl_id):
 @require_POST
 @login_maybe_required
 def create(request):
+    check_table_permissions(request.specify_collection, request.specify_user, Spreport, "create")
     report = create_report(
         request.specify_user.id,
         request.specify_collection.discipline.id,
