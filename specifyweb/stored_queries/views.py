@@ -23,6 +23,7 @@ class QueryBuilderPt(PermissionTarget):
     execute = PermissionTargetAction()
     export_csv = PermissionTargetAction()
     export_kml = PermissionTargetAction()
+    create_recordset = PermissionTargetAction()
 
 def value_from_request(field, get):
     try:
@@ -136,6 +137,7 @@ def make_recordset(request):
     recordset of the result. Redirects to the URL of the created recordset.
     """
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
     check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
     try:
         recordset_info = json.load(request)
