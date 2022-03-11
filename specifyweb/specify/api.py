@@ -796,11 +796,15 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
         except FieldError as e:
             raise OrderByError(e)
     try:
-        return objs_to_data(objs, checker, control_params['offset'], control_params['limit'])
+        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
 
-def objs_to_data(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
+def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
+    """Wrapper for backwards compatibility."""
+    return objs_to_data_(objs, lambda x: None, offset, limit)
+
+def objs_to_data_(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
