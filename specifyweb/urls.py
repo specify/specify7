@@ -55,7 +55,7 @@ urlpatterns = [
     url(r'^stored_query/', include(query_urls)), # permissions added
     url(r'^attachment_gw/', include(attachment_urls)),
     url(r'^barvis/', include(tt_urls)),
-    url(r'^report_runner/', include(report_urls)),
+    url(r'^report_runner/', include(report_urls)), # permissions added
     url(r'^interactions/', include(interaction_urls)), # permissions added
     url(r'^notifications/', include(notification_urls)),
     url(r'^export/', include(export_urls)), # permissions added
