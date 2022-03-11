@@ -1,10 +1,8 @@
 import React from 'react';
 
-import type { Tables } from '../datamodel';
 import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { getModel } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';
 import { defined } from '../types';
@@ -79,25 +77,4 @@ export function useValidationAttributes(
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;
-}
-
-export function parseResourceUrl(
-  resourceUrl: string
-): Readonly<[modelName: keyof Tables, id: number] | undefined> {
-  const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/
-    .exec(resourceUrl)
-    ?.slice(1);
-  return typeof parsed === 'undefined'
-    ? parsed
-    : [parsed[0] as keyof Tables, Number.parseInt(parsed[1])];
-}
-
-export function resourceFromUri(
-  resourceUrl: string,
-  options = { noBusinessRules: false }
-): SpecifyResource<AnySchema> | undefined {
-  const parsed = parseResourceUrl(resourceUrl);
-  if (typeof parsed === 'undefined') return undefined;
-  const [tableName, id] = parsed;
-  return new (defined(getModel(tableName)).Resource)({ id }, options);
 }

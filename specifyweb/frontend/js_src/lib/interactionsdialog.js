@@ -15,13 +15,13 @@ import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {makeResourceViewUrl} from './specifyapi';
 import {SpecifyModel} from './specifymodel';
 import {
   dialogClassNames,
   LoadingView,
   showDialog
 } from './components/modaldialog';
+import {resourceViewUrl} from "./resource";
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -135,7 +135,7 @@ export default Backbone.View.extend({
             }
             else {
               const form = forms[formIndex];
-              href = makeResourceViewUrl(SpecifyModel.parseClassName(form['class']));
+              href = resourceViewUrl(SpecifyModel.parseClassName(form['class']));
               className = 'intercept-navigation';
             }
 

@@ -3,32 +3,26 @@ import type { PickListItemSimple } from './components/combobox';
 import { PickListTypes } from './components/combobox';
 import type { PickList, PickListItem, Tables } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
-import { serializeResource } from './datamodelutils';
+import { addMissingFields, serializeResource } from './datamodelutils';
 import { format } from './dataobjformatters';
 import type { SpecifyResource } from './legacytypes';
 import { fetchPickLists, pickLists } from './picklists';
-import { getModel, schema } from './schema';
+import { getModel } from './schema';
 import { fetchRows } from './specifyapi';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
 
-export function createPickListItem(
-  // It's weird that value can be null, but that's what data model says
+export const createPickListItem = (
+  // It's weird that value can be null, but that's what the data model says
   value: string | null,
   title: string
-): SerializedResource<PickListItem> {
-  const pickListItemUrl = new schema.models.PickListItem.Resource().url();
-
-  // @ts-expect-error Nullable fields are skipped
-  return {
+): SerializedResource<PickListItem> =>
+  addMissingFields('PickListItem', {
     value: value ?? title,
     title: title ?? value,
     timestampCreated: new Date().toJSON(),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    resource_uri: pickListItemUrl,
-  };
-}
+  });
 
 export async function fetchPickListItems(
   pickList: SpecifyResource<PickList>

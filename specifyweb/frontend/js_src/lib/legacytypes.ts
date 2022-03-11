@@ -93,6 +93,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly format: () => Promise<string>;
   readonly url: () => string;
+  recordsetid?: number;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;
   };

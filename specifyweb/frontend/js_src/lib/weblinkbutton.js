@@ -81,7 +81,7 @@ export default UiPlugin.extend({
         setLink: function() {
             var a = this.$('a');
             var inFormTable = this.inFormTable;
-            this.buildUrl().then(function(url) {
+            this.buildUrl().then((url) => {
                 a.attr('href', url);
                 const isInternal = a[0].hostname === window.location.hostname;
                 if (!isInternal) {

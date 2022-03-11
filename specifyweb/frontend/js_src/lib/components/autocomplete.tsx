@@ -89,7 +89,10 @@ export function Autocomplete<T>({
         onChange: ({ target }): void => {
           const data = results[target.value];
           if (typeof data === 'object') handleChange(target.value, data);
-          else handleNewValue?.(target.value);
+        },
+        onBlur: ({ target }): void => {
+          const data = results[target.value];
+          if (typeof data === 'undefined') handleNewValue?.(target.value);
         },
       })}
       <datalist id={id('')} ref={refDataList}>

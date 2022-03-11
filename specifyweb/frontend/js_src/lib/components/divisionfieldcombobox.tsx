@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { schema } from '../schema';
+import { fetchCollection } from '../collection';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { useAsyncState } from './hooks';
@@ -10,15 +10,16 @@ export function DivisionFieldComboBox(
   props: DefaultComboBoxProps
 ): JSX.Element {
   const [items] = useAsyncState<RA<PickListItemSimple>>(
-    React.useCallback(async () => {
-      const divisionQuery = new schema.models.Division.LazyCollection();
-      return divisionQuery.fetchPromise({ limit: 0 }).then(({ models }) =>
-        models.map((division) => ({
-          value: division.get('resource_uri'),
-          title: division.get('name') ?? '',
-        }))
-      );
-    }, [])
+    React.useCallback(
+      async () =>
+        fetchCollection('Division', { limit: 0 }).then(({ records }) =>
+          records.map((division) => ({
+            value: division.resource_uri,
+            title: division.name ?? '',
+          }))
+        ),
+      []
+    )
   );
 
   return (

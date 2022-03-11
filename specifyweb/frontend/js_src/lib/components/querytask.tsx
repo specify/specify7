@@ -26,10 +26,10 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
     React.useCallback(() => {
       const recordSetId = querystring.parse().recordsetid;
       if (typeof recordSetId === 'undefined') return false;
-      const recordSet = new schema.models.RecordSet.LazyCollection({
-        filters: { id: Number.parseInt(recordSetId) },
+      const recordSet = new schema.models.RecordSet.Resource({
+        id: Number.parseInt(recordSetId),
       });
-      return recordSet.fetchPromise().then(({ models }) => models[0]);
+      return recordSet.fetchPromise();
     }, [])
   );
 

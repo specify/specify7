@@ -1,15 +1,16 @@
 import React from 'react';
 
+import { fetchCollection } from '../../collection';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import { schema } from '../../schema';
+import { resourceViewUrl } from '../../resource';
 import type { IR } from '../../types';
+import { userInformation } from '../../userinfo';
+import { Button, Link, Ul } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { Button, Link, Ul } from '../basic';
-import { userInformation } from '../../userinfo';
 
 function Users({
   onClose: handleClose,
@@ -18,18 +19,19 @@ function Users({
 }): JSX.Element {
   useTitle(commonText('manageUsers'));
   const [users] = useAsyncState<IR<string>>(
-    React.useCallback(async () => {
-      const users = new schema.models.SpecifyUser.LazyCollection({
-        filters: { orderby: 'name' },
-      });
-      return users
-        .fetchPromise({ limit: 0 })
-        .then(({ models }) =>
-          Object.fromEntries(
-            models.map((user) => [user.get('name'), user.viewUrl()])
-          )
-        );
-    }, [])
+    React.useCallback(
+      async () =>
+        fetchCollection('SpecifyUser', { orderBy: 'name', limit: 0 }).then(
+          ({ records }) =>
+            Object.fromEntries(
+              records.map((user) => [
+                user.name,
+                resourceViewUrl('SpecifyUser', user.id),
+              ])
+            )
+        ),
+      []
+    )
   );
 
   return typeof users === 'object' ? (

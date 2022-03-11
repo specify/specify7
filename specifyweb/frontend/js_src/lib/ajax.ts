@@ -13,14 +13,12 @@ export function formData(data: IR<string | Blob>): FormData {
   return formData;
 }
 
-export function isExternalUrl(url: string): boolean {
-  try {
-    // Trying to parse a relative URL would throw an exception
-    return new URL(url).origin !== window.location.origin;
-  } catch {
-    return false;
-  }
-}
+const reIsAbsolute = new RegExp('^(?:[a-z]+:)?//', 'i');
+export const isExternalUrl = (url: string): boolean =>
+  // Relative url is not external. Passing a relative URL to new URL() throws
+  reIsAbsolute.exec(url) === null
+    ? false
+    : new URL(url).origin !== window.location.origin;
 
 export const Http = {
   OK: 200,

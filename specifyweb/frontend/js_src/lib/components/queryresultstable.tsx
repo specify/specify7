@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
@@ -26,7 +25,7 @@ import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryResults } from './queryresults';
-import { RecordSelector } from './recordselector';
+import { RecordSelectorFromIds } from './recordselectorutils';
 
 function TableHeaderCell({
   fieldSpec,
@@ -89,34 +88,27 @@ function ViewRecords({
   results,
   selectedRows,
   onFetchMore: handleFetchMore,
+  onDelete: handleDelete,
+  totalCount,
 }: {
   readonly model: SpecifyModel;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
   readonly onFetchMore: (() => void) | undefined;
+  readonly onDelete: (id: number) => void;
+  readonly totalCount: number;
 }): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [records, setRecords] = React.useState<
-    RA<SpecifyResource<AnySchema>> | undefined
-  >(undefined);
+  const [ids, setIds] = React.useState<RA<number>>([]);
   React.useEffect(() => {
     if (!isOpen) return;
-    const ids =
+    setIds(
       selectedRows.size === 0
         ? (results.map((row) => row[queryIdField]) as RA<number>)
-        : Array.from(selectedRows);
-    const indexedRecords = Object.fromEntries(
-      records?.map((record) => [record.id, record]) ?? []
+        : Array.from(selectedRows)
     );
-    if (
-      ids.length === records?.length &&
-      ids.every((id) => id in indexedRecords)
-    )
-      return;
-    setRecords(
-      ids.map((id) => indexedRecords[id] ?? new model.Resource({ id }))
-    );
-  }, [results, isOpen, records, model, selectedRows]);
+  }, [results, isOpen, selectedRows]);
+
   return (
     <>
       <Button.Simple
@@ -131,23 +123,16 @@ function ViewRecords({
         buttons={commonText('close')}
         onClose={(): void => setIsOpen(false)}
       >
-        {typeof records === 'object' && (
-          <RecordSelector
+        {isOpen && (
+          <RecordSelectorFromIds
+            totalCount={totalCount}
+            ids={ids}
+            defaultIndex={0}
             model={model}
-            isDependent={false}
-            records={records}
             isReadOnly={userInformation.isReadOnly}
-            hasHeader={false}
             onAdd={undefined}
-            onSlide={(index): void =>
-              index + 1 === records.length ? handleFetchMore?.() : undefined
-            }
-            onDelete={(index): void =>
-              setRecords([
-                ...records.slice(0, index),
-                ...records.slice(index + 1),
-              ])
-            }
+            onDelete={handleDelete}
+            onSlide={(): void => {}}
           />
         )}
       </Dialog>
@@ -235,6 +220,20 @@ export function QueryResultsTable({
             results={results}
             model={model}
             onFetchMore={isFetching ? undefined : fetchMore}
+            onDelete={(index): void => {
+              setResults([
+                ...results.slice(0, index),
+                ...results.slice(index + 1),
+              ]);
+              setSelectedRows(
+                new Set(
+                  Array.from(selectedRows).filter(
+                    (id) => id !== results[index][queryIdField]
+                  )
+                )
+              );
+            }}
+            totalCount={totalCount}
           />
         ) : undefined}
       </div>

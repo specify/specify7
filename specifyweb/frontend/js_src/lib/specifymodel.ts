@@ -57,6 +57,7 @@ export type UnFetchedCollection<SCHEMA extends AnySchema> = {
 export type Collection<SCHEMA extends AnySchema> = {
   readonly field?: Relationship;
   readonly related?: SpecifyResource<AnySchema>;
+  readonly _totalCount?: number;
   readonly getTotalCount: () => Promise<number>;
   readonly toJSON: <V extends IR<unknown>>() => RA<V>;
   readonly models: RA<SpecifyResource<SCHEMA>>;

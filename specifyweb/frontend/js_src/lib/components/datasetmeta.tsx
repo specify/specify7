@@ -2,9 +2,9 @@ import React from 'react';
 
 import { ping } from '../ajax';
 import Backbone from '../backbone';
+import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
@@ -227,20 +227,12 @@ function DataSetName({
 
 const DataSetNameView = createBackboneView(DataSetName);
 
-async function fetchListOfUsers(): Promise<
+const fetchListOfUsers = async (): Promise<
   RA<SerializedResource<SpecifyUser>>
-> {
-  const users = new schema.models.SpecifyUser.LazyCollection();
-  return users
-    .fetchPromise({
-      limit: 500,
-    })
-    .then(({ models }) =>
-      models
-        .filter(({ id }) => id !== userInformation.id)
-        .map(serializeResource)
-    );
-}
+> =>
+  fetchCollection('SpecifyUser', { limit: 500 }).then(({ records: users }) =>
+    users.filter(({ id }) => id !== userInformation.id)
+  );
 
 function ChangeOwner({
   dataset,

@@ -3,6 +3,7 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import type { CollectionObject, Taxon } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
 import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -15,10 +16,12 @@ import {
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
+import { getBoolPref } from '../remoteprefs';
 import { isResourceOfType } from '../specifymodel';
 import { systemInformation } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { Dialog } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
@@ -121,7 +124,14 @@ type OutgoingMessage =
   | LocalOccurrencesAction
   | PointDataAction;
 
-export function SpecifyNetworkBadge({
+export const displaySpecifyNetwork = (
+  resource: SpecifyResource<AnySchema>
+): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
+  !getBoolPref('s2n.badges.disable', false) &&
+  !resource.isNew() &&
+  ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
+
+function SpecifyNetwork({
   resource,
 }: {
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
@@ -192,5 +202,17 @@ export function SpecifyNetworkBadge({
         <img src="/static/img/specify_network_logo_long.svg" alt="" />
       </Link.Default>
     </>
+  );
+}
+
+export function SpecifyNetworkBadge({
+  resource,
+}: {
+  readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+}): JSX.Element {
+  return (
+    <ErrorBoundary silentErrors={true}>
+      <SpecifyNetwork resource={resource} />
+    </ErrorBoundary>
   );
 }

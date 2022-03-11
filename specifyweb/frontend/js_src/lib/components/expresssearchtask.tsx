@@ -35,7 +35,6 @@ export type QueryTableResult = {
 type RawQueryTableResult = {
   readonly model: SpecifyModel;
   readonly caption: string;
-  readonly idFieldIndex: number;
   readonly tableResults: QueryTableResult;
   readonly ajaxUrl: string;
 };
@@ -67,43 +66,41 @@ function TableResults({
       ) : Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText('noMatches')}</p>
       ) : (
-        queryResults.map(
-          ({ model, caption, tableResults, ajaxUrl, idFieldIndex }, index) => (
-            <details key={index}>
-              <summary
-                className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
+        queryResults.map(({ model, caption, tableResults, ajaxUrl }, index) => (
+          <details key={index}>
+            <summary
+              className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
         rounded hover:text-white hover:dark:bg-brand-400`}
-              >
-                {caption}
-              </summary>
-              <QueryResultsTable
-                fieldSpecs={tableResults.fieldSpecs.map(
-                  ({ stringId, isRelationship }) =>
-                    QueryFieldSpec.fromStringId(stringId, isRelationship)
-                )}
-                hasIdField={true}
-                totalCount={tableResults.totalCount}
-                model={model}
-                label={model.label}
-                initialData={tableResults.results}
-                fetchResults={async (
-                  offset: number
-                ): Promise<RA<RA<string | number>>> =>
-                  ajax<IR<QueryTableResult>>(
-                    querystring.format(ajaxUrl, {
-                      name: model.name,
-                      offset: offset.toString(),
-                    }),
-                    {
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      headers: { Accept: 'application/json' },
-                    }
-                  ).then(({ data }) => data[model.name].results)
-                }
-              />
-            </details>
-          )
-        )
+            >
+              {caption}
+            </summary>
+            <QueryResultsTable
+              fieldSpecs={tableResults.fieldSpecs.map(
+                ({ stringId, isRelationship }) =>
+                  QueryFieldSpec.fromStringId(stringId, isRelationship)
+              )}
+              hasIdField={true}
+              totalCount={tableResults.totalCount}
+              model={model}
+              label={model.label}
+              initialData={tableResults.results}
+              fetchResults={async (
+                offset: number
+              ): Promise<RA<RA<string | number>>> =>
+                ajax<IR<QueryTableResult>>(
+                  querystring.format(ajaxUrl, {
+                    name: model.name,
+                    offset: offset.toString(),
+                  }),
+                  {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    headers: { Accept: 'application/json' },
+                  }
+                ).then(({ data }) => data[model.name].results)
+              }
+            />
+          </details>
+        ))
       )}
     </section>
   );
@@ -127,7 +124,6 @@ function Results(): JSX.Element {
             .map(([tableName, tableResults]) => ({
               model: defined(getModel(tableName)),
               caption: defined(getModel(tableName)).label,
-              idFieldIndex: 0,
               tableResults,
               ajaxUrl,
             }))
@@ -164,6 +160,7 @@ function Results(): JSX.Element {
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
                 );
                 if (tableResult.definition.link !== null) {
+                  // TODO: test this
                   const linkFieldSpec = fieldSpecs.pop();
                   idFieldIndex = fieldSpecs.length + 1;
                   const relationship = defined(linkFieldSpec?.getField());

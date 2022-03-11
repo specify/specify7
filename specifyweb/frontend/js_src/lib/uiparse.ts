@@ -61,7 +61,7 @@ export type Parser = Partial<{
   readonly printFormatter: (value: unknown) => string;
   readonly required: boolean;
   // Default value
-  readonly value: string;
+  readonly value: string | number | boolean;
   // This is different from field.getPickList() for date fields
   readonly pickListName: string;
 }>;
@@ -85,6 +85,7 @@ export const parsers: RR<
         : Boolean(value)
         ? queryText('yes')
         : commonText('no'),
+    value: false,
   },
 
   'java.lang.Byte': {
@@ -94,12 +95,14 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: 0,
   },
 
   'java.lang.Double': {
     type: 'number',
     formatters: [formatter.float],
     validators: [validators.number],
+    value: 0,
   },
 
   'java.lang.Float': 'java.lang.Double',
@@ -111,6 +114,7 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: 0,
   },
 
   'java.lang.Integer': {
@@ -120,6 +124,7 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: 0,
   },
 
   'java.lang.Short': {
@@ -129,11 +134,13 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
+    value: 0,
   },
 
   'java.lang.String': {
     type: 'text',
     maxLength: 2 ** 31 - 1,
+    value: '',
   },
 
   'java.math.BigDecimal': 'java.lang.Double',
@@ -195,6 +202,7 @@ export const parsers: RR<
 
   text: {
     type: 'text',
+    value: '',
   },
 };
 
@@ -203,16 +211,20 @@ type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
 };
 
+export function parserFromType(fieldType: ExtendedJavaType): Parser {
+  let parser = parsers[fieldType];
+  if (typeof parser === 'string') parser = parsers[parser];
+  if (typeof parser === 'function') parser = parser();
+  if (typeof parser !== 'object') parser = {};
+  return parser;
+}
+
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
   extras?: Partial<ExtendedField>
 ): Parser | undefined {
   const fullField = { ...field, ...extras };
-  const fieldType = fullField.type as ExtendedJavaType;
-  let parser = parsers[fieldType];
-  if (typeof parser === 'string') parser = parsers[parser];
-  if (typeof parser === 'function') parser = parser();
-  if (typeof parser !== 'object') parser = {};
+  let parser = parserFromType(fullField.type as ExtendedJavaType);
 
   if (
     parser.type === 'date' &&

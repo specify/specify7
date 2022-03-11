@@ -19,7 +19,7 @@ import {
 } from './wblocalitydataextractor';
 import Backbone from './backbone';
 import * as latlongutils from './latlongutils';
-import {camelToKebab} from './wbplanviewhelper';
+import {camelToKebab, clamp} from './wbplanviewhelper';
 import WbAdvancedSearch, {
   getInitialSearchPreferences,
 } from './components/wbadvancedsearch';
@@ -49,7 +49,7 @@ export default Backbone.View.extend({
     this.geoMapDialog = undefined;
     this.searchCells = _.debounce(
       this.searchCells,
-      Math.ceil(Math.min(200, Math.max(10, this.wbview.data.length / 20))),
+      Math.ceil(clamp(10, 200, this.wbview.data.length / 20)),
       false
     );
   },

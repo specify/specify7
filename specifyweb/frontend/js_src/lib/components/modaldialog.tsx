@@ -84,6 +84,7 @@ export function Dialog({
   isOpen = true,
   title: initialTitle,
   header,
+  headerButtons,
   buttons,
   children,
   /*
@@ -110,6 +111,7 @@ export function Dialog({
   readonly isOpen?: boolean;
   readonly title?: string;
   readonly header: React.ReactNode;
+  readonly headerButtons?: React.ReactNode;
   // Have to explicitly pass undefined if you don't want buttons
   readonly buttons: undefined | string | JSX.Element;
   readonly children: React.ReactNode;
@@ -268,15 +270,22 @@ export function Dialog({
       contentElement={draggableContainer}
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
-      <span className={`handle ${isFullScreen ? '' : 'p-4 -m-4 cursor-move'}`}>
-        {typeof title !== 'undefined' && (
-          <p id={id('title')} className="dark:text-neutral-400 text-gray-600">
-            {title}
-          </p>
-        )}
-        <h2 className={headerClassName} id={id('header')}>
-          {header}
-        </h2>
+      <span
+        className={`handle flex flex-wrap gap-4' ${
+          isFullScreen ? '' : 'p-4 -m-4 cursor-move'
+        }`}
+      >
+        <div>
+          {typeof title !== 'undefined' && (
+            <p id={id('title')} className="dark:text-neutral-400 text-gray-600">
+              {title}
+            </p>
+          )}
+          <h2 className={headerClassName} id={id('header')}>
+            {header}
+          </h2>
+        </div>
+        {headerButtons}
       </span>
       {/*
        * "px-1 -mx-1" ensures that focus outline for checkboxes

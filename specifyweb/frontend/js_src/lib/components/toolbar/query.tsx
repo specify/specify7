@@ -3,14 +3,15 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../ajax';
 import { error } from '../../assert';
+import type { CollectionFetchFilters } from '../../collection';
+import { fetchCollection } from '../../collection';
 import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
-import { serializeResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import { getModel, getModelById, schema } from '../../schema';
-import type { IR, RA } from '../../types';
+import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
@@ -210,7 +211,7 @@ function QueryToolbarItem({
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: keyof Tables) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-  readonly spQueryFilter?: IR<unknown>;
+  readonly spQueryFilter?: CollectionFetchFilters<SpQuery>;
   readonly newQueryButtonGenerator?: (state: States) => () => void;
   readonly readOnly: boolean;
 }): JSX.Element {
@@ -224,14 +225,14 @@ function QueryToolbarItem({
   });
 
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
-    React.useCallback(async () => {
-      const queryModels = new schema.models.SpQuery.LazyCollection({
-        filters: spQueryFilter ?? { specifyuser: userInformation.id },
-      });
-      return queryModels
-        .fetchPromise({ limit: QUERY_FETCH_LIMIT })
-        .then(({ models }) => models.map(serializeResource));
-    }, [spQueryFilter])
+    React.useCallback(
+      async () =>
+        fetchCollection('SpQuery', {
+          limit: QUERY_FETCH_LIMIT,
+          ...(spQueryFilter ?? { specifyUser: userInformation.id }),
+        }).then(({ records }) => records),
+      [spQueryFilter]
+    )
   );
 
   const [state, setState] = React.useState<States>({

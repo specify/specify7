@@ -1,28 +1,28 @@
 import React from 'react';
 
-import type { CollectionObject, RecordSet, Tables, Taxon } from '../datamodel';
-import type { AnySchema, RecordSetInfo } from '../datamodelutils';
+import { Http } from '../ajax';
+import { fetchCollection } from '../collection';
+import type { RecordSet, Tables } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import populateForm from '../populateform';
-import { getBoolPref } from '../remoteprefs';
 import reports from '../reports';
-import { makeResourceViewUrl } from '../specifyapi';
 import { setCurrentView } from '../specifyapp';
 import specifyForm from '../specifyform';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, FormFooter, H2 } from './basic';
+import { className, H2 } from './basic';
 import { DeleteButton } from './deletebutton';
-import { crash, ErrorBoundary } from './errorboundary';
-import { setTitle, useAsyncState } from './hooks';
-import { SpecifyNetworkBadge } from './lifemapper';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { crash } from './errorboundary';
+import { setTitle } from './hooks';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
+import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { parseResourceUrl } from './resource';
+import { RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
@@ -35,29 +35,37 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'RepositoryAgreement',
 ]);
 
-function ViewHeader({
-  recordSetInfo,
-  recordSetName,
-  previousUrl,
-  nextUrl,
-  newUrl,
+// FIXME: remove
+export function ViewHeader({
+  /*
+   * RecordSetInfo,
+   * recordSetName,
+   * previousUrl,
+   * nextUrl,
+   * newUrl,
+   */
   title,
+  children,
   resource,
 }: {
-  readonly recordSetInfo: RecordSetInfo | undefined;
-  readonly recordSetName: string | undefined;
-  readonly previousUrl: string | undefined;
-  readonly nextUrl: string | undefined;
-  readonly newUrl: string | undefined;
+  /*
+   * Readonly recordSetInfo: RecordSetInfo | undefined;
+   * readonly recordSetName: string | undefined;
+   * readonly previousUrl: string | undefined;
+   * readonly nextUrl: string | undefined;
+   * readonly newUrl: string | undefined;
+   */
   readonly title: string;
+  readonly children?: JSX.Element;
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
   return (
     <header className={className.formHeader}>
       <H2 className={className.formTitle}>{title}</H2>
-      {typeof recordSetName === 'string' && (
+      {children}
+      {/* Typeof recordSetName === 'string' && (
         <nav
-          className="recordset-header flex border border-gray-500 rounded"
+          className="flex border border-gray-500 rounded"
           title={formsText('recordSetAreaDescription')(recordSetName)}
           aria-label={formsText('recordSetAreaDescription')(recordSetName)}
         >
@@ -99,9 +107,7 @@ function ViewHeader({
                 aria-hidden="true"
               >
                 <span className="text-center">{recordSetInfo.index + 1}</span>
-                <span className="recordset-navigation-total">
-                  {recordSetInfo.total_count}
-                </span>
+                <span>{recordSetInfo.total_count}</span>
               </span>
 
               {typeof nextUrl === 'string' ? (
@@ -139,106 +145,63 @@ function ViewHeader({
             </span>
           )}
         </nav>
-      )}
-      {!getBoolPref('s2n.badges.disable', false) &&
-      !resource.isNew() &&
-      ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name) ? (
-        <span className="flex justify-end flex-1">
-          <ErrorBoundary silentErrors={true}>
-            <SpecifyNetworkBadge
-              resource={
-                resource as
-                  | SpecifyResource<CollectionObject>
-                  | SpecifyResource<Taxon>
-              }
-            />
-          </ErrorBoundary>
-        </span>
-      ) : undefined}
+      )*/}
     </header>
   );
 }
 
 export type FormType = 'form' | 'formtable';
 
-export function ResourceView({
-  resource,
-  recordSet,
-  mode,
-  type = 'form',
-  viewName,
-  canAddAnother,
-  hasHeader,
-  onChangeTitle: handleChangeTitle,
-  extraButton,
-  deletionMessage,
-  hasButtons = true,
-  onSaving: handleSaving,
-  onClose: handleClose,
-  onSaved: handleSaved,
-  onDeleted: handleDeleted,
-  className,
-  isSubView,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly recordSet?: SpecifyResource<RecordSet>;
+export type ResourceViewProps<SCHEMA extends AnySchema> = {
+  readonly resource: SpecifyResource<SCHEMA>;
   readonly mode: 'edit' | 'view';
   readonly type?: FormType;
   readonly viewName?: string;
   readonly canAddAnother: boolean;
-  readonly hasHeader: boolean;
-  // TODO: remove this once RecordSetsDialog is converted to React
-  readonly extraButton?: {
-    readonly label: string;
-    readonly onClick: () => void;
-  };
   readonly deletionMessage?: string;
   readonly onChangeTitle?: (newTitle: string) => void;
-  readonly hasButtons?: boolean;
   readonly onSaving?: () => void;
   readonly onSaved?: (payload: {
     readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<AnySchema> | undefined;
+    readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
     readonly reporterOnSave: boolean;
   }) => void;
   readonly onClose: () => void;
-  readonly onDeleted?: (nextResource: string | undefined) => void;
-  readonly className?: string;
+  readonly onDeleted?: () => void;
+  // Readonly className?: string;
   readonly isSubView: boolean;
-}): JSX.Element | null {
+  readonly children: (props: {
+    readonly isLoading: boolean;
+    readonly isModified: boolean;
+    readonly title: string;
+    readonly saveButton?: JSX.Element;
+    readonly deleteButton?: JSX.Element;
+    readonly form: JSX.Element;
+    readonly specifyNetworkBadge: JSX.Element | undefined;
+  }) => JSX.Element;
+};
+
+// FIXME: review and remove comments
+export function ResourceView<SCHEMA extends AnySchema>({
+  resource,
+  mode,
+  type = 'form',
+  viewName,
+  canAddAnother,
+  // HasHeader,
+  onChangeTitle: handleChangeTitle,
+  deletionMessage,
+  onSaving: handleSaving,
+  onClose: handleClose,
+  onSaved: handleSaved,
+  onDeleted: handleDeleted,
+  // ClassName,
+  isSubView,
+  children,
+}: ResourceViewProps<SCHEMA>): JSX.Element | null {
   const [state, setState] = React.useState<'loading' | 'main' | 'noDefinition'>(
     'loading'
-  );
-
-  // Fetch record set info
-  const [recordSetInfo] = useAsyncState(
-    React.useCallback(() => {
-      const info = resource.get('recordset_info');
-      if (typeof info === 'undefined') return undefined;
-      return {
-        recordSetInfo: info,
-        previousUrl:
-          typeof info.previous === 'string'
-            ? makeResourceViewUrl(
-                ...defined(parseResourceUrl(info.previous)),
-                info.recordsetid
-              )
-            : undefined,
-        nextUrl:
-          typeof info.next === 'string'
-            ? makeResourceViewUrl(
-                ...defined(parseResourceUrl(info.next)),
-                info.recordsetid
-              )
-            : undefined,
-        newUrl: makeResourceViewUrl(
-          resource.specifyModel.name,
-          'new',
-          info.recordsetid
-        ),
-      };
-    }, [resource])
   );
 
   // Update title when resource changes
@@ -280,8 +243,8 @@ export function ResourceView({
         isSubView
       ),
       resource.fetchIfNotPopulated(),
-    ]).then(
-      ([form]) => {
+    ])
+      .then(([form]) => {
         setState('main');
 
         form.find('.specify-form-header:first').remove();
@@ -298,98 +261,104 @@ export function ResourceView({
             : resourceLabel
         );
         return undefined;
-      },
-      (error) => {
-        if (error.status !== 404) return;
-        error.errorHandled = true;
+      })
+      .catch((error) => {
+        if (error !== Http.NOT_FOUND) throw error;
         setState('noDefinition');
-      }
-    );
+      });
   }, [resource]);
 
-  if (state === 'noDefinition')
-    return (
-      <section role="alert">
-        <H2>{formsText('missingFormDefinitionPageHeader')}</H2>
-        <p>{formsText('missingFormDefinitionPageContent')}</p>
-      </section>
-    );
-  else {
-    const content = (
-      <>
-        {state === 'loading' && hasHeader ? <LoadingScreen /> : undefined}
-        {hasHeader && typeof recordSetInfo === 'object' ? (
-          <ViewHeader
-            {...recordSetInfo}
-            recordSetName={recordSet?.get('name')}
-            title={title}
-            resource={resource}
+  return state === 'noDefinition' ? (
+    <section role="alert">
+      <H2>{formsText('missingFormDefinitionPageHeader')}</H2>
+      <p>{formsText('missingFormDefinitionPageContent')}</p>
+    </section>
+  ) : (
+    children({
+      isLoading: state === 'loading',
+      isModified: resource.needsSaved,
+      title,
+      deleteButton:
+        !resource.isNew() &&
+        mode === 'edit' &&
+        typeof handleDeleted === 'function' ? (
+          <DeleteButton
+            model={resource}
+            deletionMessage={deletionMessage}
+            onDeleted={(): void => {
+              handleDeleted();
+              handleClose();
+            }}
           />
-        ) : undefined}
-        <div ref={containerRef} />
-        {hasButtons && (
-          <FormFooter>
-            {!resource.isNew() && mode === 'edit' ? (
-              <DeleteButton
-                model={resource}
-                deletionMessage={deletionMessage}
-                onDeleted={(): void => {
-                  handleDeleted?.(
-                    recordSetInfo?.nextUrl ?? recordSetInfo?.previousUrl
-                  );
-                  handleClose();
-                }}
-              />
-            ) : undefined}
-            {typeof extraButton === 'object' && (
-              <Button.Gray onClick={extraButton.onClick}>
-                {extraButton.label}
-              </Button.Gray>
-            )}
-            {mode === 'edit' && form !== undefined ? (
-              <SaveButton
-                model={resource}
-                form={form}
-                onSaving={handleSaving}
-                onSaved={(payload): void => {
-                  const reporterOnSave = form?.getElementsByClassName(
-                    'specify-print-on-save'
-                  )[0] as HTMLInputElement | undefined;
-                  handleSaved?.({
-                    ...payload,
-                    reporterOnSave: reporterOnSave?.checked === true,
-                  });
-                  handleClose();
-                }}
-                canAddAnother={
-                  canAddAnother &&
-                  !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-                }
-              />
-            ) : undefined}
-          </FormFooter>
-        )}
-      </>
-    );
-    return hasHeader ? (
-      <section className={className}>{content}</section>
-    ) : (
-      content
-    );
-  }
+        ) : undefined,
+      form: <div ref={containerRef} />,
+      saveButton:
+        mode === 'edit' &&
+        form !== undefined &&
+        typeof handleSaved === 'function' ? (
+          <SaveButton
+            model={resource}
+            form={form}
+            onSaving={handleSaving}
+            onSaved={(payload): void => {
+              const reporterOnSave = form?.getElementsByClassName(
+                'specify-print-on-save'
+              )[0] as HTMLInputElement | undefined;
+              handleSaved({
+                ...payload,
+                reporterOnSave: reporterOnSave?.checked === true,
+              });
+              handleClose();
+            }}
+            canAddAnother={
+              canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
+            }
+          />
+        ) : undefined,
+      specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
+        <SpecifyNetworkBadge resource={resource} />
+      ) : undefined,
+    })
+  );
+  // FIXME: remove
+  /*
+   *Const content = (
+   *<>
+   *  {state === 'loading' && hasHeader ? <LoadingScreen /> : undefined}
+   *  {hasHeader && typeof recordSetInfo === 'object' ? (
+   *    <ViewHeader
+   *      {...recordSetInfo}
+   *      recordSetName={recordSet?.get('name')}
+   *      title={title}
+   *      resource={resource}
+   *    />
+   *  ) : undefined}
+   *  <div ref={containerRef} />
+   *  {hasSaveButton || hasDeleteButton ? (
+   *    <FormFooter>
+   *    </FormFooter>
+   *  ) : undefined}
+   *</>
+   *);
+   *return hasHeader ? (
+   *<section className={className}>{content}</section>
+   *) : (
+   *content
+   *);
+   *}
+   */
 }
 
 export const ResourceViewBackbone = createBackboneView(ResourceView);
 
+// FIXME: update
 export function ResourceViewComponent({
   resource,
-  recordSet,
   pushUrl,
   onClose: handleClose,
   onSaved: handleSaved,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly recordSet?: SpecifyResource<RecordSet>;
   readonly pushUrl: boolean;
   readonly onClose: () => void;
   readonly onSaved: (payload: {
@@ -419,7 +388,6 @@ export function ResourceViewComponent({
     <ResourceView
       className={`${className.container} w-fit overflow-y-auto`}
       resource={resource}
-      recordSet={recordSet}
       mode={userInformation.isReadOnly ? 'view' : 'edit'}
       canAddAnother={true}
       hasHeader={true}
@@ -432,52 +400,117 @@ export function ResourceViewComponent({
       }
       onClose={handleClose}
       isSubView={false}
-    />
+    >
+      {({
+        isLoading,
+        isModified,
+        title,
+        saveButton,
+        deleteButton,
+        form,
+      }): JSX.Element => {}}
+    </ResourceView>
   );
 }
 
 const ViewResource = createBackboneView(ResourceViewComponent);
 
-export function showResource(
+export async function showResource(
   resource: SpecifyResource<AnySchema>,
   recordSet?: SpecifyResource<RecordSet>,
   pushUrl = false
 ): void {
+  const recordSetInfo = resource.get('recordset_info');
+  const recordSetItemIndex =
+    typeof recordSetInfo === 'object'
+      ? await fetchCollection(
+          'RecordSetItem',
+          {
+            recordSet: recordSetInfo.recordsetid,
+            limit: 1,
+          },
+          { recordId__lt: resource.id }
+        )
+          .then(({ totalCount }) => totalCount)
+          .catch(crash)
+      : undefined;
   const handleClose = (): void => void view.remove();
-  const view = new ViewResource({
-    resource,
-    recordSet,
-    pushUrl,
-    onClose: handleClose,
-    onSaved: ({ reporterOnSave, addAnother, newResource, wasNew }): void => {
-      function viewSaved() {
-        if (addAnother && typeof newResource === 'object')
-          showResource(newResource, recordSet, true);
-        else if (wasNew) navigation.go(resource.viewUrl());
-        else {
-          const reloadResource = new resource.specifyModel.Resource({
-            id: resource.id,
-          });
-          // @ts-expect-error Non-standard property
-          reloadResource.recordsetid = resource.recordsetid;
-          reloadResource
-            .fetchPromise()
-            .then(() => showResource(reloadResource, recordSet));
-        }
-      }
+  const view =
+    typeof recordSetItemIndex === 'number' && typeof recordSet === 'object'
+      ? new RecordSetView({
+          recordSet,
+          defaultResourceIndex: recordSetItemIndex,
+          onClose: handleClose,
+          onSaved: ({
+            reporterOnSave,
+            addAnother,
+            newResource,
+            wasNew,
+          }): void => {
+            function viewSaved() {
+              if (addAnother && typeof newResource === 'object')
+                showResource(newResource, recordSet, true);
+              else {
+                const reloadResource = new resource.specifyModel.Resource({
+                  id: resource.id,
+                });
+                reloadResource.recordsetid = resource.recordsetid;
+                reloadResource
+                  .fetchPromise()
+                  .then(() => showResource(reloadResource, recordSet));
+              }
+            }
 
-      if (reporterOnSave) {
-        console.log('generating label or invoice');
-        reports({
-          tblId: resource.specifyModel.tableId,
-          recordToPrintId: resource.id,
-          autoSelectSingle: true,
-          done: viewSaved,
+            if (reporterOnSave) {
+              console.log('generating label or invoice');
+              reports({
+                tblId: resource.specifyModel.tableId,
+                recordToPrintId: resource.id,
+                autoSelectSingle: true,
+                done: viewSaved,
+              })
+                .then((view) => view.render())
+                .catch(crash);
+            } else viewSaved();
+          },
         })
-          .then((view) => view.render())
-          .catch(crash);
-      } else viewSaved();
-    },
-  });
+      : new ViewResource({
+          resource,
+          pushUrl,
+          onClose: handleClose,
+          onSaved: ({
+            reporterOnSave,
+            addAnother,
+            newResource,
+            wasNew,
+          }): void => {
+            function viewSaved() {
+              if (addAnother && typeof newResource === 'object')
+                showResource(newResource, recordSet, true);
+              else if (wasNew) navigation.go(resource.viewUrl());
+              else {
+                const reloadResource = new resource.specifyModel.Resource({
+                  id: resource.id,
+                });
+                reloadResource.recordsetid = resource.recordsetid;
+                reloadResource
+                  .fetchPromise()
+                  .then(() => showResource(reloadResource, recordSet));
+              }
+            }
+
+            if (reporterOnSave) {
+              console.log('generating label or invoice');
+              reports({
+                tblId: resource.specifyModel.tableId,
+                recordToPrintId: resource.id,
+                autoSelectSingle: true,
+                done: viewSaved,
+              })
+                .then((view) => view.render())
+                .catch(crash);
+            } else viewSaved();
+          },
+        });
   setCurrentView(view);
 }

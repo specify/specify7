@@ -3,9 +3,9 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import {assert} from './assert';
-import {globalEvents, makeResourceViewUrl} from './specifyapi';
+import {globalEvents} from './specifyapi';
 import * as querystring from './querystring';
-import {resourceFromUri} from "./components/resource";
+import {resourceFromUri, resourceViewUrl} from './resource';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -130,7 +130,7 @@ function eventHandlerForToOne(related, field) {
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return makeResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
+            return resourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
         },
         get: function(attribute) {
             // case insensitive
@@ -495,7 +495,7 @@ function eventHandlerForToOne(related, field) {
             return resource.fetch();
         },
         fetchPromise(options){
-            return new Promise((resolve,reject)=>this.fetch(options).done(resolve).fail(jqxhr=>{
+            return new Promise((resolve,reject)=>this.fetchIfNotPopulated(options).done(resolve).fail(jqxhr=>{
                 jqxhr.errorHandled = true;
                 reject(jqxhr);
             }));
@@ -531,7 +531,7 @@ function eventHandlerForToOne(related, field) {
                 if (!_.isUndefined(resource.recordSetId)) {
                     options.url = querystring.format(
                         options.url || resource.url(),
-                        {recordsetid: resource.recordSetId});
+                        {recordsetid: resource.recordsetid});
                 }
                 break;
             }

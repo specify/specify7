@@ -39,6 +39,7 @@ import {
 import {parseUploadPlan} from './uploadplanparser';
 import {
   capitalize,
+  clamp,
   extractDefaultValues,
   mappedFind,
 } from './wbplanviewhelper';
@@ -199,7 +200,7 @@ const WBView = Backbone.View.extend({
      *
      */
     const throttleRate = Math.ceil(
-      Math.min(2000, Math.max(10, this.data.length / 10))
+      clamp(10, 2000, this.data.length / 10)
     );
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,

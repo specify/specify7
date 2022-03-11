@@ -1,9 +1,10 @@
-import { parseResourceUrl } from './components/resource';
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
+import { parseResourceUrl, resourceApiUrl } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined } from './types';
+import { parserFromType } from './uiparse';
 
 /* The dataModel types types were generated using this code snippet: */
 /* eslint-disable multiline-comment-style*/
@@ -179,7 +180,7 @@ export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>
+  resource: SpecifyResource<SCHEMA> | SerializedModel<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
     resource?.toJSON() ?? resource,
@@ -197,35 +198,55 @@ function serializeModel<SCHEMA extends AnySchema>(
   );
   const fields = model.fields.map(({ name }) => name);
 
-  return Object.fromEntries(
-    Object.entries(resource).map(([lowercaseFieldName, value]) => {
-      let camelFieldName = fields.find(
-        (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
-      );
-      if (typeof camelFieldName === 'undefined') {
-        camelFieldName = lowercaseFieldName;
-        if (!specialFields.has(lowercaseFieldName))
-          console.warn(
-            `Trying to serialize unknown field ${lowercaseFieldName} for table ${model.name}`,
-            resource
-          );
-      }
-      if (typeof value === 'object' && value !== null) {
-        const field = model.getField(lowercaseFieldName);
-        const tableName =
-          typeof field === 'undefined' || !field.isRelationship
-            ? undefined
-            : field.relatedModel.name;
-        return [
-          camelFieldName,
-          Array.isArray(value)
-            ? value.map((value) => serializeModel(value, tableName))
-            : serializeModel(value as SerializedModel<AnySchema>, tableName),
-        ];
-      } else return [camelFieldName, value];
-    })
-  ) as SerializedResource<SCHEMA>;
+  return addMissingFields(
+    model.name,
+    Object.fromEntries(
+      Object.entries(resource).map(([lowercaseFieldName, value]) => {
+        let camelFieldName = fields.find(
+          (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
+        );
+        if (typeof camelFieldName === 'undefined') {
+          camelFieldName = lowercaseFieldName;
+          if (!specialFields.has(lowercaseFieldName))
+            console.warn(
+              `Trying to serialize unknown field ${lowercaseFieldName} for table ${model.name}`,
+              resource
+            );
+        }
+        if (typeof value === 'object' && value !== null) {
+          const field = model.getField(lowercaseFieldName);
+          const tableName =
+            typeof field === 'undefined' || !field.isRelationship
+              ? undefined
+              : field.relatedModel.name;
+          return [
+            camelFieldName,
+            Array.isArray(value)
+              ? value.map((value) => serializeModel(value, tableName))
+              : serializeModel(value as SerializedModel<AnySchema>, tableName),
+          ];
+        } else return [camelFieldName, value];
+      })
+    ) as SerializedResource<SCHEMA>
+  );
 }
+
+/** Set missing required fields to literals. Set missing optional fields to null */
+export const addMissingFields = <SCHEMA extends AnySchema>(
+  tableName: SCHEMA['tableName'],
+  record: Partial<SerializedResource<SCHEMA>>
+): SerializedResource<SCHEMA> => ({
+  ...Object.fromEntries(
+    defined(getModel(tableName)).literalFields.map(
+      ({ name, isRequired, type }) => [
+        name,
+        isRequired ? parserFromType(type).value : null,
+      ]
+    )
+  ),
+  resource_uri: resourceApiUrl(tableName, 0),
+  ...record,
+});
 
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(
   resource: OBJECT

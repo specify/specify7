@@ -2,7 +2,6 @@ import _ from 'underscore';
 
 import { ajax } from './ajax';
 import Backbone from './backbone';
-import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
@@ -138,16 +137,3 @@ export const fetchRows = async <SCHEMA extends AnySchema>(
       headers: { Accept: 'application/json' },
     }
   ).then(({ data }) => data);
-
-export function makeResourceViewUrl(
-  tableName: keyof Tables,
-  resourceId?: number | 'new',
-  recordSetId?: number
-): string {
-  const url = `/specify/view/${tableName.toLowerCase()}/${
-    resourceId ?? 'new'
-  }/`;
-  return typeof recordSetId === 'number'
-    ? queryString.format(url, { recordsetid: recordSetId.toString() })
-    : url;
-}

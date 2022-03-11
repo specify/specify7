@@ -12,9 +12,10 @@ import {userInformation} from './userinfo';
 import {QueryToolbarView} from './components/toolbar/query';
 import {formatNumber} from './components/internationalization';
 import {legacyNonJsxIcons} from './components/icons';
-import {makeResourceViewUrl} from './specifyapi';
 import {showDialog} from './components/modaldialog';
 import {filterArray} from './types';
+import {ResourceDialogView} from './components/resourcedialog';
+import {resourceViewUrl} from "./resource";
 
 
 export default Backbone.View.extend({
@@ -150,7 +151,7 @@ export default Backbone.View.extend({
             }).render();
         },
         gotoForm: function(model, recordset) {
-            navigation.go(makeResourceViewUrl(model.name, recordset.id));
+            navigation.go(resourceViewUrl(model.name, recordset.id));
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();
@@ -184,9 +185,9 @@ export default Backbone.View.extend({
                 });
                 view.render();
             };
-            const editView = new ResourceDialog({
+            const editView = new ResourceDialogView({
                 resource: recordSet,
-                deleteWarning: formsText("recordSetDeletionWarning")(recordSet.get("name")),
+                deletionMessage: formsText("recordSetDeletionWarning")(recordSet.get("name")),
                 extraButton: {
                   label: commonText("query"),
                   onClick: queryEventListener,

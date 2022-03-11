@@ -4,20 +4,19 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import * as navigation from '../navigation';
 import QueryCbxSearch from '../querycbxsearch';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { f } from '../wbplanviewhelper';
-import { Button, FormFooter, Input, Link, SubFormHeader } from './basic';
+import { clamp, f } from '../wbplanviewhelper';
+import { Button, className, Input } from './basic';
 import { crash } from './errorboundary';
 import { Dialog } from './modaldialog';
-import type { FormType } from './resourceview';
+import type { FormType, ResourceViewProps } from './resourceview';
 import { ResourceView } from './resourceview';
 
-function Buttons({
+export function RecordSelectorButtons({
   onAdd: handleAdd,
   onDelete: handleDelete,
   onVisit: handleVisit,
@@ -47,14 +46,16 @@ function Buttons({
   );
 }
 
-function Slider({
+export function Slider({
   value,
   count,
   onChange: handleChange,
+  onAdd: handleAdd,
 }: {
   readonly value: number;
   readonly count: number;
   readonly onChange: (newValue: number) => void;
+  readonly onAdd: (() => void) | undefined;
 }): JSX.Element {
   const [isBlank, setIsBlank] = React.useState<boolean>(false);
   return (
@@ -66,7 +67,6 @@ function Slider({
       <Button.Simple
         aria-label={formsText('firstRecord')}
         title={formsText('firstRecord')}
-        type="button"
         disabled={value == 0}
         onClick={(): void => handleChange(0)}
       >
@@ -76,7 +76,6 @@ function Slider({
         className="dark:bg-neutral-500 px-4 bg-white"
         aria-label={formsText('previousRecord')}
         title={formsText('previousRecord')}
-        type="button"
         disabled={value == 0}
         onClick={(): void => handleChange(value - 1)}
       >
@@ -100,9 +99,10 @@ function Slider({
             onChange={({ target }): void => {
               setIsBlank(target.value.length === 0);
               if (target.value.length > 0) {
-                const value = Math.max(
+                const value = clamp(
                   0,
-                  Math.min(count - 1, Number.parseInt(target.value) - 1)
+                  count - 1,
+                  Number.parseInt(target.value) - 1
                 );
                 handleChange(value);
               }
@@ -114,7 +114,7 @@ function Slider({
         <span>{count}</span>
       </div>
       <Button.Simple
-        className="button dark:bg-neutral-500 px-4 bg-white"
+        className="dark:bg-neutral-500 px-4 bg-white"
         aria-label={formsText('nextRecord')}
         title={formsText('nextRecord')}
         disabled={value + 1 == count}
@@ -123,7 +123,6 @@ function Slider({
         &gt;
       </Button.Simple>
       <Button.Simple
-        className="button"
         aria-label={formsText('lastRecord')}
         title={formsText('lastRecord')}
         disabled={value + 1 == count}
@@ -131,35 +130,17 @@ function Slider({
       >
         ≫
       </Button.Simple>
+      {typeof handleAdd === 'function' && (
+        <Button.Simple
+          className={className.greenButton}
+          aria-label={formsText('createRecordButtonDescription')}
+          title={formsText('createRecordButtonDescription')}
+          onClick={(): void => handleAdd()}
+        >
+          +
+        </Button.Simple>
+      )}
     </div>
-  );
-}
-
-function Header({
-  isDependent,
-  title,
-  length,
-  buttons,
-}: {
-  readonly isDependent: boolean;
-  readonly title: string;
-  readonly length: number;
-  readonly buttons: JSX.Element | undefined;
-}): JSX.Element {
-  return (
-    <SubFormHeader>
-      <legend>
-        {!isDependent && (
-          <Link.Icon
-            icon="chevronRight"
-            title={formsText('link')}
-            aria-label={formsText('link')}
-          />
-        )}
-        <span>{`${title} (${length})`}</span>
-      </legend>
-      {buttons}
-    </SubFormHeader>
   );
 }
 
@@ -201,6 +182,39 @@ function Search<SCHEMA extends AnySchema>({
   return <div ref={containerRef} />;
 }
 
+export type RecordSelectorProps<SCHEMA extends AnySchema> = {
+  readonly isReadOnly: boolean;
+  readonly model: SpecifyModel<SCHEMA>;
+  readonly formType?: FormType;
+  readonly viewName?: string;
+  readonly field?: Relationship;
+  readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
+  readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
+  readonly onDelete: () => void;
+  readonly relatedResource?: SpecifyResource<AnySchema>;
+  readonly isDependent: boolean;
+  readonly defaultIndex?: number;
+  readonly onSaved?: ResourceViewProps<SCHEMA>['onSaved'];
+  readonly renderResourceView: ResourceViewProps<SCHEMA>['children'];
+  readonly children: (props: {
+    // Delete confirmation or search dialogs
+    readonly dialogs: JSX.Element;
+    readonly slider: JSX.Element;
+    readonly index: number;
+    readonly totalCount: number;
+    readonly resource: SpecifyResource<SCHEMA> | undefined;
+    readonly resourceView: JSX.Element | undefined;
+    readonly onAdd: () => void;
+    readonly onRemove: () => void;
+    // True while fetching new record
+    readonly isLoading: boolean;
+  }) => JSX.Element;
+  readonly index: number;
+  readonly onSlide: (newIndex: number) => void;
+  readonly totalCount: number;
+};
+
+// FIXME: display old record with Loading message while loading new record
 export function RecordSelector<SCHEMA extends AnySchema>({
   isReadOnly: readOnly,
   model,
@@ -208,46 +222,32 @@ export function RecordSelector<SCHEMA extends AnySchema>({
   viewName,
   field,
   records,
-  hasHeader,
-  sliderPosition = 'bottom',
   onAdd: handleAdded,
   onDelete: handleDelete,
-  onSlide: handleSlide,
   isDependent,
-  defaultIndex,
   relatedResource,
-}: {
-  readonly isReadOnly: boolean;
-  readonly model: SpecifyModel<SCHEMA>;
-  readonly formType?: FormType;
-  readonly viewName?: string;
-  readonly field?: Relationship;
-  readonly records: RA<SpecifyResource<SCHEMA>>;
-  readonly hasHeader: boolean;
-  readonly sliderPosition?: 'top' | 'bottom';
-  readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
-  readonly onDelete: (index: number) => void;
-  readonly onSlide?: (index: number) => void;
-  readonly relatedResource?: SpecifyResource<AnySchema>;
-  readonly isDependent: boolean;
-  readonly defaultIndex?: number;
-}): JSX.Element {
+  onSaved: handleSaved,
+  renderResourceView,
+  children,
+  index,
+  onSlide: handleSlide,
+  totalCount,
+}: RecordSelectorProps<SCHEMA>): JSX.Element {
+  const lastIndexRef = React.useRef<number>(index);
+  React.useEffect(
+    () => (): void => {
+      lastIndexRef.current = index;
+    },
+    [index]
+  );
+
   const isReadOnly = readOnly && !isDependent;
-
-  const [index, setIndex] = React.useState(defaultIndex ?? records.length - 1);
-
-  function updateIndex(index: number): void {
-    setIndex(index);
-    handleSlide?.(index);
-  }
 
   const [state, setState] = React.useState<
     'main' | 'deleteDialog' | 'addBySearch'
   >();
 
   function handleAdd(): void {
-    updateIndex(records.length);
-
     if (typeof handleAdded === 'undefined') return;
 
     if (isDependent) {
@@ -259,93 +259,85 @@ export function RecordSelector<SCHEMA extends AnySchema>({
       )
         resource.set(field.otherSideName, relatedResource.url() as any);
       handleAdded(resource);
+      handleSlide(totalCount);
     } else setState('addBySearch');
   }
 
   function handleRemove(): void {
     if (records.length === 0) return;
-    updateIndex(Math.min(index, records.length - 2));
+    handleSlide(Math.min(index, totalCount - 2));
 
-    if (isDependent) handleDelete(index);
+    if (isDependent) handleDelete();
     else setState('deleteDialog');
   }
 
-  const slider = (
-    <Slider value={index} count={records.length} onChange={updateIndex} />
-  );
-
-  const title = field?.label ?? model?.label;
-
-  const buttons = isReadOnly ? undefined : (
-    <Buttons
-      onVisit={
-        typeof records[index] === 'object' && !isDependent
-          ? (): void => navigation.go(records[index].viewUrl())
-          : undefined
-      }
-      onDelete={typeof records[index] === 'object' ? handleRemove : undefined}
-      onAdd={typeof handleAdded === 'function' ? handleAdd : undefined}
-    />
-  );
-
-  const children = (
-    <>
-      {state === 'deleteDialog' ? (
-        <Dialog
-          title={title}
-          header={formsText('removeRecordDialogHeader')}
-          onClose={(): void => setState('main')}
-          buttons={
-            <>
-              <Button.Red
-                onClick={(): void => {
-                  handleDelete(index);
-                  setState('main');
-                }}
-              >
-                {commonText('delete')}
-              </Button.Red>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-            </>
-          }
-        >
-          {formsText('removeRecordDialogMessage')}
-        </Dialog>
-      ) : state === 'addBySearch' && typeof handleAdded === 'function' ? (
-        <Search
-          model={model}
-          otherSideName={defined(field?.otherSideName)}
-          parentUrl={defined(relatedResource).url()}
-          onAdd={handleAdded}
-        />
-      ) : undefined}
-      {sliderPosition === 'top' && slider}
-      {hasHeader && (
-        <Header
-          length={records.length}
-          title={title}
-          buttons={buttons}
-          isDependent={isDependent}
-        />
-      )}
-      {typeof records[index] === 'object' ? (
+  return children({
+    slider: (
+      <Slider
+        value={index}
+        count={totalCount}
+        onChange={handleSlide}
+        onAdd={undefined}
+      />
+    ),
+    index,
+    totalCount,
+    isLoading: typeof records[index] === 'object',
+    resource: records[index],
+    resourceView:
+      typeof records[index] === 'object' ||
+      typeof records[lastIndexRef.current] === 'object' ? (
         <ResourceView
-          resource={records[index]}
+          resource={defined(records[index] ?? records[lastIndexRef.current])}
           mode={isReadOnly ? 'view' : 'edit'}
           viewName={viewName}
           type={formType}
-          hasHeader={false}
-          hasButtons={false}
           canAddAnother={false}
-          onClose={f.void}
           isSubView={true}
-        />
-      ) : (
-        <p>{formsText('noData')}</p>
-      )}
-      {sliderPosition === 'bottom' && slider}
-      {!hasHeader && <FormFooter>{buttons}</FormFooter>}
-    </>
-  );
-  return hasHeader ? <fieldset>{children}</fieldset> : <div>{children}</div>;
+          onClose={f.void}
+          onSaved={handleSaved}
+          onDeleted={handleDelete}
+        >
+          {renderResourceView}
+        </ResourceView>
+      ) : undefined,
+    dialogs: (
+      <>
+        {state === 'deleteDialog' ? (
+          <Dialog
+            title={field?.label ?? model?.label}
+            header={formsText('removeRecordDialogHeader')}
+            onClose={(): void => setState('main')}
+            buttons={
+              <>
+                <Button.Red
+                  onClick={(): void => {
+                    handleDelete();
+                    setState('main');
+                  }}
+                >
+                  {commonText('delete')}
+                </Button.Red>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              </>
+            }
+          >
+            {formsText('removeRecordDialogMessage')}
+          </Dialog>
+        ) : state === 'addBySearch' && typeof handleAdded === 'function' ? (
+          <Search
+            model={model}
+            otherSideName={defined(field?.otherSideName)}
+            parentUrl={defined(relatedResource).url()}
+            onAdd={(record) => {
+              handleAdded(record);
+              handleSlide(totalCount);
+            }}
+          />
+        ) : undefined}
+      </>
+    ),
+    onAdd: handleAdd,
+    onRemove: handleRemove,
+  });
 }

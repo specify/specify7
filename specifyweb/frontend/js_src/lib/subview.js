@@ -57,6 +57,9 @@ export default Backbone.View.extend({
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
             specifyform.buildSubView(self.$el, mode).then(function(form) {
+                if(typeof form === 'undefined')
+                    return;
+                
                 self.readOnly && $('.specify-delete-related, .specify-add-related', header).remove();
 
                 section.append(header);

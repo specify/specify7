@@ -204,9 +204,13 @@ export const omit = <
     Object.entries(object).filter(([key]) => !toOmit.includes(key as OMIT))
   );
 
+export const clamp = (min: number, max: number, value: number) =>
+  Math.min(max, Math.max(min, value));
+
 export const f = {
-  // Return undefined
+  // Return void
   void: (): void => undefined,
+  undefined: (): undefined => undefined,
   // Call first argument
   call: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],

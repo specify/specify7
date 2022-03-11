@@ -5,7 +5,6 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import {getModel, getModelById, schema} from './schema';
-import {makeResourceViewUrl} from './specifyapi';
 import * as navigation from './navigation';
 import {collectionsForResource} from './domain';
 import OtherCollectionView from './othercollectionview';
@@ -19,6 +18,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {showResource} from './components/resourceview';
 import {setTitle} from './components/hooks';
+import {resourceViewUrl} from "./resource";
 
 var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
@@ -54,7 +54,7 @@ var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a
                 <p>${formsText('emptyRecordSetSecondMessage')}</p>
             `;
 
-            var url = makeResourceViewUrl(specifyModel.name, null, this.model.id);
+            var url = resourceViewUrl(specifyModel.name, null, this.model.id);
             this.$('.recordset-add').attr('href', url);
             return this;
         },

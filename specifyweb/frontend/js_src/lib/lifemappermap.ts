@@ -4,8 +4,8 @@ import type { LocalityData } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import {
   defaultRecordFilterFunction,
-  formatLocalityDataObject,
   fetchLocalityDataFromLocalityResource,
+  formatLocalityDataObject,
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
 import { schema } from './schema';
@@ -148,13 +148,11 @@ export const fetchLocalOccurrences = async (
             ])
           ),
           fetchMoreData: async (): Promise<LocalityData | false> => {
-            const locality = new schema.models.Locality.LazyCollection({
-              filters: { id: localityId },
+            const locality = new schema.models.Locality.Resource({
+              id: localityId,
             });
             return fetchLocalityDataFromLocalityResource(
-              await locality
-                .fetchPromise({ limit: 1 })
-                .then(({ models }) => models[0]),
+              await locality.fetchPromise(),
               false,
               (mappingPathParts, resource) =>
                 (typeof resource?.specifyModel?.name !== 'string' ||

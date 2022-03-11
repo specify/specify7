@@ -219,7 +219,14 @@ abstract class FieldBase {
 
 /** Non-relationship field */
 export class LiteralField extends FieldBase {
+  public readonly type: JavaType;
+
   public isRelationship: false = false;
+
+  public constructor(model: SpecifyModel, fieldDefinition: FieldDefinition) {
+    super(model, fieldDefinition);
+    this.type = fieldDefinition.type;
+  }
 }
 
 export class Relationship extends FieldBase {

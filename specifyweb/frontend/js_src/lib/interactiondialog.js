@@ -7,7 +7,6 @@ import {getModel} from './schema';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
-  makeResourceViewUrl
 } from './specifyapi';
 import RecordSetsDialog from './recordsetsdialog';
 import PrepSelectDialog from './prepselectdialog';
@@ -17,6 +16,7 @@ import formsText from './localization/forms';
 import {legacyNonJsxIcons} from './components/icons';
 import {showDialog} from './components/modaldialog';
 import commonText from './localization/common';
+import {resourceViewUrl} from "./resource";
 
 
 export default RecordSetsDialog.extend({
@@ -351,7 +351,7 @@ export default RecordSetsDialog.extend({
 
         zeroPrepLoan: function() {
             this.dialog.remove();
-            navigation.go(makeResourceViewUrl('loan'));
+            navigation.go(resourceViewUrl('loan'));
         },
 
         zeroCoPrep: function() {

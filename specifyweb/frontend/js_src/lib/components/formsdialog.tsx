@@ -4,8 +4,8 @@ import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import { resourceViewUrl } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
-import { makeResourceViewUrl } from '../specifyapi';
 import { getView } from '../specifyform';
 import { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
@@ -48,7 +48,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
             iconName:
               (view.getAttribute('iconname') as keyof Tables | null) ??
               undefined,
-            viewUrl: makeResourceViewUrl(modelName),
+            viewUrl: resourceViewUrl(modelName),
             title: view.getAttribute('title') ?? '',
             model,
           };

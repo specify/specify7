@@ -1,12 +1,11 @@
-import $ from 'jquery';
 import React from 'react';
 
-import { ping } from '../ajax';
+import { ajax, ping } from '../ajax';
+import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { schema } from '../schema';
 import type { RA } from '../types';
 import { UiPlugin } from '../uiplugin';
 import { Button, Checkbox, Form, LabelForCheckbox, Submit } from './basic';
@@ -88,7 +87,13 @@ export default UiPlugin.extend(
     },
     initialize(options: { readonly model: SpecifyResource<SpecifyUser> }) {
       this.user = options.model;
-      this.allCollections = new schema.models.Collection.LazyCollection();
+      this.allCollections = fetchCollection('Collection', { limit: 0 });
+      this.selectedCollections = ajax<RA<number>>(
+        `/context/user_collection_access/${this.user.id}/`,
+        {
+          headers: { Accept: 'application/json' },
+        }
+      ).then(({ data }) => data);
     },
     render() {
       this.el.value = adminText('collections');
@@ -99,10 +104,7 @@ export default UiPlugin.extend(
         return this;
       }
 
-      Promise.all([
-        this.user.fetchPromise(),
-        this.allCollections.fetchPromise({ limit: 0 }),
-      ]).then(() => {
+      Promise.all([this.user.fetchPromise(), this.allCollections]).then(() => {
         this.el.textContent = adminText('collections');
         this.user.isNew() &&
           this.$el
@@ -112,13 +114,13 @@ export default UiPlugin.extend(
       return this;
     },
     click() {
-      $.get(`/context/user_collection_access/${this.user.id}/`).then(
-        (permitted) => {
+      Promise.all([this.selectedCollections, this.allCollections]).then(
+        ([selectedCollections, allCollections]) => {
           const handleClose = (): void => void view.remove();
           const view = new SetCollectionsView({
             userId: this.user.id,
-            selectedCollections: permitted,
-            allCollections: this.allCollections.models,
+            selectedCollections,
+            allCollections,
             onClose: handleClose,
           }).render();
         }
