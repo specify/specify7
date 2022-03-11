@@ -1,12 +1,17 @@
-from typing import Any, Callable, Tuple, List, Dict
+from typing import Any, Callable, Tuple, List, Dict, Union, Iterable
 
 import logging
 logger = logging.getLogger(__name__)
 
 from django.db import connection
+from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
+from specifyweb.specify import models as spmodels
+
 from . import models
+
+Agent = getattr(spmodels, 'Agent')
 
 registry: Dict[str, List[str]] = dict()
 
@@ -54,15 +59,25 @@ def check_permission_targets(collectionid: int, userid: int, targets: List[Permi
 class AccessDeniedException(Exception):
     pass
 
-def enforce(collection, agent, resources: List[str], action: str) -> None:
+def enforce(collection: Union[int, Model], actor, resources: List[str], action: str) -> None:
     if not resources: return
 
-    userid = agent.specifyuser_id
+    if isinstance(actor, Agent):
+        userid = actor.specifyuser_id
+    else:
+        assert isinstance(actor, models.Specifyuser)
+        userid = actor.id
 
     if userid is None:
-        raise AccessDeniedException(f"agent {agent} is not a Specify user")
+        raise AccessDeniedException(f"agent {actor} is not a Specify user")
 
-    perm_requests = [(collection.id, userid, resource, action) for resource in resources]
+    if isinstance(collection, int):
+        collectionid = collection
+    else:
+        assert isinstance(collection, models.Collection)
+        collectionid = collection.id
+
+    perm_requests = [(collectionid, userid, resource, action) for resource in resources]
     results = [(r, *enforce_single(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
@@ -110,15 +125,15 @@ def enforce_single(collectionid: int , userid: int, resource: str, action: str) 
     return (bool(ups) or bool(rps)), ups + rps
 
 
-def check_table_permissions(collection, agent, obj, action):
+def check_table_permissions(collection, actor, obj, action: str) -> None:
     name = obj.specify_model.name.lower()
-    enforce(collection, agent, [f'/table/{name}'], action)
+    enforce(collection, actor, [f'/table/{name}'], action)
 
-def check_field_permissions(collection, agent, obj, fields, action):
+def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
     table = obj.specify_model.name.lower()
-    enforce(collection, agent, [f'/field/{table}/{field}' for field in fields], action)
+    enforce(collection, actor, [f'/field/{table}/{field}' for field in fields], action)
 
-def table_permissions_checker(collection, agent, action) -> Callable[[Any], None]:
+def table_permissions_checker(collection, actor, action: str) -> Callable[[Any], None]:
     def checker(obj) -> None:
-        check_table_permissions(collection, agent, obj, action)
+        check_table_permissions(collection, actor, obj, action)
     return checker
