@@ -19,6 +19,7 @@ from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
 from ..specify.models import Spquery
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
@@ -92,6 +93,9 @@ def extract_eml(request, filename):
         eml = archive.open(meta.attrib['metadata']).read()
     return HttpResponse(eml, content_type='text/xml')
 
+class DwCAPT(PermissionTarget):
+    resource = "/export/dwca"
+    execute = PermissionTargetAction()
 
 @login_maybe_required
 @require_POST
@@ -102,8 +106,7 @@ def export(request):
     will be generated for the requesting user when the export
     completes.
     """
-    if not request.specify_user.is_admin():
-        return HttpResponseForbidden()
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [DwCAPT.execute])
 
     user = request.specify_user
     collection = request.specify_collection
@@ -147,6 +150,10 @@ def export(request):
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
+class ExportFeedPT(PermissionTarget):
+    resource = "/export/feed"
+    force_update = PermissionTargetAction()
+
 @login_maybe_required
 @require_POST
 def force_update(request):
@@ -154,8 +161,7 @@ def force_update(request):
     server.  Requesting user must be an admin and will receive
     notification as the process complete.
     """
-    if not request.specify_user.is_admin():
-        return HttpResponseForbidden()
+    check_permission_targets(None, request.specify_user.id, [ExportFeedPT.force_update])
 
     user = request.specify_user # I don't want to close over the entire request.
     def try_update_feed():

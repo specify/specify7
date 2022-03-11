@@ -1,4 +1,4 @@
-from typing import Any, Callable, Tuple, List, Dict, Union, Iterable
+from typing import Any, Callable, Tuple, List, Dict, Union, Iterable, Optional
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class PermissionTargetMeta(type):
 class PermissionTarget(metaclass=PermissionTargetMeta):
     pass
 
-def check_permission_targets(collectionid: int, userid: int, targets: List[PermissionTargetAction]) -> None:
+def check_permission_targets(collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]) -> None:
     if not targets: return
 
     perm_requests = [(collectionid, userid, t.resource(), t.action()) for t in targets]
@@ -59,7 +59,7 @@ def check_permission_targets(collectionid: int, userid: int, targets: List[Permi
 class AccessDeniedException(Exception):
     pass
 
-def enforce(collection: Union[int, Model], actor, resources: List[str], action: str) -> None:
+def enforce(collection: Union[int, Model, None], actor, resources: List[str], action: str) -> None:
     if not resources: return
 
     if isinstance(actor, Agent):
@@ -71,7 +71,7 @@ def enforce(collection: Union[int, Model], actor, resources: List[str], action: 
     if userid is None:
         raise AccessDeniedException(f"agent {actor} is not a Specify user")
 
-    if isinstance(collection, int):
+    if isinstance(collection, int) or collection is None:
         collectionid = collection
     else:
         assert isinstance(collection, models.Collection)
@@ -85,7 +85,7 @@ def enforce(collection: Union[int, Model], actor, resources: List[str], action: 
     if denials:
         raise AccessDeniedException(denials)
 
-def enforce_single(collectionid: int , userid: int, resource: str, action: str) -> Tuple[bool, Any]:
+def enforce_single(collectionid: Optional[int] , userid: int, resource: str, action: str) -> Tuple[bool, Any]:
     cursor = connection.cursor()
 
     cursor.execute("""
