@@ -19,7 +19,7 @@ from specifyweb.specify.views import apply_access_control, login_maybe_required,
     openapi
 from specifyweb.specify import models as specify_models
 from specifyweb.notifications.models import Message
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, registry
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
 
