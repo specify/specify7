@@ -1,4 +1,4 @@
-from functools import wraps
+from functools import wraps, reduce
 from collections import namedtuple
 
 from django.views.decorators.http import require_GET, require_POST
@@ -8,6 +8,7 @@ from django.db import connection, transaction
 from .views import login_maybe_required, apply_access_control
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
+from .auditcodes import TREE_MOVE
 from . import tree_extras
 
 from sqlalchemy.orm import aliased
@@ -15,8 +16,7 @@ from sqlalchemy import sql, types, distinct
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from .auditcodes import TREE_MOVE
-from functools import reduce
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, check_table_permissions
 
 
 def tree_mutation(mutation):
@@ -249,6 +249,7 @@ def predict_fullname(request, tree, parentid):
 def merge(request, tree, id):
     """Merges <tree> node <id> into the node with id indicated by the
     'target' POST parameter."""
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).merge])
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.merge(node, target, request.specify_user_agent)
@@ -258,6 +259,7 @@ def move(request, tree, id):
     """Reparents the <tree> node <id> to be a child of the node
     indicated by the 'target' POST parameter.
     """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).move])
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     old_parent = node.parent
@@ -277,6 +279,7 @@ def synonymize(request, tree, id):
     """Synonymizes the <tree> node <id> to be a synonym of the node
     indicated by the 'target' POST parameter.
     """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).synonymize])
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.synonymize(node, target, request.specify_user_agent)
@@ -284,13 +287,65 @@ def synonymize(request, tree, id):
 @tree_mutation
 def unsynonymize(request, tree, id):
     "Causes the <tree> node <id> to no longer be a synonym of another node."
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).unsynonymize])
     node = get_object_or_404(tree, id=id)
     tree_extras.unsynonymize(node, request.specify_user_agent)
 
 @tree_mutation
 def repair_tree(request, tree):
     "Repairs the indicated <tree>."
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).repair])
     tree_model = datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
+
+
+class TaxonMutationPT(PermissionTarget):
+    resource = "/tree/mutation/taxon"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    unsynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+class GeographyMutationPT(PermissionTarget):
+    resource = "/tree/mutation/geography"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    unsynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+class StorageMutationPT(PermissionTarget):
+    resource = "/tree/mutation/storage"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    unsynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+class GeologictimeperiodMutationPT(PermissionTarget):
+    resource = "/tree/mutation/geologictimeperiod"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    unsynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+class LithostratMutationPT(PermissionTarget):
+    resource = "/tree/mutation/lithostrat"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    unsynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+
+def perm_target(tree):
+    return {
+        'taxon': TaxonMutationPT,
+        'geography': GeographyMutationPT,
+        'storage': StorageMutationPT,
+        'geologictimeperiod': GeologictimeperiodMutationPT,
+        'lithostrat': LithostratMutationPT,
+    }[tree]

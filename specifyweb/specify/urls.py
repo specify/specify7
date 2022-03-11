@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^test_error/', views.raise_error),
 
     # special tree apis
-    url(r'^specify_tree/(?P<tree>\w+)/', include([
+    url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
         url(r'^(?P<id>\d+)/merge/$', tree_views.merge),
         url(r'^(?P<id>\d+)/move/$', tree_views.move),
