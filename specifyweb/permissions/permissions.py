@@ -1,4 +1,5 @@
-from typing import Any, Callable, Tuple, List, Dict, Union, Iterable, Optional
+from typing import Any, Callable, Tuple, List, Dict, Union, Iterable, Optional, NamedTuple
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,19 +46,33 @@ class PermissionTargetMeta(type):
 class PermissionTarget(metaclass=PermissionTargetMeta):
     pass
 
+class PermRequest(NamedTuple):
+    collectionid: Optional[int]
+    userid: int
+    resource: str
+    action: str
+
 def check_permission_targets(collectionid: Optional[int], userid: int, targets: List[PermissionTargetAction]) -> None:
     if not targets: return
 
-    perm_requests = [(collectionid, userid, t.resource(), t.action()) for t in targets]
+    perm_requests = [PermRequest(collectionid, userid, t.resource(), t.action()) for t in targets]
     results = [(r, *enforce_single(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
-    denials = [(r, reason) for r, allowed, reason in results if not allowed]
+    denials = [r for r, allowed, reason in results if not allowed]
     if denials:
-        raise AccessDeniedException(denials)
+        raise NoMatchingRuleException(denials)
 
-class AccessDeniedException(Exception):
-    pass
+class PermissionsException(Exception):
+    def to_json(self) -> Dict:
+        return {'PermissionsException': repr(self)}
+
+class NoMatchingRuleException(PermissionsException):
+    def __init__(self, denials: List[PermRequest]):
+        self.denials = denials
+
+    def to_json(self) -> Dict:
+        return {'NoMatchingRuleException': [d._asdict() for d in self.denials]}
 
 def enforce(collection: Union[int, Model, None], actor, resources: List[str], action: str) -> None:
     if not resources: return
@@ -69,7 +84,7 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
         userid = actor.id
 
     if userid is None:
-        raise AccessDeniedException(f"agent {actor} is not a Specify user")
+        raise PermissionsException(f"agent {actor} is not a Specify user")
 
     if isinstance(collection, int) or collection is None:
         collectionid = collection
@@ -77,13 +92,13 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
         assert isinstance(collection, models.Collection)
         collectionid = collection.id
 
-    perm_requests = [(collectionid, userid, resource, action) for resource in resources]
+    perm_requests = [PermRequest(collectionid, userid, resource, action) for resource in resources]
     results = [(r, *enforce_single(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
-    denials = [(r, reason) for r, allowed, reason in results if not allowed]
+    denials = [r for r, allowed, reason in results if not allowed]
     if denials:
-        raise AccessDeniedException(denials)
+        raise NoMatchingRuleException(denials)
 
 def enforce_single(collectionid: Optional[int] , userid: int, resource: str, action: str) -> Tuple[bool, Any]:
     cursor = connection.cursor()
