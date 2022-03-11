@@ -52,7 +52,7 @@ urlpatterns = [
     url(r'^api/workbench/', include(wb_urls)), # permissions added
     url(r'^express_search/', include(es_urls)),
     url(r'^context/', include(context_urls)),
-    url(r'^stored_query/', include(query_urls)),
+    url(r'^stored_query/', include(query_urls)), # permissions added
     url(r'^attachment_gw/', include(attachment_urls)),
     url(r'^barvis/', include(tt_urls)),
     url(r'^report_runner/', include(report_urls)),
