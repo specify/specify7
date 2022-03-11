@@ -49,7 +49,7 @@ urlpatterns = [
     url(r'^documentation/', include(doc_urls)),
 
     # submodules
-    url(r'^api/workbench/', include(wb_urls)),
+    url(r'^api/workbench/', include(wb_urls)), # permissions added
     url(r'^express_search/', include(es_urls)),
     url(r'^context/', include(context_urls)),
     url(r'^stored_query/', include(query_urls)),
@@ -59,6 +59,6 @@ urlpatterns = [
     url(r'^interactions/', include(interaction_urls)),
     url(r'^notifications/', include(notification_urls)),
     url(r'^export/', include(export_urls)),
-    url(r'^permissions/', include(permissions_urls)),
+    url(r'^permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
 ]
