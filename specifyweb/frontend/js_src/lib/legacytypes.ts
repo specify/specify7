@@ -12,6 +12,7 @@ import type { IR, RA } from './types';
  * TODO: need to improve the typing to handle the following:
  *  Dynamic references
  *  Discrimination of union types
+ *  Phase out usages of SpecifyResource in favor of SerializedResource
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
   // eslint-disable-next-line @typescript-eslint/naming-convention

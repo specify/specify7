@@ -11,16 +11,20 @@ import type { IR, RA } from './types';
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
  */
-export let pickLists: IR<SpecifyResource<PickList>> = [];
+export let pickLists: IR<SpecifyResource<PickList>> = {};
 
-export const agentTypes = [
+const agentTypes = [
   formsText('organization'),
   formsText('person'),
   formsText('other'),
   formsText('group'),
 ] as const;
 
-const pickListTypes = [] as const;
+const pickListTypes = [
+  formsText('userDefinedItems'),
+  formsText('entireTable'),
+  formsText('fieldFromTable'),
+] as const;
 
 const auditLogActions = [
   formsText('insert'),
@@ -31,21 +35,6 @@ const auditLogActions = [
   formsText('treeSynonymize'),
   formsText('treeUnsynonymize'),
 ] as const;
-
-export const frontEndPickLists: {
-  readonly [TABLE_NAME in keyof Tables]?: {
-    readonly [FIELD_NAME in TableFields<Tables[TABLE_NAME]>]?: string;
-  };
-} = {
-  Agent: {
-    agentType: '_AgentTypeComboBox',
-  },
-  SpAuditLog: {
-    action: '_AuditLogAction',
-    tableNum: '_Tables',
-    parentTableNum: '_Tables',
-  },
-};
 
 function definePicklist(
   name: string,
@@ -61,38 +50,83 @@ function definePicklist(
   return pickList;
 }
 
-/** Create front-end only pick lists */
-function getExtraPickLists(): RA<SpecifyResource<PickList>> {
-  const agentType = definePicklist(
-    '_AgentTypeComboBox',
-    agentTypes.map((title, index) =>
-      createPickListItem(index.toString(), title)
-    )
-  );
-  const auditLogAction = definePicklist(
-    '_AuditLogAction',
-    auditLogActions.map((title, index) =>
-      createPickListItem(index.toString(), title)
-    )
-  );
-  const tables = definePicklist(
+export const monthPickListName = '_Months';
+
+let frontEndPickLists: {
+  readonly [TABLE_NAME in keyof Tables]?: {
+    readonly [FIELD_NAME in TableFields<
+      Tables[TABLE_NAME]
+    >]?: SpecifyResource<PickList>;
+  };
+};
+
+export function getFrontEndPickLists(): typeof frontEndPickLists {
+  if (typeof frontEndPickLists === 'undefined') defineFrontEndPickLists();
+  return frontEndPickLists;
+}
+
+/**
+ * Create front-end only pick lists
+ *
+ * @remarks
+ * These have to be defined inside of a function rather than globally
+ * because they depend on the data model being loaded
+ *
+ */
+function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
+  const tablesPickList = definePicklist(
     '_Tables',
     Object.values(schema.models).map(({ tableId, label }) =>
       createPickListItem(tableId.toString(), label)
     )
   );
-  const month = definePicklist(
-    '_Months',
+
+  const monthsPickList = definePicklist(
+    monthPickListName,
     months.map((title, index) =>
       createPickListItem((index + 1).toString(), title)
     )
   );
 
-  return [agentType, month, auditLogAction, tables];
+  frontEndPickLists = {
+    Agent: {
+      agentType: definePicklist(
+        '_AgentTypeComboBox',
+        agentTypes.map((title, index) =>
+          createPickListItem(index.toString(), title)
+        )
+      ),
+    },
+    SpAuditLog: {
+      action: definePicklist(
+        '_AuditLogAction',
+        auditLogActions.map((title, index) =>
+          createPickListItem(index.toString(), title)
+        )
+      ),
+      tableNum: tablesPickList,
+      parentTableNum: tablesPickList,
+    },
+    PickList: {
+      type: definePicklist(
+        '_PickListType',
+        pickListTypes.map((title, index) =>
+          createPickListItem(index.toString(), title)
+        )
+      ),
+      tableName: tablesPickList,
+    },
+  };
+
+  return [
+    monthsPickList,
+    ...Object.values(frontEndPickLists).flatMap(Object.values),
+  ];
 }
 
 export async function fetchPickLists(): Promise<typeof pickLists> {
   if (Object.keys(pickLists).length > 0) return pickLists;
+
   const collection = new schema.models.PickList.LazyCollection({
     filters: {
       domainfilter: true,
@@ -101,7 +135,7 @@ export async function fetchPickLists(): Promise<typeof pickLists> {
 
   return collection.fetchPromise({ limit: 0 }).then(async ({ models }) => {
     pickLists = Object.fromEntries(
-      [...models, ...getExtraPickLists()].map(
+      [...models, ...defineFrontEndPickLists()].map(
         (pickList) => [pickList.get('name'), pickList] as const
       )
     );

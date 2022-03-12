@@ -108,7 +108,7 @@ export function PickListComboBox(
   function addNewValue(value: string): void {
     if (props.pickList?.get('type') === PickListTypes.FIELDS)
       updateValue(value);
-    else if (props.pickList?.get('type') === PickListTypes.TABLE)
+    else if (props.pickList?.get('type') === PickListTypes.ITEMS)
       setPendingNewValue(value);
     else throw new Error('adding item to wrong type of picklist');
   }

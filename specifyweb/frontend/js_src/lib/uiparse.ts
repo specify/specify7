@@ -5,7 +5,7 @@ import commonText from './localization/common';
 import formsText from './localization/forms';
 import queryText from './localization/query';
 import { getPickListItems } from './picklistmixins';
-import { pickLists } from './picklists';
+import { monthPickListName, pickLists } from './picklists';
 import type {
   JavaType,
   LiteralField,
@@ -239,7 +239,7 @@ export function resolveParser(
     pickListName:
       typeof fullField.datePart === 'string'
         ? fullField.datePart === 'month'
-          ? '_Months'
+          ? monthPickListName
           : undefined
         : field.getPickList?.(),
     required: fullField.isRequired === true && parser.type !== 'checkbox',

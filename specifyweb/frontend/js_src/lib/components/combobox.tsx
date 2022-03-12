@@ -10,12 +10,10 @@ import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { DivisionFieldComboBox } from './divisionfieldcombobox';
 import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
-import { PickListTableComboBox } from './picklisttablecombobox';
-import { PickListTypeComboBox } from './picklisttypecombobox';
+import { PickListFormatterComboBox } from './picklistformattercombobox';
 import createBackboneView from './reactbackboneextend';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UserTypeComboBox } from './usertypecombobox';
@@ -39,8 +37,11 @@ export type PickListItemSimple = {
 };
 
 export const PickListTypes = {
-  TABLE: 0,
-  RECORDS: 1,
+  // Items are defined in the PickListItems table
+  ITEMS: 0,
+  // Items are defined from formatted rows in some table
+  TABLE: 1,
+  // Items are defined from a column in some table
   FIELDS: 2,
 } as const;
 
@@ -67,11 +68,13 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     )
   );
 
-  React.useEffect(() => () => error('Destroying combo box'), []);
-
-  // This type has to be readOnly
+  // Only PickListTypes.ITEMS pick lists are editable
   const readOnly =
-    pickList?.get('type') === PickListTypes.RECORDS || props.readOnly;
+    /*
+     * TODO: test if can add items to PickListTypes.FIELD
+     * TODO: make other pick list types editable
+     */
+    pickList?.get('type') !== PickListTypes.ITEMS || props.readOnly;
 
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
@@ -97,46 +100,51 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
 function ComboBox(props: DefaultComboBoxProps): JSX.Element {
   const { resource, field, fieldName, model } = props;
 
-  if (resource.specifyModel.name === 'PickList' && fieldName === 'typesCBX')
-    return <PickListTypeComboBox {...props} />;
+  if (resource.specifyModel.name === 'PickList' && fieldName === 'fieldsCBX')
+    return (
+      <PickListFieldComboBox
+        {...props}
+        field={defined(schema.models.PickList.getField('fieldName'))}
+      />
+    );
   else if (
     resource.specifyModel.name === 'PickList' &&
-    fieldName === 'tablesCBX'
-  )
-    return <PickListTableComboBox {...props} />;
-  else if (
-    resource.specifyModel.name === 'PickList' &&
-    fieldName === 'fieldsCBX'
-  )
-    return <PickListFieldComboBox {...props} />;
-  else if (
-    resource.specifyModel.name === 'Accession' &&
-    fieldName === 'divisionCBX'
+    fieldName === 'formatterCBX'
   )
     return (
-      <DivisionFieldComboBox
+      <PickListFormatterComboBox
         {...props}
-        field={defined(schema.models.Accession.getRelationship('division'))}
+        field={defined(schema.models.PickList.getField('formatter'))}
       />
     );
   else if (fieldName === 'definitionItem')
     return <TreeLevelComboBox {...props} />;
 
-  if (typeof field !== 'object')
+  const resolvedField =
+    resource.specifyModel.name === 'PickList' && fieldName === 'typesCBX'
+      ? defined(schema.models.PickList.getField('type'))
+      : resource.specifyModel.name === 'PickList' && fieldName === 'tablesCBX'
+      ? defined(schema.models.PickList.getField('tableName'))
+      : resource.specifyModel.name === 'Accession' &&
+        fieldName === 'divisionCBX'
+      ? defined(schema.models.Accession.getField('division'))
+      : field;
+
+  if (typeof resolvedField !== 'object')
     throw new Error(
       `can't setup picklist for unknown field ${model.specifyModel.name}.${fieldName}`
     );
 
-  const pickListName = props.pickListName ?? field.getPickList();
+  const pickListName = props.pickListName ?? resolvedField.getPickList();
 
   if (pickListName === 'UserType') return <UserTypeComboBox {...props} />;
 
   if (!Boolean(pickListName))
     throw new Error(
-      `can't determine picklist for field ${resource.specifyModel.name}.${field.name}`
+      `can't determine picklist for field ${resource.specifyModel.name}.${resolvedField.name}`
     );
 
-  return <DefaultComboBox {...props} />;
+  return <DefaultComboBox {...props} field={resolvedField} />;
 }
 
 const ComboBoxView = createBackboneView(ComboBox);

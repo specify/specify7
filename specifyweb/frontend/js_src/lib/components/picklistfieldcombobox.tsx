@@ -15,7 +15,7 @@ export function PickListFieldComboBox(
     const model = defined(getModel(props.resource.get('tableName')));
     return model.fields.map((field) => ({
       value: field.name,
-      title: field.label ?? field.name,
+      title: field.label,
     }));
   }, [props.resource]);
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);

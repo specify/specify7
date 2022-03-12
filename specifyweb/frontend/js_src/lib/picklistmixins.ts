@@ -36,13 +36,10 @@ export async function fetchPickListItems(
     pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
   );
 
-  // Items in PickListItems table
-  if (currentItems.length > 0 || type === PickListTypes.TABLE)
+  if (currentItems.length > 0 || type === PickListTypes.ITEMS)
     return currentItems;
-  // Items are objects from a table
-  else if (type === PickListTypes.RECORDS)
+  else if (type === PickListTypes.TABLE)
     items = await fetchFromTable(pickList, limit);
-  // Items are fields from a table
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
   else error('Unknown picklist type', pickList);

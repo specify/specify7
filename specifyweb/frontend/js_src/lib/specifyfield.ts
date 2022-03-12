@@ -1,5 +1,6 @@
-import type { Tables } from './datamodel';
-import { frontEndPickLists } from './picklists';
+import type { PickList, Tables } from './datamodel';
+import type { SpecifyResource } from './legacytypes';
+import { getFrontEndPickLists } from './picklists';
 import type { SchemaLocalization } from './schema';
 import { getModel, schema } from './schema';
 import { unescape } from './schemabase';
@@ -186,7 +187,9 @@ abstract class FieldBase {
   public getPickList(): string | undefined {
     return (
       this.localization.picklistname ??
-      (frontEndPickLists as IR<IR<string>>)[this.model.name]?.[this.name]
+      (getFrontEndPickLists() as IR<IR<SpecifyResource<PickList>>>)[
+        this.model.name
+      ]?.[this.name].get('name')
     );
   }
 
