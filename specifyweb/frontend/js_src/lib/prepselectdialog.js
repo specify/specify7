@@ -6,12 +6,14 @@ import _ from 'underscore';
 import {getModel, schema} from './schema';
 import * as navigation from './navigation';
 import {getInteractionsForPrepIds} from './specifyapi';
-import {ResourceViewBackbone, showResource} from './components/resourceview';
+import {showResource, ViewResource} from './components/resourceview';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {legacyNonJsxIcons} from './components/icons';
 import {fieldFormat} from "./uiparse";
+import specifyform from './specifyform';
+import {f} from './wbplanviewhelper';
 
 export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -217,12 +219,12 @@ export default PrepDialog.extend({
 
                 var resourceModel = irec.models[0];
 
-                const view = new ResourceViewBackbone({
+                const view = new ViewResource({
+                    buildView: async ()=> specifyform.buildViewByName(resourceModel.specifyModel.view, 'form', 'view'),
                     el: this.dialog,
                     resource: resourceModel,
-                    mode: 'view',
                     canAddAnother: true,
-                    hasHeader: true,
+                    onSaved: f.void,
                     onClose: ()=>view.remove(),
                 }).render();
 

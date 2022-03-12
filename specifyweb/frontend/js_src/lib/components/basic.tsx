@@ -112,7 +112,7 @@ export const className = {
   textarea: 'resize max-w-full',
   form: 'flex flex-col gap-4',
   button: 'button',
-  link: 'link',
+  link: 'link intercept-navigation',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800

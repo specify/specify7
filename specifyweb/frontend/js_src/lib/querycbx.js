@@ -3,16 +3,15 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
+import React from 'react';
 
 
 import {schema} from './schema';
 import specifyform from './specifyform';
 import template from './templates/querycbx.html';
-import {ResourceViewBackbone} from './components/resourceview';
 import {format} from './dataobjformatters';
 import whenAll from './whenall';
 import parseselect from './parseselect';
-import * as navigation from './navigation';
 import QueryCbxSearch from './querycbxsearch';
 import {QueryFieldSpec} from './queryfieldspec';
 import {load} from './initialcontext';
@@ -25,6 +24,9 @@ import {autocomplete} from './components/autocomplete';
 import {formatList} from './components/internationalization';
 import {legacyNonJsxIcons} from './components/icons';
 import {getTreeDefinitionItems, isTreeModel} from './treedefinitions';
+import {ViewResource} from './components/resourceview';
+import {fetchResource} from './resource';
+import {showDialog} from './components/modaldialog';
 
 // TODO: rewrite to React
 
@@ -385,7 +387,7 @@ export default Backbone.View.extend({
         if (self.dialog) {
             // if the open dialog is for search just close it and don't open a new one
             var closeOnly = self.dialog.hasClass('querycbx-dialog-search');
-            self.dialog.dialog('close');
+            self.dialog.remove();
             if (closeOnly) return;
         }
         var searchTemplateResource = new this.relatedModel.Resource({}, {
@@ -425,23 +427,19 @@ export default Backbone.View.extend({
         $.when(this.leftSideRelsPromise, this.rightSideRelsPromise).done((leftSideRels, rightSideRels) => {
             const relCollId = this.getRelatedCollectionId(leftSideRels, rightSideRels);
             const collections = userInformation.available_collections.map(c => c[0]);
-            if (relCollId && !collections.includes(relCollId)) {
-                const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
-                otherColl.fetch().done(function() {
-                    $(`<div>
-                        ${commonText('collectionAccessDeniedDialogHeader')}
-                        <p>${commonText('collectionAccessDeniedDialogMessage')(otherColl)}</p>
-                    </div>`).dialog({
-                        title: commonText('collectionAccessDeniedDialogTitle'),
-                        close() { $(this).remove(); },
-                        buttons: {
-                            [commonText('close')]() { $(this).dialog('close'); }
-                        }
-                    });
-                });
-                return;
-            } else {
-                this.closeDialogIfAlreadyOpen('display');
+            if (relCollId && !collections.includes(relCollId))
+                fetchResource('Collection', relCollId)
+                  .then((collection)=>{
+                      const dialog = showDialog({
+                          title: commonText('collectionAccessDeniedDialogTitle'),
+                          header: commonText('collectionAccessDeniedDialogHeader'),
+                          content: commonText('collectionAccessDeniedDialogMessage')(collection.collectionName ?? ''),
+                          onClose: ()=>dialog.remove(),
+                          buttons: commonText('close'),
+                      });
+                  });
+            else {
+                this.closeDialogIfAlreadyOpen();
                 var uri = this.model.get(this.fieldName);
                 if (!uri) return;
                 var related = this.relatedModel.Resource.fromUri(uri);
@@ -452,7 +450,7 @@ export default Backbone.View.extend({
     addRelated: function(event) {
         event.preventDefault();
         var mode = 'add';
-        this.closeDialogIfAlreadyOpen(mode);
+        this.closeDialogIfAlreadyOpen();
 
         var related = new this.relatedModel.Resource();
         this.openDialog(mode, related);
@@ -460,7 +458,7 @@ export default Backbone.View.extend({
     cloneRelated: function(event) {
         event.preventDefault();
         var mode = 'clone';
-        this.closeDialogIfAlreadyOpen(mode);
+        this.closeDialogIfAlreadyOpen();
 
         var uri = this.model.get(this.fieldName);
         if (!uri) return;
@@ -471,7 +469,7 @@ export default Backbone.View.extend({
     },
     closeDialogIfAlreadyOpen: function() {
         this.$el.find('button').attr('aria-pressed',false);
-        this.dialog?.dialog('close');
+        this.dialog?.remove();
     },
     openDialog: function(mode, related) {
 
@@ -481,54 +479,26 @@ export default Backbone.View.extend({
         this.$el.find(buttonsQuery).attr('aria-pressed',true);
         this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
-        const dialog = new ResourceViewBackbone({
+        this.dialog = new ViewResource({
             el: this.dialog,
+            dialog: 'nonModal',
             resource: related,
             mode: this.readOnly ? 'view' : 'edit',
-            noAddAnother: true,
-            noHeader: true,
-            onChangeTitle: this.changeDialogTitle.bind(this),
+            canAddAnother: false,
             onSaved: this.resourceSaved.bind(this, related),
             onDeleted: this.resourceDeleted.bind(this),
-            onClose: ()=>dialog.remove(),
+            onClose: ()=>this.closeDialogIfAlreadyOpen(),
         }).render();
-
-        this.dialog.dialog({
-            position: { my: "left top", at: "left+20 top+20", of: $('main') },
-            width: 'auto',
-            close: ()=>{
-                this.dialog.remove();
-                this.dialog = null;
-                this.closeDialogIfAlreadyOpen();
-            }
-        }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-            evt.preventDefault();
-            navigation.go(related.viewUrl());
-            _this.dialog.dialog('close');
-        });
-
-        if (!related.isNew()) {
-            $('<a>', { href: related.viewUrl(), title: formsText('linkInline'), ariaLabel: formsText('linkInline'), })
-                 .addClass('intercept-navigation')
-                 .append(legacyNonJsxIcons.link)
-              .prependTo(this.dialog.closest('.ui-dialog').find('div.ui-dialog-titlebar'));
-        }
-    },
-    dialogIsOpen(){
-        return this.$el?.is(':ui-dialog') === true;
     },
     resourceSaved: function(related) {
-        this.dialogIsOpen() && this.dialog.dialog('close');
+        this.dialog?.remove();
         this.model.set(this.fieldName, related);
         this.fillIn();
     },
     resourceDeleted: function() {
-        this.dialogIsOpen() && this.dialog.dialog('close');
+        this.dialog?.remove();
         this.model.set(this.fieldName, null);
         this.fillIn();
-    },
-    changeDialogTitle: function(_resource, title) {
-        this.dialogIsOpen() && this.dialog.dialog('option', 'title', title);
     },
     blur: function() {
         var val = this.$('input').val().trim();

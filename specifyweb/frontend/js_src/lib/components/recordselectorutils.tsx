@@ -13,7 +13,8 @@ import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp, f } from '../wbplanviewhelper';
-import { Button, FormFooter, SubFormHeader } from './basic';
+import { Button, className, FormFooter, H2, SubFormHeader } from './basic';
+import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { icons } from './icons';
@@ -21,6 +22,7 @@ import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { RecordSelectorProps } from './recordselector';
 import { RecordSelector, RecordSelectorButtons } from './recordselector';
+import { ResourceView } from './resourceview';
 
 function getDefaultIndex(queryParameter: string, lastIndex: number): number {
   const parameters = queryString.parse();
@@ -108,9 +110,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       {...rest}
       totalCount={collection._totalCount ?? records.length}
       model={collection.model.specifyModel}
-      relatedResource={collection.related}
+      relatedResource={isDependent ? collection.related : undefined}
       records={records}
-      isDependent={isDependent}
       onAdd={(resource): void => {
         collection.add(resource);
         handleAdd?.(resource);
@@ -139,63 +140,70 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   );
 }
 
+export const subFormNodeToProps = (
+  subFormNode: HTMLElement
+): {
+  readonly isReadOnly: boolean;
+  readonly buildView: () => Promise<HTMLFormElement>;
+} => ({
+  isReadOnly: specifyform.subViewMode(subFormNode) === 'view',
+  buildView: async (): Promise<HTMLFormElement> =>
+    specifyform.buildSubView(subFormNode),
+});
+
 /** A Wrapper for RecordSelector for easier usage in Backbone Views */
 function IntegratedRecordSelector({
-  subformNode,
-  htmlElement = subformNode,
+  urlParameter,
+  buildView = async (): Promise<HTMLFormElement> =>
+    specifyform.buildViewByName(
+      collection.model.specifyModel.view,
+      isReadOnly ? 'view' : 'edit'
+    ),
   isReadOnly = false,
   hasHeader = true,
   collection,
-  onSlide: handleSlide,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  | 'sliderPosition'
-  | 'formType'
-  | 'viewName'
-  | 'isReadOnly'
-  | 'hasHeader'
-  | 'onSlide'
+  'isReadOnly' | 'onSlide'
 > & {
+  readonly buildView?: () => Promise<HTMLFormElement>;
   readonly subformNode: HTMLElement;
   readonly htmlElement?: HTMLElement;
+  readonly urlParameter?: string;
   readonly isReadOnly?: boolean;
   readonly hasHeader?: boolean;
-  readonly onSlide?: (index: number) => void;
 }): JSX.Element {
+  const isDependent = collection instanceof collectionapi.Dependent;
   return (
     <RecordSelectorFromCollection
       collection={collection}
-      isReadOnly={isReadOnly || specifyform.subViewMode(subformNode) === 'view'}
       defaultIndex={getDefaultIndex(
-        htmlElement.dataset['url-param'] ?? '',
+        urlParameter ?? '',
         collection.models.length
       )}
-      onSlide={(index): void => {
-        if (typeof htmlElement.dataset['url-param'] === 'string')
-          setQueryParameter(htmlElement.dataset['url-param'], index);
-        handleSlide?.(index);
-      }}
-      formType={specifyform.getSubViewType(subformNode)}
-      viewName={htmlElement.dataset['specify-viewname']}
+      onSlide={(index): void =>
+        typeof urlParameter === 'string'
+          ? setQueryParameter(urlParameter, index)
+          : undefined
+      }
       {...rest}
     >
       {({
         dialogs,
         slider,
         index,
-        resourceView,
+        resource,
         onAdd: handleAdd,
         onRemove: handleRemove,
       }): JSX.Element => {
-        const isDependent = collection instanceof collectionapi.Dependent;
         const handleVisit =
           typeof collection.models[index] === 'object' && !isDependent
             ? (): void => navigation.go(collection.models[index].viewUrl())
             : undefined;
         const buttons = isReadOnly ? undefined : (
           <RecordSelectorButtons
-            onVisit={handleVisit}
+            onVisit={hasHeader ? undefined : handleVisit}
             onDelete={
               typeof collection.models[index] === 'object'
                 ? handleRemove
@@ -204,7 +212,6 @@ function IntegratedRecordSelector({
             onAdd={handleAdd}
           />
         );
-        const sliderAtTop = htmlElement.classList.contains('slider-at-top');
         const children = (
           <>
             {dialogs}
@@ -228,10 +235,23 @@ function IntegratedRecordSelector({
                 {buttons}
               </SubFormHeader>
             )}
-            {sliderAtTop && slider}
-            {resourceView ?? <p>{formsText('noData')}</p>}
-            {!hasHeader && <FormFooter>{buttons}</FormFooter>}
-            {!sliderAtTop && slider}
+            {typeof resource === 'object' ? (
+              <ResourceView
+                resource={defined(resource)}
+                buildView={buildView}
+                isReadOnly={isReadOnly}
+                canAddAnother={false}
+                onSaved={f.void}
+              >
+                {({ form }): JSX.Element => form}
+              </ResourceView>
+            ) : (
+              <p>{formsText('noData')}</p>
+            )}
+            {!hasHeader && typeof buttons === 'object' ? (
+              <FormFooter>{buttons}</FormFooter>
+            ) : undefined}
+            {slider}
           </>
         );
         return hasHeader ? <fieldset>{children}</fieldset> : children;
@@ -295,7 +315,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     <RecordSelector<SCHEMA>
       {...rest}
       records={records}
-      isDependent={false}
       index={index}
       onSlide={(index: number): void => {
         setIndex(index);
@@ -312,17 +331,16 @@ const fetchItems = async (
   offset: number
 ): Promise<
   (props: {
-    readonly totalItems: number;
+    readonly totalCount: number;
     readonly ids: RA<number | undefined>;
-  }) => { readonly totalItems: number; readonly ids: RA<number | undefined> }
+  }) => { readonly totalCount: number; readonly ids: RA<number | undefined> }
 > =>
   fetchCollection('RecordSetItem', {
     limit: DEFAULT_FETCH_LIMIT,
     recordSet: recordSetId,
-    orderBy: 'recordId',
     offset,
   }).then(({ records, totalCount }) => ({ ids }) => ({
-    totalItems: totalCount,
+    totalCount,
     ids: records
       .map(({ recordId }, index) => [offset + index, recordId] as const)
       .reduce(
@@ -341,17 +359,17 @@ export function RecordSet<SCHEMA extends AnySchema>({
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  'mode' | 'isDependent' | 'records' | 'field' | 'defaultIndex'
+  'mode' | 'isDependent' | 'records' | 'field' | 'defaultIndex' | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly defaultResourceIndex: number | undefined;
 }): JSX.Element {
-  const [{ totalItems, ids }, setItems] = React.useState<{
-    readonly totalItems: number;
+  const [{ totalCount, ids }, setItems] = React.useState<{
+    readonly totalCount: number;
     readonly ids: RA<number | undefined>;
   }>({
-    totalItems: 0,
-    ids: [undefined],
+    totalCount: 0,
+    ids: [],
   });
 
   const [index, setIndex] = React.useState(defaultResourceIndex ?? 0);
@@ -364,38 +382,46 @@ export function RecordSet<SCHEMA extends AnySchema>({
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 elements
-        previousIndex.current > index ? index - DEFAULT_FETCH_LIMIT : index
+        clamp(
+          0,
+          totalCount,
+          previousIndex.current > index ? index - DEFAULT_FETCH_LIMIT : index
+        )
       )
         .then(setItems)
         .catch(crash);
     return (): void => {
       previousIndex.current = index;
     };
-  }, [currentRecordId, index, recordSet.id]);
+  }, [totalCount, currentRecordId, index, recordSet.id]);
+
+  /*
+   * FIXME: handle empty record set case
+   * formsText('emptyRecordSetHeader')
+   * formsText('emptyRecordSetSecondMessage')
+   */
 
   return (
     <RecordSelectorFromIds<SCHEMA>
       {...rest}
       ids={ids}
-      totalCount={totalItems}
+      totalCount={totalCount}
       defaultIndex={defaultResourceIndex ?? 0}
       onAdd={(resource): void => {
         resource.recordsetid = recordSet.id;
-        setItems({ totalItems: totalItems + 1, ids: [...ids, resource.id] });
-        setIndex(totalItems);
+        setItems({ totalCount: totalCount + 1, ids: [...ids, resource.id] });
+        setIndex(totalCount);
       }}
       onDelete={(): void => {
-        // TODO: handle case when totalCount becomes 0
         setItems({
-          totalItems: totalItems - 1,
+          totalCount: totalCount - 1,
           ids: [...ids.slice(0, index), ...ids.slice(index + 1)],
         });
         setIndex((previousIndex) =>
-          clamp(0, totalItems - 1, previousIndex > index ? index - 1 : index)
+          clamp(0, totalCount - 1, previousIndex > index ? index - 1 : index)
         );
       }}
       onSlide={setIndex}
-      onSaved={f.void}
     >
       {children}
     </RecordSelectorFromIds>
@@ -403,79 +429,66 @@ export function RecordSet<SCHEMA extends AnySchema>({
 }
 
 /** A Wrapper for RecordSetView for easier usage in Backbone Views */
-export function IntegratedRecordSetView({
-  subformNode,
-  htmlElement = subformNode,
+function IntegratedRecordSetView({
   isReadOnly = false,
-  hasHeader = true,
   ...rest
-}: Omit<Parameters<typeof RecordSet>[0], 'formType'> & {
-  readonly subformNode: HTMLElement;
-  readonly htmlElement?: HTMLElement;
+}: Parameters<typeof RecordSet>[0] & {
   readonly isReadOnly?: boolean;
-  readonly hasHeader?: boolean;
-  readonly onSlide?: (index: number) => void;
 }): JSX.Element {
   return (
-    <RecordSet
-      isReadOnly={isReadOnly || specifyform.subViewMode(subformNode) === 'view'}
-      viewName={htmlElement.dataset['specify-viewname']}
-      {...rest}
-    >
+    <RecordSet {...rest}>
       {({
         dialogs,
         slider,
-        totalCount,
         resource,
-        resourceView,
         onAdd: handleAdd,
         onRemove: handleRemove,
-      }): JSX.Element => {
-        const handleVisit =
-          typeof resource === 'object'
-            ? (): void => navigation.go(resource.viewUrl())
-            : undefined;
-        const buttons = isReadOnly ? undefined : (
-          <RecordSelectorButtons
-            onVisit={handleVisit}
-            onDelete={typeof resource === 'object' ? handleRemove : undefined}
-            onAdd={handleAdd}
-          />
-        );
-        const wrappedSlider = (
-          <div className="contents" title={rest.recordSet.get('name')}>
-            {slider}
-          </div>
-        );
-        const sliderAtTop = htmlElement.classList.contains('slider-at-top');
-        const children = (
-          <>
-            {dialogs}
-            {hasHeader && (
-              <SubFormHeader>
-                <legend>
-                  {typeof handleVisit === 'function' && (
-                    <Button.LikeLink
-                      title={formsText('link')}
-                      aria-label={formsText('link')}
-                      onClick={handleVisit}
-                    >
-                      {icons.chevronRight}
-                    </Button.LikeLink>
-                  )}
-                  <span>{`${rest.model.label} (${totalCount})`}</span>
-                </legend>
-                {buttons}
-              </SubFormHeader>
+      }): JSX.Element =>
+        typeof resource === 'object' ? (
+          <ResourceView
+            resource={defined(resource)}
+            buildView={specifyform.buildViewByName(
+              defined(resource).specifyModel.view,
+              'form',
+              isReadOnly ? 'view' : 'edit'
             )}
-            {sliderAtTop && wrappedSlider}
-            {resourceView ?? <p>{formsText('noData')}</p>}
-            {!hasHeader && <FormFooter>{buttons}</FormFooter>}
-            {!sliderAtTop && wrappedSlider}
-          </>
-        );
-        return hasHeader ? <fieldset>{children}</fieldset> : children;
-      }}
+            isReadOnly={isReadOnly}
+            canAddAnother={true}
+            onSaved={({ wasNew, newResource }): void => {
+              if (wasNew) navigation.go(resource.viewUrl());
+              if (typeof newResource === 'object') handleAdd(newResource);
+            }}
+          >
+            {({
+              form,
+              title,
+              saveButton,
+              specifyNetworkBadge,
+            }): JSX.Element => (
+              <>
+                {dialogs}
+                <header className={className.formHeader}>
+                  <H2 className={className.formTitle}>{title}</H2>
+                  {slider}
+                  {specifyNetworkBadge}
+                </header>
+                {form}
+                <FormFooter>
+                  {!resource.isNew() && !isReadOnly ? (
+                    <DeleteButton model={resource} onDeleted={handleRemove} />
+                  ) : undefined}
+                  {saveButton}
+                </FormFooter>
+              </>
+            )}
+          </ResourceView>
+        ) : (
+          <p>
+            {dialogs}
+            {formsText('noData')}
+          </p>
+        )
+      }
     </RecordSet>
   );
 }

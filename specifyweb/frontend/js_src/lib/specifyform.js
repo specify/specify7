@@ -152,8 +152,9 @@ var formCounter = 0;
         },
 
         buildSubView: function (node, mode) {
-            var defaultType = specifyform.getSubViewType(node[0]);
-            mode = mode === 'view' || specifyform.subViewMode(node[0]) === 'view' ? 'view' : 'edit';
+            node = $(node);
+            var defaultType = specifyform.getSubViewType(node);
+            mode = mode === 'view' || specifyform.subViewMode(node) === 'view' ? 'view' : 'edit';
             var viewName = node.data('specify-viewname');
             var buildView = specifyform.buildViewByName(viewName, defaultType, mode, true);
 
@@ -163,25 +164,26 @@ var formCounter = 0;
             }).catch(error => {
                 if(error === Http.NOT_FOUND)
                     console.error('form not found for subview:', viewName, defaultType, mode);
+                else throw error;
             });
         },
 
         getSubViewType: function (node) {
             // This the form type desired by the superform. May or may not be respected
             // when the form is actually built.
-            return node.dataset['specify-viewtype'] === 'table' ? 'formtable' : 'form';
+            return $(node).data('specify-viewtype') === 'table' ? 'formtable' : 'form';
         },
 
         isSubViewButton: function (node) {
-            return node.is('.specify-subview-button');
+            return $(node).is('.specify-subview-button');
         },
 
         subViewMode: function (node) {
-            return node.dataset['specify-viewmode'];
+            return $(node).data('specify-viewmode');
         },
 
         getFormMode: function (node) {
-            return node.dataset['specify-form-mode'];
+            return $(node).data('specify-form-mode');
         }
     };
 

@@ -6,7 +6,10 @@ import Backbone from './backbone';
 import {getIcon} from './icons';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
-import {RecordSelectorView} from './components/recordselectorutils';
+import {
+    RecordSelectorView,
+    subFormNodeToProps
+} from './components/recordselectorutils';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -89,12 +92,12 @@ export const Base =  Backbone.View.extend({
             var self = this;
             if (self.readOnly && self.collection.length < 1) return;
 
+            // FIXME: replace this with a dialog record selector
             const view = new RecordSelectorView({
                 field: self.field,
                 collection: self.collection,
-                subformNode: self.el,
+               ...subFormNodeToProps(self.el),
                 isReadOnly: self.readOnly,
-                hasHeader: false
             }).render();
             self.dialog = $('<div>').append(view.el).dialog({
                 width: 'auto',
@@ -127,7 +130,7 @@ export const Base =  Backbone.View.extend({
         },
         buildDialog: function(dialogForm) {
             var self = this;
-            var formReadOnly = specifyform.getFormMode(dialogForm[0]) === 'view';
+            var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
 
             dialogForm.find('.specify-form-header:first').remove();
             var buttons = $(`<div class="${className.formFooter}" role="toolbar">`).appendTo(dialogForm);

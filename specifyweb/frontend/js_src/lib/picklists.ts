@@ -20,6 +20,8 @@ export const agentTypes = [
   formsText('group'),
 ] as const;
 
+const pickListTypes = [] as const;
+
 const auditLogActions = [
   formsText('insert'),
   formsText('update'),

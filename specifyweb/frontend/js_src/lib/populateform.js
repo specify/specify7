@@ -20,8 +20,12 @@ import {SpinnerFieldUi} from './spinnerui';
 import {readCookie} from './cookies';
 import {userInformation} from './userinfo';
 import {className} from './components/basic';
-import {RecordSelectorView} from './components/recordselectorutils';
+import {
+    RecordSelectorView,
+    subFormNodeToProps
+} from './components/recordselectorutils';
 
+// TODO: rewrite to React
 var MultiView = Backbone.View.extend({
         __name__: "MultiView",
         render: function() {
@@ -30,10 +34,10 @@ var MultiView = Backbone.View.extend({
             var iActionCollections =  ["LoanPreparationDependentCollection", "GiftPreparationDependentCollection"];
             // The form has to actually be built to tell if it is a formtable.
             specifyform.buildSubView(this.$el).then(function(form) {
-                var View = form.hasClass('specify-form-type-formtable')
-                    ? (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)
-                    : RecordSelectorView;
-                new View(options).render();
+                var View = form?.[0].classList.contains('specify-form-type-formtable') === true
+                    ? new (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)(options)
+                    : new (RecordSelectorView)({...options, ...subFormNodeToProps(options.el)});
+                View.render();
             });
             return this;
         }
@@ -65,7 +69,7 @@ var MultiView = Backbone.View.extend({
             console.error("undefined relationship:", resource.specifyModel.name, fieldName);
             return null;
         }
-        var viewOptions = { el: node[0], subformNode: node[0], field: field, populateForm: populateForm };
+        var viewOptions = { el: node[0], field: field, populateForm: populateForm };
         return resource.rget(fieldName).done(function(related) {
             var View;
             switch (field.type) {

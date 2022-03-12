@@ -160,13 +160,15 @@ export function SchemaConfig({
     void Promise.all([
       fetchPickLists().then((pickLists) =>
         Object.fromEntries(
-          pickLists.map(serializeResource).map(({ id, name, isSystem }) => [
-            id,
-            {
-              name,
-              isSystem,
-            },
-          ])
+          Object.values(pickLists)
+            .map(serializeResource)
+            .map(({ id, name, isSystem }) => [
+              id,
+              {
+                name,
+                isSystem,
+              },
+            ])
         )
       ),
       // Fetch table items and their strings

@@ -106,7 +106,7 @@ export async function format(
   resource: SpecifyResource<AnySchema> | undefined,
   formatterName?: string
 ): Promise<string | undefined> {
-  if (typeof resource !== 'object') return undefined;
+  if (typeof resource !== 'object' || resource === null) return undefined;
   await resource.fetchIfNotPopulated();
   const resolvedFormatterName =
     formatterName ?? resource.specifyModel.getFormat();

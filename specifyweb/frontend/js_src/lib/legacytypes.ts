@@ -94,6 +94,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly format: () => Promise<string>;
   readonly url: () => string;
   recordsetid?: number;
+  readonly placeInSameHierarchy: (resource: SpecifyResource<AnySchema>) => void;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;
   };

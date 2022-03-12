@@ -9,12 +9,10 @@ import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { clamp, f } from '../wbplanviewhelper';
+import { clamp } from '../wbplanviewhelper';
 import { Button, className, Input } from './basic';
 import { crash } from './errorboundary';
 import { Dialog } from './modaldialog';
-import type { FormType, ResourceViewProps } from './resourceview';
-import { ResourceView } from './resourceview';
 
 export function RecordSelectorButtons({
   onAdd: handleAdd,
@@ -182,52 +180,76 @@ function Search<SCHEMA extends AnySchema>({
   return <div ref={containerRef} />;
 }
 
+// FIXME: review and remove comments in all files
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  readonly isReadOnly: boolean;
+  /*
+   * Readonly isReadOnly: boolean;
+   * Readonly formType?: FormType;
+   * readonly viewName?: string;
+   * Readonly onSaved?: ResourceViewProps<SCHEMA>['onSaved'];
+   * readonly renderResourceView: ResourceViewProps<SCHEMA>['children'];
+   */
   readonly model: SpecifyModel<SCHEMA>;
-  readonly formType?: FormType;
-  readonly viewName?: string;
+  // Related field
   readonly field?: Relationship;
-  readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
-  readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
-  readonly onDelete: () => void;
+  // A record on which this record set is dependent
   readonly relatedResource?: SpecifyResource<AnySchema>;
-  readonly isDependent: boolean;
+  // List of record set items
+  readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
+  // Callback to call when new record needs to be added to the record set
+  readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
+  // Callback to call when new record needs to be added to the record set
+  readonly onDelete: undefined | (() => void);
   readonly defaultIndex?: number;
-  readonly onSaved?: ResourceViewProps<SCHEMA>['onSaved'];
-  readonly renderResourceView: ResourceViewProps<SCHEMA>['children'];
+  // Render function. Allows to customize placement of elements and features
   readonly children: (props: {
     // Delete confirmation or search dialogs
     readonly dialogs: JSX.Element;
+    // Record Selector slider component
     readonly slider: JSX.Element;
+    // Index of current resource in the RecordSet
     readonly index: number;
+    // Readonly resourceView: JSX.Element | undefined;
     readonly totalCount: number;
+    // Use this to render <ResourceView>
     readonly resource: SpecifyResource<SCHEMA> | undefined;
-    readonly resourceView: JSX.Element | undefined;
+    /*
+     * If current resource is still loading, can display previous resource:
+     * readonly previousResource: SpecifyResource<SCHEMA> | undefined;
+     * Set this as an "Add" button event listener
+     */
     readonly onAdd: () => void;
+    // Set this as an "Remove" button event listener
     readonly onRemove: () => void;
     // True while fetching new record
     readonly isLoading: boolean;
   }) => JSX.Element;
+  // Current index in the collection
   readonly index: number;
+  // Event handler for index change
   readonly onSlide: (newIndex: number) => void;
+  // Total number of elements in the collection
   readonly totalCount: number;
 };
 
 // FIXME: display old record with Loading message while loading new record
 export function RecordSelector<SCHEMA extends AnySchema>({
-  isReadOnly: readOnly,
+  // IsReadOnly: readOnly,
   model,
-  formType = 'form',
-  viewName,
+  /*
+   * FormType = 'form',
+   * viewName,
+   */
   field,
   records,
   onAdd: handleAdded,
   onDelete: handleDelete,
-  isDependent,
+  // IsDependent,
   relatedResource,
-  onSaved: handleSaved,
-  renderResourceView,
+  /*
+   * OnSaved: handleSaved,
+   * renderResourceView,
+   */
   children,
   index,
   onSlide: handleSlide,
@@ -241,8 +263,6 @@ export function RecordSelector<SCHEMA extends AnySchema>({
     [index]
   );
 
-  const isReadOnly = readOnly && !isDependent;
-
   const [state, setState] = React.useState<
     'main' | 'deleteDialog' | 'addBySearch'
   >();
@@ -250,13 +270,9 @@ export function RecordSelector<SCHEMA extends AnySchema>({
   function handleAdd(): void {
     if (typeof handleAdded === 'undefined') return;
 
-    if (isDependent) {
+    if (typeof relatedResource === 'object') {
       const resource = new model.Resource();
-      if (
-        typeof field?.otherSideName === 'string' &&
-        typeof relatedResource === 'object' &&
-        !relatedResource.isNew()
-      )
+      if (typeof field?.otherSideName === 'string' && !relatedResource.isNew())
         resource.set(field.otherSideName, relatedResource.url() as any);
       handleAdded(resource);
       handleSlide(totalCount);
@@ -264,17 +280,19 @@ export function RecordSelector<SCHEMA extends AnySchema>({
   }
 
   function handleRemove(): void {
-    if (records.length === 0) return;
+    if (records.length === 0 || typeof handleDelete === 'undefined') return;
     handleSlide(Math.min(index, totalCount - 2));
 
-    if (isDependent) handleDelete();
+    if (typeof relatedResource === 'object') handleDelete();
     else setState('deleteDialog');
   }
 
   return children({
     slider: (
       <Slider
-        value={index}
+        value={
+          typeof records[index] === 'object' ? index : lastIndexRef.current
+        }
         count={totalCount}
         onChange={handleSlide}
         onAdd={undefined}
@@ -283,24 +301,8 @@ export function RecordSelector<SCHEMA extends AnySchema>({
     index,
     totalCount,
     isLoading: typeof records[index] === 'object',
-    resource: records[index],
-    resourceView:
-      typeof records[index] === 'object' ||
-      typeof records[lastIndexRef.current] === 'object' ? (
-        <ResourceView
-          resource={defined(records[index] ?? records[lastIndexRef.current])}
-          mode={isReadOnly ? 'view' : 'edit'}
-          viewName={viewName}
-          type={formType}
-          canAddAnother={false}
-          isSubView={true}
-          onClose={f.void}
-          onSaved={handleSaved}
-          onDeleted={handleDelete}
-        >
-          {renderResourceView}
-        </ResourceView>
-      ) : undefined,
+    // While new resource is loading, display previous resource
+    resource: records[index] ?? records[lastIndexRef.current],
     dialogs: (
       <>
         {state === 'deleteDialog' ? (
@@ -312,7 +314,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
               <>
                 <Button.Red
                   onClick={(): void => {
-                    handleDelete();
+                    handleDelete?.();
                     setState('main');
                   }}
                 >

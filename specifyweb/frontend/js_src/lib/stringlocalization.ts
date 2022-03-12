@@ -1,8 +1,11 @@
 import { load } from './initialcontext';
+import { LANGUAGE } from './localization/utils';
 import { getProperty } from './props';
 import type { RA } from './types';
 
-const locale = 'en';
+const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
+const locale =
+  bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
 const bundles = {} as Record<typeof bundleNames[number], string>;
 
 const bundleNames = [

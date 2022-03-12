@@ -7,8 +7,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
 import { schema } from '../schema';
-import type { LiteralField } from '../specifyfield';
-import type { Relationship } from '../specifyfield';
+import type { LiteralField, Relationship } from '../specifyfield';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { DivisionFieldComboBox } from './divisionfieldcombobox';
@@ -67,6 +66,8 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       [pickList]
     )
   );
+
+  React.useEffect(() => () => error('Destroying combo box'), []);
 
   // This type has to be readOnly
   const readOnly =

@@ -44,7 +44,7 @@ export const fetchCollection = async <
    * Can query partial dates (e.g catalogeddate__year)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
-  advancedFilters: IR<string> = {}
+  advancedFilters: IR<string | number> = {}
 ): Promise<{
   readonly records: RA<SerializedResource<SCHEMA>>;
   readonly totalCount: number;

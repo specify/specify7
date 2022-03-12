@@ -1,3 +1,4 @@
+import { keysToLowerCase } from './datamodelutils';
 import type { IR } from './types';
 
 const toAbsoluteUrl = (url: string): string =>
@@ -7,7 +8,7 @@ export function format(url: string, parameters: IR<string>): string {
   const urlObject = new URL(toAbsoluteUrl(url));
   urlObject.search = new URLSearchParams({
     ...Object.fromEntries(urlObject.searchParams),
-    ...parameters,
+    ...keysToLowerCase(parameters),
   }).toString();
   return urlObject.toString();
 }

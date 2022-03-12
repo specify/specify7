@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import Backbone from './backbone';
+import React from 'react';
 
 import {getModelById, schema} from './schema';
 import FormsDialog from './components/formsdialog';
@@ -14,8 +15,10 @@ import {formatNumber} from './components/internationalization';
 import {legacyNonJsxIcons} from './components/icons';
 import {showDialog} from './components/modaldialog';
 import {filterArray} from './types';
-import {ResourceDialogView} from './components/resourcedialog';
-import {resourceViewUrl} from "./resource";
+import {ViewResource} from './components/resourceview';
+import {resourceViewUrl} from './resource';
+import {Button} from './components/basic';
+import {f} from './wbplanviewhelper';
 
 
 export default Backbone.View.extend({
@@ -174,24 +177,26 @@ export default Backbone.View.extend({
                         specifyuser: userInformation.id,
                         contexttableid: recordSet.get("dbTableId"),
                     },
-                    newQueryButtonGenerator: ({ type }) =>
-                        () => {
-                              view.remove();
-                              navigation.go(
-                                    `/specify/query/new/${getModelById(recordSet.get("dbTableId"))
-                                  .name.toLowerCase()}/?recordsetid=${recordSet.id}`
-                              );
-                          }
+                    onNewQuery() {
+                        view.remove();
+                        navigation.go(
+                              `/specify/query/new/${getModelById(recordSet.get("dbTableId"))
+                            .name.toLowerCase()}/?recordsetid=${recordSet.id}`
+                        );
+                    },
                 });
                 view.render();
             };
-            const editView = new ResourceDialogView({
+            const editView = new ViewResource({
                 resource: recordSet,
                 deletionMessage: formsText("recordSetDeletionWarning")(recordSet.get("name")),
-                extraButton: {
-                  label: commonText("query"),
-                  onClick: queryEventListener,
-                },
+                extraButtons: React.createElement(
+                    Button.Blue,
+                    {onClick: queryEventListener},
+                    commonText("query"),
+                ),
+                dialog: 'modal',
+                onSaved: f.void,
                 onClose: (event) => {
                     window.removeEventListener("click", queryEventListener);
                     if(typeof event?.originalEvent !== "undefined")

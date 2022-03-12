@@ -22,7 +22,7 @@ import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { ResourceDialog } from '../resourcedialog';
+import { IntegratedResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
@@ -205,14 +205,14 @@ function QueryToolbarItem({
   getQueryCreateUrl,
   getQuerySelectUrl,
   spQueryFilter,
-  newQueryButtonGenerator,
+  onNewQuery: handleNewQuery,
   readOnly,
 }: {
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: keyof Tables) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-  readonly spQueryFilter?: CollectionFetchFilters<SpQuery>;
-  readonly newQueryButtonGenerator?: (state: States) => () => void;
+  readonly spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>;
+  readonly onNewQuery?: () => void;
   readonly readOnly: boolean;
 }): JSX.Element {
   useTitle(commonText('queries'));
@@ -249,8 +249,7 @@ function QueryToolbarItem({
             <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
             <Button.Blue
               onClick={
-                // TODO: simplify this once RecordSetsDialog is rewritten to React
-                newQueryButtonGenerator?.(state) ??
+                handleNewQuery ??
                 ((): void =>
                   setState({
                     type: 'CreateQueryState',
@@ -337,11 +336,9 @@ export default menuItem;
 
 function EditQueryDialog({
   queryResource,
-  readOnly,
   onClose: handleClose,
 }: {
   readonly queryResource: SpecifyResource<SpQuery>;
-  readonly readOnly?: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
@@ -349,15 +346,13 @@ function EditQueryDialog({
   >('default');
 
   return state === 'default' ? (
-    <ResourceDialog
+    <IntegratedResourceView
+      dialog="modal"
       resource={queryResource}
-      readOnly={readOnly}
-      onSaved={(): void => {
-        navigation.go(`/query/${queryResource.id}/`);
-      }}
+      onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}
     >
-      {!queryResource.isNew() && (
+      {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
           <p>{commonText('actions')}</p>
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
@@ -371,7 +366,7 @@ function EditQueryDialog({
           </Button.LikeLink>
         </div>
       )}
-    </ResourceDialog>
+    </IntegratedResourceView>
   ) : state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (

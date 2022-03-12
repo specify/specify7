@@ -31,10 +31,10 @@ const commonText = createDictionary({
     'es-es': 'Access denied',
   },
   collectionAccessDeniedDialogHeader: {
-    'en-us': header('You do not have access to this collection'),
-    'ru-ru': header('У вас нет доступа к этой коллекции'),
-    ca: header('You do not have access to this collection'),
-    'es-es': header('You do not have access to this collection'),
+    'en-us': 'You do not have access to this collection',
+    'ru-ru': 'У вас нет доступа к этой коллекции',
+    ca: 'You do not have access to this collection',
+    'es-es': 'You do not have access to this collection',
   },
   collectionAccessDeniedDialogMessage: {
     'en-us': (collectionName: string) =>
