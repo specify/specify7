@@ -102,16 +102,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
   );
   React.useEffect(() => {
     if (container === null) return;
-    Promise.all([buildView(), resource.fetchIfNotPopulated()])
+    Promise.all([buildView(), resource.fetchIfNotPopulated()] as const)
       .then(([form]) => {
         setState('main');
 
-        form.find('.specify-form-header:first').remove();
+        form.querySelector('.specify-form-header')?.remove();
 
+        defined(container ?? undefined).replaceChildren(form);
         populateForm(form, resource);
-        const formElement = form[0] as HTMLFormElement;
-        defined(container ?? undefined).replaceChildren(formElement);
-        setForm(formElement);
+        setForm(form);
 
         const resourceLabel = resource.specifyModel.label;
         setTitle(
@@ -137,10 +136,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
       isLoading: state === 'loading',
       isModified: resource.needsSaved,
       title,
-      form: <div ref={setContainer} />,
+      form: (
+        <div
+          ref={(container: HTMLElement | null): void =>
+            container === null ? undefined : setContainer(container)
+          }
+        />
+      ),
       saveButton:
         !isReadOnly &&
-        form !== undefined &&
+        typeof form === 'object' &&
         typeof handleSaved === 'function' ? (
           <SaveButton
             model={resource}
@@ -187,29 +192,33 @@ const resourceDeletedDialog = (
 );
 
 // FIXME: revisit all usages of all these components
-export function IntegratedResourceView({
+export function IntegratedResourceView<SCHEMA extends AnySchema>({
   resource,
   buildView = async (): Promise<HTMLFormElement> =>
-    specifyform.buildViewByName(resource.specifyModel.view),
+    specifyform
+      .buildViewByName(resource.specifyModel.view)
+      .then(([element]) => element as HTMLFormElement),
   extraButtons = <span className="flex-1 -ml-2" />,
   headerButtons = <span className="flex-1 -ml-4" />,
   canAddAnother,
   deletionMessage,
   dialog = false,
+  onSaving: handleSaving,
   onSaved: handleSaved,
   onClose: handleClose,
   children,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<SCHEMA>;
   readonly buildView?: () => Promise<HTMLFormElement>;
   readonly headerButtons?: JSX.Element;
   readonly canAddAnother: boolean;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
-  readonly dialog?: false | 'modal' | 'nonModal';
+  readonly dialog: false | 'modal' | 'nonModal';
+  readonly onSaving?: () => void;
   readonly onSaved: (payload: {
     readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<AnySchema> | undefined;
+    readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
   readonly onClose: () => void;
@@ -226,6 +235,7 @@ export function IntegratedResourceView({
       buildView={buildView}
       isReadOnly={userInformation.isReadOnly}
       canAddAnother={canAddAnother}
+      onSaving={handleSaving}
       onSaved={(payload) => {
         handleSaved(payload);
         handleClose();
@@ -377,6 +387,7 @@ export async function showResource(
           resource,
           onClose: f.void,
           canAddAnother: true,
+          dialog: false,
           onSaved: ({ addAnother, newResource, wasNew }): void => {
             if (addAnother && typeof newResource === 'object')
               showResource(newResource, recordSet, true);

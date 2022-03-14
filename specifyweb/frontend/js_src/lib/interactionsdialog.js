@@ -21,7 +21,8 @@ import {
   LoadingView,
   showDialog
 } from './components/modaldialog';
-import {resourceViewUrl} from "./resource";
+import {resourceViewUrl} from './resource';
+import {className} from './components/basic';
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -126,17 +127,18 @@ export default Backbone.View.extend({
             return '';
         },
         dialogEntry: function(forms, interactionEntry, formIndex) {
-            let className = 'interaction-action';
-            let href='';
+            let classList;
+            let href;
 
             if(isActionEntry(interactionEntry)) {
                 const action = interactionEntry[0].getAttribute('action');
                 href = `/specify/task/interactions/${action}`;
+                classList = `interaction-action ${className.navigationHandled}`;
             }
             else {
               const form = forms[formIndex];
               href = resourceViewUrl(SpecifyModel.parseClassName(form['class']));
-              className = 'intercept-navigation';
+              classList = '';
             }
 
             return `<li
@@ -144,7 +146,7 @@ export default Backbone.View.extend({
                 aria-label="${this.getDialogEntryTooltip(interactionEntry)}"
             >
                 <a
-                    class="${className} link"
+                    class="${classList} link"
                     href="${href}"
                 >
                     <img

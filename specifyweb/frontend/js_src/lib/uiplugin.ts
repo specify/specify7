@@ -1,5 +1,5 @@
 import Backbone from './backbone';
-import specifyform from './specifyform';
+import { parseSpecifyProperties } from './parsespecifyproperties';
 import type { RA } from './types';
 
 export const UiPlugin = Backbone.View.extend({
@@ -7,9 +7,7 @@ export const UiPlugin = Backbone.View.extend({
   initialize(options: {
     readonly populateForm: (...args: RA<never>) => unknown;
   }) {
-    this.init = specifyform.parseSpecifyProperties(
-      this.$el.data('specify-initialize')
-    );
+    this.init = parseSpecifyProperties(this.$el.data('specify-initialize'));
     this.populateForm = options.populateForm;
   },
 });

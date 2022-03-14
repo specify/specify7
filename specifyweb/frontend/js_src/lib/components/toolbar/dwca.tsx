@@ -159,6 +159,7 @@ const userTool: UserTool = {
   task: 'make-dwca',
   title: commonText('makeDwca'),
   enabled: () => userInformation.isadmin,
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
 };
 

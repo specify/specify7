@@ -204,7 +204,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <li key={table.id}>
               <Link.Default
                 href={`/task/schema-config/?language=${language}&table=${table.name}`}
-                className="intercept-navigation"
               >
                 <TableIcon tableName={table.name} tableLabel={false} />
                 {table.name}
@@ -546,13 +545,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           icon="pencil"
                           title={commonText('edit')}
                           aria-label={commonText('edit')}
-                          className="intercept-navigation"
                           href={`/specify/view/picklist/${currentPickListId}/`}
                         />
                       )}
                       <Link.Icon
                         icon="plus"
-                        className="intercept-navigation"
                         href="/specify/view/picklist/new/"
                         title={commonText('add')}
                         aria-label={commonText('add')}

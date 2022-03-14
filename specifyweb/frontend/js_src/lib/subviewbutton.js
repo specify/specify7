@@ -15,6 +15,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
+import {parseSpecifyProperties} from './parsespecifyproperties';
 
 // TODO: rewrite to React
 export const Base =  Backbone.View.extend({
@@ -31,7 +32,7 @@ export const Base =  Backbone.View.extend({
             self.related = self.options.model || self.options.collection;
             self.model = self.options.parentResource || self.options.collection.parent;
 
-            var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
+            var props = parseSpecifyProperties(self.$el.data('specify-initialize'));
             self.icon = props.icon ? getIcon(props.icon) : self.relatedModel.getIcon();
         },
         render: function() {

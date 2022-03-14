@@ -112,7 +112,7 @@ export const className = {
   textarea: 'resize max-w-full',
   form: 'flex flex-col gap-4',
   button: 'button',
-  link: 'link intercept-navigation',
+  link: 'link',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800
@@ -140,6 +140,8 @@ export const className = {
   queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
     flex gap-x-2 rounded dark:border-none`,
   h2: 'font-semibold text-black dark:text-white',
+  // Disable default link click intercept action
+  navigationHandled: 'navigation-handled',
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */

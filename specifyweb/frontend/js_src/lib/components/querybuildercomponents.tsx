@@ -18,7 +18,7 @@ import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
-import { ResourceDialog } from './resourcedialog';
+import { IntegratedResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 
 function QueryButton({
@@ -168,7 +168,9 @@ export function MakeRecordSetButton({
         state === 'editing' || state === 'saving' ? (
           <>
             {typeof recordSet === 'object' && (
-              <ResourceDialog
+              <IntegratedResourceView
+                dialog="modal"
+                canAddAnother={false}
                 resource={recordSet}
                 onSaving={(): void => setState('saving')}
                 onSaved={(): void => setState('saved')}

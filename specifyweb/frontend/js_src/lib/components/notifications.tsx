@@ -299,7 +299,6 @@ const notificationRenderers: IR<
       <i>{notification.payload['previous-owner-name']}</i>,
       <Link.Default
         href={`/specify/workbench/${notification.payload['dataset-id']}/`}
-        className="intercept-navigation"
       >
         <i>{notification.payload['dataset-name']}</i>
       </Link.Default>

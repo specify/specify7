@@ -234,7 +234,6 @@ export function Icon({
   isRelationship = false,
   isPreview = false,
   isEnabled = true,
-  isDefault = false,
   tableName = undefined,
   optionLabel = '0',
 }: CustomSelectElementIconProps): JSX.Element {

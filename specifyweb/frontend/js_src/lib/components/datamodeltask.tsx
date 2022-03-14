@@ -1,14 +1,14 @@
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import formsText from '../localization/forms';
 import { router } from '../router';
-import { schema, getModel } from '../schema';
+import { getModel, schema } from '../schema';
 import * as app from '../specifyapp';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import { H2, Link, Ul } from './basic';
 import createBackboneView from './reactbackboneextend';
-import { Tables } from '../datamodel';
 
 function RelationshipLink({
   relationship,
@@ -17,10 +17,7 @@ function RelationshipLink({
 }): JSX.Element | null {
   const related = relationship.relatedModel;
   return typeof related === 'object' ? (
-    <Link.Default
-      className="intercept-navigation"
-      href={`/specify/datamodel/${related.name.toLowerCase()}/`}
-    >
+    <Link.Default href={`/specify/datamodel/${related.name.toLowerCase()}/`}>
       {related.name}
     </Link.Default>
   ) : null;
@@ -63,7 +60,6 @@ function DataModelView({
           <li key={key}>
             <Link.Default
               href={`/specify/datamodel/${model.name.toLowerCase()}/`}
-              className="intercept-navigation"
             >
               {model.name}
             </Link.Default>

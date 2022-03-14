@@ -23,16 +23,10 @@ function AppResourceDialog({
       buttons={commonText('cancel')}
     >
       <nav className="contents">
-        <Link.Default
-          href="/specify/appresources/"
-          className="intercept-navigation"
-        >
+        <Link.Default href="/specify/appresources/">
           {commonText('appResources')}
         </Link.Default>
-        <Link.Default
-          href="/specify/viewsets/"
-          className="intercept-navigation"
-        >
+        <Link.Default href="/specify/viewsets/">
           {commonText('viewSets')}
         </Link.Default>
       </nav>
@@ -45,6 +39,7 @@ const View = createBackboneView(AppResourceDialog);
 const userTool: UserTool = {
   task: 'resources',
   title: commonText('resources'),
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   enabled: () => userInformation.isadmin,
 };

@@ -12,10 +12,11 @@ export default ajax<{ readonly available: boolean }>(
   { strict: false }
 )
   .catch(() => ({ data: { available: false } }))
-  .then<MenuItem>(async ({ data: { available } }) => ({
+  .then<MenuItem>(({ data: { available } }) => ({
     task: 'report',
     title: commonText('reports'),
     icon: icons.documentReport,
     enabled: available,
+    isOverlay: true,
     view: ({ onClose }) => new ReportsView({ onClose }),
   }));

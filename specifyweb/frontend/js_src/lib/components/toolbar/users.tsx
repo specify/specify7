@@ -58,9 +58,7 @@ function Users({
       <Ul>
         {Object.entries(users).map(([userName, viewUrl]) => (
           <li key={userName}>
-            <Link.Default className="intercept-navigation" href={viewUrl}>
-              {userName}
-            </Link.Default>
+            <Link.Default href={viewUrl}>{userName}</Link.Default>
           </li>
         ))}
       </Ul>
@@ -75,6 +73,7 @@ const View = createBackboneView(Users);
 const userTool: UserTool = {
   task: 'users',
   title: commonText('manageUsers'),
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   enabled: () => userInformation.isadmin,
 };

@@ -241,7 +241,6 @@ export default PrepDialog.extend({
                 });
 
                 $('<a>', { href: resourceModel.viewUrl(), title: formsText('linkInline'), ariaLabel: formsText('linkInline'), })
-                    .addClass('intercept-navigation')
                     .append(legacyNonJsxIcons.link)
                     .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });

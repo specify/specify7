@@ -26,5 +26,17 @@ export function error(message: string | Error, ...rest: RA<unknown>): never {
  * throw and catch several exceptions during initialization
  */
 export function breakpoint(): void {
-  /* Blank */
+  /* Breakpoint */
 }
+
+/**
+ * Wrap a function in this to call a breakpoint when function is called
+ * Usually, you can just set a breakpoint inside a function, but that is hard
+ * for functions defined by third party libraries
+ */
+export const tap =
+  <ARGS extends RA<never>, RETURN>(callback: (...args: ARGS) => RETURN) =>
+  (...args: ARGS): RETURN => {
+    breakpoint();
+    return callback(...args);
+  };

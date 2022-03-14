@@ -13,7 +13,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
-import { Button, Link } from '../basic';
+import { Button, className, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { compareValues, SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
@@ -255,10 +255,10 @@ function MetadataDialog({
                           href={`/specify/workbench/${dataset.id}/`}
                           {...(typeof handleDataSetSelect === 'undefined'
                             ? {
-                                className: 'intercept-navigation font-bold',
+                                className: 'font-bold',
                               }
                             : {
-                                className: 'font-bold',
+                                className: `font-bold ${className.navigationHandled}`,
                                 onClick: (event): void => {
                                   event.preventDefault();
                                   handleDataSetSelect(dataset.id);
@@ -353,6 +353,7 @@ const menuItem: MenuItem = {
   task: 'workbenches',
   title: commonText('workbench'),
   icon: icons.table,
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),
 };
 

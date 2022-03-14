@@ -187,9 +187,9 @@ abstract class FieldBase {
   public getPickList(): string | undefined {
     return (
       this.localization.picklistname ??
-      (getFrontEndPickLists() as IR<IR<SpecifyResource<PickList>>>)[
+      (getFrontEndPickLists() as IR<IR<SpecifyResource<PickList> | undefined>>)[
         this.model.name
-      ]?.[this.name].get('name')
+      ]?.[this.name]?.get('name')
     );
   }
 

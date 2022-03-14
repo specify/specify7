@@ -7,6 +7,7 @@ const menuItem: MenuItem = {
   task: 'interactions',
   title: commonText('interactions'),
   icon: icons.chat,
+  isOverlay: true,
   view: (props) => new InteractionsDialog(props).render(),
 };
 

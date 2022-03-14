@@ -120,7 +120,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       }}
       onDelete={(): void => {
         collection.remove(defined(records[index ?? 0]));
-        handleDelete?.();
+        handleDelete?.(index ?? 0);
         setRecords(getRecords);
       }}
       index={index ?? 0}
@@ -148,17 +148,24 @@ export const subFormNodeToProps = (
 } => ({
   isReadOnly: specifyform.subViewMode(subFormNode) === 'view',
   buildView: async (): Promise<HTMLFormElement> =>
-    specifyform.buildSubView(subFormNode),
+    specifyform
+      .buildSubView(subFormNode)
+      .then(
+        (form) =>
+          (form?.[0] as HTMLFormElement) ?? document.createElement('form')
+      ),
 });
 
 /** A Wrapper for RecordSelector for easier usage in Backbone Views */
 function IntegratedRecordSelector({
   urlParameter,
   buildView = async (): Promise<HTMLFormElement> =>
-    specifyform.buildViewByName(
-      collection.model.specifyModel.view,
-      isReadOnly ? 'view' : 'edit'
-    ),
+    specifyform
+      .buildViewByName(
+        collection.model.specifyModel.view,
+        isReadOnly ? 'view' : 'edit'
+      )
+      .then((form) => form[0] as HTMLFormElement),
   isReadOnly = false,
   hasHeader = true,
   collection,
@@ -447,11 +454,15 @@ function IntegratedRecordSetView({
         typeof resource === 'object' ? (
           <ResourceView
             resource={defined(resource)}
-            buildView={specifyform.buildViewByName(
-              defined(resource).specifyModel.view,
-              'form',
-              isReadOnly ? 'view' : 'edit'
-            )}
+            buildView={async () =>
+              specifyform
+                .buildViewByName(
+                  defined(resource).specifyModel.view,
+                  'form',
+                  isReadOnly ? 'view' : 'edit'
+                )
+                .then((form) => form[0] as HTMLFormElement)
+            }
             isReadOnly={isReadOnly}
             canAddAnother={true}
             onSaved={({ wasNew, newResource }): void => {

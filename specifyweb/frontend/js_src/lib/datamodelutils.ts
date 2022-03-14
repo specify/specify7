@@ -183,8 +183,10 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | SerializedModel<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    resource?.toJSON() ?? resource,
-    resource?.specifyModel.name
+    typeof resource.toJSON === 'function'
+      ? (resource as SpecifyResource<SCHEMA>).toJSON()
+      : (resource as SerializedModel<SCHEMA>),
+    (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
 const specialFields = new Set(['id', 'resource_uri']);
@@ -236,14 +238,14 @@ export const addMissingFields = <SCHEMA extends AnySchema>(
   tableName: SCHEMA['tableName'],
   record: Partial<SerializedResource<SCHEMA>>
 ): SerializedResource<SCHEMA> => ({
-  ...Object.fromEntries(
+  ...(Object.fromEntries(
     defined(getModel(tableName)).literalFields.map(
       ({ name, isRequired, type }) => [
         name,
         isRequired ? parserFromType(type).value : null,
       ]
     )
-  ),
+  ) as SerializedResource<SCHEMA>),
   resource_uri: resourceApiUrl(tableName, 0),
   ...record,
 });

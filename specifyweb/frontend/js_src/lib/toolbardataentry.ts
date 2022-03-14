@@ -7,6 +7,7 @@ const menuItem: MenuItem = {
   task: 'data',
   title: commonText('dataEntry'),
   icon: icons.pencilAt,
+  isOverlay: true,
   view: ({ onClose }) => new FormsDialog({ onClose }),
 };
 

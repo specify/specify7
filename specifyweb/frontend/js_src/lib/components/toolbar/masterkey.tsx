@@ -117,6 +117,7 @@ const MasterKeyView = createBackboneView(MasterKey);
 const toolBarItem: UserTool = {
   task: 'master-key',
   title: commonText('generateMasterKey'),
+  isOverlay: true,
   view: ({ onClose }) => new MasterKeyView({ onClose }),
 };
 

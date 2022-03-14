@@ -3,7 +3,6 @@ import React from 'react';
 import commonText from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
-import { setCurrentView } from '../../specifyapp';
 import { Button, ContainerFull, Form, H2, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
@@ -87,11 +86,8 @@ const PreferencesView = createBackboneView(Preferences);
 const toolBarItem: UserTool = {
   task: 'preferences',
   title: commonText('preferences'),
-  view: ({ onClose }) => {
-    const view = new PreferencesView({ onClose });
-    setCurrentView(view);
-    return view;
-  },
+  isOverlay: false,
+  view: ({ onClose }) => new PreferencesView({ onClose }),
 };
 
 export default toolBarItem;

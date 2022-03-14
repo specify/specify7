@@ -132,7 +132,9 @@ function ViewRecords({
             isReadOnly={userInformation.isReadOnly}
             onAdd={undefined}
             onDelete={handleDelete}
-            onSlide={(): void => {}}
+            onSlide={(index): void =>
+              index === ids.length - 1 ? handleFetchMore?.() : undefined
+            }
           />
         )}
       </Dialog>

@@ -237,6 +237,7 @@ const View = createBackboneView(SchemaConfigWrapper);
 const userTool: UserTool = {
   task: 'schema-config',
   title: commonText('schemaConfig'),
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
 };
 

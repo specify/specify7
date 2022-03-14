@@ -27,6 +27,8 @@ export type UserTool = {
     readonly urlParameter?: string;
   }) => Backbone.View;
   readonly enabled?: boolean | (() => boolean);
+  // Whether the view opens in a dialog window
+  readonly isOverlay: boolean;
 };
 
 export type MenuItem = UserTool & {
@@ -159,10 +161,7 @@ export function Main({
       >
         <div className="2xl:contents flex justify-between w-full">
           <h1 className="contents">
-            <a
-              href="/specify/"
-              className="intercept-navigation order-1 h-16 m-4"
-            >
+            <a href="/specify/" className="order-1 h-16 m-4">
               <img src="/static/img/seven_logo.png" alt="" className="h-full" />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>

@@ -19,7 +19,7 @@ function handleClick(event: Readonly<MouseEvent>): void {
   if (
     link === null ||
     link.href.length === 0 ||
-    (!link.classList.contains('intercept-navigation') &&
+    (link.classList.contains(className.navigationHandled) &&
       (!event.altKey || link.target !== '_blank'))
   )
     return;

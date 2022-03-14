@@ -7,7 +7,6 @@ import React from 'react';
 
 
 import {schema} from './schema';
-import specifyform from './specifyform';
 import template from './templates/querycbx.html';
 import {format} from './dataobjformatters';
 import whenAll from './whenall';
@@ -27,6 +26,7 @@ import {getTreeDefinitionItems, isTreeModel} from './treedefinitions';
 import {ViewResource} from './components/resourceview';
 import {fetchResource} from './resource';
 import {showDialog} from './components/modaldialog';
+import {parseSpecifyProperties} from './parsespecifyproperties';
 
 // TODO: rewrite to React
 
@@ -302,7 +302,7 @@ export default Backbone.View.extend({
         field.isRequired && this.$('input').prop('required',true);
         this.isRequired = this.$('input').attr('required');
 
-        var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
+        var init = this.init || parseSpecifyProperties(control.data('specify-initialize'));
         if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
         this.relatedModel || (this.relatedModel = field.relatedModel);

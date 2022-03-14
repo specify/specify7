@@ -233,6 +233,9 @@ export const go = (url: string): void => navigate(url, true);
 export const push = (url: string): void =>
   navigate(url, { trigger: false, replace: true });
 
+export const getCurrentUrl = (): string =>
+  `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
 export function switchCollection(
   collection: number,
   nextUrl: string | undefined = undefined,

@@ -13,7 +13,7 @@ import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { ResourceDialog } from './resourcedialog';
+import { IntegratedResourceView } from './resourceview';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -249,12 +249,14 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 
   return typeof resource === 'object' ? (
-    <ResourceDialog
+    <IntegratedResourceView
       resource={resource}
-      onSaved={(addAnother): void => {
+      dialog="modal"
+      onSaved={({ addAnother }): void => {
         handleClose();
         handleSaved(addAnother);
       }}
+      canAddAnother={true}
       onClose={handleClose}
     />
   ) : null;

@@ -31,6 +31,7 @@ const menuItem: MenuItem = {
   task: 'tree',
   title: commonText('trees'),
   icon: icons.tree,
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
 };
 

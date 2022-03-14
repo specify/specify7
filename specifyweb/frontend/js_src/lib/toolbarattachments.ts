@@ -17,6 +17,7 @@ const menuItem: MenuItem = {
   title: commonText('attachments'),
   icon: icons.link,
   enabled: systemAvailable,
+  isOverlay: true,
   view: () => new View(),
 };
 

@@ -4,7 +4,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import specifyformcells from './specifyformcells';
-import {parseSpecifyProperties} from './parsespecifyproperties';
 import {processColumnDefinition} from './processcolumndef';
 
 import {className} from './components/basic';
@@ -132,8 +131,6 @@ var formCounter = 0;
         });
 
     var specifyform = {
-        parseSpecifyProperties: parseSpecifyProperties,
-
         buildViewByName: function (viewName, defaultType, mode, isSubView=false) {
             if (viewName === "ObjectAttachment")
                 return Promise.resolve($(`<div data-specify-model="ObjectAttachmentIFace">

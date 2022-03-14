@@ -24,6 +24,7 @@ import {
     RecordSelectorView,
     subFormNodeToProps
 } from './components/recordselectorutils';
+import {parseSpecifyProperties} from './parsespecifyproperties';
 
 // TODO: rewrite to React
 var MultiView = Backbone.View.extend({
@@ -49,7 +50,7 @@ var MultiView = Backbone.View.extend({
             '.specify-spinner': function() {return SpinnerFieldUi;},
             '.specify-querycbx': function() {return QueryCbx;},
             '.specify-uiplugin': function() {
-                var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
+                var init = parseSpecifyProperties(control.data('specify-initialize'));
                 return uiplugins[init.name] || uiplugins.PluginNotAvailable;
             },
             '.specify-combobox': function() {
@@ -103,6 +104,7 @@ var MultiView = Backbone.View.extend({
     };
 
     export default function populateForm(form, resource) {
+        form=$(form);
         localizeForm(form);
         _.each(form.find('.specify-field'), function(node) {
             populateField(resource, $(node));

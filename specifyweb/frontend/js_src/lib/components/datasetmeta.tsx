@@ -36,10 +36,7 @@ async function fetchAgent(url: string): Promise<JSX.Element> {
     id: agentId,
   });
   return format(createdByAgentResource).then((formattedAgent) => (
-    <Link.Default
-      className="intercept-navigation"
-      href={createdByAgentResource.viewUrl()}
-    >
+    <Link.Default href={createdByAgentResource.viewUrl()}>
       {formattedAgent}
     </Link.Default>
   ));

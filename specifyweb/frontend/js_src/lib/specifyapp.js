@@ -5,6 +5,7 @@ import 'jquery-ui';
 import {ErrorView} from './components/errorboundary';
 import {setTitle} from './components/hooks';
 import {openDialogs} from './components/modaldialog';
+import {getCurrentUrl, push} from './navigation';
 
 global.jQuery = $;
 
@@ -54,6 +55,12 @@ global.jQuery = $;
         currentView?.remove();
         currentOverlay?.remove();
         currentOverlay = undefined;
+        if(typeof overlayUrl === 'string' && typeof previousUrl === 'string'){
+            if(getCurrentUrl() === overlayUrl)
+                push(previousUrl);
+            overlayUrl = undefined;
+            previousUrl = undefined;
+        }
 
         /*
          * Close any open dialogs, unless rendering for the first time
@@ -82,10 +89,12 @@ global.jQuery = $;
     }
 
     let currentOverlay;
-    export function setCurrentOverlay(view){
-        // If view is already shown, don't make it an overlay
-        if(view === currentView)
-            return;
+    let previousUrl;
+    let overlayUrl;
+    export function setCurrentOverlay(view, url){
+        previousUrl = getCurrentUrl();
+        overlayUrl = url;
+        navigation.push(url);
         currentOverlay?.remove();
         view.render();
         currentOverlay=view;

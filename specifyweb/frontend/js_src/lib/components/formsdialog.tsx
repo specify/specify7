@@ -10,7 +10,7 @@ import { getView } from '../specifyform';
 import { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { Link, Ul } from './basic';
+import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
@@ -36,7 +36,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
     data.getElementsByTagName('view')
   ).filter((item) => item.getAttribute('sidebar') === 'true');
   return Promise.all(
-    views.map((view) =>
+    views.map(async (view) =>
       getView(view.getAttribute('view')).then<Entry>(
         (form: { readonly class: string }) => {
           const modelName = SpecifyModel.parseClassName(
@@ -84,8 +84,8 @@ function FormsDialog({
                 href={viewUrl}
                 className={
                   typeof handleSelected === 'function'
-                    ? undefined
-                    : 'intercept-navigation'
+                    ? className.navigationHandled
+                    : undefined
                 }
                 onClick={
                   typeof handleSelected === 'function'

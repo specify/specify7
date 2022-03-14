@@ -1,5 +1,5 @@
 import Backbone from './backbone';
-import specifyForm from './specifyform';
+import { parseSpecifyProperties } from './parsespecifyproperties';
 
 export const SpinnerFieldUi = Backbone.View.extend({
   __name__: 'SpinnerFieldUI',
@@ -7,7 +7,7 @@ export const SpinnerFieldUi = Backbone.View.extend({
     change: 'change',
   },
   render() {
-    const { min = '', max = '' } = specifyForm.parseSpecifyProperties(
+    const { min = '', max = '' } = parseSpecifyProperties(
       this.$el.data('specify-initialize')
     ) as { readonly min?: number; readonly max?: number };
 

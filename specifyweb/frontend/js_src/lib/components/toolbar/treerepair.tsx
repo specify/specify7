@@ -105,6 +105,7 @@ const View = createBackboneView(RepairTree);
 const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
+  isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   enabled: () => userInformation.isadmin,
 };

@@ -9,6 +9,7 @@ const menuItem: MenuItem = {
   task: 'recordsets',
   title: commonText('recordSets'),
   icon: icons.collection,
+  isOverlay: true,
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {

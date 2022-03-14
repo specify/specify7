@@ -199,7 +199,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   // Callback to call when new record needs to be added to the record set
   readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
   // Callback to call when new record needs to be added to the record set
-  readonly onDelete: undefined | (() => void);
+  readonly onDelete: undefined | ((index: number) => void);
   readonly defaultIndex?: number;
   // Render function. Allows to customize placement of elements and features
   readonly children: (props: {
@@ -283,7 +283,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
     if (records.length === 0 || typeof handleDelete === 'undefined') return;
     handleSlide(Math.min(index, totalCount - 2));
 
-    if (typeof relatedResource === 'object') handleDelete();
+    if (typeof relatedResource === 'object') handleDelete(index);
     else setState('deleteDialog');
   }
 
@@ -314,7 +314,7 @@ export function RecordSelector<SCHEMA extends AnySchema>({
               <>
                 <Button.Red
                   onClick={(): void => {
-                    handleDelete?.();
+                    handleDelete?.(index);
                     setState('main');
                   }}
                 >

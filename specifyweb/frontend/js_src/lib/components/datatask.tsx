@@ -101,8 +101,9 @@ async function resourceView(
   ])
     .catch(crash)
     .then(async () =>
-      checkLoggedInCollection(resource, (): void =>
-        showResource(resource, recordSet)
+      checkLoggedInCollection(
+        resource,
+        async (): Promise<void> => showResource(resource, recordSet)
       )
     );
 }
@@ -118,8 +119,9 @@ async function viewResourceByGuid(
       setTitle(commonText('pageNotFound'));
       return undefined;
     } else
-      return checkLoggedInCollection(models[0], (): void =>
-        showResource(models[0], undefined, true)
+      return checkLoggedInCollection(
+        models[0],
+        async (): Promise<void> => showResource(models[0], undefined, true)
       );
   });
 }

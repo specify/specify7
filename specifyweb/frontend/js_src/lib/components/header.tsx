@@ -5,11 +5,11 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
 import { router } from '../router';
-import { setCurrentOverlay } from '../specifyapp';
+import { setCurrentOverlay, setCurrentView } from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { sortFunction } from '../wbplanviewhelper';
-import { Button, Form, Input, Link, Ul } from './basic';
+import { Button, className, Form, Input, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -47,9 +47,10 @@ export function HeaderItems({
         order-2 -mt-2 px-2`}
       aria-label="primary"
     >
-      {menuItems.map(({ task, title, icon, view }) => (
+      {menuItems.map(({ task, title, icon, view, isOverlay }) => (
         <Link.Default
           className={`
+            ${className.navigationHandled}
             p-3
             text-gray-700
             dark:text-neutral-300
@@ -85,7 +86,9 @@ export function HeaderItems({
             const backboneView = view({
               onClose: (): void => void backboneView.remove(),
             });
-            setCurrentOverlay(backboneView);
+            if (isOverlay)
+              setCurrentOverlay(backboneView, `/specify/task/${task}/`);
+            else setCurrentView(backboneView);
           }}
         >
           {icon}
@@ -201,18 +204,20 @@ export function UserTools({
                 title: commonText('logOut'),
                 basePath: '',
                 view: undefined,
+                isOverlay: false,
               },
               {
                 task: '/accounts/password_change',
                 title: commonText('changePassword'),
                 basePath: '',
                 view: undefined,
+                isOverlay: false,
               },
               ...userTools.map((userTool) => ({
                 ...userTool,
                 basePath: '/specify/task/',
               })),
-            ].map(({ task, title, basePath, view }) => (
+            ].map(({ task, title, basePath, view, isOverlay }) => (
               <li key={task}>
                 <Link.Default
                   href={`${basePath}${task}/`}
@@ -223,7 +228,9 @@ export function UserTools({
                     const backboneView = view({
                       onClose: (): void => void backboneView.remove(),
                     });
-                    setCurrentOverlay(backboneView);
+                    if (isOverlay)
+                      setCurrentOverlay(backboneView, `${basePath}${task}/`);
+                    else setCurrentView(backboneView);
                   }}
                 >
                   {title}

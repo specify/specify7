@@ -132,7 +132,7 @@ function QueryList({
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
-                className="intercept-navigation overflow-x-auto"
+                className="overflow-x-auto"
               >
                 <TableIcon
                   tableName={getModelById(query.contextTableId).name}
@@ -173,10 +173,7 @@ function ListOfTables({
     <Ul>
       {tables.map((tableName, index) => (
         <li key={index}>
-          <Link.Default
-            href={getQueryCreateUrl(tableName)}
-            className="intercept-navigation"
-          >
+          <Link.Default href={getQueryCreateUrl(tableName)}>
             <TableIcon tableName={tableName} tableLabel={false} />
             {defined(getModel(tableName)).label}
           </Link.Default>
@@ -320,6 +317,7 @@ const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
   icon: icons.documentSearch,
+  isOverlay: true,
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,
@@ -348,6 +346,7 @@ function EditQueryDialog({
   return state === 'default' ? (
     <IntegratedResourceView
       dialog="modal"
+      canAddAnother={false}
       resource={queryResource}
       onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}

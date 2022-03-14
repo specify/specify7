@@ -260,7 +260,7 @@ const ResourceView = Backbone.View.extend({
             $('<a>', {
                 href: makeUrl(this.model),
                 text: this.model.get('name'),
-                'class': `intercept-navigation ${this.isSelected ? 'text-brand-300' : ''}`,
+                'class': `${this.isSelected ? 'text-brand-300' : ''}`,
                 'aria-current': this.isSelected ? 'page' : 'false',
             })
         );

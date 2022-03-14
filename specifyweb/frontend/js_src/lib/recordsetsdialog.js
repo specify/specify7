@@ -17,7 +17,7 @@ import {showDialog} from './components/modaldialog';
 import {filterArray} from './types';
 import {ViewResource} from './components/resourceview';
 import {resourceViewUrl} from './resource';
-import {Button} from './components/basic';
+import {Button, className} from './components/basic';
 import {f} from './wbplanviewhelper';
 
 
@@ -97,8 +97,8 @@ export default Backbone.View.extend({
                         href="/specify/recordset/${recordSet.id}/"
                         class="link ${
                             this.options.readOnly
-                                ? 'rs-select'
-                                : 'intercept-navigation'
+                                ? `rs-select ${className.navigationHandled}`
+                                : ''
                         }"
                         title="${recordSet.get('remarks') ?? ''}"
                     >
