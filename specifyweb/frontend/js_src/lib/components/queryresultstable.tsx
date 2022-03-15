@@ -19,7 +19,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import { Button, ContainerBase } from './basic';
+import { Button, Container } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
@@ -208,7 +208,7 @@ export function QueryResultsTable({
       : undefined;
 
   return (
-    <ContainerBase className="overflow-hidden">
+    <Container.Base className="overflow-hidden">
       <div className="gap-x-2 flex items-center">
         <h3>{`${label}: (${
           selectedRows.size === 0
@@ -331,7 +331,7 @@ export function QueryResultsTable({
         </div>
       )}
       {isFetching && <QueryResultsLoading />}
-    </ContainerBase>
+    </Container.Base>
   );
 }
 

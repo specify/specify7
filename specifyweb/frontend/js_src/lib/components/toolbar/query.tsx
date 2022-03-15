@@ -471,8 +471,7 @@ function QueryExport({
             .catch(console.error);
         }}
       >
-        <Input
-          type="text"
+        <Input.Text
           placeholder={
             asLabel ? commonText('labelName') : commonText('reportName')
           }

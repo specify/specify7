@@ -159,7 +159,7 @@ export function ExpressSearch(): JSX.Element {
       action="/specify/express_search/"
       role="search"
     >
-      <Input
+      <Input.Generic
         type="search"
         className="flex-1"
         name="q"

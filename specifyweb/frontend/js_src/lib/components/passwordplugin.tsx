@@ -71,9 +71,9 @@ function PasswordResetDialog({
             );
         }}
       >
-        <Label>
+        <Label.Generic>
           {adminText('password')}
-          <Input
+          <Input.Generic
             type="password"
             required
             autoComplete="new-password"
@@ -85,10 +85,10 @@ function PasswordResetDialog({
               target.setCustomValidity('');
             }}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {adminText('confirmPassword')}
-          <Input
+          <Input.Generic
             type="password"
             required
             autoComplete="new-password"
@@ -104,7 +104,7 @@ function PasswordResetDialog({
                 target.setCustomValidity(adminText('passwordsDoNotMatchError'));
             }}
           />
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );

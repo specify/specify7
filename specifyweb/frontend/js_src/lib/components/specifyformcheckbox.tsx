@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { Checkbox } from './basic';
+import { Input } from './basic';
 import { useResourceValue } from './specifyformfield';
 import { useCachedState } from './stateCache';
 
@@ -20,7 +20,7 @@ export function PrintOnSave({
     defaultValue: false,
   });
   return (
-    <Checkbox
+    <Input.Checkbox
       id={id}
       name={name}
       checked={value ?? false}
@@ -50,11 +50,11 @@ export function SpecifyFormCheckbox({
     defaultValue
   );
   return (
-    <Checkbox
+    <Input.Checkbox
       id={id}
       name={fieldName}
       checked={value}
-      onChange={({ target }): void => setValue(target.checked)}
+      onValueChange={setValue}
       required={isRequired}
       readOnly={isReadOnly}
     />

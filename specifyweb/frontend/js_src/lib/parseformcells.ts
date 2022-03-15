@@ -4,6 +4,7 @@ import type { FormType, ParsedFormDefinition } from './parseform';
 import { formTypes, parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
 import { parseFormCell } from './parseformfields';
+import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
@@ -41,7 +42,6 @@ export type CellTypes = {
   readonly Label: State<
     'Label',
     {
-      id: number | undefined;
       text: string | undefined;
       labelForCellId: number | undefined;
     }
@@ -68,10 +68,7 @@ export type CellTypes = {
   readonly Command: State<
     'Command',
     {
-      readonly name: string | undefined;
-      readonly label: string | undefined;
-      readonly action: string | undefined;
-      readonly properties: IR<string>;
+      commandDefinition: CommandDefinition;
     }
   >;
   readonly Unsupported: State<
@@ -107,11 +104,8 @@ const processCellType: {
   Label(cell) {
     const text = cell.getAttribute('label') ?? undefined;
     const labelForCellId = Number.parseInt(cell.getAttribute('labelFor') ?? '');
-    // TODO: remove the need for this
-    const id = Number.parseInt(cell.getAttribute('id') ?? '');
     return {
       type: 'Label',
-      id: Number.isNaN(id) ? undefined : id,
       text,
       labelForCellId: Number.isNaN(labelForCellId) ? undefined : labelForCellId,
     };
@@ -163,9 +157,8 @@ const processCellType: {
   }),
 };
 
-export type FormCellDefinition = {
+export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly id: number | undefined;
-  readonly cellData: CellTypes[keyof CellTypes];
   readonly colSpan: number | undefined;
 };
 
@@ -191,7 +184,7 @@ export function parseFormCellDefinition(cellNode: Element): FormCellDefinition {
   return {
     // FIXME: set as aria-labeledby. Make IDs distinct
     id: Number.isNaN(id) ? undefined : id,
-    cellData: parsedCell(cellNode),
     colSpan: Number.isNaN(colSpan) ? undefined : Math.ceil(colSpan / 2),
+    ...parsedCell(cellNode),
   };
 }

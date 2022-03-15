@@ -13,11 +13,11 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
   Button,
-  Checkbox,
-  ContainerFull,
+  Container,
   Form,
   H2,
-  LabelForCheckbox,
+  Input,
+  Label,
   Submit,
   transitionDuration,
 } from './basic';
@@ -143,7 +143,7 @@ export function QueryBuilder({
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
     if (state.queryRunCount !== 0 && containerRef.current !== null)
-      (containerRef.current as HTMLElement).scrollTo({
+      containerRef.current.scrollTo({
         top: containerRef.current.clientHeight,
         behavior: transitionDuration === 0 ? 'auto' : 'smooth',
       });
@@ -152,7 +152,7 @@ export function QueryBuilder({
   useTitle(query.name);
 
   return (
-    <ContainerFull
+    <Container.Full
       onClick={
         typeof state.openedElement.index === 'undefined'
           ? undefined
@@ -321,23 +321,21 @@ export function QueryBuilder({
               getMappedFields={getMappedFieldsBind}
             />
             <div role="toolbar" className="flex flex-wrap gap-2">
-              <LabelForCheckbox>
-                <Checkbox
+              <Label.ForCheckbox>
+                <Input.Checkbox
                   checked={showHiddenFields}
-                  onChange={({ target }): void =>
-                    setShowHiddenFields(target.checked)
-                  }
+                  onValueChange={setShowHiddenFields}
                 />
                 {wbText('revealHiddenFormFields')}
-              </LabelForCheckbox>
+              </Label.ForCheckbox>
               <span className="flex-1 -ml-2" />
               {/*
                * Query Distinct for trees is disabled because of
                * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
                */}
               {!isTreeModel(model.name) && (
-                <LabelForCheckbox>
-                  <Checkbox
+                <Label.ForCheckbox>
+                  <Input.Checkbox
                     disabled={!isEmpty}
                     checked={query.selectDistinct ?? false}
                     onChange={(): void =>
@@ -348,7 +346,7 @@ export function QueryBuilder({
                     }
                   />
                   {queryText('distinct')}
-                </LabelForCheckbox>
+                </Label.ForCheckbox>
               )}
               <Button.Simple
                 disabled={!isEmpty}
@@ -383,6 +381,6 @@ export function QueryBuilder({
           />
         </div>
       </Form>
-    </ContainerFull>
+    </Container.Full>
   );
 }

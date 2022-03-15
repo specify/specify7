@@ -10,7 +10,7 @@ import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { Button, Checkbox, LabelForCheckbox } from './basic';
+import { Button, Input, LabelForCheckbox } from './basic';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
@@ -130,8 +130,8 @@ export const stateReducer = generateReducer<
           })
         }
       />
-      <LabelForCheckbox>
-        <Checkbox
+      <Label.ForCheckbox>
+        <Input.Checkbox
           checked={state.showHiddenTables}
           onChange={(): void =>
             state.dispatch({
@@ -140,7 +140,7 @@ export const stateReducer = generateReducer<
           }
         />
         {wbText('showAdvancedTables')}
-      </LabelForCheckbox>
+      </Label.ForCheckbox>
     </Dialog>
   ),
   TemplateSelectionState: ({ action: state }) => (

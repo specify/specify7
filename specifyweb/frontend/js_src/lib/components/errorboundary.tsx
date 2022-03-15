@@ -32,10 +32,10 @@ function ErrorComponent({
   readonly message: string;
 }): JSX.Element {
   return (
-    <Container>
+    <Container.Generic>
       <H2>{header}</H2>
       <p>{message}</p>
-    </Container>
+    </Container.Generic>
   );
 }
 

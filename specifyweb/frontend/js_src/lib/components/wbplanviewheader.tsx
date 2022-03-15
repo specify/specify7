@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { ContainerFull } from './basic';
+import { Container } from './basic';
 import { useId } from './hooks';
 
 export function Layout(props: {
@@ -20,7 +20,7 @@ export function Layout(props: {
 }): JSX.Element {
   const id = useId('wbplanview-header');
   return (
-    <ContainerFull
+    <Container.Full
       onClick={
         typeof props.onClick === 'function'
           ? (event): void =>
@@ -55,6 +55,6 @@ export function Layout(props: {
         {props.children}
       </div>
       {props.footer}
-    </ContainerFull>
+    </Container.Full>
   );
 }

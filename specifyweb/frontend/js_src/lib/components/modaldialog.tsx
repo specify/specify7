@@ -368,13 +368,15 @@ function LegacyDialogWrapper({
 
   const [contentElement, setContentElement] =
     React.useState<HTMLElement | null>(null);
-  React.useEffect(() => {
-    contentElement?.replaceChildren(
-      typeof content === 'object' && 'jquery' in content
-        ? (content[0] as HTMLElement)
-        : (content as HTMLElement)
-    );
-  }, [content, contentElement]);
+  React.useEffect(
+    () =>
+      contentElement?.replaceChildren(
+        typeof content === 'object' && 'jquery' in content
+          ? (content[0] as HTMLElement)
+          : (content as HTMLElement)
+      ),
+    [content, contentElement]
+  );
 
   return (
     <Dialog

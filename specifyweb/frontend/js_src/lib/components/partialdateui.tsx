@@ -232,7 +232,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
             ? formsText('monthYear')
             : commonText('fullDate')}
         </span>
-        <Input
+        <Input.Generic
           id={inputId}
           readOnly={readOnly}
           forwardRef={validationRef}

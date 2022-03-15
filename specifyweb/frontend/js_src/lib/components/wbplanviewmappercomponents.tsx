@@ -8,14 +8,7 @@ import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
 import type { ColumnOptions, MatchBehaviors } from '../uploadplanparser';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import {
-  Button,
-  Checkbox,
-  LabelForCheckbox,
-  Radio,
-  Textarea,
-  Ul,
-} from './basic';
+import { Button, Input, Label, Textarea, Ul } from './basic';
 import { TableIcon } from './common';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -53,13 +46,13 @@ export function MappingsControlPanel({
           {wbText('addNewColumn')}
         </Button.Simple>
       )}
-      <LabelForCheckbox>
-        <Checkbox
+      <Label.ForCheckbox>
+        <Input.Checkbox
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
         {wbText('revealHiddenFormFields')}
-      </LabelForCheckbox>
+      </Label.ForCheckbox>
     </div>
   );
 }
@@ -230,8 +223,8 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <LabelForCheckbox title={description}>
-                  <Radio
+                <Label.ForCheckbox title={description}>
+                  <Input.Radio
                     name="match-behavior"
                     value={id}
                     checked={columnOptions.matchBehavior === id}
@@ -241,7 +234,7 @@ export function mappingOptionsMenu({
                     }
                   />
                   {` ${title}`}
-                </LabelForCheckbox>
+                </Label.ForCheckbox>
               </li>
             ))}
           </Ul>
@@ -250,25 +243,21 @@ export function mappingOptionsMenu({
     },
     nullAllowed: {
       optionLabel: (
-        <LabelForCheckbox>
-          <Checkbox
+        <Label.ForCheckbox>
+          <Input.Checkbox
             checked={columnOptions.nullAllowed}
             disabled={readonly}
-            onChange={
-              readonly
-                ? undefined
-                : (event): void => handleToggleAllowNulls(event.target.checked)
-            }
+            onValueChange={readonly ? undefined : handleToggleAllowNulls}
           />{' '}
           {wbText('allowNullValues')}
-        </LabelForCheckbox>
+        </Label.ForCheckbox>
       ),
     },
     default: {
       optionLabel: (
         <>
-          <LabelForCheckbox>
-            <Checkbox
+          <Label.ForCheckbox>
+            <Input.Checkbox
               checked={columnOptions.default !== null}
               disabled={readonly}
               onChange={
@@ -282,7 +271,7 @@ export function mappingOptionsMenu({
             />{' '}
             <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
             {columnOptions.default !== null && ':'}
-          </LabelForCheckbox>
+          </Label.ForCheckbox>
           {typeof columnOptions.default === 'string' && (
             <>
               <br />
@@ -461,7 +450,7 @@ export function MustMatch({
                           </label>
                         </td>
                         <td className="justify-center">
-                          <Checkbox
+                          <Input.Checkbox
                             checked={mustMatch}
                             id={id(`table-${tableName}`)}
                             {...(readonly

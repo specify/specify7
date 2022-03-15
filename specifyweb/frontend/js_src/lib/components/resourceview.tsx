@@ -237,7 +237,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
         specifyNetworkBadge,
       }): JSX.Element =>
         dialog === false ? (
-          <Container className="w-fit overflow-y-auto">
+          <Container.Generic className="w-fit overflow-y-auto">
             {isLoading && <LoadingScreen />}
             <header className={className.formHeader}>
               <H2 className={className.formTitle}>{title}</H2>
@@ -260,7 +260,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
               {extraButtons}
               {saveButton}
             </FormFooter>
-          </Container>
+          </Container.Generic>
         ) : (
           <Dialog
             header={title}

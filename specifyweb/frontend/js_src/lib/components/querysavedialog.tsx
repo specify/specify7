@@ -78,10 +78,9 @@ export function QuerySaveDialog({
           doSave(query, name, isSaveAs).then(handleSaved).catch(crash);
         }}
       >
-        <Label>
+        <Label.Generic>
           {queryText('queryName')}
-          <Input
-            type="text"
+          <Input.Text
             name="queryName"
             autoComplete="on"
             spellCheck="true"
@@ -89,7 +88,7 @@ export function QuerySaveDialog({
             value={name}
             onValueChange={setName}
           />
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );

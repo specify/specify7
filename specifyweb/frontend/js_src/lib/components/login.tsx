@@ -48,26 +48,25 @@ function Login({
           value={data.csrfToken}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
-        <Label>
+        <Label.Generic>
           {commonText('username')}
-          <Input
-            type="text"
+          <Input.Text
             required={true}
             name="username"
             defaultValue={''}
             forwardRef={validationRef}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {commonText('password')}
-          <Input
+          <Input.Generic
             type="password"
             required={true}
             name="password"
             defaultValue={''}
             forwardRef={passwordRef}
           />
-        </Label>
+        </Label.Generic>
         <input type="hidden" name="next" value={nextUrl} />
         <input type="hidden" name="this_is_the_login_form" value="1" />
         <Submit.Fancy>{commonText('login')}</Submit.Fancy>

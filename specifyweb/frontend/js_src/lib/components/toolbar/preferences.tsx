@@ -3,7 +3,7 @@ import React from 'react';
 import commonText from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
-import { Button, ContainerFull, Form, H2, Submit } from '../basic';
+import { Button, Container, Form, H2, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
@@ -22,7 +22,7 @@ function Preferences({
   const id = useId('preferences');
 
   return (
-    <ContainerFull>
+    <Container.Full>
       <H2>{commonText('preferences')}</H2>
       {isLoading && <LoadingScreen />}
       <Form
@@ -77,7 +77,7 @@ function Preferences({
           </Button.Gray>
         )}
       </nav>
-    </ContainerFull>
+    </Container.Full>
   );
 }
 

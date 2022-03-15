@@ -69,3 +69,11 @@ export function resourceFromUri(
   const [tableName, id] = parsed;
   return new (defined(getModel(tableName)).Resource)({ id }, options);
 }
+
+/*
+ * This needs to exist due to type conflicts between AnySchema and table
+ * schemas defined in datamodel.ts
+ */
+export const resourceToJson = <SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA>
+): SerializedModel<SCHEMA> => resource.toJSON() as SerializedModel<SCHEMA>;

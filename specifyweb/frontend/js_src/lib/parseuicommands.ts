@@ -29,7 +29,12 @@ const commandTranslation: IR<keyof UiCommands> = {
   ReturnLoan: 'ReturnLoan',
 };
 
-export function parseUiCommand(cell: Element) {
+export type CommandDefinition = {
+  readonly label: string | undefined;
+  readonly commandDefinition: UiCommands[keyof UiCommands];
+};
+
+export function parseUiCommand(cell: Element): CommandDefinition {
   const name = cell.getAttribute('name') ?? undefined;
   const label = cell.getAttribute('label') ?? undefined;
   const uiCommand =

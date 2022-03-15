@@ -2,6 +2,7 @@ import React from 'react';
 
 import { error } from '../assert';
 import commonText from '../localization/common';
+import type { Input as InputType } from '../saveblockers';
 import type { IR, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
@@ -145,21 +146,10 @@ export const className = {
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export const Label = wrap('label', className.label);
-export const LabelForCheckbox = wrap('label', className.labelForCheckbox);
-export const Radio = wrap('input', className.radio, { type: 'radio' });
-export const Checkbox = wrap<
-  'input',
-  {
-    onValueChange?: (isChecked: boolean) => void;
-  }
->('input', className.checkbox, (props) => ({
-  ...props,
-  onChange(event): void {
-    props.onValueChange?.((event.target as HTMLInputElement).checked);
-    props.onChange?.(event);
-  },
-}));
+export const Label = {
+  Generic: wrap('label', className.label),
+  ForCheckbox: wrap('label', className.labelForCheckbox),
+};
 export const ErrorMessage = wrap('div', className.errorMessage, {
   role: 'alert',
 });
@@ -192,28 +182,80 @@ export const Form = wrap(
     },
   })
 );
-export const Input = wrap<
-  'input',
-  {
-    readonly onValueChange?: (value: string) => void;
-  }
->('input', className.notTouchedInput, (props) => ({
-  ...props,
-  /*
-   * Don't highlight missing required and pattern mismatch fields until focus
-   * loss
-   */
-  onBlur(event): void {
-    const input = event.target as HTMLInputElement;
+/*
+ * Don't highlight missing required and pattern mismatch fields until focus
+ * loss
+ */
+const withHandleBlur = <TYPE extends InputType>(
+  handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
+) => ({
+  onBlur(event: React.FocusEvent<TYPE>): void {
+    const input = event.target as TYPE;
     if (input.classList.contains(className.notTouchedInput))
       input.classList.remove(className.notTouchedInput);
-    props?.onBlur?.(event);
+    handleBlur?.(event);
   },
-  onChange(event): void {
-    props.onValueChange?.((event.target as HTMLInputElement).value);
-    props.onChange?.(event);
-  },
-}));
+});
+export const Input = {
+  Radio: wrap('input', className.radio, { type: 'radio' }),
+  Checkbox: wrap<
+    'input',
+    {
+      onValueChange?: (isChecked: boolean) => void;
+    }
+  >('input', className.checkbox, (props) => ({
+    ...props,
+    onChange(event): void {
+      props.onValueChange?.((event.target as HTMLInputElement).checked);
+      props.onChange?.(event);
+    },
+  })),
+  Text: wrap<
+    'input',
+    {
+      readonly onValueChange?: (value: string) => void;
+      readonly type?: never;
+    }
+  >('input', className.notTouchedInput, (props) => ({
+    ...props,
+    type: 'text',
+    ...withHandleBlur(props.onBlur),
+    onChange(event): void {
+      props.onValueChange?.((event.target as HTMLInputElement).value);
+      props.onChange?.(event);
+    },
+  })),
+  Generic: wrap<
+    'input',
+    {
+      readonly onValueChange?: (value: string) => void;
+    }
+  >('input', className.notTouchedInput, (props) => ({
+    ...props,
+    ...withHandleBlur(props.onBlur),
+    onChange(event): void {
+      props.onValueChange?.((event.target as HTMLInputElement).value);
+      props.onChange?.(event);
+    },
+  })),
+  Number: wrap<
+    'input',
+    {
+      readonly onValueChange?: (value: number) => void;
+      readonly type?: never;
+    }
+  >('input', className.notTouchedInput, (props) => ({
+    ...props,
+    type: 'number',
+    ...withHandleBlur(props.onBlur),
+    onChange(event): void {
+      props.onValueChange?.(
+        Number.parseInt((event.target as HTMLInputElement).value)
+      );
+      props.onChange?.(event);
+    },
+  })),
+};
 export const Textarea = wrap<
   'textarea',
   {
@@ -225,16 +267,7 @@ export const Textarea = wrap<
   `${className.notTouchedInput} ${className.textarea}`,
   (props) => ({
     ...props,
-    /*
-     * Don't highlight missing required and pattern mismatch fields until focus
-     * loss
-     */
-    onBlur(event): void {
-      const textarea = event.target as HTMLTextAreaElement;
-      if (textarea.classList.contains(className.notTouchedInput))
-        textarea.classList.remove(className.notTouchedInput);
-      props?.onBlur?.(event);
-    },
+    ...withHandleBlur(props.onBlur),
     onChange(event): void {
       props.onValueChange?.((event.target as HTMLTextAreaElement).value);
       props.onChange?.(event);
@@ -255,16 +288,7 @@ export const Select = wrap('select', className.notTouchedInput, (props) => ({
       ? ' bg-blue-100 dark:bg-blue-900'
       : ''
   }`,
-  /*
-   * Don't highlight missing required and pattern mismatch fields until focus
-   * loss
-   */
-  onBlur(event): void {
-    const select = event.target as HTMLSelectElement;
-    if (select.classList.contains(className.notTouchedInput))
-      select.classList.remove(className.notTouchedInput);
-    props?.onBlur?.(event);
-  },
+  ...withHandleBlur(props.onBlur),
 }));
 
 export const Link = {
@@ -308,108 +332,71 @@ function DialogCloseButton({
   return <ButtonComponent {...props} onClick={handleClose} />;
 }
 
-export const Button = {
-  Simple: wrap('button', className.button, {
+const button = (className: string) =>
+  wrap('button', className, {
     type: 'button',
-  }),
+  });
+export const Button = {
+  Simple: button(className.button),
   /*
    * When using Button.LikeLink component, consider adding [role="link"] if the
    * element should be announced as a link
    */
-  LikeLink: wrap('button', className.link, {
-    type: 'button',
-  }),
+  LikeLink: button(className.link),
+  Transparent: button(`${niceButton} ${className.transparentButton}`),
+  Gray: button(`${niceButton} ${className.grayButton}`),
+  Red: button(`${niceButton} ${className.redButton}`),
+  Blue: button(`${niceButton} ${className.blueButton}`),
+  Orange: button(`${niceButton} ${className.orangeButton}`),
+  Green: button(`${niceButton} ${className.greenButton}`),
+  DialogClose: DialogCloseButton,
   Icon: wrap<'button', IconProps>('button', className.link, (props) => ({
     ...props,
     type: 'button',
     children: icons[props.icon],
   })),
-  Transparent: wrap('button', `${niceButton} ${className.transparentButton}`, {
-    type: 'button',
-  }),
-  Gray: wrap('button', `${niceButton} ${className.grayButton}`, {
-    type: 'button',
-  }),
-  Red: wrap('button', `${niceButton} ${className.redButton}`, {
-    type: 'button',
-  }),
-  Blue: wrap('button', `${niceButton} ${className.blueButton}`, {
-    type: 'button',
-  }),
-  Orange: wrap('button', `${niceButton} ${className.orangeButton}`, {
-    type: 'button',
-  }),
-  Green: wrap('button', `${niceButton} ${className.greenButton}`, {
-    type: 'button',
-  }),
-  DialogClose: DialogCloseButton,
 } as const;
 
 type SubmitProps = {
   readonly children: string;
   readonly value?: undefined;
 };
-const submitPropsMerge = ({
-  children,
-  ...props
-}: TagProps<'input'> & SubmitProps): TagProps<'input'> => ({
-  type: 'submit',
-  ...props,
-  value: children,
-  onClick(event) {
-    (event.target as HTMLInputElement)
-      .closest('form')
-      ?.classList.remove(className.notSubmittedForm);
-    props.onClick?.(event);
-  },
-});
+const submitButton = (buttonClassName: string) =>
+  wrap<'input', SubmitProps>(
+    'input',
+    buttonClassName,
+    ({
+      children,
+      ...props
+    }: TagProps<'input'> & SubmitProps): TagProps<'input'> => ({
+      type: 'submit',
+      ...props,
+      value: children,
+      onClick(event): void {
+        (event.target as HTMLInputElement)
+          .closest('form')
+          ?.classList.remove(className.notSubmittedForm);
+        props.onClick?.(event);
+      },
+    })
+  );
 export const Submit = {
   // Force passing children by nesting rather than through the [value] attribute
-  Simple: wrap<'input', SubmitProps>(
-    'input',
-    className.button,
-    submitPropsMerge
-  ),
-  Fancy: wrap<'input', SubmitProps>(
-    'input',
-    className.fancyButton,
-    submitPropsMerge
-  ),
-  Transparent: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.transparentButton}`,
-    submitPropsMerge
-  ),
-  Gray: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.grayButton}`,
-    submitPropsMerge
-  ),
-  Red: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.redButton}`,
-    submitPropsMerge
-  ),
-  Blue: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.blueButton}`,
-    submitPropsMerge
-  ),
-  Orange: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.orangeButton}`,
-    submitPropsMerge
-  ),
-  Green: wrap<'input', SubmitProps>(
-    'input',
-    `${niceButton} ${className.greenButton}`,
-    submitPropsMerge
-  ),
+  Simple: submitButton(className.button),
+  Fancy: submitButton(className.fancyButton),
+  Transparent: submitButton(`${niceButton} ${className.transparentButton}`),
+  Gray: submitButton(`${niceButton} ${className.grayButton}`),
+  Red: submitButton(`${niceButton} ${className.redButton}`),
+  Blue: submitButton(`${niceButton} ${className.blueButton}`),
+  Orange: submitButton(`${niceButton} ${className.orangeButton}`),
+  Green: submitButton(`${niceButton} ${className.greenButton}`),
 } as const;
 
-export const ContainerFull = wrap('section', className.containerFull);
-export const ContainerBase = wrap('section', className.containerBase);
-export const Container = wrap('section', className.container);
+export const Container = {
+  Generic: wrap('section', className.container),
+  Full: wrap('section', className.containerFull),
+  Base: wrap('section', className.containerBase),
+};
 export const Progress = wrap(
   'progress',
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
@@ -418,7 +405,7 @@ export const Progress = wrap(
   }
 );
 
-// Need to set explicit role as for list without bullets to be announced as a list
+// Need to set explicit [role] for list without bullets to be announced as a list
 export const Ul = wrap('ul', '', { role: 'list' });
 
 export const H2 = wrap('h2', className.h2);

@@ -15,15 +15,12 @@ import type { IR, RA, RR } from '../types';
 import { sortFunction, sortObjectsByKey, split } from '../wbplanviewhelper';
 import {
   Button,
-  Checkbox,
   className,
-  ContainerFull,
+  Container,
   H2,
   Input,
   Label,
-  LabelForCheckbox,
   Link,
-  Radio,
   Textarea,
   Ul,
 } from './basic';
@@ -255,7 +252,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       ([_id, { name }]) => name === items[itemId].picklistname
     )?.[0];
     return (
-      <ContainerFull>
+      <Container.Full>
         <header className="gap-x-2 flex">
           <H2>
             {commonText('schemaConfig')} (
@@ -296,10 +293,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <h3>
               {commonText('tableInline')} {table.name}
             </h3>
-            <Label>
+            <Label.Generic>
               {commonText('caption')}
-              <Input
-                type="text"
+              <Input.Text
                 value={table.strings.name.text}
                 onValueChange={(value): void =>
                   dispatch({
@@ -309,8 +305,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('description')}
               <Textarea
                 className="resize-y h-[15vh]"
@@ -323,8 +319,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('tableFormat')}
               <PickList
                 value={table.format}
@@ -337,8 +333,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('tableAggregation')}
               <PickList
                 value={table.aggregator}
@@ -353,20 +349,20 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <LabelForCheckbox>
-              <Checkbox
+            </Label.Generic>
+            <Label.ForCheckbox>
+              <Input.Checkbox
                 checked={table.ishidden}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'ishidden',
-                    value: target.checked,
+                    value,
                   })
                 }
               />
               {commonText('hideTable')}
-            </LabelForCheckbox>
+            </Label.ForCheckbox>
           </section>
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3 id={id('fields-label')}>{commonText('fields')}</h3>
@@ -403,10 +399,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <h3>
               {commonText('field')}: {items[itemId].name}
             </h3>
-            <Label>
+            <Label.Generic>
               {commonText('caption')}
-              <Input
-                type="text"
+              <Input.Text
                 value={items[itemId].strings.name.text}
                 onValueChange={(value): void =>
                   dispatch({
@@ -416,8 +411,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('description')}
               <Textarea
                 className="resize-y h-[15vh]"
@@ -430,65 +425,63 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('length')}
-              <Input
-                type="number"
+              <Input.Number
                 value={items[itemId].dataModel.length ?? ''}
                 readOnly={true}
                 className="no-arrows"
               />
-            </Label>
-            <Label>
+            </Label.Generic>
+            <Label.Generic>
               {commonText('type')}
-              <Input
-                type="text"
+              <Input.Text
                 readOnly={true}
                 value={javaTypeToHuman(
                   items[itemId].dataModel.type,
                   items[itemId].dataModel.relatedModelName
                 )}
               />
-            </Label>
-            <LabelForCheckbox>
-              <Checkbox
+            </Label.Generic>
+            <Label.ForCheckbox>
+              <Input.Checkbox
                 checked={items[itemId].ishidden}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
                     field: 'ishidden',
-                    value: target.checked,
+                    value,
                   })
                 }
               />
               {commonText('hideField')}
-            </LabelForCheckbox>
-            <LabelForCheckbox>
-              <Checkbox
+            </Label.ForCheckbox>
+            <Label.ForCheckbox>
+              <Input.Checkbox
                 checked={items[itemId].dataModel.readOnly ?? false}
                 disabled={true}
               />
               {commonText('readOnly')}
-            </LabelForCheckbox>
-            <LabelForCheckbox>
-              <Checkbox
+            </Label.ForCheckbox>
+            <Label.ForCheckbox>
+              <Input.Checkbox
                 checked={
                   items[itemId].dataModel.canChangeIsRequired
                     ? items[itemId].dataModel.isRequired
                     : items[itemId].isrequired ?? false
                 }
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
                     field: 'isrequired',
-                    value: target.checked,
+                    value,
                   })
                 }
               />
               {commonText('required')}
-            </LabelForCheckbox>
+            </Label.ForCheckbox>
             <fieldset className="flex flex-col gap-1">
               <legend>{commonText('fieldFormat')}</legend>
               {Object.entries<
@@ -559,8 +552,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 },
               }).map(([key, { label, value, values, extraComponents }]) => (
                 <div className={className.labelForCheckbox} key={key}>
-                  <LabelForCheckbox>
-                    <Radio
+                  <Label.ForCheckbox>
+                    <Input.Radio
                       name={id('format')}
                       value="none"
                       checked={key === getItemType(items[itemId])}
@@ -579,7 +572,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       }
                     />
                     {label}
-                  </LabelForCheckbox>
+                  </Label.ForCheckbox>
                   {values && (
                     <PickList
                       className="flex-1 w-0"
@@ -602,7 +595,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </fieldset>
           </section>
         </div>
-      </ContainerFull>
+      </Container.Full>
     );
   },
   SavingState() {

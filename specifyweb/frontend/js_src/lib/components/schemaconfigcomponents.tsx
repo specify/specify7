@@ -116,10 +116,9 @@ export function AddLanguage({
           );
         }}
       >
-        <Label>
+        <Label.Generic>
           {commonText('language')}
-          <Input
-            type="text"
+          <Input.Text
             required
             minLength={2}
             maxLength={2}
@@ -127,18 +126,17 @@ export function AddLanguage({
             value={language}
             onValueChange={setLanguage}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {commonText('country')}
-          <Input
-            type="text"
+          <Input.Text
             minLength={2}
             maxLength={2}
             placeholder="US"
             value={country}
             onValueChange={setCountry}
           />
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );

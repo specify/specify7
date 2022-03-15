@@ -36,9 +36,11 @@ const cellRenderers: {
       />
     );
   },
-  Label({ cellData: { text, labelForCellId }, formatId }) {
+  Label({ cellData: { text, labelForCellId }, formatId, id }) {
     return (
       <label
+        // FIXME: remove the need for this
+        id={typeof id === 'number' ? formatId(id.toString()) : undefined}
         htmlFor={
           typeof labelForCellId === 'number'
             ? formatId(labelForCellId.toString())
@@ -88,6 +90,9 @@ export function FormCell({
   const Render = cellRenderers[cellData.type] as (props: {
     readonly mode: FormMode;
     readonly cellData: CellTypes[keyof CellTypes];
+    readonly id: number | undefined;
+    readonly formatId: (id: string) => string;
+    readonly resource: SpecifyResource<AnySchema>;
   }) => JSX.Element;
   return (
     <Render

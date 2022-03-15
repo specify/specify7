@@ -101,7 +101,7 @@ export function RenderForm({
   hasHeader,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly viewDefinition: ViewDescription;
+  readonly viewDefinition: ViewDescription | undefined;
   readonly hasHeader: boolean;
 }): JSX.Element {
   const id = useId(resource.specifyModel.name ?? 'form');
@@ -122,7 +122,7 @@ export function RenderForm({
           {/* Cells are wrapped in rows for debugging purposes only */}
           {viewDefinition.rows.map((cells, index) => (
             <div className="contents" key={index}>
-              {cells.map(({ colSpan, id: cellId, cellData }, index) => (
+              {cells.map(({ colSpan, id: cellId, ...cellData }, index) => (
                 <div
                   key={index}
                   style={

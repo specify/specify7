@@ -169,7 +169,7 @@ function TreeView<SCHEMA extends AnyTree>({
               .catch(console.error);
           }}
           renderSearchBox={(inputProps): JSX.Element => (
-            <Input
+            <Input.Generic
               forwardRef={searchBoxRef}
               placeholder={treeText('searchTreePlaceholder')}
               title={treeText('searchTreePlaceholder')}

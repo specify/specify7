@@ -15,7 +15,7 @@ import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
-import { Button, Checkbox, ContainerFull, H2, Input } from './basic';
+import { Button, Container, H2, Input } from './basic';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
@@ -327,7 +327,7 @@ class WbImport extends Component<{}, WbImportState> {
     }
 
     return (
-      <ContainerFull>
+      <Container.Full>
         <div className="gap-y-2 flex flex-col">
           <H2>{wbText('wbImportHeader')}</H2>
           <div
@@ -339,7 +339,7 @@ class WbImport extends Component<{}, WbImportState> {
           {ui}
         </div>
         {preview}
-      </ContainerFull>
+      </Container.Full>
     );
   }
 }
@@ -529,8 +529,7 @@ function ChooseName({
   return (
     <label className="contents">
       {wbText('chooseDataSetName')}
-      <Input
-        type="text"
+      <Input.Text
         spellCheck={true}
         value={name}
         required
@@ -550,7 +549,7 @@ function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
     <label className="contents">
       {wbText('firstRowIsHeader')}
       <span>
-        <Checkbox
+        <Input.Checkbox
           onChange={(): void => props.update({ type: 'ToggleHeaderAction' })}
           checked={props.hasHeader}
         />

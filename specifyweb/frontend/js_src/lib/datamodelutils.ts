@@ -1,6 +1,6 @@
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import { parseResourceUrl, resourceApiUrl } from './resource';
+import { parseResourceUrl, resourceApiUrl, resourceToJson } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined } from './types';
@@ -184,7 +184,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
     typeof resource.toJSON === 'function'
-      ? (resource as SpecifyResource<SCHEMA>).toJSON()
+      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
       : (resource as SerializedModel<SCHEMA>),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );

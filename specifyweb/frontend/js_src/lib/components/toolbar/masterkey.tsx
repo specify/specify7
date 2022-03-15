@@ -72,9 +72,9 @@ function MasterKey({
             });
         }}
       >
-        <Label>
+        <Label.Generic>
           {commonText('userPassword')}
-          <Input
+          <Input.Generic
             forwardRef={validationRef}
             type="password"
             value={password}
@@ -84,7 +84,7 @@ function MasterKey({
             }}
             required
           />
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );
@@ -104,10 +104,10 @@ function ShowKey({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      <Label>
+      <Label.Generic>
         {commonText('masterKeyFieldLabel')}
-        <Input type="text" readOnly value={masterKey} />
-      </Label>
+        <Input.Text readOnly value={masterKey} />
+      </Label.Generic>
     </Dialog>
   );
 }

@@ -8,7 +8,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { UiPlugin } from '../uiplugin';
-import { Button, Checkbox, Form, LabelForCheckbox, Submit } from './basic';
+import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -58,8 +58,8 @@ function UserCollectionsUi({
         }}
       >
         {allCollections.map((collection) => (
-          <LabelForCheckbox key={collection.id}>
-            <Checkbox
+          <Label.ForCheckbox key={collection.id}>
+            <Input.Checkbox
               checked={selected.includes(collection.id)}
               onChange={(): void =>
                 setSelected(
@@ -70,7 +70,7 @@ function UserCollectionsUi({
               }
             />
             {collection.get('collectionName')}
-          </LabelForCheckbox>
+          </Label.ForCheckbox>
         ))}
       </Form>
     </Dialog>

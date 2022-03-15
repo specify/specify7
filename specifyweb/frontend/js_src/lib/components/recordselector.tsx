@@ -86,8 +86,7 @@ export function Slider({
           data-value={value}
         >
           <span className="sr-only">{formsText('currentRecord')(count)}</span>
-          <Input
-            type="number"
+          <Input.Number
             className="no-arrows dark:bg-neutral-600 absolute top-0 left-0 w-full h-full font-bold bg-white border-0"
             min="1"
             max={count}
@@ -95,9 +94,9 @@ export function Slider({
             // Convert 0-based indexing to 1-based
             value={isBlank ? '' : value + 1}
             onValueChange={(value): void => {
-              setIsBlank(value.length === 0);
-              if (value.length > 0)
-                handleChange(clamp(0, count - 1, Number.parseInt(value) - 1));
+              setIsBlank(Number.isNaN(value));
+              if (!Number.isNaN(value))
+                handleChange(clamp(0, count - 1, value - 1));
             }}
             onBlur={(): void => setIsBlank(false)}
           />

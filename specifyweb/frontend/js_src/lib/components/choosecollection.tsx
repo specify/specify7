@@ -10,9 +10,9 @@ import {
   className,
   ErrorMessage,
   Form,
-  LabelForCheckbox,
+  Input,
+  Label,
   Link,
-  Radio,
   Submit,
 } from './basic';
 import { ErrorBoundary } from './errorboundary';
@@ -62,15 +62,15 @@ function ChooseCollection({
         ) : (
           <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
             {data.availableCollections.map(([id, label]) => (
-              <LabelForCheckbox key={id}>
-                <Radio
+              <Label.ForCheckbox key={id}>
+                <Input.Radio
                   name="collection"
                   value={id}
                   checked={selectedCollection === id}
                   onChange={(): void => setSelectedCollection(id)}
                 />
                 {label}
-              </LabelForCheckbox>
+              </Label.ForCheckbox>
             ))}
           </div>
         )}

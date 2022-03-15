@@ -106,10 +106,9 @@ function MakeDwca({
             });
         }}
       >
-        <Label>
+        <Label.Generic>
           {commonText('dwcaDefinition')}
-          <Input
-            type="text"
+          <Input.Text
             value={definition}
             onChange={({ target }): void => {
               setDefinition(target.value);
@@ -118,11 +117,10 @@ function MakeDwca({
             required
             forwardRef={definitionRef}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {commonText('metadataResource')}
-          <Input
-            type="text"
+          <Input.Text
             value={metadata}
             onChange={({ target }): void => {
               setMetadata(target.value);
@@ -130,7 +128,7 @@ function MakeDwca({
             }}
             forwardRef={metadataRef}
           />
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );

@@ -1073,6 +1073,12 @@ const formsText = createDictionary({
     ca: 'Unsupported cell type:',
     'es-es': 'Unsupported cell type:',
   },
+  unCataloged: {
+    'en-us': 'uncataloged',
+    'ru-ru': 'некаталогизированный',
+    ca: 'uncataloged',
+    'es-es': 'uncataloged',
+  },
 });
 
 export default formsText;

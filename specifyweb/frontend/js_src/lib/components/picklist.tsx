@@ -174,7 +174,7 @@ export function PickListComboBox(
           onNewValue={addNewValue}
           onChange={updateValue}
           renderSearchBox={(inputProps): JSX.Element => (
-            <Input
+            <Input.Generic
               id={props.id}
               forwardRef={validationRef}
               name={props.pickList?.get('name') ?? props.pickListName}

@@ -185,7 +185,7 @@ const fieldRenderers: {
       defaultValue
     );
     return (
-      <Input
+      <Input.Generic
         value={value}
         onValueChange={(newValue): void => setValue(newValue)}
         id={id}
@@ -201,7 +201,7 @@ const fieldRenderers: {
 
 export function FormField({
   mode,
-  fieldDefinition: { isReadOnly, fieldDefinition },
+  fieldDefinition: { isReadOnly, ...fieldDefinition },
   ...rest
 }: {
   readonly resource: SpecifyResource<AnySchema>;

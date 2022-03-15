@@ -47,7 +47,7 @@ export function LanguageSelection({
           <p>{commonText('helpLocalizeSpecifyDialogMessage')(supportLink)}</p>
         </Dialog>
       ) : typeof languages === 'object' ? (
-        <Label>
+        <Label.Generic>
           <Select
             name="language"
             value={value}
@@ -66,7 +66,7 @@ export function LanguageSelection({
               {commonText('helpLocalizeSpecify')}
             </option>
           </Select>
-        </Label>
+        </Label.Generic>
       ) : undefined}
     </>
   );

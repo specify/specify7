@@ -44,19 +44,18 @@ function ChangePassword({
           value={csrfToken ?? ''}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
-        <Label>
+        <Label.Generic>
           {commonText('oldPassword')}
-          <Input
-            type="text"
+          <Input.Text
             required={true}
             name="old_password"
             defaultValue={''}
             forwardRef={oldPasswordRef}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {commonText('newPassword')}
-          <Input
+          <Input.Generic
             type="password"
             required={true}
             name="new_password1"
@@ -64,10 +63,10 @@ function ChangePassword({
             defaultValue={''}
             forwardRef={newPasswordRef}
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           {commonText('repeatPassword')}
-          <Input
+          <Input.Generic
             type="password"
             required={true}
             name="new_password2"
@@ -75,7 +74,7 @@ function ChangePassword({
             minLength={MIN_PASSWORD_LENGTH}
             forwardRef={repeatPasswordRef}
           />
-        </Label>
+        </Label.Generic>
         <Submit.Fancy>{commonText('changePassword')}</Submit.Fancy>
       </Form>
     </SplashScreen>

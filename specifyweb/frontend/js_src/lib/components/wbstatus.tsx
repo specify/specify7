@@ -200,12 +200,12 @@ function WbStatus({
       }}
       onClose={undefined}
     >
-      <Label aria-live="polite" aria-atomic={true}>
+      <Label.Generic aria-live="polite" aria-atomic={true}>
         {message}
         {state.status.taskstatus === 'PROGRESS' && (
           <Progress value={current} max={total} />
         )}
-      </Label>
+      </Label.Generic>
     </Dialog>
   );
 }

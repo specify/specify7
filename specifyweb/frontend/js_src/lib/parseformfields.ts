@@ -1,5 +1,7 @@
 import type { State } from 'typesafe-reducer';
 
+import type { Tables } from './datamodel';
+import { getModel } from './schema';
 import type { IR } from './types';
 
 export type FieldTypes = {
@@ -25,7 +27,13 @@ export type FieldTypes = {
       pickList: string | undefined;
     }
   >;
-  readonly QueryComboBox: State<'QueryComboBox'>;
+  readonly QueryComboBox: State<
+    'QueryComboBox',
+    {
+      readonly hasCloneButton: boolean;
+      readonly typeSearch: keyof Tables | undefined;
+    }
+  >;
   readonly Text: State<
     'Text',
     {
@@ -110,7 +118,11 @@ const processFieldType: {
       step: Number.isNaN(step) ? undefined : step,
     };
   },
-  QueryComboBox: () => ({ type: 'QueryComboBox' }),
+  QueryComboBox: (cell, properties) => ({
+    type: 'QueryComboBox',
+    hasCloneButton: properties.clonebtn?.toLowerCase() === 'true',
+    typeSearch: getModel(properties.name ?? '')?.name,
+  }),
   Plugin: (cell, properties) => ({
     type: 'Plugin',
     ...withStringDefault(cell),
@@ -136,9 +148,8 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   browse: 'FilePicker',
 };
 
-export type FormFieldDefinition = {
+export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
   readonly isReadOnly: boolean;
-  readonly fieldDefinition: FieldTypes[keyof FieldTypes];
 };
 
 export function parseFormCell(
@@ -161,5 +172,5 @@ export function parseFormCell(
     parser = processFieldType.Text;
   }
 
-  return { isReadOnly, fieldDefinition: parser(cell, properties) };
+  return { isReadOnly, ...parser(cell, properties) };
 }

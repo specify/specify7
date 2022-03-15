@@ -76,8 +76,7 @@ function Coordinate({
   }, [coordinateField, coordinateTextField, fieldType]);
 
   return (
-    <Input
-      type="text"
+    <Input.Text
       value={coordinate}
       readOnly={readOnly}
       onValueChange={

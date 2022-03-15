@@ -185,8 +185,7 @@ function QueryResult({
     >
       {typeof handleSelected === 'function' && (
         <span role="cell" className={`${cellClassName} sticky`}>
-          <Input
-            type="checkbox"
+          <Input.Checkbox
             checked={isSelected}
             /* Ignore click event, as click would be handled by onClick on row*/
             onChange={f.undefined}

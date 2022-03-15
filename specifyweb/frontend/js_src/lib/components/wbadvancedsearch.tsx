@@ -9,7 +9,7 @@ import React from 'react';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { Button, Checkbox, H2, Label, LabelForCheckbox } from './basic';
+import { Button, H2, Input, Label } from './basic';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -75,8 +75,8 @@ function CheckboxLine({
   readonly setState: (state: SearchPreferences) => void;
 }): JSX.Element {
   return (
-    <LabelForCheckbox>
-      <Checkbox
+    <Label.ForCheckbox>
+      <Input.Checkbox
         checked={state.search[property]}
         onChange={(): void =>
           setState({
@@ -89,7 +89,7 @@ function CheckboxLine({
         }
       />
       {` ${label}`}
-    </LabelForCheckbox>
+    </Label.ForCheckbox>
   );
 }
 
@@ -114,7 +114,7 @@ function PreferencesDialog({
     >
       <div>
         <H2>{wbText('navigationOptions')}</H2>
-        <Label>
+        <Label.Generic>
           {wbText('cursorPriority')}
           <select
             onChange={({ target }): void =>
@@ -131,7 +131,7 @@ function PreferencesDialog({
             <option value="columnFirst">{wbText('columnFirst')}</option>
             <option value="rowFirst">{wbText('rowFirst')}</option>
           </select>
-        </Label>
+        </Label.Generic>
       </div>
 
       <div className="flex flex-col">
@@ -168,7 +168,7 @@ function PreferencesDialog({
 
       <div>
         <H2>{wbText('replaceOptions')}</H2>
-        <Label>
+        <Label.Generic>
           {wbText('replaceMode')}
           <select
             onChange={({ target }): void =>
@@ -185,7 +185,7 @@ function PreferencesDialog({
             <option value="replaceAll">{wbText('replaceAll')}</option>
             <option value="replaceNext">{wbText('replaceNext')}</option>
           </select>
-        </Label>
+        </Label.Generic>
       </div>
     </Dialog>
   );

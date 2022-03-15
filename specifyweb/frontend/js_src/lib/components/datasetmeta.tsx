@@ -114,20 +114,19 @@ export function DataSetMeta({
           ).then((name) => handleChange(name));
         }}
       >
-        <Label>
+        <Label.Generic>
           <b>{wbText('dataSetName')}</b>
-          <Input
-            type="text"
+          <Input.Text
             spellCheck="true"
             value={name}
             onValueChange={setName}
             required
           />
-        </Label>
-        <Label>
+        </Label.Generic>
+        <Label.Generic>
           <b>{wbText('remarks')}</b>
           <Textarea value={remarks} onValueChange={setRemarks} />
-        </Label>
+        </Label.Generic>
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>
           <span>
@@ -281,7 +280,7 @@ function ChangeOwner({
           }).then(() => setIsChanged(true));
         }}
       >
-        <Label>
+        <Label.Generic>
           <p>{wbText('changeDataSetOwnerDialogMessage')}</p>
           <Select
             size={10}
@@ -296,7 +295,7 @@ function ChangeOwner({
               </option>
             ))}
           </Select>
-        </Label>
+        </Label.Generic>
       </Form>
     </Dialog>
   );

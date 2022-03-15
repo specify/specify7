@@ -17,7 +17,7 @@ import type { IR, RA } from './types';
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly toJSON: () => SerializedModel<SCHEMA>;
+  readonly toJSON: () => SerializedModel<AnySchema>;
   readonly id: number;
   readonly needsSaved: boolean;
   readonly cid: string;

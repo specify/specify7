@@ -148,9 +148,9 @@ function QueryInputField({
         after:leading-[0px] min-w-[theme(spacing.40)] after:block after:px-2`}
     >
       {/* This invisible input is used to set the height */}
-      <Input type="text" className="invisible w-0" />
+      <Input.Text className="invisible w-0" />
       {/* TODO: handle paste for dateField fullDate */}
-      <Input
+      <Input.Generic
         {...commonProps}
         {...validationAttributes}
         value={value}
