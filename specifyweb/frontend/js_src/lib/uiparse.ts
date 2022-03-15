@@ -248,7 +248,7 @@ export function resolveParser(
   });
 }
 
-function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
+export function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
   const concat = ['formatters', 'validators'] as const;
   const takeMin = ['max', 'step', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;

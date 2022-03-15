@@ -851,10 +851,10 @@ const formsText = createDictionary({
     'es-es': 'Command Not Available',
   },
   unavailableCommandDialogHeader: {
-    'en-us': header('Command Not Available'),
-    'ru-ru': header('Команда недоступна'),
-    ca: header('Command Not Available'),
-    'es-es': header('Command Not Available'),
+    'en-us': 'Command Not Available',
+    'ru-ru': 'Команда недоступна',
+    ca: 'Command Not Available',
+    'es-es': 'Command Not Available',
   },
   unavailableCommandDialogMessage: {
     'en-us': `
@@ -1066,6 +1066,12 @@ const formsText = createDictionary({
     'ru-ru': 'Отменено синонимизацию узла дерева',
     ca: 'Tree Unsynonymize',
     'es-es': 'Tree Unsynonymize',
+  },
+  unsupportedCellType: {
+    'en-us': 'Unsupported cell type:',
+    'ru-ru': 'Неподдерживаемый тип ячейки:',
+    ca: 'Unsupported cell type:',
+    'es-es': 'Unsupported cell type:',
   },
 });
 

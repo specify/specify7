@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { error } from '../assert';
-import Backbone from '../backbone';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -14,11 +13,10 @@ import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
-import createBackboneView from './reactbackboneextend';
 import { TreeLevelComboBox } from './treelevelcombobox';
-import { UserTypeComboBox } from './usertypecombobox';
 
 export type DefaultComboBoxProps = {
+  readonly id: string | undefined;
   readonly model: SpecifyResource<AnySchema>;
   readonly resource: SpecifyResource<AnySchema>;
   readonly field: LiteralField | Relationship;
@@ -26,9 +24,9 @@ export type DefaultComboBoxProps = {
   readonly pickListName: string | undefined;
   readonly defaultValue: string | undefined;
   readonly className: string | undefined;
-  readonly disabled: boolean;
-  readonly readOnly: boolean;
-  readonly required: boolean;
+  readonly isReadOnly: boolean;
+  readonly isRequired: boolean;
+  readonly isDisabled: boolean;
 };
 
 export type PickListItemSimple = {
@@ -69,20 +67,21 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   );
 
   // Only PickListTypes.ITEMS pick lists are editable
-  const readOnly =
+  const isReadOnly =
     /*
      * TODO: test if can add items to PickListTypes.FIELD
      * TODO: make other pick list types editable
      */
-    pickList?.get('type') !== PickListTypes.ITEMS || props.readOnly;
+    pickList?.get('type') !== PickListTypes.ITEMS || props.isReadOnly;
 
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
       {...props}
+      isReadOnly={isReadOnly}
       pickList={pickList}
       items={items}
       onAdd={
-        readOnly
+        isReadOnly
           ? undefined
           : (value): void =>
               setItems([
@@ -97,7 +96,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   ) : null;
 }
 
-function ComboBox(props: DefaultComboBoxProps): JSX.Element {
+export function ComboBox(props: DefaultComboBoxProps): JSX.Element {
   const { resource, field, fieldName, model } = props;
 
   if (resource.specifyModel.name === 'PickList' && fieldName === 'fieldsCBX')
@@ -137,8 +136,6 @@ function ComboBox(props: DefaultComboBoxProps): JSX.Element {
 
   const pickListName = props.pickListName ?? resolvedField.getPickList();
 
-  if (pickListName === 'UserType') return <UserTypeComboBox {...props} />;
-
   if (!Boolean(pickListName))
     throw new Error(
       `can't determine picklist for field ${resource.specifyModel.name}.${resolvedField.name}`
@@ -146,39 +143,3 @@ function ComboBox(props: DefaultComboBoxProps): JSX.Element {
 
   return <DefaultComboBox {...props} field={resolvedField} />;
 }
-
-const ComboBoxView = createBackboneView(ComboBox);
-
-export default Backbone.View.extend({
-  __name__: 'ComboBoxView',
-  render() {
-    const fieldName = this.el.getAttribute('name');
-    this.model
-      .getResourceAndField(fieldName)
-      .then(([resource, field]: [SpecifyResource<AnySchema>, LiteralField]) => {
-        this.view = new ComboBoxView({
-          model: this.model,
-          resource,
-          field,
-          fieldName,
-          pickListName: this.$el.data('specify-picklist'),
-          defaultValue: this.$el.data('specify-default'),
-          className: this.el.getAttribute('class') ?? undefined,
-          disabled: this.el.disabled,
-          readOnly: this.el.readOnly,
-          required: this.el.required,
-        }).render();
-
-        this.$el.replaceWith(this.view.el);
-        this.setElement(this.view.el);
-
-        return undefined;
-      });
-
-    return this;
-  },
-  remove() {
-    this.view?.remove();
-    Backbone.View.prototype.remove.call(this);
-  },
-});

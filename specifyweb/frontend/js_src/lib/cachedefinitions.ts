@@ -14,6 +14,9 @@ import type { RA } from './types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly forms: {
+    readonly printOnSave: boolean;
+  };
   readonly wbPlanViewUi: {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;

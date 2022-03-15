@@ -94,16 +94,10 @@ export function Slider({
             step="1"
             // Convert 0-based indexing to 1-based
             value={isBlank ? '' : value + 1}
-            onChange={({ target }): void => {
-              setIsBlank(target.value.length === 0);
-              if (target.value.length > 0) {
-                const value = clamp(
-                  0,
-                  count - 1,
-                  Number.parseInt(target.value) - 1
-                );
-                handleChange(value);
-              }
+            onValueChange={(value): void => {
+              setIsBlank(value.length === 0);
+              if (value.length > 0)
+                handleChange(clamp(0, count - 1, Number.parseInt(value) - 1));
             }}
             onBlur={(): void => setIsBlank(false)}
           />

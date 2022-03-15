@@ -38,8 +38,8 @@ export function PickListFormatterComboBox(
       fieldName="fieldName"
       onAdd={undefined}
       pickList={undefined}
-      disabled={
-        props.disabled || typeof items === 'undefined' || items.length === 0
+      isDisabled={
+        props.isDisabled || typeof items === 'undefined' || items.length === 0
       }
     />
   );

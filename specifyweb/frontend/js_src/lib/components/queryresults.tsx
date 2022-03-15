@@ -4,12 +4,13 @@ import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
-import queryText from '../localization/query';
+import commonText from '../localization/common';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { fieldFormat } from '../uiparse';
+import { f } from '../wbplanviewhelper';
 import { Input, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { queryIdField } from './queryresultstable';
@@ -110,7 +111,7 @@ function QueryResultCell({
       }
     >
       {value === null
-        ? queryText('nullInline')
+        ? commonText('nullInline')
         : typeof fieldSpec === 'undefined' || typeof value === 'object'
         ? value
         : formatted}
@@ -176,7 +177,7 @@ function QueryResult({
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
-              ['INPUT', 'A'].includes((target as HTMLElement).tagName)
+              ['A'].includes((target as HTMLElement).tagName)
                 ? undefined
                 : handleSelected?.(!isSelected, shiftKey)
           : undefined
@@ -187,7 +188,8 @@ function QueryResult({
           <Input
             type="checkbox"
             checked={isSelected}
-            onChange={(): void => undefined}
+            /* Ignore click event, as click would be handled by onClick on row*/
+            onChange={f.undefined}
             onClick={({ shiftKey }): void =>
               handleSelected?.(!isSelected, shiftKey)
             }

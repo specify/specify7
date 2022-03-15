@@ -518,12 +518,6 @@ const queryText = createDictionary({
     ca: 'Yes',
     'es-es': 'Yes',
   },
-  nullInline: {
-    'en-us': '(null)',
-    'ru-ru': '(нулевой)',
-    ca: '(null)',
-    'es-es': '(null)',
-  },
 });
 
 export default queryText;

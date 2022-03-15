@@ -478,7 +478,7 @@ function QueryExport({
           }
           required
           value={name}
-          onChange={({ target }): void => setName(target.value)}
+          onValueChange={(value): void => setName(value)}
         />
       </Form>
     </Dialog>

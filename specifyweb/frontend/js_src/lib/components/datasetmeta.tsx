@@ -120,16 +120,13 @@ export function DataSetMeta({
             type="text"
             spellCheck="true"
             value={name}
-            onChange={({ target }): void => setName(target.value)}
+            onValueChange={setName}
             required
           />
         </Label>
         <Label>
           <b>{wbText('remarks')}</b>
-          <Textarea
-            value={remarks}
-            onChange={({ target }): void => setRemarks(target.value)}
-          />
+          <Textarea value={remarks} onValueChange={setRemarks} />
         </Label>
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>

@@ -15,6 +15,7 @@ import {
 import {handleDatePaste} from './components/partialdateui';
 import {dayjs} from './dayjs';
 
+// FIXME: rewrite to React
 export default Backbone.View.extend({
         __name__: "UIField",
         render: function() {

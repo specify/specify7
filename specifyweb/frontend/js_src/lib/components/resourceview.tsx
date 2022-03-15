@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Http } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -68,9 +67,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   onSaved: handleSaved,
   children,
 }: ResourceViewProps<SCHEMA>): JSX.Element | null {
-  const [state, setState] = React.useState<'loading' | 'main' | 'noDefinition'>(
-    'loading'
-  );
+  const [state, setState] = React.useState<'loading' | 'main'>('loading');
 
   // Update title when resource changes
   const [title, setTitle] = React.useState(resource.specifyModel.label);
@@ -120,62 +117,52 @@ export function ResourceView<SCHEMA extends AnySchema>({
         );
         return undefined;
       })
-      .catch((error) => {
-        if (error !== Http.NOT_FOUND) throw error;
-        setState('noDefinition');
-      });
+      .catch(crash);
   }, [resource, container]);
 
-  return state === 'noDefinition' ? (
-    <section role="alert">
-      <H2>{formsText('missingFormDefinitionPageHeader')}</H2>
-      <p>{formsText('missingFormDefinitionPageContent')}</p>
-    </section>
-  ) : (
-    children({
-      isLoading: state === 'loading',
-      isModified: resource.needsSaved,
-      title,
-      form: (
-        <div
-          ref={(container: HTMLElement | null): void =>
-            container === null ? undefined : setContainer(container)
+  return children({
+    isLoading: state === 'loading',
+    isModified: resource.needsSaved,
+    title,
+    form: (
+      <div
+        ref={(container: HTMLElement | null): void =>
+          container === null ? undefined : setContainer(container)
+        }
+      />
+    ),
+    saveButton:
+      !isReadOnly &&
+      typeof form === 'object' &&
+      typeof handleSaved === 'function' ? (
+        <SaveButton
+          model={resource}
+          form={form}
+          onSaving={handleSaving}
+          onSaved={(payload): void => {
+            const reporterOnSave = form?.getElementsByClassName(
+              'specify-print-on-save'
+            )[0] as HTMLInputElement | undefined;
+            if (reporterOnSave?.checked === true)
+              reports({
+                tblId: resource.specifyModel.tableId,
+                recordToPrintId: resource.id,
+                autoSelectSingle: true,
+                done: (): void => handleSaved(payload),
+              })
+                .then((view) => view.render())
+                .catch(crash);
+            else handleSaved(payload);
+          }}
+          canAddAnother={
+            canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
           }
         />
-      ),
-      saveButton:
-        !isReadOnly &&
-        typeof form === 'object' &&
-        typeof handleSaved === 'function' ? (
-          <SaveButton
-            model={resource}
-            form={form}
-            onSaving={handleSaving}
-            onSaved={(payload): void => {
-              const reporterOnSave = form?.getElementsByClassName(
-                'specify-print-on-save'
-              )[0] as HTMLInputElement | undefined;
-              if (reporterOnSave?.checked === true)
-                reports({
-                  tblId: resource.specifyModel.tableId,
-                  recordToPrintId: resource.id,
-                  autoSelectSingle: true,
-                  done: (): void => handleSaved(payload),
-                })
-                  .then((view) => view.render())
-                  .catch(crash);
-              else handleSaved(payload);
-            }}
-            canAddAnother={
-              canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-            }
-          />
-        ) : undefined,
-      specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-        <SpecifyNetworkBadge resource={resource} />
       ) : undefined,
-    })
-  );
+    specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
+      <SpecifyNetworkBadge resource={resource} />
+    ) : undefined,
+  });
 }
 
 const resourceDeletedDialog = (

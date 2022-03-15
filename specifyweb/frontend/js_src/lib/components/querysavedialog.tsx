@@ -87,7 +87,7 @@ export function QuerySaveDialog({
             spellCheck="true"
             required
             value={name}
-            onChange={({ target }): void => setName(target.value)}
+            onValueChange={setName}
           />
         </Label>
       </Form>

@@ -2,11 +2,11 @@
 
 import $ from 'jquery';
 
-import {getModel} from './schema';
 import * as stringLocalization from './stringlocalization';
 import {className} from './components/basic';
 
 
+// FIXME: rewrite to React
 function localize(s) {
         return stringLocalization.localizeFrom(['views', 'global_views'], s);
     }
@@ -17,14 +17,6 @@ function localize(s) {
     }
 
 export default function(formNode) {
-        var form = $(formNode);
-        const model = getModel(form.data('specify-model') ?? '');
-        if (typeof model === 'undefined') return;
-
-        $('.specify-form-header', form).prepend(
-            $('<h2>').text(model.label)
-        );
-
         var fillinLabel = function() {
             var label = $('label', this);
             const setText = (text) => {

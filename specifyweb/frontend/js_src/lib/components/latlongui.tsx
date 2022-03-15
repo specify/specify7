@@ -1,13 +1,13 @@
 import React from 'react';
 
+import type { Locality } from '../datamodel';
 import * as latlongutils from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
 import { UiPlugin } from '../uiplugin';
-import createBackboneView from './reactbackboneextend';
 import { Input } from './basic';
-import { Locality } from '../datamodel';
+import createBackboneView from './reactbackboneextend';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -80,19 +80,20 @@ function Coordinate({
       type="text"
       value={coordinate}
       readOnly={readOnly}
-      onChange={
+      onValueChange={
         readOnly
           ? undefined
-          : ({ target }): void => {
-              setCoordinate(target.value);
-              const hasValue = target.value.trim() !== '';
+          : (value): void => {
+              setCoordinate(value);
+              const hasValue = value.trim() !== '';
               const parsed = hasValue
-                ? ((latlongutils[fieldType].parse(target.value) ??
-                    undefined) as Parsed | undefined)
+                ? ((latlongutils[fieldType].parse(value) ?? undefined) as
+                    | Parsed
+                    | undefined)
                 : undefined;
-              onChange(target.value.trim(), parsed?.format());
+              onChange(value.trim(), parsed?.format());
 
-              model.set(coordinateTextField, target.value);
+              model.set(coordinateTextField, value);
               model.set(coordinateField, parsed?.asFloat() ?? null);
               model.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
               model.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
@@ -176,9 +177,7 @@ function LatLongUi({
     model.on('change: latlongtype', () =>
       destructorCalled
         ? undefined
-        : setCoordinateType(
-            (model.get('latLongType') as CoordinateType) ?? 'point'
-          )
+        : setCoordinateType(model.get('latLongType') ?? 'point')
     );
 
     let destructorCalled = false;

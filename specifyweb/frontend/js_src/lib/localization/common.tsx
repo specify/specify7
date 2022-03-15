@@ -1508,6 +1508,12 @@ const commonText = createDictionary({
     ca: 'Preferences',
     'es-es': 'Preferences',
   },
+  nullInline: {
+    'en-us': '(null)',
+    'ru-ru': '(нулевой)',
+    ca: '(null)',
+    'es-es': '(null)',
+  },
 });
 
 export default commonText;

@@ -290,12 +290,7 @@ export function mappingOptionsMenu({
                 value={columnOptions.default || ''}
                 title={wbText('defaultValue')}
                 aria-labelledby={id('default-value')}
-                onChange={
-                  readonly
-                    ? undefined
-                    : ({ target }): void =>
-                        handleChangeDefaultValue(target.value)
-                }
+                onValueChange={readonly ? undefined : handleChangeDefaultValue}
                 disabled={readonly}
               />
             </>

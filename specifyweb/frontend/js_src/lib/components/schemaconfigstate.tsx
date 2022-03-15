@@ -301,11 +301,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Input
                 type="text"
                 value={table.strings.name.text}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'name',
-                    value: target.value,
+                    value,
                   })
                 }
               />
@@ -315,11 +315,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Textarea
                 className="resize-y h-[15vh]"
                 value={table.strings.desc.text}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
                     field: 'desc',
-                    value: target.value,
+                    value,
                   })
                 }
               />
@@ -408,11 +408,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Input
                 type="text"
                 value={items[itemId].strings.name.text}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
                     field: 'name',
-                    value: target.value,
+                    value,
                   })
                 }
               />
@@ -422,11 +422,11 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Textarea
                 className="resize-y h-[15vh]"
                 value={items[itemId].strings.desc.text}
-                onChange={({ target }): void =>
+                onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
                     field: 'desc',
-                    value: target.value,
+                    value,
                   })
                 }
               />

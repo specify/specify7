@@ -148,13 +148,25 @@ export const className = {
 export const Label = wrap('label', className.label);
 export const LabelForCheckbox = wrap('label', className.labelForCheckbox);
 export const Radio = wrap('input', className.radio, { type: 'radio' });
-export const Checkbox = wrap('input', className.checkbox, { type: 'checkbox' });
+export const Checkbox = wrap<
+  'input',
+  {
+    onValueChange?: (isChecked: boolean) => void;
+  }
+>('input', className.checkbox, (props) => ({
+  ...props,
+  onChange(event): void {
+    props.onValueChange?.((event.target as HTMLInputElement).checked);
+    props.onChange?.(event);
+  },
+}));
 export const ErrorMessage = wrap('div', className.errorMessage, {
   role: 'alert',
 });
 export const FormFooter = wrap('div', className.formFooter, {
   role: 'toolbar',
 });
+export const FormHeader = wrap('h2', className.formHeader);
 export const SubFormHeader = wrap('div', className.subFormHeader);
 export const Form = wrap(
   'form',
@@ -180,7 +192,12 @@ export const Form = wrap(
     },
   })
 );
-export const Input = wrap('input', className.notTouchedInput, (props) => ({
+export const Input = wrap<
+  'input',
+  {
+    readonly onValueChange?: (value: string) => void;
+  }
+>('input', className.notTouchedInput, (props) => ({
   ...props,
   /*
    * Don't highlight missing required and pattern mismatch fields until focus
@@ -192,8 +209,18 @@ export const Input = wrap('input', className.notTouchedInput, (props) => ({
       input.classList.remove(className.notTouchedInput);
     props?.onBlur?.(event);
   },
+  onChange(event): void {
+    props.onValueChange?.((event.target as HTMLInputElement).value);
+    props.onChange?.(event);
+  },
 }));
-export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
+export const Textarea = wrap<
+  'textarea',
+  {
+    readonly children?: undefined;
+    readonly onValueChange?: (value: string) => void;
+  }
+>(
   'textarea',
   `${className.notTouchedInput} ${className.textarea}`,
   (props) => ({
@@ -207,6 +234,10 @@ export const Textarea = wrap<'textarea', { readonly children?: undefined }>(
       if (textarea.classList.contains(className.notTouchedInput))
         textarea.classList.remove(className.notTouchedInput);
       props?.onBlur?.(event);
+    },
+    onChange(event): void {
+      props.onValueChange?.((event.target as HTMLTextAreaElement).value);
+      props.onChange?.(event);
     },
   })
 );

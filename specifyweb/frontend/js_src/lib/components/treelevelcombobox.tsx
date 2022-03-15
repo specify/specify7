@@ -77,8 +77,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       pickList={undefined}
       // Select next enforced rank by default
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
-      disabled={
-        props.disabled ||
+      isDisabled={
+        props.isDisabled ||
         props.model.get('parent') === null ||
         typeof items === 'undefined'
       }

@@ -242,16 +242,16 @@ function PartialDateUi<SCHEMA extends AnySchema>({
                 placeholder: formsText('yearPlaceholder'),
                 // Format parsed date if valid. Else, use raw input
                 value: validDate?.format('YYYY') ?? inputValue,
-                onChange: ({ target }): void => {
-                  setInputValue(target.value);
-                  const year = Number.parseInt(target.value);
+                onValueChange: (value): void => {
+                  setInputValue(value);
+                  const year = Number.parseInt(value);
                   if (!Number.isNaN(year)) setMoment(dayjs(moment).year(year));
                 },
               }
             : {
                 onBlur: handleChange,
-                onChange({ target }): void {
-                  setInputValue(target.value);
+                onValueChange(value): void {
+                  setInputValue(value);
                   setMoment(undefined);
                 },
                 onPaste(event): void {

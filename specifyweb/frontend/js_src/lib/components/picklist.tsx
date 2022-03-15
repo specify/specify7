@@ -40,13 +40,13 @@ export function PickListComboBox(
     (value: string): void =>
       void props.resource.set(
         props.field.name,
-        value === '' && props.required
+        value === '' && props.isRequired
           ? null
           : validationAttributes.type === 'number'
           ? Number.parseInt(value)
           : value
       ),
-    [props.field.name, validationAttributes, props.required, props.resource]
+    [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
 
   // Set default value
@@ -141,19 +141,20 @@ export function PickListComboBox(
       {isLoading && <LoadingScreen />}
       {typeof props.onAdd === 'undefined' ? (
         <select
+          id={props.id}
           // "null" value is represented as an empty string
           value={value ?? ''}
           {...validationAttributes}
-          required={props.required}
+          required={props.isRequired}
           onChange={({ target }): void =>
             props.items?.some(({ value }) => value === target.value)
               ? updateValue(target.value)
               : undefined
           }
-          disabled={props.disabled || typeof props.items === 'undefined'}
+          disabled={props.isDisabled || typeof props.items === 'undefined'}
         >
           {isExistingValue ? undefined : value === null ? (
-            props.required ? undefined : (
+            props.isRequired ? undefined : (
               <option key="nullValue" />
             )
           ) : (
@@ -174,11 +175,12 @@ export function PickListComboBox(
           onChange={updateValue}
           renderSearchBox={(inputProps): JSX.Element => (
             <Input
+              id={props.id}
               forwardRef={validationRef}
               name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
-              disabled={props.disabled || typeof props.items === 'undefined'}
-              required={props.required}
+              disabled={props.isDisabled || typeof props.items === 'undefined'}
+              required={props.isRequired}
               {...validationAttributes}
               {...inputProps}
             />

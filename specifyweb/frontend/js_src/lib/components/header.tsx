@@ -166,7 +166,7 @@ export function ExpressSearch(): JSX.Element {
         placeholder={commonText('search')}
         aria-label={commonText('search')}
         value={searchQuery}
-        onChange={({ target }): void => setSearchQuery(target.value)}
+        onValueChange={setSearchQuery}
       />
     </Form>
   );

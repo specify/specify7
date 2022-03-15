@@ -125,7 +125,7 @@ export function AddLanguage({
             maxLength={2}
             placeholder="en"
             value={language}
-            onChange={({ target }): void => setLanguage(target.value)}
+            onValueChange={setLanguage}
           />
         </Label>
         <Label>
@@ -136,7 +136,7 @@ export function AddLanguage({
             maxLength={2}
             placeholder="US"
             value={country}
-            onChange={({ target }): void => setCountry(target.value)}
+            onValueChange={setCountry}
           />
         </Label>
       </Form>

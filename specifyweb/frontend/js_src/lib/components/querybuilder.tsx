@@ -17,7 +17,6 @@ import {
   ContainerFull,
   Form,
   H2,
-  Input,
   LabelForCheckbox,
   Submit,
   transitionDuration,
@@ -338,11 +337,10 @@ export function QueryBuilder({
                */}
               {!isTreeModel(model.name) && (
                 <LabelForCheckbox>
-                  <Input
-                    type="checkbox"
+                  <Checkbox
                     disabled={!isEmpty}
                     checked={query.selectDistinct ?? false}
-                    onClick={(): void =>
+                    onChange={(): void =>
                       setQuery({
                         ...query,
                         selectDistinct: !(query.selectDistinct ?? false),

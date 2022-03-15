@@ -36,6 +36,8 @@ const auditLogActions = [
   formsText('treeUnsynonymize'),
 ] as const;
 
+const userTypes = ['Manager', 'FullAccess', 'LimitedAccess', 'Guest'] as const;
+
 function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
@@ -115,6 +117,14 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
         )
       ),
       tableName: tablesPickList,
+    },
+    SpecifyUser: {
+      userType: definePicklist(
+        'UserType',
+        userTypes.map((title, index) =>
+          createPickListItem(index.toString(), title)
+        )
+      ),
     },
   };
 

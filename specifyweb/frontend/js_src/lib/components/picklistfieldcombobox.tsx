@@ -30,7 +30,7 @@ export function PickListFieldComboBox(
       fieldName="fieldName"
       onAdd={undefined}
       pickList={undefined}
-      disabled={props.disabled || items.length === 0}
+      isDisabled={items.length === 0}
     />
   );
 }

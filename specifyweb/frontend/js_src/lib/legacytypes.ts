@@ -5,6 +5,7 @@ import type {
   SerializedResource,
 } from './datamodelutils';
 import type { SaveBlockers } from './saveblockers';
+import type { LiteralField, Relationship } from './specifyfield';
 import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
@@ -79,6 +80,16 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME,
     value: VALUE
   ) => SpecifyResource<SCHEMA>;
+  readonly getResourceAndField: (
+    fieldName: string
+  ) => Promise<
+    Readonly<
+      [
+        resource: SpecifyResource<AnySchema>,
+        fieldName: LiteralField | Relationship
+      ]
+    >
+  >;
   readonly save: () => Promise<void>;
   readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
   readonly fetchIfNotPopulated: () => Promise<SpecifyResource<SCHEMA>>;

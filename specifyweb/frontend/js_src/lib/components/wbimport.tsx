@@ -519,19 +519,25 @@ function Preview({
   );
 }
 
-function ChooseName(props: { name: string; update: HandleAction }) {
+function ChooseName({
+  name,
+  update,
+}: {
+  readonly name: string;
+  readonly update: HandleAction;
+}): JSX.Element {
   return (
     <label className="contents">
       {wbText('chooseDataSetName')}
       <Input
         type="text"
         spellCheck={true}
-        value={props.name}
+        value={name}
         required
-        onChange={(event) =>
-          props.update({
+        onValueChange={(value) =>
+          update({
             type: 'SetDataSetNameAction',
-            value: event.target.value,
+            value,
           })
         }
       />
