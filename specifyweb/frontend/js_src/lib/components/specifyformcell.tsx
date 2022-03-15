@@ -6,7 +6,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
 import type { CellTypes } from '../parseformcells';
-import { UiCommand } from '../specifyformcommand';
+import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 
 const cellRenderers: {

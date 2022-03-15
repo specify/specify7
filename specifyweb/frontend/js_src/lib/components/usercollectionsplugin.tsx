@@ -7,7 +7,6 @@ import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { RA } from '../types';
-import { UiPlugin } from '../uiplugin';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';

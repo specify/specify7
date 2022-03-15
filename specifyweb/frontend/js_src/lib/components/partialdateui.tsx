@@ -40,12 +40,12 @@ const inputTypeYearAttributes = getValidationAttributes(
 );
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;
-const reversePrecision: RR<number, Precision> = {
+const reversePrecision: RR<number, PartialDatePrecision> = {
   1: 'full',
   2: 'month-year',
   3: 'year',
 };
-type Precision = keyof typeof precisions;
+export type PartialDatePrecision = keyof typeof precisions;
 
 // These may be reassigned after remotePrefs are loaded:
 let dateType = 'date';
@@ -66,11 +66,11 @@ function PartialDateUi<SCHEMA extends AnySchema>({
   readonly model: SpecifyResource<SCHEMA>;
   readonly dateField: keyof SCHEMA['fields'] & string;
   readonly precisionField: keyof SCHEMA['fields'] & string;
-  readonly defaultPrecision: Precision;
+  readonly defaultPrecision: PartialDatePrecision;
   readonly readOnly: boolean;
   readonly inputId: string;
 }): JSX.Element {
-  const [precision, setPrecision] = React.useState<Precision>(
+  const [precision, setPrecision] = React.useState<PartialDatePrecision>(
     () =>
       reversePrecision[model.get(precisionField) as 1 | 2 | 3] ??
       defaultPrecision
@@ -202,7 +202,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
             title={formsText('datePrecision')}
             value={precision}
             onChange={({ target }): void => {
-              const precision = target.value as Precision;
+              const precision = target.value as PartialDatePrecision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];
               // @ts-expect-error Typing for dynamic references is not great

@@ -76,6 +76,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly fetchIfNotPopulated: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
+  readonly trigger: (eventName: string) => void;
   readonly on: (
     eventName: string,
     callback: (...args: RA<never>) => void

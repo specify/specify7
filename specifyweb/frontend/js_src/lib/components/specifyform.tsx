@@ -45,6 +45,7 @@ const getAttachmentFormDefinition = (defaultType: FormType, mode: FormMode) =>
 /*
  * FIXME: migrate props in usages and replace populateForm
  * FIXME: replace buildViewByName with this
+ * FIXME: review all original files to check everything was migrated
  */
 export function Form({
   resource,

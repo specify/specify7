@@ -90,6 +90,15 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       ]
     >
   >;
+  readonly dependentResources: {
+    readonly [FIELD_NAME in Lowercase<
+      string & keyof SCHEMA['toOneDependent']
+    >]?: SpecifyResource<AnySchema>;
+  } & {
+    readonly [FIELD_NAME in Lowercase<
+      string & keyof SCHEMA['toManyDependent']
+    >]?: Collection<AnySchema>;
+  };
   readonly save: () => Promise<void>;
   readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
   readonly fetchIfNotPopulated: () => Promise<SpecifyResource<SCHEMA>>;

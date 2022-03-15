@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { Button } from './components/basic';
-import { crash } from './components/errorboundary';
-import { Dialog, LoadingScreen } from './components/modaldialog';
-import { LoanReturn } from './components/prepreturndialog';
-import { ShowLoansCommand } from './components/showtranscommand';
-import type { AnySchema } from './datamodelutils';
-import type { SpecifyResource } from './legacytypes';
-import commonText from './localization/common';
-import formsText from './localization/forms';
-import type { UiCommands } from './parseuicommands';
-import reports from './reports';
-import { isResourceOfType } from './specifymodel';
+import { Button } from './basic';
+import { crash } from './errorboundary';
+import { Dialog, LoadingScreen } from './modaldialog';
+import { LoanReturn } from './prepreturndialog';
+import { ShowLoansCommand } from './showtranscommand';
+import type { AnySchema } from '../datamodelutils';
+import type { SpecifyResource } from '../legacytypes';
+import commonText from '../localization/common';
+import formsText from '../localization/forms';
+import type { UiCommands } from '../parseuicommands';
+import reports from '../reports';
+import { isResourceOfType } from '../specifymodel';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {

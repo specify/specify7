@@ -1,6 +1,8 @@
 import type { State } from 'typesafe-reducer';
 
 import type { Tables } from './datamodel';
+import type { PluginDefinition } from './parseuiplugins';
+import { parseUiPlugin } from './parseuiplugins';
 import { getModel } from './schema';
 import type { IR } from './types';
 
@@ -47,9 +49,7 @@ export type FieldTypes = {
   readonly Plugin: State<
     'Plugin',
     {
-      readonly defaultValue: string | undefined;
-      // FIXME: rewrite UiPlugins to React
-      readonly plugin: keyof typeof uiPlugins;
+      readonly plugin: PluginDefinition;
     }
   >;
   readonly FilePicker: State<'FilePicker'>;
@@ -118,17 +118,18 @@ const processFieldType: {
       step: Number.isNaN(step) ? undefined : step,
     };
   },
-  QueryComboBox: (cell, properties) => ({
+  QueryComboBox: (_cell, properties) => ({
     type: 'QueryComboBox',
     hasCloneButton: properties.clonebtn?.toLowerCase() === 'true',
     typeSearch: getModel(properties.name ?? '')?.name,
   }),
   Plugin: (cell, properties) => ({
     type: 'Plugin',
-    ...withStringDefault(cell),
-    plugin:
-      uiPlugins[properties.name as keyof typeof uiPlugins] ??
-      uiPlugins.Unavailable,
+    plugin: parseUiPlugin({
+      cell,
+      properties,
+      ...withStringDefault(cell),
+    }),
   }),
   FilePicker: () => ({ type: 'FilePicker' }),
 };

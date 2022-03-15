@@ -894,10 +894,10 @@ const formsText = createDictionary({
     'es-es': 'Plugin Not Available',
   },
   unavailablePluginDialogHeader: {
-    'en-us': header('Plugin Not Available'),
-    'ru-ru': header('Плагин недоступен'),
-    ca: header('Plugin Not Available'),
-    'es-es': header('Plugin Not Available'),
+    'en-us': 'Plugin Not Available',
+    'ru-ru': 'Плагин недоступен',
+    ca: 'Plugin Not Available',
+    'es-es': 'Plugin Not Available',
   },
   unavailablePluginDialogMessage: {
     'en-us': `

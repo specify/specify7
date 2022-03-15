@@ -20,7 +20,7 @@ const processUiCommand: {
   GenerateLabel: () => ({ type: 'GenerateLabel' }),
   ShowLoans: () => ({ type: 'ShowLoans' }),
   ReturnLoan: () => ({ type: 'ReturnLoan' }),
-  Unsupported: ({ name }) => ({ type: 'Unsupported', name }),
+  Unsupported: (name) => ({ type: 'Unsupported', name }),
 };
 
 const commandTranslation: IR<keyof UiCommands> = {
