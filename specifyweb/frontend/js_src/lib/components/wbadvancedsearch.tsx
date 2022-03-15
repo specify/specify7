@@ -10,6 +10,7 @@ import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, H2, Input, Label } from './basic';
+import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -198,7 +199,7 @@ function WbAdvancedSearch({
   readonly initialSearchPreferences: SearchPreferences;
   readonly onChange: (newSearchPreferences: SearchPreferences) => void;
 }): JSX.Element {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
   const [searchPreferences, setSearchPreferences] =
     React.useState<SearchPreferences>(initialSearchPreferences);
 
@@ -217,14 +218,14 @@ function WbAdvancedSearch({
         aria-pressed={isOpen}
         title={wbText('configureSearchReplace')}
         aria-label={wbText('configureSearchReplace')}
-        onClick={(): void => setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
         {icons.cog}
       </Button.Simple>
       {isOpen && (
         <PreferencesDialog
           searchPreferences={searchPreferences}
-          onClose={(): void => setIsOpen(false)}
+          onClose={handleClose}
           onChange={setSearchPreferences}
         />
       )}

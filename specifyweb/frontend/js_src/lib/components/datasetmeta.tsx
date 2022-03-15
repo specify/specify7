@@ -24,7 +24,7 @@ import {
   Submit,
   Textarea,
 } from './basic';
-import { useAsyncState, useId, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -182,7 +182,7 @@ function DataSetName({
   readonly dataset: Dataset;
   readonly getRowCount: () => number;
 }): JSX.Element {
-  const [showMeta, setShowMeta] = React.useState(false);
+  const [showMeta, handleOpen, handleClose] = useBooleanState();
   const [name, setName] = React.useState(dataset.name);
 
   useTitle(name);
@@ -198,18 +198,16 @@ function DataSetName({
           ''
         )}
       </h2>
-      <Button.Simple onClick={(): void => setShowMeta(true)}>
+      <Button.Simple onClick={handleOpen}>
         {commonText('metadata')}
       </Button.Simple>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
-          onClose={(): void => {
-            setShowMeta(false);
-          }}
+          onClose={handleClose}
           getRowCount={getRowCount}
           onChange={(name): void => {
-            setShowMeta(false);
+            handleClose();
             setName(name);
           }}
         />

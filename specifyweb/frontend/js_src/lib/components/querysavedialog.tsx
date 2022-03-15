@@ -7,7 +7,7 @@ import queryText from '../localization/query';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { crash } from './errorboundary';
-import { useId } from './hooks';
+import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 
 async function doSave(
@@ -35,14 +35,14 @@ export function QuerySaveDialog({
 }): JSX.Element {
   const id = useId('id');
   const [name, setName] = React.useState<string>(query.get('name'));
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
 
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
-    setIsLoading(true);
+    handleLoaded();
     doSave(query, name, isSaveAs).then(handleClose).catch(crash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleLoaded]);
 
   return isLoading ? (
     <LoadingScreen />
@@ -74,7 +74,7 @@ export function QuerySaveDialog({
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
-          setIsLoading(true);
+          handleLoading();
           doSave(query, name, isSaveAs).then(handleSaved).catch(crash);
         }}
       >

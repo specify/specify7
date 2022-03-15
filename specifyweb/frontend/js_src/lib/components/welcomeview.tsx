@@ -6,10 +6,10 @@ import { getBoolPref, getPref } from '../remoteprefs';
 import { systemInformation } from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { Button, Link } from './basic';
-import { useTitle } from './hooks';
+import { supportLink } from './errorboundary';
+import { useBooleanState, useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { supportLink } from './errorboundary';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
 const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
@@ -43,13 +43,10 @@ function WelcomeScreenContent(): JSX.Element {
 }
 
 function AboutSpecify(): JSX.Element {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <div className="text-right">
-      <Button.LikeLink
-        title={welcomeText('aboutSpecify')}
-        onClick={(): void => setIsOpen(true)}
-      >
+      <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
         <img
           src="/static/img/specify_7_small.png"
           alt={welcomeText('aboutSpecify')}
@@ -63,7 +60,7 @@ function AboutSpecify(): JSX.Element {
           container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
           header: 'text-3xl',
         }}
-        onClose={(): void => setIsOpen(false)}
+        onClose={handleClose}
         buttons={commonText('close')}
       >
         <p>{welcomeText('fullAddress')}</p>

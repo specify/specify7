@@ -22,6 +22,7 @@ import { systemInformation } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
+import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
@@ -137,7 +138,7 @@ function SpecifyNetwork({
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element | null {
   const [occurrenceName, setOccurrenceName] = React.useState('');
-  const [hasFailure, setHasFailure] = React.useState(false);
+  const [hasFailure, handleFailure, handleNoFailure] = useBooleanState();
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
   React.useEffect(() => {
@@ -171,7 +172,7 @@ function SpecifyNetwork({
         isOpen={hasFailure}
         title={lifemapperText('failedToOpenPopUpDialogTitle')}
         header={lifemapperText('failedToOpenPopUpDialogHeader')}
-        onClose={(): void => setHasFailure(false)}
+        onClose={handleNoFailure}
         buttons={commonText('close')}
       >
         {lifemapperText('failedToOpenPopUpDialogMessage')}
@@ -192,7 +193,7 @@ function SpecifyNetwork({
           if (!link) throw new Error('Failed to extract S^N Link');
           const childWindow = window.open(link, '_blank') ?? undefined;
           if (!childWindow) {
-            setHasFailure(true);
+            handleFailure();
             return;
           }
           window.removeEventListener('message', messageHandler);

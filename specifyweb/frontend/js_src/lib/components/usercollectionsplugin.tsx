@@ -8,9 +8,8 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { Button, Form, Input, Label, Submit } from './basic';
-import { useId } from './hooks';
+import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 
 function UserCollectionsUi({
   userId,
@@ -25,7 +24,7 @@ function UserCollectionsUi({
 }): JSX.Element {
   const [selected, setSelected] =
     React.useState<RA<number>>(selectedCollections);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading] = useBooleanState();
   const id = useId('user-collection-ui');
 
   return isLoading ? (
@@ -44,16 +43,13 @@ function UserCollectionsUi({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(event) => {
+        onSubmit={(event): void => {
           event.preventDefault();
-          setIsLoading(true);
+          handleLoading();
           void ping(`/context/user_collection_access/${userId}/`, {
             method: 'PUT',
             body: selected,
-          }).then(() => {
-            setIsLoading(false);
-            handleClose();
-          });
+          }).then(handleClose);
         }}
       >
         {allCollections.map((collection) => (
@@ -75,8 +71,25 @@ function UserCollectionsUi({
     </Dialog>
   );
 }
-
-const SetCollectionsView = createBackboneView(UserCollectionsUi);
+const fetchAllCollections = async () =>
+  fetchCollection('Collection', { limit: 0 });
+export function UserCollectionsPlugin({
+  resource,
+}: {
+  readonly resource: SpecifyResource<SpecifyUser>;
+}): JSX.Element {
+  const [allCollections] = useAsyncState(fetchAllCollections);
+  const [selectedCollections, setSelectedCollections] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<RA<number>>(`/context/user_collection_access/${this.user.id}/`, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
+      [resource]
+    )
+  );
+  return <Button.Simple>{adminText('collections')}</Button.Simple>;
+}
 
 export default UiPlugin.extend(
   {
@@ -84,19 +97,7 @@ export default UiPlugin.extend(
     events: {
       click: 'click',
     },
-    initialize(options: { readonly model: SpecifyResource<SpecifyUser> }) {
-      this.user = options.model;
-      this.allCollections = fetchCollection('Collection', { limit: 0 });
-      this.selectedCollections = ajax<RA<number>>(
-        `/context/user_collection_access/${this.user.id}/`,
-        {
-          headers: { Accept: 'application/json' },
-        }
-      ).then(({ data }) => data);
-    },
     render() {
-      this.el.value = adminText('collections');
-
       if (this.user.get('isadmin')) {
         this.el.disabled = true;
         this.el.setAttribute('title', adminText('notAvailableOnAdmins'));

@@ -4,7 +4,7 @@ import { ping } from '../../ajax';
 import commonText from '../../localization/common';
 import { userInformation } from '../../userinfo';
 import { Button } from '../basic';
-import { useTitle } from '../hooks';
+import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -15,8 +15,8 @@ function ForceUpdateFeed({
   readonly onClose: () => void;
 }): JSX.Element {
   useTitle(commonText('updateExportFeed'));
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isActivated, setIsActivated] = React.useState<boolean>(false);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const [isActivated, handleActivated, handleDeactivated] = useBooleanState();
 
   return isActivated ? (
     <Dialog
@@ -39,13 +39,13 @@ function ForceUpdateFeed({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Blue
             onClick={(): void => {
-              setIsLoading(true);
+              handleLoading();
               ping('/export/force_update/', {
                 method: 'POST',
               })
-                .then(() => setIsActivated(true))
-                .catch(() => setIsActivated(false))
-                .finally(() => setIsLoading(false));
+                .then(handleActivated)
+                .catch(handleDeactivated)
+                .finally(handleLoaded);
             }}
           >
             {commonText('update')}

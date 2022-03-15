@@ -10,7 +10,7 @@ import { userInformation } from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { crash } from '../errorboundary';
-import { useTitle } from '../hooks';
+import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -26,7 +26,7 @@ export function TreeSelectDialog({
   readonly title: string;
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, handleLoading] = useBooleanState();
 
   const trees = Object.fromEntries(
     disciplineTrees.map((tree) => [tree, defined(getTreeModel(tree))])
@@ -52,7 +52,7 @@ export function TreeSelectDialog({
                 href={getLink(tree)}
                 onClick={(event): void => {
                   event.preventDefault();
-                  setIsLoading(true);
+                  handleLoading();
                   Promise.resolve(handleClick(tree))
                     .then(handleClose)
                     .catch(crash);
@@ -81,13 +81,13 @@ function RepairTree({
 }): JSX.Element {
   useTitle(commonText('repairTree'));
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, handleLoading] = useBooleanState();
   React.useEffect(() => {
     const { tree } = querystring.parse();
     if (typeof tree === 'undefined') return;
-    setIsLoading(true);
+    handleLoading();
     handleClick(tree).then(handleClose).catch(crash);
-  }, []);
+  }, [handleLoading]);
   return isLoading ? (
     <LoadingScreen />
   ) : (

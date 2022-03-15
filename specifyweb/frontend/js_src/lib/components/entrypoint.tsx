@@ -9,6 +9,7 @@ import * as navigation from '../navigation';
 import startApp from '../startapp';
 import { className } from './basic';
 import { crash, ErrorBoundary } from './errorboundary';
+import { useBooleanState } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
 
@@ -32,13 +33,14 @@ function handleClick(event: Readonly<MouseEvent>): void {
 const LOADING_TIMEOUT = 2000;
 
 function Root(): JSX.Element | null {
-  const [isContextLoading, setIsContextLoading] = React.useState(true);
-  const [isHeaderLoading, setIsHeaderLoading] = React.useState(true);
-  const [showLoadingScreen, setShowLoadingScreen] = React.useState(false);
+  const [isContextLoaded, handleContextLoaded] = useBooleanState();
+  const [isHeaderLoaded, setHeaderLoaded] = useBooleanState();
+  const [showLoadingScreen, setShowLoadingScreen] = useBooleanState();
 
-  React.useEffect(() => {
-    initialContext.catch(crash).finally(() => setIsContextLoading(false));
-  }, []);
+  React.useEffect(
+    () => void initialContext.catch(crash).finally(handleContextLoaded),
+    [handleContextLoaded]
+  );
 
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
@@ -46,29 +48,24 @@ function Root(): JSX.Element | null {
   React.useEffect(() => {
     if (typeof timeoutRef.current !== 'undefined')
       clearTimeout(timeoutRef.current);
-    if (isContextLoading)
-      timeoutRef.current = setTimeout(
-        () => setShowLoadingScreen(true),
-        LOADING_TIMEOUT
-      );
-  }, [isContextLoading]);
+    if (!isContextLoaded)
+      timeoutRef.current = setTimeout(setShowLoadingScreen, LOADING_TIMEOUT);
+  }, [isContextLoaded, setShowLoadingScreen]);
 
   React.useEffect(() => {
-    if (isHeaderLoading) return undefined;
+    if (!isHeaderLoaded) return undefined;
     document.body.addEventListener('click', handleClick);
     startApp();
     return (): void => document.body.removeEventListener('click', handleClick);
-  }, [isHeaderLoading]);
+  }, [isHeaderLoaded]);
 
-  return isContextLoading ? (
-    showLoadingScreen ? (
-      <SplashScreen>
-        <h2 className="text-center">{commonText('loading')}</h2>
-      </SplashScreen>
-    ) : null
-  ) : (
-    <Main onLoaded={(): void => setIsHeaderLoading(false)} />
-  );
+  return isContextLoaded ? (
+    <Main onLoaded={setHeaderLoaded} />
+  ) : showLoadingScreen ? (
+    <SplashScreen>
+      <h2 className="text-center">{commonText('loading')}</h2>
+    </SplashScreen>
+  ) : null;
 }
 
 window.addEventListener('load', () => {

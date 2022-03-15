@@ -169,3 +169,24 @@ export function useUnloadProtect(
     setCallback(callback);
   };
 }
+
+export function useBooleanState(
+  value = false
+): Readonly<
+  [state: boolean, enable: () => void, disable: () => void, toggle: () => void]
+> {
+  const [state, setState] = React.useState<boolean>(value);
+  React.useEffect(() => setState(value), [value]);
+  return [
+    state,
+    React.useCallback(function enable() {
+      setState(true);
+    }, []),
+    React.useCallback(function disable() {
+      setState(false);
+    }, []),
+    React.useCallback(function toggle() {
+      setState((value) => !value);
+    }, []),
+  ];
+}

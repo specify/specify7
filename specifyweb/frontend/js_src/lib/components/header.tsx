@@ -10,7 +10,7 @@ import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { sortFunction } from '../wbplanviewhelper';
 import { Button, className, Form, Input, Link, Ul } from './basic';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -177,13 +177,13 @@ export function UserTools({
 }: {
   readonly userTools: RA<UserTool>;
 }): JSX.Element {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Simple
         className="max-w-[110px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}
-        onClick={(): void => setIsOpen(true)}
+        onClick={handleOpen}
       >
         {userInformation.name}
       </Button.Simple>
@@ -193,7 +193,7 @@ export function UserTools({
         className={{
           container: dialogClassNames.narrowContainer,
         }}
-        onClose={(): void => setIsOpen(false)}
+        onClose={handleClose}
         buttons={commonText('close')}
       >
         <nav>

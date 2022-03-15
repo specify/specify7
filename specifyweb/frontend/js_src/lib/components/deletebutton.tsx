@@ -1,16 +1,16 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
-import { AnySchema } from '../datamodelutils';
+import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { RA } from '../types';
 import { Button, Ul } from './basic';
+import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { useAsyncState } from './hooks';
 
 export function DeleteButton<SCHEMA extends AnySchema>({
   model,
@@ -37,11 +37,11 @@ export function DeleteButton<SCHEMA extends AnySchema>({
     )
   );
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
 
   return (
     <>
-      <Button.Gray onClick={(): void => setIsOpen(true)}>
+      <Button.Gray onClick={handleOpen}>
         {Array.isArray(blockers) && blockers.length > 0
           ? icons.exclamation
           : undefined}
@@ -53,7 +53,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             header={commonText('loading')}
             className={{ container: dialogClassNames.narrowContainer }}
             buttons={commonText('cancel')}
-            onClose={(): void => setIsOpen(false)}
+            onClose={handleClose}
           >
             {formsText('checkingIfResourceCanBeDeleted')}
             {loadingBar}
@@ -62,7 +62,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           <Dialog
             title={formsText('deleteConfirmationDialogTitle')}
             header={formsText('deleteConfirmationDialogHeader')}
-            onClose={(): void => setIsOpen(false)}
+            onClose={handleClose}
             className={{
               container: dialogClassNames.narrowContainer,
             }}
@@ -84,7 +84,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             title={formsText('deleteBlockedDialogTitle')}
             header={formsText('deleteBlockedDialogHeader')}
             buttons={commonText('close')}
-            onClose={(): void => setIsOpen(false)}
+            onClose={handleClose}
             className={{
               container: dialogClassNames.narrowContainer,
             }}

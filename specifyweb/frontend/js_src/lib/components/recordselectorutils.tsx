@@ -16,7 +16,7 @@ import { clamp, f } from '../wbplanviewhelper';
 import { Button, className, FormFooter, H2, SubFormHeader } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -63,7 +63,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     | 'index'
     | 'totalCount'
   >): JSX.Element | null {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoaded, handleLoaded] = useBooleanState();
 
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -80,10 +80,10 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   React.useEffect(() => {
     if (isLazy)
       Promise.resolve(collection.fetchIfNotPopulated())
-        .then(() => setIsLoading(false))
+        .then(handleLoaded)
         .then(() => setRecords(getRecords))
         .catch(crash);
-    else setIsLoading(false);
+    else handleLoaded();
   }, [collection, isLazy, getRecords]);
 
   // Listen for changes to collection
@@ -100,12 +100,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     )
   );
 
-  return isLoading ? (
-    // Don't display the loading screen for subForms
-    typeof rest.field === 'undefined' ? (
-      <LoadingScreen />
-    ) : null
-  ) : (
+  return isLoaded ? (
     <RecordSelector<SCHEMA>
       {...rest}
       totalCount={collection._totalCount ?? records.length}
@@ -137,7 +132,10 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     >
       {children}
     </RecordSelector>
-  );
+  ) : // Don't display the loading screen for subForms
+  typeof rest.field === 'undefined' ? (
+    <LoadingScreen />
+  ) : null;
 }
 
 export const subFormNodeToProps = (

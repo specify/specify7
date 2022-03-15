@@ -18,6 +18,7 @@ import { f } from '../wbplanviewhelper';
 import { Button, className, Container, FormFooter, H2, Link } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
+import { useBooleanState } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -211,7 +212,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly children?: JSX.Element;
 }): JSX.Element {
-  const [isDeleted, setIsDeleted] = React.useState(false);
+  const [isDeleted, handleDeleted] = useBooleanState();
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
   return isDeleted ? (
@@ -252,8 +253,8 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
                   model={resource}
                   deletionMessage={deletionMessage}
                   onDeleted={(): void => {
+                    handleDeleted();
                     handleClose();
-                    setIsDeleted(true);
                   }}
                 />
               ) : undefined}
@@ -275,10 +276,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
             buttons={
               <>
                 {!resource.isNew() && !userInformation.isReadOnly ? (
-                  <DeleteButton
-                    model={resource}
-                    onDeleted={(): void => setIsDeleted(true)}
-                  />
+                  <DeleteButton model={resource} onDeleted={handleDeleted} />
                 ) : undefined}
                 {extraButtons}
                 {isModified ? (

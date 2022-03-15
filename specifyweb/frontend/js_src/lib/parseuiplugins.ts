@@ -1,7 +1,6 @@
 import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';
-import type { UiCommands } from './parseuicommands';
 import type { IR } from './types';
 
 export type UiPlugins = {
@@ -38,6 +37,10 @@ export type UiPlugins = {
     }
   >;
   readonly PasswordUI: State<'PasswordUI'>;
+  readonly UserAgentsUI: State<'UserAgentsUI'>;
+  readonly AdminStatusUI: State<'AdminStatusUI'>;
+  readonly LocalityGoogleEarth: State<'LocalityGoogleEarth'>;
+  readonly PaleoMap: State<'PaleoMap'>;
   readonly Unsupported: State<
     'Unsupported',
     {
@@ -66,10 +69,8 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly cell: Element;
     readonly properties: IR<string>;
     readonly name: string | undefined;
-    readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
   UserCollectionsUI: () => ({ type: 'UserCollectionsUI' }),
@@ -101,26 +102,24 @@ const processUiPlugin: {
     relationship: properties.relname,
   }),
   PasswordUI: () => ({ type: 'PasswordUI' }),
+  UserAgentsUI: () => ({ type: 'UserAgentsUI' }),
+  AdminStatusUI: () => ({ type: 'AdminStatusUI' }),
+  LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
+  PaleoMap: () => ({ type: 'PaleoMap' }),
   Unsupported: ({ name }) => ({ type: 'Unsupported', name }),
 };
 
-export type PluginDefinition = {
-  readonly label: string | undefined;
-  readonly pluginDefinition: UiPlugins[keyof UiPlugins];
-};
+export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
-export function parseUiPlugin({
-  cell,
-  properties,
-  defaultValue,
-}: {
-  readonly cell: Element;
-  readonly properties: IR<string>;
-  readonly defaultValue: string | undefined;
-}): PluginDefinition {
+export function parseUiPlugin(
+  cell: Element,
+  properties: IR<string>
+): PluginDefinition {
   const name = cell.getAttribute('name') ?? undefined;
-  const uiCommand =
-    processUiPlugin[(name as keyof UiCommands | undefined) ?? ''] ??
-    processUiPlugin.Unsupported;
-  return uiCommand({ cell, properties, name, defaultValue });
+  const uiCommand = (processUiPlugin[(name ?? '') as keyof UiPlugins] ??
+    processUiPlugin.Unsupported) as (props: {
+    readonly properties: IR<string>;
+    readonly name: string | undefined;
+  }) => UiPlugins[keyof UiPlugins];
+  return uiCommand({ properties, name });
 }

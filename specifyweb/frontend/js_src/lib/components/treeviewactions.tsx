@@ -11,7 +11,7 @@ import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { IntegratedResourceView } from './resourceview';
 
@@ -153,13 +153,13 @@ function EditRecord<SCHEMA extends AnyTree>({
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
 
   return (
     <>
       <Button.Simple
         disabled={disabled || typeof nodeId === 'undefined'}
-        onClick={(): void => setIsOpen((state) => !state)}
+        onClick={handleToggle}
         aria-pressed={isOpen}
       >
         {userInformation.isReadOnly ? commonText('view') : commonText('edit')}
@@ -169,7 +169,7 @@ function EditRecord<SCHEMA extends AnyTree>({
           id={nodeId}
           addNew={false}
           tableName={tableName}
-          onClose={(): void => setIsOpen(false)}
+          onClose={handleClose}
           onSaved={handleRefresh}
         />
       )}
@@ -188,14 +188,14 @@ function AddChild<SCHEMA extends AnyTree>({
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
   const hasChanged = React.useRef(false);
 
   return (
     <>
       <Button.Simple
         disabled={typeof nodeId === 'undefined' || disabled}
-        onClick={(): void => setIsOpen((state) => !state)}
+        onClick={handleToggle}
         aria-pressed={isOpen}
       >
         {commonText('addChild')}
@@ -206,13 +206,14 @@ function AddChild<SCHEMA extends AnyTree>({
           addNew={true}
           tableName={tableName}
           onClose={(): void => {
-            setIsOpen(false);
+            handleClose();
             if (hasChanged.current) handleRefresh();
           }}
           onSaved={(addAnother): void => {
             if (addAnother) {
-              setIsOpen(false);
-              setTimeout(() => setIsOpen(true), 0);
+              handleClose();
+              // TODO: simplify this
+              setTimeout(handleOpen, 0);
               hasChanged.current = true;
             } else handleRefresh();
           }}
@@ -286,7 +287,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const treeName = model.label;
 
   const [showPrompt, setShowPrompt] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading] = useBooleanState();
   const [error, setError] = React.useState<undefined | string>(undefined);
 
   const action = async (): Promise<number> =>
@@ -373,7 +374,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Button.Blue
                 onClick={(): void => {
-                  setIsLoading(true);
+                  handleLoading();
                   action()
                     .then(handleCompleteAction)
                     .catch((error: Error) => setError(error.toString()));

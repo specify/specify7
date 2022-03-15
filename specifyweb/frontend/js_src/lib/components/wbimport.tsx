@@ -16,7 +16,7 @@ import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, Input } from './basic';
-import { useTitle } from './hooks';
+import { useBooleanState, useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 
@@ -432,7 +432,7 @@ function ChooseFile(props: { update: HandleAction }) {
   }
 
   const [fileName, setFileName] = React.useState<string | undefined>(undefined);
-  const [isFocused, setIsFocused] = React.useState(false);
+  const [isFocused, handleFocus, handleBlur] = useBooleanState();
 
   return (
     <label
@@ -441,8 +441,8 @@ function ChooseFile(props: { update: HandleAction }) {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={preventPropagation}
-      onFocus={(): void => setIsFocused(true)}
-      onBlur={(): void => setIsFocused(false)}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     >
       <input
         type="file"

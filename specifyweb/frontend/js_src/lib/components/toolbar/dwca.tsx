@@ -4,7 +4,7 @@ import { formData, Http, ping } from '../../ajax';
 import commonText from '../../localization/common';
 import { userInformation } from '../../userinfo';
 import { Button, Form, Input, Label, Submit } from '../basic';
-import { useId, useTitle } from '../hooks';
+import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -56,8 +56,8 @@ function MakeDwca({
   const metadataRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isExporting, setIsExporting] = React.useState<boolean>(false);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const [isExporting, handleExporting, handleExported] = useBooleanState();
 
   return isExporting ? (
     <ExportStarted onClose={handleClose} />
@@ -79,7 +79,7 @@ function MakeDwca({
         id={id('form')}
         forwardRef={formRef}
         onSubmit={(event): void => {
-          setIsLoading(true);
+          handleLoading();
           event.preventDefault();
           Promise.all([
             liftGetResource(
@@ -98,11 +98,11 @@ function MakeDwca({
             .then(async () =>
               startExport(definition, metadata === '' ? undefined : metadata)
             )
-            .then(() => setIsExporting(true))
-            .catch(() => setIsExporting(false))
+            .then(handleExporting)
+            .catch(handleExported)
             .finally(() => {
               formRef.current?.reportValidity();
-              setIsLoading(false);
+              handleLoaded();
             });
         }}
       >

@@ -49,7 +49,7 @@ export type FieldTypes = {
   readonly Plugin: State<
     'Plugin',
     {
-      readonly plugin: PluginDefinition;
+      readonly pluginDefinition: PluginDefinition;
     }
   >;
   readonly FilePicker: State<'FilePicker'>;
@@ -125,11 +125,7 @@ const processFieldType: {
   }),
   Plugin: (cell, properties) => ({
     type: 'Plugin',
-    plugin: parseUiPlugin({
-      cell,
-      properties,
-      ...withStringDefault(cell),
-    }),
+    pluginDefinition: parseUiPlugin(cell, properties),
   }),
   FilePicker: () => ({ type: 'FilePicker' }),
 };

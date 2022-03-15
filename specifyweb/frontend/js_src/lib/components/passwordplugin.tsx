@@ -5,7 +5,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { UiPlugin } from '../uiplugin';
 import { Button, Form, Input, Label, Submit } from './basic';
-import { useId, useTitle } from './hooks';
+import { useBooleanState, useId, useTitle } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
@@ -21,7 +21,7 @@ function PasswordResetDialog({
   useTitle(adminText('setPassword'));
 
   const id = useId('password-reset-dialog');
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
 
   const passwordRef = React.useRef<HTMLInputElement | null>(null);
   const repeatPasswordRef = React.useRef<HTMLInputElement | null>(null);
@@ -52,7 +52,7 @@ function PasswordResetDialog({
               adminText('passwordLengthError')
             );
           else if (password === repeatPassword) {
-            setIsLoading(true);
+            handleLoading();
             void ping(
               `/api/set_password/${modelId}/`,
               {
@@ -61,7 +61,7 @@ function PasswordResetDialog({
               },
               { expectedResponseCodes: [Http.NO_CONTENT] }
             ).then(() => {
-              setIsLoading(false);
+              handleLoaded();
               handleClose();
               return undefined;
             });

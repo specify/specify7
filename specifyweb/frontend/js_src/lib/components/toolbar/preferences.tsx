@@ -4,7 +4,7 @@ import commonText from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
 import { Button, Container, Form, H2, Submit } from '../basic';
-import { useId, useTitle } from '../hooks';
+import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -17,7 +17,7 @@ function Preferences({
   useTitle(commonText('preferences'));
 
   const [changesMade, setChangesMade] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading] = useBooleanState();
 
   const id = useId('preferences');
 
@@ -30,7 +30,7 @@ function Preferences({
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
-          setIsLoading(true);
+          handleLoading();
           // TODO: save changes
         }}
       >

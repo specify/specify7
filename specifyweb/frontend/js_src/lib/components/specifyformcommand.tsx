@@ -1,10 +1,5 @@
 import React from 'react';
 
-import { Button } from './basic';
-import { crash } from './errorboundary';
-import { Dialog, LoadingScreen } from './modaldialog';
-import { LoanReturn } from './prepreturndialog';
-import { ShowLoansCommand } from './showtranscommand';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
@@ -12,6 +7,12 @@ import formsText from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
 import reports from '../reports';
 import { isResourceOfType } from '../specifymodel';
+import { Button } from './basic';
+import { crash } from './errorboundary';
+import { useBooleanState } from './hooks';
+import { Dialog, LoadingScreen } from './modaldialog';
+import { LoanReturn } from './prepreturndialog';
+import { ShowLoansCommand } from './showtranscommand';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
@@ -62,30 +63,27 @@ const commandRenderers: {
     );
   },
   ShowLoans({ label, resource, id }) {
-    const [showLoans, setShowLoans] = React.useState(false);
+    const [showLoans, handleShow, handleHide] = useBooleanState();
     return (
       <>
         {resource.isNew() || !Boolean(resource.get('id')) ? undefined : (
-          <Button.Simple id={id} onClick={(): void => setShowLoans(true)}>
+          <Button.Simple id={id} onClick={handleShow}>
             {label}
           </Button.Simple>
         )}
         {showLoans && (
-          <ShowLoansCommand
-            resource={resource}
-            onClose={(): void => setShowLoans(false)}
-          />
+          <ShowLoansCommand resource={resource} onClose={handleHide} />
         )}
       </>
     );
   },
   ReturnLoan({ id, label, resource }) {
-    const [showDialog, setShowDialog] = React.useState(false);
+    const [showDialog, handleShow, handleHide] = useBooleanState();
     if (!isResourceOfType(resource, 'Loan'))
       throw new Error('LoanReturnCommand can only be used with Loan resources');
     return (
       <>
-        <Button.Simple id={id} onClick={(): void => setShowDialog(true)}>
+        <Button.Simple id={id} onClick={handleShow}>
           {label}
         </Button.Simple>
         {showDialog ? (
@@ -93,30 +91,27 @@ const commandRenderers: {
             <Dialog
               header={label}
               buttons={commonText('close')}
-              onClose={(): void => setShowDialog(false)}
+              onClose={handleHide}
             >
               {formsText('preparationsCanNotBeReturned')}
             </Dialog>
           ) : (
-            <LoanReturn
-              resource={resource}
-              onClose={(): void => setShowDialog(false)}
-            />
+            <LoanReturn resource={resource} onClose={handleHide} />
           )
         ) : undefined}
       </>
     );
   },
   Unsupported({ commandDefinition: { name }, id }) {
-    const [isClicked, setIsClicked] = React.useState(false);
+    const [isClicked, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        <Button.Simple id={id} onClick={(): void => setIsClicked(true)}>
+        <Button.Simple id={id} onClick={handleShow}>
           {formsText('unavailableCommandButton')}
         </Button.Simple>
         <Dialog
           isOpen={isClicked}
-          onClose={(): void => setIsClicked(false)}
+          onClose={handleHide}
           title={formsText('unavailableCommandDialogTitle')}
           header={formsText('unavailableCommandDialogHeader')}
           buttons={commonText('close')}

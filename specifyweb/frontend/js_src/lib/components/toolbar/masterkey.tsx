@@ -3,7 +3,7 @@ import React from 'react';
 import { ajax, formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
-import { useId, useTitle, useValidation } from '../hooks';
+import { useBooleanState, useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -19,7 +19,7 @@ function MasterKey({
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
   );
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const id = useId('master-key');
 
   const { validationRef, setValidation } = useValidation();
@@ -45,7 +45,7 @@ function MasterKey({
         id={id('form')}
         onSubmit={(event): void => {
           event.preventDefault();
-          setIsLoading(true);
+          handleLoading();
           ajax(
             '/api/master_key/',
             {
@@ -67,9 +67,7 @@ function MasterKey({
             )
             // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
             .catch((error: Error) => setValidation(error.message))
-            .finally(() => {
-              setIsLoading(false);
-            });
+            .finally(handleLoaded);
         }}
       >
         <Label.Generic>

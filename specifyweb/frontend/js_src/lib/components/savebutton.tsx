@@ -8,10 +8,10 @@ import formsText from '../localization/forms';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
 import { Button, className, Submit, Ul } from './basic';
-import { useId, useUnloadProtect } from './hooks';
+import { crash } from './errorboundary';
+import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { crash } from './errorboundary';
 
 function handleFocus(event: FocusEvent): void {
   const target = event.target as HTMLElement;
@@ -60,7 +60,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
-  const [isSaveConflict, setIsSaveConflict] = React.useState(false);
+  const [isSaveConflict, hasSaveConflict] = useBooleanState();
 
   const [formId, setFormId] = React.useState(id('form'));
   React.useEffect(() => {
@@ -112,7 +112,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         (error: { readonly status: number; errorHandled: boolean }) => {
           if (error.status !== Http.CONFLICT) return;
           error.errorHandled = true;
-          setIsSaveConflict(true);
+          hasSaveConflict();
         }
       );
   }

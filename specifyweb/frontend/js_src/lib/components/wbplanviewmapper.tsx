@@ -28,7 +28,7 @@ import {
   mappingPathIsComplete,
 } from '../wbplanviewutils';
 import { Button, Ul } from './basic';
-import { useId } from './hooks';
+import { useBooleanState, useId } from './hooks';
 import { icons } from './icons';
 import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
@@ -252,13 +252,15 @@ export function WbPlanViewMapper(props: {
       state.mustMatchPreferences
     );
 
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+
   function handleSave(ignoreValidation: boolean): void {
     const validationResults = ignoreValidation ? [] : validate();
     if (validationResults.length === 0) {
-      setIsLoading(true);
+      handleLoading();
       void props
         .onSave(state.lines, state.mustMatchPreferences)
-        .then(() => setIsLoading(false));
+        .then(handleLoaded);
     } else
       dispatch({
         type: 'ValidationAction',
@@ -270,8 +272,6 @@ export function WbPlanViewMapper(props: {
     dispatch({
       type: 'CloseSelectElementAction',
     });
-
-  const [isLoading, setIsLoading] = React.useState(false);
 
   const mapButtonEnabled =
     !props.readonly &&

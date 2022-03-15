@@ -18,7 +18,7 @@ import { defined } from '../types';
 import { fieldFormat } from '../uiparse';
 import { userInformation } from '../userinfo';
 import { Button, Input } from './basic';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { RenderForm } from './specifyform';
 
@@ -155,7 +155,8 @@ function Row({
     )
   );
 
-  const [showRemarks, setShowRemarks] = React.useState(false);
+  const [showRemarks, _handleShow, _handleHide, handleToggle] =
+    useBooleanState();
 
   return (
     <>
@@ -228,7 +229,7 @@ function Row({
               title={formsText('remarks')}
               aria-label={formsText('remarks')}
               icon="annotation"
-              onClick={(): void => setShowRemarks(!showRemarks)}
+              onClick={handleToggle}
             />
           )}
         </td>

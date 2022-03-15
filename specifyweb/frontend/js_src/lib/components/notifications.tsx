@@ -4,6 +4,7 @@ import { ajax, formData, ping } from '../ajax';
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
+import { useBooleanState } from './hooks';
 import { formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -25,10 +26,10 @@ export function Notifications(): JSX.Element {
 
   // Close the dialog when all notifications get dismissed
   const notificationCount = notifications?.length ?? 0;
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
   React.useEffect(() => {
-    if (notificationCount === 0) setIsOpen(false);
-  }, [notificationCount]);
+    if (notificationCount === 0) handleClose();
+  }, [notificationCount, handleClose]);
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
@@ -103,7 +104,7 @@ export function Notifications(): JSX.Element {
         className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
-        onClick={(): void => setIsOpen((isOpen) => !isOpen)}
+        onClick={handleToggle}
         forwardRef={buttonRef}
       >
         {commonText('notifications')(
@@ -117,7 +118,7 @@ export function Notifications(): JSX.Element {
           isOpen={isOpen}
           header={commonText('notificationsDialogTitle')}
           onClose={(): void => {
-            setIsOpen(false);
+            handleClose();
             setNotifications(
               notifications.map((notification) => ({
                 ...notification,

@@ -15,6 +15,7 @@ import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
 import { useAsyncState } from './hooks';
 import { PrintOnSave, SpecifyFormCheckbox } from './specifyformcheckbox';
+import { UiPlugin } from './specifyformplugin';
 
 export function useResourceValue<T>(
   resource: SpecifyResource<AnySchema>,
@@ -195,7 +196,7 @@ const fieldRenderers: {
       />
     );
   },
-  Plugin({ id, resource, isReadOnly, fieldName, isRequired }) {},
+  Plugin: UiPlugin,
   FilePicker({ id, resource, isReadOnly, fieldName, isRequired }) {},
 };
 

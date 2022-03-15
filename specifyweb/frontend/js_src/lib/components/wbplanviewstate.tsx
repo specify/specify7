@@ -11,6 +11,7 @@ import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Input, LabelForCheckbox } from './basic';
+import { useBooleanState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
@@ -64,7 +65,7 @@ function TemplateSelection({
     headers: RA<string>
   ) => void;
 }): JSX.Element {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, handleLoading] = useBooleanState();
 
   return isLoading ? (
     <LoadingScreen />
@@ -73,7 +74,7 @@ function TemplateSelection({
       showTemplates={true}
       onClose={handleClose}
       onDataSetSelect={(id: number): void => {
-        setIsLoading(true);
+        handleLoading();
         ajax<Dataset>(`/api/workbench/dataset/${id}`, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },

@@ -10,7 +10,7 @@ import type { ColumnOptions, MatchBehaviors } from '../uploadplanparser';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { Button, Input, Label, Textarea, Ul } from './basic';
 import { TableIcon } from './common';
-import { useId } from './hooks';
+import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePrefRef } from './preferenceshooks';
 import type {
@@ -172,14 +172,16 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [showDialog, setShowDialog] = React.useState<boolean>(lineCount === 0);
+  const [showDialog, _handleOpen, handleClose] = useBooleanState(
+    lineCount === 0
+  );
 
   return (
     <Dialog
       isOpen={showDialog}
       title={wbText('emptyDataSetDialogTitle')}
       header={wbText('emptyDataSetDialogHeader')}
-      onClose={(): void => setShowDialog(false)}
+      onClose={handleClose}
       buttons={commonText('close')}
     >
       {wbText('emptyDataSetDialogMessage')}

@@ -24,7 +24,7 @@ import {
   customSelectTypes,
   SuggestionBox,
 } from './customselectelement';
-import { useId } from './hooks';
+import { useBooleanState, useId } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
@@ -111,7 +111,7 @@ export function ButtonWithConfirmation(props: {
   readonly showConfirmation?: () => boolean;
   readonly disabled?: boolean;
 }): JSX.Element {
-  const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
+  const [displayPrompt, handleShow, handleHide] = useBooleanState();
 
   return (
     <>
@@ -120,7 +120,7 @@ export function ButtonWithConfirmation(props: {
         onClick={(): void =>
           typeof props.showConfirmation === 'undefined' ||
           props.showConfirmation()
-            ? setDisplayPrompt(true)
+            ? handleShow()
             : props.onConfirm()
         }
         disabled={props.disabled}
@@ -131,12 +131,12 @@ export function ButtonWithConfirmation(props: {
         isOpen={displayPrompt}
         title={props.dialogTitle}
         header={props.dialogHeader}
-        onClose={(): void => setDisplayPrompt(false)}
+        onClose={handleHide}
         className={{
           container: dialogClassNames.narrowContainer,
         }}
         buttons={props.dialogButtons(() => {
-          setDisplayPrompt(false);
+          handleHide();
           props.onConfirm();
         })}
       >
@@ -151,7 +151,7 @@ export function ValidationButton(props: {
   readonly isValidated: boolean;
   readonly onClick: () => void;
 }): JSX.Element {
-  const [displayPrompt, setDisplayPrompt] = React.useState<boolean>(false);
+  const [displayPrompt, handleShow, handleHide] = useBooleanState();
 
   return (
     <>
@@ -160,9 +160,7 @@ export function ValidationButton(props: {
           props.isValidated ? 'bg-green-400 dark:bg-green-700' : undefined
         }
         role="menuitem"
-        onClick={
-          props.canValidate ? props.onClick : (): void => setDisplayPrompt(true)
-        }
+        onClick={props.canValidate ? props.onClick : handleShow}
       >
         {wbText('validate')}
       </Button.Simple>
@@ -170,7 +168,7 @@ export function ValidationButton(props: {
         isOpen={displayPrompt}
         title={wbText('nothingToValidateDialogTitle')}
         header={wbText('nothingToValidateDialogHeader')}
-        onClose={(): void => setDisplayPrompt(false)}
+        onClose={handleHide}
         buttons={commonText('close')}
       >
         {wbText('nothingToValidateDialogMessage')}
