@@ -149,7 +149,6 @@ function QueryInputField({
     >
       {/* This invisible input is used to set the height */}
       <Input.Text className="invisible w-0" />
-      {/* TODO: handle paste for dateField fullDate */}
       <Input.Generic
         {...commonProps}
         {...validationAttributes}

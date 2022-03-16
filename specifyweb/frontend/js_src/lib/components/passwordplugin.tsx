@@ -1,21 +1,21 @@
 import React from 'react';
 
 import { formData, Http, ping } from '../ajax';
+import type { SpecifyUser } from '../datamodel';
+import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { UiPlugin } from '../uiplugin';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useBooleanState, useId, useTitle } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
 function PasswordResetDialog({
-  modelId,
+  userId,
   onClose: handleClose,
 }: {
-  readonly modelId: number;
+  readonly userId: number;
   readonly onClose: () => void;
 }): JSX.Element {
   useTitle(adminText('setPassword'));
@@ -110,33 +110,26 @@ function PasswordResetDialog({
   );
 }
 
-const DialogView = createBackboneView(PasswordResetDialog);
-
-export default UiPlugin.extend(
-  {
-    __name__: 'PasswordUIPlugin',
-    events: {
-      click: 'click',
-    },
-    render() {
-      this.el.value = adminText('setPassword');
-      if (this.model.isNew())
-        this.$el
-          .attr('title', adminText('saveUserBeforeSettingPasswordError'))
-          .prop('disabled', true);
-      return this;
-    },
-    click() {
-      const onClose = () => this.dialog?.remove();
-      this.dialog = new DialogView({
-        modelId: this.model.id,
-        onClose,
-      }).render();
-    },
-    remove() {
-      this.dialog?.remove();
-      UiPlugin.prototype.remove.call(this);
-    },
-  },
-  { pluginsProvided: ['PasswordUI'] }
-);
+export function PasswordPlugin({
+  user,
+}: {
+  readonly user: SpecifyResource<SpecifyUser>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
+    <>
+      <Button.Simple
+        disabled={user.isNew()}
+        title={
+          user.isNew()
+            ? adminText('saveUserBeforeSettingPasswordError')
+            : undefined
+        }
+        onClick={handleOpen}
+      >
+        {adminText('setPassword')}
+      </Button.Simple>
+      {isOpen && <PasswordResetDialog userId={user.id} onClose={handleClose} />}
+    </>
+  );
+}

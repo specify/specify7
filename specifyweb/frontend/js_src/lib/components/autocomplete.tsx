@@ -2,7 +2,6 @@ import * as React from 'react';
 import _ from 'underscore';
 
 import type { IR, RA } from '../types';
-import type { TagProps } from './basic';
 import { useId } from './hooks';
 
 let dataListCount = 0;
@@ -17,7 +16,7 @@ export function Autocomplete<T>({
   delay = debounceRate,
   onChange: handleChange,
   onNewValue: handleNewValue,
-  renderSearchBox,
+  children,
 }: {
   readonly source: Items<T> | ((value: string) => Promise<Items<T>>);
   readonly minLength?: number;
@@ -30,7 +29,14 @@ export function Autocomplete<T>({
       readonly data: T;
     }
   ) => void;
-  readonly renderSearchBox: (props: TagProps<'input'>) => JSX.Element;
+  readonly children: (props: {
+    readonly type: 'search';
+    readonly autoComplete: 'on';
+    readonly list: string;
+    readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    readonly onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    readonly onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  }) => JSX.Element;
 }): JSX.Element {
   const id = useId('autocomplete-data-list');
   const [results, setResults] = React.useState<
@@ -81,18 +87,20 @@ export function Autocomplete<T>({
 
   return (
     <>
-      {renderSearchBox({
+      {children({
         type: 'search',
         autoComplete: 'on',
         list: id(''),
         onKeyDown: handleKeyDown,
         onChange: ({ target }): void => {
-          const data = results[target.value];
-          if (typeof data === 'object') handleChange(target.value, data);
+          const input = target as HTMLInputElement;
+          const data = results[input.value];
+          if (typeof data === 'object') handleChange(input.value, data);
         },
         onBlur: ({ target }): void => {
-          const data = results[target.value];
-          if (typeof data === 'undefined') handleNewValue?.(target.value);
+          const input = target as HTMLInputElement;
+          const data = results[input.value];
+          if (typeof data === 'undefined') handleNewValue?.(input.value);
         },
       })}
       <datalist id={id('')} ref={refDataList}>

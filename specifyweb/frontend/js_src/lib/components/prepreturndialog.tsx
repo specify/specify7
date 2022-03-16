@@ -21,6 +21,7 @@ import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { RenderForm } from './specifyform';
+import { replaceItem } from './wbplanviewstate';
 
 function formatCatNo(catNo: string): string {
   const field = schema.models.CollectionObject.getLiteralField('catalognumber');
@@ -423,11 +424,7 @@ function PreparationReturn({
               key={preparation.cid}
               {...state[index]}
               onChange={(newState): void =>
-                setState([
-                  ...state.slice(0, index),
-                  newState,
-                  ...state.slice(index + 1),
-                ])
+                setState(replaceItem(state, index, newState))
               }
             />
           ))}

@@ -5228,6 +5228,8 @@ export type SpecifyUser = {
     readonly timestampModified: string | null;
     readonly userType: string | null;
     readonly version: number | null;
+    // Front-end only field?
+    readonly isAdmin: boolean;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

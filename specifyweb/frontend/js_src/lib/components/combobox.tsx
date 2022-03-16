@@ -4,6 +4,7 @@ import { error } from '../assert';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
+import type { FormMode } from '../parseform';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
@@ -20,11 +21,10 @@ export type DefaultComboBoxProps = {
   readonly model: SpecifyResource<AnySchema>;
   readonly resource: SpecifyResource<AnySchema>;
   readonly field: LiteralField | Relationship;
-  readonly fieldName: string;
   readonly pickListName: string | undefined;
   readonly defaultValue: string | undefined;
   readonly className: string | undefined;
-  readonly isReadOnly: boolean;
+  readonly mode: FormMode;
   readonly isRequired: boolean;
   readonly isDisabled: boolean;
 };
@@ -66,22 +66,22 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     )
   );
 
-  // Only PickListTypes.ITEMS pick lists are editable
-  const isReadOnly =
-    /*
-     * TODO: test if can add items to PickListTypes.FIELD
-     * TODO: make other pick list types editable
-     */
-    pickList?.get('type') !== PickListTypes.ITEMS || props.isReadOnly;
+  /*
+   * TODO: test if can add items to PickListTypes.FIELD
+   * TODO: make other pick list types editable
+   */
+  const mode =
+    // Only PickListTypes.ITEMS pick lists are editable
+    pickList?.get('type') !== PickListTypes.ITEMS ? 'view' : props.mode;
 
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
       {...props}
-      isReadOnly={isReadOnly}
+      mode={mode}
       pickList={pickList}
       items={items}
       onAdd={
-        isReadOnly
+        mode === 'view'
           ? undefined
           : (value): void =>
               setItems([
@@ -96,8 +96,13 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   ) : null;
 }
 
-export function ComboBox(props: DefaultComboBoxProps): JSX.Element {
-  const { resource, field, fieldName, model } = props;
+export function ComboBox({
+  fieldName,
+  ...props
+}: DefaultComboBoxProps & {
+  readonly fieldName: string | undefined;
+}): JSX.Element {
+  const { resource, field, model } = props;
 
   if (resource.specifyModel.name === 'PickList' && fieldName === 'fieldsCBX')
     return (

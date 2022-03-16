@@ -6,6 +6,7 @@ import formsText from './localization/forms';
 import queryText from './localization/query';
 import { getPickListItems } from './picklistmixins';
 import { monthPickListName, pickLists } from './picklists';
+import type { Input } from './saveblockers';
 import type {
   JavaType,
   LiteralField,
@@ -294,6 +295,7 @@ function formatterToParser(formatter: UiFormatter): Parser {
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
+    value: formatter.canAutonumber() ? formatter.value() : undefined,
   };
 }
 
@@ -380,7 +382,7 @@ export function pluralizeParser(rawParser: Parser): Parser {
 
 export function parseValue(
   parser: Parser,
-  input: HTMLInputElement | undefined,
+  input: Input | undefined,
   value: string
 ): ValidParseResult | InvalidParseResult {
   if (value.trim() === '')

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 import {assert} from './assert';
+import {deferredToPromise} from './resourceapi';
 
 
 var Base =  Backbone.Collection.extend({
@@ -19,34 +20,6 @@ var Base =  Backbone.Collection.extend({
     }
 
     var collectionapi = {};
-
-    collectionapi.Static = Base.extend({
-        __name__: "StaticCollectionBase",
-        _initialized: false,
-        constructor: function(models, options) {
-            assert(_.isArray(models));
-            Base.call(this, models, options);
-            this._initialized = true;
-        },
-        isComplete: function() { return true; },
-        fetch: fakeFetch,
-        sync: notSupported,
-        add: function() {
-            this._initialized && notSupported();
-            Base.prototype.add.apply(this, arguments);
-        },
-        remove: notSupported,
-        reset: function() {
-            this._initialized && notSupported();
-            Base.prototype.reset.apply(this, arguments);
-        },
-        set: notSupported,
-        push: notSupported,
-        pop: notSupported,
-        unshift: notSupported,
-        shift: notSupported,
-        create: notSupported
-    });
 
     function setupToOne(collection, options) {
         collection.field = options.field;
@@ -139,12 +112,7 @@ var Base =  Backbone.Collection.extend({
             return self._fetch.then(function() { self._fetch = null; return self; });
         },
         fetchPromise(options){
-            return Promise.resolve(this.fetch(options));
-        },
-        fetchIfNotFetching(options){
-            return Boolean(self._fetch)
-              ? Promise.resolve()
-              : this.fetchPromise(options);
+            return deferredToPromise(this.fetch(options));
         },
         fetchIfNotPopulated: function() {
             var _this = this;

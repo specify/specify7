@@ -10,7 +10,8 @@ export type UiPlugins = {
     'PartialDateUI',
     {
       readonly dateField: string | undefined;
-      readonly datePrecisionField: string | undefined;
+      readonly defaultValue: 'today' | undefined;
+      readonly precisionField: string | undefined;
       readonly defaultPrecision: PartialDatePrecision;
     }
   >;
@@ -20,7 +21,12 @@ export type UiPlugins = {
       readonly relationship: string | undefined;
     }
   >;
-  readonly ColRelTypePlugin: State<'ColRelTypePlugin'>;
+  readonly ColRelTypePlugin: State<
+    'ColRelTypePlugin',
+    {
+      readonly relationship: string | undefined;
+    }
+  >;
   readonly LocalityGeoRef: State<'LocalityGeoRef'>;
   readonly WebLinkButton: State<
     'WebLinkButton',
@@ -50,17 +56,7 @@ export type UiPlugins = {
 };
 
 /*
- *   Require('./components/usercollectionsplugin').default,
- *   require('./components/latlongui').default,
- *   require('./components/partialdateui').default,
- *   require('./collectionrelonetomanyplugin').default,
- *   require('./collectionrelonetooneplugin').default,
- *   require('./geolocateplugin').default,
- *   require('./weblinkbutton').default,
- *   require('./attachmentplugin').default,
- *   require('./hosttaxonplugin').default,
- *   require('./components/passwordplugin').default,
- *   require('./useragentsplugin').default,
+ *   Require('./useragentsplugin').default,
  *   require('./adminstatusplugin').default,
  *   require('./leafletplugin').default,
  *   require('./paleolocationplugin').default,
@@ -71,14 +67,16 @@ const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
     readonly properties: IR<string>;
     readonly name: string | undefined;
+    readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
   UserCollectionsUI: () => ({ type: 'UserCollectionsUI' }),
   LatLonUI: () => ({ type: 'LatLonUI' }),
-  PartialDateUI: ({ properties }) => ({
+  PartialDateUI: ({ properties, defaultValue }) => ({
     type: 'PartialDateUI',
+    defaultValue: defaultValue?.toLowerCase() === 'today' ? 'today' : undefined,
     dateField: properties.df.toLowerCase(),
-    datePrecisionField: properties.tp.toLowerCase(),
+    precisionField: properties.tp.toLowerCase(),
     defaultPrecision: ['year', 'month-year'].includes(
       properties.defaultprecision.toLowerCase()
     )
@@ -89,7 +87,10 @@ const processUiPlugin: {
     type: 'CollectionRelOneToManyPlugin',
     relationship: properties.relname,
   }),
-  ColRelTypePlugin: () => ({ type: 'ColRelTypePlugin' }),
+  ColRelTypePlugin: ({ properties }) => ({
+    type: 'ColRelTypePlugin',
+    relationship: properties.relname,
+  }),
   LocalityGeoRef: () => ({ type: 'LocalityGeoRef' }),
   WebLinkButton: ({ properties }) => ({
     type: 'WebLinkButton',
@@ -113,13 +114,12 @@ export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
   cell: Element,
-  properties: IR<string>
+  properties: IR<string>,
+  defaultValue: string | undefined
 ): PluginDefinition {
   const name = cell.getAttribute('name') ?? undefined;
-  const uiCommand = (processUiPlugin[(name ?? '') as keyof UiPlugins] ??
-    processUiPlugin.Unsupported) as (props: {
-    readonly properties: IR<string>;
-    readonly name: string | undefined;
-  }) => UiPlugins[keyof UiPlugins];
-  return uiCommand({ properties, name });
+  const uiCommand =
+    processUiPlugin[(name ?? '') as keyof UiPlugins] ??
+    processUiPlugin.Unsupported;
+  return uiCommand({ properties, name, defaultValue });
 }

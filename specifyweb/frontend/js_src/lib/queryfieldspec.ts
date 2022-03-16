@@ -1,6 +1,7 @@
 import type { MappingPath } from './components/wbplanviewmapper';
+import { insertItem } from './components/wbplanviewstate';
 import type { SpQueryField } from './datamodel';
-import { getModel, getModelById } from './schema';
+import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
@@ -22,6 +23,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
+import { SpecifyResource } from './legacytypes';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -85,6 +87,19 @@ export class QueryFieldSpec {
     };
   }
 
+  public toSpQueryField(): SpecifyResource<SpQueryField> {
+    const attributes = this.toSpQueryAttributes();
+    return new schema.models.SpQueryField.Resource()
+      .set('isDisplay', true)
+      .set('isNot', false)
+      .set('startValue', '')
+      .set('operStart', 1)
+      .set('tableList', attributes.tableList)
+      .set('stringId', attributes.stringId)
+      .set('fieldName', attributes.fieldName)
+      .set('isRelFld', attributes.isRelFld);
+  }
+
   public getField(): LiteralField | Relationship | undefined {
     return this.joinPath.slice(-1)[0];
   }
@@ -108,11 +123,7 @@ export class QueryFieldSpec {
 
     // Insert rank name (or anyRank) into the path
     if (typeof this.treeRank === 'string')
-      path = [
-        ...path.slice(0, -1),
-        formatTreeRank(this.treeRank),
-        path.slice(-1)[0],
-      ];
+      path = insertItem(path, -1, formatTreeRank(this.treeRank));
 
     // Format date field
     if (this.getField()?.isTemporal() === true)

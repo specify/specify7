@@ -1,11 +1,10 @@
 import React from 'react';
 
-import type { Taxon } from '../datamodel';
-import type { FilterTablesByEndsWith } from '../datamodelutils';
+import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
+import { isTreeModel } from '../treedefinitions';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
 
 async function fetchPossibleRanks(
@@ -32,42 +31,51 @@ async function fetchPossibleRanks(
   );
 }
 
-export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
-  const [items] = useAsyncState<RA<PickListItemSimple>>(
-    React.useCallback(
-      async (refreshState) => {
-        props.model.on('change:parent', refreshState);
-        const model = props.model as SpecifyResource<Taxon>;
-        const lowestChildRank = model.isNew()
-          ? Promise.resolve(-1)
-          : model
-              .rgetCollection('children')
-              .then(({ models }) =>
-                models.length === 0
-                  ? -1
-                  : Math.min(...models.map((model) => model.get('rankId')))
-              );
-        return (
-          model
-            .rgetPromise('parent')
-            // Parent is undefined for root tree node
-            .then(async (parent) => parent?.rgetPromise('definitionItem', true))
-            .then((treeDefinitionItem) =>
-              typeof treeDefinitionItem === 'object'
-                ? treeDefinitionItem
-                    .rgetPromise('treeDef', true)
-                    .then(async ({ id }) =>
-                      lowestChildRank.then(async (rankId) =>
-                        fetchPossibleRanks(rankId, treeDefinitionItem, id)
-                      )
-                    )
-                : []
-            )
+export const fetchLowestChildRank = async (
+  resource: SpecifyResource<AnyTree>
+): Promise<number> =>
+  resource.isNew()
+    ? Promise.resolve(-1)
+    : resource
+        .rgetCollection('children')
+        .then(({ models }) =>
+          models.length === 0
+            ? -1
+            : Math.min(...models.map((model) => model.get('rankId')))
         );
-      },
-      [props.model]
-    )
+
+export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
+  const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(
+    undefined
   );
+  React.useEffect(() => {
+    if (!isTreeModel(props.model.specifyModel.name)) return undefined;
+    const lowestChildRank = fetchLowestChildRank(props.model);
+    const handleFetch = (): void =>
+      void (props.model as SpecifyResource<AnyTree>)
+        .rgetPromise('parent')
+        // Parent is undefined for root tree node
+        .then(async (parent) => parent?.rgetPromise('definitionItem', true))
+        .then((treeDefinitionItem) =>
+          typeof treeDefinitionItem === 'object'
+            ? treeDefinitionItem
+                .rgetPromise('treeDef', true)
+                .then(async ({ id }) =>
+                  lowestChildRank.then(async (rankId) =>
+                    fetchPossibleRanks(rankId, treeDefinitionItem, id)
+                  )
+                )
+            : []
+        )
+        .then((items) => (destructorCalled ? undefined : setItems(items)));
+    props.model.on('change:parent', handleFetch);
+    handleFetch();
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+      props.model.off('change:parent', handleFetch);
+    };
+  }, [props.model]);
 
   return (
     <PickListComboBox
@@ -79,6 +87,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
+        !isTreeModel(props.model.specifyModel.name) ||
         props.model.get('parent') === null ||
         typeof items === 'undefined'
       }

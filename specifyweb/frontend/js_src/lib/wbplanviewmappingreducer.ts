@@ -15,6 +15,7 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
+import { replaceItem } from './components/wbplanviewstate';
 import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { MatchBehaviors } from './uploadplanparser';
@@ -30,14 +31,11 @@ const modifyLine = (
   state: MappingState,
   line: number,
   mappingLine: Partial<MappingLine>
-): RA<MappingLine> => [
-  ...state.lines.slice(0, line),
-  {
+): RA<MappingLine> =>
+  replaceItem(state.lines, line, {
     ...state.lines[line],
     ...mappingLine,
-  },
-  ...state.lines.slice(line + 1),
-];
+  });
 
 // Actions
 type ToggleMappingViewAction = Action<
@@ -232,14 +230,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
 
     return {
       ...state,
-      lines: [
-        ...state.lines.slice(0, focusedLine),
-        {
-          ...state.lines[focusedLine],
-          mappingPath: mappingViewMappingPath,
-        },
-        ...state.lines.slice(focusedLine + 1),
-      ],
+      lines: replaceItem(state.lines, focusedLine, {
+        ...state.lines[focusedLine],
+        mappingPath: mappingViewMappingPath,
+      }),
       changesMade: true,
       mappingsAreValidated: false,
     };

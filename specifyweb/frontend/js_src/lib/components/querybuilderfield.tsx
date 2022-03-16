@@ -41,6 +41,7 @@ import {
   mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
+import { replaceItem } from './wbplanviewstate';
 
 // TODO: split this component into smaller components
 export function QueryLine({
@@ -190,11 +191,7 @@ export function QueryLine({
   ): void =>
     handleChange({
       ...field,
-      filters: filterArray([
-        ...field.filters.slice(0, index),
-        filter,
-        ...field.filters.slice(index + 1),
-      ]),
+      filters: filterArray(replaceItem(field.filters, index, filter)),
     });
 
   const isFieldComplete = mappingPathIsComplete(field.mappingPath);

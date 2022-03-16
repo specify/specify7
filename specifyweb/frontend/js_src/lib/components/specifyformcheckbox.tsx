@@ -3,7 +3,7 @@ import React from 'react';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { Input } from './basic';
-import { useResourceValue } from './specifyformfield';
+import { useResourceValue } from './hooks';
 import { useCachedState } from './stateCache';
 
 export function PrintOnSave({
@@ -11,7 +11,7 @@ export function PrintOnSave({
   name,
 }: {
   readonly id: string | undefined;
-  readonly name: string;
+  readonly name: string | undefined;
 }): JSX.Element {
   const [value, setValue] = useCachedState({
     bucketName: 'forms',
@@ -44,17 +44,18 @@ export function SpecifyFormCheckbox({
   readonly isRequired: boolean;
   readonly isReadOnly: boolean;
 }): JSX.Element {
-  const [value = false, setValue] = useResourceValue<boolean>(
+  const { value, updateValue, validationRef } = useResourceValue<boolean>(
     resource,
     fieldName,
-    defaultValue
+    React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
   return (
     <Input.Checkbox
+      forwardRef={validationRef}
       id={id}
       name={fieldName}
       checked={value}
-      onValueChange={setValue}
+      onValueChange={updateValue}
       required={isRequired}
       readOnly={isReadOnly}
     />

@@ -1,7 +1,6 @@
+import type { AnySchema } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import type { R, RA } from './types';
-import { validationMessages } from './validationmessages';
-import { AnySchema } from './datamodelutils';
 
 // TODO: only propagate for dependent resources
 function triggerOnParent(resource: SpecifyResource<AnySchema>) {
@@ -24,17 +23,10 @@ export type Blocker = {
 
 export type Input = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
-type LinkedField = {
-  el: Input;
-  destructor: () => void;
-};
-
 export class SaveBlockers<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
 
   public blockers: R<Blocker> = {};
-
-  private inputs: R<LinkedField[]> = {};
 
   public readonly blockingResources: Set<SpecifyResource<AnySchema>> =
     new Set();
@@ -76,7 +68,6 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
       deferred,
     };
     this.triggerSaveBlocked(this.blockers[key]);
-    this.refreshValidation(this.blockers[key]);
   }
 
   private triggerSaveBlocked(blocker: Blocker): void {
@@ -101,30 +92,6 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
 
     if (Object.keys(this.blockers).length === 0)
       this.resource.trigger('oktosave', this.resource);
-
-    this.refreshValidation(blocker);
-  }
-
-  // Don't use this in React components. Prefer useSaveBlockers with useValidation
-  public linkInput(
-    input: Input,
-    fieldName: keyof SCHEMA['fields'] & string
-  ): void {
-    this.inputs[fieldName] ??= [];
-    const update = this.handleFocus.bind(this, input, fieldName);
-    input.addEventListener('focus', update);
-    this.inputs[fieldName].push({
-      el: input,
-      destructor: () => input.removeEventListener('focus', update),
-    });
-    update();
-  }
-
-  private handleFocus(
-    input: Input,
-    fieldName: keyof SCHEMA['fields'] & string
-  ): void {
-    validationMessages(input, this.getFieldErrors(fieldName));
   }
 
   public getFieldErrors(
@@ -133,32 +100,6 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
     return Object.values(this.blockers)
       .filter((blocker) => blocker.fieldName === fieldName)
       .map((blocker) => blocker.reason);
-  }
-
-  public unlinkInput(targetInput: Input): void {
-    this.inputs = Object.fromEntries(
-      Object.entries(this.inputs).map(([fieldName, inputs]) => [
-        fieldName,
-        inputs.filter((input) => {
-          if (input.el === targetInput) {
-            input.destructor();
-            return false;
-          }
-          return true;
-        }),
-      ])
-    );
-  }
-
-  private refreshValidation(blocker: Blocker): void {
-    const fieldName = blocker.fieldName;
-    if (typeof fieldName === 'undefined') return;
-    (this.inputs[fieldName] ?? []).forEach((input) =>
-      validationMessages(
-        input.el,
-        this.blockersForField(fieldName).map((blocker) => blocker.reason) ?? []
-      )
-    );
   }
 
   public blockersForField(

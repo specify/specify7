@@ -26,10 +26,12 @@ export function PickListFormatterComboBox(
   }, [props.resource]);
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(fetchItems);
   React.useEffect(() => {
-    props.resource.on('change:tableName change:type', async () =>
-      fetchItems().then(setItems).catch(crash)
-    );
-  }, [props.resource, fetchItems]);
+    const handleChange = (): void =>
+      void fetchItems().then(setItems).catch(crash);
+    props.resource.on('change:tableName change:type', handleChange);
+    return (): void =>
+      props.resource.off('change:tableName change:type', handleChange);
+  }, [props.resource, fetchItems, setItems]);
 
   return (
     <PickListComboBox

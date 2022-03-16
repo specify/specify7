@@ -2,6 +2,7 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { MappingPath } from './components/wbplanviewmapper';
+import { replaceItem } from './components/wbplanviewstate';
 import type { SpQuery, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
@@ -139,11 +140,7 @@ export const reducer = generateReducer<MainState, Actions>({
   }),
   ChangeFieldAction: ({ action, state }) => ({
     ...state,
-    fields: [
-      ...state.fields.slice(0, action.line),
-      action.field,
-      ...state.fields.slice(action.line + 1),
-    ],
+    fields: replaceItem(state.fields, action.line, action.field),
     saveRequired: true,
   }),
   ChangeSelectElementValueAction: ({ state, action }) => {
@@ -171,14 +168,10 @@ export const reducer = generateReducer<MainState, Actions>({
 
     return {
       ...state,
-      fields: [
-        ...state.fields.slice(0, action.line),
-        {
-          ...state.fields[action.line],
-          mappingPath: newMappingPath,
-        },
-        ...state.fields.slice(action.line + 1),
-      ],
+      fields: replaceItem(state.fields, action.line, {
+        ...state.fields[action.line],
+        mappingPath: newMappingPath,
+      }),
       openedElement: {
         line: state.openedElement.line,
         index: action.close ? undefined : state.openedElement.index,

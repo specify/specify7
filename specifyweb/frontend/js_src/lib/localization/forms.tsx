@@ -1093,6 +1093,18 @@ const formsText = createDictionary({
     ca: 'uncataloged',
     'es-es': 'uncataloged',
   },
+  additionalResultsOmitted: {
+    'en-us': 'Additional results omitted',
+    'ru-ru': 'Дополнительные результаты опущены',
+    ca: 'Additional results omitted',
+    'es-es': 'Additional results omitted',
+  },
+  openOriginal: {
+    'en-us': 'Open original',
+    'ru-ru': 'Открыть оригинал',
+    ca: 'Open original',
+    'es-es': 'Open original',
+  },
 });
 
 export default formsText;

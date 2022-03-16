@@ -18,7 +18,7 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
 
 export function PickListComboBox(
-  props: Omit<DefaultComboBoxProps, 'readOnly'> & {
+  props: DefaultComboBoxProps & {
     readonly items: RA<PickListItemSimple> | undefined;
     // This may be undefined for front-end only picklists
     readonly pickList: SpecifyResource<PickList> | undefined;
@@ -40,11 +40,11 @@ export function PickListComboBox(
     (value: string): void =>
       void props.resource.set(
         props.field.name,
-        value === '' && props.isRequired
+        (value === '' && props.isRequired
           ? null
           : validationAttributes.type === 'number'
           ? Number.parseInt(value)
-          : value
+          : value) as never
       ),
     [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
@@ -70,10 +70,14 @@ export function PickListComboBox(
 
   // Listen for external changes to the field
   React.useEffect(() => {
-    props.resource.on(`change:${props.field.name.toLowerCase()}`, () =>
-      setValue(getValue())
-    );
+    const handleChange = (): void => setValue(getValue);
+    props.resource.on(`change:${props.field.name.toLowerCase()}`, handleChange);
     void props.resource.businessRuleMgr.checkField(props.field.name);
+    return (): void =>
+      props.resource.off(
+        `change:${props.field.name.toLowerCase()}`,
+        handleChange
+      );
   }, [props.resource, props.field.name, getValue]);
 
   // Warn on duplicates
@@ -100,7 +104,7 @@ export function PickListComboBox(
   React.useEffect(() => {
     if (
       typeof pendingNewValue === 'string' &&
-      props.items?.some(({ value }) => value === pendingNewValue)
+      props.items?.some(({ value }) => value === pendingNewValue) === true
     )
       updateValue(pendingNewValue);
   }, [props.items, pendingNewValue, updateValue]);
@@ -145,9 +149,12 @@ export function PickListComboBox(
           // "null" value is represented as an empty string
           value={value ?? ''}
           {...validationAttributes}
-          required={props.isRequired}
+          required={
+            ('required' in validationAttributes || props.isRequired) &&
+            props.mode !== 'search'
+          }
           onChange={({ target }): void =>
-            props.items?.some(({ value }) => value === target.value)
+            props.items?.some(({ value }) => value === target.value) === true
               ? updateValue(target.value)
               : undefined
           }
@@ -173,19 +180,24 @@ export function PickListComboBox(
           source={autocompleteItems}
           onNewValue={addNewValue}
           onChange={updateValue}
-          renderSearchBox={(inputProps): JSX.Element => (
+        >
+          {(inputProps): JSX.Element => (
             <Input.Generic
               id={props.id}
               forwardRef={validationRef}
               name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
               disabled={props.isDisabled || typeof props.items === 'undefined'}
-              required={props.isRequired}
+              readOnly={props.mode === 'view'}
               {...validationAttributes}
+              required={
+                ('required' in validationAttributes || props.isRequired) &&
+                props.mode !== 'search'
+              }
               {...inputProps}
             />
           )}
-        />
+        </Autocomplete>
       )}
       {typeof pendingNewValue === 'string' &&
         typeof props.pickList === 'object' &&

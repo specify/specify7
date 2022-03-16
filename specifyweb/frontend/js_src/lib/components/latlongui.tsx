@@ -5,9 +5,7 @@ import * as latlongutils from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
-import { UiPlugin } from '../uiplugin';
 import { Input } from './basic';
-import createBackboneView from './reactbackboneextend';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -18,14 +16,14 @@ type Parsed = {
 };
 
 function Coordinate({
-  model,
+  resource,
   coordinateField,
   coordinateTextField,
   fieldType,
-  readOnly,
+  isReadOnly,
   onChange: handleChange,
 }: {
-  readonly model: SpecifyResource<Locality>;
+  readonly resource: SpecifyResource<Locality>;
   readonly coordinateField:
     | 'latitude1'
     | 'latitude2'
@@ -37,13 +35,13 @@ function Coordinate({
     | 'long1text'
     | 'long2text';
   readonly fieldType: 'Lat' | 'Long';
-  readonly readOnly: boolean;
+  readonly isReadOnly: boolean;
   readonly onChange: (parsed: string) => void;
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
     () =>
-      (model.get(coordinateTextField) ||
-        model.get(coordinateField)?.toString()) ??
+      (resource.get(coordinateTextField) ||
+        resource.get(coordinateField)?.toString()) ??
       ''
   );
 
@@ -52,66 +50,61 @@ function Coordinate({
 
   React.useEffect(() => {
     const handleChange = (coordinate: string) =>
-      destructorCalled
-        ? undefined
-        : onChange(
-            coordinate,
-            (
-              latlongutils[fieldType].parse(coordinate) as Parsed | null
-            )?.format()
-          );
-    model.on(`change: ${coordinateTextField}`, () =>
-      handleChange(model.get(coordinateTextField))
-    );
-    model.on(`change: ${coordinateField}`, () =>
-      handleChange(model.get(coordinateField)?.toString() ?? '')
-    );
+      onChange(
+        coordinate,
+        (latlongutils[fieldType].parse(coordinate) as Parsed | null)?.format()
+      );
+    const handleCoordinateTextChange = () =>
+      handleChange(resource.get(coordinateTextField));
+    resource.on(`change: ${coordinateTextField}`, handleCoordinateTextChange);
+    const handleCoordinateChange = () =>
+      handleChange(resource.get(coordinateField)?.toString() ?? '');
+    resource.on(`change: ${coordinateField}`, handleCoordinateChange);
 
-    let destructorCalled = false;
     // Update parent's Preview column with initial values on the first render
     handleChange(coordinate);
     return (): void => {
-      destructorCalled = true;
+      resource.off(
+        `change: ${coordinateTextField}`,
+        handleCoordinateTextChange
+      );
+      resource.off(`change: ${coordinateField}`, handleCoordinateChange);
     };
   }, [coordinateField, coordinateTextField, fieldType]);
 
   return (
     <Input.Text
       value={coordinate}
-      readOnly={readOnly}
-      onValueChange={
-        readOnly
-          ? undefined
-          : (value): void => {
-              setCoordinate(value);
-              const hasValue = value.trim() !== '';
-              const parsed = hasValue
-                ? ((latlongutils[fieldType].parse(value) ?? undefined) as
-                    | Parsed
-                    | undefined)
-                : undefined;
-              onChange(value.trim(), parsed?.format());
+      readOnly={isReadOnly}
+      onValueChange={(value): void => {
+        setCoordinate(value);
+        const hasValue = value.trim() !== '';
+        const parsed = hasValue
+          ? ((latlongutils[fieldType].parse(value) ?? undefined) as
+              | Parsed
+              | undefined)
+          : undefined;
+        onChange(value.trim(), parsed?.format());
 
-              model.set(coordinateTextField, value);
-              model.set(coordinateField, parsed?.asFloat() ?? null);
-              model.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
-              model.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
-            }
-      }
+        resource.set(coordinateTextField, value);
+        resource.set(coordinateField, parsed?.asFloat() ?? null);
+        resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
+        resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
+      }}
     />
   );
 }
 
 function CoordinatePoint({
-  model,
+  resource,
   label,
   index,
-  readOnly,
+  isReadOnly,
 }: {
-  readonly model: SpecifyResource<Locality>;
+  readonly resource: SpecifyResource<Locality>;
   readonly label: string;
   readonly index: 1 | 2;
-  readonly readOnly: boolean;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const [latitude, setLatitude] = React.useState<string>(
     commonText('notApplicable')
@@ -128,11 +121,11 @@ function CoordinatePoint({
             'latitude'
           )} ${index}`}</span>
           <Coordinate
-            model={model}
+            resource={resource}
             coordinateField={`latitude${index}`}
             coordinateTextField={`lat${index}text`}
             fieldType={`Lat`}
-            readOnly={readOnly}
+            isReadOnly={isReadOnly}
             onChange={setLatitude}
           />
         </label>
@@ -143,11 +136,11 @@ function CoordinatePoint({
             'longitude'
           )} ${index}`}</span>
           <Coordinate
-            model={model}
+            resource={resource}
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
             fieldType={`Lat`}
-            readOnly={readOnly}
+            isReadOnly={isReadOnly}
             onChange={setLongitude}
           />
         </label>
@@ -161,23 +154,21 @@ function CoordinatePoint({
   );
 }
 
-function LatLongUi({
-  model,
-  readOnly,
+export function LatLongUi({
+  resource,
+  isReadOnly,
 }: {
-  readonly model: SpecifyResource<Locality>;
-  readonly readOnly: boolean;
+  readonly resource: SpecifyResource<Locality>;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => model.get('latLongType') ?? 'point'
+    () => resource.get('latLongType') ?? 'point'
   );
 
   React.useEffect(() => {
-    model.on('change: latlongtype', () =>
-      destructorCalled
-        ? undefined
-        : setCoordinateType(model.get('latLongType') ?? 'point')
-    );
+    const handleChange = () =>
+      setCoordinateType(resource.get('latLongType') ?? 'point');
+    resource.on('change: latlongtype');
 
     let destructorCalled = false;
     return (): void => {
@@ -199,13 +190,13 @@ function LatLongUi({
                   name="type"
                   title={localityText('coordinateType')}
                   value={coordinateType}
-                  disabled={readOnly}
+                  disabled={isReadOnly}
                   onChange={
-                    readOnly
+                    isReadOnly
                       ? undefined
                       : ({ target }): void => {
                           setCoordinateType(target.value as CoordinateType);
-                          model.set('latLongType', target.value);
+                          resource.set('latLongType', target.value);
                         }
                   }
                 >
@@ -222,7 +213,7 @@ function LatLongUi({
         </thead>
         <tbody>
           <CoordinatePoint
-            model={model}
+            resource={resource}
             label={
               coordinateType === 'point'
                 ? localityText('coordinates')
@@ -231,18 +222,18 @@ function LatLongUi({
                 : localityText('northWestCorner')
             }
             index={1}
-            readOnly={readOnly}
+            isReadOnly={isReadOnly}
           />
           {coordinateType === 'point' ? undefined : (
             <CoordinatePoint
-              model={model}
+              resource={resource}
               label={
                 coordinateType === 'line'
                   ? commonText('end')
                   : localityText('southEastCorner')
               }
               index={2}
-              readOnly={readOnly}
+              isReadOnly={isReadOnly}
             />
           )}
         </tbody>
@@ -250,30 +241,3 @@ function LatLongUi({
     </fieldset>
   );
 }
-
-const View = createBackboneView(LatLongUi);
-
-export default UiPlugin.extend(
-  {
-    __name__: 'LatLongUI',
-    initialize() {
-      Reflect.apply(UiPlugin.prototype.initialize, this, arguments);
-    },
-    render() {
-      this.model.fetchIfNotPopulated().then(() => {
-        this.view = new View({
-          model: this.model,
-          readOnly: this.$el.prop('disabled'),
-        }).render();
-        this.$el.replaceWith(this.view.el);
-        this.setElement(this.view.el);
-      });
-      return this;
-    },
-    remove() {
-      this.view?.remove();
-      UiPlugin.prototype.remove.call(this);
-    },
-  },
-  { pluginsProvided: ['LatLonUI'] }
-);

@@ -11,31 +11,29 @@ import { FormHeader, H2 } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
 
-const getAttachmentFormDefinition = (defaultType: FormType, mode: FormMode) =>
+const getAttachmentFormDefinition = (
+  formType: FormType,
+  mode: FormMode
+): ViewDescription =>
   ({
     columns: [undefined],
-    formType: defaultType,
+    formType,
     mode,
     model: undefined,
     rows: [
       [
         {
           id: undefined,
-          cellData: {
-            type: 'Field',
-            fieldName: '',
-            fieldDefinition: {
-              isReadOnly: false,
-              fieldDefinition: {
-                type: 'Plugin',
-                defaultValue: undefined,
-              },
+          type: 'Field',
+          fieldName: '',
+          fieldDefinition: {
+            isReadOnly: false,
+            type: 'Plugin',
+            pluginDefinition: {
+              type: 'AttachmentPlugin',
             },
-            properties: {},
-            isRequired: false,
-            ignore: false,
-            printOnSave: false,
           },
+          isRequired: false,
           colSpan: undefined,
         },
       ],
@@ -47,16 +45,16 @@ const getAttachmentFormDefinition = (defaultType: FormType, mode: FormMode) =>
  * FIXME: replace buildViewByName with this
  * FIXME: review all original files to check everything was migrated
  */
-export function Form({
+export function SpecifyForm({
   resource,
   viewName,
-  defaultType,
+  formType,
   mode,
   hasHeader,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly viewName: string;
-  readonly defaultType: FormType;
+  readonly formType: FormType;
   readonly mode: FormMode;
   readonly hasHeader: boolean;
 }): JSX.Element {
@@ -64,12 +62,12 @@ export function Form({
     React.useCallback(
       async () =>
         viewName === 'ObjectAttachment'
-          ? getAttachmentFormDefinition(defaultType, mode)
+          ? getAttachmentFormDefinition(formType, mode)
           : getView(viewName)
               .catch(f.undefined)
               .then((viewDefinition) =>
                 typeof viewDefinition === 'object'
-                  ? parseViewDefinition(viewDefinition, defaultType, mode)
+                  ? parseViewDefinition(viewDefinition, formType, mode)
                   : undefined
               )
               .then((viewDefinition) =>
@@ -78,7 +76,7 @@ export function Form({
                   ? error('View definition model does not match resource model')
                   : viewDefinition
               ),
-      [viewName, defaultType, mode, resource]
+      [viewName, formType, mode, resource]
     )
   );
 
@@ -106,10 +104,14 @@ export function RenderForm({
   readonly hasHeader: boolean;
 }): JSX.Element {
   const id = useId(resource.specifyModel.name ?? 'form');
+  const [loadedResource] = useAsyncState(
+    React.useCallback(async () => resource.fetchPromise(), [resource])
+  );
   return (
     <div className="gap-y-2 flex flex-col">
       {hasHeader && <FormHeader>{resource.specifyModel.name}</FormHeader>}
-      {typeof viewDefinition === 'object' && (
+      {typeof viewDefinition === 'object' &&
+      typeof loadedResource === 'object' ? (
         <div
           className="grid"
           style={{
@@ -135,8 +137,9 @@ export function RenderForm({
                   }
                 >
                   <FormCell
-                    resource={resource}
+                    resource={loadedResource}
                     mode={viewDefinition.mode}
+                    formType={viewDefinition.formType}
                     cellData={cellData}
                     id={cellId}
                     formatId={id}
@@ -146,7 +149,7 @@ export function RenderForm({
             </div>
           ))}
         </div>
-      )}
+      ) : undefined}
     </div>
   );
 }

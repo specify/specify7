@@ -20,6 +20,7 @@ import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { uploadPlanBuilder } from './uploadplanbuilder';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
+import { f } from './wbplanviewhelper';
 import {
   findDuplicateMappings,
   formatToManyIndex,
@@ -88,9 +89,7 @@ export async function savePlan({
               body: {
                 visualorder: [
                   ...(visualorder ??
-                    Object.keys(dataset.columns).map((index) =>
-                      Number.parseInt(index)
-                    )),
+                    Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
                   ...newlyAddedHeaders.map((headerName) =>
                     columns.indexOf(headerName)
                   ),

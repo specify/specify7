@@ -237,6 +237,40 @@ export const Input = {
       props.onValueChange?.((event.target as HTMLInputElement).value);
       props.onChange?.(event);
     },
+    onPaste(event): void {
+      const target = event.target as HTMLInputElement;
+      // Handle pasting dates into input[type="date"]
+      if (target.type === 'date') {
+        const input =
+          target.tagName === 'INPUT'
+            ? target
+            : target.getElementsByTagName('input')[0];
+        const initialType = input.type;
+        input.type = 'text';
+        try {
+          // @ts-expect-error
+          input.value = (event.clipboardData ?? window.clipboardData).getData(
+            'text/plain'
+          );
+          if (typeof props.onValueChange === 'function')
+            props.onValueChange(input.value);
+          else if (typeof props.onChange === 'function')
+            props.onChange(
+              event as unknown as React.ChangeEvent<HTMLInputElement>
+            );
+          else
+            console.error('Input does not have an onChange event listener', {
+              event,
+            });
+        } catch (error: unknown) {
+          console.error(error);
+        }
+
+        event.preventDefault();
+        input.type = initialType;
+      }
+      props.onPaste?.(event);
+    },
   })),
   Number: wrap<
     'input',
@@ -397,7 +431,7 @@ export const Container = {
   Full: wrap('section', className.containerFull),
   Base: wrap('section', className.containerBase),
 };
-export const Progress = wrap(
+export const Progress = wrap<'progress', { readonly value: number }>(
   'progress',
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
   {

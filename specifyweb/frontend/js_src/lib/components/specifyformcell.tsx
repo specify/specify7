@@ -4,7 +4,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import type { FormMode } from '../parseform';
+import type { FormMode, FormType } from '../parseform';
 import type { CellTypes } from '../parseformcells';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
@@ -16,6 +16,7 @@ const cellRenderers: {
     readonly id: number | undefined;
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
+    readonly formType: FormType;
   }) => JSX.Element;
 } = {
   Field({
@@ -24,6 +25,7 @@ const cellRenderers: {
     id,
     formatId,
     resource,
+    formType,
   }) {
     return (
       <FormField
@@ -33,6 +35,7 @@ const cellRenderers: {
         fieldDefinition={fieldDefinition}
         fieldName={fieldName}
         isRequired={isRequired}
+        formType={formType}
       />
     );
   },
@@ -80,20 +83,16 @@ export function FormCell({
   cellData,
   id,
   formatId,
+  formType,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
   readonly cellData: CellTypes[keyof CellTypes];
   readonly id: number | undefined;
   readonly formatId: (id: string) => string;
+  readonly formType: FormType;
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type] as (props: {
-    readonly mode: FormMode;
-    readonly cellData: CellTypes[keyof CellTypes];
-    readonly id: number | undefined;
-    readonly formatId: (id: string) => string;
-    readonly resource: SpecifyResource<AnySchema>;
-  }) => JSX.Element;
+  const Render = cellRenderers[cellData.type];
   return (
     <Render
       resource={resource}
@@ -101,6 +100,7 @@ export function FormCell({
       cellData={cellData}
       id={id}
       formatId={formatId}
+      formType={formType}
     />
   );
 }

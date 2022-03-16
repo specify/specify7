@@ -91,6 +91,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
     resource.on('change', updateTitle);
     updateTitle();
+    return (): void => resource.off('change', updateTitle);
   }, [resource]);
 
   // Build the view
@@ -100,7 +101,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   );
   React.useEffect(() => {
     if (container === null) return;
-    Promise.all([buildView(), resource.fetchIfNotPopulated()] as const)
+    Promise.all([buildView(), resource.fetchPromise()] as const)
       .then(([form]) => {
         setState('main');
 

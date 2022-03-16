@@ -4,7 +4,6 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import QueryCbxSearch from '../querycbxsearch';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
@@ -13,6 +12,7 @@ import { clamp } from '../wbplanviewhelper';
 import { Button, className, Input } from './basic';
 import { crash } from './errorboundary';
 import { Dialog } from './modaldialog';
+import { QueryComboBoxSearch } from './querycbxsearch';
 
 export function RecordSelectorButtons({
   onAdd: handleAdd,
@@ -140,37 +140,41 @@ function Search<SCHEMA extends AnySchema>({
   otherSideName,
   parentUrl,
   onAdd: handleAdd,
+  onClose: handleClose,
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly otherSideName: string;
   readonly parentUrl: string;
   readonly onAdd: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onClose: () => void;
 }): JSX.Element {
-  React.useEffect(() => {
-    if (containerRef.current === null) return;
-    // TODO: rewrite to React
-    const view = new QueryCbxSearch({
-      el: containerRef.current,
-      model: new model.Resource(
+  const resource = React.useMemo(
+    () =>
+      new model.Resource(
         {},
         {
           noBusinessRules: true,
           noValidation: true,
         }
       ),
-      selected(resource: SpecifyResource<SCHEMA>) {
+    [model]
+  );
+  return (
+    <QueryComboBoxSearch<SCHEMA>
+      templateResource={resource}
+      forceCollection={undefined}
+      extraFilters={undefined}
+      onSelected={(resource): void => {
         resource.set(otherSideName, parentUrl as any);
         resource
           .save()
           .then(() => handleAdd(resource))
-          .catch(crash);
-      },
-    }).render();
-    return (): void => view.remove();
-  }, [model, otherSideName, parentUrl]);
-
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-  return <div ref={containerRef} />;
+          .catch(crash)
+          .finally(handleClose);
+      }}
+      onClose={handleClose}
+    />
+  );
 }
 
 // FIXME: review and remove comments in all files
@@ -324,10 +328,11 @@ export function RecordSelector<SCHEMA extends AnySchema>({
             model={model}
             otherSideName={defined(field?.otherSideName)}
             parentUrl={defined(relatedResource).url()}
-            onAdd={(record) => {
+            onAdd={(record): void => {
               handleAdded(record);
               handleSlide(totalCount);
             }}
+            onClose={(): void => setState('main')}
           />
         ) : undefined}
       </>

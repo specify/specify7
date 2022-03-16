@@ -15,14 +15,12 @@ import formsText from '../localization/forms';
 import type { RR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
-import { UiPlugin } from '../uiplugin';
 import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
-import createBackboneView from './reactbackboneextend';
 import { useSaveBlockers } from './resource';
 
-function isInputSupported(type: string): boolean {
+export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
   const value = 'a';
   input.setAttribute('type', type);
@@ -55,28 +53,49 @@ let monthSupported = isInputSupported('month');
 let inputFullFormat = databaseDateFormat;
 let inputMonthFormat = 'YYYY-MM';
 
-function PartialDateUi<SCHEMA extends AnySchema>({
-  model,
+function checkBrowserSupport(): void {
+  if (!accessibleDatePickerEnabled()) {
+    dateType = 'text';
+    dateSupported = false;
+  }
+  if (!dateSupported) inputFullFormat = fullDateFormat();
+
+  if (!accessibleMonthPickerEnabled()) {
+    monthType = 'text';
+    monthSupported = false;
+  }
+  if (!monthSupported) inputMonthFormat = monthFormat();
+}
+
+export function PartialDateUi<SCHEMA extends AnySchema>({
+  resource,
   dateField,
   precisionField,
   defaultPrecision,
-  readOnly,
-  inputId,
+  defaultValue,
+  isReadOnly,
+  id,
 }: {
-  readonly model: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA>;
   readonly dateField: keyof SCHEMA['fields'] & string;
-  readonly precisionField: keyof SCHEMA['fields'] & string;
+  readonly precisionField: (keyof SCHEMA['fields'] & string) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
-  readonly readOnly: boolean;
-  readonly inputId: string;
+  readonly defaultValue: 'today' | undefined;
+  readonly isReadOnly: boolean;
+  readonly id: string | undefined;
 }): JSX.Element {
+  React.useEffect(checkBrowserSupport, []);
+
   const [precision, setPrecision] = React.useState<PartialDatePrecision>(
     () =>
-      reversePrecision[model.get(precisionField) as 1 | 2 | 3] ??
+      reversePrecision[resource.get(precisionField ?? '') as 1 | 2 | 3] ??
       defaultPrecision
   );
 
-  const errors = useSaveBlockers({ model, fieldName: dateField as string });
+  const errors = useSaveBlockers({
+    model: resource,
+    fieldName: dateField as string,
+  });
   const { inputRef, validationRef } = useValidation(errors);
 
   // Parsed date object
@@ -88,40 +107,40 @@ function PartialDateUi<SCHEMA extends AnySchema>({
   const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
-    let destructorCalled = false;
+    if (resource.isNew() && defaultValue === 'today')
+      resource.set(dateField, getDateInputValue(new Date()) as never);
 
     function setInput(): void {
-      if (destructorCalled) return;
-
-      const value = model.get(dateField);
+      const value = resource.get(dateField);
       setMoment(
         value === null ? undefined : dayjs(value, databaseDateFormat, true)
       );
     }
 
-    function changePrecision(): void {
-      if (destructorCalled) return;
+    const changePrecision = (): void =>
       setPrecision(
-        reversePrecision[model.get(precisionField) as 1 | 2 | 3] ??
+        reversePrecision[resource.get(precisionField ?? '') as 1 | 2 | 3] ??
           defaultPrecision
       );
-    }
 
-    model.on(`change:${dateField}`, setInput);
-    model.on(`change:${precisionField}`, changePrecision);
+    resource.on(`change:${dateField}`, setInput);
+    if (typeof precisionField === 'string')
+      resource.on(`change:${precisionField}`, changePrecision);
 
     setInput();
     changePrecision();
 
     return (): void => {
-      destructorCalled = true;
+      resource.off(`change:${dateField}`, setInput);
+      if (typeof precisionField === 'string')
+        resource.off(`change:${precisionField}`, changePrecision);
     };
-  }, [model, dateField, precisionField, defaultPrecision]);
+  }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
 
   const refIsFirstRender = React.useRef(true);
   React.useEffect(() => {
     /*
-     * Don't update the value in the model on the initial useEffect execution
+     * Don't update the value in the resource on the initial useEffect execution
      * since "moment" is still undefined
      */
     if (refIsFirstRender.current)
@@ -130,18 +149,16 @@ function PartialDateUi<SCHEMA extends AnySchema>({
       };
 
     if (typeof moment === 'undefined') {
-      // @ts-expect-error
-      model.set(dateField, null);
-      // @ts-expect-error
-      model.set(precisionField, null);
-      model.saveBlockers.remove(`invaliddate:${dateField}`);
+      resource.set(dateField, null as never);
+      if (typeof precisionField === 'string')
+        resource.set(precisionField, null as never);
+      resource.saveBlockers.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
-      // @ts-expect-error
-      model.set(dateField, value);
-      // @ts-expect-error
-      model.set(precisionField, precisions[precision]);
-      model.saveBlockers.remove(`invaliddate:${dateField}`);
+      resource.set(dateField, value as never);
+      if (typeof precisionField === 'string')
+        resource.set(precisionField, precisions[precision] as never);
+      resource.saveBlockers.remove(`invaliddate:${dateField}`);
     } else {
       const validationMessage =
         precision === 'full'
@@ -149,14 +166,14 @@ function PartialDateUi<SCHEMA extends AnySchema>({
           : precision === 'month-year'
           ? formsText('requiredFormat')(monthFormat())
           : formsText('invalidDate');
-      model.saveBlockers.add(
+      resource.saveBlockers.add(
         `invaliddate:${dateField}`,
         dateField,
         validationMessage
       );
     }
     return undefined;
-  }, [model, moment, precision, dateField, precisionField]);
+  }, [resource, moment, precision, dateField, precisionField]);
 
   function handleChange() {
     const input = inputRef.current;
@@ -194,7 +211,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
 
   return (
     <div className="gap-x-1 flex">
-      {!readOnly && (
+      {!isReadOnly && (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
           <Select
@@ -205,9 +222,10 @@ function PartialDateUi<SCHEMA extends AnySchema>({
               const precision = target.value as PartialDatePrecision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];
-              // @ts-expect-error Typing for dynamic references is not great
-              model.set(precisionField, precisionIndex);
-              model.saveBlockers.remove(`invaliddate:${dateField}`);
+              if (typeof precisionField === 'string')
+                // @ts-expect-error Typing for dynamic references is not great
+                resource.set(precisionField, precisionIndex);
+              resource.saveBlockers.remove(`invaliddate:${dateField}`);
             }}
             onBlur={(): void => {
               let newMoment = dayjs(moment);
@@ -233,8 +251,8 @@ function PartialDateUi<SCHEMA extends AnySchema>({
             : commonText('fullDate')}
         </span>
         <Input.Generic
-          id={inputId}
-          readOnly={readOnly}
+          id={id}
+          readOnly={isReadOnly}
           forwardRef={validationRef}
           {...(precision === 'year'
             ? {
@@ -253,9 +271,6 @@ function PartialDateUi<SCHEMA extends AnySchema>({
                 onValueChange(value): void {
                   setInputValue(value);
                   setMoment(undefined);
-                },
-                onPaste(event): void {
-                  handleDatePaste(event, handleChange);
                 },
                 ...(precision === 'month-year'
                   ? {
@@ -287,7 +302,7 @@ function PartialDateUi<SCHEMA extends AnySchema>({
               })}
         />
       </label>
-      {!readOnly &&
+      {!isReadOnly &&
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
         <Button.Icon
@@ -301,86 +316,13 @@ function PartialDateUi<SCHEMA extends AnySchema>({
   );
 }
 
-const View = createBackboneView(PartialDateUi, false);
-
-export default UiPlugin.extend(
-  {
-    __name__: 'PartialDateUI',
-    render() {
-      if (!accessibleDatePickerEnabled()) {
-        dateType = 'text';
-        dateSupported = false;
-      }
-      if (!dateSupported) inputFullFormat = fullDateFormat();
-
-      if (!accessibleMonthPickerEnabled()) {
-        monthType = 'text';
-        monthSupported = false;
-      }
-      if (!monthSupported) inputMonthFormat = monthFormat();
-
-      if (
-        this.model.isNew() &&
-        `${this.$el.data('specify-default')}`.toLowerCase() === 'today'
-      ) {
-        this.model.set(this.init.df, getDateInputValue(new Date()));
-      }
-
-      this.model.fetchIfNotPopulated().then(this._render());
-    },
-    _render() {
-      this.id = this.$el.prop('id');
-      this.view = new View<AnySchema>({
-        model: this.model,
-        dateField: this.init.df.toLowerCase(),
-        precisionField: this.init.tp.toLowerCase(),
-        defaultPrecision: ['year', 'month-year'].includes(
-          this.init.defaultprecision
-        )
-          ? this.init.defaultprecision
-          : 'full',
-        readOnly: Boolean(this.$el.prop('disabled')),
-        inputId: this.id,
-      }).render();
-
-      this.$el.replaceWith(this.view.el);
-      this.setElement(this.view.el);
-
-      this.label = this.$el.parents().last().find(`label[for="${this.id}"]`)[0];
-      if (!this.label.textContent)
-        this.label.textContent = this.model.specifyModel.getField(
-          this.init.df
-        ).label;
-    },
-    remove() {
-      this.view.remove();
-      UiPlugin.prototype.remove.call(this);
-    },
+// FIXME: migrate this
+export default UiPlugin.extend({
+  _render() {
+    this.label = this.$el.parents().last().find(`label[for="${this.id}"]`)[0];
+    if (!this.label.textContent)
+      this.label.textContent = this.model.specifyModel.getField(
+        this.init.df
+      ).label;
   },
-  { pluginsProvided: ['PartialDateUI'] }
-);
-
-export function handleDatePaste(
-  event: React.ClipboardEvent<HTMLInputElement>,
-  updateHandler: () => void
-): void {
-  const target = event.target as HTMLInputElement;
-  const input =
-    target.tagName === 'INPUT'
-      ? target
-      : target.getElementsByTagName('input')[0];
-  const initialType = input.type;
-  input.type = 'text';
-  try {
-    // @ts-expect-error
-    input.value = (event.clipboardData ?? window.clipboardData).getData(
-      'text/plain'
-    );
-    updateHandler();
-  } catch (error) {
-    console.error(error);
-  }
-
-  event.preventDefault();
-  input.type = initialType;
-}
+});

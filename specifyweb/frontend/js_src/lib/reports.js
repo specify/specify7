@@ -6,15 +6,15 @@ import Backbone from './backbone';
 
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
+// FIXME: resolve usages
 import {parseSpecifyProperties,} from './parsespecifyproperties';
-import AttachmentPlugin from './attachmentplugin';
+import {AttachmentView} from './components/attachmentplugin';
 import * as attachments from './attachments';
 import {userInformation} from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
 import {csrfToken} from './csrftoken';
-import populateForm from './populateform';
 import * as navigation from './navigation';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
@@ -237,11 +237,12 @@ var FixImagesDialog = Backbone.View.extend({
         if (!attachments) return;
 
         var index = this.$('.missing-attachments button').index(evt.currentTarget);
-        var attachmentPlugin = new AttachmentPlugin({populateForm: populateForm});
+        var attachmentPlugin = new AttachmentView({
+            onUploadComplete: this.uploadComplete.bind(this, index),
+        });
         makeDialog(attachmentPlugin.render().$el, {
             title: formsText('missingAttachmentsFixDialogTitle')
         });
-        attachmentPlugin.on('uploadcomplete', this.uploadComplete.bind(this, index));
     },
     uploadComplete: function(index, attachment) {
         attachment.set('title', this.imageFixResult.missingAttachments[index]);
@@ -563,7 +564,7 @@ function fixupImages(reportXML) {
                 missingAttachments.push(filename);
                 imageUrl = badImageUrl;
             } else {
-                imageUrl = attachments.systemAvailable() ?
+                imageUrl = attachments.attachmentsAvailable() ?
                     '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"' :
                     badImageUrl;
             }

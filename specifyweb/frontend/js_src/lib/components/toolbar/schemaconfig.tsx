@@ -11,7 +11,6 @@ import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
-import { webLinksDefs } from '../../weblinkbutton';
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
@@ -23,6 +22,7 @@ import type {
   UiFormatter,
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
+import { webLinksDefs } from '../weblinkbutton';
 
 type Props = {
   readonly onClose: () => void;

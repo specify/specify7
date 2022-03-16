@@ -20,14 +20,16 @@ export function PickListFieldComboBox(
   }, [props.resource]);
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);
   React.useEffect(() => {
-    props.resource.on('change:tableName change:type', () => setItems(getItems));
+    const handleChange = () => setItems(getItems);
+    props.resource.on('change:tableName change:type', handleChange);
+    return (): void =>
+      props.resource.off('change:tableName change:type', handleChange);
   }, [props.resource, getItems]);
 
   return (
     <PickListComboBox
       {...props}
       items={items}
-      fieldName="fieldName"
       onAdd={undefined}
       pickList={undefined}
       isDisabled={items.length === 0}

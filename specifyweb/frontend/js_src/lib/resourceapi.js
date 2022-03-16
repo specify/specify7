@@ -6,6 +6,7 @@ import {assert} from './assert';
 import {globalEvents} from './specifyapi';
 import * as querystring from './querystring';
 import {resourceFromUri, resourceViewUrl} from './resource';
+import {getResourceAndField} from './components/resource';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -495,10 +496,7 @@ function eventHandlerForToOne(related, field) {
             return resource.fetch();
         },
         fetchPromise(options){
-            return new Promise((resolve,reject)=>this.fetchIfNotPopulated(options).done(resolve).fail(jqxhr=>{
-                jqxhr.errorHandled = true;
-                reject(jqxhr);
-            }));
+            return deferredToPromise(this.fetchIfNotPopulated(options));
         },
         parse: function(_resp) {
             // since we are putting in data, the resourcgfse in now populated
@@ -537,17 +535,8 @@ function eventHandlerForToOne(related, field) {
             }
             return Backbone.sync(method, resource, options);
         },
-        getResourceAndField: function(fieldName) {
-            var field = this.specifyModel.getField(fieldName);
-
-            var path = fieldName.split('.');
-            var getResource = path.length == 1 ? this.fetchIfNotPopulated() : (
-                path.pop(), this.rget(path, true)
-            );
-
-            return getResource.pipe(function(resource) {
-                return [resource, field];
-            });
+        async getResourceAndField(fieldName) {
+            return getResourceAndField(this, fieldName);
         },
         placeInSameHierarchy: function(other) {
             var self = this;
@@ -566,12 +555,15 @@ function eventHandlerForToOne(related, field) {
             assert(model.specifyModel === this.specifyModel);
             return model;
         },
-        idFromUrl: function(url) {
-            // Assuming urls are constructed by ResourceBase.url method
-            var urlChunks = url.split('/');
-            return urlChunks[urlChunks.length - 2];
-        }
-
     });
 
 export default ResourceBase;
+
+
+export const deferredToPromise = async (deferred) =>
+  new Promise((resolve, reject) =>
+    deferred.done(resolve).fail((jqxhr) => {
+      jqxhr.errorHandled = true;
+      reject(jqxhr);
+    })
+  );

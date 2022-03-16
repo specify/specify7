@@ -5,7 +5,7 @@ import Backbone from './backbone';
 
 import {schema} from './schema';
 import specifyform from './specifyform';
-import QueryCbxSearch from './querycbxsearch';
+import {QueryComboBoxSearch} from './components/querycbxsearch';
 import subviewheader from './templates/subviewheader.html';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -90,14 +90,14 @@ export default Backbone.View.extend({
                     noValidation: true
                 });
 
-                var _this = this;
-                this.dialog = new QueryCbxSearch({
-                    model: searchTemplateResource,
+                this.dialog = new QueryComboBoxSearch({
+                    forceCollection: undefined,
+                    resource: searchTemplateResource,
                     populateForm: this.populateForm,
-                    selected: function(resource) {
-                        _this.model.set(_this.fieldName, resource);
-                    }
-                }).render().$el.on('remove', function() { _this.dialog = null; });
+                    onSelected: (resource)=>
+                        this.model.set(this.fieldName, resource),
+                    onClose: ()=>this.dialog.remove(),
+                }).render();
             }
         },
         delete: function() {

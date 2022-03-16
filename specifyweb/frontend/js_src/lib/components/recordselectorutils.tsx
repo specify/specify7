@@ -23,6 +23,7 @@ import createBackboneView from './reactbackboneextend';
 import type { RecordSelectorProps } from './recordselector';
 import { RecordSelector, RecordSelectorButtons } from './recordselector';
 import { ResourceView } from './resourceview';
+import { removeItem } from './wbplanviewstate';
 
 function getDefaultIndex(queryParameter: string, lastIndex: number): number {
   const parameters = queryString.parse();
@@ -79,7 +80,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   // Fetch records if needed
   React.useEffect(() => {
     if (isLazy)
-      Promise.resolve(collection.fetchIfNotPopulated())
+      Promise.resolve(collection.fetchPromise())
         .then(handleLoaded)
         .then(() => setRecords(getRecords))
         .catch(crash);
@@ -420,7 +421,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
       onDelete={(): void => {
         setItems({
           totalCount: totalCount - 1,
-          ids: [...ids.slice(0, index), ...ids.slice(index + 1)],
+          ids: removeItem(ids, index),
         });
         setIndex((previousIndex) =>
           clamp(0, totalCount - 1, previousIndex > index ? index - 1 : index)

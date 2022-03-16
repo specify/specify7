@@ -84,12 +84,6 @@ const wbText = createDictionary({
     ca: 'Revert',
     'es-es': 'Revert',
   },
-  geoLocate: {
-    'en-us': 'GEoLocate',
-    'ru-ru': 'GEOLocate',
-    ca: 'GEOLocate',
-    'es-es': 'GEoLocate',
-  },
   dataMapper: {
     'en-us': 'Data Mapper',
     'ru-ru': 'Сопоставления',
@@ -936,18 +930,6 @@ const wbText = createDictionary({
     'ru-ru': 'Кодировка символов:',
     ca: 'Character encoding:',
     'es-es': 'Character encoding:',
-  },
-  filePickerMessage: {
-    'en-us': 'Choose a file or drag it here',
-    'ru-ru': 'Выберите файл или перетащите его сюда',
-    ca: 'Choose a file or drag it here',
-    'es-es': 'Choose a file or drag it here',
-  },
-  selectedFileName: {
-    'en-us': (fileName: string) => `Selected file: ${fileName}`,
-    'ru-ru': (fileName: string) => `Выбранный файл: ${fileName}`,
-    ca: (fileName: string) => `Selected file: ${fileName}`,
-    'es-es': (fileName: string) => `Selected file: ${fileName}`,
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',

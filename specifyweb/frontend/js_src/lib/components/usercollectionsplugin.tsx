@@ -71,61 +71,63 @@ function UserCollectionsUi({
     </Dialog>
   );
 }
+
 const fetchAllCollections = async () =>
   fetchCollection('Collection', { limit: 0 });
+
 export function UserCollectionsPlugin({
   resource,
 }: {
   readonly resource: SpecifyResource<SpecifyUser>;
 }): JSX.Element {
   const [allCollections] = useAsyncState(fetchAllCollections);
-  const [selectedCollections, setSelectedCollections] = useAsyncState(
+  const [selectedCollections] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<number>>(`/context/user_collection_access/${this.user.id}/`, {
+        ajax<RA<number>>(`/context/user_collection_access/${resource.id}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
-      [resource]
+      [resource.id]
     )
   );
-  return <Button.Simple>{adminText('collections')}</Button.Simple>;
-}
-
-export default UiPlugin.extend(
-  {
-    __name__: 'UserCollectionsPlugin',
-    events: {
-      click: 'click',
-    },
-    render() {
-      if (this.user.get('isadmin')) {
-        this.el.disabled = true;
-        this.el.setAttribute('title', adminText('notAvailableOnAdmins'));
-        return this;
-      }
-
-      Promise.all([this.user.fetchPromise(), this.allCollections]).then(() => {
-        this.el.textContent = adminText('collections');
-        this.user.isNew() &&
-          this.$el
-            .attr('title', adminText('saveUserFirst'))
-            .prop('disabled', true);
-      });
-      return this;
-    },
-    click() {
-      Promise.all([this.selectedCollections, this.allCollections]).then(
-        ([selectedCollections, allCollections]) => {
-          const handleClose = (): void => void view.remove();
-          const view = new SetCollectionsView({
-            userId: this.user.id,
-            selectedCollections,
-            allCollections,
-            onClose: handleClose,
-          }).render();
+  const [user] = useAsyncState(
+    React.useCallback(async () => resource.fetchPromise(), [resource])
+  );
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
+    <>
+      <Button.Simple
+        onClick={handleOpen}
+        disabled={
+          !resource.get('isAdmin') ||
+          typeof user === 'undefined' ||
+          !Array.isArray(allCollections) ||
+          !Array.isArray(selectedCollections) ||
+          user.isNew()
         }
-      );
-    },
-  },
-  { pluginsProvided: ['UserCollectionsUI'] }
-);
+        title={
+          resource.get('isAdmin')
+            ? adminText('notAvailableOnAdmins')
+            : typeof user === 'undefined'
+            ? commonText('loading')
+            : user.isNew()
+            ? adminText('saveUserFirst')
+            : undefined
+        }
+      >
+        {adminText('collections')}
+      </Button.Simple>
+      {isOpen &&
+      typeof user === 'object' &&
+      Array.isArray(allCollections) &&
+      Array.isArray(selectedCollections) ? (
+        <UserCollectionsUi
+          userId={user.id}
+          allCollections={allCollections}
+          selectedCollections={selectedCollections}
+          onClose={handleClose}
+        />
+      ) : undefined}
+    </>
+  );
+}

@@ -16,7 +16,8 @@ import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, Input } from './basic';
-import { useBooleanState, useTitle } from './hooks';
+import { FilePicker } from './filepicker';
+import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 
@@ -369,109 +370,26 @@ function ChooseEncoding(props: {
   );
 }
 
+const fileMimeMapper: IR<FileType> = {
+  'text/csv': 'csv',
+  'text/tab-separated-values': 'csv',
+  'text/plain': 'csv',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xls',
+};
+
 function ChooseFile(props: { update: HandleAction }) {
-  const [isDragging, setIsDragging] = React.useState<boolean>(false);
-  const filePickerButton = React.useRef<HTMLButtonElement>(null);
-
-  function handleFileSelected(
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void {
-    if (handleFileChange(event.target.files?.[0])) event.target.value = '';
-  }
-
-  function handleFileDropped(event: React.DragEvent): void {
-    const file = event.dataTransfer?.items?.[0].getAsFile() ?? undefined;
-    handleFileChange(file);
-    preventPropagation(event);
-    setIsDragging(false);
-  }
-
-  function handleFileChange(file: File | undefined): boolean {
-    if (file) {
-      const fileMimeMapper: IR<FileType> = {
-        'text/csv': 'csv',
-        'text/tab-separated-values': 'csv',
-        'text/plain': 'csv',
-        'application/vnd.ms-excel': 'xls',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-          'xls',
-      };
-      props.update({
-        type: 'FileSelectedAction',
-        file,
-        fileType: fileMimeMapper[file.type] ?? 'xls',
-      });
-      setFileName(file.name);
-      return true;
-    } else {
-      setFileName(undefined);
-      return false;
-    }
-  }
-
-  function handleDragEnter(event: React.DragEvent): void {
-    setIsDragging(event.dataTransfer?.items?.length !== 0 ?? false);
-    preventPropagation(event);
-  }
-
-  function handleDragLeave(event: React.DragEvent): void {
-    if (
-      event.relatedTarget === null ||
-      filePickerButton.current === null ||
-      event.target !== filePickerButton.current ||
-      filePickerButton.current.contains(event.relatedTarget as Node)
-    )
-      return;
-    setIsDragging(false);
-    preventPropagation(event);
-  }
-
-  function preventPropagation(event: React.DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  const [fileName, setFileName] = React.useState<string | undefined>(undefined);
-  const [isFocused, handleFocus, handleBlur] = useBooleanState();
-
   return (
-    <label
-      className="contents"
-      onDrop={handleFileDropped}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={preventPropagation}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-    >
-      <input
-        type="file"
-        accept=".csv,.tsv,.txt,.xls,.xlsx"
-        onChange={handleFileSelected}
-        className="sr-only"
-      />
-      <span
-        ref={filePickerButton}
-        className={`align-center button h-44 flex justify-center text-center
-          ${
-            isDragging
-              ? 'bg-white dark:bg-neutral-700 ring ring-brand-200 dark:ring-brand-400'
-              : ''
-          }
-          ${isFocused ? 'ring' : ''} col-span-2`}
-      >
-        <span>
-          {wbText('filePickerMessage')}
-          {typeof fileName === 'string' && (
-            <>
-              <br />
-              <br />
-              <b>{wbText('selectedFileName')(fileName)}</b>
-            </>
-          )}
-        </span>
-      </span>
-    </label>
+    <FilePicker
+      onSelected={(file) =>
+        props.update({
+          type: 'FileSelectedAction',
+          file,
+          fileType: fileMimeMapper[file.type] ?? 'xls',
+        })
+      }
+      acceptedFormats={['.csv', '.tsv', '.txt', '.xls', '.xlsx']}
+    />
   );
 }
 

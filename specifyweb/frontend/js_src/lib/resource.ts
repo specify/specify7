@@ -70,7 +70,13 @@ export function resourceFromUri(
   return new (defined(getModel(tableName)).Resource)({ id }, options);
 }
 
-/*
+/** Assuming urls are constructed by ResourceBase.url method */
+export function idFromUrl(url: string): number | undefined {
+  const id = Number.parseInt(url.split('/').slice(-2)[0] ?? '');
+  return Number.isNaN(id) ? undefined : id;
+}
+
+/**
  * This needs to exist due to type conflicts between AnySchema and table
  * schemas defined in datamodel.ts
  */

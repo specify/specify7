@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -66,10 +66,10 @@ const localityText = createDictionary({
     'es-es': 'Geography Required',
   },
   geographyRequiredDialogHeader: {
-    'en-us': header('Geography must be mapped'),
-    'ru-ru': header('География должна быть связана'),
-    ca: header('Geography must be mapped'),
-    'es-es': header('Geography must be mapped'),
+    'en-us': 'Geography must be mapped',
+    'ru-ru': 'География должна быть связана',
+    ca: 'Geography must be mapped',
+    'es-es': 'Geography must be mapped',
   },
   geographyRequiredDialogMessage: {
     'en-us':

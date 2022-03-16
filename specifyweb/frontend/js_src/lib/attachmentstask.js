@@ -83,7 +83,7 @@ export const AttachmentsView = Backbone.View.extend({
                 alt: model.label
             })).appendTo(cell);
 
-            attachments.getThumbnail(attachment, 123).done((img)=>
+            attachments.fetchThumbnail(attachment, 123).done((img)=>
                 $('<button>',{
                     class: 'bg-white dark:bg-black rounded shadow-lg shadow-gray-500 specify-attachment-thumbnail flex justify-center items-center',
                     title,
@@ -151,7 +151,7 @@ export const AttachmentsView = Backbone.View.extend({
         openOriginal: function(evt) {
             var index = this.$('.specify-attachment-thumbnail').index(evt.currentTarget);
             var attachment = this.attachments.at(index);
-            attachments.openOriginal(attachment);
+            attachments.fetchOriginalUrl(attachment).then(window.open);
         },
         openDataObj: function(evt) {
             var self = this;

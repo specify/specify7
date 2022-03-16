@@ -168,7 +168,8 @@ function TreeView<SCHEMA extends AnyTree>({
               )
               .catch(console.error);
           }}
-          renderSearchBox={(inputProps): JSX.Element => (
+        >
+          {(inputProps): JSX.Element => (
             <Input.Generic
               forwardRef={searchBoxRef}
               placeholder={treeText('searchTreePlaceholder')}
@@ -177,7 +178,7 @@ function TreeView<SCHEMA extends AnyTree>({
               {...inputProps}
             />
           )}
-        />
+        </Autocomplete>
         <span className="flex-1 -ml-2" />
         <TreeViewActions<SCHEMA>
           tableName={tableName}

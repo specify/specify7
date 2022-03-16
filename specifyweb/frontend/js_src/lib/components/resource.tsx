@@ -61,9 +61,10 @@ export function useSaveBlockers({
 }): string {
   const [errors, setErrors] = React.useState<string>('');
   React.useEffect(() => {
-    model.on('blockerschanged', () =>
-      setErrors(model.saveBlockers.getFieldErrors(fieldName).join('\n'))
-    );
+    const handleChange = (): void =>
+      setErrors(model.saveBlockers.getFieldErrors(fieldName).join('\n'));
+    model.on('blockerschanged', handleChange);
+    return (): void => model.off('blockerschanged', handleChange);
   }, [model, fieldName]);
   return errors;
 }
@@ -77,4 +78,38 @@ export function useValidationAttributes(
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;
+}
+
+export async function getResourceAndField(
+  model: SpecifyResource<AnySchema>,
+  fieldName: string | undefined
+): Promise<
+  | {
+      readonly resource: SpecifyResource<AnySchema>;
+      readonly field: LiteralField | Relationship;
+    }
+  | undefined
+> {
+  const path = fieldName?.split('.') ?? [];
+  const getResource =
+    path.length === 0
+      ? Promise.resolve(undefined)
+      : path.length == 1
+      ? model.fetchPromise()
+      : model.rgetPromise(path.slice(0, -1).join('.'), true);
+
+  return getResource.then((resource) => {
+    const field = model.specifyModel.getField(fieldName ?? '');
+    if (typeof field === 'undefined')
+      console.error(`Unknown field ${fieldName ?? ''}`, { resource });
+    else if (typeof resource === 'undefined' || resource === null)
+      /*
+       * Actually this probably shouldn't be an error. it can
+       * happen, for instance, in the collectors list if
+       * the collector has not been defined yet.
+       */
+      console.error("resource doesn't exist");
+    else return { resource, field };
+    return undefined;
+  });
 }

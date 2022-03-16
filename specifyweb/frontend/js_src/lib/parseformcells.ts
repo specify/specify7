@@ -7,7 +7,7 @@ import { parseFormCell } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
 import type { IR, RA } from './types';
-import { defined, filterArray } from './types';
+import { filterArray } from './types';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -34,7 +34,7 @@ export type CellTypes = {
   readonly Field: State<
     'Field',
     {
-      fieldName: string;
+      fieldName: string | undefined;
       fieldDefinition: FormFieldDefinition;
       isRequired: boolean;
     }
@@ -57,7 +57,7 @@ export type CellTypes = {
     {
       name: string | undefined;
       viewName: string | undefined;
-      defaultType: FormType;
+      formType: FormType;
       // FIXME: get rid of this
       properties: IR<string>;
       isButton: boolean;
@@ -85,7 +85,7 @@ const processCellType: {
   readonly [KEY in keyof CellTypes]: (cell: Element) => CellTypes[KEY];
 } = {
   Field(cell) {
-    const fieldName = defined(cell.getAttribute('name') ?? undefined).replace(
+    const fieldName = cell.getAttribute('name')?.replace(
       // Hack for QueryComboBox search fields that have spurious prefixes.
       /^(\w+\.)*/,
       ''
@@ -117,7 +117,7 @@ const processCellType: {
   SubView(cell) {
     const name = cell.getAttribute('name') ?? undefined;
     const viewName = cell.getAttribute('viewName') ?? undefined;
-    const defaultType = cell.getAttribute('defaultType') ?? '';
+    const formType = cell.getAttribute('defaultType') ?? '';
     const initialize = parseSpecifyProperties(
       cell.getAttribute('initialize') ?? ''
     );
@@ -128,8 +128,8 @@ const processCellType: {
         typeof initialize === 'string'
           ? parseSpecifyProperties(initialize)
           : {},
-      defaultType: formTypes.includes(defaultType as FormType)
-        ? (defaultType as FormType)
+      formType: formTypes.includes(formType as FormType)
+        ? (formType as FormType)
         : ('form' as const),
       name,
       viewName,

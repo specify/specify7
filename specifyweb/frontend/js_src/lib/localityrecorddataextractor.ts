@@ -88,10 +88,10 @@ async function recursiveResourceResolve(
     return [];
 
   if (
-    'fetchIfNotPopulated' in resource &&
+    'fetchPromise' in resource &&
     (typeof resource.related === 'undefined' || !resource.related.isNew())
   )
-    await resource.fetchIfNotPopulated();
+    await resource.fetchPromise();
 
   if (valueIsTreeRank(currentPart[0])) {
     const treeTableName = getTableFromMappingPath('Locality', pastParts);

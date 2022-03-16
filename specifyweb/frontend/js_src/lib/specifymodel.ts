@@ -73,9 +73,6 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly fetchPromise: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
-  readonly fetchIfNotPopulated: (filter?: {
-    readonly limit: number;
-  }) => Promise<Collection<SCHEMA>>;
   readonly trigger: (eventName: string) => void;
   readonly on: (
     eventName: string,
@@ -174,12 +171,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     // A Backbone collection for lazy loading a collection of items of this type.
     this.LazyCollection = collectionapi.Lazy.extend({
       __name__: `${this.name}LazyCollection`,
-      model: this.Resource,
-    });
-
-    // A Backbone collection for loading a fixed collection of items of this type.
-    this.StaticCollection = collectionapi.Static.extend({
-      __name__: `${this.name}StaticCollection`,
       model: this.Resource,
     });
 

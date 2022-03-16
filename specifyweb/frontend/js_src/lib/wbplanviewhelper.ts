@@ -214,4 +214,12 @@ export const f = {
   // Call first argument
   call: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],
+  unary:
+    <ARGUMENT, RETURN>(
+      callback: (argument: ARGUMENT) => RETURN
+    ): ((argument: ARGUMENT) => RETURN) =>
+    (argument) =>
+      callback(argument),
+  id: <T>(value: T): T => value,
+  trim: (value: string) => value.trim(),
 } as const;

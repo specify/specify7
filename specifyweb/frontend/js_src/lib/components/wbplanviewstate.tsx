@@ -10,7 +10,7 @@ import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { Button, Input, LabelForCheckbox } from './basic';
+import { Button, Input } from './basic';
 import { useBooleanState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
@@ -199,3 +199,20 @@ export const stateReducer = generateReducer<
     );
   },
 });
+
+export const insertItem = <T,>(array: RA<T>, index: number, item: T): RA<T> => [
+  ...array.slice(0, index),
+  item,
+  ...array.slice(index),
+];
+
+export const replaceItem = <T,>(
+  array: RA<T>,
+  index: number,
+  item: T
+): RA<T> => [...array.slice(0, index), item, ...array.slice(index + 1)];
+
+export const removeItem = <T,>(array: RA<T>, index: number): RA<T> => [
+  ...array.slice(0, index),
+  ...array.slice(index + 1),
+];

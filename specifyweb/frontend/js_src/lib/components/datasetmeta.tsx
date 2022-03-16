@@ -9,7 +9,7 @@ import { format } from '../dataobjformatters';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
-import resourceApi from '../resourceapi';
+import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
@@ -31,9 +31,8 @@ import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
-  const agentId = resourceApi.idFromUrl(url);
   const createdByAgentResource = new schema.models.Agent.Resource({
-    id: agentId,
+    id: idFromUrl(url),
   });
   return format(createdByAgentResource).then((formattedAgent) => (
     <Link.Default href={createdByAgentResource.viewUrl()}>

@@ -1,9 +1,7 @@
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from './datamodel';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
-import { getModel } from './schema';
 import type { IR } from './types';
 
 export type FieldTypes = {
@@ -33,7 +31,7 @@ export type FieldTypes = {
     'QueryComboBox',
     {
       readonly hasCloneButton: boolean;
-      readonly typeSearch: keyof Tables | undefined;
+      readonly typeSearch: string | undefined;
     }
   >;
   readonly Text: State<
@@ -121,11 +119,15 @@ const processFieldType: {
   QueryComboBox: (_cell, properties) => ({
     type: 'QueryComboBox',
     hasCloneButton: properties.clonebtn?.toLowerCase() === 'true',
-    typeSearch: getModel(properties.name ?? '')?.name,
+    typeSearch: properties.name,
   }),
   Plugin: (cell, properties) => ({
     type: 'Plugin',
-    pluginDefinition: parseUiPlugin(cell, properties),
+    pluginDefinition: parseUiPlugin(
+      cell,
+      properties,
+      withStringDefault(cell).defaultValue
+    ),
   }),
   FilePicker: () => ({ type: 'FilePicker' }),
 };

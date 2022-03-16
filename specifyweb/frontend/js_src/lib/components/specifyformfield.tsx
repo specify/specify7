@@ -2,69 +2,35 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import type { FormMode } from '../parseform';
+import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
 import type { IR } from '../types';
 import { defined } from '../types';
-import {
-  getValidationAttributes,
-  mergeParsers,
-  resolveParser,
-} from '../uiparse';
-import { Input, Textarea } from './basic';
+import { getValidationAttributes } from '../uiparse';
+import { Textarea } from './basic';
 import { ComboBox } from './combobox';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useResourceValue } from './hooks';
+import { QueryComboBox } from './querycombobox';
+import { getResourceAndField } from './resource';
 import { PrintOnSave, SpecifyFormCheckbox } from './specifyformcheckbox';
 import { UiPlugin } from './specifyformplugin';
-
-export function useResourceValue<T>(
-  resource: SpecifyResource<AnySchema>,
-  fieldName: string,
-  defaultValue: T | undefined
-): Readonly<[value: T | undefined, setValue: (newValue: T) => void]> {
-  const [value, setValue] = React.useState<T | undefined>(undefined);
-  const updateValue = React.useCallback(
-    function updateValue(newValue: T) {
-      setValue(newValue);
-      resource.set(fieldName, newValue);
-    },
-    [resource, fieldName]
-  );
-  React.useEffect(() => {
-    if (typeof resource.specifyModel.getField(fieldName) === 'undefined')
-      console.error(
-        `${fieldName} does not exist on ${resource.specifyModel.name}`,
-        { resource }
-      );
-
-    if (resource.isNew() && typeof defaultValue !== 'undefined')
-      resource.set(fieldName, defaultValue);
-
-    const refresh = (): void =>
-      setValue((resource.get(fieldName) as T | null) ?? defaultValue);
-
-    resource.on(`change:${fieldName}`, refresh);
-    refresh();
-    return (): void => resource.off(`change:${fieldName}`, refresh);
-  }, [resource, fieldName, defaultValue]);
-
-  return [value, updateValue] as const;
-}
+import { UiField } from './uifield';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
     readonly resource: SpecifyResource<AnySchema>;
-    readonly isReadOnly: boolean;
+    readonly mode: FormMode;
     readonly fieldDefinition: FieldTypes[KEY];
     readonly id: string | undefined;
-    readonly fieldName: string;
     readonly isRequired: boolean;
+    readonly fieldName: string | undefined;
+    readonly formType: FormType;
   }) => JSX.Element;
 } = {
   Checkbox({
     id,
     resource,
-    isReadOnly,
+    mode,
     fieldName,
     isRequired,
     fieldDefinition: { defaultValue, printOnSave },
@@ -75,64 +41,66 @@ const fieldRenderers: {
       <SpecifyFormCheckbox
         id={id}
         resource={resource}
-        fieldName={fieldName}
+        fieldName={defined(fieldName)}
         defaultValue={defaultValue}
         isRequired={isRequired}
-        isReadOnly={isReadOnly}
+        isReadOnly={mode === 'view'}
       />
     );
   },
   TextArea({
     id,
     resource,
-    isReadOnly,
+    mode,
     fieldName,
     isRequired,
     fieldDefinition: { defaultValue, rows },
   }) {
+    const { value, updateValue, validationRef, parser } = useResourceValue(
+      resource,
+      defined(fieldName),
+      React.useMemo(
+        () => ({
+          value: defaultValue,
+          required: isRequired,
+        }),
+        [defaultValue, isRequired]
+      )
+    );
+
     const [validationAttributes, setAttributes] = React.useState<IR<string>>(
       {}
     );
-    React.useEffect(() => {
-      const parser = defined(
-        resolveParser(defined(resource.specifyModel.getField(fieldName)))
-      );
-      const mergedParsers = defined(
-        mergeParsers(parser, {
-          required: isRequired,
-        })
-      );
-      setAttributes(getValidationAttributes(mergedParsers));
-    }, [resource.specifyModel, fieldName, isRequired, isReadOnly]);
-
-    const [value, setValue] = useResourceValue(
-      resource,
-      fieldName,
-      defaultValue
+    React.useEffect(
+      () => setAttributes(getValidationAttributes(parser)),
+      [parser]
     );
+
     return (
       <Textarea
+        {...validationAttributes}
+        forwardRef={validationRef}
         id={id}
         name={fieldName}
-        value={value}
-        onValueChange={setValue}
+        value={value?.toString() ?? ''}
+        onValueChange={updateValue}
         rows={rows}
-        readOnly={isReadOnly}
-        {...validationAttributes}
+        readOnly={mode === 'view'}
+        required={'required' in validationAttributes && mode !== 'search'}
       />
     );
   },
   ComboBox({
     id,
     resource,
-    isReadOnly,
+    mode,
     fieldName,
     isRequired,
     fieldDefinition: { defaultValue, pickList },
   }) {
     const [data] = useAsyncState(
       React.useCallback(
-        async () => resource.getResourceAndField(fieldName),
+        async () => getResourceAndField(resource, fieldName),
         [resource, fieldName]
       )
     );
@@ -142,62 +110,71 @@ const fieldRenderers: {
       <ComboBox
         id={id}
         model={resource}
-        resource={data[0]}
-        field={data[1]}
+        resource={data.resource}
+        field={data.field}
         fieldName={fieldName}
         pickListName={pickList}
         defaultValue={defaultValue}
         className="w-full"
-        isReadOnly={isReadOnly}
+        mode={mode}
         isRequired={isRequired}
         isDisabled={false}
       />
     );
   },
-  QueryComboBox({ id, resource, isReadOnly, fieldName, isRequired }) {},
+  QueryComboBox({
+    id,
+    resource,
+    mode,
+    formType,
+    fieldName,
+    isRequired,
+    fieldDefinition: { hasCloneButton, typeSearch },
+  }) {
+    return (
+      <QueryComboBox
+        id={id}
+        resource={resource}
+        mode={mode}
+        formType={formType}
+        fieldName={fieldName}
+        isRequired={isRequired}
+        hasCloneButton={hasCloneButton}
+        typeSearch={typeSearch}
+        forceCollections={undefined}
+        relatedModel={undefined}
+      />
+    );
+  },
   Text({
     id,
     resource,
-    isReadOnly,
+    mode,
     fieldName,
     isRequired,
     fieldDefinition: { defaultValue, min, max, step },
   }) {
-    const [validationAttributes, setAttributes] = React.useState<IR<string>>(
-      {}
-    );
-    React.useEffect(() => {
-      const parser = defined(
-        resolveParser(defined(resource.specifyModel.getField(fieldName)))
-      );
-      const mergedParsers = defined(
-        mergeParsers(parser, {
-          required: isRequired,
-          min,
-          max,
-          step,
-        })
-      );
-      setAttributes(getValidationAttributes(mergedParsers));
-    }, [resource.specifyModel, fieldName, isRequired, min, max, step]);
-    const [value, setValue] = useResourceValue(
-      resource,
-      fieldName,
-      defaultValue
-    );
     return (
-      <Input.Generic
-        value={value}
-        onValueChange={(newValue): void => setValue(newValue)}
+      <UiField
         id={id}
-        className="w-full"
-        readOnly={isReadOnly}
-        {...validationAttributes}
+        resource={resource}
+        mode={mode}
+        fieldName={fieldName}
+        parser={React.useMemo(
+          () => ({
+            defaultValue,
+            min,
+            max,
+            step,
+            required: isRequired,
+          }),
+          [defaultValue, min, max, step, isRequired]
+        )}
       />
     );
   },
   Plugin: UiPlugin,
-  FilePicker({ id, resource, isReadOnly, fieldName, isRequired }) {},
+  FilePicker({ id, resource, mode, fieldName, isRequired }) {},
 };
 
 export function FormField({
@@ -209,14 +186,16 @@ export function FormField({
   readonly mode: FormMode;
   readonly id: string | undefined;
   readonly fieldDefinition: FormFieldDefinition;
-  readonly fieldName: string;
+  readonly fieldName: string | undefined;
   readonly isRequired: boolean;
+  readonly formType: FormType;
 }): JSX.Element {
   const Render = fieldRenderers[fieldDefinition.type];
   return (
     <Render
-      isReadOnly={isReadOnly || mode === 'view'}
+      mode={isReadOnly ? 'view' : mode}
       {...rest}
+      isRequired={rest.isRequired && mode !== 'search'}
       fieldDefinition={fieldDefinition}
     />
   );

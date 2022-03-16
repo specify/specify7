@@ -48,7 +48,7 @@ export const parseFormDefinition = (
 
 function processViewDefinition(
   view: ViewDefinition,
-  defaultType: FormType,
+  formType: FormType,
   mode: FormMode
 ): {
   readonly viewDefinition: Element;
@@ -73,10 +73,10 @@ function processViewDefinition(
   let viewDefinition;
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
-    return viewDefinition.getAttribute('type') === defaultType;
+    return viewDefinition.getAttribute('type') === formType;
   });
   if (typeof altView === 'undefined' || typeof viewDefinition === 'undefined') {
-    console.error('No altView for defaultType:', defaultType);
+    console.error('No altView for defaultType:', formType);
     altView = altViews[0];
     viewDefinition = viewDefinitions[altView.viewdef];
   }

@@ -2,19 +2,19 @@ import _ from 'underscore';
 
 import { ajax } from './ajax';
 import Backbone from './backbone';
-import type { AnySchema, AnyTree } from './datamodelutils';
+import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
-import type { IR, RA } from './types';
+import type { RA } from './types';
 import { filterArray } from './types';
 
 export const globalEvents = _.extend({}, Backbone.Events);
 
-export const queryCbxExtendedSearch = async (
-  templateResource: SpecifyResource<AnySchema>,
+export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
+  templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined
-) =>
-  ajax<IR<unknown>>(
+): Promise<RA<SpecifyResource<SCHEMA>>> =>
+  ajax<RA<SerializedModel<SCHEMA>>>(
     `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
     {
       headers: { Accept: 'application/json' },
@@ -34,9 +34,8 @@ export const queryCbxExtendedSearch = async (
           : {}),
       },
     }
-  ).then(
-    ({ data: results }) =>
-      new templateResource.specifyModel.StaticCollection(results)
+  ).then(({ data: results }) =>
+    results.map((result) => new templateResource.specifyModel.Resource(result))
   );
 
 export const getTreePath = async (treeResource: SpecifyResource<AnyTree>) =>

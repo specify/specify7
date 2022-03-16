@@ -35,11 +35,10 @@ export const initialContext = Promise.all([
   import('./attachments'),
   import('./icons'),
   import('./querycbx'),
-  import('./querycbxsearch'),
   import('./stringlocalization'),
   import('./systeminfo'),
   import('./uiformatters'),
-  import('./weblinkbutton'),
+  import('./components/weblinkbutton'),
   import('./userinfo'),
   import('./treedefinitions'),
 ]).then(async (modules) =>

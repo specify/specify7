@@ -35,10 +35,12 @@ export function HeaderItems({
     undefined
   );
   React.useEffect(() => {
-    router.on('route', (route: string) => {
+    const callback = (route: string) => {
       if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
       else setActiveTask(routeMappings[route] ?? undefined);
-    });
+    };
+    router.on('route', callback);
+    return (): void => void router.off('route', callback);
   }, [menuItems]);
 
   return (

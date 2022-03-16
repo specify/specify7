@@ -1,33 +1,5 @@
-import formsText from './localization/forms';
-import type { Input } from './saveblockers';
-import type { RA } from './types';
 import { className } from './components/basic';
-
-/**
- * Display field's validation messages (both native and custom)
- * Do not use this in React components. Prefer useValidation instead
- */
-export function validationMessages(
-  field: Input,
-  validationMessages: RA<string>
-): void {
-  field.setCustomValidity('');
-  if (!hasNativeErrors(field)) updateCustomValidity(field, validationMessages);
-
-  if (isInputTouched(field)) field.reportValidity();
-}
-
-function updateCustomValidity(field: Input, messages: RA<string>): void {
-  /*
-   * Don't report "Required" errors until field is interacted with or
-   * form is being submitted
-   */
-  const filteredMessages = isInputTouched(field)
-    ? messages
-    : messages.filter((message) => message !== formsText('requiredField'));
-
-  field.setCustomValidity(filteredMessages.join('\n'));
-}
+import type { Input } from './saveblockers';
 
 /**
  * Whether browser identified any issues with the field

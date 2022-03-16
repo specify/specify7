@@ -30,17 +30,9 @@ function makeField(
   const fieldSpec = QueryFieldSpec.fromPath(pathArray);
   fieldSpec.treeRank = rankName;
 
-  const attributes = fieldSpec.toSpQueryAttributes();
-  const field = new schema.models.SpQueryField.Resource()
-    .set('sortType', flippedSortTypes.none)
-    .set('isDisplay', true)
-    .set('isNot', false)
-    .set('startValue', '')
-    .set('operStart', 1)
-    .set('tableList', attributes.tableList)
-    .set('stringId', attributes.stringId)
-    .set('fieldName', attributes.fieldName)
-    .set('isRelFld', attributes.isRelFld);
+  const field = fieldSpec
+    .toSpQueryField()
+    .set('sortType', flippedSortTypes.none);
 
   Object.entries(options).forEach(([key, value]) =>
     field.set(
@@ -142,7 +134,7 @@ export async function queryFromTree(
 ): Promise<SpecifyResource<SpQuery>> {
   const tree = defined(getTreeModel(tableName));
   const node = new tree.Resource({ id: nodeId });
-  await node.fetchIfNotPopulated();
+  await node.fetchPromise();
   const treeDefinitionItem = await node.rgetPromise('definitionItem', true);
 
   const model = schema.models.CollectionObject;

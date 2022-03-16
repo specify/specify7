@@ -2,10 +2,8 @@ import type {
   AnySchema,
   CommonFields,
   SerializedModel,
-  SerializedResource,
 } from './datamodelutils';
 import type { SaveBlockers } from './saveblockers';
-import type { LiteralField, Relationship } from './specifyfield';
 import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
@@ -74,22 +72,38 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     prePopulate?: boolean
   ) => Promise<Collection<VALUE[number]>>;
   readonly set: <
-    FIELD_NAME extends keyof SerializedResource<SCHEMA>,
-    VALUE extends SerializedResource<SCHEMA>[FIELD_NAME]
+    FIELD_NAME extends
+      | keyof SCHEMA['fields']
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent']
+      | keyof SCHEMA['toManyDependent']
+      | keyof SCHEMA['toManyIndependent']
+      | keyof CommonFields,
+    VALUE extends (IR<never> &
+      SCHEMA['toOneDependent'] &
+      SCHEMA['toOneIndependent'] &
+      SCHEMA['toManyDependent'] &
+      SCHEMA['toManyIndependent'] &
+      SCHEMA['fields'] &
+      CommonFields)[FIELD_NAME]
   >(
     fieldName: FIELD_NAME,
-    value: VALUE
+    value: [VALUE] extends [never]
+      ? never
+      :
+          | (VALUE extends AnySchema
+              ? VALUE extends null
+                ? SpecifyResource<VALUE> | null
+                : SpecifyResource<VALUE>
+              : VALUE extends RA<AnySchema>
+              ? Collection<VALUE> | RA<SpecifyResource<VALUE>>
+              : VALUE)
+          | (FIELD_NAME extends
+              | keyof SCHEMA['toOneIndependent']
+              | keyof SCHEMA['toManyIndependent']
+              ? string
+              : never)
   ) => SpecifyResource<SCHEMA>;
-  readonly getResourceAndField: (
-    fieldName: string
-  ) => Promise<
-    Readonly<
-      [
-        resource: SpecifyResource<AnySchema>,
-        fieldName: LiteralField | Relationship
-      ]
-    >
-  >;
   readonly dependentResources: {
     readonly [FIELD_NAME in Lowercase<
       string & keyof SCHEMA['toOneDependent']
@@ -99,9 +113,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       string & keyof SCHEMA['toManyDependent']
     >]?: Collection<AnySchema>;
   };
+  readonly noValidation?: boolean;
   readonly save: () => Promise<void>;
   readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
-  readonly fetchIfNotPopulated: () => Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;
   readonly destroy: () => Promise<void>;
   readonly viewUrl: () => string;
@@ -115,6 +129,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly format: () => Promise<string>;
   readonly url: () => string;
   recordsetid?: number;
+  noBusinessRules: boolean;
   readonly placeInSameHierarchy: (resource: SpecifyResource<AnySchema>) => void;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;

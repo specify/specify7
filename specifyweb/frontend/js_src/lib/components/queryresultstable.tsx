@@ -26,6 +26,7 @@ import {useAsyncState, useBooleanState} from './hooks';
 import {Dialog} from './modaldialog';
 import {QueryResults} from './queryresults';
 import {RecordSelectorFromIds} from './recordselectorutils';
+import {removeItem} from './wbplanviewstate';
 
 function TableHeaderCell({
                            fieldSpec,
@@ -224,10 +225,7 @@ export function QueryResultsTable({
             model={model}
             onFetchMore={isFetching ? undefined : fetchMore}
             onDelete={(index): void => {
-              setResults([
-                ...results.slice(0, index),
-                ...results.slice(index + 1),
-              ]);
+              setResults(removeItem(results,index));
               setSelectedRows(
                 new Set(
                   Array.from(selectedRows).filter(

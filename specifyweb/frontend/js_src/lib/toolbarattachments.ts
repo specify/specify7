@@ -1,4 +1,4 @@
-import { systemAvailable } from './attachments';
+import { attachmentsAvailable } from './attachments';
 import Backbone from './backbone';
 import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
@@ -16,7 +16,7 @@ const menuItem: MenuItem = {
   task: 'attachments',
   title: commonText('attachments'),
   icon: icons.link,
-  enabled: systemAvailable,
+  enabled: attachmentsAvailable,
   isOverlay: true,
   view: () => new View(),
 };

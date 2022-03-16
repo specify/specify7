@@ -1,9 +1,13 @@
 import React from 'react';
 
+import type { AnySchema } from '../datamodelutils';
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
+import type { Parser } from '../uiparse';
+import { parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { crash } from './errorboundary';
 
@@ -70,7 +74,9 @@ export function useValidation<T extends Input = HTMLInputElement>(
    * This happens if setValidation is called for an input that is not currently
    * rendered
    */
-  const validationMessageRef = React.useRef<string | RA<string>>(message);
+  const validationMessageRef = React.useRef<string>(
+    Array.isArray(message) ? message.join('\n') : message
+  );
 
   // Clear validation message on typing
   React.useEffect(() => {
@@ -88,37 +94,40 @@ export function useValidation<T extends Input = HTMLInputElement>(
     return (): void => input.removeEventListener('input', handleChange);
   }, []);
 
-  // Empty string clears validation error
-  function setValidation(message: string | RA<string>): void {
+  const setValidation = React.useCallback(function setValidation(
+    message: string | RA<string>
+  ): void {
     const joined = Array.isArray(message) ? message.join('\n') : message;
-    validationMessageRef.current = joined;
+    if (validationMessageRef.current === joined) return;
 
+    validationMessageRef.current = joined;
     const input = inputRef.current;
     if (!input) return;
+    // Empty string clears validation error
     input.setCustomValidity(joined);
 
     if (joined !== '' && isInputTouched(input)) input.reportValidity();
-  }
+  },
+  []);
 
-  React.useEffect(() => setValidation(message), [message]);
+  React.useEffect(() => setValidation(message), [message, setValidation]);
 
   return {
     inputRef,
-    validationRef: (input): void => {
-      inputRef.current = input;
-      setValidation(validationMessageRef.current);
-    },
+    validationRef: React.useCallback(
+      (input): void => {
+        inputRef.current = input;
+        setValidation(validationMessageRef.current);
+      },
+      [setValidation]
+    ),
     setValidation,
   };
 }
 
 /** Like React.useState, but initial value is retrieved asynchronously */
 export function useAsyncState<T>(
-  /*
-   * Callback can call "refreshState" asynchronously to trigger another call to
-   * "callback"
-   */
-  callback: (refreshState: () => void) => undefined | T | Promise<T | undefined>
+  callback: () => undefined | T | Promise<T | undefined>
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
@@ -126,13 +135,11 @@ export function useAsyncState<T>(
   const [state, setState] = React.useState<T | undefined>(undefined);
 
   React.useEffect(() => {
-    const refreshState = () =>
-      void Promise.resolve(callback(refreshState))
-        .then((initialState) =>
-          destructorCalled ? undefined : setState(initialState)
-        )
-        .catch(crash);
-    refreshState();
+    void Promise.resolve(callback())
+      .then((initialState) =>
+        destructorCalled ? undefined : setState(initialState)
+      )
+      .catch(crash);
 
     let destructorCalled = false;
     return (): void => {
@@ -189,4 +196,113 @@ export function useBooleanState(
       setState((value) => !value);
     }, []),
   ];
+}
+
+// A hook to integrate an Input with a field on a Backbone resource
+export function useResourceValue<
+  T extends string | number | boolean,
+  INPUT extends Input = HTMLInputElement
+>(
+  resource: SpecifyResource<AnySchema>,
+  // If fieldName is undefined, this behaves pretty much like useValidation()
+  fieldName: string | undefined,
+  defaultParser: Parser | undefined,
+  validationMessage?: string | RA<string>
+): {
+  readonly value: T | undefined;
+  readonly updateValue: (newValue: T) => void;
+  // See useValidation for documentation of these props:
+  readonly validationRef: React.RefCallback<INPUT>;
+  readonly inputRef: React.MutableRefObject<INPUT | null>;
+  readonly setValidation: (message: string | RA<string>) => void;
+  readonly parser: Parser;
+} & ReturnType<typeof useValidation> {
+  const { inputRef, validationRef, setValidation } =
+    useValidation<INPUT>(validationMessage);
+
+  const [parser, setParser] = React.useState<Parser>({});
+
+  const [value, setValue] = React.useState<T | undefined>(undefined);
+
+  // Parse value and update saveBlockers
+  const updateValue = React.useCallback(
+    function updateValue(newValue: T) {
+      setValue(newValue);
+      if (typeof fieldName !== 'string') return;
+
+      const parseResults = parseValue(
+        parser,
+        inputRef.current ?? undefined,
+        newValue?.toString() ?? ''
+      );
+      const key = `parseError:${fieldName.toLowerCase()}`;
+      if (parseResults.isValid) {
+        resource.saveBlockers?.remove(key);
+        const oldValue = resource.get(fieldName) ?? null;
+        const parsedValue = parseResults.parsed as string;
+        // Don't trigger unload protect needlessly
+        if (oldValue !== parsedValue) {
+          resource.set(fieldName, parsedValue as never);
+          // TODO: check if this is needed
+          resource.trigger('saverequired');
+        }
+      } else {
+        setValidation(parseResults.reason);
+        resource.saveBlockers?.add(key, fieldName, parseResults.reason);
+      }
+    },
+    [resource, fieldName, parser, inputRef, setValidation]
+  );
+
+  /*
+   * Show errors if default parser changes
+   */
+  const previousParser = React.useRef<Parser | undefined | false>(false);
+  React.useEffect(() => {
+    if (
+      previousParser.current !== false &&
+      previousParser.current !== defaultParser
+    )
+      console.error('Default parser changed. Use React.useMemo()');
+    return (): void => {
+      previousParser.current = defaultParser;
+    };
+  }, [defaultParser]);
+
+  // Listen for resource update. Set parser
+  React.useEffect(() => {
+    if (typeof fieldName === 'undefined') return undefined;
+
+    const field = resource.specifyModel.getField(fieldName);
+    if (typeof field === 'undefined')
+      console.error(
+        `${fieldName} does not exist on ${resource.specifyModel.name}`,
+        { resource }
+      );
+
+    setParser(
+      resource.noValidation === true || typeof field === 'undefined'
+        ? {}
+        : resolveParser(field) ?? {}
+    );
+
+    if (resource.isNew() && typeof defaultParser?.value !== 'undefined')
+      resource.set(fieldName, defaultParser.value as never);
+
+    const refresh = (): void =>
+      setValue((resource.get(fieldName) as T | null) ?? undefined);
+
+    resource.on(`change:${fieldName}`, refresh);
+    refresh();
+    return (): void => resource.off(`change:${fieldName}`, refresh);
+  }, [resource, fieldName, defaultParser]);
+
+  return {
+    value,
+    updateValue,
+    inputRef,
+    validationRef,
+    setValidation,
+    parser,
+  } as const;
 }

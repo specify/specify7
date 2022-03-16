@@ -35,6 +35,7 @@ import { useResource } from './resource';
 import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
+import { replaceItem } from './wbplanviewstate';
 
 /*
  * Query Results:
@@ -372,11 +373,13 @@ export function QueryBuilder({
                 line: index,
                 field: { ...state.fields[index], sortType },
               });
-              runQuery('regular', [
-                ...state.fields.slice(0, index),
-                { ...state.fields[index], sortType },
-                ...state.fields.slice(index + 1),
-              ]);
+              runQuery(
+                'regular',
+                replaceItem(state.fields, index, {
+                  ...state.fields[index],
+                  sortType,
+                })
+              );
             }}
           />
         </div>
