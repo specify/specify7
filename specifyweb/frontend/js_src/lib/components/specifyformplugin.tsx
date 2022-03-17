@@ -8,6 +8,7 @@ import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import type { UiPlugins } from '../parseuiplugins';
 import { isResourceOfType } from '../specifymodel';
+import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
 import { CollectionOneToManyPlugin } from './collectionrelonetomanyplugin';
@@ -16,9 +17,12 @@ import { GeoLocatePlugin } from './geolocateplugin';
 import { useBooleanState } from './hooks';
 import { HostTaxonPlugin } from './hosttaxonplugin';
 import { LatLongUi } from './latlongui';
+import { LeafletPlugin } from './leafletplugin';
 import { Dialog } from './modaldialog';
+import { PaleoLocationMapPlugin } from './paleolocationplugin';
 import { PartialDateUi } from './partialdateui';
 import { PasswordPlugin } from './passwordplugin';
+import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
 
@@ -55,11 +59,11 @@ const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly id: string | undefined;
-    readonly isReadOnly: boolean;
     readonly pluginDefinition: UiPlugins[KEY];
     readonly fieldName: string;
     readonly formType: FormType;
     readonly mode: FormMode;
+    readonly isRequired: boolean;
   }) => JSX.Element;
 } = {
   UserCollectionsUI({ resource }) {
@@ -73,7 +77,7 @@ const pluginRenderers: {
   PartialDateUI: ({
     id,
     resource,
-    isReadOnly,
+    mode,
     pluginDefinition: {
       defaultValue,
       dateField,
@@ -91,7 +95,7 @@ const pluginRenderers: {
       <PartialDateUi
         resource={resource}
         id={id}
-        isReadOnly={isReadOnly}
+        isReadOnly={mode === 'view'}
         defaultValue={defaultValue}
         defaultPrecision={defaultPrecision}
         precisionField={precisionField}
@@ -179,7 +183,14 @@ const pluginRenderers: {
       />
     );
   },
-  HostTaxonPlugin({ resource, pluginDefinition: { relationship } }) {
+  HostTaxonPlugin({
+    resource,
+    mode,
+    id,
+    formType,
+    isRequired,
+    pluginDefinition: { relationship },
+  }) {
     if (typeof relationship === 'undefined') {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
@@ -187,7 +198,14 @@ const pluginRenderers: {
       return <></>;
     } else
       return (
-        <HostTaxonPlugin resource={resource} relationship={relationship} />
+        <HostTaxonPlugin
+          resource={resource}
+          relationship={relationship}
+          mode={mode}
+          id={id}
+          formType={formType}
+          isRequired={isRequired}
+        />
       );
   },
   PasswordUI({ resource }) {
@@ -197,10 +215,34 @@ const pluginRenderers: {
       <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
-  UserAgentsUI: () => ({ type: 'UserAgentsUI' }),
-  AdminStatusUI: () => ({ type: 'AdminStatusUI' }),
-  LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
-  PaleoMap: () => ({ type: 'PaleoMap' }),
+  UserAgentsUI({ resource, mode, formType, id, isRequired }) {
+    return isResourceOfType(resource, 'SpecifyUser') ? (
+      <UserAgentsPlugin
+        user={resource}
+        id={id}
+        mode={mode}
+        formType={formType}
+        isRequired={isRequired}
+      />
+    ) : (
+      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    );
+  },
+  AdminStatusUI({ resource, mode, id }) {
+    return isResourceOfType(resource, 'SpecifyUser') ? (
+      <AdminStatusPlugin user={resource} id={id} mode={mode} />
+    ) : (
+      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    );
+  },
+  LocalityGoogleEarth({ resource, id }) {
+    return isResourceOfType(resource, 'Locality') ? (
+      <LeafletPlugin locality={resource} id={id} />
+    ) : (
+      <WrongTable resource={resource} allowedTable="Locality" />
+    );
+  },
+  PaleoMap: PaleoLocationMapPlugin,
   Unsupported({ pluginDefinition: { name }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
@@ -231,6 +273,7 @@ export function UiPlugin({
   pluginDefinition,
   fieldName,
   formType,
+  isRequired,
 }: {
   readonly id: string;
   readonly resource: SpecifyResource<AnySchema>;
@@ -238,15 +281,16 @@ export function UiPlugin({
   readonly pluginDefinition: UiPlugins[keyof UiPlugins];
   readonly fieldName: string | undefined;
   readonly formType: FormType;
+  readonly isRequired: boolean;
 }): JSX.Element {
   return pluginRenderers[pluginDefinition.type]({
     id,
     resource,
-    isReadOnly: mode === 'view',
     pluginDefinition,
     defaultValue,
     fieldName,
     formType,
     mode,
+    isRequired,
   });
 }

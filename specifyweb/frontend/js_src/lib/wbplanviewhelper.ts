@@ -4,6 +4,7 @@
  * @module
  */
 
+import { breakpoint } from './assert';
 import type { IR, RA, RR } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 
@@ -222,4 +223,9 @@ export const f = {
       callback(argument),
   id: <T>(value: T): T => value,
   trim: (value: string) => value.trim(),
+  error(...args: RA<unknown>): undefined {
+    breakpoint();
+    console.log(...args);
+    return undefined;
+  },
 } as const;

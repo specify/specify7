@@ -10,6 +10,7 @@ import { filterArray } from './types';
 
 export const globalEvents = _.extend({}, Backbone.Events);
 
+// TODO: consider replacing this wtih Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined

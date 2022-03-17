@@ -1,100 +1,76 @@
 import React from 'react';
 
-import Backbone from '../backbone';
-import type { Agent, Collection, Division, SpecifyUser } from '../datamodel';
+import type {
+  Address,
+  Agent,
+  Collection,
+  Division,
+  SpecifyUser,
+} from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import QueryCbx from '../querycbx';
+import type { FormMode, FormType } from '../parseform';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { defined } from '../types';
 import { group } from '../wbplanviewhelper';
-import whenall from '../whenall';
-import { Button, Form, Submit, Ul } from './basic';
+import { Button, Form, Label, Submit, Ul } from './basic';
+import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-
-// FIXME: rewrite this after QueryCbx
-const AgentForDiv = Backbone.View.extend({
-  initialize(options) {
-    /*
-     * Kind of kludgie but we need some resource with an agent field
-     * for the QueryCBX to work with;
-     */
-    this.model = new schema.models.AgentAttachment.Resource();
-    this.agent && this.model.set('agent', this.agent);
-  },
-  render() {
-    this.el.innerHTML = `<label>
-                ${this.division.get('name')}:
-                <input type="text" name="agent">
-            </label>`;
-
-    new QueryCbx({
-      populateForm: this.populateForm,
-      el: $('input', this.el),
-      model: this.model,
-      relatedModel: schema.models.Agent,
-      forceCollection: this.collection,
-      hideButtons: true,
-      init: { name: 'Agent' },
-    }).render();
-
-    return this;
-  },
-  save(user) {
-    if (
-      this.model.get('agent') != (this.agent && this.agent.get('resource_uri'))
-    ) {
-      this.model.rget('agent', true).done(this.gotNewAgent.bind(this, user));
-    }
-  },
-  gotNewAgent(user, newAgent) {
-    /*
-     * The following is not atomic, but the ramifications of
-     * one update succeeding without the other are not severe
-     * enough to worry about. Someone will notice they can't
-     * log in and then it can be fixed.
-     */
-    user
-      .rget('agents', true)
-      .pipe(function (agents) {
-        return whenall(
-          agents.map(function (agent) {
-            return agent.set('specifyuser', null).save();
-          })
-        );
-      })
-      .pipe(function () {
-        return newAgent && newAgent.set('specifyuser', user).save();
-      });
-  },
-});
+import { QueryComboBox } from './querycombobox';
 
 type Data = {
   readonly division: SpecifyResource<Division>;
-  readonly collections: RA<SpecifyResource<Collection>>;
-  readonly agent: SpecifyResource<Agent>;
+  readonly collection: SpecifyResource<Collection>;
+  readonly agent: SpecifyResource<Agent> | undefined;
+  readonly address: SpecifyResource<Address>;
 };
 
 function Entry({
   division,
-  collections,
-  agent,
-  user,
+  collection,
+  address,
+  isRequired,
+  mode,
+  formType,
 }: Data & {
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly isRequired: boolean;
+  readonly mode: FormMode;
+  readonly formType: FormType;
 }): JSX.Element {
-  return <li />;
+  return (
+    <li>
+      <Label.Generic>
+        {division.get('name')}
+        <QueryComboBox
+          id={undefined}
+          fieldName="agent"
+          resource={address}
+          mode={mode}
+          formType={formType}
+          isRequired={isRequired}
+          relatedModel={schema.models.Agent}
+          forceCollection={collection.id}
+          typeSearch="Agent"
+        />
+      </Label.Generic>
+    </li>
+  );
 }
 
 function UserAgentsDialog({
   user,
   onClose: handleClose,
+  mode,
+  formType,
+  isRequired,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly onClose: () => void;
+  readonly mode: FormMode;
+  readonly formType: FormType;
+  readonly isRequired: boolean;
 }): JSX.Element {
   const [entries] = useAsyncState<RA<Data>>(
     React.useCallback(async () => {
@@ -116,19 +92,39 @@ function UserAgentsDialog({
                       )
                   )
               )
-            ).then(group)
-          ),
+            )
+          )
+          .then(group),
         user.rgetCollection('agents', true).then(({ models }) => models),
       ]).then(([division, agents]) =>
-        Object.values(division).map((entries) => ({
-          division: entries[0].division,
-          collections: entries.map(({ collection }) => collection),
-          agent: defined(
-            agents.find(
-              (agent) => agent.get('division') === division.get('resource_uri')
-            )
-          ),
-        }))
+        Object.values(division)
+          .map((entries) => ({
+            division: entries[0].division,
+            /*
+             * Not sure how user agents plugin should behave when there are more
+             * than one collection in a division. QueryComboBox interacts with
+             * the back-end API which only allows restricting search results
+             * by one collection at a time
+             */
+            collection: entries.map(({ collection }) => collection)[0],
+            agent: agents.find(
+              (agent) =>
+                agent.get('division') ===
+                entries[0].division.get('resource_uri')
+            ),
+          }))
+          .map((entry) => ({
+            ...entry,
+            /*
+             * Kind of kludge but we need some resource with an agent field
+             * for the QueryCBX to work with;
+             */
+            address: new schema.models.Address.Resource().set(
+              'agent',
+              // @ts-expect-error TODO: improve typing
+              entry.agent ?? null
+            ),
+          }))
       );
     }, [user])
   );
@@ -147,10 +143,49 @@ function UserAgentsDialog({
         </>
       }
     >
-      <Form id={id('form')}>
+      <Form
+        id={id('form')}
+        onSubmit={(): void =>
+          void Promise.all(
+            entries.map((entry) =>
+              entry.address.get('agent') === entry.agent?.get('resource_uri')
+                ? undefined
+                : entry.address
+                    .rgetPromise('agent', true)
+                    .then(async (newAgent) =>
+                      /*
+                       * The following is not atomic, but the ramifications of
+                       * one update succeeding without the other are not severe
+                       * enough to worry about. Someone will notice they can't
+                       * log in and then it can be fixed.
+                       */
+                      user
+                        .rgetCollection('agents', true)
+                        .then(async ({ models: agents }) =>
+                          Promise.all(
+                            agents.map(async (agent) =>
+                              agent.set('specifyUser', null).save()
+                            )
+                          ).then(() =>
+                            newAgent?.set('specifyUser', user).save()
+                          )
+                        )
+                    )
+            )
+          )
+            .catch(crash)
+            .finally(handleClose)
+        }
+      >
         <Ul>
           {entries.map((entry) => (
-            <Entry key={entry.collection.id} user={user} {...entry} />
+            <Entry
+              key={entry.division.id}
+              {...entry}
+              mode={mode}
+              formType={formType}
+              isRequired={isRequired}
+            />
           ))}
         </Ul>
       </Form>
@@ -160,13 +195,22 @@ function UserAgentsDialog({
 
 export function UserAgentsPlugin({
   user,
+  id,
+  mode,
+  formType,
+  isRequired,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
+  readonly id: string | undefined;
+  readonly mode: FormMode;
+  readonly formType: FormType;
+  readonly isRequired: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Simple
+        id={id}
         disabled={user.isNew()}
         title={
           user.isNew()
@@ -177,7 +221,15 @@ export function UserAgentsPlugin({
       >
         {formsText('setAgents')}
       </Button.Simple>
-      {isOpen && <UserAgentsDialog user={user} onClose={handleClose} />}
+      {isOpen && (
+        <UserAgentsDialog
+          user={user}
+          onClose={handleClose}
+          mode={mode}
+          formType={formType}
+          isRequired={isRequired}
+        />
+      )}
     </>
   );
 }

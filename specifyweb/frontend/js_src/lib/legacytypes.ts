@@ -2,15 +2,17 @@ import type {
   AnySchema,
   CommonFields,
   SerializedModel,
+  SerializedResource,
 } from './datamodelutils';
 import type { SaveBlockers } from './saveblockers';
 import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
 /*
- * TODO: need to improve the typing to handle the following:
- *  Dynamic references
- *  Discrimination of union types
+ * TODO:
+ *  need to improve the typing to handle the following:
+ *    Dynamic references
+ *    Discrimination of union types
  *  Phase out usages of SpecifyResource in favor of SerializedResource
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
@@ -50,7 +52,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     FIELD_NAME extends
       | keyof SCHEMA['toOneDependent']
       | keyof SCHEMA['toOneIndependent'],
-    VALUE extends (IR<never> &
+    VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
       SCHEMA['toOneIndependent'])[FIELD_NAME]
   >(
@@ -59,7 +61,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ) => [VALUE] extends [never]
     ? never
     : Promise<
-        SpecifyResource<Exclude<VALUE, null>> | Exclude<VALUE, AnySchema>
+        VALUE extends AnySchema
+          ? SpecifyResource<Exclude<VALUE, null>>
+          : never | Exclude<VALUE, AnySchema>
       >;
   // Case-insensitive fetch of a -to-many resource
   rgetCollection: <
@@ -91,13 +95,15 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     value: [VALUE] extends [never]
       ? never
       :
-          | (VALUE extends AnySchema
-              ? VALUE extends null
-                ? SpecifyResource<VALUE> | null
-                : SpecifyResource<VALUE>
-              : VALUE extends RA<AnySchema>
-              ? Collection<VALUE> | RA<SpecifyResource<VALUE>>
-              : VALUE)
+          | VALUE
+          | (VALUE extends RA<AnySchema>
+              ?
+                  | Collection<VALUE[number]>
+                  | RA<SerializedResource<VALUE[number]>>
+                  | RA<SpecifyResource<VALUE[number]>>
+              : VALUE extends null
+              ? SpecifyResource<VALUE> | SerializedResource<VALUE> | null
+              : SpecifyResource<VALUE> | SerializedResource<VALUE>)
           | (FIELD_NAME extends
               | keyof SCHEMA['toOneIndependent']
               | keyof SCHEMA['toManyIndependent']
@@ -123,7 +129,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly Resource: new () => SpecifyResource<SCHEMA>;
   readonly isNew: () => boolean;
   readonly clone: () => SpecifyResource<SCHEMA>;
-  readonly specifyModel: Readonly<SpecifyModel>;
+  readonly specifyModel: Readonly<SpecifyModel<SCHEMA>>;
   readonly saveBlockers: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly format: () => Promise<string>;

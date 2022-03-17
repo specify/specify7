@@ -1,6 +1,7 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import { insertItem } from './components/wbplanviewstate';
 import type { SpQueryField } from './datamodel';
+import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -23,7 +24,6 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { SpecifyResource } from './legacytypes';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -94,6 +94,7 @@ export class QueryFieldSpec {
       .set('isNot', false)
       .set('startValue', '')
       .set('operStart', 1)
+      .set('sortType', 0)
       .set('tableList', attributes.tableList)
       .set('stringId', attributes.stringId)
       .set('fieldName', attributes.fieldName)

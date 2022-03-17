@@ -6,7 +6,11 @@ import type { IR, RA } from './types';
 import { defined } from './types';
 import { parserFromType } from './uiparse';
 
-/* The dataModel types types were generated using this code snippet: */
+/*
+ * The dataModel types types in ./datamodel.ts were generated using this code
+ * snippet.
+ * You will need to rerun it after schema changes
+ */
 /* eslint-disable multiline-comment-style*/
 /* ;
 import { schema } from './schema';
@@ -94,15 +98,33 @@ function regenerate() {
 */
 /* eslint-enable multiline-comment-style*/
 
+/**
+ * Represents schema for any table
+ *
+ * @remarks
+ * This type is not meant for objects to be created directly of it
+ * Instead, use it in place of "any" as a generic argument to
+ * SpecifyResource, SpecifyModel, Collection, SerializedResource or
+ * SerializedModel when you don't care about a particular table.
+ *
+ * When need to work with a particular schema, import the necessary
+ * schema form ./datamodel.ts and use it in place of AnySchema
+ *
+ * Note: typing support is not ideal when using AnySchema, as false type errors
+ * may occur, thus prefer using specific table schema (or union of schemas)
+ * whenever possible. Alternatively, your type/function can accept
+ * a generic argument that extends AnySchema
+ */
 export type AnySchema = {
   readonly tableName: keyof Tables;
-  readonly fields: IR<unknown>;
+  readonly fields: IR<string | boolean | number | null>;
   readonly toOneDependent: IR<AnySchema | null>;
   readonly toOneIndependent: IR<AnySchema | null>;
   readonly toManyDependent: IR<RA<AnySchema>>;
   readonly toManyIndependent: IR<RA<AnySchema>>;
 };
 
+/* A union of all field names of a given schema */
 export type TableFields<SCHEMA extends AnySchema> =
   | keyof SCHEMA['fields']
   | keyof SCHEMA['toOneDependent']
@@ -112,7 +134,15 @@ export type TableFields<SCHEMA extends AnySchema> =
 
 export type ToMany = AnySchema['toManyDependent'];
 
-// All tables that contain independent -to-one called "definitionItem"
+/**
+ * Represents any tree table schema
+ *
+ * @remarks
+ * All tables that contain independent -to-one called "definitionItem"
+ * Intended to be used in place of AnySchema when a tree table is needed,
+ * but don't know/don't care which particular tree table
+ *
+ */
 export type AnyTree = Extract<
   Tables[keyof Tables],
   {
@@ -122,11 +152,21 @@ export type AnyTree = Extract<
   }
 >;
 
+/**
+ * Filter table schemas down to schemas for tables whose names ends with a
+ * particular substring
+ */
 export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
   keyof Tables,
   `${string}${ENDS_WITH}`
 >];
 
+/**
+ * A record set information object attached to resources when fetched in a
+ * context of a RecordSet (the recordset=<id> GET parameter was passed when
+ * fetching the resource)
+ *
+ */
 export type RecordSetInfo = {
   readonly index: number;
   readonly next: string | null;
@@ -136,18 +176,31 @@ export type RecordSetInfo = {
   readonly total_count: number;
 };
 
+/**
+ * Meta-fields present in all resources
+ */
 export type CommonFields = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly resource_uri: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly recordset_info?: RecordSetInfo;
+  // TODO: This field is undefined for newly created resources
   readonly id: number;
 };
 
+/**
+ * A representation of an object of a particular schema as received from the
+ * back-end or returned by `resourceToJson(resource)`
+ */
 export type SerializedModel<SCHEMA extends AnySchema> = KeysToLowerCase<
   SerializedResource<SCHEMA>
 >;
 
+/**
+ * Like SerializedModel, but keys are in camelCase instead of lowercase
+ *
+ * This allows IDE's grammar checker to detect typos and prevent bugs
+ */
 export type SerializedResource<SCHEMA extends AnySchema> = {
   readonly [KEY in
     | keyof CommonFields
@@ -174,6 +227,8 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     : never;
 };
 
+/** Convert type's keys to lowercase */
+// TODO: make this type recursive
 export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
   [KEY in keyof DICTIONARY as Lowercase<KEY & string>]: DICTIONARY[KEY];
 };
@@ -189,8 +244,9 @@ export const serializeResource = <SCHEMA extends AnySchema>(
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
-const specialFields = new Set(['id', 'resource_uri']);
+const specialFields = new Set(['id', 'resource_uri', 'recordset_info']);
 
+/** Recursive helper for serializeResource */
 function serializeModel<SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA>,
   tableName?: keyof Tables
@@ -236,13 +292,14 @@ function serializeModel<SCHEMA extends AnySchema>(
 /** Set missing required fields to literals. Set missing optional fields to null */
 export const addMissingFields = <SCHEMA extends AnySchema>(
   tableName: SCHEMA['tableName'],
-  record: Partial<SerializedResource<SCHEMA>>
+  record: Partial<SerializedResource<SCHEMA>>,
+  setOptionalToo = false
 ): SerializedResource<SCHEMA> => ({
   ...(Object.fromEntries(
     defined(getModel(tableName)).literalFields.map(
       ({ name, isRequired, type }) => [
         name,
-        isRequired ? parserFromType(type).value : null,
+        isRequired || setOptionalToo ? parserFromType(type).value : null,
       ]
     )
   ) as SerializedResource<SCHEMA>),
@@ -250,6 +307,7 @@ export const addMissingFields = <SCHEMA extends AnySchema>(
   ...record,
 });
 
+/** Recursively convert keys on an object to lowercase */
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(
   resource: OBJECT
 ): KeysToLowerCase<OBJECT> =>

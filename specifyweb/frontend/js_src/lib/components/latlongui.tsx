@@ -5,6 +5,7 @@ import * as latlongutils from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
+import type { FormMode } from '../parseform';
 import { Input } from './basic';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
@@ -156,24 +157,23 @@ function CoordinatePoint({
 
 export function LatLongUi({
   resource,
-  isReadOnly,
+  mode,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly isReadOnly: boolean;
+  readonly mode: FormMode;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
     () => resource.get('latLongType') ?? 'point'
   );
 
   React.useEffect(() => {
-    const handleChange = () =>
-      setCoordinateType(resource.get('latLongType') ?? 'point');
-    resource.on('change: latlongtype');
-
-    let destructorCalled = false;
-    return (): void => {
-      destructorCalled = true;
-    };
+    const handleChange = (): void =>
+      setCoordinateType(
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        (resource.get('latLongType') as CoordinateType) ?? 'point'
+      );
+    resource.on('change: latlongtype', handleChange);
+    return (): void => resource.off('change: latlongtype', handleChange);
   }, []);
 
   return (
@@ -190,15 +190,11 @@ export function LatLongUi({
                   name="type"
                   title={localityText('coordinateType')}
                   value={coordinateType}
-                  disabled={isReadOnly}
-                  onChange={
-                    isReadOnly
-                      ? undefined
-                      : ({ target }): void => {
-                          setCoordinateType(target.value as CoordinateType);
-                          resource.set('latLongType', target.value);
-                        }
-                  }
+                  disabled={mode === 'view'}
+                  onChange={({ target }): void => {
+                    setCoordinateType(target.value as CoordinateType);
+                    resource.set('latLongType', target.value);
+                  }}
                 >
                   <option value="point">{localityText('point')}</option>
                   <option value="line">{localityText('line')}</option>
@@ -222,7 +218,7 @@ export function LatLongUi({
                 : localityText('northWestCorner')
             }
             index={1}
-            isReadOnly={isReadOnly}
+            isReadOnly={mode === 'view'}
           />
           {coordinateType === 'point' ? undefined : (
             <CoordinatePoint
@@ -233,7 +229,7 @@ export function LatLongUi({
                   : localityText('southEastCorner')
               }
               index={2}
-              isReadOnly={isReadOnly}
+              isReadOnly={mode === 'view'}
             />
           )}
         </tbody>

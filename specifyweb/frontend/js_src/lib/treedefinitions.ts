@@ -1,5 +1,5 @@
 import type { Tables } from './datamodel';
-import type { AnyTree, SerializedResource } from './datamodelutils';
+import type { AnySchema, AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, schema } from './schema';
@@ -59,6 +59,11 @@ export const isTreeModel = (
   tableName: keyof Tables
 ): tableName is AnyTree['tableName'] =>
   allTrees.includes(tableName as typeof allTrees[number]);
+
+export const isTreeResource = (
+  resource: SpecifyResource<AnySchema>
+): resource is SpecifyResource<AnyTree> =>
+  allTrees.includes(resource.specifyModel.name as typeof allTrees[number]);
 
 export const fetchContext = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),

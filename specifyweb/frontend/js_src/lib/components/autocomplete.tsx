@@ -94,12 +94,12 @@ export function Autocomplete<T>({
         onKeyDown: handleKeyDown,
         onChange: ({ target }): void => {
           const input = target as HTMLInputElement;
-          const data = results[input.value];
+          const data = results[input.value] ?? results[input.value.trim()];
           if (typeof data === 'object') handleChange(input.value, data);
         },
         onBlur: ({ target }): void => {
           const input = target as HTMLInputElement;
-          const data = results[input.value];
+          const data = results[input.value] ?? results[input.value.trim()];
           if (typeof data === 'undefined') handleNewValue?.(input.value);
         },
       })}

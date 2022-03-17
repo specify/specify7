@@ -1,6 +1,6 @@
 import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
-import type { AnySchema, SerializedModel } from './datamodelutils';
+import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -35,7 +35,7 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
+type CollectionConstructor<SCHEMA extends AnySchema | AnyTree> = new (props?: {
   readonly filters?: Partial<
     {
       readonly orderby: string;
@@ -48,13 +48,13 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
   readonly domainfilter?: boolean;
 }) => UnFetchedCollection<SCHEMA>;
 
-export type UnFetchedCollection<SCHEMA extends AnySchema> = {
+export type UnFetchedCollection<SCHEMA extends AnySchema | AnyTree> = {
   readonly fetchPromise: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
 };
 
-export type Collection<SCHEMA extends AnySchema> = {
+export type Collection<SCHEMA extends AnySchema | AnyTree> = {
   readonly field?: Relationship;
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
@@ -124,13 +124,13 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     }>
   ) => SpecifyResource<SCHEMA>;
 
-  public readonly LazyCollection: CollectionConstructor<SCHEMA>;
+  public readonly LazyCollection: CollectionConstructor<AnySchema & SCHEMA>;
 
-  public readonly StaticCollection: CollectionConstructor<SCHEMA>;
+  public readonly DependentCollection: CollectionConstructor<
+    AnySchema & SCHEMA
+  >;
 
-  public readonly DependentCollection: CollectionConstructor<SCHEMA>;
-
-  public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
+  public readonly ToOneCollection: CollectionConstructor<AnySchema & SCHEMA>;
 
   // All table non-relationship fields
   public literalFields: RA<LiteralField> = [];

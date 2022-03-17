@@ -5,7 +5,7 @@
  * @module
  */
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -391,10 +391,10 @@ const formsText = createDictionary({
     'es-es': 'Paleo Map',
   },
   paleoRequiresGeographyDialogHeader: {
-    'en-us': header('Geography Required'),
-    'ru-ru': header('Требуется география'),
-    ca: header('Geography Required'),
-    'es-es': header('Geography Required'),
+    'en-us': 'Geography Required',
+    'ru-ru': 'Требуется география',
+    ca: 'Geography Required',
+    'es-es': 'Geography Required',
   },
   paleoRequiresGeographyDialogMessage: {
     'en-us': `
@@ -414,32 +414,6 @@ const formsText = createDictionary({
       coordinates and that the paleo context have a geographic age with at
       least a start time or and end time populated.`,
   },
-  noCoordinatesDialogTitle: {
-    'en-us': 'No coordinates',
-    'ru-ru': 'Нет координат',
-    ca: 'No coordinates',
-    'es-es': 'No coordinates',
-  },
-  noCoordinatesDialogHeader: {
-    'en-us': (modelName: string) =>
-      header(`Not enough information to map ${modelName}`),
-    'ru-ru': (modelName: string) =>
-      header(`Недостаточно информации для отображения ${modelName}`),
-    ca: (modelName: string) =>
-      header(`Not enough information to map ${modelName}`),
-    'es-es': (modelName: string) =>
-      header(`Not enough information to map ${modelName}`),
-  },
-  noCoordinatesDialogMessage: {
-    'en-us': (modelName: string) => `
-    ${modelName} must have coordinates and paleo context to be mapped.`,
-    'ru-ru': (modelName: string) => `
-    Для отображения ${modelName}, он должен иметь координаты и палеоконтекст.`,
-    ca: (modelName: string) => `
-    ${modelName} must have coordinates and paleo context to be mapped.`,
-    'es-es': (modelName: string) => `
-    ${modelName} must have coordinates and paleo context to be mapped.`,
-  },
   unsupportedFormDialogTitle: {
     'en-us': 'Unsupported Plugin',
     'ru-ru': 'Неподдерживаемый плагин',
@@ -447,10 +421,10 @@ const formsText = createDictionary({
     'es-es': 'Unsupported Plugin',
   },
   unsupportedFormDialogHeader: {
-    'en-us': header('Incorrect Form'),
-    'ru-ru': header('Неправильная форма'),
-    ca: header('Incorrect Form'),
-    'es-es': header('Incorrect Form'),
+    'en-us': 'Incorrect Form',
+    'ru-ru': 'Неправильная форма',
+    ca: 'Incorrect Form',
+    'es-es': 'Incorrect Form',
   },
   unsupportedFormDialogMessage: {
     'en-us': `

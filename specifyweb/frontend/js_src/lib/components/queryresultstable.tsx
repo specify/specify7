@@ -1,39 +1,39 @@
 import React from 'react';
 
-import {ajax} from '../ajax';
-import type {SpQuery, Tables} from '../datamodel';
-import {keysToLowerCase} from '../datamodelutils';
-import type {SpecifyResource} from '../legacytypes';
+import { ajax } from '../ajax';
+import type { SpQuery, Tables } from '../datamodel';
+import { keysToLowerCase } from '../datamodelutils';
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import {fetchPickList} from '../picklistmixins';
-import type {QueryField} from '../querybuilderutils';
+import { fetchPickList } from '../picklistmixins';
+import type { QueryField } from '../querybuilderutils';
 import {
   addAuditLogFields,
   queryFieldsToFieldSpecs,
   sortTypes,
   unParseQueryFields,
 } from '../querybuilderutils';
-import type {QueryFieldSpec} from '../queryfieldspec';
-import type {SpecifyModel} from '../specifymodel';
-import type {RA} from '../types';
-import {userInformation} from '../userinfo';
-import {generateMappingPathPreview} from '../wbplanviewmappingpreview';
-import {Button, Container} from './basic';
-import {SortIndicator, TableIcon} from './common';
-import {crash} from './errorboundary';
-import {useAsyncState, useBooleanState} from './hooks';
-import {Dialog} from './modaldialog';
-import {QueryResults} from './queryresults';
-import {RecordSelectorFromIds} from './recordselectorutils';
-import {removeItem} from './wbplanviewstate';
+import type { QueryFieldSpec } from '../queryfieldspec';
+import type { SpecifyModel } from '../specifymodel';
+import type { RA } from '../types';
+import { userInformation } from '../userinfo';
+import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
+import { Button, Container } from './basic';
+import { SortIndicator, TableIcon } from './common';
+import { crash } from './errorboundary';
+import { useAsyncState, useBooleanState } from './hooks';
+import { Dialog } from './modaldialog';
+import { QueryResults } from './queryresults';
+import { RecordSelectorFromIds } from './recordselectorutils';
+import { removeItem } from './wbplanviewstate';
 
 function TableHeaderCell({
-                           fieldSpec,
-                           ariaLabel,
-                           sortConfig,
-                           onSortChange: handleSortChange,
-                         }: {
+  fieldSpec,
+  ariaLabel,
+  sortConfig,
+  onSortChange: handleSortChange,
+}: {
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly ariaLabel?: string;
   readonly sortConfig: QueryField['sortType'];
@@ -44,7 +44,7 @@ function TableHeaderCell({
   const content =
     typeof fieldSpec === 'object' ? (
       <>
-        {tableName && <TableIcon tableName={tableName}/>}
+        {tableName && <TableIcon tableName={tableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
           fieldSpec.toMappingPath()
@@ -85,13 +85,13 @@ function TableHeaderCell({
 }
 
 function ViewRecords({
-                       model,
-                       results,
-                       selectedRows,
-                       onFetchMore: handleFetchMore,
-                       onDelete: handleDelete,
-                       totalCount,
-                     }: {
+  model,
+  results,
+  selectedRows,
+  onFetchMore: handleFetchMore,
+  onDelete: handleDelete,
+  totalCount,
+}: {
   readonly model: SpecifyModel;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
@@ -112,10 +112,7 @@ function ViewRecords({
 
   return (
     <>
-      <Button.Simple
-        onClick={handleOpen}
-        disabled={results.length === 0}
-      >
+      <Button.Simple onClick={handleOpen} disabled={results.length === 0}>
         {commonText('viewRecords')}
       </Button.Simple>
       <Dialog
@@ -149,16 +146,16 @@ const isScrolledBottom = (scrollable: HTMLElement): boolean =>
   threshold;
 
 export function QueryResultsTable({
-                                    model,
-                                    label = queryText('results'),
-                                    hasIdField,
-                                    fetchResults,
-                                    totalCount,
-                                    fieldSpecs,
-                                    initialData,
-                                    sortConfig,
-                                    onSortChange: handleSortChange,
-                                  }: {
+  model,
+  label = queryText('results'),
+  hasIdField,
+  fetchResults,
+  totalCount,
+  fieldSpecs,
+  initialData,
+  sortConfig,
+  onSortChange: handleSortChange,
+}: {
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
@@ -175,7 +172,9 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
-  const [results, setResults] = React.useState<RA<RA<string | number | null>> | undefined>(initialData);
+  const [results, setResults] = React.useState<
+    RA<RA<string | number | null>> | undefined
+  >(initialData);
   React.useEffect(() => setResults(initialData), [initialData]);
 
   const [pickListsLoaded] = useAsyncState(
@@ -200,13 +199,12 @@ export function QueryResultsTable({
   React.useEffect(() => setSelectedRows(new Set()), [totalCount]);
 
   function fetchMore(): void {
-    if (!Array.isArray(results))
-      return;
+    if (!Array.isArray(results)) return;
     handleFetching();
     fetchResults(results.length)
       .then((newResults) => setResults([...results, ...newResults]))
       .then(handleFetched)
-      .catch(crash)
+      .catch(crash);
   }
 
   return (
@@ -217,7 +215,7 @@ export function QueryResultsTable({
             ? totalCount
             : `${selectedRows.size}/${totalCount}`
         })`}</h3>
-        <div className="flex-1 -ml-2"/>
+        <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) ? (
           <ViewRecords
             selectedRows={selectedRows}
@@ -225,7 +223,7 @@ export function QueryResultsTable({
             model={model}
             onFetchMore={isFetching ? undefined : fetchMore}
             onDelete={(index): void => {
-              setResults(removeItem(results,index));
+              setResults(removeItem(results, index));
               setSelectedRows(
                 new Set(
                   Array.from(selectedRows).filter(
@@ -243,16 +241,19 @@ export function QueryResultsTable({
           role="table"
           className={`grid-table overflow-auto max-h-[75vh] border-b
              border-gray-500 auto-rows-min
-            ${hasIdField
-            ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
-            : `grid-cols-[repeat(var(--cols),auto)]`
-          }`}
-          style={{'--cols': fieldSpecs.length} as React.CSSProperties}
+            ${
+              hasIdField
+                ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
+                : `grid-cols-[repeat(var(--cols),auto)]`
+            }`}
+          style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
           onScroll={
             isFetching || results.length === totalCount
               ? undefined
-              : ({target}): void =>
-                isScrolledBottom(target as HTMLElement)) ? undefined :fetchMore()
+              : ({ target }): void =>
+                  isScrolledBottom(target as HTMLElement)
+                    ? undefined
+                    : fetchMore()
           }
         >
           <div role="rowgroup">
@@ -303,13 +304,13 @@ export function QueryResultsTable({
               const ids = (
                 isShiftClick && typeof lastSelectedRow.current === 'number'
                   ? Array.from(
-                    {
-                      length:
-                        Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                    },
-                    (_, index) =>
-                      Math.min(lastSelectedRow.current!, rowIndex) + index
-                  )
+                      {
+                        length:
+                          Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                      },
+                      (_, index) =>
+                        Math.min(lastSelectedRow.current!, rowIndex) + index
+                    )
                   : [rowIndex]
               ).map((rowIndex) => results[rowIndex][queryIdField] as number);
               setSelectedRows(
@@ -325,7 +326,7 @@ export function QueryResultsTable({
           />
         </div>
       )}
-      {isFetching && <QueryResultsLoading/>}
+      {isFetching && <QueryResultsLoading />}
     </Container.Base>
   );
 }
@@ -345,14 +346,14 @@ export function QueryResultsLoading(): JSX.Element {
 export const queryIdField = 0;
 
 export function QueryResultsWrapper({
-                                      baseTableName,
-                                      model,
-                                      queryRunCount,
-                                      queryResource,
-                                      fields,
-                                      recordSetId,
-                                      onSortChange: handleSortChange,
-                                    }: {
+  baseTableName,
+  model,
+  queryRunCount,
+  queryResource,
+  fields,
+  recordSetId,
+  onSortChange: handleSortChange,
+}: {
   readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
   readonly queryRunCount: number;
@@ -365,13 +366,13 @@ export function QueryResultsWrapper({
   ) => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
-    async (offset: number) => {
-      return ajax<{ readonly results: RA<RA<string | number | null>> }>(
+    async (offset: number) =>
+      ajax<{ readonly results: RA<RA<string | number | null>> }>(
         '/stored_query/ephemeral/',
         {
           method: 'POST',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: {Accept: 'application/json'},
+          headers: { Accept: 'application/json' },
           body: keysToLowerCase({
             ...queryResource.toJSON(),
             fields: unParseQueryFields(
@@ -384,8 +385,7 @@ export function QueryResultsWrapper({
             offset,
           }),
         }
-      ).then(({data}) => data.results);
-    },
+      ).then(({ data }) => data.results),
     [fields, baseTableName, queryResource, recordSetId]
   );
 
@@ -393,7 +393,9 @@ export function QueryResultsWrapper({
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
    */
-  const [props, setProps] = React.useState<Parameters<typeof QueryResultsTable>[0] | undefined>(undefined);
+  const [props, setProps] = React.useState<
+    Parameters<typeof QueryResultsTable>[0] | undefined
+  >(undefined);
 
   const previousQueryRunCount = React.useRef(queryRunCount);
   React.useEffect(() => {
@@ -408,7 +410,7 @@ export function QueryResultsWrapper({
       {
         method: 'POST',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: {Accept: 'application/json'},
+        headers: { Accept: 'application/json' },
         body: keysToLowerCase({
           ...queryResource.toJSON(),
           fields: unParseQueryFields(baseTableName, allFields, []),
@@ -416,7 +418,7 @@ export function QueryResultsWrapper({
           countOnly: true,
         }),
       }
-    ).then(({data}) => data.count);
+    ).then(({ data }) => data.count);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const initialData =
@@ -453,7 +455,7 @@ export function QueryResultsWrapper({
 
   return typeof props === 'undefined' ? (
     queryRunCount === 0 ? null : (
-      <QueryResultsLoading/>
+      <QueryResultsLoading />
     )
   ) : (
     <QueryResultsTable {...props} />

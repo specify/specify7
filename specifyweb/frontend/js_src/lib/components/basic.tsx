@@ -214,7 +214,7 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (value: string) => void;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
     }
   >('input', className.notTouchedInput, (props) => ({
     ...props,

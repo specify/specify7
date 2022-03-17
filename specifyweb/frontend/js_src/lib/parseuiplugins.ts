@@ -55,14 +55,6 @@ export type UiPlugins = {
   >;
 };
 
-/*
- *   Require('./useragentsplugin').default,
- *   require('./adminstatusplugin').default,
- *   require('./leafletplugin').default,
- *   require('./paleolocationplugin').default,
- *
- */
-
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
     readonly properties: IR<string>;

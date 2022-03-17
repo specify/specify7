@@ -24,10 +24,10 @@ const dialogDefinitions = load<Element>(
 
 const resourceLimit = 100;
 
-type Filter<SCHEMA extends AnySchema> = {
+export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: keyof SCHEMA['fields'];
   readonly operation: 'in' | 'between' | 'lessThan';
-  readonly values: RA<SCHEMA['fields']>;
+  readonly values: RA<string>;
 };
 
 // TODO: update usages
@@ -39,7 +39,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
   onClose: handleClose,
 }: {
   readonly forceCollection: number | undefined;
-  readonly extraFilters: RA<Filter<SCHEMA>> | undefined;
+  readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resurce: SpecifyResource<SCHEMA>) => void;
@@ -157,7 +157,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
 
 const filterResults = <SCHEMA extends AnySchema>(
   results: RA<SpecifyResource<SCHEMA>>,
-  extraFilters: RA<Filter<SCHEMA>>
+  extraFilters: RA<QueryComboBoxFilter<SCHEMA>>
 ): RA<SpecifyResource<SCHEMA>> =>
   results.filter((result) =>
     extraFilters.every((filter) => testFilter(result, filter))
@@ -165,7 +165,7 @@ const filterResults = <SCHEMA extends AnySchema>(
 
 const testFilter = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, values }: Filter<SCHEMA>
+  { operation, field, values }: QueryComboBoxFilter<SCHEMA>
 ): boolean =>
   operation === 'between'
     ? resource.get(field) < values[0] && resource.get(field) > values[1]

@@ -11,7 +11,6 @@ import {getModel, getModelById, schema} from './schema';
 import populateform from './populateform';
 import specifyform from './specifyform';
 import * as navigation from './navigation';
-import whenAll from './whenall';
 
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -19,6 +18,11 @@ import {className} from './components/basic';
 import template from './templates/attachmentbrowser.html';
 import {legacyNonJsxIcons} from './components/icons';
 
+function whenAll(deferreds) {
+  return $.when.apply($, _(deferreds).toArray()).pipe(function () {
+    return _(arguments).toArray();
+  });
+}
 
 export const AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",

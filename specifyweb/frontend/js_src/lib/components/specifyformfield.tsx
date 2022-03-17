@@ -141,7 +141,7 @@ const fieldRenderers: {
         isRequired={isRequired}
         hasCloneButton={hasCloneButton}
         typeSearch={typeSearch}
-        forceCollections={undefined}
+        forceCollection={undefined}
         relatedModel={undefined}
       />
     );

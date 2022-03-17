@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { isTreeModel } from '../treedefinitions';
+import { isTreeResource } from '../treedefinitions';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
@@ -49,10 +49,11 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
-    if (!isTreeModel(props.model.specifyModel.name)) return undefined;
-    const lowestChildRank = fetchLowestChildRank(props.model);
+    const resource = props.model;
+    if (!isTreeResource(resource)) return undefined;
+    const lowestChildRank = fetchLowestChildRank(resource);
     const handleFetch = (): void =>
-      void (props.model as SpecifyResource<AnyTree>)
+      void resource
         .rgetPromise('parent')
         // Parent is undefined for root tree node
         .then(async (parent) => parent?.rgetPromise('definitionItem', true))
@@ -87,7 +88,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
-        !isTreeModel(props.model.specifyModel.name) ||
+        !isTreeResource(props.model) ||
         props.model.get('parent') === null ||
         typeof items === 'undefined'
       }

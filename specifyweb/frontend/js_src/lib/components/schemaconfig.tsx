@@ -272,7 +272,6 @@ export function SchemaConfig({
     Promise.all(requests)
       .then(() => handleSave(state.language))
       .catch(crash);
-    // eslint-ignore-next-line react-hooks/exhaustive-deps
   }, [state.type]);
 
   return stateReducer(<i />, {

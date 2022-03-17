@@ -194,6 +194,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
   dialog = false,
   onSaving: handleSaving,
   onSaved: handleSaved,
+  onDeleted: handleDeleted,
   onClose: handleClose,
   children,
 }: {
@@ -210,10 +211,15 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
+  readonly onDeleted: () => void;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
 }): JSX.Element {
-  const [isDeleted, handleDeleted] = useBooleanState();
+  const [isDeleted, setDeleted] = useBooleanState();
+  function handleDelete(): void {
+    setDeleted();
+    handleDeleted();
+  }
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
   return isDeleted ? (
@@ -254,7 +260,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
                   model={resource}
                   deletionMessage={deletionMessage}
                   onDeleted={(): void => {
-                    handleDeleted();
+                    handleDelete();
                     handleClose();
                   }}
                 />
@@ -277,7 +283,7 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
             buttons={
               <>
                 {!resource.isNew() && !userInformation.isReadOnly ? (
-                  <DeleteButton model={resource} onDeleted={handleDeleted} />
+                  <DeleteButton model={resource} onDeleted={handleDelete} />
                 ) : undefined}
                 {extraButtons}
                 {isModified ? (
