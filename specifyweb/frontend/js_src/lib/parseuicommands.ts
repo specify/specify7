@@ -1,3 +1,7 @@
+/**
+ * Parse XML cell with a command definition into a JSON structure
+ */
+
 import type { State } from 'typesafe-reducer';
 
 import type { IR } from './types';

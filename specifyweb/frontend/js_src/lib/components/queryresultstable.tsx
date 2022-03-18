@@ -44,7 +44,7 @@ function TableHeaderCell({
   const content =
     typeof fieldSpec === 'object' ? (
       <>
-        {tableName && <TableIcon tableName={tableName} />}
+        {tableName && <TableIcon name={tableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
           fieldSpec.toMappingPath()

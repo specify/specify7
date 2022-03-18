@@ -1,3 +1,7 @@
+/**
+ * Parse form cell XML into a JSON structure
+ */
+
 import type { State } from 'typesafe-reducer';
 
 import type { FormType, ParsedFormDefinition } from './parseform';
@@ -6,6 +10,7 @@ import type { FormFieldDefinition } from './parseformfields';
 import { parseFormCell } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
+import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
 
@@ -22,7 +27,6 @@ export const processColumnDefinition = (
     )
     .map((width) => (Number.isNaN(width) ? undefined : width));
 
-// FIXME: look for usages
 export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     filterArray(
@@ -43,7 +47,8 @@ export type CellTypes = {
     'Label',
     {
       text: string | undefined;
-      labelForCellId: number | undefined;
+      labelForCellId: string | undefined;
+      fieldName: string | undefined;
     }
   >;
   readonly Separator: State<
@@ -55,13 +60,10 @@ export type CellTypes = {
   readonly SubView: State<
     'SubView',
     {
-      name: string | undefined;
-      viewName: string | undefined;
+      fieldName: string | undefined;
       formType: FormType;
-      // FIXME: get rid of this
-      properties: IR<string>;
       isButton: boolean;
-      align: typeof cellAlign[number] | undefined;
+      icon: string | undefined;
     }
   >;
   readonly Panel: State<'Panel', ParsedFormDefinition>;
@@ -79,86 +81,73 @@ export type CellTypes = {
   >;
 };
 
-const cellAlign = ['left', 'center', 'right'] as const;
+export const cellAlign = ['left', 'center', 'right'] as const;
 
 const processCellType: {
-  readonly [KEY in keyof CellTypes]: (cell: Element) => CellTypes[KEY];
+  readonly [KEY in keyof CellTypes]: (props: {
+    readonly cell: Element;
+    readonly model: SpecifyModel | undefined;
+    readonly properties: IR<string | undefined>;
+  }) => CellTypes[KEY];
 } = {
-  Field(cell) {
-    const fieldName = cell.getAttribute('name')?.replace(
+  Field({ cell, model, properties }) {
+    const rawFieldName = cell.getAttribute('name')?.replace(
       // Hack for QueryComboBox search fields that have spurious prefixes.
       /^(\w+\.)*/,
       ''
     );
-    // TODO: parse field
-    const initialize = cell.getAttribute('initialize');
-    const properties =
-      typeof initialize === 'string' ? parseSpecifyProperties(initialize) : {};
+    const field = model?.getField(rawFieldName ?? '');
     return {
       type: 'Field',
-      fieldName,
+      fieldName: field?.name ?? rawFieldName,
       fieldDefinition: parseFormCell(cell, properties),
-      isRequired: cell.getAttribute('isRequired')?.toLowerCase() === 'true',
+      isRequired:
+        cell.getAttribute('isRequired')?.toLowerCase() === 'true' ||
+        field?.isRequiredBySchemaLocalization(),
     };
   },
-  Label(cell) {
-    const text = cell.getAttribute('label') ?? undefined;
-    const labelForCellId = Number.parseInt(cell.getAttribute('labelFor') ?? '');
-    return {
-      type: 'Label',
-      text,
-      labelForCellId: Number.isNaN(labelForCellId) ? undefined : labelForCellId,
-    };
-  },
-  Separator: (cell) => ({
+  Label: ({ cell }) => ({
+    type: 'Label',
+    text: cell.getAttribute('label') ?? undefined,
+    labelForCellId: cell.getAttribute('labelFor') ?? '',
+    // This would be set in postProcessRows
+    fieldName: undefined,
+  }),
+  Separator: ({ cell }) => ({
     type: 'Separator',
     label: cell.getAttribute('label') ?? undefined,
   }),
-  SubView(cell) {
-    const name = cell.getAttribute('name') ?? undefined;
-    const viewName = cell.getAttribute('viewName') ?? undefined;
+  SubView({ cell, model, properties }) {
+    const rawFieldName = cell.getAttribute('name') ?? undefined;
     const formType = cell.getAttribute('defaultType') ?? '';
-    const initialize = parseSpecifyProperties(
-      cell.getAttribute('initialize') ?? ''
-    );
-    const isButton = initialize.btn.toLowerCase() === 'true';
     return {
       type: 'SubView',
-      properties:
-        typeof initialize === 'string'
-          ? parseSpecifyProperties(initialize)
-          : {},
-      formType: formTypes.includes(formType as FormType)
-        ? (formType as FormType)
-        : ('form' as const),
-      name,
-      viewName,
-      isButton,
-      align:
-        isButton &&
-        cellAlign.includes(
-          initialize.align.toLowerCase() as typeof cellAlign[number]
-        )
-          ? (initialize.align.toLowerCase() as typeof cellAlign[number])
-          : undefined,
+      formType:
+        formTypes.find(
+          (type) => type.toLowerCase() === formType.toLowerCase()
+        ) ?? 'form',
+      fieldName: model?.getField(rawFieldName ?? '')?.name,
+      isButton: properties.btn?.toLowerCase() === 'true',
+      icon: properties.icon,
     };
   },
-  Panel: (cell) => ({
+  Panel: ({ cell, model }) => ({
     type: 'Panel',
-    ...parseFormDefinition(cell),
+    ...parseFormDefinition(cell, model),
   }),
-  Command: (cell) => ({
+  Command: ({ cell }) => ({
     type: 'Command',
     commandDefinition: parseUiCommand(cell),
   }),
-  Unsupported: (cell) => ({
+  Unsupported: ({ cell }) => ({
     type: 'Unsupported',
     cellType: cell.getAttribute('type') ?? undefined,
   }),
 };
 
 export type FormCellDefinition = CellTypes[keyof CellTypes] & {
-  readonly id: number | undefined;
+  readonly id: string | undefined;
+  readonly align: typeof cellAlign[number];
   readonly colSpan: number | undefined;
 };
 
@@ -172,19 +161,36 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
 };
 
 // FIXME: review attribute usages once again
-export function parseFormCellDefinition(cellNode: Element): FormCellDefinition {
+/**
+ * Parse form cell XML into a JSON structure
+ *
+ * Does not depend on FormMode, FormType
+ * Depends on SpecifyModel only for figuring out if field is required in
+ * the schema
+ */
+export function parseFormCellDefinition(
+  model: SpecifyModel | undefined,
+  cellNode: Element
+): FormCellDefinition {
   const cellClass = cellNode.getAttribute('node') ?? '';
   const parsedCell =
     processCellType[
       cellTypeTranslation[cellClass.toLowerCase()] ??
         cellTypeTranslation.Unsupported
     ];
+  const properties = parseSpecifyProperties(
+    cellNode.getAttribute('initialize') ?? ''
+  );
   const colSpan = Number.parseInt(cellNode.getAttribute('colspan') ?? '');
-  const id = Number.parseInt(cellNode.getAttribute('id') ?? '');
   return {
-    // FIXME: set as aria-labeledby. Make IDs distinct
-    id: Number.isNaN(id) ? undefined : id,
+    // FIXME: set as aria-labeledby
+    id: cellNode.getAttribute('id') ?? undefined,
     colSpan: Number.isNaN(colSpan) ? undefined : Math.ceil(colSpan / 2),
-    ...parsedCell(cellNode),
+    align: cellAlign.includes(
+      properties.align?.toLowerCase() as typeof cellAlign[number]
+    )
+      ? (properties.align?.toLowerCase() as typeof cellAlign[number])
+      : 'left',
+    ...parsedCell({ cell: cellNode, model, properties }),
   };
 }

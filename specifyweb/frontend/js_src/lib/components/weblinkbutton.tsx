@@ -142,7 +142,7 @@ export function WebLinkButton({
   return (
     <div
       className={
-        formType === 'formtable' ? undefined : 'print:hidden flex gap-x-2'
+        formType === 'formTable' ? undefined : 'print:hidden flex gap-x-2'
       }
     >
       {typeof data === 'object' ? (

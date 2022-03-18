@@ -7,7 +7,6 @@
 
 import React from 'react';
 
-import type { Tables } from '../datamodel';
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { getModel } from '../schema';
@@ -35,17 +34,17 @@ const getHue = spanNumber(
  * Renders a table icon or autogenerates a new one
  */
 export function TableIcon({
-  tableName,
+  name,
   tableLabel,
 }: {
-  readonly tableName: keyof Tables;
+  readonly name: string;
   readonly tableLabel?: string | false;
 }): JSX.Element {
-  const tableIconSource = getIcon(tableName);
+  const tableIconSource = getIcon(name);
   const resolvedTableLabel =
     tableLabel === false
       ? undefined
-      : tableLabel ?? getModel(tableName)?.label ?? '';
+      : tableLabel ?? getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = typeof resolvedTableLabel === 'undefined';
   if (tableIconSource !== '/images/unknown.png')

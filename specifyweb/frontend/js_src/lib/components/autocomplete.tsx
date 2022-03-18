@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import _ from 'underscore';
 
 import type { IR, RA } from '../types';

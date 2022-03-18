@@ -97,7 +97,7 @@ function FormsDialog({
                 }
               >
                 {typeof iconName === 'string' && (
-                  <TableIcon tableName={iconName} tableLabel={false} />
+                  <TableIcon name={iconName} tableLabel={false} />
                 )}
                 {title}
               </Link.Default>

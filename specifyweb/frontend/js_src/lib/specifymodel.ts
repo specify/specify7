@@ -36,6 +36,8 @@ export type TableDefinition = {
 };
 
 type CollectionConstructor<SCHEMA extends AnySchema | AnyTree> = new (props?: {
+  readonly related?: SpecifyResource<AnySchema>;
+  readonly field?: Relationship;
   readonly filters?: Partial<
     {
       readonly orderby: string;

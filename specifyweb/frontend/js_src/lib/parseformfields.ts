@@ -1,3 +1,7 @@
+/**
+ * Parse XML cell with a field definition into JSON
+ */
+
 import type { State } from 'typesafe-reducer';
 
 import type { PluginDefinition } from './parseuiplugins';
@@ -66,7 +70,7 @@ function withStringDefault(cell: Element): {
 const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (
     cell: Element,
-    properties: IR<string>
+    properties: IR<string | undefined>
   ) => FieldTypes[KEY];
 } = {
   Checkbox(cell) {
@@ -153,7 +157,7 @@ export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
 
 export function parseFormCell(
   cell: Element,
-  properties: IR<string>
+  properties: IR<string | undefined>
 ): FormFieldDefinition {
   let uiType = cell.getAttribute('uiType') ?? undefined;
   if (typeof uiType === 'undefined') {

@@ -1,8 +1,8 @@
 "use strict";
 
-import FormTable from './formtable';
-import { schema } from './schema';
-import { userInformation } from './userinfo';
+import FormTable from './components/formtable';
+import {schema} from './schema';
+import {userInformation} from './userinfo';
 
 
 export default FormTable.extend({

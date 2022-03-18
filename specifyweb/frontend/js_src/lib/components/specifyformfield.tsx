@@ -7,7 +7,7 @@ import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
 import type { IR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes } from '../uiparse';
-import { Textarea } from './basic';
+import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
 import { useAsyncState, useResourceValue } from './hooks';
 import { QueryComboBox } from './querycombobox';
@@ -33,10 +33,15 @@ const fieldRenderers: {
     mode,
     fieldName,
     isRequired,
-    fieldDefinition: { defaultValue, printOnSave },
+    fieldDefinition: { defaultValue, printOnSave, label },
   }) {
     return printOnSave ? (
-      <PrintOnSave id={id} name={fieldName} />
+      <PrintOnSave
+        id={id}
+        fieldName={fieldName}
+        model={resource.specifyModel}
+        text={label}
+      />
     ) : (
       <SpecifyFormCheckbox
         id={id}
@@ -45,6 +50,7 @@ const fieldRenderers: {
         defaultValue={defaultValue}
         isRequired={isRequired}
         isReadOnly={mode === 'view'}
+        text={label}
       />
     );
   },
@@ -174,7 +180,17 @@ const fieldRenderers: {
     );
   },
   Plugin: UiPlugin,
-  FilePicker({ id, resource, mode, fieldName, isRequired }) {},
+  FilePicker({ id, mode, fieldName, isRequired }) {
+    return (
+      <Input.Generic
+        type="file"
+        name={fieldName}
+        readOnly={mode === 'view'}
+        id={id}
+        required={isRequired}
+      />
+    );
+  },
 };
 
 export function FormField({

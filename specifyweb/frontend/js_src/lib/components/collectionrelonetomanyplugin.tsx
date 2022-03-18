@@ -10,6 +10,7 @@ import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+// TODO: elimitate this type of imports
 import * as navigation from '../navigation';
 import { schema } from '../schema';
 import type { RA } from '../types';

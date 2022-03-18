@@ -177,15 +177,7 @@ function Search<SCHEMA extends AnySchema>({
   );
 }
 
-// FIXME: review and remove comments in all files
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  /*
-   * Readonly isReadOnly: boolean;
-   * Readonly formType?: FormType;
-   * readonly viewName?: string;
-   * Readonly onSaved?: ResourceViewProps<SCHEMA>['onSaved'];
-   * readonly renderResourceView: ResourceViewProps<SCHEMA>['children'];
-   */
   readonly model: SpecifyModel<SCHEMA>;
   // Related field
   readonly field?: Relationship;
@@ -210,11 +202,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     readonly totalCount: number;
     // Use this to render <ResourceView>
     readonly resource: SpecifyResource<SCHEMA> | undefined;
-    /*
-     * If current resource is still loading, can display previous resource:
-     * readonly previousResource: SpecifyResource<SCHEMA> | undefined;
-     * Set this as an "Add" button event listener
-     */
+    // Set this as an "Add" button event listener
     readonly onAdd: () => void;
     // Set this as an "Remove" button event listener
     readonly onRemove: () => void;
@@ -230,23 +218,13 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
 };
 
 // FIXME: display old record with Loading message while loading new record
-export function RecordSelector<SCHEMA extends AnySchema>({
-  // IsReadOnly: readOnly,
+export function BaseRecordSelector<SCHEMA extends AnySchema>({
   model,
-  /*
-   * FormType = 'form',
-   * viewName,
-   */
   field,
   records,
   onAdd: handleAdded,
   onDelete: handleDelete,
-  // IsDependent,
   relatedResource,
-  /*
-   * OnSaved: handleSaved,
-   * renderResourceView,
-   */
   children,
   index,
   onSlide: handleSlide,

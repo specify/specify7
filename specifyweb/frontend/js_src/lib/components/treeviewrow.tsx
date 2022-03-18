@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import commonText from '../localization/common';
 import treeText from '../localization/tree';

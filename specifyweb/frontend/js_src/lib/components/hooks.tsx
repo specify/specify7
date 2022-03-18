@@ -13,6 +13,10 @@ import { crash } from './errorboundary';
 
 const idStore: R<number> = {};
 
+/**
+ * A hook that returns a unique string ID generator that is unique
+ * and unchanging for the lifecycle of a component
+ */
 export function useId(prefix: string): (suffix: string) => string {
   const id = React.useRef(-1);
 
@@ -36,6 +40,7 @@ export function setTitle(title: string): void {
   window.document.title = commonText('appTitle')(title);
 }
 
+/** Set title of the webpage. Restores previous title on component destruction */
 export function useTitle(title: string): void {
   // Reset title after component is destroyed
   React.useEffect(() => {
@@ -52,6 +57,11 @@ export function useTitle(title: string): void {
 }
 
 /**
+ * An integration into native browser error reporting mechanism.
+ * Can set an error message via prop or callback.
+ * Hides the error message on input
+ *
+ * @remarks
  * For performance reasons, this hook does not cause state update when setting
  * validation message. Thus, you can call it on keydown to implement live
  * validation
@@ -125,7 +135,31 @@ export function useValidation<T extends Input = HTMLInputElement>(
   };
 }
 
-/** Like React.useState, but initial value is retrieved asynchronously */
+/**
+ * Like React.useState, but initial value is retrieved asynchronously
+ * While value is being retrieved, hook returns undefined, which can be
+ * conveniently replaced with a default value when destructuring the array
+ *
+ * @remarks
+ * This hook resets the state value every time the prop changes. Thus,
+ * you need to wrap the prop in React.useCallback(). This allows for
+ * recalculation of the state when parent component props change.
+ *
+ * If async action is resolved after component destruction, no update occurs
+ * (thus no warning messages are triggered)
+ *
+ * Rejected promises result in a modal error dialog
+ *
+ * @example
+ * This would fetch data from a url, use defaultValue while fetching,
+ * reFetch every time url changes, and allow to manually change state
+ * value using setValue:
+ * ```js
+ * const [value=defaultValue, setValue] = useAsyncState(
+ *   React.useCallback(()=>fetch(url), [url]);
+ * );
+ * ```
+ */
 export function useAsyncState<T>(
   callback: () => undefined | T | Promise<T | undefined>
 ): [
@@ -177,6 +211,39 @@ export function useUnloadProtect(
   };
 }
 
+/**
+ * Many react states are simple boolean switches
+ * This hook gives a convenient way to defined such states
+ *
+ * @example Usage
+ * Without this hook:
+ * ```js
+ * const [isOpen, setIsOpen] = React.useState(false);
+ * ```
+ * With this hook:
+ * ```
+ * const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
+ * ```
+ * "handleOpen" is easier to reason about than "setIsOpen(false)"
+ *
+ * If handleClose or handleToggle actions are not needed, they simply
+ * don't have to be destructured.
+ *
+ * Initial value can be given as a prop. State value is changed to match the
+ * prop if prop changes.
+ *
+ * @example Performance optimization
+ * This hook also reduces the render the need for reRenders
+ * This calls reRender of Dialog on each parent component render since
+ * lamda function is redefined at each render:
+ * ```js
+ * <Dialog onClose={():void => setIsOpen(false)} ... >...</Dialog>
+ * ```
+ * This doss not cause needless reRenders and looks cleaner:
+ * ```js
+ * <Dialog onClose={handleClose} ... >...</Dialog>
+ * ```
+ */
 export function useBooleanState(
   value = false
 ): Readonly<
@@ -198,7 +265,19 @@ export function useBooleanState(
   ];
 }
 
-// A hook to integrate an Input with a field on a Backbone resource
+/**
+ * A hook to integrate an Input with a field on a Backbone resource
+ *
+ * @remarks
+ * If Backbone field value changes, hook is updated
+ *
+ * Field schema is used to define a Parser than can be used to get
+ * validation attributes for an Input
+ *
+ * If field value is invalid, save blocker is set. It is cleared as soon
+ * as field value is corrected
+ *
+ */
 export function useResourceValue<
   T extends string | number | boolean,
   INPUT extends Input = HTMLInputElement
@@ -255,7 +334,7 @@ export function useResourceValue<
   );
 
   /*
-   * Show errors if default parser changes
+   * Show errors if default parser changes (to catch possible performance issues)
    */
   const previousParser = React.useRef<Parser | undefined | false>(false);
   React.useEffect(() => {

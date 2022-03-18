@@ -1,3 +1,7 @@
+/**
+ * Parse cell XML with a plugin definition into a JSON structure
+ */
+
 import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';

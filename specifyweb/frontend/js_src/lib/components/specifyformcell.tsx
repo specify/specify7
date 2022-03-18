@@ -4,16 +4,19 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import { localizeLabel } from '../localizeform';
 import type { FormMode, FormType } from '../parseform';
 import type { CellTypes } from '../parseformcells';
+import { defined } from '../types';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
+import { SubView } from './subview';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly mode: FormMode;
     readonly cellData: CellTypes[KEY];
-    readonly id: number | undefined;
+    readonly id: string | undefined;
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
@@ -29,7 +32,7 @@ const cellRenderers: {
   }) {
     return (
       <FormField
-        id={typeof id === 'number' ? formatId(id.toString()) : undefined}
+        id={typeof id === 'string' ? formatId(id.toString()) : undefined}
         resource={resource}
         mode={mode}
         fieldDefinition={fieldDefinition}
@@ -39,18 +42,26 @@ const cellRenderers: {
       />
     );
   },
-  Label({ cellData: { text, labelForCellId }, formatId, id }) {
+  Label({
+    cellData: { text, labelForCellId },
+    formatId,
+    id,
+    resource,
+    fieldName,
+  }) {
+    const htmlFor =
+      typeof labelForCellId === 'number'
+        ? formatId(labelForCellId.toString())
+        : undefined;
+    const { children, ...props } = localizeLabel({
+      text: text?.trim(),
+      id,
+      resource,
+      fieldName,
+    });
     return (
-      <label
-        // FIXME: remove the need for this
-        id={typeof id === 'number' ? formatId(id.toString()) : undefined}
-        htmlFor={
-          typeof labelForCellId === 'number'
-            ? formatId(labelForCellId.toString())
-            : undefined
-        }
-      >
-        {text}
+      <label htmlFor={htmlFor} {...props} aria-hidden={children.length === 0}>
+        {children}
       </label>
     );
   },
@@ -61,7 +72,25 @@ const cellRenderers: {
       <hr className="w-full border-b border-gray-500" />
     );
   },
-  SubView({ mode, cellData }) {},
+  SubView({
+    resource,
+    mode,
+    formType,
+    cellData: { fieldName, formType, isButton, icon },
+  }) {
+    return (
+      <SubView
+        mode={mode}
+        isButton={isButton}
+        parentFormType={formType}
+        formType={formType}
+        parentResource={resource}
+        field={defined(resource.specifyModel.getRelationship(fieldName ?? ''))}
+        icon={icon}
+      />
+    );
+  },
+  // FIXME: figure out what to do with this
   Panel({ mode, cellData }) {},
   Command({ cellData: { name, label }, id, resource }) {
     return <UiCommand name={name} label={label} resource={resource} id={id} />;
@@ -88,7 +117,7 @@ export function FormCell({
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
   readonly cellData: CellTypes[keyof CellTypes];
-  readonly id: number | undefined;
+  readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
 }): JSX.Element {

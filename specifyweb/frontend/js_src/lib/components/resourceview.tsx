@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -8,22 +9,19 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
-import populateForm from '../populateform';
+import type { FormMode } from '../parseform';
 import reports from '../reports';
-import { setCurrentView } from '../specifyapp';
-import specifyform from '../specifyform';
-import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { f } from '../wbplanviewhelper';
 import { Button, className, Container, FormFooter, H2, Link } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
-import { useBooleanState } from './hooks';
+import { useAsyncState, useBooleanState, useId } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
 import { Dialog, LoadingScreen } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
-import { RecordSetView } from './recordselectorutils';
+import { IntegratedRecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
+import { SpecifyForm } from './specifyform';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -37,39 +35,51 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly resource: SpecifyResource<SCHEMA>;
-  readonly isReadOnly: boolean;
-  // Curried specifyForm.buildViewByName or specifyForm.buildSubView
-  readonly buildView: () => Promise<HTMLFormElement>;
-  readonly canAddAnother: boolean;
-  readonly onSaving?: () => void;
-  readonly onSaved?: (payload: {
-    readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<SCHEMA> | undefined;
-    readonly wasNew: boolean;
-    // Readonly reporterOnSave: boolean;
-  }) => void;
+  readonly mode: FormMode;
+  readonly viewName?: string;
+  readonly isSubForm: boolean;
   readonly children: (props: {
-    readonly isLoading: boolean;
     readonly isModified: boolean;
+    readonly formElement: HTMLFormElement | null;
     readonly title: string;
     // Delete button component has to be created manually
-    readonly saveButton?: JSX.Element;
+    readonly saveButton?: (props: {
+      readonly canAddAnother: boolean;
+      readonly onSaving?: () => void;
+      readonly onSaved: (payload: {
+        readonly addAnother: boolean;
+        readonly newResource: SpecifyResource<SCHEMA> | undefined;
+        readonly wasNew: boolean;
+        // Readonly reporterOnSave: boolean;
+      }) => void;
+    }) => JSX.Element;
     readonly form: JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
 
-export function ResourceView<SCHEMA extends AnySchema>({
-  resource,
-  buildView,
-  isReadOnly,
-  canAddAnother,
-  onSaving: handleSaving,
-  onSaved: handleSaved,
-  children,
-}: ResourceViewProps<SCHEMA>): JSX.Element | null {
-  const [state, setState] = React.useState<'loading' | 'main'>('loading');
+export type FormMeta = {
+  // Undefined if form does not have a printOnSave button
+  readonly printOnSave: undefined | boolean;
+};
 
+export const FormContext = React.createContext<
+  Readonly<
+    [
+      meta: FormMeta,
+      setMeta: (newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void
+    ]
+  >
+>([{ printOnSave: false }, (): void => error('Form context is not defined')]);
+FormContext.displayName = 'FormContext';
+
+function BaseResourceView<SCHEMA extends AnySchema>({
+  resource,
+  children,
+  mode,
+  viewName = resource.specifyModel.view,
+  isSubForm,
+}: ResourceViewProps<SCHEMA>): JSX.Element | null {
   // Update title when resource changes
   const [title, setTitle] = React.useState(resource.specifyModel.label);
   React.useEffect(() => {
@@ -94,73 +104,64 @@ export function ResourceView<SCHEMA extends AnySchema>({
     return (): void => resource.off('change', updateTitle);
   }, [resource]);
 
-  // Build the view
-  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
-  const [form, setForm] = React.useState<HTMLFormElement | undefined>(
-    undefined
+  const id = useId('resource-view');
+  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formMeta = React.useState<FormMeta>({
+    printOnSave: undefined,
+  });
+
+  const specifyForm = (
+    <SpecifyForm
+      resource={resource}
+      hasHeader={false}
+      mode={mode}
+      viewName={viewName}
+      formType="form"
+    />
   );
-  React.useEffect(() => {
-    if (container === null) return;
-    Promise.all([buildView(), resource.fetchPromise()] as const)
-      .then(([form]) => {
-        setState('main');
-
-        form.querySelector('.specify-form-header')?.remove();
-
-        defined(container ?? undefined).replaceChildren(form);
-        populateForm(form, resource);
-        setForm(form);
-
-        const resourceLabel = resource.specifyModel.label;
-        setTitle(
-          resource.isNew()
-            ? commonText('newResourceTitle')(resourceLabel)
-            : resourceLabel
-        );
-        return undefined;
-      })
-      .catch(crash);
-  }, [resource, container]);
 
   return children({
-    isLoading: state === 'loading',
     isModified: resource.needsSaved,
     title,
-    form: (
-      <div
-        ref={(container: HTMLElement | null): void =>
-          container === null ? undefined : setContainer(container)
-        }
-      />
+    formElement: form,
+    form: isSubForm ? (
+      specifyForm
+    ) : (
+      <FormContext.Provider value={formMeta}>
+        <form id={id('form')} ref={(newForm): void => setForm(newForm ?? form)}>
+          {specifyForm}
+        </form>
+      </FormContext.Provider>
     ),
     saveButton:
-      !isReadOnly &&
-      typeof form === 'object' &&
-      typeof handleSaved === 'function' ? (
-        <SaveButton
-          model={resource}
-          form={form}
-          onSaving={handleSaving}
-          onSaved={(payload): void => {
-            const reporterOnSave = form?.getElementsByClassName(
-              'specify-print-on-save'
-            )[0] as HTMLInputElement | undefined;
-            if (reporterOnSave?.checked === true)
-              reports({
-                tblId: resource.specifyModel.tableId,
-                recordToPrintId: resource.id,
-                autoSelectSingle: true,
-                done: (): void => handleSaved(payload),
-              })
-                .then((view) => view.render())
-                .catch(crash);
-            else handleSaved(payload);
-          }}
-          canAddAnother={
-            canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-          }
-        />
-      ) : undefined,
+      mode === 'view' && form !== null
+        ? undefined
+        : ({ onSaving: handleSaving, onSaved: handleSaved, canAddAnother }) =>
+            form === null ? (
+              <></>
+            ) : (
+              <SaveButton
+                model={resource}
+                form={form}
+                onSaving={handleSaving}
+                onSaved={(payload): void => {
+                  if (formMeta[0].printOnSave === true)
+                    reports({
+                      tblId: resource.specifyModel.tableId,
+                      recordToPrintId: resource.id,
+                      autoSelectSingle: true,
+                      done: (): void => handleSaved(payload),
+                    })
+                      .then((view) => view.render())
+                      .catch(crash);
+                  else handleSaved(payload);
+                }}
+                canAddAnother={
+                  canAddAnother &&
+                  !NO_ADD_ANOTHER.has(resource.specifyModel.name)
+                }
+              />
+            ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
       <SpecifyNetworkBadge resource={resource} />
     ) : undefined,
@@ -181,12 +182,8 @@ const resourceDeletedDialog = (
 );
 
 // FIXME: revisit all usages of all these components
-export function IntegratedResourceView<SCHEMA extends AnySchema>({
+export function ResourceView<SCHEMA extends AnySchema>({
   resource,
-  buildView = async (): Promise<HTMLFormElement> =>
-    specifyform
-      .buildViewByName(resource.specifyModel.view)
-      .then(([element]) => element as HTMLFormElement),
   extraButtons = <span className="flex-1 -ml-2" />,
   headerButtons = <span className="flex-1 -ml-4" />,
   canAddAnother,
@@ -197,9 +194,14 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
   onDeleted: handleDeleted,
   onClose: handleClose,
   children,
+  mode,
+  viewName,
+  isSubForm,
+  title: titleOverride,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
-  readonly buildView?: () => Promise<HTMLFormElement>;
+  readonly mode: FormMode;
+  readonly viewName?: string;
   readonly headerButtons?: JSX.Element;
   readonly canAddAnother: boolean;
   readonly extraButtons?: JSX.Element | undefined;
@@ -214,186 +216,241 @@ export function IntegratedResourceView<SCHEMA extends AnySchema>({
   readonly onDeleted: () => void;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
+  readonly isSubForm: boolean;
+  readonly title?: string;
 }): JSX.Element {
-  const [isDeleted, setDeleted] = useBooleanState();
+  const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
+  // Remove isDeleted status when resource changes
+  React.useEffect(setNotDeleted, [resource, setNotDeleted]);
   function handleDelete(): void {
     setDeleted();
     handleDeleted();
   }
+
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
   return isDeleted ? (
     resourceDeletedDialog
   ) : (
-    <ResourceView
+    <BaseResourceView
       resource={resource}
-      buildView={buildView}
-      isReadOnly={userInformation.isReadOnly}
-      canAddAnother={canAddAnother}
-      onSaving={handleSaving}
-      onSaved={(payload) => {
-        handleSaved(payload);
-        handleClose();
-      }}
+      mode={mode}
+      viewName={viewName}
+      isSubForm={isSubForm}
     >
       {({
-        isLoading,
         isModified,
         form,
         title,
         saveButton,
         specifyNetworkBadge,
-      }): JSX.Element =>
-        dialog === false ? (
-          <Container.Generic className="w-fit overflow-y-auto">
-            {isLoading && <LoadingScreen />}
-            <header className={className.formHeader}>
-              <H2 className={className.formTitle}>{title}</H2>
-              {headerButtons}
-              {specifyNetworkBadge}
-            </header>
-            {form}
-            {children}
-            <FormFooter>
-              {!resource.isNew() && !userInformation.isReadOnly ? (
-                <DeleteButton
-                  model={resource}
-                  deletionMessage={deletionMessage}
-                  onDeleted={(): void => {
-                    handleDelete();
-                    handleClose();
-                  }}
-                />
-              ) : undefined}
-              {extraButtons}
-              {saveButton}
-            </FormFooter>
-          </Container.Generic>
-        ) : (
-          <Dialog
-            header={title}
-            modal={dialog === 'modal'}
-            headerButtons={
-              <>
-                {!resource.isNew() && <Link.NewTab href={resource.viewUrl()} />}
-                {headerButtons}
-                {specifyNetworkBadge}
-              </>
-            }
-            buttons={
-              <>
+      }): JSX.Element => {
+        if (dialog === false) {
+          const formattedChildren = (
+            <>
+              {form}
+              {children}
+              <FormFooter>
                 {!resource.isNew() && !userInformation.isReadOnly ? (
-                  <DeleteButton model={resource} onDeleted={handleDelete} />
+                  <DeleteButton
+                    model={resource}
+                    deletionMessage={deletionMessage}
+                    onDeleted={(): void => {
+                      handleDelete();
+                      handleClose();
+                    }}
+                  />
                 ) : undefined}
                 {extraButtons}
-                {isModified ? (
-                  <Button.Red onClick={handleClose}>
-                    {commonText('cancel')}
-                  </Button.Red>
-                ) : (
-                  <Button.Blue onClick={handleClose}>
-                    {commonText('close')}
-                  </Button.Blue>
-                )}
-                {saveButton}
-              </>
-            }
-            onClose={(): void => {
-              if (isModified) setShowUnloadProtect(true);
-              else handleClose();
-            }}
-          >
-            {form}
-            {children}
-            {isLoading && <LoadingScreen />}
-            {showUnloadProtect && (
-              <Dialog
-                title={commonText('leavePageDialogTitle')}
-                header={commonText('leavePageDialogHeader')}
-                onClose={(): void => setShowUnloadProtect(false)}
-                buttons={
+                {saveButton?.({
+                  canAddAnother,
+                  onSaving: handleSaving,
+                  onSaved(payload) {
+                    handleSaved(payload);
+                    handleClose();
+                  },
+                })}
+              </FormFooter>
+            </>
+          );
+          return isSubForm ? (
+            <fieldset>
+              <legend className={className.subFormHeader}>
+                <h3 className={className.formTitle}>
+                  {titleOverride ?? title}
+                </h3>
+                {headerButtons}
+                {specifyNetworkBadge}
+              </legend>
+              {formattedChildren}
+            </fieldset>
+          ) : (
+            <Container.Generic className="w-fit overflow-y-auto">
+              <header className={className.formHeader}>
+                <H2 className={className.formTitle}>
+                  {titleOverride ?? title}
+                </H2>
+                {headerButtons}
+                {specifyNetworkBadge}
+              </header>
+              {formattedChildren}
+            </Container.Generic>
+          );
+        } else
+          return (
+            <Dialog
+              header={title}
+              modal={dialog === 'modal'}
+              headerButtons={
+                <>
+                  {!resource.isNew() && (
+                    <Link.NewTab href={resource.viewUrl()} />
+                  )}
+                  {headerButtons}
+                  {specifyNetworkBadge}
+                </>
+              }
+              buttons={
+                isSubForm ? undefined : (
                   <>
-                    <Button.DialogClose>
-                      {commonText('cancel')}
-                    </Button.DialogClose>
-                    <Button.Red onClick={handleClose}>
-                      {commonText('leave')}
-                    </Button.Red>
+                    {!resource.isNew() && !userInformation.isReadOnly ? (
+                      <DeleteButton model={resource} onDeleted={handleDelete} />
+                    ) : undefined}
+                    {extraButtons}
+                    {isModified ? (
+                      <Button.Red onClick={handleClose}>
+                        {commonText('cancel')}
+                      </Button.Red>
+                    ) : (
+                      <Button.Blue onClick={handleClose}>
+                        {commonText('close')}
+                      </Button.Blue>
+                    )}
+                    {saveButton}
                   </>
-                }
-              >
-                {formsText('unsavedFormUnloadProtect')}
-              </Dialog>
-            )}
-          </Dialog>
-        )
-      }
-    </ResourceView>
+                )
+              }
+              onClose={(): void => {
+                if (isModified) setShowUnloadProtect(true);
+                else handleClose();
+              }}
+            >
+              {form}
+              {children}
+              {showUnloadProtect && (
+                <Dialog
+                  title={commonText('leavePageDialogTitle')}
+                  header={commonText('leavePageDialogHeader')}
+                  onClose={(): void => setShowUnloadProtect(false)}
+                  buttons={
+                    <>
+                      <Button.DialogClose>
+                        {commonText('cancel')}
+                      </Button.DialogClose>
+                      <Button.Red onClick={handleClose}>
+                        {commonText('leave')}
+                      </Button.Red>
+                    </>
+                  }
+                >
+                  {formsText('unsavedFormUnloadProtect')}
+                </Dialog>
+              )}
+            </Dialog>
+          );
+      }}
+    </BaseResourceView>
   );
 }
 
-export const ViewResource = createBackboneView(IntegratedResourceView);
+export function ShowResource({
+  resource: initialResource,
+  recordSet: initialRecordSet,
+  pushUrl,
+}: {
+  resource: SpecifyResource<AnySchema>;
+  recordSet: SpecifyResource<RecordSet> | undefined;
+  pushUrl: boolean;
+}): JSX.Element {
+  const [{ resource, recordSet }, setRecord] = React.useState({
+    resource: initialResource,
+    recordSet: initialRecordSet,
+  });
 
-export async function showResource(
-  resource: SpecifyResource<AnySchema>,
-  recordSet?: SpecifyResource<RecordSet>,
-  pushUrl = false
-): Promise<void> {
-  if (pushUrl) navigation.push(resource.viewUrl());
+  React.useEffect(
+    () => navigation.push(resource.viewUrl()),
+    [resource, pushUrl]
+  );
 
-  const recordSetInfo = resource.get('recordset_info');
-  const recordSetItemIndex =
-    typeof recordSetInfo === 'object'
-      ? await fetchCollection(
-          'RecordSetItem',
-          {
-            recordSet: recordSetInfo.recordsetid,
-            limit: 1,
-          },
-          { recordId__lt: resource.id }
-        )
-          .then(({ totalCount }) => totalCount)
-          .catch(crash)
-      : undefined;
-  const view =
-    typeof recordSetItemIndex === 'number' && typeof recordSet === 'object'
-      ? new RecordSetView({
-          recordSet,
-          defaultResourceIndex: recordSetItemIndex,
-          onSaved: ({ addAnother, newResource, wasNew }): void => {
-            if (addAnother && typeof newResource === 'object')
-              showResource(newResource, recordSet, true);
-            else if (wasNew) navigation.go(resource.viewUrl());
-            else {
-              const reloadResource = new resource.specifyModel.Resource({
-                id: resource.id,
-              });
-              reloadResource.recordsetid = resource.recordsetid;
-              reloadResource
-                .fetchPromise()
-                .then(async () => showResource(reloadResource, recordSet));
-            }
-          },
-        })
-      : new ViewResource({
-          resource,
-          onClose: f.void,
-          canAddAnother: true,
-          dialog: false,
-          onSaved: ({ addAnother, newResource, wasNew }): void => {
-            if (addAnother && typeof newResource === 'object')
-              showResource(newResource, recordSet, true);
-            else if (wasNew) navigation.go(resource.viewUrl());
-            else {
-              const reloadResource = new resource.specifyModel.Resource({
-                id: resource.id,
-              });
-              reloadResource.recordsetid = resource.recordsetid;
-              reloadResource
-                .fetchPromise()
-                .then(async () => showResource(reloadResource, recordSet));
-            }
-          },
-        });
-  setCurrentView(view);
+  const [recordSetItemIndex] = useAsyncState(
+    React.useCallback(async () => {
+      const recordSetInfo = resource.get('recordset_info');
+      return typeof recordSetInfo === 'object'
+        ? fetchCollection(
+            'RecordSetItem',
+            {
+              recordSet: recordSetInfo.recordsetid,
+              limit: 1,
+            },
+            { recordId__lt: resource.id }
+          )
+            .then(({ totalCount }) => totalCount)
+            .catch(crash)
+        : undefined;
+    }, [resource])
+  );
+
+  return typeof recordSet === 'object' ? (
+    typeof recordSetItemIndex === 'undefined' ? (
+      <LoadingScreen />
+    ) : (
+      <IntegratedRecordSetView
+        recordSet={recordSet}
+        defaultResourceIndex={recordSetItemIndex}
+        onSaved={({ addAnother, newResource, wasNew }): void => {
+          if (addAnother && typeof newResource === 'object')
+            showResource(newResource, recordSet, true);
+          else if (wasNew) navigation.go(resource.viewUrl());
+          else {
+            const reloadResource = new resource.specifyModel.Resource({
+              id: resource.id,
+            });
+            reloadResource.recordsetid = resource.recordsetid;
+            reloadResource
+              .fetchPromise()
+              .then(async () =>
+                showResource(reloadResource, recordSet, pushUrl)
+              );
+          }
+        }}
+      />
+    )
+  ) : (
+    <ResourceView
+      resource={resource}
+      onClose={f.void}
+      canAddAnother={true}
+      dialog={false}
+      isSubForm={false}
+      mode={userInformation.isReadOnly ? 'edit' : 'view'}
+      viewName={resource.specifyModel.view}
+      onDeleted={() => navigation.go('/')}
+      onSaved={({ addAnother, newResource, wasNew }): void => {
+        if (addAnother && typeof newResource === 'object')
+          setRecord({ resource: newResource, recordSet });
+        else if (wasNew) navigation.go(resource.viewUrl());
+        else {
+          const reloadResource = new resource.specifyModel.Resource({
+            id: resource.id,
+          });
+          reloadResource.recordsetid = resource.recordsetid;
+          reloadResource
+            .fetchPromise()
+            .then(async () =>
+              setRecord({ resource: reloadResource, recordSet })
+            );
+        }
+      }}
+    />
+  );
 }

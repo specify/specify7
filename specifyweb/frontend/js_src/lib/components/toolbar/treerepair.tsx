@@ -58,7 +58,7 @@ export function TreeSelectDialog({
                     .catch(crash);
                 }}
               >
-                <TableIcon tableName={tree} tableLabel="false" />
+                <TableIcon name={tree} tableLabel={false} />
                 {model.label}
               </Link.Default>
             </li>

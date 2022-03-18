@@ -69,6 +69,10 @@ export function useSaveBlockers({
   return errors;
 }
 
+/**
+ * Derive validation attributes for an <Input> from a field schema
+ *
+ */
 export function useValidationAttributes(
   field: LiteralField | Relationship
 ): IR<string> {

@@ -444,10 +444,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                             className="contents"
                           >
-                            <TableIcon
-                              tableName={tableName}
-                              tableLabel={false}
-                            />
+                            <TableIcon name={tableName} tableLabel={false} />
                             {defined(getModel(tableName)).label}
                           </label>
                         </td>

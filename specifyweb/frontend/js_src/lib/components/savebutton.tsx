@@ -10,8 +10,7 @@ import { camelToHuman } from '../wbplanviewhelper';
 import { Button, className, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
-import { Dialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { Dialog, LoadingScreen } from './modaldialog';
 
 function handleFocus(event: FocusEvent): void {
   const target = event.target as HTMLElement;
@@ -133,21 +132,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
   return (
     <>
+      {typeof handleSaving === 'undefined' && isSaving ? (
+        <LoadingScreen />
+      ) : undefined}
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
           disabled={isSaving}
-          onClick={(event): void => {
-            handleSubmit(event, true).catch(crash);
-            /*
-             * If tried to submit form, unhide field validation errors
-             * (pattern mismatch and missing required value)
-             *
-             * Can't do this inside of onsubmit handler, because
-             * onsubmit is only called on valid forms
-             */
-            form.classList.remove(className.notSubmittedForm);
-          }}
+          onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
           {saveRequired
             ? formsText('saveAndAddAnother')
@@ -213,5 +205,3 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </>
   );
 }
-
-export default createBackboneView(SaveButton);

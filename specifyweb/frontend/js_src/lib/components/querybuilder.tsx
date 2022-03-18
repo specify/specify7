@@ -180,7 +180,7 @@ export function QueryBuilder({
         }}
       >
         <header className="gap-x-2 whitespace-nowrap flex items-center">
-          <TableIcon tableName={model.name} />
+          <TableIcon name={model.name} />
           <H2 className="overflow-x-auto">
             {typeof recordSet === 'object'
               ? queryText('queryRecordSetTitle')(

@@ -242,7 +242,7 @@ export function Icon({
     return tableIconSelected;
   else if (!isRelationship || typeof tableName === 'undefined')
     return tableIconEmpty;
-  else return <TableIcon tableName={tableName} />;
+  else return <TableIcon name={tableName} />;
 }
 
 function Option({

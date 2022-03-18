@@ -22,7 +22,7 @@ import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { IntegratedResourceView } from '../resourceview';
+import { ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
@@ -135,7 +135,7 @@ function QueryList({
                 className="overflow-x-auto"
               >
                 <TableIcon
-                  tableName={getModelById(query.contextTableId).name}
+                  name={getModelById(query.contextTableId).name}
                   tableLabel={false}
                 />
                 {query.name}
@@ -174,7 +174,7 @@ function ListOfTables({
       {tables.map((tableName, index) => (
         <li key={index}>
           <Link.Default href={getQueryCreateUrl(tableName)}>
-            <TableIcon tableName={tableName} tableLabel={false} />
+            <TableIcon name={tableName} tableLabel={false} />
             {defined(getModel(tableName)).label}
           </Link.Default>
         </li>
@@ -344,7 +344,7 @@ function EditQueryDialog({
   >('default');
 
   return state === 'default' ? (
-    <IntegratedResourceView
+    <ResourceView
       dialog="modal"
       canAddAnother={false}
       resource={queryResource}
@@ -365,7 +365,7 @@ function EditQueryDialog({
           </Button.LikeLink>
         </div>
       )}
-    </IntegratedResourceView>
+    </ResourceView>
   ) : state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (

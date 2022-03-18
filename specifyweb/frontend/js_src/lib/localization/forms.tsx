@@ -1079,6 +1079,12 @@ const formsText = createDictionary({
     ca: 'Open original',
     'es-es': 'Open original',
   },
+  reportOnSave: {
+    'en-us': 'Generate Label on Save',
+    'ru-ru': 'Генерировать отчет при сохранении',
+    ca: 'Generate Label on Save',
+    'es-es': 'Generate Label on Save',
+  },
 });
 
 export default formsText;

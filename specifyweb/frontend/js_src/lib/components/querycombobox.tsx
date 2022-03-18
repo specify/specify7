@@ -39,7 +39,7 @@ import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
 import type { QueryComboBoxFilter } from './querycbxsearch';
 import { QueryComboBoxSearch } from './querycbxsearch';
-import { IntegratedResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -382,7 +382,7 @@ export function QueryComboBox({
             required={isRequired}
             readOnly={
               mode === 'view' ||
-              formType === 'formtable' ||
+              formType === 'formTable' ||
               typeof typeSearch === 'undefined'
             }
             {...getValidationAttributes(parser)}
@@ -392,7 +392,7 @@ export function QueryComboBox({
       </Autocomplete>
       <span className="print:hidden contents">
         {mode === 'view' ? (
-          formType === 'formtable' ? undefined : (
+          formType === 'formTable' ? undefined : (
             <Button.Icon
               aria-pressed={state.type === 'ViewResourceState'}
               disabled={
@@ -532,7 +532,7 @@ export function QueryComboBox({
       )}
       {typeof formatted?.resource === 'object' ? (
         state.type === 'ViewResourceState' ? (
-          <IntegratedResourceView
+          <ResourceView
             resource={formatted.resource}
             canAddAnother={false}
             dialog="nonModal"
@@ -545,7 +545,7 @@ export function QueryComboBox({
             mode={mode}
           />
         ) : state.type === 'AddResourceState' ? (
-          <IntegratedResourceView
+          <ResourceView
             resource={formatted.resource}
             canAddAnother={false}
             dialog="nonModal"

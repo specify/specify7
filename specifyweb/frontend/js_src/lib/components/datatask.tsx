@@ -18,7 +18,8 @@ import { userInformation } from '../userinfo';
 import { crash } from './errorboundary';
 import { setTitle } from './hooks';
 import { OtherCollectionView } from './othercollectionview';
-import { showResource } from './resourceview';
+import createBackboneView from './reactbackboneextend';
+import { ShowResource } from './resourceview';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -101,9 +102,14 @@ async function resourceView(
   ])
     .catch(crash)
     .then(async () =>
-      checkLoggedInCollection(
-        resource,
-        async (): Promise<void> => showResource(resource, recordSet)
+      checkLoggedInCollection(resource, (): void =>
+        setCurrentView(
+          new ResourceView({
+            resource,
+            recordSet,
+            pushUrl: true,
+          })
+        )
       )
     );
 }
@@ -119,9 +125,14 @@ async function viewResourceByGuid(
       setTitle(commonText('pageNotFound'));
       return undefined;
     } else
-      return checkLoggedInCollection(
-        models[0],
-        async (): Promise<void> => showResource(models[0], undefined, true)
+      return checkLoggedInCollection(models[0], (): void =>
+        setCurrentView(
+          new ResourceView({
+            resource: models[0],
+            recordSet: undefined,
+            pushUrl: true,
+          })
+        )
       );
   });
 }
@@ -165,7 +176,13 @@ async function byCatNumber(
         });
       return collectionObjects.fetchPromise({ limit: 1 }).then(({ models }) => {
         if (models.length === 0) error('Unable to find collection object');
-        showResource(models[0], undefined, true);
+        setCurrentView(
+          new ResourceView({
+            resource: models[0],
+            recordSet: undefined,
+            pushUrl: true,
+          })
+        );
         return undefined;
       });
     })
@@ -188,6 +205,8 @@ const checkLoggedInCollection = async (
               })
             )
       );
+
+const ResourceView = createBackboneView(ShowResource);
 
 export default function routes(): void {
   router.route('recordset/:id/', 'recordSetView', recordSetView);

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { ajax, ping } from '../../ajax';
 import { csrfToken } from '../../csrftoken';

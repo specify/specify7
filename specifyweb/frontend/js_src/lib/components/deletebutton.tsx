@@ -10,7 +10,6 @@ import { Button, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 
 export function DeleteButton<SCHEMA extends AnySchema>({
   model,
@@ -101,5 +100,3 @@ export function DeleteButton<SCHEMA extends AnySchema>({
     </>
   );
 }
-
-export default createBackboneView(DeleteButton);

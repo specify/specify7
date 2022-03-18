@@ -1,5 +1,10 @@
+/**
+ * Converts XML form and formTable definitions to JSON, while also
+ * adding type safety and strictness to help resolve ambiguities
+ */
+
 import { ajax, Http } from './ajax';
-import type { FormCellDefinition } from './parseformcells';
+import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
   parseFormCellDefinition,
   processColumnDefinition,
@@ -8,7 +13,7 @@ import * as queryString from './querystring';
 import { getModel } from './schema';
 import { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { f } from './wbplanviewhelper';
 
 const columnDefinitionsPlatform = 'lnx';
@@ -20,31 +25,100 @@ const getColumnDefinitions = (viewDefinition: Element): string =>
   ).textContent ?? '';
 
 export type ParsedFormDefinition = {
+  // Define column sizes: either a number of pixels, or undefined for auto sizing
   readonly columns: RA<number | undefined>;
+  // Two dimensional grid of cells
   readonly rows: RA<RA<FormCellDefinition>>;
 };
 
 function parseFormTableDefinition(
-  viewDefinition: Element
+  viewDefinition: Element,
+  model: SpecifyModel | undefined
 ): ParsedFormDefinition {
   const cells = Array.from(
     viewDefinition.querySelectorAll('cell[type="field"], cell[type="subview"]'),
-    parseFormCellDefinition
+    parseFormCellDefinition.bind(undefined, model)
   );
   return {
     columns: cells.map(f.undefined),
-    rows: [cells],
+    rows: postProcessRows([cells]),
   };
 }
 
 export const parseFormDefinition = (
-  viewDefinition: Element
+  viewDefinition: Element,
+  model: SpecifyModel | undefined
 ): ParsedFormDefinition => ({
   columns: processColumnDefinition(getColumnDefinitions(viewDefinition)),
-  rows: Array.from(viewDefinition.querySelectorAll('rows > row'), (row) =>
-    Array.from(row.querySelectorAll('cell'), parseFormCellDefinition)
+  rows: postProcessRows(
+    Array.from(viewDefinition.querySelectorAll('rows > row'), (row) =>
+      Array.from(
+        row.querySelectorAll('cell'),
+        parseFormCellDefinition.bind(undefined, model)
+      )
+    )
   ),
 });
+
+function postProcessRows(
+  rows: RA<RA<FormCellDefinition>>
+): RA<RA<FormCellDefinition>> {
+  const fields: IR<
+    | {
+        readonly fieldName: string | undefined;
+        readonly labelOverride: string | undefined;
+      }
+    | undefined
+  > = Object.fromEntries(
+    filterArray(
+      rows.flatMap((row) =>
+        row
+          .filter(
+            (
+              cell
+            ): cell is FormCellDefinition &
+              CellTypes['Field'] & { readonly id: string } =>
+              cell.type === 'Field' && typeof cell.id === 'string'
+          )
+          .map((cell) =>
+            typeof cell.id === 'string'
+              ? [
+                  cell.id,
+                  cell.type === 'Field'
+                    ? {
+                        // PartialDateUi may override the fieldName
+                        fieldName:
+                          cell.fieldName ??
+                          (cell.fieldDefinition.type === 'Plugin' &&
+                          cell.fieldDefinition.pluginDefinition.type ===
+                            'PartialDateUI'
+                            ? cell.fieldDefinition.pluginDefinition.dateField
+                            : undefined),
+                        // Checkbox definition can contain a label
+                        labelOverride:
+                          cell.fieldDefinition.type === 'Checkbox'
+                            ? cell.fieldDefinition.label
+                            : undefined,
+                      }
+                    : undefined,
+                ]
+              : undefined
+          )
+      )
+    )
+  );
+  return rows.map((row) =>
+    row.map((cell) =>
+      cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+        ? {
+            ...cell,
+            text: fields[cell.labelForCellId]?.labelOverride ?? cell.text,
+            fieldName: fields[cell.labelForCellId]?.labelOverride,
+          }
+        : cell
+    )
+  );
+}
 
 function processViewDefinition(
   view: ViewDefinition,
@@ -88,9 +162,13 @@ function processViewDefinition(
       ? viewDefinitions[definition]
       : viewDefinition;
 
+  const newFormType = viewDefinition.getAttribute('type');
   return {
     viewDefinition: actualViewDefinition,
-    formType: (viewDefinition.getAttribute('type') as FormType) ?? 'form',
+    formType:
+      formTypes.find(
+        (type) => type.toLowerCase() === newFormType?.toLowerCase()
+      ) ?? 'form',
     mode: altView.mode,
     model: defined(
       getModel(
@@ -102,7 +180,6 @@ function processViewDefinition(
   };
 }
 
-// FIXME: reorder this file as makes sense
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
@@ -120,12 +197,12 @@ export function parseViewDefinition(
     originalMode
   );
   const parser =
-    formType === 'formtable' ? parseFormTableDefinition : parseFormDefinition;
+    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
   return {
     mode,
     formType,
     model,
-    ...parser(viewDefinition),
+    ...parser(viewDefinition, model),
   };
 }
 
@@ -167,6 +244,6 @@ export const getView = async (name: string): Promise<ViewDefinition> =>
         return data;
       });
 
-export const formTypes = ['form', 'formtable'];
-export type FormType = 'form' | 'formtable';
+export const formTypes = ['form', 'formTable'];
+export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'view' | 'search';

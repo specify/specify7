@@ -202,7 +202,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Link.Default
                 href={`/task/schema-config/?language=${language}&table=${table.name}`}
               >
-                <TableIcon tableName={table.name} tableLabel={false} />
+                <TableIcon name={table.name} tableLabel={false} />
                 {table.name}
               </Link.Default>
             </li>

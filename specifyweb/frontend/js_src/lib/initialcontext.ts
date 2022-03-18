@@ -34,12 +34,11 @@ export const initialContext = Promise.all([
   import('./remoteprefs'),
   import('./attachments'),
   import('./icons'),
-  import('./querycbx'),
   import('./stringlocalization'),
   import('./systeminfo'),
   import('./uiformatters'),
-  import('./components/weblinkbutton'),
   import('./userinfo'),
+  // TODO: consider removing this from initialContext
   import('./treedefinitions'),
 ]).then(async (modules) =>
   Promise.all(

@@ -1,4 +1,4 @@
-import type * as React from 'react';
+import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from './ajax';

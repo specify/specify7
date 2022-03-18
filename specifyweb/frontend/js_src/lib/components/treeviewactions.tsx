@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { formData, ping } from '../ajax';
 import type { AnySchema, AnyTree } from '../datamodelutils';
@@ -13,7 +13,7 @@ import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { IntegratedResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -250,7 +250,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 
   return typeof resource === 'object' ? (
-    <IntegratedResourceView
+    <ResourceView
       resource={resource}
       dialog="modal"
       onSaved={({ addAnother }): void => {

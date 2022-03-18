@@ -3,26 +3,24 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
-
-import localizeForm from './localizeform';
 import specifyform from './specifyform';
 import * as SubViewButton from './subviewbutton';
-import FormTable from './formtable';
+import FormTable from './components/formtable';
 import IActionItemFormTable from './formtableinteractionitem';
-import SubView from './subview';
+import SubView from './components/subview';
 import {
     RecordSelectorView,
     subFormNodeToProps
 } from './components/recordselectorutils';
 
-// TODO: rewrite to React
+// FIXME: rewrite to React
 var MultiView = Backbone.View.extend({
         __name__: "MultiView",
         render: function() {
             var options = this.options;
             var collectionName = this.options.collection && this.options.collection.__name__;
             var iActionCollections =  ["LoanPreparationDependentCollection", "GiftPreparationDependentCollection"];
-            // The form has to actually be built to tell if it is a formtable.
+            // The form has to actually be built to tell if it is a formTable.
             specifyform.buildSubView(this.$el).then(function(form) {
                 var View = form?.[0].classList.contains('specify-form-type-formtable') === true
                     ? new (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)(options)
@@ -63,11 +61,9 @@ var MultiView = Backbone.View.extend({
     };
 
     export default function populateForm(form, resource) {
-        localizeForm(form);
         _.each(form.find('.specify-subview'), function(node) {
             populateSubview(resource, $(node));
         });
-        return form;
     };
 
 

@@ -6,8 +6,6 @@ import Backbone from './backbone';
 
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
-// FIXME: resolve usages
-import {parseSpecifyProperties,} from './parsespecifyproperties';
 import {AttachmentView} from './components/attachmentplugin';
 import * as attachments from './attachments';
 import {userInformation} from './userinfo';
@@ -18,6 +16,7 @@ import {csrfToken} from './csrftoken';
 import * as navigation from './navigation';
 import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
+import {parseSpecifyProperties} from './parseformcells';
 
 // TODO: rewrite to React
 
