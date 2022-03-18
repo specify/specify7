@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from specifyweb.specify.views import openapi
 
 from . import models
-from .permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, registry
+from .permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, registry, query
 
 class PolicyRegistry(LoginRequiredMixin, View):
     def get(self, request):
@@ -244,6 +244,7 @@ class Role(LoginRequiredMixin, View):
         r.delete()
         return http.HttpResponse('', status=204)
 
+
 role = openapi(schema={
     "get": {
         "responses": {
@@ -315,6 +316,96 @@ role = openapi(schema={
         }
     }
 })(Role.as_view())
+
+class Query(LoginRequiredMixin, View):
+    def post(self, request) -> http.HttpResponse:
+        req = json.loads(request.body)
+
+        collectionid = req.get('collectionid', request.specify_collection.id)
+        userid = req.get('userid', request.specify_user.id)
+
+        results = [
+            {'resource': q['resource'],
+             'action': action,
+             **query(collectionid, userid, q['resource'], action)._asdict()
+            }
+            for q in req['queries']
+            for action in q['actions']
+        ]
+        response = {
+            'allowed': all(r['allowed'] for r in results),
+            'details': results
+        }
+        return http.JsonResponse(response, safe=False)
+
+query_view = openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "description": "Checks whether a set of resources and actions are allowed by permission policies.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "collectionid": { "type": "integer", "description": "Optional. Defaults to logged in collection." },
+                            "userid": { "type": "integer", "description": "Optional. Defaults to logged in user." },
+                            "queries": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "resource": { "type": "string" },
+                                        "actions": {
+                                            "type": "array",
+                                            "items": { "type": "string" },
+                                        },
+                                    },
+                                    'required': ['resource', 'actions'],
+                                    'additionalProperties': False
+                                }
+                            }
+                        },
+                        'required': ['queries'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Returns list of roles available in collection.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "allowed": { "type": "boolean", "description": "Whether _all_ of the queried permissions are allowed."},
+                                "details": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "resource": { "type": "string" },
+                                            "action": { "type": "string" },
+                                            "allowed": { "type": "boolean" },
+                                            "matching_user_policies": { "type": "array" },
+                                            "matching_role_policies": { "type": "array" },
+                                            },
+                                        'required': ['resource', 'action', 'allowed', 'matching_role_policies', 'matching_user_policies'],
+                                        'additionalProperties': False
+                                    }
+                                },
+                            },
+                            'required': ['allowed', 'details'],
+                            'additionalProperties': False
+                        }
+                    }
+                }
+            }
+        }
+    },
+})(Query.as_view())
 
 class Roles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
