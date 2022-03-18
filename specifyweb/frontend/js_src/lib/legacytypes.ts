@@ -129,6 +129,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly Resource: new () => SpecifyResource<SCHEMA>;
   readonly isNew: () => boolean;
   readonly clone: () => SpecifyResource<SCHEMA>;
+  readonly getRelatedObjectCount: (
+    fieldName:
+      | keyof SCHEMA['toManyDependent']
+      | keyof SCHEMA['toManyIndependent']
+  ) => Promise<number | undefined>;
   readonly specifyModel: Readonly<SpecifyModel<SCHEMA>>;
   readonly saveBlockers: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;

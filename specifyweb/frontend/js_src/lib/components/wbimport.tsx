@@ -14,6 +14,7 @@ import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
+import { f } from '../wbplanviewhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, Input } from './basic';
 import { FilePicker } from './filepicker';
@@ -491,7 +492,7 @@ function extractHeader(
   headerInData: boolean
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
-    ? uniquifyHeaders(data[0].map((header) => header.trim()))
+    ? uniquifyHeaders(data[0].map(f.trim))
     : Array.from(data[0], (_, index) => wbText('columnName')(index + 1));
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header: Array.from(header) };

@@ -197,20 +197,20 @@ const QUERY_FETCH_LIMIT = 5000;
 
 const fetchDefaultValue = async () => tablesToShowPromise;
 
-function QueryToolbarItem({
+export function QueryToolbarItem({
   onClose: handleClose,
   getQueryCreateUrl,
   getQuerySelectUrl,
   spQueryFilter,
   onNewQuery: handleNewQuery,
-  readOnly,
+  isReadOnly,
 }: {
   readonly onClose: () => void;
   readonly getQueryCreateUrl?: (tableName: keyof Tables) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
   readonly spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>;
   readonly onNewQuery?: () => void;
-  readonly readOnly: boolean;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   useTitle(commonText('queries'));
 
@@ -261,7 +261,7 @@ function QueryToolbarItem({
         <QueryList
           queries={queries}
           onEdit={
-            readOnly
+            isReadOnly
               ? undefined
               : (queryResource): void =>
                   setState({
@@ -304,14 +304,14 @@ function QueryToolbarItem({
     ) : (
       <LoadingScreen />
     );
-  else if (state.type === 'EditQueryState' && !readOnly)
+  else if (state.type === 'EditQueryState' && !isReadOnly)
     return (
       <EditQueryDialog queryResource={state.queryModel} onClose={handleClose} />
     );
   else throw new Error('Invalid ToolbarQuery State type');
 }
 
-export const QueryToolbarView = createBackboneView(QueryToolbarItem);
+const QueryToolbarView = createBackboneView(QueryToolbarItem);
 
 const menuItem: MenuItem = {
   task: 'query',
@@ -326,7 +326,7 @@ const menuItem: MenuItem = {
         : (tableName: keyof Tables): string =>
             `/specify/query/new/${tableName.toLowerCase()}/`,
       getQuerySelectUrl: undefined,
-      readOnly: userInformation.isReadOnly,
+      isReadOnly: userInformation.isReadOnly,
     }),
 };
 

@@ -208,6 +208,9 @@ export const omit = <
 export const clamp = (min: number, max: number, value: number) =>
   Math.min(max, Math.max(min, value));
 
+/**
+ * A collection of helper functions for functional programming style
+ */
 export const f = {
   // Return void
   void: (): void => undefined,
@@ -228,4 +231,9 @@ export const f = {
     console.log(...args);
     return undefined;
   },
+  // An alternative way to declare a variable
+  var: <VALUE, RETURN>(
+    value: VALUE,
+    callback: (value: VALUE) => RETURN
+  ): RETURN => callback(value),
 } as const;

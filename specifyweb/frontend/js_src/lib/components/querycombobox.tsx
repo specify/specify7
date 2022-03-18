@@ -40,6 +40,7 @@ import { Dialog } from './modaldialog';
 import type { QueryComboBoxFilter } from './querycbxsearch';
 import { QueryComboBoxSearch } from './querycbxsearch';
 import { ResourceView } from './resourceview';
+import { SubViewContext } from './subview';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -300,6 +301,8 @@ export function QueryComboBox({
         )
       : setState({ type: 'ViewResourceState' });
 
+  const subViewRelationship = React.useContext(SubViewContext);
+
   return (
     <div className="flex items-center">
       <Autocomplete<undefined>
@@ -326,7 +329,7 @@ export function QueryComboBox({
                         treeData:
                           typeof treeData === 'object' ? treeData : undefined,
                         typeSearch,
-                        forceCollection,
+                        subViewRelationship,
                       }),
                     })
                   )
@@ -479,7 +482,7 @@ export function QueryComboBox({
                           treeData:
                             typeof treeData === 'object' ? treeData : undefined,
                           typeSearch,
-                          forceCollection,
+                          subViewRelationship,
                         })
                           .map(serializeResource)
                           /*
@@ -533,6 +536,7 @@ export function QueryComboBox({
       {typeof formatted?.resource === 'object' ? (
         state.type === 'ViewResourceState' ? (
           <ResourceView
+            isSubForm={false}
             resource={formatted.resource}
             canAddAnother={false}
             dialog="nonModal"
@@ -546,6 +550,7 @@ export function QueryComboBox({
           />
         ) : state.type === 'AddResourceState' ? (
           <ResourceView
+            isSubForm={false}
             resource={formatted.resource}
             canAddAnother={false}
             dialog="nonModal"

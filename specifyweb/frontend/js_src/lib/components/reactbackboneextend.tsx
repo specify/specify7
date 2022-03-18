@@ -39,7 +39,6 @@ function ForwardProps<PROPS extends IR<unknown>>({
   return <Component {...props} />;
 }
 
-// FIXME: remove unneded usages
 const createBackboneView = <PROPS extends IR<unknown>>(
   Component: (props: PROPS) => JSX.Element | null,
   makeParentContents = true
@@ -102,3 +101,19 @@ const createBackboneView = <PROPS extends IR<unknown>>(
   }[Component.name]);
 
 export default createBackboneView;
+
+export function RenderView({
+  getView,
+}: {
+  readonly getView: (element: HTMLElement) => {
+    readonly render: () => { readonly remove: () => void };
+  };
+}): JSX.Element {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (containerRef.current === null) return undefined;
+    const view = getView(containerRef.current).render();
+    return (): void => view.remove();
+  }, []);
+  return <div ref={containerRef} />;
+}

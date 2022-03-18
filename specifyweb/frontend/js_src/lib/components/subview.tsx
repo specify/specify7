@@ -12,6 +12,11 @@ import { TableIcon } from './common';
 import { useAsyncState, useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
 
+export const SubViewContext = React.createContext<Relationship | undefined>(
+  undefined
+);
+SubViewContext.displayName = 'SubViewContext';
+
 export function SubView({
   field,
   parentResource,
@@ -61,7 +66,7 @@ export function SubView({
 
   const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
   return (
-    <>
+    <SubViewContext.Provider value={field}>
       {isButton && (
         <Button.Gray
           title={field.label}
@@ -94,6 +99,6 @@ export function SubView({
           onClose={handleClose}
         />
       )}
-    </>
+    </SubViewContext.Provider>
   );
 }

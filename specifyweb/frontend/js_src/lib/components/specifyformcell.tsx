@@ -8,9 +8,16 @@ import { localizeLabel } from '../localizeform';
 import type { FormMode, FormType } from '../parseform';
 import type { CellTypes } from '../parseformcells';
 import { defined } from '../types';
+import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
+import { relationshipIsToMany } from '../wbplanviewmappinghelper';
+import { useAsyncState } from './hooks';
+import { FormTableInteraction } from './formtableinteractionitem';
+import { Collection } from '../specifymodel';
+import { getView, parseViewDefinition } from '../parseform';
+import {f} from '../wbplanviewhelper';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -43,16 +50,13 @@ const cellRenderers: {
     );
   },
   Label({
-    cellData: { text, labelForCellId },
+    cellData: { text, labelForCellId, fieldName },
     formatId,
     id,
     resource,
-    fieldName,
   }) {
     const htmlFor =
-      typeof labelForCellId === 'number'
-        ? formatId(labelForCellId.toString())
-        : undefined;
+      typeof labelForCellId === 'string' ? formatId(labelForCellId) : undefined;
     const { children, ...props } = localizeLabel({
       text: text?.trim(),
       id,
@@ -75,23 +79,73 @@ const cellRenderers: {
   SubView({
     resource,
     mode,
-    formType,
+    formType: parentFormType,
     cellData: { fieldName, formType, isButton, icon },
   }) {
-    return (
+    const field = defined(
+      resource.specifyModel.getRelationship(fieldName ?? '')
+    );
+    const [interactionCollection] = useAsyncState<
+      false | Collection<AnySchema>
+    >(
+      React.useCallback(
+        () =>
+          relationshipIsToMany(field) &&
+          ['LoanPreparation', 'GiftPreparation'].includes(
+            field.relatedModel.name
+          )
+            ? resource.rgetCollection(field.name).then((collection) =>
+                getView(field.relatedModel.view)
+                  .then((viewDefinition) =>
+                    // The form has to actually be built to tell if it is a formTable.
+                    typeof viewDefinition === 'object'
+                      ? parseViewDefinition(viewDefinition, formType, mode)
+                      : undefined
+                  )
+                  .then((definition) =>
+                    definition?.formType === 'table' ? collection : undefined
+                  )
+              )
+            : false,
+        [field, resource]
+      )
+    );
+    return typeof interactionCollection === 'undefined' ? (
+      <></>
+    ) : interactionCollection === false ? (
       <SubView
         mode={mode}
         isButton={isButton}
-        parentFormType={formType}
+        parentFormType={parentFormType}
         formType={formType}
         parentResource={resource}
-        field={defined(resource.specifyModel.getRelationship(fieldName ?? ''))}
+        field={field}
         icon={icon}
+      />
+    ) : (
+      <FormTableInteraction
+        mode={mode}
+        collection={interactionCollection}
+        dialog={false}
+        onDelete={f.void}
+        onClose={f.void}
       />
     );
   },
-  // FIXME: figure out what to do with this
-  Panel({ mode, cellData }) {},
+  Panel({ mode, formType, resource, cellData }) {
+    return (
+      <RenderForm
+        viewDefinition={{
+          ...cellData,
+          mode,
+          formType,
+          model: resource.specifyModel,
+        }}
+        resource={resource}
+        hasHeader={false}
+      />
+    );
+  },
   Command({ cellData: { name, label }, id, resource }) {
     return <UiCommand name={name} label={label} resource={resource} id={id} />;
   },

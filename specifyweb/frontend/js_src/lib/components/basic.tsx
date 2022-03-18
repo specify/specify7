@@ -129,14 +129,14 @@ export const className = {
   containerFull: 'flex flex-col gap-4 h-full',
   containerBase: `${baseContainer}`,
   container: `${baseContainer} max-w-[1000px] mx-auto`,
-  // FIXME: review class names and simplify
+  // FIXME: STYLE: review class names and simplify
   formHeader: `specify-form-header border-b-2 border-brand-300 flex items-center
     pb-2 gap-x-4`,
   formTitle: 'view-title flex-1 text-lg',
   formLabel: 'specify-form-label text-right',
   formFooter:
     'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
-  // FIXME: get rid of usages of this:
+  // FIXME: STYLE: get rid of usages of this:
   subViewHeader,
   subFormHeader: `${subViewHeader} gap-x-2 flex font-bold border-b border-gray-500`,
   queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
@@ -344,6 +344,7 @@ export const Link = {
     ),
   })),
   LikeButton: wrap('a', className.button),
+  LikeFancyButton: wrap('a', niceButton),
   Icon: wrap<'a', IconProps>('a', className.link, (props) => ({
     ...props,
     children: icons[props.icon],

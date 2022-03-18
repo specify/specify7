@@ -61,15 +61,18 @@ export const getTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
     : undefined;
 
 export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
-  ajax<RA<unknown>>(`/interactions/preparations_available_rs/${recordSetId}/`, {
-    headers: { Accept: 'application/json' },
-  }).then(({ data }) => data);
+  ajax<RA<RA<string>>>(
+    `/interactions/preparations_available_rs/${recordSetId}/`,
+    {
+      headers: { Accept: 'application/json' },
+    }
+  ).then(({ data }) => data);
 
 export const getPrepsAvailableForLoanCoIds = async (
   idField: string,
-  collectionObjectIds: RA<number>
+  collectionObjectIds: RA<string>
 ) =>
-  ajax('/interactions/preparations_available_ids/', {
+  ajax<RA<RA<string>>>('/interactions/preparations_available_ids/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
     body: {

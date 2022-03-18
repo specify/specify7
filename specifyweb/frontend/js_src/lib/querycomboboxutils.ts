@@ -65,6 +65,7 @@ export function getQueryComboBoxConditions({
   fieldName,
   collectionRelationships,
   treeData,
+  subViewRelationship,
   typeSearch: { relatedModel },
 }: {
   readonly resource: SpecifyResource<AnySchema>;
@@ -72,7 +73,7 @@ export function getQueryComboBoxConditions({
   readonly treeData: QueryComboBoxTreeData | undefined;
   readonly collectionRelationships: CollectionRelationships | undefined;
   readonly typeSearch: TypeSearch;
-  readonly forceCollection: number | undefined;
+  readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: SpecifyResource<SpQueryField>[] = [];
   if (isTreeResource(resource)) {
@@ -149,8 +150,7 @@ export function getQueryComboBoxConditions({
         .set(
           'startValue',
           collectionRelationships[
-            // FIXME: get this value from data-specify-field-name on SubView
-            relationship === 'leftSideRels' ? 'left' : 'right'
+            subViewRelationship?.name === 'leftSideRels' ? 'left' : 'right'
           ]
             .map(({ id }) => id)
             .join(',')

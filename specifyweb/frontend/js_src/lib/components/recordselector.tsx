@@ -217,7 +217,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly totalCount: number;
 };
 
-// FIXME: display old record with Loading message while loading new record
+// FIXME: STYLE: display old record with Loading message while loading new record
 export function BaseRecordSelector<SCHEMA extends AnySchema>({
   model,
   field,

@@ -60,7 +60,7 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
 
 const fetchForms = async (): Promise<RA<Entry>> => getFormsPromise;
 
-function FormsDialog({
+export function FormsDialog({
   onSelected: handleSelected,
   onClose: handleClose,
 }: {

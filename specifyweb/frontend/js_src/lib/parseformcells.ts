@@ -103,7 +103,8 @@ const processCellType: {
       fieldDefinition: parseFormCell(cell, properties),
       isRequired:
         cell.getAttribute('isRequired')?.toLowerCase() === 'true' ||
-        field?.isRequiredBySchemaLocalization(),
+        field?.isRequiredBySchemaLocalization() ||
+        false,
     };
   },
   Label: ({ cell }) => ({
@@ -160,7 +161,6 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
   command: 'Command',
 };
 
-// FIXME: review attribute usages once again
 /**
  * Parse form cell XML into a JSON structure
  *

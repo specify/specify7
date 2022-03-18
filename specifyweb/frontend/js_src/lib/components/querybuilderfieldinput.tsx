@@ -12,7 +12,7 @@ import {
   pluralizeParser,
 } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
-import { omit } from '../wbplanviewhelper';
+import { f, omit } from '../wbplanviewhelper';
 import { Input, Select } from './basic';
 import type { PickListItemSimple } from './combobox';
 import { useAsyncState, useValidation } from './hooks';
@@ -40,6 +40,7 @@ export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
   'equal',
   'in',
 ]);
+const selectMultipleSize = 4;
 
 function QueryInputField({
   currentValue,
@@ -95,12 +96,12 @@ function QueryInputField({
       if (hasNativeErrors(input)) return;
 
       const parseResults = extractValues(target)
-        .map((value) => value.trim())
+        .map(f.trim)
         .filter(Boolean)
         .map((value) => parseValue(parser, input, value));
       const errorMessages = parseResults
         .filter((result): result is InvalidParseResult => !result.isValid)
-        .map(({ reason }) => reason);
+        .map(({ reason, value }) => `${reason} (${value})`);
       if (errorMessages.length > 0) {
         setValidation(errorMessages);
         return;
@@ -130,8 +131,8 @@ function QueryInputField({
       {...commonProps}
       required={Boolean(validationAttributes.required)}
       multiple={listInput}
-      value={listInput ? value.split(',').map((value) => value.trim()) : value}
-      size={listInput ? 4 : 1}
+      value={listInput ? value.split(',').map(f.trim) : value}
+      size={listInput ? selectMultipleSize : 1}
     >
       {pickListItems.map(({ title, value }) => (
         <option key={value} value={value}>

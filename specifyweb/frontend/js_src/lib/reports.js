@@ -428,7 +428,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
             $('<td class="item-count" style="display:none">'));
 
         recordSet.get('remarks') && entry.find('button').attr('title', recordSet.get('remarks'));
-        recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
+        recordSet.getRelatedObjectCount('recordsetitems').then(function(count) {
             $('.item-count', entry).text('(' + count + ')').show();
         });
         return entry;

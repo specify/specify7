@@ -5,7 +5,7 @@
  */
 
 import type { IR, RA, RR } from '../types';
-import { camelToHuman } from '../wbplanviewhelper';
+import { camelToHuman, f } from '../wbplanviewhelper';
 
 export const languages = ['en-us', 'ru-ru', 'ca', 'es-es'] as const;
 
@@ -98,7 +98,7 @@ export const whitespaceSensitive = (string: string): string =>
   string
     .trim()
     .split('\n')
-    .map((line) => line.trim())
+    .map(f.trim)
     .filter(Boolean)
     .join(' ')
     .replace(/<br>\s?/, '\n');

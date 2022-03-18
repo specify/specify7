@@ -98,15 +98,10 @@ export default PrepDialog.extend({
                 { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
                   title: commonText('clearAll') },
                 { text: commonText('apply'), click: _.bind(this.makeInteraction, this),
-                  title: this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.getTextForObjToCreate()) }
+                  title: this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.options.action.name) }
             ];
             buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
-        },
-
-        getTextForObjToCreate: function() {
-            //need to be nicer
-            return this.options.action.attr('action');
         },
 
         prepInteractionAnchor: function(model, interaction) {

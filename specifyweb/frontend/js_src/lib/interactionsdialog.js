@@ -10,7 +10,7 @@ import {getModel, schema} from './schema';
 import {getIcon} from './icons';
 import {getView} from './specifyform';
 import {userInformation} from './userinfo';
-import InteractionDialog from './interactiondialog';
+import InteractionDialog from './components/interactiondialog';
 import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';
@@ -23,6 +23,8 @@ import {
 } from './components/modaldialog';
 import {resourceViewUrl} from './resource';
 import {className} from './components/basic';
+import createBackboneView from './components/reactbackboneextend';
+import {defined} from './types';
 
 var interaction_entries, actions, isFulfilled=false;
 
@@ -169,26 +171,36 @@ export default Backbone.View.extend({
             this.handleAction(actions[index]);
         },
         handleAction(action){
-            var isRsAction = this.isRsAction(action.attr('action'));
-            if (isRsAction || action.attr('action') == 'RET_LOAN') {
-                var tblId = isRsAction ? 1 : 52;
+          const actionTable = defined(getModel(action.table));
+          const actionName = action.attr('action');
+            var isRsAction = this.isRsAction(actionName);
+            if (isRsAction || actionName === 'RET_LOAN') {
+                const model = isRsAction ? schema.models.CollectionObject : schema.models.Loan;
                 var recordSets = new schema.models.RecordSet.LazyCollection({
-                    filters: { specifyuser: userInformation.id, type: 0, dbtableid: tblId,
+                    filters: { specifyuser: userInformation.id, type: 0, dbtableid: model.tableId,
                                domainfilter: true, orderby: '-timestampcreated' }
                 });
-                recordSets.fetch({ limit: 5000 }).done(function() {
-                    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();
+                recordSets.fetchPromise({ limit: 5000 }).then((recordSets)=>{
+                    const view = new InteractionView({
+                      recordSets: recordSets,
+                      action: {model: actionTable, name: actionName},
+                      isReadOnly: true,
+                      model,
+                      searchField: model.getField(model.name === 'Loan' ? 'LoanNumber' : 'catalogNumber'),
+                      onClose: ()=>view.remove(),
+                    }).render();
                 });
-            } else if (action.attr('action') == 'PRINT_INVOICE') {
+            } else if (actionName === 'PRINT_INVOICE') {
                 //assuming loan invoice for now (52 is loan tableid)
                 reports({
                     tblId: 52,
                     //metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
                     autoSelectSingle: true
                 }).then(view=>view.render());
-            } else {
-                alert(formsText('actionNotSupported')(action.attr('action')));
-            }
+            } else
+                alert(formsText('actionNotSupported')(actionName));
         }
     });
 
+
+    const InteractionView = createBackboneView(InteractionDialog);

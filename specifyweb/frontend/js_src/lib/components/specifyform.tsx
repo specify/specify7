@@ -95,11 +95,7 @@ export const missingFormDefinition = (
   </section>
 );
 
-/*
- * FIXME: migrate props in usages and replace populateForm
- * FIXME: replace buildViewByName with this
- * FIXME: review all original files to check everything was migrated
- */
+// FIXME: review all original files to check everything was migrated
 /** Renders a form and populates it with data from a resource */
 export function SpecifyForm<SCHEMA extends AnySchema>({
   resource,
@@ -151,7 +147,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   );
   return (
     <div className="gap-y-2 flex flex-col">
-      {/* FIXME: check usages, consider removing it */}
+      {/* FIXME: STYLE: check usages, consider removing it */}
       {hasHeader && <FormHeader>{resource.specifyModel.name}</FormHeader>}
       {typeof viewDefinition === 'object' &&
       typeof loadedResource === 'object' ? (
@@ -203,51 +199,3 @@ export function RenderForm<SCHEMA extends AnySchema>({
     </div>
   );
 }
-
-// FIXME: remove the need for all of this
-`
-var specifyform = {
-  async buildSubView(node, mode) {
-    node = $(node);
-    const defaultType = specifyform.getSubViewType(node);
-    mode =
-      mode === 'view' || specifyform.subViewMode(node) === 'view'
-        ? 'view'
-        : 'edit';
-    const viewName = node.data('specify-viewname');
-    const buildView = specifyform.buildViewByName(
-      viewName,
-      defaultType,
-      mode,
-      true
-    );
-
-    return buildView.then(function (form) {
-      form
-        .find('.specify-form-header:first, .specify-form-footer button')
-        .remove();
-      return form;
-    });
-  },
-
-  getSubViewType(node) {
-    /*
-     * This the form type desired by the superform. May or may not be respected
-     * when the form is actually built.
-     */
-    return $(node).data('specify-viewtype') === 'table' ? 'formtable' : 'form';
-  },
-
-  isSubViewButton(node) {
-    return $(node).is('.specify-subview-button');
-  },
-
-  subViewMode(node) {
-    return $(node).data('specify-viewmode');
-  },
-
-  getFormMode(node) {
-    return $(node).data('specify-form-mode');
-  },
-};
-`;

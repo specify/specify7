@@ -4,7 +4,6 @@ import * as stringLocalization from './stringlocalization';
 const localize = (key: string): string =>
   stringLocalization.localizeFrom(['views', 'global_views'], key);
 
-// FIXME: rewrite to React
 export function localizeLabel({
   text,
   id,
@@ -35,7 +34,7 @@ export function localizeLabel({
         title: undefined,
       }
     : {
-        children: field?.label ?? '',
+        children: field?.label ?? fieldName ?? id ?? '',
         title: field?.getLocalizedDesc() ?? '',
       };
 }

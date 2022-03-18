@@ -5,10 +5,11 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import { localizeLabel } from '../localizeform';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
 import type { Relationship } from '../specifyfield';
-import type { SpecifyModel } from '../specifymodel';
+import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, className } from './basic';
@@ -21,18 +22,33 @@ import {
   useViewDefinition,
 } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { defined } from '../types';
+import collectionapi from '../collectionapi';
 
 const cellToLabel = (
   model: SpecifyModel,
   cell: FormCellDefinition
-): string | undefined =>
-  (cell.type === 'Field' || cell.type === 'SubView'
-    ? model.getField(cell.fieldName ?? '')?.label ?? cell.fieldName
-    : cell.type === 'Label'
-    ? cell.text ?? cell.labelForCellId
-    : cell.type === 'Separator'
-    ? cell.label
-    : '') ?? cell.id;
+): {
+  readonly children: string | undefined;
+  readonly title: string | undefined;
+} => ({
+  ...(cell.type === 'Field' || cell.type === 'SubView'
+    ? localizeLabel({
+        text: undefined,
+        model,
+        fieldName: cell.fieldName,
+        id: cell.id,
+      })
+    : {
+        title: undefined,
+        children:
+          (cell.type === 'Label'
+            ? cell.text ?? cell.labelForCellId
+            : cell.type === 'Separator'
+            ? cell.label
+            : undefined) ?? cell.id,
+      }),
+});
 
 export function FormTable<SCHEMA extends AnySchema>({
   relationship,
@@ -87,26 +103,34 @@ export function FormTable<SCHEMA extends AnySchema>({
       >
         <div className="contents" role="row">
           <div role="columnheader">{commonText('expand')}</div>
-          {viewDefinition.rows[0].map((cell, index) => (
-            <div
-              role="columnheader"
-              key={index}
-              style={{
-                gridColumn:
-                  typeof cell.colSpan === 'number'
-                    ? `span ${cell.colSpan} / span ${cell.colSpan}`
-                    : undefined,
-                alignSelf:
-                  cell.align === 'right'
-                    ? 'end'
-                    : cell.align === 'center'
-                    ? 'center'
-                    : 'left',
-              }}
-            >
-              {cellToLabel(relationship.relatedModel, cell)}
-            </div>
-          ))}
+          {viewDefinition.rows[0].map((cell, index) => {
+            const { title, children } = cellToLabel(
+              relationship.relatedModel,
+              cell
+            );
+            return (
+              <div
+                role="columnheader"
+                key={index}
+                style={{
+                  gridColumn:
+                    typeof cell.colSpan === 'number'
+                      ? `span ${cell.colSpan} / span ${cell.colSpan}`
+                      : undefined,
+                  alignSelf:
+                    cell.align === 'right'
+                      ? 'end'
+                      : cell.align === 'center'
+                      ? 'center'
+                      : 'left',
+                }}
+                title={title}
+                // TODO: add column sorting option
+              >
+                {children}
+              </div>
+            );
+          })}
           {mode !== 'edit' && (
             <div role="columnheader">{commonText('remove')}</div>
           )}
@@ -258,5 +282,38 @@ export function FormTable<SCHEMA extends AnySchema>({
     >
       {children}
     </Dialog>
+  );
+}
+
+export function FormTableCollection({
+  collection,
+  onAdd: handleAdd,
+  onDelete: handleDelete,
+  ...props
+}: Omit<
+  Parameters<typeof FormTable>[0],
+  'resources' | 'relationship' | 'isDependent'
+> & {
+  readonly collection: Collection<AnySchema>;
+}): JSX.Element {
+  const isDependent = collection instanceof collectionapi.Dependent;
+  const [records, setRecords] = React.useState(collection.models);
+  return (
+    <FormTable
+      relationship={defined(collection.field)}
+      isDependent={isDependent}
+      resources={records}
+      onAdd={(resource): void => {
+        collection.add(resource);
+        setRecords(collection.models);
+        handleAdd(resource);
+      }}
+      onDelete={(resource): void => {
+        collection.remove(resource);
+        setRecords(collection.models);
+        handleDelete(resource);
+      }}
+      {...props}
+    />
   );
 }

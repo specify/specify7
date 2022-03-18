@@ -18,6 +18,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, className, FormFooter, H2 } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
+import {FormTable, FormTableCollection} from './formtable';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
@@ -160,7 +161,17 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof collectionapi.Dependent;
   const isToOne = !relationshipIsToMany(collection.field);
   const disableAdding = isToOne && collection.models.length > 0;
-  return (
+  return formType === 'formTable' ? (
+    <FormTableCollection
+      collection={collection}
+      mode={mode}
+      viewName={viewName}
+      dialog={dialog}
+      onAdd={f.void}
+      onDelete={f.void}
+      onClose={handleClose}
+    />
+  ) : (
     <RecordSelectorFromCollection
       collection={collection}
       defaultIndex={

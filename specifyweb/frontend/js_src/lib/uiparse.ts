@@ -17,7 +17,7 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
-import { mappedFind, omit } from './wbplanviewhelper';
+import { f, mappedFind, omit } from './wbplanviewhelper';
 
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
@@ -26,7 +26,7 @@ const stringGuard =
       : error('Value is not a string');
 
 export const formatter: IR<(value: unknown) => unknown> = {
-  trim: stringGuard((value) => value.trim()),
+  trim: stringGuard(f.trim),
   toLowerCase: stringGuard((value) => value.toLowerCase()),
   int: stringGuard(Number.parseInt),
   float: stringGuard(Number.parseFloat),
