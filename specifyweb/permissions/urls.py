@@ -8,4 +8,5 @@ urlpatterns = [
     path('role/<int:roleid>/', views.role),
     path('roles/<int:collectionid>/', views.roles),
     path('registry/', views.PolicyRegistry.as_view()),
+    path('query/', views.query_view),
 ]

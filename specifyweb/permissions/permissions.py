@@ -56,10 +56,10 @@ def check_permission_targets(collectionid: Optional[int], userid: int, targets: 
     if not targets: return
 
     perm_requests = [PermRequest(collectionid, userid, t.resource(), t.action()) for t in targets]
-    results = [(r, *enforce_single(*r)) for r in perm_requests]
+    results = [(r, *query(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
-    denials = [r for r, allowed, reason in results if not allowed]
+    denials = [r for r, allowed, _, _ in results if not allowed]
     if denials:
         raise NoMatchingRuleException(denials)
 
@@ -93,18 +93,23 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
         collectionid = collection.id
 
     perm_requests = [PermRequest(collectionid, userid, resource, action) for resource in resources]
-    results = [(r, *enforce_single(*r)) for r in perm_requests]
+    results = [(r, *query(*r)) for r in perm_requests]
     logger.debug("permissions check: %s", results)
 
-    denials = [r for r, allowed, reason in results if not allowed]
+    denials = [r for r, allowed, _, _ in results if not allowed]
     if denials:
         raise NoMatchingRuleException(denials)
 
-def enforce_single(collectionid: Optional[int] , userid: int, resource: str, action: str) -> Tuple[bool, Any]:
+class QueryResult(NamedTuple):
+    allowed: bool
+    matching_user_policies: List
+    matching_role_policies: List
+
+def query(collectionid: Optional[int] , userid: int, resource: str, action: str) -> QueryResult:
     cursor = connection.cursor()
 
     cursor.execute("""
-    select *
+    select collection_id, specifyuser_id, resource, action
     from spuserpolicy
     where (collection_id = %(collectionid)s or collection_id is null)
     and (specifyuser_id = %(userid)s or specifyuser_id is null)
@@ -117,10 +122,13 @@ def enforce_single(collectionid: Optional[int] , userid: int, resource: str, act
         'action': action
     })
 
-    ups = cursor.fetchall()
+    ups = [
+        dict(zip(("collectionid", "userid", "resource", "action"), r))
+        for r in cursor.fetchall()
+    ]
 
     cursor.execute("""
-    select *
+    select r.id, r.name, resource, action
     from spuserrole ur
     join sprole r on r.id = ur.role_id
     join sprolepolicy rp on rp.role_id = r.id
@@ -135,9 +143,16 @@ def enforce_single(collectionid: Optional[int] , userid: int, resource: str, act
         'action': action
     })
 
-    rps = cursor.fetchall()
+    rps = [
+        dict(zip(("roleid", "rolename", "resource", "action"), r))
+        for r in cursor.fetchall()
+    ]
 
-    return (bool(ups) or bool(rps)), ups + rps
+    return QueryResult(
+        allowed=bool(ups) or bool(rps),
+        matching_user_policies=ups,
+        matching_role_policies=rps,
+    )
 
 
 def check_table_permissions(collection, actor, obj, action: str) -> None:

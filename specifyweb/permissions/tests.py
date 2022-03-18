@@ -142,3 +142,17 @@ class PermissionsApiTest(ApiTests):
         data = json.loads(response.content)
         self.assertEqual(data, [])
 
+    def test_query(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.post(
+            '/permissions/query/',
+            data={
+                'queries': [{'resource': '/table/collectionobject', 'actions': ['create', 'update', 'delete']}]
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+
+        data = json.loads(response.content)
