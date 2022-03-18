@@ -22,7 +22,7 @@ import type {
   UiFormatter,
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
-import { webLinksDefs } from '../weblinkbutton';
+import { webLinks } from '../weblinkbutton';
 
 type Props = {
   readonly onClose: () => void;
@@ -211,9 +211,7 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
-      webLinks={Object.keys(webLinksDefs).map(
-        (value) => [value, value] as const
-      )}
+      webLinks={Object.keys(webLinks).map((value) => [value, value] as const)}
       uiFormatters={uiFormatters}
       dataObjFormatters={formatters}
       dataObjAggregators={aggregators}

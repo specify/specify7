@@ -13,6 +13,7 @@ import {router} from './router';
 import {NotFoundView} from './notfoundview';
 import {setCurrentView} from './specifyapp';
 import {crash, UnhandledErrorView} from './components/errorboundary';
+import {showDialog} from './components/modaldialog';
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {
@@ -27,23 +28,14 @@ function handleUnexpectedError(event, jqxhr, settings, exception) {
   if (jqxhr.errorHandled) return; // Not unexpected.
 
   if (jqxhr.status === 403)
-    $(`<div role="alert">
-        ${commonText('sessionTimeOutDialogHeader')}
-        <p>${commonText('sessionTimeOutDialogMessage')}</p>
-    </div>`)
-      .appendTo('body')
-      .dialog({
-        title: commonText('sessionTimeOutDialogTitle'),
-        modal: true,
-        dialogClass: 'ui-dialog-no-close',
-        buttons: [
-          {
-            text: commonText('logIn'),
-            click: ()=>
-              window.location.assign(`/accounts/login/?next=${window.location.href}`),
-          },
-        ],
-      });
+    showDialog({
+      title: commonText('sessionTimeOutDialogTitle'),
+      header: commonText('sessionTimeOutDialogHeader'),
+      content: commonText('sessionTimeOutDialogMessage'),
+      forceToTop: true,
+      onClose: ()=>window.location.assign(`/accounts/login/?next=${window.location.href}`),
+      buttons: commonText('logIn')
+    });
   else {
     const view = new UnhandledErrorView({
       title: commonText('backEndErrorDialogTitle'),

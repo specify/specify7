@@ -25,6 +25,7 @@ import WbAdvancedSearch, {
 } from './components/wbadvancedsearch';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
+import {showDialog} from './components/modaldialog';
 
 export default Backbone.View.extend({
   __name__: 'WbUtils',
@@ -54,7 +55,6 @@ export default Backbone.View.extend({
     );
   },
   render() {
-
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
     this.advancedSearch = new WbAdvancedSearch({
@@ -79,7 +79,7 @@ export default Backbone.View.extend({
 
     return this;
   },
-  remove(){
+  remove() {
     this.advancedSearch.remove();
     Backbone.View.prototype.remove.call(this);
   },
@@ -246,11 +246,10 @@ export default Backbone.View.extend({
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
     const newState = this.el.classList.contains(cssClassName);
-    const indicator = buttonContainer.getElementsByClassName(
-      'wb-navigation-text'
-    )[0];
+    const indicator =
+      buttonContainer.getElementsByClassName('wb-navigation-text')[0];
     indicator.ariaPressed = newState;
-    indicator.classList[newState ? 'add': 'remove']('brightness-50');
+    indicator.classList[newState ? 'add' : 'remove']('brightness-50');
     return newState;
   },
   parseSearchQuery() {
@@ -673,10 +672,12 @@ export default Backbone.View.extend({
     };
   },
 
-  showGeoLocate() {
+  showGeoLocate(event) {
     // don't allow opening more than one window)
-    if(typeof this.geoLocateDialog !== 'undefined'){
-      this.geoLocateDialog.dialog('close');
+    if (typeof this.geoLocateDialog !== 'undefined') {
+      this.geoLocateDialog.remove();
+      this.geoLocateDialog = undefined;
+      event.target.ariaPressed = false;
       return;
     }
 
@@ -689,20 +690,21 @@ export default Backbone.View.extend({
     const getGeoLocateQueryURL = (localityIndex) =>
       this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
-    this.geoLocateDialog = $(`<div />`).dialog({
-      width: 960,
-      height: 740,
-      title: wbText('geoLocateDialogTitle'),
-      close() {
-        $(this).remove();
+    const content = $('<div>');
+    this.geoLocateDialog = showDialog({
+      header: wbText('geoLocateDialogTitle'),
+      content,
+      buttons: commonText('close'),
+      onClose() {
         window.removeEventListener('message', handleGeolocateResult, false);
         event.target.ariaPressed = false;
+        this.geoLocateDialog.remove();
         this.geoLocateDialog = undefined;
       },
     });
 
     const updateGeolocate = (localityIndex) =>
-      this.geoLocateDialog.html(`<iframe class="w-full h-full"
+      content.html(`<iframe class="w-full h-full"
         title="${wbText('geoLocate')}"
         src="${getGeoLocateQueryURL(localityIndex)}"
       ></iframe>`);
@@ -713,18 +715,24 @@ export default Backbone.View.extend({
       );
 
     const updateButtons = (localityIndex) =>
-      this.geoLocateDialog.dialog('option', 'buttons', [
-        {
-          text: commonText('previous'),
-          click: () => updateGeoLocate(localityIndex - 1),
-          disabled: selection.isFirst(localityIndex),
-        },
-        {
-          text: commonText('next'),
-          click: () => updateGeoLocate(localityIndex + 1),
-          disabled: selection.isLast(localityIndex),
-        },
-      ]);
+      this.geoLocateDialog.updateProps({
+        buttons: (
+          <>
+            <Button.Blue
+              onClick={() => updateGeoLocate(localityIndex - 1)}
+              disabled={selection.isFirst(localityIndex)}
+            >
+              {commonText('previous')}
+            </Button.Blue>
+            <Button.Blue
+              onClick={() => updateGeoLocate(localityIndex + 1)}
+              disabled={selection.isLast(localityIndex)}
+            >
+              {commonText('next')}
+            </Button.Blue>
+          </>
+        ),
+      });
 
     function updateGeoLocate(newLocalityIndex) {
       selection.localityIndex = newLocalityIndex;
@@ -732,6 +740,7 @@ export default Backbone.View.extend({
       updateSelectedRow(newLocalityIndex);
       updateButtons(newLocalityIndex);
     }
+
     updateGeoLocate(selection.localityIndex);
 
     const visualHeaders = this.getVisualHeaders();
@@ -757,15 +766,19 @@ export default Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selection.length === 1) dialog.dialog('close');
+      if (selection.length === 1) {
+        this.geoLocateDialog.remove();
+        this.geoLocateDialog = undefined;
+      }
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
-
-    if(typeof this.geoMapDialog !== 'undefined'){
-      this.geoMapDialog.options.onClose();
+    if (typeof this.geoMapDialog !== 'undefined') {
+      this.geoMapDialog.remove();
+      this.geoMapDialog = undefined;
+      event.target.ariaPressed = false;
       return;
     }
     event.target.ariaPressed = true;
@@ -774,15 +787,14 @@ export default Backbone.View.extend({
 
     if (typeof selection === 'undefined') return;
 
-    const localityPoints =
-      getLocalitiesDataFromSpreadsheet(
-        this.localityColumns,
-        selection.visualRows.map((visualRow) =>
-          this.wbview.hot.getDataAtRow(visualRow)
-        ),
-        this.getVisualHeaders(),
-        selection.visualRows
-      );
+    const localityPoints = getLocalitiesDataFromSpreadsheet(
+      this.localityColumns,
+      selection.visualRows.map((visualRow) =>
+        this.wbview.hot.getDataAtRow(visualRow)
+      ),
+      this.getVisualHeaders(),
+      selection.visualRows
+    );
 
     showLeafletMap({
       localityPoints,
@@ -799,7 +811,7 @@ export default Backbone.View.extend({
         this.geoMapDialog = undefined;
         event.target.ariaPressed = false;
       },
-    }).then(({dialog})=>{
+    }).then(({ dialog }) => {
       this.geoMapDialog = dialog;
     });
   },
@@ -882,6 +894,7 @@ export default Backbone.View.extend({
     this.el.classList.add('wb-focus-coordinates');
 
     let numberOfChanges = 0;
+
     function cleanUp() {
       buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
       this.wbview.hot.updateSettings({
@@ -945,51 +958,52 @@ export default Backbone.View.extend({
       closeDialog.call(this);
     }
 
-    this.wbview.coordinateConverterView = $(`<div>
-      ${wbText('coordinateConverterDialogHeader')}
-      <ul role="list">
-        ${Object.values(options)
-          .map(
-            ({ optionName }, optionIndex) =>
-              `<li>
-                <label>
-                  <input
-                    type="radio"
-                    name="latlongformat"
-                    value="${optionIndex}"
-                  >
-                  ${optionName}
-                </label>
-              </li>`
-          )
-          .join('')}
-        <li>
-          <br>
-          <label>
-            <input type="checkbox" name="includesymbols">
-            ${wbText('includeDmsSymbols')}
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="checkbox" name="applyToAll" checked>
-            ${commonText('applyAll')}
-          </label>
-        </li>
-      </ul>
-    </div>`).dialog({
-      title: wbText('coordinateConverterDialogTitle'),
-      close: revertChanges.bind(this),
-      width: 350,
-      buttons: [
-        {
-          text: commonText('cancel'),
-          click: revertChanges.bind(this),
-        },
-        { text: commonText('apply'), click: closeDialog.bind(this) },
-      ],
+    this.wbview.coordinateConverterView = showDialog({
+      modal: false,
+      header: wbText('coordinateConverterDialogTitle'),
+      onClose: revertChanges,
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue onClick={() => closeDialog}>
+            {commonText('apply')}
+          </Button.Blue>
+        </>
+      ),
+      content: $(`<div>
+        ${wbText('coordinateConverterDialogHeader')}
+        <ul role="list">
+          ${Object.values(options)
+            .map(
+              ({ optionName }, optionIndex) =>
+                `<li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="latlongformat"
+                      value="${optionIndex}"
+                    >
+                    ${optionName}
+                  </label>
+                </li>`
+            )
+            .join('')}
+          <li>
+            <br>
+            <label>
+              <input type="checkbox" name="includesymbols">
+              ${wbText('includeDmsSymbols')}
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" name="applyToAll" checked>
+              ${commonText('applyAll')}
+            </label>
+          </li>
+        </ul>
+      </div>`),
     });
-
     const handleOptionChange = () => {
       const includeSymbols = this.wbview.coordinateConverterView
         .find('input[name="includesymbols"]')

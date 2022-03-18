@@ -2,18 +2,22 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
+import React from 'react';
 
+import {Button} from './components/basic';
 import {getModel, schema} from './schema';
-import * as navigation from './navigation';
 import {getInteractionsForPrepIds} from './specifyapi';
-import {showResource, ViewResource} from './components/resourceview';
+import {setCurrentView} from './specifyapp';
+import {ResourceView, ShowResource,} from './components/resourceview';
 import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
-import {legacyNonJsxIcons} from './components/icons';
 import {fieldFormat} from "./uiparse";
-import specifyform from './specifyform';
 import {f} from './wbplanviewhelper';
+import createBackboneView from './components/reactbackboneextend';
+import {userInformation} from './userinfo';
+
+const resourceView = createBackboneView(ResourceView);
 
 export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
@@ -92,16 +96,20 @@ export default PrepDialog.extend({
         },
 
         buttons: function() {
-            var buttons = this.options.readOnly ? [] : [
-                { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
-                  title: formsText('selectAllAvailablePreparations') },
-                { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
-                  title: commonText('clearAll') },
-                { text: commonText('apply'), click: _.bind(this.makeInteraction, this),
-                  title: this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.options.action.name) }
-            ];
-            buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
-            return buttons;
+            return this.options.readOnly
+              ? <Button.Blue onClick={()=>this.dialog.remove()}>{commonText('close')}</Button.Blue>
+              : <>
+                <Button.Transparent onClick={()=>this.dialog.remove()}>{commonText('cancel')}</Button.Transparent>
+                <Button.Green title={formsText('selectAllAvailablePreparations')}
+                              onClick={_.bind(this.selectAll, this)}
+                >{this.getProp('SELECTALL')}</Button.Green>
+                <Button.Green title={commonText('clearAll')}
+                              onClick={_.bind(this.deSelectAll, this)}
+                >{this.getProp('DESELECTALL')}</Button.Green>
+                <Button.Green title={this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.options.action.name)}
+                              onClick={_.bind(this.makeInteraction, this)}
+                >{commonText('apply')}</Button.Green>
+            </>;
         },
 
         prepInteractionAnchor: function(model, interaction) {
@@ -210,34 +218,18 @@ export default PrepDialog.extend({
             });
             var _self = this;
             irec.fetch().done(function() {
-                this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
-
                 var resourceModel = irec.models[0];
 
-                const view = new ViewResource({
-                    buildView: async ()=> specifyform.buildViewByName(resourceModel.specifyModel.view, 'form', 'view'),
-                    el: this.dialog,
+                this.dialog = new resourceView({
                     resource: resourceModel,
+                    mode: userInformation.isReadOnly ? 'edit' : 'view',
+                    dialog: 'nonModal',
                     canAddAnother: true,
                     onSaved: f.void,
-                    onClose: ()=>view.remove(),
+                    onDelete: f.void,
+                    onClose: ()=>this.dialog.remove(),
+                    isSubForm: false,
                 }).render();
-
-                var _this = _self;
-                this.dialog.dialog({
-                    position: { my: "left top", at: "left+20 top+20", of: $('main') },
-                    width: 'auto',
-                    close: function() { $(this).remove(); _this.dialog = null; },
-                    modal: true
-                }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                    evt.preventDefault();
-                    navigation.go(resourceModel.viewUrl());
-                    _this.dialog.dialog('close');
-                });
-
-                $('<a>', { href: resourceModel.viewUrl(), title: formsText('linkInline'), ariaLabel: formsText('linkInline'), })
-                    .append(legacyNonJsxIcons.link)
-                    .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });
         },
 
@@ -292,13 +284,15 @@ export default PrepDialog.extend({
                 }
             }
 
-            this.$el.dialog('close');
+            this.dialog.remove();
             if (this.options.interactionresource) {
                 this.options.itemcollection.add(items);
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
-                showResource(interaction, null, true);
+                setCurrentView(new showResource({resource: interaction, recordSet: undefined, pushUrl: true}));
             }
         }
     });
+
+const showResource = createBackboneView(ShowResource);

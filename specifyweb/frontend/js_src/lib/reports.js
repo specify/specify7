@@ -4,33 +4,25 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
+import {Button, className} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
 import {AttachmentView} from './components/attachmentplugin';
 import * as attachments from './attachments';
+import {formatAttachmentUrl} from './attachments';
 import {userInformation} from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 
 import {csrfToken} from './csrftoken';
 import * as navigation from './navigation';
-import {className} from './components/basic';
 import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
+import {showDialog} from './components/modaldialog';
 
 // TODO: rewrite to React
 
 var title = commonText('reports');
-
-var dialog;
-function makeDialog(el, options) {
-    dialog && dialog.dialog('close');
-    var done = options.done;
-    dialog = el.dialog(_.extend({
-        modal: true,
-        close: function() { dialog = null; $(this).remove(); done && done();}
-    }, options));
-}
 
 var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
@@ -98,18 +90,12 @@ var ReportListDialog = Backbone.View.extend({
             if(!this.options.appResources.isComplete())
                 this.$el.append(`<p>${commonText('listTruncated')}</p>`);
 
-            const that = this;
-            makeDialog(this.$el, {
-                title: title,
-                maxHeight: 400,
-                buttons: [{
-                    text: commonText('close'),
-                    click: function() {
-                        $(this).dialog('close');
-                        that.options.onClose?.();
-                    }
-                }],
-                done: this.options.done
+            this.dialog?.remove();
+            this.dialog = showDialog({
+                header: title,
+                onClose: () => {this.dialog.remove(); this.options.done() },
+                buttons: commonText('close'),
+                content: this.el,
             });
         } else {
             this.options.done && this.options.done();
@@ -222,9 +208,15 @@ var FixImagesDialog = Backbone.View.extend({
                         >`).text(f))[0];
                 }));
         }
-        makeDialog(this.$el, {
-            buttons: [{text: commonText('ignore'), click: this.ignoreProblems.bind(this)},
-                      {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}]
+        this.dialog?.remove();
+        this.dialog = showDialog({
+            header: '',
+            content: this.el,
+            onClose: () => this.dialog.remove(),
+            buttons: <>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Butotn.Orange onClick={()=>this.ignoreProblems()}>{commonText('ignore')}</Butotn.Orange>
+            </>
         });
         return this;
     },
@@ -379,12 +371,15 @@ var ReportParametersDialog = Backbone.View.extend({
                 $('<td><input type="text" autocomplete="on" spellcheck="true"></td>'))[0];
         });
         $('<table>').append(rows).appendTo(this.el);
-        makeDialog(this.$el, {
-            title: formsText('reportParameters'),
-            buttons: [
-                {text: commonText('save'), click: this.done.bind(this)},
-                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
-            ]
+        this.dialog?.remove();
+        this.dialog = showDialog({
+            header: formsText('reportParameters'),
+            content: this.el,
+            onClose: ()=>this.dialog.remove(),
+            buttons: <>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Button.Green onClick={()=>this.done()}>{commonText('save')}</Button.Green>
+            </>,
         });
         return this;
     },
@@ -410,10 +405,11 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         this.recordSets.isComplete() ||
             table.append(`<tr><td></td><td>${commonText('listTruncated')}</td></tr>`);
         this.$el.append(table);
-        makeDialog(this.$el, {
-            title: formsText('labelFromRecordSetDialogTitle'),
-            maxHeight: 400,
-            buttons: this.dialogButtons()
+        this.dialog?.remove();
+        this.dialog = showDialog({
+            header: formsText('labelFromRecordSetDialogTitle'),
+            onClose: () => this.dialog.remove(),
+            buttons: this.dialogButtons(),
         });
         return this;
     },
@@ -434,17 +430,12 @@ var ChooseRecordSetDialog = Backbone.View.extend({
         return entry;
     },
     dialogButtons: function() {
-        var buttons = [{ text: commonText('cancel'), click: function() { $(this).dialog('close'); }}];
-        var reportResources = this.reportResources;
-        if (reportResources.query) {
-            buttons.unshift({
-                text: commonText('query'),
-                click: function() {
-                    new QueryParamsDialog({reportResources: reportResources}).render();
-                }
-            });
-        }
-        return buttons;
+        return <>
+            <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+            {this.reportResources.query && <Button.Blue
+              onClick={()=> new QueryParamsDialog({reportResources: reportResources}).render()}
+            >{commonText('close')}</Button.Blue>}
+        </>;
     },
     selected: function(evt) {
         evt.preventDefault();
@@ -481,14 +472,15 @@ var QueryParamsDialog = Backbone.View.extend({
     },
     render: function() {
         this.$el.append('<ul role="list">');
-        makeDialog(this.$el, {
-            title: this.query.get('name'),
-            width: 800,
-            position: { my: "top", at: "top+20", of: $('body') },
-            buttons: [
-                {text: formsText('runReport'), click: this.runReport.bind(this)},
-                {text: commonText('cancel'), click: function() { $(this).dialog('close'); }}
-            ]
+        this.dialog?.remove();
+        this.dialog = showDialog({
+            header: this.query.get('name'),
+            content: this.el,
+            onClose: () => this.dialog.remove(),
+            buttons: <>
+                <Button.DialogClose>{formsText('cancel')}</Button.DialogClose>
+                <Button.Blue onClick={()=>{this.dialog.remove(); this.runReport()}}>{formsText('runReport')}</Button.Blue>
+            </>,
         });
         var ul = this.$('ul');
         this.fieldUIsP.done(function(fieldUIs) {
@@ -504,7 +496,6 @@ var QueryParamsDialog = Backbone.View.extend({
 });
 
 function runReport(reportResources, recordSetId, _fieldUIs) {
-    dialog && dialog.dialog('close');
     var query = reportResources.query;
     if (_.isFunction(query.set)) {
         query.set('limit', 0);
@@ -564,7 +555,7 @@ function fixupImages(reportXML) {
                 imageUrl = badImageUrl;
             } else {
                 imageUrl = attachments.attachmentsAvailable() ?
-                    '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"' :
+                    '"' + formatAttachmentUrl(attachment, undefined) + '"' :
                     badImageUrl;
             }
             _.each(imageExprs, function(e) { e.text(imageUrl); });

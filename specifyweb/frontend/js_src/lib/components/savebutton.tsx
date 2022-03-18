@@ -23,13 +23,13 @@ function handleFocus(event: FocusEvent): void {
 
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   model,
-  canAddAnother = true,
+  canAddAnother,
   form,
   onSaving: handleSaving,
   onSaved: handleSaved,
 }: {
   readonly model: SpecifyResource<SCHEMA>;
-  readonly canAddAnother?: boolean;
+  readonly canAddAnother: boolean;
   readonly form: HTMLFormElement;
   readonly onSaving?: () => void;
   readonly onSaved?: (payload: {

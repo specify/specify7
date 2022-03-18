@@ -116,6 +116,20 @@ export async function fetchThumbnail(
     : undefined;
 }
 
+export const formatAttachmentUrl = (
+  attachment: SpecifyResource<Attachment>,
+  token: string | undefined
+): string | undefined =>
+  typeof settings === 'object'
+    ? querystring.format(settings.read, {
+        coll: settings.collection,
+        type: 'O',
+        filename: attachment.get('attachmentLocation'),
+        downloadname: attachment.get('origFilename')?.replace(/^.*[/\\]/, ''),
+        ...(typeof token === 'string' ? { token } : {}),
+      })
+    : undefined;
+
 export async function fetchOriginalUrl(
   attachment: SpecifyResource<Attachment>
 ): Promise<string | undefined> {
@@ -123,17 +137,7 @@ export async function fetchOriginalUrl(
 
   return typeof attachmentLocation === 'string'
     ? fetchToken(attachmentLocation).then((token) =>
-        typeof settings === 'object'
-          ? querystring.format(settings.read, {
-              coll: settings.collection,
-              type: 'O',
-              filename: attachmentLocation,
-              downloadname: attachment
-                .get('origFilename')
-                ?.replace(/^.*[/\\]/, ''),
-              ...(typeof token === 'string' ? { token } : {}),
-            })
-          : undefined
+        formatAttachmentUrl(attachment, token)
       )
     : Promise.resolve(undefined);
 }

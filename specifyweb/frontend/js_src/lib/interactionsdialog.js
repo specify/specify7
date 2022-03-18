@@ -10,7 +10,7 @@ import {getModel, schema} from './schema';
 import {getIcon} from './icons';
 import {getView} from './specifyform';
 import {userInformation} from './userinfo';
-import InteractionDialog from './components/interactiondialog';
+import {InteractionDialog} from './components/interactiondialog';
 import * as s from './stringlocalization';
 import reports from './reports';
 import formsText from './localization/forms';

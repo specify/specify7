@@ -4,9 +4,10 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import { schema } from './schema';
+import {schema} from './schema';
 import * as s from './stringlocalization';
 import formsText from './localization/forms';
+import {showDialog} from './components/modaldialog';
 
 
 export default Backbone.View.extend({
@@ -35,13 +36,11 @@ export default Backbone.View.extend({
                 });
             });
             this.$el.append(table);
-            this.$el.dialog({
-                modal: true,
-                close: function() { $(this).remove(); },
-                title: formsText('preparationsDialogTitle'),
-                maxHeight: 700,
-                width: 600,
-                buttons: this.buttons()
+            this.dialog = showDialog({
+                header: formsText('preparationsDialogTitle'),
+                buttons: this.buttons(),
+                onClose: ()=>this.dialog.remove(),
+                content: this.el,
             });
 
             return this;

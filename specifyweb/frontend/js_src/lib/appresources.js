@@ -12,8 +12,8 @@ import 'brace/theme/monokai';
 
 import * as app from './specifyapp';
 import {schema} from './schema';
-import SaveButton from './components/savebutton';
-import DeleteButton from './components/deletebutton';
+import {SaveButton} from './components/savebutton';
+import {DeleteButton} from './components/deletebutton';
 import {userInformation} from './userinfo';
 import * as navigation from './navigation';
 import adminText from './localization/admin';
@@ -21,6 +21,10 @@ import commonText from './localization/common';
 import {setTitle} from './components/hooks';
 import {className, darkMode} from './components/basic';
 import {showDialog} from './components/modaldialog';
+import createBackboneView from './components/reactbackboneextend';
+
+const SaveButtonView = createBackboneView(SaveButton);
+const DeleteButtonView = createBackboneView(DeleteButton);
 
 function makeUrl(resource) {
     return {
@@ -195,8 +199,9 @@ const ResourceDataView = Backbone.View.extend({
                 });
 
                 if(userInformation.isadmin){
-                    const saveButton = new SaveButton({
+                    const saveButton = new SaveButtonView({
                         model: this.appresourceData,
+                        canAddAnother: false,
                         form: this.el,
                         onSaved: ()=>this.model.save(),
                     }).render();
@@ -208,7 +213,7 @@ const ResourceDataView = Backbone.View.extend({
             }
 
             userInformation.isadmin && buttonsDiv.prepend(
-                new DeleteButton({
+                new DeleteButtonView({
                     model: this.model,
                     onDeleted: () => navigation.go('/specify/appresources/')
                 }).render().el
