@@ -212,10 +212,10 @@ export const clamp = (min: number, max: number, value: number) =>
  * A collection of helper functions for functional programming style
  */
 export const f = {
-  // Return void
+  /** Return void */
   void: (): void => undefined,
   undefined: (): undefined => undefined,
-  // Call first argument
+  /** Call first argument */
   call: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],
   unary:
@@ -226,14 +226,33 @@ export const f = {
       callback(argument),
   id: <T>(value: T): T => value,
   trim: (value: string) => value.trim(),
+  /**
+   * Like console.log but return type is undefined instead of void, thus it
+   * can be used in ternary expressions without type errors
+   * Also, calls a breakpoint()
+   */
   error(...args: RA<unknown>): undefined {
     breakpoint();
     console.log(...args);
     return undefined;
   },
-  // An alternative way to declare a variable
+  /** An alternative way to declare a variable */
   var: <VALUE, RETURN>(
     value: VALUE,
     callback: (value: VALUE) => RETURN
   ): RETURN => callback(value),
+  /** Like Promise.all, but accepts a dictionary instead of an array */
+  all: async <T extends IR<unknown>>(dictionary: {
+    readonly [PROMISE_NAME in keyof T]:
+      | Promise<T[PROMISE_NAME]>
+      | T[PROMISE_NAME];
+  }): Promise<T> =>
+    Object.fromEntries(
+      await Promise.all(
+        Object.entries(dictionary).map(async ([promiseName, promise]) => [
+          promiseName,
+          await promise,
+        ])
+      )
+    ),
 } as const;

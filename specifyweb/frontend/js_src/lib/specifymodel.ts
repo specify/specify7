@@ -69,9 +69,6 @@ export type Collection<SCHEMA extends AnySchema | AnyTree> = {
   };
   readonly add: (resource: SpecifyResource<SCHEMA>) => void;
   readonly remove: (resource: SpecifyResource<SCHEMA>) => void;
-  readonly fetchIfNotFetching: (filter?: {
-    readonly limit: number;
-  }) => Promise<Collection<SCHEMA>>;
   readonly fetchPromise: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
@@ -263,7 +260,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   }
 
   public getIcon(): string {
-    return getIcon(this.name.toLowerCase());
+    return this.overrides.isSystem
+      ? '/images/system.png'
+      : getIcon(this.name.toLowerCase());
   }
 
   /**

@@ -13,6 +13,7 @@ import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
+import { f } from '../wbplanviewhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import {
   Button,
@@ -64,14 +65,14 @@ export function DataSetMeta({
 
   React.useEffect(() => {
     const sameAgent = dataset.createdbyagent === dataset.modifiedbyagent;
-    const createdByAgent = fetchAgent(dataset.createdbyagent);
-    const modifiedByAgent =
-      sameAgent || typeof dataset.modifiedbyagent !== 'string'
-        ? Promise.resolve(commonText('notApplicable'))
-        : fetchAgent(dataset.modifiedbyagent);
-
-    Promise.all([createdByAgent, modifiedByAgent])
-      .then(([createdByAgent, modifiedByAgent]) => {
+    f.all({
+      createdByAgent: fetchAgent(dataset.createdbyagent),
+      modifiedByAgent:
+        sameAgent || typeof dataset.modifiedbyagent !== 'string'
+          ? Promise.resolve(commonText('notApplicable'))
+          : fetchAgent(dataset.modifiedbyagent),
+    })
+      .then(({ createdByAgent, modifiedByAgent }) => {
         setCreatedBy(createdByAgent);
         setModifiedBy(sameAgent ? createdByAgent : modifiedByAgent);
       })

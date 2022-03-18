@@ -2,12 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { error } from '../assert';
-import {
-  attachmentsAvailable,
-  fetchOriginalUrl,
-  fetchThumbnail,
-  uploadFile,
-} from '../attachments';
+import { attachmentsAvailable, uploadFile } from '../attachments';
 import type { Attachment } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -15,11 +10,12 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { userInformation } from '../userinfo';
-import { Link, Progress } from './basic';
+import { AttachmentCell } from './attachmentstask';
+import { Progress } from './basic';
 import { crash } from './errorboundary';
 import { FilePicker } from './filepicker';
-import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog, loadingBar, LoadingScreen } from './modaldialog';
+import { useAsyncState } from './hooks';
+import { Dialog, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
 export function AttachmentPlugin({
@@ -81,33 +77,6 @@ export function AttachmentPlugin({
     [state, resource, handleUploadComplete]
   );
 
-  const [thumbnail] = useAsyncState(
-    React.useCallback(
-      () =>
-        state?.type === 'DisplayAttachment'
-          ? fetchThumbnail(state.attachment)
-          : undefined,
-      [state]
-    )
-  );
-  const [originalUrl] = useAsyncState(
-    React.useCallback(
-      () =>
-        state?.type === 'DisplayAttachment'
-          ? fetchOriginalUrl(state.attachment)
-          : undefined,
-      [state]
-    )
-  );
-  const [isPreviewPending, handlePreviewPending, handleNoPreviewPending] =
-    useBooleanState();
-  React.useEffect(() => {
-    if (isPreviewPending && typeof originalUrl === 'string') {
-      handleNoPreviewPending();
-      window.open(originalUrl, '_blank');
-    }
-  }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
-
   return typeof state === 'undefined' ? (
     <>{commonText('loading')}</>
   ) : state.type === 'Unavailable' ? (
@@ -147,41 +116,7 @@ export function AttachmentPlugin({
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
         <div className="flex items-center justify-center h-full bg-black">
-          {typeof thumbnail === 'object' ? (
-            <>
-              <Link.Default
-                href={originalUrl}
-                target="_blank"
-                onClick={(): void =>
-                  /*
-                   * If clicked on a link before originalUrl is loaded,
-                   * remember that and open the link as soon as loaded.
-                   * In the meanwhile, display a loading screen
-                   */
-                  typeof originalUrl === 'undefined'
-                    ? handlePreviewPending()
-                    : undefined
-                }
-              >
-                <img
-                  src={thumbnail.src}
-                  alt={thumbnail.alt}
-                  style={{
-                    width: `${thumbnail.width}px`,
-                    height: `${thumbnail.height}px`,
-                  }}
-                />
-              </Link.Default>
-              {typeof originalUrl === 'string' && (
-                <Link.NewTab href={originalUrl}>
-                  {formsText('openOriginal')}
-                </Link.NewTab>
-              )}
-            </>
-          ) : (
-            loadingBar
-          )}
-          {isPreviewPending && <LoadingScreen />}
+          <AttachmentCell attachment={state.attachment} />
         </div>
       ) : (
         error('Unhandled case', { state })

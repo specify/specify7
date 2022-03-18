@@ -6,7 +6,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { sortObjectsByKey } from '../wbplanviewhelper';
+import { f, sortObjectsByKey } from '../wbplanviewhelper';
 import { Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -75,17 +75,19 @@ export function ShowLoansCommand({
       const exchPreps = new schema.models.ExchangeOutPrep.LazyCollection({
         filters: { preparation_id: resource.get('id') },
       });
-      return Promise.all([
-        openLoanPreps.fetchPromise(),
-        resolvedLoanPreps.fetchPromise(),
-        giftPreps.fetchPromise(),
-        exchPreps.fetchPromise(),
-      ]).then(([openLoans, resolvedLoans, gifts, exchanges]) => ({
-        openLoans: openLoans.models,
-        resolvedLoans: resolvedLoans.models,
-        gifts: gifts.models,
-        exchanges: exchanges.models,
-      }));
+      return f
+        .all({
+          openLoans: openLoanPreps.fetchPromise(),
+          resolvedLoans: resolvedLoanPreps.fetchPromise(),
+          gifts: giftPreps.fetchPromise(),
+          exchanges: exchPreps.fetchPromise(),
+        })
+        .then(({ openLoans, resolvedLoans, gifts, exchanges }) => ({
+          openLoans: openLoans.models,
+          resolvedLoans: resolvedLoans.models,
+          gifts: gifts.models,
+          exchanges: exchanges.models,
+        }));
     }, [resource])
   );
 

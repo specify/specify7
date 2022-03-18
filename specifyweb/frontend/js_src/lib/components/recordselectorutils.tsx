@@ -18,7 +18,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, className, FormFooter, H2 } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
-import {FormTable, FormTableCollection} from './formtable';
+import { FormTableCollection } from './formtable';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
@@ -129,7 +129,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
           index === collection.models.length - 1 &&
           !collection.isComplete()
         )
-          collection.fetchIfNotFetching().catch(crash);
+          collection.fetchPromise().catch(crash);
         handleSlide?.(index);
       }}
     >

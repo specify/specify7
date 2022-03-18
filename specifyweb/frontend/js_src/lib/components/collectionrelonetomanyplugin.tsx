@@ -15,6 +15,7 @@ import * as navigation from '../navigation';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
+import { f } from '../wbplanviewhelper';
 import { Button, className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
@@ -62,14 +63,14 @@ export async function fetchOtherCollectionData(
   const collection = new schema.models.CollectionRelType.LazyCollection({
     filters: { name: relationship },
   });
-  const [relationshipType, left, right] = await collection
+  const { relationshipType, left, right } = await collection
     .fetchPromise({ limit: 1 })
     .then(async ({ models: [relationshipType] }) =>
-      Promise.all([
+      f.all({
         relationshipType,
-        relationshipType.rgetPromise('leftSideCollection'),
-        relationshipType.rgetPromise('rightSideCollection'),
-      ])
+        left: relationshipType.rgetPromise('leftSideCollection'),
+        right: relationshipType.rgetPromise('rightSideCollection'),
+      })
     );
   let side: 'left' | 'right';
   let otherSide: 'left' | 'right';

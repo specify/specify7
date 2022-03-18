@@ -13,7 +13,7 @@ import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { group } from '../wbplanviewhelper';
+import { f, group } from '../wbplanviewhelper';
 import { Button, Form, Label, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
@@ -75,57 +75,61 @@ function UserAgentsDialog({
   const [entries] = useAsyncState<RA<Data>>(
     React.useCallback(async () => {
       const collections = new schema.models.Collection.LazyCollection();
-      return Promise.all([
-        collections
-          .fetchPromise({ limit: 0 })
-          .then(async ({ models }) =>
-            Promise.all(
-              models.map(async (collection) =>
-                collection
-                  .rgetPromise('discipline')
-                  .then(async (discipline) =>
-                    discipline
-                      .rgetPromise('division', true)
-                      .then(
-                        (division) =>
-                          [division.id, { division, collection }] as const
-                      )
-                  )
+      return f
+        .all({
+          division: collections
+            .fetchPromise({ limit: 0 })
+            .then(async ({ models }) =>
+              Promise.all(
+                models.map(async (collection) =>
+                  collection
+                    .rgetPromise('discipline')
+                    .then(async (discipline) =>
+                      discipline
+                        .rgetPromise('division', true)
+                        .then(
+                          (division) =>
+                            [division.id, { division, collection }] as const
+                        )
+                    )
+                )
               )
             )
-          )
-          .then(group),
-        user.rgetCollection('agents', true).then(({ models }) => models),
-      ]).then(([division, agents]) =>
-        Object.values(division)
-          .map((entries) => ({
-            division: entries[0].division,
-            /*
-             * Not sure how user agents plugin should behave when there are more
-             * than one collection in a division. QueryComboBox interacts with
-             * the back-end API which only allows restricting search results
-             * by one collection at a time
-             */
-            collection: entries.map(({ collection }) => collection)[0],
-            agent: agents.find(
-              (agent) =>
-                agent.get('division') ===
-                entries[0].division.get('resource_uri')
-            ),
-          }))
-          .map((entry) => ({
-            ...entry,
-            /*
-             * Kind of kludge but we need some resource with an agent field
-             * for the QueryCBX to work with;
-             */
-            address: new schema.models.Address.Resource().set(
-              'agent',
-              // @ts-expect-error TODO: improve typing
-              entry.agent ?? null
-            ),
-          }))
-      );
+            .then(group),
+          agents: user
+            .rgetCollection('agents', true)
+            .then(({ models }) => models),
+        })
+        .then(({ division, agents }) =>
+          Object.values(division)
+            .map((entries) => ({
+              division: entries[0].division,
+              /*
+               * Not sure how user agents plugin should behave when there are more
+               * than one collection in a division. QueryComboBox interacts with
+               * the back-end API which only allows restricting search results
+               * by one collection at a time
+               */
+              collection: entries.map(({ collection }) => collection)[0],
+              agent: agents.find(
+                (agent) =>
+                  agent.get('division') ===
+                  entries[0].division.get('resource_uri')
+              ),
+            }))
+            .map((entry) => ({
+              ...entry,
+              /*
+               * Kind of kludge but we need some resource with an agent field
+               * for the QueryCBX to work with;
+               */
+              address: new schema.models.Address.Resource().set(
+                'agent',
+                // @ts-expect-error TODO: improve typing
+                entry.agent ?? null
+              ),
+            }))
+        );
     }, [user])
   );
 

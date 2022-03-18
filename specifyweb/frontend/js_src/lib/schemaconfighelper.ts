@@ -17,6 +17,7 @@ import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
+import { f } from './wbplanviewhelper';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -61,16 +62,15 @@ export const fetchStrings = async <
 ): Promise<RA<T & WithFetchedStrings>> =>
   Promise.all(
     objects.map(async (item) =>
-      Promise.all([
-        fetchString(item.names, language, country),
-        fetchString(item.descs, language, country),
-      ]).then(([name, desc]) => ({
-        ...item,
-        strings: {
-          name,
-          desc,
-        },
-      }))
+      f
+        .all({
+          name: fetchString(item.names, language, country),
+          desc: fetchString(item.descs, language, country),
+        })
+        .then((strings) => ({
+          ...item,
+          strings,
+        }))
     )
   );
 

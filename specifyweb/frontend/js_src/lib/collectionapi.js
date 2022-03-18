@@ -112,7 +112,8 @@ var Base =  Backbone.Collection.extend({
             return self._fetch.then(function() { self._fetch = null; return self; });
         },
         fetchPromise(options){
-            return deferredToPromise(this.fetch(options));
+            // Fetch if not fetching and convert deferred to promise
+            return self._fetch || self.isComplete() ? Promise.resolve(this) : deferredToPromise(this.fetch(options));
         },
         fetchIfNotPopulated: function() {
             var _this = this;

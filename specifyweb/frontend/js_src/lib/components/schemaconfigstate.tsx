@@ -3,7 +3,6 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import commonText from '../localization/common';
-import formsText from '../localization/forms';
 import {
   filterFormatters,
   getItemType,
@@ -182,7 +181,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
     return (
       <Dialog
-        header={formsText('tables')}
+        header={commonText('tables')}
         onClose={handleClose}
         buttons={
           <Button.Transparent

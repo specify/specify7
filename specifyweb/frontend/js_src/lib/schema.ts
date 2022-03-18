@@ -13,6 +13,7 @@ import { LiteralField, Relationship } from './specifyfield';
 import { type TableDefinition, SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
+import { f } from './wbplanviewhelper';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -46,44 +47,49 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   }),
 ];
 
-export const fetchContext = Promise.all([
-  load<RA<TableDefinition>>('/context/datamodel.json', 'application/json'),
-  load<IR<SchemaLocalization>>(
-    '/context/schema_localization.json',
-    'application/json'
-  ),
-] as const).then(([tables, data]) => {
-  localization = data;
-  tables
-    .map((tableDefinition) => {
-      const model = new SpecifyModel(tableDefinition);
-      // @ts-expect-error Assigning to readOnly props
-      schemaBase.models[model.name] = model;
-      return [tableDefinition, model] as const;
-    })
-    .forEach(([tableDefinition, model]) => {
-      const [frontEndFields, frontEndRelationships, callback] = schemaExtras[
-        model.name
-      ]?.(model) ?? [[], []];
+export const fetchContext = f
+  .all({
+    tables: load<RA<TableDefinition>>(
+      '/context/datamodel.json',
+      'application/json'
+    ),
+    data: load<IR<SchemaLocalization>>(
+      '/context/schema_localization.json',
+      'application/json'
+    ),
+  })
+  .then(({ tables, data }) => {
+    localization = data;
+    tables
+      .map((tableDefinition) => {
+        const model = new SpecifyModel(tableDefinition);
+        // @ts-expect-error Assigning to readOnly props
+        schemaBase.models[model.name] = model;
+        return [tableDefinition, model] as const;
+      })
+      .forEach(([tableDefinition, model]) => {
+        const [frontEndFields, frontEndRelationships, callback] = schemaExtras[
+          model.name
+        ]?.(model) ?? [[], []];
 
-      model.literalFields = processFields(
-        tableDefinition.fields.map(
-          (fieldDefinition) => new LiteralField(model, fieldDefinition)
-        ),
-        frontEndFields
-      );
-      model.relationships = processFields(
-        tableDefinition.relationships.map(
-          (relationshipDefinition) =>
-            new Relationship(model, relationshipDefinition)
-        ),
-        frontEndRelationships
-      );
-      model.fields = [...model.literalFields, ...model.relationships];
+        model.literalFields = processFields(
+          tableDefinition.fields.map(
+            (fieldDefinition) => new LiteralField(model, fieldDefinition)
+          ),
+          frontEndFields
+        );
+        model.relationships = processFields(
+          tableDefinition.relationships.map(
+            (relationshipDefinition) =>
+              new Relationship(model, relationshipDefinition)
+          ),
+          frontEndRelationships
+        );
+        model.fields = [...model.literalFields, ...model.relationships];
 
-      callback?.();
-    });
-});
+        callback?.();
+      });
+  });
 
 export const schema = schemaBase;
 

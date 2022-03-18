@@ -222,6 +222,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
   React.useEffect(setNotDeleted, [resource, setNotDeleted]);
+
   function handleDelete(): void {
     setDeleted();
     handleDeleted();
@@ -304,7 +305,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               headerButtons={
                 <>
                   {!resource.isNew() && (
-                    <Link.NewTab href={resource.viewUrl()} />
+                    <Link.NewTab href={resource.viewUrl()}>
+                      {formsText('visit')}
+                    </Link.NewTab>
                   )}
                   {headerButtons}
                   {specifyNetworkBadge}

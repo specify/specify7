@@ -1,228 +1,381 @@
-"use strict";
+import React from 'react';
+import type { State } from 'typesafe-reducer';
 
-import $ from 'jquery';
-import _ from 'underscore';
-import Backbone from './backbone';
+import * as attachments from '../attachments';
+import { fetchOriginalUrl } from '../attachments';
+import { fetchCollection } from '../collection';
+import type { Attachment, Tables } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
+import type { SpecifyResource } from '../legacytypes';
+import commonText from '../localization/common';
+import formsText from '../localization/forms';
+import { idFromUrl } from '../resource';
+import { router } from '../router';
+import { getModel, getModelById, schema } from '../schema';
+import * as app from '../specifyapp';
+import type { Collection, SpecifyModel } from '../specifymodel';
+import type { RA } from '../types';
+import { filterArray } from '../types';
+import { userInformation } from '../userinfo';
+import { f } from '../wbplanviewhelper';
+import { Button, Container, H2, Label, Link, Select } from './basic';
+import { TableIcon } from './common';
+import { crash } from './errorboundary';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { LoadingScreen } from './modaldialog';
+import createBackboneView from './reactbackboneextend';
+import { ResourceView } from './resourceview';
 
-import * as attachments from './attachments';
-import {router} from './router';
-import * as app from './specifyapp';
-import {getModel, getModelById, schema} from './schema';
-import populateform from './populateform';
-import specifyform from './specifyform';
-import * as navigation from './navigation';
+const previewSize = 123;
 
-import formsText from './localization/forms';
-import commonText from './localization/common';
-import {className} from './components/basic';
-import template from './templates/attachmentbrowser.html';
-import {legacyNonJsxIcons} from './components/icons';
+export function AttachmentCell({
+  attachment,
+  onViewRecord: handleViewRecord,
+}: {
+  readonly attachment: SpecifyResource<Attachment> | undefined;
+  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+}): JSX.Element {
+  const tableId = attachment?.get('tableID') ?? undefined;
+  const model = typeof tableId === 'number' ? getModelById(tableId) : undefined;
 
-function whenAll(deferreds) {
-  return $.when.apply($, _(deferreds).toArray()).pipe(function () {
-    return _(arguments).toArray();
-  });
+  const [thumbnail] = useAsyncState(
+    React.useCallback(
+      () =>
+        typeof attachment === 'undefined'
+          ? undefined
+          : attachments.fetchThumbnail(attachment, previewSize),
+      [attachment]
+    )
+  );
+
+  const [originalUrl] = useAsyncState(
+    React.useCallback(
+      () =>
+        typeof attachment === 'object'
+          ? fetchOriginalUrl(attachment)
+          : undefined,
+      [attachment]
+    )
+  );
+
+  const [isPreviewPending, handlePreviewPending, handleNoPreviewPending] =
+    useBooleanState();
+  React.useEffect(() => {
+    if (isPreviewPending && typeof originalUrl === 'string') {
+      handleNoPreviewPending();
+      window.open(originalUrl, '_blank');
+    }
+  }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
+
+  const [isLoading, setLoading, setLoaded] = useBooleanState();
+  const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
+  const title = attachment?.get('title') ?? thumbnail?.alt;
+
+  return (
+    <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">
+      {isLoading && <LoadingScreen />}
+      {typeof attachment === 'object' && (
+        <>
+          <Button.LikeLink
+            className="absolute top-0 left-0"
+            title={model?.label}
+            onClick={(): void =>
+              typeof model === 'undefined'
+                ? handleMetaToggle()
+                : void Promise.resolve(setLoading)
+                    .then(async () =>
+                      attachment.rgetCollection(
+                        `${model.name as 'agent'}Attachments`,
+                        true
+                      )
+                    )
+                    .then(({ models }) =>
+                      idFromUrl(models[0].get(model.name as 'agent') ?? '')
+                    )
+                    .then((id) =>
+                      typeof id === 'number'
+                        ? handleViewRecord(model, id)
+                        : handleMetaToggle()
+                    )
+                    .catch(crash)
+                    .finally(setLoaded)
+            }
+          >
+            <TableIcon name={model?.name ?? 'Attachment'} />
+          </Button.LikeLink>
+          <Button.Icon
+            className="absolute top-0 right-0"
+            title={commonText('metadata')}
+            aria-label={commonText('metadata')}
+            onClick={handleMetaToggle}
+            icon="informationCircle"
+            aria-pressed={isMetaOpen}
+          />
+          {isMetaOpen && (
+            <ResourceView
+              title={title}
+              resource={attachment}
+              dialog="modal"
+              onClose={handleMetaClose}
+              canAddAnother={false}
+              isSubForm={false}
+              mode={userInformation.isReadOnly ? 'edit' : 'view'}
+              onDeleted={f.void}
+              onSaved={f.void}
+            />
+          )}
+        </>
+      )}
+      {typeof thumbnail === 'object' ? (
+        <Link.Default
+          className="dark:bg-black shadow-gray-500 flex items-center justify-center bg-white rounded shadow-lg"
+          href={originalUrl}
+          target="_blank"
+          onClick={(): void =>
+            /*
+             * If clicked on a link before originalUrl is loaded,
+             * remember that and open the link as soon as loaded.
+             * In the meanwhile, display a loading screen
+             */
+            typeof originalUrl === 'undefined'
+              ? handlePreviewPending()
+              : undefined
+          }
+        >
+          <img
+            className="object-contain max-w-full max-h-full"
+            src={thumbnail.src}
+            alt={attachment?.get('title') ?? thumbnail.alt}
+            style={{
+              width: `${thumbnail.width}px`,
+              height: `${thumbnail.height}px`,
+            }}
+          />
+          {isPreviewPending && <LoadingScreen />}
+        </Link.Default>
+      ) : (
+        <div className="flex items-center justify-center w-10 h-10">
+          {commonText('loading')}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export const AttachmentsView = Backbone.View.extend({
-        __name__: "AttachmentsView",
-        className: className.containerFull,
-        title: commonText('attachments'),
-        events: {
-            'click .specify-attachment-thumbnail': 'openOriginal',
-            'click .specify-attachment-dataobj-icon': 'openDataObj',
-            'change select': 'selectChanged'
+const preFetchDistance = 200;
+
+export function AttachmentsView(): JSX.Element {
+  useTitle(commonText('attachments'));
+
+  const [order, setOrder] = React.useState<
+    keyof Attachment['fields'] | `-${keyof Attachment['fields']}`
+  >('-timestampCreated');
+
+  const [filter, setFilter] = React.useState<
+    | State<'all'>
+    | State<'unused'>
+    | State<'byTable', { readonly tableName: keyof Tables }>
+  >({ type: 'all' });
+
+  const tablesWithAttachments = React.useMemo(
+    () =>
+      filterArray(
+        Object.keys(schema.models)
+          .filter((tableName) => tableName.endsWith('Attachments'))
+          .map((tableName) =>
+            getModel(tableName.slice(0, -1 * 'Attachment'.length))
+          )
+      ),
+    []
+  );
+
+  const [collectionSizes] = useAsyncState(
+    React.useCallback(
+      async () =>
+        f.all({
+          all: fetchCollection('Attachment', { limit: 1 }).then<number>(
+            ({ totalCount }) => totalCount
+          ),
+          unused: fetchCollection('Attachment', { limit: 1 }).then<number>(
+            ({ totalCount }) => totalCount
+          ),
+          byTable: f.all(
+            Object.fromEntries(
+              tablesWithAttachments.map(({ name }) => [
+                name,
+                fetchCollection('Attachment', { limit: 1 }).then<number>(
+                  ({ totalCount }) => totalCount
+                ),
+              ])
+            )
+          ),
+        }),
+      [tablesWithAttachments]
+    )
+  );
+
+  const collection = React.useMemo(
+    () =>
+      new schema.models.Attachment.LazyCollection({
+        domainfilter: true,
+        filters: {
+          orderby: order,
+          ...(filter.type === 'unused'
+            ? { tableId__isnull: true }
+            : filter.type === 'byTable'
+            ? {
+                tableId: schema.models[filter.tableName].tableId,
+              }
+            : {}),
         },
-        initialize: function() {
-            var collections = this.attachmentCollections = {
-                all: new schema.models.Attachment.LazyCollection({ domainfilter: true })
-                // TODO:
-                // So-called "unused" attachments now might be used in reports.
+      }) as Collection<Attachment>,
+    [order, filter]
+  );
 
-                // unused: new AttachmentModel.LazyCollection({
-                //     filters: { tableid__isnull: true },
-                //     domainfilter: true
-                // })
-            };
+  const containerRef = React.useRef<HTMLElement | null>(null);
 
-            var tablesWithAttachments = _( // TODO: get these from server or something
-                ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
-                 "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
-                 "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
-            ).map(function(table) { return getModel(table); });
+  const fillPage = React.useCallback(
+    async () =>
+      // Fetch more attachments when within 200px of the bottom
+      containerRef.current !== null &&
+      !collection.isComplete() &&
+      Math.max(
+        containerRef.current.scrollTop,
+        containerRef.current.clientHeight
+      ) +
+        preFetchDistance >
+        containerRef.current.scrollHeight
+        ? collection
+            .fetchPromise()
+            .then(({ models }) => setAttachments(Array.from(models)))
+            .catch(crash)
+        : undefined,
+    [collection]
+  );
 
-            _.each(tablesWithAttachments, function(table) {
-                collections[table.tableId] = new schema.models.Attachment.LazyCollection({
-                    filters: { tableid: table.tableId },
-                    domainfilter: true
-                });
-            });
+  const [attachments, setAttachments] = React.useState<
+    RA<SpecifyResource<Attachment> | undefined>
+  >([]);
+  React.useEffect(() => {
+    setAttachments([]);
+    fillPage().catch(crash);
+  }, [fillPage]);
 
-            _.each(collections, function(collection) {
-                collection.filters.orderby = "-timestampcreated"; // TODO: not really a filter
-            });
+  const [viewRecord, setViewRecord] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
 
-            this.attachments = collections.all;
-        },
-        index: function() {
-            return this.$('.specify-attachment-browser')[0].childElementCount;
-        },
-        makeThumbnail: function() {
-            var cell = $('<div class="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">');
-
-            var attachment = this.attachments.at(this.index());
-            var tableId = attachment.get('tableid');
-            var title = attachment.get('title');
-
-            var model = tableId != null && getModelById(tableId);
-            var icon = model ? (model.isSystem ? "/images/system.png" : model.getIcon()) :
-                schema.models.Attachment.getIcon();
-
-            $('<button>', {
-                class: 'specify-attachment-dataobj-icon absolute left-0 top-0',
-                title: model.label,
-            }).append($('<img>', {
-                'class': "w-table-icon",
-                src: icon,
-                alt: model.label
-            })).appendTo(cell);
-
-            attachments.fetchThumbnail(attachment, 123).done((img)=>
-                $('<button>',{
-                    class: 'bg-white dark:bg-black rounded shadow-lg shadow-gray-500 specify-attachment-thumbnail flex justify-center items-center',
-                    title,
-                }).append(
-                    img.addClass('max-w-full max-h-full object-contain').attr('alt', title)
-                ).appendTo(cell)
-            );
-
-            return cell;
-        },
-        fillPage: function() {
-            var browser = this.$('.specify-attachment-browser');
-
-            // Fetch more attachments when within 200px of the bottom
-            if (Math.max(browser[0].scrollTop, browser[0].clientHeight) + 200 > browser[0].scrollHeight) {
-                while (this.index() < this.attachments.length)
-                    browser.append(this.makeThumbnail());
-
-                // Fetch more if not all are fetched are not already fetching
-                if(!this.attachments.isComplete() && !this.attachments._fetch)
-                    this.attachments.fetch().done(()=>this.fillPage());
-            }
-        },
-        getCounts: function() {
-            return whenAll(_.map(this.attachmentCollections, function(collection) {
-                return collection.getTotalCount();
-            }));
-        },
-        render: function() {
-            var self = this;
-            self.$el.html(template({formsText, commonText, className}));
-
-            self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
-
-            self.getCounts().done(function(counts) {
-                var cols = self.attachmentCollections;
-                var tables = $(`<optgroup
-                    label="${formsText('tables')}
-                "></optgroup>`);
-
-                let hasAttachments = false;
-                let i = 0;
-                _.each(self.attachmentCollections, function(collection, key) {
-                    var count = counts[i++];
-                    var name = key === 'all' ? "All" : key === 'unused' ? "Unused" :
-                            getModelById(parseInt(key)).label;
-
-                    var parent = _(['all', 'unused']).contains(key) ? self.$('select') : tables;
-
-                    if(count > 0){
-                        parent.append('<option value="' + key + '">' + name + ' - ' + count + '</option>');
-                        hasAttachments=true;
+  return (
+    <Container.Full>
+      <header className="gap-x-2 flex items-center">
+        <H2>{commonText('attachments')}</H2>
+        <Label.ForCheckbox>
+          <span className="sr-only">{formsText('filter')}</span>
+          <Select
+            value={filter.type === 'byTable' ? filter.tableName : filter.type}
+            onValueChange={(filter): void =>
+              setFilter(
+                filter === 'all' || filter === 'unused'
+                  ? { type: filter }
+                  : {
+                      type: 'byTable',
+                      tableName: filter as keyof Tables,
                     }
-                });
-
-                if(!hasAttachments)
-                    tables.append(`<option disabled selected>${formsText('noAttachments')}</option>`);
-
-                self.$('select').append(tables);
-                self.fillPage();
-            });
-
-            return this;
-        },
-        openOriginal: function(evt) {
-            var index = this.$('.specify-attachment-thumbnail').index(evt.currentTarget);
-            var attachment = this.attachments.at(index);
-            attachments.fetchOriginalUrl(attachment).then(window.open);
-        },
-        openDataObj: function(evt) {
-            var self = this;
-            self.dialog && self.dialog.dialog('close');
-
-            self.dialog = $('<div>').dialog({
-                title: formsText('openDataDialogTitle'),
-                modal: true
-            });
-
-            var index = self.$('.specify-attachment-dataobj-icon').index(evt.currentTarget);
-
-            var attachment = self.attachments.at(index);
-            var tableId = attachment.get('tableid');
-            if (_.isNull(tableId)) {
-                // TODO: something for unused attachments.
-                //                self.buildDialog(attachment);
-                return;
+              )
             }
+          >
+            <option value="all">
+              {commonText('all')}
+              {typeof collectionSizes === 'object'
+                ? ` (${collectionSizes.all})`
+                : ''}
+            </option>
+            {collectionSizes?.unused !== 0 && (
+              <option value="unused">
+                {commonText('unused')}
+                {typeof collectionSizes === 'object'
+                  ? ` (${collectionSizes.unused})`
+                  : ''}
+              </option>
+            )}
+            <optgroup label={commonText('tables')}>
+              {tablesWithAttachments
+                .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
+                .map(({ name, label }) => (
+                  <option value={name} key={name}>
+                    {label}
+                    {typeof collectionSizes === 'object'
+                      ? ` (${collectionSizes.byTable[name]})`
+                      : ''}
+                  </option>
+                ))}
+            </optgroup>
+          </Select>
+        </Label.ForCheckbox>
+        <Label.ForCheckbox>
+          <span className="sr-only">{formsText('order')}</span>
+          <Select
+            value={order.startsWith('-') ? order.slice(1) : order}
+            onValueChange={(value): void => setOrder(value as typeof order)}
+          >
+            <option value="">{commonText('none')}</option>
+            <optgroup label={commonText('ascending')}>
+              {schema.models.Attachment.fields
+                .filter(({ overrides }) => !overrides.isHidden)
+                .map(({ name, label }) => (
+                  <option value={name} key={name}>
+                    {label}
+                  </option>
+                ))}
+            </optgroup>
+            <optgroup label={commonText('descending')}>
+              {schema.models.Attachment.fields
+                .filter(({ overrides }) => !overrides.isHidden)
+                .map(({ name, label }) => (
+                  <option value={`-${name}`} key={name}>
+                    {label}
+                  </option>
+                ))}
+            </optgroup>
+          </Select>
+        </Label.ForCheckbox>
+      </header>
+      <Container.Base
+        className="flex-1 !w-max-none overflow-y-auto gap-4 grid items-center
+          grid-cols-[repeat(auto-fit,minmax(150px,1fr))]"
+        forwardRef={containerRef}
+        onScroll={collection.isComplete() ? undefined : fillPage}
+      >
+        {attachments.map((attachment, index) => (
+          <AttachmentCell
+            key={index}
+            attachment={attachment}
+            onViewRecord={(model, id) =>
+              setViewRecord(new model.Resource({ id }))
+            }
+          />
+        ))}
+      </Container.Base>
+      {typeof viewRecord === 'object' && (
+        <ResourceView
+          resource={viewRecord}
+          dialog="modal"
+          onClose={(): void => setViewRecord(undefined)}
+          canAddAnother={false}
+          isSubForm={false}
+          mode={userInformation.isReadOnly ? 'edit' : 'view'}
+          onDeleted={f.void}
+          onSaved={f.void}
+        />
+      )}
+    </Container.Full>
+  );
+}
 
-            var model = getModelById(tableId);
-            attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
-                return dataObjs && dataObjs.length > 0 ? dataObjs.at(0).rget(model.name.toLowerCase()) : null;
-            }).done(function(dataObj) {
-                dataObj ? self.buildDialog(dataObj) : self.dialog.dialog('close');
-            });
-        },
-        buildDialog: function(resource) {
-            var self = this;
-            specifyform.buildViewByName(resource.specifyModel.view, null, 'view').done(function(dialogForm) {
-                dialogForm.find('.specify-form-header:first').remove();
+const Attachments = createBackboneView(AttachmentsView);
 
-                populateform(dialogForm, resource);
-
-                self.dialog.dialog('close');
-                var dialog = self.dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    position: { my: "top", at: "top+20", of: self.$('.specify-attachment-browser') },
-                    title:  resource.specifyModel.label,
-                    close: function() { $(this).remove(); self.dialog = null; }
-                });
-
-                if (!resource.isNew()) {
-                    dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                        `<a href="${resource.viewUrl()}" title="${formsText('linkInline')}" aria-label="${formsText('linkInline')}">
-                            ${legacyNonJsxIcons.link}
-                        </a>`
-                    );
-
-                    dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                        evt.preventDefault();
-                        navigation.go(resource.viewUrl());
-                        dialog.dialog('close');
-                    });
-                }
-            });
-        },
-        selectChanged: function() {
-            this.attachments = this.attachmentCollections[this.$('select').val()];
-            this.$('.specify-attachment-browser').empty();
-            this.fillPage();
-        }
-    });
-
-export default function() {
-    router.route('attachments/', 'attachments', function () {
-        app.setCurrentView(new AttachmentsView());
-      });
-};
-
+export default function Routes(): void {
+  router.route('attachments/', 'attachments', function () {
+    app.setCurrentView(new Attachments());
+  });
+}

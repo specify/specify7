@@ -18,6 +18,7 @@ import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
+import { f } from '../wbplanviewhelper';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container } from './basic';
 import { SortIndicator, TableIcon } from './common';
@@ -430,8 +431,8 @@ export function QueryResultsWrapper({
       displayedFields
     ).map(([_field, fieldSpec]) => fieldSpec);
 
-    Promise.all([totalCount, initialData])
-      .then(([totalCount, initialData]) =>
+    f.all({ totalCount, initialData })
+      .then(({ totalCount, initialData }) =>
         setProps({
           model,
           hasIdField: queryResource.get('selectDistinct') !== true,

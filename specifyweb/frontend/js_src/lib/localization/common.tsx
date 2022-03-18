@@ -1526,6 +1526,24 @@ const commonText = createDictionary({
     ca: (fileName: string) => `Selected file: ${fileName}`,
     'es-es': (fileName: string) => `Selected file: ${fileName}`,
   },
+  all: {
+    'en-us': 'All',
+    'ru-ru': 'Все',
+    ca: 'All',
+    'es-es': 'All',
+  },
+  unused: {
+    'en-us': 'Unused',
+    'ru-ru': 'Неиспользованные',
+    ca: 'Unused',
+    'es-es': 'Unused',
+  },
+  tables: {
+    'en-us': 'Tables',
+    'ru-ru': 'Таблицы',
+    ca: 'Tables',
+    'es-es': 'Tables',
+  },
 });
 
 export default commonText;

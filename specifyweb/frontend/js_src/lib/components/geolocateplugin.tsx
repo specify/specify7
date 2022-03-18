@@ -8,6 +8,7 @@ import * as querystring from '../querystring';
 import { schema } from '../schema';
 import type { IR } from '../types';
 import { filterArray } from '../types';
+import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -121,18 +122,20 @@ async function getGeoLocateData(
   const constructGeography = async (
     geography: SpecifyResource<Geography>
   ): Promise<IR<string>> =>
-    Promise.all([
-      geography.rgetPromise('parent', true),
-      geography.rgetPromise('definitionItem', true),
-    ]).then(async ([parent, geographyDefinition]) => {
-      const level = geographyDefinition.get('name').toLowerCase();
-      return {
-        ...(['country', 'state', 'county'].includes(level)
-          ? { [level]: geography.get('name') }
-          : {}),
-        ...(parent === null ? {} : await constructGeography(parent)),
-      };
-    });
+    f
+      .all({
+        parent: geography.rgetPromise('parent', true),
+        geographyDefinition: geography.rgetPromise('definitionItem', true),
+      })
+      .then(async ({ parent, geographyDefinition }) => {
+        const level = geographyDefinition.get('name').toLowerCase();
+        return {
+          ...(['country', 'state', 'county'].includes(level)
+            ? { [level]: geography.get('name') }
+            : {}),
+          ...(parent === null ? {} : await constructGeography(parent)),
+        };
+      });
 
   const uncertainty =
     typeof point === 'undefined'
@@ -147,26 +150,25 @@ async function getGeoLocateData(
       geography === null ? undefined : constructGeography(geography)
     );
 
-  return Promise.all([geography, uncertainty]).then(
-    ([geography, uncertainty]) =>
-      typeof geography === 'undefined'
-        ? undefined
-        : {
-            v: '1',
-            w: '900',
-            h: '400',
-            georef: 'run',
-            locality: resource.get('localityName') ?? '',
-            tab: 'results',
-            ...geography,
-            ...(Array.isArray(point)
-              ? {
-                  points: filterArray([...point, uncertainty])
-                    .map((part) => part.toString().replace(/[:|]/g, ' '))
-                    .join('|'),
-                }
-              : {}),
-          }
+  return f.all({ geography, uncertainty }).then(({ geography, uncertainty }) =>
+    typeof geography === 'undefined'
+      ? undefined
+      : {
+          v: '1',
+          w: '900',
+          h: '400',
+          georef: 'run',
+          locality: resource.get('localityName') ?? '',
+          tab: 'results',
+          ...geography,
+          ...(Array.isArray(point)
+            ? {
+                points: filterArray([...point, uncertainty])
+                  .map((part) => part.toString().replace(/[:|]/g, ' '))
+                  .join('|'),
+              }
+            : {}),
+        }
   );
 }
 

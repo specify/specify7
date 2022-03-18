@@ -11,11 +11,17 @@ import { createDictionary } from './utils';
 
 const formsText = createDictionary({
   // Attachments
-  filterAttachments: {
-    'en-us': 'Filter Attachments',
-    'ru-ru': 'Фильтрировать вложений',
-    ca: 'Filter Attachments',
-    'es-es': 'Filter Attachments',
+  filter: {
+    'en-us': 'Filter',
+    'ru-ru': 'Фильтрировать',
+    ca: 'Filter',
+    'es-es': 'Filter',
+  },
+  order: {
+    'en-us': 'Order By',
+    'ru-ru': 'Сортировать по',
+    ca: 'Order By',
+    'es-es': 'Order By',
   },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable.',
@@ -28,12 +34,6 @@ const formsText = createDictionary({
     'ru-ru': 'Закачивание...',
     ca: 'Uploading...',
     'es-es': 'Uploading...',
-  },
-  tables: {
-    'en-us': 'Tables',
-    'ru-ru': 'Таблицы',
-    ca: 'Tables',
-    'es-es': 'Tables',
   },
   openDataDialogTitle: {
     'en-us': 'Opening...',

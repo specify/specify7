@@ -3,7 +3,7 @@ import React from 'react';
 import { error } from '../assert';
 import commonText from '../localization/common';
 import type { Input as InputType } from '../saveblockers';
-import type { IR, RR } from '../types';
+import type { IR, RA, RR } from '../types';
 import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
 import { icons } from './icons';
@@ -36,7 +36,10 @@ export type HtmlElementFromTagName<TAG extends keyof React.ReactHTML> =
     ? X
     : never;
 
-// Add default className and props to common HTML elements in a type-safe way
+/**
+ * Add default className and props to common HTML elements in a type-safe way
+ * Essentially function currying, but for React Components
+ */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function wrap<
   TAG extends keyof React.ReactHTML,
@@ -309,7 +312,13 @@ export const Textarea = wrap<
     },
   })
 );
-export const Select = wrap('select', className.notTouchedInput, (props) => ({
+export const Select = wrap<
+  'select',
+  {
+    readonly onValueChange?: (value: string) => void;
+    readonly onValuesChange?: (value: RA<string>) => void;
+  }
+>('select', className.notTouchedInput, (props) => ({
   ...props,
   /*
    * Required fields have blue background. Selected <option> in a select
@@ -324,6 +333,15 @@ export const Select = wrap('select', className.notTouchedInput, (props) => ({
       : ''
   }`,
   ...withHandleBlur(props.onBlur),
+  onChange(event): void {
+    props.onValueChange?.((event.target as HTMLSelectElement).value);
+    props.onValuesChange?.(
+      Array.from((event.target as HTMLSelectElement).querySelectorAll('option'))
+        .filter(({ selected }) => selected)
+        .map(({ value }) => value)
+    );
+    props.onChange?.(event);
+  },
 }));
 
 export const Link = {
