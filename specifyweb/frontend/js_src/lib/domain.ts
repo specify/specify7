@@ -1,10 +1,5 @@
 import { fetchCollection } from './collection';
-import type {
-  Collection,
-  CollectionObject,
-  Determination,
-  Preparation,
-} from './datamodel';
+import type { Collection, CollectionObject, Determination } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
@@ -27,7 +22,7 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
     typeof domainField === 'object' &&
     !Boolean(resource.get(domainField.name))
   )
-    resource.set(domainField.name, parentResource.url());
+    resource.set(domainField.name, parentResource.url() as never);
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   if (!isResourceOfType(resource, 'CollectionObject')) return;
@@ -46,8 +41,7 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
     const prepModel = defined(
       resource.specifyModel.getRelationship('preparations')
     ).relatedModel;
-    const preparation =
-      new prepModel.Resource() as SpecifyResource<Preparation>;
+    const preparation = new prepModel.Resource();
     resource
       .rgetCollection('preparations')
       .then((preparations) => preparations.add(preparation));

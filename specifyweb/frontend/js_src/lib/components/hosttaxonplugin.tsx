@@ -4,7 +4,6 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
 import { schema } from '../schema';
-import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { Input } from './basic';
 import { useAsyncState } from './hooks';
@@ -53,7 +52,7 @@ export function HostTaxonPlugin({
       fieldName={undefined}
       resource={resource}
       forceCollection={rightSideCollection}
-      relatedModel={schema.models.Taxon as unknown as SpecifyModel}
+      relatedModel={schema.models.Taxon}
       isRequired={isRequired}
       mode={mode}
       formType={formType}

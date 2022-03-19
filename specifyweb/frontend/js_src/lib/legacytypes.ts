@@ -102,7 +102,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | RA<SerializedResource<VALUE[number]>>
                   | RA<SpecifyResource<VALUE[number]>>
               : VALUE extends null
-              ? SpecifyResource<VALUE> | SerializedResource<VALUE> | null
+              ?
+                  | SpecifyResource<Exclude<VALUE, null>>
+                  | SerializedResource<Exclude<VALUE, null>>
+                  | null
               : SpecifyResource<VALUE> | SerializedResource<VALUE>)
           | (FIELD_NAME extends
               | keyof SCHEMA['toOneIndependent']
@@ -110,15 +113,14 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
               ? string
               : never)
   ) => SpecifyResource<SCHEMA>;
-  readonly dependentResources: {
-    readonly [FIELD_NAME in Lowercase<
-      string & keyof SCHEMA['toOneDependent']
-    >]?: SpecifyResource<AnySchema>;
-  } & {
-    readonly [FIELD_NAME in Lowercase<
-      string & keyof SCHEMA['toManyDependent']
-    >]?: Collection<AnySchema>;
-  };
+  getDependentResource: (<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
+    fieldName: FIELD_NAME
+  ) =>
+    | SpecifyResource<Exclude<SCHEMA['toOneDependent'][FIELD_NAME], null>>
+    | undefined) &
+    (<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
+      fieldName: FIELD_NAME
+    ) => Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined);
   readonly noValidation?: boolean;
   readonly save: () => Promise<void>;
   readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
@@ -131,10 +133,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly clone: () => SpecifyResource<SCHEMA>;
   readonly getRelatedObjectCount: (
     fieldName:
-      | keyof SCHEMA['toManyDependent']
-      | keyof SCHEMA['toManyIndependent']
+      | (string & keyof SCHEMA['toManyDependent'])
+      | (string & keyof SCHEMA['toManyIndependent'])
   ) => Promise<number | undefined>;
-  readonly specifyModel: Readonly<SpecifyModel<SCHEMA>>;
+  readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly format: () => Promise<string>;

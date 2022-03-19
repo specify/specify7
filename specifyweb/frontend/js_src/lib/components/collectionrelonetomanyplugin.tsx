@@ -10,7 +10,7 @@ import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-// TODO: elimitate this type of imports
+// TODO: eliminate this type of imports
 import * as navigation from '../navigation';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -26,6 +26,7 @@ type Data = {
   readonly collectionObjects: RA<{
     readonly formatted: string;
     readonly resource: SpecifyResource<CollectionObject>;
+    readonly relationship: SpecifyResource<CollectionRelationship>;
   }>;
   readonly otherCollection: {
     readonly id: number;
@@ -38,20 +39,23 @@ type Data = {
 };
 
 const processRelationships = async (
-  resources: RA<SpecifyResource<CollectionRelationship>>,
+  relationships: RA<SpecifyResource<CollectionRelationship>>,
   otherSide: 'left' | 'right'
 ): Promise<Data['collectionObjects']> =>
   Promise.all(
-    resources.map(async (resource) =>
-      resource.rgetPromise(`${otherSide}Side`, true)
+    relationships.map(async (relationship) =>
+      relationship
+        .rgetPromise(`${otherSide}Side`, true)
+        .then((collectionObject) => [relationship, collectionObject] as const)
     )
   ).then(async (resources) =>
     Promise.all(
-      resources.map(async (collectionObject) => ({
+      resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject).then(
           (formatted) => formatted ?? collectionObject.id.toString()
         ),
         resource: collectionObject,
+        relationship,
       }))
     )
   );
@@ -165,7 +169,10 @@ export function CollectionOneToManyPlugin({
         <tbody>
           {typeof data === 'object' ? (
             data.collectionObjects.map(
-              ({ formatted, resource: relatedResource }, index) => (
+              (
+                { formatted, resource: relatedResource, relationship },
+                index
+              ) => (
                 <tr key={relatedResource.cid}>
                   <td>
                     <Link.Default
@@ -204,9 +211,9 @@ export function CollectionOneToManyPlugin({
                       icon="trash"
                       onClick={(): void => {
                         if (typeof data === 'undefined') return;
-                        resource.dependentResources[
-                          `${data.side}siderels`
-                        ]?.remove(relatedResource);
+                        resource
+                          .getDependentResource(`${data.side}SideRels`)
+                          ?.remove(relationship);
                         setData({
                           ...data,
                           collectionObjects: removeItem(
@@ -272,7 +279,7 @@ export function CollectionOneToManyPlugin({
             toAdd.set(`${data.otherSide}Side`, addedResource);
             toAdd.set(`${data.side}Side`, resource);
             toAdd.set('collectionRelType', relationship);
-            resource.dependentResources[`${data.side}siderels`]?.add(toAdd);
+            resource.getDependentResource(`${data.side}SideRels`)?.add(toAdd);
             setData({
               ...data,
               collectionObjects: [

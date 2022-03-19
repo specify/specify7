@@ -10,7 +10,6 @@ import 'brace/mode/json';
 import 'brace/mode/properties';
 import 'brace/theme/monokai';
 
-import * as app from './specifyapp';
 import {schema} from './schema';
 import {SaveButton} from './components/savebutton';
 import {DeleteButton} from './components/deletebutton';
@@ -22,6 +21,7 @@ import {setTitle} from './components/hooks';
 import {className, darkMode} from './components/basic';
 import {showDialog} from './components/modaldialog';
 import createBackboneView from './components/reactbackboneextend';
+import {setCurrentView} from './specifyapp';
 
 const SaveButtonView = createBackboneView(SaveButton);
 const DeleteButtonView = createBackboneView(DeleteButton);
@@ -800,7 +800,7 @@ function appResourcesTask(ResourceModel, id) {
         resources.fetch({limit: 0}),
         users.fetch({limit: 0}),
     ]).done(() => {
-        app.setCurrentView(new AppResourcePage({
+        setCurrentView(new AppResourcePage({
             selectedId: id,
             directories: resourceDirs,
             disciplines: disciplines,

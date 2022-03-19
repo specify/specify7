@@ -60,7 +60,7 @@ export function TableIcon({
     );
 
   // eslint-disable-next-line unicorn/prefer-code-point
-  const colorHue = getHue(tableName.charCodeAt(0) + tableName.charCodeAt(0));
+  const colorHue = getHue(name.charCodeAt(0) + name.charCodeAt(0));
   const color = `hsl(${colorHue}, 70%, 50%)`;
   return (
     <span
@@ -71,7 +71,7 @@ export function TableIcon({
       aria-label={resolvedTableLabel}
       aria-hidden={ariaHidden}
     >
-      {tableName.slice(0, 2).toUpperCase()}
+      {name.slice(0, 2).toUpperCase()}
     </span>
   );
 }

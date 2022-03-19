@@ -19,6 +19,7 @@ import * as navigation from './navigation';
 import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/modaldialog';
+import {getRelatedObjectCount} from './resource';
 
 // TODO: rewrite to React
 
@@ -424,7 +425,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
             $('<td class="item-count" style="display:none">'));
 
         recordSet.get('remarks') && entry.find('button').attr('title', recordSet.get('remarks'));
-        recordSet.getRelatedObjectCount('recordsetitems').then(function(count) {
+        getRelatedObjectCount(recordSet, 'recordSetItems').then(function(count) {
             $('.item-count', entry).text('(' + count + ')').show();
         });
         return entry;

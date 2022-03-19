@@ -6,7 +6,7 @@ import { QueryFieldSpec } from '../queryfieldspec';
 import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel } from '../schema';
-import * as app from '../specifyapp';
+import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
@@ -207,6 +207,6 @@ const ResultsView = createBackboneView(Results);
 
 export default function (): void {
   router.route('express_search/', 'esearch', function () {
-    app.setCurrentView(new ResultsView({}));
+    setCurrentView(new ResultsView({}));
   });
 }

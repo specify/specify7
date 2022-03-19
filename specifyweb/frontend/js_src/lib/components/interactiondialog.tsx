@@ -8,7 +8,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import PrepSelectDialog from '../prepselectdialog';
-import { resourceViewUrl } from '../resource';
+import { getResourceViewUrl } from '../resource';
 import { getModel } from '../schema';
 import {
   getPrepsAvailableForLoanCoIds,
@@ -240,7 +240,7 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.LikeFancyButton
                   className={className.blueButton}
-                  href={resourceViewUrl('Loan')}
+                  href={getResourceViewUrl('Loan')}
                 >
                   {formsText('noPreparationsCaption')}
                 </Link.LikeFancyButton>

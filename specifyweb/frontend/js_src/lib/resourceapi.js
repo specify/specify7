@@ -5,7 +5,7 @@ import Backbone from './backbone';
 import {assert} from './assert';
 import {globalEvents} from './specifyapi';
 import * as querystring from './querystring';
-import {resourceFromUri, resourceViewUrl} from './resource';
+import {getResourceViewUrl, resourceFromUri} from './resource';
 import {getResourceAndField} from './components/resource';
 
 function eventHandlerForToOne(related, field) {
@@ -131,7 +131,7 @@ function eventHandlerForToOne(related, field) {
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return resourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
+            return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
         },
         get: function(attribute) {
             // case insensitive
@@ -503,18 +503,6 @@ function eventHandlerForToOne(related, field) {
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },
-        async getRelatedObjectCount(fieldName) {
-            // return the number of objects represented by a to-many field
-            if (this.specifyModel.getField(fieldName).type !== 'one-to-many') {
-                throw new TypeError('field is not one-to-many');
-            }
-
-            // for unpersisted objects, this function doesn't make sense
-            if (this.isNew()) return Promise.resolve(undefined);
-
-            return this.rgetPromise(fieldName).then((collection)=>
-              collection?.getTotalCount() ?? 0);
-        },
         sync: function(method, resource, options) {
             options = options || {};
             switch (method) {
@@ -546,6 +534,9 @@ function eventHandlerForToOne(related, field) {
             return other.rget(diff.join('.')).done(function(common) {
                 self.set(_(diff).last(), common.url());
             });
+        },
+        getDependentResource(fieldName){
+            return this.dependentResources[fieldName.toLowerCase()];
         }
     }, {
         fromUri: function(uri, options) {

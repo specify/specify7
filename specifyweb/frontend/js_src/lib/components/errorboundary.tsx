@@ -239,5 +239,11 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
     iframeDocument.body.innerHTML = error;
   }, [error]);
 
-  return <iframe className="h-full" ref={iframeRef} />;
+  return (
+    <iframe
+      title={commonText('backEndErrorDialogTitle')}
+      className="h-full"
+      ref={iframeRef}
+    />
+  );
 }

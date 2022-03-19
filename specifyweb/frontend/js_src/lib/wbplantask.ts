@@ -3,7 +3,7 @@ import { crash } from './components/errorboundary';
 import type { Dataset } from './components/wbplanview';
 import { NotFoundView } from './notfoundview';
 import { router } from './router';
-import * as app from './specifyapp';
+import { setCurrentView } from './specifyapp';
 import { f } from './wbplanviewhelper';
 
 export default function () {
@@ -23,8 +23,8 @@ export default function () {
           wbPlanView: { default: WbPlanView },
           dataSet: { status, data: dataset },
         }) => {
-          if (status === Http.NOT_FOUND) app.setCurrentView(new NotFoundView());
-          else app.setCurrentView(new WbPlanView({ dataset }));
+          if (status === Http.NOT_FOUND) setCurrentView(new NotFoundView());
+          else setCurrentView(new WbPlanView({ dataset }));
         }
       )
       .catch(crash);

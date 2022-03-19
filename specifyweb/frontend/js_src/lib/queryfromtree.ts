@@ -7,7 +7,6 @@ import type { SpecifyResource } from './legacytypes';
 import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
 import { getTreeModel, schema } from './schema';
-import type { SpecifyModel } from './specifymodel';
 import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
@@ -140,7 +139,7 @@ export async function queryFromTree(
   const model = schema.models.CollectionObject;
   const query = createQuery(
     `${model.label} in ${node.get('fullName') ?? node.get('name')}`,
-    model as unknown as SpecifyModel
+    model
   );
 
   query.set(

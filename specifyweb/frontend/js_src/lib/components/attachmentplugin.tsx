@@ -116,7 +116,10 @@ export function AttachmentPlugin({
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
         <div className="flex items-center justify-center h-full bg-black">
-          <AttachmentCell attachment={state.attachment} />
+          <AttachmentCell
+            attachment={state.attachment}
+            onViewRecord={undefined}
+          />
         </div>
       ) : (
         error('Unhandled case', { state })

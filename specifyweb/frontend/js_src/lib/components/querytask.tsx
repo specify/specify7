@@ -11,7 +11,6 @@ import { queryFromTree } from '../queryfromtree';
 import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel, schema } from '../schema';
-import * as app from '../specifyapp';
 import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
@@ -153,17 +152,17 @@ const QueryFromTree = createBackboneView(QueryBuilderFromTree);
 
 export default function Routes(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
-    app.setCurrentView(new QueryById({ queryId: Number.parseInt(id) }))
+    setCurrentView(new QueryById({ queryId: Number.parseInt(id) }))
   );
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
-    app.setCurrentView(new NewQueryView({ tableName }))
+    setCurrentView(new NewQueryView({ tableName }))
   );
   // TODO: test this:
   router.route(
     'query/fromtree/:table/:id/',
     'queryFromTree',
     (tableName, nodeId) =>
-      app.setCurrentView(
+      setCurrentView(
         new QueryFromTree({
           tableName: tableName as AnyTree['tableName'],
           nodeId: Number.parseInt(nodeId),

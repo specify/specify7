@@ -24,7 +24,6 @@ import Papa from 'papaparse';
 
 import {Button, className} from './components/basic';
 import {getModel} from './schema';
-import * as app from './specifyapp';
 import {userInformation} from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
@@ -60,6 +59,7 @@ import {crash} from './components/errorboundary';
 import {getTreeDefinitionItems} from './treedefinitions';
 import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
+import {setCurrentView} from './specifyapp';
 
 const metaKeys = [
   'isNew',
@@ -2550,12 +2550,12 @@ export default function loadDataset(
       })
         .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
         .on('loaded', () => loadingScreen.remove());
-      app.setCurrentView(view);
+      setCurrentView(view);
     })
     .fail((jqXHR) => {
       if (jqXHR.status === 404) {
         jqXHR.errorHandled = true;
-        app.setCurrentView(new NotFoundView());
+        setCurrentView(new NotFoundView());
         return '(not found)';
       }
       return jqXHR;

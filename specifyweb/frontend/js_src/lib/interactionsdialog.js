@@ -21,7 +21,7 @@ import {
   LoadingView,
   showDialog
 } from './components/modaldialog';
-import {resourceViewUrl} from './resource';
+import {getResourceViewUrl} from './resource';
 import {className} from './components/basic';
 import createBackboneView from './components/reactbackboneextend';
 import {defined} from './types';
@@ -139,7 +139,7 @@ export default Backbone.View.extend({
             }
             else {
               const form = forms[formIndex];
-              href = resourceViewUrl(SpecifyModel.parseClassName(form['class']));
+              href = getResourceViewUrl(SpecifyModel.parseClassName(form['class']));
               classList = '';
             }
 

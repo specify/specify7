@@ -4,7 +4,7 @@ import type { Tables } from '../datamodel';
 import formsText from '../localization/forms';
 import { router } from '../router';
 import { getModel, schema } from '../schema';
-import * as app from '../specifyapp';
+import { setCurrentView } from '../specifyapp';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import { H2, Link, Ul } from './basic';
@@ -73,7 +73,7 @@ function DataModelView({
 const View = createBackboneView(DataModelView);
 
 function view(model: string | undefined): void {
-  app.setCurrentView(
+  setCurrentView(
     new View({
       model:
         typeof model === 'string' ? getModel(model as keyof Tables) : undefined,

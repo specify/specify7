@@ -1,10 +1,6 @@
 import React from 'react';
 
-import type {
-  Loan,
-  LoanPreparation,
-  LoanReturnPreparation,
-} from '../datamodel';
+import type { Loan, LoanPreparation } from '../datamodel';
 import { getDateInputValue } from '../dayjs';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
@@ -40,10 +36,13 @@ const metaDataFormDefinition: ViewDescription = {
         colSpan: undefined,
         type: 'Label',
         text: '',
-        labelForCellId: 1,
+        labelForCellId: '1',
+        fieldName: 'receivedBy',
+        align: 'left',
       },
       {
-        id: 1,
+        id: '1',
+        align: 'left',
         colSpan: undefined,
         type: 'Field',
         fieldName: 'receivedBy',
@@ -57,13 +56,16 @@ const metaDataFormDefinition: ViewDescription = {
       },
       {
         id: undefined,
+        align: 'left',
         colSpan: undefined,
         type: 'Label',
         text: '',
-        labelForCellId: 2,
+        labelForCellId: '2',
+        fieldName: 'returnedDate',
       },
       {
-        id: 2,
+        id: '2',
+        align: 'left',
         colSpan: undefined,
         type: 'Field',
         fieldName: 'returnedDate',
@@ -81,6 +83,7 @@ const metaDataFormDefinition: ViewDescription = {
     [
       {
         id: undefined,
+        align: 'left',
         colSpan: 4,
         type: 'Separator',
         label: undefined,
@@ -360,20 +363,11 @@ function PreparationReturn({
                     loanReturnPreparation.current.get('returnedDate')
                   );
 
-                  if (
-                    typeof preparation.dependentResources
-                      .loanreturnpreparations === 'object'
-                  ) {
-                    (
-                      preparation.dependentResources.loanreturnpreparations
-                        .models as SpecifyResource<LoanReturnPreparation>[]
-                    ).push(loanReturn);
-                    // @ts-expect-error Manually changing collection
-                    preparation.dependentResources.loanreturnpreparations.length += 1;
-                    preparation.dependentResources.loanreturnpreparations.trigger(
-                      'add'
-                    );
-                  }
+                  const loanPreparations = preparation.getDependentResource(
+                    'loanReturnPreparations'
+                  );
+                  if (typeof loanPreparations === 'object')
+                    loanPreparations.add(loanReturn);
                 });
               handleClose();
             }}

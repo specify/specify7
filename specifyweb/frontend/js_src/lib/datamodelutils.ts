@@ -1,13 +1,17 @@
 import type { Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import { parseResourceUrl, resourceApiUrl, resourceToJson } from './resource';
+import {
+  getResourceApiUrl,
+  parseResourceUrl,
+  resourceToJson,
+} from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined } from './types';
 import { parserFromType } from './uiparse';
 
 /*
- * The dataModel types types in ./datamodel.ts were generated using this code
+ * The dataModel types in ./datamodel.ts were generated using this code
  * snippet.
  * You will need to rerun it after schema changes
  */
@@ -99,7 +103,7 @@ function regenerate() {
 /* eslint-enable multiline-comment-style*/
 
 /**
- * Represents schema for any table
+ * Represents a schema for any table
  *
  * @remarks
  * This type is not meant for objects to be created directly of it
@@ -117,22 +121,20 @@ function regenerate() {
  */
 export type AnySchema = {
   readonly tableName: keyof Tables;
-  readonly fields: IR<string | boolean | number | null>;
+  readonly fields: IR<string | number | boolean | null>;
   readonly toOneDependent: IR<AnySchema | null>;
   readonly toOneIndependent: IR<AnySchema | null>;
   readonly toManyDependent: IR<RA<AnySchema>>;
   readonly toManyIndependent: IR<RA<AnySchema>>;
 };
 
-/* A union of all field names of a given schema */
+/** A union of all field names of a given schema */
 export type TableFields<SCHEMA extends AnySchema> =
   | keyof SCHEMA['fields']
   | keyof SCHEMA['toOneDependent']
   | keyof SCHEMA['toOneIndependent']
   | keyof SCHEMA['toManyDependent']
   | keyof SCHEMA['toManyIndependent'];
-
-export type ToMany = AnySchema['toManyDependent'];
 
 /**
  * Represents any tree table schema
@@ -153,7 +155,7 @@ export type AnyTree = Extract<
 >;
 
 /**
- * Filter table schemas down to schemas for tables whose names ends with a
+ * Filter table schemas down to schemas for tables whose names end with a
  * particular substring
  */
 export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
@@ -163,7 +165,7 @@ export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
 
 /**
  * A record set information object attached to resources when fetched in a
- * context of a RecordSet (the recordset=<id> GET parameter was passed when
+ * context of a RecordSet (the recordset=<ID> GET parameter was passed when
  * fetching the resource)
  *
  */
@@ -228,9 +230,12 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
 };
 
 /** Convert type's keys to lowercase */
-// TODO: make this type recursive
 export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
-  [KEY in keyof DICTIONARY as Lowercase<KEY & string>]: DICTIONARY[KEY];
+  [KEY in keyof DICTIONARY as Lowercase<
+    KEY & string
+  >]: DICTIONARY[KEY] extends IR<unknown>
+    ? KeysToLowerCase<DICTIONARY[KEY]>
+    : DICTIONARY[KEY];
 };
 
 /** Like resource.toJSON(), but keys are converted to camel case */
@@ -303,7 +308,7 @@ export const addMissingFields = <SCHEMA extends AnySchema>(
       ]
     )
   ) as SerializedResource<SCHEMA>),
-  resource_uri: resourceApiUrl(tableName, 0),
+  resource_uri: getResourceApiUrl(tableName, 0),
   ...record,
 });
 

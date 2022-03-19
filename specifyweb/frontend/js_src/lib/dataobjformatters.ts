@@ -102,8 +102,8 @@ export const fetchFormatters: Promise<{
     ),
   }));
 
-export async function format(
-  resource: SpecifyResource<AnySchema> | undefined,
+export async function format<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA> | undefined,
   formatterName?: string
 ): Promise<string | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
@@ -176,7 +176,7 @@ export async function aggregate(
   if (typeof aggregator === 'undefined')
     throw new Error('Aggregator not found');
 
-  if (!collection.isComplete()) throw new Error('Collection is not complete');
+  if (!collection.isComplete()) throw new Error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>

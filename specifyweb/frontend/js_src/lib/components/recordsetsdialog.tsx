@@ -7,7 +7,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 // TODO: phase out this style of imports:
 import * as navigation from '../navigation';
-import { resourceViewUrl } from '../resource';
+import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
@@ -32,7 +32,7 @@ function Row({
 }): JSX.Element {
   const [count] = useAsyncState(
     React.useCallback(
-      async () => recordSet.getRelatedObjectCount('recordSetItems'),
+      async () => getRelatedObjectCount(recordSet, 'recordSetItems'),
       [recordSet]
     )
   );
@@ -194,11 +194,10 @@ export function RecordSetsDialog({
         dialog="modal"
         resource={state.recordSet}
         mode={isReadOnly ? 'edit' : 'view'}
-        formType="form"
         onDelete={f.void}
         onSaved={(): void =>
           navigation.go(
-            resourceViewUrl(
+            getResourceViewUrl(
               getModelById(state.recordSet.get('dbTableId')).name,
               state.recordSet.id
             )

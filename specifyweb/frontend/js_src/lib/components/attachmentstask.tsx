@@ -12,7 +12,7 @@ import formsText from '../localization/forms';
 import { idFromUrl } from '../resource';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
-import * as app from '../specifyapp';
+import { setCurrentView } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
@@ -33,7 +33,9 @@ export function AttachmentCell({
   onViewRecord: handleViewRecord,
 }: {
   readonly attachment: SpecifyResource<Attachment> | undefined;
-  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+  readonly onViewRecord:
+    | ((model: SpecifyModel, recordId: number) => void)
+    | undefined;
 }): JSX.Element {
   const tableId = attachment?.get('tableID') ?? undefined;
   const model = typeof tableId === 'number' ? getModelById(tableId) : undefined;
@@ -76,33 +78,35 @@ export function AttachmentCell({
       {isLoading && <LoadingScreen />}
       {typeof attachment === 'object' && (
         <>
-          <Button.LikeLink
-            className="absolute top-0 left-0"
-            title={model?.label}
-            onClick={(): void =>
-              typeof model === 'undefined'
-                ? handleMetaToggle()
-                : void Promise.resolve(setLoading)
-                    .then(async () =>
-                      attachment.rgetCollection(
-                        `${model.name as 'agent'}Attachments`,
-                        true
+          {typeof handleViewRecord === 'function' && (
+            <Button.LikeLink
+              className="absolute top-0 left-0"
+              title={model?.label}
+              onClick={(): void =>
+                typeof model === 'undefined'
+                  ? handleMetaToggle()
+                  : void Promise.resolve(setLoading)
+                      .then(async () =>
+                        attachment.rgetCollection(
+                          `${model.name as 'agent'}Attachments`,
+                          true
+                        )
                       )
-                    )
-                    .then(({ models }) =>
-                      idFromUrl(models[0].get(model.name as 'agent') ?? '')
-                    )
-                    .then((id) =>
-                      typeof id === 'number'
-                        ? handleViewRecord(model, id)
-                        : handleMetaToggle()
-                    )
-                    .catch(crash)
-                    .finally(setLoaded)
-            }
-          >
-            <TableIcon name={model?.name ?? 'Attachment'} />
-          </Button.LikeLink>
+                      .then(({ models }) =>
+                        idFromUrl(models[0].get(model.name as 'agent') ?? '')
+                      )
+                      .then((id) =>
+                        typeof id === 'number'
+                          ? handleViewRecord(model, id)
+                          : handleMetaToggle()
+                      )
+                      .catch(crash)
+                      .finally(setLoaded)
+              }
+            >
+              <TableIcon name={model?.name ?? 'Attachment'} />
+            </Button.LikeLink>
+          )}
           <Button.Icon
             className="absolute top-0 right-0"
             title={commonText('metadata')}
@@ -376,6 +380,6 @@ const Attachments = createBackboneView(AttachmentsView);
 
 export default function Routes(): void {
   router.route('attachments/', 'attachments', function () {
-    app.setCurrentView(new Attachments());
+    setCurrentView(new Attachments());
   });
 }

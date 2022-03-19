@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import collectionapi from '../collectionapi';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
@@ -11,6 +12,7 @@ import type { FormCellDefinition } from '../parseformcells';
 import type { Relationship } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
+import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, className } from './basic';
 import { useId } from './hooks';
@@ -22,8 +24,6 @@ import {
   useViewDefinition,
 } from './specifyform';
 import { FormCell } from './specifyformcell';
-import { defined } from '../types';
-import collectionapi from '../collectionapi';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -160,7 +160,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     }}
                   >
                     <SpecifyForm
-                      resourcse={resource}
+                      resource={resource}
                       viewName={viewName}
                       formType="form"
                       mode={mode}

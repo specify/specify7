@@ -1,6 +1,11 @@
 import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
-import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
+import type {
+  AnySchema,
+  CommonFields,
+  SerializedModel,
+  SerializedResource,
+} from './datamodelutils';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import ResourceBase from './resourceapi';
@@ -35,28 +40,28 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type CollectionConstructor<SCHEMA extends AnySchema | AnyTree> = new (props?: {
+type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
   readonly related?: SpecifyResource<AnySchema>;
   readonly field?: Relationship;
   readonly filters?: Partial<
     {
       readonly orderby: string;
-      readonly id: number;
-      readonly specifyuser: number;
       readonly domainfilter: boolean;
     } & SCHEMA['fields'] &
-      IR<unknown>
+      CommonFields &
+      // This is required to allow for filters like leftSide__isnull
+      IR<string | boolean | number | null>
   >;
   readonly domainfilter?: boolean;
 }) => UnFetchedCollection<SCHEMA>;
 
-export type UnFetchedCollection<SCHEMA extends AnySchema | AnyTree> = {
+export type UnFetchedCollection<SCHEMA extends AnySchema> = {
   readonly fetchPromise: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
 };
 
-export type Collection<SCHEMA extends AnySchema | AnyTree> = {
+export type Collection<SCHEMA extends AnySchema> = {
   readonly field?: Relationship;
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
@@ -114,22 +119,19 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   private readonly fieldAliases: RA<FieldAlias>;
 
-  // TODO: make newly created resources have default values for fields
   public readonly Resource: new (
-    props?: Partial<SerializedModel<SCHEMA>>,
+    props?: Partial<SerializedResource<SCHEMA> | SerializedModel<SCHEMA>>,
     options?: Partial<{
       readonly noBusinessRules: boolean;
       readonly noValidation: boolean;
     }>
   ) => SpecifyResource<SCHEMA>;
 
-  public readonly LazyCollection: CollectionConstructor<AnySchema & SCHEMA>;
+  public readonly LazyCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly DependentCollection: CollectionConstructor<
-    AnySchema & SCHEMA
-  >;
+  public readonly DependentCollection: CollectionConstructor<SCHEMA>;
 
-  public readonly ToOneCollection: CollectionConstructor<AnySchema & SCHEMA>;
+  public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
   // All table non-relationship fields
   public literalFields: RA<LiteralField> = [];
@@ -294,12 +296,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
 // TODO: this won't be needed if typings were to be improved
 /** Checks if SpecifyResource has a desired table name and cast's its type */
-export function isResourceOfType<TABLE_NAME extends keyof Tables>(
+export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
-): resource is SpecifyResource<Tables[TABLE_NAME]> {
-  return resource.specifyModel.name === tableName;
-}
+): resource is SpecifyResource<Tables[TABLE_NAME]> =>
+  resource.specifyModel.name === tableName;
 
 // If this is true, then you can use {domainfilter:true} when fetching that model
 export const hasHierarchyField = (model: SpecifyModel): boolean =>

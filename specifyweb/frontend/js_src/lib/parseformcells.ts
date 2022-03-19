@@ -172,12 +172,10 @@ export function parseFormCellDefinition(
   model: SpecifyModel | undefined,
   cellNode: Element
 ): FormCellDefinition {
-  const cellClass = cellNode.getAttribute('node') ?? '';
+  const cellClass = cellNode.getAttribute('type') ?? '';
   const parsedCell =
-    processCellType[
-      cellTypeTranslation[cellClass.toLowerCase()] ??
-        cellTypeTranslation.Unsupported
-    ];
+    processCellType[cellTypeTranslation[cellClass.toLowerCase()]] ??
+    processCellType.Unsupported;
   const properties = parseSpecifyProperties(
     cellNode.getAttribute('initialize') ?? ''
   );

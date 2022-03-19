@@ -1,6 +1,6 @@
 /**
  * TypeScript types for DataModel tables
- * The types types were generated with help from the regenerate() function
+ * The types were generated with help from the regenerate() function
  *   in ./datamodelutils.ts
  *
  * Schema version: 2.9

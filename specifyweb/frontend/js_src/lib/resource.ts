@@ -27,7 +27,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined : serializeResource(record)
   );
 
-export function resourceViewUrl(
+export function getResourceViewUrl(
   tableName: keyof Tables,
   resourceId: number | 'new' = 'new',
   recordSetId?: number
@@ -38,7 +38,7 @@ export function resourceViewUrl(
     : url;
 }
 
-export function resourceApiUrl(
+export function getResourceApiUrl(
   tableName: keyof Tables,
   resourceId: number,
   recordSetId?: number
@@ -83,3 +83,30 @@ export function idFromUrl(url: string): number | undefined {
 export const resourceToJson = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
 ): SerializedModel<SCHEMA> => resource.toJSON() as SerializedModel<SCHEMA>;
+
+export async function getRelatedObjectCount<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA>,
+  fieldName: string &
+    (keyof SCHEMA['toManyDependent'] | keyof SCHEMA['toManyIndependent'])
+): Promise<number | undefined> {
+  // Return the number of objects represented by a to-many field
+  if (resource.specifyModel.getField(fieldName)?.type !== 'one-to-many') {
+    throw new TypeError('field is not one-to-many');
+  }
+
+  // For unpersisted objects, this function doesn't make sense
+  if (resource.isNew()) return undefined;
+
+  return resource
+    .rgetCollection(fieldName)
+    .then(async (collection) => collection?.getTotalCount() ?? 0);
+}
+
+/*
+ * Things to keep in mind:
+ * on resource delete send header: {'If-Match': resource.get('version')}
+ * placeInSameHierarchy
+ * zero-to-one
+ * business rules and validation
+ * prevent fetching multiple at the same time
+ */

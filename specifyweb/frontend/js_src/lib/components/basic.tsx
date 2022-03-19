@@ -207,10 +207,10 @@ export const Input = {
     {
       onValueChange?: (isChecked: boolean) => void;
     }
-  >('input', className.checkbox, (props) => ({
+  >('input', className.checkbox, ({ onValueChange, ...props }) => ({
     ...props,
     onChange(event): void {
-      props.onValueChange?.((event.target as HTMLInputElement).checked);
+      onValueChange?.((event.target as HTMLInputElement).checked);
       props.onChange?.(event);
     },
   })),
@@ -220,12 +220,12 @@ export const Input = {
       readonly onValueChange?: (value: string) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
     }
-  >('input', className.notTouchedInput, (props) => ({
+  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
     ...props,
     type: 'text',
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      props.onValueChange?.((event.target as HTMLInputElement).value);
+      onValueChange?.((event.target as HTMLInputElement).value);
       props.onChange?.(event);
     },
   })),
@@ -234,11 +234,11 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
     }
-  >('input', className.notTouchedInput, (props) => ({
+  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
     ...props,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      props.onValueChange?.((event.target as HTMLInputElement).value);
+      onValueChange?.((event.target as HTMLInputElement).value);
       props.onChange?.(event);
     },
     onPaste(event): void {
@@ -256,8 +256,7 @@ export const Input = {
           input.value = (event.clipboardData ?? window.clipboardData).getData(
             'text/plain'
           );
-          if (typeof props.onValueChange === 'function')
-            props.onValueChange(input.value);
+          if (typeof onValueChange === 'function') onValueChange(input.value);
           else if (typeof props.onChange === 'function')
             props.onChange(
               event as unknown as React.ChangeEvent<HTMLInputElement>
@@ -282,12 +281,12 @@ export const Input = {
       readonly onValueChange?: (value: number) => void;
       readonly type?: never;
     }
-  >('input', className.notTouchedInput, (props) => ({
+  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
     ...props,
     type: 'number',
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      props.onValueChange?.(
+      onValueChange?.(
         Number.parseInt((event.target as HTMLInputElement).value)
       );
       props.onChange?.(event);
@@ -303,11 +302,11 @@ export const Textarea = wrap<
 >(
   'textarea',
   `${className.notTouchedInput} ${className.textarea}`,
-  (props) => ({
+  ({ onValueChange, ...props }) => ({
     ...props,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      props.onValueChange?.((event.target as HTMLTextAreaElement).value);
+      onValueChange?.((event.target as HTMLTextAreaElement).value);
       props.onChange?.(event);
     },
   })
@@ -318,7 +317,7 @@ export const Select = wrap<
     readonly onValueChange?: (value: string) => void;
     readonly onValuesChange?: (value: RA<string>) => void;
   }
->('select', className.notTouchedInput, (props) => ({
+>('select', className.notTouchedInput, ({ onValueChange, ...props }) => ({
   ...props,
   /*
    * Required fields have blue background. Selected <option> in a select
@@ -334,7 +333,7 @@ export const Select = wrap<
   }`,
   ...withHandleBlur(props.onBlur),
   onChange(event): void {
-    props.onValueChange?.((event.target as HTMLSelectElement).value);
+    onValueChange?.((event.target as HTMLSelectElement).value);
     props.onValuesChange?.(
       Array.from((event.target as HTMLSelectElement).querySelectorAll('option'))
         .filter(({ selected }) => selected)

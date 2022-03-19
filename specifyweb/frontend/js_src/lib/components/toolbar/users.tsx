@@ -3,7 +3,7 @@ import React from 'react';
 import { fetchCollection } from '../../collection';
 import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
-import { resourceViewUrl } from '../../resource';
+import { getResourceViewUrl } from '../../resource';
 import type { IR } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
@@ -26,7 +26,7 @@ function Users({
             Object.fromEntries(
               records.map((user) => [
                 user.name,
-                resourceViewUrl('SpecifyUser', user.id),
+                getResourceViewUrl('SpecifyUser', user.id),
               ])
             )
         ),

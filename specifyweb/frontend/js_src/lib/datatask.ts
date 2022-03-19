@@ -1,25 +1,24 @@
-import { error } from '../assert';
-import { fetchCollection } from '../collection';
-import type { AnySchema } from '../datamodelutils';
-import { collectionsForResource } from '../domain';
-import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import * as navigation from '../navigation';
-import { NotFoundView } from '../notfoundview';
-import * as querystring from '../querystring';
-import { resourceViewUrl } from '../resource';
-import { router } from '../router';
-import { getModel, getModelById, schema } from '../schema';
-import * as app from '../specifyapp';
-import { setCurrentView } from '../specifyapp';
-import type { SpecifyModel } from '../specifymodel';
-import { defined } from '../types';
-import { userInformation } from '../userinfo';
-import { crash } from './errorboundary';
-import { setTitle } from './hooks';
-import { OtherCollectionView } from './othercollectionview';
-import createBackboneView from './reactbackboneextend';
-import { ShowResource } from './resourceview';
+import { error } from './assert';
+import { fetchCollection } from './collection';
+import { crash } from './components/errorboundary';
+import { setTitle } from './components/hooks';
+import { OtherCollectionView } from './components/othercollectionview';
+import createBackboneView from './components/reactbackboneextend';
+import { ShowResource } from './components/resourceview';
+import type { AnySchema } from './datamodelutils';
+import { collectionsForResource } from './domain';
+import type { SpecifyResource } from './legacytypes';
+import commonText from './localization/common';
+import * as navigation from './navigation';
+import { NotFoundView } from './notfoundview';
+import * as querystring from './querystring';
+import { getResourceViewUrl } from './resource';
+import { router } from './router';
+import { getModel, getModelById, schema } from './schema';
+import { setCurrentView } from './specifyapp';
+import type { SpecifyModel } from './specifymodel';
+import { defined } from './types';
+import { userInformation } from './userinfo';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -41,7 +40,7 @@ async function recordSetView(id: string, index = '0'): Promise<void> {
               .then(({ records }) =>
                 navigation.navigate(
                   querystring.format(
-                    resourceViewUrl(
+                    getResourceViewUrl(
                       getModelById(recordSet.get('dbTableId')).name,
                       records[0].recordId
                     ),
@@ -61,7 +60,7 @@ async function recordSetView(id: string, index = '0'): Promise<void> {
 // Begins the process of creating a new resource
 const newResourceView = async (modelName: string): Promise<void> =>
   userInformation.isReadOnly
-    ? Promise.resolve(app.setCurrentView(new NotFoundView()))
+    ? Promise.resolve(setCurrentView(new NotFoundView()))
     : resourceView(modelName, undefined);
 
 /*
@@ -75,7 +74,7 @@ async function resourceView(
   const model = getModel(modelName);
 
   if (typeof model === 'undefined') {
-    app.setCurrentView(new NotFoundView());
+    setCurrentView(new NotFoundView());
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
 
@@ -121,7 +120,7 @@ async function viewResourceByGuid(
   const collection = new model.LazyCollection({ filters: { guid } });
   return collection.fetchPromise({ limit: 1 }).then(({ models }) => {
     if (models.length === 0) {
-      app.setCurrentView(new NotFoundView());
+      setCurrentView(new NotFoundView());
       setTitle(commonText('pageNotFound'));
       return undefined;
     } else
@@ -186,7 +185,7 @@ async function byCatNumber(
         return undefined;
       });
     })
-    .catch(() => app.setCurrentView(new NotFoundView()));
+    .catch(() => setCurrentView(new NotFoundView()));
 }
 
 // Check that it makes sense to view this resource when logged into current collection
@@ -199,7 +198,7 @@ const checkLoggedInCollection = async (
     : collectionsForResource(resource).then((collections) =>
         collections.some(({ id }) => id === schema.domainLevelIds.collection)
           ? callback()
-          : app.setCurrentView(
+          : setCurrentView(
               new OtherCollectionView({
                 collections,
               })

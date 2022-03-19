@@ -109,9 +109,9 @@ const processFieldType: {
     pickList: cell.getAttribute('pickList') ?? undefined,
   }),
   Text(cell, properties) {
-    const min = Number.parseInt(properties.min);
-    const max = Number.parseInt(properties.max);
-    const step = Number.parseInt(properties.step);
+    const min = Number.parseInt(properties.min ?? '');
+    const max = Number.parseInt(properties.max ?? '');
+    const step = Number.parseInt(properties.step ?? '');
     return {
       type: 'Text',
       ...withStringDefault(cell),

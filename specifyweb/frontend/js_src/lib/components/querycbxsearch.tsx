@@ -7,7 +7,7 @@ import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { resourceViewUrl } from '../resource';
+import { getResourceViewUrl } from '../resource';
 import { queryCbxExtendedSearch } from '../specifyapi';
 import type { RA } from '../types';
 import { f, sortObjectsByKey } from '../wbplanviewhelper';
@@ -123,7 +123,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
               {results.map(({ id, formatted, resource }) => (
                 <li key={id}>
                   <Link.Default
-                    href={resourceViewUrl(
+                    href={getResourceViewUrl(
                       templateResource.specifyModel.name,
                       id
                     )}

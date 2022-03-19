@@ -156,7 +156,7 @@ function processViewDefinition(
   }
 
   const definition =
-    viewDefinition.getElementsByTagName('definition')[0].textContent;
+    viewDefinition.getElementsByTagName('definition')[0]?.textContent;
   const actualViewDefinition =
     typeof definition === 'string'
       ? viewDefinitions[definition]

@@ -6,18 +6,18 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { localizeLabel } from '../localizeform';
 import type { FormMode, FormType } from '../parseform';
+import { getView, parseViewDefinition } from '../parseform';
 import type { CellTypes } from '../parseformcells';
+import type { Collection } from '../specifymodel';
 import { defined } from '../types';
+import { f } from '../wbplanviewhelper';
+import { relationshipIsToMany } from '../wbplanviewmappinghelper';
+import { FormTableInteraction } from './formtableinteractionitem';
+import { useAsyncState } from './hooks';
 import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
-import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { useAsyncState } from './hooks';
-import { FormTableInteraction } from './formtableinteractionitem';
-import { Collection } from '../specifymodel';
-import { getView, parseViewDefinition } from '../parseform';
-import {f} from '../wbplanviewhelper';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -60,7 +60,7 @@ const cellRenderers: {
     const { children, ...props } = localizeLabel({
       text: text?.trim(),
       id,
-      resource,
+      model: resource.specifyModel,
       fieldName,
     });
     return (
@@ -94,7 +94,7 @@ const cellRenderers: {
           ['LoanPreparation', 'GiftPreparation'].includes(
             field.relatedModel.name
           )
-            ? resource.rgetCollection(field.name).then((collection) =>
+            ? resource.rgetCollection(field.name).then(async (collection) =>
                 getView(field.relatedModel.view)
                   .then((viewDefinition) =>
                     // The form has to actually be built to tell if it is a formTable.
@@ -146,8 +146,21 @@ const cellRenderers: {
       />
     );
   },
-  Command({ cellData: { name, label }, id, resource }) {
-    return <UiCommand name={name} label={label} resource={resource} id={id} />;
+  Command({
+    cellData: {
+      commandDefinition: { label, commandDefinition },
+    },
+    id,
+    resource,
+  }) {
+    return (
+      <UiCommand
+        label={label}
+        commandDefinition={commandDefinition}
+        resource={resource}
+        id={id}
+      />
+    );
   },
   Unsupported({ cellData: { cellType } }) {
     return (
