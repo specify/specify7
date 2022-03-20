@@ -69,24 +69,24 @@ export function findRequiredMissingFields(
     );
   // Handle trees
   else if (isTreeModel(tableName))
-    return getTreeDefinitionItems(tableName as 'Geography', false).flatMap(
-      ({ name: rankName, isEnforced }) => {
-        const formattedRankName = formatTreeRank(rankName);
-        const localPath = [...path, formattedRankName];
+    return defined(
+      getTreeDefinitionItems(tableName as 'Geography', false)
+    ).flatMap(({ name: rankName, isEnforced }) => {
+      const formattedRankName = formatTreeRank(rankName);
+      const localPath = [...path, formattedRankName];
 
-        if (formattedRankName in indexedMappings)
-          return findRequiredMissingFields(
-            tableName,
-            indexedMappings[formattedRankName],
-            mustMatchPreferences,
-            parentRelationship,
-            localPath
-          );
-        else if (isEnforced === true && !mustMatchPreferences[tableName])
-          return [localPath];
-        else return [];
-      }
-    );
+      if (formattedRankName in indexedMappings)
+        return findRequiredMissingFields(
+          tableName,
+          indexedMappings[formattedRankName],
+          mustMatchPreferences,
+          parentRelationship,
+          localPath
+        );
+      else if (isEnforced === true && !mustMatchPreferences[tableName])
+        return [localPath];
+      else return [];
+    });
 
   return [
     ...model.relationships.flatMap((relationship) => {

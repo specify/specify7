@@ -124,7 +124,7 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
                     language,
                     new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
                       language.replace('_', '-')
-                    ),
+                    ) ?? language,
                   ] as const
               )
             )

@@ -54,7 +54,7 @@ function PasswordResetDialog({
           else if (password === repeatPassword) {
             handleLoading();
             void ping(
-              `/api/set_password/${modelId}/`,
+              `/api/set_password/${userId}/`,
               {
                 method: 'POST',
                 body: formData({ password }),

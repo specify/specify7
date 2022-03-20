@@ -20,7 +20,7 @@ import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
 import { getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
-import { filterArray } from './types';
+import { defined, filterArray } from './types';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -95,9 +95,8 @@ async function recursiveResourceResolve(
 
   if (valueIsTreeRank(currentPart[0])) {
     const treeTableName = getTableFromMappingPath('Locality', pastParts);
-    const tableRanks = getTreeDefinitionItems(
-      treeTableName as 'Geography',
-      false
+    const tableRanks = defined(
+      getTreeDefinitionItems(treeTableName as 'Geography', false)
     );
     const currentRank = tableRanks.find(
       ({ rankId }) => rankId === resource.get('rankId')

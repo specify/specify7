@@ -147,6 +147,7 @@ const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
   style: 'long',
 });
 
+/** Does not support future dates */
 export function getRelativeDate(date: Readonly<Date>): string {
   const timePassed = Math.round((Date.now() - date.getTime()) / MILLISECONDS);
   if (timePassed < 0) {

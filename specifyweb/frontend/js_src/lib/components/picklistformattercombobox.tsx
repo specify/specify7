@@ -37,7 +37,6 @@ export function PickListFormatterComboBox(
     <PickListComboBox
       {...props}
       items={items}
-      fieldName="fieldName"
       onAdd={undefined}
       pickList={undefined}
       isDisabled={

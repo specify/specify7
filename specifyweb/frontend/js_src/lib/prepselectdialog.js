@@ -13,7 +13,6 @@ import PrepDialog from './prepdialog';
 import formsText from './localization/forms';
 import commonText from './localization/common';
 import {fieldFormat} from "./uiparse";
-import {f} from './wbplanviewhelper';
 import createBackboneView from './components/reactbackboneextend';
 import {userInformation} from './userinfo';
 
@@ -225,8 +224,8 @@ export default PrepDialog.extend({
                     mode: userInformation.isReadOnly ? 'edit' : 'view',
                     dialog: 'nonModal',
                     canAddAnother: true,
-                    onSaved: f.void,
-                    onDelete: f.void,
+                    onSaved: undefined,
+                    onDelete: undefined,
                     onClose: ()=>this.dialog.remove(),
                     isSubForm: false,
                 }).render();

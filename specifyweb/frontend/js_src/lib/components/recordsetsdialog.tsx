@@ -11,7 +11,6 @@ import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
 import { Button, className, Link } from './basic';
 import { TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
@@ -194,7 +193,7 @@ export function RecordSetsDialog({
         dialog="modal"
         resource={state.recordSet}
         mode={isReadOnly ? 'edit' : 'view'}
-        onDelete={f.void}
+        onDelete={undefined}
         onSaved={(): void =>
           navigation.go(
             getResourceViewUrl(

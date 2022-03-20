@@ -105,9 +105,8 @@ export function QueryComboBox({
               .fetchPromise({ limit: 1 })
               .then(({ models }) => models[0]?.get('rankId'));
           }
-          const treeRanks = getTreeDefinitionItems(
-            resource.specifyModel.name,
-            false
+          const treeRanks = defined(
+            getTreeDefinitionItems(resource.specifyModel.name, false)
           ).map((rank) => ({
             rankId: rank.rankId,
             isEnforced: rank.isEnforced ?? false,
@@ -541,7 +540,7 @@ export function QueryComboBox({
             canAddAnother={false}
             dialog="nonModal"
             onClose={(): void => setState({ type: 'MainState' })}
-            onSaved={f.void}
+            onSaved={undefined}
             onDeleted={(): void =>
               // @ts-expect-error Need to refactor this to use generics
               void resource.set(defined(field?.name), null)
@@ -559,7 +558,7 @@ export function QueryComboBox({
               // @ts-expect-error Need to refactor this to use generics
               void resource.set(defined(field?.name), state.resource)
             }
-            onDeleted={f.void}
+            onDeleted={undefined}
             mode={mode}
           />
         ) : undefined

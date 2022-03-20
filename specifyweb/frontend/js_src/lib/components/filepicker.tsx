@@ -7,14 +7,12 @@ import { useBooleanState } from './hooks';
 export function FilePicker({
   onSelected: handleSelected,
   acceptedFormats,
-  autoOpen,
   id,
   name,
 }: {
   readonly onSelected: (file: File) => void;
   readonly acceptedFormats: RA<string> | undefined;
   // Whether to automatically click on the file input as soon as rendered
-  readonly autoOpen: boolean;
   readonly id?: string;
   readonly name?: string;
 }): JSX.Element {
@@ -84,7 +82,6 @@ export function FilePicker({
         type="file"
         accept={acceptedFormats?.join(',')}
         onChange={handleFileSelected}
-        ref={autoOpen ? undefined : (input): void => input?.click()}
         className="sr-only"
         id={id}
         name={name}

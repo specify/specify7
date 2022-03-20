@@ -125,7 +125,6 @@ function UserAgentsDialog({
                */
               address: new schema.models.Address.Resource().set(
                 'agent',
-                // @ts-expect-error TODO: improve typing
                 entry.agent ?? null
               ),
             }))

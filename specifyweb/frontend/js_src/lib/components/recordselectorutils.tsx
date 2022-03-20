@@ -13,14 +13,13 @@ import * as queryString from '../querystring';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { clamp, f } from '../wbplanviewhelper';
+import { clamp } from '../wbplanviewhelper';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, className, FormFooter, H2 } from './basic';
-import { DeleteButton } from './deletebutton';
+import { Button } from './basic';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
 import { ResourceView } from './resourceview';
@@ -167,8 +166,8 @@ export function IntegratedRecordSelector({
       mode={mode}
       viewName={viewName}
       dialog={dialog}
-      onAdd={f.void}
-      onDelete={f.void}
+      onAdd={undefined}
+      onDelete={undefined}
       onClose={handleClose}
     />
   ) : (
@@ -214,7 +213,7 @@ export function IntegratedRecordSelector({
                   <RecordSelectorButtons
                     onVisit={
                       typeof collection.models[index] === 'object' &&
-                      !isDependent
+                      (!isDependent || dialog !== false)
                         ? (): void =>
                             navigation.go(collection.models[index].viewUrl())
                         : undefined
@@ -232,13 +231,13 @@ export function IntegratedRecordSelector({
                 </>
               }
               mode={mode}
-              formType={formType}
               viewName={viewName}
               isSubForm={dialog === false}
               canAddAnother={false}
-              onSaved={f.void}
-              onDelete={f.void}
-              onDeleted={collection.models.length <= 1 ? handleClose : f.void}
+              onSaved={undefined}
+              onDeleted={
+                collection.models.length <= 1 ? handleClose : undefined
+              }
               onClose={handleClose}
             />
           ) : (
@@ -258,8 +257,16 @@ export function IntegratedRecordSelector({
 export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   ids,
   onSlide: handleSlide,
-  children,
   defaultIndex,
+  model,
+  viewName,
+  title = model.label,
+  dialog,
+  isDependent,
+  mode,
+  onClose: handleClose,
+  canAddAnother,
+  onSaved: handleSaved,
   ...rest
 }: {
   /*
@@ -268,15 +275,27 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly defaultIndex?: number;
+  readonly title: string | undefined;
+  readonly dialog: false | 'modal' | 'nonModal';
+  readonly isDependent: boolean;
+  readonly mode: FormMode;
+  readonly viewName?: string;
+  readonly onClose: () => void;
+  readonly canAddAnother: boolean;
+  readonly onSaved: (payload: {
+    readonly addAnother: boolean;
+    readonly newResource: SpecifyResource<SCHEMA> | undefined;
+    readonly wasNew: boolean;
+  }) => void;
 } & Omit<
   RecordSelectorProps<SCHEMA>,
-  'relatedResource' | 'records' | 'isDependent' | 'index'
+  'relatedResource' | 'records' | 'index' | 'children'
 >): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
     ids.map((id) =>
-      typeof id === 'undefined' ? undefined : new rest.model.Resource({ id })
+      typeof id === 'undefined' ? undefined : new model.Resource({ id })
     )
   );
 
@@ -286,20 +305,21 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) =>
         typeof id === 'undefined'
           ? undefined
-          : records[index] ?? new rest.model.Resource({ id })
+          : records[index] ?? new model.Resource({ id })
       )
     );
 
     return (): void => {
       previousIds.current = ids;
     };
-  }, [ids, rest.model]);
+  }, [ids, model]);
 
   const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
 
   return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
+      model={model}
       records={records}
       index={index}
       onSlide={(index: number): void => {
@@ -307,7 +327,58 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         handleSlide?.(index);
       }}
     >
-      {children}
+      {({
+        dialogs,
+        slider,
+        resource,
+        onAdd: handleAdd,
+        onRemove: handleRemove,
+      }): JSX.Element => (
+        <>
+          {typeof resource === 'object' ? (
+            <ResourceView
+              resource={resource}
+              dialog={dialog}
+              title={`${title} (${ids.length})`}
+              headerButtons={
+                <>
+                  <span className="flex-1 -ml-4" />
+                  {slider}
+                </>
+              }
+              extraButtons={
+                <>
+                  <span className="flex-1 -ml-2" />
+                  <RecordSelectorButtons
+                    onVisit={
+                      typeof resource === 'object' &&
+                      (!isDependent || dialog !== false)
+                        ? (): void => navigation.go(resource.viewUrl())
+                        : undefined
+                    }
+                    onDelete={
+                      typeof resource === 'object' && mode !== 'view'
+                        ? handleRemove
+                        : undefined
+                    }
+                    onAdd={mode === 'view' ? undefined : handleAdd}
+                  />
+                </>
+              }
+              mode={mode}
+              viewName={viewName}
+              isSubForm={dialog === false}
+              canAddAnother={canAddAnother}
+              onSaved={handleSaved}
+              onDeleted={ids.length > 1 ? undefined : handleClose}
+              onClose={handleClose}
+            />
+          ) : (
+            <p>{formsText('noData')}</p>
+          )}
+          {dialogs}
+        </>
+      )}
     </BaseRecordSelector>
   );
 }
@@ -316,16 +387,19 @@ const fetchItems = async (
   recordSetId: number,
   offset: number
 ): Promise<
-  (props: {
-    readonly totalCount: number;
-    readonly ids: RA<number | undefined>;
-  }) => { readonly totalCount: number; readonly ids: RA<number | undefined> }
+  (
+    props:
+      | {
+          readonly ids: RA<number | undefined>;
+        }
+      | undefined
+  ) => { readonly totalCount: number; readonly ids: RA<number | undefined> }
 > =>
   fetchCollection('RecordSetItem', {
     limit: DEFAULT_FETCH_LIMIT,
     recordSet: recordSetId,
     offset,
-  }).then(({ records, totalCount }) => ({ ids }) => ({
+  }).then(({ records, totalCount }) => ({ ids } = { ids: [] }) => ({
     totalCount,
     ids: records
       .map(({ recordId }, index) => [offset + index, recordId] as const)
@@ -341,27 +415,51 @@ const fetchItems = async (
 export function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
   defaultResourceIndex,
-  children,
+  title,
+  dialog,
+  mode,
+  onClose: handleClose,
+  canAddAnother,
+  onSaved: handleSaved,
+  onDeleted: handleDeleted,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  'mode' | 'isDependent' | 'records' | 'field' | 'defaultIndex' | 'totalCount'
+  | 'records'
+  | 'field'
+  | 'defaultIndex'
+  | 'totalCount'
+  | 'children'
+  | 'onDelete'
+  | 'index'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly defaultResourceIndex: number | undefined;
+  readonly title: string | undefined;
+  readonly dialog: false | 'modal' | 'nonModal';
+  readonly mode: FormMode;
+  readonly onClose: () => void;
+  readonly canAddAnother: boolean;
+  readonly onSaved: (payload: {
+    readonly addAnother: boolean;
+    readonly newResource: SpecifyResource<SCHEMA> | undefined;
+    readonly wasNew: boolean;
+  }) => void;
+  readonly onDeleted: (newCount: number) => void;
 }): JSX.Element {
-  const [{ totalCount, ids }, setItems] = React.useState<{
-    readonly totalCount: number;
-    readonly ids: RA<number | undefined>;
-  }>({
-    totalCount: 0,
-    ids: [],
-  });
+  const [items, setItems] = React.useState<
+    | {
+        readonly totalCount: number;
+        readonly ids: RA<number | undefined>;
+      }
+    | undefined
+  >(undefined);
+  const { totalCount, ids } = items ?? { totalCount: 0, ids: [] };
 
   const [index, setIndex] = React.useState(defaultResourceIndex ?? 0);
 
   // Fetch ID of record at current index
-  const currentRecordId = ids?.[index];
+  const currentRecordId = ids[index];
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
     if (typeof currentRecordId === 'undefined')
@@ -381,17 +479,51 @@ export function RecordSet<SCHEMA extends AnySchema>({
     };
   }, [totalCount, currentRecordId, index, recordSet.id]);
 
-  return (
+  function handleAdd(resource: SpecifyResource<SCHEMA>): void {
+    resource.recordsetid = recordSet.id;
+    setItems({ totalCount: totalCount + 1, ids: [...ids, resource.id] });
+    setIndex(totalCount);
+  }
+
+  return totalCount === 0 ? (
+    typeof items === 'undefined' ? (
+      <LoadingScreen />
+    ) : (
+      <p>
+        <Dialog
+          header={formsText('emptyRecordSetHeader')}
+          onClose={(): void => history.back()}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+              <Button.Green
+                onClick={(): void => handleAdd(new rest.model.Resource())}
+              >
+                {commonText('add')}
+              </Button.Green>
+            </>
+          }
+        >
+          {formsText('emptyRecordSetSecondMessage')}
+        </Dialog>
+
+        {formsText('noData')}
+      </p>
+    )
+  ) : (
     <RecordSelectorFromIds<SCHEMA>
       {...rest}
       ids={ids}
+      title={title}
+      isDependent={false}
+      dialog={dialog}
+      mode={mode}
+      canAddAnother={canAddAnother}
+      onClose={handleClose}
       totalCount={totalCount}
       defaultIndex={defaultResourceIndex ?? 0}
-      onAdd={(resource): void => {
-        resource.recordsetid = recordSet.id;
-        setItems({ totalCount: totalCount + 1, ids: [...ids, resource.id] });
-        setIndex(totalCount);
-      }}
+      onSaved={handleSaved}
+      onAdd={handleAdd}
       onDelete={(): void => {
         setItems({
           totalCount: totalCount - 1,
@@ -400,85 +532,9 @@ export function RecordSet<SCHEMA extends AnySchema>({
         setIndex((previousIndex) =>
           clamp(0, totalCount - 1, previousIndex > index ? index - 1 : index)
         );
+        handleDeleted(totalCount - 1);
       }}
       onSlide={setIndex}
-    >
-      {children}
-    </RecordSelectorFromIds>
-  );
-}
-
-export function IntegratedRecordSetView({
-  mode,
-  ...rest
-}: Parameters<typeof RecordSet>[0] & {
-  readonly mode: FormMode;
-}): JSX.Element {
-  return (
-    <RecordSet {...rest}>
-      {({
-        dialogs,
-        slider,
-        resource,
-        onAdd: handleAdd,
-        onRemove: handleRemove,
-      }): JSX.Element =>
-        typeof resource === 'object' ? (
-          <ResourceView resource={defined(resource)} mode={mode}>
-            {({
-              form,
-              title,
-              saveButton,
-              specifyNetworkBadge,
-            }): JSX.Element => (
-              <>
-                {dialogs}
-                <header className={className.formHeader}>
-                  <H2 className={className.formTitle}>{title}</H2>
-                  {slider}
-                  {specifyNetworkBadge}
-                </header>
-                {form}
-                <FormFooter>
-                  {!resource.isNew() && mode !== 'view' ? (
-                    <DeleteButton model={resource} onDeleted={handleRemove} />
-                  ) : undefined}
-                  {saveButton?.({
-                    canAddAnother: true,
-                    onSaved: ({ wasNew, newResource }): void => {
-                      if (wasNew) navigation.go(resource.viewUrl());
-                      if (typeof newResource === 'object')
-                        handleAdd(newResource);
-                    },
-                  })}
-                </FormFooter>
-              </>
-            )}
-          </ResourceView>
-        ) : (
-          <p>
-            {dialogs}
-            <Dialog
-              header={formsText('emptyRecordSetHeader')}
-              onClose={(): void => history.back()}
-              buttons={
-                <>
-                  <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Button.Green
-                    onClick={(): void => handleAdd(new rest.model.Resource())}
-                  >
-                    {commonText('add')}
-                  </Button.Green>
-                </>
-              }
-            >
-              {formsText('emptyRecordSetSecondMessage')}
-            </Dialog>
-
-            {formsText('noData')}
-          </p>
-        )
-      }
-    </RecordSet>
+    />
   );
 }

@@ -206,13 +206,15 @@ export function FormField({
   readonly isRequired: boolean;
   readonly formType: FormType;
 }): JSX.Element {
-  const Render = fieldRenderers[fieldDefinition.type];
+  const Render = fieldRenderers[
+    fieldDefinition.type
+  ] as typeof fieldRenderers.Checkbox;
   return (
     <Render
       mode={isReadOnly ? 'view' : mode}
       {...rest}
       isRequired={rest.isRequired && mode !== 'search'}
-      fieldDefinition={fieldDefinition}
+      fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
     />
   );
 }

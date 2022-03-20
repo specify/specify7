@@ -888,7 +888,9 @@ export class AutoMapper {
         valueIsTreeRank(mappingPathPart)
           ? formatTreeRankUndefined(
               defined(
-                getTreeDefinitionItems(tableName as 'Geography', false).find(
+                defined(
+                  getTreeDefinitionItems(tableName as 'Geography', false)
+                ).find(
                   ({ name }) =>
                     name.toLowerCase() ===
                     getNameFromTreeRankName(mappingPathPart).toLowerCase()

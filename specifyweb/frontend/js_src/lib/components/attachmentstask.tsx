@@ -124,8 +124,8 @@ export function AttachmentCell({
               canAddAnother={false}
               isSubForm={false}
               mode={userInformation.isReadOnly ? 'edit' : 'view'}
-              onDeleted={f.void}
-              onSaved={f.void}
+              onDeleted={undefined}
+              onSaved={undefined}
             />
           )}
         </>
@@ -368,8 +368,8 @@ export function AttachmentsView(): JSX.Element {
           canAddAnother={false}
           isSubForm={false}
           mode={userInformation.isReadOnly ? 'edit' : 'view'}
-          onDeleted={f.void}
-          onSaved={f.void}
+          onDeleted={undefined}
+          onSaved={undefined}
         />
       )}
     </Container.Full>

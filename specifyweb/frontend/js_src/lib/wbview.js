@@ -275,6 +275,7 @@ const WBView = Backbone.View.extend({
 
           // The rest goes in order of importance
           this.identifyMappedHeaders();
+          // CHeck if any column is reordered
           if (
             this.dataset.visualorder?.some((column, index) => column !== index)
           )
@@ -692,7 +693,7 @@ const WBView = Backbone.View.extend({
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
           mappingGroup,
           physicalCol,
-          rankId: Object.keys(getTreeDefinitionItems(tableName)).findIndex(
+          rankId: Object.keys(defined(getTreeDefinitionItems(tableName))).findIndex(
             ({ name }) => name === rankName
           ),
         }))

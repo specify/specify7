@@ -17,7 +17,6 @@ import {
 import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { userInformation } from '../userinfo';
 import { f } from '../wbplanviewhelper';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container } from './basic';
@@ -128,7 +127,6 @@ function ViewRecords({
             ids={ids}
             defaultIndex={0}
             model={model}
-            isReadOnly={userInformation.isReadOnly}
             onAdd={undefined}
             onDelete={handleDelete}
             onSlide={(index): void =>

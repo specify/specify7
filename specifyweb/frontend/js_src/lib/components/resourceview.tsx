@@ -12,16 +12,16 @@ import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
 import reports from '../reports';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
 import { Button, className, Container, FormFooter, H2, Link } from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { IntegratedRecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
+import { RecordSet as RecordSetView } from './recordselectorutils';
+import { f } from '../wbplanviewhelper';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -50,7 +50,6 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
         readonly addAnother: boolean;
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
-        // Readonly reporterOnSave: boolean;
       }) => void;
     }) => JSX.Element;
     readonly form: JSX.Element;
@@ -208,12 +207,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly deletionMessage?: string | undefined;
   readonly dialog: false | 'modal' | 'nonModal';
   readonly onSaving?: () => void;
-  readonly onSaved: (payload: {
-    readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<SCHEMA> | undefined;
-    readonly wasNew: boolean;
-  }) => void;
-  readonly onDeleted: () => void;
+  readonly onSaved:
+    | ((payload: {
+        readonly addAnother: boolean;
+        readonly newResource: SpecifyResource<SCHEMA> | undefined;
+        readonly wasNew: boolean;
+      }) => void)
+    | undefined;
+  readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
@@ -225,7 +226,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   function handleDelete(): void {
     setDeleted();
-    handleDeleted();
+    handleDeleted?.();
+    handleClose();
   }
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
@@ -267,7 +269,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   canAddAnother,
                   onSaving: handleSaving,
                   onSaved(payload) {
-                    handleSaved(payload);
+                    handleSaved?.(payload);
                     handleClose();
                   },
                 })}
@@ -403,57 +405,61 @@ export function ShowResource({
     }, [resource])
   );
 
+  function handleSaved({
+    addAnother,
+    newResource,
+    wasNew,
+  }: {
+    readonly addAnother: boolean;
+    readonly newResource: SpecifyResource<AnySchema> | undefined;
+    readonly wasNew: boolean;
+  }) {
+    if (addAnother && typeof newResource === 'object')
+      setRecord({ resource: newResource, recordSet });
+    else if (wasNew) navigation.go(resource.viewUrl());
+    else {
+      const reloadResource = new resource.specifyModel.Resource({
+        id: resource.id,
+      });
+      reloadResource.recordsetid = resource.recordsetid;
+      reloadResource
+        .fetchPromise()
+        .then(async () => setRecord({ resource: reloadResource, recordSet }));
+    }
+  }
+
   return typeof recordSet === 'object' ? (
     typeof recordSetItemIndex === 'undefined' ? (
       <LoadingScreen />
     ) : (
-      <IntegratedRecordSetView
+      <RecordSetView
+        dialog={false}
+        mode={userInformation.isReadOnly ? 'edit' : 'view'}
+        model={resource.specifyModel}
+        onClose={f.never}
+        title={undefined}
+        onAdd={f.void}
+        onDeleted={(newCount): void =>
+          newCount === 0 ? navigation.go('/') : undefined
+        }
+        onSlide={f.void}
         recordSet={recordSet}
         defaultResourceIndex={recordSetItemIndex}
-        onSaved={({ addAnother, newResource, wasNew }): void => {
-          if (addAnother && typeof newResource === 'object')
-            showResource(newResource, recordSet, true);
-          else if (wasNew) navigation.go(resource.viewUrl());
-          else {
-            const reloadResource = new resource.specifyModel.Resource({
-              id: resource.id,
-            });
-            reloadResource.recordsetid = resource.recordsetid;
-            reloadResource
-              .fetchPromise()
-              .then(async () =>
-                showResource(reloadResource, recordSet, pushUrl)
-              );
-          }
-        }}
+        canAddAnother={true}
+        onSaved={handleSaved}
       />
     )
   ) : (
     <ResourceView
       resource={resource}
-      onClose={f.void}
+      onClose={f.never}
       canAddAnother={true}
       dialog={false}
       isSubForm={false}
       mode={userInformation.isReadOnly ? 'edit' : 'view'}
       viewName={resource.specifyModel.view}
-      onDeleted={() => navigation.go('/')}
-      onSaved={({ addAnother, newResource, wasNew }): void => {
-        if (addAnother && typeof newResource === 'object')
-          setRecord({ resource: newResource, recordSet });
-        else if (wasNew) navigation.go(resource.viewUrl());
-        else {
-          const reloadResource = new resource.specifyModel.Resource({
-            id: resource.id,
-          });
-          reloadResource.recordsetid = resource.recordsetid;
-          reloadResource
-            .fetchPromise()
-            .then(async () =>
-              setRecord({ resource: reloadResource, recordSet })
-            );
-        }
-      }}
+      onDeleted={(): void => navigation.go('/')}
+      onSaved={handleSaved}
     />
   );
 }

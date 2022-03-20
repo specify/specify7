@@ -326,19 +326,20 @@ export function getMappingLineData({
                     },
                   ]
                 : undefined,
-              ...getTreeDefinitionItems(model.name as 'Geography', false).map(
-                ({ name, title }) =>
-                  name === defaultValue || generateFieldData === 'all'
-                    ? ([
-                        formatTreeRank(name),
-                        {
-                          optionLabel: title ?? name,
-                          isRelationship: true,
-                          isDefault: name === defaultValue,
-                          tableName: model.name,
-                        },
-                      ] as const)
-                    : undefined
+              ...defined(
+                getTreeDefinitionItems(model.name as 'Geography', false)
+              ).map(({ name, title }) =>
+                name === defaultValue || generateFieldData === 'all'
+                  ? ([
+                      formatTreeRank(name),
+                      {
+                        optionLabel: title ?? name,
+                        isRelationship: true,
+                        isDefault: name === defaultValue,
+                        tableName: model.name,
+                      },
+                    ] as const)
+                  : undefined
               ),
             ]
       );

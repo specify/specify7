@@ -127,8 +127,8 @@ const cellRenderers: {
         mode={mode}
         collection={interactionCollection}
         dialog={false}
-        onDelete={f.void}
-        onClose={f.void}
+        onDelete={undefined}
+        onClose={f.never}
       />
     );
   },

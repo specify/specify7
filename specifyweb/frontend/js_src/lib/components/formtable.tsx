@@ -292,9 +292,13 @@ export function FormTableCollection({
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
-  'resources' | 'relationship' | 'isDependent'
+  'resources' | 'relationship' | 'isDependent' | 'onAdd' | 'onDelete'
 > & {
   readonly collection: Collection<AnySchema>;
+  readonly onAdd: ((resource: SpecifyResource<AnySchema>) => void) | undefined;
+  readonly onDelete:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
 }): JSX.Element {
   const isDependent = collection instanceof collectionapi.Dependent;
   const [records, setRecords] = React.useState(collection.models);
@@ -306,12 +310,12 @@ export function FormTableCollection({
       onAdd={(resource): void => {
         collection.add(resource);
         setRecords(collection.models);
-        handleAdd(resource);
+        handleAdd?.(resource);
       }}
       onDelete={(resource): void => {
         collection.remove(resource);
         setRecords(collection.models);
-        handleDelete(resource);
+        handleDelete?.(resource);
       }}
       {...props}
     />

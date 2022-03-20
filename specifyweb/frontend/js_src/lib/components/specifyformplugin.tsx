@@ -60,7 +60,7 @@ const pluginRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly id: string | undefined;
     readonly pluginDefinition: UiPlugins[KEY];
-    readonly fieldName: string;
+    readonly fieldName: string | undefined;
     readonly formType: FormType;
     readonly mode: FormMode;
     readonly isRequired: boolean;
@@ -283,11 +283,14 @@ export function UiPlugin({
   readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element {
-  return pluginRenderers[pluginDefinition.type]({
+  return (
+    pluginRenderers[
+      pluginDefinition.type
+    ] as typeof pluginRenderers.AttachmentPlugin
+  )({
     id,
     resource,
-    pluginDefinition,
-    defaultValue,
+    pluginDefinition: pluginDefinition as UiPlugins['AttachmentPlugin'],
     fieldName,
     formType,
     mode,

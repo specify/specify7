@@ -27,7 +27,6 @@ export const getPrefValue = <
   subcategory: SUBCATEGORY,
   item: ITEM
 ): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] =>
-  // @ts-expect-error
   preferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 

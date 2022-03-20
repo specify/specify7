@@ -53,7 +53,7 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
   readonly onClose: () => void;
   readonly action: {
     readonly model: SpecifyModel;
-    readonly name: string;
+    readonly name?: string;
   };
   readonly interactionResource?: SpecifyResource<
     FilterTablesByEndsWith<'Preparation'>

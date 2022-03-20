@@ -20,6 +20,7 @@ import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { f } from '../wbplanviewhelper';
 
 function QueryButton({
   disabled,
@@ -175,6 +176,7 @@ export function MakeRecordSetButton({
                 onSaving={(): void => setState('saving')}
                 onSaved={(): void => setState('saved')}
                 onClose={(): void => setState(undefined)}
+                onDeleted={f.never}
               />
             )}
             {state === 'saving' && (

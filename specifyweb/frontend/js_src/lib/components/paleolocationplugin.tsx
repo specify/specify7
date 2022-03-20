@@ -8,6 +8,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { isResourceOfType } from '../specifymodel';
 import { filterArray } from '../types';
+import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -111,7 +112,7 @@ export function PaleoLocationMapPlugin({
 async function fetchPaleoData(
   resource: SpecifyResource<AnySchema>
 ): Promise<States> {
-  const locality: SpecifyResource<Locality> | null | 'InvalidTableState' =
+  const locality: SpecifyResource<Locality> | undefined | 'InvalidTableState' =
     isResourceOfType(resource, 'Locality')
       ? resource
       : isResourceOfType(resource, 'CollectingEvent')
@@ -149,6 +150,6 @@ async function fetchPaleoData(
         type: 'LoadedState',
         latitude,
         longitude,
-        age: periods / periods.length,
+        age: f.sum(periods) / periods.length,
       };
 }

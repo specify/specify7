@@ -24,6 +24,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
+import { f } from '../../wbplanviewhelper';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -350,6 +351,9 @@ function EditQueryDialog({
       resource={queryResource}
       onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}
+      mode={userInformation.isReadOnly ? 'view' : 'edit'}
+      isSubForm={false}
+      onDeleted={f.void}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">

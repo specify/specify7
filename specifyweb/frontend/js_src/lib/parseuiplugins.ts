@@ -61,7 +61,7 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly properties: IR<string>;
+    readonly properties: IR<string | undefined>;
     readonly name: string | undefined;
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
@@ -71,12 +71,12 @@ const processUiPlugin: {
   PartialDateUI: ({ properties, defaultValue }) => ({
     type: 'PartialDateUI',
     defaultValue: defaultValue?.toLowerCase() === 'today' ? 'today' : undefined,
-    dateField: properties.df.toLowerCase(),
-    precisionField: properties.tp.toLowerCase(),
+    dateField: properties.df?.toLowerCase(),
+    precisionField: properties.tp?.toLowerCase(),
     defaultPrecision: ['year', 'month-year'].includes(
-      properties.defaultprecision.toLowerCase()
+      properties.defaultprecision?.toLowerCase() ?? ''
     )
-      ? (properties.defaultprecision.toLowerCase() as 'year' | 'month-year')
+      ? (properties.defaultprecision?.toLowerCase() as 'year' | 'month-year')
       : 'full',
   }),
   CollectionRelOneToManyPlugin: ({ properties }) => ({
@@ -110,7 +110,7 @@ export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
   cell: Element,
-  properties: IR<string>,
+  properties: IR<string | undefined>,
   defaultValue: string | undefined
 ): PluginDefinition {
   const name = cell.getAttribute('name') ?? undefined;

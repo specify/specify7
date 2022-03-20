@@ -4,7 +4,7 @@
  * @module
  */
 
-import { breakpoint } from './assert';
+import { breakpoint, error } from './assert';
 import type { IR, RA, RR } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 
@@ -210,6 +210,7 @@ export const clamp = (min: number, max: number, value: number) =>
 
 /**
  * A collection of helper functions for functional programming style
+ * Kind of like underscore or ramda, but typesafe
  */
 export const f = {
   /** Return void */
@@ -255,4 +256,21 @@ export const f = {
         ])
       )
     ),
+  sum: (array: RA<number>): number =>
+    array.reduce((total, value) => total + value, 0),
+  never: (): never => error('This should never get called'),
+  equal:
+    (value: unknown) =>
+    (secondValue: unknown): boolean =>
+      secondValue === value,
+  /**
+   * If need to support internationalization, consider using localeCompare
+   *
+   * Example of case-insensitive comparison:
+   * a.localeCompare(b, LANGUAGE, { sensitivity: 'base' })
+   */
+  looseEqual:
+    (value: string) =>
+    (secondValue: string): boolean =>
+      value.toString() == secondValue.toLowerCase(),
 } as const;

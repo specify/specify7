@@ -94,7 +94,6 @@ export function AttachmentPlugin({
                 file,
               })
             }
-            autoOpen={true}
             acceptedFormats={undefined}
             id={id}
             name={name}

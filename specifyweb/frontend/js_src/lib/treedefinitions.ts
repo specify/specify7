@@ -118,7 +118,7 @@ export const fetchContext = Promise.all([
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
   includeRoot: boolean
-): typeof treeDefinitions[TREE_NAME]['ranks'] {
+): typeof treeDefinitions[TREE_NAME]['ranks'] | undefined {
   const definition = caseInsensitiveHash(treeDefinitions, tableName);
   return definition?.ranks.slice(includeRoot ? 0 : 1);
 }

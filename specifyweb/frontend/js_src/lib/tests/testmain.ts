@@ -1,6 +1,6 @@
 import QUnit from 'qunit';
 
-import { getTreeDefinitionItems, setupForTests } from '../treedefinitions';
+import { setupForTests } from '../treedefinitions';
 import type { RA } from '../types';
 import testAutoMapper from './testautomapper';
 import testLatLongUtils from './testlatlongutils';
@@ -27,8 +27,6 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 
 async function runTests(): Promise<void> {
   await setupForTests();
-
-  console.log(getTreeDefinitionItems('Geography', false));
 
   testLatLongUtils();
   testMappingsTreeToUploadPlan();
