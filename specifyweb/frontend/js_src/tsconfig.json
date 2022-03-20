@@ -42,7 +42,8 @@
     /* Advanced */
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noErrorTruncation": true
   },
   "noPropertyAccessFromIndexSignature": true
 }
