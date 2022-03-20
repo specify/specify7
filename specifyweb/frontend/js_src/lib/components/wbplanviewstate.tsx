@@ -10,7 +10,7 @@ import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
-import { Button, Input } from './basic';
+import { Button, Input, Label } from './basic';
 import { useBooleanState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';

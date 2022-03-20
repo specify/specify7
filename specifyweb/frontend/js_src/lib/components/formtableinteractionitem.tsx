@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { RecordSet } from '../datamodel';
+import { resourceTypeEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -21,16 +22,19 @@ export function FormTableInteraction(
   >(undefined);
   return (
     <>
-      {typeof recordSetsPromise === 'object' && (
+      {typeof recordSetsPromise === 'object' &&
+      typeof props.collection.related === 'object' &&
+      resourceTypeEndsWith(props.collection.related, 'Preparation') ? (
         <InteractionDialog
           action={{ model: defined(props.collection.related).specifyModel }}
           model={schema.models.CollectionObject}
-          interactionresource={props.collection.related}
+          interactionResource={props.collection.related}
           itemCollection={props.collection}
           recordSetsPromise={recordSetsPromise}
           onClose={(): void => setRecordSetsPromise(undefined)}
+          searchField={undefined}
         />
-      )}
+      ) : undefined}
       <FormTableCollection
         {...props}
         onAdd={(): void => {

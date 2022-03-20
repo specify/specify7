@@ -15,6 +15,7 @@ import { TableIcon } from './common';
 import { useAsyncState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { getAttribute } from '../parseformcells';
 
 type Entry = {
   iconName: keyof Tables | undefined;
@@ -34,10 +35,10 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
   // I don't think the non-sidebar items are ever used in Sp6.
   const views: RA<Element> = Array.from(
     data.getElementsByTagName('view')
-  ).filter((item) => item.getAttribute('sidebar') === 'true');
+  ).filter((item) => getAttribute(item, 'sideBar') === 'true');
   return Promise.all(
     views.map(async (view) =>
-      getView(view.getAttribute('view') ?? '').then<Entry>(
+      getView(getAttribute(view, 'view') ?? '').then<Entry>(
         (form: { readonly class: string }) => {
           const modelName = SpecifyModel.parseClassName(
             form.class
@@ -46,10 +47,10 @@ const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
 
           return {
             iconName:
-              (view.getAttribute('iconname') as keyof Tables | null) ??
+              (getAttribute(view, 'iconName') as keyof Tables | undefined) ??
               undefined,
             viewUrl: getResourceViewUrl(modelName),
-            title: view.getAttribute('title') ?? '',
+            title: getAttribute(view, 'title') ?? '',
             model,
           };
         }

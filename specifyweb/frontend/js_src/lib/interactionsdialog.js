@@ -8,7 +8,6 @@ import Backbone from './backbone';
 import {ajax} from './ajax';
 import {getModel, schema} from './schema';
 import {getIcon} from './icons';
-import {getView} from './specifyform';
 import {userInformation} from './userinfo';
 import {InteractionDialog} from './components/interactiondialog';
 import * as s from './stringlocalization';
@@ -25,6 +24,7 @@ import {getResourceViewUrl} from './resource';
 import {className} from './components/basic';
 import createBackboneView from './components/reactbackboneextend';
 import {defined} from './types';
+import {getView} from './parseform';
 
 var interaction_entries, actions, isFulfilled=false;
 

@@ -16,12 +16,16 @@ import type { IR, RA } from './types';
  *  Phase out usages of SpecifyResource in favor of SerializedResource
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly toJSON: () => SerializedModel<AnySchema>;
   readonly id: number;
   readonly needsSaved: boolean;
   readonly cid: string;
-  get: <
+  /*
+   * Shorthand method signature is used to prevent
+   * https://github.com/microsoft/TypeScript/issues/48339
+   * More info: https://stackoverflow.com/a/55992840/8584605
+   */
+  /* eslint-disable @typescript-eslint/method-signature-style */
+  get<
     FIELD_NAME extends
       | keyof SCHEMA['fields']
       | keyof SCHEMA['toOneDependent']
@@ -38,7 +42,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       CommonFields)[FIELD_NAME]
   >(
     fieldName: FIELD_NAME
-  ) => [VALUE] extends [never]
+  ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
     ? VALUE extends null
@@ -48,7 +52,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     ? string
     : VALUE;
   // Case-insensitive fetch of a -to-one resource
-  rgetPromise: <
+  rgetPromise<
     FIELD_NAME extends
       | keyof SCHEMA['toOneDependent']
       | keyof SCHEMA['toOneIndependent'],
@@ -58,7 +62,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME,
     prePopulate?: boolean
-  ) => [VALUE] extends [never]
+  ): [VALUE] extends [never]
     ? never
     : Promise<
         VALUE extends AnySchema
@@ -66,7 +70,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
           : never | Exclude<VALUE, AnySchema>
       >;
   // Case-insensitive fetch of a -to-many resource
-  rgetCollection: <
+  rgetCollection<
     FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent']),
     VALUE extends (SCHEMA['toManyDependent'] &
@@ -74,8 +78,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME,
     prePopulate?: boolean
-  ) => Promise<Collection<VALUE[number]>>;
-  readonly set: <
+  ): Promise<Collection<VALUE[number]>>;
+  set<
     FIELD_NAME extends
       | keyof SCHEMA['fields']
       | keyof SCHEMA['toOneDependent']
@@ -112,56 +116,48 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
               | keyof SCHEMA['toManyIndependent']
               ? string
               : never)
-  ) => SpecifyResource<SCHEMA>;
-  getDependentResource: (<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
+  ): SpecifyResource<SCHEMA>;
+  getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME
-  ) =>
+  ):
     | SpecifyResource<Exclude<SCHEMA['toOneDependent'][FIELD_NAME], null>>
-    | undefined) &
-    (<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
-      fieldName: FIELD_NAME
-    ) => Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined);
+    | undefined;
+  getDependentResource<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
+    fieldName: FIELD_NAME
+  ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   readonly noValidation?: boolean;
-  readonly save: () => Promise<void>;
-  readonly fetchPromise: () => Promise<SpecifyResource<SCHEMA>>;
+  save(): Promise<void>;
+  fetchPromise(): Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;
-  readonly destroy: () => Promise<void>;
-  readonly viewUrl: () => string;
+  destroy(): Promise<void>;
+  viewUrl(): string;
+  isNew(): boolean;
+  clone(): SpecifyResource<SCHEMA>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly Resource: new () => SpecifyResource<SCHEMA>;
-  readonly isNew: () => boolean;
-  readonly clone: () => SpecifyResource<SCHEMA>;
-  readonly getRelatedObjectCount: (
+  toJSON(): SerializedModel<AnySchema>;
+  getRelatedObjectCount(
     fieldName:
       | (string & keyof SCHEMA['toManyDependent'])
       | (string & keyof SCHEMA['toManyIndependent'])
-  ) => Promise<number | undefined>;
+  ): Promise<number | undefined>;
   readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
-  readonly format: () => Promise<string>;
-  readonly url: () => string;
+  format(): Promise<string>;
+  url(): string;
   recordsetid?: number;
   noBusinessRules: boolean;
-  readonly placeInSameHierarchy: (resource: SpecifyResource<AnySchema>) => void;
+  placeInSameHierarchy(resource: SpecifyResource<AnySchema>): void;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;
   };
-  readonly on: (
-    eventName: string,
-    callback: (...args: RA<never>) => void
-  ) => void;
-  readonly once: (
-    eventName: string,
-    callback: (...args: RA<never>) => void
-  ) => void;
-  readonly off: (
-    eventName?: string,
-    callback?: (...args: RA<never>) => void
-  ) => void;
-  readonly trigger: (eventName: string, ...args: RA<unknown>) => void;
+  on(eventName: string, callback: (...args: RA<never>) => void): void;
+  once(eventName: string, callback: (...args: RA<never>) => void): void;
+  off(eventName?: string, callback?: (...args: RA<never>) => void): void;
+  trigger(eventName: string, ...args: RA<unknown>): void;
   readonly businessRuleMgr: {
     readonly pending: Promise<void>;
-    readonly checkField: (fieldName: string) => Promise<void>;
+    checkField(fieldName: string): Promise<void>;
   };
+  /* eslint-enable @typescript-eslint/method-signature-style */
 };

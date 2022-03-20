@@ -7,7 +7,6 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import type { UiPlugins } from '../parseuiplugins';
-import { isResourceOfType } from '../specifymodel';
 import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
@@ -25,6 +24,9 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
+import { FieldTypes } from '../parseformfields';
+import { f } from '../wbplanviewhelper';
+import { toTable } from '../specifymodel';
 
 function WrongTable({
   resource,
@@ -67,13 +69,19 @@ const pluginRenderers: {
   }) => JSX.Element;
 } = {
   UserCollectionsUI({ resource }) {
-    return isResourceOfType(resource, 'SpecifyUser') ? (
-      <UserCollectionsPlugin resource={resource} />
-    ) : (
-      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    return (
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+        <UserCollectionsPlugin resource={specifyUser} />
+      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
-  LatLonUI: LatLongUi,
+  LatLonUI({ resource, mode, id }) {
+    return (
+      f.maybe(toTable(resource, 'Locality'), (locality) => (
+        <LatLongUi resource={locality} mode={mode} id={id} />
+      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
+    );
+  },
   PartialDateUI: ({
     id,
     resource,
@@ -113,17 +121,17 @@ const pluginRenderers: {
       );
       return <></>;
     }
-    return isResourceOfType(resource, 'CollectionObject') ? (
-      resource.isNew() ? (
-        <></>
-      ) : (
-        <CollectionOneToManyPlugin
-          resource={resource}
-          relationship={relationship}
-        />
-      )
-    ) : (
-      <WrongTable resource={resource} allowedTable="CollectionObject" />
+    return (
+      f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
+        collectionObject.isNew() ? (
+          <></>
+        ) : (
+          <CollectionOneToManyPlugin
+            resource={collectionObject}
+            relationship={relationship}
+          />
+        )
+      ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
     );
   },
   ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
@@ -133,24 +141,24 @@ const pluginRenderers: {
       );
       return <></>;
     }
-    return isResourceOfType(resource, 'CollectionObject') ? (
-      resource.isNew() ? (
-        <></>
-      ) : (
-        <CollectionOneToOnePlugin
-          resource={resource}
-          relationship={relationship}
-        />
-      )
-    ) : (
-      <WrongTable resource={resource} allowedTable="CollectionObject" />
+    return (
+      f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
+        collectionObject.isNew() ? (
+          <></>
+        ) : (
+          <CollectionOneToOnePlugin
+            resource={collectionObject}
+            relationship={relationship}
+          />
+        )
+      ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
     );
   },
   LocalityGeoRef({ resource }) {
-    return isResourceOfType(resource, 'Locality') ? (
-      <GeoLocatePlugin resource={resource} />
-    ) : (
-      <WrongTable resource={resource} allowedTable="Locality" />
+    return (
+      f.maybe(toTable(resource, 'Locality'), (locality) => (
+        <GeoLocatePlugin resource={locality} />
+      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
     );
   },
   WebLinkButton({
@@ -209,37 +217,37 @@ const pluginRenderers: {
       );
   },
   PasswordUI({ resource }) {
-    return isResourceOfType(resource, 'SpecifyUser') ? (
-      <PasswordPlugin user={resource} />
-    ) : (
-      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    return (
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+        <PasswordPlugin user={specifyUser} />
+      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   UserAgentsUI({ resource, mode, formType, id, isRequired }) {
-    return isResourceOfType(resource, 'SpecifyUser') ? (
-      <UserAgentsPlugin
-        user={resource}
-        id={id}
-        mode={mode}
-        formType={formType}
-        isRequired={isRequired}
-      />
-    ) : (
-      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    return (
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+        <UserAgentsPlugin
+          user={specifyUser}
+          id={id}
+          mode={mode}
+          formType={formType}
+          isRequired={isRequired}
+        />
+      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   AdminStatusUI({ resource, mode, id }) {
-    return isResourceOfType(resource, 'SpecifyUser') ? (
-      <AdminStatusPlugin user={resource} id={id} mode={mode} />
-    ) : (
-      <WrongTable resource={resource} allowedTable="SpecifyUser" />
+    return (
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+        <AdminStatusPlugin user={specifyUser} id={id} mode={mode} />
+      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   LocalityGoogleEarth({ resource, id }) {
-    return isResourceOfType(resource, 'Locality') ? (
-      <LeafletPlugin locality={resource} id={id} />
-    ) : (
-      <WrongTable resource={resource} allowedTable="Locality" />
+    return (
+      f.maybe(toTable(resource, 'Locality'), (locality) => (
+        <LeafletPlugin locality={locality} id={id} />
+      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
@@ -270,27 +278,28 @@ export function UiPlugin({
   id,
   resource,
   mode,
-  pluginDefinition,
+  fieldDefinition,
   fieldName,
   formType,
   isRequired,
 }: {
-  readonly id: string;
+  readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
-  readonly pluginDefinition: UiPlugins[keyof UiPlugins];
+  readonly fieldDefinition: FieldTypes['Plugin'];
   readonly fieldName: string | undefined;
   readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element {
   return (
     pluginRenderers[
-      pluginDefinition.type
+      fieldDefinition.pluginDefinition.type
     ] as typeof pluginRenderers.AttachmentPlugin
   )({
     id,
     resource,
-    pluginDefinition: pluginDefinition as UiPlugins['AttachmentPlugin'],
+    pluginDefinition:
+      fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin'],
     fieldName,
     formType,
     mode,

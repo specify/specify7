@@ -1,17 +1,17 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import type { CollectionObject, Locality } from '../datamodel';
+import type { Locality } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { isResourceOfType } from '../specifymodel';
 import { filterArray } from '../types';
 import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { toTable, toTables } from '../specifymodel';
 
 type States =
   | State<'MainState'>
@@ -109,47 +109,62 @@ export function PaleoLocationMapPlugin({
   );
 }
 
-async function fetchPaleoData(
+const fetchPaleoData = async (
   resource: SpecifyResource<AnySchema>
-): Promise<States> {
-  const locality: SpecifyResource<Locality> | undefined | 'InvalidTableState' =
-    isResourceOfType(resource, 'Locality')
-      ? resource
-      : isResourceOfType(resource, 'CollectingEvent')
-      ? await resource.rgetPromise('locality', true)
-      : isResourceOfType(resource, 'CollectionObject')
-      ? await (resource as SpecifyResource<CollectionObject>)
-          .rgetPromise('collectingEvent')
-          .then((collectingEvent) =>
-            collectingEvent?.rgetPromise('locality', true)
-          )
-      : 'InvalidTableState';
-  if (locality === 'InvalidTableState') return { type: 'InvalidTableState' };
+): Promise<States> =>
+  f.maybe(
+    toTables(resource, ['Locality', 'CollectionObject', 'CollectingEvent']),
+    async (resource) => {
+      const locality:
+        | SpecifyResource<Locality>
+        | undefined
+        | 'InvalidTableState' =
+        toTable(resource, 'Locality') ??
+        (await f.maybe(
+          toTable(resource, 'CollectingEvent'),
+          async (collectingEvent) =>
+            collectingEvent.rgetPromise('locality', true)
+        )) ??
+        (await f.maybe(
+          toTable(resource, 'CollectionObject'),
+          (collectionObject) =>
+            collectionObject
+              .rgetPromise('collectingEvent')
+              .then((collectingEvent) =>
+                collectingEvent?.rgetPromise('locality', true)
+              )
+        )) ??
+        'InvalidTableState';
+      if (locality === 'InvalidTableState')
+        return { type: 'InvalidTableState' };
 
-  const latitude = locality?.get('latitude1') ?? undefined;
-  const longitude = locality?.get('longitude1') ?? undefined;
+      const latitude = locality?.get('latitude1') ?? undefined;
+      const longitude = locality?.get('longitude1') ?? undefined;
 
-  if (typeof latitude === 'undefined' || typeof longitude === 'undefined')
-    return { type: 'NoDataState' };
+      if (typeof latitude === 'undefined' || typeof longitude === 'undefined')
+        return { type: 'NoDataState' };
 
-  /*
-   * Because the paleo context is related directly to each of the possible forms in the same way
-   * we can treat the retrieval of the age in the same all for all forms.
-   */
-  const chronosStrat = await (resource as SpecifyResource<Locality>)
-    .rgetPromise('paleoContext')
-    .then((paleoContext) => paleoContext?.rgetPromise('chronosStrat', true));
-  const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
-  const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
+      /*
+       * Because the paleo context is related directly to each of the possible forms in the same way
+       * we can treat the retrieval of the age in the same all for all forms.
+       */
+      const chronosStrat = await resource
+        .rgetPromise('paleoContext')
+        .then((paleoContext) =>
+          paleoContext?.rgetPromise('chronosStrat', true)
+        );
+      const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
+      const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
 
-  // Calculate the mid-point of the age if possible
-  const periods = filterArray([startPeriod, endPeriod]);
-  return periods.length === 0
-    ? { type: 'NoDataState' }
-    : {
-        type: 'LoadedState',
-        latitude,
-        longitude,
-        age: f.sum(periods) / periods.length,
-      };
-}
+      // Calculate the mid-point of the age if possible
+      const periods = filterArray([startPeriod, endPeriod]);
+      return periods.length === 0
+        ? { type: 'NoDataState' }
+        : {
+            type: 'LoadedState',
+            latitude,
+            longitude,
+            age: f.sum(periods) / periods.length,
+          };
+    }
+  ) ?? { type: 'InvalidTableState' };

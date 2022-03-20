@@ -193,7 +193,7 @@ export function RecordSetsDialog({
         dialog="modal"
         resource={state.recordSet}
         mode={isReadOnly ? 'edit' : 'view'}
-        onDelete={undefined}
+        onDeleted={undefined}
         onSaved={(): void =>
           navigation.go(
             getResourceViewUrl(
@@ -206,6 +206,8 @@ export function RecordSetsDialog({
         deletionMessage={formsText('recordSetDeletionWarning')(
           state.recordSet.get('name')
         )}
+        canAddAnother={true}
+        isSubForm={false}
         extraButtons={
           <>
             <span className="flex-1 -ml-2" />

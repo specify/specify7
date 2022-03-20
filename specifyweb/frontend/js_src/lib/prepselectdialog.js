@@ -195,7 +195,7 @@ export default PrepDialog.extend({
             for (var p=0; p < amounts.length; p++) {
                 amounts[p].value = this.options.preps[p].available ;
                 chks[p].checked = (this.options.preps[p].available  > 0);
-            };
+            }
         },
 
         deSelectAll: function() {
@@ -224,9 +224,9 @@ export default PrepDialog.extend({
                     mode: userInformation.isReadOnly ? 'edit' : 'view',
                     dialog: 'nonModal',
                     canAddAnother: true,
-                    onSaved: undefined,
-                    onDelete: undefined,
                     onClose: ()=>this.dialog.remove(),
+                    onSaved: undefined,
+                    onDeleted: undefined,
                     isSubForm: false,
                 }).render();
             });

@@ -189,9 +189,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   deletionMessage,
   dialog = false,
   onSaving: handleSaving,
-  onSaved: handleSaved,
-  onDeleted: handleDeleted,
   onClose: handleClose,
+  onSaved: handleSaved = handleClose,
+  onDeleted: handleDeleted = handleClose,
   children,
   mode,
   viewName,
@@ -226,8 +226,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   function handleDelete(): void {
     setDeleted();
-    handleDeleted?.();
-    handleClose();
+    handleDeleted();
   }
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
@@ -258,20 +257,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   <DeleteButton
                     model={resource}
                     deletionMessage={deletionMessage}
-                    onDeleted={(): void => {
-                      handleDelete();
-                      handleClose();
-                    }}
+                    onDeleted={handleDelete}
                   />
                 ) : undefined}
                 {extraButtons}
                 {saveButton?.({
                   canAddAnother,
                   onSaving: handleSaving,
-                  onSaved(payload) {
-                    handleSaved?.(payload);
-                    handleClose();
-                  },
+                  onSaved: handleSaved,
                 })}
               </FormFooter>
             </>

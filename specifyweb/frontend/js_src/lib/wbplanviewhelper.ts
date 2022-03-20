@@ -202,7 +202,7 @@ export const omit = <
 } =>
   // @ts-expect-error
   Object.fromEntries(
-    Object.entries(object).filter(([key]) => !toOmit.includes(key as OMIT))
+    Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
   );
 
 export const clamp = (min: number, max: number, value: number) =>
@@ -267,10 +267,34 @@ export const f = {
    * If need to support internationalization, consider using localeCompare
    *
    * Example of case-insensitive comparison:
+   * ```js
    * a.localeCompare(b, LANGUAGE, { sensitivity: 'base' })
+   * ```
    */
   looseEqual:
     (value: string) =>
     (secondValue: string): boolean =>
       value.toString() == secondValue.toLowerCase(),
+  /**
+   * Call the second argument with the first if not undefined.
+   * Else return undefined
+   * Can replace undefined case with an alternative branch using nullish
+   * coalescing operator:
+   * ```js
+   * f.maybe(undefinedOrNot, calledOnNotUndefined) ?? calledOnUndefined()
+   * ```
+   */
+  maybe: <VALUE, RETURN>(
+    value: VALUE | undefined,
+    callback: (value: VALUE) => RETURN
+  ): RETURN | undefined =>
+    typeof value === 'undefined' ? undefined : callback(value),
+  /**
+   * A better typed version of Array.prototype.includes
+   *
+   * It allows first argument to be of any type, but if value is present
+   * in the array, its type is changed using a type predicate
+   */
+  includes: <T>(array: RA<T>, item: unknown): item is T =>
+    array.includes(item as T),
 } as const;

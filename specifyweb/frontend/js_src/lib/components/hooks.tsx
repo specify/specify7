@@ -205,10 +205,10 @@ export function useUnloadProtect(
     callback();
     setCallback(undefined);
   }
-  return (isEnabled, callback) => {
+  return React.useCallback((isEnabled, callback) => {
     setHasUnloadProtect(isEnabled);
     setCallback(callback);
-  };
+  }, []);
 }
 
 /**

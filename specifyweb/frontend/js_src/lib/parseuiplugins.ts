@@ -62,7 +62,6 @@ export type UiPlugins = {
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
     readonly properties: IR<string | undefined>;
-    readonly name: string | undefined;
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
@@ -103,19 +102,20 @@ const processUiPlugin: {
   AdminStatusUI: () => ({ type: 'AdminStatusUI' }),
   LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
   PaleoMap: () => ({ type: 'PaleoMap' }),
-  Unsupported: ({ name }) => ({ type: 'Unsupported', name }),
+  Unsupported: ({ properties }) => ({
+    type: 'Unsupported',
+    name: properties.name,
+  }),
 };
 
 export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
-  cell: Element,
   properties: IR<string | undefined>,
   defaultValue: string | undefined
 ): PluginDefinition {
-  const name = cell.getAttribute('name') ?? undefined;
   const uiCommand =
-    processUiPlugin[(name ?? '') as keyof UiPlugins] ??
+    processUiPlugin[(properties.name ?? '') as keyof UiPlugins] ??
     processUiPlugin.Unsupported;
-  return uiCommand({ properties, name, defaultValue });
+  return uiCommand({ properties, defaultValue });
 }

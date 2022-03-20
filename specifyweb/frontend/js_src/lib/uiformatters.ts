@@ -3,6 +3,7 @@ import { load } from './initialcontext';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
+import { getAttribute } from './parseformcells';
 
 export let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
@@ -28,25 +29,26 @@ export const fetchContext = load<Document>(
             Array.from(formatter.getElementsByTagName('field'), (field) => {
               const FieldClass =
                 fieldMapper[
-                  (field.getAttribute('type') ?? '') as keyof typeof fieldMapper
+                  (getAttribute(field, 'type') ??
+                    '') as keyof typeof fieldMapper
                 ];
               if (typeof FieldClass === 'undefined') return undefined;
               return new FieldClass({
-                size: Number.parseInt(field.getAttribute('size') ?? '1'),
-                value: field.getAttribute('value') ?? ' ',
-                autoIncrement: field.getAttribute('inc') === 'true',
-                byYear: field.getAttribute('byyear') === 'true',
-                pattern: field.getAttribute('pattern') ?? '',
+                size: Number.parseInt(getAttribute(field, 'size') ?? '1'),
+                value: getAttribute(field, 'value') ?? ' ',
+                autoIncrement: getAttribute(field, 'inc') === 'true',
+                byYear: getAttribute(field, 'byYear') === 'true',
+                pattern: getAttribute(field, 'pattern') ?? '',
               });
             })
           );
           resolvedFormatter = new UiFormatter(
-            formatter.getAttribute('system') === 'true',
+            getAttribute(formatter, 'system') === 'true',
             fields
           );
         }
 
-        return [formatter.getAttribute('name') ?? '', resolvedFormatter];
+        return [getAttribute(formatter, 'name') ?? '', resolvedFormatter];
       })
     )
   );

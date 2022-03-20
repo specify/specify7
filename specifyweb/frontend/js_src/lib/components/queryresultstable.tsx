@@ -23,10 +23,10 @@ import { Button, Container } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog } from './modaldialog';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { removeItem } from './wbplanviewstate';
+import { userInformation } from '../userinfo';
 
 function TableHeaderCell({
   fieldSpec,
@@ -115,26 +115,26 @@ function ViewRecords({
       <Button.Simple onClick={handleOpen} disabled={results.length === 0}>
         {commonText('viewRecords')}
       </Button.Simple>
-      <Dialog
-        isOpen={isOpen}
-        header={model.label}
-        buttons={commonText('close')}
-        onClose={handleClose}
-      >
-        {isOpen && (
-          <RecordSelectorFromIds
-            totalCount={totalCount}
-            ids={ids}
-            defaultIndex={0}
-            model={model}
-            onAdd={undefined}
-            onDelete={handleDelete}
-            onSlide={(index): void =>
-              index === ids.length - 1 ? handleFetchMore?.() : undefined
-            }
-          />
-        )}
-      </Dialog>
+      {isOpen && (
+        <RecordSelectorFromIds
+          totalCount={totalCount}
+          ids={ids}
+          defaultIndex={0}
+          model={model}
+          onAdd={undefined}
+          onDelete={handleDelete}
+          onSlide={(index): void =>
+            index === ids.length - 1 ? handleFetchMore?.() : undefined
+          }
+          dialog="modal"
+          onClose={handleClose}
+          onSaved={f.void}
+          isDependent={false}
+          title={undefined}
+          mode={userInformation.isReadOnly ? 'view' : 'edit'}
+          canAddAnother={false}
+        />
+      )}
     </>
   );
 }

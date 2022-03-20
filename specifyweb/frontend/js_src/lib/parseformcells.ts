@@ -13,6 +13,7 @@ import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
+import { f } from './wbplanviewhelper';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -64,6 +65,7 @@ export type CellTypes = {
       formType: FormType;
       isButton: boolean;
       icon: string | undefined;
+      viewName: string | undefined;
     }
   >;
   readonly Panel: State<'Panel', ParsedFormDefinition>;
@@ -83,6 +85,10 @@ export type CellTypes = {
 
 export const cellAlign = ['left', 'center', 'right'] as const;
 
+/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
+export const getAttribute = (cell: Element, name: string): string | undefined =>
+  cell.getAttribute(name.toLowerCase()) ?? undefined;
+
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: Element;
@@ -91,7 +97,7 @@ const processCellType: {
   }) => CellTypes[KEY];
 } = {
   Field({ cell, model, properties }) {
-    const rawFieldName = cell.getAttribute('name')?.replace(
+    const rawFieldName = getAttribute(cell, 'name')?.replace(
       // Hack for QueryComboBox search fields that have spurious prefixes.
       /^(\w+\.)*/,
       ''
@@ -102,25 +108,25 @@ const processCellType: {
       fieldName: field?.name ?? rawFieldName,
       fieldDefinition: parseFormCell(cell, properties),
       isRequired:
-        cell.getAttribute('isRequired')?.toLowerCase() === 'true' ||
+        getAttribute(cell, 'isRequired')?.toLowerCase() === 'true' ||
         field?.isRequiredBySchemaLocalization() ||
         false,
     };
   },
   Label: ({ cell }) => ({
     type: 'Label',
-    text: cell.getAttribute('label') ?? undefined,
-    labelForCellId: cell.getAttribute('labelFor') ?? '',
+    text: getAttribute(cell, 'label'),
+    labelForCellId: getAttribute(cell, 'labelFor') ?? '',
     // This would be set in postProcessRows
     fieldName: undefined,
   }),
   Separator: ({ cell }) => ({
     type: 'Separator',
-    label: cell.getAttribute('label') ?? undefined,
+    label: getAttribute(cell, 'label'),
   }),
   SubView({ cell, model, properties }) {
-    const rawFieldName = cell.getAttribute('name') ?? undefined;
-    const formType = cell.getAttribute('defaultType') ?? '';
+    const rawFieldName = getAttribute(cell, 'name');
+    const formType = getAttribute(cell, 'defaultType') ?? '';
     return {
       type: 'SubView',
       formType:
@@ -128,6 +134,7 @@ const processCellType: {
           (type) => type.toLowerCase() === formType.toLowerCase()
         ) ?? 'form',
       fieldName: model?.getField(rawFieldName ?? '')?.name,
+      viewName: getAttribute(cell, 'viewName'),
       isButton: properties.btn?.toLowerCase() === 'true',
       icon: properties.icon,
     };
@@ -142,7 +149,7 @@ const processCellType: {
   }),
   Unsupported: ({ cell }) => ({
     type: 'Unsupported',
-    cellType: cell.getAttribute('type') ?? undefined,
+    cellType: getAttribute(cell, 'type'),
   }),
 };
 
@@ -172,23 +179,20 @@ export function parseFormCellDefinition(
   model: SpecifyModel | undefined,
   cellNode: Element
 ): FormCellDefinition {
-  const cellClass = cellNode.getAttribute('type') ?? '';
+  const cellClass = getAttribute(cellNode, 'type') ?? '';
   const parsedCell =
     processCellType[cellTypeTranslation[cellClass.toLowerCase()]] ??
     processCellType.Unsupported;
   const properties = parseSpecifyProperties(
-    cellNode.getAttribute('initialize') ?? ''
+    getAttribute(cellNode, 'initialize') ?? ''
   );
-  const colSpan = Number.parseInt(cellNode.getAttribute('colspan') ?? '');
+  const colSpan = Number.parseInt(getAttribute(cellNode, 'colspan') ?? '');
+  const align = properties.align?.toLowerCase();
   return {
     // FIXME: set as aria-labeledby
-    id: cellNode.getAttribute('id') ?? undefined,
+    id: getAttribute(cellNode, 'id'),
     colSpan: Number.isNaN(colSpan) ? undefined : Math.ceil(colSpan / 2),
-    align: cellAlign.includes(
-      properties.align?.toLowerCase() as typeof cellAlign[number]
-    )
-      ? (properties.align?.toLowerCase() as typeof cellAlign[number])
-      : 'left',
+    align: f.includes(cellAlign, align) ? align : 'left',
     ...parsedCell({ cell: cellNode, model, properties }),
   };
 }

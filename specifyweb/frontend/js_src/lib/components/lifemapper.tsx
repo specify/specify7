@@ -17,13 +17,14 @@ import {
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { getBoolPref } from '../remoteprefs';
-import { isResourceOfType } from '../specifymodel';
+import { toTable } from '../specifymodel';
 import { systemInformation } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
+import { f } from '../wbplanviewhelper';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -141,12 +142,14 @@ function SpecifyNetwork({
   const [hasFailure, handleFailure, handleNoFailure] = useBooleanState();
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
-  React.useEffect(() => {
-    if (isResourceOfType(resource, 'CollectionObject'))
-      fetchOccurrenceName(resource)
-        .then(setOccurrenceName)
-        .catch(console.error);
-  }, [resource]);
+  React.useEffect(
+    () =>
+      void f
+        .maybe(toTable(resource, 'CollectionObject'), fetchOccurrenceName)
+        ?.then(setOccurrenceName)
+        .catch(console.error),
+    [resource]
+  );
 
   const messageHandler = React.useCallback(
     (event: MessageEvent<IncomingMessage>): void => {
@@ -179,7 +182,7 @@ function SpecifyNetwork({
       </Dialog>
       <Link.Default
         href={formatLifemapperViewPageRequest(
-          (resource as SpecifyResource<CollectionObject>).get('guid') ?? '',
+          toTable(resource, 'CollectionObject')?.get('guid') ?? '',
           occurrenceName
         )}
         target="_blank"

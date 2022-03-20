@@ -2,6 +2,7 @@ import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
 import type {
   AnySchema,
+  AnyTree,
   CommonFields,
   SerializedModel,
   SerializedResource,
@@ -20,7 +21,8 @@ import {
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
-import { camelToHuman } from './wbplanviewhelper';
+import { camelToHuman, f } from './wbplanviewhelper';
+import { isTreeResource } from './treedefinitions';
 
 type FieldAlias = {
   readonly vname: string;
@@ -65,36 +67,35 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly field?: Relationship;
   readonly related?: SpecifyResource<AnySchema>;
   readonly _totalCount?: number;
-  readonly getTotalCount: () => Promise<number>;
-  readonly toJSON: <V extends IR<unknown>>() => RA<V>;
   readonly models: RA<SpecifyResource<SCHEMA>>;
-  readonly isComplete: () => boolean;
   readonly model: {
     readonly specifyModel: SpecifyModel<SCHEMA>;
   };
-  readonly add: (resource: SpecifyResource<SCHEMA>) => void;
-  readonly remove: (resource: SpecifyResource<SCHEMA>) => void;
-  readonly fetchPromise: (filter?: {
+  /*
+   * Shorthand method signature is used to prevent
+   * https://github.com/microsoft/TypeScript/issues/48339
+   * More info: https://stackoverflow.com/a/55992840/8584605
+   */
+  /* eslint-disable @typescript-eslint/method-signature-style */
+  isComplete(): boolean;
+  getTotalCount(): Promise<number>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  toJSON<V extends IR<unknown>>(): RA<V>;
+  add(resource: SpecifyResource<SCHEMA>): void;
+  remove(resource: SpecifyResource<SCHEMA>): void;
+  fetchPromise(filter?: {
     readonly limit: number;
-  }) => Promise<Collection<SCHEMA>>;
-  readonly trigger: (eventName: string) => void;
-  readonly on: (
-    eventName: string,
-    callback: (...args: RA<never>) => void
-  ) => void;
-  readonly once: (
-    eventName: string,
-    callback: (...args: RA<never>) => void
-  ) => void;
-  readonly off: (
-    eventName?: string,
-    callback?: (...args: RA<never>) => void
-  ) => void;
+  }): Promise<Collection<SCHEMA>>;
+  trigger(eventName: string): void;
+  on(eventName: string, callback: (...args: RA<never>) => void): void;
+  once(eventName: string, callback: (...args: RA<never>) => void): void;
+  off(eventName?: string, callback?: (...args: RA<never>) => void): void;
+  /* eslint-enable @typescript-eslint/method-signature-style */
 };
 
 // TODO: tighten up schema field types (use literals / enums)
 export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
-  // Java classname of the Specify 6 ORM object.
+  /** Java classname of the Specify 6 ORM object */
   public readonly longName: string;
 
   public readonly name: SCHEMA['tableName'];
@@ -119,32 +120,56 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   private readonly fieldAliases: RA<FieldAlias>;
 
-  public readonly Resource: new (
-    props?: Partial<SerializedResource<SCHEMA> | SerializedModel<SCHEMA>>,
+  /**
+   * A Backbone model resource for accessing the API for items of this type.
+   *
+   * @remarks
+   * RESOURCE generic is needed as a workaround for
+   * https://github.com/microsoft/TypeScript/issues/48339
+   */
+  public readonly Resource: new <RESOURCE extends AnySchema = SCHEMA>(
+    props?: Partial<
+      | SerializedResource<RESOURCE>
+      | SerializedModel<RESOURCE>
+      /*
+       * Even though id is already a part of SerializedResource, for some reason
+       * I need to specify it again here
+       */
+      | { readonly id?: number }
+    >,
     options?: Partial<{
       readonly noBusinessRules: boolean;
       readonly noValidation: boolean;
     }>
-  ) => SpecifyResource<SCHEMA>;
+  ) => SpecifyResource<RESOURCE>;
 
+  /** A Backbone collection for lazy loading a collection of items of this type. */
   public readonly LazyCollection: CollectionConstructor<SCHEMA>;
 
+  /**
+   * A Backbone collection for loading a dependent collection of items of this
+   * type as a -to-many collection of some other resource.
+   */
   public readonly DependentCollection: CollectionConstructor<SCHEMA>;
 
+  /**
+   * A Backbone collection for loading a collection of items of this type as a
+   * backwards -to-one collection of some other resource.
+   */
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
-  // All table non-relationship fields
+  /** All table non-relationship fields */
   public literalFields: RA<LiteralField> = [];
 
-  // All table relationships
+  /** All table relationships */
   public relationships: RA<Relationship> = [];
 
-  // All table literal fields and relationships
+  /** All table literal fields and relationships */
   public fields: RA<LiteralField | Relationship> = [];
 
   public readonly localization: SchemaLocalization;
 
-  // Localized name from the schema localization
+  /** Localized name from the schema localization */
   public readonly label: string;
 
   public static parseClassName(className: string): string {
@@ -163,31 +188,21 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.isSystem = tableDefinition.system;
     this.fieldAliases = tableDefinition.fieldAliases;
 
-    // A Backbone model resource for accessing the API for items of this type.
     this.Resource = ResourceBase.extend(
       { __name__: `${this.name}Resource` },
       { specifyModel: this }
     );
 
-    // A Backbone collection for lazy loading a collection of items of this type.
     this.LazyCollection = collectionapi.Lazy.extend({
       __name__: `${this.name}LazyCollection`,
       model: this.Resource,
     });
 
-    /*
-     * A Backbone collection for loading a dependent collection of items of this type as a
-     * -to-many collection of some other resource.
-     */
     this.DependentCollection = collectionapi.Dependent.extend({
       __name__: `${this.name}DependentCollection`,
       model: this.Resource,
     });
 
-    /*
-     * A Backbone collection for loading a collection of items of this type as a backwards
-     * -to-one collection of some other resource.
-     */
     this.ToOneCollection = collectionapi.ToOne.extend({
       __name__: `${this.name}ToOneCollection`,
       model: this.Resource,
@@ -294,13 +309,29 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   }
 }
 
-// TODO: this won't be needed if typings were to be improved
-/** Checks if SpecifyResource has a desired table name and cast's its type */
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
+  // @ts-expect-error
 ): resource is SpecifyResource<Tables[TABLE_NAME]> =>
   resource.specifyModel.name === tableName;
+
+export const toTable = <TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableName: TABLE_NAME
+): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
+  resource.specifyModel.name === tableName ? resource : undefined;
+
+export const toTreeTable = (
+  resource: SpecifyResource<AnySchema>
+): SpecifyResource<AnyTree> | undefined =>
+  isTreeResource(resource) ? resource : undefined;
+
+export const toTables = <TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableNames: RA<TABLE_NAME>
+): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
+  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
 
 // If this is true, then you can use {domainfilter:true} when fetching that model
 export const hasHierarchyField = (model: SpecifyModel): boolean =>

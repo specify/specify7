@@ -365,11 +365,11 @@ export function AttachmentsView(): JSX.Element {
           resource={viewRecord}
           dialog="modal"
           onClose={(): void => setViewRecord(undefined)}
+          onDeleted={undefined}
+          onSaved={undefined}
           canAddAnother={false}
           isSubForm={false}
           mode={userInformation.isReadOnly ? 'edit' : 'view'}
-          onDeleted={undefined}
-          onSaved={undefined}
         />
       )}
     </Container.Full>

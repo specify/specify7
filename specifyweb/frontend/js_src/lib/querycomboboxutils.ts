@@ -7,8 +7,7 @@ import { idFromUrl } from './resource';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
-import { isResourceOfType } from './specifymodel';
-import { isTreeResource } from './treedefinitions';
+import { toTable, toTreeTable } from './specifymodel';
 import type { RA } from './types';
 import { userInformation } from './userinfo';
 
@@ -76,10 +75,11 @@ export function getQueryComboBoxConditions({
   readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: SpecifyResource<SpQueryField>[] = [];
-  if (isTreeResource(resource)) {
+  const treeResource = toTreeTable(resource);
+  if (typeof treeResource === 'object') {
     const tableId = resource.specifyModel.tableId;
     // Add not-a-descendant condition
-    if (!resource.isNew())
+    if (!treeResource.isNew())
       fields.push(
         QueryFieldSpec.fromStringId(`${tableId}..nodeNumber`, false)
           .toSpQueryField()
@@ -89,8 +89,8 @@ export function getQueryComboBoxConditions({
           .set(
             'startValue',
             [
-              resource.get('nodeNumber') ?? '',
-              resource.get('highestChildNodeNumber') ?? '',
+              treeResource.get('nodeNumber') ?? '',
+              treeResource.get('highestChildNodeNumber') ?? '',
             ].join(',')
           )
       );
@@ -101,7 +101,7 @@ export function getQueryComboBoxConditions({
         let rankIndex =
           treeData.treeRanks.findIndex(
             // "rankId" is the original value; not updated with unsaved changes
-            ({ rankId }) => rankId === resource.get('rankId')
+            ({ rankId }) => rankId === treeResource.get('rankId')
           ) + 1;
         if (rankIndex !== 0) {
           while (
@@ -173,9 +173,8 @@ export const getRelatedCollectionId = (
     ({ id }) =>
       id ===
       idFromUrl(
-        isResourceOfType(resource, 'CollectionRelationship')
-          ? resource.get('collectionRelType') ?? ''
-          : ''
+        toTable(resource, 'CollectionRelationship')?.get('collectionRelType') ??
+          ''
       )
   )?.collection;
 

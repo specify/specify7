@@ -5,6 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR } from './types';
+import { getAttribute } from './parseformcells';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -39,8 +40,8 @@ export type CommandDefinition = {
 };
 
 export function parseUiCommand(cell: Element): CommandDefinition {
-  const name = cell.getAttribute('name') ?? undefined;
-  const label = cell.getAttribute('label') ?? undefined;
+  const name = getAttribute(cell, 'name');
+  const label = getAttribute(cell, 'label');
   const uiCommand =
     processUiCommand[commandTranslation[name ?? '']] ??
     processUiCommand[commandTranslation[label ?? '']] ??

@@ -57,8 +57,7 @@ let eventListenerIsInitialized = false;
 
 /** Set's an event listener that runs commitToStorage before a page unload */
 function initialize(): void {
-  if (typeof addEventListener === 'function')
-    addEventListener('beforeunload', commitToStorage);
+  addEventListener?.('beforeunload', commitToStorage);
   eventListenerIsInitialized = true;
 }
 

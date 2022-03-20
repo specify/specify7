@@ -163,6 +163,13 @@ export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
   `${string}${ENDS_WITH}`
 >];
 
+export const resourceTypeEndsWith = <ENDS_WITH extends string>(
+  resource: SpecifyResource<AnySchema>,
+  endsWith: ENDS_WITH
+  // @ts-expect-error
+): resource is SpecifyResource<FilterTablesByEndsWith<ENDS_WITH>> =>
+  resource.specifyModel.name.endsWith(endsWith);
+
 /**
  * A record set information object attached to resources when fetched in a
  * context of a RecordSet (the recordset=<ID> GET parameter was passed when
@@ -257,7 +264,12 @@ function serializeModel<SCHEMA extends AnySchema>(
   tableName?: keyof Tables
 ): SerializedResource<SCHEMA> {
   const model = defined(
-    getModel(defined(tableName ?? parseResourceUrl(resource.resource_uri)?.[0]))
+    getModel(
+      defined(
+        tableName ??
+          parseResourceUrl(resource.resource_uri?.toString() ?? '')?.[0]
+      )
+    )
   );
   const fields = model.fields.map(({ name }) => name);
 
@@ -285,7 +297,12 @@ function serializeModel<SCHEMA extends AnySchema>(
           return [
             camelFieldName,
             Array.isArray(value)
-              ? value.map((value) => serializeModel(value, tableName))
+              ? value.map((value) =>
+                  serializeModel(
+                    value as unknown as SerializedModel<SCHEMA>,
+                    tableName
+                  )
+                )
               : serializeModel(value as SerializedModel<AnySchema>, tableName),
           ];
         } else return [camelFieldName, value];

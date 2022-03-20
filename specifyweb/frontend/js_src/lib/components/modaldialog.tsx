@@ -81,6 +81,7 @@ export function Dialog({
    * Using isOpen prop instead of conditional rendering is optional, but it
    * allows for smooth dialog close animation
    */
+  // TODO: consider getting rid of this
   isOpen = true,
   title: initialTitle,
   header,

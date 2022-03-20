@@ -177,7 +177,7 @@ export function GeoLocatePlugin({
 }: {
   readonly resource: SpecifyResource<Locality>;
 }): JSX.Element {
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   return (
     <>
       <Button.Simple onClick={handleToggle} aria-pressed={isOpen}>

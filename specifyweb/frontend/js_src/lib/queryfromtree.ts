@@ -1,6 +1,6 @@
 import { error } from './assert';
 import { createQuery } from './components/querytask';
-import type { SpQuery, SpQueryField } from './datamodel';
+import type { GeographyTreeDefItem, SpQuery, SpQueryField } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
@@ -144,9 +144,10 @@ export async function queryFromTree(
 
   query.set(
     'fields',
-    defaultFields[tree.name](nodeId, treeDefinitionItem.get('name')).map(
-      serializeResource
-    )
+    defaultFields[tree.name](
+      nodeId,
+      (treeDefinitionItem as SpecifyResource<GeographyTreeDefItem>).get('name')
+    ).map(serializeResource)
   );
 
   return query;

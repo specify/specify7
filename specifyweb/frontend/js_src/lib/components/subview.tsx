@@ -24,6 +24,7 @@ export function SubView({
   parentFormType,
   formType,
   isButton,
+  viewName = field.relatedModel.view,
   icon = parentResource.specifyModel.getIcon(),
 }: {
   readonly field: Relationship;
@@ -33,6 +34,7 @@ export function SubView({
   readonly formType: FormType;
   readonly isButton: boolean;
   readonly icon: string | undefined;
+  readonly viewName: string | undefined;
 }): JSX.Element {
   const [resourceUrl, setResourceUrl] = React.useState<string | null>('');
   React.useEffect(() => {
@@ -47,9 +49,9 @@ export function SubView({
     React.useCallback(() => {
       if (resourceUrl === '') return undefined;
       else if (relationshipIsToMany(field))
-        return parentResource.rgetPromise(field.name);
+        return parentResource.rgetCollection(field.name);
       else {
-        const resource = parentResource.rgetCollection(field.name);
+        const resource = parentResource.rgetPromise(field.name);
         const collection = (
           field.isDependent()
             ? new parentResource.specifyModel.DependentCollection({
@@ -64,7 +66,7 @@ export function SubView({
     }, [resourceUrl, parentResource, field])
   );
 
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   return (
     <SubViewContext.Provider value={field}>
       {isButton && (
@@ -81,6 +83,7 @@ export function SubView({
       )}
       {typeof collection === 'object' && (
         <IntegratedRecordSelector
+          viewName={viewName}
           formType={formType}
           dialog={isButton ? 'nonModal' : false}
           mode={field.isDependent() && initialMode !== 'view' ? 'edit' : 'view'}

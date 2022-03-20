@@ -172,9 +172,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [showDialog, _handleOpen, handleClose] = useBooleanState(
-    lineCount === 0
-  );
+  const [showDialog, _, handleClose] = useBooleanState(lineCount === 0);
 
   return (
     <Dialog

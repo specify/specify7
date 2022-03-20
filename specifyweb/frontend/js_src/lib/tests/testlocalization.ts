@@ -1,4 +1,4 @@
-/*
+/**
  *
  * Walks through front-end files in search of invalid usages of localization
  * keys.
@@ -18,6 +18,7 @@ import type {
 import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
 import type { IR, R } from '../types';
 import { filterArray } from '../types';
+import { f } from '../wbplanviewhelper';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');
@@ -145,9 +146,7 @@ type Dictionary = IR<Key>;
                     );
 
                   Object.keys(strings)
-                    .filter(
-                      (language) => !languages.includes(language as Language)
-                    )
+                    .filter((language) => !f.includes(languages, language))
                     .forEach((language) =>
                       warn(
                         [

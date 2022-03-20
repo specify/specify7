@@ -16,7 +16,7 @@ import {
 } from '../specifyapi';
 import type { LiteralField } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
-import { isResourceOfType } from '../specifymodel';
+import { toTable } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
@@ -49,7 +49,7 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
     readonly recordSets: RA<SpecifyResource<RecordSet>>;
   }>;
   readonly model: SpecifyModel<SCHEMA>;
-  readonly searchField: LiteralField;
+  readonly searchField: LiteralField | undefined;
   readonly onClose: () => void;
   readonly action: {
     readonly model: SpecifyModel;
@@ -74,9 +74,9 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
   >({ type: 'MainState' });
 
   const { parser, split, attributes } = React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField) ?? {});
+    const parser = pluralizeParser(resolveParser(searchField ?? {}) ?? {});
     // Determine which delimiters are allowed
-    const formatter = searchField.getUiFormatter();
+    const formatter = searchField?.getUiFormatter();
     const formatted =
       formatter?.fields.map((field) => field.value).join('') ?? '';
     const formatterHasSpaces = formatted.includes(' ');
@@ -162,10 +162,10 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
         const itemModelName = `${interactionResource.specifyModel.name}Preparation`;
         const itemModel = defined(getModel(itemModelName));
         const item = new itemModel.Resource();
-        if (isResourceOfType(item, 'LoanPreparation')) {
-          item.set('quantityReturned', 0);
-          item.set('quantityResolved', 0);
-        }
+        f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
+          loanPreparation.set('quantityReturned', 0);
+          loanPreparation.set('quantityResolved', 0);
+        });
         itemCollection?.add(item);
       } else showPrepSelectDlg(prepsData, formatProblems(prepsData, missing));
     } else showPrepSelectDlg(prepsData, {});
@@ -253,12 +253,10 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
             {children}
           </details>
           <details>
-            <summary>{formsText('entryCaption')(searchField.label)}</summary>
+            <summary>
+              {formsText('entryCaption')(searchField?.label ?? '')}
+            </summary>
             <Textarea
-              /*
-               * I-action-entry
-               * OnInput this.$('button[type=i-snag-snub]').remove();
-               */
               spellCheck={false}
               value={catalogNumbers}
               onValueChange={setCatalogNumbers}

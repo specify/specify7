@@ -16,8 +16,8 @@ export type Language = typeof languages[number];
 export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =
   (typeof document === 'object' &&
-  languages.includes(document.documentElement.lang as Language)
-    ? (document.documentElement.lang as Language)
+  f.includes(languages, document.documentElement.lang)
+    ? document.documentElement.lang
     : undefined) ?? DEFAULT_LANGUAGE;
 
 type Line = string | JSX.Element;

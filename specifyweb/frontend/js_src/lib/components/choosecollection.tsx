@@ -42,9 +42,13 @@ function ChooseCollection({
 
   // Focus submit button if some collection is selected by default
   const submitRef = React.useRef<HTMLInputElement | null>(null);
-  React.useEffect(() => {
-    if (typeof data.initialValue === 'string') submitRef.current?.focus();
-  }, [data.initialValue]);
+  React.useEffect(
+    () =>
+      typeof data.initialValue === 'string'
+        ? void submitRef.current?.focus()
+        : undefined,
+    [data.initialValue]
+  );
 
   return (
     <SplashScreen>

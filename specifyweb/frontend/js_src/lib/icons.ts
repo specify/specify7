@@ -37,7 +37,7 @@ function findIconInXml(
   if (cycleDetect.includes(icon))
     throw new Error('Circular reference in icon definitions');
   const iconNode = xml.querySelector(`icon[name="${icon}"]`);
-  const alias = iconNode?.getAttribute('alias') ?? undefined;
+  const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])
     : iconNode ?? undefined;
@@ -45,8 +45,7 @@ function findIconInXml(
 
 export function getIcon(icon: string): string {
   for (const [group, xml] of Object.entries(iconGroups)) {
-    const iconFile =
-      findIconInXml(icon, xml)?.getAttribute('file') ?? undefined;
+    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
     if (typeof iconFile === 'string')
       return `${iconDirectories[group as IconGroup]}${iconFile}`;
   }

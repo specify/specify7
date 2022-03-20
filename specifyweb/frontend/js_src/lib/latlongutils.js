@@ -18,8 +18,7 @@ _.extend(Coord.prototype, {
             if (i > 0 && Math.abs(x) >= 60) return false;
         }
         const decDegs = this.toDegs();
-        if (Math.abs(decDegs._components[0]) > 180) return false;
-        return true;
+        return Math.abs(decDegs._components[0]) <= 180;
     },
     format() {
         return (this._sign < 0 ? "-" : "") + format(this._components);

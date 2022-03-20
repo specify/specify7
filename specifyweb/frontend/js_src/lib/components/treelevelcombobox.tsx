@@ -6,6 +6,8 @@ import { isTreeResource } from '../treedefinitions';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
+import { toTreeTable } from '../specifymodel';
+import { Geography } from '../datamodel';
 
 async function fetchPossibleRanks(
   lowestChildRank: number,
@@ -49,21 +51,32 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
-    const resource = props.model;
-    if (!isTreeResource(resource)) return undefined;
+    const resource = toTreeTable(props.model);
+    if (typeof resource === 'undefined') return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
     const handleFetch = (): void =>
       void resource
         .rgetPromise('parent')
         // Parent is undefined for root tree node
-        .then(async (parent) => parent?.rgetPromise('definitionItem', true))
+        .then(async (parent) =>
+          (parent as SpecifyResource<Geography> | undefined)?.rgetPromise(
+            'definitionItem',
+            true
+          )
+        )
         .then((treeDefinitionItem) =>
           typeof treeDefinitionItem === 'object'
             ? treeDefinitionItem
                 .rgetPromise('treeDef', true)
                 .then(async ({ id }) =>
                   lowestChildRank.then(async (rankId) =>
-                    fetchPossibleRanks(rankId, treeDefinitionItem, id)
+                    fetchPossibleRanks(
+                      rankId,
+                      treeDefinitionItem as SpecifyResource<
+                        FilterTablesByEndsWith<'TreeDefItem'>
+                      >,
+                      id
+                    )
                   )
                 )
             : []

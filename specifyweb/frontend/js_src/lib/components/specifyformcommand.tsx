@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
 import reports from '../reports';
-import { isResourceOfType } from '../specifymodel';
+import { toTable } from '../specifymodel';
+import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState } from './hooks';
@@ -79,27 +81,27 @@ const commandRenderers: {
   },
   ReturnLoan({ id, label, resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
-    if (!isResourceOfType(resource, 'Loan'))
-      throw new Error('LoanReturnCommand can only be used with Loan resources');
     return (
-      <>
-        <Button.Simple id={id} onClick={handleShow}>
-          {label}
-        </Button.Simple>
-        {showDialog ? (
-          resource.isNew() || !Boolean(resource.get('id')) ? (
-            <Dialog
-              header={label}
-              buttons={commonText('close')}
-              onClose={handleHide}
-            >
-              {formsText('preparationsCanNotBeReturned')}
-            </Dialog>
-          ) : (
-            <LoanReturn resource={resource} onClose={handleHide} />
-          )
-        ) : undefined}
-      </>
+      f.maybe(toTable(resource, 'Loan'), (loan) => (
+        <>
+          <Button.Simple id={id} onClick={handleShow}>
+            {label}
+          </Button.Simple>
+          {showDialog ? (
+            loan.isNew() || !Boolean(loan.get('id')) ? (
+              <Dialog
+                header={label}
+                buttons={commonText('close')}
+                onClose={handleHide}
+              >
+                {formsText('preparationsCanNotBeReturned')}
+              </Dialog>
+            ) : (
+              <LoanReturn resource={loan} onClose={handleHide} />
+            )
+          ) : undefined}
+        </>
+      )) ?? error('LoanReturnCommand can only be used with Loan resources')
     );
   },
   Unsupported({ commandDefinition: { name }, id }) {
@@ -136,10 +138,14 @@ export function UiCommand({
   readonly label: string | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
 }): JSX.Element {
-  return commandRenderers[commandDefinition.type]({
+  return (
+    commandRenderers[
+      commandDefinition.type
+    ] as typeof commandRenderers['GenerateLabel']
+  )({
     resource,
     id,
     label,
-    commandDefinition,
+    commandDefinition: commandDefinition as UiCommands['GenerateLabel'],
   });
 }

@@ -80,7 +80,7 @@ const cellRenderers: {
     resource,
     mode,
     formType: parentFormType,
-    cellData: { fieldName, formType, isButton, icon },
+    cellData: { fieldName, formType, isButton, icon, viewName },
   }) {
     const field = defined(
       resource.specifyModel.getRelationship(fieldName ?? '')
@@ -120,6 +120,7 @@ const cellRenderers: {
         formType={formType}
         parentResource={resource}
         field={field}
+        viewName={viewName}
         icon={icon}
       />
     ) : (
@@ -188,12 +189,12 @@ export function FormCell({
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type];
+  const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
     <Render
       resource={resource}
       mode={mode}
-      cellData={cellData}
+      cellData={cellData as CellTypes['Field']}
       id={id}
       formatId={formatId}
       formType={formType}

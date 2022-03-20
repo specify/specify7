@@ -15,6 +15,7 @@ import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
+import { isResourceOfType } from '../specifymodel';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -104,7 +105,7 @@ export function ComboBox({
 }): JSX.Element {
   const { resource, field, model } = props;
 
-  if (resource.specifyModel.name === 'PickList' && fieldName === 'fieldsCBX')
+  if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
     return (
       <PickListFieldComboBox
         {...props}
@@ -112,7 +113,7 @@ export function ComboBox({
       />
     );
   else if (
-    resource.specifyModel.name === 'PickList' &&
+    isResourceOfType(resource, 'PickList') &&
     fieldName === 'formatterCBX'
   )
     return (
@@ -125,7 +126,7 @@ export function ComboBox({
     return <TreeLevelComboBox {...props} />;
 
   const resolvedField =
-    resource.specifyModel.name === 'PickList' && fieldName === 'typesCBX'
+    isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
       ? defined(schema.models.PickList.getField('type'))
       : resource.specifyModel.name === 'PickList' && fieldName === 'tablesCBX'
       ? defined(schema.models.PickList.getField('tableName'))

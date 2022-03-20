@@ -25,8 +25,8 @@ import {
 import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
-import { isResourceOfType } from '../specifymodel';
-import { getTreeDefinitionItems, isTreeResource } from '../treedefinitions';
+import { toTable, toTreeTable } from '../specifymodel';
+import { getTreeDefinitionItems } from '../treedefinitions';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
@@ -41,6 +41,7 @@ import type { QueryComboBoxFilter } from './querycbxsearch';
 import { QueryComboBoxSearch } from './querycbxsearch';
 import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
+import { getAttribute } from '../parseformcells';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -73,60 +74,59 @@ export function QueryComboBox({
   const field = resource.specifyModel.getField(initialFieldName ?? '');
 
   React.useEffect(() => {
-    if (resource.isNew()) {
-      if (
-        isResourceOfType(resource, 'CollectionObject') &&
-        field?.name === 'cataloger'
-      )
-        resource.set('cataloger', userInformation.agent.resource_uri);
-      if (
-        isResourceOfType(resource, 'LoanReturnPreparation') &&
-        field?.name === 'receivedBy'
-      )
-        resource.set('receivedBy', userInformation.agent.resource_uri);
-    }
+    if (!resource.isNew()) return;
+    if (field?.name === 'cataloger')
+      toTable(resource, 'CollectionObject')?.set(
+        'cataloger',
+        userInformation.agent.resource_uri
+      );
+    if (field?.name === 'receivedBy')
+      toTable(resource, 'LoanReturnPreparation')?.set(
+        'receivedBy',
+        userInformation.agent.resource_uri
+      );
   }, [resource, field]);
 
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {
-      if (isTreeResource(resource)) {
-        if (field?.name == 'parent') {
-          let lowestChildRank: Promise<number | undefined>;
-          if (resource.isNew()) lowestChildRank = Promise.resolve(undefined);
-          else {
-            const children = new resource.specifyModel.LazyCollection({
-              filters: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                parent_id: resource.id,
-                orderby: 'rankId',
-              },
-            });
-            lowestChildRank = children
-              .fetchPromise({ limit: 1 })
-              .then(({ models }) => models[0]?.get('rankId'));
-          }
-          const treeRanks = defined(
-            getTreeDefinitionItems(resource.specifyModel.name, false)
-          ).map((rank) => ({
-            rankId: rank.rankId,
-            isEnforced: rank.isEnforced ?? false,
-          }));
-          return lowestChildRank.then((rank) => ({
-            lowestChildRank: rank,
-            treeRanks,
-          }));
-        } else if (field?.name == 'acceptedParent') {
-          // Don't need to do anything. Form system prevents lookups/edits
-        } else if (
-          field?.name == 'hybridParent1' ||
-          field?.name == 'hybridParent2'
-        ) {
-          /*
-           * No idea what restrictions there should be, the only obviously
-           * required one - that a taxon is not a hybrid of itself, seems to
-           * already be enforced
-           */
+      const treeResource = toTreeTable(resource);
+      if (typeof treeResource === 'undefined') return false;
+      if (field?.name == 'parent') {
+        let lowestChildRank: Promise<number | undefined>;
+        if (treeResource.isNew()) lowestChildRank = Promise.resolve(undefined);
+        else {
+          const children = new treeResource.specifyModel.LazyCollection({
+            filters: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              parent_id: treeResource.id,
+              orderby: 'rankId',
+            },
+          });
+          lowestChildRank = children
+            .fetchPromise({ limit: 1 })
+            .then(({ models }) => models[0]?.get('rankId'));
         }
+        const treeRanks = defined(
+          getTreeDefinitionItems(treeResource.specifyModel.name, false)
+        ).map((rank) => ({
+          rankId: rank.rankId,
+          isEnforced: rank.isEnforced ?? false,
+        }));
+        return lowestChildRank.then((rank) => ({
+          lowestChildRank: rank,
+          treeRanks,
+        }));
+      } else if (field?.name == 'acceptedParent') {
+        // Don't need to do anything. Form system prevents lookups/edits
+      } else if (
+        field?.name == 'hybridParent1' ||
+        field?.name == 'hybridParent2'
+      ) {
+        /*
+         * No idea what restrictions there should be, the only obviously
+         * required one — that a taxon is not a hybrid of itself, seems to
+         * already be enforced
+         */
       }
       return false;
     }, [resource, field])
@@ -135,33 +135,42 @@ export function QueryComboBox({
   const [collectionRelationships] = useAsyncState<
     CollectionRelationships | false
   >(
-    React.useCallback(() => {
-      if (!isResourceOfType(resource, 'CollectionRelationship')) return false;
-      const left = new schema.models.CollectionRelType.LazyCollection({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        filters: { leftsidecollection_id: schema.domainLevelIds.collection },
-      });
-      const right = new schema.models.CollectionRelType.LazyCollection({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        filters: { rightsidecollection_id: schema.domainLevelIds.collection },
-      });
-      return Promise.all([
-        left.fetchPromise().then(({ models }) =>
-          models.map((relationship) => ({
-            id: relationship.id,
-            collection: idFromUrl(
-              relationship.get('rightSideCollection') ?? ''
+    React.useCallback(
+      () =>
+        f.maybe(toTable(resource, 'CollectionRelationship'), async () => {
+          const left = new schema.models.CollectionRelType.LazyCollection({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            filters: {
+              leftsidecollection_id: schema.domainLevelIds.collection,
+            },
+          });
+          const right = new schema.models.CollectionRelType.LazyCollection({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            filters: {
+              rightsidecollection_id: schema.domainLevelIds.collection,
+            },
+          });
+          return Promise.all([
+            left.fetchPromise().then(({ models }) =>
+              models.map((relationship) => ({
+                id: relationship.id,
+                collection: idFromUrl(
+                  relationship.get('rightSideCollection') ?? ''
+                ),
+              }))
             ),
-          }))
-        ),
-        right.fetchPromise().then(({ models }) =>
-          models.map((relationship) => ({
-            id: relationship.id,
-            collection: idFromUrl(relationship.get('leftSideCollection') ?? ''),
-          }))
-        ),
-      ]).then(([left, right]) => ({ left, right }));
-    }, [resource])
+            right.fetchPromise().then(({ models }) =>
+              models.map((relationship) => ({
+                id: relationship.id,
+                collection: idFromUrl(
+                  relationship.get('leftSideCollection') ?? ''
+                ),
+              }))
+            ),
+          ]).then(([left, right]) => ({ left, right }));
+        }),
+      [resource]
+    )
   );
 
   const [typeSearch] = useAsyncState<TypeSearch | false>(
@@ -184,15 +193,16 @@ export function QueryComboBox({
               if (typeof relatedModel === 'undefined') return false;
 
               const searchFieldsNames =
-                typeSearch
-                  ?.getAttribute('searchField')
-                  ?.split(',')
-                  .map(f.trim)
-                  .map(
-                    typeof typeSearch?.textContent === 'string'
-                      ? columnToFieldMapper(typeSearch.textContent)
-                      : f.id
-                  ) ?? [];
+                typeSearch === null
+                  ? []
+                  : getAttribute(typeSearch, 'searchField')
+                      ?.split(',')
+                      .map(f.trim)
+                      .map(
+                        typeof typeSearch?.textContent === 'string'
+                          ? columnToFieldMapper(typeSearch.textContent)
+                          : f.id
+                      ) ?? [];
               const searchFields = searchFieldsNames.map((searchField) =>
                 defined(relatedModel.getField(searchField))
               );
@@ -541,10 +551,10 @@ export function QueryComboBox({
             dialog="nonModal"
             onClose={(): void => setState({ type: 'MainState' })}
             onSaved={undefined}
-            onDeleted={(): void =>
-              // @ts-expect-error Need to refactor this to use generics
-              void resource.set(defined(field?.name), null)
-            }
+            onDeleted={(): void => {
+              resource.set(defined(field?.name), null as never);
+              setState({ type: 'MainState' });
+            }}
             mode={mode}
           />
         ) : state.type === 'AddResourceState' ? (
@@ -554,10 +564,10 @@ export function QueryComboBox({
             canAddAnother={false}
             dialog="nonModal"
             onClose={(): void => setState({ type: 'MainState' })}
-            onSaved={(): void =>
-              // @ts-expect-error Need to refactor this to use generics
-              void resource.set(defined(field?.name), state.resource)
-            }
+            onSaved={(): void => {
+              resource.set(defined(field?.name), state.resource as never);
+              setState({ type: 'MainState' });
+            }}
             onDeleted={undefined}
             mode={mode}
           />

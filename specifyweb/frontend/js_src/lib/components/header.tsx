@@ -226,7 +226,7 @@ export function UserTools({
                   onClick={(event): void => {
                     if (typeof view === 'undefined') return;
                     event.preventDefault();
-                    setIsOpen(false);
+                    handleOpen();
                     const backboneView = view({
                       onClose: (): void => void backboneView.remove(),
                     });

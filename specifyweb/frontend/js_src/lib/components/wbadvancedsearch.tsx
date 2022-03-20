@@ -199,7 +199,7 @@ function WbAdvancedSearch({
   readonly initialSearchPreferences: SearchPreferences;
   readonly onChange: (newSearchPreferences: SearchPreferences) => void;
 }): JSX.Element {
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [searchPreferences, setSearchPreferences] =
     React.useState<SearchPreferences>(initialSearchPreferences);
 

@@ -92,7 +92,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           }).then(({ data }) =>
             Object.fromEntries(
               Object.entries(data)
-                .filter(([code]) => enabledLanguages.includes(code as Language))
+                .filter(([code]) => f.includes(enabledLanguages, code))
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 .map(([code, { name_local }]) => [code, name_local])
             )

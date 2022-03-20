@@ -3,7 +3,6 @@ import 'jquery-ui';
 import $ from 'jquery';
 
 import type Backbone from './backbone';
-import { setTitle } from './components/hooks';
 import { openDialogs } from './components/modaldialog';
 import { getCurrentUrl, push } from './navigation';
 
@@ -42,13 +41,6 @@ export function setCurrentView(view: Backbone.View): void {
   main.empty();
   main[0].append(currentView.el);
   main[0].focus();
-
-  const viewWithTitle = currentView as Backbone.View & {
-    readonly title: string | ((self: Backbone.View) => string);
-  };
-  if (typeof viewWithTitle.title === 'string') setTitle(viewWithTitle.title);
-  else if (typeof viewWithTitle.title === 'function')
-    setTitle(viewWithTitle.title(currentView));
 }
 
 let currentOverlay: Backbone.View | undefined;

@@ -6,6 +6,7 @@
 import { ajax, Http } from './ajax';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
+  getAttribute,
   parseFormCellDefinition,
   processColumnDefinition,
 } from './parseformcells';
@@ -147,7 +148,7 @@ function processViewDefinition(
   let viewDefinition;
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
-    return viewDefinition.getAttribute('type') === formType;
+    return getAttribute(viewDefinition, 'type') === formType;
   });
   if (typeof altView === 'undefined' || typeof viewDefinition === 'undefined') {
     console.error('No altView for defaultType:', formType);
@@ -162,7 +163,7 @@ function processViewDefinition(
       ? viewDefinitions[definition]
       : viewDefinition;
 
-  const newFormType = viewDefinition.getAttribute('type');
+  const newFormType = getAttribute(viewDefinition, 'type');
   return {
     viewDefinition: actualViewDefinition,
     formType:
@@ -173,7 +174,7 @@ function processViewDefinition(
     model: defined(
       getModel(
         SpecifyModel.parseClassName(
-          defined(actualViewDefinition.getAttribute('class') ?? undefined)
+          defined(getAttribute(actualViewDefinition, 'class'))
         )
       )
     ),

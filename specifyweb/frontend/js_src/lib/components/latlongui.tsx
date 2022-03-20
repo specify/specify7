@@ -158,9 +158,11 @@ function CoordinatePoint({
 export function LatLongUi({
   resource,
   mode,
+  id,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly mode: FormMode;
+  readonly id: string | undefined;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
     () => resource.get('latLongType') ?? 'point'
@@ -174,7 +176,7 @@ export function LatLongUi({
       );
     resource.on('change: latlongtype', handleChange);
     return (): void => resource.off('change: latlongtype', handleChange);
-  }, []);
+  }, [resource]);
 
   return (
     <fieldset>
@@ -187,6 +189,7 @@ export function LatLongUi({
                   {localityText('coordinateType')}
                 </span>
                 <select
+                  id={id}
                   name="type"
                   title={localityText('coordinateType')}
                   value={coordinateType}

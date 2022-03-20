@@ -8,6 +8,7 @@ import type { RA } from './types';
 import { defined } from './types';
 import {
   caseInsensitiveHash,
+  f,
   sortObjectsByKey,
   unCapitalize,
 } from './wbplanviewhelper';
@@ -18,9 +19,7 @@ export function getDomainResource<
   const id = schema.domainLevelIds[level];
   if (typeof id === 'undefined') return undefined;
   const model = defined(getModel(level));
-  return new model.Resource({ id }) as SpecifyResource<
-    Tables[Capitalize<LEVEL>]
-  >;
+  return new model.Resource({ id });
 }
 
 export let treeDefinitions: {
@@ -57,13 +56,12 @@ export let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 
 export const isTreeModel = (
   tableName: keyof Tables
-): tableName is AnyTree['tableName'] =>
-  allTrees.includes(tableName as typeof allTrees[number]);
+): tableName is AnyTree['tableName'] => f.includes(allTrees, tableName);
 
 export const isTreeResource = (
   resource: SpecifyResource<AnySchema>
 ): resource is SpecifyResource<AnyTree> =>
-  allTrees.includes(resource.specifyModel.name as typeof allTrees[number]);
+  f.includes(allTrees, resource.specifyModel.name);
 
 export const fetchContext = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),

@@ -68,7 +68,7 @@ export function LeafletPlugin({
   readonly locality: SpecifyResource<Locality>;
   readonly id: string | undefined;
 }): JSX.Element {
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
   return (
     <>

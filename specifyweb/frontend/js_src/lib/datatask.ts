@@ -188,7 +188,7 @@ async function byCatNumber(
     .catch(() => setCurrentView(new NotFoundView()));
 }
 
-// Check that it makes sense to view this resource when logged into current collection
+// Check if it makes sense to view this resource when logged into current collection
 const checkLoggedInCollection = async (
   resource: SpecifyResource<AnySchema>,
   callback: () => void

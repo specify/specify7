@@ -26,7 +26,7 @@ export function Notifications(): JSX.Element {
 
   // Close the dialog when all notifications get dismissed
   const notificationCount = notifications?.length ?? 0;
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
   }, [notificationCount, handleClose]);

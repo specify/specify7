@@ -13,6 +13,7 @@ import { getModel, schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
+import { f } from '../wbplanviewhelper';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
@@ -20,7 +21,6 @@ import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
-import { f } from '../wbplanviewhelper';
 
 function QueryButton({
   disabled,
@@ -38,7 +38,7 @@ function QueryButton({
       dialogTitle={queryText('queryDeleteIncompleteDialogTitle')}
       dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
       dialogMessage={queryText('queryDeleteIncompleteDialogMessage')}
-      dialogButtons={(confirm) => (
+      dialogButtons={(confirm): JSX.Element => (
         <>
           <Button.Orange onClick={confirm}>
             {commonText('remove')}
@@ -146,7 +146,7 @@ export function MakeRecordSetButton({
   return (
     <>
       <QueryButton
-        showConfirmation={() =>
+        showConfirmation={(): boolean =>
           fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath))
         }
         disabled={fields.length === 0}
@@ -177,6 +177,8 @@ export function MakeRecordSetButton({
                 onSaved={(): void => setState('saved')}
                 onClose={(): void => setState(undefined)}
                 onDeleted={f.never}
+                mode={userInformation.isReadOnly ? 'view' : 'edit'}
+                isSubForm={false}
               />
             )}
             {state === 'saving' && (

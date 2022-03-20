@@ -153,7 +153,7 @@ function EditRecord<SCHEMA extends AnyTree>({
   readonly onRefresh: () => void;
   readonly disabled: boolean;
 }): JSX.Element {
-  const [isOpen, _handleOpen, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
   return (
     <>
@@ -170,6 +170,7 @@ function EditRecord<SCHEMA extends AnyTree>({
           addNew={false}
           tableName={tableName}
           onClose={handleClose}
+          onDeleted={handleRefresh}
           onSaved={handleRefresh}
         />
       )}
@@ -205,10 +206,10 @@ function AddChild<SCHEMA extends AnyTree>({
           id={nodeId}
           addNew={true}
           tableName={tableName}
-          onClose={(): void => {
-            handleClose();
-            if (hasChanged.current) handleRefresh();
-          }}
+          onClose={(): void =>
+            hasChanged.current ? handleRefresh() : handleClose()
+          }
+          onDeleted={handleRefresh}
           onSaved={(addAnother): void => {
             if (addAnother) {
               handleClose();
@@ -228,6 +229,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   addNew,
   tableName,
   onClose: handleClose,
+  onDeleted: handleDeleted,
   onSaved: handleSaved,
 }: {
   readonly id: number;
@@ -235,6 +237,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly tableName: SCHEMA['tableName'];
   readonly onClose: () => void;
   readonly onSaved: (addAnother: boolean) => void;
+  readonly onDeleted: () => void;
 }): JSX.Element | null {
   const [resource] = useAsyncState<SpecifyResource<AnySchema>>(
     React.useCallback(() => {
@@ -259,6 +262,9 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       }}
       canAddAnother={true}
       onClose={handleClose}
+      mode={userInformation.isReadOnly ? 'view' : 'edit'}
+      onDeleted={handleDeleted}
+      isSubForm={false}
     />
   ) : null;
 }

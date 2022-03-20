@@ -7,6 +7,7 @@ import type { State } from 'typesafe-reducer';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
 import type { IR } from './types';
+import { getAttribute } from './parseformcells';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -57,15 +58,13 @@ export type FieldTypes = {
   readonly FilePicker: State<'FilePicker'>;
 };
 
-function withStringDefault(cell: Element): {
+const withStringDefault = (
+  cell: Element
+): {
   readonly defaultValue: string | undefined;
-} {
-  const defaultValue = cell.getAttribute('default') ?? undefined;
-  return {
-    defaultValue:
-      typeof defaultValue === 'undefined' ? undefined : defaultValue,
-  };
-}
+} => ({
+  defaultValue: getAttribute(cell, 'default'),
+});
 
 const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (
@@ -73,31 +72,23 @@ const processFieldType: {
     properties: IR<string | undefined>
   ) => FieldTypes[KEY];
 } = {
-  Checkbox(cell) {
-    const fieldName = cell.getAttribute('name') ?? '';
-    const defaultValue = cell.getAttribute('default') ?? undefined;
-    const ignore = cell.getAttribute('ignore')?.toLowerCase() === 'true';
-    return {
-      type: 'Checkbox',
-      defaultValue:
-        typeof defaultValue === 'undefined'
-          ? undefined
-          : defaultValue.toLowerCase() === 'true',
-      label: cell.getAttribute('label') ?? undefined,
-      printOnSave:
-        ignore &&
-        ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-          fieldName.toLowerCase()
-        ),
-    };
-  },
+  Checkbox: (cell) => ({
+    type: 'Checkbox',
+    defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
+    label: getAttribute(cell, 'label'),
+    printOnSave:
+      getAttribute(cell, 'ignore')?.toLowerCase() === 'true' &&
+      ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
+        getAttribute(cell, 'name')?.toLowerCase() ?? ''
+      ),
+  }),
   TextArea(cell) {
-    const rows = Number.parseInt(cell.getAttribute('rows') ?? '');
+    const rows = Number.parseInt(getAttribute(cell, 'rows') ?? '');
     return {
       type: 'TextArea',
       ...withStringDefault(cell),
       rows: Number.isNaN(rows)
-        ? cell.getAttribute('uiType')?.toLowerCase() === 'textareabrief'
+        ? getAttribute(cell, 'uiType')?.toLowerCase() === 'textareabrief'
           ? 1
           : undefined
         : rows,
@@ -106,7 +97,7 @@ const processFieldType: {
   ComboBox: (cell) => ({
     type: 'ComboBox',
     ...withStringDefault(cell),
-    pickList: cell.getAttribute('pickList') ?? undefined,
+    pickList: getAttribute(cell, 'pickList') ?? undefined,
   }),
   Text(cell, properties) {
     const min = Number.parseInt(properties.min ?? '');
@@ -128,7 +119,6 @@ const processFieldType: {
   Plugin: (cell, properties) => ({
     type: 'Plugin',
     pluginDefinition: parseUiPlugin(
-      cell,
       properties,
       withStringDefault(cell).defaultValue
     ),
@@ -159,14 +149,14 @@ export function parseFormCell(
   cell: Element,
   properties: IR<string | undefined>
 ): FormFieldDefinition {
-  let uiType = cell.getAttribute('uiType') ?? undefined;
+  let uiType = getAttribute(cell, 'uiType') ?? undefined;
   if (typeof uiType === 'undefined') {
     console.error('field is missing uiType', cell);
     uiType = 'text';
   }
 
   const isReadOnly =
-    cell.getAttribute('readonly')?.toLowerCase() === 'true' ||
+    getAttribute(cell, 'readOnly')?.toLowerCase() === 'true' ||
     uiType.toLowerCase() === 'dsptextfield';
 
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];

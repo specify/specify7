@@ -7,7 +7,6 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { ViewDescription } from '../parseform';
 import { schema } from '../schema';
-import type { SpecifyModel } from '../specifymodel';
 import * as s from '../stringlocalization';
 import type { RA } from '../types';
 import { defined } from '../types';
@@ -92,7 +91,7 @@ const metaDataFormDefinition: ViewDescription = {
   ],
   formType: 'form',
   mode: 'edit',
-  model: schema.models.LoanReturnPreparation as SpecifyModel,
+  model: schema.models.LoanReturnPreparation,
 };
 
 type RowState = {

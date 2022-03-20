@@ -7,6 +7,7 @@ import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
+import { getAttribute } from './parseformcells';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -55,19 +56,19 @@ export const fetchFormatters: Promise<{
         const switchElement = formatter.getElementsByTagName('switch')[0];
         if (typeof switchElement === 'undefined') return undefined;
         const isSingle =
-          switchElement.getAttribute('single')?.trim() !== 'false';
-        const field = switchElement.getAttribute('field')?.trim();
+          getAttribute(switchElement, 'single')?.trim() !== 'false';
+        const field = getAttribute(switchElement, 'field')?.trim();
         const fields = Array.from(
           switchElement.getElementsByTagName('fields'),
           (fields) => ({
-            value: fields.getAttribute('value') ?? undefined,
+            value: getAttribute(fields, 'value'),
             fields: Array.from(
               fields.getElementsByTagName('field'),
               (field) => ({
                 fieldName: field.textContent?.trim() ?? '',
-                separator: field.getAttribute('sep') ?? '',
-                formatter: field.getAttribute('formatter')?.trim() ?? '',
-                fieldFormatter: field.getAttribute('format')?.trim(),
+                separator: getAttribute(field, 'sep') ?? '',
+                formatter: getAttribute(field, 'formatter')?.trim() ?? '',
+                fieldFormatter: getAttribute(field, 'format')?.trim(),
               })
             ).filter(({ fieldName }) => fieldName.length > 0),
           })
@@ -75,10 +76,10 @@ export const fetchFormatters: Promise<{
         // External DataObjFormatters are not supported
         if (fields.length === 0) return undefined;
         return {
-          name: formatter.getAttribute('name')?.trim() ?? undefined,
-          title: formatter.getAttribute('title')?.trim() ?? undefined,
-          className: formatter.getAttribute('class')?.trim() ?? undefined,
-          isDefault: formatter.getAttribute('default')?.trim() === 'true',
+          name: getAttribute(formatter, 'name')?.trim(),
+          title: getAttribute(formatter, 'title')?.trim(),
+          className: getAttribute(formatter, 'class')?.trim(),
+          isDefault: getAttribute(formatter, 'default')?.trim() === 'true',
           fields,
           switchFieldName:
             typeof field === 'string' && !isSingle ? field : undefined,
@@ -90,12 +91,12 @@ export const fetchFormatters: Promise<{
         definitions.getElementsByTagName('aggregator'),
         (aggregator) => {
           return {
-            name: aggregator.getAttribute('name')?.trim() ?? undefined,
-            title: aggregator.getAttribute('title')?.trim() ?? undefined,
-            className: aggregator.getAttribute('class')?.trim() ?? undefined,
-            isDefault: aggregator.getAttribute('default')?.trim() === 'true',
-            separator: aggregator.getAttribute('separator') ?? '',
-            format: aggregator.getAttribute('format') ?? '',
+            name: getAttribute(aggregator, 'name')?.trim(),
+            title: getAttribute(aggregator, 'title')?.trim(),
+            className: getAttribute(aggregator, 'class')?.trim(),
+            isDefault: getAttribute(aggregator, 'default')?.trim() === 'true',
+            separator: getAttribute(aggregator, 'separator') ?? '',
+            format: getAttribute(aggregator, 'format') ?? '',
           };
         }
       )

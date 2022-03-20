@@ -10,6 +10,8 @@ import {
 } from './localityrecorddataextractor';
 import { schema } from './schema';
 import type { RA } from './types';
+import { f } from './wbplanviewhelper';
+import { toTable } from './specifymodel';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -20,26 +22,21 @@ export type OccurrenceData = {
 };
 
 export const fetchLocalOccurrences = async (
-  model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
+  resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
   const LIMIT = 10_000;
 
-  let taxon: SpecifyResource<Taxon>;
-  if (model.specifyModel.name === 'CollectionObject') {
-    const determination = await (
-      model as SpecifyResource<CollectionObject>
-    ).rgetCollection('determinations');
-
-    const currentDetermination = determination.models.find((model) =>
-      model.get('isCurrent')
-    );
-
-    if (typeof currentDetermination === 'undefined') return [];
-
-    const taxonResource = await currentDetermination.rgetPromise('taxon');
-    if (taxonResource === null) return [];
-    else taxon = taxonResource;
-  } else taxon = model as SpecifyResource<Taxon>;
+  const taxon =
+    toTable(resource, 'Taxon') ??
+    (await f.maybe(
+      toTable(resource, 'CollectionObject'),
+      async (collectionObject) =>
+        collectionObject
+          .rgetCollection('determinations')
+          .then(({ models }) => models.find((model) => model.get('isCurrent')))
+          .then((determination) => determination?.rgetPromise('taxon'))
+    ));
+  if (typeof taxon === 'undefined') return [];
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 

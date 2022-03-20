@@ -97,20 +97,20 @@ export const missingFormDefinition = (
 
 // FIXME: review all original files to check everything was migrated
 /** Renders a form and populates it with data from a resource */
-export function SpecifyForm<SCHEMA extends AnySchema>({
+export function SpecifyForm({
   resource,
   viewName = resource.specifyModel.view,
   formType,
   mode,
   hasHeader,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<AnySchema>;
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
   readonly hasHeader: boolean;
 }): JSX.Element {
-  const viewDefinition = useViewDefinition<SCHEMA>({
+  const viewDefinition = useViewDefinition({
     model: resource.specifyModel,
     viewName,
     formType,
