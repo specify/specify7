@@ -1,6 +1,6 @@
 import json
 
-from typing import Dict
+from typing import Dict, Union
 
 from django import http
 from django.db import transaction
@@ -198,10 +198,11 @@ user_roles = openapi(schema={
     }
 })(UserRoles.as_view())
 
-def serialize_role(role: models.Role) -> Dict:
+def serialize_role(role: Union[models.Role, models.LibraryRole]) -> Dict:
     return {
         'id': role.id,
         'name': role.name,
+        'description': role.description,
         'policies': [
             {'resource': p.resource, 'action': p.action}
                 for p in role.policies.all()
@@ -213,6 +214,7 @@ class RolePT(PermissionTarget):
     create = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
+    copy_from_library = PermissionTargetAction()
 
 
 class Role(LoginRequiredMixin, View):
@@ -228,6 +230,7 @@ class Role(LoginRequiredMixin, View):
             check_permission_targets(r.collection_id, request.specify_user.id, [RolePT.update])
 
             r.name = data['name']
+            r.description = data['description']
             r.save()
 
             r.policies.all().delete()
@@ -249,7 +252,7 @@ role = openapi(schema={
     "get": {
         "responses": {
             "200": {
-                "description": "Returns the name and permission policies for the given role.",
+                "description": "Returns the name, description and permission policies for the given role.",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -257,6 +260,7 @@ role = openapi(schema={
                             "properties": {
                                 "id": { "type": "integer", "description": "The role id." },
                                 "name": { "type": "string", "description": "The role name." },
+                                "description": { "type": "string", "description": "The role description." },
                                 "policies": {
                                     "type": "array",
                                     "items": {
@@ -270,7 +274,7 @@ role = openapi(schema={
                                     }
                                 }
                             },
-                            'required': ['id', 'name', 'policies'],
+                            'required': ['id', 'name', 'description', 'policies'],
                             'additionalProperties': False
                         }
                     }
@@ -281,13 +285,14 @@ role = openapi(schema={
     "put": {
         "requestBody": {
             "required": True,
-            "description": "Sets the name and permission policies for the given role.",
+            "description": "Sets the name, description and permission policies for the given role.",
             "content": {
                 "application/json": {
                     "schema": {
                         "type": "object",
                         "properties": {
                             "name": { "type": "string", "description": "The role name." },
+                            "description": { "type": "string", "description": "The role description." },
                             "policies": {
                                 "type": "array",
                                 "items": {
@@ -301,7 +306,7 @@ role = openapi(schema={
                                 }
                             }
                         },
-                        'required': ['name', 'policies'],
+                        'required': ['name', 'description', 'policies'],
                     }
                 }
             }
@@ -414,20 +419,35 @@ class Roles(LoginRequiredMixin, View):
         return http.JsonResponse(data, safe=False)
 
     def post(self, request, collectionid: int) -> http.HttpResponse:
-        check_permission_targets(collectionid, request.specify_user.id, [RolePT.create])
-
         data = json.loads(request.body)
+        if 'libraryroleid' in data:
+            check_permission_targets(collectionid, request.specify_user.id, [RolePT.copy_from_library])
 
-        with transaction.atomic():
-            r = models.Role.objects.create(
-                collection_id=collectionid,
-                name=data['name'],
-            )
+            lr = models.LibraryRole.objects.get(id=data['libraryroleid'])
+            with transaction.atomic():
+                r = models.Role.objects.create(
+                    collection_id=collectionid,
+                    name=lr.name,
+                    description=lr.description,
+                )
 
-            for p in data['policies']:
-                r.policies.create(
-                    resource=p['resource'],
-                    action=p['action'])
+                for lp in lr.policies.all():
+                    r.policies.create(resource=lp.resource, action=lp.action)
+        else:
+            check_permission_targets(collectionid, request.specify_user.id, [RolePT.create])
+
+
+            with transaction.atomic():
+                r = models.Role.objects.create(
+                    collection_id=collectionid,
+                    name=data['name'],
+                    description=data['description'],
+                )
+
+                for p in data['policies']:
+                    r.policies.create(
+                        resource=p['resource'],
+                        action=p['action'])
 
         return http.JsonResponse(serialize_role(r), status=201)
 
@@ -445,6 +465,7 @@ roles = openapi(schema={
                                 "properties": {
                                     "id": { "type": "integer", "description": "The role id." },
                                     "name": { "type": "string", "description": "The role name." },
+                                    "description": { "type": "string", "description": "The role description." },
                                     "policies": {
                                         "type": "array",
                                         "items": {
@@ -458,7 +479,7 @@ roles = openapi(schema={
                                         }
                                     }
                                 },
-                                'required': ['id', 'name', 'policies'],
+                                'required': ['id', 'name', 'description', 'policies'],
                                 'additionalProperties': False
                             }
                         }
@@ -470,27 +491,42 @@ roles = openapi(schema={
     "post": {
         "requestBody": {
             "required": True,
-            "description": "Creates a new role in a collection.",
+            "description": "Creates a new role in a collection either explicitly or from a library role.",
             "content": {
                 "application/json": {
                     "schema": {
-                        "type": "object",
-                        "properties": {
-                            "name": { "type": "string", "description": "The role name." },
-                            "policies": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resource": { "type": "string" },
-                                        "action": { "type": "string" },
-                                    },
-                                    'required': ['resource', 'action'],
-                                    'additionalProperties': False
-                                }
-                            }
-                        },
-                        'required': ['name', 'policies'],
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "description": "Copy a role from the role library.",
+                                "properties": {
+                                    "libraryroleid": { "type": "integer", "description": "The id of the library role to copy." }
+                                },
+                                "additionalProperties": False,
+                                "required": ["libraryroleid"],
+                            },
+                            {
+                                "type": "object",
+                                "description": "Create a role explicitly.",
+                                "properties": {
+                                    "name": { "type": "string", "description": "The role name." },
+                                    "description": { "type": "string", "description": "The role description." },
+                                    "policies": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "resource": { "type": "string" },
+                                                "action": { "type": "string" },
+                                            },
+                                            'required': ['resource', 'action'],
+                                            'additionalProperties': False
+                                        }
+                                    }
+                                },
+                                'required': ['name', 'description', 'policies'],
+                            },
+                        ]
                     }
                 }
             }
@@ -505,6 +541,7 @@ roles = openapi(schema={
                             "properties": {
                                 "id": { "type": "integer", "description": "The role id." },
                                 "name": { "type": "string", "description": "The role name." },
+                                "description": { "type": "string", "description": "The role description." },
                                 "policies": {
                                     "type": "array",
                                     "items": {
@@ -518,7 +555,7 @@ roles = openapi(schema={
                                     }
                                 }
                             },
-                            'required': ['id', 'name', 'policies'],
+                            'required': ['id', 'name', 'description', 'policies'],
                             'additionalProperties': False
                         }
                     }
@@ -527,3 +564,241 @@ roles = openapi(schema={
         }
     }
 })(Roles.as_view())
+
+
+class LibraryRolePT(PermissionTarget):
+    resource = "/permissions/library/roles"
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+
+
+class LibraryRole(LoginRequiredMixin, View):
+    def get(self, request, roleid: int) -> http.HttpResponse:
+        r = models.LibraryRole.objects.get(id=roleid)
+        return http.JsonResponse(serialize_role(r), safe=False)
+
+    def put(self, request, roleid: int) -> http.HttpResponse:
+        data = json.loads(request.body)
+
+        with transaction.atomic():
+            r = models.LibraryRole.objects.get(id=roleid)
+            check_permission_targets(None, request.specify_user.id, [LibraryRolePT.update])
+
+            r.name = data['name']
+            r.description = data['description']
+            r.save()
+
+            r.policies.all().delete()
+            for p in data['policies']:
+                r.policies.create(
+                    resource=p['resource'],
+                    action=p['action'])
+
+        return http.HttpResponse('', status=204)
+
+    def delete(self, request, roleid: int) -> http.HttpResponse:
+        r = models.LibraryRole.objects.get(id=roleid)
+        check_permission_targets(None, request.specify_user.id, [LibraryRolePT.delete])
+        r.delete()
+        return http.HttpResponse('', status=204)
+
+
+library_role = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns the name, description and permission policies for the given library role.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": { "type": "integer", "description": "The library role id." },
+                                "name": { "type": "string", "description": "The library role name." },
+                                "description": { "type": "string", "description": "The library role description." },
+                                "policies": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "resource": { "type": "string" },
+                                            "action": { "type": "string" },
+                                        },
+                                        'required': ['resource', 'action'],
+                                        'additionalProperties': False
+                                    }
+                                }
+                            },
+                            'required': ['id', 'name', 'description', 'policies'],
+                            'additionalProperties': False
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "put": {
+        "requestBody": {
+            "required": True,
+            "description": "Sets the name, description and permission policies for the given library role.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "name": { "type": "string", "description": "The library role name." },
+                            "description": { "type": "string", "description": "The library role description." },
+                            "policies": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "resource": { "type": "string" },
+                                        "action": { "type": "string" },
+                                    },
+                                    'required': ['resource', 'action'],
+                                    'additionalProperties': False
+                                }
+                            }
+                        },
+                        'required': ['name', 'description', 'policies'],
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "The library role was updated."}
+        }
+    },
+    "delete": {
+        "responses": {
+            "204": {"description": "The library role was deleted.",}
+        }
+    }
+})(LibraryRole.as_view())
+
+
+class LibraryRoles(LoginRequiredMixin, View):
+    def get(self, request) -> http.HttpResponse:
+        rs = models.LibraryRole.objects.all()
+        data = [serialize_role(r) for r in rs]
+        return http.JsonResponse(data, safe=False)
+
+    def post(self, request) -> http.HttpResponse:
+        check_permission_targets(None, request.specify_user.id, [LibraryRolePT.create])
+
+        data = json.loads(request.body)
+
+        with transaction.atomic():
+            r = models.LibraryRole.objects.create(
+                name=data['name'],
+                description=data['description'],
+            )
+
+            for p in data['policies']:
+                r.policies.create(
+                    resource=p['resource'],
+                    action=p['action'])
+
+        return http.JsonResponse(serialize_role(r), status=201)
+
+library_roles = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns list of library roles available in the database.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": { "type": "integer", "description": "The library role id." },
+                                    "name": { "type": "string", "description": "The library role name." },
+                                    "description": { "type": "string", "description": "The library role description." },
+                                    "policies": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "resource": { "type": "string" },
+                                                "action": { "type": "string" },
+                                            },
+                                            'required': ['resource', 'action'],
+                                            'additionalProperties': False
+                                        }
+                                    }
+                                },
+                                'required': ['id', 'name', 'description', 'policies'],
+                                'additionalProperties': False
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "post": {
+        "requestBody": {
+            "required": True,
+            "description": "Creates a new library role in the database.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "name": { "type": "string", "description": "The role name." },
+                            "description": { "type": "string", "description": "The role description." },
+                            "policies": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "resource": { "type": "string" },
+                                        "action": { "type": "string" },
+                                    },
+                                    'required': ['resource', 'action'],
+                                    'additionalProperties': False
+                                }
+                            }
+                        },
+                        'required': ['name', 'description', 'policies'],
+                    }
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": "The library role was created.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": { "type": "integer", "description": "The library role id." },
+                                "name": { "type": "string", "description": "The library role name." },
+                                "description": { "type": "string", "description": "The library role description." },
+                                "policies": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "resource": { "type": "string" },
+                                            "action": { "type": "string" },
+                                        },
+                                        'required': ['resource', 'action'],
+                                        'additionalProperties': False
+                                    }
+                                }
+                            },
+                            'required': ['id', 'name', 'description', 'policies'],
+                            'additionalProperties': False
+                        }
+                    }
+                }
+            }
+        }
+    }
+})(LibraryRoles.as_view())
