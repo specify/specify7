@@ -19,6 +19,7 @@ import { filterArray } from '../types';
 import { f } from '../wbplanviewhelper';
 import { Button, Container, H2, Label, Link, Select } from './basic';
 import { TableIcon } from './common';
+import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
@@ -46,7 +47,8 @@ export function AttachmentCell({
           ? undefined
           : attachments.fetchThumbnail(attachment, previewSize),
       [attachment]
-    )
+    ),
+    false
   );
 
   const [originalUrl] = useAsyncState(
@@ -56,7 +58,8 @@ export function AttachmentCell({
           ? fetchOriginalUrl(attachment)
           : undefined,
       [attachment]
-    )
+    ),
+    false
   );
 
   const [isPreviewPending, handlePreviewPending, handleNoPreviewPending] =
@@ -68,13 +71,12 @@ export function AttachmentCell({
     }
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
 
-  const [isLoading, setLoading, setLoaded] = useBooleanState();
   const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
   const title = attachment?.get('title') ?? thumbnail?.alt;
+  const loading = React.useContext(LoadingContext);
 
   return (
     <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">
-      {isLoading && <LoadingScreen />}
       {typeof attachment === 'object' && (
         <>
           {typeof handleViewRecord === 'function' && (
@@ -84,23 +86,21 @@ export function AttachmentCell({
               onClick={(): void =>
                 typeof model === 'undefined'
                   ? handleMetaToggle()
-                  : void Promise.resolve(setLoading)
-                      .then(async () =>
-                        attachment.rgetCollection(
+                  : loading(
+                      attachment
+                        .rgetCollection(
                           `${model.name as 'agent'}Attachments`,
                           true
                         )
-                      )
-                      .then(({ models }) =>
-                        idFromUrl(models[0].get(model.name as 'agent') ?? '')
-                      )
-                      .then((id) =>
-                        typeof id === 'number'
-                          ? handleViewRecord(model, id)
-                          : handleMetaToggle()
-                      )
-                      .catch(crash)
-                      .finally(setLoaded)
+                        .then(({ models }) =>
+                          idFromUrl(models[0].get(model.name as 'agent') ?? '')
+                        )
+                        .then((id) =>
+                          typeof id === 'number'
+                            ? handleViewRecord(model, id)
+                            : handleMetaToggle()
+                        )
+                    )
               }
             >
               <TableIcon name={model?.name ?? 'Attachment'} />
@@ -214,7 +214,8 @@ export function AttachmentsView(): JSX.Element {
           ),
         }),
       [tablesWithAttachments]
-    )
+    ),
+    false
   );
 
   const collection = React.useMemo(

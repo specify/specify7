@@ -4,6 +4,7 @@ import { formData, Http, ping } from '../../ajax';
 import commonText from '../../localization/common';
 import { userInformation } from '../../userinfo';
 import { Button, Form, Input, Label, Submit } from '../basic';
+import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -56,7 +57,7 @@ function MakeDwca({
   const metadataRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
   const [isExporting, handleExporting, handleExported] = useBooleanState();
 
   return isExporting ? (
@@ -68,9 +69,7 @@ function MakeDwca({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} disabled={isLoading}>
-            {isLoading ? commonText('loading') : commonText('start')}
-          </Submit.Blue>
+          <Submit.Blue form={id('form')}>{commonText('start')}</Submit.Blue>
         </>
       }
     >
@@ -78,33 +77,30 @@ function MakeDwca({
         className="contents"
         id={id('form')}
         forwardRef={formRef}
-        onSubmit={(event): void => {
-          handleLoading();
-          event.preventDefault();
-          Promise.all([
-            liftGetResource(
-              definition,
-              commonText('definitionResourceNotFound')(definition),
-              definitionRef.current
-            ),
-            metadata === ''
-              ? metadataRef.current?.setCustomValidity('')
-              : liftGetResource(
-                  metadata,
-                  commonText('metadataResourceNotFound')(metadata),
-                  metadataRef.current
-                ),
-          ])
-            .then(async () =>
-              startExport(definition, metadata === '' ? undefined : metadata)
-            )
-            .then(handleExporting)
-            .catch(handleExported)
-            .finally(() => {
-              formRef.current?.reportValidity();
-              handleLoaded();
-            });
-        }}
+        onSubmit={(): void =>
+          loading(
+            Promise.all([
+              liftGetResource(
+                definition,
+                commonText('definitionResourceNotFound')(definition),
+                definitionRef.current
+              ),
+              metadata === ''
+                ? metadataRef.current?.setCustomValidity('')
+                : liftGetResource(
+                    metadata,
+                    commonText('metadataResourceNotFound')(metadata),
+                    metadataRef.current
+                  ),
+            ])
+              .then(async () =>
+                startExport(definition, metadata === '' ? undefined : metadata)
+              )
+              .then(handleExporting)
+              .catch(handleExported)
+              .finally(() => formRef.current?.reportValidity())
+          )
+        }
       >
         <Label.Generic>
           {commonText('dwcaDefinition')}

@@ -18,7 +18,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
-import { useAsyncState, useBooleanState } from './hooks';
+import { useBooleanState, useLiveState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
@@ -97,7 +97,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     return (): void => collection.off('add remove destroy', updateRecords);
   }, [collection, getRecords]);
 
-  const [index, setIndex] = useAsyncState(
+  const [index, setIndex] = useLiveState(
     React.useCallback(
       () => defaultIndex ?? collection._totalCount ?? 0,
       [collection._totalCount, defaultIndex]
@@ -120,11 +120,11 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         setRecords(getRecords);
       }}
       onDelete={(): void => {
-        collection.remove(defined(records[index ?? 0]));
-        handleDelete?.(index ?? 0);
+        collection.remove(defined(records[index]));
+        handleDelete?.(index);
         setRecords(getRecords);
       }}
-      index={index ?? 0}
+      index={index}
       onSlide={(index: number): void => {
         setIndex(index);
         if (

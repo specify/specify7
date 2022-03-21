@@ -10,7 +10,7 @@ import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useLiveState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
@@ -56,10 +56,11 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
             )
           : undefined,
       [props.pickListName]
-    )
+    ),
+    false
   );
 
-  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
+  const [items, setItems] = useLiveState<RA<PickListItemSimple> | undefined>(
     React.useCallback(
       () =>
         typeof pickList === 'object' ? getPickListItems(pickList) : undefined,

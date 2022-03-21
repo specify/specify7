@@ -48,9 +48,7 @@ export const findRanksInMappings = (
   mappingPaths
     .map((mappingPath) => ({
       mappingPath,
-      treeRankLocation: mappingPath.findIndex((mappingPathPart) =>
-        valueIsTreeRank(mappingPathPart)
-      ),
+      treeRankLocation: mappingPath.findIndex(valueIsTreeRank),
     }))
     .map(({ mappingPath, treeRankLocation }) =>
       treeRankLocation === -1

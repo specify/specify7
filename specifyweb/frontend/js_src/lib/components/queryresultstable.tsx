@@ -188,7 +188,8 @@ export function QueryResultsTable({
           )
         ).then(() => true),
       [fieldSpecs]
-    )
+    ),
+    true
   );
 
   const [selectedRows, setSelectedRows] = React.useState<Set<number>>(

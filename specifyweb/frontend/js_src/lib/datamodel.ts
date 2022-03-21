@@ -2,6 +2,8 @@
  * TypeScript types for DataModel tables
  * The types were generated with help from the regenerate() function
  *   in ./datamodelutils.ts
+ * Afterward, some manual edits have been made. Those are marked with
+ * "NOTE:" comments
  *
  * Schema version: 2.9
  * Date generated: March 21, 2022
@@ -1359,6 +1361,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly visibilitySetBy: SpecifyUser | null;
     readonly currentDetermination: Determination | null;
+    readonly paleoContext: PaleoContext | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
@@ -5011,7 +5014,7 @@ export type SpPrincipal = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
-    // This is a -to-one relationship with collection, discipline or division
+    // NOTE: This is a -to-one relationship with collection, discipline or division
     readonly scope: number | null;
   };
   readonly toOneDependent: RR<never, never>;
@@ -5240,6 +5243,8 @@ export type SpecifyUser = {
     readonly timestampModified: string | null;
     readonly userType: string | null;
     readonly version: number | null;
+    // NOTE: Front-end only field?
+    readonly isAdmin: boolean;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

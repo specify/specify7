@@ -30,7 +30,8 @@ export function UiField({
     React.useCallback(
       async () => getResourceAndField(resource, fieldName),
       [resource, fieldName]
-    )
+    ),
+    false
   );
   return typeof data === 'undefined' ? (
     <Input.Text disabled id={id} />
@@ -99,7 +100,8 @@ export function Field({
               .then((value) => value ?? '')
           : undefined,
       [resource, field]
-    )
+    ),
+    false
   );
 
   return (

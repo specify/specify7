@@ -13,7 +13,7 @@ import { defined } from '../types';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState } from './hooks';
-import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { getAttribute } from '../parseformcells';
 
@@ -67,8 +67,8 @@ export function FormsDialog({
 }: {
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
-}): JSX.Element {
-  const [forms] = useAsyncState(fetchForms);
+}): JSX.Element | null {
+  const [forms] = useAsyncState(fetchForms, true);
 
   return Array.isArray(forms) ? (
     <Dialog
@@ -107,9 +107,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }
 
 export default createBackboneView(FormsDialog);

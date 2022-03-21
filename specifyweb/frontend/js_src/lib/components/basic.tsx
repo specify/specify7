@@ -227,15 +227,19 @@ export const Form = wrap(
       const form = event.target as HTMLFormElement;
       if (form.classList.contains(className.notSubmittedForm))
         form.classList.remove(className.notSubmittedForm);
-      /*
-       * If container has a <form>, and it summons a dialog (which uses a React
-       * Portal) which renders another <form>, the child <form>, while not be
-       * in the same DOM hierarchy, but would still have its onSubmit event
-       * bubble (because React Portals resolve event bubbles).
-       * Thus, have to stop propagation
-       */
-      if (typeof props?.onSubmit === 'function') event.stopPropagation();
-      props?.onSubmit?.(event);
+      if (typeof props?.onSubmit === 'function') {
+        /*
+         * If container has a <form>, and it summons a dialog (which uses a React
+         * Portal) which renders another <form>, the child <form>, while not be
+         * in the same DOM hierarchy, but would still have its onSubmit event
+         * bubble (because React Portals resolve event bubbles).
+         * Thus, have to stop propagation
+         */
+        event.stopPropagation();
+        // Prevent default just so that I don't have to do it in the callback
+        event.preventDefault();
+        props.onSubmit(event);
+      }
     },
   })
 );

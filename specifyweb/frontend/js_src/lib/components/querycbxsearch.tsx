@@ -14,7 +14,7 @@ import { f, sortObjectsByKey } from '../wbplanviewhelper';
 import { Button, className, Form, Link, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { SpecifyForm } from './specifyform';
 
 const dialogDefinitions = load<Element>(
@@ -43,7 +43,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resurce: SpecifyResource<SCHEMA>) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [viewName] = useAsyncState(
     React.useCallback(
       async () =>
@@ -56,7 +56,8 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
               ?.getAttribute('view') ?? false
         ),
       [templateResource]
-    )
+    ),
+    true
   );
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
@@ -83,8 +84,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
     >
       <Form
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
+        onSubmit={(): void => {
           handleLoading();
           queryCbxExtendedSearch(templateResource, forceCollection)
             .then(async (resources) =>
@@ -146,9 +146,7 @@ export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
         </Ul>
       </Form>
     </Dialog>
-  ) : typeof viewName === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  ) : typeof viewName === 'undefined' ? null : (
     error(
       `Unable to find a search dialog for the ${templateResource.specifyModel.name} table`
     )

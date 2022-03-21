@@ -24,6 +24,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { getDefaultFormMode, ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
+import { LoadingContext } from '../contexts';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   '/static/config/querybuilder.xml',
@@ -211,7 +212,7 @@ export function QueryToolbarItem({
   readonly spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>;
   readonly onNewQuery?: () => void;
   readonly isReadOnly: boolean;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(commonText('queries'));
 
   const [tablesToShow] = useCachedState({
@@ -229,7 +230,8 @@ export function QueryToolbarItem({
           ...(spQueryFilter ?? { specifyUser: userInformation.id }),
         }).then(({ records }) => records),
       [spQueryFilter]
-    )
+    ),
+    true
   );
 
   const [state, setState] = React.useState<States>({
@@ -274,9 +276,7 @@ export function QueryToolbarItem({
           getQuerySelectUrl={getQuerySelectUrl}
         />
       </Dialog>
-    ) : (
-      <LoadingScreen />
-    );
+    ) : null;
   } else if (
     state.type === 'CreateQueryState' &&
     typeof getQueryCreateUrl === 'function'
@@ -388,7 +388,7 @@ function DwcaQueryExport({
 }: {
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [exported] = useAsyncState<string>(
     React.useCallback(
       async () =>
@@ -397,7 +397,8 @@ function DwcaQueryExport({
           headers: { Accept: 'text/plain' },
         }).then(({ data: xml }) => xml),
       [queryResource.id]
-    )
+    ),
+    true
   );
 
   return typeof exported === 'string' ? (
@@ -412,9 +413,7 @@ function DwcaQueryExport({
     >
       <Textarea readOnly className="min-h-[60vh]" value={exported} />
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }
 
 function QueryExport({
@@ -428,6 +427,7 @@ function QueryExport({
 }): JSX.Element {
   const id = useId('query-export');
   const [name, setName] = React.useState<string>('');
+  const loading = React.useContext(LoadingContext);
 
   return (
     <Dialog
@@ -451,28 +451,29 @@ function QueryExport({
     >
       <Form
         id={id('form')}
-        onSubmit={(): void => {
-          ajax<SerializedResource<SpReport>>('/report_runner/create/', {
-            method: 'POST',
-            body: {
-              queryid: queryResource.id,
-              mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
-              name: name.trim(),
-            },
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              Accept: 'application/json',
-            },
-          })
-            .then(async ({ data: reportJson }) => {
-              const report = new schema.models.SpReport.Resource(reportJson);
-              return report.rgetPromise('appResource');
+        onSubmit={(): void =>
+          loading(
+            ajax<SerializedResource<SpReport>>('/report_runner/create/', {
+              method: 'POST',
+              body: {
+                queryid: queryResource.id,
+                mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
+                name: name.trim(),
+              },
+              headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Accept: 'application/json',
+              },
             })
-            .then((appResource) =>
-              navigation.go(`/specify/appresources/${appResource.id}/`)
-            )
-            .catch(console.error);
-        }}
+              .then(async ({ data: reportJson }) => {
+                const report = new schema.models.SpReport.Resource(reportJson);
+                return report.rgetPromise('appResource');
+              })
+              .then((appResource) =>
+                navigation.go(`/specify/appresources/${appResource.id}/`)
+              )
+          )
+        }
       >
         <Input.Text
           placeholder={

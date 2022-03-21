@@ -24,7 +24,10 @@ export function PickListFormatterComboBox(
         title: title ?? name ?? '',
       }));
   }, [props.resource]);
-  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(fetchItems);
+  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
+    fetchItems,
+    false
+  );
   React.useEffect(() => {
     const handleChange = (): void =>
       void fetchItems().then(setItems).catch(crash);

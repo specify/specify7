@@ -64,7 +64,8 @@ export function SubView({
         if (typeof resource === 'object') collection.add(resource);
         return collection;
       }
-    }, [resourceUrl, parentResource, field])
+    }, [resourceUrl, parentResource, field]),
+    false
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);

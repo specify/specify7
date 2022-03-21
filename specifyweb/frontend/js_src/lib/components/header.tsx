@@ -116,7 +116,8 @@ export function CollectionSelector(): JSX.Element {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       []
-    )
+    ),
+    true
   );
 
   return (
@@ -148,8 +149,7 @@ export function ExpressSearch(): JSX.Element {
   );
   return (
     <Form
-      onSubmit={(event): void => {
-        event.preventDefault();
+      onSubmit={(): void => {
         const query = searchQuery.trim();
         if (query.length === 0) return;
         const url = querystring.format('/specify/express_search/', {

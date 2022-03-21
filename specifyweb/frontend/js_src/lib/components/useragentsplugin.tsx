@@ -15,10 +15,10 @@ import { schema } from '../schema';
 import type { RA } from '../types';
 import { f, group } from '../wbplanviewhelper';
 import { Button, Form, Label, Submit, Ul } from './basic';
-import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
+import { LoadingContext } from './contexts';
 
 type Data = {
   readonly division: SpecifyResource<Division>;
@@ -71,7 +71,7 @@ function UserAgentsDialog({
   readonly mode: FormMode;
   readonly formType: FormType;
   readonly isRequired: boolean;
-}): JSX.Element {
+}): JSX.Element | null {
   const [entries] = useAsyncState<RA<Data>>(
     React.useCallback(async () => {
       const collections = new schema.models.Collection.LazyCollection();
@@ -129,13 +129,13 @@ function UserAgentsDialog({
               ),
             }))
         );
-    }, [user])
+    }, [user]),
+    true
   );
 
   const id = useId('user-agents-plugin');
-  return typeof entries === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  const loading = React.useContext(LoadingContext);
+  return typeof entries === 'undefined' ? null : (
     <Dialog
       header={formsText('userAgentsPluginDialogTitle')}
       onClose={handleClose}
@@ -149,35 +149,35 @@ function UserAgentsDialog({
       <Form
         id={id('form')}
         onSubmit={(): void =>
-          void Promise.all(
-            entries.map((entry) =>
-              entry.address.get('agent') === entry.agent?.get('resource_uri')
-                ? undefined
-                : entry.address
-                    .rgetPromise('agent', true)
-                    .then(async (newAgent) =>
-                      /*
-                       * The following is not atomic, but the ramifications of
-                       * one update succeeding without the other are not severe
-                       * enough to worry about. Someone will notice they can't
-                       * log in and then it can be fixed.
-                       */
-                      user
-                        .rgetCollection('agents', true)
-                        .then(async ({ models: agents }) =>
-                          Promise.all(
-                            agents.map(async (agent) =>
-                              agent.set('specifyUser', null).save()
+          loading(
+            Promise.all(
+              entries.map((entry) =>
+                entry.address.get('agent') === entry.agent?.get('resource_uri')
+                  ? undefined
+                  : entry.address
+                      .rgetPromise('agent', true)
+                      .then(async (newAgent) =>
+                        /*
+                         * The following is not atomic, but the ramifications of
+                         * one update succeeding without the other are not severe
+                         * enough to worry about. Someone will notice they can't
+                         * log in and then it can be fixed.
+                         */
+                        user
+                          .rgetCollection('agents', true)
+                          .then(async ({ models: agents }) =>
+                            Promise.all(
+                              agents.map(async (agent) =>
+                                agent.set('specifyUser', null).save()
+                              )
+                            ).then(() =>
+                              newAgent?.set('specifyUser', user).save()
                             )
-                          ).then(() =>
-                            newAgent?.set('specifyUser', user).save()
                           )
-                        )
-                    )
-            )
+                      )
+              )
+            ).finally(handleClose)
           )
-            .catch(crash)
-            .finally(handleClose)
         }
       >
         <Ul>

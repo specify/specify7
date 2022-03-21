@@ -7,7 +7,8 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useBooleanState, useId, useTitle } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
+import { LoadingContext } from './contexts';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
@@ -17,21 +18,19 @@ function PasswordResetDialog({
 }: {
   readonly userId: number;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(adminText('setPassword'));
 
   const id = useId('password-reset-dialog');
-  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
 
   const passwordRef = React.useRef<HTMLInputElement | null>(null);
   const repeatPasswordRef = React.useRef<HTMLInputElement | null>(null);
 
   const [password, setPassword] = React.useState('');
   const [repeatPassword, setRepeatPassword] = React.useState('');
+  const loading = React.useContext(LoadingContext);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <Dialog
       header={adminText('setPassword')}
       onClose={handleClose}
@@ -45,31 +44,26 @@ function PasswordResetDialog({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-          if (password.length < MIN_PASSWORD_LENGTH)
-            passwordRef.current?.setCustomValidity(
-              adminText('passwordLengthError')
-            );
-          else if (password === repeatPassword) {
-            handleLoading();
-            void ping(
-              `/api/set_password/${userId}/`,
-              {
-                method: 'POST',
-                body: formData({ password }),
-              },
-              { expectedResponseCodes: [Http.NO_CONTENT] }
-            ).then(() => {
-              handleLoaded();
-              handleClose();
-              return undefined;
-            });
-          } else
-            repeatPasswordRef.current?.setCustomValidity(
-              adminText('passwordsDoNotMatchError')
-            );
-        }}
+        onSubmit={(): void =>
+          password.length < MIN_PASSWORD_LENGTH
+            ? passwordRef.current?.setCustomValidity(
+                adminText('passwordLengthError')
+              )
+            : password === repeatPassword
+            ? loading(
+                ping(
+                  `/api/set_password/${userId}/`,
+                  {
+                    method: 'POST',
+                    body: formData({ password }),
+                  },
+                  { expectedResponseCodes: [Http.NO_CONTENT] }
+                ).then(handleClose)
+              )
+            : repeatPasswordRef.current?.setCustomValidity(
+                adminText('passwordsDoNotMatchError')
+              )
+        }
       >
         <Label.Generic>
           {adminText('password')}

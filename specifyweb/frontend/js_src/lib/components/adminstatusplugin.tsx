@@ -7,9 +7,8 @@ import adminText from '../localization/admin';
 import type { FormMode } from '../parseform';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
-import { useBooleanState } from './hooks';
-import { LoadingScreen } from './modaldialog';
 import { useResource } from './resource';
+import { LoadingContext } from './contexts';
 
 export function AdminStatusPlugin({
   user: resource,
@@ -20,13 +19,12 @@ export function AdminStatusPlugin({
   readonly mode: FormMode;
   readonly id: string | undefined;
 }): JSX.Element {
-  const [isLoading, handeLoading, handleLoaded] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
   const [user, setUser] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
       <Button.Simple
         id={id}
         disabled={
@@ -44,25 +42,24 @@ export function AdminStatusPlugin({
             ? undefined
             : adminText('mustBeManager')
         }
-        onClick={(): void => {
-          handeLoading();
-          ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
-            method: 'POST',
-            body: {
-              admin_status: !user.isAdmin,
-            },
-            headers: {
-              Accept: 'text/plain',
-            },
-          })
-            .then(({ data }) =>
+        onClick={(): void =>
+          loading(
+            ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
+              method: 'POST',
+              body: {
+                admin_status: !user.isAdmin,
+              },
+              headers: {
+                Accept: 'text/plain',
+              },
+            }).then(({ data }) =>
               setUser({
                 ...user,
                 isAdmin: data === 'true',
               })
             )
-            .finally(handleLoaded);
-        }}
+          )
+        }
       >
         {user.isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
       </Button.Simple>

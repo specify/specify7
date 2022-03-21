@@ -107,14 +107,13 @@ export function AddLanguage({
         className="contents"
         forwardRef={formRef}
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
+        onSubmit={(): void =>
           handleAddLanguage(
             `${language.toLowerCase()}${
               country === '' ? '' : `_${country.toUpperCase()}`
             }`
-          );
-        }}
+          )
+        }
       >
         <Label.Generic>
           {commonText('language')}

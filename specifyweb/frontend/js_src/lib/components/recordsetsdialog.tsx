@@ -16,7 +16,7 @@ import { TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState } from './hooks';
 import { formatNumber } from './internationalization';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
 
@@ -33,7 +33,8 @@ function Row({
     React.useCallback(
       async () => getRelatedObjectCount(recordSet, 'recordSetItems'),
       [recordSet]
-    )
+    ),
+    false
   );
 
   return (
@@ -99,7 +100,8 @@ export function RecordSetsDialog({
   }) => JSX.Element;
 }): JSX.Element | null {
   const [data] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise])
+    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
+    true
   );
 
   const [state, setState] = React.useState<
@@ -244,7 +246,5 @@ export function RecordSetsDialog({
         }
       />
     ) : null
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }

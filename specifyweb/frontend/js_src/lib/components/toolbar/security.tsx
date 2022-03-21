@@ -30,10 +30,10 @@ import {
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import { icons } from '../icons';
 import type { UserTool } from '../main';
-import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { removeItem } from '../wbplanviewstate';
 import { crash } from '../errorboundary';
+import { LoadingContext } from '../contexts';
 
 function InstitutionView({
   institution,
@@ -94,7 +94,8 @@ function UserView({
           )
         ).then((entries) => Object.fromEntries(entries)),
       [collections]
-    )
+    ),
+    false
   );
   const initialUserRoles = React.useRef<IR<RA<number>>>({});
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
@@ -117,7 +118,8 @@ function UserView({
             return userRoles;
           }),
       [user.id, collections]
-    )
+    ),
+    false
   );
   const changesMade =
     typeof userRoles === 'object' &&
@@ -131,28 +133,32 @@ function UserView({
     commonText('leavePageDialogMessage')
   );
   const [collection, setCollection] = React.useState(initialCollection);
+  const loading = React.useContext(LoadingContext);
   return (
     <Form
-      onSubmit={(event): void => {
-        event.preventDefault();
-        if (typeof userRoles === 'undefined') return;
-        Promise.all(
-          Object.entries(userRoles)
-            .filter(
-              ([collectionId, roles]) =>
-                JSON.stringify(roles) !==
-                JSON.stringify(initialUserRoles.current[collectionId])
+      onSubmit={(): void =>
+        typeof userRoles === 'object'
+          ? loading(
+              Promise.all(
+                Object.entries(userRoles)
+                  .filter(
+                    ([collectionId, roles]) =>
+                      JSON.stringify(roles) !==
+                      JSON.stringify(initialUserRoles.current[collectionId])
+                  )
+                  .map(async ([collectionId, roles]) =>
+                    ping(
+                      `/permissions/user_roles/${collectionId}/${user.id}/`,
+                      {
+                        method: 'POST',
+                        body: roles.map((id) => ({ id })),
+                      }
+                    )
+                  )
+              ).then(handleClose)
             )
-            .map(async ([collectionId, roles]) =>
-              ping(`/permissions/user_roles/${collectionId}/${user.id}/`, {
-                method: 'POST',
-                body: roles.map((id) => ({ id })),
-              })
-            )
-        )
-          .then(handleClose)
-          .catch(crash);
-      }}
+          : undefined
+      }
     >
       <H3>{user.name}</H3>
       <Label.Generic>
@@ -245,17 +251,17 @@ function RoleView({
     changesMade,
     commonText('leavePageDialogMessage')
   );
+  const loading = React.useContext(LoadingContext);
   return (
     <Form
-      onSubmit={(event): void => {
-        event.preventDefault();
-        ping(`/permissions/role/${role.id}`, {
-          method: 'POST',
-          body: role,
-        })
-          .then(handleClose)
-          .catch(crash);
-      }}
+      onSubmit={(): void =>
+        loading(
+          ping(`/permissions/role/${role.id}`, {
+            method: 'POST',
+            body: role,
+          }).then(handleClose)
+        )
+      }
     >
       <H3>{role.name}</H3>
       <Button.LikeLink onClick={handleClose}>
@@ -359,7 +365,8 @@ function CollectionView({
     React.useCallback(
       async () => fetchRoles(collection.id, undefined).then(index),
       [collection.id]
-    )
+    ),
+    false
   );
   const [userRoles] = useAsyncState<UserRoles>(
     React.useCallback(
@@ -374,7 +381,8 @@ function CollectionView({
           ).then((entries) => Object.fromEntries(entries))
         ),
       [collection.id]
-    )
+    ),
+    false
   );
   const [state, setState] = React.useState<
     State<'MainState'> | State<'RoleState', { readonly roleId: number }>
@@ -442,7 +450,7 @@ function CollectionView({
   );
 }
 
-function SecurityPanel(): JSX.Element {
+function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
 
   const [data] = useAsyncState(
@@ -463,7 +471,8 @@ function SecurityPanel(): JSX.Element {
             )
           ),
       });
-    }, [])
+    }, []),
+    true
   );
 
   const [state, setState] = React.useState<
@@ -565,9 +574,7 @@ function SecurityPanel(): JSX.Element {
         </Container.Base>
       </div>
     </Container.Full>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }
 
 const View = createBackboneView(SecurityPanel);

@@ -14,32 +14,31 @@ export function Contexts({
   const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handle = React.useCallback(
-    async <T,>(promise: () => Promise<T>): Promise<T> => {
+    (promise: Promise<unknown>): void => {
       const holderId = holders.current.length;
       holders.current = [...holders.current, holderId];
       handleLoading();
-      return promise()
-        .then((data) => {
-          holders.current = holders.current.filter((item) => item !== holderId);
-          if (holders.current.length === 0) handleLoaded();
-          return data;
-        })
+      promise
         .catch((error: Error) => {
           crash(error);
           throw error;
+        })
+        .finally(() => {
+          holders.current = holders.current.filter((item) => item !== holderId);
+          if (holders.current.length === 0) handleLoaded();
         });
     },
     [handleLoading, handleLoaded]
   );
   return (
     <LoadingContext.Provider value={handle}>
-      {isLoading && <LoadingScreen />}
+      <LoadingScreen isLoading={isLoading} />
       {children}
     </LoadingContext.Provider>
   );
 }
 
-const LoadingContext = React.createContext<
-  <V>(promise: () => Promise<V>) => Promise<V>
+export const LoadingContext = React.createContext<
+  (promise: Promise<unknown>) => void
 >(() => error('Not defined'));
 LoadingContext.displayName = 'LoadingContext';

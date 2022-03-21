@@ -137,7 +137,8 @@ export function CollectionOneToManyPlugin({
     React.useCallback(
       async () => fetchOtherCollectionData(resource, relationship),
       [resource, relationship]
-    )
+    ),
+    true
   );
 
   const [state, setState] = React.useState<

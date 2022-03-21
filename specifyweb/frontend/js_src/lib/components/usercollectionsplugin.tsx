@@ -8,6 +8,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { Button, Form, Input, Label, Submit } from './basic';
+import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 
@@ -21,15 +22,13 @@ function UserCollectionsUi({
   readonly selectedCollections: RA<number>;
   readonly allCollections: RA<SpecifyResource<Collection>>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [selected, setSelected] =
     React.useState<RA<number>>(selectedCollections);
-  const [isLoading, handleLoading] = useBooleanState();
   const id = useId('user-collection-ui');
+  const loading = React.useContext(LoadingContext);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <Dialog
       header={adminText('userCollectionsPluginDialogTitle')}
       onClose={handleClose}
@@ -43,14 +42,14 @@ function UserCollectionsUi({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-          handleLoading();
-          void ping(`/context/user_collection_access/${userId}/`, {
-            method: 'PUT',
-            body: selected,
-          }).then(handleClose);
-        }}
+        onSubmit={(): void =>
+          loading(
+            ping(`/context/user_collection_access/${userId}/`, {
+              method: 'PUT',
+              body: selected,
+            }).then(handleClose)
+          )
+        }
       >
         {allCollections.map((collection) => (
           <Label.ForCheckbox key={collection.id}>
@@ -76,22 +75,20 @@ const fetchAllCollections = async () =>
   fetchCollection('Collection', { limit: 0 });
 
 export function UserCollectionsPlugin({
-  resource,
+  user,
 }: {
-  readonly resource: SpecifyResource<SpecifyUser>;
+  readonly user: SpecifyResource<SpecifyUser>;
 }): JSX.Element {
-  const [allCollections] = useAsyncState(fetchAllCollections);
+  const [allCollections] = useAsyncState(fetchAllCollections, false);
   const [selectedCollections] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<number>>(`/context/user_collection_access/${resource.id}/`, {
+        ajax<RA<number>>(`/context/user_collection_access/${user.id}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
-      [resource.id]
-    )
-  );
-  const [user] = useAsyncState(
-    React.useCallback(async () => resource.fetchPromise(), [resource])
+      [user.id]
+    ),
+    false
   );
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -99,14 +96,14 @@ export function UserCollectionsPlugin({
       <Button.Simple
         onClick={handleOpen}
         disabled={
-          !resource.get('isAdmin') ||
+          !user.get('isAdmin') ||
           typeof user === 'undefined' ||
           !Array.isArray(allCollections) ||
           !Array.isArray(selectedCollections) ||
           user.isNew()
         }
         title={
-          resource.get('isAdmin')
+          user.get('isAdmin')
             ? adminText('notAvailableOnAdmins')
             : typeof user === 'undefined'
             ? commonText('loading')
@@ -127,7 +124,9 @@ export function UserCollectionsPlugin({
           selectedCollections={selectedCollections}
           onClose={handleClose}
         />
-      ) : undefined}
+      ) : (
+        <LoadingScreen />
+      )}
     </>
   );
 }

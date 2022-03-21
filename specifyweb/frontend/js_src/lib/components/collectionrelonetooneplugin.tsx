@@ -17,7 +17,8 @@ export function CollectionOneToOnePlugin({
     React.useCallback(
       async () => fetchOtherCollectionData(resource, relationship),
       [resource, relationship]
-    )
+    ),
+    true
   );
   return typeof data === 'object' && data.collectionObjects.length > 0 ? (
     <Link.Default href={data.collectionObjects[0].resource.viewUrl()}>

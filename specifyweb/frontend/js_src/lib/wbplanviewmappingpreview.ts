@@ -83,7 +83,7 @@ export function generateMappingPathPreview(
 
   const toManyLocation = Array.from(mappingPath)
     .reverse()
-    .findIndex((mappingPathPart) => valueIsToManyIndex(mappingPathPart));
+    .findIndex(valueIsToManyIndex);
 
   const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
   const toManyIndexNumber = toManyIndex

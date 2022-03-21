@@ -13,7 +13,6 @@ import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import type { UserTool } from '../main';
-import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import type {
   DataObjectFormatter,
@@ -84,7 +83,9 @@ export type WithFieldInfo = {
   };
 };
 
-function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
+function SchemaConfigWrapper({
+  onClose: handleClose,
+}: Props): JSX.Element | null {
   const { language: defaultLanguage, table: defaultTable } =
     querystring.parse();
 
@@ -130,7 +131,8 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
             )
           ),
       []
-    )
+    ),
+    true
   );
   const [tables] = useAsyncState<IR<SpLocaleContainer>>(
     React.useCallback(async () => {
@@ -153,7 +155,8 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
           // Index by ID
           Object.fromEntries(tables.map((table) => [table.id, table]))
         );
-    }, [])
+    }, []),
+    true
   );
 
   const [formatters, setFormatters] = React.useState<
@@ -189,7 +192,8 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
             .filter(({ value }) => value)
         ),
       []
-    )
+    ),
+    true
   );
 
   const setHasUnloadProtect = useUnloadProtect(
@@ -201,9 +205,7 @@ function SchemaConfigWrapper({ onClose: handleClose }: Props): JSX.Element {
     typeof tables === 'undefined' ||
     typeof formatters === 'undefined' ||
     typeof aggregators === 'undefined' ||
-    typeof uiFormatters === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+    typeof uiFormatters === 'undefined' ? null : (
     <SchemaConfig
       languages={languages}
       tables={tables}

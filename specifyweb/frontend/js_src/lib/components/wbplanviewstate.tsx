@@ -11,13 +11,13 @@ import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Input, Label } from './basic';
-import { useBooleanState } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
+import { LoadingContext } from './contexts';
 
 // States
 
@@ -65,21 +65,18 @@ function TemplateSelection({
     headers: RA<string>
   ) => void;
 }): JSX.Element {
-  const [isLoading, handleLoading] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <WbsDialog
       showTemplates={true}
       onClose={handleClose}
-      onDataSetSelect={(id: number): void => {
-        handleLoading();
-        ajax<Dataset>(`/api/workbench/dataset/${id}`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        })
-          .then(({ data: { uploadplan, columns, visualorder } }) =>
+      onDataSetSelect={(id: number): void =>
+        loading(
+          ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: { Accept: 'application/json' },
+          }).then(({ data: { uploadplan, columns, visualorder } }) =>
             handleSelect(
               uploadplan,
               headers.length === 0 && Array.isArray(visualorder)
@@ -87,8 +84,8 @@ function TemplateSelection({
                 : headers
             )
           )
-          .catch(console.error);
-      }}
+        )
+      }
     />
   );
 }

@@ -10,11 +10,11 @@ import reports from '../reports';
 import { toTable } from '../specifymodel';
 import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
-import { crash } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
 import { ShowLoansCommand } from './showtranscommand';
+import { LoadingContext } from './contexts';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
@@ -26,22 +26,23 @@ const commandRenderers: {
 } = {
   GenerateLabel({ id, label, resource }) {
     const [runReport, setRunReport] = React.useState(false);
+    const loading = React.useContext(LoadingContext);
 
     React.useEffect(() => {
       if (!runReport || resource.isNew() || !Boolean(resource.get('id')))
         return;
-      // TODO: convert to React
-      reports({
-        tblId: resource.specifyModel.tableId,
-        recordToPrintId: resource.get('id'),
-        autoSelectSingle: true,
-      })
-        .then((view) => {
+      loading(
+        // TODO: convert to React
+        reports({
+          tblId: resource.specifyModel.tableId,
+          recordToPrintId: resource.get('id'),
+          autoSelectSingle: true,
+        }).then((view) => {
           setRunReport(false);
           view.render();
         })
-        .catch(crash);
-    }, [runReport, resource]);
+      );
+    }, [loading, runReport, resource]);
 
     return (
       <>

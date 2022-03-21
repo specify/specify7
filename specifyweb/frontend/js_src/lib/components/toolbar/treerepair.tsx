@@ -7,13 +7,14 @@ import { getTreeModel } from '../../schema';
 import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
-import { Button, Link, Ul } from '../basic';
+import { Button, className, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
-import { crash } from '../errorboundary';
-import { useBooleanState, useTitle } from '../hooks';
+import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { Dialog, LoadingScreen } from '../modaldialog';
+import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { LoadingContext } from '../contexts';
+import { f } from '../../wbplanviewhelper';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -22,19 +23,17 @@ export function TreeSelectDialog({
   getLink,
 }: {
   readonly onClose: () => void;
-  readonly onClick: (tree: string) => Promise<void> | void;
+  readonly onClick: undefined | ((tree: string) => Promise<void> | void);
   readonly title: string;
   readonly getLink: (tree: string) => string;
 }): JSX.Element {
-  const [isLoading, handleLoading] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
   const trees = Object.fromEntries(
     disciplineTrees.map((tree) => [tree, defined(getTreeModel(tree))])
   );
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <Dialog
       header={title}
       onClose={handleClose}
@@ -50,12 +49,15 @@ export function TreeSelectDialog({
             <li key={tree}>
               <Link.Default
                 href={getLink(tree)}
+                className={
+                  typeof handleClick === 'function'
+                    ? className.navigationHandled
+                    : undefined
+                }
                 onClick={(event): void => {
+                  if (typeof handleClick === 'undefined') return;
                   event.preventDefault();
-                  handleLoading();
-                  Promise.resolve(handleClick(tree))
-                    .then(handleClose)
-                    .catch(crash);
+                  loading(Promise.resolve(handleClick(tree)).then(handleClose));
                 }}
               >
                 <TableIcon name={tree} tableLabel={false} />
@@ -72,7 +74,7 @@ export function TreeSelectDialog({
 const handleClick = async (tree: string): Promise<void> =>
   ping(`/api/specify_tree/${tree}/repair/`, {
     method: 'POST',
-  }).then(() => undefined);
+  }).then(f.void);
 
 function RepairTree({
   onClose: handleClose,
@@ -81,20 +83,18 @@ function RepairTree({
 }): JSX.Element {
   useTitle(commonText('repairTree'));
 
-  const [isLoading, handleLoading] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
     const { tree } = querystring.parse();
     if (typeof tree === 'undefined') return;
-    handleLoading();
-    handleClick(tree).then(handleClose).catch(crash);
-  }, [handleLoading]);
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+    loading(handleClick(tree).then(handleClose));
+  }, [loading, handleClose]);
+  return (
     <TreeSelectDialog
       onClose={handleClose}
       onClick={handleClick}
       title={commonText('repairTree')}
+      // TODO: handle this sort of thing though the routing library
       getLink={(tree): string => `/specify/task/repair-tree/?tree=${tree}`}
     />
   );

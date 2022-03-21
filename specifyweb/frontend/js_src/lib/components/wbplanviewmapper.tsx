@@ -28,9 +28,8 @@ import {
   mappingPathIsComplete,
 } from '../wbplanviewutils';
 import { Button, Ul } from './basic';
-import { useBooleanState, useId } from './hooks';
+import { useId } from './hooks';
 import { icons } from './icons';
-import { LoadingScreen } from './modaldialog';
 import type { Dataset } from './wbplanview';
 import type { MappingElementProps } from './wbplanviewcomponents';
 import {
@@ -51,6 +50,7 @@ import {
   ValidationResults,
 } from './wbplanviewmappercomponents';
 import { TableIcon } from './common';
+import { LoadingContext } from './contexts';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -249,20 +249,17 @@ export function WbPlanViewMapper(props: {
       props.baseTableName,
       state.lines
         .map(({ mappingPath }) => mappingPath)
-        .filter((mappingPath) => mappingPathIsComplete(mappingPath)),
+        .filter(mappingPathIsComplete),
       state.mustMatchPreferences
     );
 
-  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
   function handleSave(ignoreValidation: boolean): void {
     const validationResults = ignoreValidation ? [] : validate();
-    if (validationResults.length === 0) {
-      handleLoading();
-      void props
-        .onSave(state.lines, state.mustMatchPreferences)
-        .then(handleLoaded);
-    } else
+    if (validationResults.length === 0)
+      loading(props.onSave(state.lines, state.mustMatchPreferences));
+    else
       dispatch({
         type: 'ValidationAction',
         validationResults,
@@ -280,9 +277,7 @@ export function WbPlanViewMapper(props: {
     typeof state.focusedLine === 'number' &&
     mappingPathIsComplete(state.mappingView);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <Layout
       title={
         <>

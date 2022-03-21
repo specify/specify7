@@ -49,7 +49,8 @@ export function AttachmentPlugin({
             )
           : { type: 'Unavailable' },
       [resource]
-    )
+    ),
+    true
   );
 
   const [uploadProgress, setUploadProgress] = React.useState<
@@ -74,7 +75,7 @@ export function AttachmentPlugin({
             .catch(crash)
             .finally(() => setUploadProgress(undefined))
         : undefined,
-    [state, resource, handleUploadComplete]
+    [setState, state, resource, handleUploadComplete]
   );
 
   return typeof state === 'undefined' ? (

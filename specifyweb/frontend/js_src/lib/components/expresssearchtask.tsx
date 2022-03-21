@@ -130,7 +130,8 @@ function Results(): JSX.Element {
             }))
         ),
       [ajaxUrl]
-    )
+    ),
+    false
   );
   const [secondaryResults] = useAsyncState<RA<RawQueryTableResult>>(
     React.useCallback(
@@ -187,7 +188,8 @@ function Results(): JSX.Element {
               })
           ),
       [query]
-    )
+    ),
+    false
   );
 
   return (

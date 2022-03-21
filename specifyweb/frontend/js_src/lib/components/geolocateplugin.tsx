@@ -11,7 +11,7 @@ import { filterArray } from '../types';
 import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 function GeoLocate({
   resource,
@@ -19,16 +19,17 @@ function GeoLocate({
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(
       async () => getGeoLocateData(resource).then((data) => data ?? false),
       [resource]
-    )
+    ),
+    true
   );
 
   React.useEffect(() => {
-    if (typeof data !== 'object') return;
+    if (typeof data !== 'object') return undefined;
 
     function listener(event: MessageEvent): void {
       if (
@@ -76,9 +77,7 @@ function GeoLocate({
     return (): void => window.removeEventListener('message', listener);
   }, [data, handleClose, resource]);
 
-  return typeof data === 'undefined' ? (
-    <LoadingScreen />
-  ) : data === false ? (
+  return typeof data === 'undefined' ? null : data === false ? (
     <Dialog
       onClose={handleClose}
       title={localityText('geographyRequiredDialogTitle')}

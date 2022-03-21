@@ -9,7 +9,7 @@ import type { RA } from '../types';
 import { f, sortObjectsByKey } from '../wbplanviewhelper';
 import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 function List({
   resources,
@@ -35,7 +35,8 @@ function List({
           )
         ),
       [resources, fieldName, displayFieldName]
-    )
+    ),
+    false
   );
 
   return resources.length === 0 ? (
@@ -59,7 +60,7 @@ export function ShowLoansCommand({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(async () => {
       const openLoanPreps = new schema.models.LoanPreparation.LazyCollection({
@@ -88,7 +89,8 @@ export function ShowLoansCommand({
           gifts: gifts.models,
           exchanges: exchanges.models,
         }));
-    }, [resource])
+    }, [resource]),
+    true
   );
 
   return typeof data === 'object' ? (
@@ -126,7 +128,5 @@ export function ShowLoansCommand({
         </>
       )}
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }

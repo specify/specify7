@@ -71,7 +71,7 @@ const pluginRenderers: {
   UserCollectionsUI({ resource }) {
     return (
       f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <UserCollectionsPlugin resource={specifyUser} />
+        <UserCollectionsPlugin user={specifyUser} />
       )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },

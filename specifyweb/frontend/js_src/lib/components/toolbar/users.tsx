@@ -9,14 +9,14 @@ import { userInformation } from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
+import { Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 
 function Users({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(commonText('manageUsers'));
   const [users] = useAsyncState<IR<string>>(
     React.useCallback(
@@ -31,7 +31,8 @@ function Users({
             )
         ),
       []
-    )
+    ),
+    true
   );
 
   return typeof users === 'object' ? (
@@ -63,9 +64,7 @@ function Users({
         ))}
       </Ul>
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }
 
 const View = createBackboneView(Users);

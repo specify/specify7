@@ -83,7 +83,8 @@ export function useViewDefinition({
                   : viewDefinition
               ),
       [viewName, formType, mode, model]
-    )
+    ),
+    false
   );
   return viewDefinition;
 }
@@ -146,7 +147,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
   );
   const [loadedResource] = useAsyncState(
-    React.useCallback(async () => resource.fetchPromise(), [resource])
+    React.useCallback(async () => resource.fetchPromise(), [resource]),
+    false
   );
   return (
     <div className="gap-y-2 flex flex-col">

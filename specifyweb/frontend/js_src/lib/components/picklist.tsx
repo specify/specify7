@@ -12,10 +12,10 @@ import { Autocomplete } from './autocomplete';
 import { Button, Input, Select } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from './combobox';
-import { crash } from './errorboundary';
 import { useValidation } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
+import { LoadingContext } from './contexts';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -117,7 +117,6 @@ export function PickListComboBox(
     else throw new Error('adding item to wrong type of picklist');
   }
 
-  const [isLoading, setIsLoading] = React.useState(false);
   const isExistingValue =
     props.items?.some((item) => item.value === value) ?? true;
 
@@ -142,7 +141,6 @@ export function PickListComboBox(
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
       {typeof props.onAdd === 'undefined' ? (
         <Select
           id={props.id}
@@ -207,7 +205,6 @@ export function PickListComboBox(
             pickList={props.pickList}
             onAdd={(): void => props.onAdd?.(pendingNewValue)}
             onClose={(): void => setPendingNewValue(undefined)}
-            onLoading={setIsLoading}
           />
         )}
     </>
@@ -219,14 +216,13 @@ function AddingToPicklist({
   pickList,
   onAdd: handleAdd,
   onClose: handleClose,
-  onLoading: handleLoading,
 }: {
   readonly value: string;
   readonly pickList: SpecifyResource<PickList>;
   readonly onAdd: () => void;
   readonly onClose: () => void;
-  readonly onLoading: (isLoading: boolean) => void;
 }): JSX.Element {
+  const loading = React.useContext(LoadingContext);
   return (
     <Dialog
       title={formsText('addToPickListConfirmationDialogTitle')}
@@ -235,21 +231,20 @@ function AddingToPicklist({
       buttons={
         <>
           <Button.Green
-            onClick={(): void => {
-              handleLoading(true);
-              pickList
-                .rgetCollection('pickListItems')
-                .then(async (items) => {
-                  const item = new schema.models.PickListItem.Resource();
-                  item.set('title', value);
-                  item.set('value', value);
-                  items.add(item);
-                  return pickList.save();
-                })
-                .then(() => handleAdd())
-                .then(() => handleLoading(false))
-                .catch(crash);
-            }}
+            onClick={(): void =>
+              loading(
+                pickList
+                  .rgetCollection('pickListItems')
+                  .then(async (items) => {
+                    const item = new schema.models.PickListItem.Resource();
+                    item.set('title', value);
+                    item.set('value', value);
+                    items.add(item);
+                    return pickList.save();
+                  })
+                  .then(handleAdd)
+              )
+            }
           >
             {commonText('add')}
           </Button.Green>

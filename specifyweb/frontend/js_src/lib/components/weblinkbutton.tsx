@@ -81,7 +81,8 @@ export function WebLinkButton({
         definition,
         isExternal: false,
       };
-    }, [resource, fieldName, webLink])
+    }, [resource, fieldName, webLink]),
+    false
   );
 
   const [{ url, isExternal }, setUrl] = React.useState<{

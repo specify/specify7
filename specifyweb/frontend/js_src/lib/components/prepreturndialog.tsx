@@ -14,7 +14,7 @@ import { fieldFormat } from '../uiparse';
 import { userInformation } from '../userinfo';
 import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
 import { replaceItem } from './wbplanviewstate';
 
@@ -160,7 +160,8 @@ function Row({
               }
         ),
       [preparation]
-    )
+    ),
+    false
   );
 
   const [showRemarks, _handleShow, _handleHide, handleToggle] =
@@ -438,7 +439,7 @@ export function LoanReturn({
 }: {
   readonly resource: SpecifyResource<Loan>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [preparations] = useAsyncState(
     React.useCallback(
       async () =>
@@ -452,7 +453,8 @@ export function LoanReturn({
             )
           ),
       [resource]
-    )
+    ),
+    true
   );
 
   return Array.isArray(preparations) ? (
@@ -467,7 +469,5 @@ export function LoanReturn({
     ) : (
       <PreparationReturn preparations={preparations} onClose={handleClose} />
     )
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }

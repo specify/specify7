@@ -172,13 +172,7 @@ export function QueryBuilder({
                 : undefined
       }
     >
-      <Form
-        className="contents"
-        onSubmit={(event): void => {
-          event.preventDefault();
-          runQuery('regular');
-        }}
-      >
+      <Form className="contents" onSubmit={(): void => runQuery('regular')}>
         <header className="gap-x-2 whitespace-nowrap flex items-center">
           <TableIcon name={model.name} />
           <H2 className="overflow-x-auto">

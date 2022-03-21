@@ -33,7 +33,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           }
         ).then(({ data }) => data),
       [model]
-    )
+    ),
+    false
   );
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();

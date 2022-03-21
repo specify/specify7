@@ -129,7 +129,8 @@ export function QueryComboBox({
          */
       }
       return false;
-    }, [resource, field])
+    }, [resource, field]),
+    false
   );
 
   const [collectionRelationships] = useAsyncState<
@@ -170,7 +171,8 @@ export function QueryComboBox({
           ]).then(([left, right]) => ({ left, right }));
         }),
       [resource]
-    )
+    ),
+    false
   );
 
   const [typeSearch] = useAsyncState<TypeSearch | false>(
@@ -227,7 +229,8 @@ export function QueryComboBox({
             })
           : false,
       [initialTypeSearch, field, initialRelatedModel]
-    )
+    ),
+    false
   );
 
   const isLoaded =
@@ -265,7 +268,8 @@ export function QueryComboBox({
                 }))
           ),
       [value, resource, field, typeSearch]
-    )
+    ),
+    false
   );
 
   const [state, setState] = React.useState<

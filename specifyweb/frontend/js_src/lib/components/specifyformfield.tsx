@@ -109,7 +109,8 @@ const fieldRenderers: {
       React.useCallback(
         async () => getResourceAndField(resource, fieldName),
         [resource, fieldName]
-      )
+      ),
+      false
     );
     return typeof data === 'undefined' ? null : (
       <ComboBox

@@ -98,7 +98,8 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
             )
           ),
         []
-      )
+      ),
+      true
     );
     return (
       <LanguageSelection

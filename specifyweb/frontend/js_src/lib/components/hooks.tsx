@@ -9,7 +9,8 @@ import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
 import { parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
-import { crash } from './errorboundary';
+import { LoadingContext } from './contexts';
+import { f } from '../wbplanviewhelper';
 
 const idStore: R<number> = {};
 
@@ -161,24 +162,67 @@ export function useValidation<T extends Input = HTMLInputElement>(
  * ```
  */
 export function useAsyncState<T>(
-  callback: () => undefined | T | Promise<T | undefined>
+  callback: () => undefined | T | Promise<T | undefined>,
+  // Show the loading screen while the promise is being resolved
+  loadingScreen: boolean
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
 ] {
   const [state, setState] = React.useState<T | undefined>(undefined);
+  const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
-    void Promise.resolve(callback())
-      .then((initialState) =>
+    const wrapped = loadingScreen ? loading : f.id;
+    void wrapped(
+      Promise.resolve(callback()).then((initialState) =>
         destructorCalled ? undefined : setState(initialState)
       )
-      .catch(crash);
+    );
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
+  }, [callback, loading, loadingScreen]);
+
+  return [state, setState];
+}
+
+/**
+ * A synchronous version of useAsyncState
+ *
+ * @remarks
+ * Like React.useState, but default value must always be a function, and when
+ * function changes, default value is recalculated and reapplied.
+ *
+ * Thus, wrap the callback in React.useCallback with dependency array that
+ * would determine when the state is recalculated.
+ *
+ * @example
+ * This will call getDefaultValue to get new default value every time
+ * dependency changes
+ * ```js
+ * const [value, setValue] = useLiveState(
+ *   React.useCallback(
+ *     getDefaultValue,
+ *     [dependency]
+ *   )
+ * );
+ * ```
+ */
+export function useLiveState<T>(
+  callback: () => T
+): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+  const [state, setState] = React.useState<T>(callback());
+
+  const isFirstRender = React.useRef(true);
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setState(callback);
   }, [callback]);
 
   return [state, setState];

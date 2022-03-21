@@ -42,7 +42,8 @@ export function HostTaxonPlugin({
           models[0]?.rgetPromise('rightSideCollection')
         )
         .then((collection) => collection?.get('id'));
-    }, [relationship])
+    }, [relationship]),
+    false
   );
   return typeof rightSideCollection === 'undefined' ? (
     <Input.Text readOnly />

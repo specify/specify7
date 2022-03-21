@@ -27,7 +27,6 @@ import { Autocomplete } from './autocomplete';
 import { Button, Container, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId, useTitle } from './hooks';
-import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
@@ -45,7 +44,7 @@ function TreeView<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-}): JSX.Element {
+}): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
@@ -101,7 +100,8 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
-    React.useCallback(async () => getRows('null'), [getRows])
+    React.useCallback(async () => getRows('null'), [getRows]),
+    true
   );
 
   const id = useId('tree-view');
@@ -114,9 +114,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLButtonElement | null>(null);
 
-  return typeof rows === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof rows === 'undefined' ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
         <TableIcon name={table.name} />

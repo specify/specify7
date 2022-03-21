@@ -11,7 +11,7 @@ import localityText from '../localization/locality';
 import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { LeafletMap } from './leaflet';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 function LeafletDialog({
   locality,
@@ -19,21 +19,20 @@ function LeafletDialog({
 }: {
   readonly locality: SpecifyResource<Locality>;
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [localityData] = useAsyncState(
     React.useCallback(
       async () => fetchLocalityDataFromLocalityResource(locality, true),
       [locality]
-    )
+    ),
+    true
   );
 
   const fullLocalityData = React.useRef<undefined | false | LocalityData>(
     undefined
   );
 
-  return typeof localityData === 'undefined' ? (
-    <LoadingScreen />
-  ) : localityData === false ? (
+  return typeof localityData === 'undefined' ? null : localityData === false ? (
     <Dialog
       header={localityText('noCoordinates')}
       onClose={handleClose}

@@ -9,13 +9,12 @@ import formsText from '../localization/forms';
 import { filterArray } from '../types';
 import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
-import { crash } from './errorboundary';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { toTable, toTables } from '../specifymodel';
+import { LoadingContext } from './contexts';
 
 type States =
   | State<'MainState'>
-  | State<'LoadingState'>
   | State<'InvalidTableState'>
   | State<'NoDataState'>
   | State<
@@ -35,26 +34,16 @@ export function PaleoLocationMapPlugin({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const [state, setState] = React.useState<States>({ type: 'MainState' });
+  const loading = React.useContext(LoadingContext);
 
   return (
     <>
       <Button.Simple
         id={id}
-        onClick={(): void => {
-          setState({
-            type: 'LoadingState',
-          });
-          fetchPaleoData(resource).then(setState).catch(crash);
-          /*
-           * .then((data) => (data ? openPaleoMap(data) : paleoRequired()))
-           * .catch(crash)
-           * .finally(handleLoaded);
-           */
-        }}
+        onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
       >
         {formsText('paleoMap')}
       </Button.Simple>
-      {state.type === 'LoadingState' && <LoadingScreen />}
       {state.type === 'InvalidTableState' && (
         <Dialog
           title={formsText('unsupportedFormDialogTitle')}

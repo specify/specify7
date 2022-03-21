@@ -1,7 +1,6 @@
 import React from 'react';
 
 import commonText from '../../localization/common';
-import * as navigation from '../../navigation';
 import { useTitle } from '../hooks';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
@@ -18,7 +17,7 @@ function RepairTree({
   return (
     <TreeSelectDialog
       onClose={handleClose}
-      onClick={(tree): void => navigation.go(`/specify/tree/${tree}/`)}
+      onClick={undefined}
       title={commonText('treesDialogTitle')}
       getLink={(tree): string => `/specify/tree/${tree}/`}
     />

@@ -65,7 +65,8 @@ function DsMeta({
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dsId]
-    )
+    ),
+    true
   );
 
   return typeof dataset === 'object' ? (
@@ -74,9 +75,7 @@ function DsMeta({
       onClose={handleClose}
       onChange={handleClose}
     />
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }
 
 function TableHeader({

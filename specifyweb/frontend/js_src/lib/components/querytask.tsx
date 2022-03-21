@@ -15,7 +15,7 @@ import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
@@ -29,7 +29,8 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
         id: Number.parseInt(recordSetId),
       });
       return recordSet.fetchPromise();
-    }, [])
+    }, []),
+    true
   );
 
   return recordSet;
@@ -41,28 +42,27 @@ function QueryBuilderWrapper({
 }: {
   query: SpecifyResource<SpQuery>;
   recordSet?: SpecifyResource<RecordSet> | false;
-}) {
-  const [pickListsLoading = true] = useAsyncState(async () =>
-    fetchPickLists().then(() => false)
+}): JSX.Element | null {
+  const [isLoaded = false] = useAsyncState(
+    async () => fetchPickLists().then(() => true),
+    true
   );
 
-  return pickListsLoading ? (
-    <LoadingScreen />
-  ) : (
+  return isLoaded ? (
     <QueryBuilder
       query={query}
       readOnly={userInformation.isReadOnly}
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
-  );
+  ) : null;
 }
 
 function QueryBuilderById({
   queryId,
 }: {
   readonly queryId: number;
-}): JSX.Element {
+}): JSX.Element | null {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
@@ -71,13 +71,13 @@ function QueryBuilderById({
         else throw error;
         return undefined;
       });
-    }, [queryId])
+    }, [queryId]),
+    false
   );
   const recordSet = useQueryRecordSet();
 
-  return typeof query === 'undefined' || typeof recordSet === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof query === 'undefined' ||
+    typeof recordSet === 'undefined' ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
@@ -106,7 +106,7 @@ export function createQuery(
 }
 
 function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
-  const [query] = useAsyncState<SpecifyResource<SpQuery>>(
+  const [query] = useLiveState<SpecifyResource<SpQuery> | undefined>(
     React.useCallback(() => {
       const model = getModel(tableName);
       if (typeof model === 'undefined') {
@@ -133,17 +133,16 @@ function QueryBuilderFromTree({
 }: {
   readonly tableName: AnyTree['tableName'];
   readonly nodeId: number;
-}): JSX.Element {
+}): JSX.Element | null {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
       async () => queryFromTree(tableName, nodeId),
       [tableName, nodeId]
-    )
+    ),
+    true
   );
 
-  return typeof query === 'undefined' ? (
-    <LoadingScreen />
-  ) : (
+  return typeof query === 'undefined' ? null : (
     <QueryBuilderWrapper query={query} />
   );
 }

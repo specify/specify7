@@ -35,9 +35,14 @@ export const loadingBar = (
  * Modal dialog with a loading bar
  * @module
  */
-export function LoadingScreen(): JSX.Element {
+export function LoadingScreen({
+  isLoading = true,
+}: {
+  readonly isLoading?: boolean;
+}): JSX.Element {
   return (
     <Dialog
+      isOpen={isLoading}
       header={commonText('loading')}
       className={{ container: dialogClassNames.narrowContainer }}
       buttons={undefined}
@@ -75,6 +80,7 @@ const getNextIndex = (): number =>
 /*
  * TODO: disable outside click detection while resizing the dialog
  * TODO: reset scrollTop if title and header changed
+ * TODO: consider hiding dialogs while loading context is true
  */
 export function Dialog({
   /*
@@ -82,6 +88,7 @@ export function Dialog({
    * allows for smooth dialog close animation
    */
   // TODO: consider getting rid of this
+  // TODO: test if it works, and if animations could be made to work without it
   isOpen = true,
   title: initialTitle,
   header,

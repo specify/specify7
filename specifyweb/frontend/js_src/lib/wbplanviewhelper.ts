@@ -217,7 +217,7 @@ export const f = {
   void: (): void => undefined,
   undefined: (): undefined => undefined,
   /** Call first argument */
-  call: <T>(function_: (...args: RA<never>) => T): T => function_(),
+  exec: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],
   unary:
     <ARGUMENT, RETURN>(
@@ -310,4 +310,9 @@ export const f = {
       tapFunction(...args);
       return action(...args);
     },
+  /**
+   * Calls a function without any arguments.
+   * Useful when mapping over a list of functions
+   */
+  call: <RETURN>(callback: () => RETURN): RETURN => callback(),
 } as const;

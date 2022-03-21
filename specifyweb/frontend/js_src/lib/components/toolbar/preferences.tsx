@@ -4,10 +4,10 @@ import commonText from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
 import { Button, Container, Form, H2, H3, Submit } from '../basic';
-import { useBooleanState, useId, useTitle } from '../hooks';
+import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { LoadingContext } from '../contexts';
 
 function Preferences({
   onClose: handleClose,
@@ -16,32 +16,30 @@ function Preferences({
 }): JSX.Element {
   useTitle(commonText('preferences'));
 
-  const [changesMade, setChangesMade] = React.useState(false);
-  const [isLoading, handleLoading] = useBooleanState();
+  const [changesMade, _setChangesMade] = React.useState(false);
 
+  const loading = React.useContext(LoadingContext);
   const id = useId('preferences');
 
   return (
     <Container.Full>
       <H2>{commonText('preferences')}</H2>
-      {isLoading && <LoadingScreen />}
       <Form
         className="flex flex-col flex-1 gap-6 overflow-y-auto"
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-          handleLoading();
+        onSubmit={(): void =>
           // TODO: save changes
-        }}
+          loading(Promise.resolve())
+        }
       >
         {Object.entries(
           preferenceDefinitions as GenericPreferencesCategories
         ).map(
-          ([category, { title, description = undefined, subcategories }]) => (
+          ([category, { title, description = undefined, subCategories }]) => (
             <section key={category} className="flex flex-col gap-4">
               <H3>{title}</H3>
               {typeof description === 'string' && <p>{description}</p>}
-              {Object.entries(subcategories).map(
+              {Object.entries(subCategories).map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section key={subcategory} className="flex flex-col gap-2">
                     <h4>{title}</h4>

@@ -108,8 +108,9 @@ const cellRenderers: {
                   )
               )
             : false,
-        [field, resource]
-      )
+        [field, resource, formType, mode]
+      ),
+      false
     );
     return typeof interactionCollection ===
       'undefined' ? null : interactionCollection === false ? (

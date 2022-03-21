@@ -71,7 +71,7 @@ function toUploadTable(
   );
   const [toOne, toMany] = split(relationships, ({ mappingPath }) =>
     valueIsToManyIndex(mappingPath[1])
-  ).map((group) => indexMappings(group));
+  ).map(indexMappings);
 
   return {
     wbcols: Object.fromEntries(

@@ -5,6 +5,7 @@ import $ from 'jquery';
 import type Backbone from './backbone';
 import { openDialogs } from './components/modaldialog';
 import { getCurrentUrl, push } from './navigation';
+import { f } from './wbplanviewhelper';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;
@@ -32,7 +33,7 @@ export function setCurrentView(view: Backbone.View): void {
    * Close any open dialogs, unless rendering for the first time
    * (e.g, UserTools dialog can be opened by the user before first render)
    */
-  if (!isFirstRender) Array.from(openDialogs, (close) => close());
+  if (!isFirstRender) Array.from(openDialogs, f.call);
   isFirstRender = false;
 
   currentView = view;

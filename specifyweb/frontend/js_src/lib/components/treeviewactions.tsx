@@ -11,9 +11,10 @@ import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
-import { useAsyncState, useBooleanState } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { useBooleanState, useLiveState } from './hooks';
+import { Dialog } from './modaldialog';
 import { getDefaultFormMode, ResourceView } from './resourceview';
+import { LoadingContext } from './contexts';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -239,7 +240,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly onSaved: (addAnother: boolean) => void;
   readonly onDeleted: () => void;
 }): JSX.Element | null {
-  const [resource] = useAsyncState<SpecifyResource<AnySchema>>(
+  const [resource] = useLiveState<SpecifyResource<AnySchema>>(
     React.useCallback(() => {
       const model = schema.models[tableName] as SpecifyModel<AnyTree>;
       const parentNode = new model.Resource({ id });
@@ -252,7 +253,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
     }, [id, tableName, addNew])
   );
 
-  return typeof resource === 'object' ? (
+  return (
     <ResourceView
       resource={resource}
       dialog="modal"
@@ -266,7 +267,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       onDeleted={handleDeleted}
       isSubForm={false}
     />
-  ) : null;
+  );
 }
 
 function ActiveAction<SCHEMA extends AnyTree>({
@@ -293,7 +294,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const treeName = model.label;
 
   const [showPrompt, setShowPrompt] = React.useState(false);
-  const [isLoading, handleLoading] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<undefined | string>(undefined);
 
   const action = async (): Promise<number> =>
@@ -361,8 +362,6 @@ function ActiveAction<SCHEMA extends AnyTree>({
           <br />
           {error}
         </Dialog>
-      ) : isLoading ? (
-        <LoadingScreen />
       ) : showPrompt ? (
         <Dialog
           header={
@@ -379,12 +378,13 @@ function ActiveAction<SCHEMA extends AnyTree>({
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Button.Blue
-                onClick={(): void => {
-                  handleLoading();
-                  action()
-                    .then(handleCompleteAction)
-                    .catch((error: Error) => setError(error.toString()));
-                }}
+                onClick={(): void =>
+                  loading(
+                    action()
+                      .then(handleCompleteAction)
+                      .catch((error: Error) => setError(error.toString()))
+                  )
+                }
               >
                 {type === 'move'
                   ? treeText('moveNode')

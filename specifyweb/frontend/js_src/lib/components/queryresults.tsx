@@ -27,7 +27,7 @@ async function resourceToLink(
   const resource = new model.Resource({ id });
   return resource
     .fetchPromise()
-    .then(async (resource) => format(resource))
+    .then(format)
     .then((string) => (
       <Link.NewTab href={resource.viewUrl()}>{string ?? id}</Link.NewTab>
     ))
@@ -150,7 +150,8 @@ function QueryResult({
     React.useCallback(
       () => recordFormatter?.(result),
       [result, recordFormatter]
-    )
+    ),
+    false
   );
 
   const cells = result

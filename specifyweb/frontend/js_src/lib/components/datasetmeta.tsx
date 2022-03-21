@@ -27,9 +27,10 @@ import {
 } from './basic';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { LoadingContext } from './contexts';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   const createdByAgentResource = new schema.models.Agent.Resource({
@@ -79,6 +80,8 @@ export function DataSetMeta({
       .catch(console.error);
   }, [dataset.createdbyagent, dataset.modifiedbyagent]);
 
+  const loading = React.useContext(LoadingContext);
+
   return (
     <Dialog
       header={wbText('dataSetMetaDialogTitle')}
@@ -92,11 +95,9 @@ export function DataSetMeta({
     >
       <Form
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-
-          void (
-            name.trim() === dataset.name && remarks.trim() === dataset.remarks
+        onSubmit={(): void =>
+          loading(
+            (name.trim() === dataset.name && remarks.trim() === dataset.remarks
               ? Promise.resolve(dataset.name)
               : uniquifyDataSetName(name.trim(), dataset.id).then(
                   async (uniqueName) =>
@@ -111,8 +112,9 @@ export function DataSetMeta({
                       return uniqueName;
                     })
                 )
-          ).then((name) => handleChange(name));
-        }}
+            ).then(handleChange)
+          )
+        }
       >
         <Label.Generic>
           <b>{wbText('dataSetName')}</b>
@@ -233,17 +235,18 @@ function ChangeOwner({
   readonly dataset: Dataset;
   readonly onClose: () => void;
   readonly onChanged: () => void;
-}): JSX.Element {
-  const [users] =
-    useAsyncState<RA<SerializedResource<SpecifyUser>>>(fetchListOfUsers);
+}): JSX.Element | null {
+  const [users] = useAsyncState<RA<SerializedResource<SpecifyUser>>>(
+    fetchListOfUsers,
+    true
+  );
 
   const id = useId('change-data-set-owner');
   const [newOwner, setNewOwner] = React.useState<number | undefined>(undefined);
   const [isChanged, setIsChanged] = React.useState(false);
+  const loading = React.useContext(LoadingContext);
 
-  return typeof users === 'undefined' ? (
-    <LoadingScreen />
-  ) : isChanged ? (
+  return typeof users === 'undefined' ? null : isChanged ? (
     <Dialog
       title={wbText('dataSetOwnerChangedDialogTitle')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
@@ -265,18 +268,19 @@ function ChangeOwner({
       }
     >
       <Form
-        onSubmit={(event): void => {
-          event.preventDefault();
-          void ping(`/api/workbench/transfer/${dataset.id}/`, {
-            method: 'POST',
-            body: {
-              specifyuserid: newOwner,
-            },
-            headers: {
-              Accept: 'application/json',
-            },
-          }).then(() => setIsChanged(true));
-        }}
+        onSubmit={(): void =>
+          loading(
+            ping(`/api/workbench/transfer/${dataset.id}/`, {
+              method: 'POST',
+              body: {
+                specifyuserid: newOwner,
+              },
+              headers: {
+                Accept: 'application/json',
+              },
+            }).then(() => setIsChanged(true))
+          )
+        }
       >
         <Label.Generic>
           <p>{wbText('changeDataSetOwnerDialogMessage')}</p>

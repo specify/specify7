@@ -445,6 +445,21 @@ export function QueryLineFilter({
   readonly parser: Parser;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element | null {
+  const parser = queryFieldFilters[filter.type].hasParser
+    ? originalParser
+    : ({
+        ...omit(originalParser, [
+          'pattern',
+          'min',
+          'max',
+          'step',
+          'formatters',
+          'parser',
+          'validators',
+        ]),
+        type: 'text',
+      } as const);
+
   const [pickListItems] = useAsyncState(
     React.useCallback(
       () =>
@@ -455,8 +470,9 @@ export function QueryLineFilter({
                 : undefined
             )
           : undefined,
-      [originalParser.pickListName]
-    )
+      [parser.pickListName]
+    ),
+    false
   );
 
   const previousFilter = React.useRef<QueryFieldFilter>(filter.type);
@@ -472,21 +488,6 @@ export function QueryLineFilter({
       );
     previousFilter.current = filter.type;
   }, [handleChange, filter]);
-
-  const parser = queryFieldFilters[filter.type].hasParser
-    ? originalParser
-    : ({
-        ...omit(originalParser, [
-          'pattern',
-          'min',
-          'max',
-          'step',
-          'formatters',
-          'parser',
-          'validators',
-        ]),
-        type: 'text',
-      } as const);
 
   const Component = queryFieldFilters[filter.type].component;
   return typeof Component === 'undefined' ? null : (

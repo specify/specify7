@@ -14,6 +14,7 @@ import {NotFoundView} from './notfoundview';
 import {setCurrentView} from './specifyapp';
 import {crash, UnhandledErrorView} from './components/errorboundary';
 import {showDialog} from './components/modaldialog';
+import {f} from './wbplanviewhelper';
 
 $.ajaxSetup({
   beforeSend: function (xhr, settings) {
@@ -74,7 +75,7 @@ export default function appStart() {
   console.info('specify app starting');
   businessRules.enable(true);
   tasksPromise
-    .then((execute) => execute())
+    .then(f.call)
     .then(() => navigation.start())
     .catch(crash);
 

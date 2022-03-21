@@ -3,30 +3,29 @@ import React from 'react';
 import { ajax, formData, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
-import { useBooleanState, useId, useTitle, useValidation } from '../hooks';
+import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
-import { Dialog, LoadingScreen } from '../modaldialog';
+import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { LoadingContext } from '../contexts';
 
 function MasterKey({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(commonText('generateMasterKey'));
 
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
   );
-  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
   const id = useId('master-key');
 
   const { validationRef, setValidation } = useValidation();
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : typeof masterKey === 'string' ? (
+  return typeof masterKey === 'string' ? (
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   ) : (
     <Dialog
@@ -43,32 +42,31 @@ function MasterKey({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-          handleLoading();
-          ajax(
-            '/api/master_key/',
-            {
-              method: 'POST',
-              body: formData({ password }),
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                Accept: 'text/plain',
+        onSubmit={(): void =>
+          loading(
+            ajax(
+              '/api/master_key/',
+              {
+                method: 'POST',
+                body: formData({ password }),
+                headers: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  Accept: 'text/plain',
+                },
               },
-            },
-            {
-              expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
-            }
-          )
-            .then(({ data, status }) =>
-              status === Http.FORBIDDEN
-                ? setValidation(commonText('incorrectPassword'))
-                : setMasterKey(data)
+              {
+                expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
+              }
             )
-            // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-            .catch((error: Error) => setValidation(error.message))
-            .finally(handleLoaded);
-        }}
+              .then(({ data, status }) =>
+                status === Http.FORBIDDEN
+                  ? setValidation(commonText('incorrectPassword'))
+                  : setMasterKey(data)
+              )
+              // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+              .catch((error: Error) => setValidation(error.message))
+          )
+        }
       >
         <Label.Generic>
           {commonText('userPassword')}

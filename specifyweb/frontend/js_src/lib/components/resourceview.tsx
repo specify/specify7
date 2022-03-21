@@ -28,7 +28,7 @@ import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
@@ -406,7 +406,7 @@ export function ShowResource({
   resource: SpecifyResource<AnySchema>;
   recordSet: SpecifyResource<RecordSet> | undefined;
   pushUrl: boolean;
-}): JSX.Element {
+}): JSX.Element | null {
   const [{ resource, recordSet }, setRecord] = React.useState({
     resource: initialResource,
     recordSet: initialRecordSet,
@@ -441,7 +441,8 @@ export function ShowResource({
             .then(({ totalCount }) => totalCount)
             .catch(crash)
         : undefined;
-    }, [resource])
+    }, [resource]),
+    true
   );
 
   function handleSaved({
@@ -468,9 +469,7 @@ export function ShowResource({
   }
 
   return typeof recordSet === 'object' ? (
-    typeof recordSetItemIndex === 'undefined' ? (
-      <LoadingScreen />
-    ) : (
+    typeof recordSetItemIndex === 'undefined' ? null : (
       <RecordSetView
         dialog={false}
         mode={getDefaultFormMode()}

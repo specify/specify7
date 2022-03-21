@@ -114,9 +114,7 @@ export function deduplicateMappings(
   focusedLine: number | false
 ): RA<MappingLine> {
   const duplicateMappingIndexes = findDuplicateMappings(
-    lines
-      .map(({ mappingPath }) => mappingPath)
-      .filter((mappingPath) => mappingPathIsComplete(mappingPath)),
+    lines.map(({ mappingPath }) => mappingPath).filter(mappingPathIsComplete),
     focusedLine
   );
 

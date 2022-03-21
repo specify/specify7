@@ -64,7 +64,7 @@ export function setPref<
       prefs[category][subcategory] = undefined;
     if (filterArray(Object.values(prefs[category])).length === 0)
       prefs[category] = undefined;
-    prefUpdateListeners.forEach(f.call);
+    prefUpdateListeners.forEach(f.exec);
   }
   requestPreferencesSync();
 }
@@ -139,7 +139,7 @@ async function syncPreferences(): Promise<void> {
 
 function handlePreferencesUpdate(data: typeof preferences): void {
   preferences = data;
-  prefUpdateListeners.forEach(f.call);
+  prefUpdateListeners.forEach(f.exec);
 }
 
 const fetchPreferences = async (): Promise<typeof preferences> =>
@@ -153,7 +153,7 @@ const fetchPreferences = async (): Promise<typeof preferences> =>
       },
     },
     {
-      // TODO: test what does the parser on 404
+      // TODO: test what does the parser do on 404
       expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
     }
   ).then(({ data, status }) => (status === Http.NOT_FOUND ? {} : data));

@@ -4,12 +4,13 @@ import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
+import { deferredToPromise } from '../resourceapi';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
+import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
-import { useBooleanState, useId } from './hooks';
-import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
-import { deferredToPromise } from '../resourceapi';
+import { useId } from './hooks';
+import { Dialog, dialogClassNames } from './modaldialog';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -33,21 +34,19 @@ export function QuerySaveDialog({
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly onSaved: (queryId: number) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const id = useId('id');
   const [name, setName] = React.useState<string>(query.get('name'));
-  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+
+  const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
-    handleLoaded();
     doSave(query, name, isSaveAs).then(handleClose).catch(crash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleLoaded]);
+  }, []);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <Dialog
       header={
         isSaveAs
@@ -73,11 +72,9 @@ export function QuerySaveDialog({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(event): void => {
-          event.preventDefault();
-          handleLoading();
-          doSave(query, name, isSaveAs).then(handleSaved).catch(crash);
-        }}
+        onSubmit={(): void =>
+          loading(doSave(query, name, isSaveAs).then(handleSaved))
+        }
       >
         <Label.Generic>
           {queryText('queryName')}
