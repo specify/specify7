@@ -16,6 +16,35 @@ class PolicyRegistry(LoginRequiredMixin, View):
     def get(self, request):
         return http.JsonResponse(registry, safe=False)
 
+policy_registry = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns the permissions resources and actions checked by the server.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "The resources.",
+                            "example": {
+                                "/table/agent": ["read"],
+                                "/table/collectionobject": ["create", "read", "update", "delete"],
+                            },
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "The supported actions for the resource."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})(PolicyRegistry.as_view())
+
 class PoliciesUserPT(PermissionTarget):
     resource = "/permissions/policies/user"
     update = PermissionTargetAction()

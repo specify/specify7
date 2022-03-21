@@ -9,6 +9,6 @@ urlpatterns = [
     path('roles/<int:collectionid>/', views.roles),
     path('library_role/<int:roleid>/', views.library_role),
     path('library_roles/', views.library_roles),
-    path('registry/', views.PolicyRegistry.as_view()),
+    path('registry/', views.policy_registry),
     path('query/', views.query_view),
 ]
