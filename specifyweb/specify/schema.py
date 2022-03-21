@@ -201,6 +201,39 @@ def generate_openapi_for_tables():
                     table.django_name: table_to_schema(table)
                     for table in datamodel.tables
                 },
+                "_permission_denied_error": {
+                    "type": "object",
+                    "properties": {
+                        "NoMatchingRuleException": {
+                            "description": "One or more permissions checks failed during the request due to no policy rule matching the requested actions.",
+                            "type": "array",
+                            "items": {
+                                "description": "The action(s) which failed the permissions check.",
+                                "type": "object",
+                                "properties": {
+                                    "action": {
+                                        "type": "string",
+                                        "description": "The specific action which was not allowed."
+                                    },
+                                    "resource": {
+                                        "type": "string",
+                                        "description": "The resource to which the action applied."
+                                    },
+                                    "collectionid": {
+                                        "type": "integer",
+                                        "description": "The collection within which the action was applied."
+                                    },
+                                    "userid": {
+                                        "type": "integer",
+                                        "description": "The user attempting the action."
+                                    },
+                                },
+                                "additionalProperties": False,
+                                "required": ["collectionid", "userid", "resource", "action"],
+                            }
+                        }
+                    }
+                },
                 "_collection_get": {
                     "type": "object",
                     "properties": {
@@ -362,6 +395,14 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                     },
                                 },
                             },
+                        },
+                        "403": {
+                            "description": "Permission denied",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/_permission_denied_error" }
+                                }
+                            }
                         },
                     },
                 },
