@@ -165,5 +165,8 @@ export function parseFormCell(
     parser = processFieldType.Text;
   }
 
-  return { isReadOnly, ...parser(cell, properties) };
+  return {
+    isReadOnly,
+    ...parser(cell, properties),
+  };
 }

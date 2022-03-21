@@ -42,6 +42,7 @@ const getAttachmentFormDefinition = (
           isRequired: false,
           colSpan: 1,
           align: 'left',
+          visible: true,
         },
       ],
     ],
@@ -158,8 +159,16 @@ export function RenderForm<SCHEMA extends AnySchema>({
           {viewDefinition.rows.map((cells, index) => (
             <div className="contents" key={index}>
               {cells.map(
-                ({ colSpan, align, id: cellId, ...cellData }, index) => (
-                  <DataEntry.Cell key={index} colSpan={colSpan} align={align}>
+                (
+                  { colSpan, align, visible, id: cellId, ...cellData },
+                  index
+                ) => (
+                  <DataEntry.Cell
+                    key={index}
+                    colSpan={colSpan}
+                    align={align}
+                    visible={visible}
+                  >
                     <FormCell
                       resource={loadedResource}
                       mode={viewDefinition.mode}

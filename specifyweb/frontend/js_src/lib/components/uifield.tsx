@@ -105,6 +105,7 @@ export function Field({
   return (
     <Input.Generic
       forwardRef={validationRef}
+      name={field?.name}
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')

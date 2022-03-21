@@ -161,14 +161,16 @@ export const DataEntry = {
     {
       colSpan: number;
       align: string;
+      visible: boolean;
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, ...props }) => ({
+    ({ colSpan, align, visible, ...props }) => ({
       ...props,
       style: {
+        visibility: visible ? undefined : 'hidden',
         gridColumn:
           colSpan === 1 ? undefined : `span ${colSpan} / span ${colSpan}`,
         alignItems:

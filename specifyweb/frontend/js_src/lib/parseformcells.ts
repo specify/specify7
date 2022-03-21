@@ -169,6 +169,7 @@ export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly id: string | undefined;
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;
+  readonly visible: boolean;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -208,6 +209,7 @@ export function parseFormCellDefinition(
       : cellType === 'Label'
       ? 'right'
       : 'left',
+    visible: properties.visible?.toLowerCase() !== 'false',
     ...parsedCell({ cell: cellNode, model, properties }),
   };
 }

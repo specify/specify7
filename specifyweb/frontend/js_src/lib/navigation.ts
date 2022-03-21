@@ -217,7 +217,7 @@ export function navigate(
     }
   };
 
-  if (unloadBlockers.length > 0 && options.trigger !== true)
+  if (unloadBlockers.length > 0 && options.trigger !== false)
     confirmNavigation(cont, () => {
       /* Nothing */
     });

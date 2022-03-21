@@ -9,6 +9,7 @@ import { Button, Form, Input, Label, Submit } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
+import { deferredToPromise } from '../resourceapi';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -19,7 +20,7 @@ async function doSave(
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
-  return Promise.resolve(clonedQuery.save()).then(() => clonedQuery.id);
+  return deferredToPromise(clonedQuery.save()).then(() => clonedQuery.id);
 }
 
 export function QuerySaveDialog({

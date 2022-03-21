@@ -107,6 +107,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 colSpan={cell.colSpan}
                 align={cell.align}
                 title={title}
+                visible={true}
                 // TODO: add column sorting option
               >
                 {children}
@@ -135,11 +136,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                       }
                     />
                   </div>
-                  <div
+                  <DataEntry.Cell
                     role="cell"
-                    style={{
-                      gridColumn: `span ${viewDefinition.columns.length} / span ${viewDefinition.columns.length}`,
-                    }}
+                    colSpan={viewDefinition.columns.length}
+                    align="left"
+                    visible={true}
                   >
                     <SpecifyForm
                       resource={resource}
@@ -148,7 +149,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       mode={mode}
                       hasHeader={false}
                     />
-                  </div>
+                  </DataEntry.Cell>
                 </>
               ) : (
                 <>
@@ -166,22 +167,16 @@ export function FormTable<SCHEMA extends AnySchema>({
                     />
                   </div>
                   {viewDefinition.rows[0].map(
-                    ({ colSpan, align, id: cellId, ...cellData }, index) => (
-                      <div
+                    (
+                      { colSpan, align, visible, id: cellId, ...cellData },
+                      index
+                    ) => (
+                      <DataEntry.Cell
                         role="cell"
                         key={index}
-                        style={{
-                          gridColumn:
-                            typeof colSpan === 'number'
-                              ? `span ${colSpan} / span ${colSpan}`
-                              : undefined,
-                          alignSelf:
-                            align === 'right'
-                              ? 'end'
-                              : align === 'center'
-                              ? 'center'
-                              : 'left',
-                        }}
+                        colSpan={colSpan}
+                        align={align}
+                        visible={visible}
                       >
                         <FormCell
                           resource={resource}
@@ -193,7 +188,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             id(`${index}-${suffix}`)
                           }
                         />
-                      </div>
+                      </DataEntry.Cell>
                     )
                   )}
                 </>

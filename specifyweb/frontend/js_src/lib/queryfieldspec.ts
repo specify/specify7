@@ -71,11 +71,15 @@ export class QueryFieldSpec {
   > {
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
-      `${this.getField()?.name ?? ''}${
-        typeof this.datePart === 'string' && this.datePart !== 'fullDate'
-          ? `Numeric${capitalize(this.datePart)}`
-          : ''
-      }`,
+      typeof this.treeRank === 'string' &&
+      this.treeRank !== anyTreeRank &&
+      this.getField()?.name === 'fullName'
+        ? undefined
+        : `${this.getField()?.name ?? ''}${
+            typeof this.datePart === 'string' && this.datePart !== 'fullDate'
+              ? `Numeric${capitalize(this.datePart)}`
+              : ''
+          }`,
     ]).join(' ');
     const tableList = this.makeTableList();
 

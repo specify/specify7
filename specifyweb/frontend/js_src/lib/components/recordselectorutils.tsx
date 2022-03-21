@@ -82,7 +82,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   // Fetch records if needed
   React.useEffect(() => {
     if (isLazy)
-      Promise.resolve(collection.fetchPromise())
+      collection
+        .fetchPromise()
         .then(handleLoaded)
         .then(() => setRecords(getRecords))
         .catch(crash);
