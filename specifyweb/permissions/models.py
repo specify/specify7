@@ -21,9 +21,17 @@ class UserPolicy(models.Model):
 class Role(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=1024)
+    description = models.TextField(default='')
 
     class Meta:
         db_table = 'sprole'
+
+class LibraryRole(models.Model):
+    name = models.CharField(max_length=1024)
+    description = models.TextField(default='')
+
+    class Meta:
+        db_table = 'splibraryrole'
 
 class UserRole(models.Model):
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
@@ -39,3 +47,11 @@ class RolePolicy(models.Model):
 
     class Meta:
         db_table = 'sprolepolicy'
+
+class LibraryRolePolicy(models.Model):
+    role = models.ForeignKey(LibraryRole, on_delete=models.CASCADE, related_name='policies')
+    resource = models.CharField(max_length=1024)
+    action = models.CharField(max_length=1024)
+
+    class Meta:
+        db_table = 'splibraryrolepolicy'
