@@ -9,7 +9,7 @@ import React from 'react';
 import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { Button, H2, Input, Label } from './basic';
+import { Button, H2, Input, Label, Select } from './basic';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -117,13 +117,13 @@ function PreferencesDialog({
         <H2>{wbText('navigationOptions')}</H2>
         <Label.Generic>
           {wbText('cursorPriority')}
-          <select
-            onChange={({ target }): void =>
+          <Select
+            onValueChange={(value): void =>
               handleChange({
                 ...searchPreferences,
                 navigation: {
                   ...searchPreferences.navigation,
-                  direction: target.value as NavigationDirection,
+                  direction: value as NavigationDirection,
                 },
               })
             }
@@ -131,7 +131,7 @@ function PreferencesDialog({
           >
             <option value="columnFirst">{wbText('columnFirst')}</option>
             <option value="rowFirst">{wbText('rowFirst')}</option>
-          </select>
+          </Select>
         </Label.Generic>
       </div>
 
@@ -171,13 +171,13 @@ function PreferencesDialog({
         <H2>{wbText('replaceOptions')}</H2>
         <Label.Generic>
           {wbText('replaceMode')}
-          <select
-            onChange={({ target }): void =>
+          <Select
+            onValueChange={(value): void =>
               handleChange({
                 ...searchPreferences,
                 replace: {
                   ...searchPreferences.replace,
-                  replaceMode: target.value as ReplaceMode,
+                  replaceMode: value as ReplaceMode,
                 },
               })
             }
@@ -185,7 +185,7 @@ function PreferencesDialog({
           >
             <option value="replaceAll">{wbText('replaceAll')}</option>
             <option value="replaceNext">{wbText('replaceNext')}</option>
-          </select>
+          </Select>
         </Label.Generic>
       </div>
     </Dialog>

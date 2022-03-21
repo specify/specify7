@@ -12,7 +12,7 @@ export function CollectionOneToOnePlugin({
 }: {
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
-}): JSX.Element {
+}): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(
       async () => fetchOtherCollectionData(resource, relationship),
@@ -23,7 +23,5 @@ export function CollectionOneToOnePlugin({
     <Link.Default href={data.collectionObjects[0].resource.viewUrl()}>
       {data.collectionObjects[0].formatted}
     </Link.Default>
-  ) : (
-    <></>
-  );
+  ) : null;
 }

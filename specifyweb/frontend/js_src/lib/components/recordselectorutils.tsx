@@ -76,6 +76,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof collectionapi.Dependent;
   const isLazy = collection instanceof collectionapi.Lazy;
+  const field = defined(collection.field?.getReverse());
+  const isToOne = !relationshipIsToMany(field);
 
   // Fetch records if needed
   React.useEffect(() => {
@@ -85,7 +87,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .then(() => setRecords(getRecords))
         .catch(crash);
     else handleLoaded();
-  }, [collection, isLazy, getRecords]);
+  }, [collection, isLazy, getRecords, handleLoaded]);
 
   // Listen for changes to collection
   React.useEffect(() => {
@@ -109,7 +111,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       relatedResource={isDependent ? collection.related : undefined}
       records={records}
       onAdd={(resource): void => {
-        if (isDependent) collection.related?.placeInSameHierarchy(resource);
+        if (isDependent && isToOne)
+          collection.related?.placeInSameHierarchy(resource);
         collection.add(resource);
         handleAdd?.(resource);
         // Updates the state to trigger a reRender
@@ -158,7 +161,8 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
 }): JSX.Element {
   const isDependent = collection instanceof collectionapi.Dependent;
-  const isToOne = !relationshipIsToMany(collection.field);
+  const field = defined(collection.field?.getReverse());
+  const isToOne = !relationshipIsToMany(field);
   const disableAdding = isToOne && collection.models.length > 0;
   return formType === 'formTable' ? (
     <FormTableCollection
@@ -188,61 +192,47 @@ export function IntegratedRecordSelector({
       {({
         dialogs,
         slider,
-        index,
         resource,
         onAdd: handleAdd,
         onRemove: handleRemove,
       }): JSX.Element => (
         <>
-          {typeof resource === 'object' ? (
-            <ResourceView
-              resource={resource}
-              dialog={dialog}
-              title={`${
-                collection.field?.label ?? collection.model.specifyModel?.label
-              } (${collection.models.length})`}
-              headerButtons={
-                <>
-                  <span className="flex-1 -ml-4" />
-                  {slider}
-                </>
-              }
-              extraButtons={
-                <>
-                  <span className="flex-1 -ml-2" />
-                  <RecordSelectorButtons
-                    onVisit={
-                      typeof collection.models[index] === 'object' &&
-                      (!isDependent || dialog !== false)
-                        ? (): void =>
-                            navigation.go(collection.models[index].viewUrl())
-                        : undefined
-                    }
-                    onDelete={
-                      typeof collection.models[index] === 'object' &&
-                      mode !== 'view'
-                        ? handleRemove
-                        : undefined
-                    }
-                    onAdd={
-                      mode === 'view' || disableAdding ? undefined : handleAdd
-                    }
-                  />
-                </>
-              }
-              mode={mode}
-              viewName={viewName}
-              isSubForm={dialog === false}
-              canAddAnother={false}
-              onSaved={undefined}
-              onDeleted={
-                collection.models.length <= 1 ? handleClose : undefined
-              }
-              onClose={handleClose}
-            />
-          ) : (
-            <p>{formsText('noData')}</p>
-          )}
+          <ResourceView
+            resource={resource}
+            dialog={dialog}
+            title={`${field?.label ?? collection.model.specifyModel?.label}${
+              isToOne ? '' : ` (${collection.models.length})`
+            }`}
+            headerButtons={
+              <>
+                <RecordSelectorButtons
+                  visitHref={
+                    typeof resource === 'object' &&
+                    (!isDependent || dialog !== false)
+                      ? resource.viewUrl()
+                      : undefined
+                  }
+                  onDelete={
+                    typeof resource === 'object' && mode !== 'view'
+                      ? handleRemove
+                      : undefined
+                  }
+                  onAdd={
+                    mode === 'view' || disableAdding ? undefined : handleAdd
+                  }
+                />
+                <span className="flex-1 -ml-4" />
+                {slider}
+              </>
+            }
+            mode={mode}
+            viewName={viewName}
+            isSubForm={dialog === false}
+            canAddAnother={false}
+            onSaved={undefined}
+            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
+            onClose={handleClose}
+          />
           {dialogs}
         </>
       )}
@@ -339,47 +329,38 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         onRemove: handleRemove,
       }): JSX.Element => (
         <>
-          {typeof resource === 'object' ? (
-            <ResourceView
-              resource={resource}
-              dialog={dialog}
-              title={`${title} (${ids.length})`}
-              headerButtons={
-                <>
-                  <span className="flex-1 -ml-4" />
-                  {slider}
-                </>
-              }
-              extraButtons={
-                <>
-                  <span className="flex-1 -ml-2" />
-                  <RecordSelectorButtons
-                    onVisit={
-                      typeof resource === 'object' &&
-                      (!isDependent || dialog !== false)
-                        ? (): void => navigation.go(resource.viewUrl())
-                        : undefined
-                    }
-                    onDelete={
-                      typeof resource === 'object' && mode !== 'view'
-                        ? handleRemove
-                        : undefined
-                    }
-                    onAdd={mode === 'view' ? undefined : handleAdd}
-                  />
-                </>
-              }
-              mode={mode}
-              viewName={viewName}
-              isSubForm={dialog === false}
-              canAddAnother={canAddAnother}
-              onSaved={handleSaved}
-              onDeleted={ids.length > 1 ? undefined : handleClose}
-              onClose={handleClose}
-            />
-          ) : (
-            <p>{formsText('noData')}</p>
-          )}
+          <ResourceView
+            resource={resource}
+            dialog={dialog}
+            title={`${title} (${ids.length})`}
+            headerButtons={
+              <>
+                <RecordSelectorButtons
+                  visitHref={
+                    typeof resource === 'object' &&
+                    (!isDependent || dialog !== false)
+                      ? resource.viewUrl()
+                      : undefined
+                  }
+                  onDelete={
+                    typeof resource === 'object' && mode !== 'view'
+                      ? handleRemove
+                      : undefined
+                  }
+                  onAdd={mode === 'view' ? undefined : handleAdd}
+                />
+                <span className="flex-1 -ml-4" />
+                {slider}
+              </>
+            }
+            mode={mode}
+            viewName={viewName}
+            isSubForm={dialog === false}
+            canAddAnother={canAddAnother}
+            onSaved={handleSaved}
+            onDeleted={ids.length > 1 ? undefined : handleClose}
+            onClose={handleClose}
+          />
           {dialogs}
         </>
       )}
@@ -510,7 +491,6 @@ export function RecordSet<SCHEMA extends AnySchema>({
         >
           {formsText('emptyRecordSetSecondMessage')}
         </Dialog>
-
         {formsText('noData')}
       </p>
     )

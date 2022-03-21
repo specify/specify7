@@ -21,9 +21,9 @@ const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
     viewDefinition.querySelector(
-      `columnDef[os="${columnDefinitionsPlatform}"], columnDef, colDef`
-    ) ?? undefined
-  ).textContent ?? '';
+      `columnDef[os="${columnDefinitionsPlatform}"], columnDef`
+    )?.textContent ?? getAttribute(viewDefinition, 'colDef')
+  );
 
 export type ParsedFormDefinition = {
   // Define column sizes: either a number of pixels, or undefined for auto sizing
@@ -40,31 +40,28 @@ function parseFormTableDefinition(
     viewDefinition.querySelectorAll('cell[type="field"], cell[type="subview"]'),
     parseFormCellDefinition.bind(undefined, model)
   );
-  return {
-    columns: cells.map(f.undefined),
-    rows: postProcessRows([cells]),
-  };
+  return postProcessRows(cells.map(f.undefined), [cells]);
 }
 
 export const parseFormDefinition = (
   viewDefinition: Element,
   model: SpecifyModel | undefined
-): ParsedFormDefinition => ({
-  columns: processColumnDefinition(getColumnDefinitions(viewDefinition)),
-  rows: postProcessRows(
+): ParsedFormDefinition =>
+  postProcessRows(
+    processColumnDefinition(getColumnDefinitions(viewDefinition)),
     Array.from(viewDefinition.querySelectorAll('rows > row'), (row) =>
       Array.from(
         row.querySelectorAll('cell'),
         parseFormCellDefinition.bind(undefined, model)
       )
     )
-  ),
-});
+  );
 
 function postProcessRows(
+  columns: RA<number | undefined>,
   rows: RA<RA<FormCellDefinition>>
-): RA<RA<FormCellDefinition>> {
-  const fields: IR<
+): ParsedFormDefinition {
+  const fieldsById: IR<
     | {
         readonly fieldName: string | undefined;
         readonly labelOverride: string | undefined;
@@ -87,14 +84,20 @@ function postProcessRows(
                   cell.id,
                   cell.type === 'Field'
                     ? {
-                        // PartialDateUi may override the fieldName
+                        // Some plugins may override the fieldName
                         fieldName:
-                          cell.fieldName ??
-                          (cell.fieldDefinition.type === 'Plugin' &&
-                          cell.fieldDefinition.pluginDefinition.type ===
-                            'PartialDateUI'
-                            ? cell.fieldDefinition.pluginDefinition.dateField
-                            : undefined),
+                          (cell.fieldDefinition.type === 'Plugin'
+                            ? cell.fieldDefinition.pluginDefinition.type ===
+                              'PartialDateUI'
+                              ? cell.fieldDefinition.pluginDefinition.dateField
+                              : cell.fieldDefinition.pluginDefinition.type ===
+                                  'CollectionRelOneToManyPlugin' ||
+                                cell.fieldDefinition.pluginDefinition.type ===
+                                  'ColRelTypePlugin'
+                              ? cell.fieldDefinition.pluginDefinition
+                                  .relationship
+                              : undefined
+                            : undefined) ?? cell.fieldName,
                         // Checkbox definition can contain a label
                         labelOverride:
                           cell.fieldDefinition.type === 'Checkbox'
@@ -108,17 +111,82 @@ function postProcessRows(
       )
     )
   );
-  return rows.map((row) =>
-    row.map((cell) =>
-      cell.type === 'Label' && typeof cell.labelForCellId === 'string'
-        ? {
-            ...cell,
-            text: fields[cell.labelForCellId]?.labelOverride ?? cell.text,
-            fieldName: fields[cell.labelForCellId]?.labelOverride,
-          }
-        : cell
-    )
-  );
+  return {
+    columns,
+    rows: rows.map((row, index) => {
+      const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
+      if (totalColumns > columns.length)
+        console.error(
+          `Row ${index}/${rows.length} has ${row.length} column(s), when
+          expected only ${columns.length}`,
+          { row, columns }
+        );
+      return filterArray([
+        ...row
+          /*
+           * Make sure total colSpan is not larger than the number of columns
+           * as that would mess up the grid
+           */
+          .reduce<{ readonly cells: typeof row; readonly remaining: number }>(
+            ({ cells, remaining }, cell) => ({
+              cells:
+                remaining < 0
+                  ? cells
+                  : [
+                      ...cells,
+                      {
+                        ...cell,
+                        colSpan: Math.min(remaining, cell.colSpan),
+                      },
+                    ],
+              remaining: remaining - (cell.colSpan ?? 1),
+            }),
+            { cells: [], remaining: columns.length }
+          )
+          .cells.map((cell, index) =>
+            /*
+             * If a Label without a labelForCellId attribute precedes a field with an
+             * ID, but no label, associate the label with that field
+             */
+            cell.type === 'Label' &&
+            typeof cell.labelForCellId === 'undefined' &&
+            typeof row[index + 1]?.id === 'number' &&
+            rows.every((row) =>
+              row.every(
+                (cell) =>
+                  cell.type !== 'Label' ||
+                  cell.labelForCellId !== row[index + 1].id
+              )
+            )
+              ? {
+                  ...cell,
+                  labelForCellId: row[index + 1].id,
+                }
+              : cell
+          )
+          .map((cell) =>
+            cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+              ? {
+                  ...cell,
+                  // Let some fields overwrite their label
+                  text:
+                    fieldsById[cell.labelForCellId]?.labelOverride ?? cell.text,
+                  // Get label fieldName from its field
+                  fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+                }
+              : cell
+          ),
+        columns.length - totalColumns > 0
+          ? {
+              type: 'Blank',
+              id: undefined,
+              align: 'left',
+              colSpan: columns.length - row.length,
+            }
+          : undefined,
+      ]);
+    }),
+  };
 }
 
 function processViewDefinition(

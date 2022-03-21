@@ -19,7 +19,10 @@ import { f } from './wbplanviewhelper';
 export const processColumnDefinition = (
   columnDefinition: string
 ): RA<number | undefined> =>
-  columnDefinition
+  (columnDefinition.endsWith(',p:g')
+    ? columnDefinition.slice(0, -1 * ',p:g'.length)
+    : columnDefinition
+  )
     .split(',')
     .filter((_, index) => index % 2 === 0)
     .map((definition) => /(\d+)px/.exec(definition)?.[1])
@@ -81,6 +84,7 @@ export type CellTypes = {
       readonly cellType: string | undefined;
     }
   >;
+  readonly Blank: State<'Blank'>;
 };
 
 export const cellAlign = ['left', 'center', 'right'] as const;
@@ -116,13 +120,15 @@ const processCellType: {
   Label: ({ cell }) => ({
     type: 'Label',
     text: getAttribute(cell, 'label'),
-    labelForCellId: getAttribute(cell, 'labelFor') ?? '',
+    labelForCellId: getAttribute(cell, 'labelFor'),
     // This would be set in postProcessRows
     fieldName: undefined,
   }),
   Separator: ({ cell }) => ({
     type: 'Separator',
-    label: getAttribute(cell, 'label'),
+    label: f.maybe(getAttribute(cell, 'label'), (label) =>
+      label.trim().length === 0 ? undefined : label
+    ),
   }),
   SubView({ cell, model, properties }) {
     const rawFieldName = getAttribute(cell, 'name');
@@ -147,6 +153,12 @@ const processCellType: {
     type: 'Command',
     commandDefinition: parseUiCommand(cell),
   }),
+  /**
+   * This function never actually gets called
+   * Blank cell type is used by postProcessRows if definition row has fewer
+   * cells than defined columns
+   */
+  Blank: () => ({ type: 'Blank' }),
   Unsupported: ({ cell }) => ({
     type: 'Unsupported',
     cellType: getAttribute(cell, 'type'),
@@ -156,7 +168,7 @@ const processCellType: {
 export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly id: string | undefined;
   readonly align: typeof cellAlign[number];
-  readonly colSpan: number | undefined;
+  readonly colSpan: number;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -180,9 +192,8 @@ export function parseFormCellDefinition(
   cellNode: Element
 ): FormCellDefinition {
   const cellClass = getAttribute(cellNode, 'type') ?? '';
-  const parsedCell =
-    processCellType[cellTypeTranslation[cellClass.toLowerCase()]] ??
-    processCellType.Unsupported;
+  const cellType = cellTypeTranslation[cellClass.toLowerCase()];
+  const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
   );
@@ -191,8 +202,12 @@ export function parseFormCellDefinition(
   return {
     // FIXME: set as aria-labeledby
     id: getAttribute(cellNode, 'id'),
-    colSpan: Number.isNaN(colSpan) ? undefined : Math.ceil(colSpan / 2),
-    align: f.includes(cellAlign, align) ? align : 'left',
+    colSpan: Number.isNaN(colSpan) ? 1 : Math.ceil(colSpan / 2),
+    align: f.includes(cellAlign, align)
+      ? align
+      : cellType === 'Label'
+      ? 'right'
+      : 'left',
     ...parsedCell({ cell: cellNode, model, properties }),
   };
 }

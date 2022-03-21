@@ -24,7 +24,7 @@ import {
 import type { IR, RA } from '../types';
 import { sortObjectsByKey } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
-import { Button, className, Input } from './basic';
+import { Button, Container, Input } from './basic';
 import { useAsyncState, useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -116,7 +116,7 @@ function TreeView<SCHEMA extends AnyTree>({
   return typeof rows === 'undefined' ? (
     <LoadingScreen />
   ) : (
-    <section className={className.containerFull}>
+    <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
         <h2>{table.label}</h2>
         {/* A react component that is also a TypeScript generic */}
@@ -302,7 +302,7 @@ function TreeView<SCHEMA extends AnyTree>({
           ))}
         </ul>
       </div>
-    </section>
+    </Container.Full>
   );
 }
 

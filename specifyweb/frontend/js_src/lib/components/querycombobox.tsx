@@ -11,6 +11,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import queryText from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
+import { getAttribute } from '../parseformcells';
 import { columnToFieldMapper } from '../parseselect';
 import type {
   CollectionRelationships,
@@ -41,7 +42,6 @@ import type { QueryComboBoxFilter } from './querycbxsearch';
 import { QueryComboBoxSearch } from './querycbxsearch';
 import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
-import { getAttribute } from '../parseformcells';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -139,14 +139,14 @@ export function QueryComboBox({
       () =>
         f.maybe(toTable(resource, 'CollectionRelationship'), async () => {
           const left = new schema.models.CollectionRelType.LazyCollection({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             filters: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               leftsidecollection_id: schema.domainLevelIds.collection,
             },
           });
           const right = new schema.models.CollectionRelType.LazyCollection({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             filters: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               rightsidecollection_id: schema.domainLevelIds.collection,
             },
           });

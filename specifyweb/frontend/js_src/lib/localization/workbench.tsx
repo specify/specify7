@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { createDictionary, header, whitespaceSensitive } from './utils';
+import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -188,10 +188,10 @@ const wbText = createDictionary({
     'es-es': 'Upload Plan Status',
   },
   noUploadPlanDialogHeader: {
-    'en-us': header('No Upload Plan is Defined'),
-    'ru-ru': header('План загрузки не определен'),
-    ca: header('No Upload Plan is Defined'),
-    'es-es': header('No Upload Plan is Defined'),
+    'en-us': 'No Upload Plan is Defined',
+    'ru-ru': 'План загрузки не определен',
+    ca: 'No Upload Plan is Defined',
+    'es-es': 'No Upload Plan is Defined',
   },
   noUploadPlanDialogMessage: {
     'en-us':
@@ -209,10 +209,10 @@ const wbText = createDictionary({
     'es-es': 'Disambiguate',
   },
   noDisambiguationResultsDialogHeader: {
-    'en-us': header('Unable to disambiguate'),
-    'ru-ru': header('Невозможно устранить неуверенность'),
-    ca: header('Unable to disambiguate'),
-    'es-es': header('Unable to disambiguate'),
+    'en-us': 'Unable to disambiguate',
+    'ru-ru': 'Невозможно устранить неуверенность',
+    ca: 'Unable to disambiguate',
+    'es-es': 'Unable to disambiguate',
   },
   noDisambiguationResultsDialogMessage: {
     'en-us': `
@@ -263,10 +263,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Roll Back',
   },
   rollbackDialogHeader: {
-    'en-us': header('Begin Data Set Roll Back?'),
-    'ru-ru': header('Начать откат набора данных?'),
-    ca: header('Begin Data Set Roll Back?'),
-    'es-es': header('Begin Data Set Roll Back?'),
+    'en-us': 'Begin Data Set Roll Back?',
+    'ru-ru': 'Начать откат набора данных?',
+    ca: 'Begin Data Set Roll Back?',
+    'es-es': 'Begin Data Set Roll Back?',
   },
   rollbackDialogMessage: {
     'en-us': `
@@ -296,10 +296,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Upload',
   },
   startUploadDialogHeader: {
-    'en-us': header('Begin Data Set Upload?'),
-    'ru-ru': header('Начать загрузку набора данных?'),
-    ca: header('Begin Data Set Upload?'),
-    'es-es': header('Begin Data Set Upload?'),
+    'en-us': 'Begin Data Set Upload?',
+    'ru-ru': 'Начать загрузку набора данных?',
+    ca: 'Begin Data Set Upload?',
+    'es-es': 'Begin Data Set Upload?',
   },
   startUploadDialogMessage: {
     'en-us': `
@@ -318,10 +318,10 @@ const wbText = createDictionary({
     'es-es': 'Delete Data Set',
   },
   deleteDataSetDialogHeader: {
-    'en-us': header('Delete this Data Set?'),
-    'ru-ru': header('Удалить этот набор данных?'),
-    ca: header('Delete this Data Set?'),
-    'es-es': header('Delete this Data Set?'),
+    'en-us': 'Delete this Data Set?',
+    'ru-ru': 'Удалить этот набор данных?',
+    ca: 'Delete this Data Set?',
+    'es-es': 'Delete this Data Set?',
   },
   deleteDataSetDialogMessage: {
     'en-us': `
@@ -350,10 +350,10 @@ const wbText = createDictionary({
     'es-es': 'Delete Data Set',
   },
   dataSetDeletedDialogHeader: {
-    'en-us': header('Data Set successfully deleted'),
-    'ru-ru': header('Набор данных успешно удален'),
-    ca: header('Data Set successfully deleted'),
-    'es-es': header('Data Set successfully deleted'),
+    'en-us': 'Data Set successfully deleted',
+    'ru-ru': 'Набор данных успешно удален',
+    ca: 'Data Set successfully deleted',
+    'es-es': 'Data Set successfully deleted',
   },
   dataSetDeletedDialogMessage: {
     'en-us': 'Data Set successfully deleted.',
@@ -368,10 +368,10 @@ const wbText = createDictionary({
     'es-es': 'Revert Changes',
   },
   revertChangesDialogHeader: {
-    'en-us': header('Revert Unsaved Changes?'),
-    'ru-ru': header('Отменить несохраненные изменения?'),
-    ca: header('Revert Unsaved Changes?'),
-    'es-es': header('Revert Unsaved Changes?'),
+    'en-us': 'Revert Unsaved Changes?',
+    'ru-ru': 'Отменить несохраненные изменения?',
+    ca: 'Revert Unsaved Changes?',
+    'es-es': 'Revert Unsaved Changes?',
   },
   revertChangesDialogMessage: {
     'en-us': `
@@ -459,10 +459,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Validation',
   },
   validationNoErrorsDialogHeader: {
-    'en-us': header('Validate Completed with No Errors'),
-    'ru-ru': header('Проверка завершена без ошибок'),
-    ca: header('Validate Completed with No Errors'),
-    'es-es': header('Validate Completed with No Errors'),
+    'en-us': 'Validate Completed with No Errors',
+    'ru-ru': 'Проверка завершена без ошибок',
+    ca: 'Validate Completed with No Errors',
+    'es-es': 'Validate Completed with No Errors',
   },
   validationNoErrorsDialogMessage: {
     'en-us': `
@@ -500,10 +500,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Validation',
   },
   validationErrorsDialogHeader: {
-    'en-us': header('Validate Completed with Errors'),
-    'ru-ru': header('Проверка завершена с ошибками'),
-    ca: header('Validate Completed with Errors'),
-    'es-es': header('Validate Completed with Errors'),
+    'en-us': 'Validate Completed with Errors',
+    'ru-ru': 'Проверка завершена с ошибками',
+    ca: 'Validate Completed with Errors',
+    'es-es': 'Validate Completed with Errors',
   },
   validationErrorsDialogMessage: {
     'en-us': `
@@ -537,10 +537,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Upload',
   },
   uploadNoErrorsDialogHeader: {
-    'en-us': header('Upload Completed with No Errors'),
-    'ru-ru': header('Загрузка завершена без ошибок'),
-    ca: header('Upload Completed with No Errors'),
-    'es-es': header('Upload Completed with No Errors'),
+    'en-us': 'Upload Completed with No Errors',
+    'ru-ru': 'Загрузка завершена без ошибок',
+    ca: 'Upload Completed with No Errors',
+    'es-es': 'Upload Completed with No Errors',
   },
   uploadNoErrorsDialogMessage: {
     'en-us': `
@@ -563,10 +563,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Upload',
   },
   uploadErrorsDialogHeader: {
-    'en-us': header('Upload Failed due to Error Cells'),
-    'ru-ru': header('Ошибка загрузки из-за ошибок'),
-    ca: header('Upload Failed due to Error Cells'),
-    'es-es': header('Upload Failed due to Error Cells'),
+    'en-us': 'Upload Failed due to Error Cells',
+    'ru-ru': 'Ошибка загрузки из-за ошибок',
+    ca: 'Upload Failed due to Error Cells',
+    'es-es': 'Upload Failed due to Error Cells',
   },
   uploadErrorsDialogMessage: {
     'en-us': `
@@ -605,10 +605,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Rollback',
   },
   dataSetRollbackDialogHeader: {
-    'en-us': header('Data Set was rolled back successfully'),
-    'ru-ru': header('Набор данных был успешно откат'),
-    ca: header('Data Set was rolled back successfully'),
-    'es-es': header('Data Set was rolled back successfully'),
+    'en-us': 'Data Set was rolled back successfully',
+    'ru-ru': 'Набор данных был успешно откат',
+    ca: 'Data Set was rolled back successfully',
+    'es-es': 'Data Set was rolled back successfully',
   },
   dataSetRollbackDialogMessage: {
     'en-us':
@@ -626,10 +626,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Validation',
   },
   validationCanceledDialogHeader: {
-    'en-us': header('Validation Canceled'),
-    'ru-ru': header('Проверка отменена'),
-    ca: header('Validation Canceled'),
-    'es-es': header('Validation Canceled'),
+    'en-us': 'Validation Canceled',
+    'ru-ru': 'Проверка отменена',
+    ca: 'Validation Canceled',
+    'es-es': 'Validation Canceled',
   },
   validationCanceledDialogMessage: {
     'en-us': 'Data Set Validation cancelled.',
@@ -644,10 +644,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Rollback',
   },
   rollbackCanceledDialogHeader: {
-    'en-us': header('Rollback Canceled'),
-    'ru-ru': header('Откат отменен'),
-    ca: header('Rollback Canceled'),
-    'es-es': header('Rollback Canceled'),
+    'en-us': 'Rollback Canceled',
+    'ru-ru': 'Откат отменен',
+    ca: 'Rollback Canceled',
+    'es-es': 'Rollback Canceled',
   },
   rollbackCanceledDialogMessage: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -662,10 +662,10 @@ const wbText = createDictionary({
     'es-es': 'Data Set Upload',
   },
   uploadCanceledDialogHeader: {
-    'en-us': header('Upload Canceled'),
-    'ru-ru': header('Загрузка отменена'),
-    ca: header('Upload Canceled'),
-    'es-es': header('Upload Canceled'),
+    'en-us': 'Upload Canceled',
+    'ru-ru': 'Загрузка отменена',
+    ca: 'Upload Canceled',
+    'es-es': 'Upload Canceled',
   },
   uploadCanceledDialogMessage: {
     'en-us': 'Data Set Upload cancelled.',
@@ -686,10 +686,10 @@ const wbText = createDictionary({
     'es-es': 'Geocoordinate Format',
   },
   coordinateConverterDialogHeader: {
-    'en-us': header('Choose a preferred Geocoordinate format'),
-    'ru-ru': header('Выберите предпочтительный формат геокоординат'),
-    ca: header('Choose a preferred Geocoordinate format'),
-    'es-es': header('Choose a preferred Geocoordinate format'),
+    'en-us': 'Choose a preferred Geocoordinate format',
+    'ru-ru': 'Выберите предпочтительный формат геокоординат',
+    ca: 'Choose a preferred Geocoordinate format',
+    'es-es': 'Choose a preferred Geocoordinate format',
   },
   // Misc
   unmappedColumn: {

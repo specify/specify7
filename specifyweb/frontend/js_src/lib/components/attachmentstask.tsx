@@ -16,7 +16,6 @@ import { setCurrentView } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
-import { userInformation } from '../userinfo';
 import { f } from '../wbplanviewhelper';
 import { Button, Container, H2, Label, Link, Select } from './basic';
 import { TableIcon } from './common';
@@ -24,7 +23,7 @@ import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { ResourceView } from './resourceview';
+import { getDefaultFormMode, ResourceView } from './resourceview';
 
 const previewSize = 123;
 
@@ -123,7 +122,7 @@ export function AttachmentCell({
               onClose={handleMetaClose}
               canAddAnother={false}
               isSubForm={false}
-              mode={userInformation.isReadOnly ? 'edit' : 'view'}
+              mode={getDefaultFormMode()}
               onDeleted={undefined}
               onSaved={undefined}
             />
@@ -369,7 +368,7 @@ export function AttachmentsView(): JSX.Element {
           onSaved={undefined}
           canAddAnother={false}
           isSubForm={false}
-          mode={userInformation.isReadOnly ? 'edit' : 'view'}
+          mode={getDefaultFormMode()}
         />
       )}
     </Container.Full>

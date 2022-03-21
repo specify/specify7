@@ -9,7 +9,6 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
-import { userInformation } from '../userinfo';
 import { AttachmentCell } from './attachmentstask';
 import { Progress } from './basic';
 import { crash } from './errorboundary';
@@ -17,11 +16,12 @@ import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { getDefaultFormMode } from './resourceview';
 
 export function AttachmentPlugin({
   resource,
   onUploadComplete: handleUploadComplete,
-  mode = userInformation.isReadOnly ? 'view' : 'edit',
+  mode = getDefaultFormMode(),
   id,
   name,
 }: {

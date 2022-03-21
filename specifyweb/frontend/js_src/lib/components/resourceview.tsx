@@ -11,17 +11,27 @@ import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
 import reports from '../reports';
+import { getResourceViewUrl } from '../resource';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, FormFooter, H2, Link } from './basic';
+import { f } from '../wbplanviewhelper';
+import {
+  Button,
+  className,
+  Container,
+  DataEntry,
+  Form,
+  FormFooter,
+  H2,
+  Link,
+} from './basic';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
-import { RecordSet as RecordSetView } from './recordselectorutils';
-import { f } from '../wbplanviewhelper';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -34,7 +44,7 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
 ]);
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
@@ -51,7 +61,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
       }) => void;
-    }) => JSX.Element;
+    }) => JSX.Element | undefined;
     readonly form: JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
@@ -76,13 +86,21 @@ function BaseResourceView<SCHEMA extends AnySchema>({
   resource,
   children,
   mode,
-  viewName = resource.specifyModel.view,
+  viewName = resource?.specifyModel.view,
   isSubForm,
 }: ResourceViewProps<SCHEMA>): JSX.Element | null {
   // Update title when resource changes
-  const [title, setTitle] = React.useState(resource.specifyModel.label);
+  const [title, setTitle] = React.useState(
+    resource?.specifyModel.label ?? commonText('loading')
+  );
   React.useEffect(() => {
+    if (typeof resource === 'undefined') {
+      setTitle(commonText('loading'));
+      return;
+    }
+
     function updateTitle(): void {
+      if (typeof resource === 'undefined') return;
       const title = resource.isNew()
         ? commonText('newResourceTitle')(resource.specifyModel.label)
         : resource.specifyModel.label;
@@ -109,36 +127,40 @@ function BaseResourceView<SCHEMA extends AnySchema>({
     printOnSave: undefined,
   });
 
-  const specifyForm = (
-    <SpecifyForm
-      resource={resource}
-      hasHeader={false}
-      mode={mode}
-      viewName={viewName}
-      formType="form"
-    />
-  );
+  const specifyForm =
+    typeof resource === 'object' ? (
+      <SpecifyForm
+        resource={resource}
+        hasHeader={false}
+        mode={mode}
+        viewName={viewName}
+        formType="form"
+      />
+    ) : (
+      <p>{formsText('noData')}</p>
+    );
 
   return children({
-    isModified: resource.needsSaved,
+    isModified: resource?.needsSaved ?? false,
     title,
     formElement: form,
     form: isSubForm ? (
       specifyForm
     ) : (
       <FormContext.Provider value={formMeta}>
-        <form id={id('form')} ref={(newForm): void => setForm(newForm ?? form)}>
+        <Form
+          id={id('form')}
+          forwardRef={(newForm): void => setForm(newForm ?? form)}
+        >
           {specifyForm}
-        </form>
+        </Form>
       </FormContext.Provider>
     ),
     saveButton:
-      mode === 'view' && form !== null
+      mode === 'view' && form !== null && typeof resource === 'undefined'
         ? undefined
         : ({ onSaving: handleSaving, onSaved: handleSaved, canAddAnother }) =>
-            form === null ? (
-              <></>
-            ) : (
+            form === null || typeof resource === 'undefined' ? undefined : (
               <SaveButton
                 model={resource}
                 form={form}
@@ -161,9 +183,10 @@ function BaseResourceView<SCHEMA extends AnySchema>({
                 }
               />
             ),
-    specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
-    ) : undefined,
+    specifyNetworkBadge:
+      typeof resource === 'object' && displaySpecifyNetwork(resource) ? (
+        <SpecifyNetworkBadge resource={resource} />
+      ) : undefined,
   });
 }
 
@@ -183,7 +206,7 @@ const resourceDeletedDialog = (
 // FIXME: revisit all usages of all these components
 export function ResourceView<SCHEMA extends AnySchema>({
   resource,
-  extraButtons = <span className="flex-1 -ml-2" />,
+  extraButtons,
   headerButtons = <span className="flex-1 -ml-4" />,
   canAddAnother,
   deletionMessage,
@@ -198,7 +221,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isSubForm,
   title: titleOverride,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly headerButtons?: JSX.Element;
@@ -248,38 +271,47 @@ export function ResourceView<SCHEMA extends AnySchema>({
         specifyNetworkBadge,
       }): JSX.Element => {
         if (dialog === false) {
+          const deleteButton =
+            typeof resource === 'object' &&
+            !resource.isNew() &&
+            !userInformation.isReadOnly ? (
+              <DeleteButton
+                model={resource}
+                deletionMessage={deletionMessage}
+                onDeleted={handleDelete}
+              />
+            ) : undefined;
+          const saveButtonElement = saveButton?.({
+            canAddAnother,
+            onSaving: handleSaving,
+            onSaved: handleSaved,
+          });
           const formattedChildren = (
             <>
               {form}
               {children}
-              <FormFooter>
-                {!resource.isNew() && !userInformation.isReadOnly ? (
-                  <DeleteButton
-                    model={resource}
-                    deletionMessage={deletionMessage}
-                    onDeleted={handleDelete}
-                  />
-                ) : undefined}
-                {extraButtons}
-                {saveButton?.({
-                  canAddAnother,
-                  onSaving: handleSaving,
-                  onSaved: handleSaved,
-                })}
-              </FormFooter>
+              {typeof deleteButton === 'object' ||
+              typeof saveButtonElement === 'object' ||
+              typeof extraButtons === 'object' ? (
+                <FormFooter>
+                  {deleteButton}
+                  {extraButtons ?? <span className="flex-1 -ml-2" />}
+                  {saveButtonElement}
+                </FormFooter>
+              ) : undefined}
             </>
           );
           return isSubForm ? (
-            <fieldset>
-              <legend className={className.subFormHeader}>
+            <DataEntry.SubForm>
+              <DataEntry.SubFormHeader>
                 <h3 className={className.formTitle}>
                   {titleOverride ?? title}
                 </h3>
                 {headerButtons}
                 {specifyNetworkBadge}
-              </legend>
+              </DataEntry.SubFormHeader>
               {formattedChildren}
-            </fieldset>
+            </DataEntry.SubForm>
           ) : (
             <Container.Generic className="w-fit overflow-y-auto">
               <header className={className.formHeader}>
@@ -299,7 +331,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               modal={dialog === 'modal'}
               headerButtons={
                 <>
-                  {!resource.isNew() && (
+                  {typeof resource === 'object' && !resource.isNew() && (
                     <Link.NewTab href={resource.viewUrl()}>
                       {formsText('visit')}
                     </Link.NewTab>
@@ -311,7 +343,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               buttons={
                 isSubForm ? undefined : (
                   <>
-                    {!resource.isNew() && !userInformation.isReadOnly ? (
+                    {typeof resource === 'object' &&
+                    !resource.isNew() &&
+                    !userInformation.isReadOnly ? (
                       <DeleteButton model={resource} onDeleted={handleDelete} />
                     ) : undefined}
                     {extraButtons}
@@ -361,6 +395,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   );
 }
 
+export const getDefaultFormMode = (): FormMode =>
+  userInformation.isReadOnly ? 'view' : 'edit';
+
 export function ShowResource({
   resource: initialResource,
   recordSet: initialRecordSet,
@@ -376,8 +413,17 @@ export function ShowResource({
   });
 
   React.useEffect(
-    () => navigation.push(resource.viewUrl()),
-    [resource, pushUrl]
+    () =>
+      pushUrl
+        ? navigation.push(
+            getResourceViewUrl(
+              resource.specifyModel.name,
+              resource.id,
+              recordSet?.id
+            )
+          )
+        : undefined,
+    [resource, recordSet, pushUrl]
   );
 
   const [recordSetItemIndex] = useAsyncState(
@@ -406,7 +452,7 @@ export function ShowResource({
     readonly addAnother: boolean;
     readonly newResource: SpecifyResource<AnySchema> | undefined;
     readonly wasNew: boolean;
-  }) {
+  }): void {
     if (addAnother && typeof newResource === 'object')
       setRecord({ resource: newResource, recordSet });
     else if (wasNew) navigation.go(resource.viewUrl());
@@ -427,7 +473,7 @@ export function ShowResource({
     ) : (
       <RecordSetView
         dialog={false}
-        mode={userInformation.isReadOnly ? 'edit' : 'view'}
+        mode={getDefaultFormMode()}
         model={resource.specifyModel}
         onClose={f.never}
         title={undefined}
@@ -449,7 +495,7 @@ export function ShowResource({
       canAddAnother={true}
       dialog={false}
       isSubForm={false}
-      mode={userInformation.isReadOnly ? 'edit' : 'view'}
+      mode={getDefaultFormMode()}
       viewName={resource.specifyModel.view}
       onDeleted={(): void => navigation.go('/')}
       onSaved={handleSaved}

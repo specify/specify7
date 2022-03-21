@@ -239,7 +239,7 @@ function eventHandlerForToOne(related, field) {
                 var collectionOptions = { related: this, field: field.getReverse() };
 
                 if (field.isDependent()) {
-                    const collection = new relatedModel.DependentCollection(value, collectionOptions);
+                    const collection = new relatedModel.DependentCollection(collectionOptions, value);
                     this.storeDependent(field, collection);
                 } else {
                     console.warn("got unexpected inline data for independent collection field");
@@ -397,14 +397,14 @@ function eventHandlerForToOne(related, field) {
                     }
 
                     if (this.isNew()) {
-                        toMany = new related.DependentCollection([], collectionOptions);
+                        toMany = new related.DependentCollection(collectionOptions, []);
                         this.storeDependent(field, toMany);
                         return toMany;
                     } else {
                         console.warn("expected dependent resource to be in cache");
                         var tempCollection = new related.ToOneCollection(collectionOptions);
                         return tempCollection.fetch({ limit: 0 }).pipe(function() {
-                            return new related.DependentCollection(tempCollection.models, collectionOptions);
+                            return new related.DependentCollection(collectionOptions, tempCollection.models);
                         }).done(function (toMany) { _this.storeDependent(field, toMany); });
                     }
                 }

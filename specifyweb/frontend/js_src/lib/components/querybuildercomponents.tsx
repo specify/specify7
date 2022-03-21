@@ -19,7 +19,7 @@ import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
-import { ResourceView } from './resourceview';
+import { getDefaultFormMode, ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 
 function QueryButton({
@@ -177,7 +177,7 @@ export function MakeRecordSetButton({
                 onSaved={(): void => setState('saved')}
                 onClose={(): void => setState(undefined)}
                 onDeleted={f.never}
-                mode={userInformation.isReadOnly ? 'view' : 'edit'}
+                mode={getDefaultFormMode()}
                 isSubForm={false}
               />
             )}

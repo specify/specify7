@@ -12,7 +12,7 @@ import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
 import { f } from '../wbplanviewhelper';
-import { FormHeader, H2 } from './basic';
+import { DataEntry, FormHeader, H2 } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
 
@@ -40,7 +40,7 @@ const getAttachmentFormDefinition = (
             },
           },
           isRequired: false,
-          colSpan: undefined,
+          colSpan: 1,
           align: 'left',
         },
       ],
@@ -141,7 +141,9 @@ export function RenderForm<SCHEMA extends AnySchema>({
   readonly viewDefinition: ViewDescription | undefined;
   readonly hasHeader: boolean;
 }): JSX.Element {
-  const id = useId(resource.specifyModel.name ?? 'form');
+  const id = useId(
+    `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
+  );
   const [loadedResource] = useAsyncState(
     React.useCallback(async () => resource.fetchPromise(), [resource])
   );
@@ -151,36 +153,13 @@ export function RenderForm<SCHEMA extends AnySchema>({
       {hasHeader && <FormHeader>{resource.specifyModel.name}</FormHeader>}
       {typeof viewDefinition === 'object' &&
       typeof loadedResource === 'object' ? (
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: viewDefinition.columns
-              .map((width) =>
-                typeof width === 'number' ? `${width}px` : 'auto'
-              )
-              .join(' '),
-          }}
-        >
+        <DataEntry.Grid viewDefinition={viewDefinition}>
           {/* Cells are wrapped in rows for debugging purposes only */}
           {viewDefinition.rows.map((cells, index) => (
             <div className="contents" key={index}>
               {cells.map(
                 ({ colSpan, align, id: cellId, ...cellData }, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      gridColumn:
-                        typeof colSpan === 'number'
-                          ? `span ${colSpan} / span ${colSpan}`
-                          : undefined,
-                      alignSelf:
-                        align === 'right'
-                          ? 'end'
-                          : align === 'center'
-                          ? 'center'
-                          : 'left',
-                    }}
-                  >
+                  <DataEntry.Cell key={index} colSpan={colSpan} align={align}>
                     <FormCell
                       resource={loadedResource}
                       mode={viewDefinition.mode}
@@ -189,12 +168,12 @@ export function RenderForm<SCHEMA extends AnySchema>({
                       id={cellId}
                       formatId={id}
                     />
-                  </div>
+                  </DataEntry.Cell>
                 )
               )}
             </div>
           ))}
-        </div>
+        </DataEntry.Grid>
       ) : undefined}
     </div>
   );

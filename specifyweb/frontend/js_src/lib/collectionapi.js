@@ -31,7 +31,7 @@ var Base =  Backbone.Collection.extend({
 
     collectionapi.Dependent = Base.extend({
         __name__: "DependentCollectionBase",
-        constructor: function(models, options) {
+        constructor: function(options, models=[]) {
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
@@ -113,7 +113,7 @@ var Base =  Backbone.Collection.extend({
         },
         fetchPromise(options){
             // Fetch if not fetching and convert deferred to promise
-            return self._fetch || self.isComplete() ? Promise.resolve(this) : deferredToPromise(this.fetch(options));
+            return this._fetch || this.isComplete() ? Promise.resolve(this) : deferredToPromise(this.fetch(options));
         },
         fetchIfNotPopulated: function() {
             var _this = this;

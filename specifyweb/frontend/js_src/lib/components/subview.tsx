@@ -41,6 +41,7 @@ export function SubView({
     const handleChange = (): void =>
       setResourceUrl(parentResource.get('field'));
     parentResource.on(`change:${field.name.toLowerCase()}`, handleChange);
+    handleChange();
     return (): void =>
       parentResource.off(`change:${field.name.toLowerCase()}`, handleChange);
   }, [parentResource, field]);
@@ -54,11 +55,11 @@ export function SubView({
         const resource = parentResource.rgetPromise(field.name);
         const collection = (
           field.isDependent()
-            ? new parentResource.specifyModel.DependentCollection({
+            ? new field.relatedModel.DependentCollection({
                 related: parentResource,
-                field,
+                field: field.getReverse(),
               })
-            : new parentResource.specifyModel.LazyCollection()
+            : new field.relatedModel.LazyCollection()
         ) as Collection<AnySchema>;
         if (typeof resource === 'object') collection.add(resource);
         return collection;
@@ -66,7 +67,7 @@ export function SubView({
     }, [resourceUrl, parentResource, field])
   );
 
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
   return (
     <SubViewContext.Provider value={field}>
       {isButton && (
@@ -81,7 +82,7 @@ export function SubView({
           </span>
         </Button.Gray>
       )}
-      {typeof collection === 'object' && (
+      {typeof collection === 'object' && isOpen && (
         <IntegratedRecordSelector
           viewName={viewName}
           formType={formType}

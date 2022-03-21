@@ -13,7 +13,7 @@ import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { ResourceView } from './resourceview';
+import { getDefaultFormMode, ResourceView } from './resourceview';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -262,7 +262,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       }}
       canAddAnother={true}
       onClose={handleClose}
-      mode={userInformation.isReadOnly ? 'view' : 'edit'}
+      mode={getDefaultFormMode()}
       onDeleted={handleDeleted}
       isSubForm={false}
     />

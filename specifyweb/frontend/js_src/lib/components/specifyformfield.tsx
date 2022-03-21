@@ -6,7 +6,7 @@ import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
 import type { IR } from '../types';
 import { defined } from '../types';
-import { getValidationAttributes } from '../uiparse';
+import { getValidationAttributes, Parser } from '../uiparse';
 import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
 import { useAsyncState, useResourceValue } from './hooks';
@@ -25,7 +25,7 @@ const fieldRenderers: {
     readonly isRequired: boolean;
     readonly fieldName: string | undefined;
     readonly formType: FormType;
-  }) => JSX.Element;
+  }) => JSX.Element | null;
 } = {
   Checkbox({
     id,
@@ -41,6 +41,7 @@ const fieldRenderers: {
         fieldName={fieldName}
         model={resource.specifyModel}
         text={label}
+        defaultValue={defaultValue}
       />
     ) : (
       <SpecifyFormCheckbox
@@ -110,9 +111,7 @@ const fieldRenderers: {
         [resource, fieldName]
       )
     );
-    return typeof data === 'undefined' ? (
-      <></>
-    ) : (
+    return typeof data === 'undefined' ? null : (
       <ComboBox
         id={id}
         model={resource}
@@ -166,9 +165,9 @@ const fieldRenderers: {
         resource={resource}
         mode={mode}
         fieldName={fieldName}
-        parser={React.useMemo(
+        parser={React.useMemo<Parser>(
           () => ({
-            defaultValue,
+            value: defaultValue,
             min,
             max,
             step,

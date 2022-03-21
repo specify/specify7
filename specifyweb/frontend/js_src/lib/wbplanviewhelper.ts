@@ -297,4 +297,17 @@ export const f = {
    */
   includes: <T>(array: RA<T>, item: unknown): item is T =>
     array.includes(item as T),
+  /**
+   * Intercept function arguments without affecting it
+   * Useful for debugging or logging
+   */
+  tap:
+    <ARGUMENTS extends RA<never>, RETURN>(
+      tapFunction: (...args: ARGUMENTS) => void,
+      action: (...args: ARGUMENTS) => RETURN
+    ) =>
+    (...args: ARGUMENTS): RETURN => {
+      tapFunction(...args);
+      return action(...args);
+    },
 } as const;

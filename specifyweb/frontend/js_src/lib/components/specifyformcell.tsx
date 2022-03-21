@@ -27,7 +27,7 @@ const cellRenderers: {
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
-  }) => JSX.Element;
+  }) => JSX.Element | null;
 } = {
   Field({
     mode,
@@ -110,9 +110,8 @@ const cellRenderers: {
         [field, resource]
       )
     );
-    return typeof interactionCollection === 'undefined' ? (
-      <></>
-    ) : interactionCollection === false ? (
+    return typeof interactionCollection ===
+      'undefined' ? null : interactionCollection === false ? (
       <SubView
         mode={mode}
         isButton={isButton}
@@ -162,6 +161,9 @@ const cellRenderers: {
         id={id}
       />
     );
+  },
+  Blank() {
+    return null;
   },
   Unsupported({ cellData: { cellType } }) {
     return (

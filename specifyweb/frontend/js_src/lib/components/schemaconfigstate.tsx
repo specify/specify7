@@ -20,6 +20,7 @@ import {
   Input,
   Label,
   Link,
+  Select,
   Textarea,
   Ul,
 } from './basic';
@@ -365,14 +366,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           </section>
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3 id={id('fields-label')}>{commonText('fields')}</h3>
-            <select
+            <Select
               className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto"
               size={2}
               aria-labelledby={id('fields-label')}
-              onChange={({ target }): void =>
+              onValueChange={(value): void =>
                 dispatch({
                   type: 'ChangeItemAction',
-                  itemId: Number.parseInt(target.value),
+                  itemId: Number.parseInt(value),
                 })
               }
             >
@@ -392,7 +393,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   ))}
                 </optgroup>
               )}
-            </select>
+            </Select>
           </section>
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <h3>

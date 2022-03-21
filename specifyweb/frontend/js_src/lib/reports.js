@@ -4,7 +4,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
-import {Button, className} from './components/basic';
+import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
 import {AttachmentView} from './components/attachmentplugin';
@@ -462,7 +462,6 @@ var QueryParamsDialog = Backbone.View.extend({
                 parentView: this,
                 model: this.model,
                 spqueryfield: spqueryfield,
-                el: $(`<li class="${className.queryField}">`)
             });
         }).bind(this);
 

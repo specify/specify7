@@ -9,7 +9,7 @@ import { setCurrentOverlay, setCurrentView } from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { sortFunction } from '../wbplanviewhelper';
-import { Button, className, Form, Input, Link, Ul } from './basic';
+import { Button, className, Form, Input, Link, Select, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -119,13 +119,13 @@ export function CollectionSelector(): JSX.Element {
   );
 
   return (
-    <select
+    <Select
       className="flex-1"
       title={commonText('currentCollection')}
       aria-label={commonText('currentCollection')}
       value={collections?.current ?? undefined}
-      onChange={({ target }): void =>
-        navigation.switchCollection(Number.parseInt(target.value), '/', () => {
+      onValueChange={(value): void =>
+        navigation.switchCollection(Number.parseInt(value), '/', () => {
           /* Nothing */
         })
       }
@@ -137,7 +137,7 @@ export function CollectionSelector(): JSX.Element {
             {name}
           </option>
         ))}
-    </select>
+    </Select>
   );
 }
 
@@ -226,7 +226,7 @@ export function UserTools({
                   onClick={(event): void => {
                     if (typeof view === 'undefined') return;
                     event.preventDefault();
-                    handleOpen();
+                    handleClose();
                     const backboneView = view({
                       onClose: (): void => void backboneView.remove(),
                     });

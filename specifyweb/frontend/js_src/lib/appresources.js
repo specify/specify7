@@ -9,6 +9,7 @@ import 'brace/mode/xml';
 import 'brace/mode/json';
 import 'brace/mode/properties';
 import 'brace/theme/monokai';
+import React from 'react';
 
 import {schema} from './schema';
 import {SaveButton} from './components/savebutton';
@@ -18,7 +19,7 @@ import * as navigation from './navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from './components/hooks';
-import {className, darkMode} from './components/basic';
+import {Button, className, darkMode, Submit} from './components/basic';
 import {showDialog} from './components/modaldialog';
 import createBackboneView from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
@@ -342,14 +343,10 @@ const ResourceList = Backbone.View.extend({
                 </label>
             </form>`),
             onClose: ()=>dialog.remove(),
-            buttons: [
-                commonText('cancel'),
-                {
-                    text: commonText('create'),
-                    type: 'submit',
-                    form: 'app-resources-new-resource-form',
-                }
-            ],
+            buttons: <>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Submit.Green form="app-resources-new-resource-form">{commonText('create')}</Submit.Green>
+            </>,
         });
 
         $('form', dialog).submit(createResource);

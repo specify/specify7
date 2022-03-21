@@ -1,4 +1,5 @@
 import type { RA } from './types';
+import { f } from './wbplanviewhelper';
 
 export function assert(value: unknown, message?: string): void {
   if (!Boolean(value)) error(message ?? 'Assertion failed');
@@ -34,9 +35,6 @@ export function breakpoint(): void {
  * Usually, you can just set a breakpoint inside a function, but that is hard
  * for functions defined by third party libraries
  */
-export const tap =
-  <ARGS extends RA<never>, RETURN>(callback: (...args: ARGS) => RETURN) =>
-  (...args: ARGS): RETURN => {
-    breakpoint();
-    return callback(...args);
-  };
+export const tap = <ARGS extends RA<never>, RETURN>(
+  callback: (...args: ARGS) => RETURN
+) => f.tap(breakpoint, callback);

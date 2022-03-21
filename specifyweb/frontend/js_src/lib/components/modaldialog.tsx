@@ -332,36 +332,47 @@ function LegacyDialogWrapper({
   ...props
 }: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children' | 'buttons'> & {
   readonly content: HTMLElement | typeof jQuery | string;
-  readonly buttons: string | undefined | RA<string | ButtonDefinition>;
+  readonly buttons:
+    | JSX.Element
+    | string
+    | undefined
+    | RA<string | ButtonDefinition>;
 }): JSX.Element {
   const dialogButtons =
     typeof buttons === 'object' ? (
       <>
-        {buttons
-          .map<ButtonDefinition>((button) =>
-            typeof button === 'string'
-              ? {
-                  style: 'Transparent',
-                  text: button,
-                  onClick: 'dialogClose',
+        {Array.isArray(buttons)
+          ? buttons
+              .map<ButtonDefinition>((button) =>
+                typeof button === 'string'
+                  ? {
+                      style: 'Transparent',
+                      text: button,
+                      onClick: 'dialogClose',
+                    }
+                  : button
+              )
+              .map(
+                (
+                  { type = 'button', style, className, onClick, text },
+                  index
+                ) => {
+                  const Component =
+                    type === 'button' ? Button[style] : Submit[style];
+                  return (
+                    <Component
+                      key={index}
+                      className={className}
+                      onClick={
+                        onClick === 'dialogClose' ? props.onClose : onClick
+                      }
+                    >
+                      {text}
+                    </Component>
+                  );
                 }
-              : button
-          )
-          .map(
-            ({ type = 'button', style, className, onClick, text }, index) => {
-              const Component =
-                type === 'button' ? Button[style] : Submit[style];
-              return (
-                <Component
-                  key={index}
-                  className={className}
-                  onClick={onClick === 'dialogClose' ? props.onClose : onClick}
-                >
-                  {text}
-                </Component>
-              );
-            }
-          )}
+              )
+          : buttons}
       </>
     ) : (
       buttons
@@ -392,7 +403,7 @@ function LegacyDialogWrapper({
         } legacy-dialog`,
       }}
     >
-      {undefined}
+      {''}
     </Dialog>
   );
 }

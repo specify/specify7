@@ -96,6 +96,7 @@ async function resourceView(
    * an unfilled view from being displayed.
    */
   return Promise.all([
+    // TODO: check if this is needed anymore
     resource.isNew() ? resource.fetchPromise() : undefined,
     recordSet?.fetchPromise(),
   ])

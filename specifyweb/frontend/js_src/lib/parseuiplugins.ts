@@ -82,6 +82,7 @@ const processUiPlugin: {
     type: 'CollectionRelOneToManyPlugin',
     relationship: properties.relname,
   }),
+  // Collection one-to-one Relationship plugin
   ColRelTypePlugin: ({ properties }) => ({
     type: 'ColRelTypePlugin',
     relationship: properties.relname,

@@ -14,7 +14,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, className } from './basic';
+import { Button, DataEntry } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBoxSearch } from './querycbxsearch';
@@ -92,15 +92,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : viewDefinition === false ? (
       missingFormDefinition
     ) : (
-      <div
-        className="grid"
-        style={{
-          gridTemplateColumns: viewDefinition.columns
-            .map((width) => (typeof width === 'number' ? `${width}px` : 'auto'))
-            .join(' '),
-        }}
-        role="table"
-      >
+      <DataEntry.Grid role="table" viewDefinition={viewDefinition}>
         <div className="contents" role="row">
           <div role="columnheader">{commonText('expand')}</div>
           {viewDefinition.rows[0].map((cell, index) => {
@@ -109,26 +101,16 @@ export function FormTable<SCHEMA extends AnySchema>({
               cell
             );
             return (
-              <div
+              <DataEntry.Cell
                 role="columnheader"
                 key={index}
-                style={{
-                  gridColumn:
-                    typeof cell.colSpan === 'number'
-                      ? `span ${cell.colSpan} / span ${cell.colSpan}`
-                      : undefined,
-                  alignSelf:
-                    cell.align === 'right'
-                      ? 'end'
-                      : cell.align === 'center'
-                      ? 'center'
-                      : 'left',
-                }}
+                colSpan={cell.colSpan}
+                align={cell.align}
                 title={title}
                 // TODO: add column sorting option
               >
                 {children}
-              </div>
+              </DataEntry.Cell>
             );
           })}
           {mode !== 'edit' && (
@@ -242,7 +224,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             }}
           />
         )}
-      </div>
+      </DataEntry.Grid>
     );
   const addButton = (
     <Button.LikeLink
@@ -265,13 +247,13 @@ export function FormTable<SCHEMA extends AnySchema>({
     </Button.LikeLink>
   );
   return dialog === false ? (
-    <fieldset>
-      <legend className={className.subFormHeader}>
+    <DataEntry.SubForm>
+      <DataEntry.SubFormHeader>
         <h3>{header}</h3>
         {addButton}
-      </legend>
+      </DataEntry.SubFormHeader>
       {children}
-    </fieldset>
+    </DataEntry.SubForm>
   ) : (
     <Dialog
       modal={dialog === 'modal'}
@@ -304,7 +286,7 @@ export function FormTableCollection({
   const [records, setRecords] = React.useState(collection.models);
   return (
     <FormTable
-      relationship={defined(collection.field)}
+      relationship={defined(collection.field?.getReverse())}
       isDependent={isDependent}
       resources={records}
       onAdd={(resource): void => {

@@ -2,7 +2,7 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import type { IR, RA } from '../types';
-import { Button, Form, Input, Label, Submit } from './basic';
+import { Button, Form, Input, Label, Select, Submit } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 
@@ -22,13 +22,13 @@ export function PickList({
   readonly className?: string;
 }): JSX.Element {
   return (
-    <select
+    <Select
       className={className}
       aria-label={label}
       value={value ?? '0'}
       disabled={disabled}
-      onChange={({ target }): void =>
-        handleChange(target.value === '0' ? null : target.value)
+      onValueChange={(value): void =>
+        handleChange(value === '0' ? null : value)
       }
     >
       {Object.keys(groups).length === 0 ? (
@@ -50,7 +50,7 @@ export function PickList({
           {}
         </>
       )}
-    </select>
+    </Select>
   );
 }
 

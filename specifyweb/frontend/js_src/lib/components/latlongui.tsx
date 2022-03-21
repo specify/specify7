@@ -6,7 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
 import type { FormMode } from '../parseform';
-import { Input } from './basic';
+import { Input, Select } from './basic';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -188,21 +188,21 @@ export function LatLongUi({
                 <span className="sr-only">
                   {localityText('coordinateType')}
                 </span>
-                <select
+                <Select
                   id={id}
                   name="type"
                   title={localityText('coordinateType')}
                   value={coordinateType}
                   disabled={mode === 'view'}
-                  onChange={({ target }): void => {
-                    setCoordinateType(target.value as CoordinateType);
-                    resource.set('latLongType', target.value);
+                  onValueChange={(value): void => {
+                    setCoordinateType(value as CoordinateType);
+                    resource.set('latLongType', value);
                   }}
                 >
                   <option value="point">{localityText('point')}</option>
                   <option value="line">{localityText('line')}</option>
                   <option value="rectangle">{localityText('rectangle')}</option>
-                </select>
+                </Select>
               </label>
             </th>
             <th scope="col">{localityText('latitude')}</th>

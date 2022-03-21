@@ -9,7 +9,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp } from '../wbplanviewhelper';
-import { Button, className, Input } from './basic';
+import { Button, className, Input, Link } from './basic';
 import { crash } from './errorboundary';
 import { Dialog } from './modaldialog';
 import { QueryComboBoxSearch } from './querycbxsearch';
@@ -17,28 +17,38 @@ import { QueryComboBoxSearch } from './querycbxsearch';
 export function RecordSelectorButtons({
   onAdd: handleAdd,
   onDelete: handleDelete,
-  onVisit: handleVisit,
+  visitHref,
 }: {
   readonly onAdd: (() => void) | undefined;
   readonly onDelete: (() => void) | undefined;
-  readonly onVisit: (() => void) | undefined;
+  readonly visitHref: string | undefined;
 }): JSX.Element {
   return (
     <>
-      {typeof handleAdd === 'function' && (
-        <Button.LikeLink onClick={handleAdd}>
-          {commonText('add')}
-        </Button.LikeLink>
-      )}
-      {typeof handleDelete === 'function' && (
-        <Button.LikeLink onClick={handleDelete}>
-          {commonText('delete')}
-        </Button.LikeLink>
-      )}
-      {typeof handleVisit === 'function' && (
-        <Button.LikeLink onClick={handleVisit}>
-          {formsText('visit')}
-        </Button.LikeLink>
+      <Button.Simple
+        className={className.greenButton}
+        aria-label={commonText('add')}
+        title={commonText('add')}
+        onClick={handleAdd}
+        disabled={typeof handleAdd === 'undefined'}
+      >
+        +
+      </Button.Simple>
+      <Button.Simple
+        className={className.redButton}
+        aria-label={commonText('delete')}
+        title={commonText('delete')}
+        onClick={handleDelete}
+        disabled={typeof handleDelete === 'undefined'}
+      >
+        -
+      </Button.Simple>
+      {typeof visitHref === 'string' && (
+        <Link.NewTab
+          href={visitHref}
+          aria-label={formsText('visit')}
+          title={formsText('visit')}
+        />
       )}
     </>
   );
@@ -126,7 +136,7 @@ export function Slider({
           className={className.greenButton}
           aria-label={formsText('createRecordButtonDescription')}
           title={formsText('createRecordButtonDescription')}
-          onClick={(): void => handleAdd()}
+          onClick={handleAdd}
         >
           +
         </Button.Simple>

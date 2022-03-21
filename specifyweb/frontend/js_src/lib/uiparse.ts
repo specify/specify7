@@ -216,7 +216,7 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
   let parser = parsers[fieldType];
   if (typeof parser === 'string') parser = parsers[parser];
   if (typeof parser === 'function') parser = parser();
-  if (typeof parser !== 'object') parser = {};
+  if (typeof parser !== 'object') parser = { type: 'text' };
   return parser;
 }
 

@@ -82,12 +82,6 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   return resolver;
 }
 
-// TODO: remove this once everything is using react
-export const header = (header: string): string =>
-  header === ''
-    ? ''
-    : `<h2 class="font-semibold text-black dark:text-white">${header}</h2>`;
-
 /**
  * Make whitespace insensitive string suitable to go into a
  * whitespace sensitive place (e.g [title] attribute)

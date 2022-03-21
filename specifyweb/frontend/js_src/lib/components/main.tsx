@@ -7,7 +7,7 @@ import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
 import { systemInformation } from '../systeminfo';
 import type { RA } from '../types';
-import { userInformation } from '../userinfo';
+import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
@@ -48,7 +48,9 @@ const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
   import('../toolbarreport').then(async ({ default: menuItem }) => ({
     default: await menuItem,
   })),
-  import('../toolbarattachments'),
+  import('../attachments')
+    .then(async ({ fetchContext }) => fetchContext)
+    .then(async () => import('../toolbarattachments')),
   import('./toolbar/wbsdialog'),
 ]).then(processMenuItems);
 
@@ -79,16 +81,20 @@ function processMenuItems<T extends UserTool | MenuItem>(
   return filtered;
 }
 
-const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
-  import('./toolbar/schemaconfig'),
-  import('./toolbar/masterkey'),
-  import('./toolbar/users'),
-  import('./toolbar/treerepair'),
-  import('./toolbar/resources'),
-  import('./toolbar/dwca'),
-  import('./toolbar/forceupdate'),
-  import('./toolbar/preferences'),
-]).then(processMenuItems);
+const userToolsPromise: Promise<RA<UserTool>> = fetchUserInfo
+  .then(() =>
+    Promise.all([
+      import('./toolbar/schemaconfig'),
+      import('./toolbar/masterkey'),
+      import('./toolbar/users'),
+      import('./toolbar/treerepair'),
+      import('./toolbar/resources'),
+      import('./toolbar/dwca'),
+      import('./toolbar/forceupdate'),
+      import('./toolbar/preferences'),
+    ])
+  )
+  .then(processMenuItems);
 
 export function Main({
   onLoaded: handleLoaded,

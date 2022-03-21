@@ -28,7 +28,7 @@ function Row({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly onSelect?: () => void;
   readonly onEdit?: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [count] = useAsyncState(
     React.useCallback(
       async () => getRelatedObjectCount(recordSet, 'recordSetItems'),
@@ -97,7 +97,7 @@ export function RecordSetsDialog({
     readonly children: JSX.Element;
     readonly dialog: (children: JSX.Element) => JSX.Element;
   }) => JSX.Element;
-}): JSX.Element {
+}): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(async () => recordSetsPromise, [recordSetsPromise])
   );
@@ -192,7 +192,7 @@ export function RecordSetsDialog({
       <ResourceView
         dialog="modal"
         resource={state.recordSet}
-        mode={isReadOnly ? 'edit' : 'view'}
+        mode={isReadOnly ? 'view' : 'edit'}
         onDeleted={undefined}
         onSaved={(): void =>
           navigation.go(
@@ -243,9 +243,7 @@ export function RecordSetsDialog({
           )
         }
       />
-    ) : (
-      <></>
-    )
+    ) : null
   ) : (
     <LoadingScreen />
   );

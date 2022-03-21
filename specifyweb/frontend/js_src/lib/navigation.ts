@@ -174,6 +174,7 @@ function defaultConfirmNavigationHandler(
       dialog.remove();
       cancel?.();
     },
+    forceToTop: true,
     buttons: [
       commonText('cancel'),
       {
@@ -196,12 +197,10 @@ function confirmNavigation(proceed: () => void, cancel: () => void): void {
 
 export function navigate(
   url: string,
-  options:
-    | boolean
-    | {
-        readonly trigger?: boolean;
-        readonly replace?: boolean;
-      }
+  options: {
+    readonly trigger?: boolean;
+    readonly replace?: boolean;
+  } = {}
 ): void {
   const cont = (): void => {
     clearUnloadProtect();
@@ -218,7 +217,7 @@ export function navigate(
     }
   };
 
-  if (unloadBlockers.length > 0)
+  if (unloadBlockers.length > 0 && options.trigger !== true)
     confirmNavigation(cont, () => {
       /* Nothing */
     });
@@ -228,7 +227,7 @@ export function navigate(
 export const start = (): void =>
   void Backbone.history.start({ pushState: true, root: '/specify/' });
 
-export const go = (url: string): void => navigate(url, true);
+export const go = (url: string): void => navigate(url, { trigger: true });
 
 export const push = (url: string): void =>
   navigate(url, { trigger: false, replace: true });

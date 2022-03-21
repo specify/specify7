@@ -111,6 +111,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           wasNew,
         })
       )
+      .then(() => setSaveRequired(false))
       .then(
         () => setIsSaving(false),
         (error: { readonly status: number; errorHandled: boolean }) => {

@@ -16,7 +16,7 @@ import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { f } from '../wbplanviewhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
-import { Button, Container, H2, Input } from './basic';
+import { Button, Container, H2, Input, Select } from './basic';
 import { FilePicker } from './filepicker';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
@@ -350,23 +350,22 @@ function ChooseEncoding(props: {
   encoding: string | null;
   update: HandleAction;
 }) {
-  function selected(value: string) {
-    props.update({ type: 'EncodingAction', encoding: value });
-  }
-
-  const options = encodings.map((encoding: string) => (
-    <option key={encoding}>{encoding}</option>
-  ));
-
   return (
     <label className="contents">
       {wbText('characterEncoding')}
-      <select
-        onChange={(event) => selected(event.target.value)}
-        value={props.encoding || ''}
+      <Select
+        onValueChange={(value): void =>
+          props.update({
+            type: 'EncodingAction',
+            encoding: value,
+          })
+        }
+        value={props.encoding ?? ''}
       >
-        {options}
-      </select>
+        {encodings.map((encoding: string) => (
+          <option key={encoding}>{encoding}</option>
+        ))}
+      </Select>
     </label>
   );
 }

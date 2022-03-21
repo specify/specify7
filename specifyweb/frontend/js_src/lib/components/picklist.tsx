@@ -9,7 +9,7 @@ import queryText from '../localization/query';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
-import { Button, Input } from './basic';
+import { Button, Input, Select } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from './combobox';
 import { crash } from './errorboundary';
@@ -144,7 +144,7 @@ export function PickListComboBox(
     <>
       {isLoading && <LoadingScreen />}
       {typeof props.onAdd === 'undefined' ? (
-        <select
+        <Select
           id={props.id}
           // "null" value is represented as an empty string
           value={value ?? ''}
@@ -153,9 +153,9 @@ export function PickListComboBox(
             ('required' in validationAttributes || props.isRequired) &&
             props.mode !== 'search'
           }
-          onChange={({ target }): void =>
-            props.items?.some(({ value }) => value === target.value) === true
-              ? updateValue(target.value)
+          onValueChange={(newValue): void =>
+            props.items?.some(({ value }) => value === newValue) === true
+              ? updateValue(newValue)
               : undefined
           }
           disabled={props.isDisabled || typeof props.items === 'undefined'}
@@ -174,7 +174,7 @@ export function PickListComboBox(
               {title}
             </option>
           ))}
-        </select>
+        </Select>
       ) : (
         <Autocomplete<undefined>
           source={autocompleteItems}

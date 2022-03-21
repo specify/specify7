@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { createDictionary, header } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -1201,10 +1201,10 @@ const commonText = createDictionary({
     'es-es': 'Access denied',
   },
   sessionTimeOutDialogHeader: {
-    'en-us': header('Insufficient Privileges'),
-    'ru-ru': header('Insufficient Privileges'),
-    ca: header('Insufficient Privileges'),
-    'es-es': header('Insufficient Privileges'),
+    'en-us': 'Insufficient Privileges',
+    'ru-ru': 'Insufficient Privileges',
+    ca: 'Insufficient Privileges',
+    'es-es': 'Insufficient Privileges',
   },
   sessionTimeOutDialogMessage: {
     'en-us': `

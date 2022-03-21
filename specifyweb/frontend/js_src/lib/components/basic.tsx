@@ -2,9 +2,9 @@ import React from 'react';
 
 import { error } from '../assert';
 import commonText from '../localization/common';
+import type { ViewDescription } from '../parseform';
 import type { Input as InputType } from '../saveblockers';
 import type { IR, RA, RR } from '../types';
-import { capitalize } from '../wbplanviewhelper';
 import type { IconProps } from './icons';
 import { icons } from './icons';
 
@@ -50,6 +50,8 @@ function wrap<
    */
   EXTRA_PROPS extends IR<unknown> = RR<never, never>
 >(
+  // Would be shown in React DevTools
+  name: string,
   tagName: TAG,
   className: string,
   initialProps?:
@@ -74,8 +76,7 @@ function wrap<
       ref: forwardRef,
     });
   };
-  // Use capitalized tagName as a devTool's component name
-  wrapped.displayName = capitalize(tagName);
+  wrapped.displayName = name;
   return wrapped;
 }
 
@@ -101,20 +102,18 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   inline-flex items-center`;
 const baseContainer = `bg-gray-200 dark:bg-neutral-800 flex flex-col gap-2
     p-4 shadow-md shadow-gray-500 rounded`;
-const subViewHeader = 'specify-subview-header';
+// TODO: reduce this once everything is using React
 export const className = {
   root: `flex flex-col h-screen overflow-hidden bg-white dark:bg-neutral-900
     text-neutral-900 dark:text-neutral-200`,
+  // Do not show validation errors until tried to submit the form
+  notSubmittedForm: 'not-submitted',
+  // Or field lost focus
+  notTouchedInput: 'not-touched',
+  // Disable default link click intercept action
+  navigationHandled: 'navigation-handled',
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
-  radio: 'h-3 w-3',
-  checkbox: 'h-3 w-3',
-  errorMessage: 'flex gap-2 p-2 text-white bg-red-500 rounded',
-  notSubmittedForm: 'not-submitted',
-  notTouchedInput: 'not-touched',
-  // Ensures textarea can't grow past max dialog width
-  textarea: 'resize max-w-full',
-  form: 'flex flex-col gap-4',
   button: 'button',
   link: 'link',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
@@ -131,40 +130,89 @@ export const className = {
     rounded`,
   containerFull: 'flex flex-col gap-4 h-full',
   containerBase: `${baseContainer}`,
-  container: `${baseContainer} max-w-[1000px] mx-auto`,
-  // FIXME: STYLE: review class names and simplify
-  formHeader: `specify-form-header border-b-2 border-brand-300 flex items-center
-    pb-2 gap-x-4`,
-  formTitle: 'view-title flex-1 text-lg',
-  formLabel: 'specify-form-label text-right',
-  formFooter:
-    'specify-form-buttons border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
-  // FIXME: STYLE: get rid of usages of this:
-  subViewHeader,
-  subFormHeader: `${subViewHeader} gap-x-2 flex font-bold border-b border-gray-500`,
-  queryField: `bg-white dark:bg-neutral-700 border border-gray-300 p-2 shadow
-    flex gap-x-2 rounded dark:border-none`,
+  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
+  formTitle: 'text-lg',
   h2: 'font-semibold text-black dark:text-white',
-  // Disable default link click intercept action
-  navigationHandled: 'navigation-handled',
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export const Label = {
-  Generic: wrap('label', className.label),
-  ForCheckbox: wrap('label', className.labelForCheckbox),
+export const DataEntry = {
+  Grid: wrap<
+    'div',
+    {
+      viewDefinition: ViewDescription;
+    }
+  >(
+    'DataEntry.Grid',
+    'div',
+    'grid overflow-x-auto items-center py-5 gap-2',
+    ({ viewDefinition, ...props }) => ({
+      ...props,
+      style: {
+        gridTemplateColumns: viewDefinition.columns
+          .map((width) => (typeof width === 'number' ? `${width}fr` : 'auto'))
+          .join(' '),
+        ...props.style,
+      },
+    })
+  ),
+  Cell: wrap<
+    'div',
+    {
+      colSpan: number;
+      align: string;
+    }
+  >(
+    'DataEntry.Cell',
+    'div',
+    'flex flex-col',
+    ({ colSpan, align, ...props }) => ({
+      ...props,
+      style: {
+        gridColumn:
+          colSpan === 1 ? undefined : `span ${colSpan} / span ${colSpan}`,
+        alignItems:
+          align === 'right'
+            ? 'flex-end'
+            : align === 'flex-center'
+            ? 'center'
+            : undefined,
+        ...props.style,
+      },
+    })
+  ),
+  SubForm: wrap('DataEntry.SubForm', 'fieldset', 'contents'),
+  SubFormHeader: wrap(
+    'DataEntry.SubFormHeader',
+    'legend',
+    'gap-x-2 flex font-bold border-b border-gray-500 pt-5'
+  ),
 };
-export const ErrorMessage = wrap('div', className.errorMessage, {
-  role: 'alert',
-});
-export const FormFooter = wrap('div', className.formFooter, {
-  role: 'toolbar',
-});
-export const FormHeader = wrap('h2', className.formHeader);
-export const SubFormHeader = wrap('div', className.subFormHeader);
+export const Label = {
+  Generic: wrap('Label.Generic', 'label', className.label),
+  ForCheckbox: wrap('Label.ForCheckbox', 'label', className.labelForCheckbox),
+};
+export const ErrorMessage = wrap(
+  'ErrorMessage',
+  'div',
+  'flex gap-2 p-2 text-white bg-red-500 rounded',
+  {
+    role: 'alert',
+  }
+);
+export const FormFooter = wrap(
+  'FormFooter',
+  'div',
+  'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
+  {
+    role: 'toolbar',
+  }
+);
+export const FormHeader = wrap('FormHeader', 'h2', className.formHeader);
 export const Form = wrap(
+  'Form',
   'form',
-  `${className.notSubmittedForm} ${className.form}`,
+  `${className.notSubmittedForm} flex flex-col gap-4`,
   (props) => ({
     ...props,
     /*
@@ -176,10 +224,11 @@ export const Form = wrap(
       if (form.classList.contains(className.notSubmittedForm))
         form.classList.remove(className.notSubmittedForm);
       /*
-       * If container has a <form>, and it summons a dialog (with uses a React
-       * Portal) which renders anoter <form>, the child <form>, while not being
-       * in the same DOM hierarchy, would still have it's onSubmit event bubble
-       * (because React Portals resolve event bubbles).
+       * If container has a <form>, and it summons a dialog (which uses a React
+       * Portal) which renders another <form>, the child <form>, while not be
+       * in the same DOM hierarchy, but would still have its onSubmit event
+       * bubble (because React Portals resolve event bubbles).
+       * Thus, have to stop propagation
        */
       if (typeof props?.onSubmit === 'function') event.stopPropagation();
       props?.onSubmit?.(event);
@@ -201,14 +250,15 @@ const withHandleBlur = <TYPE extends InputType>(
   },
 });
 export const Input = {
-  Radio: wrap('input', className.radio, { type: 'radio' }),
+  Radio: wrap('Input.Radio', 'input', 'h-3 w-3', { type: 'radio' }),
   Checkbox: wrap<
     'input',
     {
       onValueChange?: (isChecked: boolean) => void;
     }
-  >('input', className.checkbox, ({ onValueChange, ...props }) => ({
+  >('Input.Checkbox', 'input', 'h-3 w-3', ({ onValueChange, ...props }) => ({
     ...props,
+    type: 'checkbox',
     onChange(event): void {
       onValueChange?.((event.target as HTMLInputElement).checked);
       props.onChange?.(event);
@@ -220,78 +270,93 @@ export const Input = {
       readonly onValueChange?: (value: string) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
     }
-  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
-    ...props,
-    type: 'text',
-    ...withHandleBlur(props.onBlur),
-    onChange(event): void {
-      onValueChange?.((event.target as HTMLInputElement).value);
-      props.onChange?.(event);
-    },
-  })),
+  >(
+    'Input.Text',
+    'input',
+    className.notTouchedInput,
+    ({ onValueChange, ...props }) => ({
+      ...props,
+      type: 'text',
+      ...withHandleBlur(props.onBlur),
+      onChange(event): void {
+        onValueChange?.((event.target as HTMLInputElement).value);
+        props.onChange?.(event);
+      },
+    })
+  ),
   Generic: wrap<
     'input',
     {
       readonly onValueChange?: (value: string) => void;
     }
-  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
-    ...props,
-    ...withHandleBlur(props.onBlur),
-    onChange(event): void {
-      onValueChange?.((event.target as HTMLInputElement).value);
-      props.onChange?.(event);
-    },
-    onPaste(event): void {
-      const target = event.target as HTMLInputElement;
-      // Handle pasting dates into input[type="date"]
-      if (target.type === 'date') {
-        const input =
-          target.tagName === 'INPUT'
-            ? target
-            : target.getElementsByTagName('input')[0];
-        const initialType = input.type;
-        input.type = 'text';
-        try {
-          // @ts-expect-error
-          input.value = (event.clipboardData ?? window.clipboardData).getData(
-            'text/plain'
-          );
-          if (typeof onValueChange === 'function') onValueChange(input.value);
-          else if (typeof props.onChange === 'function')
-            props.onChange(
-              event as unknown as React.ChangeEvent<HTMLInputElement>
+  >(
+    'Input.Generic',
+    'input',
+    className.notTouchedInput,
+    ({ onValueChange, ...props }) => ({
+      ...props,
+      ...withHandleBlur(props.onBlur),
+      onChange(event): void {
+        onValueChange?.((event.target as HTMLInputElement).value);
+        props.onChange?.(event);
+      },
+      onPaste(event): void {
+        const target = event.target as HTMLInputElement;
+        // Handle pasting dates into input[type="date"]
+        if (target.type === 'date') {
+          const input =
+            target.tagName === 'INPUT'
+              ? target
+              : target.getElementsByTagName('input')[0];
+          const initialType = input.type;
+          input.type = 'text';
+          try {
+            // @ts-expect-error
+            input.value = (event.clipboardData ?? window.clipboardData).getData(
+              'text/plain'
             );
-          else
-            console.error('Input does not have an onChange event listener', {
-              event,
-            });
-        } catch (error: unknown) {
-          console.error(error);
-        }
+            if (typeof onValueChange === 'function') onValueChange(input.value);
+            else if (typeof props.onChange === 'function')
+              props.onChange(
+                event as unknown as React.ChangeEvent<HTMLInputElement>
+              );
+            else
+              console.error('Input does not have an onChange event listener', {
+                event,
+              });
+          } catch (error: unknown) {
+            console.error(error);
+          }
 
-        event.preventDefault();
-        input.type = initialType;
-      }
-      props.onPaste?.(event);
-    },
-  })),
+          event.preventDefault();
+          input.type = initialType;
+        }
+        props.onPaste?.(event);
+      },
+    })
+  ),
   Number: wrap<
     'input',
     {
       readonly onValueChange?: (value: number) => void;
       readonly type?: never;
     }
-  >('input', className.notTouchedInput, ({ onValueChange, ...props }) => ({
-    ...props,
-    type: 'number',
-    ...withHandleBlur(props.onBlur),
-    onChange(event): void {
-      onValueChange?.(
-        Number.parseInt((event.target as HTMLInputElement).value)
-      );
-      props.onChange?.(event);
-    },
-  })),
+  >(
+    'Input.Number',
+    'input',
+    className.notTouchedInput,
+    ({ onValueChange, ...props }) => ({
+      ...props,
+      type: 'number',
+      ...withHandleBlur(props.onBlur),
+      onChange(event): void {
+        onValueChange?.(
+          Number.parseInt((event.target as HTMLInputElement).value)
+        );
+        props.onChange?.(event);
+      },
+    })
+  ),
 };
 export const Textarea = wrap<
   'textarea',
@@ -300,8 +365,10 @@ export const Textarea = wrap<
     readonly onValueChange?: (value: string) => void;
   }
 >(
+  'Textarea',
   'textarea',
-  `${className.notTouchedInput} ${className.textarea}`,
+  // Ensures Textarea can't grow past max dialog width
+  `${className.notTouchedInput} resize max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]`,
   ({ onValueChange, ...props }) => ({
     ...props,
     ...withHandleBlur(props.onBlur),
@@ -317,35 +384,42 @@ export const Select = wrap<
     readonly onValueChange?: (value: string) => void;
     readonly onValuesChange?: (value: RA<string>) => void;
   }
->('select', className.notTouchedInput, ({ onValueChange, ...props }) => ({
-  ...props,
-  /*
-   * Required fields have blue background. Selected <option> in a select
-   * multiple also has blue background. Those clash. Need to make required
-   * select background slightly lighter
-   */
-  className: `${props.className ?? ''}${
-    props.required === true &&
-    (props.multiple === true ||
-      (typeof props.size === 'number' && props.size > 1))
-      ? ' bg-blue-100 dark:bg-blue-900'
-      : ''
-  }`,
-  ...withHandleBlur(props.onBlur),
-  onChange(event): void {
-    onValueChange?.((event.target as HTMLSelectElement).value);
-    props.onValuesChange?.(
-      Array.from((event.target as HTMLSelectElement).querySelectorAll('option'))
-        .filter(({ selected }) => selected)
-        .map(({ value }) => value)
-    );
-    props.onChange?.(event);
-  },
-}));
+>(
+  'Select',
+  'select',
+  className.notTouchedInput,
+  ({ onValueChange, ...props }) => ({
+    ...props,
+    /*
+     * Required fields have blue background. Selected <option> in a select
+     * multiple also has blue background. Those clash. Need to make required
+     * select background slightly lighter
+     */
+    className: `${props.className ?? ''}${
+      props.required === true &&
+      (props.multiple === true ||
+        (typeof props.size === 'number' && props.size > 1))
+        ? ' bg-blue-100 dark:bg-blue-900'
+        : ''
+    }`,
+    ...withHandleBlur(props.onBlur),
+    onChange(event): void {
+      onValueChange?.((event.target as HTMLSelectElement).value);
+      props.onValuesChange?.(
+        Array.from(
+          (event.target as HTMLSelectElement).querySelectorAll('option')
+        )
+          .filter(({ selected }) => selected)
+          .map(({ value }) => value)
+      );
+      props.onChange?.(event);
+    },
+  })
+);
 
 export const Link = {
-  Default: wrap('a', className.link),
-  NewTab: wrap('a', className.link, (props) => ({
+  Default: wrap('Link.Default', 'a', className.link),
+  NewTab: wrap('Link.NewTab', 'a', className.link, (props) => ({
     ...props,
     target: '_blank',
     children: (
@@ -360,12 +434,17 @@ export const Link = {
       </>
     ),
   })),
-  LikeButton: wrap('a', className.button),
-  LikeFancyButton: wrap('a', niceButton),
-  Icon: wrap<'a', IconProps>('a', className.link, (props) => ({
-    ...props,
-    children: icons[props.icon],
-  })),
+  LikeButton: wrap('Link.LikeButton', 'a', className.button),
+  LikeFancyButton: wrap('Link.LikeFancyButton', 'a', niceButton),
+  Icon: wrap<'a', IconProps>(
+    'Link.Icon',
+    'a',
+    `${className.link} rounded`,
+    (props) => ({
+      ...props,
+      children: icons[props.icon],
+    })
+  ),
 } as const;
 
 export const DialogContext = React.createContext<(() => void) | undefined>(() =>
@@ -385,37 +464,46 @@ function DialogCloseButton({
   return <ButtonComponent {...props} onClick={handleClose} />;
 }
 
-const button = (className: string) =>
-  wrap('button', className, {
+const button = (name: string, className: string) =>
+  wrap(name, 'button', className, {
     type: 'button',
   });
 export const Button = {
-  Simple: button(className.button),
+  Simple: button('Button.Simple', className.button),
   /*
    * When using Button.LikeLink component, consider adding [role="link"] if the
    * element should be announced as a link
    */
-  LikeLink: button(className.link),
-  Transparent: button(`${niceButton} ${className.transparentButton}`),
-  Gray: button(`${niceButton} ${className.grayButton}`),
-  Red: button(`${niceButton} ${className.redButton}`),
-  Blue: button(`${niceButton} ${className.blueButton}`),
-  Orange: button(`${niceButton} ${className.orangeButton}`),
-  Green: button(`${niceButton} ${className.greenButton}`),
+  LikeLink: button('Button.LikeLink', className.link),
+  Transparent: button(
+    'Button.Transparent',
+    `${niceButton} ${className.transparentButton}`
+  ),
+  Gray: button('Button.Gray', `${niceButton} ${className.grayButton}`),
+  Red: button('Button.Red', `${niceButton} ${className.redButton}`),
+  Blue: button('Button.Blue', `${niceButton} ${className.blueButton}`),
+  Orange: button('Button.Orange', `${niceButton} ${className.orangeButton}`),
+  Green: button('Button.Green', `${niceButton} ${className.greenButton}`),
   DialogClose: DialogCloseButton,
-  Icon: wrap<'button', IconProps>('button', className.link, (props) => ({
-    ...props,
-    type: 'button',
-    children: icons[props.icon],
-  })),
+  Icon: wrap<'button', IconProps>(
+    'Button.Icon',
+    'button',
+    `${className.link} rounded`,
+    (props) => ({
+      ...props,
+      type: 'button',
+      children: icons[props.icon],
+    })
+  ),
 } as const;
 
 type SubmitProps = {
   readonly children: string;
   readonly value?: undefined;
 };
-const submitButton = (buttonClassName: string) =>
+const submitButton = (name: string, buttonClassName: string) =>
   wrap<'input', SubmitProps>(
+    name,
     'input',
     buttonClassName,
     ({
@@ -429,22 +517,33 @@ const submitButton = (buttonClassName: string) =>
   );
 export const Submit = {
   // Force passing children by nesting rather than through the [value] attribute
-  Simple: submitButton(className.button),
-  Fancy: submitButton(className.fancyButton),
-  Transparent: submitButton(`${niceButton} ${className.transparentButton}`),
-  Gray: submitButton(`${niceButton} ${className.grayButton}`),
-  Red: submitButton(`${niceButton} ${className.redButton}`),
-  Blue: submitButton(`${niceButton} ${className.blueButton}`),
-  Orange: submitButton(`${niceButton} ${className.orangeButton}`),
-  Green: submitButton(`${niceButton} ${className.greenButton}`),
+  Simple: submitButton('Submit.Simple', className.button),
+  Fancy: submitButton('Submit.Fancy', className.fancyButton),
+  Transparent: submitButton(
+    'Submit.Transparent',
+    `${niceButton} ${className.transparentButton}`
+  ),
+  Gray: submitButton('Submit.Gray', `${niceButton} ${className.grayButton}`),
+  Red: submitButton('Submit.Red', `${niceButton} ${className.redButton}`),
+  Blue: submitButton('Submit.Blue', `${niceButton} ${className.blueButton}`),
+  Orange: submitButton(
+    'Submit.Orange',
+    `${niceButton} ${className.orangeButton}`
+  ),
+  Green: submitButton('Submit.Green', `${niceButton} ${className.greenButton}`),
 } as const;
 
 export const Container = {
-  Generic: wrap('section', className.container),
-  Full: wrap('section', className.containerFull),
-  Base: wrap('section', className.containerBase),
+  Generic: wrap(
+    'Container.Generic',
+    'section',
+    `${baseContainer} max-w-[min(100%,1200px)] mx-auto`
+  ),
+  Full: wrap('Container.Full', 'section', className.containerFull),
+  Base: wrap('Container.Base', 'section', className.containerBase),
 };
 export const Progress = wrap<'progress', { readonly value: number }>(
+  'Progress',
   'progress',
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
   {
@@ -453,7 +552,7 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 );
 
 // Need to set explicit [role] for list without bullets to be announced as a list
-export const Ul = wrap('ul', '', { role: 'list' });
+export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
-export const H2 = wrap('h2', className.h2);
+export const H2 = wrap('H2', 'h2', className.h2);
 /* eslint-enable @typescript-eslint/naming-convention */

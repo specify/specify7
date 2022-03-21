@@ -6,7 +6,10 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
+import type { FieldTypes } from '../parseformfields';
 import type { UiPlugins } from '../parseuiplugins';
+import { toTable } from '../specifymodel';
+import { f } from '../wbplanviewhelper';
 import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
@@ -24,9 +27,6 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
-import { FieldTypes } from '../parseformfields';
-import { f } from '../wbplanviewhelper';
-import { toTable } from '../specifymodel';
 
 function WrongTable({
   resource,
@@ -66,7 +66,7 @@ const pluginRenderers: {
     readonly formType: FormType;
     readonly mode: FormMode;
     readonly isRequired: boolean;
-  }) => JSX.Element;
+  }) => JSX.Element | null;
 } = {
   UserCollectionsUI({ resource }) {
     return (
@@ -86,6 +86,7 @@ const pluginRenderers: {
     id,
     resource,
     mode,
+    fieldName,
     pluginDefinition: {
       defaultValue,
       dateField,
@@ -93,23 +94,24 @@ const pluginRenderers: {
       precisionField,
     },
   }) => {
-    if (typeof dateField === 'undefined') {
+    const field = dateField ?? fieldName;
+    if (typeof field === 'undefined') {
       console.error(
         "Can't display PartialDateUi because initialize.df is not set"
       );
-      return <></>;
-    }
-    return (
-      <PartialDateUi
-        resource={resource}
-        id={id}
-        isReadOnly={mode === 'view'}
-        defaultValue={defaultValue}
-        defaultPrecision={defaultPrecision}
-        precisionField={precisionField}
-        dateField={dateField}
-      />
-    );
+      return null;
+    } else
+      return (
+        <PartialDateUi
+          resource={resource}
+          id={id}
+          isReadOnly={mode === 'view'}
+          defaultValue={defaultValue}
+          defaultPrecision={defaultPrecision}
+          precisionField={precisionField}
+          dateField={field}
+        />
+      );
   },
   CollectionRelOneToManyPlugin({
     resource,
@@ -119,40 +121,36 @@ const pluginRenderers: {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
-      return <></>;
-    }
-    return (
-      f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-        collectionObject.isNew() ? (
-          <></>
-        ) : (
-          <CollectionOneToManyPlugin
-            resource={collectionObject}
-            relationship={relationship}
-          />
-        )
-      ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
-    );
+      return null;
+    } else
+      return (
+        f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
+          collectionObject.isNew() ? null : (
+            <CollectionOneToManyPlugin
+              resource={collectionObject}
+              relationship={relationship}
+            />
+          )
+        ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
+      );
   },
   ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
     if (typeof relationship === 'undefined') {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
-      return <></>;
-    }
-    return (
-      f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-        collectionObject.isNew() ? (
-          <></>
-        ) : (
-          <CollectionOneToOnePlugin
-            resource={collectionObject}
-            relationship={relationship}
-          />
-        )
-      ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
-    );
+      return null;
+    } else
+      return (
+        f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
+          collectionObject.isNew() ? null : (
+            <CollectionOneToOnePlugin
+              resource={collectionObject}
+              relationship={relationship}
+            />
+          )
+        ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
+      );
   },
   LocalityGeoRef({ resource }) {
     return (
@@ -291,18 +289,20 @@ export function UiPlugin({
   readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element {
+  const Renderer = pluginRenderers[
+    fieldDefinition.pluginDefinition.type
+  ] as typeof pluginRenderers.AttachmentPlugin;
   return (
-    pluginRenderers[
-      fieldDefinition.pluginDefinition.type
-    ] as typeof pluginRenderers.AttachmentPlugin
-  )({
-    id,
-    resource,
-    pluginDefinition:
-      fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin'],
-    fieldName,
-    formType,
-    mode,
-    isRequired,
-  });
+    <Renderer
+      id={id}
+      resource={resource}
+      pluginDefinition={
+        fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
+      }
+      fieldName={fieldName}
+      formType={formType}
+      mode={mode}
+      isRequired={isRequired}
+    />
+  );
 }

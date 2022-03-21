@@ -22,7 +22,7 @@ import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { ResourceView } from '../resourceview';
+import { getDefaultFormMode, ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
@@ -351,7 +351,7 @@ function EditQueryDialog({
       onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}
       onDeleted={handleClose}
-      mode={userInformation.isReadOnly ? 'view' : 'edit'}
+      mode={getDefaultFormMode()}
       isSubForm={false}
     >
       {queryResource.isNew() ? undefined : (

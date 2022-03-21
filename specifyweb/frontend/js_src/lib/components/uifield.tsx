@@ -94,7 +94,9 @@ export function Field({
               resource.rgetPromise(field.name) as Promise<
                 SpecifyResource<AnySchema> | undefined
               >
-            ).then(format)
+            )
+              .then(format)
+              .then((value) => value ?? '')
           : undefined,
       [resource, field]
     )

@@ -14,17 +14,19 @@ export function PrintOnSave({
   fieldName,
   model,
   text,
+  defaultValue,
 }: {
   readonly id: string | undefined;
   readonly fieldName: string | undefined;
   readonly model: SpecifyModel;
   readonly text: string | undefined;
+  readonly defaultValue: boolean | undefined;
 }): JSX.Element {
   const [value, setValue] = useCachedState({
     bucketName: 'forms',
     cacheName: 'printOnSave',
     bucketType: 'localStorage',
-    defaultValue: false,
+    defaultValue: defaultValue ?? false,
   });
   const [, setFormMeta] = React.useContext(FormContext);
   React.useEffect(
@@ -92,7 +94,8 @@ export function SpecifyFormCheckbox({
       forwardRef={validationRef}
       id={id}
       name={fieldName}
-      checked={value}
+      checked={value ?? false}
+      disabled={typeof value === 'undefined'}
       onValueChange={updateValue}
       required={isRequired}
       readOnly={isReadOnly}
