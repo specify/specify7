@@ -3,7 +3,7 @@ import React from 'react';
 import commonText from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
-import { Button, Container, Form, H2, Submit } from '../basic';
+import { Button, Container, Form, H2, H3, Submit } from '../basic';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { LoadingScreen } from '../modaldialog';
@@ -39,7 +39,7 @@ function Preferences({
         ).map(
           ([category, { title, description = undefined, subcategories }]) => (
             <section key={category} className="flex flex-col gap-4">
-              <h3>{title}</h3>
+              <H3>{title}</H3>
               {typeof description === 'string' && <p>{description}</p>}
               {Object.entries(subcategories).map(
                 ([subcategory, { title, description = undefined, items }]) => (

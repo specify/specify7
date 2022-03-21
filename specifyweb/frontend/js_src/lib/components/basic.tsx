@@ -99,12 +99,14 @@ export const darkMode =
 // ClassNames are primarily for usage by non-react components
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
-  inline-flex items-center`;
+  inline-flex items-center capitalize`;
 const baseContainer = `bg-gray-200 dark:bg-neutral-800 flex flex-col gap-2
     p-4 shadow-md shadow-gray-500 rounded`;
 // TODO: reduce this once everything is using React
+const rootBackground = 'bg-white dark:bg-neutral-900';
 export const className = {
-  root: `flex flex-col h-screen overflow-hidden bg-white dark:bg-neutral-900
+  rootBackground,
+  root: `flex flex-col h-screen overflow-hidden ${rootBackground} 
     text-neutral-900 dark:text-neutral-200`,
   // Do not show validation errors until tried to submit the form
   notSubmittedForm: 'not-submitted',
@@ -557,4 +559,5 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.h2);
+export const H3 = wrap('H3', 'h2', 'text-xl');
 /* eslint-enable @typescript-eslint/naming-convention */

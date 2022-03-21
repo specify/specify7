@@ -18,15 +18,14 @@ unlockInitialContext();
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');
   if (
-    link === null ||
-    link.href.length === 0 ||
-    (link.classList.contains(className.navigationHandled) &&
-      (!event.altKey || link.target !== '_blank'))
-  )
-    return;
-
-  event.preventDefault();
-  navigation.go(link.href);
+    link !== null &&
+    link.href.length > 0 &&
+    (link.target !== '_blank' || event.altKey) &&
+    !link.classList.contains(className.navigationHandled)
+  ) {
+    event.preventDefault();
+    navigation.go(link.href);
+  }
 }
 
 // Show loading splash screen if didn't finish load within 2 seconds

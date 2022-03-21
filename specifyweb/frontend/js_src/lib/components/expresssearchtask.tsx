@@ -14,6 +14,7 @@ import { defined } from '../types';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
+import { H3 } from './basic';
 
 const relatedSearchesPromise = ajax<RA<string>>(
   '/context/available_related_searches.json',
@@ -60,7 +61,7 @@ function TableResults({
 }): JSX.Element {
   return (
     <section className="flex flex-col gap-1">
-      <h3>{header}</h3>
+      <H3>{header}</H3>
       {typeof queryResults === 'undefined' ? (
         <p aria-live="polite">{commonText('running')}</p>
       ) : Object.keys(queryResults).length === 0 ? (

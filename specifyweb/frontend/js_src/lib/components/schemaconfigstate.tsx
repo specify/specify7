@@ -17,6 +17,7 @@ import {
   className,
   Container,
   H2,
+  H3,
   Input,
   Label,
   Link,
@@ -290,9 +291,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         </header>
         <div className="sm:flex-row sm:h-full flex flex-col gap-4">
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
-            <h3>
+            <H3>
               {commonText('tableInline')} {table.name}
-            </h3>
+            </H3>
             <Label.Generic>
               {commonText('caption')}
               <Input.Text
@@ -396,9 +397,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Select>
           </section>
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
-            <h3>
+            <H3>
               {commonText('field')}: {items[itemId].name}
-            </h3>
+            </H3>
             <Label.Generic>
               {commonText('caption')}
               <Input.Text

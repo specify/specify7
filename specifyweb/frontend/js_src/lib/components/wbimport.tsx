@@ -16,7 +16,7 @@ import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { f } from '../wbplanviewhelper';
 import { uniquifyDataSetName } from '../wbuniquifyname';
-import { Button, Container, H2, Input, Select } from './basic';
+import { Button, Container, H2, H3, Input, Select } from './basic';
 import { FilePicker } from './filepicker';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
@@ -404,7 +404,7 @@ function Preview({
 
   return (
     <div>
-      <h3>{wbText('previewDataSet')}</h3>
+      <H3>{wbText('previewDataSet')}</H3>
       <div className="overflow-auto">
         <table>
           <thead>

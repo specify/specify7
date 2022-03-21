@@ -7,6 +7,6 @@ export const NotFoundView = Backbone.View.extend({
   render() {
     this.el.setAttribute('role', 'alert');
     this.el.setAttribute('class', 'p-2');
-    this.el.innerHTML = `<h3>${commonText('pageNotFound')}</h3`;
+    this.el.innerHTML = `<h2>${commonText('pageNotFound')}</h2>`;
   },
 });

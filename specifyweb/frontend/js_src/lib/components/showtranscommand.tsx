@@ -7,7 +7,7 @@ import formsText from '../localization/forms';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { f, sortObjectsByKey } from '../wbplanviewhelper';
-import { Link, Ul } from './basic';
+import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 
@@ -97,19 +97,19 @@ export function ShowLoansCommand({
       header={commonText('transactions')}
       onClose={handleClose}
     >
-      <h2>{formsText('openLoans')}</h2>
+      <H3>{formsText('openLoans')}</H3>
       <List
         resources={data.openLoans}
         fieldName="loan"
         displayFieldName="loanNumber"
       />
-      <h2>{formsText('resolvedLoans')}</h2>
+      <H3>{formsText('resolvedLoans')}</H3>
       <List
         resources={data.resolvedLoans}
         fieldName="loan"
         displayFieldName="loanNumber"
       />
-      <h2>{formsText('gifts')}</h2>
+      <H3>{formsText('gifts')}</H3>
       <List
         resources={data.gifts}
         fieldName="gift"
@@ -117,7 +117,7 @@ export function ShowLoansCommand({
       />
       {data.exchanges.length > 0 && (
         <>
-          <h2>${formsText('exchanges')}</h2>
+          <H3>${formsText('exchanges')}</H3>
           <List
             resources={data.exchanges}
             fieldName="exchange"

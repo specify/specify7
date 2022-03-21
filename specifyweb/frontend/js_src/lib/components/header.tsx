@@ -52,7 +52,7 @@ export function HeaderItems({
       {menuItems.map(({ task, title, icon, view, isOverlay }) => (
         <Link.Default
           className={`
-            ${className.navigationHandled}
+            ${typeof view === 'string' ? '' : className.navigationHandled}
             p-3
             text-gray-700
             dark:text-neutral-300
@@ -81,9 +81,10 @@ export function HeaderItems({
             ${task === activeTask ? 'lg:after:dark:bg-neutral-800' : ''}
           `}
           key={task}
-          href={`/specify/task/${task}/`}
+          href={typeof view === 'string' ? view : `/specify/task/${task}/`}
           aria-current={task === activeTask ? 'page' : undefined}
           onClick={(event): void => {
+            if (typeof view === 'string') return;
             event.preventDefault();
             const backboneView = view({
               onClose: (): void => void backboneView.remove(),
@@ -222,9 +223,12 @@ export function UserTools({
             ].map(({ task, title, basePath, view, isOverlay }) => (
               <li key={task}>
                 <Link.Default
-                  href={`${basePath}${task}/`}
+                  href={typeof view === 'string' ? view : `${basePath}${task}/`}
+                  className={
+                    typeof view === 'string' ? '' : className.navigationHandled
+                  }
                   onClick={(event): void => {
-                    if (typeof view === 'undefined') return;
+                    if (typeof view !== 'function') return;
                     event.preventDefault();
                     handleClose();
                     const backboneView = view({

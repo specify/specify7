@@ -7,7 +7,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { defined } from '../types';
 import { camelToHuman } from '../wbplanviewhelper';
-import { Button, className, Submit, Ul } from './basic';
+import { Button, className, H3, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
@@ -179,7 +179,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           <Ul>
             {Array.from(model.saveBlockers.blockingResources, (resource) => (
               <li key={resource.cid}>
-                <h3>{resource.specifyModel.label}</h3>
+                <H3>{resource.specifyModel.label}</H3>
                 <dl>
                   {Object.entries(resource.saveBlockers.blockers).map(
                     ([key, blocker]) => (

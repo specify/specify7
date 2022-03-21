@@ -438,14 +438,14 @@ export function parseValue(
  * Finds pickList item if available
  */
 export function fieldFormat(
-  field: LiteralField,
+  field: LiteralField | undefined,
   parser: Parser | undefined,
-  value: string | number | null | undefined
+  value: string | number | null | boolean | undefined
 ): string {
   if (typeof value === 'undefined' || value === null) return '';
 
   // Find Pick List Item Title
-  const pickListName = parser?.pickListName ?? field.getPickList();
+  const pickListName = parser?.pickListName ?? field?.getPickList();
   if (
     typeof pickListName === 'string' &&
     typeof pickLists[pickListName] === 'object'
@@ -455,7 +455,7 @@ export function fieldFormat(
     if (typeof item === 'object') return item.title;
   }
 
-  const resolvedParser = parser ?? resolveParser(field);
+  const resolvedParser = parser ?? resolveParser(field ?? {});
 
   if (typeof resolvedParser === 'object') {
     const parseResults = parseValue(

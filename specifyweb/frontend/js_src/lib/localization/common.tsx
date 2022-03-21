@@ -1544,6 +1544,72 @@ const commonText = createDictionary({
     ca: 'Tables',
     'es-es': 'Tables',
   },
+  label: {
+    'en-us': 'Label',
+    'ru-ru': 'Локализованный',
+    ca: 'Label',
+    'es-es': 'Label',
+  },
+  hidden: {
+    'en-us': 'Hidden',
+    'ru-ru': 'Скрытый',
+    ca: 'Hidden',
+    'es-es': 'Hidden',
+  },
+  databaseColumn: {
+    'en-us': 'Database Column',
+    'ru-ru': 'Столбец базы данных',
+    ca: 'Database Column',
+    'es-es': 'Database Column',
+  },
+  relatedModel: {
+    'en-us': 'Related Model',
+    'ru-ru': 'Таблица',
+    ca: 'Related Model',
+    'es-es': 'Related Model',
+  },
+  otherSideName: {
+    'en-us': 'Other side name',
+    'ru-ru': 'Имя другой стороны',
+    ca: 'Other side name',
+    'es-es': 'Other side name',
+  },
+  dependent: {
+    'en-us': 'Dependent',
+    'ru-ru': 'Зависимый',
+    ca: 'Dependent',
+    'es-es': 'Dependent',
+  },
+  viewAsJson: {
+    'en-us': 'View as JSON',
+    'ru-ru': 'Посмотреть как JSON',
+    ca: 'View as JSON',
+    'es-es': 'View as JSON',
+  },
+  tableId: {
+    'en-us': 'Table ID',
+    'ru-ru': 'Идентификатор',
+    ca: 'Table ID',
+    'es-es': 'Table ID',
+  },
+  fieldCount: {
+    'en-us': 'Field count',
+    'ru-ru': 'Количество полей',
+    ca: 'Field count',
+    'es-es': 'Field count',
+  },
+  relationshipCount: {
+    'en-us': 'Relationship count',
+    'ru-ru': 'Количество отношений',
+    ca: 'Relationship count',
+    'es-es': 'Relationship count',
+  },
+  datamodel: {
+    'en-us': 'Data Model',
+    'ru-ru': 'Схема базы данных',
+    ca: 'Data Model',
+    'es-es': 'Data Model',
+  },
 });
 
 export default commonText;

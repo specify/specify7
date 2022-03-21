@@ -5,7 +5,7 @@ import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
 import { systemInformation } from '../systeminfo';
 import taxonTiles from '../taxontiles';
-import { Button, Link } from './basic';
+import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -76,7 +76,7 @@ function AboutSpecify(): JSX.Element {
         <p className="text-justify">{welcomeText('licence')}</p>
 
         <section>
-          <h3>{welcomeText('systemInformation')}</h3>
+          <H3>{welcomeText('systemInformation')}</H3>
           <table className="grid-table gap-1 grid-cols-[auto,auto]">
             <tbody>
               {[

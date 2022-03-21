@@ -19,7 +19,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { f } from '../wbplanviewhelper';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import { Button, Container } from './basic';
+import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState } from './hooks';
@@ -209,11 +209,11 @@ export function QueryResultsTable({
   return (
     <Container.Base className="overflow-hidden">
       <div className="gap-x-2 flex items-center">
-        <h3>{`${label}: (${
+        <H3>{`${label}: (${
           selectedRows.size === 0
             ? totalCount
             : `${selectedRows.size}/${totalCount}`
-        })`}</h3>
+        })`}</H3>
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) ? (
           <ViewRecords

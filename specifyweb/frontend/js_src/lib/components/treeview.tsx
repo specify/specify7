@@ -24,7 +24,8 @@ import {
 import type { IR, RA } from '../types';
 import { sortObjectsByKey } from '../wbplanviewhelper';
 import { Autocomplete } from './autocomplete';
-import { Button, Container, Input } from './basic';
+import { Button, Container, H2, Input } from './basic';
+import { TableIcon } from './common';
 import { useAsyncState, useId, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -118,7 +119,8 @@ function TreeView<SCHEMA extends AnyTree>({
   ) : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
-        <h2>{table.label}</h2>
+        <TableIcon name={table.name} />
+        <H2>{table.label}</H2>
         {/* A react component that is also a TypeScript generic */}
         <Autocomplete<SpecifyResource<SCHEMA>>
           source={async (value) => {

@@ -50,6 +50,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { TableIcon } from './common';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -285,6 +286,7 @@ export function WbPlanViewMapper(props: {
     <Layout
       title={
         <>
+          <TableIcon name={props.baseTableName} />
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
           <span title={wbText('baseTable')}>
             {` (${defined(getModel(props.baseTableName)).label})`}

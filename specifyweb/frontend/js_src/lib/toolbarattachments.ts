@@ -1,16 +1,7 @@
 import { attachmentsAvailable } from './attachments';
-import Backbone from './backbone';
 import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
-import * as navigation from './navigation';
-
-const View = Backbone.View.extend({
-  __name__: 'ToolbarAttachments',
-  render() {
-    navigation.go('attachments/');
-  },
-});
 
 const menuItem: MenuItem = {
   task: 'attachments',
@@ -18,7 +9,7 @@ const menuItem: MenuItem = {
   icon: icons.link,
   enabled: attachmentsAvailable,
   isOverlay: true,
-  view: () => new View(),
+  view: '/specify/attachments/',
 };
 
 export default menuItem;

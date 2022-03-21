@@ -28,7 +28,7 @@ import {
   resolveParser,
 } from '../uiparse';
 import { f, sortFunction } from '../wbplanviewhelper';
-import { Button, className, H2, Link, Textarea } from './basic';
+import { Button, className, H3, Link, Textarea } from './basic';
 import { crash } from './errorboundary';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
@@ -309,12 +309,12 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
                 }
               />
             ) : (
-              <H2>
+              <>
                 ${formsText('problemsFound')}
                 {Object.entries(state.problems).map(
                   ([header, problems], index) => (
                     <React.Fragment key={index}>
-                      <h3>{header}</h3>
+                      <H3>{header}</H3>
                       {problems.map((problem, index) => (
                         <p key={index}>{problem}</p>
                       ))}
@@ -331,7 +331,7 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
                 >
                   {formsText('ignoreAndContinue')}
                 </Button.Blue>
-              </H2>
+              </>
             )
           ) : undefined}
         </Dialog>

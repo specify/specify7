@@ -22,20 +22,18 @@ import { Notifications } from './notifications';
 export type UserTool = {
   readonly task: string;
   readonly title: string;
-  readonly view: (props: {
-    readonly onClose: () => void;
-    readonly urlParameter?: string;
-  }) => Backbone.View;
+  readonly view:
+    | string
+    | ((props: {
+        readonly onClose: () => void;
+        readonly urlParameter?: string;
+      }) => Backbone.View);
   readonly enabled?: boolean | (() => boolean);
   // Whether the view opens in a dialog window
   readonly isOverlay: boolean;
 };
 
 export type MenuItem = UserTool & {
-  readonly view: (props: {
-    readonly onClose: () => void;
-    readonly urlParameter?: string;
-  }) => Backbone.View;
   readonly icon: JSX.Element;
 };
 
@@ -67,14 +65,15 @@ function processMenuItems<T extends UserTool | MenuItem>(
     router.route(
       `task/${task}/(:options)`,
       'startTask',
-      (urlParameter: string) => {
-        setCurrentView(
-          view({
-            onClose: (): void => navigation.go('/specify'),
-            urlParameter,
-          })
-        );
-      }
+      (urlParameter: string) =>
+        typeof view === 'string'
+          ? navigation.go(view)
+          : setCurrentView(
+              view({
+                onClose: (): void => navigation.go('/specify'),
+                urlParameter,
+              })
+            )
     )
   );
 
@@ -92,6 +91,9 @@ const userToolsPromise: Promise<RA<UserTool>> = fetchUserInfo
       import('./toolbar/dwca'),
       import('./toolbar/forceupdate'),
       import('./toolbar/preferences'),
+      import('./toolbar/schema').then(({ toolBarItem }) => ({
+        default: toolBarItem,
+      })),
     ])
   )
   .then(processMenuItems);
