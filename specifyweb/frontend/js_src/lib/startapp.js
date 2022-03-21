@@ -59,6 +59,7 @@ const tasksPromise = Promise.all([
   import('./wbimporttask'),
   import('./wbplantask'),
   import('./appresourcetask'),
+  import('./components/toolbar/security'),
 ]).then((tasks) => () => tasks.forEach(({ default: task }) => task()));
 
 router

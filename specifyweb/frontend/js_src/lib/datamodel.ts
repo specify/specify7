@@ -4,7 +4,7 @@
  *   in ./datamodelutils.ts
  *
  * Schema version: 2.9
- * Date generated: Jan 20, 2022
+ * Date generated: March 21, 2022
  */
 
 import type { RA, RR } from './types';
@@ -452,6 +452,7 @@ export type Agent = {
     readonly collectors: RA<Collector>;
     readonly members: RA<GroupPerson>;
     readonly orgMembers: RA<Agent>;
+    readonly catalogerOf: RA<CollectionObject>;
   };
 };
 export type AgentAttachment = {
@@ -1271,6 +1272,7 @@ export type Collection = {
     readonly rightSideRelTypes: RA<CollectionRelType>;
     readonly technicalContacts: RA<Agent>;
     readonly userGroups: RA<SpPrincipal>;
+    readonly collectionObjects: RA<CollectionObject>;
   };
 };
 export type CollectionObject = {
@@ -1339,6 +1341,7 @@ export type CollectionObject = {
   };
   readonly toOneDependent: {
     readonly collectionObjectAttribute: CollectionObjectAttribute | null;
+    readonly paleoContext: PaleoContext | null;
   };
   readonly toOneIndependent: {
     readonly accession: Accession | null;
@@ -1354,8 +1357,8 @@ export type CollectionObject = {
     readonly fieldNotebookPage: FieldNotebookPage | null;
     readonly inventorizedBy: Agent | null;
     readonly modifiedByAgent: Agent | null;
-    readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
+    readonly currentDetermination: Determination | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
@@ -2546,6 +2549,7 @@ export type Division = {
     readonly members: RA<Agent>;
     readonly numberingSchemes: RA<AutoNumberingScheme>;
     readonly userGroups: RA<SpPrincipal>;
+    readonly accessions: RA<Accession>;
   };
 };
 export type ExchangeIn = {
@@ -3507,6 +3511,12 @@ export type Loan = {
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
+    readonly totalPreps: number | null;
+    readonly totalItems: number | null;
+    readonly unresolvedPreps: number | null;
+    readonly unresolvedItems: number | null;
+    readonly resolvedPreps: number | null;
+    readonly resolvedItems: number | null;
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
@@ -4101,7 +4111,7 @@ export type PrepType = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly attributeDefs: RA<AttributeDef> };
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyIndependent: { readonly preparations: RA<Preparation> };
 };
 export type Preparation = {
   readonly tableName: 'Preparation';
@@ -4150,6 +4160,7 @@ export type Preparation = {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
+    readonly isOnLoan: boolean | null;
   };
   readonly toOneDependent: {
     readonly preparationAttribute: PreparationAttribute | null;
@@ -5007,6 +5018,7 @@ export type SpPrincipal = {
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly scope: Division | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -5228,8 +5240,6 @@ export type SpecifyUser = {
     readonly timestampModified: string | null;
     readonly userType: string | null;
     readonly version: number | null;
-    // Front-end only field?
-    readonly isAdmin: boolean;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -5469,6 +5479,7 @@ export type Taxon = {
     readonly determinations: RA<Determination>;
     readonly hybridChildren1: RA<Taxon>;
     readonly hybridChildren2: RA<Taxon>;
+    readonly preferredTaxonOf: RA<Determination>;
   };
 };
 export type TaxonAttachment = {

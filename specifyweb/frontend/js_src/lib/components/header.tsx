@@ -228,7 +228,10 @@ export function UserTools({
                     typeof view === 'string' ? '' : className.navigationHandled
                   }
                   onClick={(event): void => {
-                    if (typeof view !== 'function') return;
+                    if (typeof view !== 'function') {
+                      handleClose();
+                      return;
+                    }
                     event.preventDefault();
                     handleClose();
                     const backboneView = view({

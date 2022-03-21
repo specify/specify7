@@ -14,7 +14,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry } from './basic';
+import { Button, DataEntry, H3 } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBoxSearch } from './querycbxsearch';
@@ -244,7 +244,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
-        <h3>{header}</h3>
+        <H3>{header}</H3>
         {addButton}
       </DataEntry.SubFormHeader>
       {children}

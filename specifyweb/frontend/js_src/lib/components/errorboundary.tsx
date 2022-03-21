@@ -10,6 +10,7 @@ import React from 'react';
 import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
+import type { RA } from '../types';
 import { Button, Container, H2, Link } from './basic';
 import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
@@ -247,3 +248,17 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
     />
   );
 }
+
+// FIXME: properly handle permission denied errors
+function PermissionsDenied({
+  resposne,
+}: {
+  readonly response: {
+    readonly NoMatchingRuleException: RA<{
+      readonly action: 'read';
+      readonly collectionid: number;
+      readonly resource: string;
+      readonly userid: string;
+    }>;
+  };
+}): JSX.Element {}

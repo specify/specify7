@@ -191,6 +191,37 @@ const adminText = createDictionary({
     ca: 'Select user collection access',
     'es-es': 'Select user collection access',
   },
+  // FIXME: localize
+  securityPanel: {
+    'en-us': 'Security Panel',
+    'ru-ru': 'Security Panel',
+    ca: 'Security Panel',
+    'es-es': 'Security Panel',
+  },
+  institution: {
+    'en-us': 'Institution:',
+    'ru-ru': 'Institution:',
+    ca: 'Institution:',
+    'es-es': 'Institution:',
+  },
+  admins: {
+    'en-us': 'Admins:',
+    'ru-ru': 'Admins:',
+    ca: 'Admins:',
+    'es-es': 'Admins:',
+  },
+  userRoleLibrary: {
+    'en-us': 'User role library:',
+    'ru-ru': 'User role library:',
+    ca: 'User role library:',
+    'es-es': 'User role library:',
+  },
+  userRoles: {
+    'en-us': 'User roles:',
+    'ru-ru': 'User roles:',
+    ca: 'User roles:',
+    'es-es': 'User roles:',
+  },
 });
 
 export default adminText;

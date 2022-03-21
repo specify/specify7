@@ -366,7 +366,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.ForCheckbox>
           </section>
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
-            <h3 id={id('fields-label')}>{commonText('fields')}</h3>
+            <H3 id={id('fields-label')}>{commonText('fields')}</H3>
             <Select
               className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto"
               size={2}

@@ -7,7 +7,7 @@ import { ajax, Http } from './ajax';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
   getAttribute,
-  parseFormCellDefinition,
+  parseFormCell,
   processColumnDefinition,
 } from './parseformcells';
 import * as queryString from './querystring';
@@ -38,7 +38,7 @@ function parseFormTableDefinition(
 ): ParsedFormDefinition {
   const cells = Array.from(
     viewDefinition.querySelectorAll('cell[type="field"], cell[type="subview"]'),
-    parseFormCellDefinition.bind(undefined, model)
+    parseFormCell.bind(undefined, model)
   );
   return postProcessRows(cells.map(f.undefined), [cells]);
 }
@@ -52,7 +52,7 @@ export const parseFormDefinition = (
     Array.from(viewDefinition.querySelectorAll('rows > row'), (row) =>
       Array.from(
         row.querySelectorAll('cell'),
-        parseFormCellDefinition.bind(undefined, model)
+        parseFormCell.bind(undefined, model)
       )
     )
   );

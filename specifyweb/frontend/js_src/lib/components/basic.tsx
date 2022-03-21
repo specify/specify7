@@ -559,5 +559,5 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.h2);
-export const H3 = wrap('H3', 'h2', 'text-xl');
+export const H3 = wrap('H3', 'h3', 'text-gray-500 dark:text-neutral-400');
 /* eslint-enable @typescript-eslint/naming-convention */

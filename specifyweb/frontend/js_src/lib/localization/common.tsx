@@ -997,6 +997,13 @@ const commonText = createDictionary({
     ca: 'Are you sure you want to leave this page?',
     'es-es': 'Are you sure you want to leave this page?',
   },
+  // FIXME: localize
+  leavePageDialogMessage: {
+    'en-us': 'Unsaved changes would be lost if your leave this page',
+    'ru-ru': 'Unsaved changes would be lost if your leave this page',
+    ca: 'Unsaved changes would be lost if your leave this page',
+    'es-es': 'Unsaved changes would be lost if your leave this page',
+  },
   leave: {
     'en-us': 'Leave',
     'ru-ru': 'Покинуть',
@@ -1609,6 +1616,19 @@ const commonText = createDictionary({
     'ru-ru': 'Схема базы данных',
     ca: 'Data Model',
     'es-es': 'Data Model',
+  },
+  // FIXME: localize
+  tableApi: {
+    'en-us': 'Tables API documentation',
+    'ru-ru': 'Tables API documentation',
+    ca: 'Tables API documentation',
+    'es-es': 'Tables API documentation',
+  },
+  operationsApi: {
+    'en-us': 'Operations API documentation',
+    'ru-ru': 'Operations API documentation',
+    ca: 'Operations API documentation',
+    'es-es': 'Operations API documentation',
   },
 });
 

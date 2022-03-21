@@ -18,6 +18,7 @@ import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
+import { H3 } from './basic';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -71,7 +72,7 @@ const cellRenderers: {
   },
   Separator({ cellData: { label } }) {
     return typeof label === 'string' ? (
-      <h3 className="border-b border-gray-500">{label}</h3>
+      <H3 className="border-b border-gray-500">{label}</H3>
     ) : (
       <hr className="w-full border-b border-gray-500" />
     );

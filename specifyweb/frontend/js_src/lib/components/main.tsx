@@ -80,6 +80,7 @@ function processMenuItems<T extends UserTool | MenuItem>(
   return filtered;
 }
 
+// TODO: group these into categories
 const userToolsPromise: Promise<RA<UserTool>> = fetchUserInfo
   .then(() =>
     Promise.all([
@@ -94,8 +95,15 @@ const userToolsPromise: Promise<RA<UserTool>> = fetchUserInfo
       import('./toolbar/schema').then(({ toolBarItem }) => ({
         default: toolBarItem,
       })),
+      import('./toolbar/swagger').then(({ toolbarItems }) =>
+        toolbarItems.map((item) => ({ default: item }))
+      ),
+      import('./toolbar/security').then(({ userTool }) => ({
+        default: userTool,
+      })),
     ])
   )
+  .then((items) => items.flat())
   .then(processMenuItems);
 
 export function Main({

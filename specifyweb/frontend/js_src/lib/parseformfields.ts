@@ -108,6 +108,8 @@ const processFieldType: {
       ...withStringDefault(cell),
       min: Number.isNaN(min) ? undefined : min,
       max: Number.isNaN(max) ? undefined : max,
+      // TODO: factor in this value when displaing a field
+      // TODO: figure out how this could be used for latlong fields
       step: Number.isNaN(step) ? undefined : step,
     };
   },
@@ -145,7 +147,7 @@ export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
   readonly isReadOnly: boolean;
 };
 
-export function parseFormCell(
+export function parseFormField(
   cell: Element,
   properties: IR<string | undefined>
 ): FormFieldDefinition {

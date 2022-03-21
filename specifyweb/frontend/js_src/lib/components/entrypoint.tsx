@@ -12,6 +12,7 @@ import { crash, ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
+import { Contexts } from './contexts';
 
 unlockInitialContext();
 
@@ -74,7 +75,9 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <React.StrictMode>
       <ErrorBoundary>
-        <Root />
+        <Contexts>
+          <Root />
+        </Contexts>
       </ErrorBoundary>
     </React.StrictMode>,
     root

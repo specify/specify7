@@ -7,7 +7,7 @@ import type { State } from 'typesafe-reducer';
 import type { FormType, ParsedFormDefinition } from './parseform';
 import { formTypes, parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
-import { parseFormCell } from './parseformfields';
+import { parseFormField } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
@@ -110,7 +110,7 @@ const processCellType: {
     return {
       type: 'Field',
       fieldName: field?.name ?? rawFieldName,
-      fieldDefinition: parseFormCell(cell, properties),
+      fieldDefinition: parseFormField(cell, properties),
       isRequired:
         getAttribute(cell, 'isRequired')?.toLowerCase() === 'true' ||
         field?.isRequiredBySchemaLocalization() ||
@@ -188,7 +188,7 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  * Depends on SpecifyModel only for figuring out if field is required in
  * the schema
  */
-export function parseFormCellDefinition(
+export function parseFormCell(
   model: SpecifyModel | undefined,
   cellNode: Element
 ): FormCellDefinition {
