@@ -71,6 +71,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
                 break
 
             next_table = datamodel.get_table(field.relatedModelName, strict=True)
+            if next_table == table:
+                # If doing a self join, it seems like SQLAlchemy wants
+                # to do it backwards. Not sure if this is a bug in
+                # SQLAlchemy. If so it is present up to at least
+                # 1.4.32. We can get around it by flipping the
+                # relationship backwards before joining.
+                field = table.get_field(field.otherSideName)
             logger.debug("joining: %r to %r via %r", table, next_table, field)
             if (model, field.name) in query.join_cache:
                 aliased = query.join_cache[(model, field.name)]
