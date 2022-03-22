@@ -42,6 +42,7 @@ import type { QueryComboBoxFilter } from './querycbxsearch';
 import { QueryComboBoxSearch } from './querycbxsearch';
 import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
+import { LoadingContext } from './contexts';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -298,6 +299,7 @@ export function QueryComboBox({
         )
       : undefined;
 
+  const loading = React.useContext(LoadingContext);
   const handleOpenRelated = (): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
@@ -305,12 +307,13 @@ export function QueryComboBox({
         !userInformation.available_collections
           .map(([id]) => id)
           .includes(relatedCollectionId)
-      ? void fetchResource('Collection', relatedCollectionId).then(
-          (collection) =>
+      ? loading(
+          fetchResource('Collection', relatedCollectionId).then((collection) =>
             setState({
               type: 'AccessDeniedState',
               collectionName: collection?.collectionName ?? '',
             })
+          )
         )
       : setState({ type: 'ViewResourceState' });
 

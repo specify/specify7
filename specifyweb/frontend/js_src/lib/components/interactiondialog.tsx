@@ -29,11 +29,11 @@ import {
 } from '../uiparse';
 import { f, sortFunction } from '../wbplanviewhelper';
 import { Button, className, H3, Link, Textarea } from './basic';
-import { crash } from './errorboundary';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
+import { LoadingContext } from './contexts';
 
 export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
   recordSetsPromise,
@@ -101,35 +101,41 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
 
+  const loading = React.useContext(LoadingContext);
+
   function handleProceed(
     recordSet: SpecifyResource<RecordSet> | undefined
   ): void {
     const items = catalogNumbers.split('\t');
     if (model.name === 'Loan')
-      ajax('/interactions/loan_return_all/', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: {
-          recordSetId: recordSet?.get('id') ?? undefined,
-          loanNumbers: typeof recordSet === 'undefined' ? items : undefined,
-        },
-      })
-        .then(({ data }) =>
+      loading(
+        ajax('/interactions/loan_return_all/', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: {
+            recordSetId: recordSet?.get('id') ?? undefined,
+            loanNumbers: typeof recordSet === 'undefined' ? items : undefined,
+          },
+        }).then(({ data }) =>
           setState({
             type: 'LoanReturnDoneState',
             result: data[0],
           })
         )
-        .catch(crash);
+      );
     else if (typeof recordSet === 'object')
-      getPrepsAvailableForLoanRs(recordSet.get('id')).then((data) =>
-        availablePrepsReady(undefined, recordSet, data)
+      loading(
+        getPrepsAvailableForLoanRs(recordSet.get('id')).then((data) =>
+          availablePrepsReady(undefined, recordSet, data)
+        )
       );
     else
-      (items.length > 0
-        ? Promise.resolve([])
-        : getPrepsAvailableForLoanCoIds('CatalogNumber', items)
-      ).then((data) => availablePrepsReady(items, undefined, data));
+      loading(
+        (items.length > 0
+          ? Promise.resolve([])
+          : getPrepsAvailableForLoanCoIds('CatalogNumber', items)
+        ).then((data) => availablePrepsReady(items, undefined, data))
+      );
   }
 
   function availablePrepsReady(

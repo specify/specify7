@@ -12,6 +12,7 @@ import { f } from '../wbplanviewhelper';
 import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
+import { LoadingContext } from './contexts';
 
 function GeoLocate({
   resource,
@@ -27,6 +28,7 @@ function GeoLocate({
     ),
     true
   );
+  const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
     if (typeof data !== 'object') return undefined;
@@ -54,23 +56,28 @@ function GeoLocate({
           : Number.parseFloat(uncertainty);
       const polyParsed = poly === 'Unavailable' ? undefined : poly;
 
-      (typeof uncertaintyParsed === 'number' || typeof poly === 'string'
-        ? resource.rgetPromise('geoCoordDetails').then((details) => {
-            let detailsResource = details;
-            if (detailsResource === null) {
-              detailsResource = new schema.models.GeoCoordDetail.Resource();
-              detailsResource.placeInSameHierarchy(resource);
-              resource.set('geoCoordDetails', detailsResource);
-            }
-            detailsResource.set('maxUncertaintyEst', uncertaintyParsed ?? null);
-            detailsResource.set(
-              'maxUncertaintyEstUnit',
-              typeof uncertaintyParsed === 'number' ? 'm' : ''
-            );
-            detailsResource.set('errorPolygon', polyParsed ?? null);
-          })
-        : Promise.resolve()
-      ).then(handleClose);
+      loading(
+        (typeof uncertaintyParsed === 'number' || typeof poly === 'string'
+          ? resource.rgetPromise('geoCoordDetails').then((details) => {
+              let detailsResource = details;
+              if (detailsResource === null) {
+                detailsResource = new schema.models.GeoCoordDetail.Resource();
+                detailsResource.placeInSameHierarchy(resource);
+                resource.set('geoCoordDetails', detailsResource);
+              }
+              detailsResource.set(
+                'maxUncertaintyEst',
+                uncertaintyParsed ?? null
+              );
+              detailsResource.set(
+                'maxUncertaintyEstUnit',
+                typeof uncertaintyParsed === 'number' ? 'm' : ''
+              );
+              detailsResource.set('errorPolygon', polyParsed ?? null);
+            })
+          : Promise.resolve()
+        ).then(handleClose)
+      );
     }
 
     window.addEventListener('message', listener);

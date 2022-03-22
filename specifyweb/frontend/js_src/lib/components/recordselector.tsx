@@ -10,9 +10,9 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp } from '../wbplanviewhelper';
 import { Button, className, Input, Link } from './basic';
-import { crash } from './errorboundary';
 import { Dialog } from './modaldialog';
 import { QueryComboBoxSearch } from './querycbxsearch';
+import { LoadingContext } from './contexts';
 
 export function RecordSelectorButtons({
   onAdd: handleAdd,
@@ -169,6 +169,7 @@ function Search<SCHEMA extends AnySchema>({
       ),
     [model]
   );
+  const loading = React.useContext(LoadingContext);
   return (
     <QueryComboBoxSearch<SCHEMA>
       templateResource={resource}
@@ -176,11 +177,12 @@ function Search<SCHEMA extends AnySchema>({
       extraFilters={undefined}
       onSelected={(resource): void => {
         resource.set(otherSideName, parentUrl as any);
-        resource
-          .save()
-          .then(() => handleAdd(resource))
-          .catch(crash)
-          .finally(handleClose);
+        loading(
+          resource
+            .save()
+            .then(() => handleAdd(resource))
+            .then(handleClose)
+        );
       }}
       onClose={handleClose}
     />

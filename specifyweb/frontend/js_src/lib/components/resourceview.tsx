@@ -32,6 +32,7 @@ import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
+import { LoadingContext } from './contexts';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -140,6 +141,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
+  const loading = React.useContext(LoadingContext);
   return children({
     isModified: resource?.needsSaved ?? false,
     title,
@@ -167,14 +169,14 @@ function BaseResourceView<SCHEMA extends AnySchema>({
                 onSaving={handleSaving}
                 onSaved={(payload): void => {
                   if (formMeta[0].printOnSave === true)
-                    reports({
-                      tblId: resource.specifyModel.tableId,
-                      recordToPrintId: resource.id,
-                      autoSelectSingle: true,
-                      done: (): void => handleSaved(payload),
-                    })
-                      .then((view) => view.render())
-                      .catch(crash);
+                    loading(
+                      reports({
+                        tblId: resource.specifyModel.tableId,
+                        recordToPrintId: resource.id,
+                        autoSelectSingle: true,
+                        done: (): void => handleSaved(payload),
+                      }).then((view) => view.render())
+                    );
                   else handleSaved(payload);
                 }}
                 canAddAnother={

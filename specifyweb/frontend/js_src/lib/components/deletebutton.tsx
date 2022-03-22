@@ -10,6 +10,7 @@ import { Button, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
+import { LoadingContext } from './contexts';
 
 export function DeleteButton<SCHEMA extends AnySchema>({
   model,
@@ -38,6 +39,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
   return (
     <>
@@ -69,7 +71,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             buttons={
               <>
                 <Button.Red
-                  onClick={(): void => void model.destroy().then(handleDeleted)}
+                  onClick={(): void =>
+                    loading(model.destroy().then(handleDeleted))
+                  }
                 >
                   {commonText('delete')}
                 </Button.Red>

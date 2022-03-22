@@ -7,7 +7,6 @@ import queryText from '../localization/query';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
-import { crash } from './errorboundary';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -41,7 +40,7 @@ export function QuerySaveDialog({
 
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
-    doSave(query, name, isSaveAs).then(handleClose).catch(crash);
+    loading(doSave(query, name, isSaveAs).then(handleClose));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

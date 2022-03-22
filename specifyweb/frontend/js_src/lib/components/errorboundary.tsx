@@ -100,6 +100,13 @@ export const UnhandledErrorView = createBackboneView(ErrorDialog);
 
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
+  if (
+    error instanceof Error &&
+    Object.getOwnPropertyDescriptor(error, 'handledBy')?.value ===
+      handleAjaxError
+  )
+    // It is a network error, and it has already been handled
+    return;
   const [errorObject, errorMessage] = formatError(error);
   console.error(errorMessage);
   breakpoint();
@@ -223,7 +230,11 @@ export function handleAjaxError(
     new PermissionErrorView({
       error: errorObject,
     }).render();
-    throw new Error(errorMessage);
+    const error = new Error(errorMessage);
+    Object.defineProperty(error, 'handledBy', {
+      value: handleAjaxError,
+    });
+    throw error;
   }
   const [errorObject, errorMessage] = formatError(error, url);
   const handleClose = (): void => void view?.remove();
@@ -236,7 +247,11 @@ export function handleAjaxError(
           onClose: handleClose,
         }).render()
       : undefined;
-  throw new Error(errorMessage);
+  const newError = new Error(errorMessage);
+  Object.defineProperty(newError, 'handledBy', {
+    value: handleAjaxError,
+  });
+  throw newError;
 }
 
 function formatErrorResponse(error: string): JSX.Element {
