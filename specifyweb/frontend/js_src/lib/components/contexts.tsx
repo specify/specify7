@@ -2,7 +2,7 @@ import React from 'react';
 
 import { error } from '../assert';
 import type { RA } from '../types';
-import { crash } from './errorboundary';
+import { crash, ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 
@@ -31,10 +31,12 @@ export function Contexts({
     [handleLoading, handleLoaded]
   );
   return (
-    <LoadingContext.Provider value={handle}>
-      <LoadingScreen isLoading={isLoading} />
-      {children}
-    </LoadingContext.Provider>
+    <ErrorBoundary>
+      <LoadingContext.Provider value={handle}>
+        <LoadingScreen isLoading={isLoading} />
+        {children}
+      </LoadingContext.Provider>
+    </ErrorBoundary>
   );
 }
 

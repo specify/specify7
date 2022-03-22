@@ -106,7 +106,7 @@ function eventHandlerForToOne(related, field) {
                     newResource.set(fieldName, related && related.clone());
                     break;
                 case 'one-to-many':
-                    newResource.rget(fieldName).done(function(newCollection) {
+                    newResource.rget(fieldName).then(function(newCollection) {
                         related.each(function(resource) { newCollection.add(resource.clone()); });
                     });
                     break;
@@ -311,11 +311,11 @@ function eventHandlerForToOne(related, field) {
         // TODO: remove the need for this
         // Like "rget", but returns native promise
         rgetPromise: function(fieldName, prePop) {
-            return Promise.resolve(this.getRelated(fieldName, {prePop: prePop}));
+            return this.getRelated(fieldName, {prePop: prePop});
         },
         // Duplicate definition for purposes of better typing:
         rgetCollection: function(fieldName, prePop) {
-            return Promise.resolve(this.getRelated(fieldName, {prePop: prePop}));
+            return this.getRelated(fieldName, {prePop: prePop});
         },
         getRelated: function(fieldName, options) {
             options || (options = {
@@ -324,10 +324,10 @@ function eventHandlerForToOne(related, field) {
             });
             var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
 
-            var rget = function(_this) { return _this._rget(path, options); };
-
             // first make sure we actually have this object.
-            return this.fetchIfNotPopulated().pipe(rget).pipe(function(value) {
+            return this.fetchIfNotPopulated().then(function(_this) {
+                return _this._rget(path, options);
+            }).then(function(value) {
                 // if the requested value is fetchable, and prePop is true,
                 // fetch the value, otherwise return the unpopulated resource
                 // or collection
@@ -403,9 +403,9 @@ function eventHandlerForToOne(related, field) {
                     } else {
                         console.warn("expected dependent resource to be in cache");
                         var tempCollection = new related.ToOneCollection(collectionOptions);
-                        return tempCollection.fetch({ limit: 0 }).pipe(function() {
+                        return tempCollection.fetch({ limit: 0 }).then(function() {
                             return new related.DependentCollection(collectionOptions, tempCollection.models);
-                        }).done(function (toMany) { _this.storeDependent(field, toMany); });
+                        }).then(function (toMany) { _this.storeDependent(field, toMany); });
                     }
                 }
             case 'zero-to-one':
@@ -426,7 +426,7 @@ function eventHandlerForToOne(related, field) {
                 var collection = new related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
 
                 // fetch the collection and pretend like it is a single resource
-                return collection.fetchIfNotPopulated().pipe(function() {
+                return collection.fetchIfNotPopulated().then(function() {
                     var value = collection.isEmpty() ? null : collection.first();
                     if (field.isDependent()) {
                         console.warn("expect dependent resource to be in cache");
@@ -450,7 +450,7 @@ function eventHandlerForToOne(related, field) {
 
             resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
 
-            resource._save.fail(function() {
+            resource._save.catch(function() {
                 resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
@@ -487,16 +487,16 @@ function eventHandlerForToOne(related, field) {
         fetchIfNotPopulated: function() {
             var resource = this;
             // if already populated, return the resource
-            if (resource.populated) return $.when(resource);
+            if (resource.populated) return Promise.resolve(resource);
 
             // if can't be populate by fetching, return the resource
-            if (resource.isNew()) return $.when(resource);
+            if (resource.isNew()) return Promise.resolve(resource);
 
             // fetch and return a deferred.
             return resource.fetch();
         },
         fetchPromise(options){
-            return deferredToPromise(this.fetchIfNotPopulated(options));
+            return this.fetchIfNotPopulated(options);
         },
         parse: function(_resp) {
             // since we are putting in data, the resourcgfse in now populated
@@ -531,7 +531,7 @@ function eventHandlerForToOne(related, field) {
             if (!myPath || !otherPath) return null;
             if (myPath.length > otherPath.length) return null;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();
-            return other.rget(diff.join('.')).done(function(common) {
+            return other.rget(diff.join('.')).then(function(common) {
                 self.set(_(diff).last(), common.url());
             });
         },
@@ -548,11 +548,15 @@ function eventHandlerForToOne(related, field) {
 
 export default ResourceBase;
 
-
-export const deferredToPromise = async (deferred) =>
-  new Promise((resolve, reject) =>
-    deferred.done(resolve).fail((jqxhr) => {
-      jqxhr.errorHandled = true;
-      reject(jqxhr);
-    })
-  );
+export function promiseToXhr(promise) {
+  promise.done = function (fn) {
+    return promiseToXhr(promise.then(fn));
+  };
+  promise.fail = function (fn) {
+    return promiseToXhr(promise.then(null, fn));
+  };
+  promise.complete = function (fn) {
+    return promiseToXhr(promise.then(fn, fn));
+  };
+  return promise;
+}

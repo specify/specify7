@@ -111,7 +111,17 @@ export function crash(error: Error): void {
 }
 
 export class ErrorBoundary extends React.Component<
-  { readonly children: JSX.Element | null; readonly silentErrors?: boolean },
+  {
+    readonly children: JSX.Element | null;
+    /*
+     * Can wrap a component in an <ErrorBoundary> with silentErrors
+     * to silence all errors from it (on error, the component is quietly
+     * deRendered), if in production
+     * Useful for ensuring non-critical and experimental components don't
+     * crash the whole application
+     */
+    readonly silentErrors?: boolean;
+  },
   ErrorBoundaryState
 > {
   public state: ErrorBoundaryState = {
@@ -196,17 +206,36 @@ export function handleAjaxError(
   error: unknown,
   url: string,
   strict: boolean
-): Error {
+): never {
+  const permissionError = error as {
+    readonly type: 'permissionDenied';
+    readonly responseText: string;
+  };
+  const isPermissionError =
+    typeof permissionError === 'object' &&
+    permissionError?.type === 'permissionDenied' &&
+    strict;
+  if (isPermissionError) {
+    const [errorObject, errorMessage] = formatPermissionsError(
+      permissionError.responseText,
+      url
+    );
+    new PermissionErrorView({
+      error: errorObject,
+    }).render();
+    throw new Error(errorMessage);
+  }
   const [errorObject, errorMessage] = formatError(error, url);
   const handleClose = (): void => void view?.remove();
-  const view = strict
-    ? new UnhandledErrorView({
-        title: commonText('backEndErrorDialogTitle'),
-        header: commonText('backEndErrorDialogHeader'),
-        children: errorObject,
-        onClose: handleClose,
-      }).render()
-    : undefined;
+  const view =
+    strict && !isPermissionError
+      ? new UnhandledErrorView({
+          title: commonText('backEndErrorDialogTitle'),
+          header: commonText('backEndErrorDialogHeader'),
+          children: errorObject,
+          onClose: handleClose,
+        }).render()
+      : undefined;
   throw new Error(errorMessage);
 }
 
@@ -249,16 +278,73 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
   );
 }
 
-// FIXME: properly handle permission denied errors
-function PermissionsDenied({
-  resposne,
+type PermissionAction = 'create' | 'read' | 'update' | 'delete';
+type PermissionErrorSchema = {
+  readonly NoMatchingRuleException: RA<{
+    readonly action: PermissionAction;
+    readonly collectionid: number;
+    readonly resource: string;
+    readonly userid: string;
+  }>;
+};
+
+function PermissionError({
+  error,
 }: {
-  readonly response: {
-    readonly NoMatchingRuleException: RA<{
-      readonly action: 'read';
-      readonly collectionid: number;
-      readonly resource: string;
-      readonly userid: string;
-    }>;
-  };
-}): JSX.Element {}
+  readonly error: JSX.Element | undefined;
+}): JSX.Element {
+  return typeof error === 'object' ? (
+    /*
+     * If this type of error occurs, it is a UI's fault
+     * No need to localize it, only need to make sure it never happens
+     */
+    <Dialog
+      header="Permission denied error"
+      onClose={(): void => window.location.assign('/specify/')}
+      buttons={
+        <Button.DialogClose component={Button.Red}>
+          {commonText('close')}
+        </Button.DialogClose>
+      }
+    >
+      {error}
+    </Dialog>
+  ) : (
+    <Dialog
+      title={commonText('sessionTimeOutDialogTitle')}
+      header={commonText('sessionTimeOutDialogHeader')}
+      forceToTop={true}
+      onClose={(): void =>
+        window.location.assign(`/accounts/login/?next=${window.location.href}`)
+      }
+      buttons={commonText('logIn')}
+    >
+      {commonText('sessionTimeOutDialogMessage')}
+    </Dialog>
+  );
+}
+
+const PermissionErrorView = createBackboneView(PermissionError);
+
+function formatPermissionsError(
+  response: string,
+  url: string
+): Readonly<[errorObject: JSX.Element | undefined, errorMessage: string]> {
+  if (response.length === 0)
+    return [undefined, commonText('sessionTimeOutDialogTitle')];
+  const error = (JSON.parse(response) as PermissionErrorSchema)
+    .NoMatchingRuleException;
+
+  return [
+    <div className="gap-y-2 flex flex-col h-full">
+      <p>
+        Permission denied when accessing <code>{url}</code>
+        {formatErrorResponse(response)}
+      </p>
+    </div>,
+    [
+      `Permission denied when fetching from ${url}`,
+      `Response: ${JSON.stringify(error, null, '\t')}`,
+    ].join('\n'),
+  ] as const;
+}

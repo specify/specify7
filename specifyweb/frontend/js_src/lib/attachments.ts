@@ -1,13 +1,13 @@
-import { ajax } from './ajax';
+import { ajax, handleResponse, Http } from './ajax';
 import type { Attachment } from './datamodel';
 import { getIcon } from './icons';
 import { load } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
 import * as querystring from './querystring';
-import { deferredToPromise } from './resourceapi';
 import { schema } from './schema';
 import type { IR } from './types';
+import { defined } from './types';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -172,28 +172,37 @@ export const uploadFile = async (
         formData.append('type', 'O');
         formData.append('coll', settings.collection);
 
-        return deferredToPromise(
-          // TODO: migrate to new API
-          $.ajax({
-            url: settings.write,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr() {
-              // @ts-expect-error Using deprecated API
-              const xhr = $.ajaxSettings.xhr();
-              xhr.upload &&
-                xhr.upload.addEventListener('progress', (event) =>
-                  handleProgress(
-                    event.lengthComputable
-                      ? event.loaded / event.total
-                      : undefined
-                  )
-                );
-              return xhr;
-            },
-          })
+        /*
+         * Using XMLHttpRequest rather than fetch() because need upload
+         * progress reporting, which is not yet supported by fetch API
+         */
+        const xhr = new XMLHttpRequest();
+        xhr.upload?.addEventListener('progress', (event) =>
+          handleProgress(
+            event.lengthComputable ? event.loaded / event.total : undefined
+          )
+        );
+        xhr.open('POST', settings.write);
+        xhr.send(formData);
+        const DONE = 4;
+        return new Promise((resolve) =>
+          xhr.addEventListener('readystatechange', () =>
+            xhr.readyState === DONE
+              ? resolve(
+                  handleResponse({
+                    expectedResponseCodes: [Http.OK],
+                    accept: undefined,
+                    response: {
+                      ok: xhr.status === Http.OK,
+                      status: xhr.status,
+                      url: defined(settings).write,
+                    } as Response,
+                    strict: true,
+                    text: xhr.responseText,
+                  })
+                )
+              : undefined
+          )
         ).then(
           () =>
             new schema.models.Attachment.Resource({

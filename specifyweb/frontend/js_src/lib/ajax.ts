@@ -1,4 +1,3 @@
-import { error } from './assert';
 import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
@@ -13,14 +12,16 @@ export function formData(data: IR<string | Blob>): FormData {
   return formData;
 }
 
-const reIsAbsolute = new RegExp('^(?:[a-z]+:)?//', 'i');
+const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
 export const isExternalUrl = (url: string): boolean =>
   // Relative url is not external. Passing a relative URL to new URL() throws
   reIsAbsolute.exec(url) === null
     ? false
     : new URL(url).origin !== window.location.origin;
 
+/* An enum of HTTP status code back-end commonly returns */
 export const Http = {
+  // You may add others codes as needed
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -30,7 +31,22 @@ export const Http = {
   UNAVAILABLE: 503,
 };
 
+// TODO: add a central place for all API endpoint definitions
+
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
+
+type ResponseObject<RESPONSE_TYPE> = {
+  /*
+   * Parsed response (parser is selected based on the value of options.headers.Accept:
+   *   - application/json - json
+   *   - application/xml - xml
+   *   - else - string
+   */
+  readonly data: RESPONSE_TYPE;
+  readonly response: Response;
+  // One of expectedResponseCodes
+  readonly status: number;
+};
 
 /**
  * Wraps native fetch in useful helpers
@@ -43,10 +59,6 @@ export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 export const ajax = async <RESPONSE_TYPE = string>(
   url: string,
   {
-    /*
-     * Validates and parses response as JSON if 'Accept' header is 'application/json'
-     * Validates and parses response as XML if 'Accept' header is 'application/xml'
-     */
     headers: { Accept: accept, ...headers },
     ...options
   }: Omit<RequestInit, 'body' | 'headers'> & {
@@ -55,7 +67,11 @@ export const ajax = async <RESPONSE_TYPE = string>(
      * Can wrap request body object in formData() to encode body as form data
      */
     body?: string | RA<unknown> | IR<unknown> | FormData;
-    headers: IR<string> & { Accept?: MimeType };
+    /*
+     * Validates and parses response as JSON if 'Accept' header is 'application/json'
+     * Validates and parses response as XML if 'Accept' header is 'application/xml'
+     */
+    headers: IR<string | undefined> & { Accept?: MimeType };
   },
   {
     expectedResponseCodes = [Http.OK],
@@ -72,17 +88,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
      */
     readonly strict?: boolean;
   } = {}
-): Promise<{
-  /*
-   * Parsed response (parser is selected based on the value of options.headers.Accept:
-   *   - application/json - json
-   *   - application/xml - xml
-   *   - else - string
-   */
-  readonly data: RESPONSE_TYPE;
-  // One of expectedResponseCodes
-  readonly status: number;
-}> =>
+): Promise<ResponseObject<RESPONSE_TYPE>> =>
   fetch(url, {
     ...options,
     body:
@@ -104,41 +110,84 @@ export const ajax = async <RESPONSE_TYPE = string>(
     },
   })
     .then(async (response) => Promise.all([response, response.text()]))
-    .then(([{ status, ok }, text]: [Response, string]) => {
-      if (expectedResponseCodes.includes(status)) {
-        if (ok && accept === 'application/json') {
-          try {
-            return { data: JSON.parse(text), status };
-          } catch {
-            throw {
-              statusText: 'Failed parsing JSON response:',
-              responseText: text,
-            };
-          }
-        } else if (ok && accept === 'application/xml') {
-          try {
-            return {
-              data: new window.DOMParser().parseFromString(text, 'text/xml'),
-              status,
-            };
-          } catch {
-            throw {
-              statusText: 'Failed parsing XML response:',
-              responseText: text,
-            };
-          }
-        } else return { data: text, status };
-      } else {
-        console.error('Invalid response', text);
-        throw {
-          statusText: `Invalid response code ${status}. Expected one of [${expectedResponseCodes.join(
-            ', '
-          )}]. Response:`,
-          responseText: text,
+    .then(([response, text]: [Response, string]) =>
+      handleResponse({
+        expectedResponseCodes,
+        accept,
+        strict,
+        response,
+        text,
+      })
+    );
+
+export function handleResponse<RESPONSE_TYPE = string>({
+  expectedResponseCodes,
+  accept,
+  response,
+  strict,
+  text,
+}: {
+  readonly expectedResponseCodes: RA<number>;
+  readonly accept: MimeType | undefined;
+  readonly response: Response;
+  readonly strict: boolean;
+  readonly text: string;
+}): ResponseObject<RESPONSE_TYPE> {
+  try {
+    if (expectedResponseCodes.includes(response.status)) {
+      if (response.ok && accept === 'application/json') {
+        try {
+          return { data: JSON.parse(text), response, status: response.status };
+        } catch {
+          throw {
+            type: 'jsonParseFailure',
+            statusText: 'Failed parsing JSON response:',
+            responseText: text,
+          };
+        }
+      } else if (response.ok && accept === 'application/xml') {
+        try {
+          return {
+            data: new window.DOMParser().parseFromString(
+              text,
+              'text/xml'
+            ) as unknown as RESPONSE_TYPE,
+            response,
+            status: response.status,
+          };
+        } catch {
+          throw {
+            type: 'xmlParseFailure',
+            statusText: 'Failed parsing XML response:',
+            responseText: text,
+          };
+        }
+      } else
+        return {
+          data: text as unknown as RESPONSE_TYPE,
+          response,
+          status: response.status,
         };
-      }
-    })
-    .catch((error_) => error(handleAjaxError(error_, url, strict)));
+    } else if (response.status === Http.FORBIDDEN) {
+      throw {
+        type: 'permissionDenied',
+        statusText: "You don't have a permission to do this action",
+        responseText: text,
+      };
+    } else {
+      console.error('Invalid response', text);
+      throw {
+        type: 'invalidResponseCode',
+        statusText: `Invalid response code ${
+          response.status
+        }. Expected one of [${expectedResponseCodes.join(', ')}]. Response:`,
+        responseText: text,
+      };
+    }
+  } catch (error) {
+    handleAjaxError(error, response.url, strict);
+  }
+}
 
 /**
  * A wrapper for "ajax" for when response data is not needed

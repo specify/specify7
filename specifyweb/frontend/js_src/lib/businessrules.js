@@ -2,7 +2,6 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import Q from 'q';
 import {globalEvents} from './specifyapi';
 import {SaveBlockers} from './saveblockers';
 import treeBusinessRules from './treebusinessrules';
@@ -29,7 +28,7 @@ var enabled = true;
     function BusinessRuleMgr(resource) {
         this.resource = resource;
         this.rules = rules[this.resource.specifyModel.name];
-        this.pending = Q(null);
+        this.pending = Promise.resolve(null);
         this.fieldChangePromises = {};
         this.watchers = {};
         this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
@@ -37,7 +36,7 @@ var enabled = true;
 
     _(BusinessRuleMgr.prototype).extend({
         addPromise: function(promise) {
-            this.pending = Q.allSettled([this.pending, promise]).thenResolve(null);
+            this.pending = Promise.allSettled([this.pending, promise]).then(()=>null);
         },
 
         setupEvents: function() {
@@ -55,12 +54,12 @@ var enabled = true;
         },
         _invokeRule: function(ruleName, fieldName, args) {
             var rule = this.rules && this.rules[ruleName];
-            if (!rule) return Q('no rule: ' + ruleName);
+            if (!rule) return Promise.resolve('no rule: ' + ruleName);
             if (fieldName) {
                 rule = rule[fieldName];
-                if (!rule) return Q('no rule: ' + ruleName + ' for: ' + fieldName);
+                if (!rule) return Promise.resolve('no rule: ' + ruleName + ' for: ' + fieldName);
             }
-            return Q(rule.apply(this, args));
+            return Promise.resolve(rule.apply(this, args));
         },
 
         doCustomInit: function() {
@@ -92,14 +91,14 @@ var enabled = true;
         checkField: function(fieldName) {
             fieldName = fieldName.toLowerCase();
 
-            var thisCheck = Q.defer();
+            const thisCheck  = flippedPromise();
             // thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
             //                                                         {field: fieldName, result: result}); });
-            this.addPromise(thisCheck.promise);
+            this.addPromise(thisCheck);
 
             // If another change happens while the previous check is pending,
             // that check is superseded by checking the new value.
-            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
+            this.fieldChangePromises[fieldName] && resoleFlippedPromise(this.fieldChangePromises[fieldName], 'superseded');
             this.fieldChangePromises[fieldName] = thisCheck;
 
             var checks = [
@@ -109,15 +108,15 @@ var enabled = true;
 
             this.isTreeNode && checks.push(treeBusinessRules.run(this.resource, fieldName));
 
-            Q.all(checks).then(function(results) {
+            Promise.all(checks).then(function(results) {
                 // Only process these results if the change has not been superseded.
                 return (thisCheck === this.fieldChangePromises[fieldName]) &&
                     this.processCheckFieldResults(fieldName, results);
-            }.bind(this)).then(function() { thisCheck.resolve('finished'); });
+            }.bind(this)).then(function() { resoleFlippedPromise(thisCheck,'finished'); });
         },
         processCheckFieldResults: function(fieldName, results) {
             var resource = this.resource;
-            return Q.all(results.map(function(result) {
+            return Promise.all(results.map(function(result) {
                 if (!result) return null;
                 if (result.valid === false) {
                     resource.saveBlockers.add(result.key, fieldName, result.reason);
@@ -146,7 +145,7 @@ var enabled = true;
                     return uniqueIn(field, _this.resource, fieldNames);
                 });
             }
-            Q.all(results).then(function(results) {
+            Promise.all(results).then(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
                     var event = dup.cid + ':' + fieldName;
                     if (_this.watchers[event]) return;
@@ -165,7 +164,7 @@ var enabled = true;
 
 
     var combineUniquenessResults = function(deferredResults) {
-        return Q.all(deferredResults).then(function(results) {
+        return Promise.all(deferredResults).then(function(results) {
             var invalids = _.filter(results, function(result) { return !result.valid; });
             return invalids.length < 1
                 ? {valid: true}
@@ -219,7 +218,7 @@ var enabled = true;
                 valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
         }, true);
         if (allNullOrUndefinedToOnes) {
-            return Q(valid);
+            return Promise.resolve(valid);
         }
 
         var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
@@ -247,9 +246,9 @@ var enabled = true;
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
             if (dupes.length > 0) {
                 invalid.localDupes = dupes;
-                return Q(invalid);
+                return Promise.resolve(invalid);
             }
-            return Q(resource.rget(toOneField)).then(function(related) {
+            return resource.rget(toOneField).then(function(related) {
                 if (!related) return valid;
                 var filters = {};
                 for (var f = 0; f < valueField.length; f++) {
@@ -260,7 +259,7 @@ var enabled = true;
                     field: toOneFieldInfo,
                     filters: filters
                 });
-                return Q(others.fetch()).then(function() {
+                return others.fetch().then(function() {
                     var inDatabase = others.chain().compact();
                     inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
                         return !(resource.collection.get(other.id));
@@ -280,7 +279,7 @@ var enabled = true;
             var others = new resource.specifyModel.LazyCollection({
                 filters: filters
             });
-            return Q(others.fetch()).then(function() {
+            return others.fetch().then(function() {
                 if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
                     return invalid;
                 } else {
@@ -295,3 +294,19 @@ export function enable(e) {
     return enabled = e;
 }
 
+/**
+ * A promise that can be resolved from outside the promise
+ * This is probably an anti-pattern and is included here only for compatability
+ * with the legacy promise implementation (Q.js)
+ */
+function flippedPromise() {
+  const promise = new Promise((resolve) =>
+      setTimeout(() => {
+          promise.resolve = resolve;
+      }, 0)
+  );
+  return promise;
+}
+
+const resoleFlippedPromise = (promise, ...args) =>
+  setTimeout(()=>promise.resolve(...args), 0);

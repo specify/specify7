@@ -5,13 +5,13 @@
  * @module
  */
 
-import { type View, default as Backbone } from 'backbone';
+import { default as Backbone, type View } from 'backbone';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { error } from '../assert';
 import type { IR } from '../types';
-import { ErrorBoundary } from './errorboundary';
+import { Contexts } from './contexts';
 
 /**
  * If ReactDOM.render props changed, react documentation recommends
@@ -69,13 +69,13 @@ const createBackboneView = <PROPS extends IR<unknown>>(
         if (makeParentContents) this.el.classList.add('contents');
         ReactDOM.render(
           <React.StrictMode>
-            <ErrorBoundary>
+            <Contexts>
               <ForwardProps
                 Component={Component}
                 props={this.options}
                 setPropsCallback={this.saveSetProps.bind(this)}
               />
-            </ErrorBoundary>
+            </Contexts>
           </React.StrictMode>,
           this.el
         );

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax, ping } from '../../ajax';
+import { ajax, Http, ping } from '../../ajax';
 import { fetchCollection } from '../../collection';
 import type { Collection, Institution, SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
@@ -12,6 +12,7 @@ import { router } from '../../router';
 import { schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import type { IR, RA } from '../../types';
+import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { f, omit, sortFunction } from '../../wbplanviewhelper';
 import {
@@ -27,13 +28,13 @@ import {
   Submit,
   Ul,
 } from '../basic';
+import { LoadingContext } from '../contexts';
 import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
 import { icons } from '../icons';
 import type { UserTool } from '../main';
+import { QueryComboBoxSearch } from '../querycbxsearch';
 import createBackboneView from '../reactbackboneextend';
-import { removeItem } from '../wbplanviewstate';
-import { crash } from '../errorboundary';
-import { LoadingContext } from '../contexts';
+import { removeItem, replaceKey } from '../wbplanviewstate';
 
 function InstitutionView({
   institution,
@@ -64,10 +65,14 @@ type Policy = {
   readonly action: string;
 };
 
-type Role = {
-  readonly id: number;
+type NewRole = {
+  readonly id: number | undefined;
   readonly name: string;
   readonly policies: RA<Policy>;
+};
+
+type Role = NewRole & {
+  readonly id: number;
 };
 
 function UserView({
@@ -150,9 +155,10 @@ function UserView({
                     ping(
                       `/permissions/user_roles/${collectionId}/${user.id}/`,
                       {
-                        method: 'POST',
+                        method: 'PUT',
                         body: roles.map((id) => ({ id })),
-                      }
+                      },
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
                     )
                   )
               ).then(handleClose)
@@ -184,17 +190,20 @@ function UserView({
                     <Input.Checkbox
                       checked={userRoles[collection].includes(role.id)}
                       onValueChange={(isChecked): void =>
-                        setUserRoles({
-                          ...userRoles,
-                          [collection]: Array.from(
-                            isChecked
-                              ? removeItem(
-                                  userRoles[collection],
-                                  userRoles[collection].indexOf(role.id)
-                                )
-                              : [...userRoles[collection], role.id]
-                          ).sort(sortFunction(f.id)),
-                        })
+                        setUserRoles(
+                          replaceKey(
+                            userRoles,
+                            collection.toString(),
+                            Array.from(
+                              isChecked
+                                ? removeItem(
+                                    userRoles[collection],
+                                    userRoles[collection].indexOf(role.id)
+                                  )
+                                : [...userRoles[collection], role.id]
+                            ).sort(sortFunction(f.id))
+                          )
+                        )
                       }
                     />
                     {role.name}
@@ -236,14 +245,24 @@ function RoleView({
   role: initialRole,
   collection,
   userRoles,
+  onDelete: handleDelete,
+  onSave: handleSave,
   onClose: handleClose,
   onOpenUser: handleOpenUser,
+  onAddUser: handleAddUser,
 }: {
-  readonly role: Role;
+  readonly role: Role | NewRole;
   readonly collection: SpecifyResource<Collection>;
   readonly userRoles: UserRoles | undefined;
+  /*
+   * All these are delegated to the parent resource so that the parent
+   * can update its list of roles
+   */
+  readonly onSave: (role: Role | NewRole) => void;
+  readonly onDelete: () => void;
   readonly onClose: () => void;
   readonly onOpenUser: (user: SerializedResource<SpecifyUser>) => void;
+  readonly onAddUser: (user: SpecifyResource<SpecifyUser>) => void;
 }): JSX.Element {
   const [role, setRole] = React.useState(initialRole);
   const changesMade = JSON.stringify(initialRole) !== JSON.stringify(role);
@@ -251,21 +270,24 @@ function RoleView({
     changesMade,
     commonText('leavePageDialogMessage')
   );
-  const loading = React.useContext(LoadingContext);
-  return (
-    <Form
-      onSubmit={(): void =>
-        loading(
-          ping(`/permissions/role/${role.id}`, {
-            method: 'POST',
-            body: role,
-          }).then(handleClose)
+  const [state, setState] = React.useState<
+    | State<'MainState'>
+    | State<
+        'AddUserState',
+        { readonly templateResource: SpecifyResource<SpecifyUser> }
+      >
+  >({ type: 'MainState' });
+  const usersWithRole =
+    typeof userRoles === 'object' && typeof role.id === 'number'
+      ? Object.values(userRoles).filter(({ roles }) =>
+          roles.includes(defined(role.id))
         )
-      }
-    >
+      : undefined;
+  return (
+    <Form onSubmit={(): void => handleSave(role)}>
       <H3>{role.name}</H3>
       <Button.LikeLink onClick={handleClose}>
-        {/* FIXME: add a back arrow here */}
+        {icons.arrowLeft}
         {collection.get('collectionName')}
       </Button.LikeLink>
       <Label.Generic>
@@ -273,46 +295,73 @@ function RoleView({
         <Input.Text
           value={role.name}
           onValueChange={(name): void =>
-            setRole({ name, ...omit(role, ['name']) })
+            setRole(replaceKey(role, 'name', name))
           }
           required
           maxLength={1024}
         />
       </Label.Generic>
-      <fieldset className="flex gap-2">
-        <legend>{adminText('users')}</legend>
-        {typeof userRoles === 'object' ? (
-          <ul>
-            {Object.values(userRoles)
-              .filter(({ roles }) => roles.some(({ id }) => id === role.id))
-              .map(({ user }) => (
-                <li key={user.id}>
-                  <Button.LikeLink
-                    // TODO: trigger unload protect
-                    onClick={(): void => handleOpenUser(user)}
-                  >
-                    {user.name}
-                  </Button.LikeLink>
-                </li>
-              ))}
-          </ul>
-        ) : (
-          commonText('loading')
-        )}
-      </fieldset>
+      {typeof role.id === 'number' && (
+        <fieldset className="flex gap-2">
+          <legend>{adminText('users')}</legend>
+          {typeof usersWithRole === 'object' ? (
+            <>
+              <ul>
+                {Object.values(usersWithRole)
+                  .filter(({ roles }) => roles.includes(defined(role.id)))
+                  .map(({ user }) => (
+                    <li key={user.id}>
+                      <Button.LikeLink
+                        // TODO: trigger unload protect
+                        onClick={(): void => handleOpenUser(user)}
+                      >
+                        {user.name}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
+              </ul>
+              <div>
+                <Button.Green
+                  onClick={(): void =>
+                    setState({
+                      type: 'AddUserState',
+                      templateResource:
+                        new schema.models.SpecifyUser.Resource(),
+                    })
+                  }
+                >
+                  {commonText('add')}
+                </Button.Green>
+              </div>
+              {state.type === 'AddUserState' && (
+                <QueryComboBoxSearch
+                  forceCollection={undefined}
+                  extraFilters={[
+                    {
+                      field: 'id',
+                      operation: 'notIn',
+                      values: usersWithRole.map(({ user }) =>
+                        user.id.toString()
+                      ),
+                    },
+                  ]}
+                  templateResource={state.templateResource}
+                  onClose={(): void => setState({ type: 'MainState' })}
+                  onSelected={handleAddUser}
+                />
+              )}
+            </>
+          ) : (
+            commonText('loading')
+          )}
+        </fieldset>
+      )}
       <span className="flex-1 -mt-2" />
       <div className="flex gap-2">
-        <Button.Red
-          onClick={(): void =>
-            void ping(`/permissions/role/${role.id}`, {
-              method: 'DELETE',
-            })
-              .then(handleClose)
-              .catch(crash)
-          }
-        >
-          {commonText('remove')}
-        </Button.Red>
+        {/* FIXME: handle deletion of role with users */}
+        {typeof role.id === 'number' && (
+          <Button.Red onClick={handleDelete}>{commonText('remove')}</Button.Red>
+        )}
         {changesMade ? (
           <Button.Red
             // TODO: improve unload protect workflow
@@ -333,7 +382,7 @@ function RoleView({
 
 type UserRoles = IR<{
   readonly user: SerializedResource<SpecifyUser>;
-  roles: RA<Role>;
+  readonly roles: RA<number>;
 }>;
 
 const fetchRoles = async (
@@ -361,21 +410,28 @@ function CollectionView({
   readonly initialRole: number | undefined;
   readonly onOpenUser: (user: SerializedResource<SpecifyUser>) => void;
 }): JSX.Element {
-  const [roles] = useAsyncState<IR<Role>>(
+  const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
       async () => fetchRoles(collection.id, undefined).then(index),
       [collection.id]
     ),
     false
   );
-  const [userRoles] = useAsyncState<UserRoles>(
+  const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
         fetchCollection('SpecifyUser', { limit: 0 }).then(async ({ records }) =>
           Promise.all(
             records.map(async (user) =>
               fetchRoles(collection.id, user.id).then(
-                (roles) => [user.id, { user, roles }] as const
+                (roles) =>
+                  [
+                    user.id,
+                    {
+                      user,
+                      roles: roles.map((role) => role.id),
+                    },
+                  ] as const
               )
             )
           ).then((entries) => Object.fromEntries(entries))
@@ -385,7 +441,8 @@ function CollectionView({
     false
   );
   const [state, setState] = React.useState<
-    State<'MainState'> | State<'RoleState', { readonly roleId: number }>
+    | State<'MainState'>
+    | State<'RoleState', { readonly roleId: number | undefined }>
   >(
     typeof initialRole === 'number'
       ? {
@@ -394,6 +451,7 @@ function CollectionView({
         }
       : { type: 'MainState' }
   );
+  const loading = React.useContext(LoadingContext);
   return (
     <>
       {state.type === 'MainState' && (
@@ -428,22 +486,110 @@ function CollectionView({
               commonText('loading')
             )}
             <div>
-              <Button.Green>{commonText('add')}</Button.Green>
+              <Button.Green
+                onClick={(): void =>
+                  setState({
+                    type: 'RoleState',
+                    roleId: undefined,
+                  })
+                }
+              >
+                {commonText('add')}
+              </Button.Green>
             </div>
           </div>
         </>
       )}
       {state.type === 'RoleState' && typeof roles === 'object' ? (
         <RoleView
-          role={roles[state.roleId]}
+          role={
+            typeof state.roleId === 'number'
+              ? roles[state.roleId]
+              : ({
+                  id: undefined,
+                  name: '',
+                  policies: [],
+                } as const)
+          }
           collection={collection}
-          onClose={(): void =>
-            setState({
-              type: 'MainState',
-            })
+          onClose={(): void => setState({ type: 'MainState' })}
+          onSave={(role): void =>
+            loading(
+              (typeof role.id === 'number'
+                ? ping(
+                    `/permissions/role/${role.id}/`,
+                    {
+                      method: 'PUT',
+                      body: role,
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  ).then((): void =>
+                    setRoles(
+                      replaceKey(
+                        roles,
+                        defined(role.id).toString(),
+                        role as Role
+                      )
+                    )
+                  )
+                : ajax<Role>(
+                    `/permissions/roles/${collection.id}/`,
+                    {
+                      method: 'POST',
+                      body: omit(role, ['id']),
+                      headers: { Accept: 'application/json' },
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  ).then(({ data: role }) =>
+                    setRoles({
+                      ...roles,
+                      [role.id]: role,
+                    })
+                  )
+              ).then((): void => setState({ type: 'MainState' }))
+            )
+          }
+          onDelete={(): void =>
+            typeof state.roleId === 'number'
+              ? loading(
+                  ping(
+                    `/permissions/role/${state.roleId}/`,
+                    {
+                      method: 'DELETE',
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  ).then((): void => setState({ type: 'MainState' }))
+                )
+              : undefined
           }
           userRoles={userRoles}
           onOpenUser={handleOpenUser}
+          onAddUser={(user): void =>
+            typeof userRoles === 'object' && typeof state.roleId === 'number'
+              ? loading(
+                  ping(
+                    `/permissions/user_roles/${collection.id}/${user.id}/`,
+                    {
+                      method: 'PUT',
+                      body: [...userRoles[user.id].roles, state.roleId].map(
+                        (id) => ({ id })
+                      ),
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  ).then(() =>
+                    setUserRoles(
+                      replaceKey(userRoles, user.id.toString(), {
+                        ...userRoles[user.id],
+                        roles: [
+                          ...userRoles[user.id].roles,
+                          defined(state.roleId),
+                        ],
+                      })
+                    )
+                  )
+                )
+              : undefined
+          }
         />
       ) : undefined}
     </>
@@ -502,7 +648,6 @@ function SecurityPanel(): JSX.Element | null {
         <aside className={className.containerBase}>
           <section>
             <H3>{adminText('institution')}</H3>
-            {/* FIXME: aria-pressed styles for LikeLink improve */}
             <Button.LikeLink
               aria-pressed={state.type === 'InstitutionState'}
               onClick={(): void =>

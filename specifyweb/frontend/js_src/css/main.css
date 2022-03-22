@@ -105,7 +105,7 @@
   }
 
   [type='number'].webkit:not([readonly]):not(.no-arrows) {
-    @apply text-right relative pr-1.5
+    @apply text-right relative pr-2.5
   }
 
   .button {
@@ -119,6 +119,10 @@
 
   button[aria-pressed='true']:not(.aria-handled) {
     @apply bg-white dark:bg-neutral-400;
+  }
+
+  button[aria-pressed='true']:not(.aria-handled).link {
+    @apply !bg-transparent text-brand-200 dark:text-brand-400 cursor-default;
   }
 
   .link, .icon {

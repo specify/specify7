@@ -1,7 +1,6 @@
 "use strict";
 
 import $ from 'jquery';
-import Q from 'q';
 import Backbone from './backbone';
 import _ from 'underscore';
 import ace from 'brace';
@@ -122,7 +121,7 @@ const ResourceDataView = Backbone.View.extend({
             return this;
         }
 
-        this.model.rget('spappresourcedatas', true).done(sards => {
+        this.model.rget('spappresourcedatas', true).then(sards => {
             const buttonsDiv = $(`<div class="${className.formFooter}" role="toolbar">`);
             this.appresourceData = sards.first();
 
@@ -314,13 +313,13 @@ const ResourceList = Backbone.View.extend({
                 specifyuser: userInformation.resource_uri,
                 spappresourcedir: directory.get('resource_uri')
             });
-            return Q(resource.save()).then(() => resource);
+            return resource.save().then(() => resource);
         }).then(resource => {
             const resourceFieldName = this.ResourceModel.getField('spappresourcedatas').getReverse().name;
             const resourceData = new schema.models.SpAppResourceData.Resource({data: ""});
             resourceData.set(resourceFieldName, resource.get('resource_uri'));
-            return Q(resourceData.save()).then(() => resource);
-        }).done(resource => {
+            return resourceData.save().then(() => resource);
+        }).then(resource => {
             navigation.go(makeUrl(resource));
         });
     },
@@ -425,13 +424,13 @@ const GlobalResourcesView = Backbone.View.extend({
         // all new resources will be added to the common directory
         // because, why not?
         let directory = this.directories.filter(d => d.get('usertype') === 'Common')[0];
-        if (directory != null) return Q(directory);
+        if (directory != null) return Promise.resolve(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             usertype: 'Common'
         }, {noBusinessRules: true});
         directory.set({collection: null, discipline: null}); // The collection gets set automatically by the 'newresource' event on the api.
-        return Q(directory.save()).then(() => directory);
+        return directory.save().then(() => directory);
     }
 });
 
@@ -519,13 +518,13 @@ const DisciplineResourcesView = Backbone.View.extend({
     },
     getDirectory() {
         let directory = this.directories[0];
-        if (directory != null) return Q(directory);
+        if (directory != null) return Promise.resolve(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri')
         }, {noBusinessRules: true});
         directory.set('collection', null); // The collection gets set automatically by the 'newresource' event on the api.
-        return Q(directory.save()).then(() => directory);
+        return directory.save().then(() => directory);
     }
 });
 
@@ -607,13 +606,13 @@ const CollectionResourcesView = Backbone.View.extend({
     },
     getDirectory() {
         let directory = this.directories[0];
-        if (directory != null) return Q(directory);
+        if (directory != null) return Promise.resolve(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri'),
             collection: this.collection.get('resource_uri')
         }, {noBusinessRules: true});
-        return Q(directory.save()).then(() => directory);
+        return directory.save().then(() => directory);
     }
 });
 
@@ -687,14 +686,14 @@ const UserTypeResourcesView = Backbone.View.extend({
     },
     getDirectory() {
         let directory = this.directories[0];
-        if (directory != null) return Q(directory);
+        if (directory != null) return Promise.resolve(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: false,
             discipline: this.discipline.get('resource_uri'),
             collection: this.collection.get('resource_uri'),
             usertype: this.usertype.toLowerCase()
         }, {noBusinessRules: true});
-        return Q(directory.save()).then(() => directory);
+        return directory.save().then(() => directory);
     }
 });
 
@@ -769,7 +768,7 @@ const UserResourcesView = Backbone.View.extend({
     },
     getDirectory() {
         let directory = this.directories[0];
-        if (directory != null) return Q(directory);
+        if (directory != null) return Promise.resolve(directory);
         directory = new schema.models.SpAppResourceDir.Resource({
             ispersonal: true,
             discipline: this.discipline.get('resource_uri'),
@@ -777,7 +776,7 @@ const UserResourcesView = Backbone.View.extend({
             usertype: this.user.get('usertype').toLowerCase(),
             specifyuser: this.user.get('resource_uri')
         }, {noBusinessRules: true});
-        return Q(directory.save()).then(() => directory);
+        return directory.save().then(() => directory);
     }
 });
 
@@ -790,13 +789,13 @@ function appResourcesTask(ResourceModel, id) {
     const resources = new ResourceModel.LazyCollection();
     const users = new schema.models.SpecifyUser.LazyCollection();
 
-    Q.all([
+    Promise.all([
         resourceDirs.fetch({limit: 0}),
         disciplines.fetch({limit: 0}),
         collections.fetch({limit: 0}),
         resources.fetch({limit: 0}),
         users.fetch({limit: 0}),
-    ]).done(() => {
+    ]).then(() => {
         setCurrentView(new AppResourcePage({
             selectedId: id,
             directories: resourceDirs,

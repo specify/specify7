@@ -1,5 +1,5 @@
 "use strict";
-import { schema } from './schema';
+import {schema} from './schema';
 import interactionBusinessRules from './interactionbusinessrules';
 
 export default Object.freeze({
@@ -127,12 +127,12 @@ export default Object.freeze({
                 }
             },
             customChecks: {
-                taxon: determination => determination.rget('taxon', true).pipe(
+                taxon: determination => determination.rget('taxon', true).then(
                     taxon => taxon == null ?
                         { valid: true, action() { determination.set('preferredtaxon', null); }}
                     : (function recur(taxon) {
                         return taxon.get('acceptedtaxon') != null ?
-                            taxon.rget('acceptedtaxon', true).pipe(recur)
+                            taxon.rget('acceptedtaxon', true).then(recur)
                             : { valid: true, action() { determination.set('preferredtaxon', taxon); }};
                     })(taxon)),
 

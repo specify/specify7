@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { error } from '../assert';
-import type { AnySchema } from '../datamodelutils';
+import type { AnySchema, CommonFields } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
@@ -25,8 +25,8 @@ const dialogDefinitions = load<Element>(
 const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
-  readonly field: keyof SCHEMA['fields'];
-  readonly operation: 'in' | 'between' | 'lessThan';
+  readonly field: keyof SCHEMA['fields'] | keyof CommonFields;
+  readonly operation: 'notIn' | 'in' | 'between' | 'lessThan';
   readonly values: RA<string>;
 };
 
@@ -169,6 +169,8 @@ const testFilter = <SCHEMA extends AnySchema>(
     ? resource.get(field) < values[0] && resource.get(field) > values[1]
     : operation === 'in'
     ? values.some(f.equal(resource.get(field)))
+    : operation === 'notIn'
+    ? values.every(f.notEqual(resource.get(field)))
     : operation === 'lessThan'
     ? values.every((value) => resource.get(field) > value)
     : error('Invalid Query Combo Box search filter', {

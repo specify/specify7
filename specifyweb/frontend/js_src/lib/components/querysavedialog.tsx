@@ -4,7 +4,6 @@ import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import { deferredToPromise } from '../resourceapi';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
@@ -21,7 +20,7 @@ async function doSave(
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
-  return deferredToPromise(clonedQuery.save()).then(() => clonedQuery.id);
+  return clonedQuery.save().then(() => clonedQuery.id);
 }
 
 export function QuerySaveDialog({

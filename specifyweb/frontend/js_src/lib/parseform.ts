@@ -117,7 +117,7 @@ function postProcessRows(
       const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
       if (totalColumns > columns.length)
         console.error(
-          `Row ${index}/${rows.length} has ${row.length} column(s), when
+          `Row ${index}/${rows.length} has ${totalColumns} column(s), when
           expected only ${columns.length}`,
           { row, columns }
         );
@@ -182,6 +182,7 @@ function postProcessRows(
               id: undefined,
               align: 'left',
               colSpan: columns.length - row.length,
+              visible: false,
             }
           : undefined,
       ]);

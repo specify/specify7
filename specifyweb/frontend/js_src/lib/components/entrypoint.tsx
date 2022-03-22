@@ -8,11 +8,11 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import startApp from '../startapp';
 import { className } from './basic';
-import { crash, ErrorBoundary } from './errorboundary';
+import { Contexts } from './contexts';
+import { crash } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
-import { Contexts } from './contexts';
 
 unlockInitialContext();
 
@@ -74,11 +74,9 @@ window.addEventListener('load', () => {
   root.setAttribute('class', className.root);
   ReactDOM.render(
     <React.StrictMode>
-      <ErrorBoundary>
-        <Contexts>
-          <Root />
-        </Contexts>
-      </ErrorBoundary>
+      <Contexts>
+        <Root />
+      </Contexts>
     </React.StrictMode>,
     root
   );

@@ -8,10 +8,10 @@ import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
-import { ErrorBoundary } from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
+import { Contexts } from './contexts';
 
 function Login({
   data,
@@ -85,7 +85,7 @@ window.addEventListener('load', () => {
   const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
   ReactDOM.render(
     <React.StrictMode>
-      <ErrorBoundary>
+      <Contexts>
         <Login
           data={{
             formErrors: parseDjangoDump('form-errors'),
@@ -100,7 +100,7 @@ window.addEventListener('load', () => {
               : `${nextDestination}${nextUrl}`
           }
         />
-      </ErrorBoundary>
+      </Contexts>
     </React.StrictMode>,
     root
   );

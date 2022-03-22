@@ -129,7 +129,13 @@ export function Field({
         if (parser.type === 'date') updateValue(target.value);
       }}
       id={id}
-      className="w-full"
+      /*
+       * Disable text-align: right in non webkit browsers
+       * as they don't support spinner's arrow customization
+       */
+      className={`w-full ${
+        navigator.userAgent.includes('webkit') ? 'webkit' : ''
+      }`}
       {...validationAttributes}
       readOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}

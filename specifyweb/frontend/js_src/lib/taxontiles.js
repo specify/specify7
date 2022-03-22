@@ -4,8 +4,9 @@ import $ from 'jquery';
 import _ from 'underscore';
 import d3 from 'd3';
 
-import { schema } from './schema';
+import {schema} from './schema';
 import welcomeText from './localization/welcome';
+import {ajax} from './ajax';
 
 export default function makeTreeMap(container) {
   container.classList.add('h-[473px]');
@@ -33,18 +34,19 @@ export default function makeTreeMap(container) {
     filters: {name: 'Genus'},
   });
 
-  const getGenusRankID = genusTreeDefItem.fetch({limit: 1}).pipe(function () {
-    return genusTreeDefItem.length > 0
+  const getGenusRankID = genusTreeDefItem.fetchPromise({limit: 1}).then(() =>
+    genusTreeDefItem.length > 0
       ? genusTreeDefItem.at(0).get('rankid')
-      : null;
-  });
+      : null
+  );
 
-  const getTreeData = $.getJSON('/barvis/taxon_bar/');
+  const getTreeData = ajax('/barvis/taxon_bar/', {headers: {Accept: 'application/json'}})
+    .then(({data})=>data);
 
-  $.when(getTreeData, getGenusRankID).done(function buildFromData(
+  Promise.all([getTreeData, getGenusRankID]).then(function buildFromData([
     data,
     genusRankID
-  ) {
+  ]) {
     const tree = buildTree(data[0]);
     const root = tree[0];
     const thres = tree[1];

@@ -263,6 +263,10 @@ export const f = {
     (value: unknown) =>
     (secondValue: unknown): boolean =>
       secondValue === value,
+  notEqual:
+    (value: unknown) =>
+    (secondValue: unknown): boolean =>
+      secondValue !== value,
   /**
    * If need to support internationalization, consider using localeCompare
    *

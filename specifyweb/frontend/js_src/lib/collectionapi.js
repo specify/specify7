@@ -1,22 +1,20 @@
 "use strict";
 
-import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 import {assert} from './assert';
-import {deferredToPromise} from './resourceapi';
 
 
 var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
-        getTotalCount: function() { return $.when(this.length); }
+        getTotalCount: function() { return Promise.resolve(this.length); }
     });
 
     function notSupported() { throw new Error("method is not supported"); }
 
     function fakeFetch() {
         console.error("fetch called on", this);
-        return $.when(null);
+        return Promise.resolve(null);
     }
 
     var collectionapi = {};
@@ -113,17 +111,17 @@ var Base =  Backbone.Collection.extend({
         },
         fetchPromise(options){
             // Fetch if not fetching and convert deferred to promise
-            return this._fetch || this.isComplete() || this.related?.isNew() ? Promise.resolve(this) : deferredToPromise(this.fetch(options));
+            return this._fetch || this.isComplete() || this.related?.isNew() ? Promise.resolve(this) : this.fetch(options);
         },
         fetchIfNotPopulated: function() {
             var _this = this;
-            return (this._neverFetched ? this.fetch() : $.when(null)).pipe(function() {
+            return (this._neverFetched ? this.fetch() : Promise.resolve(null)).then(function() {
                 return _this;
             });
         },
         getTotalCount: function() {
-            if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
-            return this.fetchIfNotPopulated().pipe(function(_this) {
+            if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
+            return this.fetchIfNotPopulated().then(function(_this) {
                 return _this._totalCount;
             });
         }

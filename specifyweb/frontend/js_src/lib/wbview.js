@@ -18,7 +18,6 @@ import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
 import Backbone from './backbone';
-import Q from 'q';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
@@ -60,6 +59,7 @@ import {getTreeDefinitionItems} from './treedefinitions';
 import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentView} from './specifyapp';
+import {ajax, Http, ping} from './ajax';
 
 const metaKeys = [
   'isNew',
@@ -693,9 +693,9 @@ const WBView = Backbone.View.extend({
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
           mappingGroup,
           physicalCol,
-          rankId: Object.keys(defined(getTreeDefinitionItems(tableName))).findIndex(
-            ({ name }) => name === rankName
-          ),
+          rankId: Object.keys(
+            defined(getTreeDefinitionItems(tableName))
+          ).findIndex(({ name }) => name === rankName),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
           groupedRanks[mappingGroup] ??= [];
@@ -1149,12 +1149,10 @@ const WBView = Backbone.View.extend({
       columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-        type: 'PUT',
-        data: JSON.stringify({ visualorder: columnOrder }),
-        dataType: 'json',
-        processData: false,
-      }).fail(this.checkDeletedFail.bind(this));
+      ping(`/api/workbench/dataset/${this.dataset.id}/`, {
+        method: 'PUT',
+        body: { visualorder: columnOrder },
+      }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }).then(this.checkDeletedFail.bind(this));
     }
   },
   // Do not scroll the viewport to the last column after inserting a row
@@ -1496,7 +1494,7 @@ const WBView = Backbone.View.extend({
     };
 
     const content = $('<div class="flex flex-col">');
-    resources.fetch({ limit: 0 }).done(() => {
+    resources.fetch({ limit: 0 }).then(() => {
       if (resources.length === 0) {
         const dialog = showDialog({
           title: wbText('noDisambiguationResultsDialogTitle'),
@@ -1534,7 +1532,7 @@ const WBView = Backbone.View.extend({
         if (model.getField('rankid')) {
           resource
             .rget('parent.fullname')
-            .done((parentName) =>
+            .then((parentName) =>
               row
                 .find('.label')
                 .text(`${resource.get('fullname')} (in ${parentName})`)
@@ -1782,12 +1780,10 @@ const WBView = Backbone.View.extend({
           <Button.Green
             onClick={() => {
               dataset.uploadplan = JSON.parse($('textarea', dialog).val());
-              $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
-                type: 'PUT',
-                data: JSON.stringify({ uploadplan: dataset.uploadplan }),
-                dataType: 'json',
-                processData: false,
-              }).fail(this.checkDeletedFail.bind(this));
+              ping(`/api/workbench/dataset/${dataset.id}/`, {
+                method: 'PUT',
+                body: { uploadplan: dataset.uploadplan },
+              }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }).then(this.checkDeletedFail.bind(this));
               dialog.remove();
               $this.trigger('refresh');
             }}
@@ -1815,9 +1811,10 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
             onClick={() => {
-              $.post(`/api/workbench/unupload/${this.dataset.id}/`).then(() =>
-                this.openStatus('unupload')
-              );
+              ajax(`/api/workbench/unupload/${this.dataset.id}/`, {
+                method: 'POST',
+                headers: {},
+              } ).then(() => this.openStatus('unupload'));
               dialog.remove();
             }}
           >
@@ -1873,14 +1870,14 @@ const WBView = Backbone.View.extend({
   startUpload(mode) {
     this.stopLiveValidation();
     this.updateValidationButton();
-    $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-      .fail((jqxhr) => {
+    ajax(`/api/workbench/${mode}/${this.dataset.id}/`, {
+      method: 'POST',
+    }, {expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT]})
+      .then((jqxhr) => {
         this.checkDeletedFail(jqxhr);
         this.checkConflictFail(jqxhr);
       })
-      .done(() => {
-        this.openStatus(mode);
-      });
+      .then(() => this.openStatus(mode));
   },
   openStatus(mode) {
     this.wbstatus = new WBStatus({
@@ -1924,25 +1921,22 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
             onClick={() => {
-              $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-                type: 'DELETE',
-              })
-                .done(() => {
+              ping(`/api/workbench/dataset/${this.dataset.id}/`, {
+                method: 'DELETE',
+              }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] })
+                .then((status) => {
                   this.$el.empty();
                   dialog.remove();
 
-                  showDialog({
-                    title: wbText('dataSetDeletedDialogTitle'),
-                    header: wbText('dataSetDeletedDialogHeader'),
-                    content: wbText('dataSetDeletedDialogMessage'),
-                    onClose: () => navigation.go('/'),
-                    buttons: commonText('close'),
-                  });
+                  if(!this.checkDeletedFail(status))
+                    showDialog({
+                      title: wbText('dataSetDeletedDialogTitle'),
+                      header: wbText('dataSetDeletedDialogHeader'),
+                      content: wbText('dataSetDeletedDialogMessage'),
+                      onClose: () => navigation.go('/'),
+                      buttons: commonText('close'),
+                    });
                 })
-                .fail((jqxhr) => {
-                  this.checkDeletedFail(jqxhr);
-                  dialog.remove();
-                });
             }}
           >
             {commonText('delete')}
@@ -1986,7 +1980,7 @@ const WBView = Backbone.View.extend({
     });
   },
   saveClicked() {
-    this.save().done();
+    this.save().then();
   },
   save() {
     // Clear validation
@@ -2003,13 +1997,11 @@ const WBView = Backbone.View.extend({
     });
 
     // Send data
-    return Q(
-      $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
-        data: JSON.stringify(this.data),
-        error: this.checkDeletedFail.bind(this),
-        type: 'PUT',
-      })
-    )
+    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
+      method: 'PUT',
+      body: this.data,
+    }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] })
+      .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();
         this.cellMeta = [];
@@ -2078,14 +2070,15 @@ const WBView = Backbone.View.extend({
       const physicalRow = this.liveValidationStack.pop();
       if (physicalRow === null) return;
       const rowData = this.hot.getSourceDataAtRow(physicalRow);
-      Q(
-        $.post(
-          `/api/workbench/validate_row/${this.dataset.id}/`,
-          JSON.stringify(rowData)
+      ajax(`/api/workbench/validate_row/${this.dataset.id}/`, {
+        method: 'POST',
+        body: rowData,
+        headers: { Accept: 'application/json' },
+      })
+        .then(({ data: result }) =>
+          this.gotRowValidationResult(physicalRow, result)
         )
-      )
-        .then((result) => this.gotRowValidationResult(physicalRow, result))
-        .fin(pumpValidation);
+        .then(pumpValidation);
     };
 
     if (!this.liveValidationActive) {
@@ -2327,23 +2320,20 @@ const WBView = Backbone.View.extend({
     navigation.addUnloadProtect(this, wbText('onExitDialogMessage'));
   },
   // Check if AJAX failed because Data Set was deleted
-  checkDeletedFail(jqxhr) {
-    if (!jqxhr.errorHandled && jqxhr.status === 404) {
+  checkDeletedFail(statusCode) {
+    if (statusCode === Http.NOT_FOUND)
       this.$el.empty().append(wbText('dataSetDeletedOrNotFound'));
-      jqxhr.errorHandled = true;
-    }
+    return statusCode === Http.NOT_FOUND;
   },
   // Check if AJAX failed because Data Set was modified by other session
-  checkConflictFail(jqxhr) {
-    if (!jqxhr.errorHandled && jqxhr.status === 409) {
+  checkConflictFail(statusCode) {
+    if (statusCode === Http.CONFLICT)
       /*
        * Upload/Validation/Un-Upload has been initialized by another session
        * Need to reload the page to display the new state
-       *
        */
       this.trigger('reload');
-      jqxhr.errorHandled = true;
-    }
+    return statusCode === Http.CONFLICT;
   },
   spreadSheetUpToDate() {
     if (!this.hasUnSavedChanges) return;
@@ -2542,23 +2532,22 @@ export default function loadDataset(
 ) {
   const loadingScreen = new LoadingView().render();
 
-  $.get(`/api/workbench/dataset/${id}/`)
-    .done((dataset) => {
-      const view = new WBView({
-        dataset,
-        refreshInitiatedBy,
-        refreshInitiatorAborted,
-      })
-        .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
-        .on('loaded', () => loadingScreen.remove());
-      setCurrentView(view);
+  ajax(
+    `/api/workbench/dataset/${id}/`,
+    { headers: { Accept: 'application/json' } },
+    { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+  ).then(({ data: dataset, status }) => {
+    if (status === Http.NOT_FOUND) {
+      setCurrentView(new NotFoundView());
+      return;
+    }
+    const view = new WBView({
+      dataset,
+      refreshInitiatedBy,
+      refreshInitiatorAborted,
     })
-    .fail((jqXHR) => {
-      if (jqXHR.status === 404) {
-        jqXHR.errorHandled = true;
-        setCurrentView(new NotFoundView());
-        return '(not found)';
-      }
-      return jqXHR;
-    });
+      .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
+      .on('loaded', () => loadingScreen.remove());
+    setCurrentView(view);
+  });
 }

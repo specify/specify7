@@ -139,7 +139,7 @@ var ReportListDialog = Backbone.View.extend({
         });
         var dataFetch = appResource.rget('spappresourcedatas', true);
         var reportOptions = this.options;
-        $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
+        Promise.all([dataFetch, reports.fetch({ limit: 1 })]).then(function([data]) {
             if (data.length > 1) {
                 console.warn("found multiple report definitions for appresource id:", appResource.id);
             } else if (data.length < 1) {
@@ -155,8 +155,8 @@ var ReportListDialog = Backbone.View.extend({
             const report = reports.at(0);
             const appResourceData = data.at(0);
             const reportXML = appResourceData.get('data');
-            $.when(report.rget('query', true), fixupImages(reportXML))
-                .done(function(query, imageFixResult) {
+            Promise.all([report.rget('query', true), fixupImages(reportXML)])
+                .then(function([query, imageFixResult]) {
                     var reportResources = {
                         appResource: appResource,
                         report: report,
@@ -239,8 +239,8 @@ var FixImagesDialog = Backbone.View.extend({
     uploadComplete: function(index, attachment) {
         attachment.set('title', this.imageFixResult.missingAttachments[index]);
         var originalXML = this.reportResources.reportXML;
-        attachment.save().pipe(function() { return fixupImages(originalXML); })
-            .done(this.tryAgain.bind(this));
+        attachment.save().then(function() { return fixupImages(originalXML); })
+            .then(this.tryAgain.bind(this));
     },
     tryAgain: function(imageFixResult) {
         if (imageFixResult.isOK) {
@@ -270,7 +270,7 @@ function getRecordSets(reportResources) {
             dbtableid: contextTableId
         }
     });
-    recordSets.fetch({ limit: 100 }).done(function() {
+    recordSets.fetch({ limit: 100 }).then(function() {
         if (recordSets._totalCount > 0) {
             new ChooseRecordSetDialog({
                 recordSets: recordSets,
@@ -465,7 +465,7 @@ var QueryParamsDialog = Backbone.View.extend({
             });
         }).bind(this);
 
-        this.fieldUIsP = this.query.rget('fields').pipe(function(spqueryfields) {
+        this.fieldUIsP = this.query.rget('fields').then(function(spqueryfields) {
             spqueryfields.each(function(field) { field.set('isdisplay', true); });
             return spqueryfields.map(makeFieldUI);
         });
@@ -483,7 +483,7 @@ var QueryParamsDialog = Backbone.View.extend({
             </>,
         });
         var ul = this.$('ul');
-        this.fieldUIsP.done(function(fieldUIs) {
+        this.fieldUIsP.then(function(fieldUIs) {
             _.invoke(fieldUIs, 'render');
             ul.append.apply(ul, _.pluck(fieldUIs, 'el'));
         });
@@ -491,7 +491,7 @@ var QueryParamsDialog = Backbone.View.extend({
     },
     runReport: function() {
         var runReportWithFields = runReport.bind(null, this.reportResources, this.recordSetId);
-        this.fieldUIsP.done(runReportWithFields);
+        this.fieldUIsP.then(runReportWithFields);
     }
 });
 
@@ -543,7 +543,7 @@ function fixupImages(reportXML) {
     });
     var titles = _.keys(filenames).join(',');
     var reportAttachments = new schema.models.Attachment.LazyCollection({ filters: {title__in: titles}});
-    return reportAttachments.fetch().pipe(function() {
+    return reportAttachments.fetch().then(function() {
         var byTitles = {};
         var missingAttachments = [];
         reportAttachments.each(function(a) { byTitles[a.get('title')] = a; });

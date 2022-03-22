@@ -216,7 +216,7 @@ export default PrepDialog.extend({
                 filters: { id: key }
             });
             var _self = this;
-            irec.fetch().done(function() {
+            irec.fetch().then(function() {
                 var resourceModel = irec.models[0];
 
                 this.dialog = new resourceView({

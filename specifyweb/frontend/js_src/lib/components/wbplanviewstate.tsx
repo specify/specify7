@@ -11,13 +11,13 @@ import type { UploadPlan } from '../uploadplanparser';
 import type { WbPlanViewActions } from '../wbplanviewreducer';
 import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Input, Label } from './basic';
+import { LoadingContext } from './contexts';
 import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
 import { WbsDialog } from './toolbar/wbsdialog';
 import type { Dataset, WbPlanViewProps } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
-import { LoadingContext } from './contexts';
 
 // States
 
@@ -197,19 +197,42 @@ export const stateReducer = generateReducer<
   },
 });
 
+/** Create a new array with a new item at a given position */
 export const insertItem = <T,>(array: RA<T>, index: number, item: T): RA<T> => [
   ...array.slice(0, index),
   item,
   ...array.slice(index),
 ];
 
+/** Create a new array with a given item replaced */
 export const replaceItem = <T,>(
   array: RA<T>,
   index: number,
   item: T
 ): RA<T> => [...array.slice(0, index), item, ...array.slice(index + 1)];
 
+/** Create a new array without a given item */
 export const removeItem = <T,>(array: RA<T>, index: number): RA<T> => [
   ...array.slice(0, index),
   ...array.slice(index + 1),
 ];
+
+/**
+ * Creates a new object with a given key replaced.
+ * Unlike object decomposition, this would preserve the order of keys
+ */
+export const replaceKey = <T extends IR<unknown>>(
+  object: T,
+  targetKey: keyof T,
+  newValue: T[keyof T]
+): T =>
+  Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [
+      key,
+      /*
+       * Convert targetKey to string because Object.entries convers all keys
+       * to a string
+       */
+      key === targetKey.toString() ? newValue : value,
+    ])
+  ) as T;

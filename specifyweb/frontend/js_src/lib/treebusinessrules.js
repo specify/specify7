@@ -1,23 +1,30 @@
 "use strict";
-import $ from 'jquery';
-import Q from 'q';
 import _ from 'underscore';
 import treeText from './localization/tree';
+import {ajax} from './ajax';
+import * as querystring from './querystring';
 
 function predictFullName(resource, options) {
     const treeName = resource.specifyModel.name.toLowerCase();
-    return Q.all([resource,
+    return Promise.all([resource,
                   resource.getRelated('parent', {prePop: true, noBusinessRules: true}),
                   resource.getRelated('definitionitem', {prePop: true, noBusinessRules: true})
                  ])
-        .spread((resource, parent, defitem) => {
+        .then(([resource, parent, defitem]) => {
             if (parent == null || defitem == null) return null;
             if (parent.id === resource.id || parent.get('rankid') >= defitem.get('rankid')) {
                 throw 'bad-tree-structure';
             }
             if (resource.get('name') == null) return null;
-            return $.get(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`, {
-                name: resource.get('name'), treedefitemid: defitem.id });
+            return ajax(
+                querystring.format(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
+                {
+                  name: resource.get('name'),
+                    treedefitemid: defitem.id
+                }),
+              {
+               headers: {'Accept': 'text/plain'}
+            }).then(({data})=>data);
         })
         .then(
             fullname => ({
@@ -57,7 +64,7 @@ function predictFullName(resource, options) {
                 promise = predictFullName(resource, {reportBadStructure: false});
                 break;
             default:
-                promise = Q(null);
+                promise = Promise.resolve(null);
             }
 
             promise.then(function(result) { console.debug('Tree BR finished',

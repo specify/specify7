@@ -15,9 +15,9 @@ import {
   Link,
   Submit,
 } from './basic';
-import { ErrorBoundary } from './errorboundary';
 import { useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
+import { Contexts } from './contexts';
 
 function ChooseCollection({
   data,
@@ -96,7 +96,7 @@ window.addEventListener('load', () => {
   root.setAttribute('class', className.root);
   ReactDOM.render(
     <React.StrictMode>
-      <ErrorBoundary>
+      <Contexts>
         <ChooseCollection
           data={{
             errors: [
@@ -109,7 +109,7 @@ window.addEventListener('load', () => {
           }}
           nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
         />
-      </ErrorBoundary>
+      </Contexts>
     </React.StrictMode>,
     root
   );
