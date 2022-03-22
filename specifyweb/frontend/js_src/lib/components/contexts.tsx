@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from 'react-modal';
 
 import { error } from '../assert';
 import type { RA } from '../types';
@@ -11,6 +12,8 @@ export function Contexts({
 }: {
   readonly children: JSX.Element;
 }): JSX.Element {
+  React.useEffect(() => Modal.setAppElement('#root'), []);
+
   const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handle = React.useCallback(

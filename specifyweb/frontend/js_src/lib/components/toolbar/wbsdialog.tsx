@@ -12,16 +12,17 @@ import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
+import { sortFunction } from '../../wbplanviewhelper';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, Link } from '../basic';
 import type { SortConfig } from '../common';
-import { compareValues, SortIndicator } from '../common';
+import { SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
 import { useAsyncState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
+import { Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
@@ -143,29 +144,29 @@ const defaultSearchConfig = {
   ascending: false,
 } as const;
 
-function MetadataDialog({
-  datasets: unsortedDatasets,
+function DataSets({
+  onClose: handleClose,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
-  onClose: handleClose,
-  onChange: handleChange,
+  onShowMeta: handleShowMeta,
 }: {
-  readonly datasets: RA<DatasetBrief>;
   readonly showTemplates: boolean;
-  readonly onDataSetSelect?: (id: number) => void;
   readonly onClose: () => void;
-  readonly onChange: () => void;
+  readonly onDataSetSelect?: (id: number) => void;
+  readonly onShowMeta: (dataSet: number) => void;
 }): JSX.Element | null {
-  // Whether to show DS meta dialog. Either false or Data Set ID
-  const [showMeta, setShowMeta] = React.useState<false | number>(false);
-
-  const isFirstRender = React.useRef<boolean>(true);
-  React.useEffect(() => {
-    if (isFirstRender.current) isFirstRender.current = false;
-    else handleChange();
-  }, [showMeta, handleChange]);
-
-  const canImport = !showTemplates && !userInformation.isReadOnly;
+  const [unsortedDatasets] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<RA<DatasetBrief>>(
+          `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { headers: { Accept: 'application/json' } }
+        ).then(({ data }) => data),
+      [showTemplates]
+    ),
+    true
+  );
 
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',
@@ -173,134 +174,119 @@ function MetadataDialog({
     bucketType: 'localStorage',
     defaultValue: defaultSearchConfig,
   });
-
   if (typeof sortConfig === 'undefined') return null;
 
-  const datasets = Array.from(unsortedDatasets).sort(
-    (
-      {
-        name: nameLeft,
-        timestampcreated: dateCreatedLeft,
-        uploadresult: uploadResultLeft,
-      },
-      {
-        name: nameRight,
-        timestampcreated: dateCreatedRight,
-        uploadresult: uploadResultRight,
-      }
-    ) =>
-      sortConfig.sortField === 'name'
-        ? compareValues(sortConfig.ascending, nameLeft, nameRight)
-        : sortConfig.sortField === 'dateCreated'
-        ? compareValues(sortConfig.ascending, dateCreatedLeft, dateCreatedRight)
-        : compareValues(
-            sortConfig.ascending,
-            uploadResultLeft?.timestamp ?? '',
-            uploadResultRight?.timestamp ?? ''
-          )
-  );
+  const datasets = Array.isArray(unsortedDatasets)
+    ? Array.from(unsortedDatasets).sort(
+        sortFunction(
+          ({ name, timestampcreated, uploadresult }) =>
+            sortConfig.sortField === 'name'
+              ? name
+              : sortConfig.sortField === 'dateCreated'
+              ? timestampcreated
+              : uploadresult?.timestamp ?? '',
+          !sortConfig.ascending
+        )
+      )
+    : undefined;
 
-  return (
-    <>
-      <Dialog
-        header={
-          showTemplates
-            ? wbText('wbsDialogTemplatesDialogTitle')
-            : wbText('wbsDialogDefaultDialogTitle')(datasets.length)
-        }
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        onClose={handleClose}
-        buttons={
-          <>
-            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            {canImport && (
-              <>
-                <Button.Blue
-                  onClick={(): void => navigation.go('/workbench-import/')}
-                >
-                  {wbText('importFile')}
-                </Button.Blue>
-                <Button.Blue onClick={createEmptyDataSet}>
-                  {wbText('createNew')}
-                </Button.Blue>
-              </>
-            )}
-          </>
-        }
-      >
-        {datasets.length === 0 ? (
-          <p>
-            {showTemplates
-              ? wbText('wbsDialogEmptyTemplateDialogMessage')
-              : `${wbText('wbsDialogEmptyDefaultDialogMessage')} ${
-                  canImport ? wbText('createDataSetInstructions') : ''
-                }`}
-          </p>
-        ) : (
-          <nav>
-            <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
-              <TableHeader
-                sortConfig={sortConfig}
-                onChange={(newSortConfig): void => setSortConfig(newSortConfig)}
-              />
-              <tbody>
-                {datasets.map((dataset, index) => {
-                  return (
-                    <tr key={index}>
-                      <td className="overflow-x-auto">
-                        <Link.Default
-                          href={`/specify/workbench/${dataset.id}/`}
-                          {...(typeof handleDataSetSelect === 'undefined'
-                            ? {
-                                className: 'font-bold',
-                              }
-                            : {
-                                className: `font-bold ${className.navigationHandled}`,
-                                onClick: (event): void => {
-                                  event.preventDefault();
-                                  handleDataSetSelect(dataset.id);
-                                },
-                              })}
-                        >
-                          <img
-                            src="/images/Workbench32x32.png"
-                            alt=""
-                            className="w-table-icon"
-                          />
-                          {dataset.name}
-                        </Link.Default>
-                      </td>
-                      <td>
-                        <DateElement date={dataset.timestampcreated} />
-                      </td>
-                      <td>
-                        <DateElement date={dataset.uploadresult?.timestamp} />
-                      </td>
-                      <td>
-                        {canImport && (
-                          <Button.Icon
-                            icon="pencil"
-                            aria-label={commonText('edit')}
-                            title={commonText('edit')}
-                            onClick={(): void => setShowMeta(dataset.id)}
-                          />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </nav>
-        )}
-      </Dialog>
-      {showMeta !== false && (
-        <DsMeta dsId={showMeta} onClose={(): void => setShowMeta(false)} />
+  const canImport = !showTemplates && !userInformation.isReadOnly;
+  return Array.isArray(datasets) ? (
+    <Dialog
+      header={
+        showTemplates
+          ? wbText('wbsDialogTemplatesDialogTitle')
+          : wbText('wbsDialogDefaultDialogTitle')(datasets.length)
+      }
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      onClose={handleClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          {canImport && (
+            <>
+              <Button.Blue
+                onClick={(): void => navigation.go('/workbench-import/')}
+              >
+                {wbText('importFile')}
+              </Button.Blue>
+              <Button.Blue onClick={createEmptyDataSet}>
+                {wbText('createNew')}
+              </Button.Blue>
+            </>
+          )}
+        </>
+      }
+    >
+      {datasets.length === 0 ? (
+        <p>
+          {showTemplates
+            ? wbText('wbsDialogEmptyTemplateDialogMessage')
+            : `${wbText('wbsDialogEmptyDefaultDialogMessage')} ${
+                canImport ? wbText('createDataSetInstructions') : ''
+              }`}
+        </p>
+      ) : (
+        <nav>
+          <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
+            <TableHeader
+              sortConfig={sortConfig}
+              onChange={(newSortConfig): void => setSortConfig(newSortConfig)}
+            />
+            <tbody>
+              {datasets.map((dataset, index) => {
+                return (
+                  <tr key={index}>
+                    <td className="overflow-x-auto">
+                      <Link.Default
+                        href={`/specify/workbench/${dataset.id}/`}
+                        {...(typeof handleDataSetSelect === 'undefined'
+                          ? {
+                              className: 'font-bold',
+                            }
+                          : {
+                              className: `font-bold ${className.navigationHandled}`,
+                              onClick: (event): void => {
+                                event.preventDefault();
+                                handleDataSetSelect(dataset.id);
+                              },
+                            })}
+                      >
+                        <img
+                          src="/images/Workbench32x32.png"
+                          alt=""
+                          className="w-table-icon"
+                        />
+                        {dataset.name}
+                      </Link.Default>
+                    </td>
+                    <td>
+                      <DateElement date={dataset.timestampcreated} />
+                    </td>
+                    <td>
+                      <DateElement date={dataset.uploadresult?.timestamp} />
+                    </td>
+                    <td>
+                      {canImport && (
+                        <Button.Icon
+                          icon="pencil"
+                          aria-label={commonText('edit')}
+                          title={commonText('edit')}
+                          onClick={(): void => handleShowMeta(dataset.id)}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </nav>
       )}
-    </>
-  );
+    </Dialog>
+  ) : null;
 }
 
 /** Render a dialog for choosing a data set */
@@ -312,37 +298,24 @@ export function WbsDialog({
   readonly showTemplates: boolean;
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(commonText('workbench'));
 
-  const [datasets, setDatasets] = React.useState<undefined | RA<DatasetBrief>>(
-    undefined
-  );
+  // Whether to show DS meta dialog. Either false or Data Set ID
+  const [showMeta, setShowMeta] = React.useState<false | number>(false);
 
-  const fetchDatasets = React.useCallback(
-    () =>
-      void ajax<RA<DatasetBrief>>(
-        `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } }
-      )
-        .then(({ data }) => setDatasets(data))
-        .catch(console.error),
-    [showTemplates]
-  );
-
-  React.useEffect(fetchDatasets, [fetchDatasets]);
-
-  return Array.isArray(datasets) ? (
-    <MetadataDialog
-      datasets={datasets}
-      onClose={handleClose}
-      showTemplates={showTemplates}
-      onDataSetSelect={handleDataSetSelect}
-      onChange={fetchDatasets}
-    />
-  ) : (
-    <LoadingScreen />
+  return (
+    <>
+      <DataSets
+        onClose={handleClose}
+        showTemplates={showTemplates}
+        onDataSetSelect={handleDataSetSelect}
+        onShowMeta={setShowMeta}
+      />
+      {showMeta !== false && (
+        <DsMeta dsId={showMeta} onClose={(): void => setShowMeta(false)} />
+      )}
+    </>
   );
 }
 

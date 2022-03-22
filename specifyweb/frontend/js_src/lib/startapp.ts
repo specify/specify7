@@ -1,5 +1,3 @@
-import Modal from 'react-modal';
-
 import { ajax, ping } from './ajax';
 import Backbone from './backbone';
 import * as businessRules from './businessrules';
@@ -75,6 +73,4 @@ export default function appStart(): void {
     .then(f.call)
     .then(() => navigation.start())
     .catch(crash);
-
-  Modal.setAppElement('#root');
 }

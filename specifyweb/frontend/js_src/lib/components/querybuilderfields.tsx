@@ -7,6 +7,7 @@ import type { RA } from '../types';
 import { Ul } from './basic';
 import { QueryLine } from './querybuilderfield';
 import type { MappingPath } from './wbplanviewmapper';
+import { useReadyEffect } from './hooks';
 
 export function QueryFields({
   baseTableName,
@@ -51,23 +52,22 @@ export function QueryFields({
   readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
-  const isFirstRenderRef = React.useRef(true);
-  React.useEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false;
-      return;
-    }
-    if (
-      fieldsContainerRef.current !== null &&
-      fieldsContainerRef.current.lastChild !== null &&
-      fieldsContainerRef.current.clientHeight !==
-        fieldsContainerRef.current.scrollHeight
+
+  useReadyEffect(
+    React.useCallback(
+      () =>
+        fieldsContainerRef.current !== null &&
+        fieldsContainerRef.current.lastChild !== null &&
+        fieldsContainerRef.current.clientHeight !==
+          fieldsContainerRef.current.scrollHeight
+          ? scrollIntoView(
+              fieldsContainerRef.current.lastChild as HTMLElement,
+              'nearest'
+            )
+          : undefined,
+      [fields.length]
     )
-      scrollIntoView(
-        fieldsContainerRef.current.lastChild as HTMLElement,
-        'nearest'
-      );
-  }, [fields.length]);
+  );
 
   return (
     <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>

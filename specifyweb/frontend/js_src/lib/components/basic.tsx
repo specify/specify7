@@ -96,6 +96,19 @@ export const darkMode =
     ? window.matchMedia('(prefers-color-scheme: dark)').matches
     : false;
 
+/**
+ * If dialog contains a button with this className, it will use that icon
+ * by default
+ */
+export const dialogIconTriggers = {
+  // Icons are ordered by precedence
+  none: '',
+  error: 'dialog-icon-error',
+  warning: 'dialog-icon-warning',
+  success: 'dialog-icon-success',
+  info: 'dialog-icon-info',
+};
+
 // ClassNames are primarily for usage by non-react components
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
@@ -122,10 +135,10 @@ export const className = {
     text-gray-800 dark:text-neutral-200`,
   grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`,
-  redButton: `hover:bg-red-800 bg-red-700 text-white`,
-  blueButton: `hover:bg-blue-700 bg-blue-600 text-white`,
-  orangeButton: `hover:bg-orange-600 bg-orange-500 text-white`,
-  greenButton: `hover:bg-green-800 bg-green-700 text-white`,
+  redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
+  blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
+  orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
+  greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `active:bg-brand-300 active:dark:bg-brand-400 bg-gray-300 gap-2
     hover:bg-brand-200 hover:dark:bg-brand:400 inline-flex dark:bg-neutral-500
     dark:text-white justify-center items-center p-2 text-black cursor-pointer
@@ -460,6 +473,13 @@ export const DialogContext = React.createContext<(() => void) | undefined>(() =>
 );
 DialogContext.displayName = 'DialogContext';
 
+/**
+ * A button that registers its onClick handler to containing dialog's
+ * onClose handler.
+ *
+ * This is useful to avoid duplicating the dialog close logic
+ * in the button's onClick and the dialog's onClose
+ */
 function DialogCloseButton({
   component: ButtonComponent = Button.Transparent,
   ...props

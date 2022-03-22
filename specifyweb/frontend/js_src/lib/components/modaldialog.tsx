@@ -16,11 +16,13 @@ import {
   Button,
   className,
   DialogContext,
+  dialogIconTriggers,
   Submit,
   transitionDuration,
 } from './basic';
-import { useId } from './hooks';
+import { useId, useLiveState } from './hooks';
 import createBackboneView from './reactbackboneextend';
+import { dialogIcons } from './icons';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -87,12 +89,15 @@ export function Dialog({
    * Using isOpen prop instead of conditional rendering is optional, but it
    * allows for smooth dialog close animation
    */
-  // TODO: consider getting rid of this
-  // TODO: test if it works, and if animations could be made to work without it
+  /*
+   * TODO: consider getting rid of this
+   * TODO: test if it works, and if animations could be made to work without it
+   */
   isOpen = true,
-  title: initialTitle,
   header,
   headerButtons,
+  // Default icon type is determined based on dialog button types
+  icon: defaultIconType,
   buttons,
   children,
   /*
@@ -110,16 +115,19 @@ export function Dialog({
     container: containerClassName = dialogClassNames.normalContainer,
     // Buttons are right-aligned by default
     buttonContainer: buttonContainerClassName = 'justify-end',
-    header: headerClassName = className.h2,
+    header: headerClassName = `${className.h2} text-xl`,
   } = {},
-  /* Force dialog to stay on top of all other. Useful for exception messages */
+  /* Force dialog to stay on top of all others. Useful for exception messages */
   forceToTop = false,
   contentRef,
 }: {
   readonly isOpen?: boolean;
-  readonly title?: string;
   readonly header: React.ReactNode;
+  // TODO: remove this and usages
+  readonly title?: string;
   readonly headerButtons?: React.ReactNode;
+  // TODO: review dialogs that don't need icons
+  readonly icon?: keyof typeof dialogIconTriggers;
   // Have to explicitly pass undefined if you don't want buttons
   readonly buttons: undefined | string | JSX.Element;
   readonly children: React.ReactNode;
@@ -145,7 +153,7 @@ export function Dialog({
   const id = useId('modal');
 
   /*
-   * Don't set index on first render, because that may lead dialogs
+   * Don't set index on first render, because that may lead multiple dialogs
    * to have the same index, since render of all children is done before any
    * useEffect can update max z-index)
    */
@@ -211,9 +219,11 @@ export function Dialog({
       <Draggable
         // Don't allow moving the dialog past the window bounds
         bounds="parent"
+        // Allow moving the dialog when hovering over the header line
         handle=".handle"
         // Don't allow moving when in full-screen
         cancel=".full-screen"
+        // Don't need any extra classNames
         defaultClassName=""
         defaultClassNameDragging=""
         defaultClassNameDragged=""
@@ -225,8 +235,26 @@ export function Dialog({
     []
   );
 
-  // Don't show dialog title if it is identical to dialog header
-  const title = initialTitle === header ? undefined : initialTitle;
+  const [buttonContainer, setButtonContainer] =
+    React.useState<HTMLDivElement | null>(null);
+  const [iconType] = useLiveState(
+    React.useCallback(() => {
+      if (typeof defaultIconType === 'string') return defaultIconType;
+      else if (buttonContainer === null) return 'none';
+      /*
+       * If icon was not specified explicitly, it is determined based on what
+       * matching className dialog buttons have
+       */
+      return (
+        Object.entries(dialogIconTriggers).find(
+          ([_type, className]) =>
+            className !== '' &&
+            typeof buttonContainer.getElementsByClassName(className)[0] ===
+              'object'
+        )?.[0] ?? 'none'
+      );
+    }, [defaultIconType, buttons, buttonContainer])
+  );
 
   return (
     <Modal
@@ -242,11 +270,7 @@ export function Dialog({
         afterOpen: `opacity-1`,
         beforeClose: 'opacity-0',
       }}
-      style={{
-        overlay: {
-          zIndex,
-        },
-      }}
+      style={{ overlay: { zIndex } }}
       portalClassName=""
       className={`bg-gradient-to-bl from-gray-200 dark:from-neutral-800
         via-white dark:via-neutral-900 to-white dark:to-neutral-900
@@ -256,15 +280,10 @@ export function Dialog({
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}`}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
       shouldCloseOnOverlayClick={modal && typeof handleClose === 'function'}
-      contentLabel={title}
-      aria={
-        typeof title === 'string'
-          ? {
-              labelledby: id('title'),
-              describedby: id('header'),
-            }
-          : { labelledby: id('header') }
-      }
+      aria={{
+        labelledby: id('header'),
+        describedby: id('content'),
+      }}
       onRequestClose={handleClose}
       bodyOpenClassName={null}
       htmlOpenClassName={null}
@@ -283,12 +302,8 @@ export function Dialog({
           isFullScreen ? '' : 'p-4 -m-4 cursor-move'
         }`}
       >
-        <div>
-          {typeof title !== 'undefined' && (
-            <p id={id('title')} className="dark:text-neutral-400 text-gray-600">
-              {title}
-            </p>
-          )}
+        <div className="flex items-center gap-2">
+          {dialogIcons[iconType]}
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>
@@ -303,13 +318,18 @@ export function Dialog({
         className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
           dark:text-neutral-350 ${contentClassName}`}
         ref={contentRef}
+        id={id('content')}
       >
         {children}
       </div>
       {typeof buttons !== 'undefined' && (
-        <div className={`gap-x-2 flex ${buttonContainerClassName}`}>
+        <div
+          className={`gap-x-2 flex ${buttonContainerClassName}`}
+          ref={setButtonContainer}
+        >
           <DialogContext.Provider value={handleClose}>
             {typeof buttons === 'string' ? (
+              // If button was passed directly as text, render it as Blue.Button
               <Button.DialogClose component={Button.Blue}>
                 {buttons}
               </Button.DialogClose>

@@ -162,6 +162,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
  * ```
  */
 export function useAsyncState<T>(
+  // Can return backOut to cancel a state update
   callback: () => undefined | T | Promise<T | undefined>,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean
@@ -174,9 +175,12 @@ export function useAsyncState<T>(
 
   React.useEffect(() => {
     const wrapped = loadingScreen ? loading : f.id;
+    const backOut = {};
     void wrapped(
-      Promise.resolve(callback()).then((initialState) =>
-        destructorCalled ? undefined : setState(initialState)
+      Promise.resolve(callback()).then((newState) =>
+        destructorCalled || newState === backOut
+          ? undefined
+          : setState(newState)
       )
     );
 
@@ -214,18 +218,23 @@ export function useAsyncState<T>(
 export function useLiveState<T>(
   callback: () => T
 ): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
-  const [state, setState] = React.useState<T>(callback());
+  const [state, setState] = React.useState<T>(() => callback());
 
-  const isFirstRender = React.useRef(true);
-  React.useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    setState(callback);
-  }, [callback]);
+  useReadyEffect(React.useCallback(() => setState(callback()), [callback]));
 
   return [state, setState];
+}
+
+/**
+ * Like React.useEffect, but does not execute on first render.
+ * Passed callback must be wrapped in React.useCallback
+ */
+export function useReadyEffect(callback: () => void): void {
+  const isFirstRender = React.useRef(true);
+  React.useEffect(() => {
+    if (isFirstRender.current) isFirstRender.current = false;
+    else callback();
+  }, [callback]);
 }
 
 export function useUnloadProtect(
@@ -236,7 +245,7 @@ export function useUnloadProtect(
   React.useEffect(() => setHasUnloadProtect(isEnabled), [isEnabled]);
 
   React.useEffect(() => {
-    if (!hasUnloadProtect) return;
+    if (!hasUnloadProtect) return undefined;
     const id = {};
     navigation.addUnloadProtect(id, message);
     return (): void => navigation.removeUnloadProtect(id);

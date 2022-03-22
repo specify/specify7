@@ -23,7 +23,7 @@ export function usePref<
 > {
   const [pref, setLocalPref] = React.useState<
     Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(getPrefValue(category, subcategory, item));
+  >(() => getPrefValue(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
   React.useEffect(() => {
