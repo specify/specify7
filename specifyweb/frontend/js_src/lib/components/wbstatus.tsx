@@ -7,7 +7,7 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import { ajax, Http, ping } from '../ajax';
+import { ajax, Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, Label, Progress } from './basic';
@@ -15,6 +15,7 @@ import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
+import { error } from '../assert';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -169,19 +170,21 @@ function WbStatus({
                 type: 'AbortAction',
                 aborted: 'pending',
               });
-              ping(
+              ajax<'ok' | 'not running'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST' },
+                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE],
+                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
                   strict: false,
                 }
               )
-                .then(() =>
-                  dispatch({
-                    type: 'AbortAction',
-                    aborted: true,
-                  })
+                .then(({ data, status }) =>
+                  status === Http.OK && data === 'ok'
+                    ? dispatch({
+                        type: 'AbortAction',
+                        aborted: true,
+                      })
+                    : error('Invalid response')
                 )
                 .catch(() => {
                   dispatch({

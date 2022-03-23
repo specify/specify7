@@ -45,7 +45,7 @@ export async function savePlan({
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
     dataset.columns,
-    lines
+    lines.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
   );
 
   const newlyAddedHeaders = renamedLines

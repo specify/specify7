@@ -13,9 +13,9 @@ import {
 } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
 import { f, omit } from '../wbplanviewhelper';
-import { Input, Select } from './basic';
+import { Input, Select, selectMultipleSize } from './basic';
 import type { PickListItemSimple } from './combobox';
-import { useAsyncState, useValidation } from './hooks';
+import { useAsyncState, useTriggerState, useValidation } from './hooks';
 import { mappingElementDivider } from './wbplanviewcomponents';
 
 export type QueryFieldType = 'text' | 'number' | 'date' | 'id' | 'checkbox';
@@ -40,8 +40,6 @@ export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
   'equal',
   'in',
 ]);
-const selectMultipleSize = 4;
-
 function QueryInputField({
   currentValue,
   // Used only to help browsers with autocomplete
@@ -60,8 +58,7 @@ function QueryInputField({
   readonly listInput?: boolean;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element {
-  const [value, setValue] = React.useState(currentValue);
-  React.useEffect(() => setValue(currentValue), [currentValue]);
+  const [value, setValue] = useTriggerState(currentValue);
 
   const { validationRef, setValidation } = useValidation<
     HTMLInputElement | HTMLSelectElement

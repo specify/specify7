@@ -226,6 +226,19 @@ export function useLiveState<T>(
 }
 
 /**
+ * Like React.useState, but updates the state whenever default value changes
+ */
+export function useTriggerState<T>(
+  defaultValue: T
+): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+  const [state, setState] = React.useState<T>(defaultValue);
+
+  React.useEffect(() => setState(defaultValue), [defaultValue]);
+
+  return [state, setState];
+}
+
+/**
  * Like React.useEffect, but does not execute on first render.
  * Passed callback must be wrapped in React.useCallback
  */
@@ -241,8 +254,7 @@ export function useUnloadProtect(
   isEnabled: boolean,
   message: string
 ): (isEnabled: boolean, callback?: () => void) => void {
-  const [hasUnloadProtect, setHasUnloadProtect] = React.useState(isEnabled);
-  React.useEffect(() => setHasUnloadProtect(isEnabled), [isEnabled]);
+  const [hasUnloadProtect, setHasUnloadProtect] = useTriggerState(isEnabled);
 
   React.useEffect(() => {
     if (!hasUnloadProtect) return undefined;
@@ -302,19 +314,27 @@ export function useBooleanState(
 ): Readonly<
   [state: boolean, enable: () => void, disable: () => void, toggle: () => void]
 > {
-  const [state, setState] = React.useState<boolean>(value);
-  React.useEffect(() => setState(value), [value]);
+  const [state, setState] = useTriggerState(value);
   return [
     state,
-    React.useCallback(function enable() {
-      setState(true);
-    }, []),
-    React.useCallback(function disable() {
-      setState(false);
-    }, []),
-    React.useCallback(function toggle() {
-      setState((value) => !value);
-    }, []),
+    React.useCallback(
+      function enable() {
+        setState(true);
+      },
+      [setState]
+    ),
+    React.useCallback(
+      function disable() {
+        setState(false);
+      },
+      [setState]
+    ),
+    React.useCallback(
+      function toggle() {
+        setState((value) => !value);
+      },
+      [setState]
+    ),
   ];
 }
 

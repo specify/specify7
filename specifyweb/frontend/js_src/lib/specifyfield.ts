@@ -79,7 +79,7 @@ abstract class FieldBase {
   public readonly isRequired: boolean;
 
   public overrides: {
-    readonly isRequired: boolean;
+    isRequired: boolean;
     // If relatedModel isHidden, this is set to true
     isHidden: boolean;
     // If relatedModel isSystem, this is set to true
@@ -139,6 +139,11 @@ abstract class FieldBase {
     let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
 
+    const isReadOnly =
+      this.isReadOnly ||
+      fieldOverwrite === 'readOnly' ||
+      (this.isRelationship && isTreeModel(this.model.name));
+
     // Overwritten hidden fields are made not required
     if (fieldOverwrite === 'hidden') {
       isRequired = false;
@@ -149,11 +154,8 @@ abstract class FieldBase {
 
     this.overrides = {
       isHidden,
-      isRequired,
-      isReadOnly:
-        this.isReadOnly ||
-        fieldOverwrite === 'readOnly' ||
-        (this.isRelationship && isTreeModel(this.model.name)),
+      isRequired: isRequired && !isReadOnly,
+      isReadOnly,
     };
   }
 
@@ -264,8 +266,11 @@ export class Relationship extends FieldBase {
         : relationshipDefinition.relatedModelName;
     this.relatedModel = defined(getModel(relatedModelName));
 
-    this.overrides.isHidden ||= this.relatedModel.overrides.isHidden;
     this.overrides.isReadOnly ||= this.relatedModel.overrides.isSystem;
+    this.overrides.isRequired =
+      this.overrides.isRequired && !this.overrides.isReadOnly;
+    this.overrides.isHidden ||=
+      !this.overrides.isRequired && this.relatedModel.overrides.isHidden;
   }
 
   /*

@@ -1,5 +1,4 @@
 import type { MimeType } from './ajax';
-import type { RA } from './types';
 
 let unlock: () => void;
 
@@ -28,22 +27,36 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 }
 
 export const initialContext = Promise.all([
+  /*
+   * TODO: consider creating a secondary context queue that would be loaded after
+   *   the primary, and would consist of everything not needed to render the
+   *   welcome page
+   */
+  // Fetch user preferences
   import('./preferencesutils'),
+  // Fetch general context information
   import('./schemabase'),
+  // Fetch schema
   import('./schema'),
+  // Fetch remote preferences
   import('./remoteprefs'),
+  // Fetch attachment settings
   import('./attachments'),
+  // Fetch icon definitions
   import('./icons'),
+  // Fetch schema localization
   import('./stringlocalization'),
+  // Fetch general system information
   import('./systeminfo'),
+  // Fetch UI formatters
   import('./uiformatters'),
+  // Fetch user information
   import('./userinfo'),
   // TODO: consider removing this from initialContext
+  // Fetch all tree definitions (tree ranks)
   import('./treedefinitions'),
+  // Fetch user permissions
+  import('./permissions'),
 ]).then(async (modules) =>
-  Promise.all(
-    (modules as RA<{ readonly fetchContext: Promise<void> }>).map(
-      async ({ fetchContext }) => fetchContext
-    )
-  )
+  Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
 );

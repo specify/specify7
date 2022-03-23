@@ -399,6 +399,7 @@ export const Textarea = wrap<
     },
   })
 );
+export const selectMultipleSize = 4;
 export const Select = wrap<
   'select',
   {
@@ -409,7 +410,7 @@ export const Select = wrap<
   'Select',
   'select',
   className.notTouchedInput,
-  ({ onValueChange, ...props }) => ({
+  ({ onValueChange, onValuesChange, ...props }) => ({
     ...props,
     /*
      * Required fields have blue background. Selected <option> in a select
@@ -426,7 +427,7 @@ export const Select = wrap<
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
       onValueChange?.((event.target as HTMLSelectElement).value);
-      props.onValuesChange?.(
+      onValuesChange?.(
         Array.from(
           (event.target as HTMLSelectElement).querySelectorAll('option')
         )

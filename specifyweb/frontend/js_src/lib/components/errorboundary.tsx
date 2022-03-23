@@ -169,7 +169,7 @@ function formatError(
   url?: string
 ): Readonly<[errorObject: JSX.Element, errorMessage: string]> {
   const errorObject: React.ReactNode[] = [
-    typeof error === 'string' && (
+    typeof url === 'string' && (
       <p>
         Error occurred fetching from <code>{url}</code>
       </p>
@@ -293,10 +293,9 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
   );
 }
 
-type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
-    readonly action: PermissionAction;
+    readonly action: string;
     readonly collectionid: number;
     readonly resource: string;
     readonly userid: string;

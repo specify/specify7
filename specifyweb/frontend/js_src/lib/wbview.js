@@ -60,6 +60,7 @@ import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
+import localityText from './localization/locality';
 
 const metaKeys = [
   'isNew',
@@ -214,6 +215,7 @@ const WBView = Backbone.View.extend({
         isManager: userInformation.usertype === 'Manager',
         wbText,
         commonText,
+        localityText,
       })
     );
     this.$el.attr('aria-label', commonText('workbench'));
@@ -772,14 +774,12 @@ const WBView = Backbone.View.extend({
      *
      * This is the only type of validation that is done on the front-end
      */
-    const newIssues = Array.from(
-      new Set([
-        ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
-        ...issues.filter(
-          (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
-        ),
-      ])
-    );
+    const newIssues = f.unique([
+      ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
+      ...issues.filter(
+        (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
+      ),
+    ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
       this.updateCellMeta(physicalRow, physicalCol, 'issues', newIssues);
   },
@@ -1149,10 +1149,14 @@ const WBView = Backbone.View.extend({
       columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      ping(`/api/workbench/dataset/${this.dataset.id}/`, {
-        method: 'PUT',
-        body: { visualorder: columnOrder },
-      }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }).then(this.checkDeletedFail.bind(this));
+      ping(
+        `/api/workbench/dataset/${this.dataset.id}/`,
+        {
+          method: 'PUT',
+          body: { visualorder: columnOrder },
+        },
+        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      ).then(this.checkDeletedFail.bind(this));
     }
   },
   // Do not scroll the viewport to the last column after inserting a row
@@ -1780,10 +1784,14 @@ const WBView = Backbone.View.extend({
           <Button.Green
             onClick={() => {
               dataset.uploadplan = JSON.parse($('textarea', dialog).val());
-              ping(`/api/workbench/dataset/${dataset.id}/`, {
-                method: 'PUT',
-                body: { uploadplan: dataset.uploadplan },
-              }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }).then(this.checkDeletedFail.bind(this));
+              ping(
+                `/api/workbench/dataset/${dataset.id}/`,
+                {
+                  method: 'PUT',
+                  body: { uploadplan: dataset.uploadplan },
+                },
+                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+              ).then(this.checkDeletedFail.bind(this));
               dialog.remove();
               $this.trigger('refresh');
             }}
@@ -1811,10 +1819,9 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
             onClick={() => {
-              ajax(`/api/workbench/unupload/${this.dataset.id}/`, {
+              ping(`/api/workbench/unupload/${this.dataset.id}/`, {
                 method: 'POST',
-                headers: {},
-              } ).then(() => this.openStatus('unupload'));
+              }).then(() => this.openStatus('unupload'));
               dialog.remove();
             }}
           >
@@ -1839,7 +1846,7 @@ const WBView = Backbone.View.extend({
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Button.Blue
-                onClose={() => {
+                onClick={() => {
                   this.startUpload(mode);
                   dialog.remove();
                 }}
@@ -1870,12 +1877,16 @@ const WBView = Backbone.View.extend({
   startUpload(mode) {
     this.stopLiveValidation();
     this.updateValidationButton();
-    ajax(`/api/workbench/${mode}/${this.dataset.id}/`, {
-      method: 'POST',
-    }, {expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT]})
-      .then((jqxhr) => {
-        this.checkDeletedFail(jqxhr);
-        this.checkConflictFail(jqxhr);
+    ping(
+      `/api/workbench/${mode}/${this.dataset.id}/`,
+      {
+        method: 'POST',
+      },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
+    )
+      .then((statusCode) => {
+        this.checkDeletedFail(statusCode);
+        this.checkConflictFail(statusCode);
       })
       .then(() => this.openStatus(mode));
   },
@@ -1921,22 +1932,25 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
             onClick={() => {
-              ping(`/api/workbench/dataset/${this.dataset.id}/`, {
-                method: 'DELETE',
-              }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] })
-                .then((status) => {
-                  this.$el.empty();
-                  dialog.remove();
+              ping(
+                `/api/workbench/dataset/${this.dataset.id}/`,
+                {
+                  method: 'DELETE',
+                },
+                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+              ).then((status) => {
+                this.$el.empty();
+                dialog.remove();
 
-                  if(!this.checkDeletedFail(status))
-                    showDialog({
-                      title: wbText('dataSetDeletedDialogTitle'),
-                      header: wbText('dataSetDeletedDialogHeader'),
-                      content: wbText('dataSetDeletedDialogMessage'),
-                      onClose: () => navigation.go('/'),
-                      buttons: commonText('close'),
-                    });
-                })
+                if (!this.checkDeletedFail(status))
+                  showDialog({
+                    title: wbText('dataSetDeletedDialogTitle'),
+                    header: wbText('dataSetDeletedDialogHeader'),
+                    content: wbText('dataSetDeletedDialogMessage'),
+                    onClose: () => navigation.go('/'),
+                    buttons: commonText('close'),
+                  });
+              });
             }}
           >
             {commonText('delete')}
@@ -1997,10 +2011,14 @@ const WBView = Backbone.View.extend({
     });
 
     // Send data
-    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
-      method: 'PUT',
-      body: this.data,
-    }, { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] })
+    return ping(
+      `/api/workbench/rows/${this.dataset.id}/`,
+      {
+        method: 'PUT',
+        body: this.data,
+      },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    )
       .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();

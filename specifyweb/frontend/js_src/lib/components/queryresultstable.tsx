@@ -22,7 +22,7 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { crash } from './errorboundary';
-import { useAsyncState, useBooleanState } from './hooks';
+import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { removeItem } from './wbplanviewstate';
@@ -171,10 +171,7 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
-  const [results, setResults] = React.useState<
-    RA<RA<string | number | null>> | undefined
-  >(initialData);
-  React.useEffect(() => setResults(initialData), [initialData]);
+  const [results, setResults] = useTriggerState(initialData);
 
   const [pickListsLoaded] = useAsyncState(
     React.useCallback(

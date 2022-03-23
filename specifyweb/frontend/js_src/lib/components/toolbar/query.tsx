@@ -32,20 +32,18 @@ const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   { headers: { Accept: 'application/xml' } }
 )
   .then(({ data: document }) =>
-    Array.from(
-      new Set(
-        filterArray(
-          Array.from(document.querySelectorAll('database > table'), (table) =>
-            getModel(table.getAttribute('name') ?? '')
-          )
+    f.unique(
+      filterArray(
+        Array.from(document.querySelectorAll('database > table'), (table) =>
+          getModel(table.getAttribute('name') ?? '')
         )
-          .filter(
-            ({ name }) =>
-              name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
-          )
-          .map(({ name }) => name)
-          .sort()
       )
+        .filter(
+          ({ name }) =>
+            name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
+        )
+        .map(({ name }) => name)
+        .sort()
     )
   )
   .catch((error) => {

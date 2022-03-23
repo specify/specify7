@@ -21,7 +21,7 @@ import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { defined, filterArray } from './types';
-import { findArrayDivergencePoint } from './wbplanviewhelper';
+import { f, findArrayDivergencePoint } from './wbplanviewhelper';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -699,12 +699,10 @@ export class AutoMapper {
     }
 
     const tableSynonyms = this.findTableSynonyms(tableName, mappingPath, mode);
-    const tableNames = Array.from(
-      new Set(
-        tableSynonyms.length === 0
-          ? [tableName.toLowerCase(), label]
-          : tableSynonyms
-      )
+    const tableNames = f.unique(
+      tableSynonyms.length === 0
+        ? [tableName.toLowerCase(), label]
+        : tableSynonyms
     );
 
     const findMappingsInDefinitionsPayload = {
@@ -742,9 +740,11 @@ export class AutoMapper {
         tableName,
         field.name
       );
-      const fieldNames = Array.from(
-        new Set([...headerFieldSynonyms, label, field.name.toLowerCase()])
-      );
+      const fieldNames = f.unique([
+        ...headerFieldSynonyms,
+        label,
+        field.name.toLowerCase(),
+      ]);
       const conservativeFieldNames =
         mode === 'synonymsAndMatches' ? fieldNames : headerFieldSynonyms;
 

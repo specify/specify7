@@ -67,7 +67,7 @@ function toUploadTable(
 ): UploadTable {
   const [fields, relationships] = split(
     lines,
-    ({ mappingPath }) => mappingPath.length === 1
+    ({ mappingPath }) => mappingPath.length > 1
   );
   const [toOne, toMany] = split(relationships, ({ mappingPath }) =>
     valueIsToManyIndex(mappingPath[1])
@@ -88,7 +88,7 @@ function toUploadTable(
       toOne.map(
         ([fieldName, lines]) =>
           [
-            fieldName,
+            fieldName.toLowerCase(),
             toUploadable(
               defined(model.getRelationship(fieldName)).relatedModel,
               lines,
@@ -100,7 +100,7 @@ function toUploadTable(
     toMany: Object.fromEntries(
       toMany.map(([fieldName, lines]) => {
         return [
-          fieldName,
+          fieldName.toLowerCase(),
           indexMappings(lines).map(([_index, lines]) =>
             omit(
               toUploadTable(

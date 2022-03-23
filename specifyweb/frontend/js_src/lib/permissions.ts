@@ -1,0 +1,168 @@
+import { ajax } from './ajax';
+import { error } from './assert';
+import type { Tables } from './datamodel';
+import { load } from './initialcontext';
+import { schema } from './schema';
+import { fetchContext as domainPromise } from './schemabase';
+import type { permissionSeparator } from './securityutils';
+import {
+  tableNameToResourceName,
+  tablePermissionsPrefix,
+} from './securityutils';
+import type { RA, RR } from './types';
+import { defined } from './types';
+import { userInformation } from './userinfo';
+import { group, split } from './wbplanviewhelper';
+
+export const tableActions = ['read', 'create', 'update', 'delete'] as const;
+
+/**
+ * List of policies is stored on the front-end to improve TypeScript typing
+ * In development mode, the code would still fetch the policies from the back-end
+ * to make sure they haven't changed
+ */
+const checkRegistry = async (): Promise<void> =>
+  process.env.NODE_ENV === 'production'
+    ? Promise.resolve()
+    : load<typeof operationPolicies>(
+        '/permissions/registry/',
+        'application/json'
+      ).then((policies) =>
+        JSON.stringify(policies) === JSON.stringify(operationPolicies)
+          ? undefined
+          : error('Front-end has an outdated list of operation policies')
+      );
+
+export const operationPolicies = {
+  '/tree/mutation/taxon': [
+    'merge',
+    'move',
+    'synonymize',
+    'unsynonymize',
+    'repair',
+  ],
+  '/tree/mutation/geography': [
+    'merge',
+    'move',
+    'synonymize',
+    'unsynonymize',
+    'repair',
+  ],
+  '/tree/mutation/storage': [
+    'merge',
+    'move',
+    'synonymize',
+    'unsynonymize',
+    'repair',
+  ],
+  '/tree/mutation/geologictimeperiod': [
+    'merge',
+    'move',
+    'synonymize',
+    'unsynonymize',
+    'repair',
+  ],
+  '/tree/mutation/lithostrat': [
+    'merge',
+    'move',
+    'synonymize',
+    'unsynonymize',
+    'repair',
+  ],
+  '/workbench/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'unupload',
+    'validate',
+    'transfer',
+  ],
+  '/report': ['execute'],
+  '/querybuilder/query': [
+    'execute',
+    'export_csv',
+    'export_kml',
+    'create_recordset',
+  ],
+  '/export/dwca': ['execute'],
+  '/export/feed': ['force_update'],
+  '/permissions/policies/user': ['update'],
+  '/permissions/user/roles': ['update'],
+  '/permissions/roles': ['create', 'update', 'delete'],
+} as const;
+
+let operationPermissions: {
+  readonly [RESOURCE in keyof typeof operationPolicies]: RR<
+    typeof operationPolicies[RESOURCE][number],
+    boolean
+  >;
+};
+let tablePermissions: {
+  readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}${typeof permissionSeparator}`]: RR<
+    typeof tableActions[number],
+    boolean
+  >;
+};
+
+export const fetchContext = domainPromise
+  .then(async () =>
+    ajax<{
+      readonly details: RA<{
+        readonly action: string;
+        readonly resource: string;
+        readonly allowed: boolean;
+      }>;
+    }>('/permissions/query/', {
+      headers: { Accept: 'application/json' },
+      method: 'POST',
+      body: {
+        collectionid: schema.domainLevelIds.collection,
+        userid: userInformation.id,
+        queries: [
+          ...Object.entries(operationPolicies).map(([policy, actions]) => ({
+            resource: policy,
+            actions,
+          })),
+          ...Object.keys(schema.models)
+            .map(tableNameToResourceName)
+            .map((resource) => ({
+              resource,
+              actions: tableActions,
+            })),
+        ],
+      },
+    })
+  )
+  .then(({ data }) =>
+    split(
+      Object.entries(
+        group(
+          data.details.map((result) => [
+            result.resource,
+            [result.action, result.allowed] as const,
+          ])
+        )
+      ).map(([resource, actions]) => [resource, group(actions)] as const),
+      ([key]) => key.startsWith(tablePermissionsPrefix)
+    ).map(Object.fromEntries)
+  )
+  .then(([operations, tables]) => {
+    operationPermissions = operations as unknown as typeof operationPermissions;
+    tablePermissions = tables as unknown as typeof tablePermissions;
+    void checkRegistry();
+    // TODO: check if user has permissions to essential tables
+  });
+
+export const hasTablePermission = (
+  tableName: keyof Tables,
+  action: typeof tableActions[number]
+): boolean =>
+  defined(tablePermissions)[tableNameToResourceName(tableName)][action];
+
+export const hasPermission = <
+  RESOURCE extends keyof typeof operationPermissions
+>(
+  resource: RESOURCE,
+  action: keyof typeof operationPermissions[RESOURCE]
+): boolean => defined(operationPermissions)[resource][action];

@@ -18,7 +18,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
-import { useBooleanState, useLiveState } from './hooks';
+import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
@@ -97,11 +97,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     return (): void => collection.off('add remove destroy', updateRecords);
   }, [collection, getRecords]);
 
-  const [index, setIndex] = useLiveState(
-    React.useCallback(
-      () => defaultIndex ?? collection._totalCount ?? 0,
-      [collection._totalCount, defaultIndex]
-    )
+  const [index, setIndex] = useTriggerState(
+    defaultIndex ?? collection._totalCount ?? 0
   );
 
   return isLoaded ? (

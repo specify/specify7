@@ -10,7 +10,7 @@ import type {
   WithTableInfo,
 } from './components/toolbar/schemaconfig';
 import type { IR } from './types';
-import { sortObjectsByKey } from './wbplanviewhelper';
+import { f, sortObjectsByKey } from './wbplanviewhelper';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -151,9 +151,7 @@ export const reducer = generateReducer<States, Actions>({
     ['MainState'],
     ({ action: { field, value }, state }) => ({
       ...state,
-      modifiedItems: Array.from(
-        new Set([...state.modifiedItems, state.itemId])
-      ),
+      modifiedItems: f.unique([...state.modifiedItems, state.itemId]),
       items: {
         ...state.items,
         [state.itemId]: {
@@ -179,9 +177,7 @@ export const reducer = generateReducer<States, Actions>({
     ['MainState'],
     ({ action: { format, value }, state }) => ({
       ...state,
-      modifiedItems: Array.from(
-        new Set([...state.modifiedItems, state.itemId])
-      ),
+      modifiedItems: f.unique([...state.modifiedItems, state.itemId]),
       items: {
         ...state.items,
         [state.itemId]: {

@@ -222,6 +222,18 @@ const adminText = createDictionary({
     ca: 'User roles:',
     'es-es': 'User roles:',
   },
+  table: {
+    'en-us': 'Table',
+    'ru-ru': 'Table',
+    ca: 'Table',
+    'es-es': 'Table',
+  },
+  policies: {
+    'en-us': 'Policies',
+    'ru-ru': 'Policies',
+    ca: 'Policies',
+    'es-es': 'Policies',
+  },
 });
 
 export default adminText;

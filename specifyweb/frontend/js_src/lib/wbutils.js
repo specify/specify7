@@ -19,7 +19,7 @@ import {
 } from './wblocalitydataextractor';
 import Backbone from './backbone';
 import * as latlongutils from './latlongutils';
-import {camelToKebab, clamp} from './wbplanviewhelper';
+import {camelToKebab, clamp, f, sortFunction} from './wbplanviewhelper';
 import WbAdvancedSearch, {
   getInitialSearchPreferences,
 } from './components/wbadvancedsearch';
@@ -608,17 +608,15 @@ export default Backbone.View.extend({
   ) {
     const selectedRegions = this.getSelectedRegions();
 
-    const selectedHeaders = Array.from(
-      new Set(
+    const selectedHeaders = f.unique(
         selectedRegions.flatMap(({ startCol, endCol }) =>
           Array.from(
             { length: endCol - startCol + 1 },
             (_, index) => startCol + index
           )
         )
-      )
     )
-      .sort()
+      .sort(sortFunction(f.id))
       .map(
         (visualCol) =>
           this.wbview.dataset.columns[
@@ -626,16 +624,14 @@ export default Backbone.View.extend({
           ]
       );
 
-    const selectedRows = Array.from(
-      new Set(
+    const selectedRows = f.unique(
         selectedRegions.flatMap(({ startRow, endRow }) =>
           Array.from(
             { length: endRow - startRow + 1 },
             (_, index) => startRow + index
           )
         )
-      )
-    ).sort();
+      ).sort(sortFunction(f.id));
 
     const selectAll =
       !allowSingleCell &&
@@ -705,7 +701,7 @@ export default Backbone.View.extend({
 
     const updateGeolocate = (localityIndex) =>
       content.html(`<iframe class="w-full h-full"
-        title="${wbText('geoLocate')}"
+        title="${localityText('geoLocate')}"
         src="${getGeoLocateQueryURL(localityIndex)}"
       ></iframe>`);
 

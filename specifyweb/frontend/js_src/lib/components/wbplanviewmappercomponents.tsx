@@ -93,7 +93,7 @@ export function ValidationResults(props: {
         {props.validationResults.map((fieldPath, index) => (
           <Button.Simple
             className={`hover:bg-gray-300 hover:dark:bg-neutral-700 border-x-0
-              bg-transparent border-b-0 rounded-none`}
+              bg-transparent border-b-0 rounded-none flex-wrap`}
             key={index}
             onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
           >

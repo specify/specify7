@@ -451,6 +451,7 @@ function ChooseName({
         spellCheck={true}
         value={name}
         required
+        maxLength={256}
         onValueChange={(value) =>
           update({
             type: 'SetDataSetNameAction',

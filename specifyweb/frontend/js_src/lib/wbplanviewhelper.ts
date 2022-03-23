@@ -87,6 +87,9 @@ export const extractDefaultValues = (
 export const upperToKebab = (value: string): string =>
   value.toLowerCase().split('_').join('-');
 
+export const lowerToHuman = (value: string): string =>
+  value.toLowerCase().split('_').map(capitalize).join(' ');
+
 export const camelToKebab = (value: string): string =>
   value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
@@ -151,6 +154,7 @@ export const sortObjectsByKey = <
 /** Split array in half according to a discriminator function */
 export const split = <ITEM>(
   array: RA<ITEM>,
+  // If returns true, item would go to the right array
   discriminator: (item: ITEM, index: number) => boolean
 ): Readonly<[left: RA<ITEM>, right: RA<ITEM>]> =>
   array
@@ -207,6 +211,9 @@ export const omit = <
 
 export const clamp = (min: number, max: number, value: number) =>
   Math.min(max, Math.max(min, value));
+
+/** A storage for f.store */
+const store = new Map<() => unknown, unknown>();
 
 /**
  * A collection of helper functions for functional programming style
@@ -319,4 +326,15 @@ export const f = {
    * Useful when mapping over a list of functions
    */
   call: <RETURN>(callback: () => RETURN): RETURN => callback(),
+  /**
+   * Wrap a pure function that does not need any arguments in this
+   * call to remember and return its return value
+   */
+  store:
+    <RETURN>(callback: () => RETURN): (() => RETURN) =>
+    (): RETURN => {
+      if (!store.has(callback)) store.set(callback, callback());
+      return store.get(callback) as RETURN;
+    },
+  unique: <ITEM>(array: RA<ITEM>): RA<ITEM> => Array.from(new Set(array)),
 } as const;

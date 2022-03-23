@@ -205,7 +205,6 @@ const resourceDeletedDialog = (
   </Dialog>
 );
 
-// FIXME: revisit all usages of all these components
 export function ResourceView<SCHEMA extends AnySchema>({
   resource,
   extraButtons,

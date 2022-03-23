@@ -22,6 +22,7 @@ import type {
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
+import { f } from '../../wbplanviewhelper';
 
 type Props = {
   readonly onClose: () => void;
@@ -105,14 +106,12 @@ function SchemaConfigWrapper({
         })
           .then(({ data }) =>
             // Sometimes languages are duplicated. Need to make the list unique
-            Array.from(
-              new Set(
-                data.map(
-                  ({ country, language }) =>
-                    `${language}${
-                      country === null || country === '' ? '' : `_${country}`
-                    }`
-                )
+            f.unique(
+              data.map(
+                ({ country, language }) =>
+                  `${language}${
+                    country === null || country === '' ? '' : `_${country}`
+                  }`
               )
             )
           )
