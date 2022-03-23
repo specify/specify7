@@ -48,9 +48,12 @@ policy_registry = openapi(schema={
 class PoliciesUserPT(PermissionTarget):
     resource = "/permissions/policies/user"
     update = PermissionTargetAction()
+    read = PermissionTargetAction()
 
 class UserPolicies(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
+
         data = [
             {'resource': p.resource, 'action': p.action}
             for p in models.UserPolicy.objects.filter(
@@ -133,10 +136,13 @@ user_policies = openapi(schema={
 class UserRolesPT(PermissionTarget):
     resource = "/permissions/user/roles"
     update = PermissionTargetAction()
+    read = PermissionTargetAction()
 
 
 class UserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.read])
+
         data = [
             serialize_role(ur.role)
             for ur in models.UserRole.objects.select_related('role').filter(
@@ -241,6 +247,7 @@ def serialize_role(role: Union[models.Role, models.LibraryRole]) -> Dict:
 class RolePT(PermissionTarget):
     resource = "/permissions/roles"
     create = PermissionTargetAction()
+    read = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
     copy_from_library = PermissionTargetAction()
@@ -249,6 +256,7 @@ class RolePT(PermissionTarget):
 class Role(LoginRequiredMixin, View):
     def get(self, request, roleid: int) -> http.HttpResponse:
         r = models.Role.objects.get(id=roleid)
+        check_permission_targets(r.collection_id, request.specify_user.id, [RolePT.read])
         return http.JsonResponse(serialize_role(r), safe=False)
 
     def put(self, request, roleid: int) -> http.HttpResponse:
@@ -357,6 +365,8 @@ class Query(LoginRequiredMixin, View):
 
         collectionid = req.get('collectionid', request.specify_collection.id)
         userid = req.get('userid', request.specify_user.id)
+        if userid != request.specify_user.id:
+            check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read, RolePT.read, UserRolesPT.read])
 
         results = [
             {'resource': q['resource'],
@@ -443,6 +453,7 @@ query_view = openapi(schema={
 
 class Roles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [RolePT.read])
         rs = models.Role.objects.filter(collection_id=collectionid)
         data = [serialize_role(r) for r in rs]
         return http.JsonResponse(data, safe=False)
@@ -598,6 +609,7 @@ roles = openapi(schema={
 class LibraryRolePT(PermissionTarget):
     resource = "/permissions/library/roles"
     create = PermissionTargetAction()
+    read = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 
@@ -605,6 +617,7 @@ class LibraryRolePT(PermissionTarget):
 class LibraryRole(LoginRequiredMixin, View):
     def get(self, request, roleid: int) -> http.HttpResponse:
         r = models.LibraryRole.objects.get(id=roleid)
+        check_permission_targets(None, request.specify_user.id, [LibraryRolePT.read])
         return http.JsonResponse(serialize_role(r), safe=False)
 
     def put(self, request, roleid: int) -> http.HttpResponse:
@@ -710,6 +723,7 @@ library_role = openapi(schema={
 
 class LibraryRoles(LoginRequiredMixin, View):
     def get(self, request) -> http.HttpResponse:
+        check_permission_targets(None, request.specify_user.id, [LibraryRolePT.read])
         rs = models.LibraryRole.objects.all()
         data = [serialize_role(r) for r in rs]
         return http.JsonResponse(data, safe=False)
