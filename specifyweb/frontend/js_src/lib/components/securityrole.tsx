@@ -88,10 +88,7 @@ export function RoleView({
       }
       className="contents"
     >
-      {/* Reserve space for the name if empty */}
-      <H3 className={role.name.length === 0 ? 'invisible' : undefined}>
-        {role.name.length === 0 ? 'this is invisible' : role.name}
-      </H3>
+      <H3>{`${adminText('role')} ${role.name}`}</H3>
       <Button.LikeLink onClick={handleClose}>
         {icons.arrowLeft}
         {collection.get('collectionName')}

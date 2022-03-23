@@ -25,6 +25,7 @@ import createBackboneView from '../reactbackboneextend';
 import { getDefaultFormMode, ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
 import { LoadingContext } from '../contexts';
+import { f } from '../../wbplanviewhelper';
 
 const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
   '/static/config/querybuilder.xml',

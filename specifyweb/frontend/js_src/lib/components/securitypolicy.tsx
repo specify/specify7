@@ -3,6 +3,7 @@ import React from 'react';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import {
+  anyAction,
   getRegistriesFromPath,
   partsToResourceName,
   resourceNameToParts,
@@ -29,9 +30,11 @@ function PolicyView({
   readonly onChange: (policy: Policy | undefined) => void;
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
-  const registryParts = getRegistriesFromPath(resourceParts);
+  const registryParts = getRegistriesFromPath(resourceParts).filter(
+    (items) => typeof items === 'object' && Object.keys(items).length > 0
+  );
   const possibleActions =
-    registryParts.slice(-2)[0]?.[resourceParts.slice(-1)[0]]?.actions;
+    registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
   return (
     <li className="flex flex-wrap gap-2">
       <ul className="contents">
@@ -39,7 +42,7 @@ function PolicyView({
           Object.keys(registry).length === 0 ? undefined : (
             <li key={index} className="contents">
               <Select
-                value={resourceParts[index]}
+                value={resourceParts[index] ?? '0'}
                 disabled={isReadOnly}
                 onValueChange={(part): void =>
                   handleChange({
@@ -51,7 +54,7 @@ function PolicyView({
                         (newPath) =>
                           filterArray(
                             getRegistriesFromPath(newPath)
-                              .slice(index)
+                              .slice(index + 1)
                               .map<string | undefined>(
                                 (registry, index) =>
                                   registry?.[newPath[index]]?.label
@@ -64,39 +67,42 @@ function PolicyView({
                 }
               >
                 <option value="0" />
-                <option value="%">{commonText('all')}</option>
                 {Object.entries(defined(registry)).map(
-                  ([partName, { label }]) => (
-                    <option key={partName} value={partName}>
-                      {label}
-                    </option>
-                  )
+                  ([partName, { label }], _index, { length }) =>
+                    // Don't show Any if there is only one other option
+                    partName === anyAction && length === 2 ? undefined : (
+                      <option key={partName} value={partName}>
+                        {label}
+                      </option>
+                    )
                 )}
               </Select>
             </li>
           )
         )}
-        {Array.isArray(possibleActions) && possibleActions.length > 0 && (
-          <li className="contents">
-            <Select
-              value={actions}
-              multiple
-              size={Math.min(possibleActions.length, selectMultipleSize)}
-              onValuesChange={(actions): void =>
-                handleChange({
-                  resource,
-                  actions,
-                })
-              }
-            >
-              {possibleActions.map((action) => (
-                <option key={action} value={action}>
-                  {lowerToHuman(action)}
-                </option>
-              ))}
-            </Select>
-          </li>
-        )}
+        {Array.isArray(possibleActions) &&
+          possibleActions.length > 0 &&
+          resourceParts.slice(-1)[0] !== '0' && (
+            <li className="contents">
+              <Select
+                value={possibleActions.length > 1 ? actions : actions[0] ?? ''}
+                multiple={possibleActions.length > 1}
+                size={Math.min(possibleActions.length, selectMultipleSize)}
+                onValuesChange={(actions): void =>
+                  handleChange({
+                    resource,
+                    actions,
+                  })
+                }
+              >
+                {possibleActions.map((action) => (
+                  <option key={action} value={action}>
+                    {lowerToHuman(action)}
+                  </option>
+                ))}
+              </Select>
+            </li>
+          )}
       </ul>
       <Button.Simple
         className={`${className.redButton} print:hidden`}

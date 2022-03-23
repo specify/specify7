@@ -34,7 +34,7 @@ declare global {
     // Object
     entries<DICTIONARY extends IR<unknown>>(
       object: DICTIONARY
-    ): [`${keyof DICTIONARY}`, DICTIONARY[keyof DICTIONARY]][];
+    ): [keyof DICTIONARY, DICTIONARY[keyof DICTIONARY]][];
 
     // Array
     entries<ITEM>(array: RA<ITEM>): [string, ITEM][];
@@ -47,6 +47,6 @@ declare global {
     // Prevent Object.keys() from widening the key type to string[]
     keys<KEY extends string | number | symbol>(
       object: RR<KEY, unknown>
-    ): RA<`${KEY}`>;
+    ): RA<KEY>;
   }
 }

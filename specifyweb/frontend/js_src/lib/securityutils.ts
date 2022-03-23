@@ -7,6 +7,7 @@ import type { IR, R, RA } from './types';
 import { capitalize, f, toLowerCase } from './wbplanviewhelper';
 import { Policy } from './components/securitypolicy';
 import { Tables } from './datamodel';
+import commonText from './localization/common';
 
 export const fetchRoles = async (
   collectionId: number,
@@ -60,39 +61,61 @@ const buildRegistry = f.store(
         actions,
       })),
     ].reduce<R<WritableRegistry>>(
-      (registry, { resource, localized, actions }) => {
+      (registry, { resource, localized }) => {
         const resourceParts = resourceNameToParts(resource);
-        resourceParts.reduce<R<WritableRegistry>>((place, part, index) => {
-          place[part] ??= {
-            label: localized[index],
-            children: {},
-            actions: getAllActions(
-              partsToResourceName(resourceParts.slice(0, index))
-            ),
-          };
-          return place[part].children;
-        }, registry);
+        resourceParts.reduce<R<WritableRegistry>>(
+          (place, part, index, { length }) => {
+            place[part] ??= {
+              label: localized[index],
+              children:
+                index + 1 === length
+                  ? {}
+                  : {
+                      [anyAction]: {
+                        label: commonText('all'),
+                        children: {},
+                        actions: getAllActions(
+                          partsToResourceName(resourceParts.slice(0, index + 1))
+                        ),
+                      },
+                    },
+              actions:
+                index + 1 === length
+                  ? getAllActions(
+                      partsToResourceName(resourceParts.slice(0, index + 1))
+                    )
+                  : [],
+            };
+            return place[part].children;
+          },
+          registry
+        );
         return registry;
       },
-      {}
+      {
+        [anyAction]: {
+          label: commonText('all'),
+          children: {},
+          actions: getAllActions(partsToResourceName([])),
+        },
+      }
     )
 );
 
+export const anyAction = '%';
 export const permissionSeparator = '/';
 
 export const resourceNameToParts = (resourceName: string): RA<string> =>
   resourceName.split(permissionSeparator).filter(Boolean);
 
 export const partsToResourceName = (parts: RA<string>): string =>
-  `${permissionSeparator}${parts.join(
-    permissionSeparator
-  )}${permissionSeparator}`;
+  `${permissionSeparator}${parts.join(permissionSeparator)}`;
 
 export const tablePermissionsPrefix = `${permissionSeparator}table${permissionSeparator}`;
 export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME
-): `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}${typeof permissionSeparator}` =>
-  `${tablePermissionsPrefix}${toLowerCase(tableName)}${permissionSeparator}`;
+): `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}` =>
+  `${tablePermissionsPrefix}${toLowerCase(tableName)}`;
 
 const getAllActions = (path: string): RA<string> =>
   f.unique(

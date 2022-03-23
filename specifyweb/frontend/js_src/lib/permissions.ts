@@ -4,7 +4,6 @@ import type { Tables } from './datamodel';
 import { load } from './initialcontext';
 import { schema } from './schema';
 import { fetchContext as domainPromise } from './schemabase';
-import type { permissionSeparator } from './securityutils';
 import {
   tableNameToResourceName,
   tablePermissionsPrefix,
@@ -99,7 +98,7 @@ let operationPermissions: {
   >;
 };
 let tablePermissions: {
-  readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}${typeof permissionSeparator}`]: RR<
+  readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
     typeof tableActions[number],
     boolean
   >;
