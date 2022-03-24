@@ -161,6 +161,12 @@ function getFieldDefinition(
             defaultValue: undefined,
             pickList: parser.pickListName,
           }
+        : field.type === 'text'
+        ? {
+            type: 'TextArea',
+            defaultValue: undefined,
+            rows: undefined,
+          }
         : {
             type: 'Text',
             defaultValue: undefined,

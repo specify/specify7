@@ -1,18 +1,31 @@
 import React from 'react';
 
-import { Http, ping } from '../ajax';
+import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
+import { hasPermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
 import type { IR, RA } from '../types';
 import { f, sortFunction } from '../wbplanviewhelper';
-import { Button, Form, H3, Input, Label, Select, Submit, Ul } from './basic';
+import {
+  Button,
+  className,
+  Form,
+  H3,
+  Input,
+  Label,
+  Select,
+  Submit,
+  Ul,
+} from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
+import type { Policy } from './securitypolicy';
+import { PoliciesView } from './securitypolicy';
 import { removeItem, replaceKey } from './wbplanviewstate';
 
 export function UserView({
@@ -66,13 +79,42 @@ export function UserView({
     ),
     false
   );
-  const changesMade =
+
+  const initialUserPolicies = React.useRef<IR<RA<Policy>>>({});
+  const [userPolicies, setUserPolicies] = useAsyncState(
+    React.useCallback(
+      async () =>
+        Promise.all(
+          Object.values(collections).map(async (collection) =>
+            ajax<RA<Policy>>(
+              `/permissions/user_policies/${collection.id}/${user.id}/`,
+              {
+                headers: { Accept: 'application/json' },
+              }
+            ).then(({ data }) => [collection.id, data] as const)
+          )
+        )
+          .then((entries) => Object.fromEntries(entries))
+          .then((policies) => {
+            initialUserPolicies.current = policies;
+            return policies;
+          }),
+      [user.id, collections]
+    ),
+    false
+  );
+  const changedPolices =
+    typeof userPolicies === 'object' &&
+    JSON.stringify(userPolicies) !==
+      JSON.stringify(initialUserPolicies.current);
+  const changedRoles =
     typeof userRoles === 'object' &&
     Object.entries(userRoles).some(
       ([collectionId, roles]) =>
         JSON.stringify(roles) !==
         JSON.stringify(initialUserRoles.current[collectionId])
     );
+  const changesMade = changedPolices || changedRoles;
   const setUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')
@@ -83,10 +125,10 @@ export function UserView({
     <Form
       className="contents"
       onSubmit={(): void =>
-        typeof userRoles === 'object'
+        typeof userRoles === 'object' && typeof userPolicies === 'object'
           ? loading(
-              Promise.all(
-                Object.entries(userRoles)
+              Promise.all([
+                ...Object.entries(userRoles)
                   .filter(
                     ([collectionId, roles]) =>
                       JSON.stringify(roles) !==
@@ -101,13 +143,29 @@ export function UserView({
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
                     )
+                  ),
+                ...Object.entries(userPolicies)
+                  .filter(
+                    ([collectionId, policies]) =>
+                      JSON.stringify(policies) !==
+                      JSON.stringify(initialUserPolicies.current[collectionId])
                   )
-              ).then(handleClose)
+                  .map(async ([collectionId, policies]) =>
+                    ping(
+                      `/permissions/user_policies/${collectionId}/${user.id}/`,
+                      {
+                        method: 'PUT',
+                        body: policies,
+                      },
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
+                    )
+                  ),
+              ]).then(handleClose)
             )
           : undefined
       }
     >
-      <H3>{user.name}</H3>
+      <H3>{`${adminText('user')} ${user.name}`}</H3>
       <Label.Generic>
         {commonText('collection')}
         <Select
@@ -126,7 +184,7 @@ export function UserView({
         <Ul>
           {typeof collectionRoles === 'object' && typeof userRoles === 'object'
             ? collectionRoles[collection].map((role) => (
-                <li key={role.id}>
+                <li key={role.id} className="flex items-center gap-2">
                   <Label.ForCheckbox>
                     <Input.Checkbox
                       checked={userRoles[collection].includes(role.id)}
@@ -149,20 +207,29 @@ export function UserView({
                     />
                     {role.name}
                   </Label.ForCheckbox>
-                  <Button.Blue
+                  <Button.Simple
+                    className={`${className.redButton} print:hidden`}
                     title={commonText('edit')}
                     aria-label={commonText('edit')}
                     // TODO: trigger unload protect
                     onClick={(): void => handleOpenRole(collection, role.id)}
                   >
                     {icons.pencil}
-                  </Button.Blue>
+                  </Button.Simple>
                 </li>
               ))
             : commonText('loading')}
         </Ul>
       </fieldset>
-      <span className="flex-1 -mt-2" />
+      <PoliciesView
+        policies={userPolicies?.[collection]}
+        isReadOnly={hasPermission('/permissions/policies/user', 'update')}
+        onChange={(policies): void =>
+          typeof userPolicies === 'object'
+            ? setUserPolicies(replaceKey(userPolicies, collection, policies))
+            : undefined
+        }
+      />
       <div className="flex gap-2">
         {changesMade ? (
           <Button.Gray

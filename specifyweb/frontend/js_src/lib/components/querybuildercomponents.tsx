@@ -56,14 +56,14 @@ function QueryButton({
 }
 
 export function SaveQueryButtons({
-  readOnly,
+  isReadOnly,
   fields,
   saveRequired,
   queryResource,
   setHasUnloadProtect,
   getQueryFieldRecords,
 }: {
-  readonly readOnly: boolean;
+  readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
@@ -99,7 +99,7 @@ export function SaveQueryButtons({
           query={queryResource}
         />
       )}
-      {readOnly ||
+      {isReadOnly ||
       queryResource.get('specifyUser') !==
         userInformation.resource_uri ? undefined : (
         <QueryButton
@@ -110,7 +110,7 @@ export function SaveQueryButtons({
           {commonText('save')}
         </QueryButton>
       )}
-      {readOnly || queryResource.isNew() ? undefined : (
+      {isReadOnly || queryResource.isNew() ? undefined : (
         <QueryButton
           disabled={fields.length === 0}
           onClick={(): void => handleSave('saveAs')}

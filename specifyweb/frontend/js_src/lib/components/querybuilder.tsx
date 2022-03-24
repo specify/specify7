@@ -36,6 +36,7 @@ import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 import { replaceItem } from './wbplanviewstate';
+import { AnySchema } from '../datamodelutils';
 
 /*
  * Query Results:
@@ -50,14 +51,17 @@ import { replaceItem } from './wbplanviewstate';
 
 export function QueryBuilder({
   query: queryResource,
-  readOnly,
+  isReadOnly,
   recordSet,
   model,
+  // If present, this callback is called when a query result is selected
+  onSelected: handleSelected,
 }: {
   readonly query: SpecifyResource<SpQuery>;
-  readonly readOnly: boolean;
+  readonly isReadOnly: boolean;
   readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
+  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   const [originalQueryFields] = React.useState(query.fields ?? []);
@@ -173,50 +177,52 @@ export function QueryBuilder({
       }
     >
       <Form className="contents" onSubmit={(): void => runQuery('regular')}>
-        <header className="gap-x-2 whitespace-nowrap flex items-center">
-          <TableIcon name={model.name} />
-          <H2 className="overflow-x-auto">
-            {typeof recordSet === 'object'
-              ? queryText('queryRecordSetTitle')(
-                  query.name,
-                  recordSet.get('name')
-                )
-              : queryText('queryTaskTitle')(query.name)}
-          </H2>
-          <span className="flex-1 ml-2" />
-          <QueryExportButtons
-            baseTableName={state.baseTableName}
-            fields={state.fields}
-            queryResource={queryResource}
-            getQueryFieldRecords={getQueryFieldRecords}
-          />
-          {!readOnly && (
-            <MakeRecordSetButton
+        {typeof handleSelected === 'undefined' && (
+          <header className="gap-x-2 whitespace-nowrap flex items-center">
+            <TableIcon name={model.name} />
+            <H2 className="overflow-x-auto">
+              {typeof recordSet === 'object'
+                ? queryText('queryRecordSetTitle')(
+                    query.name,
+                    recordSet.get('name')
+                  )
+                : queryText('queryTaskTitle')(query.name)}
+            </H2>
+            <span className="flex-1 ml-2" />
+            <QueryExportButtons
               baseTableName={state.baseTableName}
               fields={state.fields}
               queryResource={queryResource}
               getQueryFieldRecords={getQueryFieldRecords}
             />
-          )}
-          {!queryResource.isNew() && (
-            <Button.Simple
-              disabled={!state.saveRequired}
-              onClick={(): void =>
-                setHasUnloadProtect(false, () => window.location.reload())
-              }
-            >
-              {queryText('abandonChanges')}
-            </Button.Simple>
-          )}
-          <SaveQueryButtons
-            readOnly={readOnly}
-            queryResource={queryResource}
-            fields={state.fields}
-            saveRequired={state.saveRequired}
-            setHasUnloadProtect={setHasUnloadProtect}
-            getQueryFieldRecords={getQueryFieldRecords}
-          />
-        </header>
+            {!isReadOnly && (
+              <MakeRecordSetButton
+                baseTableName={state.baseTableName}
+                fields={state.fields}
+                queryResource={queryResource}
+                getQueryFieldRecords={getQueryFieldRecords}
+              />
+            )}
+            {!queryResource.isNew() && (
+              <Button.Simple
+                disabled={!state.saveRequired}
+                onClick={(): void =>
+                  setHasUnloadProtect(false, () => window.location.reload())
+                }
+              >
+                {queryText('abandonChanges')}
+              </Button.Simple>
+            )}
+            <SaveQueryButtons
+              isReadOnly={isReadOnly}
+              queryResource={queryResource}
+              fields={state.fields}
+              saveRequired={state.saveRequired}
+              setHasUnloadProtect={setHasUnloadProtect}
+              getQueryFieldRecords={getQueryFieldRecords}
+            />
+          </header>
+        )}
         <div
           className={`gap-y-4 grid flex-1 overflow-y-auto px-4 -mx-4 grid-cols-1
             ${
@@ -361,6 +367,7 @@ export function QueryBuilder({
             fields={state.fields}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            onSelected={handleSelected}
             onSortChange={(index, sortType): void => {
               dispatch({
                 type: 'ChangeFieldAction',

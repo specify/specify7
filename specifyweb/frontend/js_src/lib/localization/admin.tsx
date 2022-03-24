@@ -240,6 +240,12 @@ const adminText = createDictionary({
     ca: 'Role:',
     'es-es': 'Role:',
   },
+  user: {
+    'en-us': 'User:',
+    'ru-ru': 'User:',
+    ca: 'User:',
+    'es-es': 'User:',
+  },
 });
 
 export default adminText;

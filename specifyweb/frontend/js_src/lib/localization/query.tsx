@@ -518,6 +518,13 @@ const queryText = createDictionary({
     ca: 'Yes',
     'es-es': 'Yes',
   },
+  // FIXME: localize
+  queryBuilder: {
+    'en-us': 'Query Builder',
+    'ru-ru': 'Query Builder',
+    ca: 'Query Builder',
+    'es-es': 'Query Builder',
+  },
 });
 
 export default queryText;

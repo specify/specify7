@@ -14,8 +14,12 @@ import { f, sortObjectsByKey } from '../wbplanviewhelper';
 import { Button, className, Form, Link, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import { SpecifyForm } from './specifyform';
+import queryText from '../localization/query';
+import { SpecifyModel } from '../specifymodel';
+import { QueryBuilder } from './querybuilder';
+import { createQuery } from './querytask';
 
 const dialogDefinitions = load<Element>(
   '/context/app.resource?name=DialogDefs',
@@ -41,9 +45,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly onClose: () => void;
-  readonly onSelected: (resurce: SpecifyResource<SCHEMA>) => void;
+  readonly onSelected: (resource: SpecifyResource<SCHEMA>) => void;
 }): JSX.Element | null {
-  const [viewName] = useAsyncState(
+  const [viewName, setViewName] = useAsyncState(
     React.useCallback(
       async () =>
         dialogDefinitions.then(
@@ -68,7 +72,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
       }>
     | undefined
   >(undefined);
-  const id = useId('query-combo-box-search');
+  const id = useId('search-dialog');
   return typeof viewName === 'string' ? (
     <Dialog
       header={commonText('search')}
@@ -76,6 +80,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.Blue onClick={(): void => setViewName(false)}>
+            {queryText('queryBuilder')}
+          </Button.Blue>
           <Submit.Green form={id('form')}>{commonText('search')}</Submit.Green>
         </>
       }
@@ -145,11 +152,13 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         </Ul>
       </Form>
     </Dialog>
-  ) : typeof viewName === 'undefined' ? null : (
-    error(
-      `Unable to find a search dialog for the ${templateResource.specifyModel.name} table`
-    )
-  );
+  ) : viewName === false ? (
+    <QueryBuilderSearch
+      model={templateResource.specifyModel}
+      onClose={handleClose}
+      onSelected={handleSelected}
+    />
+  ) : null;
 }
 
 const filterResults = <SCHEMA extends AnySchema>(
@@ -180,3 +189,36 @@ const testFilter = <SCHEMA extends AnySchema>(
         },
         resource,
       });
+
+function QueryBuilderSearch<SCHEMA extends AnySchema>({
+  model,
+  onSelected: handleSelected,
+  onClose: handleClose,
+}: {
+  readonly model: SpecifyModel<SCHEMA>;
+  readonly onClose: () => void;
+  readonly onSelected: (resource: SpecifyResource<SCHEMA>) => void;
+}): JSX.Element {
+  const query = React.useMemo(
+    () => createQuery(commonText('search'), model),
+    [model]
+  );
+  return (
+    <Dialog
+      header={queryText('queryBuilder')}
+      onClose={handleClose}
+      buttons={commonText('close')}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+    >
+      <QueryBuilder
+        query={query}
+        isReadOnly={false}
+        model={model}
+        recordSet={undefined}
+        onSelected={handleSelected}
+      />
+    </Dialog>
+  );
+}

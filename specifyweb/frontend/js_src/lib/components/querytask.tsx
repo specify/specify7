@@ -51,7 +51,7 @@ function QueryBuilderWrapper({
   return isLoaded ? (
     <QueryBuilder
       query={query}
-      readOnly={userInformation.isReadOnly}
+      isReadOnly={userInformation.isReadOnly}
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />

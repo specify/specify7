@@ -12,7 +12,7 @@ import { removeIncompletePolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Button, Form, H3, Input, Label, Submit } from './basic';
-import { useTriggerState, useUnloadProtect } from './hooks';
+import { useLiveState, useTriggerState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
 import type { Policy } from './securitypolicy';
@@ -63,13 +63,14 @@ export function RoleView({
     changesMade,
     commonText('leavePageDialogMessage')
   );
-  const [state, setState] = React.useState<
+  const [state, setState] = useLiveState<
     | State<'MainState'>
     | State<
         'AddUserState',
         { readonly templateResource: SpecifyResource<SpecifyUser> }
       >
-  >({ type: 'MainState' });
+    // Close AddUser dialog when new user is added
+  >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
   const usersWithRole =
     typeof userRoles === 'object' && typeof role.id === 'number'
       ? Object.values(userRoles).filter(({ roles }) =>

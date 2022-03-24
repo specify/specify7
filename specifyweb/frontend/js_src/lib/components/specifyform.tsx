@@ -6,6 +6,7 @@ import React from 'react';
 
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
+import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
@@ -14,7 +15,6 @@ import { f } from '../wbplanviewhelper';
 import { DataEntry, FormHeader } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
-import { autoGenerateViewDefinition } from '../generateformdefinitions';
 
 /** A hardcoded view description for an attachment table */
 const getAttachmentFormDefinition = (
@@ -77,10 +77,13 @@ export function useViewDefinition({
                   : undefined
               )
               .then((viewDefinition) =>
-                typeof viewDefinition === 'object' &&
-                viewDefinition.model !== model
-                  ? error('View definition model does not match resource model')
-                  : autoGenerateViewDefinition(model, formType)
+                typeof viewDefinition === 'object'
+                  ? viewDefinition.model === model
+                    ? viewDefinition
+                    : error(
+                        'View definition model does not match resource model'
+                      )
+                  : autoGenerateViewDefinition(model, formType, mode)
               ),
       [viewName, formType, mode, model]
     ),
@@ -89,7 +92,7 @@ export function useViewDefinition({
   return viewDefinition;
 }
 
-// FIXME: review all original files to check everything was migrated
+// FIXME: review all original specifyform files to check everything was migrated
 /** Renders a form and populates it with data from a resource */
 export function SpecifyForm({
   resource,

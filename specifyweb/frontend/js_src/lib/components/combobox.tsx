@@ -16,6 +16,7 @@ import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { isResourceOfType } from '../specifymodel';
+import { UiField } from './uifield';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -143,10 +144,19 @@ export function ComboBox({
 
   const pickListName = props.pickListName ?? resolvedField.getPickList();
 
-  if (!Boolean(pickListName))
-    throw new Error(
-      `can't determine picklist for field ${resource.specifyModel.name}.${resolvedField.name}`
+  if (typeof pickListName === 'string')
+    return <DefaultComboBox {...props} field={resolvedField} />;
+  else {
+    console.error(
+      `Unable to resolve a pick list for ${model.specifyModel.name}.${fieldName}`
     );
-
-  return <DefaultComboBox {...props} field={resolvedField} />;
+    return (
+      <UiField
+        id={props.id}
+        resource={props.resource}
+        mode={props.mode}
+        fieldName={resolvedField.name}
+      />
+    );
+  }
 }

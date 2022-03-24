@@ -10,7 +10,7 @@ import startApp from '../startapp';
 import { className } from './basic';
 import { Contexts } from './contexts';
 import { crash } from './errorboundary';
-import { useBooleanState } from './hooks';
+import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
 
@@ -33,6 +33,8 @@ function handleClick(event: Readonly<MouseEvent>): void {
 const LOADING_TIMEOUT = 2000;
 
 function Root(): JSX.Element | null {
+  useTitle('');
+
   const [isContextLoaded, handleContextLoaded] = useBooleanState();
   const [isHeaderLoaded, setHeaderLoaded] = useBooleanState();
   const [showLoadingScreen, setShowLoadingScreen] = useBooleanState();

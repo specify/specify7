@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
-import { keysToLowerCase } from '../datamodelutils';
+import { AnySchema, keysToLowerCase } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
@@ -153,6 +153,7 @@ export function QueryResultsTable({
   fieldSpecs,
   initialData,
   sortConfig,
+  onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
   readonly model: SpecifyModel;
@@ -165,6 +166,7 @@ export function QueryResultsTable({
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly initialData: RA<RA<string | number | null>> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
+  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
@@ -213,7 +215,9 @@ export function QueryResultsTable({
             : `${selectedRows.size}/${totalCount}`
         })`}</H3>
         <div className="flex-1 -ml-2" />
-        {hasIdField && Array.isArray(results) ? (
+        {hasIdField &&
+        Array.isArray(results) &&
+        typeof handleSelected === 'undefined' ? (
           <ViewRecords
             selectedRows={selectedRows}
             results={results}
@@ -294,6 +298,7 @@ export function QueryResultsTable({
             results={results}
             selectedRows={selectedRows}
             onSelected={(id, isSelected, isShiftClick): void => {
+              handleSelected?.(new model.Resource({ id }));
               if (!hasIdField) return;
               const rowIndex = results.findIndex(
                 (row) => row[queryIdField] === id
@@ -349,6 +354,7 @@ export function QueryResultsWrapper({
   queryResource,
   fields,
   recordSetId,
+  onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
   readonly baseTableName: keyof Tables;
@@ -357,6 +363,7 @@ export function QueryResultsWrapper({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
+  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
@@ -455,6 +462,6 @@ export function QueryResultsWrapper({
       <QueryResultsLoading />
     )
   ) : (
-    <QueryResultsTable {...props} />
+    <QueryResultsTable {...props} onSelected={handleSelected} />
   );
 }

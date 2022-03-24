@@ -121,45 +121,51 @@ export function PoliciesView({
   isReadOnly,
   onChange: handleChange,
 }: {
-  readonly policies: RA<Policy>;
+  readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
 }): JSX.Element {
   return (
     <fieldset className="flex flex-col flex-1 gap-2 overflow-hidden">
       <h2>{adminText('policies')}</h2>
-      <ul className="flex flex-col gap-2 overflow-auto">
-        {policies.map((policy, index) => (
-          <PolicyView
-            key={index}
-            policy={policy}
-            isReadOnly={isReadOnly}
-            onChange={(policy): void =>
-              handleChange(
-                typeof policy === 'object'
-                  ? replaceItem(policies, index, policy)
-                  : removeItem(policies, index)
-              )
-            }
-          />
-        ))}
-      </ul>
-      {!isReadOnly && (
-        <div>
-          <Button.Green
-            onClick={(): void =>
-              handleChange([
-                ...policies,
-                {
-                  resource: '',
-                  actions: [],
-                },
-              ])
-            }
-          >
-            {commonText('add')}
-          </Button.Green>
-        </div>
+      {Array.isArray(policies) ? (
+        <>
+          <ul className="flex flex-col gap-2 overflow-auto">
+            {policies.map((policy, index) => (
+              <PolicyView
+                key={index}
+                policy={policy}
+                isReadOnly={isReadOnly}
+                onChange={(policy): void =>
+                  handleChange(
+                    typeof policy === 'object'
+                      ? replaceItem(policies, index, policy)
+                      : removeItem(policies, index)
+                  )
+                }
+              />
+            ))}
+          </ul>
+          {!isReadOnly && (
+            <div>
+              <Button.Green
+                onClick={(): void =>
+                  handleChange([
+                    ...policies,
+                    {
+                      resource: '',
+                      actions: [],
+                    },
+                  ])
+                }
+              >
+                {commonText('add')}
+              </Button.Green>
+            </div>
+          )}
+        </>
+      ) : (
+        commonText('loading')
       )}
     </fieldset>
   );
