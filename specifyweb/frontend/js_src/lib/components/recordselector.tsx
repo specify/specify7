@@ -11,7 +11,7 @@ import { defined } from '../types';
 import { clamp } from '../wbplanviewhelper';
 import { Button, className, Input, Link } from './basic';
 import { Dialog } from './modaldialog';
-import { QueryComboBoxSearch } from './querycbxsearch';
+import { SearchDialog } from './searchdialog';
 import { LoadingContext } from './contexts';
 
 export function RecordSelectorButtons({
@@ -171,7 +171,7 @@ function Search<SCHEMA extends AnySchema>({
   );
   const loading = React.useContext(LoadingContext);
   return (
-    <QueryComboBoxSearch<SCHEMA>
+    <SearchDialog<SCHEMA>
       templateResource={resource}
       forceCollection={undefined}
       extraFilters={undefined}

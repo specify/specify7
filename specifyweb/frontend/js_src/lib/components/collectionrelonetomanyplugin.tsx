@@ -19,7 +19,7 @@ import { f } from '../wbplanviewhelper';
 import { Button, className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
-import { QueryComboBoxSearch } from './querycbxsearch';
+import { SearchDialog } from './searchdialog';
 import { removeItem } from './wbplanviewstate';
 
 type Data = {
@@ -270,7 +270,7 @@ export function CollectionOneToManyPlugin({
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
-        <QueryComboBoxSearch
+        <SearchDialog
           forceCollection={data.otherCollection.id}
           extraFilters={undefined}
           templateResource={state.templateResource}

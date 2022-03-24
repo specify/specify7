@@ -30,8 +30,7 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly values: RA<string>;
 };
 
-// TODO: update usages
-export function QueryComboBoxSearch<SCHEMA extends AnySchema>({
+export function SearchDialog<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = [],
   templateResource,

@@ -38,8 +38,8 @@ import { Button, Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';
 import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
-import type { QueryComboBoxFilter } from './querycbxsearch';
-import { QueryComboBoxSearch } from './querycbxsearch';
+import type { QueryComboBoxFilter } from './searchdialog';
+import { SearchDialog } from './searchdialog';
 import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
 import { LoadingContext } from './contexts';
@@ -581,7 +581,7 @@ export function QueryComboBox({
         ) : undefined
       ) : undefined}
       {state.type === 'SearchState' ? (
-        <QueryComboBoxSearch
+        <SearchDialog
           forceCollection={forceCollection ?? relatedCollectionId}
           extraFilters={state.extraConditions}
           templateResource={state.templateResource}

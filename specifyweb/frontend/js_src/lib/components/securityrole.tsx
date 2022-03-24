@@ -14,7 +14,7 @@ import { defined } from '../types';
 import { Button, Form, H3, Input, Label, Submit } from './basic';
 import { useTriggerState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
-import { QueryComboBoxSearch } from './querycbxsearch';
+import { SearchDialog } from './searchdialog';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { replaceKey } from './wbplanviewstate';
@@ -141,7 +141,7 @@ export function RoleView({
                 </div>
               )}
               {state.type === 'AddUserState' && (
-                <QueryComboBoxSearch
+                <SearchDialog
                   forceCollection={undefined}
                   extraFilters={[
                     {

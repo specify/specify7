@@ -17,7 +17,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, DataEntry, H3 } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { QueryComboBoxSearch } from './querycbxsearch';
+import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
 
@@ -202,7 +202,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           {resources.length === 0 && <p>{formsText('noData')}</p>}
         </div>
         {state.type === 'SearchState' && (
-          <QueryComboBoxSearch
+          <SearchDialog
             forceCollection={undefined}
             extraFilters={undefined}
             templateResource={state.resource}
