@@ -19,6 +19,8 @@ import { setCurrentView } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
 import { userInformation } from './userinfo';
+import { f } from './wbplanviewhelper';
+import { Tables } from './datamodel';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -194,7 +196,11 @@ const checkLoggedInCollection = async (
   resource: SpecifyResource<AnySchema>,
   callback: () => void
 ): Promise<void> =>
-  resource.isNew()
+  resource.isNew() ||
+  f.includes<keyof Tables>(
+    ['Institution', 'Discipline', 'Division'],
+    resource.specifyModel.name
+  )
     ? Promise.resolve(void callback())
     : collectionsForResource(resource).then((collections) =>
         collections.some(({ id }) => id === schema.domainLevelIds.collection)

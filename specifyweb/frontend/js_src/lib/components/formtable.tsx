@@ -18,11 +18,7 @@ import { Button, DataEntry, H3 } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBoxSearch } from './querycbxsearch';
-import {
-  missingFormDefinition,
-  SpecifyForm,
-  useViewDefinition,
-} from './specifyform';
+import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
 
 const cellToLabel = (
@@ -89,8 +85,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
-    ) : viewDefinition === false ? (
-      missingFormDefinition
     ) : (
       <DataEntry.Grid role="table" viewDefinition={viewDefinition}>
         <div className="contents" role="row">

@@ -98,4 +98,7 @@ export const collectionsForResource = async (
       ?.rgetPromise(domainField.name as 'collection')
       .then(collectionsInDomain)
   ) ??
+  f.maybe(toTable(resource, 'Collection'), (collection) => [
+    serializeResource(collection),
+  ]) ??
   Promise.resolve([]);

@@ -28,7 +28,7 @@ export function OtherCollection({
       ) : (
         <>
           <p>{commonText('resourceInaccessible')}</p>
-          {collections.length === 1 ? (
+          {collections.length > 1 ? (
             <>
               <p>{commonText('selectCollection')}</p>
               <ul role="list">
@@ -68,13 +68,6 @@ export function OtherCollection({
           )}
         </>
       )}
-
-      <p>${commonText('selectCollection')}</p>
-      <ul role="list">
-        <li>
-          <a>${commonText('collection')}</a>
-        </li>
-      </ul>
     </div>
   );
 }
