@@ -127,7 +127,7 @@ export function PoliciesView({
 }): JSX.Element {
   return (
     <fieldset className="flex flex-col gap-2">
-      <h2>{adminText('policies')}</h2>
+      <h4>{adminText('policies')}</h4>
       {Array.isArray(policies) ? (
         <>
           <ul className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]">

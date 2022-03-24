@@ -5,10 +5,10 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { PermissionsQuery } from '../permissions';
 import { getTablePermissions, queryUserPermissions } from '../permissions';
-import { resourceNameToModel } from '../securityutils';
-import type { IR, RA } from '../types';
-import { group } from '../wbplanviewhelper';
-import { className, Input } from './basic';
+import { resourceNameToModel, resourceNameToParts } from '../securityutils';
+import type { IR, R, RA } from '../types';
+import { capitalize, group, lowerToHuman } from '../wbplanviewhelper';
+import { className, Input, Label, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 
@@ -16,11 +16,20 @@ function PreviewCell({ cell }: { readonly cell: Cell }): JSX.Element {
   return (
     <div role="cell" className="justify-center">
       <Input.Checkbox
-        readOnly
+        disabled
         checked={cell.allowed}
         className="cursor-pointer"
       />
     </div>
+  );
+}
+
+function ReasonExplanation({ cell }: { readonly cell: Cell }): JSX.Element {
+  // FIXME: humanize
+  return (
+    <pre role="cell" className="col-span-5">
+      {JSON.stringify(cell, null, '\t')}
+    </pre>
   );
 }
 
@@ -56,10 +65,14 @@ function PreviewRow({
         className={isOpen ? undefined : '!hidden'}
         id={id('reason')}
       >
-        {/* FIXME: humanize */}
-        <pre role="cell" className="col-span-5">
-          {JSON.stringify(row, null, '\t')}
-        </pre>
+        {adminText('read')}:
+        <ReasonExplanation cell={row.read} />
+        {commonText('create')}:
+        <ReasonExplanation cell={row.create} />
+        {commonText('update')}:
+        <ReasonExplanation cell={row.update} />
+        {commonText('delete')}:
+        <ReasonExplanation cell={row.delete} />
       </div>
     </>
   );
@@ -126,6 +139,85 @@ function PreviewTables({
   );
 }
 
+export type Tree = {
+  readonly label: string;
+  readonly children: IR<Tree>;
+  readonly actions: RA<Omit<PermissionsQuery['details'][number], 'resource'>>;
+};
+
+type WritableTree = {
+  readonly label: string;
+  readonly children: R<WritableTree>;
+  readonly actions: RA<Omit<PermissionsQuery['details'][number], 'resource'>>;
+};
+
+function TreeView({ tree }: { readonly tree: IR<Tree> }): JSX.Element {
+  return (
+    <Ul className="pl-5 list-disc">
+      {Object.entries(tree).map(([name, { label, children, actions }]) => (
+        <li key={name}>
+          {label}
+          {actions.length > 0 && (
+            <Ul className="pl-5">
+              {actions.map(({ action, ...rest }) => (
+                <li key={action}>
+                  <details>
+                    <summary>
+                      <Label.ForCheckbox>
+                        <Input.Checkbox
+                          disabled
+                          checked={rest.allowed}
+                          className="cursor-pointer"
+                        />{' '}
+                        {lowerToHuman(action)}
+                      </Label.ForCheckbox>
+                    </summary>
+                    <ReasonExplanation cell={rest} />
+                  </details>
+                </li>
+              ))}
+            </Ul>
+          )}
+          {Object.keys(children).length > 0 && <TreeView tree={children} />}
+        </li>
+      ))}
+    </Ul>
+  );
+}
+
+function PreviewOperations({
+  query,
+}: {
+  readonly query: PermissionsQuery;
+}): JSX.Element {
+  const tree = React.useMemo(
+    () =>
+      Object.entries(
+        group(
+          query.details
+            .filter(({ resource }) => !(resource in getTablePermissions()))
+            .map(({ resource, ...rest }) => [resource, rest] as const)
+        )
+      ).reduce<R<WritableTree>>((registry, [resource, actions]) => {
+        const resourceParts = resourceNameToParts(resource);
+        resourceParts.reduce<R<WritableTree>>(
+          (place, part, index, { length }) => {
+            place[part] ??= {
+              label: capitalize(part),
+              children: {},
+              actions: index + 1 === length ? actions : [],
+            };
+            return place[part].children;
+          },
+          registry
+        );
+        return registry;
+      }, {}),
+    [query]
+  );
+  return <TreeView tree={tree} />;
+}
+
 export function PreviewPermissions({
   userId,
   collectionId,
@@ -144,13 +236,13 @@ export function PreviewPermissions({
   );
   return (
     <section className="contents">
-      <h4 className={className.h3}>{adminText('preview')}</h4>
+      <h4>{adminText('preview')}</h4>
       {typeof query === 'object' ? (
         <>
           {changesMade && <p>{adminText('outOfDateWarning')}</p>}
           <div className="flex flex-wrap flex-1 gap-4">
             <PreviewTables query={query} />
-            <PreviewTables query={query} />
+            <PreviewOperations query={query} />
           </div>
         </>
       ) : (
