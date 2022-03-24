@@ -7,6 +7,7 @@ import { fetchContext as domainPromise } from './schemabase';
 import {
   tableNameToResourceName,
   tablePermissionsPrefix,
+  toolDefinitions,
 } from './securityutils';
 import type { RA, RR } from './types';
 import { defined } from './types';
@@ -184,3 +185,11 @@ export const hasPermission = <
   resource: RESOURCE,
   action: keyof typeof operationPermissions[RESOURCE]
 ): boolean => defined(operationPermissions)[resource][action];
+
+export const hasToolPermission = (
+  tool: keyof typeof toolDefinitions,
+  action: typeof tableActions[number]
+) =>
+  (toolDefinitions[tool].tables as RA<keyof Tables>).every((tableName) =>
+    hasTablePermission(tableName, action)
+  );

@@ -122,7 +122,7 @@ export const caseInsensitiveHash = <
     | Uncapitalize<KEY>
 ): DICTIONARY[KEY] =>
   Object.entries(dictionary).find(
-    ([key]) => key.toLowerCase() === searchKey.toLowerCase()
+    ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
   )?.[1] as DICTIONARY[KEY];
 
 /** Generate a sort function for Array.prototype.sort */
@@ -308,6 +308,10 @@ export const f = {
    */
   includes: <T>(array: RA<T>, item: unknown): item is T =>
     array.includes(item as T),
+  /**
+   * Like f.includes, but for sets
+   */
+  has: <T>(set: Set<T>, item: unknown): item is T => set.has(item as T),
   /**
    * Intercept function arguments without affecting it
    * Useful for debugging or logging

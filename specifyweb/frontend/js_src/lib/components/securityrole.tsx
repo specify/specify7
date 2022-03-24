@@ -8,11 +8,15 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission } from '../permissions';
 import { schema } from '../schema';
-import { removeIncompletePolicies } from '../securityutils';
+import {
+  compressPolicies,
+  decompressPolicies,
+  removeIncompletePolicies,
+} from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Button, Form, H3, Input, Label, Submit } from './basic';
-import { useLiveState, useTriggerState, useUnloadProtect } from './hooks';
+import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
 import type { Policy } from './securitypolicy';
@@ -57,7 +61,17 @@ export function RoleView({
   readonly onOpenUser: (user: SerializedResource<SpecifyUser>) => void;
   readonly onAddUser: (user: SpecifyResource<SpecifyUser>) => void;
 }): JSX.Element {
-  const [role, setRole] = useTriggerState(initialRole);
+  const [role, setRole] = useLiveState(
+    React.useCallback(
+      () =>
+        replaceKey(
+          initialRole,
+          'policies',
+          compressPolicies(initialRole.policies)
+        ),
+      [initialRole]
+    )
+  );
   const changesMade = JSON.stringify(initialRole) !== JSON.stringify(role);
   const setUnloadProtect = useUnloadProtect(
     changesMade,
@@ -84,7 +98,11 @@ export function RoleView({
     <Form
       onSubmit={(): void =>
         handleSave(
-          replaceKey(role, 'policies', removeIncompletePolicies(role.policies))
+          replaceKey(
+            role,
+            'policies',
+            decompressPolicies(removeIncompletePolicies(role.policies))
+          )
         )
       }
       className="contents"

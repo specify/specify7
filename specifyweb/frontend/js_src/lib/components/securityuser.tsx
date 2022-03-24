@@ -7,7 +7,12 @@ import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission } from '../permissions';
-import { fetchRoles } from '../securityutils';
+import {
+  compressPolicies,
+  decompressPolicies,
+  fetchRoles,
+  removeIncompletePolicies,
+} from '../securityutils';
 import type { IR, RA } from '../types';
 import { f, sortFunction } from '../wbplanviewhelper';
 import {
@@ -93,7 +98,9 @@ export function UserView({
               {
                 headers: { Accept: 'application/json' },
               }
-            ).then(({ data }) => [collection.id, data] as const)
+            ).then(
+              ({ data }) => [collection.id, compressPolicies(data)] as const
+            )
           )
         )
           .then((entries) => Object.fromEntries(entries))
@@ -160,7 +167,9 @@ export function UserView({
                         `/permissions/user_policies/${collectionId}/${user.id}/`,
                         {
                           method: 'PUT',
-                          body: policies,
+                          body: decompressPolicies(
+                            removeIncompletePolicies(policies)
+                          ),
                         },
                         { expectedResponseCodes: [Http.NO_CONTENT] }
                       )

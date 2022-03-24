@@ -50,11 +50,31 @@ export const isFunction = <T>(
  * a type error is thrown.
  *
  * The function has to return a function because typescript does not allow to
- * explicitly specify first generic, but leave the second imlplicit.
+ * explicitly specify first generic, while leave the second implicit.
  *
- * The function is needed as `const value: SomeType = {...} as const;` would
+ * The function is needed since `const value: SomeType = {...} as const;` would
  * cast the value to `SomeType` and lose the information from the `as const`
  * assertion.
+ *
+ * The disadvantage of this function is that "Go to definition" IDE feature
+ * doesn't work as good when an `as const` object is wrapped in "ensure". For
+ * use cases where that feature is important, instead of wrapping the
+ * object in ensure, add an ensure line after object definition. A disadvantage
+ * of not wrapping the object is that IDE won't be able to do autocompletion
+ * inside the object from the type information and the type error, if present,
+ * is going to be thrown at the "ensure" line, rather than in the exact place
+ * inside the object where the error originated.
+ *
+ * @example Wrapping an `as const` object
+ * ```ts
+ * const tools = ensure<keoyf Tables>()(['CollectionObject','Locality'] as const);
+ * ```
+ *
+ * @example Usage without wrapping
+ * ```ts
+ * const tools = ['CollectionObject', 'Locality'] as const;
+ * ensure<RA<tools>>(tools);
+ * ```
  */
 export const ensure =
   <T>() =>

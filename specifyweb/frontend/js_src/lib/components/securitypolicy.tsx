@@ -10,7 +10,7 @@ import {
 } from '../securityutils';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { f, lowerToHuman } from '../wbplanviewhelper';
+import { f, group, lowerToHuman } from '../wbplanviewhelper';
 import { Button, className, Select, selectMultipleSize } from './basic';
 import { icons } from './icons';
 import { removeItem, replaceItem } from './wbplanviewstate';
@@ -67,14 +67,33 @@ function PolicyView({
                 }
               >
                 <option value="0" />
-                {Object.entries(defined(registry)).map(
-                  ([partName, { label }], _index, { length }) =>
-                    // Don't show Any if there is only one other option
-                    partName === anyAction && length === 2 ? undefined : (
-                      <option key={partName} value={partName}>
-                        {label}
-                      </option>
+                {Object.entries(
+                  group(
+                    Object.entries(defined(registry)).map(
+                      ([partName, { groupName, ...rest }]) =>
+                        [groupName, [partName, rest]] as const
                     )
+                  )
+                ).map(([groupName, permissions]) =>
+                  f.var(
+                    permissions.map(
+                      ([partName, { label }], _index, { length }) =>
+                        // Don't show Any if there is only one other option
+                        partName === anyAction && length === 2 ? undefined : (
+                          <option key={partName} value={partName}>
+                            {label}
+                          </option>
+                        )
+                    ),
+                    (children) =>
+                      groupName === '' ? (
+                        children
+                      ) : (
+                        <optgroup label={groupName} key={groupName}>
+                          {children}
+                        </optgroup>
+                      )
+                  )
                 )}
               </Select>
             </li>
