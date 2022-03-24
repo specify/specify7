@@ -66,7 +66,7 @@ function SecurityPanel(): JSX.Element | null {
     <Container.Full>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
       <div className="flex flex-1 gap-4 overflow-hidden">
-        <aside className={className.containerBase}>
+        <aside className={`${className.containerBase} overflow-auto`}>
           <section>
             <H3>{adminText('institution')}</H3>
             <Button.LikeLink
@@ -105,39 +105,37 @@ function SecurityPanel(): JSX.Element | null {
             </ul>
           </section>
         </aside>
-        <Container.Base className="flex-1">
-          {state.type === 'InstitutionState' && (
-            <InstitutionView institution={data.institution} />
-          )}
-          {state.type === 'CollectionState' && (
-            <CollectionView
-              collection={data.collections[state.collectionId]}
-              initialRole={state.initialRole}
-              onOpenUser={(user): void =>
-                setState({
-                  type: 'UserState',
-                  user,
-                  initialCollection: state.collectionId,
-                })
-              }
-            />
-          )}
-          {state.type === 'UserState' && (
-            <UserView
-              user={state.user}
-              collections={data.collections}
-              initialCollection={state.initialCollection}
-              onClose={(): void => setState({ type: 'MainState' })}
-              onOpenRole={(collectionId, roleId): void =>
-                setState({
-                  type: 'CollectionState',
-                  collectionId,
-                  initialRole: roleId,
-                })
-              }
-            />
-          )}
-        </Container.Base>
+        {state.type === 'InstitutionState' && (
+          <InstitutionView institution={data.institution} />
+        )}
+        {state.type === 'CollectionState' && (
+          <CollectionView
+            collection={data.collections[state.collectionId]}
+            initialRole={state.initialRole}
+            onOpenUser={(user): void =>
+              setState({
+                type: 'UserState',
+                user,
+                initialCollection: state.collectionId,
+              })
+            }
+          />
+        )}
+        {state.type === 'UserState' && (
+          <UserView
+            user={state.user}
+            collections={data.collections}
+            initialCollection={state.initialCollection}
+            onClose={(): void => setState({ type: 'MainState' })}
+            onOpenRole={(collectionId, roleId): void =>
+              setState({
+                type: 'CollectionState',
+                collectionId,
+                initialRole: roleId,
+              })
+            }
+          />
+        )}
       </div>
     </Container.Full>
   ) : null;

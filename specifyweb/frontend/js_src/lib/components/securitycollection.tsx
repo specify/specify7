@@ -13,7 +13,7 @@ import { fetchRoles } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { omit } from '../wbplanviewhelper';
-import { Button, H3 } from './basic';
+import { Button, Container, H3, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import type { Role, UserRoles } from './securityrole';
@@ -75,17 +75,17 @@ export function CollectionView({
   );
   const loading = React.useContext(LoadingContext);
   return (
-    <>
+    <Container.Base className="flex-1 overflow-hidden">
       {state.type === 'MainState' && (
         <>
           <H3>{collection.get('collectionName')}</H3>
-          <div className="flex flex-col gap-2">
+          <section className="flex flex-col gap-2">
             <h4>{adminText('admins')}</h4>
             <div>
               <Button.Green>{commonText('add')}</Button.Green>
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
+          </section>
+          <section className="flex flex-col gap-2">
             <h4>{adminText('userRoles')}</h4>
             {typeof roles === 'object' ? (
               <ul>
@@ -121,7 +121,27 @@ export function CollectionView({
                 </Button.Green>
               </div>
             )}
-          </div>
+          </section>
+          <section className="flex flex-col gap-2">
+            <h4>{adminText('users')}</h4>
+            {typeof userRoles === 'object' ? (
+              <Ul>
+                {Object.values(userRoles)
+                  .filter(({ roles }) => roles.length > 0)
+                  .map(({ user }) => (
+                    <li key={user.id}>
+                      <Button.LikeLink
+                        onClick={(): void => handleOpenUser(user)}
+                      >
+                        {user.name}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
+              </Ul>
+            ) : (
+              commonText('loading')
+            )}
+          </section>
         </>
       )}
       {state.type === 'RoleState' && typeof roles === 'object' ? (
@@ -216,6 +236,6 @@ export function CollectionView({
           }
         />
       ) : undefined}
-    </>
+    </Container.Base>
   );
 }

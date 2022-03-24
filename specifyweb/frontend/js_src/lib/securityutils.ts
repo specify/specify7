@@ -2,12 +2,14 @@ import { ajax } from './ajax';
 import type { Role } from './components/securityrole';
 import adminText from './localization/admin';
 import { operationPolicies, tableActions } from './permissions';
-import { schema } from './schema';
+import { getModel, schema } from './schema';
 import type { IR, R, RA } from './types';
+import { defined } from './types';
 import { capitalize, f, toLowerCase } from './wbplanviewhelper';
 import { Policy } from './components/securitypolicy';
 import { Tables } from './datamodel';
 import commonText from './localization/common';
+import { SpecifyModel } from './specifymodel';
 
 export const fetchRoles = async (
   collectionId: number,
@@ -107,6 +109,9 @@ export const permissionSeparator = '/';
 
 export const resourceNameToParts = (resourceName: string): RA<string> =>
   resourceName.split(permissionSeparator).filter(Boolean);
+
+export const resourceNameToModel = (resourceName: string): SpecifyModel =>
+  defined(getModel(resourceNameToParts(resourceName)[1]));
 
 export const partsToResourceName = (parts: RA<string>): string =>
   `${permissionSeparator}${parts.join(permissionSeparator)}`;

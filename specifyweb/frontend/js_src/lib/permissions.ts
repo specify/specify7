@@ -104,36 +104,52 @@ let tablePermissions: {
   >;
 };
 
+export const getTablePermissions = () => tablePermissions;
+
+export type PermissionsQuery = {
+  readonly details: RA<{
+    readonly action: string;
+    readonly resource: string;
+    readonly allowed: boolean;
+    readonly matching_user_policies: RA<{
+      readonly action: string;
+      readonly collectionid: number | null;
+      readonly resource: string;
+      readonly userid: number | null;
+    }>;
+  }>;
+};
+
+export const queryUserPermissions = async (
+  userId: number,
+  collectionId: number
+): Promise<PermissionsQuery> =>
+  ajax<PermissionsQuery>('/permissions/query/', {
+    headers: { Accept: 'application/json' },
+    method: 'POST',
+    body: {
+      collectionid: collectionId,
+      userid: userId,
+      queries: [
+        ...Object.entries(operationPolicies).map(([policy, actions]) => ({
+          resource: policy,
+          actions,
+        })),
+        ...Object.keys(schema.models)
+          .map(tableNameToResourceName)
+          .map((resource) => ({
+            resource,
+            actions: tableActions,
+          })),
+      ],
+    },
+  }).then(({ data }) => data);
+
 export const fetchContext = domainPromise
   .then(async () =>
-    ajax<{
-      readonly details: RA<{
-        readonly action: string;
-        readonly resource: string;
-        readonly allowed: boolean;
-      }>;
-    }>('/permissions/query/', {
-      headers: { Accept: 'application/json' },
-      method: 'POST',
-      body: {
-        collectionid: schema.domainLevelIds.collection,
-        userid: userInformation.id,
-        queries: [
-          ...Object.entries(operationPolicies).map(([policy, actions]) => ({
-            resource: policy,
-            actions,
-          })),
-          ...Object.keys(schema.models)
-            .map(tableNameToResourceName)
-            .map((resource) => ({
-              resource,
-              actions: tableActions,
-            })),
-        ],
-      },
-    })
+    queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
   )
-  .then(({ data }) =>
+  .then((data) =>
     split(
       Object.entries(
         group(
@@ -142,7 +158,10 @@ export const fetchContext = domainPromise
             [result.action, result.allowed] as const,
           ])
         )
-      ).map(([resource, actions]) => [resource, group(actions)] as const),
+      ).map(
+        ([resource, actions]) =>
+          [resource, Object.fromEntries(actions)] as const
+      ),
       ([key]) => key.startsWith(tablePermissionsPrefix)
     ).map(Object.fromEntries)
   )

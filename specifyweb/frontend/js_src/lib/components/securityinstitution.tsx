@@ -4,7 +4,7 @@ import type { Institution } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { Button, H3 } from './basic';
+import { Button, Container, H3 } from './basic';
 
 export function InstitutionView({
   institution,
@@ -12,7 +12,7 @@ export function InstitutionView({
   readonly institution: SpecifyResource<Institution>;
 }): JSX.Element {
   return (
-    <>
+    <Container.Base className="flex-1">
       <H3>{institution.get('name')}</H3>
       <div className="flex flex-col gap-2">
         <h4>{adminText('admins')}</h4>
@@ -26,6 +26,6 @@ export function InstitutionView({
           <Button.Green>{commonText('add')}</Button.Green>
         </div>
       </div>
-    </>
+    </Container.Base>
   );
 }

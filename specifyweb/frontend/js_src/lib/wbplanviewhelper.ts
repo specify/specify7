@@ -127,7 +127,7 @@ export const caseInsensitiveHash = <
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
-  <T, V extends boolean | number | string>(
+  <T, V extends boolean | number | string | null>(
     mapper: (value: T) => V,
     reverse = false
   ): ((left: T, right: T) => -1 | 0 | 1) =>
@@ -145,7 +145,7 @@ export const sortFunction =
 
 export const sortObjectsByKey = <
   KEY extends string | number | symbol,
-  T extends Record<KEY, boolean | number | string>
+  T extends Record<KEY, boolean | number | string | null>
 >(
   objects: RA<T>,
   key: KEY

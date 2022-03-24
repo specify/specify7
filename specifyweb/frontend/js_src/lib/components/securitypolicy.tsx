@@ -126,11 +126,11 @@ export function PoliciesView({
   readonly onChange: (policies: RA<Policy>) => void;
 }): JSX.Element {
   return (
-    <fieldset className="flex flex-col flex-1 gap-2 overflow-hidden">
+    <fieldset className="flex flex-col gap-2">
       <h2>{adminText('policies')}</h2>
       {Array.isArray(policies) ? (
         <>
-          <ul className="flex flex-col gap-2 overflow-auto">
+          <ul className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]">
             {policies.map((policy, index) => (
               <PolicyView
                 key={index}

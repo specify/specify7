@@ -3,11 +3,11 @@ import { months } from './components/internationalization';
 import type { PickList, PickListItem, Tables } from './datamodel';
 import type { SerializedResource, TableFields } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
+import commonText from './localization/common';
 import formsText from './localization/forms';
 import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
-import commonText from './localization/common';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())

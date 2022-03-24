@@ -246,6 +246,24 @@ const adminText = createDictionary({
     ca: 'User:',
     'es-es': 'User:',
   },
+  read: {
+    'en-us': 'Read',
+    'ru-ru': 'Read',
+    ca: 'Read',
+    'es-es': 'Read',
+  },
+  preview: {
+    'en-us': 'Preview',
+    'ru-ru': 'Preview',
+    ca: 'Preview',
+    'es-es': 'Preview',
+  },
+  outOfDateWarning: {
+    'en-us': 'Note: preview may be out of date',
+    'ru-ru': 'Note: preview may be out of date',
+    ca: 'Note: preview may be out of date',
+    'es-es': 'Note: preview may be out of date',
+  },
 });
 
 export default adminText;

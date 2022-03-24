@@ -13,6 +13,7 @@ import { f, sortFunction } from '../wbplanviewhelper';
 import {
   Button,
   className,
+  Container,
   Form,
   H3,
   Input,
@@ -27,6 +28,7 @@ import { icons } from './icons';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { removeItem, replaceKey } from './wbplanviewstate';
+import { PreviewPermissions } from './securitypreview';
 
 export function UserView({
   user,
@@ -122,129 +124,143 @@ export function UserView({
   const [collection, setCollection] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
   return (
-    <Form
-      className="contents"
-      onSubmit={(): void =>
-        typeof userRoles === 'object' && typeof userPolicies === 'object'
-          ? loading(
-              Promise.all([
-                ...Object.entries(userRoles)
-                  .filter(
-                    ([collectionId, roles]) =>
-                      JSON.stringify(roles) !==
-                      JSON.stringify(initialUserRoles.current[collectionId])
-                  )
-                  .map(async ([collectionId, roles]) =>
-                    ping(
-                      `/permissions/user_roles/${collectionId}/${user.id}/`,
-                      {
-                        method: 'PUT',
-                        body: roles.map((id) => ({ id })),
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
+    <Container.Base className="flex-1 overflow-y-auto">
+      <Form
+        className="contents"
+        onSubmit={(): void =>
+          typeof userRoles === 'object' && typeof userPolicies === 'object'
+            ? loading(
+                Promise.all([
+                  ...Object.entries(userRoles)
+                    .filter(
+                      ([collectionId, roles]) =>
+                        JSON.stringify(roles) !==
+                        JSON.stringify(initialUserRoles.current[collectionId])
                     )
-                  ),
-                ...Object.entries(userPolicies)
-                  .filter(
-                    ([collectionId, policies]) =>
-                      JSON.stringify(policies) !==
-                      JSON.stringify(initialUserPolicies.current[collectionId])
-                  )
-                  .map(async ([collectionId, policies]) =>
-                    ping(
-                      `/permissions/user_policies/${collectionId}/${user.id}/`,
-                      {
-                        method: 'PUT',
-                        body: policies,
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    )
-                  ),
-              ]).then(handleClose)
-            )
-          : undefined
-      }
-    >
-      <H3>{`${adminText('user')} ${user.name}`}</H3>
-      <Label.Generic>
-        {commonText('collection')}
-        <Select
-          value={collection}
-          onValueChange={(value): void => setCollection(Number.parseInt(value))}
-        >
-          {Object.values(collections).map((collection) => (
-            <option key={collection.id} value={collection.id}>
-              {collection.get('collectionName')}
-            </option>
-          ))}
-        </Select>
-      </Label.Generic>
-      <fieldset className="flex flex-col gap-2">
-        <legend>{adminText('userRoles')}</legend>
-        <Ul>
-          {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-            ? collectionRoles[collection].map((role) => (
-                <li key={role.id} className="flex items-center gap-2">
-                  <Label.ForCheckbox>
-                    <Input.Checkbox
-                      checked={userRoles[collection].includes(role.id)}
-                      onValueChange={(isChecked): void =>
-                        setUserRoles(
-                          replaceKey(
-                            userRoles,
-                            collection.toString(),
-                            Array.from(
-                              isChecked
-                                ? removeItem(
-                                    userRoles[collection],
-                                    userRoles[collection].indexOf(role.id)
-                                  )
-                                : [...userRoles[collection], role.id]
-                            ).sort(sortFunction(f.id))
-                          )
+                    .map(async ([collectionId, roles]) =>
+                      ping(
+                        `/permissions/user_roles/${collectionId}/${user.id}/`,
+                        {
+                          method: 'PUT',
+                          body: roles.map((id) => ({ id })),
+                        },
+                        { expectedResponseCodes: [Http.NO_CONTENT] }
+                      )
+                    ),
+                  ...Object.entries(userPolicies)
+                    .filter(
+                      ([collectionId, policies]) =>
+                        JSON.stringify(policies) !==
+                        JSON.stringify(
+                          initialUserPolicies.current[collectionId]
                         )
-                      }
-                    />
-                    {role.name}
-                  </Label.ForCheckbox>
-                  <Button.Simple
-                    className={`${className.redButton} print:hidden`}
-                    title={commonText('edit')}
-                    aria-label={commonText('edit')}
-                    // TODO: trigger unload protect
-                    onClick={(): void => handleOpenRole(collection, role.id)}
-                  >
-                    {icons.pencil}
-                  </Button.Simple>
-                </li>
-              ))
-            : commonText('loading')}
-        </Ul>
-      </fieldset>
-      <PoliciesView
-        policies={userPolicies?.[collection]}
-        isReadOnly={hasPermission('/permissions/policies/user', 'update')}
-        onChange={(policies): void =>
-          typeof userPolicies === 'object'
-            ? setUserPolicies(replaceKey(userPolicies, collection, policies))
+                    )
+                    .map(async ([collectionId, policies]) =>
+                      ping(
+                        `/permissions/user_policies/${collectionId}/${user.id}/`,
+                        {
+                          method: 'PUT',
+                          body: policies,
+                        },
+                        { expectedResponseCodes: [Http.NO_CONTENT] }
+                      )
+                    ),
+                ]).then(handleClose)
+              )
             : undefined
         }
-      />
-      <div className="flex gap-2">
-        {changesMade ? (
-          <Button.Gray
-            // TODO: improve unload protect workflow
-            onClick={(): void => setUnloadProtect(false, handleClose)}
+      >
+        <H3>{`${adminText('user')} ${user.name}`}</H3>
+        <Label.Generic>
+          {commonText('collection')}
+          <Select
+            value={collection}
+            onValueChange={(value): void =>
+              setCollection(Number.parseInt(value))
+            }
           >
-            {commonText('cancel')}
-          </Button.Gray>
-        ) : (
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
-        )}
-        <Submit.Green disabled={!changesMade}>
-          {commonText('save')}
-        </Submit.Green>
-      </div>
-    </Form>
+            {Object.values(collections).map((collection) => (
+              <option key={collection.id} value={collection.id}>
+                {collection.get('collectionName')}
+              </option>
+            ))}
+          </Select>
+        </Label.Generic>
+        <fieldset className="flex flex-col gap-2">
+          <legend>{adminText('userRoles')}</legend>
+          <Ul>
+            {typeof collectionRoles === 'object' &&
+            typeof userRoles === 'object'
+              ? collectionRoles[collection].map((role) => (
+                  <li key={role.id} className="flex items-center gap-2">
+                    <Label.ForCheckbox>
+                      <Input.Checkbox
+                        checked={userRoles[collection].includes(role.id)}
+                        onValueChange={(isChecked): void =>
+                          setUserRoles(
+                            replaceKey(
+                              userRoles,
+                              collection.toString(),
+                              Array.from(
+                                isChecked
+                                  ? removeItem(
+                                      userRoles[collection],
+                                      userRoles[collection].indexOf(role.id)
+                                    )
+                                  : [...userRoles[collection], role.id]
+                              ).sort(sortFunction(f.id))
+                            )
+                          )
+                        }
+                      />
+                      {role.name}
+                    </Label.ForCheckbox>
+                    <Button.Simple
+                      className={`${className.redButton} print:hidden`}
+                      title={commonText('edit')}
+                      aria-label={commonText('edit')}
+                      // TODO: trigger unload protect
+                      onClick={(): void => handleOpenRole(collection, role.id)}
+                    >
+                      {icons.pencil}
+                    </Button.Simple>
+                  </li>
+                ))
+              : commonText('loading')}
+          </Ul>
+        </fieldset>
+        <PoliciesView
+          policies={userPolicies?.[collection]}
+          isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
+          onChange={(policies): void =>
+            typeof userPolicies === 'object'
+              ? setUserPolicies(replaceKey(userPolicies, collection, policies))
+              : undefined
+          }
+        />
+        <PreviewPermissions
+          userId={user.id}
+          collectionId={collection}
+          changesMade={changesMade}
+        />
+        <div className="flex gap-2">
+          {changesMade ? (
+            <Button.Gray
+              // TODO: improve unload protect workflow
+              onClick={(): void => setUnloadProtect(false, handleClose)}
+            >
+              {commonText('cancel')}
+            </Button.Gray>
+          ) : (
+            <Button.Blue onClick={handleClose}>
+              {commonText('close')}
+            </Button.Blue>
+          )}
+          <Submit.Green disabled={!changesMade}>
+            {commonText('save')}
+          </Submit.Green>
+        </div>
+      </Form>
+    </Container.Base>
   );
 }

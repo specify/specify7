@@ -113,12 +113,14 @@ export const dialogIconTriggers = {
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
-const baseContainer = `bg-gray-200 dark:bg-neutral-800 flex flex-col gap-2
-    p-4 shadow-md shadow-gray-500 rounded`;
+const containerBackground = 'bg-gray-200 dark:bg-neutral-800';
+const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
+  shadow-gray-500 rounded`;
 // TODO: reduce this once everything is using React
 const rootBackground = 'bg-white dark:bg-neutral-900';
 export const className = {
   rootBackground,
+  containerBackground,
   root: `flex flex-col h-screen overflow-hidden ${rootBackground} 
     text-neutral-900 dark:text-neutral-200`,
   // Do not show validation errors until tried to submit the form
@@ -148,6 +150,7 @@ export const className = {
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg',
   h2: 'font-semibold text-black dark:text-white',
+  h3: 'text-gray-500 dark:text-neutral-400',
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -584,5 +587,5 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.h2);
-export const H3 = wrap('H3', 'h3', 'text-gray-500 dark:text-neutral-400');
+export const H3 = wrap('H3', 'h3', className.h3);
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -89,7 +89,7 @@ export const getPickListItems = (
       title: title ?? value,
     }));
 
-/** From table picklist */
+/** From the table picklist */
 async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
@@ -110,7 +110,7 @@ async function fetchFromTable(
   );
 }
 
-/** From field picklist */
+/** From the field picklist */
 async function fetchFromField(
   pickList: SpecifyResource<PickList>,
   limit: number

@@ -1195,10 +1195,14 @@ const commonText = createDictionary({
     'es-es': 'Item was deleted successfully.',
   },
   appTitle: {
-    'en-us': (baseTitle: string) => `${baseTitle} | Specify 7`,
-    'ru-ru': (baseTitle: string) => `${baseTitle} | Specify 7`,
-    ca: (baseTitle: string) => `${baseTitle} | Specify 7`,
-    'es-es': (baseTitle: string) => `${baseTitle} | Specify 7`,
+    'en-us': (baseTitle: string) =>
+      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
+    'ru-ru': (baseTitle: string) =>
+      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
+    ca: (baseTitle: string) =>
+      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
+    'es-es': (baseTitle: string) =>
+      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
   },
   // StartApp
   sessionTimeOutDialogTitle: {
@@ -1629,6 +1633,18 @@ const commonText = createDictionary({
     'ru-ru': 'Operations API documentation',
     ca: 'Operations API documentation',
     'es-es': 'Operations API documentation',
+  },
+  title: {
+    'en-us': 'Title',
+    'ru-ru': 'Title',
+    ca: 'Title',
+    'es-es': 'Title',
+  },
+  ordinal: {
+    'en-us': 'Ordinal',
+    'ru-ru': 'Ordinal',
+    ca: 'Ordinal',
+    'es-es': 'Ordinal',
   },
 });
 
