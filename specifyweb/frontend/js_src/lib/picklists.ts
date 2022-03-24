@@ -7,6 +7,7 @@ import formsText from './localization/forms';
 import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
+import commonText from './localization/common';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
@@ -35,6 +36,12 @@ const auditLogActions = [
   formsText('treeSynonymize'),
   formsText('treeUnsynonymize'),
 ] as const;
+
+const pickListSortTypes = [
+  commonText('none'),
+  commonText('title'),
+  commonText('ordinal'),
+];
 
 const userTypes = ['Manager', 'FullAccess', 'LimitedAccess', 'Guest'] as const;
 
@@ -117,6 +124,12 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
         )
       ),
       tableName: tablesPickList,
+      sortType: definePicklist(
+        '_PickListSortType',
+        pickListSortTypes.map((title, index) =>
+          createPickListItem(index.toString(), title)
+        )
+      ),
     },
     SpecifyUser: {
       userType: definePicklist(

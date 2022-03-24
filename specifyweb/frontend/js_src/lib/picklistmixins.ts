@@ -12,6 +12,7 @@ import { fetchRows } from './specifyapi';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
+import { f, sortObjectsByKey } from './wbplanviewhelper';
 
 export const createPickListItem = (
   // It's weird that value can be null, but that's what the data model says
@@ -61,16 +62,32 @@ export async function fetchPickList(
   return pickList;
 }
 
+export const PickListSortType = {
+  NO_SORT: 0,
+  // Sort by "title" field
+  TITLE_SORT: 1,
+  // Sort by "ordinal" field
+  ORDINAL_SORT: 2,
+};
+
 export const getPickListItems = (
   pickList: SpecifyResource<PickList>
 ): RA<{
   readonly value: string;
   readonly title: string;
 }> =>
-  serializeResource(pickList).pickListItems.map(({ value, title }) => ({
-    value: value ?? title,
-    title: title ?? value,
-  }));
+  f
+    .var(serializeResource(pickList).pickListItems, (items) =>
+      pickList.get('sortType') === PickListSortType.TITLE_SORT
+        ? sortObjectsByKey(items, 'title')
+        : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
+        ? sortObjectsByKey(items, 'ordinal')
+        : items
+    )
+    .map(({ value, title }) => ({
+      value: value ?? title,
+      title: title ?? value,
+    }));
 
 /** From table picklist */
 async function fetchFromTable(
