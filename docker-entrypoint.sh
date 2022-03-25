@@ -13,6 +13,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   ve/bin/python manage.py migrate notifications
   ve/bin/python manage.py migrate workbench
   ve/bin/python manage.py migrate accounts
+  ve/bin/python manage.py migrate permissions
   set -e
 fi
 exec "$@"
