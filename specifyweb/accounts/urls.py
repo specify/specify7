@@ -1,11 +1,16 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 from . import views
 
 
 urlpatterns = [
-    path('login/', views.oic_login),
+    path('login/',
+         views.oic_login
+         if settings.OAUTH_LOGIN_PROVIDERS is not None
+         else auth_views.LoginView.as_view(template_name='login.html')
+         ),
 
     # Login with Specify username and password:
     path('legacy_login/', auth_views.LoginView.as_view(template_name='login.html')),
