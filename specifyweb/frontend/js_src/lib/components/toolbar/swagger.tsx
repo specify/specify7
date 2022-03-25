@@ -8,11 +8,13 @@ export const toolbarItems: RA<UserTool> = [
     title: commonText('tableApi'),
     isOverlay: false,
     view: '/documentation/api/tables/',
+    groupLabel: commonText('developers'),
   },
   {
     task: 'swagger-operations',
     title: commonText('operationsApi'),
     isOverlay: false,
     view: '/documentation/api/operations/',
+    groupLabel: commonText('developers'),
   },
 ];

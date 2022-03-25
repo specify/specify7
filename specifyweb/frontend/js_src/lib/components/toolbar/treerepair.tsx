@@ -115,6 +115,7 @@ const userTool: UserTool = {
   title: commonText('repairTree'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
+  groupLabel: commonText('administration'),
 };
 
 export default userTool;

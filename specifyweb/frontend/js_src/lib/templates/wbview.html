@@ -37,11 +37,11 @@
   >
     <%= wbText('results') %>
   </button>
-  <% if(isUploaded && isManager){ %>
+  <% if(isUploaded){ %>
   <button type="button" aria-haspopup="dialog" class="button wb-unupload">
     <%= wbText('rollback') %>
   </button>
-  <% } else { %> <% if(isManager){ %>
+  <% } else { %>
   <button type="button" aria-haspopup="dialog" class="button wb-upload">
     <%= wbText('upload') %>
   </button>

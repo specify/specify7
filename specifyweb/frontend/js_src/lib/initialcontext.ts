@@ -27,23 +27,26 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 }
 
 export const initialContext = Promise.all([
-  // Fetch user preferences
+  // TODO: cache preferences and permissions
+  // Fetch user preferences (NOT CACHED)
   import('./preferencesutils'),
-  // Fetch general context information
+  // Fetch general context information (NOT CACHED)
   import('./schemabase'),
-  // Fetch schema
+  // Fetch schema (cached)
   import('./schema'),
-  // Fetch remote preferences
+  // Fetch remote preferences (cached)
   import('./remoteprefs'),
-  // Fetch icon definitions
+  // Fetch icon definitions (cached)
   import('./icons'),
-  // Fetch schema localization
+  // Fetch general system information (cached)
+  import('./systeminfo'),
+  // Fetch schema localization (cached)
   import('./stringlocalization'),
-  // Fetch UI formatters
+  // Fetch UI formatters (cached)
   import('./uiformatters'),
-  // Fetch user information
+  // Fetch user information (NOT CACHED)
   import('./userinfo'),
-  // Fetch user permissions
+  // Fetch user permissions (NOT CACHED)
   import('./permissions'),
 ]).then(async (modules) =>
   Promise.all(modules.map(async ({ fetchContext }) => fetchContext))

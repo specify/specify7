@@ -42,6 +42,7 @@ const userTool: UserTool = {
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   enabled: () => hasToolPermission('resources', 'read'),
+  groupLabel: commonText('administration'),
 };
 
 export default userTool;

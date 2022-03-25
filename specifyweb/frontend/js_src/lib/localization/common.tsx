@@ -1622,16 +1622,16 @@ const commonText = createDictionary({
     'es-es': 'Data Model',
   },
   tableApi: {
-    'en-us': 'Tables API documentation',
-    'ru-ru': 'Документация по API таблиц',
-    ca: 'Tables API documentation',
-    'es-es': 'Tables API documentation',
+    'en-us': 'Tables API',
+    'ru-ru': 'API таблиц',
+    ca: 'Tables API',
+    'es-es': 'Tables API',
   },
   operationsApi: {
-    'en-us': 'Operations API documentation',
-    'ru-ru': 'Документация по API операций',
-    ca: 'Operations API documentation',
-    'es-es': 'Operations API documentation',
+    'en-us': 'Operations API',
+    'ru-ru': ' API операций',
+    ca: 'Operations API',
+    'es-es': 'Operations API',
   },
   title: {
     'en-us': 'Title',
@@ -1656,6 +1656,49 @@ const commonText = createDictionary({
     'ru-ru': 'У вас нет разрешения на выполнение этого действия.',
     ca: "You don't have permission to perform this action.",
     'es-es': "You don't have permission to perform this action.",
+  },
+  // FIXME: localize
+  userAccount: {
+    'en-us': 'User Account',
+    'ru-ru': 'User Account',
+    ca: 'User Account',
+    'es-es': 'User Account',
+  },
+  customization: {
+    'en-us': 'Customization',
+    'ru-ru': 'Customization',
+    ca: 'Customization',
+    'es-es': 'Customization',
+  },
+  administration: {
+    'en-us': 'Administration',
+    'ru-ru': 'Administration',
+    ca: 'Administration',
+    'es-es': 'Administration',
+  },
+  export: {
+    'en-us': 'Export',
+    'ru-ru': 'Export',
+    ca: 'Export',
+    'es-es': 'Export',
+  },
+  documentation: {
+    'en-us': 'Documentation',
+    'ru-ru': 'Documentation',
+    ca: 'Documentation',
+    'es-es': 'Documentation',
+  },
+  developers: {
+    'en-us': 'Developers',
+    'ru-ru': 'Developers',
+    ca: 'Developers',
+    'es-es': 'Developers',
+  },
+  forum: {
+    'en-us': 'Forum',
+    'ru-ru': 'Forum',
+    ca: 'Forum',
+    'es-es': 'Forum',
   },
 });
 

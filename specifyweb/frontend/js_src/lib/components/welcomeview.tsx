@@ -3,13 +3,14 @@ import React from 'react';
 import commonText from '../localization/common';
 import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
-import { systemInformationPromise } from '../systeminfo';
+import { getSystemInfo } from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
-import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { useBooleanState, useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { UserTool } from './main';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
 const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
@@ -42,13 +43,76 @@ function WelcomeScreenContent(): JSX.Element {
   );
 }
 
-function AboutSpecify(): JSX.Element | null {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [systemInformation] = useAsyncState(
-    React.useCallback(() => systemInformationPromise, []),
-    true
+export function AboutDialog({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      title={welcomeText('aboutSpecifyDialogTitle')}
+      header={commonText('specifySeven')}
+      className={{
+        container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
+        header: 'text-3xl',
+      }}
+      onClose={handleClose}
+      buttons={commonText('close')}
+    >
+      <p>{welcomeText('fullAddress')}</p>
+      <address>
+        <p>
+          <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
+            www.specifysoftware.org
+          </Link.NewTab>
+        </p>
+        <p>{supportLink}</p>
+      </address>
+      <p className="text-justify">{welcomeText('disclosure')}</p>
+      <p className="text-justify">{welcomeText('licence')}</p>
+
+      <section>
+        <H3>{welcomeText('systemInformation')}</H3>
+        <table className="grid-table gap-1 grid-cols-[auto,auto]">
+          <tbody>
+            {[
+              [welcomeText('version'), getSystemInfo().version],
+              [
+                welcomeText('specifySixVersion'),
+                getSystemInfo().specify6_version,
+              ],
+              [
+                welcomeText('databaseVersion'),
+                getSystemInfo().database_version,
+              ],
+              [welcomeText('schemaVersion'), getSystemInfo().schema_version],
+              [welcomeText('databaseName'), getSystemInfo().database],
+              [welcomeText('institution'), getSystemInfo().institution],
+              [welcomeText('discipline'), getSystemInfo().discipline],
+              [welcomeText('collection'), getSystemInfo().collection],
+              [
+                welcomeText('isaNumber'),
+                getSystemInfo().isa_number ?? commonText('notApplicable'),
+              ],
+              [welcomeText('browser'), window.navigator.userAgent],
+            ].map(([label, value], index) => (
+              <tr key={index}>
+                <th scope="row" className="whitespace-nowrap justify-end">
+                  {label}
+                </th>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </Dialog>
   );
-  return typeof systemInformation === 'object' ? (
+}
+
+function AboutSpecify(): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
     <div className="text-right">
       <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
         <img
@@ -56,70 +120,9 @@ function AboutSpecify(): JSX.Element | null {
           alt={welcomeText('aboutSpecify')}
         />
       </Button.LikeLink>
-      <Dialog
-        isOpen={isOpen}
-        title={welcomeText('aboutSpecifyDialogTitle')}
-        header={commonText('specifySeven')}
-        className={{
-          container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
-          header: 'text-3xl',
-        }}
-        onClose={handleClose}
-        buttons={commonText('close')}
-      >
-        <p>{welcomeText('fullAddress')}</p>
-        <address>
-          <p>
-            <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
-              www.specifysoftware.org
-            </Link.NewTab>
-          </p>
-          <p>{supportLink}</p>
-        </address>
-        <p className="text-justify">{welcomeText('disclosure')}</p>
-        <p className="text-justify">{welcomeText('licence')}</p>
-
-        <section>
-          <H3>{welcomeText('systemInformation')}</H3>
-          <table className="grid-table gap-1 grid-cols-[auto,auto]">
-            <tbody>
-              {[
-                [welcomeText('version'), systemInformation.version],
-                [
-                  welcomeText('specifySixVersion'),
-                  systemInformation.specify6_version,
-                ],
-                [
-                  welcomeText('databaseVersion'),
-                  systemInformation.database_version,
-                ],
-                [
-                  welcomeText('schemaVersion'),
-                  systemInformation.schema_version,
-                ],
-                [welcomeText('databaseName'), systemInformation.database],
-                [welcomeText('institution'), systemInformation.institution],
-                [welcomeText('discipline'), systemInformation.discipline],
-                [welcomeText('collection'), systemInformation.collection],
-                [
-                  welcomeText('isaNumber'),
-                  systemInformation.isa_number ?? commonText('notApplicable'),
-                ],
-                [welcomeText('browser'), window.navigator.userAgent],
-              ].map(([label, value], index) => (
-                <tr key={index}>
-                  <th scope="row" className="whitespace-nowrap justify-end">
-                    {label}
-                  </th>
-                  <td>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </Dialog>
+      {isOpen && <AboutDialog onClose={handleClose} />}
     </div>
-  ) : null;
+  );
 }
 
 function WelcomeView(): JSX.Element {
@@ -144,4 +147,14 @@ function WelcomeView(): JSX.Element {
   );
 }
 
-export default createBackboneView(WelcomeView);
+const View = createBackboneView(WelcomeView);
+
+export const userTool: UserTool = {
+  task: 'about',
+  title: welcomeText('aboutSpecify'),
+  view: ({ onClose }) => new View({ onClose }),
+  isOverlay: true,
+  groupLabel: commonText('documentation'),
+};
+
+export default View;

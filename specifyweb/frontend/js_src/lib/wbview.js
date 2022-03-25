@@ -23,7 +23,6 @@ import Papa from 'papaparse';
 
 import {Button, className} from './components/basic';
 import {getModel} from './schema';
-import {userInformation} from './userinfo';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
 import {NotFoundView} from './notfoundview';
@@ -214,7 +213,6 @@ const WBView = Backbone.View.extend({
       template({
         isUploaded:
           this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
-        isManager: userInformation.usertype === 'Manager',
         wbText,
         commonText,
         localityText,

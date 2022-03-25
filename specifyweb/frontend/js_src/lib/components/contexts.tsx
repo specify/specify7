@@ -19,6 +19,7 @@ export function Contexts({
   const handle = React.useCallback(
     (promise: Promise<unknown>): void => {
       const holderId = holders.current.length;
+      console.log('Begun loading', holderId);
       holders.current = [...holders.current, holderId];
       handleLoading();
       promise
@@ -29,6 +30,7 @@ export function Contexts({
         .finally(() => {
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
+          console.log('Finished loading', holderId);
         });
     },
     [handleLoading, handleLoaded]

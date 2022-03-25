@@ -86,6 +86,7 @@ const toolBarItem: UserTool = {
   title: commonText('preferences'),
   isOverlay: false,
   view: ({ onClose }) => new PreferencesView({ onClose }),
+  groupLabel: commonText('customization'),
 };
 
 export default toolBarItem;

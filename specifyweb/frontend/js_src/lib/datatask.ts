@@ -28,7 +28,7 @@ const PermissionDeniedView = createBackboneView(PermissionDenied);
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
 async function recordSetView(id: string, index = '0'): Promise<void> {
-  if (!hasToolPermission('recordSets', 'view')) {
+  if (!hasToolPermission('recordSets', 'read')) {
     setCurrentView(new PermissionDeniedView());
     return;
   }

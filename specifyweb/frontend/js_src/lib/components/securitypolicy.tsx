@@ -66,7 +66,7 @@ function PolicyView({
                   })
                 }
               >
-                <option value="0" />
+                <option value="0" key="0" />
                 {Object.entries(
                   group(
                     Object.entries(defined(registry)).map(

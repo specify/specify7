@@ -59,8 +59,9 @@ export function useCachedState<
     [bucketName, cacheName, bucketType]
   );
 
+  const isUndefined = typeof state === 'undefined';
   React.useEffect(() => {
-    if (typeof state === 'undefined' || staleWhileRefresh)
+    if (isUndefined || staleWhileRefresh)
       (isFunction(defaultValue)
         ? Promise.resolve(defaultValue())
         : Promise.resolve(defaultValue)
@@ -69,7 +70,7 @@ export function useCachedState<
           typeof value === 'undefined' ? undefined : setCachedState(value)
         )
         .catch(crash);
-  }, [state, defaultValue, setCachedState, staleWhileRefresh]);
+  }, [isUndefined, defaultValue, setCachedState, staleWhileRefresh]);
 
   return [state, setCachedState];
 }

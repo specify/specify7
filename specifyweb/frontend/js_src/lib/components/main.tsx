@@ -5,7 +5,7 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
-import { systemInformationPromise } from '../systeminfo';
+import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
 import { fetchContext as userPermission } from '../permissions';
@@ -19,7 +19,6 @@ import {
 } from './header';
 import { Dialog } from './modaldialog';
 import { Notifications } from './notifications';
-import { useAsyncState } from './hooks';
 
 export type UserTool = {
   readonly task: string;
@@ -33,9 +32,10 @@ export type UserTool = {
   readonly enabled?: boolean | (() => boolean);
   // Whether the view opens in a dialog window
   readonly isOverlay: boolean;
+  readonly groupLabel: string;
 };
 
-export type MenuItem = UserTool & {
+export type MenuItem = Omit<UserTool, 'groupLabel'> & {
   readonly icon: JSX.Element;
 };
 
@@ -88,30 +88,66 @@ function processMenuItems<T extends UserTool | MenuItem>(
   return filtered;
 }
 
-// TODO: group these into categories
 const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   userPermission,
   fetchUserInfo,
 ])
   .then(() =>
     Promise.all([
-      import('./toolbar/schemaconfig'),
+      // User Account
+      {
+        default: {
+          task: 'logout',
+          title: commonText('logOut'),
+          basePath: '',
+          view: '/accounts/logout',
+          isOverlay: false,
+          groupLabel: commonText('userAccount'),
+        },
+      },
+      {
+        default: {
+          task: 'password_change',
+          title: commonText('changePassword'),
+          basePath: '',
+          view: '/accounts/logout',
+          isOverlay: false,
+          groupLabel: commonText('userAccount'),
+        },
+      },
       import('./toolbar/masterkey'),
+      // Customization
+      import('./toolbar/preferences'),
+      import('./toolbar/schemaconfig'),
+      // Administration
       import('./toolbar/users'),
-      import('./toolbar/treerepair'),
       import('./toolbar/resources'),
+      import('./toolbar/security').then(({ userTool }) => ({
+        default: userTool,
+      })),
+      import('./toolbar/treerepair'),
+      // Export
       import('./toolbar/dwca'),
       import('./toolbar/forceupdate'),
-      import('./toolbar/preferences'),
+      // Documentation
+      import('./welcomeview').then(({ userTool }) => ({ default: userTool })),
+      {
+        default: {
+          task: 'discourse',
+          title: commonText('forum'),
+          basePath: '',
+          view: 'https://discourse.specifysoftware.org/',
+          isOverlay: false,
+          groupLabel: commonText('documentation'),
+        },
+      },
+      // Developers
       import('./toolbar/schema').then(({ toolBarItem }) => ({
         default: toolBarItem,
       })),
       import('./toolbar/swagger').then(({ toolbarItems }) =>
         toolbarItems.map((item) => ({ default: item }))
       ),
-      import('./toolbar/security').then(({ userTool }) => ({
-        default: userTool,
-      })),
     ])
   )
   .then((items) => items.flat())
@@ -128,17 +164,8 @@ export function Main({
   const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
     undefined
   );
-  const [showVersionMismatch = false, setShowVersionMismatch] = useAsyncState(
-    React.useCallback(
-      async () =>
-        systemInformationPromise.then(
-          (systemInformation) =>
-            systemInformation.specify6_version !==
-            systemInformation.database_version
-        ),
-      []
-    ),
-    false
+  const [showVersionMismatch = false, setShowVersionMismatch] = React.useState(
+    getSystemInfo().specify6_version !== getSystemInfo().database_version
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
@@ -182,8 +209,8 @@ export function Main({
         >
           <p>
             {commonText('versionMismatchDialogMessage')(
-              systemInformation.specify6_version,
-              systemInformation.database_version
+              getSystemInfo().specify6_version,
+              getSystemInfo().database_version
             )}
           </p>
           <p>{commonText('versionMismatchSecondDialogMessage')}</p>

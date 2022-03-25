@@ -8,11 +8,11 @@ import { router } from '../router';
 import { setCurrentOverlay, setCurrentView } from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
-import { sortFunction } from '../wbplanviewhelper';
-import { Button, className, Form, Input, Link, Select, Ul } from './basic';
+import { group, sortFunction, split } from '../wbplanviewhelper';
+import { Button, className, Form, H3, Input, Link, Select, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
-import { Dialog, dialogClassNames } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -176,15 +176,92 @@ export function ExpressSearch(): JSX.Element {
   );
 }
 
-// FIXME: split userTools menu into categories
-// FIXME: add discourse link to about dialog
-// FIXME: add about dialog to userTools
+/*
+ * FIXME: split userTools menu into categories
+ * FIXME: add discourse link to about dialog
+ * FIXME: add about dialog to userTools
+ */
+
+function UserToolsColumn({
+  groups,
+  onClose: handleClose,
+}: {
+  readonly groups: RA<Readonly<[string, RA<Omit<UserTool, 'groupLabel'>>]>>;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <div className="flex flex-col flex-1 gap-4">
+      {groups.map(([groupName, userTools]) => (
+        <div key={groupName}>
+          <H3>{groupName}</H3>
+          <Ul>
+            {userTools
+              .map((userTool) => ({
+                ...userTool,
+                basePath:
+                  'basePath' in userTool
+                    ? (
+                        userTool as unknown as {
+                          readonly basePath: string;
+                        }
+                      ).basePath
+                    : '/specify/task/',
+              }))
+              .map(({ task, title, basePath, view, isOverlay }) => (
+                <li key={task}>
+                  <Link.Default
+                    href={
+                      typeof view === 'string' ? view : `${basePath}${task}/`
+                    }
+                    className={
+                      typeof view === 'string'
+                        ? ''
+                        : className.navigationHandled
+                    }
+                    onClick={(event): void => {
+                      if (typeof view !== 'function') {
+                        handleClose();
+                        return;
+                      }
+                      event.preventDefault();
+                      handleClose();
+                      const backboneView = view({
+                        onClose: (): void => void backboneView.remove(),
+                        urlParameter: undefined,
+                      });
+                      if (isOverlay)
+                        setCurrentOverlay(backboneView, `${basePath}${task}/`);
+                      else setCurrentView(backboneView);
+                    }}
+                  >
+                    {title}
+                  </Link.Default>
+                </li>
+              ))}
+          </Ul>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function UserTools({
   userTools,
 }: {
   readonly userTools: RA<UserTool>;
 }): JSX.Element {
+  /*
+   * Can't split columns with CSS because break-inside:avoid is not yet
+   * very well supported
+   */
+  const [leftColumn, rightColumn] = split(
+    Object.entries(
+      group(
+        userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
+      )
+    ),
+    (_item, index, { length }) => index >= length / 2
+  );
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
@@ -198,61 +275,12 @@ export function UserTools({
       <Dialog
         isOpen={isOpen}
         header={commonText('userToolsDialogTitle')}
-        className={{
-          container: dialogClassNames.narrowContainer,
-        }}
         onClose={handleClose}
         buttons={commonText('close')}
       >
-        <nav>
-          <Ul>
-            {[
-              {
-                task: '/accounts/logout',
-                title: commonText('logOut'),
-                basePath: '',
-                view: undefined,
-                isOverlay: false,
-              },
-              {
-                task: '/accounts/password_change',
-                title: commonText('changePassword'),
-                basePath: '',
-                view: undefined,
-                isOverlay: false,
-              },
-              ...userTools.map((userTool) => ({
-                ...userTool,
-                basePath: '/specify/task/',
-              })),
-            ].map(({ task, title, basePath, view, isOverlay }) => (
-              <li key={task}>
-                <Link.Default
-                  href={typeof view === 'string' ? view : `${basePath}${task}/`}
-                  className={
-                    typeof view === 'string' ? '' : className.navigationHandled
-                  }
-                  onClick={(event): void => {
-                    if (typeof view !== 'function') {
-                      handleClose();
-                      return;
-                    }
-                    event.preventDefault();
-                    handleClose();
-                    const backboneView = view({
-                      onClose: (): void => void backboneView.remove(),
-                      urlParameter: undefined,
-                    });
-                    if (isOverlay)
-                      setCurrentOverlay(backboneView, `${basePath}${task}/`);
-                    else setCurrentView(backboneView);
-                  }}
-                >
-                  {title}
-                </Link.Default>
-              </li>
-            ))}
-          </Ul>
+        <nav className="flex gap-2">
+          <UserToolsColumn groups={leftColumn} onClose={handleClose} />
+          <UserToolsColumn groups={rightColumn} onClose={handleClose} />
         </nav>
       </Dialog>
     </>

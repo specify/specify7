@@ -233,4 +233,5 @@ export const toolBarItem: UserTool = {
   title: commonText('datamodel'),
   isOverlay: false,
   view: '/specify/datamodel/',
+  groupLabel: commonText('developers'),
 };

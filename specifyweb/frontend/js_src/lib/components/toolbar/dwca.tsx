@@ -155,6 +155,7 @@ const userTool: UserTool = {
   enabled: () => hasPermission('/export/dwca', 'execute'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
+  groupLabel: commonText('export'),
 };
 
 export default userTool;

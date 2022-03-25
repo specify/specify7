@@ -155,10 +155,10 @@ export const sortObjectsByKey = <
 export const split = <ITEM>(
   array: RA<ITEM>,
   // If returns true, item would go to the right array
-  discriminator: (item: ITEM, index: number) => boolean
+  discriminator: (item: ITEM, index: number, array: RA<ITEM>) => boolean
 ): Readonly<[left: RA<ITEM>, right: RA<ITEM>]> =>
   array
-    .map((item, index) => [item, discriminator(item, index)] as const)
+    .map((item, index) => [item, discriminator(item, index, array)] as const)
     .reduce<Readonly<[left: RA<ITEM>, right: RA<ITEM>]>>(
       ([left, right], [item, isRight]) => [
         [...left, ...(isRight ? [] : [item])],

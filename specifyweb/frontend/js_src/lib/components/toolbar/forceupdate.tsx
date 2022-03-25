@@ -65,6 +65,7 @@ const userTool: UserTool = {
   enabled: () => hasPermission('/export/feed', 'force_update'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
+  groupLabel: commonText('export'),
 };
 
 export default userTool;

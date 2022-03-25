@@ -18,7 +18,7 @@ import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { getBoolPref } from '../remoteprefs';
 import { toTable } from '../specifymodel';
-import { systemInformationPromise } from '../systeminfo';
+import { getSystemInfo } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
@@ -48,7 +48,7 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
       .then(async (leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',
-          systemInfo: await systemInformationPromise,
+          systemInfo: getSystemInfo(),
           // @ts-expect-error
           leafletLayers: Object.fromEntries(
             Object.entries(leafletLayers).map(([groupName, group]) => [

@@ -238,6 +238,7 @@ const userTool: UserTool = {
   title: commonText('schemaConfig'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
+  groupLabel: commonText('customization'),
 };
 
 export default userTool;

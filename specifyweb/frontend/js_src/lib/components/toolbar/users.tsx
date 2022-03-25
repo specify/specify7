@@ -77,6 +77,7 @@ const userTool: UserTool = {
   enabled: () =>
     hasTablePermission('SpecifyUser', 'update') ||
     hasTablePermission('SpecifyUser', 'create'),
+  groupLabel: commonText('administration'),
 };
 
 export default userTool;

@@ -26,7 +26,11 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
-import { hasPermission, hasToolPermission } from '../../permissions';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../../permissions';
 
 const fetchTablesToShow = async (): Promise<RA<keyof Tables>> =>
   ajax<Document>(
@@ -41,10 +45,6 @@ const fetchTablesToShow = async (): Promise<RA<keyof Tables>> =>
             getModel(table.getAttribute('name') ?? '')
           )
         )
-          .filter(
-            ({ name }) =>
-              name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
-          )
           .map(({ name }) => name)
           .sort()
       )
@@ -293,7 +293,11 @@ export function QueryToolbarItem({
           </Button.Transparent>
         }
       >
-        <ListOfTables tables={tablesToShow} />
+        <ListOfTables
+          tables={tablesToShow.filter((tableName) =>
+            hasTablePermission(tableName, 'read')
+          )}
+        />
       </Dialog>
     ) : (
       <LoadingScreen />

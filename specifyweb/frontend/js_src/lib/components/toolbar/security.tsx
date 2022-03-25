@@ -15,6 +15,7 @@ import createBackboneView from '../reactbackboneextend';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import { UserView } from '../securityuser';
+import commonText from '../../localization/common';
 
 function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -148,6 +149,7 @@ export const userTool: UserTool = {
   title: adminText('securityPanel'),
   isOverlay: true,
   view: '/specify/security/',
+  groupLabel: commonText('administration'),
 };
 
 export default function Routes(): void {

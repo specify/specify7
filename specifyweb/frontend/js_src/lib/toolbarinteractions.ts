@@ -12,7 +12,7 @@ const menuItem: MenuItem = {
   title: commonText('interactions'),
   icon: icons.chat,
   isOverlay: true,
-  enabled: () => hasToolPermission('recordSets', 'view'),
+  enabled: () => hasToolPermission('recordSets', 'read'),
   view: (props) => new InteractionsView(props).render(),
 };
 

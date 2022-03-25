@@ -1,4 +1,4 @@
-import { ping } from './ajax';
+import { Http, ping } from './ajax';
 import { load } from './initialcontext';
 import * as querystring from './querystring';
 
@@ -17,10 +17,13 @@ type SystemInfo = {
   readonly stats_url: string | null;
 };
 
-export const systemInformationPromise: Promise<SystemInfo> = load<SystemInfo>(
+let systemInfo: SystemInfo;
+
+export const fetchContext = load<SystemInfo>(
   '/context/system_info.json',
   'application/json'
-).then((systemInfo) => {
+).then((data) => {
+  systemInfo = data;
   if (systemInfo.stats_url !== null)
     ping(
       querystring.format(systemInfo.stats_url, {
@@ -34,7 +37,8 @@ export const systemInformationPromise: Promise<SystemInfo> = load<SystemInfo>(
         isaNumber: systemInfo.isa_number,
       }),
       {},
-      { strict: false }
+      { strict: false, expectedResponseCodes: [Http.NO_CONTENT] }
     ).catch(console.error);
-  return systemInfo;
 });
+
+export const getSystemInfo = (): SystemInfo => systemInfo;
