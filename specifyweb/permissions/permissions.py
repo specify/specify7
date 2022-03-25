@@ -1,6 +1,5 @@
 from typing import Any, Callable, Tuple, List, Dict, Union, Iterable, Optional, NamedTuple
 
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -105,7 +104,10 @@ class QueryResult(NamedTuple):
     matching_user_policies: List
     matching_role_policies: List
 
-def query(collectionid: Optional[int] , userid: int, resource: str, action: str) -> QueryResult:
+def query_pt(collectionid: Optional[int], userid: int, target: PermissionTargetAction) -> QueryResult:
+    return query(collectionid, userid, target.resource(), target.action())
+
+def query(collectionid: Optional[int], userid: int, resource: str, action: str) -> QueryResult:
     cursor = connection.cursor()
 
     cursor.execute("""
@@ -167,3 +169,12 @@ def table_permissions_checker(collection, actor, action: str) -> Callable[[Any],
     def checker(obj) -> None:
         check_table_permissions(collection, actor, obj, action)
     return checker
+
+def skip_collection_access_check(view):
+    view.__skip_sp_collection_access_check = True
+    return view
+
+class CollectionAccessPT(PermissionTarget):
+    resource = "/system/sp7/collection"
+    access = PermissionTargetAction()
+
