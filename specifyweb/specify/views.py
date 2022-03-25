@@ -7,7 +7,8 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
-from specifyweb import permissions
+from specifyweb.permissions.permissions import PermissionTarget, \
+    PermissionTargetAction, check_permission_targets
 from . import api, models
 from .specify_jar import specify_jar
 
@@ -121,6 +122,9 @@ def properties(request, name):
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
 
+class SetPasswordPT(PermissionTarget):
+    resource = '/admin/user/password'
+    update = PermissionTargetAction()
 
 @openapi(schema={
     'post': {
@@ -156,14 +160,16 @@ def set_password(request, userid):
     POST parameter. Must be logged in as an admin, otherwise HTTP 403
     is returned.
     """
-    if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden()
-
+    check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
     user = models.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
 
+
+class Sp6AdminPT(PermissionTarget):
+    resource = '/admin/user/sp6/is_admin'
+    update = PermissionTargetAction()
 
 @openapi(schema={
     'post': {
@@ -200,9 +206,7 @@ def set_admin_status(request, userid):
     according to the 'admin_status' POST parameter. Must be logged in
     as an admin, otherwise HTTP 403 is returned.
     """
-    if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden()
-
+    check_permission_targets(None, request.specify_user.id, [Sp6AdminPT.update])
     user = models.Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()

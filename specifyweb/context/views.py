@@ -27,6 +27,7 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
@@ -66,17 +67,22 @@ def set_users_collections(cursor, user, collectionids):
             cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
                            'values (%s, %s)', [user.id, principal.id])
 
+class Sp6CollectionAccessPT(PermissionTarget):
+    resource = '/admin/user/sp6/collection_access'
+    read = PermissionTargetAction()
+    update = PermissionTargetAction()
+
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
 def user_collection_access(request, userid):
     """Returns (GET) or sets (PUT) the list of collections user <userid>
     can log into. Requesting user must be an admin."""
-    if not request.specify_user.is_admin():
-        return HttpResponseForbidden()
+    check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.read])
     cursor = connection.cursor()
 
     if request.method == 'PUT':
+        check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
         set_users_collections(cursor, user, collections)
