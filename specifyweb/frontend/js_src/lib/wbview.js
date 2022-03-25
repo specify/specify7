@@ -61,6 +61,7 @@ import {fetchPickList} from './picklistmixins';
 import {setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
 import localityText from './localization/locality';
+import {hasPermission} from './permissions';
 
 const metaKeys = [
   'isNew',
@@ -211,7 +212,8 @@ const WBView = Backbone.View.extend({
   render() {
     this.$el.append(
       template({
-        isUploaded: this.isUploaded,
+        isUploaded:
+          this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
         isManager: userInformation.usertype === 'Manager',
         wbText,
         commonText,
@@ -219,6 +221,20 @@ const WBView = Backbone.View.extend({
       })
     );
     this.$el.attr('aria-label', commonText('workbench'));
+    if (!hasPermission('/workbench/dataset', 'upload'))
+      this.$el.find('.wb-upload').remove();
+    if (!hasPermission('/workbench/dataset', 'validate'))
+      this.$el.find('.wb-validate').remove();
+    if (!hasPermission('/workbench/dataset', 'unupload'))
+      this.$el.find('.wb-unupload').remove();
+    if (!hasPermission('/workbench/dataset', 'delete'))
+      this.$el.find('.wb-delete-data-set').remove();
+    if (!hasPermission('/workbench/dataset', 'transfer'))
+      this.$el.find('.wb-change-data-set-owner').remove();
+    if (!hasPermission('/workbench/dataset', 'update'))
+      this.$el
+        .find('.wb-save, .wb-revert, .wb-convert-coordinates, .wb-geolocate')
+        .remove();
 
     /*
      * HOT Comments for last column overflow outside the viewport for a moment
@@ -241,7 +257,11 @@ const WBView = Backbone.View.extend({
     const initDataModelIntegration = () =>
       this.fetchPickLists().then((pickLists) =>
         this.hot.batch(() => {
-          if (!this.isUploaded && !(this.mappings?.lines.length > 0)) {
+          if (
+            !this.isUploaded &&
+            !(this.mappings?.lines.length > 0) &&
+            hasPermission('/workbench/dataset', 'update')
+          ) {
             const dialog = showDialog({
               title: wbText('noUploadPlanDialogTitle'),
               header: wbText('noUploadPlanDialogHeader'),
@@ -530,7 +550,8 @@ const WBView = Backbone.View.extend({
           },
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
-          readOnly: this.isUploaded,
+          readOnly:
+            this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
           afterUndo: this.afterUndo.bind(this),
           afterRedo: this.afterRedo.bind(this),
           beforePaste: this.beforePaste.bind(this),
@@ -833,7 +854,11 @@ const WBView = Backbone.View.extend({
     else this.afterChangeDisambiguation(physicalRow);
   },
   beforePaste() {
-    return !this.uploadedView && !this.isUploaded;
+    return (
+      !this.uploadedView &&
+      !this.isUploaded &&
+      hasPermission('/workbench/dataset', 'update')
+    );
   },
   /*
    * If copying values from a 1x3 area and pasting into the last cell, HOT
@@ -1126,7 +1151,7 @@ const WBView = Backbone.View.extend({
   },
   beforeColumnMove(_columnIndexes, _finalIndex, dropIndex) {
     return (
-      // Don't allow moving columns when readOnly
+      // Don't allow moving columns when isReadOnly
       !this.uploadedView &&
       !this.coordinateConverterView &&
       // An ugly fix for jQuery's dialogs conflicting with HOT

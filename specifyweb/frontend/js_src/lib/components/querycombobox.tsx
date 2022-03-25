@@ -399,7 +399,7 @@ export function QueryComboBox({
             forwardRef={validationRef}
             className="flex-1"
             required={isRequired}
-            readOnly={
+            isReadOnly={
               mode === 'view' ||
               formType === 'formTable' ||
               typeof typeSearch === 'undefined'

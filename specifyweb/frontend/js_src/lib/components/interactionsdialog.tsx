@@ -20,9 +20,11 @@ import { f } from '../wbplanviewhelper';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { useAsyncState, useTitle } from './hooks';
+import { useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { useCachedState } from './stateCache';
+import { hasTablePermission } from '../permissions';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -31,7 +33,7 @@ const supportedActions = [
   'PRINT_INVOICE',
 ] as const;
 
-type Entry = {
+export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
   readonly table: keyof Tables;
   readonly label: string | undefined;
@@ -39,34 +41,38 @@ type Entry = {
   readonly icon: string | undefined;
 };
 
-const entriesPromise = ajax<Element>(
-  '/context/app.resource?name=InteractionsTaskInit',
-  { headers: { Accept: 'application/xml' } }
-).then<RA<Entry>>(async ({ data }) =>
-  Promise.all(
-    Array.from(data.querySelectorAll('entry'), async (entry) =>
-      f.var(getAttribute(entry, 'action'), async (action) =>
-        getAttribute(entry, 'isOnLeft')?.toLowerCase() === 'true'
-          ? ({
-              action: f.includes(supportedActions, action) ? action : undefined,
-              table:
-                action === 'NEW_GIFT'
-                  ? 'Gift'
-                  : typeof action === 'string'
-                  ? 'Loan'
-                  : await getView(getAttribute(entry, 'view') ?? '').then(
-                      (view) =>
-                        SpecifyModel.parseClassName(view.class) as keyof Tables
-                    ),
-              label: getAttribute(entry, 'label'),
-              tooltip: getAttribute(entry, 'tooltip'),
-              icon: getAttribute(entry, 'icon'),
-            } as const)
-          : undefined
+const fetchEntries = async (): Promise<RA<InteractionEntry>> =>
+  ajax<Element>('/context/app.resource?name=InteractionsTaskInit', {
+    headers: { Accept: 'application/xml' },
+  }).then<RA<InteractionEntry>>(async ({ data }) =>
+    Promise.all(
+      Array.from(data.querySelectorAll('entry'), async (entry) =>
+        f.var(getAttribute(entry, 'action'), async (action) =>
+          getAttribute(entry, 'isOnLeft')?.toLowerCase() === 'true'
+            ? ({
+                action: f.includes(supportedActions, action)
+                  ? action
+                  : undefined,
+                table:
+                  action === 'NEW_GIFT'
+                    ? 'Gift'
+                    : typeof action === 'string'
+                    ? 'Loan'
+                    : await getView(getAttribute(entry, 'view') ?? '').then(
+                        (view) =>
+                          SpecifyModel.parseClassName(
+                            view.class
+                          ) as keyof Tables
+                      ),
+                label: getAttribute(entry, 'label'),
+                tooltip: getAttribute(entry, 'tooltip'),
+                icon: getAttribute(entry, 'icon'),
+              } as const)
+            : undefined
+        )
       )
-    )
-  ).then(filterArray)
-);
+    ).then(filterArray)
+  );
 
 function Interactions({
   onClose: handleClose,
@@ -75,7 +81,7 @@ function Interactions({
 }: {
   readonly onClose: () => void;
   readonly urlParameter: string | undefined;
-  readonly entries: Awaited<typeof entriesPromise>;
+  readonly entries: RA<InteractionEntry>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
@@ -157,43 +163,45 @@ function Interactions({
       buttons={commonText('close')}
     >
       <Ul>
-        {entries.map(({ label, table, action, tooltip, icon }, index) => (
-          <li
-            key={index}
-            title={
-              typeof tooltip === 'string'
-                ? s.localizeFrom('resources', tooltip)
-                : undefined
-            }
-          >
-            <Link.Default
-              href={
-                typeof action === 'string'
-                  ? `/specify/task/interactions/${action}`
-                  : getResourceViewUrl(table)
-              }
-              className={
-                typeof action === 'string'
-                  ? className.navigationHandled
-                  : undefined
-              }
-              onClick={
-                typeof action === 'string'
-                  ? (): void => handleAction(action, table)
+        {entries
+          .filter(({ table }) => hasTablePermission(table, 'create'))
+          .map(({ label, table, action, tooltip, icon }, index) => (
+            <li
+              key={index}
+              title={
+                typeof tooltip === 'string'
+                  ? s.localizeFrom('resources', tooltip)
                   : undefined
               }
             >
-              {typeof label === 'string'
-                ? s.localizeFrom('resources', label)
-                : typeof table === 'string'
-                ? getModel(table)?.label
-                : action}
-              {f.maybe(icon ?? table, (icon) => (
-                <TableIcon name={icon} tableLabel={false} />
-              ))}
-            </Link.Default>
-          </li>
-        ))}
+              <Link.Default
+                href={
+                  typeof action === 'string'
+                    ? `/specify/task/interactions/${action}`
+                    : getResourceViewUrl(table)
+                }
+                className={
+                  typeof action === 'string'
+                    ? className.navigationHandled
+                    : undefined
+                }
+                onClick={
+                  typeof action === 'string'
+                    ? (): void => handleAction(action, table)
+                    : undefined
+                }
+              >
+                {typeof label === 'string'
+                  ? s.localizeFrom('resources', label)
+                  : typeof table === 'string'
+                  ? getModel(table)?.label
+                  : action}
+                {f.maybe(icon ?? table, (icon) => (
+                  <TableIcon name={icon} tableLabel={false} />
+                ))}
+              </Link.Default>
+            </li>
+          ))}
       </Ul>
     </Dialog>
   ) : state.type === 'InteractionState' ? (
@@ -226,10 +234,13 @@ export function InteractionsDialog({
 }): JSX.Element | null {
   useTitle(commonText('interactions'));
 
-  const [entries] = useAsyncState(
-    React.useCallback(async () => entriesPromise, []),
-    true
-  );
+  const [entries] = useCachedState({
+    bucketName: 'common',
+    cacheName: 'listOfInteractions',
+    bucketType: 'localStorage',
+    defaultValue: fetchEntries,
+    staleWhileRefresh: true,
+  });
 
   return typeof entries === 'object' ? (
     <Interactions

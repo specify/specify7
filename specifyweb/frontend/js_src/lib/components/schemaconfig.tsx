@@ -142,7 +142,7 @@ export function SchemaConfig({
           field.name,
           {
             length: field.length,
-            readOnly: field.overrides.isReadOnly,
+            isReadOnly: field.overrides.isReadOnly,
             relatedModelName:
               'relatedModel' in field ? field.relatedModel.name : undefined,
             isRequired: field.overrides.isRequired,
@@ -185,7 +185,7 @@ export function SchemaConfig({
             ...item,
             dataModel: fields[item.name] ?? {
               length: undefined,
-              readOnly: false,
+              isReadOnly: false,
               relatedModelName: undefined,
               isRequired: false,
               isRelationship: false,

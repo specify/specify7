@@ -11,6 +11,8 @@ import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { SpQuery, Tables } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { RA } from './types';
+import { InteractionEntry } from './components/interactionsdialog';
+import { FormEntry } from './components/formsdialog';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -61,5 +63,7 @@ export type CacheDefinitions = {
   };
   readonly common: {
     readonly listOfQueryTables: RA<keyof Tables>;
+    readonly listOfInteractions: RA<InteractionEntry>;
+    readonly listOfForms: RA<FormEntry>;
   };
 };

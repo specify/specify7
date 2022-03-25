@@ -5,6 +5,8 @@ import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { getView } from '../parseform';
+import { getAttribute } from '../parseformcells';
+import { hasTablePermission } from '../permissions';
 import { getResourceViewUrl } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
 import { SpecifyModel } from '../specifymodel';
@@ -12,55 +14,51 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { getAttribute } from '../parseformcells';
-import { hasTablePermission } from '../permissions';
+import { useCachedState } from './stateCache';
 
-type Entry = {
+export type FormEntry = {
   iconName: keyof Tables | undefined;
   viewUrl: string;
   title: string;
-  model: SpecifyModel;
+  table: keyof Tables;
 };
 
-const getFormsPromise: Promise<RA<Entry>> = ajax<Document>(
-  '/context/app.resource?name=DataEntryTaskInit',
-  {
+const fetchForms = async (): Promise<RA<FormEntry>> =>
+  ajax<Document>('/context/app.resource?name=DataEntryTaskInit', {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/xml' },
-  }
-).then(async ({ data }) => {
-  await fetchSchema;
-  // I don't think the non-sidebar items are ever used in Sp6.
-  const views: RA<Element> = Array.from(
-    data.getElementsByTagName('view')
-  ).filter((item) => getAttribute(item, 'sideBar') === 'true');
-  return Promise.all(
-    views.map(async (view) =>
-      getView(getAttribute(view, 'view') ?? '').then<Entry>(
-        (form: { readonly class: string }) => {
-          const modelName = SpecifyModel.parseClassName(
-            form.class
-          ) as keyof Tables;
-          const model = defined(getModel(modelName));
+  }).then(async ({ data }) => {
+    await fetchSchema;
+    return Promise.all(
+      Array.from(data.getElementsByTagName('view'))
+        // I don't think the non-sidebar items are ever used in Sp6.
+        .filter((item) => getAttribute(item, 'sideBar') === 'true')
+        .map(async (view) =>
+          getView(getAttribute(view, 'view') ?? '').then<FormEntry>(
+            (form: { readonly class: string }) => {
+              const modelName = SpecifyModel.parseClassName(
+                form.class
+              ) as keyof Tables;
+              const model = defined(getModel(modelName));
 
-          return {
-            iconName:
-              (getAttribute(view, 'iconName') as keyof Tables | undefined) ??
-              undefined,
-            viewUrl: getResourceViewUrl(modelName),
-            title: getAttribute(view, 'title') ?? '',
-            model,
-          };
-        }
-      )
-    )
-  );
-});
-
-const fetchForms = async (): Promise<RA<Entry>> => getFormsPromise;
+              return {
+                iconName:
+                  (getAttribute(view, 'iconName') as
+                    | keyof Tables
+                    | undefined) ??
+                  model.name ??
+                  undefined,
+                viewUrl: getResourceViewUrl(modelName),
+                title: getAttribute(view, 'title') ?? '',
+                table: model.name,
+              };
+            }
+          )
+        )
+    );
+  });
 
 export function FormsDialog({
   onSelected: handleSelected,
@@ -69,7 +67,13 @@ export function FormsDialog({
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [forms] = useAsyncState(fetchForms, true);
+  const [forms] = useCachedState({
+    bucketName: 'common',
+    cacheName: 'listOfForms',
+    bucketType: 'localStorage',
+    defaultValue: fetchForms,
+    staleWhileRefresh: true,
+  });
 
   return Array.isArray(forms) ? (
     <Dialog
@@ -81,8 +85,8 @@ export function FormsDialog({
       <nav>
         <Ul>
           {forms
-            .filter(({ model }) => hasTablePermission(model.name, 'create'))
-            .map(({ iconName, title, viewUrl, model }, index) => (
+            .filter(({ table }) => hasTablePermission(table, 'create'))
+            .map(({ iconName, title, viewUrl, table }, index) => (
               <li key={index}>
                 <Link.Default
                   href={viewUrl}
@@ -95,7 +99,7 @@ export function FormsDialog({
                     typeof handleSelected === 'function'
                       ? (event): void => {
                           event.preventDefault();
-                          handleSelected(model);
+                          handleSelected(defined(getModel(table)));
                         }
                       : undefined
                   }

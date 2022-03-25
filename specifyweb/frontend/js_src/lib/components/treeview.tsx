@@ -52,6 +52,7 @@ function TreeView<SCHEMA extends AnyTree>({
     cacheName: `collapsedRanks${tableName}`,
     bucketType: 'localStorage',
     defaultValue: defaultCacheValue,
+    staleWhileRefresh: false,
   });
 
   const [rawConformation, setConformation] = useCachedState({
@@ -59,6 +60,7 @@ function TreeView<SCHEMA extends AnyTree>({
     cacheName: `conformation${tableName}`,
     bucketType: 'localStorage',
     defaultValue: undefined,
+    staleWhileRefresh: false,
   });
   const conformation = deserializeConformation(rawConformation);
 

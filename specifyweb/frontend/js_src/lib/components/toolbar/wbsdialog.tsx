@@ -11,7 +11,6 @@ import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
 import type { RA } from '../../types';
-import { userInformation } from '../../userinfo';
 import { sortFunction } from '../../wbplanviewhelper';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, Link } from '../basic';
@@ -26,6 +25,7 @@ import { Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../stateCache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
+import { hasPermission } from '../../permissions';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -173,6 +173,7 @@ function DataSets({
     cacheName: 'listOfDataSets',
     bucketType: 'localStorage',
     defaultValue: defaultSearchConfig,
+    staleWhileRefresh: false,
   });
   if (typeof sortConfig === 'undefined') return null;
 
@@ -190,7 +191,8 @@ function DataSets({
       )
     : undefined;
 
-  const canImport = !showTemplates && !userInformation.isReadOnly;
+  const canImport =
+    hasPermission('/workbench/dataset', 'create') && !showTemplates;
   return Array.isArray(datasets) ? (
     <Dialog
       header={

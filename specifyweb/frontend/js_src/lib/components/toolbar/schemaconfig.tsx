@@ -75,7 +75,7 @@ export type WithTableInfo = {
 export type WithFieldInfo = {
   readonly dataModel: {
     readonly length: number | undefined;
-    readonly readOnly: boolean;
+    readonly isReadOnly: boolean;
     readonly relatedModelName: string | undefined;
     readonly isRequired: boolean;
     readonly isRelationship: boolean;

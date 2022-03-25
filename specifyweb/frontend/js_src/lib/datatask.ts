@@ -18,9 +18,9 @@ import { getModel, getModelById, schema } from './schema';
 import { setCurrentView } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
-import { userInformation } from './userinfo';
 import { f } from './wbplanviewhelper';
 import { Tables } from './datamodel';
+import { hasTablePermission } from './permissions';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -60,10 +60,10 @@ async function recordSetView(id: string, index = '0'): Promise<void> {
 }
 
 // Begins the process of creating a new resource
-const newResourceView = async (modelName: string): Promise<void> =>
-  userInformation.isReadOnly
-    ? Promise.resolve(setCurrentView(new NotFoundView()))
-    : resourceView(modelName, undefined);
+const newResourceView = async (tableName: string): Promise<void> =>
+  !hasTablePermission(tableName as keyof Tables, 'create')
+    ? Promise.resolve(void setCurrentView(new NotFoundView()))
+    : resourceView(tableName, undefined);
 
 /*
  * This function shows users individual resources which

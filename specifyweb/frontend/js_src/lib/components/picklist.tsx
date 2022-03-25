@@ -186,7 +186,7 @@ export function PickListComboBox(
               name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
               disabled={props.isDisabled || typeof props.items === 'undefined'}
-              readOnly={props.mode === 'view'}
+              isReadOnly={props.mode === 'view'}
               {...validationAttributes}
               required={
                 ('required' in validationAttributes || props.isRequired) &&

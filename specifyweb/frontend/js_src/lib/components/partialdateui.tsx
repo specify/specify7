@@ -252,7 +252,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         </span>
         <Input.Generic
           id={id}
-          readOnly={isReadOnly}
+          isReadOnly={isReadOnly}
           forwardRef={validationRef}
           {...(precision === 'year'
             ? {

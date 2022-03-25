@@ -8,6 +8,7 @@ import { setCurrentView } from '../specifyapp';
 import { systemInformation } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
+import { fetchContext as userPermission } from '../permissions';
 import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
@@ -37,20 +38,24 @@ export type MenuItem = UserTool & {
   readonly icon: JSX.Element;
 };
 
-const menuItemsPromise: Promise<RA<MenuItem>> = Promise.all([
-  import('../toolbardataentry'),
-  import('../toolbarinteractions'),
-  import('./toolbar/trees'),
-  import('../toolbarrecordsets'),
-  import('./toolbar/query'),
-  import('../toolbarreport').then(async ({ default: menuItem }) => ({
-    default: await menuItem,
-  })),
-  import('../attachments')
-    .then(async ({ fetchContext }) => fetchContext)
-    .then(async () => import('../toolbarattachments')),
-  import('./toolbar/wbsdialog'),
-]).then(processMenuItems);
+const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
+  .then(() =>
+    Promise.all([
+      import('../toolbardataentry'),
+      import('../toolbarinteractions'),
+      import('./toolbar/trees'),
+      import('../toolbarrecordsets'),
+      import('./toolbar/query'),
+      import('../toolbarreport').then(async ({ default: menuItem }) => ({
+        default: await menuItem,
+      })),
+      import('../attachments')
+        .then(async ({ fetchContext }) => fetchContext)
+        .then(async () => import('../toolbarattachments')),
+      import('./toolbar/wbsdialog'),
+    ])
+  )
+  .then(processMenuItems);
 
 function processMenuItems<T extends UserTool | MenuItem>(
   items: RA<{ readonly default: T }>
@@ -81,7 +86,10 @@ function processMenuItems<T extends UserTool | MenuItem>(
 }
 
 // TODO: group these into categories
-const userToolsPromise: Promise<RA<UserTool>> = fetchUserInfo
+const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
+  userPermission,
+  fetchUserInfo,
+])
   .then(() =>
     Promise.all([
       import('./toolbar/schemaconfig'),

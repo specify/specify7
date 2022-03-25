@@ -26,7 +26,6 @@ import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { removeItem } from './wbplanviewstate';
-import { getDefaultFormMode } from './resourceview';
 
 function TableHeaderCell({
   fieldSpec,
@@ -131,7 +130,7 @@ function ViewRecords({
           onSaved={f.void}
           isDependent={false}
           title={undefined}
-          mode={getDefaultFormMode()}
+          mode="edit"
           canAddAnother={false}
         />
       )}

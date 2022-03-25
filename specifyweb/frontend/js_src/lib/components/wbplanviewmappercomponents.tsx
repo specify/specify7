@@ -228,7 +228,7 @@ export function mappingOptionsMenu({
                     name="match-behavior"
                     value={id}
                     checked={columnOptions.matchBehavior === id}
-                    readOnly={readonly}
+                    isReadOnly={readonly}
                     onChange={({ target }): void =>
                       handleChangeMatchBehaviour(target.value as MatchBehaviors)
                     }

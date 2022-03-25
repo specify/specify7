@@ -9,6 +9,7 @@ import { userInformation } from '../userinfo';
 import { Button } from './basic';
 import { useResource } from './resource';
 import { LoadingContext } from './contexts';
+import { hasTablePermission } from '../permissions';
 
 export function AdminStatusPlugin({
   user: resource,
@@ -29,6 +30,7 @@ export function AdminStatusPlugin({
         id={id}
         disabled={
           mode === 'view' ||
+          !hasTablePermission('SpecifyUser', 'update') ||
           resource.isNew() ||
           user.userType != 'Manager' ||
           (user.isAdmin && isCurrentUser)

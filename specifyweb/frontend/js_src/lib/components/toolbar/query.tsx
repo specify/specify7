@@ -14,43 +14,45 @@ import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
+import { f } from '../../wbplanviewhelper';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
+import { LoadingContext } from '../contexts';
 import { useAsyncState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { getDefaultFormMode, ResourceView } from '../resourceview';
+import { ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
-import { LoadingContext } from '../contexts';
-import { f } from '../../wbplanviewhelper';
+import { hasToolPermission } from '../../permissions';
 
-const tablesToShowPromise: Promise<RA<keyof Tables>> = ajax<Document>(
-  '/static/config/querybuilder.xml',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  { headers: { Accept: 'application/xml' } }
-)
-  .then(({ data: document }) =>
-    f.unique(
-      filterArray(
-        Array.from(document.querySelectorAll('database > table'), (table) =>
-          getModel(table.getAttribute('name') ?? '')
-        )
-      )
-        .filter(
-          ({ name }) =>
-            name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
-        )
-        .map(({ name }) => name)
-        .sort()
-    )
+const fetchTablesToShow = async (): Promise<RA<keyof Tables>> =>
+  ajax<Document>(
+    '/static/config/querybuilder.xml',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    { headers: { Accept: 'application/xml' } }
   )
-  .catch((error) => {
-    console.error(error);
-    return [];
-  });
+    .then(({ data: document }) =>
+      f.unique(
+        filterArray(
+          Array.from(document.querySelectorAll('database > table'), (table) =>
+            getModel(table.getAttribute('name') ?? '')
+          )
+        )
+          .filter(
+            ({ name }) =>
+              name !== 'SpAuditLog' || userInformation.usertype === 'Manager'
+          )
+          .map(({ name }) => name)
+          .sort()
+      )
+    )
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
 
 const defaultSortConfig = {
   sortField: 'timestampCreated',
@@ -71,6 +73,7 @@ function QueryList({
     cacheName: 'listOfQueries',
     bucketType: 'localStorage',
     defaultValue: defaultSortConfig,
+    staleWhileRefresh: true,
   });
 
   if (typeof sortConfig === 'undefined') return null;
@@ -164,16 +167,14 @@ function QueryList({
 
 function ListOfTables({
   tables,
-  getQueryCreateUrl,
 }: {
   readonly tables: RA<keyof Tables>;
-  readonly getQueryCreateUrl: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
     <Ul>
       {tables.map((tableName, index) => (
         <li key={index}>
-          <Link.Default href={getQueryCreateUrl(tableName)}>
+          <Link.Default href={`/specify/query/new/${tableName.toLowerCase()}/`}>
             <TableIcon name={tableName} tableLabel={false} />
             {defined(getModel(tableName)).label}
           </Link.Default>
@@ -195,18 +196,14 @@ type States = ShowQueryListState | CreateQueryState | EditQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
-const fetchDefaultValue = async () => tablesToShowPromise;
-
 export function QueryToolbarItem({
   onClose: handleClose,
-  getQueryCreateUrl,
   getQuerySelectUrl,
   spQueryFilter,
   onNewQuery: handleNewQuery,
   isReadOnly,
 }: {
   readonly onClose: () => void;
-  readonly getQueryCreateUrl?: (tableName: keyof Tables) => string;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
   readonly spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>;
   readonly onNewQuery?: () => void;
@@ -214,11 +211,13 @@ export function QueryToolbarItem({
 }): JSX.Element | null {
   useTitle(commonText('queries'));
 
+  // TODO: test this to make sure it works
   const [tablesToShow] = useCachedState({
     bucketName: 'common',
     cacheName: 'listOfQueryTables',
     bucketType: 'sessionStorage',
-    defaultValue: fetchDefaultValue,
+    defaultValue: fetchTablesToShow,
+    staleWhileRefresh: true,
   });
 
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
@@ -245,17 +244,19 @@ export function QueryToolbarItem({
         buttons={
           <>
             <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-            <Button.Blue
-              onClick={
-                handleNewQuery ??
-                ((): void =>
-                  setState({
-                    type: 'CreateQueryState',
-                  }))
-              }
-            >
-              {commonText('new')}
-            </Button.Blue>
+            {hasToolPermission('queryBuilder', 'create') && (
+              <Button.Blue
+                onClick={
+                  handleNewQuery ??
+                  ((): void =>
+                    setState({
+                      type: 'CreateQueryState',
+                    }))
+                }
+              >
+                {commonText('new')}
+              </Button.Blue>
+            )}
           </>
         }
       >
@@ -276,10 +277,7 @@ export function QueryToolbarItem({
         />
       </Dialog>
     ) : null;
-  } else if (
-    state.type === 'CreateQueryState' &&
-    typeof getQueryCreateUrl === 'function'
-  )
+  } else if (state.type === 'CreateQueryState')
     return Array.isArray(tablesToShow) ? (
       <Dialog
         onClose={handleClose}
@@ -295,10 +293,7 @@ export function QueryToolbarItem({
           </Button.Transparent>
         }
       >
-        <ListOfTables
-          tables={tablesToShow}
-          getQueryCreateUrl={getQueryCreateUrl}
-        />
+        <ListOfTables tables={tablesToShow} />
       </Dialog>
     ) : (
       <LoadingScreen />
@@ -320,12 +315,8 @@ const menuItem: MenuItem = {
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,
-      getQueryCreateUrl: userInformation.isReadOnly
-        ? undefined
-        : (tableName: keyof Tables): string =>
-            `/specify/query/new/${tableName.toLowerCase()}/`,
       getQuerySelectUrl: undefined,
-      isReadOnly: userInformation.isReadOnly,
+      isReadOnly: false,
     }),
 };
 
@@ -350,7 +341,7 @@ function EditQueryDialog({
       onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}
       onDeleted={handleClose}
-      mode={getDefaultFormMode()}
+      mode="edit"
       isSubForm={false}
     >
       {queryResource.isNew() ? undefined : (
@@ -410,7 +401,7 @@ function DwcaQueryExport({
       buttons={commonText('close')}
       onClose={handleClose}
     >
-      <Textarea readOnly className="min-h-[60vh]" value={exported} />
+      <Textarea isReadOnly className="min-h-[60vh]" value={exported} />
     </Dialog>
   ) : null;
 }

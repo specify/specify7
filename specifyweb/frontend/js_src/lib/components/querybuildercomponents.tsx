@@ -19,8 +19,9 @@ import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
-import { getDefaultFormMode, ResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { hasPermission } from '../permissions';
 
 function QueryButton({
   disabled,
@@ -177,7 +178,7 @@ export function MakeRecordSetButton({
                 onSaved={(): void => setState('saved')}
                 onClose={(): void => setState(undefined)}
                 onDeleted={f.never}
-                mode={getDefaultFormMode()}
+                mode="edit"
                 isSubForm={false}
               />
             )}
@@ -271,31 +272,35 @@ export function QueryExportButtons({
           {queryText('unableToExportAsKmlDialogMessage')}
         </Dialog>
       ) : undefined}
-      <QueryButton
-        disabled={fields.length === 0}
-        onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
-        showConfirmation={showConfirmation}
-      >
-        {queryText('createCsv')}
-      </QueryButton>
-      <QueryButton
-        disabled={fields.length === 0}
-        onClick={(): void =>
-          hasLocalityColumns(fields)
-            ? doQueryExport(
-                '/stored_query/exportkml/',
-                fields
-                  .filter(({ isDisplay }) => isDisplay)
-                  .map(({ mappingPath }) =>
-                    generateMappingPathPreview(baseTableName, mappingPath)
-                  )
-              )
-            : setState('warning')
-        }
-        showConfirmation={showConfirmation}
-      >
-        {queryText('createKml')}
-      </QueryButton>
+      {hasPermission('/querybuilder/query', 'export_csv') && (
+        <QueryButton
+          disabled={fields.length === 0}
+          onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
+          showConfirmation={showConfirmation}
+        >
+          {queryText('createCsv')}
+        </QueryButton>
+      )}
+      {hasPermission('/querybuilder/query', 'export_kml') && (
+        <QueryButton
+          disabled={fields.length === 0}
+          onClick={(): void =>
+            hasLocalityColumns(fields)
+              ? doQueryExport(
+                  '/stored_query/exportkml/',
+                  fields
+                    .filter(({ isDisplay }) => isDisplay)
+                    .map(({ mappingPath }) =>
+                      generateMappingPathPreview(baseTableName, mappingPath)
+                    )
+                )
+              : setState('warning')
+          }
+          showConfirmation={showConfirmation}
+        >
+          {queryText('createKml')}
+        </QueryButton>
+      )}
     </>
   );
 }

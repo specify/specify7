@@ -431,14 +431,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('length')}
               <Input.Number
                 value={items[itemId].dataModel.length ?? ''}
-                readOnly={true}
+                isReadOnly={true}
                 className="no-arrows"
               />
             </Label.Generic>
             <Label.Generic>
               {commonText('type')}
               <Input.Text
-                readOnly={true}
+                isReadOnly={true}
                 value={javaTypeToHuman(
                   items[itemId].dataModel.type,
                   items[itemId].dataModel.relatedModelName
@@ -460,7 +460,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.ForCheckbox>
             <Label.ForCheckbox>
               <Input.Checkbox
-                checked={items[itemId].dataModel.readOnly ?? false}
+                checked={items[itemId].dataModel.isReadOnly ?? false}
                 disabled={true}
               />
               {commonText('readOnly')}

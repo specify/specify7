@@ -24,7 +24,7 @@ import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { getDefaultFormMode, ResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 
 const previewSize = 123;
 
@@ -122,7 +122,7 @@ export function AttachmentCell({
               onClose={handleMetaClose}
               canAddAnother={false}
               isSubForm={false}
-              mode={getDefaultFormMode()}
+              mode="edit"
               onDeleted={undefined}
               onSaved={undefined}
             />
@@ -369,7 +369,7 @@ export function AttachmentsView(): JSX.Element {
           onSaved={undefined}
           canAddAnother={false}
           isSubForm={false}
-          mode={getDefaultFormMode()}
+          mode="edit"
         />
       )}
     </Container.Full>

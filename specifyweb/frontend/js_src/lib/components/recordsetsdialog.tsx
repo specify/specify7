@@ -19,6 +19,7 @@ import { formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
+import { hasToolPermission } from '../permissions';
 
 function Row({
   recordSet,
@@ -164,7 +165,7 @@ export function RecordSetsDialog({
             buttons={
               <>
                 <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                {!isReadOnly && (
+                {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                   <Button.Blue
                     onClick={(): void => setState({ type: 'CreateState' })}
                   >
@@ -194,7 +195,13 @@ export function RecordSetsDialog({
       <ResourceView
         dialog="modal"
         resource={state.recordSet}
-        mode={isReadOnly ? 'view' : 'edit'}
+        mode={
+          isReadOnly ||
+          (!state.recordSet.isNew() &&
+            !hasToolPermission('recordSets', 'update'))
+            ? 'view'
+            : 'edit'
+        }
         onDeleted={undefined}
         onSaved={(): void =>
           navigation.go(
@@ -211,19 +218,21 @@ export function RecordSetsDialog({
         canAddAnother={true}
         isSubForm={false}
         extraButtons={
-          <>
-            <span className="flex-1 -ml-2" />
-            <Button.Blue
-              onClick={(): void =>
-                setState({
-                  type: 'QueryState',
-                  recordSet: state.recordSet,
-                })
-              }
-            >
-              {commonText('query')}
-            </Button.Blue>
-          </>
+          hasToolPermission('queryBuilder', 'read') ? (
+            <>
+              <span className="flex-1 -ml-2" />
+              <Button.Blue
+                onClick={(): void =>
+                  setState({
+                    type: 'QueryState',
+                    recordSet: state.recordSet,
+                  })
+                }
+              >
+                {commonText('query')}
+              </Button.Blue>
+            </>
+          ) : undefined
         }
       />
     ) : state.type === 'QueryState' ? (

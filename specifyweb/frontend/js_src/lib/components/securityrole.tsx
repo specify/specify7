@@ -6,7 +6,7 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import {
   compressPolicies,
@@ -22,6 +22,7 @@ import { SearchDialog } from './searchdialog';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { replaceKey } from './wbplanviewstate';
+import { userInformation } from '../userinfo';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -92,7 +93,9 @@ export function RoleView({
         )
       : undefined;
 
-  const isReadOnly = !hasPermission('/permissions/roles', 'update');
+  const isReadOnly =
+    typeof role.id === 'number' &&
+    !hasPermission('/permissions/roles', 'update');
 
   return (
     <Form
@@ -136,6 +139,15 @@ export function RoleView({
                   .map(({ user }) => (
                     <li key={user.id}>
                       <Button.LikeLink
+                        disabled={
+                          user.id !== userInformation.id &&
+                          !hasTablePermission('SpecifyUser', 'update') &&
+                          !hasPermission(
+                            '/permissions/policies/user',
+                            'update'
+                          ) &&
+                          !hasPermission('/permissions/user/roles', 'update')
+                        }
                         // TODO: trigger unload protect
                         onClick={(): void => handleOpenUser(user)}
                       >

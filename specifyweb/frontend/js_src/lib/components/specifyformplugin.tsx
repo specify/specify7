@@ -27,6 +27,7 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
+import { hasTablePermission } from '../permissions';
 
 function WrongTable({
   resource,
@@ -180,13 +181,17 @@ const pluginRenderers: {
     );
   },
   AttachmentPlugin({ resource, mode, id, fieldName }) {
-    return (
+    return hasTablePermission('Attachment', 'read') ? (
       <AttachmentPlugin
         resource={resource}
         mode={mode}
         id={id}
         name={fieldName}
       />
+    ) : (
+      void console.error(
+        "Can't display AttachmentPlugin. User has no read access to Attachment table"
+      ) ?? null
     );
   },
   HostTaxonPlugin({

@@ -204,6 +204,9 @@ export function UserView({
                   <li key={role.id} className="flex items-center gap-2">
                     <Label.ForCheckbox>
                       <Input.Checkbox
+                        disabled={
+                          !hasPermission('/permissions/user/roles', 'update')
+                        }
                         checked={userRoles[collection].includes(role.id)}
                         onValueChange={(isChecked): void =>
                           setUserRoles(

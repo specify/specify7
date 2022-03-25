@@ -9,12 +9,13 @@ import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
-import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { useBooleanState, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
-import { getDefaultFormMode, ResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 import { LoadingContext } from './contexts';
+import { hasPermission, hasTablePermission } from '../permissions';
+import { toLowerCase } from '../wbplanviewhelper';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 
@@ -41,6 +42,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     setCurrentAction(action);
   }
 
+  const resourceName = `/tree/mutation/${toLowerCase(tableName)}` as const;
+  const isSynonym = typeof focusedRow?.acceptedId === 'number';
+
   const disableButtons =
     typeof focusedRow === 'undefined' || typeof currentAction === 'string';
   return typeof currentAction === 'undefined' ||
@@ -49,20 +53,22 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     currentAction === 'add' ||
     currentAction === 'edit' ? (
     <menu className="contents">
-      <li className="contents">
-        {typeof focusedRow === 'object' ? (
-          <Link.LikeButton
-            href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-              focusedRow.nodeId
-            }/`}
-            target="_blank"
-          >
-            {commonText('query')}
-          </Link.LikeButton>
-        ) : (
-          <Button.Simple disabled>{commonText('query')}</Button.Simple>
-        )}
-      </li>
+      {hasPermission('/querybuilder/query', 'execute') && (
+        <li className="contents">
+          {typeof focusedRow === 'object' ? (
+            <Link.LikeButton
+              href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
+                focusedRow.nodeId
+              }/`}
+              target="_blank"
+            >
+              {commonText('query')}
+            </Link.LikeButton>
+          ) : (
+            <Button.Simple disabled>{commonText('query')}</Button.Simple>
+          )}
+        </li>
+      )}
       <li className="contents">
         <EditRecord<SCHEMA>
           nodeId={focusedRow?.nodeId}
@@ -84,48 +90,47 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           }
         />
       </li>
-      <li className="contents">
-        <Button.Simple
-          disabled={disableButtons}
-          onClick={disableButtons ? undefined : (): void => setAction('move')}
-        >
-          {commonText('move')}
-        </Button.Simple>
-      </li>
-      <li className="contents">
-        <Button.Simple
-          disabled={disableButtons}
-          onClick={disableButtons ? undefined : (): void => setAction('merge')}
-        >
-          {treeText('merge')}
-        </Button.Simple>
-      </li>
-      <li className="contents">
-        <Button.Simple
-          disabled={
-            disableButtons ||
-            (typeof focusedRow.acceptedId === 'undefined' &&
-              focusedRow.children > 0)
-          }
-          forwardRef={focusRef}
-          onClick={
-            disableButtons ||
-            (typeof focusedRow.acceptedId === 'undefined' &&
-              focusedRow.children > 0)
-              ? undefined
-              : (): void =>
-                  setAction(
-                    typeof focusedRow?.acceptedId === 'number'
-                      ? 'unsynonymize'
-                      : 'synonymize'
-                  )
-          }
-        >
-          {typeof focusedRow?.acceptedId === 'number'
-            ? treeText('undoSynonymy')
-            : treeText('synonymize')}
-        </Button.Simple>
-      </li>
+      {hasPermission(resourceName, 'move') && (
+        <li className="contents">
+          <Button.Simple
+            disabled={disableButtons}
+            onClick={disableButtons ? undefined : (): void => setAction('move')}
+          >
+            {commonText('move')}
+          </Button.Simple>
+        </li>
+      )}
+      {hasPermission(resourceName, 'merge') && (
+        <li className="contents">
+          <Button.Simple
+            disabled={disableButtons}
+            onClick={
+              disableButtons ? undefined : (): void => setAction('merge')
+            }
+          >
+            {treeText('merge')}
+          </Button.Simple>
+        </li>
+      )}
+      {hasPermission(
+        resourceName,
+        isSynonym ? 'unsynonymize' : 'synonymize'
+      ) && (
+        <li className="contents">
+          <Button.Simple
+            disabled={disableButtons || (!isSynonym && focusedRow.children > 0)}
+            forwardRef={focusRef}
+            onClick={
+              disableButtons || (!isSynonym && focusedRow.children > 0)
+                ? undefined
+                : (): void =>
+                    setAction(isSynonym ? 'unsynonymize' : 'synonymize')
+            }
+          >
+            {isSynonym ? treeText('undoSynonymy') : treeText('synonymize')}
+          </Button.Simple>
+        </li>
+      )}
     </menu>
   ) : (
     <ActiveAction<SCHEMA>
@@ -163,7 +168,9 @@ function EditRecord<SCHEMA extends AnyTree>({
         onClick={handleToggle}
         aria-pressed={isOpen}
       >
-        {userInformation.isReadOnly ? commonText('view') : commonText('edit')}
+        {hasTablePermission(tableName, 'update')
+          ? commonText('edit')
+          : commonText('view')}
       </Button.Simple>
       {isOpen && typeof nodeId === 'number' && (
         <EditRecordDialog<SCHEMA>
@@ -263,7 +270,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       }}
       canAddAnother={true}
       onClose={handleClose}
-      mode={getDefaultFormMode()}
+      mode="edit"
       onDeleted={handleDeleted}
       isSubForm={false}
     />

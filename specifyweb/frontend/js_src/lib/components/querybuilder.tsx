@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { RecordSet, SpQuery } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
@@ -36,7 +37,7 @@ import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 import { replaceItem } from './wbplanviewstate';
-import { AnySchema } from '../datamodelutils';
+import { hasPermission, hasToolPermission } from '../permissions';
 
 /*
  * Query Results:
@@ -81,6 +82,7 @@ export function QueryBuilder({
     cacheName: 'showHiddenFields',
     bucketType: 'localStorage',
     defaultValue: false,
+    staleWhileRefresh: false,
   });
 
   React.useEffect(() => {
@@ -128,7 +130,7 @@ export function QueryBuilder({
     mode: 'regular' | 'count',
     fields: typeof state.fields = state.fields
   ): void {
-    if (!isEmpty) return;
+    if (!isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
       ...query,
       fields: getQueryFieldRecords(fields),
@@ -195,14 +197,16 @@ export function QueryBuilder({
               queryResource={queryResource}
               getQueryFieldRecords={getQueryFieldRecords}
             />
-            {!isReadOnly && (
+            {!isReadOnly &&
+            hasPermission('/querybuilder/query', 'create_recordset') &&
+            hasToolPermission('recordSets', 'create') ? (
               <MakeRecordSetButton
                 baseTableName={state.baseTableName}
                 fields={state.fields}
                 queryResource={queryResource}
                 getQueryFieldRecords={getQueryFieldRecords}
               />
-            )}
+            ) : undefined}
             {!queryResource.isNew() && (
               <Button.Simple
                 disabled={!state.saveRequired}
@@ -349,40 +353,46 @@ export function QueryBuilder({
                   {queryText('distinct')}
                 </Label.ForCheckbox>
               )}
-              <Button.Simple
-                disabled={!isEmpty}
-                onClick={(): void => runQuery('count')}
-              >
-                {queryText('countOnly')}
-              </Button.Simple>
-              <Submit.Simple disabled={!isEmpty}>
-                {commonText('query')}
-              </Submit.Simple>
+              {hasPermission('/querybuilder/query', 'execute') && (
+                <>
+                  <Button.Simple
+                    disabled={!isEmpty}
+                    onClick={(): void => runQuery('count')}
+                  >
+                    {queryText('countOnly')}
+                  </Button.Simple>
+                  <Submit.Simple disabled={!isEmpty}>
+                    {commonText('query')}
+                  </Submit.Simple>
+                </>
+              )}
             </div>
           </div>
-          <QueryResultsWrapper
-            baseTableName={state.baseTableName}
-            model={model}
-            queryResource={queryResource}
-            fields={state.fields}
-            queryRunCount={state.queryRunCount}
-            recordSetId={recordSet?.id}
-            onSelected={handleSelected}
-            onSortChange={(index, sortType): void => {
-              dispatch({
-                type: 'ChangeFieldAction',
-                line: index,
-                field: { ...state.fields[index], sortType },
-              });
-              runQuery(
-                'regular',
-                replaceItem(state.fields, index, {
-                  ...state.fields[index],
-                  sortType,
-                })
-              );
-            }}
-          />
+          {hasPermission('/querybuilder/query', 'execute') && (
+            <QueryResultsWrapper
+              baseTableName={state.baseTableName}
+              model={model}
+              queryResource={queryResource}
+              fields={state.fields}
+              queryRunCount={state.queryRunCount}
+              recordSetId={recordSet?.id}
+              onSelected={handleSelected}
+              onSortChange={(index, sortType): void => {
+                dispatch({
+                  type: 'ChangeFieldAction',
+                  line: index,
+                  field: { ...state.fields[index], sortType },
+                });
+                runQuery(
+                  'regular',
+                  replaceItem(state.fields, index, {
+                    ...state.fields[index],
+                    sortType,
+                  })
+                );
+              }}
+            />
+          )}
         </div>
       </Form>
     </Container.Full>

@@ -8,7 +8,7 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
@@ -19,6 +19,7 @@ import { useAsyncState } from './hooks';
 import type { Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
 import { replaceKey } from './wbplanviewstate';
+import { userInformation } from '../userinfo';
 
 const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
   Object.fromEntries(data.map((item) => [item.id, item]));
@@ -92,6 +93,9 @@ export function CollectionView({
                 {Object.values(roles).map((role) => (
                   <li key={role.id}>
                     <Button.LikeLink
+                      disabled={
+                        !hasPermission('/permissions/user/roles', 'update')
+                      }
                       onClick={(): void =>
                         setState({
                           type: 'RoleState',
@@ -127,7 +131,14 @@ export function CollectionView({
             {typeof userRoles === 'object' ? (
               <Ul>
                 {Object.values(userRoles)
-                  .filter(({ roles }) => roles.length > 0)
+                  .filter(
+                    ({ roles, user }) =>
+                      roles.length > 0 &&
+                      (user.id === userInformation.id ||
+                        hasTablePermission('SpecifyUser', 'update') ||
+                        hasPermission('/permissions/policies/user', 'update') ||
+                        hasPermission('/permissions/user/roles', 'update'))
+                  )
                   .map(({ user }) => (
                     <li key={user.id}>
                       <Button.LikeLink

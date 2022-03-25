@@ -7,7 +7,6 @@ import adminText from '../../localization/admin';
 import { router } from '../../router';
 import { schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
-import { userInformation } from '../../userinfo';
 import { f } from '../../wbplanviewhelper';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
@@ -81,6 +80,7 @@ function SecurityPanel(): JSX.Element | null {
             </Button.LikeLink>
           </section>
           <section>
+            {/* Remove collections you don't have access to from the sidebar */}
             <H3>{adminText('collections')}</H3>
             <ul>
               {Object.values(data.collections).map((collection) => (
@@ -146,7 +146,6 @@ const View = createBackboneView(SecurityPanel);
 export const userTool: UserTool = {
   task: 'security',
   title: adminText('securityPanel'),
-  enabled: () => userInformation.isadmin,
   isOverlay: true,
   view: '/specify/security/',
 };

@@ -102,7 +102,7 @@ function ShowKey({
     >
       <Label.Generic>
         {commonText('masterKeyFieldLabel')}
-        <Input.Text readOnly value={masterKey} />
+        <Input.Text isReadOnly value={masterKey} />
       </Label.Generic>
     </Dialog>
   );

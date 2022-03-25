@@ -11,6 +11,7 @@ import { useTitle, useUnloadProtect } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { WbPlanViewConstructorProps } from './wbplanview';
 import { WbPlanView } from './wbplanview';
+import { hasPermission } from '../permissions';
 
 /**
  * Entrypoint react component for the workbench mapper
@@ -40,7 +41,11 @@ function WbPlanViewWrapper({
       dataset={dataset}
       uploadPlan={dataset.uploadplan}
       headers={headers}
-      readonly={dataset.uploadresult?.success ?? false}
+      readonly={
+        (!hasPermission('/workbench/dataset', 'update') ||
+          dataset.uploadresult?.success) ??
+        false
+      }
       removeUnloadProtect={(): void => setHasUnloadProtect(false)}
       setUnloadProtect={(): void => setHasUnloadProtect(true)}
     />

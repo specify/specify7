@@ -16,12 +16,12 @@ import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { getDefaultFormMode } from './resourceview';
+import { hasTablePermission } from '../permissions';
 
 export function AttachmentPlugin({
   resource,
   onUploadComplete: handleUploadComplete,
-  mode = getDefaultFormMode(),
+  mode = 'edit',
   id,
   name,
 }: {
@@ -85,7 +85,7 @@ export function AttachmentPlugin({
   ) : (
     <div className="w-72 h-72">
       {state.type === 'AddAttachment' ? (
-        mode === 'view' ? (
+        mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
           <p>{formsText('noData')}</p>
         ) : (
           <FilePicker

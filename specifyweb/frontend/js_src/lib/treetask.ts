@@ -4,6 +4,11 @@ import { getModel } from './schema';
 import { setCurrentView } from './specifyapp';
 import { isTreeModel, treeDefinitions } from './treedefinitions';
 import { caseInsensitiveHash } from './wbplanviewhelper';
+import { hasToolPermission } from './permissions';
+import { PermissionDenied } from './components/permissiondenied';
+import createBackboneView from './components/reactbackboneextend';
+
+const PermissionDeniedView = createBackboneView(PermissionDenied);
 
 export default function Routes(): void {
   router.route('tree/:table/', 'tree', async (table: string) =>
@@ -11,6 +16,10 @@ export default function Routes(): void {
       const tableName = getModel(table)?.name;
       if (typeof tableName === 'undefined' || !isTreeModel(tableName)) {
         setCurrentView(new NotFoundView());
+        return;
+      }
+      if (!hasToolPermission(tableName, 'read')) {
+        setCurrentView(new PermissionDeniedView());
         return;
       }
       const treeDefinition = caseInsensitiveHash(treeDefinitions, tableName);

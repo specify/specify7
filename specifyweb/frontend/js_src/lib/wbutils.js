@@ -883,7 +883,7 @@ export default Backbone.View.extend({
     ]
       .map((className) => this.el.getElementsByClassName(className)[0])
       .map((button) => [button, button.disabled]);
-    const originalReadOnlyState = this.wbview.readOnly;
+    const originalReadOnlyState = this.wbview.isReadOnly;
     this.wbview.hot.updateSettings({
       readOnly: true,
     });
@@ -896,7 +896,7 @@ export default Backbone.View.extend({
       this.wbview.hot.updateSettings({
         readOnly: originalReadOnlyState,
       });
-      this.wbview.readOnly = originalReadOnlyState;
+      this.wbview.isReadOnly = originalReadOnlyState;
       this.el.classList.remove('wb-focus-coordinates');
     }
 

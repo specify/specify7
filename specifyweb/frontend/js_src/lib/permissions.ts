@@ -12,7 +12,7 @@ import {
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
-import { group, split } from './wbplanviewhelper';
+import { f, group, split } from './wbplanviewhelper';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -173,18 +173,25 @@ export const fetchContext = domainPromise
     // TODO: check if user has permissions to essential tables
   });
 
+// FIXME: review usages of model.Resource and model.Collection for permission issues
+
 export const hasTablePermission = (
   tableName: keyof Tables,
   action: typeof tableActions[number]
 ): boolean =>
-  defined(tablePermissions)[tableNameToResourceName(tableName)][action];
+  defined(tablePermissions)[tableNameToResourceName(tableName)][action]
+    ? true
+    : f.log(`No permission to ${action} ${tableName}`) ?? false;
 
 export const hasPermission = <
   RESOURCE extends keyof typeof operationPermissions
 >(
   resource: RESOURCE,
   action: keyof typeof operationPermissions[RESOURCE]
-): boolean => defined(operationPermissions)[resource][action];
+): boolean =>
+  defined(operationPermissions)[resource][action]
+    ? true
+    : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
 export const hasToolPermission = (
   tool: keyof typeof toolDefinitions,

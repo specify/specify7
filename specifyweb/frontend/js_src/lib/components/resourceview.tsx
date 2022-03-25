@@ -12,7 +12,6 @@ import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
-import { userInformation } from '../userinfo';
 import { f } from '../wbplanviewhelper';
 import {
   Button,
@@ -33,6 +32,7 @@ import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { LoadingContext } from './contexts';
+import { hasTablePermission } from '../permissions';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -192,6 +192,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
   });
 }
 
+// FIXME: integrate resource view components with permissions
 const resourceDeletedDialog = (
   <Dialog
     title={commonText('resourceDeletedDialogTitle')}
@@ -275,7 +276,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           const deleteButton =
             typeof resource === 'object' &&
             !resource.isNew() &&
-            !userInformation.isReadOnly ? (
+            hasTablePermission(resource.specifyModel.name, 'delete') ? (
               <DeleteButton
                 model={resource}
                 deletionMessage={deletionMessage}
@@ -346,7 +347,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   <>
                     {typeof resource === 'object' &&
                     !resource.isNew() &&
-                    !userInformation.isReadOnly ? (
+                    hasTablePermission(resource.specifyModel.name, 'delete') ? (
                       <DeleteButton model={resource} onDeleted={handleDelete} />
                     ) : undefined}
                     {extraButtons}
@@ -395,9 +396,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
     </BaseResourceView>
   );
 }
-
-export const getDefaultFormMode = (): FormMode =>
-  userInformation.isReadOnly ? 'view' : 'edit';
 
 export function ShowResource({
   resource: initialResource,
@@ -473,7 +471,7 @@ export function ShowResource({
     typeof recordSetItemIndex === 'undefined' ? null : (
       <RecordSetView
         dialog={false}
-        mode={getDefaultFormMode()}
+        mode="edit"
         model={resource.specifyModel}
         onClose={f.never}
         title={undefined}
@@ -495,7 +493,7 @@ export function ShowResource({
       canAddAnother={true}
       dialog={false}
       isSubForm={false}
-      mode={getDefaultFormMode()}
+      mode="edit"
       viewName={resource.specifyModel.view}
       onDeleted={(): void => navigation.go('/')}
       onSaved={handleSaved}

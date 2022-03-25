@@ -10,7 +10,7 @@ import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import * as querystring from '../querystring';
 import { router } from '../router';
-import { getModel, schema } from '../schema';
+import { getModel, getModelById, schema } from '../schema';
 import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
@@ -19,10 +19,17 @@ import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
+import { PermissionDenied } from './permissiondenied';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../permissions';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
+      if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = querystring.parse().recordsetid;
       if (typeof recordSetId === 'undefined') return false;
       const recordSet = new schema.models.RecordSet.Resource({
@@ -51,7 +58,7 @@ function QueryBuilderWrapper({
   return isLoaded ? (
     <QueryBuilder
       query={query}
-      isReadOnly={userInformation.isReadOnly}
+      isReadOnly={false}
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
@@ -77,8 +84,13 @@ function QueryBuilderById({
   const recordSet = useQueryRecordSet();
 
   return typeof query === 'undefined' ||
-    typeof recordSet === 'undefined' ? null : (
+    typeof recordSet === 'undefined' ? null : hasTablePermission(
+      getModelById(query.get('contextTableId')).name,
+      'read'
+    ) ? (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
+  ) : (
+    <PermissionDenied />
   );
 }
 
@@ -120,8 +132,13 @@ function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
 
   return typeof query === 'undefined' || typeof recordSet === 'undefined' ? (
     <LoadingScreen />
-  ) : (
+  ) : hasTablePermission(
+      getModelById(query.get('contextTableId')).name,
+      'read'
+    ) ? (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
+  ) : (
+    <PermissionDenied />
   );
 }
 
@@ -142,19 +159,35 @@ function QueryBuilderFromTree({
     true
   );
 
-  return typeof query === 'undefined' ? null : (
+  return typeof query === 'undefined' ? null : hasToolPermission(
+      getModelById(query.get('contextTableId')).name as 'Geography',
+      'read'
+    ) ? (
     <QueryBuilderWrapper query={query} />
+  ) : (
+    <PermissionDenied />
   );
 }
 
 const QueryFromTree = createBackboneView(QueryBuilderFromTree);
+const PermissionDeniedView = createBackboneView(PermissionDenied);
 
 export default function Routes(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
-    setCurrentView(new QueryById({ queryId: Number.parseInt(id) }))
+    setCurrentView(
+      hasPermission('/querybuilder/query', 'execute') &&
+        hasToolPermission('queryBuilder', 'read')
+        ? new QueryById({ queryId: Number.parseInt(id) })
+        : new PermissionDeniedView()
+    )
   );
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
-    setCurrentView(new NewQueryView({ tableName }))
+    setCurrentView(
+      hasPermission('/querybuilder/query', 'execute') &&
+        hasToolPermission('queryBuilder', 'create')
+        ? new NewQueryView({ tableName })
+        : new PermissionDeniedView()
+    )
   );
   // TODO: test this:
   router.route(
@@ -162,10 +195,13 @@ export default function Routes(): void {
     'queryFromTree',
     (tableName, nodeId) =>
       setCurrentView(
-        new QueryFromTree({
-          tableName: tableName as AnyTree['tableName'],
-          nodeId: Number.parseInt(nodeId),
-        })
+        hasPermission('/querybuilder/query', 'execute') &&
+          hasToolPermission('queryBuilder', 'read')
+          ? new QueryFromTree({
+              tableName: tableName as AnyTree['tableName'],
+              nodeId: Number.parseInt(nodeId),
+            })
+          : new PermissionDeniedView()
       )
   );
 }

@@ -92,7 +92,7 @@ const fieldRenderers: {
         value={value?.toString() ?? ''}
         onValueChange={updateValue}
         rows={rows}
-        readOnly={mode === 'view'}
+        isReadOnly={mode === 'view'}
         required={'required' in validationAttributes && mode !== 'search'}
       />
     );
@@ -185,7 +185,7 @@ const fieldRenderers: {
       <Input.Generic
         type="file"
         name={fieldName}
-        readOnly={mode === 'view'}
+        isReadOnly={mode === 'view'}
         id={id}
         required={isRequired}
       />

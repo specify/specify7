@@ -5,12 +5,12 @@ import commonText from '../../localization/common';
 import * as navigation from '../../navigation';
 import { getResourceViewUrl } from '../../resource';
 import type { IR } from '../../types';
-import { userInformation } from '../../userinfo';
 import { Button, Link, Ul } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { hasTablePermission } from '../../permissions';
 
 function Users({
   onClose: handleClose,
@@ -74,7 +74,9 @@ const userTool: UserTool = {
   title: commonText('manageUsers'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInformation.isadmin,
+  enabled: () =>
+    hasTablePermission('SpecifyUser', 'update') ||
+    hasTablePermission('SpecifyUser', 'create'),
 };
 
 export default userTool;

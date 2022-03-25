@@ -136,6 +136,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
   };
 }
 
+// TODO: check where useAsyncState could be replaced with useCachedState
 /**
  * Like React.useState, but initial value is retrieved asynchronously
  * While value is being retrieved, hook returns undefined, which can be

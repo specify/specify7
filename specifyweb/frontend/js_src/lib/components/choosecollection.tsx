@@ -19,6 +19,7 @@ import { useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { Contexts } from './contexts';
 
+// TODO: remove collections you don't have permission to from the list
 function ChooseCollection({
   data,
   nextUrl,

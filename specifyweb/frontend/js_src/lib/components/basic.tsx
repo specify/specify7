@@ -56,9 +56,11 @@ function wrap<
   className: string,
   initialProps?:
     | TagProps<TAG>
-    | ((props: TagProps<TAG> & EXTRA_PROPS) => TagProps<TAG>)
+    | ((props: TagProps<TAG> & Readonly<EXTRA_PROPS>) => TagProps<TAG>)
 ) {
-  const wrapped = (props: TagProps<TAG> & EXTRA_PROPS): JSX.Element => {
+  const wrapped = (
+    props: TagProps<TAG> & Readonly<EXTRA_PROPS>
+  ): JSX.Element => {
     // Merge classNames
     const fullClassName =
       typeof props?.className === 'string'
@@ -274,31 +276,53 @@ const withHandleBlur = <TYPE extends InputType>(
   },
 });
 export const Input = {
-  Radio: wrap('Input.Radio', 'input', 'h-3 w-3', { type: 'radio' }),
+  Radio: wrap<
+    'input',
+    {
+      readOnly?: never;
+      isReadOnly?: boolean;
+      type?: never;
+    }
+  >('Input.Radio', 'input', 'h-3 w-3', ({ isReadOnly, ...props }) => ({
+    ...props,
+    type: 'radio',
+    readOnly: isReadOnly,
+  })),
   Checkbox: wrap<
     'input',
     {
       onValueChange?: (isChecked: boolean) => void;
+      readOnly?: never;
+      isReadOnly?: boolean;
+      type?: never;
     }
-  >('Input.Checkbox', 'input', 'h-3 w-3', ({ onValueChange, ...props }) => ({
-    ...props,
-    type: 'checkbox',
-    onChange(event): void {
-      onValueChange?.((event.target as HTMLInputElement).checked);
-      props.onChange?.(event);
-    },
-  })),
+  >(
+    'Input.Checkbox',
+    'input',
+    'h-3 w-3',
+    ({ onValueChange, isReadOnly, ...props }) => ({
+      ...props,
+      type: 'checkbox',
+      onChange(event): void {
+        onValueChange?.((event.target as HTMLInputElement).checked);
+        props.onChange?.(event);
+      },
+      readOnly: isReadOnly,
+    })
+  ),
   Text: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
-      readonly type?: 'If you need to specify type, use Input.Generic';
+      onValueChange?: (value: string) => void;
+      type?: 'If you need to specify type, use Input.Generic';
+      readOnly?: never;
+      isReadOnly?: boolean;
     }
   >(
     'Input.Text',
     'input',
     className.notTouchedInput,
-    ({ onValueChange, ...props }) => ({
+    ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'text',
       ...withHandleBlur(props.onBlur),
@@ -306,18 +330,21 @@ export const Input = {
         onValueChange?.((event.target as HTMLInputElement).value);
         props.onChange?.(event);
       },
+      readOnly: isReadOnly,
     })
   ),
   Generic: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
+      onValueChange?: (value: string) => void;
+      readOnly?: never;
+      isReadOnly?: boolean;
     }
   >(
     'Input.Generic',
     'input',
     className.notTouchedInput,
-    ({ onValueChange, ...props }) => ({
+    ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
@@ -357,19 +384,22 @@ export const Input = {
         }
         props.onPaste?.(event);
       },
+      readOnly: isReadOnly,
     })
   ),
   Number: wrap<
     'input',
     {
-      readonly onValueChange?: (value: number) => void;
-      readonly type?: never;
+      onValueChange?: (value: number) => void;
+      type?: never;
+      readOnly?: never;
+      isReadOnly?: boolean;
     }
   >(
     'Input.Number',
     'input',
     className.notTouchedInput,
-    ({ onValueChange, ...props }) => ({
+    ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'number',
       ...withHandleBlur(props.onBlur),
@@ -379,27 +409,31 @@ export const Input = {
         );
         props.onChange?.(event);
       },
+      readOnly: isReadOnly,
     })
   ),
 };
 export const Textarea = wrap<
   'textarea',
   {
-    readonly children?: undefined;
-    readonly onValueChange?: (value: string) => void;
+    children?: undefined;
+    onValueChange?: (value: string) => void;
+    readOnly?: never;
+    isReadOnly?: boolean;
   }
 >(
   'Textarea',
   'textarea',
   // Ensures Textarea can't grow past max dialog width
   `${className.notTouchedInput} resize max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]`,
-  ({ onValueChange, ...props }) => ({
+  ({ onValueChange, isReadOnly, ...props }) => ({
     ...props,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
       onValueChange?.((event.target as HTMLTextAreaElement).value);
       props.onChange?.(event);
     },
+    readOnly: isReadOnly,
   })
 );
 export const selectMultipleSize = 4;

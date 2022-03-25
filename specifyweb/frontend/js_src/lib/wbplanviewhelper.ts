@@ -244,6 +244,7 @@ export const f = {
     console.log(...args);
     return undefined;
   },
+  log: (...args: RA<unknown>): undefined => void console.log(...args),
   /** An alternative way to declare a variable */
   var: <VALUE, RETURN>(
     value: VALUE,

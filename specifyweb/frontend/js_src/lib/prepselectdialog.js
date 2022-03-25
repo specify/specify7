@@ -14,7 +14,6 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 import {fieldFormat} from "./uiparse";
 import createBackboneView from './components/reactbackboneextend';
-import {userInformation} from './userinfo';
 
 const resourceView = createBackboneView(ResourceView);
 
@@ -221,7 +220,7 @@ export default PrepDialog.extend({
 
                 this.dialog = new resourceView({
                     resource: resourceModel,
-                    mode: userInformation.isReadOnly ? 'edit' : 'view',
+                    mode: 'edit',
                     dialog: 'nonModal',
                     canAddAnother: true,
                     onClose: ()=>this.dialog.remove(),

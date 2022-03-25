@@ -1,12 +1,12 @@
 import React from 'react';
 
 import commonText from '../../localization/common';
-import { userInformation } from '../../userinfo';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
+import { hasToolPermission } from '../../permissions';
 
 function AppResourceDialog({
   onClose: handleClose,
@@ -41,7 +41,7 @@ const userTool: UserTool = {
   title: commonText('resources'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInformation.isadmin,
+  enabled: () => hasToolPermission('resources', 'read'),
 };
 
 export default userTool;

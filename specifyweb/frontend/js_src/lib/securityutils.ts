@@ -148,6 +148,34 @@ export const toolDefinitions = ensure<
     label: commonText('appResources'),
     tables: ['SpAppResource', 'SpAppResourceData', 'SpAppResourceDir'],
   },
+  pickLists: {
+    label: commonText('pickList'),
+    tables: ['PickList', 'PickListItem'],
+  },
+  Taxon: {
+    label: schema.models.Taxon.label,
+    tables: ['Taxon', 'TaxonTreeDef', 'TaxonTreeDefItem'],
+  },
+  Geography: {
+    label: schema.models.Geography.label,
+    tables: ['Geography', 'GeographyTreeDef', 'GeographyTreeDefItem'],
+  },
+  Storage: {
+    label: schema.models.Storage.label,
+    tables: ['Storage', 'StorageTreeDef', 'StorageTreeDefItem'],
+  },
+  LithoStrat: {
+    label: schema.models.LithoStrat.label,
+    tables: ['LithoStrat', 'LithoStratTreeDef', 'LithoStratTreeDefItem'],
+  },
+  GeologicTimePeriod: {
+    label: schema.models.GeologicTimePeriod.label,
+    tables: [
+      'GeologicTimePeriod',
+      'GeologicTimePeriodTreeDef',
+      'GeologicTimePeriodTreeDefItem',
+    ],
+  },
 } as const);
 
 const toolTables = new Set(

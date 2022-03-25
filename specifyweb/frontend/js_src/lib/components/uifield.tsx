@@ -137,7 +137,7 @@ export function Field({
         navigator.userAgent.includes('webkit') ? 'webkit' : ''
       }`}
       {...validationAttributes}
-      readOnly={isReadOnly}
+      isReadOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}
     />
   );

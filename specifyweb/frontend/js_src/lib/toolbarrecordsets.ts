@@ -5,6 +5,7 @@ import { RecordSetsDialog } from './components/recordsetsdialog';
 import commonText from './localization/common';
 import { schema } from './schema';
 import { userInformation } from './userinfo';
+import { hasToolPermission } from './permissions';
 
 const RecordSetsView = createBackboneView(RecordSetsDialog);
 
@@ -13,6 +14,7 @@ const menuItem: MenuItem = {
   title: commonText('recordSets'),
   icon: icons.collection,
   isOverlay: true,
+  enabled: () => hasToolPermission('recordSets', 'read'),
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {
@@ -29,7 +31,7 @@ const menuItem: MenuItem = {
           recordSets: models,
           totalCount: _totalCount ?? models.length,
         })),
-      isReadOnly: userInformation.isReadOnly,
+      isReadOnly: false,
       onClose,
     }).render();
   },

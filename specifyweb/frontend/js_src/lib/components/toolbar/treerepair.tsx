@@ -6,7 +6,6 @@ import * as querystring from '../../querystring';
 import { getTreeModel } from '../../schema';
 import { disciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
-import { userInformation } from '../../userinfo';
 import { Button, className, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { useTitle } from '../hooks';
@@ -15,6 +14,7 @@ import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 import { f } from '../../wbplanviewhelper';
+import { hasToolPermission } from '../../permissions';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -45,26 +45,30 @@ export function TreeSelectDialog({
     >
       <nav>
         <Ul>
-          {Object.entries(trees).map(([tree, model]) => (
-            <li key={tree}>
-              <Link.Default
-                href={getLink(tree)}
-                className={
-                  typeof handleClick === 'function'
-                    ? className.navigationHandled
-                    : undefined
-                }
-                onClick={(event): void => {
-                  if (typeof handleClick === 'undefined') return;
-                  event.preventDefault();
-                  loading(Promise.resolve(handleClick(tree)).then(handleClose));
-                }}
-              >
-                <TableIcon name={tree} tableLabel={false} />
-                {model.label}
-              </Link.Default>
-            </li>
-          ))}
+          {Object.entries(trees)
+            .filter(([_tree, { name }]) => hasToolPermission(name, 'update'))
+            .map(([tree, model]) => (
+              <li key={tree}>
+                <Link.Default
+                  href={getLink(tree)}
+                  className={
+                    typeof handleClick === 'function'
+                      ? className.navigationHandled
+                      : undefined
+                  }
+                  onClick={(event): void => {
+                    if (typeof handleClick === 'undefined') return;
+                    event.preventDefault();
+                    loading(
+                      Promise.resolve(handleClick(tree)).then(handleClose)
+                    );
+                  }}
+                >
+                  <TableIcon name={tree} tableLabel={false} />
+                  {model.label}
+                </Link.Default>
+              </li>
+            ))}
         </Ul>
       </nav>
     </Dialog>
@@ -107,7 +111,6 @@ const userTool: UserTool = {
   title: commonText('repairTree'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
-  enabled: () => userInformation.isadmin,
 };
 
 export default userTool;

@@ -46,7 +46,7 @@ export function HostTaxonPlugin({
     false
   );
   return typeof rightSideCollection === 'undefined' ? (
-    <Input.Text readOnly />
+    <Input.Text isReadOnly />
   ) : (
     <QueryComboBox
       id={id}

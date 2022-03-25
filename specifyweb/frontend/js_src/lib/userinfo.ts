@@ -10,8 +10,6 @@ export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
 export type UserInfo = {
   // NOTE: some userInfo properties are not listed here
   readonly id: number;
-  readonly isadmin: boolean;
-  readonly isReadOnly: boolean;
   readonly usertype: UserType;
   readonly isauthenticated: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -3,6 +3,7 @@ import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import { ReportsView } from './reports';
+import { hasPermission } from './permissions';
 
 export default ajax<{ readonly available: boolean }>(
   '/context/report_runner_status.json',
@@ -16,7 +17,7 @@ export default ajax<{ readonly available: boolean }>(
     task: 'report',
     title: commonText('reports'),
     icon: icons.documentReport,
-    enabled: available,
+    enabled: available && hasPermission('/report', 'execute'),
     isOverlay: true,
     view: ({ onClose }) => new ReportsView({ onClose }),
   }));

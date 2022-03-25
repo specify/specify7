@@ -76,7 +76,7 @@ function Coordinate({
   return (
     <Input.Text
       value={coordinate}
-      readOnly={isReadOnly}
+      isReadOnly={isReadOnly}
       onValueChange={(value): void => {
         setCoordinate(value);
         const hasValue = value.trim() !== '';

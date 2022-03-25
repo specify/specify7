@@ -27,6 +27,7 @@ export function PrintOnSave({
     cacheName: 'printOnSave',
     bucketType: 'localStorage',
     defaultValue: defaultValue ?? false,
+    staleWhileRefresh: false,
   });
   const [, setFormMeta] = React.useContext(FormContext);
   React.useEffect(
@@ -98,7 +99,7 @@ export function SpecifyFormCheckbox({
       disabled={typeof value === 'undefined'}
       onValueChange={updateValue}
       required={isRequired}
-      readOnly={isReadOnly}
+      isReadOnly={isReadOnly}
     />
   );
   return children.length > 0 ? (

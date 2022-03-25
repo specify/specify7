@@ -5,9 +5,11 @@ import type { SerializedResource, TableFields } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
 import formsText from './localization/forms';
+import { hasToolPermission } from './permissions';
 import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
+import { f } from './wbplanviewhelper';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
@@ -147,21 +149,24 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
   ];
 }
 
-export async function fetchPickLists(): Promise<typeof pickLists> {
-  if (Object.keys(pickLists).length > 0) return pickLists;
-
-  const collection = new schema.models.PickList.LazyCollection({
-    filters: {
-      domainfilter: true,
-    },
-  });
-
-  return collection.fetchPromise({ limit: 0 }).then(async ({ models }) => {
-    pickLists = Object.fromEntries(
-      [...models, ...defineFrontEndPickLists()].map(
-        (pickList) => [pickList.get('name'), pickList] as const
-      )
-    );
-    return pickLists;
-  });
-}
+export const fetchPickLists = async (): Promise<typeof pickLists> =>
+  Object.keys(pickLists).length > 0
+    ? pickLists
+    : (hasToolPermission('pickLists', 'read')
+        ? f.var(
+            new schema.models.PickList.LazyCollection({
+              filters: {
+                domainfilter: true,
+              },
+            }),
+            async (collection) => collection.fetchPromise({ limit: 0 })
+          )
+        : Promise.resolve({ models: [] })
+      ).then(async ({ models }) => {
+        pickLists = Object.fromEntries(
+          [...models, ...defineFrontEndPickLists()].map(
+            (pickList) => [pickList.get('name'), pickList] as const
+          )
+        );
+        return pickLists;
+      });
