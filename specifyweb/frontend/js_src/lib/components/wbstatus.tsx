@@ -179,7 +179,7 @@ function WbStatus({
                 }
               )
                 .then(({ data, status }) =>
-                  status === Http.OK && data === 'ok'
+                  status === Http.OK && ['ok', 'not running'].includes(data)
                     ? dispatch({
                         type: 'AbortAction',
                         aborted: true,

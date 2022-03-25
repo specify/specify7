@@ -5,12 +5,9 @@ import { load } from './initialcontext';
 import commonText from './localization/common';
 import type { RA, Writable } from './types';
 
-export type UserType = 'Manager' | 'FullAccess' | 'LimitedAccess' | 'Guest';
-
 export type UserInfo = {
   // NOTE: some userInfo properties are not listed here
   readonly id: number;
-  readonly usertype: UserType;
   readonly isauthenticated: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly available_collections: RA<

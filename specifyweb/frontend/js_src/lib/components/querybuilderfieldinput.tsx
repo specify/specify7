@@ -6,11 +6,7 @@ import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
-import {
-  getValidationAttributes,
-  parseValue,
-  pluralizeParser,
-} from '../uiparse';
+import { getValidationAttributes, parseValue } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
 import { f, omit } from '../wbplanviewhelper';
 import { Input, Select, selectMultipleSize } from './basic';
@@ -40,6 +36,7 @@ export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
   'equal',
   'in',
 ]);
+
 function QueryInputField({
   currentValue,
   // Used only to help browsers with autocomplete
@@ -246,7 +243,7 @@ function In({
   return (
     <QueryInputField
       currentValue={filter.startValue}
-      parser={pluralizeParser(parser)}
+      parser={parser}
       pickListItems={pickListItems}
       label={queryText('startValue')}
       fieldName={fieldName}
@@ -448,7 +445,6 @@ export function QueryLineFilter({
         ...omit(originalParser, [
           'pattern',
           'min',
-          'max',
           'step',
           'formatters',
           'parser',

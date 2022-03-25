@@ -44,7 +44,6 @@ import {
 } from './wbplanviewhelper';
 import {getTableFromMappingPath} from './wbplanviewnavigator';
 import {getIcon} from './icons';
-import template from './templates/wbview.html';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
@@ -59,8 +58,8 @@ import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
-import localityText from './localization/locality';
 import {hasPermission} from './permissions';
+import {wbViewTemplate} from './components/wbviewtemplate';
 
 const metaKeys = [
   'isNew',
@@ -210,29 +209,11 @@ const WBView = Backbone.View.extend({
   },
   render() {
     this.$el.append(
-      template({
-        isUploaded:
-          this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
-        wbText,
-        commonText,
-        localityText,
-      })
+      wbViewTemplate(
+        this.isUploaded || !hasPermission('/workbench/dataset', 'update')
+      )
     );
     this.$el.attr('aria-label', commonText('workbench'));
-    if (!hasPermission('/workbench/dataset', 'upload'))
-      this.$el.find('.wb-upload').remove();
-    if (!hasPermission('/workbench/dataset', 'validate'))
-      this.$el.find('.wb-validate').remove();
-    if (!hasPermission('/workbench/dataset', 'unupload'))
-      this.$el.find('.wb-unupload').remove();
-    if (!hasPermission('/workbench/dataset', 'delete'))
-      this.$el.find('.wb-delete-data-set').remove();
-    if (!hasPermission('/workbench/dataset', 'transfer'))
-      this.$el.find('.wb-change-data-set-owner').remove();
-    if (!hasPermission('/workbench/dataset', 'update'))
-      this.$el
-        .find('.wb-save, .wb-revert, .wb-convert-coordinates, .wb-geolocate')
-        .remove();
 
     /*
      * HOT Comments for last column overflow outside the viewport for a moment

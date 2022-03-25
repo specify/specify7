@@ -40,7 +40,7 @@ import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
-import { augmentMode, ResourceView } from './resourceview';
+import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
 import { LoadingContext } from './contexts';
 import { hasTablePermission, hasToolPermission } from '../permissions';
@@ -54,7 +54,7 @@ export function QueryComboBox({
   id,
   resource,
   fieldName: initialFieldName,
-  mode: initialMode,
+  mode,
   formType,
   isRequired,
   hasCloneButton = false,
@@ -280,14 +280,6 @@ export function QueryComboBox({
       [value, resource, field, typeSearch]
     ),
     false
-  );
-
-  const mode = augmentMode(
-    initialMode,
-    formatted?.resource?.isNew() === true,
-    formatted?.resource?.specifyModel.name ??
-      initialRelatedModel?.name ??
-      (field?.isRelationship ? field.relatedModel.name : undefined)
   );
 
   const [state, setState] = React.useState<

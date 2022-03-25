@@ -4,6 +4,10 @@ import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
+import {
+  fetchContext as fetchPermissions,
+  hasToolPermission,
+} from './permissions';
 import type { RA } from './types';
 import { defined } from './types';
 import {
@@ -12,7 +16,6 @@ import {
   sortObjectsByKey,
   unCapitalize,
 } from './wbplanviewhelper';
-import { hasToolPermission } from './permissions';
 
 export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
@@ -68,6 +71,7 @@ export const isTreeResource = (
 export const fetchTreeRanks = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
+  fetchPermissions,
 ])
   .then(() => getDomainResource('discipline')?.fetchPromise())
   .then((discipline) => {
@@ -80,9 +84,8 @@ export const fetchTreeRanks = Promise.all([
       Object.entries(treeScopes)
         .filter(
           ([treeName]) =>
-            disciplineTrees.includes(
-              treeName.toLowerCase() as typeof disciplineTrees[number]
-            ) && hasToolPermission(treeName, 'read')
+            disciplineTrees.includes(treeName) &&
+            hasToolPermission(treeName, 'read')
         )
         .map(async ([treeName, definitionLevel]) => {
           const domainResource = getDomainResource(

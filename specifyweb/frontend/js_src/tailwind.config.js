@@ -9,7 +9,6 @@
 module.exports = {
   content: [
     './lib/components/**/*.tsx',
-    './lib/templates/*.html',
     './lib/*.{ts,js}',
   ],
   corePlugins: {

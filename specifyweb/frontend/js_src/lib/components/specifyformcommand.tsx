@@ -17,8 +17,6 @@ import { ShowLoansCommand } from './showtranscommand';
 import { LoadingContext } from './contexts';
 import { hasPermission, hasTablePermission } from '../permissions';
 
-// FIXME: hide subviews if don't have permission
-
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
     readonly resource: SpecifyResource<AnySchema>;

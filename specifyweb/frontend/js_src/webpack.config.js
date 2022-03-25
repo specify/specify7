@@ -99,15 +99,6 @@ module.exports = (_env, argv)=>({
                 ]
             },
             {
-                test: /\.html$/,
-                use: [{
-                    loader: "underscore-template-loader",
-                    options: {
-                        engine: 'underscore',
-                    }
-                }]
-            },
-            {
                 test: /\.[tj]sx?$/,
                 exclude: /(node_modules)/,
                 use: [{
