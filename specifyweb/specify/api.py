@@ -338,8 +338,8 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             cleaned[field_name] = data[field_name]
-    if model is get_model('Agent') and not agent.specifyuser.is_admin():
-        # only admins can set the user field on agents
+    if model is get_model('Agent'):
+        # setting user agents is part of the user managment system.
         try:
             del cleaned['specifyuser']
         except KeyError:
