@@ -27,7 +27,7 @@ import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
-import { getTreeDefinitionItems } from '../treedefinitions';
+import { fetchTreeRanks, getTreeDefinitionItems } from '../treedefinitions';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
@@ -112,15 +112,17 @@ export function QueryComboBox({
             .fetchPromise({ limit: 1 })
             .then(({ models }) => models[0]?.get('rankId'));
         }
-        const treeRanks = defined(
-          getTreeDefinitionItems(treeResource.specifyModel.name, false)
-        ).map((rank) => ({
-          rankId: rank.rankId,
-          isEnforced: rank.isEnforced ?? false,
-        }));
-        return lowestChildRank.then((rank) => ({
+        const treeRanks = fetchTreeRanks.then(() =>
+          defined(
+            getTreeDefinitionItems(treeResource.specifyModel.name, false)
+          ).map((rank) => ({
+            rankId: rank.rankId,
+            isEnforced: rank.isEnforced ?? false,
+          }))
+        );
+        return lowestChildRank.then(async (rank) => ({
           lowestChildRank: rank,
-          treeRanks,
+          treeRanks: await treeRanks,
         }));
       } else if (field?.name == 'acceptedParent') {
         // Don't need to do anything. Form system prevents lookups/edits

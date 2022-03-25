@@ -18,7 +18,8 @@ import {
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
-import { getTreeDefinitionItems } from './treedefinitions';
+import { hasTablePermission, hasToolPermission } from './permissions';
+import { fetchTreeRanks, getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import {
@@ -31,7 +32,6 @@ import {
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { hasTablePermission, hasToolPermission } from './permissions';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -209,6 +209,7 @@ export async function fetchLocalityDataFromLocalityResource(
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {
+  await fetchTreeRanks;
   const filteredMappingPaths = parseLocalityPinFields(quickFetch);
 
   const results = await Promise.all(

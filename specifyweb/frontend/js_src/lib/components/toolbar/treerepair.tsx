@@ -4,11 +4,11 @@ import { ping } from '../../ajax';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
 import { getTreeModel } from '../../schema';
-import { disciplineTrees } from '../../treedefinitions';
+import { fetchTreeRanks, getDisciplineTrees } from '../../treedefinitions';
 import { defined } from '../../types';
 import { Button, className, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
-import { useTitle } from '../hooks';
+import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
@@ -26,14 +26,18 @@ export function TreeSelectDialog({
   readonly onClick: undefined | ((tree: string) => Promise<void> | void);
   readonly title: string;
   readonly getLink: (tree: string) => string;
-}): JSX.Element {
+}): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-
-  const trees = Object.fromEntries(
-    disciplineTrees.map((tree) => [tree, defined(getTreeModel(tree))])
+  const [treeRanks] = useAsyncState(
+    React.useCallback(async () => fetchTreeRanks, []),
+    true
   );
 
-  return (
+  const trees = Object.fromEntries(
+    getDisciplineTrees().map((tree) => [tree, defined(getTreeModel(tree))])
+  );
+
+  return typeof treeRanks === 'object' ? (
     <Dialog
       header={title}
       onClose={handleClose}
@@ -72,7 +76,7 @@ export function TreeSelectDialog({
         </Ul>
       </nav>
     </Dialog>
-  );
+  ) : null;
 }
 
 const handleClick = async (tree: string): Promise<void> =>

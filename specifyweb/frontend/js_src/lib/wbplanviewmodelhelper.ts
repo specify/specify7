@@ -19,8 +19,7 @@ import {
   relationshipIsToMany,
   valueIsToManyIndex,
 } from './wbplanviewmappinghelper';
-import { has } from 'underscore';
-import { hasTablePermission, hasToolPermission } from './permissions';
+import { hasToolPermission } from './permissions';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (

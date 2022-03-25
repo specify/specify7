@@ -1,44 +1,40 @@
+import { ping } from './ajax';
 import { load } from './initialcontext';
 import * as querystring from './querystring';
 
-const systemInfo = {} as SystemInfo;
-
 type SystemInfo = {
-  version: string;
-  specify6_version: string;
-  database_version: string;
-  schema_version: string;
-  collection: string;
-  collection_guid: string;
-  database: string;
-  discipline: string;
-  institution: string;
-  institution_guid: string;
-  isa_number: string;
-  stats_url: string | null;
+  readonly version: string;
+  readonly specify6_version: string;
+  readonly database_version: string;
+  readonly schema_version: string;
+  readonly collection: string;
+  readonly collection_guid: string;
+  readonly database: string;
+  readonly discipline: string;
+  readonly institution: string;
+  readonly institution_guid: string;
+  readonly isa_number: string;
+  readonly stats_url: string | null;
 };
 
-export const systemInformationPromise: Promise<Readonly<SystemInfo>> =
-  load<SystemInfo>('/context/system_info.json', 'application/json').then(
-    (data) => {
-      Object.entries(data).forEach(([key, value]) => {
-        // @ts-expect-error
-        systemInfo[key as keyof SystemInfo] = value;
-      });
-      if (systemInfo.stats_url != null) {
-        const payload = {
-          version: systemInfo.version,
-          dbVersion: systemInfo.database_version,
-          institution: systemInfo.institution,
-          institutionGUID: systemInfo.institution_guid,
-          discipline: systemInfo.discipline,
-          collection: systemInfo.collection,
-          collectionGUID: systemInfo.collection_guid,
-          isaNumber: systemInfo.isa_number,
-        };
-        fetch(querystring.format(systemInfo.stats_url, payload)).catch(
-          console.error
-        );
-      }
-    }
-  );
+export const systemInformationPromise: Promise<SystemInfo> = load<SystemInfo>(
+  '/context/system_info.json',
+  'application/json'
+).then((systemInfo) => {
+  if (systemInfo.stats_url !== null)
+    ping(
+      querystring.format(systemInfo.stats_url, {
+        version: systemInfo.version,
+        dbVersion: systemInfo.database_version,
+        institution: systemInfo.institution,
+        institutionGUID: systemInfo.institution_guid,
+        discipline: systemInfo.discipline,
+        collection: systemInfo.collection,
+        collectionGUID: systemInfo.collection_guid,
+        isaNumber: systemInfo.isa_number,
+      }),
+      {},
+      { strict: false }
+    ).catch(console.error);
+  return systemInfo;
+});

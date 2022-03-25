@@ -8,7 +8,11 @@ import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
 import {AttachmentView} from './components/attachmentplugin';
-import {formatAttachmentUrl, attachmentsAvailable, attachmentSettingsPromise} from './attachments';
+import {
+    attachmentsAvailable,
+    attachmentSettingsPromise,
+    formatAttachmentUrl
+} from './attachments';
 import {userInformation} from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';

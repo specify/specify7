@@ -9,7 +9,7 @@ import wbText from '../localization/workbench';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
-import { isTreeModel } from '../treedefinitions';
+import { fetchTreeRanks, isTreeModel } from '../treedefinitions';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
@@ -23,7 +23,7 @@ import {
   transitionDuration,
 } from './basic';
 import { TableIcon } from './common';
-import { useTitle, useUnloadProtect } from './hooks';
+import { useAsyncState, useTitle, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import {
   MakeRecordSetButton,
@@ -63,7 +63,12 @@ export function QueryBuilder({
   readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
-}): JSX.Element {
+}): JSX.Element | null {
+  const [treeRanks] = useAsyncState(
+    React.useCallback(() => fetchTreeRanks, []),
+    true
+  );
+
   const [query, setQuery] = useResource(queryResource);
   const [originalQueryFields] = React.useState(query.fields ?? []);
 
@@ -158,7 +163,7 @@ export function QueryBuilder({
 
   useTitle(query.name);
 
-  return (
+  return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
         typeof state.openedElement.index === 'undefined'
@@ -396,5 +401,5 @@ export function QueryBuilder({
         </div>
       </Form>
     </Container.Full>
-  );
+  ) : null;
 }

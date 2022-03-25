@@ -17,6 +17,9 @@ export default function () {
         },
         { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
       ),
+      treeRanks: import('./treedefinitions').then(
+        async ({ fetchTreeRanks }) => fetchTreeRanks
+      ),
     })
       .then(
         ({

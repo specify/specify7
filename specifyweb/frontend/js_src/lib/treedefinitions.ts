@@ -53,7 +53,8 @@ const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 const allTrees = [...commonTrees, ...treesForPaleo] as const;
 const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
-export let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
+let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
+export const getDisciplineTrees = (): typeof disciplineTrees => disciplineTrees;
 
 export const isTreeModel = (
   tableName: keyof Tables
@@ -64,7 +65,7 @@ export const isTreeResource = (
 ): resource is SpecifyResource<AnyTree> =>
   f.includes(allTrees, resource.specifyModel.name);
 
-export const fetchContext = Promise.all([
+export const fetchTreeRanks = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])

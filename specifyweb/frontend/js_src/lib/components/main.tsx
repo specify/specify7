@@ -137,7 +137,8 @@ export function Main({
             systemInformation.database_version
         ),
       []
-    ), false
+    ),
+    false
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);

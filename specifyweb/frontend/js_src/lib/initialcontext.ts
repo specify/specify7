@@ -27,11 +27,6 @@ export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
 }
 
 export const initialContext = Promise.all([
-  /*
-   * TODO: consider creating a secondary context queue that would be loaded after
-   *   the primary, and would consist of everything not needed to render the
-   *   welcome page
-   */
   // Fetch user preferences
   import('./preferencesutils'),
   // Fetch general context information
@@ -48,9 +43,6 @@ export const initialContext = Promise.all([
   import('./uiformatters'),
   // Fetch user information
   import('./userinfo'),
-  // TODO: consider removing this from initialContext
-  // Fetch all tree definitions (tree ranks)
-  import('./treedefinitions'),
   // Fetch user permissions
   import('./permissions'),
 ]).then(async (modules) =>
