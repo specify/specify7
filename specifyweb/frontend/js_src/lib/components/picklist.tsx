@@ -16,6 +16,7 @@ import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
 import { LoadingContext } from './contexts';
+import { hasToolPermission } from '../permissions';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -139,9 +140,13 @@ export function PickListComboBox(
     [props.items]
   );
 
+  const handleAdd = hasToolPermission('pickLists', 'create')
+    ? props.onAdd
+    : undefined;
+
   return (
     <>
-      {typeof props.onAdd === 'undefined' ? (
+      {typeof handleAdd === 'undefined' ? (
         <Select
           id={props.id}
           // "null" value is represented as an empty string
@@ -199,11 +204,11 @@ export function PickListComboBox(
       )}
       {typeof pendingNewValue === 'string' &&
         typeof props.pickList === 'object' &&
-        typeof props.onAdd === 'function' && (
+        typeof handleAdd === 'function' && (
           <AddingToPicklist
             value={pendingNewValue}
             pickList={props.pickList}
-            onAdd={(): void => props.onAdd?.(pendingNewValue)}
+            onAdd={(): void => handleAdd?.(pendingNewValue)}
             onClose={(): void => setPendingNewValue(undefined)}
           />
         )}

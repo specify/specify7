@@ -26,7 +26,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../stateCache';
-import { hasToolPermission } from '../../permissions';
+import { hasPermission, hasToolPermission } from '../../permissions';
 
 const fetchTablesToShow = async (): Promise<RA<keyof Tables>> =>
   ajax<Document>(
@@ -350,12 +350,16 @@ function EditQueryDialog({
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
             {commonText('exportQueryForDwca')}
           </Button.LikeLink>
-          <Button.LikeLink onClick={(): void => setState('reportExport')}>
-            {commonText('exportQueryAsReport')}
-          </Button.LikeLink>
-          <Button.LikeLink onClick={(): void => setState('labelExport')}>
-            {commonText('exportQueryAsLabel')}
-          </Button.LikeLink>
+          {hasPermission('/report', 'execute') && (
+            <>
+              <Button.LikeLink onClick={(): void => setState('reportExport')}>
+                {commonText('exportQueryAsReport')}
+              </Button.LikeLink>
+              <Button.LikeLink onClick={(): void => setState('labelExport')}>
+                {commonText('exportQueryAsLabel')}
+              </Button.LikeLink>
+            </>
+          )}
         </div>
       )}
     </ResourceView>

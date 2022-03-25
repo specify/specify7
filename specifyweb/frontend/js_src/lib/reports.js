@@ -8,8 +8,7 @@ import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
 import {QueryLineView} from './components/querybuilderfield';
 import {AttachmentView} from './components/attachmentplugin';
-import * as attachments from './attachments';
-import {formatAttachmentUrl} from './attachments';
+import {formatAttachmentUrl, attachmentsAvailable, attachmentSettingsPromise} from './attachments';
 import {userInformation} from './userinfo';
 import formsText from './localization/forms';
 import commonText from './localization/common';
@@ -62,7 +61,11 @@ var ReportListDialog = Backbone.View.extend({
         this.reports = byType('jrxml/report');
         this.labels = byType('jrxml/label');
     },
-    render: function() {
+    render(){
+        attachmentSettingsPromise.then(()=>this._render());
+        return this;
+    },
+    _render: function() {
         if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length <= 1)) {
             var reports = $('<table class="reports">');
             var labels = $('<table class="labels">');
@@ -101,7 +104,6 @@ var ReportListDialog = Backbone.View.extend({
         } else {
             this.options.done && this.options.done();
         }
-        return this;
     },
     makeEntry: function(icon, appResource) {
         const img = $('<img>', {src: icon});
@@ -226,14 +228,19 @@ var FixImagesDialog = Backbone.View.extend({
     },
     fixMissingAttachment: function(evt) {
         evt.preventDefault();
-        if (!attachments) return;
 
         var index = this.$('.missing-attachments button').index(evt.currentTarget);
         var attachmentPlugin = new AttachmentView({
             onUploadComplete: this.uploadComplete.bind(this, index),
         });
-        makeDialog(attachmentPlugin.render().$el, {
-            title: formsText('missingAttachmentsFixDialogTitle')
+        this.dialog?.remove();
+        this.dialog = showDialog({
+            header: formsText('missingAttachmentsFixDialogTitle'),
+            content: attachmentPlugin.render().$el,
+            onClose: () => this.dialog.remove(),
+            buttons: <>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+            </>
         });
     },
     uploadComplete: function(index, attachment) {
@@ -554,7 +561,7 @@ function fixupImages(reportXML) {
                 missingAttachments.push(filename);
                 imageUrl = badImageUrl;
             } else {
-                imageUrl = attachments.attachmentsAvailable() ?
+                imageUrl = attachmentsAvailable() ?
                     '"' + formatAttachmentUrl(attachment, undefined) + '"' :
                     badImageUrl;
             }

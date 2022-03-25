@@ -18,7 +18,7 @@ import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
 import { getBoolPref } from '../remoteprefs';
 import { toTable } from '../specifymodel';
-import { systemInformation } from '../systeminfo';
+import { systemInformationPromise } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
@@ -45,10 +45,10 @@ type IncomingMessageExtended = IncomingMessage & {
 const dispatch = generateDispatch<IncomingMessageExtended>({
   LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
     void leafletTileServersPromise
-      .then((leafletLayers) =>
+      .then(async (leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',
-          systemInfo: systemInformation,
+          systemInfo: await systemInformationPromise,
           // @ts-expect-error
           leafletLayers: Object.fromEntries(
             Object.entries(leafletLayers).map(([groupName, group]) => [
@@ -137,7 +137,7 @@ function SpecifyNetwork({
   resource,
 }: {
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
-}): JSX.Element | null {
+}): JSX.Element {
   const [occurrenceName, setOccurrenceName] = React.useState('');
   const [hasFailure, handleFailure, handleNoFailure] = useBooleanState();
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);

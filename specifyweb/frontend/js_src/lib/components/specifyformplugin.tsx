@@ -28,6 +28,7 @@ import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
 import { hasTablePermission } from '../permissions';
+import { augmentMode } from './resourceview';
 
 function WrongTable({
   resource,
@@ -106,7 +107,10 @@ const pluginRenderers: {
         <PartialDateUi
           resource={resource}
           id={id}
-          isReadOnly={mode === 'view'}
+          isReadOnly={
+            augmentMode(mode, resource.isNew(), resource.specifyModel.name) ===
+            'view'
+          }
           defaultValue={defaultValue}
           defaultPrecision={defaultPrecision}
           precisionField={precisionField}
@@ -126,7 +130,9 @@ const pluginRenderers: {
     } else
       return (
         f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-          collectionObject.isNew() ? null : (
+          collectionObject.isNew() ||
+          !hasTablePermission('CollectionRelationship', 'read') ||
+          !hasTablePermission('CollectionRelType', 'read') ? null : (
             <CollectionOneToManyPlugin
               resource={collectionObject}
               relationship={relationship}
@@ -144,7 +150,9 @@ const pluginRenderers: {
     } else
       return (
         f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-          collectionObject.isNew() ? null : (
+          collectionObject.isNew() ||
+          !hasTablePermission('CollectionRelationship', 'read') ||
+          !hasTablePermission('CollectionRelType', 'read') ? null : (
             <CollectionOneToOnePlugin
               resource={collectionObject}
               relationship={relationship}
@@ -208,7 +216,7 @@ const pluginRenderers: {
       );
       return <></>;
     } else
-      return (
+      return hasTablePermission('CollectionRelType', 'read') ? (
         <HostTaxonPlugin
           resource={resource}
           relationship={relationship}
@@ -217,7 +225,7 @@ const pluginRenderers: {
           formType={formType}
           isRequired={isRequired}
         />
-      );
+      ) : null;
   },
   PasswordUI({ resource }) {
     return (
@@ -228,15 +236,17 @@ const pluginRenderers: {
   },
   UserAgentsUI({ resource, mode, formType, id, isRequired }) {
     return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <UserAgentsPlugin
-          user={specifyUser}
-          id={id}
-          mode={mode}
-          formType={formType}
-          isRequired={isRequired}
-        />
-      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
+        hasTablePermission('Agent', 'read') ? (
+          <UserAgentsPlugin
+            user={specifyUser}
+            id={id}
+            mode={mode}
+            formType={formType}
+            isRequired={isRequired}
+          />
+        ) : null
+      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   AdminStatusUI({ resource, mode, id }) {

@@ -56,14 +56,14 @@ const buildRegistry = f.store(
   (): IR<Registry> =>
     [
       ...Object.values(schema.models)
-        .filter(({ name }) => !f.has(toolTables, name))
+        .filter(({ name }) => !f.has(toolTables(), name))
         .map(({ name, label, isSystem }) => ({
           resource: tableNameToResourceName(name),
           localized: [adminText('table'), label],
           actions: tableActions,
           groupName: isSystem ? commonText('system') : '',
         })),
-      ...Object.entries(toolDefinitions).map(([name, { label }]) => ({
+      ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
         localized: [commonText('tools'), label],
         actions: tableActions,
@@ -126,60 +126,63 @@ const buildRegistry = f.store(
  * If user doesn't have some access to any of these tables, user does not
  * have access to a tool
  */
-export const toolDefinitions = ensure<
-  IR<{
-    readonly label: string;
-    readonly tables: RA<keyof Tables>;
-  }>
->()({
-  schemaConfig: {
-    label: commonText('schemaConfig'),
-    tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
-  },
-  queryBuilder: {
-    label: queryText('queryBuilder'),
-    tables: ['SpQuery', 'SpQueryField'],
-  },
-  recordSets: {
-    label: commonText('recordSets'),
-    tables: ['RecordSet', 'RecordSetItem'],
-  },
-  resources: {
-    label: commonText('appResources'),
-    tables: ['SpAppResource', 'SpAppResourceData', 'SpAppResourceDir'],
-  },
-  pickLists: {
-    label: commonText('pickList'),
-    tables: ['PickList', 'PickListItem'],
-  },
-  Taxon: {
-    label: schema.models.Taxon.label,
-    tables: ['Taxon', 'TaxonTreeDef', 'TaxonTreeDefItem'],
-  },
-  Geography: {
-    label: schema.models.Geography.label,
-    tables: ['Geography', 'GeographyTreeDef', 'GeographyTreeDefItem'],
-  },
-  Storage: {
-    label: schema.models.Storage.label,
-    tables: ['Storage', 'StorageTreeDef', 'StorageTreeDefItem'],
-  },
-  LithoStrat: {
-    label: schema.models.LithoStrat.label,
-    tables: ['LithoStrat', 'LithoStratTreeDef', 'LithoStratTreeDefItem'],
-  },
-  GeologicTimePeriod: {
-    label: schema.models.GeologicTimePeriod.label,
-    tables: [
-      'GeologicTimePeriod',
-      'GeologicTimePeriodTreeDef',
-      'GeologicTimePeriodTreeDefItem',
-    ],
-  },
-} as const);
+export const toolDefinitions = f.store(() =>
+  ensure<
+    IR<{
+      readonly label: string;
+      readonly tables: RA<keyof Tables>;
+    }>
+  >()({
+    schemaConfig: {
+      label: commonText('schemaConfig'),
+      tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
+    },
+    queryBuilder: {
+      label: queryText('queryBuilder'),
+      tables: ['SpQuery', 'SpQueryField'],
+    },
+    recordSets: {
+      label: commonText('recordSets'),
+      tables: ['RecordSet', 'RecordSetItem'],
+    },
+    resources: {
+      label: commonText('appResources'),
+      tables: ['SpAppResource', 'SpAppResourceData', 'SpAppResourceDir'],
+    },
+    pickLists: {
+      label: commonText('pickList'),
+      tables: ['PickList', 'PickListItem'],
+    },
+    Taxon: {
+      label: schema.models.Taxon.label,
+      tables: ['Taxon', 'TaxonTreeDef', 'TaxonTreeDefItem'],
+    },
+    Geography: {
+      label: schema.models.Geography.label,
+      tables: ['Geography', 'GeographyTreeDef', 'GeographyTreeDefItem'],
+    },
+    Storage: {
+      label: schema.models.Storage.label,
+      tables: ['Storage', 'StorageTreeDef', 'StorageTreeDefItem'],
+    },
+    LithoStrat: {
+      label: schema.models.LithoStrat.label,
+      tables: ['LithoStrat', 'LithoStratTreeDef', 'LithoStratTreeDefItem'],
+    },
+    GeologicTimePeriod: {
+      label: schema.models.GeologicTimePeriod.label,
+      tables: [
+        'GeologicTimePeriod',
+        'GeologicTimePeriodTreeDef',
+        'GeologicTimePeriodTreeDefItem',
+      ],
+    },
+  } as const)
+);
 
-const toolTables = new Set(
-  Object.values(toolDefinitions).flatMap(({ tables }) => tables)
+const toolTables = f.store(
+  () =>
+    new Set(Object.values(toolDefinitions()).flatMap(({ tables }) => tables))
 );
 
 /**
@@ -192,8 +195,8 @@ export const compressPolicies = (policies: RA<Policy>): RA<Policy> =>
       ({ tools, policies }, policy) => {
         if (policy.resource.startsWith(tablePermissionsPrefix)) {
           const model = resourceNameToModel(policy.resource);
-          if (f.has(toolTables, model.name)) {
-            const toolName = Object.entries(toolDefinitions).find(
+          if (f.has(toolTables(), model.name)) {
+            const toolName = Object.entries(toolDefinitions()).find(
               ([_name, { tables }]) => f.includes(tables, model.name)
             )?.[0];
             if (typeof toolName === 'string') {
@@ -232,10 +235,10 @@ export const compressPolicies = (policies: RA<Policy>): RA<Policy> =>
 export const decompressPolicies = (policies: RA<Policy>): RA<Policy> =>
   policies.flatMap((policy) =>
     resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
-      ? toolDefinitions[
-          resourceNameToParts(
-            policy.resource
-          )[1] as keyof typeof toolDefinitions
+      ? toolDefinitions()[
+          resourceNameToParts(policy.resource)[1] as keyof ReturnType<
+            typeof toolDefinitions
+          >
         ].tables.map((tableName) => ({
           resource: tableNameToResourceName(tableName),
           actions: policy.actions,

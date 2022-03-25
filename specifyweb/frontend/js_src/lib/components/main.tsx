@@ -5,7 +5,7 @@ import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
-import { systemInformation } from '../systeminfo';
+import { systemInformationPromise } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
 import { fetchContext as userPermission } from '../permissions';
@@ -19,6 +19,7 @@ import {
 } from './header';
 import { Dialog } from './modaldialog';
 import { Notifications } from './notifications';
+import { useAsyncState } from './hooks';
 
 export type UserTool = {
   readonly task: string;
@@ -49,9 +50,11 @@ const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
       import('../toolbarreport').then(async ({ default: menuItem }) => ({
         default: await menuItem,
       })),
-      import('../attachments')
-        .then(async ({ fetchContext }) => fetchContext)
-        .then(async () => import('../toolbarattachments')),
+      import('../toolbarattachments').then(
+        async ({ default: menuItemPromise }) => ({
+          default: await menuItemPromise,
+        })
+      ),
       import('./toolbar/wbsdialog'),
     ])
   )
@@ -125,8 +128,16 @@ export function Main({
   const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
     undefined
   );
-  const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    systemInformation.specify6_version !== systemInformation.database_version
+  const [showVersionMismatch = false, setShowVersionMismatch] = useAsyncState(
+    React.useCallback(
+      async () =>
+        systemInformationPromise.then(
+          (systemInformation) =>
+            systemInformation.specify6_version !==
+            systemInformation.database_version
+        ),
+      []
+    ), false
   );
 
   const mainRef = React.useRef<HTMLElement | null>(null);

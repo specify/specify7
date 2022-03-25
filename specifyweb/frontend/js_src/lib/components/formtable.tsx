@@ -20,6 +20,7 @@ import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { hasTablePermission } from '../permissions';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -187,13 +188,17 @@ export function FormTable<SCHEMA extends AnySchema>({
                   )}
                 </>
               )}
-              {mode !== 'edit' && (
+              {mode === 'edit' && (
                 <div role="cell">
                   <Button.Icon
                     title={commonText('remove')}
                     aria-label={commonText('remove')}
                     icon="trash"
                     onClick={(): void => handleDelete(resource)}
+                    disabled={
+                      !resource.isNew() &&
+                      !hasTablePermission(resource.specifyModel.name, 'delete')
+                    }
                   />
                 </div>
               )}
@@ -215,26 +220,32 @@ export function FormTable<SCHEMA extends AnySchema>({
         )}
       </DataEntry.Grid>
     );
-  const addButton = (
-    <Button.LikeLink
-      onClick={
-        disableAdding
-          ? undefined
-          : isDependent
-          ? void setState({
-              type: 'SearchState',
-              resource: new relationship.relatedModel.Resource(),
-            })
-          : (): void => {
-              const resource = new relationship.relatedModel.Resource();
-              setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-              handleAdd(resource);
-            }
-      }
-    >
-      {commonText('add')}
-    </Button.LikeLink>
-  );
+  const addButton =
+    mode !== 'view' &&
+    !disableAdding &&
+    hasTablePermission(
+      relationship.relatedModel.name,
+      isDependent ? 'read' : 'create'
+    ) ? (
+      <Button.LikeLink
+        onClick={
+          disableAdding
+            ? undefined
+            : isDependent
+            ? void setState({
+                type: 'SearchState',
+                resource: new relationship.relatedModel.Resource(),
+              })
+            : (): void => {
+                const resource = new relationship.relatedModel.Resource();
+                setExpandedRecords({ ...isExpanded, [resource.cid]: true });
+                handleAdd(resource);
+              }
+        }
+      >
+        {commonText('add')}
+      </Button.LikeLink>
+    ) : undefined;
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>

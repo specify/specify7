@@ -39,6 +39,7 @@ import {
   getMaxToManyIndex,
   isCircularRelationship,
 } from './wbplanviewmodelhelper';
+import { hasToolPermission } from './permissions';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -305,7 +306,8 @@ export function getMappingLineData({
       commitInstanceData(
         'tree',
         model,
-        generateFieldData === 'none'
+        generateFieldData === 'none' ||
+          !hasToolPermission(model.name as 'Geography', 'read')
           ? []
           : [
               scope === 'queryBuilder' &&

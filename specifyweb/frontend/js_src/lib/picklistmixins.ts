@@ -13,6 +13,7 @@ import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
 import { f, sortObjectsByKey } from './wbplanviewhelper';
+import { hasTablePermission } from './permissions';
 
 export const createPickListItem = (
   // It's weird that value can be null, but that's what the data model says
@@ -95,6 +96,7 @@ async function fetchFromTable(
   limit: number
 ): Promise<RA<PickListItemSimple>> {
   const model = defined(getModel(pickList.get('tableName')));
+  if (!hasTablePermission(model.name, 'read')) return [];
   const collection = new model.LazyCollection({
     domainfilter: hasHierarchyField(model),
   });

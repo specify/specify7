@@ -201,6 +201,7 @@ export function RoleView({
         }
         isReadOnly={isReadOnly}
       />
+      <span className="flex-1 -mt-2" />
       <div className="flex gap-2">
         {/* FIXME: handle deletion of role with users */}
         {typeof role.id === 'number' &&

@@ -176,6 +176,10 @@ export function ExpressSearch(): JSX.Element {
   );
 }
 
+// FIXME: split userTools menu into categories
+// FIXME: add discourse link to about dialog
+// FIXME: add about dialog to userTools
+
 export function UserTools({
   userTools,
 }: {

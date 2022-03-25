@@ -25,6 +25,7 @@ import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { ResourceView } from './resourceview';
+import { hasTablePermission } from '../permissions';
 
 const previewSize = 123;
 
@@ -79,33 +80,37 @@ export function AttachmentCell({
     <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">
       {typeof attachment === 'object' && (
         <>
-          {typeof handleViewRecord === 'function' && (
-            <Button.LikeLink
-              className="absolute top-0 left-0"
-              title={model?.label}
-              onClick={(): void =>
-                typeof model === 'undefined'
-                  ? handleMetaToggle()
-                  : loading(
-                      attachment
-                        .rgetCollection(
-                          `${model.name as 'agent'}Attachments`,
-                          true
-                        )
-                        .then(({ models }) =>
-                          idFromUrl(models[0].get(model.name as 'agent') ?? '')
-                        )
-                        .then((id) =>
-                          typeof id === 'number'
-                            ? handleViewRecord(model, id)
-                            : handleMetaToggle()
-                        )
-                    )
-              }
-            >
-              <TableIcon name={model?.name ?? 'Attachment'} />
-            </Button.LikeLink>
-          )}
+          {typeof handleViewRecord === 'function' &&
+            (typeof model === 'undefined' ||
+              hasTablePermission(model.name, 'read')) && (
+              <Button.LikeLink
+                className="absolute top-0 left-0"
+                title={model?.label}
+                onClick={(): void =>
+                  typeof model === 'undefined'
+                    ? handleMetaToggle()
+                    : loading(
+                        attachment
+                          .rgetCollection(
+                            `${model.name as 'agent'}Attachments`,
+                            true
+                          )
+                          .then(({ models }) =>
+                            idFromUrl(
+                              models[0].get(model.name as 'agent') ?? ''
+                            )
+                          )
+                          .then((id) =>
+                            typeof id === 'number'
+                              ? handleViewRecord(model, id)
+                              : handleMetaToggle()
+                          )
+                      )
+                }
+              >
+                <TableIcon name={model?.name ?? 'Attachment'} />
+              </Button.LikeLink>
+            )}
           <Button.Icon
             className="absolute top-0 right-0"
             title={commonText('metadata')}
@@ -204,12 +209,14 @@ export function AttachmentsView(): JSX.Element {
           ),
           byTable: f.all(
             Object.fromEntries(
-              tablesWithAttachments.map(({ name }) => [
-                name,
-                fetchCollection('Attachment', { limit: 1 }).then<number>(
-                  ({ totalCount }) => totalCount
-                ),
-              ])
+              tablesWithAttachments
+                .filter(({ name }) => hasTablePermission(name, 'read'))
+                .map(({ name }) => [
+                  name,
+                  fetchCollection('Attachment', { limit: 1 }).then<number>(
+                    ({ totalCount }) => totalCount
+                  ),
+                ])
             )
           ),
         }),

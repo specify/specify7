@@ -121,7 +121,7 @@ function UserAgentsDialog({
               ...entry,
               /*
                * Kind of kludge but we need some resource with an agent field
-               * for the QueryCBX to work with;
+               * for the QueryCBX to work with
                */
               address: new schema.models.Address.Resource().set(
                 'agent',
@@ -142,7 +142,7 @@ function UserAgentsDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          {<Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>}
         </>
       }
     >

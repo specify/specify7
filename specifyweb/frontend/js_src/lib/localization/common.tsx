@@ -997,12 +997,12 @@ const commonText = createDictionary({
     ca: 'Are you sure you want to leave this page?',
     'es-es': 'Are you sure you want to leave this page?',
   },
-  // FIXME: localize
   leavePageDialogMessage: {
-    'en-us': 'Unsaved changes would be lost if your leave this page',
-    'ru-ru': 'Unsaved changes would be lost if your leave this page',
-    ca: 'Unsaved changes would be lost if your leave this page',
-    'es-es': 'Unsaved changes would be lost if your leave this page',
+    'en-us': 'Unsaved changes would be lost if your leave this page.',
+    'ru-ru':
+      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+    ca: 'Unsaved changes would be lost if your leave this page.',
+    'es-es': 'Unsaved changes would be lost if your leave this page.',
   },
   leave: {
     'en-us': 'Leave',
@@ -1621,40 +1621,39 @@ const commonText = createDictionary({
     ca: 'Data Model',
     'es-es': 'Data Model',
   },
-  // FIXME: localize
   tableApi: {
     'en-us': 'Tables API documentation',
-    'ru-ru': 'Tables API documentation',
+    'ru-ru': 'Документация по API таблиц',
     ca: 'Tables API documentation',
     'es-es': 'Tables API documentation',
   },
   operationsApi: {
     'en-us': 'Operations API documentation',
-    'ru-ru': 'Operations API documentation',
+    'ru-ru': 'Документация по API операций',
     ca: 'Operations API documentation',
     'es-es': 'Operations API documentation',
   },
   title: {
     'en-us': 'Title',
-    'ru-ru': 'Title',
+    'ru-ru': 'Надпись',
     ca: 'Title',
     'es-es': 'Title',
   },
   ordinal: {
     'en-us': 'Ordinal',
-    'ru-ru': 'Ordinal',
+    'ru-ru': 'Порядковый номер',
     ca: 'Ordinal',
     'es-es': 'Ordinal',
   },
   accessDenied: {
     'en-us': 'Access Denied',
-    'ru-ru': 'Access Denied',
+    'ru-ru': 'Доступ запрещен',
     ca: 'Access Denied',
     'es-es': 'Access Denied',
   },
   noPermissionForAction: {
     'en-us': "You don't have permission to perform this action.",
-    'ru-ru': "You don't have permission to perform this action.",
+    'ru-ru': 'У вас нет разрешения на выполнение этого действия.',
     ca: "You don't have permission to perform this action.",
     'es-es': "You don't have permission to perform this action.",
   },

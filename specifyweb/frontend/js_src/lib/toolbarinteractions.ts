@@ -3,6 +3,7 @@ import type { MenuItem } from './components/main';
 import { InteractionsDialog } from './components/interactionsdialog';
 import commonText from './localization/common';
 import createBackboneView from './components/reactbackboneextend';
+import { hasToolPermission } from './permissions';
 
 const InteractionsView = createBackboneView(InteractionsDialog);
 
@@ -11,6 +12,7 @@ const menuItem: MenuItem = {
   title: commonText('interactions'),
   icon: icons.chat,
   isOverlay: true,
+  enabled: () => hasToolPermission('recordSets', 'view'),
   view: (props) => new InteractionsView(props).render(),
 };
 

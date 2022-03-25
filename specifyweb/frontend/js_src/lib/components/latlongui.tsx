@@ -7,6 +7,7 @@ import commonText from '../localization/common';
 import localityText from '../localization/locality';
 import type { FormMode } from '../parseform';
 import { Input, Select } from './basic';
+import { augmentMode } from './resourceview';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -157,7 +158,7 @@ function CoordinatePoint({
 
 export function LatLongUi({
   resource,
-  mode,
+  mode: initialMode,
   id,
 }: {
   readonly resource: SpecifyResource<Locality>;
@@ -166,6 +167,12 @@ export function LatLongUi({
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
     () => resource.get('latLongType') ?? 'point'
+  );
+
+  const mode = augmentMode(
+    initialMode,
+    resource.isNew(),
+    resource.specifyModel.name
   );
 
   React.useEffect(() => {

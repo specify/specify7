@@ -20,11 +20,18 @@ import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
 import { f } from './wbplanviewhelper';
 import { Tables } from './datamodel';
-import { hasTablePermission } from './permissions';
+import { hasTablePermission, hasToolPermission } from './permissions';
+import { PermissionDenied } from './components/permissiondenied';
+
+const PermissionDeniedView = createBackboneView(PermissionDenied);
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
 async function recordSetView(id: string, index = '0'): Promise<void> {
+  if (!hasToolPermission('recordSets', 'view')) {
+    setCurrentView(new PermissionDeniedView());
+    return;
+  }
   const recordSet = new schema.models.RecordSet.Resource({
     id: Number.parseInt(id),
   });
@@ -77,6 +84,12 @@ async function resourceView(
 
   if (typeof model === 'undefined') {
     setCurrentView(new NotFoundView());
+    return undefined;
+  } else if (
+    typeof id === 'string' &&
+    !hasTablePermission(model.name, 'read')
+  ) {
+    setCurrentView(new PermissionDeniedView());
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
 
@@ -143,6 +156,11 @@ async function byCatNumber(
   rawCollection: string,
   rawCatNumber: string
 ): Promise<void> {
+  if (!hasTablePermission('CollectionObject', 'read')) {
+    setCurrentView(new PermissionDeniedView());
+    return;
+  }
+
   const collection = decodeURIComponent(rawCollection);
   let catNumber = decodeURIComponent(rawCatNumber);
   const collectionLookup = new schema.models.Collection.LazyCollection({

@@ -40,14 +40,10 @@ export const initialContext = Promise.all([
   import('./schema'),
   // Fetch remote preferences
   import('./remoteprefs'),
-  // Fetch attachment settings
-  import('./attachments'),
   // Fetch icon definitions
   import('./icons'),
   // Fetch schema localization
   import('./stringlocalization'),
-  // Fetch general system information
-  import('./systeminfo'),
   // Fetch UI formatters
   import('./uiformatters'),
   // Fetch user information

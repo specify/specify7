@@ -12,6 +12,7 @@ import { Button } from './basic';
 import { Dialog } from './modaldialog';
 import { toTable, toTables } from '../specifymodel';
 import { LoadingContext } from './contexts';
+import { hasTablePermission } from '../permissions';
 
 type States =
   | State<'MainState'>
@@ -32,11 +33,13 @@ export function PaleoLocationMapPlugin({
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema>;
-}): JSX.Element {
+}): JSX.Element | null {
   const [state, setState] = React.useState<States>({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
-  return (
+  return hasTablePermission('CollectingEvent', 'read') &&
+    hasTablePermission('Locality', 'read') &&
+    hasTablePermission('PaleoContext', 'read') ? (
     <>
       <Button.Simple
         id={id}
@@ -95,7 +98,7 @@ export function PaleoLocationMapPlugin({
         </Dialog>
       )}
     </>
-  );
+  ) : null;
 }
 
 const fetchPaleoData = async (

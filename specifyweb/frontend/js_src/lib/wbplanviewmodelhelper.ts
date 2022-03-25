@@ -19,6 +19,8 @@ import {
   relationshipIsToMany,
   valueIsToManyIndex,
 } from './wbplanviewmappinghelper';
+import { has } from 'underscore';
+import { hasTablePermission, hasToolPermission } from './permissions';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -69,24 +71,26 @@ export function findRequiredMissingFields(
     );
   // Handle trees
   else if (isTreeModel(tableName))
-    return defined(
-      getTreeDefinitionItems(tableName as 'Geography', false)
-    ).flatMap(({ name: rankName, isEnforced }) => {
-      const formattedRankName = formatTreeRank(rankName);
-      const localPath = [...path, formattedRankName];
+    return hasToolPermission(tableName as 'Geography', 'read')
+      ? defined(
+          getTreeDefinitionItems(tableName as 'Geography', false)
+        ).flatMap(({ name: rankName, isEnforced }) => {
+          const formattedRankName = formatTreeRank(rankName);
+          const localPath = [...path, formattedRankName];
 
-      if (formattedRankName in indexedMappings)
-        return findRequiredMissingFields(
-          tableName,
-          indexedMappings[formattedRankName],
-          mustMatchPreferences,
-          parentRelationship,
-          localPath
-        );
-      else if (isEnforced === true && !mustMatchPreferences[tableName])
-        return [localPath];
-      else return [];
-    });
+          if (formattedRankName in indexedMappings)
+            return findRequiredMissingFields(
+              tableName,
+              indexedMappings[formattedRankName],
+              mustMatchPreferences,
+              parentRelationship,
+              localPath
+            );
+          else if (isEnforced === true && !mustMatchPreferences[tableName])
+            return [localPath];
+          else return [];
+        })
+      : [];
 
   return [
     ...model.relationships.flatMap((relationship) => {

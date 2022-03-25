@@ -15,6 +15,7 @@ import { defined } from '../types';
 import { Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
+import { augmentMode } from './resourceview';
 
 export const webLinks = load<Element>(
   '/context/app.resource?name=WebLinks',
@@ -50,7 +51,7 @@ export function WebLinkButton({
   webLink,
   icon,
   formType,
-  mode,
+  mode: initialMode,
   id,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
@@ -61,6 +62,13 @@ export function WebLinkButton({
   readonly mode: FormMode;
   readonly id: string | undefined;
 }): JSX.Element {
+  // FIXME: lift this to the subview or resourceview level
+  const mode = augmentMode(
+    initialMode,
+    resource.isNew(),
+    resource.specifyModel.name
+  );
+
   const [data] = useAsyncState(
     React.useCallback(async () => {
       const fieldInfo = resource.specifyModel.getField(fieldName ?? '');

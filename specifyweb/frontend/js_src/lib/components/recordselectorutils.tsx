@@ -22,8 +22,9 @@ import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
-import { ResourceView } from './resourceview';
+import { augmentMode, ResourceView } from './resourceview';
 import { removeItem } from './wbplanviewstate';
+import { hasTablePermission, hasToolPermission } from '../permissions';
 
 function getDefaultIndex(queryParameter: string, lastIndex: number): number {
   const parameters = queryString.parse();
@@ -101,6 +102,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     defaultIndex ?? collection._totalCount ?? 0
   );
 
+  // FIXME: disable onAdd and onDelete if no permission
   return isLoaded ? (
     <BaseRecordSelector<SCHEMA>
       {...rest}
@@ -140,7 +142,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
 export function IntegratedRecordSelector({
   urlParameter,
-  mode,
+  mode: initialMode,
   viewName,
   collection,
   dialog,
@@ -161,7 +163,10 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof collectionapi.Dependent;
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
-  const disableAdding = isToOne && collection.models.length > 0;
+  const disableAdding =
+    (isToOne && collection.models.length > 0) ||
+    !hasTablePermission(field.relatedModel.name, 'create');
+  const mode = augmentMode(initialMode, false, field.relatedModel.name);
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -211,7 +216,10 @@ export function IntegratedRecordSelector({
                       : undefined
                   }
                   onDelete={
-                    typeof resource === 'object' && mode !== 'view'
+                    typeof resource === 'object' &&
+                    mode !== 'view' &&
+                    (resource.isNew() ||
+                      hasTablePermission(resource.specifyModel.name, 'delete'))
                       ? handleRemove
                       : undefined
                   }
@@ -341,7 +349,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                       : undefined
                   }
                   onDelete={
-                    typeof resource === 'object' && mode !== 'view'
+                    typeof resource === 'object' &&
+                    mode !== 'view' &&
+                    (resource.isNew() ||
+                      hasTablePermission(resource.specifyModel.name, 'delete'))
                       ? handleRemove
                       : undefined
                   }
@@ -479,11 +490,13 @@ export function RecordSet<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-              <Button.Green
-                onClick={(): void => handleAdd(new rest.model.Resource())}
-              >
-                {commonText('add')}
-              </Button.Green>
+              {hasToolPermission('recordSets', 'create') && (
+                <Button.Green
+                  onClick={(): void => handleAdd(new rest.model.Resource())}
+                >
+                  {commonText('add')}
+                </Button.Green>
+              )}
             </>
           }
         >
@@ -505,17 +518,25 @@ export function RecordSet<SCHEMA extends AnySchema>({
       totalCount={totalCount}
       defaultIndex={defaultResourceIndex ?? 0}
       onSaved={handleSaved}
-      onAdd={handleAdd}
-      onDelete={(): void => {
-        setItems({
-          totalCount: totalCount - 1,
-          ids: removeItem(ids, index),
-        });
-        setIndex((previousIndex) =>
-          clamp(0, totalCount - 1, previousIndex > index ? index - 1 : index)
-        );
-        handleDeleted(totalCount - 1);
-      }}
+      onAdd={hasToolPermission('recordSets', 'create') ? handleAdd : undefined}
+      onDelete={
+        recordSet.isNew() || hasToolPermission('recordSets', 'delete')
+          ? (): void => {
+              setItems({
+                totalCount: totalCount - 1,
+                ids: removeItem(ids, index),
+              });
+              setIndex((previousIndex) =>
+                clamp(
+                  0,
+                  totalCount - 1,
+                  previousIndex > index ? index - 1 : index
+                )
+              );
+              handleDeleted(totalCount - 1);
+            }
+          : undefined
+      }
       onSlide={setIndex}
     />
   );

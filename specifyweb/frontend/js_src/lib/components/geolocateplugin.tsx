@@ -13,6 +13,7 @@ import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoadingContext } from './contexts';
+import { hasTablePermission } from '../permissions';
 
 function GeoLocate({
   resource,
@@ -36,7 +37,8 @@ function GeoLocate({
     function listener(event: MessageEvent): void {
       if (
         !event.origin.endsWith('www.geo-locate.org') ||
-        typeof event.data !== 'string'
+        typeof event.data !== 'string' ||
+        !hasTablePermission('Locality', resource.isNew() ? 'create' : 'update')
       )
         return;
 
@@ -57,7 +59,10 @@ function GeoLocate({
       const polyParsed = poly === 'Unavailable' ? undefined : poly;
 
       loading(
-        (typeof uncertaintyParsed === 'number' || typeof poly === 'string'
+        ((typeof uncertaintyParsed === 'number' || typeof poly === 'string') &&
+        hasTablePermission('GeoCoordDetail', 'read') &&
+        hasTablePermission('GeoCoordDetail', 'create') &&
+        hasTablePermission('GeoCoordDetail', 'update')
           ? resource.rgetPromise('geoCoordDetails').then((details) => {
               let detailsResource = details;
               if (detailsResource === null) {

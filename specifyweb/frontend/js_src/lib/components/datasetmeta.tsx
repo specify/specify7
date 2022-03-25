@@ -31,8 +31,10 @@ import { Dialog } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
+import { hasTablePermission } from '../permissions';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
+  if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
   const createdByAgentResource = new schema.models.Agent.Resource({
     id: idFromUrl(url),
   });

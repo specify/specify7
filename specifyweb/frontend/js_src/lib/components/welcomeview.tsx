@@ -3,11 +3,11 @@ import React from 'react';
 import commonText from '../localization/common';
 import welcomeText from '../localization/welcome';
 import { getBoolPref, getPref } from '../remoteprefs';
-import { systemInformation } from '../systeminfo';
+import { systemInformationPromise } from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
-import { useBooleanState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
@@ -42,9 +42,13 @@ function WelcomeScreenContent(): JSX.Element {
   );
 }
 
-function AboutSpecify(): JSX.Element {
+function AboutSpecify(): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
+  const [systemInformation] = useAsyncState(
+    React.useCallback(() => systemInformationPromise, []),
+    true
+  );
+  return typeof systemInformation === 'object' ? (
     <div className="text-right">
       <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
         <img
@@ -115,7 +119,7 @@ function AboutSpecify(): JSX.Element {
         </section>
       </Dialog>
     </div>
-  );
+  ) : null;
 }
 
 function WelcomeView(): JSX.Element {

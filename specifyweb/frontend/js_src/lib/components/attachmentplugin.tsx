@@ -2,7 +2,11 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { error } from '../assert';
-import { attachmentsAvailable, uploadFile } from '../attachments';
+import {
+  attachmentsAvailable,
+  attachmentSettingsPromise,
+  uploadFile,
+} from '../attachments';
 import type { Attachment } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -39,15 +43,18 @@ export function AttachmentPlugin({
   >(
     React.useCallback(
       () =>
-        attachmentsAvailable()
-          ? (
-              resource?.rgetPromise('attachment', true) ?? Promise.resolve(null)
-            ).then((attachment) =>
-              attachment === null
-                ? { type: 'AddAttachment' }
-                : { type: 'DisplayAttachment', attachment }
-            )
-          : { type: 'Unavailable' },
+        attachmentSettingsPromise.then(() =>
+          attachmentsAvailable()
+            ? (
+                resource?.rgetPromise('attachment', true) ??
+                Promise.resolve(null)
+              ).then((attachment) =>
+                attachment === null
+                  ? { type: 'AddAttachment' }
+                  : { type: 'DisplayAttachment', attachment }
+              )
+            : { type: 'Unavailable' }
+        ),
       [resource]
     ),
     true

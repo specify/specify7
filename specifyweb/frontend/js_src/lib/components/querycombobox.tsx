@@ -40,9 +40,10 @@ import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
-import { ResourceView } from './resourceview';
+import { augmentMode, ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
 import { LoadingContext } from './contexts';
+import { hasTablePermission, hasToolPermission } from '../permissions';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -53,7 +54,7 @@ export function QueryComboBox({
   id,
   resource,
   fieldName: initialFieldName,
-  mode,
+  mode: initialMode,
   formType,
   isRequired,
   hasCloneButton = false,
@@ -91,7 +92,11 @@ export function QueryComboBox({
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {
       const treeResource = toTreeTable(resource);
-      if (typeof treeResource === 'undefined') return false;
+      if (
+        typeof treeResource === 'undefined' ||
+        !hasToolPermission(treeResource.specifyModel.name, 'read')
+      )
+        return false;
       if (field?.name == 'parent') {
         let lowestChildRank: Promise<number | undefined>;
         if (treeResource.isNew()) lowestChildRank = Promise.resolve(undefined);
@@ -139,38 +144,40 @@ export function QueryComboBox({
   >(
     React.useCallback(
       () =>
-        f.maybe(toTable(resource, 'CollectionRelationship'), async () => {
-          const left = new schema.models.CollectionRelType.LazyCollection({
-            filters: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              leftsidecollection_id: schema.domainLevelIds.collection,
-            },
-          });
-          const right = new schema.models.CollectionRelType.LazyCollection({
-            filters: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              rightsidecollection_id: schema.domainLevelIds.collection,
-            },
-          });
-          return Promise.all([
-            left.fetchPromise().then(({ models }) =>
-              models.map((relationship) => ({
-                id: relationship.id,
-                collection: idFromUrl(
-                  relationship.get('rightSideCollection') ?? ''
+        hasTablePermission('CollectionRelType', 'read')
+          ? f.maybe(toTable(resource, 'CollectionRelationship'), async () => {
+              const left = new schema.models.CollectionRelType.LazyCollection({
+                filters: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  leftsidecollection_id: schema.domainLevelIds.collection,
+                },
+              });
+              const right = new schema.models.CollectionRelType.LazyCollection({
+                filters: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  rightsidecollection_id: schema.domainLevelIds.collection,
+                },
+              });
+              return Promise.all([
+                left.fetchPromise().then(({ models }) =>
+                  models.map((relationship) => ({
+                    id: relationship.id,
+                    collection: idFromUrl(
+                      relationship.get('rightSideCollection') ?? ''
+                    ),
+                  }))
                 ),
-              }))
-            ),
-            right.fetchPromise().then(({ models }) =>
-              models.map((relationship) => ({
-                id: relationship.id,
-                collection: idFromUrl(
-                  relationship.get('leftSideCollection') ?? ''
+                right.fetchPromise().then(({ models }) =>
+                  models.map((relationship) => ({
+                    id: relationship.id,
+                    collection: idFromUrl(
+                      relationship.get('leftSideCollection') ?? ''
+                    ),
+                  }))
                 ),
-              }))
-            ),
-          ]).then(([left, right]) => ({ left, right }));
-        }),
+              ]).then(([left, right]) => ({ left, right }));
+            })
+          : false,
       [resource]
     ),
     false
@@ -271,6 +278,14 @@ export function QueryComboBox({
       [value, resource, field, typeSearch]
     ),
     false
+  );
+
+  const mode = augmentMode(
+    initialMode,
+    formatted?.resource?.isNew() === true,
+    formatted?.resource?.specifyModel.name ??
+      initialRelatedModel?.name ??
+      (field?.isRelationship ? field.relatedModel.name : undefined)
   );
 
   const [state, setState] = React.useState<

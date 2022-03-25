@@ -20,7 +20,7 @@ type AttachmentSettings = {
 };
 
 let settings: AttachmentSettings | undefined;
-export const fetchContext = load<AttachmentSettings | IR<never>>(
+export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   '/context/attachment_settings.json',
   'application/json'
 ).then((data) => {

@@ -1,10 +1,9 @@
-import { attachmentsAvailable } from './attachments';
+import { attachmentsAvailable, attachmentSettingsPromise } from './attachments';
 import { icons } from './components/icons';
-import type { MenuItem } from './components/main';
 import commonText from './localization/common';
 import { hasTablePermission } from './permissions';
 
-const menuItem: MenuItem = {
+const menuItemPromise = attachmentSettingsPromise.then(() => ({
   task: 'attachments',
   title: commonText('attachments'),
   icon: icons.link,
@@ -12,6 +11,6 @@ const menuItem: MenuItem = {
     attachmentsAvailable() && hasTablePermission('Attachment', 'read'),
   isOverlay: true,
   view: '/specify/attachments/',
-};
+}));
 
-export default menuItem;
+export default menuItemPromise;

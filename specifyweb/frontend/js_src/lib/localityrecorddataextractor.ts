@@ -7,7 +7,7 @@
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Locality } from './datamodel';
-import type { AnySchema } from './datamodelutils';
+import type { AnySchema, AnyTree } from './datamodelutils';
 import { format } from './dataobjformatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletconfig';
 import type { LocalityData } from './leafletutils';
@@ -31,6 +31,7 @@ import {
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { hasTablePermission, hasToolPermission } from './permissions';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -69,6 +70,7 @@ export const defaultRecordFilterFunction: FilterFunction = (
   resource.specifyModel.name !== 'Determination' ||
   resource.get('isCurrent');
 
+// TODO: make this type safe
 async function recursiveResourceResolve(
   resource: any,
   mappingPath: MappingPath,
@@ -91,10 +93,19 @@ async function recursiveResourceResolve(
     'fetchPromise' in resource &&
     (typeof resource.related === 'undefined' || !resource.related.isNew())
   )
-    await resource.fetchPromise();
+    if (
+      hasTablePermission(
+        resource?.specifyModel?.name ?? resource?.resource.specifyModel?.name,
+        'read'
+      )
+    )
+      await resource.fetchPromise();
+    else return [];
 
   if (valueIsTreeRank(currentPart[0])) {
     const treeTableName = getTableFromMappingPath('Locality', pastParts);
+    if (!hasToolPermission(treeTableName as AnyTree['tableName'], 'read'))
+      return [];
     const tableRanks = defined(
       getTreeDefinitionItems(treeTableName as 'Geography', false)
     );

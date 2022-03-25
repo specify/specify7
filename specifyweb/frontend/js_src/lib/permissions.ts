@@ -2,7 +2,7 @@ import { ajax } from './ajax';
 import { error } from './assert';
 import type { Tables } from './datamodel';
 import { load } from './initialcontext';
-import { schema } from './schema';
+import { fetchContext as schemaPromise, schema } from './schema';
 import { fetchContext as domainPromise } from './schemabase';
 import {
   tableNameToResourceName,
@@ -13,6 +13,9 @@ import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
 import { f, group, split } from './wbplanviewhelper';
+import { setCurrentView } from './specifyapp';
+import { PermissionDenied } from './components/permissiondenied';
+import createBackboneView from './components/reactbackboneextend';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -125,26 +128,32 @@ export const queryUserPermissions = async (
   userId: number,
   collectionId: number
 ): Promise<PermissionsQuery> =>
-  ajax<PermissionsQuery>('/permissions/query/', {
-    headers: { Accept: 'application/json' },
-    method: 'POST',
-    body: {
-      collectionid: collectionId,
-      userid: userId,
-      queries: [
-        ...Object.entries(operationPolicies).map(([policy, actions]) => ({
-          resource: policy,
-          actions,
-        })),
-        ...Object.keys(schema.models)
-          .map(tableNameToResourceName)
-          .map((resource) => ({
-            resource,
-            actions: tableActions,
-          })),
-      ],
-    },
-  }).then(({ data }) => data);
+  schemaPromise
+    .then(() =>
+      ajax<PermissionsQuery>('/permissions/query/', {
+        headers: { Accept: 'application/json' },
+        method: 'POST',
+        body: {
+          collectionid: collectionId,
+          userid: userId,
+          queries: [
+            ...Object.entries(operationPolicies).map(([policy, actions]) => ({
+              resource: policy,
+              actions,
+            })),
+            ...Object.keys(schema.models)
+              .map(tableNameToResourceName)
+              .map((resource) => ({
+                resource,
+                actions: tableActions,
+              })),
+          ],
+        },
+      })
+    )
+    .then(({ data }) => data);
+
+const PermissionDeniedView = createBackboneView(PermissionDenied);
 
 export const fetchContext = domainPromise
   .then(async () =>
@@ -170,10 +179,17 @@ export const fetchContext = domainPromise
     operationPermissions = operations as unknown as typeof operationPermissions;
     tablePermissions = tables as unknown as typeof tablePermissions;
     void checkRegistry();
-    // TODO: check if user has permissions to essential tables
+    if (
+      schema.orgHierarchy.some(
+        (tableName) =>
+          tableName !== 'CollectionObject' &&
+          !hasTablePermission(tableName, 'read')
+      )
+    ) {
+      setCurrentView(new PermissionDeniedView());
+      return;
+    }
   });
-
-// FIXME: review usages of model.Resource and model.Collection for permission issues
 
 export const hasTablePermission = (
   tableName: keyof Tables,
@@ -194,9 +210,9 @@ export const hasPermission = <
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
 export const hasToolPermission = (
-  tool: keyof typeof toolDefinitions,
+  tool: keyof ReturnType<typeof toolDefinitions>,
   action: typeof tableActions[number]
 ) =>
-  (toolDefinitions[tool].tables as RA<keyof Tables>).every((tableName) =>
+  (toolDefinitions()[tool].tables as RA<keyof Tables>).every((tableName) =>
     hasTablePermission(tableName, action)
   );

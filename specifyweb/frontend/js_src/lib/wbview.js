@@ -1523,6 +1523,7 @@ const WBView = Backbone.View.extend({
     };
 
     const content = $('<div class="flex flex-col">');
+    // TODO: this will fail if don't have read permission to that table
     resources.fetch({ limit: 0 }).then(() => {
       if (resources.length === 0) {
         const dialog = showDialog({

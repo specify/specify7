@@ -21,6 +21,7 @@ import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { removeItem } from './wbplanviewstate';
+import { hasTablePermission } from '../permissions';
 
 type Data = {
   readonly collectionObjects: RA<{
@@ -164,7 +165,7 @@ export function CollectionOneToManyPlugin({
           <tr>
             <th>{formsText('collectionObject')}</th>
             <th>{commonText('collection')}</th>
-            <td />
+            {hasTablePermission('CollectionRelationship', 'delete') && <td />}
           </tr>
         </thead>
         <tbody>
@@ -205,26 +206,28 @@ export function CollectionOneToManyPlugin({
                       {data.otherCollection.formatted}
                     </Link.Default>
                   </td>
-                  <td>
-                    <Button.Icon
-                      title={commonText('remove')}
-                      aria-label={commonText('remove')}
-                      icon="trash"
-                      onClick={(): void => {
-                        if (typeof data === 'undefined') return;
-                        resource
-                          .getDependentResource(`${data.side}SideRels`)
-                          ?.remove(relationship);
-                        setData({
-                          ...data,
-                          collectionObjects: removeItem(
-                            data.collectionObjects,
-                            index
-                          ),
-                        });
-                      }}
-                    />
-                  </td>
+                  {hasTablePermission('CollectionRelationship', 'delete') && (
+                    <td>
+                      <Button.Icon
+                        title={commonText('remove')}
+                        aria-label={commonText('remove')}
+                        icon="trash"
+                        onClick={(): void => {
+                          if (typeof data === 'undefined') return;
+                          resource
+                            .getDependentResource(`${data.side}SideRels`)
+                            ?.remove(relationship);
+                          setData({
+                            ...data,
+                            collectionObjects: removeItem(
+                              data.collectionObjects,
+                              index
+                            ),
+                          });
+                        }}
+                      />
+                    </td>
+                  )}
                 </tr>
               )
             )
@@ -235,28 +238,31 @@ export function CollectionOneToManyPlugin({
           )}
         </tbody>
       </table>
-      <Button.Icon
-        title={commonText('add')}
-        aria-label={commonText('add')}
-        icon="plus"
-        aria-pressed={state.type === 'SearchState'}
-        onClick={(): void =>
-          setState(
-            state.type === 'SearchState'
-              ? { type: 'MainState' }
-              : {
-                  type: 'SearchState',
-                  templateResource: new schema.models.CollectionObject.Resource(
-                    {},
-                    {
-                      noBusinessRules: true,
-                      noValidation: true,
-                    }
-                  ),
-                }
-          )
-        }
-      />
+      {hasTablePermission('CollectionRelationship', 'create') && (
+        <Button.Icon
+          title={commonText('add')}
+          aria-label={commonText('add')}
+          icon="plus"
+          aria-pressed={state.type === 'SearchState'}
+          onClick={(): void =>
+            setState(
+              state.type === 'SearchState'
+                ? { type: 'MainState' }
+                : {
+                    type: 'SearchState',
+                    templateResource:
+                      new schema.models.CollectionObject.Resource(
+                        {},
+                        {
+                          noBusinessRules: true,
+                          noValidation: true,
+                        }
+                      ),
+                  }
+            )
+          }
+        />
+      )}
       {state.type === 'DeniedAccessState' && (
         <Dialog
           title={commonText('collectionAccessDeniedDialogTitle')}

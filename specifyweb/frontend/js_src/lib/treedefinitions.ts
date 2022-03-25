@@ -12,6 +12,7 @@ import {
   sortObjectsByKey,
   unCapitalize,
 } from './wbplanviewhelper';
+import { hasToolPermission } from './permissions';
 
 export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
@@ -76,12 +77,12 @@ export const fetchContext = Promise.all([
   .then(async () =>
     Promise.all(
       Object.entries(treeScopes)
-        // TODO: figure out if this optimization is safe:
-        /*
-         *.filter(([treeName]) =>
-         *disciplineTrees.includes(
-         *treeName.toLowerCase() as typeof disciplineTrees[number]))
-         */
+        .filter(
+          ([treeName]) =>
+            disciplineTrees.includes(
+              treeName.toLowerCase() as typeof disciplineTrees[number]
+            ) && hasToolPermission(treeName, 'read')
+        )
         .map(async ([treeName, definitionLevel]) => {
           const domainResource = getDomainResource(
             definitionLevel as 'discipline'

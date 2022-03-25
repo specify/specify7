@@ -32,7 +32,7 @@ import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { LoadingContext } from './contexts';
-import { hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -186,13 +186,16 @@ function BaseResourceView<SCHEMA extends AnySchema>({
               />
             ),
     specifyNetworkBadge:
-      typeof resource === 'object' && displaySpecifyNetwork(resource) ? (
+      typeof resource === 'object' &&
+      displaySpecifyNetwork(resource) &&
+      hasTablePermission('Locality', 'read') &&
+      hasPermission('/querybuilder/query', 'execute') &&
+      ['CollectionObject', 'Locality'].includes(resource.specifyModel.name) ? (
         <SpecifyNetworkBadge resource={resource} />
       ) : undefined,
   });
 }
 
-// FIXME: integrate resource view components with permissions
 const resourceDeletedDialog = (
   <Dialog
     title={commonText('resourceDeletedDialogTitle')}
@@ -206,6 +209,19 @@ const resourceDeletedDialog = (
   </Dialog>
 );
 
+export const augmentMode = (
+  initialMode: FormMode,
+  isNew: boolean,
+  tableName: keyof Tables | undefined
+): FormMode =>
+  typeof tableName === 'undefined'
+    ? 'view'
+    : initialMode === 'edit'
+    ? hasTablePermission(tableName, isNew ? 'create' : 'update')
+      ? 'edit'
+      : 'view'
+    : initialMode;
+
 export function ResourceView<SCHEMA extends AnySchema>({
   resource,
   extraButtons,
@@ -218,7 +234,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   onSaved: handleSaved = handleClose,
   onDeleted: handleDeleted = handleClose,
   children,
-  mode,
+  mode: initialMode,
   viewName,
   isSubForm,
   title: titleOverride,
@@ -245,6 +261,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly title?: string;
 }): JSX.Element {
+  const mode = augmentMode(
+    initialMode,
+    resource?.isNew() === true,
+    resource?.specifyModel.name
+  );
+
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
   React.useEffect(setNotDeleted, [resource, setNotDeleted]);

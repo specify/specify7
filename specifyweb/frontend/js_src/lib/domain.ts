@@ -13,6 +13,7 @@ import type { RA } from './types';
 import { defined } from './types';
 import { crash } from './components/errorboundary';
 import { f } from './wbplanviewhelper';
+import { hasTablePermission } from './permissions';
 
 globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
   const domainField = resource.specifyModel.getScopingRelationship();
@@ -31,20 +32,29 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   const colId = parentResource.get('id');
-  if (remotePrefs[`CO_CREATE_COA_${colId}`] === 'true') {
+  if (
+    remotePrefs[`CO_CREATE_COA_${colId}`] === 'true' &&
+    hasTablePermission('CollectionObjectAttribute', 'create')
+  ) {
     const attribute = new schema.models.CollectionObjectAttribute.Resource();
     attribute.placeInSameHierarchy(collectionObject);
     collectionObject.set('collectionObjectAttribute', attribute);
   }
 
-  if (remotePrefs[`CO_CREATE_PREP_${colId}`] === 'true')
+  if (
+    remotePrefs[`CO_CREATE_PREP_${colId}`] === 'true' &&
+    hasTablePermission('Preparation', 'create')
+  )
     collectionObject
       .rgetCollection('preparations')
       .then((preparations) =>
         preparations.add(new schema.models.Preparation.Resource())
       )
       .catch(crash);
-  if (remotePrefs[`CO_CREATE_DET_${colId}`] === 'true')
+  if (
+    remotePrefs[`CO_CREATE_DET_${colId}`] === 'true' &&
+    hasTablePermission('Determination', 'create')
+  )
     collectionObject
       .rgetCollection('determinations')
       .then((determinations) =>
