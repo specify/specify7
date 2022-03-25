@@ -284,7 +284,7 @@ type AltView = {
   readonly viewdef: string;
 };
 
-type ViewDefinition = {
+export type ViewDefinition = {
   readonly altviews: IR<AltView>;
   readonly busrules: string;
   readonly class: string;

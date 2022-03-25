@@ -26,7 +26,7 @@ export type UserTool = {
     | string
     | ((props: {
         readonly onClose: () => void;
-        readonly urlParameter?: string;
+        readonly urlParameter: string | undefined;
       }) => Backbone.View);
   readonly enabled?: boolean | (() => boolean);
   // Whether the view opens in a dialog window

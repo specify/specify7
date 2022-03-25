@@ -16,6 +16,7 @@ import { useAsyncState } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { getAttribute } from '../parseformcells';
+import { hasTablePermission } from '../permissions';
 
 type Entry = {
   iconName: keyof Tables | undefined;
@@ -79,31 +80,33 @@ export function FormsDialog({
     >
       <nav>
         <Ul>
-          {forms.map(({ iconName, title, viewUrl, model }, index) => (
-            <li key={index}>
-              <Link.Default
-                href={viewUrl}
-                className={
-                  typeof handleSelected === 'function'
-                    ? className.navigationHandled
-                    : undefined
-                }
-                onClick={
-                  typeof handleSelected === 'function'
-                    ? (event): void => {
-                        event.preventDefault();
-                        handleSelected(model);
-                      }
-                    : undefined
-                }
-              >
-                {typeof iconName === 'string' && (
-                  <TableIcon name={iconName} tableLabel={false} />
-                )}
-                {title}
-              </Link.Default>
-            </li>
-          ))}
+          {forms
+            .filter(({ model }) => hasTablePermission(model.name, 'create'))
+            .map(({ iconName, title, viewUrl, model }, index) => (
+              <li key={index}>
+                <Link.Default
+                  href={viewUrl}
+                  className={
+                    typeof handleSelected === 'function'
+                      ? className.navigationHandled
+                      : undefined
+                  }
+                  onClick={
+                    typeof handleSelected === 'function'
+                      ? (event): void => {
+                          event.preventDefault();
+                          handleSelected(model);
+                        }
+                      : undefined
+                  }
+                >
+                  {typeof iconName === 'string' && (
+                    <TableIcon name={iconName} tableLabel={false} />
+                  )}
+                  {title}
+                </Link.Default>
+              </li>
+            ))}
         </Ul>
       </nav>
     </Dialog>

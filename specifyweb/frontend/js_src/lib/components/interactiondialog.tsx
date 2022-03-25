@@ -35,7 +35,7 @@ import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
 import { LoadingContext } from './contexts';
 
-export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
+export function InteractionDialog({
   recordSetsPromise,
   model,
   searchField,
@@ -48,7 +48,7 @@ export function InteractionDialog<SCHEMA extends CollectionObject | Loan>({
     readonly totalCount: number;
     readonly recordSets: RA<SpecifyResource<RecordSet>>;
   }>;
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly model: SpecifyModel<CollectionObject | Loan>;
   readonly searchField: LiteralField | undefined;
   readonly onClose: () => void;
   readonly action: {

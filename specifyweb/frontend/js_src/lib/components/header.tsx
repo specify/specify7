@@ -88,6 +88,7 @@ export function HeaderItems({
             event.preventDefault();
             const backboneView = view({
               onClose: (): void => void backboneView.remove(),
+              urlParameter: undefined,
             });
             if (isOverlay)
               setCurrentOverlay(backboneView, `/specify/task/${task}/`);
@@ -236,6 +237,7 @@ export function UserTools({
                     handleClose();
                     const backboneView = view({
                       onClose: (): void => void backboneView.remove(),
+                      urlParameter: undefined,
                     });
                     if (isOverlay)
                       setCurrentOverlay(backboneView, `${basePath}${task}/`);
