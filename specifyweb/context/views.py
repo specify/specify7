@@ -27,7 +27,8 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, skip_collection_access_check, query_pt, CollectionAccessPT
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
@@ -107,7 +108,11 @@ def choose_collection(request):
         else settings.LOGIN_REDIRECT_URL
     )
 
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections = [
+        (c.id, c.collectionname)
+        for c in Collection.objects.all()
+        if query_pt(c.id, request.specify_user.id, CollectionAccessPT.access).allowed
+    ]
     available_collections.sort(key=lambda x: x[1])
 
     if len(available_collections) < 1:
@@ -211,6 +216,7 @@ def choose_collection(request):
 @require_http_methods(['GET', 'PUT'])
 @never_cache
 @ensure_csrf_cookie
+@skip_collection_access_check
 def api_login(request):
     """An API endpoint for logging in. GET returns the currently logged in user/collection if any.
     PUT logs into the request collection if possible.
@@ -389,6 +395,7 @@ def remote_prefs(request):
 
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
+@skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
     spversion = Spversion.objects.get()

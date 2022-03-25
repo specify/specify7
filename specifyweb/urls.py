@@ -18,22 +18,24 @@ from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .export import urls as export_urls
 from .permissions import urls as permissions_urls
+from .permissions.permissions import skip_collection_access_check
 
 urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
     url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html')),
-    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(next_page='/accounts/login/')),
-    url(r'^accounts/password_change/$', auth_views.PasswordChangeView.as_view(
-        template_name='password_change.html', success_url='/')),
+    url(r'^accounts/logout/$', skip_collection_access_check(
+        auth_views.LogoutView.as_view(next_page='/accounts/login/'))),
+    url(r'^accounts/password_change/$', skip_collection_access_check(
+        auth_views.PasswordChangeView.as_view(template_name='password_change.html', success_url='/'))),
 
-    url(r'^accounts/support_login/$', support_login),
+    url(r'^accounts/support_login/$', skip_collection_access_check(support_login)),
 
-    url(r'^accounts/choose_collection/$', choose_collection),
+    url(r'^accounts/choose_collection/$', skip_collection_access_check(choose_collection)),
 
     # just redirect root url to the main specify view
-    url(r'^$', RedirectView.as_view(url='/specify/')),
+    url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
