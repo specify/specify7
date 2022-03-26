@@ -92,9 +92,16 @@ export const operationPolicies = {
   ],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
-  '/permissions/policies/user': ['update'],
-  '/permissions/user/roles': ['update'],
-  '/permissions/roles': ['create', 'update', 'delete'],
+  '/permissions/policies/user': ['update', 'read'],
+  '/permissions/user/roles': ['update', 'read'],
+  '/permissions/roles': [
+    'create',
+    'read',
+    'update',
+    'delete',
+    'copy_from_library',
+  ],
+  '/permissions/library/roles': ['create', 'read', 'update', 'delete'],
 } as const;
 
 let operationPermissions: {
@@ -117,6 +124,12 @@ export type PermissionsQuery = {
     readonly action: string;
     readonly resource: string;
     readonly allowed: boolean;
+    readonly matching_role_policies: RA<{
+      readonly action: string;
+      readonly resource: string;
+      readonly roleid: number;
+      readonly rolename: string;
+    }>;
     readonly matching_user_policies: RA<{
       readonly action: string;
       readonly collectionid: number | null;

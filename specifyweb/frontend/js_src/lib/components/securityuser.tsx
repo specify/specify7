@@ -250,6 +250,7 @@ export function UserView({
           userId={user.id}
           collectionId={collection}
           changesMade={changesMade}
+          onOpenRole={(roleId): void => handleOpenRole(collection, roleId)}
         />
         <div className="flex gap-2">
           {changesMade ? (

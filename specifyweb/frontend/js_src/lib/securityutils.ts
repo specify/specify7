@@ -42,6 +42,12 @@ export const flattenPolicies = (policies: RA<Policy>): RA<BackEndPolicy> =>
     }))
   );
 
+export const resourceToLabel = (resource: string): string => getRegistriesFromPath(
+                        resourceNameToParts(resource)
+                      )
+                        .map((part) => part?.label)
+                        .join(' ')
+
 /**
  * Convert a part like ['table','locality'] to an array of information for
  * each item

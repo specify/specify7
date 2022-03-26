@@ -5,6 +5,7 @@ import { ajax, Http, ping } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { omit, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
@@ -12,13 +13,13 @@ import { hasPermission, hasTablePermission } from '../permissions';
 import { fetchRoles, flattenPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { omit, replaceKey } from '../helpers';
+import { userInformation } from '../userinfo';
 import { Button, Container, H3, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useLiveState } from './hooks';
+import { LoadingScreen } from './modaldialog';
 import type { Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
-import { userInformation } from '../userinfo';
 
 const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
   Object.fromEntries(data.map((item) => [item.id, item]));
@@ -37,7 +38,8 @@ export function CollectionView({
       async () => fetchRoles(collection.id, undefined).then(index),
       [collection.id]
     ),
-    false
+    false,
+    true
   );
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
@@ -60,18 +62,24 @@ export function CollectionView({
         ),
       [collection.id]
     ),
-    false
+    false,
+    true
   );
-  const [state, setState] = React.useState<
+  const [state, setState] = useLiveState<
     | State<'MainState'>
     | State<'RoleState', { readonly roleId: number | undefined }>
   >(
-    typeof initialRole === 'number'
-      ? {
-          type: 'RoleState',
-          roleId: initialRole,
-        }
-      : { type: 'MainState' }
+    React.useCallback(
+      () =>
+        typeof initialRole === 'number'
+          ? ({
+              type: 'RoleState',
+              roleId: initialRole,
+            } as const)
+          : ({ type: 'MainState' } as const),
+      // Reset state when collection changes
+      [collection.id]
+    )
   );
   const loading = React.useContext(LoadingContext);
   return (
@@ -154,103 +162,108 @@ export function CollectionView({
           </section>
         </>
       )}
-      {state.type === 'RoleState' && typeof roles === 'object' ? (
-        <RoleView
-          role={
-            typeof state.roleId === 'number'
-              ? roles[state.roleId]
-              : ({
-                  id: undefined,
-                  name: '',
-                  policies: [],
-                } as const)
-          }
-          collection={collection}
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSave={(role): void =>
-            loading(
-              (typeof role.id === 'number'
-                ? ping(
-                    `/permissions/role/${role.id}/`,
-                    {
-                      method: 'PUT',
-                      body: {
-                        ...role,
-                        policies: flattenPolicies(role.policies),
+      {state.type === 'RoleState' ? (
+        typeof roles === 'object' ? (
+          <RoleView
+            role={
+              typeof state.roleId === 'number'
+                ? roles[state.roleId]
+                : ({
+                    id: undefined,
+                    name: '',
+                    description: '',
+                    policies: [],
+                  } as const)
+            }
+            collection={collection}
+            onClose={(): void => setState({ type: 'MainState' })}
+            onSave={(role): void =>
+              loading(
+                (typeof role.id === 'number'
+                  ? ping(
+                      `/permissions/role/${role.id}/`,
+                      {
+                        method: 'PUT',
+                        body: {
+                          ...role,
+                          policies: flattenPolicies(role.policies),
+                        },
                       },
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                  ).then((): void =>
-                    setRoles(
-                      replaceKey(
-                        roles,
-                        defined(role.id).toString(),
-                        role as Role
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
+                    ).then((): void =>
+                      setRoles(
+                        replaceKey(
+                          roles,
+                          defined(role.id).toString(),
+                          role as Role
+                        )
+                      )
+                    )
+                  : ajax<Role>(
+                      `/permissions/roles/${collection.id}/`,
+                      {
+                        method: 'POST',
+                        body: {
+                          ...omit(role, ['id']),
+                          policies: flattenPolicies(role.policies),
+                        },
+                        headers: { Accept: 'application/json' },
+                      },
+                      { expectedResponseCodes: [Http.CREATED] }
+                    ).then(({ data: role }) =>
+                      setRoles({
+                        ...roles,
+                        [role.id]: role,
+                      })
+                    )
+                ).then((): void => setState({ type: 'MainState' }))
+              )
+            }
+            onDelete={(): void =>
+              typeof state.roleId === 'number'
+                ? loading(
+                    ping(
+                      `/permissions/role/${state.roleId}/`,
+                      {
+                        method: 'DELETE',
+                      },
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
+                    ).then((): void => setState({ type: 'MainState' }))
+                  )
+                : undefined
+            }
+            userRoles={userRoles}
+            onOpenUser={handleOpenUser}
+            onAddUser={(user): void =>
+              typeof userRoles === 'object' && typeof state.roleId === 'number'
+                ? loading(
+                    ping(
+                      `/permissions/user_roles/${collection.id}/${user.id}/`,
+                      {
+                        method: 'PUT',
+                        body: [...userRoles[user.id].roles, state.roleId].map(
+                          (id) => ({ id })
+                        ),
+                      },
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
+                    ).then(() =>
+                      setUserRoles(
+                        replaceKey(userRoles, user.id.toString(), {
+                          ...userRoles[user.id],
+                          roles: [
+                            ...userRoles[user.id].roles,
+                            defined(state.roleId),
+                          ],
+                        })
                       )
                     )
                   )
-                : ajax<Role>(
-                    `/permissions/roles/${collection.id}/`,
-                    {
-                      method: 'POST',
-                      body: {
-                        ...omit(role, ['id']),
-                        policies: flattenPolicies(role.policies),
-                      },
-                      headers: { Accept: 'application/json' },
-                    },
-                    { expectedResponseCodes: [Http.CREATED] }
-                  ).then(({ data: role }) =>
-                    setRoles({
-                      ...roles,
-                      [role.id]: role,
-                    })
-                  )
-              ).then((): void => setState({ type: 'MainState' }))
-            )
-          }
-          onDelete={(): void =>
-            typeof state.roleId === 'number'
-              ? loading(
-                  ping(
-                    `/permissions/role/${state.roleId}/`,
-                    {
-                      method: 'DELETE',
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                  ).then((): void => setState({ type: 'MainState' }))
-                )
-              : undefined
-          }
-          userRoles={userRoles}
-          onOpenUser={handleOpenUser}
-          onAddUser={(user): void =>
-            typeof userRoles === 'object' && typeof state.roleId === 'number'
-              ? loading(
-                  ping(
-                    `/permissions/user_roles/${collection.id}/${user.id}/`,
-                    {
-                      method: 'PUT',
-                      body: [...userRoles[user.id].roles, state.roleId].map(
-                        (id) => ({ id })
-                      ),
-                    },
-                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                  ).then(() =>
-                    setUserRoles(
-                      replaceKey(userRoles, user.id.toString(), {
-                        ...userRoles[user.id],
-                        roles: [
-                          ...userRoles[user.id].roles,
-                          defined(state.roleId),
-                        ],
-                      })
-                    )
-                  )
-                )
-              : undefined
-          }
-        />
+                : undefined
+            }
+          />
+        ) : (
+          <LoadingScreen />
+        )
       ) : undefined}
     </Container.Base>
   );

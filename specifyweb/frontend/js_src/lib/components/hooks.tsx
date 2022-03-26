@@ -166,7 +166,9 @@ export function useAsyncState<T>(
   // Can return backOut to cancel a state update
   callback: () => undefined | T | Promise<T | undefined>,
   // Show the loading screen while the promise is being resolved
-  loadingScreen: boolean
+  loadingScreen: boolean,
+  // Whether to reset state value to undefined while fetching new state
+  forceConsistency?: boolean
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
@@ -175,6 +177,7 @@ export function useAsyncState<T>(
   const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
+    if (forceConsistency) setState(undefined);
     const wrapped = loadingScreen ? loading : f.id;
     const backOut = {};
     void wrapped(

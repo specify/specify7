@@ -263,6 +263,37 @@ const adminText = createDictionary({
     ca: 'Note: preview may be out of date.',
     'es-es': 'Note: preview may be out of date.',
   },
+  // FIXME: localize
+  userPolicies: {
+    'en-us': 'User policies:',
+    'ru-ru': 'User policies:',
+    ca: 'User policies:',
+    'es-es': 'User policies:',
+  },
+  noMatchingUserRoles: {
+    'en-us': 'No matching user roles:',
+    'ru-ru': 'No matching user roles:',
+    ca: 'No matching user roles:',
+    'es-es': 'No matching user roles:',
+  },
+  noMatchingUserPolicies: {
+    'en-us': 'No matching user policies:',
+    'ru-ru': 'No matching user policies:',
+    ca: 'No matching user policies:',
+    'es-es': 'No matching user policies:',
+  },
+  allUsers: {
+    'en-us': 'All Users',
+    'ru-ru': 'All Users',
+    ca: 'All Users',
+    'es-es': 'All Users',
+  },
+  allCollections: {
+    'en-us': 'All Collectins',
+    'ru-ru': 'All Collectins',
+    ca: 'All Collectins',
+    'es-es': 'All Collectins',
+  },
 });
 
 export default adminText;

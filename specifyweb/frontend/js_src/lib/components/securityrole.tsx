@@ -11,7 +11,7 @@ import { schema } from '../schema';
 import { compressPolicies, decompressPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { Button, Form, H3, Input, Label, Submit } from './basic';
+import { Button, Form, H3, Input, Label, Submit, Textarea } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
@@ -22,6 +22,7 @@ import { userInformation } from '../userinfo';
 export type NewRole = {
   readonly id: number | undefined;
   readonly name: string;
+  readonly description: string;
   readonly policies: RA<Policy>;
 };
 
@@ -123,6 +124,16 @@ export function RoleView({
           />
         </Label.Generic>
       )}
+      <Label.Generic>
+        {commonText('description')}
+        <Textarea
+          isReadOnly={isReadOnly}
+          value={role.description}
+          onValueChange={(description): void =>
+            setRole(replaceKey(role, 'description', description))
+          }
+        />
+      </Label.Generic>
       {typeof role.id === 'number' && (
         <fieldset className="flex flex-col gap-2">
           <legend>{adminText('users')}</legend>
