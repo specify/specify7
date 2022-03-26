@@ -1,5 +1,3 @@
-@import url('./custom-theme/jquery-ui-1.10.2.custom.css');
-
 /**
  * This injects Tailwind's base styles and any base styles registered by
  * plugins.

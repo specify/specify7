@@ -1,5 +1,3 @@
-import 'jquery-ui';
-
 import $ from 'jquery';
 
 import type Backbone from './backbone';
