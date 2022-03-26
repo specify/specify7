@@ -10,7 +10,7 @@ import type { Parser } from '../uiparse';
 import { parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { LoadingContext } from './contexts';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 
 const idStore: R<number> = {};
 

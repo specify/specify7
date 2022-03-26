@@ -10,7 +10,8 @@ import type {
   WithTableInfo,
 } from './components/toolbar/schemaconfig';
 import type { IR } from './types';
-import { f, sortObjectsByKey } from './wbplanviewhelper';
+import { sortObjectsByKey } from './helpers';
+import { f } from './functools';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',

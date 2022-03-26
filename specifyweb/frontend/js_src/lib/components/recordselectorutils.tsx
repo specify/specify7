@@ -13,7 +13,7 @@ import * as queryString from '../querystring';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { clamp } from '../wbplanviewhelper';
+import { clamp, removeItem } from '../helpers';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
@@ -23,7 +23,6 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
-import { removeItem } from './wbplanviewstate';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 
 function getDefaultIndex(queryParameter: string, lastIndex: number): number {

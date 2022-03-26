@@ -7,7 +7,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { filterArray } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Button } from './basic';
 import { Dialog } from './modaldialog';
 import { toTable, toTables } from '../specifymodel';

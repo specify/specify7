@@ -8,7 +8,7 @@ import { router } from '../router';
 import { setCurrentOverlay, setCurrentView } from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
-import { group, sortFunction, split } from '../wbplanviewhelper';
+import { group, sortFunction, split } from '../helpers';
 import { Button, className, Form, H3, Input, Link, Select, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';

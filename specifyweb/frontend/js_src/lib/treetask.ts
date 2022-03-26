@@ -10,7 +10,7 @@ import {
   isTreeModel,
   treeDefinitions,
 } from './treedefinitions';
-import { caseInsensitiveHash } from './wbplanviewhelper';
+import { caseInsensitiveHash } from './helpers';
 
 const PermissionDeniedView = createBackboneView(PermissionDenied);
 

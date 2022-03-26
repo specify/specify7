@@ -5,7 +5,8 @@
  */
 
 import type { IR, RA, RR } from '../types';
-import { camelToHuman, f } from '../wbplanviewhelper';
+import { camelToHuman } from '../helpers';
+import { f } from '../functools';
 
 export const languages = ['en-us', 'ru-ru', 'ca', 'es-es'] as const;
 

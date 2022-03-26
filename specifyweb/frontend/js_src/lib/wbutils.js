@@ -19,7 +19,8 @@ import {
 } from './wblocalitydataextractor';
 import Backbone from './backbone';
 import * as latlongutils from './latlongutils';
-import {camelToKebab, clamp, f, sortFunction} from './wbplanviewhelper';
+import {camelToKebab, clamp, sortFunction} from './helpers';
+import {f} from './functools';
 import WbAdvancedSearch, {
   getInitialSearchPreferences,
 } from './components/wbadvancedsearch';

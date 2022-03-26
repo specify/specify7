@@ -16,7 +16,7 @@ import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
 import { PoliciesView, Policy } from './securitypolicy';
-import { replaceKey } from './wbplanviewstate';
+import { replaceKey } from '../helpers';
 import { userInformation } from '../userinfo';
 
 export type NewRole = {

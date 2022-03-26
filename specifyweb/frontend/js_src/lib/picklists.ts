@@ -9,7 +9,7 @@ import { hasToolPermission } from './permissions';
 import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())

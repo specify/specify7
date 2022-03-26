@@ -24,7 +24,7 @@ import type { Field, LocalityData } from './leafletutils';
 import commonText from './localization/common';
 import localityText from './localization/locality';
 import type { IR, RA, RR } from './types';
-import { capitalize } from './wbplanviewhelper';
+import { capitalize } from './helpers';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 
 const DEFAULT_ZOOM = 5;

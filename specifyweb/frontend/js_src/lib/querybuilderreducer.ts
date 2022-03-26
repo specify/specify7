@@ -2,7 +2,7 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import { replaceItem } from './components/wbplanviewstate';
+import { replaceItem } from './helpers';
 import type { SpQuery, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';

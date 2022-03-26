@@ -13,7 +13,7 @@ import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplanparser';
 import { parseUploadPlan } from './uploadplanparser';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',

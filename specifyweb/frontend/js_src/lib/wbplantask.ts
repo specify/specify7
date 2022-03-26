@@ -4,7 +4,7 @@ import type { Dataset } from './components/wbplanview';
 import { NotFoundView } from './notfoundview';
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export default function () {
   router.route('workbench-plan/:id/', 'workbench-plan', (id: string) => {

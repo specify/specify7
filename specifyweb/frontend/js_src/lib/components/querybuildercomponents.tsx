@@ -13,7 +13,7 @@ import { getModel, schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button } from './basic';

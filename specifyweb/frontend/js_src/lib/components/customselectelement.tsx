@@ -15,7 +15,7 @@ import { getModel } from '../schema';
 import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
-import { camelToKebab, upperToKebab } from '../wbplanviewhelper';
+import { camelToKebab, upperToKebab } from '../helpers';
 import { transitionDuration } from './basic';
 import {
   TableIcon,

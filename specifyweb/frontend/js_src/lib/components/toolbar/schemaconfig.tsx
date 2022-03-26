@@ -22,7 +22,7 @@ import type {
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
-import { f } from '../../wbplanviewhelper';
+import { f } from '../../functools';
 import { cachableUrl } from '../../initialcontext';
 
 type Props = {

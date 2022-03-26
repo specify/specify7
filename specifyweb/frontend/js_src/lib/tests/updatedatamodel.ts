@@ -1,5 +1,5 @@
 import { schema } from '../schema';
-import { group, sortFunction } from '../wbplanviewhelper';
+import { group, sortFunction } from '../helpers';
 
 const javaTypeToTypeScript = {
   text: 'string',

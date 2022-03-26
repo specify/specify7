@@ -36,7 +36,7 @@ import { useResource } from './resource';
 import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-import { replaceItem } from './wbplanviewstate';
+import { replaceItem } from '../helpers';
 import { hasPermission, hasToolPermission } from '../permissions';
 
 /*

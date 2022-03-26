@@ -11,7 +11,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { getModel } from './schema';
 import { defined, filterArray } from './types';
-import { camelToHuman } from './wbplanviewhelper';
+import { camelToHuman } from './helpers';
 import {
   anyTreeRank,
   formatTreeRank,

@@ -11,7 +11,7 @@ import {
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA, RR } from '../types';
-import { sortFunction, sortObjectsByKey, split } from '../wbplanviewhelper';
+import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import {
   Button,
   className,

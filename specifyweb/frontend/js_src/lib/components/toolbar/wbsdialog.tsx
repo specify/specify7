@@ -11,7 +11,7 @@ import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
 import * as navigation from '../../navigation';
 import type { RA } from '../../types';
-import { sortFunction } from '../../wbplanviewhelper';
+import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, Link } from '../basic';
 import type { SortConfig } from '../common';

@@ -15,7 +15,7 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import { replaceItem } from './components/wbplanviewstate';
+import { replaceItem } from './helpers';
 import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { MatchBehaviors } from './uploadplanparser';

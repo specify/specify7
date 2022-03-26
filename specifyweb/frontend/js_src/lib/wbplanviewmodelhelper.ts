@@ -12,7 +12,7 @@ import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
-import { group } from './wbplanviewhelper';
+import { group } from './helpers';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,

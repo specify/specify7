@@ -18,7 +18,7 @@
 
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
-import { omit } from './wbplanviewhelper';
+import { omit } from './helpers';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =

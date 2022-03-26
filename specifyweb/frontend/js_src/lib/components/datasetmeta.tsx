@@ -13,7 +13,7 @@ import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import {
   Button,

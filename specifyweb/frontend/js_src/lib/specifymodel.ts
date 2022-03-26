@@ -21,7 +21,8 @@ import {
 } from './specifyfield';
 import type { IR, RA } from './types';
 import { defined } from './types';
-import { camelToHuman, f } from './wbplanviewhelper';
+import { camelToHuman } from './helpers';
+import { f } from './functools';
 import { isTreeResource } from './treedefinitions';
 
 type FieldAlias = {

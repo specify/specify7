@@ -16,7 +16,7 @@ import { setCurrentView } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Button, Container, H2, Label, Link, Select } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';

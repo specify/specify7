@@ -7,7 +7,7 @@ import type { PermissionsQuery } from '../permissions';
 import { getTablePermissions, queryUserPermissions } from '../permissions';
 import { resourceNameToModel, resourceNameToParts } from '../securityutils';
 import type { IR, R, RA } from '../types';
-import { capitalize, group, lowerToHuman } from '../wbplanviewhelper';
+import { capitalize, group, lowerToHuman } from '../helpers';
 import { className, Input, Label, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId } from './hooks';

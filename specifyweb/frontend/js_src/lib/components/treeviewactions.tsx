@@ -15,7 +15,7 @@ import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { LoadingContext } from './contexts';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { toLowerCase } from '../wbplanviewhelper';
+import { toLowerCase } from '../helpers';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
 

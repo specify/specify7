@@ -10,7 +10,7 @@ import { isTreeModel } from './treedefinitions';
 import type { IR } from './types';
 import { defined } from './types';
 import { type UiFormatter, uiFormatters } from './uiformatters';
-import { camelToHuman } from './wbplanviewhelper';
+import { camelToHuman } from './helpers';
 
 export type JavaType =
   // Strings

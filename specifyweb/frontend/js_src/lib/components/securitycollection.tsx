@@ -12,13 +12,12 @@ import { hasPermission, hasTablePermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { omit } from '../wbplanviewhelper';
+import { omit, replaceKey } from '../helpers';
 import { Button, Container, H3, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import type { Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
-import { replaceKey } from './wbplanviewstate';
 import { userInformation } from '../userinfo';
 
 const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>

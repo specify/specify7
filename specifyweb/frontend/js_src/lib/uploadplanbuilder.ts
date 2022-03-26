@@ -19,7 +19,7 @@ import type {
   UploadPlan,
   UploadTable,
 } from './uploadplanparser';
-import { group, omit, split, toLowerCase } from './wbplanviewhelper';
+import { group, omit, split, toLowerCase } from './helpers';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {

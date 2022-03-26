@@ -7,7 +7,7 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages } from '../../localization/utils';
 import type { PreferenceItemComponent } from '../../preferences';
 import type { IR, RA } from '../../types';
-import { f } from '../../wbplanviewhelper';
+import { f } from '../../functools';
 import { Label, Select } from '../basic';
 import { supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';

@@ -8,7 +8,7 @@ import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { clamp } from '../wbplanviewhelper';
+import { clamp } from '../helpers';
 import { Button, className, Input, Link } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';

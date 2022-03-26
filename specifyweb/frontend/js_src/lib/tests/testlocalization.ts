@@ -18,7 +18,7 @@ import type {
 import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
 import type { IR, R } from '../types';
 import { filterArray } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');

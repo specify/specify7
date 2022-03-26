@@ -4,7 +4,7 @@ import { prefUpdateListeners } from './components/preferenceshooks';
 import type { Preferences } from './preferences';
 import { preferenceDefinitions } from './preferences';
 import { filterArray } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,

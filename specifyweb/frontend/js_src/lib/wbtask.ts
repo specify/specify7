@@ -1,6 +1,6 @@
 import { router } from './router';
 import { crash } from './components/errorboundary';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export default function (): void {
   router.route(

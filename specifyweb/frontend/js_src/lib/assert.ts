@@ -1,5 +1,5 @@
 import type { RA } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export function assert(value: unknown, message?: string): void {
   if (!Boolean(value)) error(message ?? 'Assertion failed');

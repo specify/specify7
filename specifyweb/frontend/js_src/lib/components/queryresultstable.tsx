@@ -17,7 +17,7 @@ import {
 import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
@@ -25,7 +25,7 @@ import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
-import { removeItem } from './wbplanviewstate';
+import { removeItem } from '../helpers';
 
 function TableHeaderCell({
   fieldSpec,

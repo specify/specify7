@@ -9,7 +9,7 @@ import { promiseToXhr } from './resourceapi';
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
 import { defined } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 /*
  * Make Backbone use fetch() API instead of JQuery so that all errors

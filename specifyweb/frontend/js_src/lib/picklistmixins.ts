@@ -12,7 +12,8 @@ import { fetchRows } from './specifyapi';
 import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
-import { f, sortObjectsByKey } from './wbplanviewhelper';
+import { sortObjectsByKey } from './helpers';
+import { f } from './functools';
 import { hasTablePermission } from './permissions';
 
 export const createPickListItem = (

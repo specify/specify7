@@ -24,7 +24,7 @@ import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 

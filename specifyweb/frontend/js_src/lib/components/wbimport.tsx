@@ -14,7 +14,7 @@ import wbText from '../localization/workbench';
 import * as navigation from '../navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, H3, Input, Select } from './basic';
 import { FilePicker } from './filepicker';

@@ -13,7 +13,7 @@ import { LiteralField, Relationship } from './specifyfield';
 import { type TableDefinition, SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 export type SchemaLocalization = {
   readonly name: string | null;

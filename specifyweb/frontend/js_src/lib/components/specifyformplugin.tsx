@@ -9,7 +9,7 @@ import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes } from '../parseformfields';
 import type { UiPlugins } from '../parseuiplugins';
 import { toTable } from '../specifymodel';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';

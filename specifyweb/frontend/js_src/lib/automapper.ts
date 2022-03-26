@@ -21,7 +21,8 @@ import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { defined, filterArray } from './types';
-import { f, findArrayDivergencePoint } from './wbplanviewhelper';
+import { findArrayDivergencePoint } from './helpers';
+import { f } from './functools';
 import {
   formatToManyIndex,
   formatTreeRank,

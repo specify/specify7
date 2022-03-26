@@ -10,7 +10,7 @@ import { getView, parseViewDefinition } from '../parseform';
 import type { CellTypes } from '../parseformcells';
 import type { Collection } from '../specifymodel';
 import { defined } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { FormTableInteraction } from './formtableinteractionitem';
 import { useAsyncState } from './hooks';
@@ -64,8 +64,8 @@ const cellRenderers: {
       model: resource.specifyModel,
       fieldName,
     });
-    return (
-      <label htmlFor={htmlFor} {...props} aria-hidden={children.length === 0}>
+    return children.length === 0 ? null : (
+      <label htmlFor={htmlFor} {...props}>
         {children}
       </label>
     );

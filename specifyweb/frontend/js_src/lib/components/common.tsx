@@ -10,7 +10,7 @@ import React from 'react';
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { getModel } from '../schema';
-import { spanNumber } from '../wbplanviewhelper';
+import { spanNumber } from '../helpers';
 import { icons } from './icons';
 
 const MAX_HUE = 360;

@@ -13,7 +13,7 @@ import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 // Parse column width definitions
 export const processColumnDefinition = (

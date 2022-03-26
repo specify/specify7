@@ -22,7 +22,7 @@ import {
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
-import { sortObjectsByKey } from '../wbplanviewhelper';
+import { sortObjectsByKey } from '../helpers';
 import { Autocomplete } from './autocomplete';
 import { Button, Container, H2, Input } from './basic';
 import { TableIcon } from './common';

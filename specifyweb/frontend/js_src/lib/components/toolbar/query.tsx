@@ -14,7 +14,7 @@ import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
-import { f } from '../../wbplanviewhelper';
+import { f } from '../../functools';
 import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import { LoadingContext } from '../contexts';

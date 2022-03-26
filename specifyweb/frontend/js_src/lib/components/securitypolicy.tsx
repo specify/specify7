@@ -10,10 +10,11 @@ import {
 } from '../securityutils';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { f, group, lowerToHuman } from '../wbplanviewhelper';
+import { group, lowerToHuman } from '../helpers';
+import { f } from '../functools';
 import { Button, className, Select, selectMultipleSize } from './basic';
 import { icons } from './icons';
-import { removeItem, replaceItem } from './wbplanviewstate';
+import { removeItem, replaceItem } from '../helpers';
 
 export type Policy = {
   readonly resource: string;

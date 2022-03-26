@@ -6,7 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { defined } from '../types';
-import { camelToHuman } from '../wbplanviewhelper';
+import { camelToHuman } from '../helpers';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';

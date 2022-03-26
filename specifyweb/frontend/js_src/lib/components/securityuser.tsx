@@ -13,7 +13,8 @@ import {
   fetchRoles,
 } from '../securityutils';
 import type { IR, RA } from '../types';
-import { f, sortFunction } from '../wbplanviewhelper';
+import { removeItem, replaceKey, sortFunction } from '../helpers';
+import { f } from '../functools';
 import {
   Button,
   className,
@@ -30,7 +31,6 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { PoliciesView, Policy } from './securitypolicy';
-import { removeItem, replaceKey } from './wbplanviewstate';
 import { PreviewPermissions } from './securitypreview';
 
 export function UserView({

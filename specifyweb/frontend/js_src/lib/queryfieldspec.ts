@@ -1,5 +1,5 @@
 import type { MappingPath } from './components/wbplanviewmapper';
-import { insertItem } from './components/wbplanviewstate';
+import { insertItem } from './helpers';
 import type { SpQueryField } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
@@ -10,7 +10,7 @@ import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { resolveParser } from './uiparse';
-import { capitalize, toLowerCase } from './wbplanviewhelper';
+import { capitalize, toLowerCase } from './helpers';
 import {
   anyTreeRank,
   formatPartialField,

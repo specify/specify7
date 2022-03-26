@@ -8,7 +8,7 @@ import * as querystring from '../querystring';
 import { schema } from '../schema';
 import type { IR } from '../types';
 import { filterArray } from '../types';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';

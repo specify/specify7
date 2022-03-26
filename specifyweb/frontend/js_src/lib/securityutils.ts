@@ -10,7 +10,8 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, ensure } from './types';
-import { capitalize, f, toLowerCase } from './wbplanviewhelper';
+import { capitalize, toLowerCase } from './helpers';
+import { f } from './functools';
 
 export const fetchRoles = async (
   collectionId: number,

@@ -41,7 +41,7 @@ import {
   mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
-import { replaceItem } from './wbplanviewstate';
+import { replaceItem } from '../helpers';
 
 // TODO: split this component into smaller components
 export function QueryLine({

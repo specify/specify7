@@ -16,7 +16,7 @@ import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
-import { replaceItem } from './wbplanviewstate';
+import { replaceItem } from '../helpers';
 
 function formatCatNo(catNo: string): string {
   const field = schema.models.CollectionObject.getLiteralField('catalognumber');

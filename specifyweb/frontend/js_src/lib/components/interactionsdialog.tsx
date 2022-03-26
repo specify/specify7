@@ -16,7 +16,7 @@ import * as s from '../stringlocalization';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';

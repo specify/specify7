@@ -12,7 +12,7 @@ import { getDomainResource } from './treedefinitions';
 import type { RA } from './types';
 import { defined } from './types';
 import { crash } from './components/errorboundary';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 import { hasTablePermission } from './permissions';
 
 globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {

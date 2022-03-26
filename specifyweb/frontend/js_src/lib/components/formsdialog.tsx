@@ -18,7 +18,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import { cachableUrl } from '../initialcontext';
 import { useAsyncState } from './hooks';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 
 export type FormEntry = {
   iconName: keyof Tables | undefined;

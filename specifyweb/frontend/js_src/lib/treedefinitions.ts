@@ -7,12 +7,8 @@ import { fetchContext as fetchDomain } from './schemabase';
 import { fetchContext as fetchPermissions, hasTreeAccess } from './permissions';
 import type { RA } from './types';
 import { defined } from './types';
-import {
-  caseInsensitiveHash,
-  f,
-  sortObjectsByKey,
-  unCapitalize,
-} from './wbplanviewhelper';
+import { caseInsensitiveHash, sortObjectsByKey, unCapitalize } from './helpers';
+import { f } from './functools';
 
 export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds

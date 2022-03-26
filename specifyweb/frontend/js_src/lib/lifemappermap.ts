@@ -10,7 +10,7 @@ import {
 } from './localityrecorddataextractor';
 import { schema } from './schema';
 import type { RA } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 import { toTable } from './specifymodel';
 
 export type OccurrenceData = {

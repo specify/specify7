@@ -10,7 +10,7 @@ import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { fieldFormat } from '../uiparse';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Input, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { queryIdField } from './queryresultstable';

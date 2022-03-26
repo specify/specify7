@@ -12,7 +12,7 @@ import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import {
   Button,
   className,

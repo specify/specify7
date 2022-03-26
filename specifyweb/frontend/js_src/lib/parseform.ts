@@ -16,7 +16,7 @@ import { getModel } from './schema';
 import { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>

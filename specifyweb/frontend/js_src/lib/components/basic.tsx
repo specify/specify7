@@ -7,7 +7,7 @@ import type { Input as InputType } from '../saveblockers';
 import type { IR, RA, RR } from '../types';
 import type { IconProps } from './icons';
 import { icons } from './icons';
-import { split } from '../wbplanviewhelper';
+import { split } from '../helpers';
 
 export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],

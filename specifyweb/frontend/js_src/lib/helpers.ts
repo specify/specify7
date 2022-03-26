@@ -1,18 +1,29 @@
 /**
- * Collection of various helper methods used during the mapping process
+ * Collection of various helper methods
  *
  * @module
  */
 
-import { breakpoint, error } from './assert';
 import type { IR, RA, RR } from './types';
-import type { SplitMappingPath } from './wbplanviewmappinghelper';
+import { f } from './functools';
 
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
 
 export const unCapitalize = <T extends string>(string: T): Uncapitalize<T> =>
   (string.charAt(0).toLowerCase() + string.slice(1)) as Uncapitalize<T>;
+
+export const upperToKebab = (value: string): string =>
+  value.toLowerCase().split('_').join('-');
+
+export const lowerToHuman = (value: string): string =>
+  value.toLowerCase().split('_').map(capitalize).join(' ');
+
+export const camelToKebab = (value: string): string =>
+  value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+
+export const camelToHuman = (value: string): string =>
+  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
 
 /** Type-safe variant of toLowerCase */
 export const toLowerCase = <T extends string>(string: T): Lowercase<T> =>
@@ -65,36 +76,6 @@ export function findArrayDivergencePoint<T>(
     }) ?? searchLength - 1
   );
 }
-
-export const extractDefaultValues = (
-  splitMappingPaths: RA<SplitMappingPath>,
-  emptyStringReplacement = ''
-): IR<string> =>
-  Object.fromEntries(
-    splitMappingPaths
-      .map(
-        ({ headerName, columnOptions }) =>
-          [
-            headerName,
-            columnOptions.default === ''
-              ? emptyStringReplacement
-              : columnOptions.default,
-          ] as [string, string]
-      )
-      .filter(([, defaultValue]) => defaultValue !== null)
-  );
-
-export const upperToKebab = (value: string): string =>
-  value.toLowerCase().split('_').join('-');
-
-export const lowerToHuman = (value: string): string =>
-  value.toLowerCase().split('_').map(capitalize).join(' ');
-
-export const camelToKebab = (value: string): string =>
-  value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-
-export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
 
 /** Scale a number from original range into new range */
 export const spanNumber =
@@ -212,134 +193,42 @@ export const omit = <
 export const clamp = (min: number, max: number, value: number) =>
   Math.min(max, Math.max(min, value));
 
-/** A storage for f.store */
-const store = new Map<() => unknown, unknown>();
+/** Create a new array with a new item at a given position */
+export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
+  ...array.slice(0, index),
+  item,
+  ...array.slice(index),
+];
+
+/** Create a new array with a given item replaced */
+export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
+  ...array.slice(0, index),
+  item,
+  ...array.slice(index + 1),
+];
+
+/** Create a new array without a given item */
+export const removeItem = <T>(array: RA<T>, index: number): RA<T> => [
+  ...array.slice(0, index),
+  ...array.slice(index + 1),
+];
 
 /**
- * A collection of helper functions for functional programming style
- * Kind of like underscore or ramda, but typesafe
+ * Creates a new object with a given key replaced.
+ * Unlike object decomposition, this would preserve the order of keys
  */
-export const f = {
-  /** Return void */
-  void: (): void => undefined,
-  undefined: (): undefined => undefined,
-  /** Call first argument */
-  exec: <T>(function_: (...args: RA<never>) => T): T => function_(),
-  array: (): RA<never> => [],
-  unary:
-    <ARGUMENT, RETURN>(
-      callback: (argument: ARGUMENT) => RETURN
-    ): ((argument: ARGUMENT) => RETURN) =>
-    (argument) =>
-      callback(argument),
-  id: <T>(value: T): T => value,
-  trim: (value: string) => value.trim(),
-  /**
-   * Like console.log but return type is undefined instead of void, thus it
-   * can be used in ternary expressions without type errors
-   * Also, calls a breakpoint()
-   */
-  error(...args: RA<unknown>): undefined {
-    breakpoint();
-    console.log(...args);
-    return undefined;
-  },
-  log: (...args: RA<unknown>): undefined => void console.log(...args),
-  /** An alternative way to declare a variable */
-  var: <VALUE, RETURN>(
-    value: VALUE,
-    callback: (value: VALUE) => RETURN
-  ): RETURN => callback(value),
-  /** Like Promise.all, but accepts a dictionary instead of an array */
-  all: async <T extends IR<unknown>>(dictionary: {
-    readonly [PROMISE_NAME in keyof T]:
-      | Promise<T[PROMISE_NAME]>
-      | T[PROMISE_NAME];
-  }): Promise<T> =>
-    Object.fromEntries(
-      await Promise.all(
-        Object.entries(dictionary).map(async ([promiseName, promise]) => [
-          promiseName,
-          await promise,
-        ])
-      )
-    ),
-  sum: (array: RA<number>): number =>
-    array.reduce((total, value) => total + value, 0),
-  never: (): never => error('This should never get called'),
-  equal:
-    (value: unknown) =>
-    (secondValue: unknown): boolean =>
-      secondValue === value,
-  notEqual:
-    (value: unknown) =>
-    (secondValue: unknown): boolean =>
-      secondValue !== value,
-  /**
-   * If need to support internationalization, consider using localeCompare
-   *
-   * Example of case-insensitive comparison:
-   * ```js
-   * a.localeCompare(b, LANGUAGE, { sensitivity: 'base' })
-   * ```
-   */
-  looseEqual:
-    (value: string) =>
-    (secondValue: string): boolean =>
-      value.toString() == secondValue.toLowerCase(),
-  /**
-   * Call the second argument with the first if not undefined.
-   * Else return undefined
-   * Can replace undefined case with an alternative branch using nullish
-   * coalescing operator:
-   * ```js
-   * f.maybe(undefinedOrNot, calledOnNotUndefined) ?? calledOnUndefined()
-   * ```
-   */
-  maybe: <VALUE, RETURN>(
-    value: VALUE | undefined,
-    callback: (value: VALUE) => RETURN
-  ): RETURN | undefined =>
-    typeof value === 'undefined' ? undefined : callback(value),
-  /**
-   * A better typed version of Array.prototype.includes
-   *
-   * It allows first argument to be of any type, but if value is present
-   * in the array, its type is changed using a type predicate
-   */
-  includes: <T>(array: RA<T>, item: unknown): item is T =>
-    array.includes(item as T),
-  /**
-   * Like f.includes, but for sets
-   */
-  has: <T>(set: Set<T>, item: unknown): item is T => set.has(item as T),
-  /**
-   * Intercept function arguments without affecting it
-   * Useful for debugging or logging
-   */
-  tap:
-    <ARGUMENTS extends RA<never>, RETURN>(
-      tapFunction: (...args: ARGUMENTS) => void,
-      action: (...args: ARGUMENTS) => RETURN
-    ) =>
-    (...args: ARGUMENTS): RETURN => {
-      tapFunction(...args);
-      return action(...args);
-    },
-  /**
-   * Calls a function without any arguments.
-   * Useful when mapping over a list of functions
-   */
-  call: <RETURN>(callback: () => RETURN): RETURN => callback(),
-  /**
-   * Wrap a pure function that does not need any arguments in this
-   * call to remember and return its return value
-   */
-  store:
-    <RETURN>(callback: () => RETURN): (() => RETURN) =>
-    (): RETURN => {
-      if (!store.has(callback)) store.set(callback, callback());
-      return store.get(callback) as RETURN;
-    },
-  unique: <ITEM>(array: RA<ITEM>): RA<ITEM> => Array.from(new Set(array)),
-} as const;
+export const replaceKey = <T extends IR<unknown>>(
+  object: T,
+  targetKey: keyof T,
+  newValue: T[keyof T]
+): T =>
+  Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [
+      key,
+      /*
+       * Convert targetKey to string because Object.entries convers all keys
+       * to a string
+       */
+      key === targetKey.toString() ? newValue : value,
+    ])
+  ) as T;

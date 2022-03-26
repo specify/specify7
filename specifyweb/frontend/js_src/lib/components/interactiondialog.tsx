@@ -27,7 +27,8 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { f, sortFunction } from '../wbplanviewhelper';
+import { sortFunction } from '../helpers';
+import { f } from '../functools';
 import { Button, className, H3, Link, Textarea } from './basic';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';

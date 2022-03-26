@@ -13,7 +13,7 @@ import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
-import { f } from '../../wbplanviewhelper';
+import { f } from '../../functools';
 import { hasTreeAccess } from '../../permissions';
 
 export function TreeSelectDialog({

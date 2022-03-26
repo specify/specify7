@@ -20,7 +20,7 @@ import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { uploadPlanBuilder } from './uploadplanbuilder';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 import {
   findDuplicateMappings,
   formatToManyIndex,

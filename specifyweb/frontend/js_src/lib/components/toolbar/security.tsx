@@ -7,7 +7,7 @@ import adminText from '../../localization/admin';
 import { router } from '../../router';
 import { schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
-import { f } from '../../wbplanviewhelper';
+import { f } from '../../functools';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';

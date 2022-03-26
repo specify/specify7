@@ -17,7 +17,7 @@ import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 let newStringId = 1;
 const defaultLanguage = 'en';

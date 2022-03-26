@@ -18,7 +18,7 @@ import { getModel, getModelById, schema } from './schema';
 import { setCurrentView } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 import { Tables } from './datamodel';
 import { hasTablePermission, hasToolPermission } from './permissions';
 import { PermissionDenied } from './components/permissiondenied';

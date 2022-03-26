@@ -3,7 +3,7 @@ import $ from 'jquery';
 import type Backbone from './backbone';
 import { openDialogs } from './components/modaldialog';
 import { getCurrentUrl, push } from './navigation';
-import { f } from './wbplanviewhelper';
+import { f } from './functools';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;

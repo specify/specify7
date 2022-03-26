@@ -12,7 +12,8 @@ import {
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
-import { f, group, split } from './wbplanviewhelper';
+import { group, split } from './helpers';
+import { f } from './functools';
 import { setCurrentView } from './specifyapp';
 import { PermissionDenied } from './components/permissiondenied';
 import createBackboneView from './components/reactbackboneextend';

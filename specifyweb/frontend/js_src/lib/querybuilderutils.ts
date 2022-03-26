@@ -7,7 +7,7 @@ import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
 import type { Parser } from './uiparse';
-import { group, sortObjectsByKey } from './wbplanviewhelper';
+import { group, sortObjectsByKey } from './helpers';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';

@@ -32,7 +32,7 @@ import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Autocomplete } from './autocomplete';
 import { Button, Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';

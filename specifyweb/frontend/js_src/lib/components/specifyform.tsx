@@ -11,7 +11,7 @@ import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { DataEntry, FormHeader } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';

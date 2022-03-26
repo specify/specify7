@@ -8,7 +8,7 @@ import formsText from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
 import reports from '../reports';
 import { toTable } from '../specifymodel';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Button } from './basic';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';

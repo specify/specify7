@@ -15,12 +15,12 @@ import * as navigation from '../navigation';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../wbplanviewhelper';
+import { f } from '../functools';
 import { Button, className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
-import { removeItem } from './wbplanviewstate';
+import { removeItem } from '../helpers';
 import { hasTablePermission } from '../permissions';
 
 type Data = {
