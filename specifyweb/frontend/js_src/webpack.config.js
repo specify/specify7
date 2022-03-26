@@ -150,8 +150,8 @@ module.exports = (_env, argv)=>({
         new webpack.optimize.LimitChunkCountPlugin({
             maxChunks: 10,
         }),
-        // Clean up build artifacts when in production
-        ...(argv.mode === 'development' ? [] : [new CleanupPlugin(),]),
+        // Clean up build artifacts
+        new CleanupPlugin(),
     ],
     // Set appropriate process.env.NODE_ENV
     mode: argv.mode,
