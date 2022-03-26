@@ -43,7 +43,7 @@ function WelcomeScreenContent(): JSX.Element {
   );
 }
 
-export function AboutDialog({
+function AboutDialog({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
@@ -147,7 +147,8 @@ function WelcomeView(): JSX.Element {
   );
 }
 
-const View = createBackboneView(WelcomeView);
+export default createBackboneView(WelcomeView);
+const View = createBackboneView(AboutDialog);
 
 export const userTool: UserTool = {
   task: 'about',
@@ -156,5 +157,3 @@ export const userTool: UserTool = {
   isOverlay: true,
   groupLabel: commonText('documentation'),
 };
-
-export default View;

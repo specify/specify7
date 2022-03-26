@@ -6,6 +6,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { Button, Container, H3 } from './basic';
 
+// FIXME: UI for superuser
 export function InstitutionView({
   institution,
 }: {

@@ -8,7 +8,7 @@ import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
 import { toTreeTable } from '../specifymodel';
 import { Geography } from '../datamodel';
-import { hasToolPermission } from '../permissions';
+import { hasTreeAccess } from '../permissions';
 
 async function fetchPossibleRanks(
   lowestChildRank: number,
@@ -55,7 +55,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.model);
     if (
       typeof resource === 'undefined' ||
-      hasToolPermission(resource.specifyModel.name, 'read')
+      hasTreeAccess(resource.specifyModel.name, 'read')
     )
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);

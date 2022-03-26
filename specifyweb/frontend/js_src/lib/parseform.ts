@@ -4,6 +4,7 @@
  */
 
 import { ajax, Http } from './ajax';
+import { cachableUrl } from './initialcontext';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
   getAttribute,
@@ -87,18 +88,24 @@ function postProcessRows(
                     ? {
                         // Some plugins may override the fieldName
                         fieldName:
-                          (cell.fieldDefinition.type === 'Plugin'
-                            ? cell.fieldDefinition.pluginDefinition.type ===
-                              'PartialDateUI'
-                              ? cell.fieldDefinition.pluginDefinition.dateField
-                              : cell.fieldDefinition.pluginDefinition.type ===
-                                  'CollectionRelOneToManyPlugin' ||
-                                cell.fieldDefinition.pluginDefinition.type ===
-                                  'ColRelTypePlugin'
-                              ? cell.fieldDefinition.pluginDefinition
-                                  .relationship
-                              : undefined
-                            : undefined) ?? cell.fieldName,
+                          cell.fieldDefinition.type === 'Plugin' &&
+                          cell.fieldDefinition.pluginDefinition.type ===
+                            'LatLonUI'
+                            ? undefined
+                            : (cell.fieldDefinition.type === 'Plugin'
+                                ? cell.fieldDefinition.pluginDefinition.type ===
+                                  'PartialDateUI'
+                                  ? cell.fieldDefinition.pluginDefinition
+                                      .dateField
+                                  : cell.fieldDefinition.pluginDefinition
+                                      .type ===
+                                      'CollectionRelOneToManyPlugin' ||
+                                    cell.fieldDefinition.pluginDefinition
+                                      .type === 'ColRelTypePlugin'
+                                  ? cell.fieldDefinition.pluginDefinition
+                                      .relationship
+                                  : undefined
+                                : undefined) ?? cell.fieldName,
                         // Checkbox definition can contain a label
                         labelOverride:
                           cell.fieldDefinition.type === 'Checkbox'
@@ -301,7 +308,11 @@ export const getView = async (name: string): Promise<ViewDefinition> =>
   name in views
     ? Promise.resolve(views[name])
     : ajax<ViewDefinition>(
-        queryString.format('/context/view.json', { name }),
+        /*
+         * NOTE: If getView hasn't yet been invoked, the view URLs won't be
+         * marked as cachable
+         */
+        cachableUrl(queryString.format('/context/view.json', { name })),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },

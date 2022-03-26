@@ -42,7 +42,7 @@ function PolicyView({
           Object.keys(registry).length === 0 ? undefined : (
             <li key={index} className="contents">
               <Select
-                value={resourceParts[index] ?? '0'}
+                value={resourceParts[index] ?? ''}
                 disabled={isReadOnly}
                 onValueChange={(part): void =>
                   handleChange({
@@ -65,8 +65,9 @@ function PolicyView({
                     actions,
                   })
                 }
+                required
               >
-                <option value="0" key="0" />
+                <option value="" key="0" />
                 {Object.entries(
                   group(
                     Object.entries(defined(registry)).map(
@@ -99,29 +100,28 @@ function PolicyView({
             </li>
           )
         )}
-        {Array.isArray(possibleActions) &&
-          possibleActions.length > 0 &&
-          resourceParts.slice(-1)[0] !== '0' && (
-            <li className="contents">
-              <Select
-                value={possibleActions.length > 1 ? actions : actions[0] ?? ''}
-                multiple={possibleActions.length > 1}
-                size={Math.min(possibleActions.length, selectMultipleSize)}
-                onValuesChange={(actions): void =>
-                  handleChange({
-                    resource,
-                    actions,
-                  })
-                }
-              >
-                {possibleActions.map((action) => (
-                  <option key={action} value={action}>
-                    {lowerToHuman(action)}
-                  </option>
-                ))}
-              </Select>
-            </li>
-          )}
+        {Array.isArray(possibleActions) && possibleActions.length > 0 && (
+          <li className="contents">
+            <Select
+              value={possibleActions.length > 1 ? actions : actions[0] ?? ''}
+              multiple={possibleActions.length > 1}
+              size={Math.min(possibleActions.length, selectMultipleSize)}
+              onValuesChange={(actions): void =>
+                handleChange({
+                  resource,
+                  actions,
+                })
+              }
+              required
+            >
+              {possibleActions.map((action) => (
+                <option key={action} value={action}>
+                  {lowerToHuman(action)}
+                </option>
+              ))}
+            </Select>
+          </li>
+        )}
       </ul>
       <Button.Simple
         className={`${className.redButton} print:hidden`}

@@ -1700,6 +1700,30 @@ const commonText = createDictionary({
     ca: 'Forum',
     'es-es': 'Forum',
   },
+  cleanCache: {
+    'en-us': 'Clean Cache',
+    'ru-ru': 'Clean Cache',
+    ca: 'Clean Cache',
+    'es-es': 'Clean Cache',
+  },
+  cleanedCacheDialogMessage: {
+    'en-us': 'Cache has been cleaned. Please reload the page.',
+    'ru-ru': 'Cache has been cleaned. Please reload the page.',
+    ca: 'Cache has been cleaned. Please reload the page.',
+    'es-es': 'Cache has been cleaned. Please reload the page.',
+  },
+  reload: {
+    'en-us': 'Reload',
+    'ru-ru': 'Reload',
+    ca: 'Reload',
+    'es-es': 'Reload',
+  },
+  githubWiki: {
+    'en-us': 'GitHub Wiki',
+    'ru-ru': 'GitHub Wiki',
+    ca: 'GitHub Wiki',
+    'es-es': 'GitHub Wiki',
+  },
 });
 
 export default commonText;

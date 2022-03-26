@@ -20,11 +20,11 @@ import { f } from '../wbplanviewhelper';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { useTitle } from './hooks';
+import { useAsyncState, useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { useCachedState } from './stateCache';
 import { hasTablePermission } from '../permissions';
+import { cachableUrl } from '../initialcontext';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -41,38 +41,41 @@ export type InteractionEntry = {
   readonly icon: string | undefined;
 };
 
-const fetchEntries = async (): Promise<RA<InteractionEntry>> =>
-  ajax<Element>('/context/app.resource?name=InteractionsTaskInit', {
-    headers: { Accept: 'application/xml' },
-  }).then<RA<InteractionEntry>>(async ({ data }) =>
-    Promise.all(
-      Array.from(data.querySelectorAll('entry'), async (entry) =>
-        f.var(getAttribute(entry, 'action'), async (action) =>
-          getAttribute(entry, 'isOnLeft')?.toLowerCase() === 'true'
-            ? ({
-                action: f.includes(supportedActions, action)
-                  ? action
-                  : undefined,
-                table:
-                  action === 'NEW_GIFT'
-                    ? 'Gift'
-                    : typeof action === 'string'
-                    ? 'Loan'
-                    : await getView(getAttribute(entry, 'view') ?? '').then(
-                        (view) =>
-                          SpecifyModel.parseClassName(
-                            view.class
-                          ) as keyof Tables
-                      ),
-                label: getAttribute(entry, 'label'),
-                tooltip: getAttribute(entry, 'tooltip'),
-                icon: getAttribute(entry, 'icon'),
-              } as const)
-            : undefined
+const url = cachableUrl('/context/app.resource?name=InteractionsTaskInit');
+const fetchEntries = f.store(
+  async (): Promise<RA<InteractionEntry>> =>
+    ajax<Element>(url, {
+      headers: { Accept: 'application/xml' },
+    }).then<RA<InteractionEntry>>(async ({ data }) =>
+      Promise.all(
+        Array.from(data.querySelectorAll('entry'), async (entry) =>
+          f.var(getAttribute(entry, 'action'), async (action) =>
+            getAttribute(entry, 'isOnLeft')?.toLowerCase() === 'true'
+              ? ({
+                  action: f.includes(supportedActions, action)
+                    ? action
+                    : undefined,
+                  table:
+                    action === 'NEW_GIFT'
+                      ? 'Gift'
+                      : typeof action === 'string'
+                      ? 'Loan'
+                      : await getView(getAttribute(entry, 'view') ?? '').then(
+                          (view) =>
+                            SpecifyModel.parseClassName(
+                              view.class
+                            ) as keyof Tables
+                        ),
+                  label: getAttribute(entry, 'label'),
+                  tooltip: getAttribute(entry, 'tooltip'),
+                  icon: getAttribute(entry, 'icon'),
+                } as const)
+              : undefined
+          )
         )
-      )
-    ).then(filterArray)
-  );
+      ).then(filterArray)
+    )
+);
 
 function Interactions({
   onClose: handleClose,
@@ -234,13 +237,7 @@ export function InteractionsDialog({
 }): JSX.Element | null {
   useTitle(commonText('interactions'));
 
-  const [entries] = useCachedState({
-    bucketName: 'common',
-    cacheName: 'listOfInteractions',
-    bucketType: 'localStorage',
-    defaultValue: fetchEntries,
-    staleWhileRefresh: true,
-  });
+  const [entries] = useAsyncState(fetchEntries, true);
 
   return typeof entries === 'object' ? (
     <Interactions

@@ -16,6 +16,7 @@ import { f, group, split } from './wbplanviewhelper';
 import { setCurrentView } from './specifyapp';
 import { PermissionDenied } from './components/permissiondenied';
 import createBackboneView from './components/reactbackboneextend';
+import { AnyTree } from './datamodelutils';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -179,16 +180,15 @@ export const fetchContext = domainPromise
     operationPermissions = operations as unknown as typeof operationPermissions;
     tablePermissions = tables as unknown as typeof tablePermissions;
     void checkRegistry();
+    // Check that user has at least read access to the hierarchy tables
     if (
       schema.orgHierarchy.some(
         (tableName) =>
           tableName !== 'CollectionObject' &&
           !hasTablePermission(tableName, 'read')
       )
-    ) {
+    )
       setCurrentView(new PermissionDeniedView());
-      return;
-    }
   });
 
 export const hasTablePermission = (
@@ -212,7 +212,15 @@ export const hasPermission = <
 export const hasToolPermission = (
   tool: keyof ReturnType<typeof toolDefinitions>,
   action: typeof tableActions[number]
-) =>
+): boolean =>
   (toolDefinitions()[tool].tables as RA<keyof Tables>).every((tableName) =>
     hasTablePermission(tableName, action)
   );
+
+export const hasTreeAccess = (
+  treeName: AnyTree['tableName'],
+  action: typeof tableActions[number]
+): boolean =>
+  hasTablePermission(treeName, action) &&
+  hasTablePermission(`${treeName}TreeDef`, action) &&
+  hasTablePermission(`${treeName}TreeDefItem`, action);

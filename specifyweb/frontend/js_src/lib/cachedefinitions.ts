@@ -8,11 +8,9 @@ import type hot from 'handsontable';
 
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
-import type { SpQuery, Tables } from './datamodel';
+import type { SpQuery } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { RA } from './types';
-import { InteractionEntry } from './components/interactionsdialog';
-import { FormEntry } from './components/formsdialog';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -28,7 +26,6 @@ export type CacheDefinitions = {
   readonly queryBuilder: {
     readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
-    readonly showQueryDefinition: boolean;
     readonly mappingViewHeight: number;
   };
   readonly leaflet: {
@@ -51,6 +48,9 @@ export type CacheDefinitions = {
     readonly [key in `conformation${string}`]: string;
   };
   readonly workBenchSortConfig: {
+    // eslint-disable-next-line multiline-comment-style, capitalized-comments
+    // prettier-ignore
+    // {Collection ID}_{Dataset ID}
     readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
   readonly sortConfig: {
@@ -60,10 +60,5 @@ export type CacheDefinitions = {
     readonly listOfDataSets: SortConfig<
       'name' | 'dateCreated' | 'dateUploaded'
     >;
-  };
-  readonly common: {
-    readonly listOfQueryTables: RA<keyof Tables>;
-    readonly listOfInteractions: RA<InteractionEntry>;
-    readonly listOfForms: RA<FormEntry>;
   };
 };

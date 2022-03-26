@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ajax } from '../ajax';
+import { ajax, isExternalUrl } from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
 import * as querystring from '../querystring';
@@ -176,12 +176,6 @@ export function ExpressSearch(): JSX.Element {
   );
 }
 
-/*
- * FIXME: split userTools menu into categories
- * FIXME: add discourse link to about dialog
- * FIXME: add about dialog to userTools
- */
-
 function UserToolsColumn({
   groups,
   onClose: handleClose,
@@ -207,37 +201,45 @@ function UserToolsColumn({
                       ).basePath
                     : '/specify/task/',
               }))
-              .map(({ task, title, basePath, view, isOverlay }) => (
-                <li key={task}>
-                  <Link.Default
-                    href={
-                      typeof view === 'string' ? view : `${basePath}${task}/`
-                    }
-                    className={
-                      typeof view === 'string'
-                        ? ''
-                        : className.navigationHandled
-                    }
-                    onClick={(event): void => {
-                      if (typeof view !== 'function') {
-                        handleClose();
-                        return;
+              .map(({ task, title, basePath, view, isOverlay }) => {
+                const isExternalLink =
+                  typeof view === 'string' && isExternalUrl(view);
+                const Component = isExternalLink ? Link.NewTab : Link.Default;
+                return (
+                  <li key={task}>
+                    <Component
+                      href={
+                        typeof view === 'string' ? view : `${basePath}${task}/`
                       }
-                      event.preventDefault();
-                      handleClose();
-                      const backboneView = view({
-                        onClose: (): void => void backboneView.remove(),
-                        urlParameter: undefined,
-                      });
-                      if (isOverlay)
-                        setCurrentOverlay(backboneView, `${basePath}${task}/`);
-                      else setCurrentView(backboneView);
-                    }}
-                  >
-                    {title}
-                  </Link.Default>
-                </li>
-              ))}
+                      className={
+                        typeof view === 'string'
+                          ? ''
+                          : className.navigationHandled
+                      }
+                      onClick={(event): void => {
+                        if (typeof view !== 'function') {
+                          handleClose();
+                          return;
+                        }
+                        event.preventDefault();
+                        if (!isExternalLink) handleClose();
+                        const backboneView = view({
+                          onClose: (): void => void backboneView.remove(),
+                          urlParameter: undefined,
+                        });
+                        if (isOverlay)
+                          setCurrentOverlay(
+                            backboneView,
+                            `${basePath}${task}/`
+                          );
+                        else setCurrentView(backboneView);
+                      }}
+                    >
+                      {title}
+                    </Component>
+                  </li>
+                );
+              })}
           </Ul>
         </div>
       ))}

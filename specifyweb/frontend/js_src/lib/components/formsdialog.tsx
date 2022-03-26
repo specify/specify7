@@ -16,7 +16,9 @@ import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { useCachedState } from './stateCache';
+import { cachableUrl } from '../initialcontext';
+import { useAsyncState } from './hooks';
+import { f } from '../wbplanviewhelper';
 
 export type FormEntry = {
   iconName: keyof Tables | undefined;
@@ -25,40 +27,43 @@ export type FormEntry = {
   table: keyof Tables;
 };
 
-const fetchForms = async (): Promise<RA<FormEntry>> =>
-  ajax<Document>('/context/app.resource?name=DataEntryTaskInit', {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { Accept: 'application/xml' },
-  }).then(async ({ data }) => {
-    await fetchSchema;
-    return Promise.all(
-      Array.from(data.getElementsByTagName('view'))
-        // I don't think the non-sidebar items are ever used in Sp6.
-        .filter((item) => getAttribute(item, 'sideBar') === 'true')
-        .map(async (view) =>
-          getView(getAttribute(view, 'view') ?? '').then<FormEntry>(
-            (form: { readonly class: string }) => {
-              const modelName = SpecifyModel.parseClassName(
-                form.class
-              ) as keyof Tables;
-              const model = defined(getModel(modelName));
+const url = cachableUrl('/context/app.resource?name=DataEntryTaskInit');
+const fetchForms = f.store(
+  async (): Promise<RA<FormEntry>> =>
+    ajax<Document>(url, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/xml' },
+    }).then(async ({ data }) => {
+      await fetchSchema;
+      return Promise.all(
+        Array.from(data.getElementsByTagName('view'))
+          // I don't think the non-sidebar items are ever used in Sp6.
+          .filter((item) => getAttribute(item, 'sideBar') === 'true')
+          .map(async (view) =>
+            getView(getAttribute(view, 'view') ?? '').then<FormEntry>(
+              (form: { readonly class: string }) => {
+                const modelName = SpecifyModel.parseClassName(
+                  form.class
+                ) as keyof Tables;
+                const model = defined(getModel(modelName));
 
-              return {
-                iconName:
-                  (getAttribute(view, 'iconName') as
-                    | keyof Tables
-                    | undefined) ??
-                  model.name ??
-                  undefined,
-                viewUrl: getResourceViewUrl(modelName),
-                title: getAttribute(view, 'title') ?? '',
-                table: model.name,
-              };
-            }
+                return {
+                  iconName:
+                    (getAttribute(view, 'iconName') as
+                      | keyof Tables
+                      | undefined) ??
+                    model.name ??
+                    undefined,
+                  viewUrl: getResourceViewUrl(modelName),
+                  title: getAttribute(view, 'title') ?? '',
+                  table: model.name,
+                };
+              }
+            )
           )
-        )
-    );
-  });
+      );
+    })
+);
 
 export function FormsDialog({
   onSelected: handleSelected,
@@ -67,13 +72,7 @@ export function FormsDialog({
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [forms] = useCachedState({
-    bucketName: 'common',
-    cacheName: 'listOfForms',
-    bucketType: 'localStorage',
-    defaultValue: fetchForms,
-    staleWhileRefresh: true,
-  });
+  const [forms] = useAsyncState(fetchForms, true);
 
   return Array.isArray(forms) ? (
     <Dialog

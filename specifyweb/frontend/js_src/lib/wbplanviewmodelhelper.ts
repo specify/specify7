@@ -19,7 +19,7 @@ import {
   relationshipIsToMany,
   valueIsToManyIndex,
 } from './wbplanviewmappinghelper';
-import { hasToolPermission } from './permissions';
+import { hasTreeAccess } from './permissions';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -70,7 +70,7 @@ export function findRequiredMissingFields(
     );
   // Handle trees
   else if (isTreeModel(tableName))
-    return hasToolPermission(tableName as 'Geography', 'read')
+    return hasTreeAccess(tableName as 'Geography', 'read')
       ? defined(
           getTreeDefinitionItems(tableName as 'Geography', false)
         ).flatMap(({ name: rankName, isEnforced }) => {

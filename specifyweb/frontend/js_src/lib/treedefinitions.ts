@@ -4,10 +4,7 @@ import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
-import {
-  fetchContext as fetchPermissions,
-  hasToolPermission,
-} from './permissions';
+import { fetchContext as fetchPermissions, hasTreeAccess } from './permissions';
 import type { RA } from './types';
 import { defined } from './types';
 import {
@@ -85,7 +82,7 @@ export const fetchTreeRanks = Promise.all([
         .filter(
           ([treeName]) =>
             disciplineTrees.includes(treeName) &&
-            hasToolPermission(treeName, 'read')
+            hasTreeAccess(treeName, 'read')
         )
         .map(async ([treeName, definitionLevel]) => {
           const domainResource = getDomainResource(

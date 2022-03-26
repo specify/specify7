@@ -12,6 +12,7 @@ import { Label, Select } from '../basic';
 import { supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
+import { cachableUrl } from '../../initialcontext';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -72,6 +73,7 @@ export function LanguageSelection({
   );
 }
 
+const url = cachableUrl('/context/language/');
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
   function LanguagePreferencesItem({
     value,
@@ -86,7 +88,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
               readonly name_local: string;
               readonly code: string;
             }>
-          >('/context/language/', {
+          >(url, {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { Accept: 'application/json' },
           }).then(({ data }) =>

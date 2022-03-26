@@ -18,7 +18,7 @@ import {
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
-import { hasTablePermission, hasToolPermission } from './permissions';
+import { hasTablePermission, hasTreeAccess } from './permissions';
 import { fetchTreeRanks, getTreeDefinitionItems } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
@@ -104,7 +104,7 @@ async function recursiveResourceResolve(
 
   if (valueIsTreeRank(currentPart[0])) {
     const treeTableName = getTableFromMappingPath('Locality', pastParts);
-    if (!hasToolPermission(treeTableName as AnyTree['tableName'], 'read'))
+    if (!hasTreeAccess(treeTableName as AnyTree['tableName'], 'read'))
       return [];
     const tableRanks = defined(
       getTreeDefinitionItems(treeTableName as 'Geography', false)

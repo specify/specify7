@@ -115,7 +115,7 @@ const toolBarItem: UserTool = {
   title: commonText('generateMasterKey'),
   isOverlay: true,
   view: ({ onClose }) => new MasterKeyView({ onClose }),
-  groupLabel: commonText('userAccount'),
+  groupLabel: commonText('administration'),
 };
 
 export default toolBarItem;

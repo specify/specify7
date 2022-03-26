@@ -115,7 +115,6 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
           groupLabel: commonText('userAccount'),
         },
       },
-      import('./toolbar/masterkey'),
       // Customization
       import('./toolbar/preferences'),
       import('./toolbar/schemaconfig'),
@@ -126,6 +125,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
         default: userTool,
       })),
       import('./toolbar/treerepair'),
+      import('./toolbar/masterkey'),
       // Export
       import('./toolbar/dwca'),
       import('./toolbar/forceupdate'),
@@ -145,9 +145,20 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
       import('./toolbar/schema').then(({ toolBarItem }) => ({
         default: toolBarItem,
       })),
+      import('./toolbar/cachebuster'),
       import('./toolbar/swagger').then(({ toolbarItems }) =>
         toolbarItems.map((item) => ({ default: item }))
       ),
+      {
+        default: {
+          task: 'password_change',
+          title: commonText('githubWiki'),
+          basePath: '',
+          view: 'https://github.com/specify/specify7/wiki',
+          isOverlay: false,
+          groupLabel: commonText('developers'),
+        },
+      },
     ])
   )
   .then((items) => items.flat())

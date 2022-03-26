@@ -43,7 +43,7 @@ import { SearchDialog } from './searchdialog';
 import { ResourceView } from './resourceview';
 import { SubViewContext } from './subview';
 import { LoadingContext } from './contexts';
-import { hasTablePermission, hasToolPermission } from '../permissions';
+import { hasTablePermission, hasTreeAccess } from '../permissions';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -94,7 +94,7 @@ export function QueryComboBox({
       const treeResource = toTreeTable(resource);
       if (
         typeof treeResource === 'undefined' ||
-        !hasToolPermission(treeResource.specifyModel.name, 'read')
+        !hasTreeAccess(treeResource.specifyModel.name, 'read')
       )
         return false;
       if (field?.name == 'parent') {

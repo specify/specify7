@@ -1,12 +1,13 @@
 import { ajax } from './ajax';
 import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
+import { cachableUrl } from './initialcontext';
 import commonText from './localization/common';
-import { ReportsView } from './reports';
 import { hasPermission } from './permissions';
+import { ReportsView } from './reports';
 
 export default ajax<{ readonly available: boolean }>(
-  '/context/report_runner_status.json',
+  cachableUrl('/context/report_runner_status.json'),
   {
     headers: { Accept: 'application/json' },
   },

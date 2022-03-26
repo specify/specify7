@@ -30,8 +30,8 @@ export type SearchPreferences = {
     // Use Regex
     readonly useRegex: boolean;
     /*
-     * Live Updated
      * Whether to check newly changed cells for search query matches
+     * And whether to rerun search as soon as SearchPreferences are changed
      */
     readonly liveUpdate: boolean;
   };

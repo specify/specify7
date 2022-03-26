@@ -621,6 +621,7 @@ def api_endpoints_all(request):
     return JsonResponse(generate_openapi_for_endpoints(True))
 
 @require_http_methods(['GET', 'POST'])
+@cache_control(max_age=86400, public=True)
 def languages(request):
     """Get List of available languages OR set current language."""
     if request.method == 'GET':
@@ -634,6 +635,7 @@ def languages(request):
         return set_language(request)
 
 @require_GET
+@cache_control(max_age=86400, public=True)
 def schema_language(request):
     """Get list of schema languages, countries and variants."""
     schema_languages = get_schema_languages()

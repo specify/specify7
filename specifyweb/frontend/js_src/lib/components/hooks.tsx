@@ -234,7 +234,15 @@ export function useTriggerState<T>(
 ): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = React.useState<T>(defaultValue);
 
-  React.useEffect(() => setState(defaultValue), [defaultValue]);
+  /**
+   * Using React.useRef rather than React.useEffect with a [defaultValue]
+   * dependency because React.useEffect executes too late in the process
+   */
+  const previousDefaultValue = React.useRef<T>(defaultValue);
+  if (previousDefaultValue.current !== defaultValue) {
+    setState(defaultValue);
+    previousDefaultValue.current = defaultValue;
+  }
 
   return [state, setState];
 }

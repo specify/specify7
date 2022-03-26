@@ -201,7 +201,6 @@ export function parseFormCell(
   const colSpan = Number.parseInt(getAttribute(cellNode, 'colspan') ?? '');
   const align = properties.align?.toLowerCase();
   return {
-    // FIXME: set as aria-labeledby
     id: getAttribute(cellNode, 'id'),
     colSpan: Number.isNaN(colSpan) ? 1 : Math.ceil(colSpan / 2),
     align: f.includes(cellAlign, align)

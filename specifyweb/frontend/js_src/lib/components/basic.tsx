@@ -7,6 +7,7 @@ import type { Input as InputType } from '../saveblockers';
 import type { IR, RA, RR } from '../types';
 import type { IconProps } from './icons';
 import { icons } from './icons';
+import { split } from '../wbplanviewhelper';
 
 export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
@@ -463,14 +464,22 @@ export const Select = wrap<
     }`,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      onValueChange?.((event.target as HTMLSelectElement).value);
-      onValuesChange?.(
-        Array.from(
-          (event.target as HTMLSelectElement).querySelectorAll('option')
-        )
-          .filter(({ selected }) => selected)
-          .map(({ value }) => value)
+      const options = Array.from(
+        (event.target as HTMLSelectElement).querySelectorAll('option')
       );
+      const [unselected, selected] = split(options, ({ selected }) => selected);
+      /*
+       * Selected options in an optional multiple select are clashing with
+       * the background in dark mode. This is a fix:
+       */
+      if (props.required !== true && props.multiple === true) {
+        selected.map((option) => option.classList.add('dark:bg-neutral-100'));
+        unselected.map((option) =>
+          option.classList.remove('dark:bg-neutral-100')
+        );
+      }
+      onValueChange?.((event.target as HTMLSelectElement).value);
+      onValuesChange?.(selected.map(({ value }) => value));
       props.onChange?.(event);
     },
   })

@@ -22,7 +22,7 @@ import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
 import {Button, className} from './components/basic';
-import {getModel} from './schema';
+import {getModel, schema} from './schema';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
 import {NotFoundView} from './notfoundview';
@@ -707,11 +707,10 @@ const WBView = Backbone.View.extend({
     );
   },
   async fetchSortConfig() {
-    const currentCollection = await cache.fetchCurrentCollectionId();
     if (!this.hot) return;
     const sortConfig = cache.get(
       'workBenchSortConfig',
-      `${currentCollection}_${this.dataset.id}`
+      `${schema.domainLevelIds.collection}_${this.dataset.id}`
     );
     if (!Array.isArray(sortConfig)) return;
     const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
@@ -1112,7 +1111,6 @@ const WBView = Backbone.View.extend({
   },
   // Cache sort config to preserve column sort order across sessions
   async afterColumnSort(_previousSortConfig, sortConfig) {
-    const currentCollection = await cache.fetchCurrentCollectionId();
     const physicalSortConfig = sortConfig.map(
       ({ column: visualCol, ...rest }) => ({
         ...rest,
@@ -1121,7 +1119,7 @@ const WBView = Backbone.View.extend({
     );
     cache.set(
       'workBenchSortConfig',
-      `${currentCollection}_${this.dataset.id}`,
+      `${schema.domainLevelIds.collection}_${this.dataset.id}`,
       physicalSortConfig,
       {
         overwrite: true,

@@ -11,7 +11,6 @@ import {
   compressPolicies,
   decompressPolicies,
   fetchRoles,
-  removeIncompletePolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
 import { f, sortFunction } from '../wbplanviewhelper';
@@ -30,8 +29,7 @@ import {
 import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
-import type { Policy } from './securitypolicy';
-import { PoliciesView } from './securitypolicy';
+import { PoliciesView, Policy } from './securitypolicy';
 import { removeItem, replaceKey } from './wbplanviewstate';
 import { PreviewPermissions } from './securitypreview';
 
@@ -167,9 +165,7 @@ export function UserView({
                         `/permissions/user_policies/${collectionId}/${user.id}/`,
                         {
                           method: 'PUT',
-                          body: decompressPolicies(
-                            removeIncompletePolicies(policies)
-                          ),
+                          body: decompressPolicies(policies),
                         },
                         { expectedResponseCodes: [Http.NO_CONTENT] }
                       )

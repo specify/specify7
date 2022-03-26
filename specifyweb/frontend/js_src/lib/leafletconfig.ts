@@ -41,6 +41,7 @@ export const leafletTileServers: RR<
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright"' +
           ' target="_blank">OpenStreetMap</a> contributors',
+        // Smartly inverts leaflet layer's color scheme when in dark-mode:
         className: 'dark:invert-leaflet-layer',
       }
     ),

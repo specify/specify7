@@ -153,30 +153,6 @@ export const toolDefinitions = f.store(() =>
       label: commonText('pickList'),
       tables: ['PickList', 'PickListItem'],
     },
-    Taxon: {
-      label: schema.models.Taxon.label,
-      tables: ['Taxon', 'TaxonTreeDef', 'TaxonTreeDefItem'],
-    },
-    Geography: {
-      label: schema.models.Geography.label,
-      tables: ['Geography', 'GeographyTreeDef', 'GeographyTreeDefItem'],
-    },
-    Storage: {
-      label: schema.models.Storage.label,
-      tables: ['Storage', 'StorageTreeDef', 'StorageTreeDefItem'],
-    },
-    LithoStrat: {
-      label: schema.models.LithoStrat.label,
-      tables: ['LithoStrat', 'LithoStratTreeDef', 'LithoStratTreeDefItem'],
-    },
-    GeologicTimePeriod: {
-      label: schema.models.GeologicTimePeriod.label,
-      tables: [
-        'GeologicTimePeriod',
-        'GeologicTimePeriodTreeDef',
-        'GeologicTimePeriodTreeDefItem',
-      ],
-    },
   } as const)
 );
 
@@ -279,6 +255,3 @@ const getAllActions = (path: string): RA<string> =>
           .filter(([key]) => key.startsWith(path))
           .flatMap(([_key, actions]) => actions)
       );
-
-export const removeIncompletePolicies = (policies: RA<Policy>): RA<Policy> =>
-  policies.filter((policy) => policy.actions.length > 0 && policy.actions);

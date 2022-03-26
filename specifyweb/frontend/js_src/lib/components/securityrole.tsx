@@ -8,19 +8,14 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
-import {
-  compressPolicies,
-  decompressPolicies,
-  removeIncompletePolicies,
-} from '../securityutils';
+import { compressPolicies, decompressPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Button, Form, H3, Input, Label, Submit } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
-import type { Policy } from './securitypolicy';
-import { PoliciesView } from './securitypolicy';
+import { PoliciesView, Policy } from './securitypolicy';
 import { replaceKey } from './wbplanviewstate';
 import { userInformation } from '../userinfo';
 
@@ -101,11 +96,7 @@ export function RoleView({
     <Form
       onSubmit={(): void =>
         handleSave(
-          replaceKey(
-            role,
-            'policies',
-            decompressPolicies(removeIncompletePolicies(role.policies))
-          )
+          replaceKey(role, 'policies', decompressPolicies(role.policies))
         )
       }
       className="contents"

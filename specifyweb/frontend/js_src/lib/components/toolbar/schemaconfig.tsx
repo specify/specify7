@@ -23,6 +23,7 @@ import type {
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
 import { f } from '../../wbplanviewhelper';
+import { cachableUrl } from '../../initialcontext';
 
 type Props = {
   readonly onClose: () => void;
@@ -84,6 +85,7 @@ export type WithFieldInfo = {
   };
 };
 
+const languagesUrl = cachableUrl('/context/schema/language/');
 function SchemaConfigWrapper({
   onClose: handleClose,
 }: Props): JSX.Element | null {
@@ -100,7 +102,7 @@ function SchemaConfigWrapper({
             readonly country: string | null;
             readonly language: string;
           }>
-        >('/context/schema/language/', {
+        >(languagesUrl, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         })

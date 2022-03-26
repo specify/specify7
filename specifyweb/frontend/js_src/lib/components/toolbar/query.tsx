@@ -31,28 +31,32 @@ import {
   hasTablePermission,
   hasToolPermission,
 } from '../../permissions';
+import { cachableUrl } from '../../initialcontext';
 
-const fetchTablesToShow = async (): Promise<RA<keyof Tables>> =>
-  ajax<Document>(
-    '/static/config/querybuilder.xml',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    { headers: { Accept: 'application/xml' } }
-  )
-    .then(({ data: document }) =>
-      f.unique(
-        filterArray(
-          Array.from(document.querySelectorAll('database > table'), (table) =>
-            getModel(table.getAttribute('name') ?? '')
-          )
-        )
-          .map(({ name }) => name)
-          .sort()
-      )
+const url = cachableUrl('/static/config/querybuilder.xml');
+const fetchTablesToShow = f.store(
+  async (): Promise<RA<keyof Tables>> =>
+    ajax<Document>(
+      url,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { headers: { Accept: 'application/xml' } }
     )
-    .catch((error) => {
-      console.error(error);
-      return [];
-    });
+      .then(({ data: document }) =>
+        f.unique(
+          filterArray(
+            Array.from(document.querySelectorAll('database > table'), (table) =>
+              getModel(table.getAttribute('name') ?? '')
+            )
+          )
+            .map(({ name }) => name)
+            .sort()
+        )
+      )
+      .catch((error) => {
+        console.error(error);
+        return [];
+      })
+);
 
 const defaultSortConfig = {
   sortField: 'timestampCreated',
@@ -211,14 +215,7 @@ export function QueryToolbarItem({
 }): JSX.Element | null {
   useTitle(commonText('queries'));
 
-  // TODO: test this to make sure it works
-  const [tablesToShow] = useCachedState({
-    bucketName: 'common',
-    cacheName: 'listOfQueryTables',
-    bucketType: 'sessionStorage',
-    defaultValue: fetchTablesToShow,
-    staleWhileRefresh: true,
-  });
+  const [tablesToShow] = useAsyncState(fetchTablesToShow, true);
 
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(

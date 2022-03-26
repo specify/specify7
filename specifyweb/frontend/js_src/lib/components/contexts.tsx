@@ -4,8 +4,8 @@ import Modal from 'react-modal';
 import { error } from '../assert';
 import type { RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
-import { useBooleanState } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { useBooleanState } from './hooks';
 
 export function Contexts({
   children,
@@ -15,11 +15,12 @@ export function Contexts({
   React.useEffect(() => Modal.setAppElement('#root'), []);
 
   const holders = React.useRef<RA<number>>([]);
+
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+
   const handle = React.useCallback(
     (promise: Promise<unknown>): void => {
       const holderId = holders.current.length;
-      console.log('Begun loading', holderId);
       holders.current = [...holders.current, holderId];
       handleLoading();
       promise
@@ -30,7 +31,6 @@ export function Contexts({
         .finally(() => {
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
-          console.log('Finished loading', holderId);
         });
     },
     [handleLoading, handleLoaded]

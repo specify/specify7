@@ -1,5 +1,20 @@
 import type { MimeType } from './ajax';
 
+/*
+ * This belong to ./components/toolbar/cachebuster.tsx but was moved here
+ * due to circular dependency issues
+ */
+export const cachableUrls: Set<string> = new Set();
+
+/**
+ * Mark URL as cachable -> should have its cache cleared when cache buster is
+ * invoked
+ */
+export function cachableUrl(url: string): string {
+  cachableUrls.add(url);
+  return url;
+}
+
 let unlock: () => void;
 
 // Context is unlocked for main entrypoint only
@@ -9,26 +24,31 @@ export const contextUnlockedPromise = new Promise<void>((resolve) => {
 
 export const unlockInitialContext = (): void => unlock();
 
-export async function load<T>(path: string, mimeType: MimeType): Promise<T> {
-  await contextUnlockedPromise;
-
-  // eslint-disable-next-line no-console
-  console.log('initial context:', path);
-  /*
-   * Using async import to avoid circular dependency
-   * TODO: find a better solution
-   */
-  return import('./ajax')
+export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
+  contextUnlockedPromise
+    .then(
+      () =>
+        /*
+         * Using async import to avoid circular dependency
+         * TODO: find a better solution
+         */
+        import('./ajax')
+    )
     .then(async ({ ajax }) =>
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      ajax<T>(path, { headers: { Accept: mimeType } })
+      ajax<T>(cachableUrl(path), { headers: { Accept: mimeType } })
     )
-    .then(({ data }) => data);
-}
+    .then(({ data }) => {
+      // eslint-disable-next-line no-console
+      console.log('initial context:', path);
+      return data;
+    });
 
 export const initialContext = Promise.all([
-  // TODO: cache preferences and permissions
-  // Fetch user preferences (NOT CACHED)
+  /*
+   * TODO: cache preferences and permissions
+   * Fetch user preferences (NOT CACHED)
+   */
   import('./preferencesutils'),
   // Fetch general context information (NOT CACHED)
   import('./schemabase'),

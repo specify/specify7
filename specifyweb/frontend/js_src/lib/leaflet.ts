@@ -11,7 +11,7 @@ import { ajax, Http } from './ajax';
 import * as cache from './cache';
 import { legacyNonJsxIcons } from './components/icons';
 import { dialogClassNames, showDialog } from './components/modaldialog';
-import { contextUnlockedPromise } from './initialcontext';
+import { cachableUrl, contextUnlockedPromise } from './initialcontext';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -59,7 +59,7 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
   contextUnlockedPromise
     .then(async () =>
       ajax<IR<unknown>>(
-        '/context/app.resource?name=leaflet-layers',
+        cachableUrl('/context/app.resource?name=leaflet-layers'),
         { headers: { Accept: 'application/json' } },
         { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
       )
@@ -67,7 +67,7 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
     .then(({ data, status }) =>
       status === Http.NOT_FOUND
         ? ajax<IR<unknown>>(
-            leafletLayersEndpoint,
+            cachableUrl(leafletLayersEndpoint),
             { headers: { Accept: 'application/json' } },
             { strict: false }
           ).then(({ data }) => data)

@@ -1,7 +1,7 @@
 import { PermissionDenied } from './components/permissiondenied';
 import createBackboneView from './components/reactbackboneextend';
 import { NotFoundView } from './notfoundview';
-import { hasToolPermission } from './permissions';
+import { hasTreeAccess } from './permissions';
 import { router } from './router';
 import { getModel } from './schema';
 import { setCurrentView } from './specifyapp';
@@ -22,7 +22,7 @@ export default function Routes(): void {
         setCurrentView(new NotFoundView());
         return;
       }
-      if (!hasToolPermission(tableName, 'read')) {
+      if (!hasTreeAccess(tableName, 'read')) {
         setCurrentView(new PermissionDeniedView());
         return;
       }

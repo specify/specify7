@@ -24,6 +24,7 @@ import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
+  hasTreeAccess,
 } from '../permissions';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
@@ -159,7 +160,7 @@ function QueryBuilderFromTree({
     true
   );
 
-  return typeof query === 'undefined' ? null : hasToolPermission(
+  return typeof query === 'undefined' ? null : hasTreeAccess(
       getModelById(query.get('contextTableId')).name as 'Geography',
       'read'
     ) ? (

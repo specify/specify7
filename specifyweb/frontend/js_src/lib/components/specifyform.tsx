@@ -92,7 +92,6 @@ export function useViewDefinition({
   return viewDefinition;
 }
 
-// FIXME: review all original specifyform files to check everything was migrated
 /** Renders a form and populates it with data from a resource */
 export function SpecifyForm({
   resource,

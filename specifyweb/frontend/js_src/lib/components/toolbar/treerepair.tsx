@@ -14,7 +14,7 @@ import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 import { f } from '../../wbplanviewhelper';
-import { hasToolPermission } from '../../permissions';
+import { hasTreeAccess } from '../../permissions';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -50,7 +50,7 @@ export function TreeSelectDialog({
       <nav>
         <Ul>
           {Object.entries(trees)
-            .filter(([_tree, { name }]) => hasToolPermission(name, 'update'))
+            .filter(([_tree, { name }]) => hasTreeAccess(name, 'update'))
             .map(([tree, model]) => (
               <li key={tree}>
                 <Link.Default

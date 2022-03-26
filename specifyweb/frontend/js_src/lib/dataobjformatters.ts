@@ -1,6 +1,6 @@
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
-import { contextUnlockedPromise } from './initialcontext';
+import { cachableUrl, contextUnlockedPromise } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
@@ -45,10 +45,13 @@ export const fetchFormatters: Promise<{
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise
   .then(async () =>
-    ajax<Document>('/context/app.resource?name=DataObjFormatters', {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/xml' },
-    })
+    ajax<Document>(
+      cachableUrl('/context/app.resource?name=DataObjFormatters'),
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { Accept: 'application/xml' },
+      }
+    )
   )
   .then(({ data: definitions }) => ({
     formatters: filterArray(

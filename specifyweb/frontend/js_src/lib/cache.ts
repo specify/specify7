@@ -1,14 +1,21 @@
 /**
  * LocalStorage and SessionStorage front-end cache
  *
- * Used for saving results of computationally expensive actions (getting a table
- * name from a mapping path) as well as remembering user preferences (last used
- * leaflet map or WB Column sort order)
+ * Mostly used for remembering user preferences (last used leaflet map or WB
+ * Column sort order), but can also be used to store results of computationally
+ * expensive operations.
+ *
+ * @remarks
+ * localStorage limit in most browsers is 5MB.
+ * You can measure current usage with a function like this:
+ * https://stackoverflow.com/a/17887889/8584605
+ * There used to be a piece of code in cache.ts that trimmed underused old cache
+ * entries when cache was getting too big, but it was removed as cache is
+ * no longer used to store large objects
  *
  * @module
  */
 
-import { ajax } from './ajax';
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
 import { omit } from './wbplanviewhelper';
@@ -303,16 +310,4 @@ export function genericSet<T>(
   };
 
   return cacheValue;
-}
-
-let collectionId: number | undefined = undefined;
-
-export async function fetchCurrentCollectionId(): Promise<number> {
-  if (typeof collectionId === 'number') return collectionId;
-  const { data } = await ajax<{ readonly current: number }>(
-    '/context/collection/',
-    { headers: { Accept: 'application/json' } }
-  );
-  collectionId = data.current;
-  return collectionId;
 }
