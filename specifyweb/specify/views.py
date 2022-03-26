@@ -1,15 +1,14 @@
 import mimetypes
+from django import http
+from django.conf import settings
+from django.db import router
+from django.db.models.deletion import Collector
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
-from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.cache import cache_control
-from django.conf import settings
-from django import http
-from django.db.models.deletion import Collector
-from django.db import router
-
-from .specify_jar import specify_jar
 from . import api, models
+from .specify_jar import specify_jar
 
 
 def login_maybe_required(view):
@@ -79,7 +78,7 @@ def raise_error(request):
                     'scheduled hacking.')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def delete_blockers(request, model, id):
     """Returns a JSON list of fields on <model> that point to related
     resources which prevent the resource <id> of that model from being
@@ -95,12 +94,12 @@ def delete_blockers(request, model, id):
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def rows(request, model):
     "Returns tuples from the table for <model>."
     return api.rows(request, model)
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=365*24*60*60, public=True)
 def images(request, path):
     """Returns images and icons from the Specify thickclient jar file
@@ -114,7 +113,7 @@ def images(request, path):
     return http.HttpResponse(image, content_type=mimetype)
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=24*60*60, public=True)
 def properties(request, name):
     """Returns the <name>.properities file from the thickclient jar file."""
@@ -211,7 +210,7 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def support_login(request):
     """If the ALLOW_SUPPORT_LOGIN setting is True, requesting this
     endpoint with a valid 'token' GET parameter will log in without a

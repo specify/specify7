@@ -18,8 +18,7 @@ from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_POST, \
-    require_http_methods
+from django.views.decorators.http import require_http_methods
 from django.views.i18n import set_language
 
 from specifyweb.specify.models import Agent, Collection, Institution, \
@@ -260,7 +259,7 @@ def collection(request):
         return HttpResponse(json.dumps(response), content_type="application/json")
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @never_cache
 @cache_control(max_age=86400, private=True)
 def user(request):
@@ -276,7 +275,7 @@ def user(request):
     return HttpResponse(toJson(data), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @never_cache
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
@@ -295,7 +294,7 @@ def domain(request):
     return HttpResponse(json.dumps(domain), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
@@ -312,7 +311,7 @@ def app_resource(request):
 
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
@@ -331,7 +330,7 @@ def available_related_searches(request):
 
 datamodel_json = None
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, public=True)
 def datamodel(request):
@@ -343,7 +342,7 @@ def datamodel(request):
 
     return HttpResponse(datamodel_json, content_type='application/json')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def schema_localization(request):
@@ -356,7 +355,7 @@ def schema_localization(request):
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def view(request):
@@ -375,14 +374,14 @@ def view(request):
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def system_info(request):
     "Return various information about this Specify instance."
@@ -607,34 +606,34 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     }
 
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
     """Returns a JSON description of endpoints that have schema defined."""
     return JsonResponse(generate_openapi_for_endpoints(False))
 
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'POST', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def languages(request):
     """Get List of available languages OR set current language."""
-    if request.method == 'GET':
+    if request.method == 'POST':
+        return set_language(request)
+    else:  # GET or HEAD
         return JsonResponse({
             code:{
                 **get_language_info(code),
                 'is_current': code==request.LANGUAGE_CODE
             } for code, name in settings.LANGUAGES
         })
-    else:  # POST
-        return set_language(request)
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def schema_language(request):
     """Get list of schema languages, countries and variants."""

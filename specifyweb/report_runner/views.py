@@ -1,25 +1,32 @@
-import requests
 import json
-
-from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.cache import cache_control
-from django.db.models import Q
-from django.db import transaction
-from django.http import HttpResponse
+import requests
 from django.conf import settings
+from django.db import transaction
+from django.db.models import Q
+from django.http import HttpResponse
 from django.template import loader, Context
 from django.utils.translation import gettext as _
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_GET, require_POST, \
+    require_http_methods
 
-from ..specify.views import login_maybe_required
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, check_table_permissions
 from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
 from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
+from ..specify.views import login_maybe_required
 from ..stored_queries.execution import run_ephemeral_query, models
 from ..stored_queries.queryfield import QueryField
+
 
 class ReportException(Exception):
     pass
 
-@require_GET
+class ReportsPT(PermissionTarget):
+    resource = "/report"
+    execute = PermissionTargetAction()
+
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def get_status(request):
     "Indicates whether a report runner server is available."

@@ -1,13 +1,16 @@
+import hmac
+import json
+import logging
+import requests
+import time
+from django.conf import settings
+from django.http import HttpResponse
+from django.utils.translation import gettext as _
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_http_methods
+from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
-from os.path import splitext
-import requests, time, hmac, json, logging
-
-from django.http import HttpResponse
-from django.views.decorators.http import require_GET
-from django.views.decorators.cache import cache_control
-from django.conf import settings
-from django.utils.translation import gettext as _
 
 from specifyweb.specify.views import login_maybe_required, openapi
 
@@ -47,7 +50,7 @@ def get_collection():
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def get_settings(request):
     "Returns settings needed to access the asset server for this Specify instance."
@@ -79,7 +82,7 @@ def get_settings(request):
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def get_token(request):
     "Returns an asset server access token. Must be supplied 'filename' GET parameter."
     filename = request.GET['filename']
@@ -108,7 +111,7 @@ def get_token(request):
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def get_upload_params(request):
     "Returns information for uploading a file with GET parameter 'filename' to the asset server."
     filename = request.GET['filename']
