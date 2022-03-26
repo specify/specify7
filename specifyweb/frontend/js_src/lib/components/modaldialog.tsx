@@ -352,6 +352,7 @@ type ButtonDefinition = {
   readonly onClick: 'dialogClose' | (() => void);
 };
 
+// TODO: get rid of this once everything is using React
 /** Wrapper for using React dialog in Backbone views */
 function LegacyDialogWrapper({
   content,

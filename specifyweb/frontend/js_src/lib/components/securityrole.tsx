@@ -15,7 +15,7 @@ import { Button, Form, H3, Input, Label, Submit } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
-import { PoliciesView, Policy } from './securitypolicy';
+import { BackEndPolicy, PoliciesView, Policy } from './securitypolicy';
 import { replaceKey } from '../helpers';
 import { userInformation } from '../userinfo';
 
@@ -27,6 +27,10 @@ export type NewRole = {
 
 export type Role = NewRole & {
   readonly id: number;
+};
+
+export type BackEndRole = Omit<Role, 'policies'> & {
+  readonly policies: RA<BackEndPolicy>;
 };
 
 export type UserRoles = IR<{

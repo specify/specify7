@@ -27,7 +27,7 @@ import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
-import { fetchTreeRanks, getTreeDefinitionItems } from '../treedefinitions';
+import { getTreeDefinitionItems, treeRanksPromise } from '../treedefinitions';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
@@ -112,7 +112,7 @@ export function QueryComboBox({
             .fetchPromise({ limit: 1 })
             .then(({ models }) => models[0]?.get('rankId'));
         }
-        const treeRanks = fetchTreeRanks.then(() =>
+        const treeRanks = treeRanksPromise.then(() =>
           defined(
             getTreeDefinitionItems(treeResource.specifyModel.name, false)
           ).map((rank) => ({

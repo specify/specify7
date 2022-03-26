@@ -6,9 +6,9 @@ import { router } from './router';
 import { getModel } from './schema';
 import { setCurrentView } from './specifyapp';
 import {
-  fetchTreeRanks,
   isTreeModel,
   treeDefinitions,
+  treeRanksPromise,
 } from './treedefinitions';
 import { caseInsensitiveHash } from './helpers';
 
@@ -26,7 +26,7 @@ export default function Routes(): void {
         setCurrentView(new PermissionDeniedView());
         return;
       }
-      await fetchTreeRanks;
+      await treeRanksPromise;
       const treeDefinition = caseInsensitiveHash(treeDefinitions, tableName);
       if (typeof treeDefinition === 'object')
         setCurrentView(

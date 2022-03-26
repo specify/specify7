@@ -9,7 +9,7 @@ import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { fetchRoles } from '../securityutils';
+import { fetchRoles, flattenPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { omit, replaceKey } from '../helpers';
@@ -174,7 +174,10 @@ export function CollectionView({
                     `/permissions/role/${role.id}/`,
                     {
                       method: 'PUT',
-                      body: role,
+                      body: {
+                        ...role,
+                        policies: flattenPolicies(role.policies),
+                      },
                     },
                     { expectedResponseCodes: [Http.NO_CONTENT] }
                   ).then((): void =>
@@ -190,7 +193,10 @@ export function CollectionView({
                     `/permissions/roles/${collection.id}/`,
                     {
                       method: 'POST',
-                      body: omit(role, ['id']),
+                      body: {
+                        ...omit(role, ['id']),
+                        policies: flattenPolicies(role.policies),
+                      },
                       headers: { Accept: 'application/json' },
                     },
                     { expectedResponseCodes: [Http.CREATED] }

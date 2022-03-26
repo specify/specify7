@@ -9,7 +9,7 @@ import wbText from '../localization/workbench';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
-import { fetchTreeRanks, isTreeModel } from '../treedefinitions';
+import { isTreeModel, treeRanksPromise } from '../treedefinitions';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import {
@@ -65,7 +65,7 @@ export function QueryBuilder({
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
-    React.useCallback(() => fetchTreeRanks, []),
+    React.useCallback(async () => treeRanksPromise, []),
     true
   );
 

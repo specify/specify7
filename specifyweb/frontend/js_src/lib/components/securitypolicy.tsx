@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { f } from '../functools';
+import { group, lowerToHuman, removeItem, replaceItem } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import {
@@ -10,11 +12,13 @@ import {
 } from '../securityutils';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { group, lowerToHuman } from '../helpers';
-import { f } from '../functools';
 import { Button, className, Select, selectMultipleSize } from './basic';
 import { icons } from './icons';
-import { removeItem, replaceItem } from '../helpers';
+
+export type BackEndPolicy = {
+  readonly resource: string;
+  readonly action: string;
+};
 
 export type Policy = {
   readonly resource: string;

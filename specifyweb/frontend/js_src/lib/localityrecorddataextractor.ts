@@ -19,7 +19,7 @@ import {
 import type { SpecifyResource } from './legacytypes';
 import { deflateLocalityData } from './lifemapperhelper';
 import { hasTablePermission, hasTreeAccess } from './permissions';
-import { fetchTreeRanks, getTreeDefinitionItems } from './treedefinitions';
+import { getTreeDefinitionItems, treeRanksPromise } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import {
@@ -209,7 +209,7 @@ export async function fetchLocalityDataFromLocalityResource(
   quickFetch = false,
   filterFunction: FilterFunction = defaultRecordFilterFunction
 ): Promise<LocalityData | false> {
-  await fetchTreeRanks;
+  await treeRanksPromise;
   const filteredMappingPaths = parseLocalityPinFields(quickFetch);
 
   const results = await Promise.all(

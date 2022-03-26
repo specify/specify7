@@ -32,6 +32,7 @@ import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
+import { TableIcon } from './common';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
@@ -195,11 +196,12 @@ function DataSetName({
     <>
       {' '}
       <h2 className="gap-x-1 flex overflow-y-auto">
+        {dataset.uploadplan !== null && (
+          <TableIcon name={dataset.uploadplan.baseTableName} />
+        )}
         {`${wbText('dataSet')} ${name}`}
-        {dataset.uploadresult?.success === true ? (
+        {dataset.uploadresult?.success === true && (
           <span className="text-red-600">{wbText('dataSetUploadedLabel')}</span>
-        ) : (
-          ''
         )}
       </h2>
       <Button.Simple onClick={handleOpen}>

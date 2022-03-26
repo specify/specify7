@@ -1671,10 +1671,10 @@ const commonText = createDictionary({
     'es-es': 'Customization',
   },
   administration: {
-    'en-us': 'Administration',
-    'ru-ru': 'Administration',
-    ca: 'Administration',
-    'es-es': 'Administration',
+    'en-us': 'Administrative Tools',
+    'ru-ru': 'Administrative Tools',
+    ca: 'Administrative Tools',
+    'es-es': 'Administrative Tools',
   },
   export: {
     'en-us': 'Export',
@@ -1689,10 +1689,10 @@ const commonText = createDictionary({
     'es-es': 'Documentation',
   },
   developers: {
-    'en-us': 'Developers',
-    'ru-ru': 'Developers',
-    ca: 'Developers',
-    'es-es': 'Developers',
+    'en-us': 'Developer Tools',
+    'ru-ru': 'Developer Tools',
+    ca: 'Developer Tools',
+    'es-es': 'Developer Tools',
   },
   forum: {
     'en-us': 'Forum',

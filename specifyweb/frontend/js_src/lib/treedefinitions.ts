@@ -61,7 +61,7 @@ export const isTreeResource = (
 ): resource is SpecifyResource<AnyTree> =>
   f.includes(allTrees, resource.specifyModel.name);
 
-export const fetchTreeRanks = Promise.all([
+export const treeRanksPromise = Promise.all([
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
   fetchPermissions,
@@ -108,7 +108,7 @@ export const fetchTreeRanks = Promise.all([
   .then((ranks) => {
     // @ts-expect-error
     treeDefinitions = Object.fromEntries(ranks.filter(Boolean));
-    return undefined;
+    return treeDefinitions;
   });
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(

@@ -11,7 +11,7 @@ export default function (): void {
         .all({
           wbView: import('./wbview'),
           treeRanks: import('./treedefinitions').then(
-            ({ fetchTreeRanks }) => fetchTreeRanks
+            ({ treeRanksPromise }) => treeRanksPromise
           ),
         })
         .then(({ wbView: { default: wbView } }) => wbView(Number.parseInt(id)))

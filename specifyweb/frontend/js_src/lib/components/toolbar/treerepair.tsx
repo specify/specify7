@@ -4,7 +4,7 @@ import { ping } from '../../ajax';
 import commonText from '../../localization/common';
 import * as querystring from '../../querystring';
 import { getTreeModel } from '../../schema';
-import { fetchTreeRanks, getDisciplineTrees } from '../../treedefinitions';
+import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
 import { defined } from '../../types';
 import { Button, className, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
@@ -29,7 +29,7 @@ export function TreeSelectDialog({
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const [treeRanks] = useAsyncState(
-    React.useCallback(async () => fetchTreeRanks, []),
+    React.useCallback(async () => treeRanksPromise, []),
     true
   );
 

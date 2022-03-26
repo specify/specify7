@@ -1,6 +1,7 @@
 import { ajax } from './ajax';
-import type { Policy } from './components/securitypolicy';
+import type { BackEndPolicy, Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
+import { BackEndRole } from './components/securityrole';
 import type { Tables } from './datamodel';
 import adminText from './localization/admin';
 import commonText from './localization/common';
@@ -10,21 +11,36 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, ensure } from './types';
-import { capitalize, toLowerCase } from './helpers';
+import { capitalize, group, toLowerCase } from './helpers';
 import { f } from './functools';
 
 export const fetchRoles = async (
   collectionId: number,
   userId: number | undefined
 ): Promise<RA<Role>> =>
-  ajax<RA<Role>>(
+  ajax<RA<BackEndRole>>(
     typeof userId === 'undefined'
       ? `/permissions/roles/${collectionId}/`
       : `/permissions/user_roles/${collectionId}/${userId}/`,
     {
       headers: { Accept: 'application/json' },
     }
-  ).then(({ data }) => data);
+  ).then(({ data }) =>
+    data.map((role) => ({
+      ...role,
+      policies: Object.entries(
+        group(role.policies.map(({ resource, action }) => [resource, action]))
+      ).map(([resource, actions]) => ({ resource, actions })),
+    }))
+  );
+
+export const flattenPolicies = (policies: RA<Policy>): RA<BackEndPolicy> =>
+  policies.flatMap(({ resource, actions }) =>
+    actions.map((action) => ({
+      resource,
+      action,
+    }))
+  );
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
