@@ -1,92 +1,132 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import { capitalize, group, lowerToHuman } from '../helpers';
+import { capitalize, group } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { PermissionsQuery } from '../permissions';
-import { getTablePermissions, queryUserPermissions } from '../permissions';
 import {
+  getTablePermissions,
+  queryUserPermissions,
+  tableActions,
+} from '../permissions';
+import {
+  actionToLabel,
   partsToResourceName,
   resourceNameToModel,
   resourceNameToParts,
   resourceToLabel,
 } from '../securityutils';
 import type { IR, R, RA } from '../types';
-import { filterArray } from '../types';
 import { Button, className, Input, Label, Ul } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState, useBooleanState, useId } from './hooks';
-
-function PreviewCell({ cell }: { readonly cell: Cell }): JSX.Element {
-  return (
-    <div role="cell" className="justify-center">
-      <Input.Checkbox
-        disabled
-        checked={cell.allowed}
-        className="cursor-pointer"
-      />
-    </div>
-  );
-}
+import { useAsyncState, useId } from './hooks';
+import { schema } from '../schema';
 
 function ReasonExplanation({
-  cell: { matching_role_policies, matching_user_policies, resource },
-  action,
+  cell: { matching_role_policies, matching_user_policies },
   onOpenRole: handleOpenRole,
 }: {
   readonly cell: Cell;
-  readonly action: string;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   return (
-    <div>
-      <p>
-        {matching_role_policies.length > 0
-          ? adminText('userRoles')
-          : adminText('noMatchingUserRoles')}
-      </p>
-      <Ul>
-        {matching_role_policies.length > 0 &&
-          matching_role_policies.map((role, index) => (
-            <li key={index}>
-              <Button.LikeLink
-                onClick={(): void => handleOpenRole(role.roleid)}
-              >
-                {`${role.rolename}${
-                  role.action === action ? '' : ` (${role.action})`
-                }${
-                  role.resource === resource
-                    ? ''
-                    : ` (${resourceToLabel(role.resource)})`
-                }`}
-              </Button.LikeLink>
-            </li>
+    <>
+      <div
+        className="grid-table grid-cols-[repeat(3,auto)] border border-gray-500 w-full"
+        role="table"
+      >
+        <div role="row">
+          {[
+            adminText('userRoles'),
+            adminText('action'),
+            adminText('resource'),
+          ].map((label, index) => (
+            <div
+              role="columnheader"
+              className="bg-gray-350 dark:bg-neutral-600 p-2"
+              key={index}
+            >
+              {label}
+            </div>
           ))}
-      </Ul>
-      <p>
-        {matching_user_policies.length > 0
-          ? adminText('userPolicies')
-          : adminText('noMatchingUserPolicies')}
-      </p>
-      <Ul>
-        {matching_user_policies.length > 0 &&
-          matching_user_policies.map((policy, index) => (
-            <li key={index}>
-              {filterArray([
-                policy.userid === null ? `${adminText('allUsers')}` : undefined,
+        </div>
+        <div role="rowgroup">
+          {matching_role_policies.map((role, index) => (
+            <Button.LikeLink
+              role="row"
+              key={index}
+              onClick={(): void => handleOpenRole(role.roleid)}
+            >
+              {[
+                role.rolename,
+                actionToLabel(role.action),
+                resourceToLabel(role.resource),
+              ].map((value, index) => (
+                <div role="cell" className="p-2" key={index}>
+                  {value}
+                </div>
+              ))}
+            </Button.LikeLink>
+          ))}
+          {matching_role_policies.length === 0 && (
+            <div role="row">
+              <div role="cell" className="col-span-3 p-2">
+                {adminText('none')}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <div
+        className="grid-table grid-cols-[repeat(4,auto)] border border-gray-500 w-full"
+        role="table"
+      >
+        <div role="row">
+          {[
+            adminText('userPolicies'),
+            commonText('collection'),
+            adminText('action'),
+            adminText('resource'),
+          ].map((label, index) => (
+            <div
+              role="columnheader"
+              className="bg-gray-350 dark:bg-neutral-600 p-2"
+              key={index}
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+        <div role="rowgroup">
+          {matching_user_policies.map((policy, index) => (
+            <div role="row" key={index}>
+              {[
+                policy.userid === null
+                  ? adminText('allUsers')
+                  : adminText('thisUser'),
                 policy.collectionid === null
-                  ? `${adminText('allCollections')}`
-                  : undefined,
-                policy.action === action ? undefined : policy.action,
-                policy.resource === resource
-                  ? undefined
-                  : resourceToLabel(policy.resource),
-              ]).join(' : ')}
-            </li>
+                  ? adminText('allCollections')
+                  : adminText('thisCollection'),
+                actionToLabel(policy.action),
+                resourceToLabel(policy.resource),
+              ].map((value, index) => (
+                <div role="cell" key={index} className="p-2">
+                  {value}
+                </div>
+              ))}
+            </div>
           ))}
-      </Ul>
-    </div>
+          {matching_user_policies.length === 0 && (
+            <div role="row">
+              <div role="cell" className="col-span-4 p-2">
+                {adminText('none')}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -99,48 +139,45 @@ function PreviewRow({
   readonly tableName: keyof Tables;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
-  const [isOpen, _, __, handleToggle] = useBooleanState();
+  const [view, setView] = React.useState<
+    undefined | typeof tableActions[number]
+  >(undefined);
   const id = useId('preview-row');
   return (
     <>
-      <div
-        className="cursor-pointer"
-        role="row"
-        onClick={handleToggle}
-        aria-controls={id('reason')}
-        aria-expanded={isOpen}
-      >
-        <PreviewCell cell={row.read} />
-        <PreviewCell cell={row.create} />
-        <PreviewCell cell={row.update} />
-        <PreviewCell cell={row.delete} />
-        <div role="cell">
+      <div className="cursor-pointer" role="row" aria-controls={id('reason')}>
+        {tableActions.map((action) => (
+          <div
+            role="cell"
+            className={`justify-center p-2 ${
+              view === action ? 'bg-brand-100 dark:bg-brand-500' : ''
+            }`}
+            key={action}
+            onClick={(): void => setView(action === view ? undefined : action)}
+          >
+            <Input.Checkbox
+              aria-expanded={view === action}
+              disabled
+              checked={row[action].allowed}
+              className="pointer-events-none"
+            />
+          </div>
+        ))}
+        <div role="cell" className="p-2">
           <TableIcon name={tableName} tableLabel={false} />
-          {tableName}
+          {schema.models[tableName].label}
         </div>
       </div>
       <div
         role="row"
-        className={`col-span-5 ${isOpen ? '' : '!hidden'}`}
+        className={typeof view === 'string' ? '' : '!hidden'}
         id={id('reason')}
       >
-        <div role="cell">
-          {[
-            ['read', adminText('read')],
-            ['create', commonText('create')],
-            ['update', commonText('update')],
-            ['delete', commonText('delete')],
-          ].map(([key, label]) => (
-            <React.Fragment key={key}>
-              {label}:
-              <ReasonExplanation
-                cell={row[key]}
-                action={key}
-                onOpenRole={handleOpenRole}
-              />
-            </React.Fragment>
-          ))}
-        </div>
+        {typeof view === 'string' && (
+          <div role="cell" className="flex-col col-span-5 gap-4 py-2">
+            <ReasonExplanation cell={row[view]} onOpenRole={handleOpenRole} />
+          </div>
+        )}
       </div>
     </>
   );
@@ -179,7 +216,7 @@ function PreviewTables({
   );
   return (
     <div
-      className={`grid-table grid-cols-[repeat(4,min-content)_auto] gap-2
+      className={`grid-table grid-cols-[repeat(4,min-content)_auto]
         relative overflow-x-hidden h-80`}
       role="table"
     >
@@ -194,7 +231,7 @@ function PreviewTables({
           <div
             key={header}
             role="columnheader"
-            className={`sticky top-0 ${className.containerBackground}`}
+            className={`p-2 sticky top-0 ${className.containerBackground}`}
           >
             {header}
           </div>
@@ -253,12 +290,11 @@ function TreeView({
                             checked={rest.allowed}
                             className="cursor-pointer"
                           />{' '}
-                          {lowerToHuman(action)}
+                          {actionToLabel(action)}
                         </Label.ForCheckbox>
                       </summary>
                       <ReasonExplanation
                         cell={{ ...rest, resource }}
-                        action={action}
                         onOpenRole={handleOpenRole}
                       />
                     </details>
@@ -332,7 +368,7 @@ export function PreviewPermissions({
   );
   return (
     <section className="contents">
-      <h4>{adminText('preview')}</h4>
+      <h4 className={className.headerGray}>{adminText('preview')}</h4>
       {typeof query === 'object' ? (
         <>
           {changesMade && <p>{adminText('outOfDateWarning')}</p>}

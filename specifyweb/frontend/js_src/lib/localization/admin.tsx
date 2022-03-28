@@ -270,29 +270,59 @@ const adminText = createDictionary({
     ca: 'User policies:',
     'es-es': 'User policies:',
   },
-  noMatchingUserRoles: {
-    'en-us': 'No matching user roles:',
-    'ru-ru': 'No matching user roles:',
-    ca: 'No matching user roles:',
-    'es-es': 'No matching user roles:',
-  },
-  noMatchingUserPolicies: {
-    'en-us': 'No matching user policies:',
-    'ru-ru': 'No matching user policies:',
-    ca: 'No matching user policies:',
-    'es-es': 'No matching user policies:',
-  },
   allUsers: {
     'en-us': 'All Users',
     'ru-ru': 'All Users',
     ca: 'All Users',
     'es-es': 'All Users',
   },
+  thisUser: {
+    'en-us': 'This user',
+    'ru-ru': 'This user',
+    ca: 'This user',
+    'es-es': 'This user',
+  },
+  action: {
+    'en-us': 'Action',
+    'ru-ru': 'Action',
+    ca: 'Action',
+    'es-es': 'Action',
+  },
+  resource: {
+    'en-us': 'Resource',
+    'ru-ru': 'Resource',
+    ca: 'Resource',
+    'es-es': 'Resource',
+  },
   allCollections: {
     'en-us': 'All Collectins',
     'ru-ru': 'All Collectins',
     ca: 'All Collectins',
     'es-es': 'All Collectins',
+  },
+  thisCollection: {
+    'en-us': 'This collection',
+    'ru-ru': 'This collection',
+    ca: 'This collection',
+    'es-es': 'This collection',
+  },
+  allResources: {
+    'en-us': 'All Resources',
+    'ru-ru': 'All Resources',
+    ca: 'All Resources',
+    'es-es': 'All Resources',
+  },
+  allActions: {
+    'en-us': 'All Actions',
+    'ru-ru': 'All Actions',
+    ca: 'All Actions',
+    'es-es': 'All Actions',
+  },
+  none: {
+    'en-us': 'none',
+    'ru-ru': 'none',
+    ca: 'none',
+    'es-es': 'none',
   },
 });
 

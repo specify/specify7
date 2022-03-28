@@ -152,9 +152,10 @@ export const className = {
   containerBase: `${baseContainer}`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg',
-  h2: 'font-semibold text-black dark:text-white',
-  h3: 'text-gray-500 dark:text-neutral-400',
+  headerPrimary: 'font-semibold text-black dark:text-white',
+  headerGray: 'text-gray-500 dark:text-neutral-400',
 } as const;
+// TODO: create components for grid tables (+ col with full-span)
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const DataEntry = {
@@ -470,7 +471,7 @@ export const Select = wrap<
       const [unselected, selected] = split(options, ({ selected }) => selected);
       /*
        * Selected options in an optional multiple select are clashing with
-       * the background in dark mode. This is a fix:
+       * the background both in dark-mode. This is a fix:
        */
       if (props.required !== true && props.multiple === true) {
         selected.map((option) => option.classList.add('dark:bg-neutral-100'));
@@ -508,9 +509,9 @@ export const Link = {
     'Link.Icon',
     'a',
     `${className.link} rounded`,
-    (props) => ({
+    ({ icon, ...props }) => ({
       ...props,
-      children: icons[props.icon],
+      children: icons[icon],
     })
   ),
 } as const;
@@ -629,6 +630,6 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 // Need to set explicit [role] for list without bullets to be announced as a list
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
-export const H2 = wrap('H2', 'h2', className.h2);
-export const H3 = wrap('H3', 'h3', className.h3);
+export const H2 = wrap('H2', 'h2', className.headerPrimary);
+export const H3 = wrap('H3', 'h3', className.headerGray);
 /* eslint-enable @typescript-eslint/naming-convention */

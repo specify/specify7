@@ -3,6 +3,7 @@ import type { State } from 'typesafe-reducer';
 
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
@@ -11,13 +12,13 @@ import { schema } from '../schema';
 import { compressPolicies, decompressPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { Button, Form, H3, Input, Label, Submit, Textarea } from './basic';
+import { userInformation } from '../userinfo';
+import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
-import { BackEndPolicy, PoliciesView, Policy } from './securitypolicy';
-import { replaceKey } from '../helpers';
-import { userInformation } from '../userinfo';
+import type { BackEndPolicy, Policy } from './securitypolicy';
+import { PoliciesView } from './securitypolicy';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -106,7 +107,7 @@ export function RoleView({
       }
       className="contents"
     >
-      <H3>{`${adminText('role')} ${role.name}`}</H3>
+      <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <Button.LikeLink onClick={handleClose}>
         {icons.arrowLeft}
         {collection.get('collectionName')}
@@ -136,10 +137,10 @@ export function RoleView({
       </Label.Generic>
       {typeof role.id === 'number' && (
         <fieldset className="flex flex-col gap-2">
-          <legend>{adminText('users')}</legend>
+          <legend>{adminText('users')}:</legend>
           {typeof usersWithRole === 'object' ? (
             <>
-              <ul>
+              <Ul className="flex flex-col gap-2 max-h-[theme(spacing.80)] overflow-auto">
                 {Object.values(usersWithRole)
                   .filter(({ roles }) => roles.includes(defined(role.id)))
                   .map(({ user }) => (
@@ -161,7 +162,7 @@ export function RoleView({
                       </Button.LikeLink>
                     </li>
                   ))}
-              </ul>
+              </Ul>
               {hasPermission('/permissions/user/roles', 'update') && (
                 <div>
                   <Button.Green
@@ -209,7 +210,6 @@ export function RoleView({
       />
       <span className="flex-1 -mt-2" />
       <div className="flex gap-2">
-        {/* FIXME: handle deletion of role with users */}
         {typeof role.id === 'number' &&
         hasPermission('/permissions/roles', 'delete') ? (
           <Button.Red onClick={handleDelete}>{commonText('remove')}</Button.Red>

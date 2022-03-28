@@ -1,10 +1,11 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { group, lowerToHuman, removeItem, replaceItem } from '../helpers';
+import { group, removeItem, replaceItem } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import {
+  actionToLabel,
   anyAction,
   getRegistriesFromPath,
   partsToResourceName,
@@ -121,7 +122,7 @@ function PolicyView({
             >
               {possibleActions.map((action) => (
                 <option key={action} value={action}>
-                  {lowerToHuman(action)}
+                  {actionToLabel(action)}
                 </option>
               ))}
             </Select>
@@ -151,7 +152,7 @@ export function PoliciesView({
 }): JSX.Element {
   return (
     <fieldset className="flex flex-col gap-2">
-      <h4>{adminText('policies')}</h4>
+      <h4 className={className.headerGray}>{adminText('policies')}</h4>
       {Array.isArray(policies) ? (
         <>
           <ul className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]">

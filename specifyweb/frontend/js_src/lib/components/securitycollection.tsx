@@ -5,20 +5,20 @@ import { ajax, Http, ping } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { omit, replaceKey } from '../helpers';
+import { omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { fetchRoles, flattenPolicies } from '../securityutils';
+import { fetchRoles, flattenPolicies, inflatePolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Container, H3, Ul } from './basic';
+import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
-import type { Role, UserRoles } from './securityrole';
+import type { BackEndRole, Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
 
 const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
@@ -77,47 +77,48 @@ export function CollectionView({
               roleId: initialRole,
             } as const)
           : ({ type: 'MainState' } as const),
-      // Reset state when collection changes
-      [collection.id]
+      [initialRole]
     )
   );
   const loading = React.useContext(LoadingContext);
   return (
-    <Container.Base className="flex-1 overflow-hidden">
+    <Container.Base className="flex-1 overflow-y-auto">
       {state.type === 'MainState' && (
         <>
-          <H3>{collection.get('collectionName')}</H3>
+          <h3 className="text-xl">{collection.get('collectionName')}</h3>
           <section className="flex flex-col gap-2">
-            <h4>{adminText('admins')}</h4>
+            <h4 className={className.headerGray}>{adminText('admins')}</h4>
             <div>
               <Button.Green>{commonText('add')}</Button.Green>
             </div>
           </section>
           <section className="flex flex-col gap-2">
-            <h4>{adminText('userRoles')}</h4>
-            {typeof roles === 'object' ? (
-              <ul>
-                {Object.values(roles).map((role) => (
-                  <li key={role.id}>
-                    <Button.LikeLink
-                      disabled={
-                        !hasPermission('/permissions/user/roles', 'update')
-                      }
-                      onClick={(): void =>
-                        setState({
-                          type: 'RoleState',
-                          roleId: role.id,
-                        })
-                      }
-                    >
-                      {role.name}
-                    </Button.LikeLink>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              commonText('loading')
-            )}
+            <div>
+              <h4 className={className.headerGray}>{adminText('userRoles')}</h4>
+              {typeof roles === 'object' ? (
+                <ul>
+                  {Object.values(roles).map((role) => (
+                    <li key={role.id}>
+                      <Button.LikeLink
+                        disabled={
+                          !hasPermission('/permissions/user/roles', 'update')
+                        }
+                        onClick={(): void =>
+                          setState({
+                            type: 'RoleState',
+                            roleId: role.id,
+                          })
+                        }
+                      >
+                        {role.name}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                commonText('loading')
+              )}
+            </div>
             {hasPermission('/permissions/roles', 'create') && (
               <div>
                 <Button.Green
@@ -134,7 +135,7 @@ export function CollectionView({
             )}
           </section>
           <section className="flex flex-col gap-2">
-            <h4>{adminText('users')}</h4>
+            <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof userRoles === 'object' ? (
               <Ul>
                 {Object.values(userRoles)
@@ -199,7 +200,7 @@ export function CollectionView({
                         )
                       )
                     )
-                  : ajax<Role>(
+                  : ajax<BackEndRole>(
                       `/permissions/roles/${collection.id}/`,
                       {
                         method: 'POST',
@@ -213,7 +214,10 @@ export function CollectionView({
                     ).then(({ data: role }) =>
                       setRoles({
                         ...roles,
-                        [role.id]: role,
+                        [role.id]: {
+                          ...role,
+                          policies: inflatePolicies(role.policies),
+                        },
                       })
                     )
                 ).then((): void => setState({ type: 'MainState' }))
@@ -228,7 +232,13 @@ export function CollectionView({
                         method: 'DELETE',
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
-                    ).then((): void => setState({ type: 'MainState' }))
+                    )
+                      .then((): void => setState({ type: 'MainState' }))
+                      .then((): void =>
+                        setRoles(
+                          removeKey(roles, defined(state.roleId).toString())
+                        )
+                      )
                   )
                 : undefined
             }

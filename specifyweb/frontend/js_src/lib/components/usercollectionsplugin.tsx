@@ -11,6 +11,7 @@ import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { toggleItem } from '../helpers';
 
 function UserCollectionsUi({
   userId,
@@ -56,11 +57,7 @@ function UserCollectionsUi({
             <Input.Checkbox
               checked={selected.includes(collection.id)}
               onChange={(): void =>
-                setSelected(
-                  selected.includes(collection.id)
-                    ? selected.filter((id) => id !== collection.id)
-                    : [...selected, collection.id]
-                )
+                setSelected(toggleItem(selected, collection.id))
               }
             />
             {collection.get('collectionName')}

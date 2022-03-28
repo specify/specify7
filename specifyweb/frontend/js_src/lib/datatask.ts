@@ -72,9 +72,9 @@ const newResourceView = async (tableName: string): Promise<void> =>
     ? Promise.resolve(void setCurrentView(new NotFoundView()))
     : resourceView(tableName, undefined);
 
-/*
- * This function shows users individual resources which
- * can optionally be in the context of some recordset
+/**
+ * Shows user's individual resources which can optionally be in the context of
+ * some recordset
  */
 async function resourceView(
   modelName: string,

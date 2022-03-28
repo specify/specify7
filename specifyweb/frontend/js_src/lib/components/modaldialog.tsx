@@ -115,7 +115,7 @@ export function Dialog({
     container: containerClassName = dialogClassNames.normalContainer,
     // Buttons are right-aligned by default
     buttonContainer: buttonContainerClassName = 'justify-end',
-    header: headerClassName = `${className.h2} text-xl`,
+    header: headerClassName = `${className.headerPrimary} text-xl`,
   } = {},
   /* Force dialog to stay on top of all others. Useful for exception messages */
   forceToTop = false,

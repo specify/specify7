@@ -10,10 +10,11 @@ import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
-import { type TableDefinition, SpecifyModel } from './specifymodel';
+import { SpecifyModel, type TableDefinition } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { f } from './functools';
+import { Tables } from './datamodel';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -104,8 +105,11 @@ if (process.env.NODE_ENV !== 'production')
  */
 export function getModel(name: string): SpecifyModel | undefined {
   const lowerCase = name.toLowerCase();
-  return Object.values(schema.models as unknown as IR<SpecifyModel>).find(
-    (model) => model.name.toLowerCase() === lowerCase
+  return (
+    schema.models[name as keyof Tables] ??
+    Object.values(schema.models as unknown as IR<SpecifyModel>).find(
+      (model) => model.name.toLowerCase() === lowerCase
+    )
   );
 }
 

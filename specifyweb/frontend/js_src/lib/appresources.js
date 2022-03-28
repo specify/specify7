@@ -361,7 +361,7 @@ const AppResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $(`<h2 class="${className.h2}">`).text(this.options.ResourceModel.label),
+            $(`<h2 class="${className.headerPrimary}">`).text(this.options.ResourceModel.label),
             $('<ul role="tree" class="ml-4">')
                 .append(new GlobalResourcesView(this.options).render().el)
                 .append(new DisciplinesView(this.options).render().el)

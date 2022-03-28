@@ -3,6 +3,8 @@ import React from 'react';
 import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
+import { replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
@@ -11,16 +13,15 @@ import {
   compressPolicies,
   decompressPolicies,
   fetchRoles,
+  flattenPolicies,
+  inflatePolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
-import { removeItem, replaceKey, sortFunction } from '../helpers';
-import { f } from '../functools';
 import {
   Button,
   className,
   Container,
   Form,
-  H3,
   Input,
   Label,
   Select,
@@ -30,7 +31,8 @@ import {
 import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
-import { PoliciesView, Policy } from './securitypolicy';
+import type { BackEndPolicy, Policy } from './securitypolicy';
+import { PoliciesView } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
 
 export function UserView({
@@ -91,13 +93,17 @@ export function UserView({
       async () =>
         Promise.all(
           Object.values(collections).map(async (collection) =>
-            ajax<RA<Policy>>(
+            ajax<RA<BackEndPolicy>>(
               `/permissions/user_policies/${collection.id}/${user.id}/`,
               {
                 headers: { Accept: 'application/json' },
               }
             ).then(
-              ({ data }) => [collection.id, compressPolicies(data)] as const
+              ({ data }) =>
+                [
+                  collection.id,
+                  compressPolicies(inflatePolicies(data)),
+                ] as const
             )
           )
         )
@@ -126,7 +132,7 @@ export function UserView({
     changesMade,
     commonText('leavePageDialogMessage')
   );
-  const [collection, setCollection] = React.useState(initialCollection);
+  const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
   return (
     <Container.Base className="flex-1 overflow-y-auto">
@@ -165,7 +171,7 @@ export function UserView({
                         `/permissions/user_policies/${collectionId}/${user.id}/`,
                         {
                           method: 'PUT',
-                          body: decompressPolicies(policies),
+                          body: flattenPolicies(decompressPolicies(policies)),
                         },
                         { expectedResponseCodes: [Http.NO_CONTENT] }
                       )
@@ -175,13 +181,15 @@ export function UserView({
             : undefined
         }
       >
-        <H3>{`${adminText('user')} ${user.name}`}</H3>
+        <h3 className="text-xl">{`${adminText('user')} ${user.name}`}</h3>
         <Label.Generic>
-          {commonText('collection')}
+          <span className={className.headerGray}>
+            {commonText('collection')}
+          </span>
           <Select
-            value={collection}
+            value={collectionId}
             onValueChange={(value): void =>
-              setCollection(Number.parseInt(value))
+              setCollectionId(Number.parseInt(value))
             }
           >
             {Object.values(collections).map((collection) => (
@@ -192,30 +200,27 @@ export function UserView({
           </Select>
         </Label.Generic>
         <fieldset className="flex flex-col gap-2">
-          <legend>{adminText('userRoles')}</legend>
+          <legend className={className.headerGray}>
+            {adminText('userRoles')}
+          </legend>
           <Ul>
             {typeof collectionRoles === 'object' &&
             typeof userRoles === 'object'
-              ? collectionRoles[collection].map((role) => (
+              ? collectionRoles[collectionId].map((role) => (
                   <li key={role.id} className="flex items-center gap-2">
                     <Label.ForCheckbox>
                       <Input.Checkbox
                         disabled={
                           !hasPermission('/permissions/user/roles', 'update')
                         }
-                        checked={userRoles[collection].includes(role.id)}
-                        onValueChange={(isChecked): void =>
+                        checked={userRoles[collectionId].includes(role.id)}
+                        onValueChange={(): void =>
                           setUserRoles(
                             replaceKey(
                               userRoles,
-                              collection.toString(),
+                              collectionId.toString(),
                               Array.from(
-                                isChecked
-                                  ? removeItem(
-                                      userRoles[collection],
-                                      userRoles[collection].indexOf(role.id)
-                                    )
-                                  : [...userRoles[collection], role.id]
+                                toggleItem(userRoles[collectionId], role.id)
                               ).sort(sortFunction(f.id))
                             )
                           )
@@ -224,11 +229,13 @@ export function UserView({
                       {role.name}
                     </Label.ForCheckbox>
                     <Button.Simple
-                      className={`${className.redButton} print:hidden`}
+                      className={`${className.blueButton} print:hidden`}
                       title={commonText('edit')}
                       aria-label={commonText('edit')}
                       // TODO: trigger unload protect
-                      onClick={(): void => handleOpenRole(collection, role.id)}
+                      onClick={(): void =>
+                        handleOpenRole(collectionId, role.id)
+                      }
                     >
                       {icons.pencil}
                     </Button.Simple>
@@ -238,19 +245,21 @@ export function UserView({
           </Ul>
         </fieldset>
         <PoliciesView
-          policies={userPolicies?.[collection]}
+          policies={userPolicies?.[collectionId]}
           isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
           onChange={(policies): void =>
             typeof userPolicies === 'object'
-              ? setUserPolicies(replaceKey(userPolicies, collection, policies))
+              ? setUserPolicies(
+                  replaceKey(userPolicies, collectionId, policies)
+                )
               : undefined
           }
         />
         <PreviewPermissions
           userId={user.id}
-          collectionId={collection}
+          collectionId={collectionId}
           changesMade={changesMade}
-          onOpenRole={(roleId): void => handleOpenRole(collection, roleId)}
+          onOpenRole={(roleId): void => handleOpenRole(collectionId, roleId)}
         />
         <div className="flex gap-2">
           {changesMade ? (

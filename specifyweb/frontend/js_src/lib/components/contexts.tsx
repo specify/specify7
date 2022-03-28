@@ -2,10 +2,16 @@ import React from 'react';
 import Modal from 'react-modal';
 
 import { error } from '../assert';
+import { replaceItem } from '../helpers';
 import type { RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
-import { LoadingScreen } from './modaldialog';
 import { useBooleanState } from './hooks';
+import { LoadingScreen } from './modaldialog';
+
+let setError: (
+  error: (props: { readonly onClose: () => void }) => JSX.Element
+) => void;
+export const displayError: typeof setError = (error) => setError(error);
 
 export function Contexts({
   children,
@@ -35,12 +41,35 @@ export function Contexts({
     },
     [handleLoading, handleLoaded]
   );
+
+  const [errors, setErrors] = React.useState<RA<JSX.Element | undefined>>([]);
+
+  const handleError = React.useCallback(
+    (error: (props: { readonly onClose: () => void }) => JSX.Element) =>
+      setErrors((errors) => [
+        ...errors,
+        error({
+          onClose: () =>
+            setErrors((newErrors) =>
+              replaceItem(newErrors, errors.length, undefined)
+            ),
+        }),
+      ]),
+    []
+  );
+  React.useEffect(() => {
+    setError = handleError;
+  }, [handleError]);
+
   return (
     <ErrorBoundary>
-      <LoadingContext.Provider value={handle}>
-        <LoadingScreen isLoading={isLoading} />
-        {children}
-      </LoadingContext.Provider>
+      <ErrorContext.Provider value={handleError}>
+        {errors}
+        <LoadingContext.Provider value={handle}>
+          <LoadingScreen isLoading={isLoading} />
+          {children}
+        </LoadingContext.Provider>
+      </ErrorContext.Provider>
     </ErrorBoundary>
   );
 }
@@ -49,3 +78,8 @@ export const LoadingContext = React.createContext<
   (promise: Promise<unknown>) => void
 >(() => error('Not defined'));
 LoadingContext.displayName = 'LoadingContext';
+
+export const ErrorContext = React.createContext<
+  (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
+>(() => error('Not defined'));
+ErrorContext.displayName = 'ErrorContext';

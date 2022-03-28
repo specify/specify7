@@ -65,7 +65,7 @@ function SecurityPanel(): JSX.Element | null {
   return typeof data === 'object' ? (
     <Container.Full>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
-      <div className="flex flex-1 gap-4 overflow-hidden">
+      <div className="flex flex-1 h-0 gap-4">
         <aside className={`${className.containerBase} overflow-auto`}>
           <section>
             <H3>{adminText('institution')}</H3>
@@ -81,7 +81,7 @@ function SecurityPanel(): JSX.Element | null {
             </Button.LikeLink>
           </section>
           <section>
-            {/* Remove collections you don't have access to from the sidebar */}
+            {/* TODO: Remove collections you don't have access to from the sidebar */}
             <H3>{adminText('collections')}</H3>
             <ul>
               {Object.values(data.collections).map((collection) => (

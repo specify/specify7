@@ -22,7 +22,7 @@ import {
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
-import { sortObjectsByKey } from '../helpers';
+import { sortObjectsByKey, toggleItem } from '../helpers';
 import { Autocomplete } from './autocomplete';
 import { Button, Container, H2, Input } from './basic';
 import { TableIcon } from './common';
@@ -233,11 +233,7 @@ function TreeView<SCHEMA extends AnyTree>({
                     Array.isArray(collapsedRanks)
                       ? (): void =>
                           setCollapsedRanks(
-                            collapsedRanks.includes(rank.rankId)
-                              ? collapsedRanks.filter(
-                                  (rankId) => rankId !== rank.rankId
-                                )
-                              : [...collapsedRanks, rank.rankId]
+                            toggleItem(collapsedRanks, rank.rankId)
                           )
                       : undefined
                   }

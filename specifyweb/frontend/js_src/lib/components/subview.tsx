@@ -78,7 +78,7 @@ export function SubView({
           onClick={handleToggle}
         >
           {parentFormType === 'form' && <TableIcon name={icon} />}
-          <span className="bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
+          <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
             {collection?.models.length ?? commonText('loading')}
           </span>
         </Button.Gray>

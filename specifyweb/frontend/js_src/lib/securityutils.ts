@@ -11,7 +11,7 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, ensure } from './types';
-import { capitalize, group, toLowerCase } from './helpers';
+import { capitalize, group, lowerToHuman, toLowerCase } from './helpers';
 import { f } from './functools';
 
 export const fetchRoles = async (
@@ -28,12 +28,17 @@ export const fetchRoles = async (
   ).then(({ data }) =>
     data.map((role) => ({
       ...role,
-      policies: Object.entries(
-        group(role.policies.map(({ resource, action }) => [resource, action]))
-      ).map(([resource, actions]) => ({ resource, actions })),
+      policies: inflatePolicies(role.policies),
     }))
   );
 
+/** Convert from BackEndPolicy to Policy */
+export const inflatePolicies = (policies: RA<BackEndPolicy>): RA<Policy> =>
+  Object.entries(
+    group(policies.map(({ resource, action }) => [resource, action]))
+  ).map(([resource, actions]) => ({ resource, actions }));
+
+/** Convert from Policy to BackEndPolicy */
 export const flattenPolicies = (policies: RA<Policy>): RA<BackEndPolicy> =>
   policies.flatMap(({ resource, actions }) =>
     actions.map((action) => ({
@@ -42,11 +47,12 @@ export const flattenPolicies = (policies: RA<Policy>): RA<BackEndPolicy> =>
     }))
   );
 
-export const resourceToLabel = (resource: string): string => getRegistriesFromPath(
-                        resourceNameToParts(resource)
-                      )
-                        .map((part) => part?.label)
-                        .join(' ')
+export const resourceToLabel = (resource: string): string =>
+  resource === anyAction
+    ? adminText('allResources')
+    : getRegistriesFromPath(resourceNameToParts(resource))
+        .map((part) => part?.label)
+        .join(' ');
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -228,9 +234,7 @@ export const compressPolicies = (policies: RA<Policy>): RA<Policy> =>
     ]
   );
 
-/*
- * Convert virtual tool policies back to real system table policies
- */
+/** Convert virtual tool policies back to real system table policies */
 export const decompressPolicies = (policies: RA<Policy>): RA<Policy> =>
   policies.flatMap((policy) =>
     resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
@@ -245,6 +249,9 @@ export const decompressPolicies = (policies: RA<Policy>): RA<Policy> =>
       : policy
   );
 
+export const actionToLabel = (action: string): string =>
+  action === anyAction ? adminText('allActions') : lowerToHuman(action);
+
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';
 export const permissionSeparator = '/';
@@ -256,7 +263,9 @@ export const resourceNameToModel = (resourceName: string): SpecifyModel =>
   defined(getModel(resourceNameToParts(resourceName)[1]));
 
 export const partsToResourceName = (parts: RA<string>): string =>
-  `${permissionSeparator}${parts.join(permissionSeparator)}`;
+  parts.length === 1 && parts[0] === anyAction
+    ? anyAction
+    : `${permissionSeparator}${parts.join(permissionSeparator)}`;
 
 export const tablePermissionsPrefix = `${permissionSeparator}table${permissionSeparator}`;
 export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(

@@ -69,6 +69,8 @@ export function QueryBuilder({
     true
   );
 
+  const isEmbedded = typeof handleSelected === 'function';
+
   const [query, setQuery] = useResource(queryResource);
   const [originalQueryFields] = React.useState(query.fields ?? []);
 
@@ -184,7 +186,7 @@ export function QueryBuilder({
       }
     >
       <Form className="contents" onSubmit={(): void => runQuery('regular')}>
-        {typeof handleSelected === 'undefined' && (
+        {!isEmbedded && (
           <header className="gap-x-2 whitespace-nowrap flex items-center">
             <TableIcon name={model.name} />
             <H2 className="overflow-x-auto">
@@ -233,12 +235,13 @@ export function QueryBuilder({
           </header>
         )}
         <div
-          className={`gap-y-4 grid flex-1 overflow-y-auto px-4 -mx-4 grid-cols-1
+          className={`gap-y-4 grid flex-1 overflow-y-auto grid-cols-1
             ${
               state.queryRunCount === 0
                 ? 'grid-rows-[100%]'
                 : 'grid-rows-[100%_100%]'
             }
+            ${isEmbedded ? '' : 'px-4 -mx-4'}
           `}
           ref={containerRef}
         >

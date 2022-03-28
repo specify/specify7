@@ -11,9 +11,9 @@ import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
 import type { RA } from '../types';
-import { Button, Container, H2, Link } from './basic';
+import { Button, Link } from './basic';
+import { displayError } from './contexts';
 import { Dialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 
 type ErrorBoundaryState =
   | {
@@ -24,23 +24,6 @@ type ErrorBoundaryState =
       readonly error: { toString: () => string };
       readonly errorInfo: { componentStack: string };
     };
-
-function ErrorComponent({
-  header,
-  message,
-}: {
-  readonly header: string;
-  readonly message: string;
-}): JSX.Element {
-  return (
-    <Container.Generic>
-      <H2>{header}</H2>
-      <p>{message}</p>
-    </Container.Generic>
-  );
-}
-
-export const ErrorView = createBackboneView(ErrorComponent);
 
 export const supportLink =
   process.env.NODE_ENV == 'test' ? (
@@ -96,25 +79,20 @@ function ErrorDialog({
   );
 }
 
-export const UnhandledErrorView = createBackboneView(ErrorDialog);
-
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   if (
-    error instanceof Error &&
-    Object.getOwnPropertyDescriptor(error, 'handledBy')?.value ===
-      handleAjaxError
+    Object.getOwnPropertyDescriptor(error ?? {}, 'handledBy')?.value ===
+    handleAjaxError
   )
     // It is a network error, and it has already been handled
     return;
   const [errorObject, errorMessage] = formatError(error);
   console.error(errorMessage);
   breakpoint();
-  const handleClose = (): void => void view.remove();
-  const view = new UnhandledErrorView({
-    children: errorObject,
-    onClose: handleClose,
-  }).render();
+  displayError(({ onClose: handleClose }) => (
+    <ErrorDialog onClose={handleClose}>{errorObject}</ErrorDialog>
+  ));
 }
 
 export class ErrorBoundary extends React.Component<
@@ -170,7 +148,7 @@ function formatError(
 ): Readonly<[errorObject: JSX.Element, errorMessage: string]> {
   const errorObject: React.ReactNode[] = [
     typeof url === 'string' && (
-      <p>
+      <p key="errorOccurred">
         Error occurred fetching from <code>{url}</code>
       </p>
     ),
@@ -181,10 +159,10 @@ function formatError(
   if (typeof error === 'object' && error !== null) {
     if (error instanceof Error) {
       errorObject.push(
-        <>
+        <React.Fragment key="stack">
           <p>Stack:</p>
           <pre>{error.stack}</pre>
-        </>
+        </React.Fragment>
       );
       errorMessage.push(`Error: ${error.message}`);
       console.error(error);
@@ -194,17 +172,19 @@ function formatError(
         readonly responseText: string;
       };
       errorObject.push(
-        <>
+        <React.Fragment key="statusText">
           <p>{statusText}</p>
           {formatErrorResponse(responseText)}
-        </>
+        </React.Fragment>
       );
       errorMessage.push(statusText);
-    } else errorObject.push(<p>{error.toString()}</p>);
+    } else errorObject.push(<p className="raw">{error.toString()}</p>);
   }
 
   return [
-    <div className="gap-y-2 flex flex-col h-full">{errorObject}</div>,
+    <div key="object" className="gap-y-2 flex flex-col h-full">
+      {errorObject}
+    </div>,
     errorMessage.join('\n'),
   ] as const;
 }
@@ -227,9 +207,9 @@ export function handleAjaxError(
       permissionError.responseText,
       url
     );
-    new PermissionErrorView({
-      error: errorObject,
-    }).render();
+    displayError(({ onClose: handleClose }) => (
+      <PermissionError error={errorObject} onClose={handleClose} />
+    ));
     const error = new Error(errorMessage);
     Object.defineProperty(error, 'handledBy', {
       value: handleAjaxError,
@@ -237,16 +217,16 @@ export function handleAjaxError(
     throw error;
   }
   const [errorObject, errorMessage] = formatError(error, url);
-  const handleClose = (): void => void view?.remove();
-  const view =
-    strict && !isPermissionError
-      ? new UnhandledErrorView({
-          title: commonText('backEndErrorDialogTitle'),
-          header: commonText('backEndErrorDialogHeader'),
-          children: errorObject,
-          onClose: handleClose,
-        }).render()
-      : undefined;
+  if (strict && !isPermissionError)
+    displayError(({ onClose: handleClose }) => (
+      <ErrorDialog
+        title={commonText('backEndErrorDialogTitle')}
+        header={commonText('backEndErrorDialogHeader')}
+        onClose={handleClose}
+      >
+        {errorObject}
+      </ErrorDialog>
+    ));
   const newError = new Error(errorMessage);
   Object.defineProperty(newError, 'handledBy', {
     value: handleAjaxError,
@@ -304,8 +284,10 @@ type PermissionErrorSchema = {
 
 function PermissionError({
   error,
+  onClose: handleClose,
 }: {
   readonly error: JSX.Element | undefined;
+  readonly onClose: () => void;
 }): JSX.Element {
   return typeof error === 'object' ? (
     /*
@@ -316,9 +298,17 @@ function PermissionError({
       header="Permission denied error"
       onClose={(): void => window.location.assign('/specify/')}
       buttons={
-        <Button.DialogClose component={Button.Red}>
-          {commonText('close')}
-        </Button.DialogClose>
+        <>
+          <Button.DialogClose component={Button.Red}>
+            {commonText('close')}
+          </Button.DialogClose>
+          {process.env.NODE_ENV !== 'production' &&
+            typeof handleClose === 'function' && (
+              <Button.Blue onClick={handleClose}>
+                [development] dismiss
+              </Button.Blue>
+            )}
+        </>
       }
     >
       {error}
@@ -337,8 +327,6 @@ function PermissionError({
     </Dialog>
   );
 }
-
-const PermissionErrorView = createBackboneView(PermissionError);
 
 function formatPermissionsError(
   response: string,
