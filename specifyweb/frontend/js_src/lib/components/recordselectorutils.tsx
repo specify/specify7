@@ -227,7 +227,7 @@ export function IntegratedRecordSelector({
                   }
                 />
                 <span className="flex-1 -ml-4" />
-                {slider}
+                {!isToOne && slider}
               </>
             }
             mode={mode}

@@ -124,7 +124,11 @@
   }
 
   .link, .icon {
-    @apply text-black hover:text-brand-300 dark:text-gray-200 cursor-pointer;
+    @apply text-black dark:text-gray-200 cursor-pointer;
+  }
+
+  .link:not([disabled]), .icon:not([disabled]) {
+    @apply hover:text-brand-300;
   }
 
   .link {

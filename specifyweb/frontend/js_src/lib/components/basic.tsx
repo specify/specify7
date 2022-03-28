@@ -136,6 +136,7 @@ export const className = {
   labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
   button: 'button',
   link: 'link',
+  icon: 'icon',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800
@@ -508,7 +509,7 @@ export const Link = {
   Icon: wrap<'a', IconProps>(
     'Link.Icon',
     'a',
-    `${className.link} rounded`,
+    `${className.icon} rounded`,
     ({ icon, ...props }) => ({
       ...props,
       children: icons[icon],
@@ -564,7 +565,7 @@ export const Button = {
   Icon: wrap<'button', IconProps>(
     'Button.Icon',
     'button',
-    `${className.link} rounded`,
+    `${className.icon} rounded`,
     (props) => ({
       ...props,
       type: 'button',

@@ -25,24 +25,22 @@ export function RecordSelectorButtons({
 }): JSX.Element {
   return (
     <>
-      <Button.Simple
-        className={className.greenButton}
+      <Button.Icon
+        icon="plus"
+        className="text-green-700"
         aria-label={commonText('add')}
         title={commonText('add')}
         onClick={handleAdd}
         disabled={typeof handleAdd === 'undefined'}
-      >
-        +
-      </Button.Simple>
-      <Button.Simple
-        className={className.redButton}
+      />
+      <Button.Icon
+        icon="minus"
+        className="text-red-700"
         aria-label={commonText('delete')}
         title={commonText('delete')}
         onClick={handleDelete}
         disabled={typeof handleDelete === 'undefined'}
-      >
-        -
-      </Button.Simple>
+      />
       {typeof visitHref === 'string' && (
         <Link.NewTab
           href={visitHref}
