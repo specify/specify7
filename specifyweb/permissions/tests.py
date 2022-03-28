@@ -10,18 +10,18 @@ class PermissionsApiTest(ApiTests):
         c.force_login(self.specifyuser)
         response = c.put(
             f'/permissions/user_policies/{self.collection.id}/{self.specifyuser.id}/',
-            data=[
-                {'resource': '/table/%', 'action': '%'},
-                {'resource': '/field/%', 'action': '%'},
-            ],
+            data={
+                '/table/%': ['%'],
+                '/field/%': ['%']
+            },
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
 
         response = c.get(f'/permissions/user_policies/{self.collection.id}/{self.specifyuser.id}/')
         data = json.loads(response.content)
-        self.assertIn({'resource': '/table/%', 'action': '%'}, data)
-        self.assertIn({'resource': '/field/%', 'action': '%'}, data)
+        self.assertEqual(data['/table/%'], ['%'])
+        self.assertEqual(data['/field/%'], ['%'])
 
     def test_create_get_delete_role(self) -> None:
         c = Client()
@@ -31,10 +31,10 @@ class PermissionsApiTest(ApiTests):
             data={
                 'name': 'fullaccess',
                 'description': 'fullaccess role',
-                'policies': [
-                    {'resource': '/table/%', 'action': '%'},
-                    {'resource': '/field/%', 'action': '%'},
-                ],
+                'policies': {
+                    '/table/%': ['%'],
+                    '/field/%': ['%']
+                },
             },
             content_type='application/json',
         )
@@ -67,10 +67,10 @@ class PermissionsApiTest(ApiTests):
             data={
                 'name': 'fullaccess',
                 'description': 'fullaccess role',
-                'policies': [
-                    {'resource': '/table/%', 'action': 'read'},
-                    {'resource': '/field/%', 'action': 'read'},
-                ],
+                'policies': {
+                    '/table/%': ['read'],
+                    '/field/%': ['read'],
+                },
             },
             content_type='application/json',
         )
@@ -80,10 +80,10 @@ class PermissionsApiTest(ApiTests):
         update_data = {
             'name': 'fullaccess_updated',
             'description': 'fullaccess_updated role',
-            'policies': [
-                {'resource': '/table/%', 'action': '%'},
-                {'resource': '/field/%', 'action': '%'},
-            ],
+            'policies': {
+                '/table/%': ['%'],
+                '/field/%': ['%'],
+            },
         }
 
         response = c.put(
@@ -105,10 +105,10 @@ class PermissionsApiTest(ApiTests):
             data={
                 'name': 'fullaccess library',
                 'description': 'fullaccess library role',
-                'policies': [
-                    {'resource': '/table/%', 'action': '%'},
-                    {'resource': '/field/%', 'action': '%'},
-                ],
+                'policies': {
+                    '/table/%': ['%'],
+                    '/field/%': ['%'],
+                }
             },
             content_type='application/json',
         )
@@ -141,10 +141,10 @@ class PermissionsApiTest(ApiTests):
             data={
                 'name': 'fullaccess library',
                 'description': 'fullaccess library role',
-                'policies': [
-                    {'resource': '/table/%', 'action': '%'},
-                    {'resource': '/field/%', 'action': '%'},
-                ],
+                'policies': {
+                    '/table/%': ['%'],
+                    '/field/%': ['%'],
+                }
             },
             content_type='application/json',
         )
@@ -169,10 +169,10 @@ class PermissionsApiTest(ApiTests):
             data={
                 'name': 'fullaccess library',
                 'description': 'fullaccess lib role',
-                'policies': [
-                    {'resource': '/table/%', 'action': 'read'},
-                    {'resource': '/field/%', 'action': 'read'},
-                ],
+                'policies': {
+                    '/table/%': ['read'],
+                    '/field/%': ['read'],
+                },
             },
             content_type='application/json',
         )
@@ -182,10 +182,10 @@ class PermissionsApiTest(ApiTests):
         update_data = {
             'name': 'fullaccess_updated lib',
             'description': 'fullaccess role updated lib',
-            'policies': [
-                {'resource': '/table/%', 'action': '%'},
-                {'resource': '/field/%', 'action': '%'},
-            ],
+            'policies': {
+                '/table/%': ['%'],
+                '/field/%': ['%'],
+            }
         }
 
         response = c.put(
@@ -203,10 +203,10 @@ class PermissionsApiTest(ApiTests):
         full_access = {
             'name': 'fullaccess',
             'description': 'fullaccess role',
-            'policies': [
-                {'resource': '/table/%', 'action': 'read'},
-                {'resource': '/field/%', 'action': 'read'},
-            ],
+            'policies': {
+                '/table/%': ['read'],
+                '/field/%': ['read'],
+            },
         }
 
         c = Client()

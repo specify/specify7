@@ -1,6 +1,7 @@
 import json
 
 from typing import Dict, Union
+from collections import defaultdict
 
 from django import http
 from django.db import transaction
@@ -54,12 +55,12 @@ class UserPolicies(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
 
-        data = [
-            {'resource': p.resource, 'action': p.action}
-            for p in models.UserPolicy.objects.filter(
-                    collection_id=collectionid,
-                    specifyuser_id=userid)
-        ]
+        data = defaultdict(list)
+        for p in models.UserPolicy.objects.filter(
+                collection_id=collectionid,
+                specifyuser_id=userid):
+            data[p.resource].append(p.action)
+
         return http.JsonResponse(data, safe=False)
 
     def put(self, request, collectionid: int, userid: int) -> http.HttpResponse:
@@ -73,12 +74,13 @@ class UserPolicies(LoginRequiredMixin, View):
                 specifyuser_id=userid
             ).delete()
 
-            for p in  data:
-                models.UserPolicy.objects.create(
-                    collection_id=collectionid,
-                    specifyuser_id=userid,
-                    resource=p['resource'],
-                    action=p['action'])
+            for resource, actions in data.items():
+                for action in actions:
+                    models.UserPolicy.objects.create(
+                        collection_id=collectionid,
+                        specifyuser_id=userid,
+                        resource=resource,
+                        action=action)
 
         return http.HttpResponse('', status=204)
 
@@ -90,15 +92,18 @@ user_policies = openapi(schema={
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "resource": { "type": "string" },
-                                    "action": { "type": "string" },
-                                },
-                                'required': ['resource', 'action'],
-                                'additionalProperties': False
+                            "type": "object",
+                            "description": "The resources.",
+                            "example": {
+                                "/table/agent": ["read"],
+                                "/table/collectionobject": ["create", "read", "update", "delete"],
+                            },
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "The supported actions for the resource."
+                                }
                             }
                         }
                     }
@@ -113,15 +118,18 @@ user_policies = openapi(schema={
             "content": {
                 "application/json": {
                     "schema": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "resource": { "type": "string" },
-                                "action": { "type": "string" },
-                            },
-                            'required': ['resource', 'action'],
-                            'additionalProperties': False
+                        "type": "object",
+                        "description": "The resources.",
+                        "example": {
+                            "/table/agent": ["read"],
+                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "The supported actions for the resource."
+                            }
                         }
                     }
                 }
@@ -187,15 +195,18 @@ user_roles = openapi(schema={
                                     "id": { "type": "integer", "description": "The role id." },
                                     "name": { "type": "string", "description": "The role name." },
                                     "policies": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "resource": { "type": "string" },
-                                                "action": { "type": "string" },
-                                            },
-                                            'required': ['resource', 'action'],
-                                            'additionalProperties': False
+                                        "type": "object",
+                                        "description": "The resources.",
+                                        "example": {
+                                            "/table/agent": ["read"],
+                                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                                        },
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "description": "The supported actions for the resource."
+                                            }
                                         }
                                     }
                                 },
@@ -234,14 +245,15 @@ user_roles = openapi(schema={
 })(UserRoles.as_view())
 
 def serialize_role(role: Union[models.Role, models.LibraryRole]) -> Dict:
+    policies = defaultdict(list)
+    for p in role.policies.all():
+        policies[p.resource].append(p.action)
+
     return {
         'id': role.id,
         'name': role.name,
         'description': role.description,
-        'policies': [
-            {'resource': p.resource, 'action': p.action}
-                for p in role.policies.all()
-        ]
+        'policies': policies
     }
 
 class RolePT(PermissionTarget):
@@ -271,10 +283,9 @@ class Role(LoginRequiredMixin, View):
             r.save()
 
             r.policies.all().delete()
-            for p in data['policies']:
-                r.policies.create(
-                    resource=p['resource'],
-                    action=p['action'])
+            for resource, actions in data['policies'].items():
+                for action in actions:
+                    r.policies.create(resource=resource, action=action)
 
         return http.HttpResponse('', status=204)
 
@@ -299,15 +310,18 @@ role = openapi(schema={
                                 "name": { "type": "string", "description": "The role name." },
                                 "description": { "type": "string", "description": "The role description." },
                                 "policies": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "resource": { "type": "string" },
-                                            "action": { "type": "string" },
-                                        },
-                                        'required': ['resource', 'action'],
-                                        'additionalProperties': False
+                                    "type": "object",
+                                    "description": "The resources.",
+                                    "example": {
+                                        "/table/agent": ["read"],
+                                        "/table/collectionobject": ["create", "read", "update", "delete"],
+                                    },
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "description": "The supported actions for the resource."
+                                        }
                                     }
                                 }
                             },
@@ -331,15 +345,18 @@ role = openapi(schema={
                             "name": { "type": "string", "description": "The role name." },
                             "description": { "type": "string", "description": "The role description." },
                             "policies": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resource": { "type": "string" },
-                                        "action": { "type": "string" },
-                                    },
-                                    'required': ['resource', 'action'],
-                                    'additionalProperties': False
+                                "type": "object",
+                                "description": "The resources.",
+                                "example": {
+                                    "/table/agent": ["read"],
+                                    "/table/collectionobject": ["create", "read", "update", "delete"],
+                                },
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "The supported actions for the resource."
+                                    }
                                 }
                             }
                         },
@@ -484,10 +501,9 @@ class Roles(LoginRequiredMixin, View):
                     description=data['description'],
                 )
 
-                for p in data['policies']:
-                    r.policies.create(
-                        resource=p['resource'],
-                        action=p['action'])
+                for resource, actions in data['policies'].items():
+                    for action in actions:
+                        r.policies.create(resource=resource, action=action)
 
         return http.JsonResponse(serialize_role(r), status=201)
 
@@ -507,15 +523,18 @@ roles = openapi(schema={
                                     "name": { "type": "string", "description": "The role name." },
                                     "description": { "type": "string", "description": "The role description." },
                                     "policies": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "resource": { "type": "string" },
-                                                "action": { "type": "string" },
-                                            },
-                                            'required': ['resource', 'action'],
-                                            'additionalProperties': False
+                                        "type": "object",
+                                        "description": "The resources.",
+                                        "example": {
+                                            "/table/agent": ["read"],
+                                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                                        },
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "description": "The supported actions for the resource."
+                                            }
                                         }
                                     }
                                 },
@@ -551,16 +570,19 @@ roles = openapi(schema={
                                 "properties": {
                                     "name": { "type": "string", "description": "The role name." },
                                     "description": { "type": "string", "description": "The role description." },
-                                    "policies": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "resource": { "type": "string" },
-                                                "action": { "type": "string" },
-                                            },
-                                            'required': ['resource', 'action'],
-                                            'additionalProperties': False
+                                    "policies":{
+                                        "type": "object",
+                                        "description": "The resources.",
+                                        "example": {
+                                            "/table/agent": ["read"],
+                                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                                        },
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "description": "The supported actions for the resource."
+                                            }
                                         }
                                     }
                                 },
@@ -583,15 +605,18 @@ roles = openapi(schema={
                                 "name": { "type": "string", "description": "The role name." },
                                 "description": { "type": "string", "description": "The role description." },
                                 "policies": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "resource": { "type": "string" },
-                                            "action": { "type": "string" },
-                                        },
-                                        'required': ['resource', 'action'],
-                                        'additionalProperties': False
+                                    "type": "object",
+                                    "description": "The resources.",
+                                    "example": {
+                                        "/table/agent": ["read"],
+                                        "/table/collectionobject": ["create", "read", "update", "delete"],
+                                    },
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "description": "The supported actions for the resource."
+                                        }
                                     }
                                 }
                             },
@@ -632,10 +657,9 @@ class LibraryRole(LoginRequiredMixin, View):
             r.save()
 
             r.policies.all().delete()
-            for p in data['policies']:
-                r.policies.create(
-                    resource=p['resource'],
-                    action=p['action'])
+            for resource, actions in data['policies'].items():
+                for action in actions:
+                    r.policies.create(resource=resource, action=action)
 
         return http.HttpResponse('', status=204)
 
@@ -660,15 +684,18 @@ library_role = openapi(schema={
                                 "name": { "type": "string", "description": "The library role name." },
                                 "description": { "type": "string", "description": "The library role description." },
                                 "policies": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "resource": { "type": "string" },
-                                            "action": { "type": "string" },
-                                        },
-                                        'required': ['resource', 'action'],
-                                        'additionalProperties': False
+                                    "type": "object",
+                                    "description": "The resources.",
+                                    "example": {
+                                        "/table/agent": ["read"],
+                                        "/table/collectionobject": ["create", "read", "update", "delete"],
+                                    },
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "description": "The supported actions for the resource."
+                                        }
                                     }
                                 }
                             },
@@ -692,15 +719,18 @@ library_role = openapi(schema={
                             "name": { "type": "string", "description": "The library role name." },
                             "description": { "type": "string", "description": "The library role description." },
                             "policies": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resource": { "type": "string" },
-                                        "action": { "type": "string" },
-                                    },
-                                    'required': ['resource', 'action'],
-                                    'additionalProperties': False
+                                "type": "object",
+                                "description": "The resources.",
+                                "example": {
+                                    "/table/agent": ["read"],
+                                    "/table/collectionobject": ["create", "read", "update", "delete"],
+                                },
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "The supported actions for the resource."
+                                    }
                                 }
                             }
                         },
@@ -739,10 +769,9 @@ class LibraryRoles(LoginRequiredMixin, View):
                 description=data['description'],
             )
 
-            for p in data['policies']:
-                r.policies.create(
-                    resource=p['resource'],
-                    action=p['action'])
+            for resource, actions in data['policies'].items():
+                for action in actions:
+                    r.policies.create(resource=resource, action=action)
 
         return http.JsonResponse(serialize_role(r), status=201)
 
@@ -762,15 +791,18 @@ library_roles = openapi(schema={
                                     "name": { "type": "string", "description": "The library role name." },
                                     "description": { "type": "string", "description": "The library role description." },
                                     "policies": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "resource": { "type": "string" },
-                                                "action": { "type": "string" },
-                                            },
-                                            'required': ['resource', 'action'],
-                                            'additionalProperties': False
+                                        "type": "object",
+                                        "description": "The resources.",
+                                        "example": {
+                                            "/table/agent": ["read"],
+                                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                                        },
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "description": "The supported actions for the resource."
+                                            }
                                         }
                                     }
                                 },
@@ -795,15 +827,18 @@ library_roles = openapi(schema={
                             "name": { "type": "string", "description": "The role name." },
                             "description": { "type": "string", "description": "The role description." },
                             "policies": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resource": { "type": "string" },
-                                        "action": { "type": "string" },
-                                    },
-                                    'required': ['resource', 'action'],
-                                    'additionalProperties': False
+                                "type": "object",
+                                "description": "The resources.",
+                                "example": {
+                                    "/table/agent": ["read"],
+                                    "/table/collectionobject": ["create", "read", "update", "delete"],
+                                },
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "The supported actions for the resource."
+                                    }
                                 }
                             }
                         },
@@ -823,16 +858,19 @@ library_roles = openapi(schema={
                                 "id": { "type": "integer", "description": "The library role id." },
                                 "name": { "type": "string", "description": "The library role name." },
                                 "description": { "type": "string", "description": "The library role description." },
-                                "policies": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "resource": { "type": "string" },
-                                            "action": { "type": "string" },
-                                        },
-                                        'required': ['resource', 'action'],
-                                        'additionalProperties': False
+                                "policies":{
+                                    "type": "object",
+                                    "description": "The resources.",
+                                    "example": {
+                                        "/table/agent": ["read"],
+                                        "/table/collectionobject": ["create", "read", "update", "delete"],
+                                    },
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "description": "The supported actions for the resource."
+                                        }
                                     }
                                 }
                             },
