@@ -1,6 +1,6 @@
 import json
 
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 from collections import defaultdict
 
 from django import http
@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from specifyweb.specify.views import openapi
 
 from . import models
-from .permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, registry, query
+from .permissions import PermissionTarget, PermissionTargetAction, NoAdminUsersException, check_permission_targets, registry, query
 
 class PolicyRegistry(LoginRequiredMixin, View):
     def get(self, request):
@@ -52,27 +52,28 @@ class PoliciesUserPT(PermissionTarget):
     read = PermissionTargetAction()
 
 class UserPolicies(LoginRequiredMixin, View):
-    def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+    def get(self, request, collectionid: Optional[int], userid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
 
         data = defaultdict(list)
-        for p in models.UserPolicy.objects.filter(
-                collection_id=collectionid,
-                specifyuser_id=userid):
+        ps = models.UserPolicy.objects.filter(collection__isnull=True, specifyuser_id=userid) \
+            if collectionid is None else \
+               models.UserPolicy.objects.filter(collection_id=collectionid, specifyuser_id=userid)
+        for p in ps:
             data[p.resource].append(p.action)
 
         return http.JsonResponse(data, safe=False)
 
-    def put(self, request, collectionid: int, userid: int) -> http.HttpResponse:
+    def put(self, request, collectionid: Optional[int], userid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.update])
 
         data = json.loads(request.body)
 
         with transaction.atomic():
-            models.UserPolicy.objects.filter(
-                collection_id=collectionid,
-                specifyuser_id=userid
-            ).delete()
+            ps = models.UserPolicy.objects.filter(collection__isnull=True, specifyuser_id=userid) \
+                if collectionid is None else \
+                   models.UserPolicy.objects.filter(collection_id=collectionid, specifyuser_id=userid)
+            ps.delete()
 
             for resource, actions in data.items():
                 for action in actions:
@@ -81,6 +82,9 @@ class UserPolicies(LoginRequiredMixin, View):
                         specifyuser_id=userid,
                         resource=resource,
                         action=action)
+
+            if not models.UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
+                raise NoAdminUsersException()
 
         return http.HttpResponse('', status=204)
 
@@ -140,6 +144,83 @@ user_policies = openapi(schema={
         }
     }
 })(UserPolicies.as_view())
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns institution permission policies for user.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "The resources.",
+                            "example": {
+                                "/table/agent": ["read"],
+                                "/table/collectionobject": ["create", "read", "update", "delete"],
+                            },
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "description": "The supported actions for the resource."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "put": {
+        "requestBody": {
+            "required": True,
+            "description": "Sets the institution permission policies for user.",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "description": "The resources.",
+                        "example": {
+                            "/table/agent": ["read"],
+                            "/table/collectionobject": ["create", "read", "update", "delete"],
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "The supported actions for the resource."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "User policies set."},
+            "400": {
+                "description": "The request was rejected.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "The error.",
+                            "properties": {
+                                "NoAdminUsersException": {
+                                    'type': 'object',
+                                    'description': "Request would leave system with no admin users."
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+def user_policies_institution(request, userid: int) -> http.HttpResponse:
+    return user_policies(request, None, userid)
+
 
 class UserRolesPT(PermissionTarget):
     resource = "/permissions/user/roles"
