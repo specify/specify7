@@ -18,7 +18,10 @@ class PermissionsMiddleware:
         user = request.specify_user
         col = request.specify_collection
         if not skip_collection_access_check and user != None and col != None:
-            check_permission_targets(col.id, user.id, [CollectionAccessPT.access])
+            try:
+                check_permission_targets(col.id, user.id, [CollectionAccessPT.access])
+            except PermissionsException as exception:
+                return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
 
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
         if isinstance(exception, PermissionsException):
