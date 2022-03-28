@@ -10,7 +10,6 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import {showLeafletMap} from './leaflet';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
@@ -27,6 +26,10 @@ import WbAdvancedSearch, {
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 import {showDialog} from './components/modaldialog';
+import createBackboneView from './components/reactbackboneextend';
+import {LeafletMap} from './components/leaflet';
+
+const LeafletMapView = createBackboneView(LeafletMap);
 
 export default Backbone.View.extend({
   __name__: 'WbUtils',
@@ -793,7 +796,7 @@ export default Backbone.View.extend({
       selection.visualRows
     );
 
-    showLeafletMap({
+    this.geoMapDialog = new LeafletMapView({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
@@ -808,8 +811,6 @@ export default Backbone.View.extend({
         this.geoMapDialog = undefined;
         event.target.ariaPressed = false;
       },
-    }).then(({ dialog }) => {
-      this.geoMapDialog = dialog;
     });
   },
   showCoordinateConversion() {

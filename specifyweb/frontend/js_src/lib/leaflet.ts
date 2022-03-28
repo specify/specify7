@@ -5,12 +5,10 @@
  */
 
 import type { LayersControlEventHandlerFn } from 'leaflet';
-import _ from 'underscore';
 
 import { ajax, Http } from './ajax';
 import * as cache from './cache';
 import { legacyNonJsxIcons } from './components/icons';
-import { dialogClassNames, showDialog } from './components/modaldialog';
 import { cachableUrl, contextUnlockedPromise } from './initialcontext';
 import {
   leafletLayersEndpoint,
@@ -82,15 +80,10 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
 export async function showLeafletMap({
   localityPoints = [],
   markerClickCallback,
-  onClose: handleClose,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-  readonly onClose?: () => void;
-}): Promise<{
-  readonly map: L.Map;
-  readonly dialog: ReturnType<typeof showDialog>;
-}> {
+}): Promise<L.Map> {
   const tileLayers = await leafletTileServersPromise;
 
   const leafletMapContainer = document.createElement('div');
@@ -125,22 +118,6 @@ export async function showLeafletMap({
     .getElementsByClassName('leaflet-control-container')[0]
     ?.classList.add('print:hidden');
 
-  const dialog = showDialog({
-    header: commonText('geoMap'),
-    modal: false,
-    content: leafletMapContainer,
-    className: {
-      container: dialogClassNames.wideContainer,
-    },
-    buttons: commonText('close'),
-    onClose() {
-      map.remove();
-      dialog.remove();
-      handleClose?.();
-    },
-    onResize: _.throttle(() => map.invalidateSize(), 250),
-  });
-
   addMarkersToMap(
     map,
     controlLayers,
@@ -152,20 +129,10 @@ export async function showLeafletMap({
     )
   );
 
-  addFullScreenButton(map, (isEnabled: boolean) =>
-    dialog.updateProps({
-      className: {
-        container: isEnabled
-          ? dialogClassNames.fullScreen
-          : dialogClassNames.wideContainer,
-      },
-    })
-  );
-
   addPrintMapButton(map);
   rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
 
-  return { map, dialog };
+  return map;
 }
 
 export type LeafletCacheSalt = string & ('MainMap' | 'CoMap');
@@ -222,7 +189,7 @@ function rememberSelectedOverlays(
   map.on('overlayremove', handleOverlayEvent);
 }
 
-function addFullScreenButton(
+export function addFullScreenButton(
   map: L.Map,
   callback: (isEnabled: boolean) => void
 ): void {
@@ -503,13 +470,3 @@ export function getMarkersFromLocalityData({
 
   return markers;
 }
-
-export type LayerConfig = {
-  readonly transparent: boolean;
-  readonly layerLabel: string;
-  readonly isDefault: boolean;
-  readonly tileLayer: {
-    readonly mapUrl: string;
-    readonly options: IR<unknown>;
-  };
-};
