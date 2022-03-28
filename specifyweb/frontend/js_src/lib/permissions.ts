@@ -38,6 +38,7 @@ const checkRegistry = async (): Promise<void> =>
           : error('Front-end has an outdated list of operation policies')
       );
 
+export const collectionAccessResource = '/system/sp7/collection';
 export const operationPolicies = {
   '/system/sp7/collection': ['access'],
   '/admin/user/password': ['update'],
@@ -123,33 +124,33 @@ let tablePermissions: {
 
 export const getTablePermissions = () => tablePermissions;
 
-export type PermissionsQuery = {
-  readonly details: RA<{
+export type PermissionsQueryItem = {
+  readonly action: string;
+  readonly resource: string;
+  readonly allowed: boolean;
+  readonly matching_role_policies: RA<{
     readonly action: string;
     readonly resource: string;
-    readonly allowed: boolean;
-    readonly matching_role_policies: RA<{
-      readonly action: string;
-      readonly resource: string;
-      readonly roleid: number;
-      readonly rolename: string;
-    }>;
-    readonly matching_user_policies: RA<{
-      readonly action: string;
-      readonly collectionid: number | null;
-      readonly resource: string;
-      readonly userid: number | null;
-    }>;
+    readonly roleid: number;
+    readonly rolename: string;
+  }>;
+  readonly matching_user_policies: RA<{
+    readonly action: string;
+    readonly collectionid: number | null;
+    readonly resource: string;
+    readonly userid: number | null;
   }>;
 };
 
 export const queryUserPermissions = async (
   userId: number,
   collectionId: number
-): Promise<PermissionsQuery> =>
+): Promise<RA<PermissionsQueryItem>> =>
   schemaPromise
     .then(async () =>
-      ajax<PermissionsQuery>('/permissions/query/', {
+      ajax<{
+        readonly details: RA<PermissionsQueryItem>;
+      }>('/permissions/query/', {
         headers: { Accept: 'application/json' },
         method: 'POST',
         body: {
@@ -170,7 +171,7 @@ export const queryUserPermissions = async (
         },
       })
     )
-    .then(({ data }) => data);
+    .then(({ data }) => data.details);
 
 const PermissionDeniedView = createBackboneView(PermissionDenied);
 
@@ -178,11 +179,11 @@ export const fetchContext = domainPromise
   .then(async () =>
     queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
   )
-  .then((data) =>
+  .then((query) =>
     split(
       Object.entries(
         group(
-          data.details.map((result) => [
+          query.map((result) => [
             result.resource,
             [result.action, result.allowed] as const,
           ])

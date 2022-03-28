@@ -4,14 +4,16 @@ import type { Tables } from '../datamodel';
 import { capitalize, group } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import type { PermissionsQuery } from '../permissions';
+import type { PermissionsQueryItem } from '../permissions';
 import {
   getTablePermissions,
   queryUserPermissions,
   tableActions,
 } from '../permissions';
+import { schema } from '../schema';
 import {
   actionToLabel,
+  compressPermissionQuery,
   partsToResourceName,
   resourceNameToModel,
   resourceNameToParts,
@@ -21,7 +23,6 @@ import type { IR, R, RA } from '../types';
 import { Button, className, Input, Label, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
-import { schema } from '../schema';
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
@@ -183,20 +184,20 @@ function PreviewRow({
   );
 }
 
-type Cell = Omit<PermissionsQuery['details'][number], 'action'>;
+type Cell = Omit<PermissionsQueryItem, 'action'>;
 
 function PreviewTables({
   query,
   onOpenRole: handleOpenRole,
 }: {
-  readonly query: PermissionsQuery;
+  readonly query: RA<PermissionsQueryItem>;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   const table = React.useMemo<RA<Readonly<[keyof Tables, IR<Cell>]>>>(
     () =>
       Object.entries(
         group(
-          query.details
+          query
             .filter(({ resource }) => resource in getTablePermissions())
             .map(
               (entry) =>
@@ -255,14 +256,14 @@ export type Tree = {
   readonly label: string;
   readonly children: IR<Tree>;
   readonly resource: string;
-  readonly actions: RA<Omit<PermissionsQuery['details'][number], 'resource'>>;
+  readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;
 };
 
 type WritableTree = {
   readonly label: string;
   readonly children: R<WritableTree>;
   readonly resource: string;
-  readonly actions: RA<Omit<PermissionsQuery['details'][number], 'resource'>>;
+  readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;
 };
 
 function TreeView({
@@ -316,14 +317,14 @@ function PreviewOperations({
   query,
   onOpenRole: handleOpenRole,
 }: {
-  readonly query: PermissionsQuery;
+  readonly query: RA<PermissionsQueryItem>;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   const tree = React.useMemo(
     () =>
       Object.entries(
         group(
-          query.details
+          query
             .filter(({ resource }) => !(resource in getTablePermissions()))
             .map(({ resource, ...rest }) => [resource, rest] as const)
         )
@@ -361,7 +362,10 @@ export function PreviewPermissions({
 }): JSX.Element {
   const [query] = useAsyncState(
     React.useCallback(
-      async () => queryUserPermissions(userId, collectionId),
+      async () =>
+        queryUserPermissions(userId, collectionId).then(
+          compressPermissionQuery
+        ),
       [userId, collectionId]
     ),
     false

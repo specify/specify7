@@ -140,14 +140,16 @@ export function PoliciesView({
   policies,
   isReadOnly,
   onChange: handleChange,
+  header = adminText('policies'),
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
+  readonly header?: string;
 }): JSX.Element {
   return (
     <fieldset className="flex flex-col gap-2">
-      <h4 className={className.headerGray}>{adminText('policies')}</h4>
+      <h4 className={className.headerGray}>{header}</h4>
       {Array.isArray(policies) ? (
         <>
           <ul className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]">

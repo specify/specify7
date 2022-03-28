@@ -1,14 +1,18 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { fetchCollection } from '../../collection';
 import type { SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
+import { index } from '../../helpers';
 import adminText from '../../localization/admin';
 import commonText from '../../localization/common';
 import { router } from '../../router';
 import { schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
+import type { IR } from '../../types';
+import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
@@ -16,7 +20,6 @@ import createBackboneView from '../reactbackboneextend';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import { UserView } from '../securityuser';
-import { userInformation } from '../../userinfo';
 
 function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -63,10 +66,21 @@ function SecurityPanel(): JSX.Element | null {
         'UserState',
         {
           readonly initialCollection: number;
-          readonly user: SerializedResource<SpecifyUser>;
+          readonly userId: number;
         }
       >
   >({ type: 'MainState' });
+
+  const [users] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpecifyUser', { limit: 0 })
+          .then(async ({ records }) => records)
+          .then(index),
+      []
+    ),
+    false
+  );
 
   // TODO: write a routing library that would make navigation easier
   return typeof data === 'object' ? (
@@ -114,24 +128,35 @@ function SecurityPanel(): JSX.Element | null {
           </section>
         </aside>
         {state.type === 'InstitutionState' && (
-          <InstitutionView institution={data.institution} />
+          <InstitutionView
+            institution={data.institution}
+            users={users}
+            onOpenUser={(userId): void =>
+              setState({
+                type: 'UserState',
+                userId,
+                initialCollection: Object.values(data.collections)[0].id,
+              })
+            }
+          />
         )}
         {state.type === 'CollectionState' && (
           <CollectionView
             collection={data.collections[state.collectionId]}
             initialRole={state.initialRole}
-            onOpenUser={(user): void =>
+            users={users}
+            onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',
-                user,
+                userId,
                 initialCollection: state.collectionId,
               })
             }
           />
         )}
-        {state.type === 'UserState' && (
+        {state.type === 'UserState' && typeof users === 'object' ? (
           <UserView
-            user={state.user}
+            user={users[state.userId]}
             collections={data.collections}
             initialCollection={state.initialCollection}
             onClose={(): void => setState({ type: 'MainState' })}
@@ -143,7 +168,7 @@ function SecurityPanel(): JSX.Element | null {
               })
             }
           />
-        )}
+        ) : undefined}
       </div>
     </Container.Full>
   ) : null;

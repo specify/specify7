@@ -8,13 +8,11 @@ import { replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { hasPermission } from '../permissions';
+import { collectionAccessResource, hasPermission } from '../permissions';
 import {
-  compressPolicies,
   decompressPolicies,
-  deflatePolicies,
   fetchRoles,
-  inflatePolicies,
+  processPolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
 import {
@@ -48,6 +46,7 @@ export function UserView({
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
   readonly onClose: () => void;
 }): JSX.Element {
+  // Fetching roles from all collections
   const [collectionRoles] = useAsyncState(
     React.useCallback(
       async () =>
@@ -62,6 +61,8 @@ export function UserView({
     ),
     false
   );
+
+  // Fetching user roles in all collections
   const initialUserRoles = React.useRef<IR<RA<number>>>({});
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
     React.useCallback(
@@ -88,7 +89,15 @@ export function UserView({
     ),
     false
   );
+  const changedRoles =
+    typeof userRoles === 'object' &&
+    Object.entries(userRoles).some(
+      ([collectionId, roles]) =>
+        JSON.stringify(roles) !==
+        JSON.stringify(initialUserRoles.current[collectionId])
+    );
 
+  // Fetching user policies
   const initialUserPolicies = React.useRef<IR<RA<Policy>>>({});
   const [userPolicies, setUserPolicies] = useAsyncState(
     React.useCallback(
@@ -102,11 +111,7 @@ export function UserView({
                     headers: { Accept: 'application/json' },
                   }
                 ).then(
-                  ({ data }) =>
-                    [
-                      collection.id,
-                      compressPolicies(inflatePolicies(data)),
-                    ] as const
+                  ({ data }) => [collection.id, processPolicies(data)] as const
                 )
               )
             )
@@ -124,20 +129,53 @@ export function UserView({
     typeof userPolicies === 'object' &&
     JSON.stringify(userPolicies) !==
       JSON.stringify(initialUserPolicies.current);
-  const changedRoles =
-    typeof userRoles === 'object' &&
-    Object.entries(userRoles).some(
-      ([collectionId, roles]) =>
-        JSON.stringify(roles) !==
-        JSON.stringify(initialUserRoles.current[collectionId])
-    );
-  const changesMade = changedPolices || changedRoles;
+
+  // Fetching user institutional policies
+  const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
+  const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
+    React.useCallback(
+      async () =>
+        hasPermission('/permissions/policies/user', 'read')
+          ? ajax<IR<RA<string>>>(
+              `/permissions/user_policies/institution/${user.id}/`,
+              {
+                headers: { Accept: 'application/json' },
+              }
+            ).then(({ data }) => {
+              const policies = processPolicies(data);
+              initialInstitutionPolicies.current = policies;
+              return policies;
+            })
+          : undefined,
+      [user.id]
+    ),
+    false
+  );
+  const changedInstitutionPolicies =
+    JSON.stringify(initialInstitutionPolicies.current) !==
+    JSON.stringify(institutionPolicies);
+
+  const changesMade =
+    changedPolices || changedRoles || changedInstitutionPolicies;
   const setUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')
   );
   const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
+
+  /*
+   * FIXME: expose the system/collection access permission
+   * FIXME: create role template > prompt to use a role from another collection
+   * FIXME: role import/export
+   */
+
+  const hasCollectionAccess =
+    userPolicies?.[collectionId].some(
+      ({ resource, actions }) =>
+        resource === collectionAccessResource && actions.includes('access')
+    ) ?? false;
+
   return (
     <Container.Base className="flex-1 overflow-y-auto">
       <Form
@@ -172,16 +210,38 @@ export function UserView({
                     `/permissions/user_policies/${collectionId}/${user.id}/`,
                     {
                       method: 'PUT',
-                      body: deflatePolicies(decompressPolicies(policies)),
+                      body: decompressPolicies(policies),
                     },
                     { expectedResponseCodes: [Http.NO_CONTENT] }
                   )
                 ),
+              Array.isArray(institutionPolicies) && changedInstitutionPolicies
+                ? ping(
+                    `/permissions/user_policies/institution/${user.id}/`,
+                    {
+                      method: 'PUT',
+                      body: decompressPolicies(institutionPolicies),
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  )
+                : undefined,
             ]).then(handleClose)
           )
         }
       >
         <h3 className="text-xl">{`${adminText('user')} ${user.name}`}</h3>
+        {hasPermission('/permissions/policies/user', 'read') && (
+          <PoliciesView
+            header={adminText('institutionUserPolicies')}
+            policies={institutionPolicies}
+            isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
+            onChange={(policies): void =>
+              typeof userPolicies === 'object'
+                ? setInstitutionPolicies(policies)
+                : undefined
+            }
+          />
+        )}
         <Label.Generic>
           <span className={className.headerGray}>
             {commonText('collection')}
@@ -199,6 +259,43 @@ export function UserView({
             ))}
           </Select>
         </Label.Generic>
+        <div>
+          <Label.ForCheckbox>
+            <Input.Checkbox
+              isReadOnly={
+                !hasPermission('/permissions/policies/user', 'update') ||
+                typeof userPolicies === 'undefined'
+              }
+              onValueChange={
+                hasPermission('/permissions/policies/user', 'update')
+                  ? (): void =>
+                      setUserPolicies(
+                        typeof userPolicies === 'object'
+                          ? replaceKey(
+                              userPolicies,
+                              collectionId,
+                              hasCollectionAccess
+                                ? userPolicies[collectionId].filter(
+                                    ({ resource }) =>
+                                      resource !== collectionAccessResource
+                                  )
+                                : [
+                                    ...userPolicies[collectionId],
+                                    {
+                                      resource: collectionAccessResource,
+                                      actions: ['access'],
+                                    },
+                                  ]
+                            )
+                          : undefined
+                      )
+                  : undefined
+              }
+              checked={hasCollectionAccess}
+            />
+            {adminText('collectionAccess')}
+          </Label.ForCheckbox>
+        </div>
         {hasPermission('/permissions/user/roles', 'read') && (
           <fieldset className="flex flex-col gap-2">
             <legend className={className.headerGray}>

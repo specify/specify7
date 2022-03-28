@@ -9,7 +9,6 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
-import { compressPolicies, decompressPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
@@ -57,9 +56,7 @@ export function RoleView({
   readonly onSave: (role: Role | NewRole) => void;
   readonly onDelete: () => void;
   readonly onClose: () => void;
-  readonly onOpenUser:
-    | ((user: SerializedResource<SpecifyUser>) => void)
-    | undefined;
+  readonly onOpenUser: ((userId: number) => void) | undefined;
   readonly onAddUser:
     | ((user: SpecifyResource<SpecifyUser>) => void)
     | undefined;
@@ -67,12 +64,7 @@ export function RoleView({
 }): JSX.Element {
   const [role, setRole] = useLiveState(
     React.useCallback(
-      () =>
-        replaceKey(
-          initialRole,
-          'policies',
-          compressPolicies(initialRole.policies)
-        ),
+      () => replaceKey(initialRole, 'policies', initialRole.policies),
       [initialRole]
     )
   );
@@ -100,14 +92,7 @@ export function RoleView({
     typeof role.id === 'number' && !hasPermission(permissionName, 'update');
 
   return (
-    <Form
-      onSubmit={(): void =>
-        handleSave(
-          replaceKey(role, 'policies', decompressPolicies(role.policies))
-        )
-      }
-      className="contents"
-    >
+    <Form onSubmit={(): void => handleSave(role)} className="contents">
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <Button.LikeLink onClick={handleClose}>
         {icons.arrowLeft}
@@ -157,7 +142,7 @@ export function RoleView({
                           !hasPermission('/permissions/user/roles', 'update')
                         }
                         // TODO: trigger unload protect
-                        onClick={(): void => handleOpenUser(user)}
+                        onClick={(): void => handleOpenUser(user.id)}
                       >
                         {user.name}
                       </Button.LikeLink>

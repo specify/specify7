@@ -3,21 +3,19 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
-import type { Institution } from '../datamodel';
+import type { Institution, SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { index, omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import type { BackEndRole } from '../securityutils';
-import {
-  compressPolicies,
-  deflatePolicies,
-  inflatePolicies,
-} from '../securityutils';
+import { decompressPolicies, processPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
-import { Button, className, Container } from './basic';
+import { userInformation } from '../userinfo';
+import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import { LoadingScreen } from './modaldialog';
@@ -27,20 +25,24 @@ import { RoleView } from './securityrole';
 // FIXME: UI for superuser
 export function InstitutionView({
   institution,
+  users,
+  onOpenUser: handleOpenUser,
 }: {
   readonly institution: SpecifyResource<Institution>;
+  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
+  readonly onOpenUser: (userId: number) => void;
 }): JSX.Element {
   const [libraryRoles, setLibraryRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
       async () =>
         hasPermission('/permissions/library/roles', 'read')
-          ? ajax<RA<BackEndRole>>('/api/permissions/library_roles/', {
+          ? ajax<RA<BackEndRole>>('/permissions/library_roles/', {
               headers: { Accept: 'application/json' },
             }).then(({ data }) =>
               index(
                 data.map((role) => ({
                   ...role,
-                  policies: compressPolicies(inflatePolicies(role.policies)),
+                  policies: processPolicies(role.policies),
                 }))
               )
             )
@@ -113,6 +115,30 @@ export function InstitutionView({
               )}
             </section>
           )}
+          <section className="flex flex-col gap-2">
+            <h4 className={className.headerGray}>{adminText('users')}:</h4>
+            {typeof users === 'object' ? (
+              <Ul>
+                {Object.values(users)
+                  .filter(
+                    ({ id }) =>
+                      id === userInformation.id ||
+                      hasTablePermission('SpecifyUser', 'update') ||
+                      hasPermission('/permissions/policies/user', 'update') ||
+                      hasPermission('/permissions/user/roles', 'update')
+                  )
+                  .map(({ id, name }) => (
+                    <li key={id}>
+                      <Button.LikeLink onClick={(): void => handleOpenUser(id)}>
+                        {name}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
+              </Ul>
+            ) : (
+              commonText('loading')
+            )}
+          </section>
         </>
       ) : state.type === 'RoleState' ? (
         typeof libraryRoles === 'object' ? (
@@ -139,7 +165,7 @@ export function InstitutionView({
                         method: 'PUT',
                         body: {
                           ...role,
-                          policies: deflatePolicies(role.policies),
+                          policies: decompressPolicies(role.policies),
                         },
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
@@ -158,7 +184,7 @@ export function InstitutionView({
                         method: 'POST',
                         body: {
                           ...omit(role, ['id']),
-                          policies: deflatePolicies(role.policies),
+                          policies: decompressPolicies(role.policies),
                         },
                         headers: { Accept: 'application/json' },
                       },
@@ -168,7 +194,7 @@ export function InstitutionView({
                         ...libraryRoles,
                         [role.id]: {
                           ...role,
-                          policies: inflatePolicies(role.policies),
+                          policies: processPolicies(role.policies),
                         },
                       })
                     )

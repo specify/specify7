@@ -2,7 +2,6 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
-import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { index, omit, removeKey, replaceKey } from '../helpers';
@@ -11,7 +10,11 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import type { BackEndRole } from '../securityutils';
-import { deflatePolicies, fetchRoles, inflatePolicies } from '../securityutils';
+import {
+  decompressPolicies,
+  fetchRoles,
+  processPolicies,
+} from '../securityutils';
 import type { IR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
@@ -25,11 +28,13 @@ import { RoleView } from './securityrole';
 export function CollectionView({
   collection,
   initialRole,
+  users,
   onOpenUser: handleOpenUser,
 }: {
   readonly collection: SpecifyResource<Collection>;
   readonly initialRole: number | undefined;
-  readonly onOpenUser: (user: SerializedResource<SpecifyUser>) => void;
+  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
+  readonly onOpenUser: (userId: number) => void;
 }): JSX.Element {
   const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
@@ -45,23 +50,23 @@ export function CollectionView({
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
-        fetchCollection('SpecifyUser', { limit: 0 }).then(async ({ records }) =>
-          Promise.all(
-            records.map(async (user) =>
-              fetchRoles(collection.id, user.id).then(
-                (roles) =>
-                  [
-                    user.id,
-                    {
-                      user,
-                      roles: roles.map((role) => role.id),
-                    },
-                  ] as const
+        typeof users === 'object'
+          ? Promise.all(
+              Object.values(users).map(async (user) =>
+                fetchRoles(collection.id, user.id).then(
+                  (roles) =>
+                    [
+                      user.id,
+                      {
+                        user,
+                        roles: roles.map((role) => role.id),
+                      },
+                    ] as const
+                )
               )
-            )
-          ).then((entries) => Object.fromEntries(entries))
-        ),
-      [collection.id]
+            ).then((entries) => Object.fromEntries(entries))
+          : undefined,
+      [collection.id, users]
     ),
     false,
     true
@@ -149,7 +154,7 @@ export function CollectionView({
                   .map(({ user }) => (
                     <li key={user.id}>
                       <Button.LikeLink
-                        onClick={(): void => handleOpenUser(user)}
+                        onClick={(): void => handleOpenUser(user.id)}
                       >
                         {user.name}
                       </Button.LikeLink>
@@ -186,7 +191,7 @@ export function CollectionView({
                         method: 'PUT',
                         body: {
                           ...role,
-                          policies: deflatePolicies(role.policies),
+                          policies: decompressPolicies(role.policies),
                         },
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
@@ -205,7 +210,7 @@ export function CollectionView({
                         method: 'POST',
                         body: {
                           ...omit(role, ['id']),
-                          policies: deflatePolicies(role.policies),
+                          policies: decompressPolicies(role.policies),
                         },
                         headers: { Accept: 'application/json' },
                       },
@@ -215,7 +220,7 @@ export function CollectionView({
                         ...roles,
                         [role.id]: {
                           ...role,
-                          policies: inflatePolicies(role.policies),
+                          policies: processPolicies(role.policies),
                         },
                       })
                     )

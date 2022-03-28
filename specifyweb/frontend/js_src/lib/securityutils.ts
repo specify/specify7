@@ -2,16 +2,17 @@ import { ajax } from './ajax';
 import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
+import { f } from './functools';
+import { capitalize, group, lowerToHuman, toLowerCase } from './helpers';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import queryText from './localization/query';
+import type { PermissionsQueryItem } from './permissions';
 import { operationPolicies, tableActions } from './permissions';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
-import { defined, ensure } from './types';
-import { capitalize, lowerToHuman, toLowerCase } from './helpers';
-import { f } from './functools';
+import { defined, ensure, filterArray } from './types';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;
@@ -31,19 +32,8 @@ export const fetchRoles = async (
   ).then(({ data }) =>
     data.map((role) => ({
       ...role,
-      policies: inflatePolicies(role.policies),
+      policies: processPolicies(role.policies),
     }))
-  );
-
-export const inflatePolicies = (policies: IR<RA<string>>): RA<Policy> =>
-  Object.entries(policies).map(([resource, actions]) => ({
-    resource,
-    actions,
-  }));
-
-export const deflatePolicies = (policies: RA<Policy>): IR<RA<string>> =>
-  Object.fromEntries(
-    policies.map(({ resource, actions }) => [resource, actions])
   );
 
 export const resourceToLabel = (resource: string): string =>
@@ -195,28 +185,83 @@ const toolTables = f.store(
  * Separate out tool tables from the raw list of policies received from the
  * back-end
  */
-export const compressPolicies = (policies: RA<Policy>): RA<Policy> =>
+export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
+  Object.entries(
+    group(
+      compressPermissionQuery(
+        Object.entries(policies).flatMap(([resource, actions]) =>
+          actions.map((action) => ({
+            resource,
+            action,
+            allowed: true,
+            matching_role_policies: [],
+            matching_user_policies: [],
+          }))
+        )
+      ).map(({ resource, action }) => [resource, action])
+    )
+  ).map(([resource, actions]) => ({ resource, actions }));
+
+/** Convert virtual tool policies back to real system table policies */
+export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
+  Object.fromEntries(
+    policies
+      .flatMap((policy) =>
+        resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
+          ? toolDefinitions()[
+              resourceNameToParts(policy.resource)[1] as keyof ReturnType<
+                typeof toolDefinitions
+              >
+            ].tables.map((tableName) => ({
+              resource: tableNameToResourceName(tableName),
+              actions: policy.actions,
+            }))
+          : policy
+      )
+      .map(({ resource, actions }) => [resource, actions])
+  );
+
+/**
+ * Like processPolicies, but works on the output of the /permission/query/
+ * endpoint
+ */
+export const compressPermissionQuery = (
+  query: RA<PermissionsQueryItem>
+): RA<PermissionsQueryItem> =>
   f.var(
-    policies.reduce<{ readonly tools: R<R<boolean>>; policies: Policy[] }>(
-      ({ tools, policies }, policy) => {
-        if (policy.resource.startsWith(tablePermissionsPrefix)) {
-          const model = resourceNameToModel(policy.resource);
+    query.reduce<{
+      readonly tools: R<R<PermissionsQueryItem | undefined>>;
+      policies: PermissionsQueryItem[];
+    }>(
+      ({ tools, policies }, item) => {
+        if (item.resource.startsWith(tablePermissionsPrefix)) {
+          const model = resourceNameToModel(item.resource);
           if (f.has(toolTables(), model.name)) {
             const toolName = Object.entries(toolDefinitions()).find(
               ([_name, { tables }]) => f.includes(tables, model.name)
             )?.[0];
             if (typeof toolName === 'string') {
-              tools[toolName] = tableActions.reduce((actions, action) => {
-                const isAllowed = policy.actions.includes(action);
-                actions[action] ??= true;
-                actions[action] &&= isAllowed;
-                return actions;
-              }, tools[toolName] ?? {});
+              tools[toolName] ??= {};
+              tools[toolName][item.action] = {
+                action: item.action,
+                resource: partsToResourceName([toolPermissionPrefix, toolName]),
+                allowed: (tools[toolName][item.action] ?? true) && item.allowed,
+                matching_role_policies: [
+                  ...(tools[toolName][item.action]?.matching_role_policies ??
+                    []),
+                  ...item.matching_role_policies,
+                ],
+                matching_user_policies: [
+                  ...(tools[toolName][item.action]?.matching_user_policies ??
+                    []),
+                  ...item.matching_user_policies,
+                ],
+              };
               return { tools, policies };
             }
           }
         }
-        policies.push(policy);
+        policies.push(item);
         return { tools, policies };
       },
       {
@@ -226,28 +271,19 @@ export const compressPolicies = (policies: RA<Policy>): RA<Policy> =>
     ),
     ({ tools, policies }) => [
       ...policies,
-      ...Object.entries(tools).map(([toolName, actions]) => ({
-        resource: partsToResourceName([toolPermissionPrefix, toolName]),
-        actions: Object.entries(actions)
-          .filter(([_action, isAllowed]) => isAllowed)
-          .map(([action]) => action),
-      })),
-    ]
-  );
-
-/** Convert virtual tool policies back to real system table policies */
-export const decompressPolicies = (policies: RA<Policy>): RA<Policy> =>
-  policies.flatMap((policy) =>
-    resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
-      ? toolDefinitions()[
-          resourceNameToParts(policy.resource)[1] as keyof ReturnType<
-            typeof toolDefinitions
-          >
-        ].tables.map((tableName) => ({
-          resource: tableNameToResourceName(tableName),
-          actions: policy.actions,
+      ...Object.values(tools).flatMap((actions) =>
+        filterArray(Object.values(actions)).map((item) => ({
+          ...item,
+          // Remove duplicate matching rules and policies
+          matching_role_policies: f
+            .unique(item.matching_role_policies.map(f.unary(JSON.stringify)))
+            .map(f.unary(JSON.parse)),
+          matching_user_policies: f
+            .unique(item.matching_user_policies.map(f.unary(JSON.stringify)))
+            .map(f.unary(JSON.parse)),
         }))
-      : policy
+      ),
+    ]
   );
 
 export const actionToLabel = (action: string): string =>

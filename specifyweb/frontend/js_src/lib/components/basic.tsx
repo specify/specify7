@@ -289,6 +289,10 @@ export const Input = {
     ...props,
     type: 'radio',
     readOnly: isReadOnly,
+    // Disable onChange when readOnly
+    onChange(event): void {
+      if (props.disabled !== true) props.onChange?.(event);
+    },
   })),
   Checkbox: wrap<
     'input',
@@ -306,6 +310,8 @@ export const Input = {
       ...props,
       type: 'checkbox',
       onChange(event): void {
+        // Disable onChange when readOnly
+        if (props.disabled === true) return;
         onValueChange?.((event.target as HTMLInputElement).checked);
         props.onChange?.(event);
       },

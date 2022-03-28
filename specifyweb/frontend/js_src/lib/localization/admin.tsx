@@ -264,6 +264,12 @@ const adminText = createDictionary({
     ca: 'User policies:',
     'es-es': 'User policies:',
   },
+  institutionUserPolicies: {
+    'en-us': 'Institution-wide User policies:',
+    'ru-ru': 'Institution-wide User policies:',
+    ca: 'Institution-wide User policies:',
+    'es-es': 'Institution-wide User policies:',
+  },
   allUsers: {
     'en-us': 'All Users',
     'ru-ru': 'All Users',
@@ -317,6 +323,12 @@ const adminText = createDictionary({
     'ru-ru': 'none',
     ca: 'none',
     'es-es': 'none',
+  },
+  collectionAccess: {
+    'en-us': 'Collection Access',
+    'ru-ru': 'Collection Access',
+    ca: 'Collection Access',
+    'es-es': 'Collection Access',
   },
 });
 
