@@ -73,6 +73,29 @@ class PermissionsApiTest(ApiTests):
         )
         self.assertEqual(response.status_code, 204)
 
+    def test_collection_access(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        models.UserPolicy.objects.all().delete()
+        models.UserPolicy.objects.create(collection=None, specifyuser=self.specifyuser, resource="/table/%", action="read")
+
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 403)
+        data = json.loads(response.content)
+        self.assertEqual(data, {
+            'NoMatchingRuleException': [{
+                'collectionid': self.collection.id,
+                'userid': self.specifyuser.id,
+                'resource': '/system/sp7/collection',
+                'action': 'access'}]
+        })
+
+        models.UserPolicy.objects.create(collection=self.collection, specifyuser=self.specifyuser, resource="/system/sp7/collection", action="access")
+        response = c.get('/api/specify/collectionobject/')
+        self.assertEqual(response.status_code, 200)
+
+
     def test_create_get_delete_role(self) -> None:
         c = Client()
         c.force_login(self.specifyuser)
