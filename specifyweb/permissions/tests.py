@@ -3,6 +3,7 @@ import json
 from django.test import TestCase, Client
 
 from specifyweb.specify.api_tests import ApiTests
+from . import models
 
 class PermissionsApiTest(ApiTests):
     def test_set_user_policies(self) -> None:
@@ -22,6 +23,55 @@ class PermissionsApiTest(ApiTests):
         data = json.loads(response.content)
         self.assertEqual(data['/table/%'], ['%'])
         self.assertEqual(data['/field/%'], ['%'])
+
+    def test_set_user_policies_institution(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.put(
+            f'/permissions/user_policies/institution/{self.specifyuser.id}/',
+            data={
+                '/table/%': ['%'],
+                '/field/%': ['%']
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = c.get(f'/permissions/user_policies/institution/{self.specifyuser.id}/')
+        data = json.loads(response.content)
+        self.assertEqual(data['/table/%'], ['%'])
+        self.assertEqual(data['/field/%'], ['%'])
+
+    def test_set_no_admin(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        models.UserPolicy.objects.all().delete()
+
+        # Make self.specifyuser an admin
+        models.UserPolicy.objects.create(collection=None, specifyuser=self.specifyuser, resource="%", action="%")
+
+        # There's an admin user
+        self.assertTrue(models.UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists())
+
+        response = c.put(
+            f'/permissions/user_policies/institution/{self.specifyuser.id}/',
+            data={
+                '/table/%': ['%'],
+                '/field/%': ['%']
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.content)
+        self.assertIn("NoAdminUsersException", data)
+
+        response = c.put(
+            f'/permissions/user_policies/institution/{self.specifyuser.id}/',
+            data={'%': ['%'],},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
 
     def test_create_get_delete_role(self) -> None:
         c = Client()

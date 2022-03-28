@@ -22,6 +22,6 @@ class PermissionsMiddleware:
 
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
         if isinstance(exception, PermissionsException):
-            return http.JsonResponse(exception.to_json(), status=403, safe=False)
+            return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
         else:
             return None

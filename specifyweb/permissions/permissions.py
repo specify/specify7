@@ -63,15 +63,25 @@ def check_permission_targets(collectionid: Optional[int], userid: int, targets: 
         raise NoMatchingRuleException(denials)
 
 class PermissionsException(Exception):
+    http_status = 500
+
     def to_json(self) -> Dict:
         return {'PermissionsException': repr(self)}
 
 class NoMatchingRuleException(PermissionsException):
+    http_status = 403
+
     def __init__(self, denials: List[PermRequest]):
         self.denials = denials
 
     def to_json(self) -> Dict:
         return {'NoMatchingRuleException': [d._asdict() for d in self.denials]}
+
+class NoAdminUsersException(PermissionsException):
+    http_status = 400
+
+    def to_json(self) -> Dict:
+        return {'NoAdminUsersException': {}}
 
 def enforce(collection: Union[int, Model, None], actor, resources: List[str], action: str) -> None:
     if not resources: return
