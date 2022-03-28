@@ -7,7 +7,7 @@ from ..report_runner.views import get_status as report_runner_status
 urlpatterns = [
     url(r'^login/$', views.api_login),
     url(r'^collection/$', views.collection),
-    url(r'^user_collection_access/(?P<userid>\d+)/$', views.user_collection_access),
+    url(r'^user_collection_access_for_sp6/(?P<userid>\d+)/$', views.user_collection_access_for_sp6),
     url(r'^language/$', views.languages),
     url(r'^schema/language/$', views.schema_language),
 

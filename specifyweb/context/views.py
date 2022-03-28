@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from typing import List, Tuple
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -39,7 +40,7 @@ urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def users_collections(cursor, user_id):
+def users_collections_for_sp6(cursor, user_id):
     cursor.execute("""
     select distinct c.usergroupscopeid, c.collectionname from collection c
     inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
@@ -50,7 +51,14 @@ def users_collections(cursor, user_id):
 
     return list(cursor.fetchall())
 
-def set_users_collections(cursor, user, collectionids):
+def users_collections_for_sp7(userid: int) -> List[Tuple[int, str]]:
+    return [
+        (c.id, c.collectionname)
+        for c in Collection.objects.all()
+        if query_pt(c.id, userid, CollectionAccessPT.access).allowed
+    ]
+
+def set_users_collections_for_sp6(cursor, user, collectionids):
     with transaction.atomic():
         cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [user.id])
         cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
@@ -76,7 +84,7 @@ class Sp6CollectionAccessPT(PermissionTarget):
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
-def user_collection_access(request, userid):
+def user_collection_access_for_sp6(request, userid):
     """Returns (GET) or sets (PUT) the list of collections user <userid>
     can log into. Requesting user must be an admin."""
     check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.read])
@@ -86,9 +94,9 @@ def user_collection_access(request, userid):
         check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        set_users_collections(cursor, user, collections)
+        set_users_collections_for_sp6(cursor, user, collections)
 
-    collections = users_collections(cursor, userid)
+    collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
 
@@ -108,11 +116,7 @@ def choose_collection(request):
         else settings.LOGIN_REDIRECT_URL
     )
 
-    available_collections = [
-        (c.id, c.collectionname)
-        for c in Collection.objects.all()
-        if query_pt(c.id, request.specify_user.id, CollectionAccessPT.access).allowed
-    ]
+    available_collections = users_collections_for_sp7(request.specify_user.id)
     available_collections.sort(key=lambda x: x[1])
 
     if len(available_collections) < 1:
@@ -253,7 +257,7 @@ def api_login(request):
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
     current = request.COOKIES.get('collection', None)
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections = users_collections_for_sp7(request.specify_user.id)
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.body))
@@ -279,7 +283,7 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
+    data['available_collections'] = users_collections_for_sp7(request.specify_user.id)
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
     if settings.RO_MODE or not request.user.is_authenticated:
