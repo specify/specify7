@@ -1,6 +1,11 @@
 import { ajax } from './ajax';
 import { error } from './assert';
+import { PermissionDenied } from './components/permissiondenied';
+import createBackboneView from './components/reactbackboneextend';
 import type { Tables } from './datamodel';
+import type { AnyTree } from './datamodelutils';
+import { f } from './functools';
+import { group, split } from './helpers';
 import { load } from './initialcontext';
 import { fetchContext as schemaPromise, schema } from './schema';
 import { fetchContext as domainPromise } from './schemabase';
@@ -9,15 +14,10 @@ import {
   tablePermissionsPrefix,
   toolDefinitions,
 } from './securityutils';
+import { setCurrentView } from './specifyapp';
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
-import { group, split } from './helpers';
-import { f } from './functools';
-import { setCurrentView } from './specifyapp';
-import { PermissionDenied } from './components/permissiondenied';
-import createBackboneView from './components/reactbackboneextend';
-import { AnyTree } from './datamodelutils';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -39,6 +39,10 @@ const checkRegistry = async (): Promise<void> =>
       );
 
 export const operationPolicies = {
+  '/system/sp7/collection': ['access'],
+  '/admin/user/password': ['update'],
+  '/admin/user/sp6/is_admin': ['update'],
+  '/admin/user/sp6/collection_access': ['read', 'update'],
   '/tree/mutation/taxon': [
     'merge',
     'move',
@@ -144,7 +148,7 @@ export const queryUserPermissions = async (
   collectionId: number
 ): Promise<PermissionsQuery> =>
   schemaPromise
-    .then(() =>
+    .then(async () =>
       ajax<PermissionsQuery>('/permissions/query/', {
         headers: { Accept: 'application/json' },
         method: 'POST',

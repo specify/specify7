@@ -282,7 +282,11 @@ export function FormTableCollection({
     | ((resource: SpecifyResource<AnySchema>) => void)
     | undefined;
 }): JSX.Element {
+  // FIXME: disable add and remove for dependent toOne
+  // FIXME: disable onAdd and onDelete if no permission
+  const field = defined(collection.field?.getReverse());
   const isDependent = collection instanceof collectionapi.Dependent;
+  const isToOne = !relationshipIsToMany(field);
   const [records, setRecords] = React.useState(collection.models);
   return (
     <FormTable

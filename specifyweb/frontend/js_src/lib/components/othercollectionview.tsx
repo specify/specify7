@@ -9,6 +9,7 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
 import createBackboneView from './reactbackboneextend';
+import { f } from '../functools';
 
 export function OtherCollection({
   collections: resourceCollections,
@@ -16,7 +17,9 @@ export function OtherCollection({
   collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const accessibleCollections = new Set(
-    userInformation.available_collections.map((collection) => collection[0])
+    Object.keys(userInformation.availableCollections).map(
+      f.unary(Number.parseInt)
+    )
   );
   const collections = resourceCollections.filter((collection) =>
     accessibleCollections.has(collection.id)

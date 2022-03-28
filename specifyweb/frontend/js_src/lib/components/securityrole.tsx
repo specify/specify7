@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import type { Collection, SpecifyUser } from '../datamodel';
+import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -17,7 +17,7 @@ import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
-import type { BackEndPolicy, Policy } from './securitypolicy';
+import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 
 export type NewRole = {
@@ -31,10 +31,6 @@ export type Role = NewRole & {
   readonly id: number;
 };
 
-export type BackEndRole = Omit<Role, 'policies'> & {
-  readonly policies: RA<BackEndPolicy>;
-};
-
 export type UserRoles = IR<{
   readonly user: SerializedResource<SpecifyUser>;
   readonly roles: RA<number>;
@@ -42,16 +38,17 @@ export type UserRoles = IR<{
 
 export function RoleView({
   role: initialRole,
-  collection,
+  parentName,
   userRoles,
   onDelete: handleDelete,
   onSave: handleSave,
   onClose: handleClose,
   onOpenUser: handleOpenUser,
   onAddUser: handleAddUser,
+  permissionName,
 }: {
   readonly role: Role | NewRole;
-  readonly collection: SpecifyResource<Collection>;
+  readonly parentName: string | undefined;
   readonly userRoles: UserRoles | undefined;
   /*
    * All these are delegated to the parent resource so that the parent
@@ -60,8 +57,13 @@ export function RoleView({
   readonly onSave: (role: Role | NewRole) => void;
   readonly onDelete: () => void;
   readonly onClose: () => void;
-  readonly onOpenUser: (user: SerializedResource<SpecifyUser>) => void;
-  readonly onAddUser: (user: SpecifyResource<SpecifyUser>) => void;
+  readonly onOpenUser:
+    | ((user: SerializedResource<SpecifyUser>) => void)
+    | undefined;
+  readonly onAddUser:
+    | ((user: SpecifyResource<SpecifyUser>) => void)
+    | undefined;
+  readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
 }): JSX.Element {
   const [role, setRole] = useLiveState(
     React.useCallback(
@@ -95,8 +97,7 @@ export function RoleView({
       : undefined;
 
   const isReadOnly =
-    typeof role.id === 'number' &&
-    !hasPermission('/permissions/roles', 'update');
+    typeof role.id === 'number' && !hasPermission(permissionName, 'update');
 
   return (
     <Form
@@ -110,7 +111,7 @@ export function RoleView({
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <Button.LikeLink onClick={handleClose}>
         {icons.arrowLeft}
-        {collection.get('collectionName')}
+        {parentName}
       </Button.LikeLink>
       {!isReadOnly && (
         <Label.Generic>
@@ -135,7 +136,7 @@ export function RoleView({
           }
         />
       </Label.Generic>
-      {typeof role.id === 'number' && (
+      {typeof role.id === 'number' && typeof handleOpenUser === 'function' ? (
         <fieldset className="flex flex-col gap-2">
           <legend>{adminText('users')}:</legend>
           {typeof usersWithRole === 'object' ? (
@@ -178,7 +179,8 @@ export function RoleView({
                   </Button.Green>
                 </div>
               )}
-              {state.type === 'AddUserState' && (
+              {state.type === 'AddUserState' &&
+              typeof handleAddUser === 'function' ? (
                 <SearchDialog
                   forceCollection={undefined}
                   extraFilters={[
@@ -194,13 +196,13 @@ export function RoleView({
                   onClose={(): void => setState({ type: 'MainState' })}
                   onSelected={handleAddUser}
                 />
-              )}
+              ) : undefined}
             </>
           ) : (
             commonText('loading')
           )}
         </fieldset>
-      )}
+      ) : undefined}
       <PoliciesView
         policies={role.policies}
         onChange={(policies): void =>
@@ -211,7 +213,7 @@ export function RoleView({
       <span className="flex-1 -mt-2" />
       <div className="flex gap-2">
         {typeof role.id === 'number' &&
-        hasPermission('/permissions/roles', 'delete') ? (
+        hasPermission(permissionName, 'delete') ? (
           <Button.Red onClick={handleDelete}>{commonText('remove')}</Button.Red>
         ) : undefined}
         {changesMade ? (

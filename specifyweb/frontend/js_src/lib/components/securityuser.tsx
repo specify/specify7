@@ -12,8 +12,8 @@ import { hasPermission } from '../permissions';
 import {
   compressPolicies,
   decompressPolicies,
+  deflatePolicies,
   fetchRoles,
-  flattenPolicies,
   inflatePolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
@@ -31,7 +31,7 @@ import {
 import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
-import type { BackEndPolicy, Policy } from './securitypolicy';
+import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
 
@@ -66,22 +66,24 @@ export function UserView({
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
     React.useCallback(
       async () =>
-        Promise.all(
-          Object.values(collections).map(async (collection) =>
-            fetchRoles(collection.id, user.id).then(
-              (roles) =>
-                [
-                  collection.id,
-                  roles.map((role) => role.id).sort(sortFunction(f.id)),
-                ] as const
+        hasPermission('/permissions/user/roles', 'read')
+          ? Promise.all(
+              Object.values(collections).map(async (collection) =>
+                fetchRoles(collection.id, user.id).then(
+                  (roles) =>
+                    [
+                      collection.id,
+                      roles.map((role) => role.id).sort(sortFunction(f.id)),
+                    ] as const
+                )
+              )
             )
-          )
-        )
-          .then((entries) => Object.fromEntries(entries))
-          .then((userRoles) => {
-            initialUserRoles.current = userRoles;
-            return userRoles;
-          }),
+              .then((entries) => Object.fromEntries(entries))
+              .then((userRoles) => {
+                initialUserRoles.current = userRoles;
+                return userRoles;
+              })
+          : undefined,
       [user.id, collections]
     ),
     false
@@ -91,27 +93,29 @@ export function UserView({
   const [userPolicies, setUserPolicies] = useAsyncState(
     React.useCallback(
       async () =>
-        Promise.all(
-          Object.values(collections).map(async (collection) =>
-            ajax<RA<BackEndPolicy>>(
-              `/permissions/user_policies/${collection.id}/${user.id}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(
-              ({ data }) =>
-                [
-                  collection.id,
-                  compressPolicies(inflatePolicies(data)),
-                ] as const
+        hasPermission('/permissions/policies/user', 'read')
+          ? Promise.all(
+              Object.values(collections).map(async (collection) =>
+                ajax<IR<RA<string>>>(
+                  `/permissions/user_policies/${collection.id}/${user.id}/`,
+                  {
+                    headers: { Accept: 'application/json' },
+                  }
+                ).then(
+                  ({ data }) =>
+                    [
+                      collection.id,
+                      compressPolicies(inflatePolicies(data)),
+                    ] as const
+                )
+              )
             )
-          )
-        )
-          .then((entries) => Object.fromEntries(entries))
-          .then((policies) => {
-            initialUserPolicies.current = policies;
-            return policies;
-          }),
+              .then((entries) => Object.fromEntries(entries))
+              .then((policies) => {
+                initialUserPolicies.current = policies;
+                return policies;
+              })
+          : undefined,
       [user.id, collections]
     ),
     false
@@ -139,46 +143,42 @@ export function UserView({
       <Form
         className="contents"
         onSubmit={(): void =>
-          typeof userRoles === 'object' && typeof userPolicies === 'object'
-            ? loading(
-                Promise.all([
-                  ...Object.entries(userRoles)
-                    .filter(
-                      ([collectionId, roles]) =>
-                        JSON.stringify(roles) !==
-                        JSON.stringify(initialUserRoles.current[collectionId])
-                    )
-                    .map(async ([collectionId, roles]) =>
-                      ping(
-                        `/permissions/user_roles/${collectionId}/${user.id}/`,
-                        {
-                          method: 'PUT',
-                          body: roles.map((id) => ({ id })),
-                        },
-                        { expectedResponseCodes: [Http.NO_CONTENT] }
-                      )
-                    ),
-                  ...Object.entries(userPolicies)
-                    .filter(
-                      ([collectionId, policies]) =>
-                        JSON.stringify(policies) !==
-                        JSON.stringify(
-                          initialUserPolicies.current[collectionId]
-                        )
-                    )
-                    .map(async ([collectionId, policies]) =>
-                      ping(
-                        `/permissions/user_policies/${collectionId}/${user.id}/`,
-                        {
-                          method: 'PUT',
-                          body: flattenPolicies(decompressPolicies(policies)),
-                        },
-                        { expectedResponseCodes: [Http.NO_CONTENT] }
-                      )
-                    ),
-                ]).then(handleClose)
-              )
-            : undefined
+          loading(
+            Promise.all([
+              ...Object.entries(userRoles ?? {})
+                .filter(
+                  ([collectionId, roles]) =>
+                    JSON.stringify(roles) !==
+                    JSON.stringify(initialUserRoles.current[collectionId])
+                )
+                .map(async ([collectionId, roles]) =>
+                  ping(
+                    `/permissions/user_roles/${collectionId}/${user.id}/`,
+                    {
+                      method: 'PUT',
+                      body: roles.map((id) => ({ id })),
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  )
+                ),
+              ...Object.entries(userPolicies ?? {})
+                .filter(
+                  ([collectionId, policies]) =>
+                    JSON.stringify(policies) !==
+                    JSON.stringify(initialUserPolicies.current[collectionId])
+                )
+                .map(async ([collectionId, policies]) =>
+                  ping(
+                    `/permissions/user_policies/${collectionId}/${user.id}/`,
+                    {
+                      method: 'PUT',
+                      body: deflatePolicies(decompressPolicies(policies)),
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT] }
+                  )
+                ),
+            ]).then(handleClose)
+          )
         }
       >
         <h3 className="text-xl">{`${adminText('user')} ${user.name}`}</h3>
@@ -199,62 +199,66 @@ export function UserView({
             ))}
           </Select>
         </Label.Generic>
-        <fieldset className="flex flex-col gap-2">
-          <legend className={className.headerGray}>
-            {adminText('userRoles')}
-          </legend>
-          <Ul>
-            {typeof collectionRoles === 'object' &&
-            typeof userRoles === 'object'
-              ? collectionRoles[collectionId].map((role) => (
-                  <li key={role.id} className="flex items-center gap-2">
-                    <Label.ForCheckbox>
-                      <Input.Checkbox
-                        disabled={
-                          !hasPermission('/permissions/user/roles', 'update')
-                        }
-                        checked={userRoles[collectionId].includes(role.id)}
-                        onValueChange={(): void =>
-                          setUserRoles(
-                            replaceKey(
-                              userRoles,
-                              collectionId.toString(),
-                              Array.from(
-                                toggleItem(userRoles[collectionId], role.id)
-                              ).sort(sortFunction(f.id))
+        {hasPermission('/permissions/user/roles', 'read') && (
+          <fieldset className="flex flex-col gap-2">
+            <legend className={className.headerGray}>
+              {adminText('userRoles')}
+            </legend>
+            <Ul className="flex flex-col gap-1">
+              {typeof collectionRoles === 'object' &&
+              typeof userRoles === 'object'
+                ? collectionRoles[collectionId].map((role) => (
+                    <li key={role.id} className="flex items-center gap-2">
+                      <Label.ForCheckbox>
+                        <Input.Checkbox
+                          disabled={
+                            !hasPermission('/permissions/user/roles', 'update')
+                          }
+                          checked={userRoles[collectionId].includes(role.id)}
+                          onValueChange={(): void =>
+                            setUserRoles(
+                              replaceKey(
+                                userRoles,
+                                collectionId.toString(),
+                                Array.from(
+                                  toggleItem(userRoles[collectionId], role.id)
+                                ).sort(sortFunction(f.id))
+                              )
                             )
-                          )
+                          }
+                        />
+                        {role.name}
+                      </Label.ForCheckbox>
+                      <Button.Simple
+                        className={`${className.blueButton} print:hidden`}
+                        title={commonText('edit')}
+                        aria-label={commonText('edit')}
+                        // TODO: trigger unload protect
+                        onClick={(): void =>
+                          handleOpenRole(collectionId, role.id)
                         }
-                      />
-                      {role.name}
-                    </Label.ForCheckbox>
-                    <Button.Simple
-                      className={`${className.blueButton} print:hidden`}
-                      title={commonText('edit')}
-                      aria-label={commonText('edit')}
-                      // TODO: trigger unload protect
-                      onClick={(): void =>
-                        handleOpenRole(collectionId, role.id)
-                      }
-                    >
-                      {icons.pencil}
-                    </Button.Simple>
-                  </li>
-                ))
-              : commonText('loading')}
-          </Ul>
-        </fieldset>
-        <PoliciesView
-          policies={userPolicies?.[collectionId]}
-          isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
-          onChange={(policies): void =>
-            typeof userPolicies === 'object'
-              ? setUserPolicies(
-                  replaceKey(userPolicies, collectionId, policies)
-                )
-              : undefined
-          }
-        />
+                      >
+                        {icons.pencil}
+                      </Button.Simple>
+                    </li>
+                  ))
+                : commonText('loading')}
+            </Ul>
+          </fieldset>
+        )}
+        {hasPermission('/permissions/policies/user', 'read') && (
+          <PoliciesView
+            policies={userPolicies?.[collectionId]}
+            isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
+            onChange={(policies): void =>
+              typeof userPolicies === 'object'
+                ? setUserPolicies(
+                    replaceKey(userPolicies, collectionId, policies)
+                  )
+                : undefined
+            }
+          />
+        )}
         <PreviewPermissions
           userId={user.id}
           collectionId={collectionId}
@@ -274,9 +278,12 @@ export function UserView({
               {commonText('close')}
             </Button.Blue>
           )}
-          <Submit.Green disabled={!changesMade}>
-            {commonText('save')}
-          </Submit.Green>
+          {hasPermission('/permissions/policies/user', 'update') ||
+          hasPermission('/permissions/user/roles', 'update') ? (
+            <Submit.Green disabled={!changesMade}>
+              {commonText('save')}
+            </Submit.Green>
+          ) : undefined}
         </div>
       </Form>
     </Container.Base>

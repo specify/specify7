@@ -5,24 +5,22 @@ import { ajax, Http, ping } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { omit, removeKey, replaceKey } from '../helpers';
+import { index, omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { fetchRoles, flattenPolicies, inflatePolicies } from '../securityutils';
-import type { IR, RA } from '../types';
+import type { BackEndRole } from '../securityutils';
+import { deflatePolicies, fetchRoles, inflatePolicies } from '../securityutils';
+import type { IR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
-import type { BackEndRole, Role, UserRoles } from './securityrole';
+import type { Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
-
-const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
-  Object.fromEntries(data.map((item) => [item.id, item]));
 
 export function CollectionView({
   collection,
@@ -35,7 +33,10 @@ export function CollectionView({
 }): JSX.Element {
   const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
-      async () => fetchRoles(collection.id, undefined).then(index),
+      async () =>
+        hasPermission('/permissions/user/roles', 'read')
+          ? fetchRoles(collection.id, undefined).then(index)
+          : undefined,
       [collection.id]
     ),
     false,
@@ -86,54 +87,52 @@ export function CollectionView({
       {state.type === 'MainState' && (
         <>
           <h3 className="text-xl">{collection.get('collectionName')}</h3>
-          <section className="flex flex-col gap-2">
-            <h4 className={className.headerGray}>{adminText('admins')}</h4>
-            <div>
-              <Button.Green>{commonText('add')}</Button.Green>
-            </div>
-          </section>
-          <section className="flex flex-col gap-2">
-            <div>
-              <h4 className={className.headerGray}>{adminText('userRoles')}</h4>
-              {typeof roles === 'object' ? (
-                <ul>
-                  {Object.values(roles).map((role) => (
-                    <li key={role.id}>
-                      <Button.LikeLink
-                        disabled={
-                          !hasPermission('/permissions/user/roles', 'update')
-                        }
-                        onClick={(): void =>
-                          setState({
-                            type: 'RoleState',
-                            roleId: role.id,
-                          })
-                        }
-                      >
-                        {role.name}
-                      </Button.LikeLink>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                commonText('loading')
-              )}
-            </div>
-            {hasPermission('/permissions/roles', 'create') && (
+          {hasPermission('/permissions/user/roles', 'read') && (
+            <section className="flex flex-col gap-2">
               <div>
-                <Button.Green
-                  onClick={(): void =>
-                    setState({
-                      type: 'RoleState',
-                      roleId: undefined,
-                    })
-                  }
-                >
-                  {commonText('add')}
-                </Button.Green>
+                <h4 className={className.headerGray}>
+                  {adminText('userRoles')}
+                </h4>
+                {typeof roles === 'object' ? (
+                  <ul>
+                    {Object.values(roles).map((role) => (
+                      <li key={role.id}>
+                        <Button.LikeLink
+                          disabled={
+                            !hasPermission('/permissions/user/roles', 'update')
+                          }
+                          onClick={(): void =>
+                            setState({
+                              type: 'RoleState',
+                              roleId: role.id,
+                            })
+                          }
+                        >
+                          {role.name}
+                        </Button.LikeLink>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  commonText('loading')
+                )}
               </div>
-            )}
-          </section>
+              {hasPermission('/permissions/roles', 'create') && (
+                <div>
+                  <Button.Green
+                    onClick={(): void =>
+                      setState({
+                        type: 'RoleState',
+                        roleId: undefined,
+                      })
+                    }
+                  >
+                    {commonText('add')}
+                  </Button.Green>
+                </div>
+              )}
+            </section>
+          )}
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof userRoles === 'object' ? (
@@ -176,7 +175,7 @@ export function CollectionView({
                     policies: [],
                   } as const)
             }
-            collection={collection}
+            parentName={collection.get('collectionName') ?? ''}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>
               loading(
@@ -187,7 +186,7 @@ export function CollectionView({
                         method: 'PUT',
                         body: {
                           ...role,
-                          policies: flattenPolicies(role.policies),
+                          policies: deflatePolicies(role.policies),
                         },
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
@@ -206,7 +205,7 @@ export function CollectionView({
                         method: 'POST',
                         body: {
                           ...omit(role, ['id']),
-                          policies: flattenPolicies(role.policies),
+                          policies: deflatePolicies(role.policies),
                         },
                         headers: { Accept: 'application/json' },
                       },
@@ -270,6 +269,7 @@ export function CollectionView({
                   )
                 : undefined
             }
+            permissionName="/permissions/library/roles"
           />
         ) : (
           <LoadingScreen />

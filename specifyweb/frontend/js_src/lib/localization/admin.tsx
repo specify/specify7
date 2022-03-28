@@ -203,12 +203,6 @@ const adminText = createDictionary({
     ca: 'Institution:',
     'es-es': 'Institution:',
   },
-  admins: {
-    'en-us': 'Admins:',
-    'ru-ru': 'Учреждение:',
-    ca: 'Admins:',
-    'es-es': 'Admins:',
-  },
   userRoleLibrary: {
     'en-us': 'User role library:',
     'ru-ru': 'Библиотека ролей пользователей:',

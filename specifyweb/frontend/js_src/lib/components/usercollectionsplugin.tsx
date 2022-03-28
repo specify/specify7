@@ -12,6 +12,7 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { toggleItem } from '../helpers';
+import { hasPermission } from '../permissions';
 
 function UserCollectionsUi({
   userId,
@@ -36,7 +37,9 @@ function UserCollectionsUi({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
+          {hasPermission('/admin/user/sp6/collection_access', 'update') && (
+            <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          )}
         </>
       }
     >
@@ -45,7 +48,7 @@ function UserCollectionsUi({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ping(`/context/user_collection_access/${userId}/`, {
+            ping(`/context/user_collection_access_for_sp6/${userId}/`, {
               method: 'PUT',
               body: selected,
             }).then(handleClose)
@@ -59,6 +62,10 @@ function UserCollectionsUi({
               onChange={(): void =>
                 setSelected(toggleItem(selected, collection.id))
               }
+              isReadOnly={hasPermission(
+                '/admin/user/sp6/collection_access',
+                'update'
+              )}
             />
             {collection.get('collectionName')}
           </Label.ForCheckbox>
@@ -80,9 +87,12 @@ export function UserCollectionsPlugin({
   const [selectedCollections] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<number>>(`/context/user_collection_access/${user.id}/`, {
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data),
+        ajax<RA<number>>(
+          `/context/user_collection_access_for_sp6/${user.id}/`,
+          {
+            headers: { Accept: 'application/json' },
+          }
+        ).then(({ data }) => data),
       [user.id]
     ),
     false

@@ -34,7 +34,7 @@ declare global {
     // Object
     entries<DICTIONARY extends IR<unknown>>(
       object: DICTIONARY
-    ): [keyof DICTIONARY, DICTIONARY[keyof DICTIONARY]][];
+    ): [string & keyof DICTIONARY, DICTIONARY[keyof DICTIONARY]][];
 
     // Array
     entries<ITEM>(array: RA<ITEM>): [string, ITEM][];

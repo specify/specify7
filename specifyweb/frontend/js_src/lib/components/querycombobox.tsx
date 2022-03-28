@@ -313,9 +313,9 @@ export function QueryComboBox({
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
-        !userInformation.available_collections
-          .map(([id]) => id)
-          .includes(relatedCollectionId)
+        !Object.keys(userInformation.availableCollections).includes(
+          relatedCollectionId.toString()
+        )
       ? loading(
           fetchResource('Collection', relatedCollectionId).then((collection) =>
             setState({

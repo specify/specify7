@@ -1,7 +1,6 @@
 import { ajax } from './ajax';
-import type { BackEndPolicy, Policy } from './components/securitypolicy';
+import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
-import { BackEndRole } from './components/securityrole';
 import type { Tables } from './datamodel';
 import adminText from './localization/admin';
 import commonText from './localization/common';
@@ -11,8 +10,12 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, ensure } from './types';
-import { capitalize, group, lowerToHuman, toLowerCase } from './helpers';
+import { capitalize, lowerToHuman, toLowerCase } from './helpers';
 import { f } from './functools';
+
+export type BackEndRole = Omit<Role, 'policies'> & {
+  readonly policies: IR<RA<string>>;
+};
 
 export const fetchRoles = async (
   collectionId: number,
@@ -32,24 +35,22 @@ export const fetchRoles = async (
     }))
   );
 
-/** Convert from BackEndPolicy to Policy */
-export const inflatePolicies = (policies: RA<BackEndPolicy>): RA<Policy> =>
-  Object.entries(
-    group(policies.map(({ resource, action }) => [resource, action]))
-  ).map(([resource, actions]) => ({ resource, actions }));
+export const inflatePolicies = (policies: IR<RA<string>>): RA<Policy> =>
+  Object.entries(policies).map(([resource, actions]) => ({
+    resource,
+    actions,
+  }));
 
-/** Convert from Policy to BackEndPolicy */
-export const flattenPolicies = (policies: RA<Policy>): RA<BackEndPolicy> =>
-  policies.flatMap(({ resource, actions }) =>
-    actions.map((action) => ({
-      resource,
-      action,
-    }))
+export const deflatePolicies = (policies: RA<Policy>): IR<RA<string>> =>
+  Object.fromEntries(
+    policies.map(({ resource, actions }) => [resource, actions])
   );
 
 export const resourceToLabel = (resource: string): string =>
   resource === anyAction
     ? adminText('allResources')
+    : resource.startsWith(tablePermissionsPrefix)
+    ? resourceNameToModel(resource).label
     : getRegistriesFromPath(resourceNameToParts(resource))
         .map((part) => part?.label)
         .join(' ');

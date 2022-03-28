@@ -31,7 +31,7 @@ function ReasonExplanation({
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <div
         className="grid-table grid-cols-[repeat(3,auto)] border border-gray-500 w-full"
         role="table"
@@ -126,7 +126,7 @@ function ReasonExplanation({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -174,7 +174,7 @@ function PreviewRow({
         id={id('reason')}
       >
         {typeof view === 'string' && (
-          <div role="cell" className="flex-col col-span-5 gap-4 py-2">
+          <div role="cell" className="col-span-5 py-2">
             <ReasonExplanation cell={row[view]} onOpenRole={handleOpenRole} />
           </div>
         )}

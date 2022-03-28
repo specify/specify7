@@ -5,7 +5,11 @@ import type { IR, PartialBy, RA } from './types';
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-// TODO: make back-end accept both formData and JSON
+/*
+ * TODO: make back-end accept both formData and JSON
+ * TODO: add a central place for all API endpoint definitions
+ */
+
 export function formData(data: IR<string | Blob>): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => formData.append(key, value));
@@ -30,8 +34,6 @@ export const Http = {
   CONFLICT: 409,
   UNAVAILABLE: 503,
 };
-
-// TODO: add a central place for all API endpoint definitions
 
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 

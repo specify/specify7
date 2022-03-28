@@ -16,11 +16,6 @@ import { defined, filterArray } from '../types';
 import { Button, className, Select, selectMultipleSize } from './basic';
 import { icons } from './icons';
 
-export type BackEndPolicy = {
-  readonly resource: string;
-  readonly action: string;
-};
-
 export type Policy = {
   readonly resource: string;
   readonly actions: RA<string>;

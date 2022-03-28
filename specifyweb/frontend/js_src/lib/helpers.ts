@@ -250,3 +250,7 @@ export const removeKey = <T extends IR<unknown>>(
         Object.entries(object).filter(([key]) => key !== targetKey)
       ) as T)
     : object;
+
+/** Convert an array of objects with IDs into a dictionary */
+export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
+  Object.fromEntries(data.map((item) => [item.id, item]));

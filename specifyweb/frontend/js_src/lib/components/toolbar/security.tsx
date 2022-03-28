@@ -3,11 +3,12 @@ import type { State } from 'typesafe-reducer';
 
 import type { SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
+import { f } from '../../functools';
 import adminText from '../../localization/admin';
+import commonText from '../../localization/common';
 import { router } from '../../router';
 import { schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
-import { f } from '../../functools';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
@@ -15,7 +16,7 @@ import createBackboneView from '../reactbackboneextend';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import { UserView } from '../securityuser';
-import commonText from '../../localization/common';
+import { userInformation } from '../../userinfo';
 
 function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -34,7 +35,13 @@ function SecurityPanel(): JSX.Element | null {
           .fetchPromise({ limit: 0 })
           .then(({ models }) =>
             Object.fromEntries(
-              models.map((collection) => [collection.id, collection])
+              models
+                .filter((collection) =>
+                  Object.keys(userInformation.availableCollections).includes(
+                    collection.id.toString()
+                  )
+                )
+                .map((collection) => [collection.id, collection])
             )
           ),
       });

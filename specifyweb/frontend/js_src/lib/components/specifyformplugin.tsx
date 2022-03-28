@@ -27,8 +27,7 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
-import { hasTablePermission } from '../permissions';
-import { augmentMode } from './resourceview';
+import { hasPermission, hasTablePermission } from '../permissions';
 
 function WrongTable({
   resource,
@@ -72,9 +71,11 @@ const pluginRenderers: {
 } = {
   UserCollectionsUI({ resource }) {
     return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <UserCollectionsPlugin user={specifyUser} />
-      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
+        hasPermission('/admin/user/sp6/collection_access', 'read') ? (
+          <UserCollectionsPlugin user={specifyUser} />
+        ) : null
+      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   LatLonUI({ resource, mode, id }) {
@@ -107,10 +108,7 @@ const pluginRenderers: {
         <PartialDateUi
           resource={resource}
           id={id}
-          isReadOnly={
-            augmentMode(mode, resource.isNew(), resource.specifyModel.name) ===
-            'view'
-          }
+          isReadOnly={mode === 'view'}
           defaultValue={defaultValue}
           defaultPrecision={defaultPrecision}
           precisionField={precisionField}
@@ -229,9 +227,11 @@ const pluginRenderers: {
   },
   PasswordUI({ resource }) {
     return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <PasswordPlugin user={specifyUser} />
-      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
+        hasPermission('/admin/user/password', 'update') ? (
+          <PasswordPlugin user={specifyUser} />
+        ) : null
+      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   UserAgentsUI({ resource, mode, formType, id, isRequired }) {
@@ -251,9 +251,11 @@ const pluginRenderers: {
   },
   AdminStatusUI({ resource, mode, id }) {
     return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <AdminStatusPlugin user={specifyUser} id={id} mode={mode} />
-      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
+        hasPermission('/admin/user/sp6/is_admin', 'update') ? (
+          <AdminStatusPlugin user={specifyUser} id={id} mode={mode} />
+        ) : null
+      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
     );
   },
   LocalityGoogleEarth({ resource, id }) {

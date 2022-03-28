@@ -156,7 +156,6 @@ export const className = {
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
 } as const;
-// TODO: create components for grid tables (+ col with full-span)
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const DataEntry = {

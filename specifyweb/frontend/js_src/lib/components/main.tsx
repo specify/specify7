@@ -3,12 +3,12 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
+import { fetchContext as userPermission } from '../permissions';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
-import { fetchContext as userPermission } from '../permissions';
 import { Button, Link } from './basic';
 import { crash } from './errorboundary';
 import {
@@ -17,7 +17,7 @@ import {
   HeaderItems,
   UserTools,
 } from './header';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import { Notifications } from './notifications';
 
 export type UserTool = {
@@ -40,7 +40,7 @@ export type MenuItem = Omit<UserTool, 'groupLabel'> & {
 };
 
 const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
-  .then(() =>
+  .then(async () =>
     Promise.all([
       import('../toolbardataentry'),
       import('../toolbarinteractions'),
@@ -92,7 +92,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   userPermission,
   fetchUserInfo,
 ])
-  .then(() =>
+  .then(async () =>
     Promise.all([
       // User Account
       {
@@ -175,9 +175,11 @@ export function Main({
   const [userTools, setUserTools] = React.useState<RA<UserTool> | undefined>(
     undefined
   );
-  const [showVersionMismatch = false, setShowVersionMismatch] = React.useState(
+  const [showVersionMismatch, setShowVersionMismatch] = React.useState(
     getSystemInfo().specify6_version !== getSystemInfo().database_version
   );
+
+  const [showMissingAgent] = React.useState(userInformation.agent === null);
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
@@ -204,29 +206,6 @@ export function Main({
       >
         {commonText('skipToContent')}
       </Button.Simple>
-
-      {showVersionMismatch && (
-        <Dialog
-          isOpen={showVersionMismatch}
-          title={commonText('versionMismatchDialogTitle')}
-          header={commonText('versionMismatchDialogHeader')}
-          onClose={(): void => setShowVersionMismatch(false)}
-          buttons={
-            <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
-              {commonText('close')}
-            </Button.Orange>
-          }
-          forceToTop={true}
-        >
-          <p>
-            {commonText('versionMismatchDialogMessage')(
-              getSystemInfo().specify6_version,
-              getSystemInfo().database_version
-            )}
-          </p>
-          <p>{commonText('versionMismatchSecondDialogMessage')}</p>
-        </Dialog>
-      )}
 
       <header
         className={`bg-gray-200 dark:bg-neutral-800 border-b-4 border-b-[5px]
@@ -263,6 +242,46 @@ export function Main({
         <HeaderItems menuItems={menuItems} />
       </header>
       <main className="flex-1 p-4 overflow-auto" ref={mainRef} />
+
+      {showVersionMismatch && (
+        <Dialog
+          isOpen={showVersionMismatch}
+          title={commonText('versionMismatchDialogTitle')}
+          header={commonText('versionMismatchDialogHeader')}
+          onClose={(): void => setShowVersionMismatch(false)}
+          buttons={
+            <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
+              {commonText('close')}
+            </Button.Orange>
+          }
+          forceToTop={true}
+        >
+          <p>
+            {commonText('versionMismatchDialogMessage')(
+              getSystemInfo().specify6_version,
+              getSystemInfo().database_version
+            )}
+          </p>
+          <p>{commonText('versionMismatchSecondDialogMessage')}</p>
+        </Dialog>
+      )}
+      {showMissingAgent && (
+        <Dialog
+          title={commonText('noAgentDialogTitle')}
+          header={commonText('noAgentDialogHeader')}
+          className={{
+            container: `${dialogClassNames.narrowContainer}`,
+          }}
+          onClose={(): void => window.location.assign('/accounts/logout/')}
+          buttons={
+            <Button.DialogClose component={Button.Red}>
+              {commonText('logOut')}
+            </Button.DialogClose>
+          }
+        >
+          {commonText('noAgentDialogMessage')}
+        </Dialog>
+      )}
     </>
   );
 }

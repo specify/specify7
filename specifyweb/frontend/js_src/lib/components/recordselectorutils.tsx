@@ -101,7 +101,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     defaultIndex ?? collection._totalCount ?? 0
   );
 
-  // FIXME: disable onAdd and onDelete if no permission
   return isLoaded ? (
     <BaseRecordSelector<SCHEMA>
       {...rest}
@@ -166,6 +165,8 @@ export function IntegratedRecordSelector({
     (isToOne && collection.models.length > 0) ||
     !hasTablePermission(field.relatedModel.name, 'create');
   const mode = augmentMode(initialMode, false, field.relatedModel.name);
+  // FIXME: disable add and remove for dependent toOne
+  // FIXME: disable onAdd and onDelete if no permission
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
