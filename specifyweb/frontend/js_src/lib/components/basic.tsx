@@ -119,6 +119,8 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
 const containerBackground = 'bg-gray-200 dark:bg-neutral-800';
 const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
   shadow-gray-500 rounded`;
+const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
+    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 // TODO: reduce this once everything is using React
 const rootBackground = 'bg-white dark:bg-neutral-900';
 export const className = {
@@ -139,8 +141,8 @@ export const className = {
   icon: 'icon',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
-  grayButton: `hover:bg-gray-400 bg-gray-300 text-gray-800
-    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`,
+  grayButton,
+  borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
@@ -198,8 +200,8 @@ export const DataEntry = {
         alignItems:
           align === 'right'
             ? 'flex-end'
-            : align === 'flex-center'
-            ? 'center'
+            : align === 'center'
+            ? 'flex-center'
             : undefined,
         ...props.style,
       },
@@ -562,6 +564,10 @@ export const Button = {
     `${niceButton} ${className.transparentButton}`
   ),
   Gray: button('Button.Gray', `${niceButton} ${className.grayButton}`),
+  BorderedGray: button(
+    'Button.BorderedGray',
+    `${niceButton} ${className.borderedGrayButton}`
+  ),
   Red: button('Button.Red', `${niceButton} ${className.redButton}`),
   Blue: button('Button.Blue', `${niceButton} ${className.blueButton}`),
   Orange: button('Button.Orange', `${niceButton} ${className.orangeButton}`),

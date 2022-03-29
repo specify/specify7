@@ -67,7 +67,6 @@ export function SpecifyFormCheckbox({
   resource,
   fieldName,
   defaultValue,
-  isRequired,
   isReadOnly,
   text,
 }: {
@@ -75,7 +74,6 @@ export function SpecifyFormCheckbox({
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
   readonly defaultValue: boolean | undefined;
-  readonly isRequired: boolean;
   readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
@@ -98,8 +96,8 @@ export function SpecifyFormCheckbox({
       checked={value ?? false}
       disabled={typeof value === 'undefined'}
       onValueChange={updateValue}
-      required={isRequired}
       isReadOnly={isReadOnly}
+      // Checkbox can not be required as checkbox does not have a "null" state
     />
   );
   return children.length > 0 ? (

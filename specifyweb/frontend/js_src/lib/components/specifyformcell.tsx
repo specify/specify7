@@ -1,24 +1,24 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { localizeLabel } from '../localizeform';
 import type { FormMode, FormType } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
-import type { CellTypes } from '../parseformcells';
+import type { cellAlign, CellTypes } from '../parseformcells';
 import type { Collection } from '../specifymodel';
 import { defined } from '../types';
-import { f } from '../functools';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
+import { H3 } from './basic';
 import { FormTableInteraction } from './formtableinteractionitem';
 import { useAsyncState } from './hooks';
 import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
-import { H3 } from './basic';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -28,6 +28,7 @@ const cellRenderers: {
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
+    readonly align: typeof cellAlign[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -55,6 +56,7 @@ const cellRenderers: {
     formatId,
     id,
     resource,
+    align,
   }) {
     const htmlFor =
       typeof labelForCellId === 'string' ? formatId(labelForCellId) : undefined;
@@ -65,7 +67,18 @@ const cellRenderers: {
       fieldName,
     });
     return children.length === 0 ? null : (
-      <label htmlFor={htmlFor} {...props}>
+      <label
+        htmlFor={htmlFor}
+        {...props}
+        style={{
+          textAlign:
+            align === 'right'
+              ? 'right'
+              : align === 'center'
+              ? 'center'
+              : undefined,
+        }}
+      >
         {children}
       </label>
     );
@@ -185,6 +198,7 @@ export function FormCell({
   id,
   formatId,
   formType,
+  align,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
@@ -192,10 +206,12 @@ export function FormCell({
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
+  readonly align: typeof cellAlign[number];
 }): JSX.Element {
   const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
   return (
     <Render
+      align={align}
       resource={resource}
       mode={mode}
       cellData={cellData as CellTypes['Field']}

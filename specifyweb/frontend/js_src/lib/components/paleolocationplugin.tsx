@@ -44,6 +44,7 @@ export function PaleoLocationMapPlugin({
       <Button.Simple
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
+        className="w-fit"
       >
         {formsText('paleoMap')}
       </Button.Simple>

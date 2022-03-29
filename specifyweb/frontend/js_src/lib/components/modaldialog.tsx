@@ -55,8 +55,6 @@ export function LoadingScreen({
   );
 }
 
-export const LoadingView = createBackboneView(LoadingScreen);
-
 const commonContainer = `rounded resize overflow-y-hidden max-w-[90%]
   shadow-lg shadow-gray-500`;
 export const dialogClassNames = {

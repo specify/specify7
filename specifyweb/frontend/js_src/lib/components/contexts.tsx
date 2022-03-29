@@ -13,6 +13,14 @@ let setError: (
 ) => void;
 export const displayError: typeof setError = (error) => setError(error);
 
+/*
+ * For usage in non-react components only
+ * TODO: remove this once everything is using react
+ */
+let legacyContext: (promise: Promise<unknown>) => void;
+export const legacyLoadingContext = (promise: Promise<unknown>) =>
+  legacyContext(promise);
+
 export function Contexts({
   children,
 }: {
@@ -29,6 +37,8 @@ export function Contexts({
       const holderId = holders.current.length;
       holders.current = [...holders.current, holderId];
       handleLoading();
+      if (process.env.NODE_ENV !== 'production')
+        console.log('Loading screen', { promise, holders });
       promise
         .catch((error: Error) => {
           crash(error);
@@ -41,6 +51,7 @@ export function Contexts({
     },
     [handleLoading, handleLoaded]
   );
+  legacyContext = handle;
 
   const [errors, setErrors] = React.useState<RA<JSX.Element | undefined>>([]);
 

@@ -8,7 +8,7 @@ import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
-import { TableIcon } from './common';
+import { Icon } from './common';
 import { useAsyncState, useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
 
@@ -25,7 +25,7 @@ export function SubView({
   formType,
   isButton,
   viewName = field.relatedModel.view,
-  icon = parentResource.specifyModel.getIcon(),
+  icon = field.relatedModel.getIcon(),
 }: {
   readonly field: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -47,12 +47,12 @@ export function SubView({
   }, [parentResource, field]);
 
   const [collection] = useAsyncState(
-    React.useCallback(() => {
+    React.useCallback(async () => {
       if (resourceUrl === '') return undefined;
       else if (relationshipIsToMany(field))
         return parentResource.rgetCollection(field.name);
       else {
-        const resource = parentResource.rgetPromise(field.name);
+        const resource = await parentResource.rgetPromise(field.name);
         const collection = (
           field.isDependent()
             ? new field.relatedModel.DependentCollection({
@@ -72,16 +72,17 @@ export function SubView({
   return (
     <SubViewContext.Provider value={field}>
       {isButton && (
-        <Button.Gray
+        <Button.BorderedGray
           title={field.label}
+          aria-label={field.label}
           aria-pressed={isOpen}
           onClick={handleToggle}
         >
-          {parentFormType === 'form' && <TableIcon name={icon} />}
+          {parentFormType === 'form' && <Icon path={icon} title={undefined} />}
           <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
             {collection?.models.length ?? commonText('loading')}
           </span>
-        </Button.Gray>
+        </Button.BorderedGray>
       )}
       {typeof collection === 'object' && isOpen && (
         <IntegratedRecordSelector

@@ -214,6 +214,7 @@ export function UserAgentsPlugin({
   return (
     <>
       <Button.Simple
+        className="w-fit"
         id={id}
         disabled={user.isNew()}
         title={

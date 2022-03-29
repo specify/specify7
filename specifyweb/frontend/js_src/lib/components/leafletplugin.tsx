@@ -71,7 +71,12 @@ export function LeafletPlugin({
 
   return (
     <>
-      <Button.Simple id={id} onClick={handleToggle} aria-pressed={isOpen}>
+      <Button.Simple
+        id={id}
+        onClick={handleToggle}
+        aria-pressed={isOpen}
+        className="w-fit"
+      >
         {localityText('showMap')}
       </Button.Simple>
       {isOpen && <LeafletDialog locality={locality} onClose={handleClose} />}

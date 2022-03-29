@@ -430,6 +430,7 @@ export function QueryComboBox({
               onClick={handleOpenRelated}
               title={commonText('view')}
               aria-label={commonText('view')}
+              className="text-orange-400"
               icon="eye"
             />
           )
@@ -444,6 +445,7 @@ export function QueryComboBox({
               }
               onClick={handleOpenRelated}
               aria-label={commonText('edit')}
+              className="text-orange-400"
               icon="pencil"
             />
             <Button.Icon
@@ -451,6 +453,8 @@ export function QueryComboBox({
               title={commonText('add')}
               aria-label={commonText('add')}
               disabled={field?.isRelationship !== true}
+              className="text-green-700"
+              icon="plus"
               onClick={(): void =>
                 field?.isRelationship === true
                   ? state.type === 'AddResourceState'
@@ -461,7 +465,6 @@ export function QueryComboBox({
                       })
                   : undefined
               }
-              icon="plus"
             />
             {hasCloneButton && (
               <Button.Icon
@@ -469,6 +472,7 @@ export function QueryComboBox({
                 disabled={typeof formatted?.resource === 'undefined'}
                 aria-label={formsText('clone')}
                 icon="clipboard"
+                className="text-amber-700"
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
@@ -485,6 +489,7 @@ export function QueryComboBox({
               icon="search"
               aria-pressed={state.type === 'SearchState'}
               disabled={!isLoaded || typeof typeSearch !== 'object'}
+              className="text-blue-500"
               onClick={(): void =>
                 isLoaded && typeof typeSearch === 'object'
                   ? setState({

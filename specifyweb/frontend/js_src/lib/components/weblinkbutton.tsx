@@ -12,7 +12,7 @@ import type { FormMode, FormType } from '../parseform';
 import { getTreePath } from '../specifyapi';
 import type { IR } from '../types';
 import { defined } from '../types';
-import { Link } from './basic';
+import { className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 
@@ -61,7 +61,11 @@ export function WebLinkButton({
   readonly mode: FormMode;
   readonly id: string | undefined;
 }): JSX.Element {
-  const [data] = useAsyncState(
+  const [data] = useAsyncState<{
+    readonly title: string;
+    readonly definition: Element | undefined;
+    readonly isExternal: boolean;
+  }>(
     React.useCallback(async () => {
       const fieldInfo = resource.specifyModel.getField(fieldName ?? '');
       const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
@@ -96,7 +100,7 @@ export function WebLinkButton({
     async function buildUrl(): Promise<string> {
       const template =
         data?.definition
-          .querySelector('baseURLStr')
+          ?.querySelector('baseURLStr')
           ?.textContent?.replace(/<\s*this\s*>/g, '<_this>')
           .replaceAll('AMP', '&')
           .replaceAll('<', '<%= ')
@@ -104,7 +108,7 @@ export function WebLinkButton({
 
       let args = Object.fromEntries(
         Array.from(
-          data?.definition.querySelectorAll('weblinkdefarg > name') ?? [],
+          data?.definition?.querySelectorAll('weblinkdefarg > name') ?? [],
           (parameter) => [
             parameter.textContent === 'this'
               ? '_this'
@@ -158,7 +162,8 @@ export function WebLinkButton({
               id={id}
             />
           ) : undefined}
-          <Link.LikeButton
+          <Link.LikeFancyButton
+            className={className.grayButton}
             title={data.title}
             href={url}
             target={isExternal ? '_blank' : undefined}
@@ -169,7 +174,7 @@ export function WebLinkButton({
               className="max-w-[40px] max-h-[20px]"
               alt={data.title ?? url}
             />
-          </Link.LikeButton>
+          </Link.LikeFancyButton>
         </>
       ) : undefined}
     </div>

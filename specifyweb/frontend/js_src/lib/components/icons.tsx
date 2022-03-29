@@ -8,8 +8,9 @@
  */
 
 import React from 'react';
-import { dialogIconTriggers } from './basic';
-import { RR } from '../types';
+
+import type { RR } from '../types';
+import type { dialogIconTriggers } from './basic';
 
 export const iconClassName = 'w-6 h-6';
 

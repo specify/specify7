@@ -42,7 +42,7 @@ import {getIcon} from './icons';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import {loadingBar, LoadingView, showDialog} from './components/modaldialog';
+import {loadingBar, showDialog} from './components/modaldialog';
 import {format} from './dataobjformatters';
 import {legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
@@ -55,6 +55,7 @@ import {setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
 import {hasPermission} from './permissions';
 import {wbViewTemplate} from './components/wbviewtemplate';
+import {legacyLoadingContext} from './components/contexts';
 
 const metaKeys = [
   'isNew',
@@ -284,7 +285,6 @@ const WBView = Backbone.View.extend({
           this.identifyTreeRanks();
           this.wbutils.render();
 
-          this.trigger('loaded');
           this.hotIsReady = true;
 
           this.hotCommentsContainer =
@@ -292,20 +292,23 @@ const WBView = Backbone.View.extend({
         })
       );
 
-    this.initHot().then(() => {
-      if (this.dataset.uploadplan) {
-        this.mappings = parseUploadPlan(this.dataset.uploadplan);
+    legacyLoadingContext(
+      this.initHot().then(() => {
+        if (this.dataset.uploadplan) {
+          this.mappings = parseUploadPlan(this.dataset.uploadplan);
 
-        this.mappings.tableNames = this.mappings.lines.map(({ mappingPath }) =>
-          getTableFromMappingPath(
-            this.mappings.baseTable.name,
-            // Remove field name from mapping path
-            mappingPath.slice(0, -1)
-          )
-        );
-      }
-      initDataModelIntegration().catch(crash);
-    });
+          this.mappings.tableNames = this.mappings.lines.map(
+            ({ mappingPath }) =>
+              getTableFromMappingPath(
+                this.mappings.baseTable.name,
+                // Remove field name from mapping path
+                mappingPath.slice(0, -1)
+              )
+          );
+        }
+        return initDataModelIntegration().catch(crash);
+      })
+    );
 
     this.updateValidationButton();
     if (this.validationMode === 'static' && !this.isUploaded)
@@ -2546,26 +2549,24 @@ export default function loadDataset(
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false
 ) {
-  const loadingScreen = new LoadingView().render();
-
-  ajax(
-    `/api/workbench/dataset/${id}/`,
-    { headers: { Accept: 'application/json' } },
-    { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-  ).then(({ data: dataset, status }) => {
-    if (status === Http.NOT_FOUND) {
-      setCurrentView(new NotFoundView());
-      return;
-    }
-    const view = new WBView({
-      dataset,
-      refreshInitiatedBy,
-      refreshInitiatorAborted,
+  legacyLoadingContext(
+    ajax(
+      `/api/workbench/dataset/${id}/`,
+      { headers: { Accept: 'application/json' } },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    ).then(({ data: dataset, status }) => {
+      if (status === Http.NOT_FOUND) {
+        setCurrentView(new NotFoundView());
+        return;
+      }
+      const view = new WBView({
+        dataset,
+        refreshInitiatedBy,
+        refreshInitiatorAborted,
+      }).on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted));
+      setCurrentView(view);
     })
-      .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
-      .on('loaded', () => loadingScreen.remove());
-    setCurrentView(view);
-  });
+  );
 }
 
 const extractDefaultValues = (splitMappingPaths, emptyStringReplacement) =>

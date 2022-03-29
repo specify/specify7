@@ -27,6 +27,7 @@ export function AdminStatusPlugin({
   return (
     <>
       <Button.Simple
+        className="w-fit"
         id={id}
         disabled={
           mode === 'view' ||

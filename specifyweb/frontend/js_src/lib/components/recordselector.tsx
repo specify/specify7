@@ -19,28 +19,32 @@ export function RecordSelectorButtons({
   onDelete: handleDelete,
   visitHref,
 }: {
-  readonly onAdd: (() => void) | undefined;
-  readonly onDelete: (() => void) | undefined;
+  readonly onAdd: (() => void) | undefined | false;
+  readonly onDelete: (() => void) | undefined | false;
   readonly visitHref: string | undefined;
 }): JSX.Element {
   return (
     <>
-      <Button.Icon
-        icon="plus"
-        className="text-green-700"
-        aria-label={commonText('add')}
-        title={commonText('add')}
-        onClick={handleAdd}
-        disabled={typeof handleAdd === 'undefined'}
-      />
-      <Button.Icon
-        icon="minus"
-        className="text-red-700"
-        aria-label={commonText('delete')}
-        title={commonText('delete')}
-        onClick={handleDelete}
-        disabled={typeof handleDelete === 'undefined'}
-      />
+      {handleAdd !== false && (
+        <Button.Icon
+          icon="plus"
+          className="text-green-700"
+          aria-label={commonText('add')}
+          title={commonText('add')}
+          onClick={handleAdd}
+          disabled={typeof handleAdd === 'undefined'}
+        />
+      )}
+      {handleDelete !== false && (
+        <Button.Icon
+          icon="minus"
+          className="text-red-700"
+          aria-label={commonText('delete')}
+          title={commonText('delete')}
+          onClick={handleDelete}
+          disabled={typeof handleDelete === 'undefined'}
+        />
+      )}
       {typeof visitHref === 'string' && (
         <Link.NewTab
           href={visitHref}

@@ -102,6 +102,10 @@ const createBackboneView = <PROPS extends IR<unknown>>(
 
 export default createBackboneView;
 
+/**
+ * Render a non-react component inside of React
+ * Usage is discouraged. Better to just rewrite the component to React
+ */
 export function RenderView({
   getView,
 }: {

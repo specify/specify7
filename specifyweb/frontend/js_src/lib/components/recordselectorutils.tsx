@@ -4,16 +4,18 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import collectionapi from '../collectionapi';
 import type { RecordSet as RecordSetSchema } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
+import { clamp, removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import type { FormMode, FormType } from '../parseform';
+import { hasTablePermission, hasToolPermission } from '../permissions';
 import * as queryString from '../querystring';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { clamp, removeItem } from '../helpers';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { crash } from './errorboundary';
@@ -23,8 +25,6 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
-import { hasTablePermission, hasToolPermission } from '../permissions';
-import { f } from '../functools';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(queryString.parse()[queryParameter], (index) =>
@@ -157,12 +157,11 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof collectionapi.Dependent;
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
-  const disableAdding =
-    (isToOne && collection.models.length > 0) ||
-    !hasTablePermission(field.relatedModel.name, 'create');
   const mode = augmentMode(initialMode, false, field.relatedModel.name);
-  // FIXME: disable add and remove for dependent toOne
-  // FIXME: disable onAdd and onDelete if no permission
+  /*
+   * FIXME: disable add and remove for dependent toOne
+   * FIXME: disable onAdd and onDelete if no permission
+   */
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -212,15 +211,20 @@ export function IntegratedRecordSelector({
                       : undefined
                   }
                   onDelete={
-                    typeof resource === 'object' &&
-                    mode !== 'view' &&
-                    (resource.isNew() ||
-                      hasTablePermission(resource.specifyModel.name, 'delete'))
-                      ? handleRemove
+                    typeof resource === 'object' && mode !== 'view'
+                      ? resource.isNew() ||
+                        hasTablePermission(resource.specifyModel.name, 'delete')
+                        ? handleRemove
+                        : false
                       : undefined
                   }
                   onAdd={
-                    mode === 'view' || disableAdding ? undefined : handleAdd
+                    hasTablePermission(field.relatedModel.name, 'create')
+                      ? mode === 'view' ||
+                        (isToOne && collection.models.length > 0)
+                        ? undefined
+                        : handleAdd
+                      : false
                   }
                 />
                 <span className="flex-1 -ml-4" />
@@ -345,11 +349,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                       : undefined
                   }
                   onDelete={
-                    typeof resource === 'object' &&
-                    mode !== 'view' &&
-                    (resource.isNew() ||
-                      hasTablePermission(resource.specifyModel.name, 'delete'))
-                      ? handleRemove
+                    typeof resource === 'object' && mode !== 'view'
+                      ? resource.isNew() ||
+                        hasTablePermission(resource.specifyModel.name, 'delete')
+                        ? handleRemove
+                        : false
                       : undefined
                   }
                   onAdd={mode === 'view' ? undefined : handleAdd}

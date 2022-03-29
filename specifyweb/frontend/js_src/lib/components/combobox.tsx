@@ -145,7 +145,13 @@ export function ComboBox({
   const pickListName = props.pickListName ?? resolvedField.getPickList();
 
   if (typeof pickListName === 'string')
-    return <DefaultComboBox {...props} field={resolvedField} />;
+    return (
+      <DefaultComboBox
+        {...props}
+        field={resolvedField}
+        pickListName={pickListName}
+      />
+    );
   else {
     console.error(
       `Unable to resolve a pick list for ${model.specifyModel.name}.${fieldName}`

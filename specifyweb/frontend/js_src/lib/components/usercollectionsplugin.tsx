@@ -102,6 +102,7 @@ export function UserCollectionsPlugin({
     <>
       <Button.Simple
         onClick={handleOpen}
+        className="w-fit"
         disabled={
           !user.get('isAdmin') ||
           typeof user === 'undefined' ||

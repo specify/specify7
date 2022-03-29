@@ -9,6 +9,7 @@ import formsText from '../localization/forms';
 import { localizeLabel } from '../localizeform';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
+import { hasTablePermission } from '../permissions';
 import type { Relationship } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
@@ -20,7 +21,6 @@ import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
-import { hasTablePermission } from '../permissions';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -174,6 +174,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         visible={visible}
                       >
                         <FormCell
+                          align={align}
                           resource={resource}
                           mode={viewDefinition.mode}
                           formType={viewDefinition.formType}
@@ -282,8 +283,10 @@ export function FormTableCollection({
     | ((resource: SpecifyResource<AnySchema>) => void)
     | undefined;
 }): JSX.Element {
-  // FIXME: disable add and remove for dependent toOne
-  // FIXME: disable onAdd and onDelete if no permission
+  /*
+   * FIXME: disable add and remove for dependent toOne
+   * FIXME: disable onAdd and onDelete if no permission
+   */
   const field = defined(collection.field?.getReverse());
   const isDependent = collection instanceof collectionapi.Dependent;
   const isToOne = !relationshipIsToMany(field);

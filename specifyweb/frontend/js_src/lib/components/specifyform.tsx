@@ -165,6 +165,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
                     visible={visible}
                   >
                     <FormCell
+                      align={align}
                       resource={loadedResource}
                       mode={viewDefinition.mode}
                       formType={viewDefinition.formType}

@@ -32,7 +32,6 @@ const fieldRenderers: {
     resource,
     mode,
     fieldName,
-    isRequired,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
     return printOnSave ? (
@@ -49,7 +48,6 @@ const fieldRenderers: {
         resource={resource}
         fieldName={defined(fieldName)}
         defaultValue={defaultValue}
-        isRequired={isRequired}
         isReadOnly={mode === 'view'}
         text={label}
       />

@@ -893,16 +893,16 @@ const formsText = createDictionary({
   },
   wrongTablePluginDialogMessage: {
     'en-us': (currentTable: string, correctTable: string) => `
-      The plugin can not be used on the SpecifyUser ${currentTable} form.
+      The plugin can not be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
     'ru-ru': (currentTable: string, correctTable: string) => `
       Этот плагин нельзя использовать в форме ${currentTable}. Его можно
       использовать только в форме ${correctTable}.`,
     ca: (currentTable: string, correctTable: string) => `
-      This plugin can not be used on the SpecifyUser ${currentTable} form.
+      This plugin can not be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
     'es-es': (currentTable: string, correctTable: string) => `
-      This plugin can not be used on the SpecifyUser ${currentTable} form.
+      This plugin can not be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
   },
   pluginName: {

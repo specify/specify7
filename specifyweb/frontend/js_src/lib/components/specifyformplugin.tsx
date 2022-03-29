@@ -2,14 +2,15 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes } from '../parseformfields';
 import type { UiPlugins } from '../parseuiplugins';
+import { hasPermission, hasTablePermission } from '../permissions';
 import { toTable } from '../specifymodel';
-import { f } from '../functools';
 import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
@@ -27,7 +28,6 @@ import { PasswordPlugin } from './passwordplugin';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
-import { hasPermission, hasTablePermission } from '../permissions';
 
 function WrongTable({
   resource,
@@ -70,13 +70,11 @@ const pluginRenderers: {
   }) => JSX.Element | null;
 } = {
   UserCollectionsUI({ resource }) {
-    return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
-        hasPermission('/admin/user/sp6/collection_access', 'read') ? (
+    return hasPermission('/admin/user/sp6/collection_access', 'read')
+      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
           <UserCollectionsPlugin user={specifyUser} />
-        ) : null
-      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-    );
+        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      : null;
   },
   LatLonUI({ resource, mode, id }) {
     return (
@@ -126,18 +124,18 @@ const pluginRenderers: {
       );
       return null;
     } else
-      return (
-        f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-          collectionObject.isNew() ||
-          !hasTablePermission('CollectionRelationship', 'read') ||
-          !hasTablePermission('CollectionRelType', 'read') ? null : (
+      return resource.isNew() ||
+        !hasTablePermission('CollectionRelationship', 'read') ||
+        !hasTablePermission('CollectionRelType', 'read')
+        ? null
+        : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
             <CollectionOneToManyPlugin
               resource={collectionObject}
               relationship={relationship}
             />
-          )
-        ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
-      );
+          )) ?? (
+            <WrongTable resource={resource} allowedTable="CollectionObject" />
+          );
   },
   ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
     if (typeof relationship === 'undefined') {
@@ -146,18 +144,18 @@ const pluginRenderers: {
       );
       return null;
     } else
-      return (
-        f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-          collectionObject.isNew() ||
-          !hasTablePermission('CollectionRelationship', 'read') ||
-          !hasTablePermission('CollectionRelType', 'read') ? null : (
+      return resource.isNew() ||
+        !hasTablePermission('CollectionRelationship', 'read') ||
+        !hasTablePermission('CollectionRelType', 'read')
+        ? null
+        : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
             <CollectionOneToOnePlugin
               resource={collectionObject}
               relationship={relationship}
             />
-          )
-        ) ?? <WrongTable resource={resource} allowedTable="CollectionObject" />
-      );
+          )) ?? (
+            <WrongTable resource={resource} allowedTable="CollectionObject" />
+          );
   },
   LocalityGeoRef({ resource }) {
     return (
@@ -226,18 +224,15 @@ const pluginRenderers: {
       ) : null;
   },
   PasswordUI({ resource }) {
-    return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
-        hasPermission('/admin/user/password', 'update') ? (
+    return hasPermission('/admin/user/password', 'update')
+      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
           <PasswordPlugin user={specifyUser} />
-        ) : null
-      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-    );
+        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      : null;
   },
   UserAgentsUI({ resource, mode, formType, id, isRequired }) {
-    return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
-        hasTablePermission('Agent', 'read') ? (
+    return hasTablePermission('Agent', 'read')
+      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
           <UserAgentsPlugin
             user={specifyUser}
             id={id}
@@ -245,18 +240,15 @@ const pluginRenderers: {
             formType={formType}
             isRequired={isRequired}
           />
-        ) : null
-      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-    );
+        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      : null;
   },
   AdminStatusUI({ resource, mode, id }) {
-    return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) =>
-        hasPermission('/admin/user/sp6/is_admin', 'update') ? (
+    return hasPermission('/admin/user/sp6/is_admin', 'update')
+      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
           <AdminStatusPlugin user={specifyUser} id={id} mode={mode} />
-        ) : null
-      ) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-    );
+        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      : null;
   },
   LocalityGoogleEarth({ resource, id }) {
     return (
@@ -270,7 +262,7 @@ const pluginRenderers: {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        <Button.Simple id={id} onClick={handleShow}>
+        <Button.Simple id={id} onClick={handleShow} className="w-fit">
           {formsText('unavailablePluginButton')}
         </Button.Simple>
         <Dialog

@@ -100,7 +100,8 @@ export function Autocomplete<T>({
         onBlur: ({ target }): void => {
           const input = target as HTMLInputElement;
           const data = results[input.value] ?? results[input.value.trim()];
-          if (typeof data === 'undefined') handleNewValue?.(input.value);
+          if (typeof data === 'undefined' && input.value.length > 0)
+            handleNewValue?.(input.value);
         },
       })}
       <datalist id={id('')} ref={refDataList}>

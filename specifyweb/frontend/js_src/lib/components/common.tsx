@@ -7,10 +7,10 @@
 
 import React from 'react';
 
+import { spanNumber } from '../helpers';
 import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { getModel } from '../schema';
-import { spanNumber } from '../helpers';
 import { icons } from './icons';
 
 const MAX_HUE = 360;
@@ -30,6 +30,27 @@ const getHue = spanNumber(
   MAX_HUE
 );
 
+export function Icon({
+  path,
+  title,
+}: {
+  readonly path: string;
+  readonly title: string | undefined;
+}): JSX.Element {
+  const role = typeof title === 'string' ? 'img' : undefined;
+  const ariaHidden = typeof title === 'undefined';
+  return (
+    <span
+      className="w-table-icon h-table-icon bg-center bg-no-repeat bg-contain"
+      role={role}
+      style={{ backgroundImage: `url('${path}')` }}
+      title={title}
+      aria-label={title}
+      aria-hidden={ariaHidden}
+    />
+  );
+}
+
 /**
  * Renders a table icon or autogenerates a new one
  */
@@ -48,16 +69,7 @@ export function TableIcon({
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = typeof resolvedTableLabel === 'undefined';
   if (tableIconSource !== '/images/unknown.png')
-    return (
-      <span
-        className="w-table-icon h-table-icon bg-center bg-no-repeat bg-contain"
-        role={role}
-        style={{ backgroundImage: `url('${tableIconSource}')` }}
-        title={resolvedTableLabel}
-        aria-label={resolvedTableLabel}
-        aria-hidden={ariaHidden}
-      />
-    );
+    return <Icon path={tableIconSource} title={resolvedTableLabel} />;
 
   // eslint-disable-next-line unicorn/prefer-code-point
   const colorHue = getHue(name.charCodeAt(0) + name.charCodeAt(0));
