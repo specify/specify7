@@ -19,7 +19,9 @@ export function formData(data: IR<string | Blob>): FormData {
 const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
 export const isExternalUrl = (url: string): boolean =>
   // Relative url is not external. Passing a relative URL to new URL() throws
-  reIsAbsolute.exec(url) === null
+  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
+    ? true
+    : reIsAbsolute.exec(url) === null
     ? false
     : new URL(url).origin !== window.location.origin;
 

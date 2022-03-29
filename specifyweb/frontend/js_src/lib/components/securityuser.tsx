@@ -164,11 +164,6 @@ export function UserView({
   const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
 
-  /*
-   * FIXME: create role template > prompt to use a role from another collection
-   * FIXME: role import/export
-   */
-
   const hasCollectionAccess =
     userPolicies?.[collectionId].some(
       ({ resource, actions }) =>
@@ -298,7 +293,7 @@ export function UserView({
         {hasPermission('/permissions/user/roles', 'read') && (
           <fieldset className="flex flex-col gap-2">
             <legend className={className.headerGray}>
-              {adminText('userRoles')}
+              {adminText('userRoles')}:
             </legend>
             <Ul className="flex flex-col gap-1">
               {typeof collectionRoles === 'object' &&

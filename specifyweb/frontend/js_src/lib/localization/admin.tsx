@@ -210,10 +210,10 @@ const adminText = createDictionary({
     'es-es': 'User role library:',
   },
   userRoles: {
-    'en-us': 'User roles:',
-    'ru-ru': 'Роли пользователей:',
-    ca: 'User roles:',
-    'es-es': 'User roles:',
+    'en-us': 'User roles',
+    'ru-ru': 'Роли пользователей',
+    ca: 'User roles',
+    'es-es': 'User roles',
   },
   table: {
     'en-us': 'Table',
@@ -259,10 +259,10 @@ const adminText = createDictionary({
   },
   // FIXME: localize
   userPolicies: {
-    'en-us': 'User policies:',
-    'ru-ru': 'User policies:',
-    ca: 'User policies:',
-    'es-es': 'User policies:',
+    'en-us': 'User policies',
+    'ru-ru': 'User policies',
+    ca: 'User policies',
+    'es-es': 'User policies',
   },
   institutionUserPolicies: {
     'en-us': 'Institution-wide User policies:',
@@ -359,6 +359,24 @@ const adminText = createDictionary({
     'ru-ru': 'From scratch',
     ca: 'From scratch',
     'es-es': 'From scratch',
+  },
+  createNewRoles: {
+    'en-us': 'Create new roles:',
+    'ru-ru': 'Create new roles:',
+    ca: 'Create new roles:',
+    'es-es': 'Create new roles:',
+  },
+  updateExistingRoles: {
+    'en-us': 'Update existing roles:',
+    'ru-ru': 'Update existing roles:',
+    ca: 'Update existing roles:',
+    'es-es': 'Update existing roles:',
+  },
+  unchangedRoles: {
+    'en-us': 'Unchanged roles:',
+    'ru-ru': 'Unchanged roles:',
+    ca: 'Unchanged roles:',
+    'es-es': 'Unchanged roles:',
   },
 });
 

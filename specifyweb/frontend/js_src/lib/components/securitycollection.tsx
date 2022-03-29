@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
 import { index, omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
@@ -22,6 +23,7 @@ import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
@@ -44,7 +46,7 @@ export function CollectionView({
   const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/user/roles', 'read')
+        hasPermission('/permissions/roles', 'read')
           ? fetchRoles(collection.id, undefined).then(index)
           : undefined,
       [collection.id]
@@ -91,7 +93,8 @@ export function CollectionView({
               roleId: initialRoleId,
             } as const)
           : ({ type: 'MainState' } as const),
-      [initialRoleId]
+      // Close open role when collection changes
+      [initialRoleId, collection.id]
     )
   );
   React.useEffect(() => {
@@ -106,17 +109,54 @@ export function CollectionView({
       });
   }, [roles, state, initialRoleId, setState]);
 
+  const updateRole = async (role: Role): Promise<void> =>
+    ping(
+      `/permissions/role/${role.id}/`,
+      {
+        method: 'PUT',
+        body: {
+          ...role,
+          policies: decompressPolicies(role.policies),
+        },
+      },
+      { expectedResponseCodes: [Http.NO_CONTENT] }
+    ).then((): void =>
+      setRoles(replaceKey(defined(roles), role.id.toString(), role))
+    );
+
+  const createRole = async (role: NewRole): Promise<void> =>
+    ajax<BackEndRole>(
+      `/permissions/roles/${collection.id}/`,
+      {
+        method: 'POST',
+        body: {
+          ...omit(role, ['id']),
+          policies: decompressPolicies(role.policies),
+        },
+        headers: { Accept: 'application/json' },
+      },
+      { expectedResponseCodes: [Http.CREATED] }
+    ).then(({ data: role }) =>
+      setRoles((roles) => ({
+        ...roles,
+        [role.id]: {
+          ...role,
+          policies: processPolicies(role.policies),
+        },
+      }))
+    );
+
   const loading = React.useContext(LoadingContext);
   return (
     <Container.Base className="flex-1 overflow-y-auto">
       {state.type === 'MainState' && (
         <>
           <h3 className="text-xl">{collection.get('collectionName')}</h3>
-          {hasPermission('/permissions/user/roles', 'read') && (
+          {hasPermission('/permissions/roles', 'read') && (
             <section className="flex flex-col gap-2">
               <div>
                 <h4 className={className.headerGray}>
-                  {adminText('userRoles')}
+                  {adminText('userRoles')}:
                 </h4>
                 {typeof roles === 'object' ? (
                   <ul>
@@ -124,7 +164,7 @@ export function CollectionView({
                       <li key={role.id}>
                         <Button.LikeLink
                           disabled={
-                            !hasPermission('/permissions/user/roles', 'update')
+                            !hasPermission('/permissions/roles', 'update')
                           }
                           onClick={(): void =>
                             setState({
@@ -142,8 +182,8 @@ export function CollectionView({
                   commonText('loading')
                 )}
               </div>
-              {hasPermission('/permissions/roles', 'create') && (
-                <div>
+              <div className="flex gap-2">
+                {hasPermission('/permissions/roles', 'create') && (
                   <Button.Green
                     onClick={(): void =>
                       setState({
@@ -151,38 +191,49 @@ export function CollectionView({
                       })
                     }
                   >
-                    {commonText('add')}
+                    {commonText('create')}
                   </Button.Green>
-                </div>
-              )}
+                )}
+                <SecurityImportExport
+                  roles={roles}
+                  isReadOnly={!hasPermission('/permissions/roles', 'update')}
+                  baseName={collection.get('collectionName') ?? ''}
+                  onUpdateRole={updateRole}
+                  onCreateRole={createRole}
+                />
+              </div>
             </section>
           )}
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
-            {typeof userRoles === 'object' ? (
-              <Ul>
-                {Object.values(userRoles)
-                  .filter(
+            {typeof userRoles === 'object'
+              ? f.var(
+                  Object.values(userRoles).filter(
                     ({ roles, user }) =>
                       roles.length > 0 &&
                       (user.id === userInformation.id ||
                         hasTablePermission('SpecifyUser', 'update') ||
                         hasPermission('/permissions/policies/user', 'update') ||
                         hasPermission('/permissions/user/roles', 'update'))
-                  )
-                  .map(({ user }) => (
-                    <li key={user.id}>
-                      <Button.LikeLink
-                        onClick={(): void => handleOpenUser(user.id)}
-                      >
-                        {user.name}
-                      </Button.LikeLink>
-                    </li>
-                  ))}
-              </Ul>
-            ) : (
-              commonText('loading')
-            )}
+                  ),
+                  (users) =>
+                    users.length === 0 ? (
+                      commonText('none')
+                    ) : (
+                      <Ul>
+                        {users.map(({ user }) => (
+                          <li key={user.id}>
+                            <Button.LikeLink
+                              onClick={(): void => handleOpenUser(user.id)}
+                            >
+                              {user.name}
+                            </Button.LikeLink>
+                          </li>
+                        ))}
+                      </Ul>
+                    )
+                )
+              : commonText('loading')}
           </section>
         </>
       )}
@@ -212,45 +263,8 @@ export function CollectionView({
             onSave={(role): void =>
               loading(
                 (typeof role.id === 'number'
-                  ? ping(
-                      `/permissions/role/${role.id}/`,
-                      {
-                        method: 'PUT',
-                        body: {
-                          ...role,
-                          policies: decompressPolicies(role.policies),
-                        },
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    ).then((): void =>
-                      setRoles(
-                        replaceKey(
-                          roles,
-                          defined(role.id).toString(),
-                          role as Role
-                        )
-                      )
-                    )
-                  : ajax<BackEndRole>(
-                      `/permissions/roles/${collection.id}/`,
-                      {
-                        method: 'POST',
-                        body: {
-                          ...omit(role, ['id']),
-                          policies: decompressPolicies(role.policies),
-                        },
-                        headers: { Accept: 'application/json' },
-                      },
-                      { expectedResponseCodes: [Http.CREATED] }
-                    ).then(({ data: role }) =>
-                      setRoles({
-                        ...roles,
-                        [role.id]: {
-                          ...role,
-                          policies: processPolicies(role.policies),
-                        },
-                      })
-                    )
+                  ? updateRole(role as Role)
+                  : createRole(role)
                 ).then((): void => setState({ type: 'MainState' }))
               )
             }

@@ -1682,6 +1682,12 @@ const commonText = createDictionary({
     ca: 'Export',
     'es-es': 'Export',
   },
+  import: {
+    'en-us': 'Import',
+    'ru-ru': 'Import',
+    ca: 'Import',
+    'es-es': 'Import',
+  },
   documentation: {
     'en-us': 'Documentation',
     'ru-ru': 'Documentation',

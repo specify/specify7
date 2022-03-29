@@ -18,6 +18,8 @@ import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
+import { SecurityImportExport } from './securityimportexport';
+import { f } from '../functools';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -212,6 +214,15 @@ export function RoleView({
           </Button.Red>
         ) : (
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
+        )}
+        {typeof role.id === 'number' && (
+          <SecurityImportExport
+            roles={{ [role.id]: role as Role }}
+            isReadOnly
+            baseName={role.name ?? ''}
+            onUpdateRole={f.never}
+            onCreateRole={f.never}
+          />
         )}
         {!isReadOnly && (
           <Submit.Green disabled={!changesMade}>
