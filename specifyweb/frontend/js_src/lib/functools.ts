@@ -131,4 +131,12 @@ export const f = {
       return store.get(callback) as RETURN;
     },
   unique: <ITEM>(array: RA<ITEM>): RA<ITEM> => Array.from(new Set(array)),
+  /**
+   * Since TypeScript is unaware of the NaN type, returning undefined
+   * is a safer choice
+   */
+  parseInt: (value: string): number | undefined =>
+    f.var(Number.parseInt(value), (number) =>
+      Number.isNaN(number) ? undefined : number
+    ),
 } as const;

@@ -19,6 +19,7 @@ import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
 import { useSaveBlockers } from './resource';
+import { f } from '../functools';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -262,8 +263,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 value: validDate?.format('YYYY') ?? inputValue,
                 onValueChange: (value): void => {
                   setInputValue(value);
-                  const year = Number.parseInt(value);
-                  if (!Number.isNaN(year)) setMoment(dayjs(moment).year(year));
+                  const year = f.parseInt(value);
+                  if (typeof year === 'number')
+                    setMoment(dayjs(moment).year(year));
                 },
               }
             : {

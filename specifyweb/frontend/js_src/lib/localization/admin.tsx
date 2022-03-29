@@ -330,6 +330,36 @@ const adminText = createDictionary({
     ca: 'Collection Access',
     'es-es': 'Collection Access',
   },
+  createRoleDialogHeader: {
+    'en-us': 'Create Role',
+    'ru-ru': 'Create Role',
+    ca: 'Create Role',
+    'es-es': 'Create Role',
+  },
+  newRole: {
+    'en-us': 'New Role',
+    'ru-ru': 'New Role',
+    ca: 'New Role',
+    'es-es': 'New Role',
+  },
+  fromLibrary: {
+    'en-us': 'From library:',
+    'ru-ru': 'From library:',
+    ca: 'From library:',
+    'es-es': 'From library:',
+  },
+  fromExistingRole: {
+    'en-us': 'From an existing role:',
+    'ru-ru': 'From an existing role:',
+    ca: 'From an existing role:',
+    'es-es': 'From an existing role:',
+  },
+  fromScratch: {
+    'en-us': 'From scratch',
+    'ru-ru': 'From scratch',
+    ca: 'From scratch',
+    'es-es': 'From scratch',
+  },
 });
 
 export default adminText;

@@ -25,11 +25,8 @@ export const processColumnDefinition = (
   )
     .split(',')
     .filter((_, index) => index % 2 === 0)
-    .map((definition) => /(\d+)px/.exec(definition)?.[1])
-    .map((width) =>
-      typeof width === 'string' ? Number.parseInt(width) : Number.NaN
-    )
-    .map((width) => (Number.isNaN(width) ? undefined : width));
+    .map((definition) => /(\d+)px/.exec(definition)?.[1] ?? '')
+    .map(f.parseInt);
 
 export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
@@ -198,11 +195,11 @@ export function parseFormCell(
   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
   );
-  const colSpan = Number.parseInt(getAttribute(cellNode, 'colspan') ?? '');
+  const colSpan = f.parseInt(getAttribute(cellNode, 'colspan') ?? '');
   const align = properties.align?.toLowerCase();
   return {
     id: getAttribute(cellNode, 'id'),
-    colSpan: Number.isNaN(colSpan) ? 1 : Math.ceil(colSpan / 2),
+    colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align
       : cellType === 'Label'

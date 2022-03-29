@@ -184,7 +184,7 @@ export function CollectionOneToManyPlugin({
                         event.preventDefault();
                         const collectionsIds = Object.keys(
                           userInformation.availableCollections
-                        ).map(f.unary(Number.parseInt));
+                        ).map(f.parseInt);
                         if (collectionsIds.includes(data.otherCollection.id))
                           navigation.switchCollection(
                             data.otherCollection.id,

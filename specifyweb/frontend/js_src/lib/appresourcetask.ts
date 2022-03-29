@@ -1,10 +1,10 @@
 import { router } from './router';
+import { f } from './functools';
 
 function appResources(type: 'appResources' | 'viewSets', id?: string) {
-  import('./appresources').then((appResourcesModule) => {
-    const idInt = Number.parseInt(id ?? '');
-    appResourcesModule[type](Number.isNaN(idInt) ? null : idInt);
-  });
+  import('./appresources').then((appResourcesModule) =>
+    appResourcesModule[type](f.parseInt(id ?? '') ?? null)
+  );
 }
 
 export default function () {

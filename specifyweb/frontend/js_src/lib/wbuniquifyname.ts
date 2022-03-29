@@ -1,32 +1,57 @@
 import { ajax } from './ajax';
 import type { DatasetBrief } from './components/wbplanview';
 import type { RA } from './types';
+import { filterArray } from './types';
+import { escapeRegExp } from './escaperegexp';
+import { f } from './functools';
 
 const MAX_NAME_LENGTH = 64;
 
-function addSuffix(name: string, usedNames: RA<string>): string {
-  let newName = name;
-  for (let index = 0; usedNames.includes(newName); index += 1) {
-    const suffix = ` (${index})`;
-    index += 1;
-    newName =
-      name.slice(0, Math.max(0, MAX_NAME_LENGTH - suffix.length)) + suffix;
-  }
-  return newName;
+export function getUniqueName(
+  name: string,
+  usedNames: RA<string>,
+  maxLength: number = Number.POSITIVE_INFINITY
+): string {
+  if (!usedNames.includes(name)) return name;
+  const suffix = / \((\d+)\)$/.exec(name);
+  const [{ length }, indexString] = suffix ?? ([[], '0'] as const);
+  const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
+  const indexRegex = new RegExp(`^${escapeRegExp(strippedName)} \\((\\d+)\\)$`);
+  const newIndex =
+    Math.max(
+      ...filterArray([
+        f.parseInt(indexString),
+        ...usedNames.map((name) =>
+          f.parseInt(indexRegex.exec(name)?.[1] ?? '1')
+        ),
+      ])
+    ) + 1;
+  const newName =
+    newIndex === 1 && length === 0
+      ? strippedName
+      : `${strippedName} (${newIndex})`;
+  return newName.length > maxLength
+    ? getUniqueName(
+        name.slice(0, -1 * ` (${newIndex})`.length),
+        usedNames,
+        maxLength
+      )
+    : newName;
 }
 
 export async function uniquifyDataSetName(
   name: string,
   currentDataSetId?: number
 ): Promise<string> {
-  const trimmedName = name.trim().slice(0, MAX_NAME_LENGTH);
-
   return ajax<RA<DatasetBrief>>(`/api/workbench/dataset/`, {
     headers: { Accept: 'application/json' },
-  }).then(({ data: datasets }) => {
-    const usedNames = datasets
-      .filter(({ id }) => id !== currentDataSetId)
-      .map(({ name }) => name);
-    return addSuffix(trimmedName, usedNames);
-  });
+  }).then(({ data: datasets }) =>
+    getUniqueName(
+      name,
+      datasets
+        .filter(({ id }) => id !== currentDataSetId)
+        .map(({ name }) => name),
+      MAX_NAME_LENGTH
+    )
+  );
 }

@@ -18,6 +18,7 @@ import {
 import { useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { Contexts } from './contexts';
+import { f } from '../functools';
 
 // TODO: remove collections you don't have permission to from the list
 function ChooseCollection({
@@ -35,11 +36,7 @@ function ChooseCollection({
   useTitle(commonText('chooseCollection'));
   const [selectedCollection, setSelectedCollection] = React.useState<
     number | undefined
-  >(
-    typeof data.initialValue === 'string'
-      ? Number.parseInt(data.initialValue)
-      : undefined
-  );
+  >(f.parseInt(data.initialValue ?? ''));
 
   // Focus submit button if some collection is selected by default
   const submitRef = React.useRef<HTMLInputElement | null>(null);

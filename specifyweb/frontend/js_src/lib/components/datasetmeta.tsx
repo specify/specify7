@@ -126,6 +126,8 @@ export function DataSetMeta({
             value={name}
             onValueChange={setName}
             required
+            // TODO: increase the limit. See https://github.com/specify/specify7/issues/1203
+            maxLength={64}
           />
         </Label.Generic>
         <Label.Generic>

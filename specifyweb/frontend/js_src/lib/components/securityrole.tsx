@@ -68,7 +68,9 @@ export function RoleView({
       [initialRole]
     )
   );
-  const changesMade = JSON.stringify(initialRole) !== JSON.stringify(role);
+  const changesMade =
+    typeof role.id === 'undefined' ||
+    JSON.stringify(initialRole) !== JSON.stringify(role);
   const setUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')

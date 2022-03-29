@@ -26,15 +26,16 @@ import {
   hasToolPermission,
   hasTreeAccess,
 } from '../permissions';
+import { f } from '../functools';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;
-      const recordSetId = querystring.parse().recordsetid;
+      const recordSetId = f.parseInt(querystring.parse().recordsetid ?? '');
       if (typeof recordSetId === 'undefined') return false;
       const recordSet = new schema.models.RecordSet.Resource({
-        id: Number.parseInt(recordSetId),
+        id: recordSetId,
       });
       return recordSet.fetchPromise();
     }, []),

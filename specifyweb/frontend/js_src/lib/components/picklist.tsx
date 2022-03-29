@@ -17,6 +17,7 @@ import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
 import { LoadingContext } from './contexts';
 import { hasToolPermission } from '../permissions';
+import { f } from '../functools';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -44,7 +45,7 @@ export function PickListComboBox(
         (value === '' && props.isRequired
           ? null
           : validationAttributes.type === 'number'
-          ? Number.parseInt(value)
+          ? f.parseInt(value) ?? null
           : value) as never
       ),
     [props.field.name, validationAttributes, props.isRequired, props.resource]

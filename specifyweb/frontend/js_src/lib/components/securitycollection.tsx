@@ -22,19 +22,24 @@ import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState } from './hooks';
 import { LoadingScreen } from './modaldialog';
-import type { Role, UserRoles } from './securityrole';
+import type { NewRole, Role, UserRoles } from './securityrole';
 import { RoleView } from './securityrole';
+import { CreateRole } from './securityroletemplate';
 
 export function CollectionView({
   collection,
-  initialRole,
+  initialRoleId,
   users,
   onOpenUser: handleOpenUser,
+  collections,
+  libraryRoles,
 }: {
   readonly collection: SpecifyResource<Collection>;
-  readonly initialRole: number | undefined;
+  readonly initialRoleId: number | undefined;
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
+  readonly collections: IR<SpecifyResource<Collection>>;
+  readonly libraryRoles: IR<Role> | undefined;
 }): JSX.Element {
   const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
@@ -68,24 +73,39 @@ export function CollectionView({
           : undefined,
       [collection.id, users]
     ),
-    false,
+    // Display loading screen while loading a role
+    typeof initialRoleId === 'number',
     true
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>
-    | State<'RoleState', { readonly roleId: number | undefined }>
+    | State<'CreatingRoleState'>
+    | State<'LoadingRole'>
+    | State<'RoleState', { readonly role: Role | NewRole }>
   >(
     React.useCallback(
       () =>
-        typeof initialRole === 'number'
+        typeof initialRoleId === 'number'
           ? ({
-              type: 'RoleState',
-              roleId: initialRole,
+              type: 'LoadingRole',
+              roleId: initialRoleId,
             } as const)
           : ({ type: 'MainState' } as const),
-      [initialRole]
+      [initialRoleId]
     )
   );
+  React.useEffect(() => {
+    if (
+      state.type === 'LoadingRole' &&
+      typeof initialRoleId === 'number' &&
+      typeof roles === 'object'
+    )
+      setState({
+        type: 'RoleState',
+        role: roles[initialRoleId],
+      });
+  }, [roles, state, initialRoleId, setState]);
+
   const loading = React.useContext(LoadingContext);
   return (
     <Container.Base className="flex-1 overflow-y-auto">
@@ -109,7 +129,7 @@ export function CollectionView({
                           onClick={(): void =>
                             setState({
                               type: 'RoleState',
-                              roleId: role.id,
+                              role,
                             })
                           }
                         >
@@ -127,8 +147,7 @@ export function CollectionView({
                   <Button.Green
                     onClick={(): void =>
                       setState({
-                        type: 'RoleState',
-                        roleId: undefined,
+                        type: 'CreatingRoleState',
                       })
                     }
                   >
@@ -167,19 +186,27 @@ export function CollectionView({
           </section>
         </>
       )}
+      {state.type === 'CreatingRoleState' && (
+        <CreateRole
+          libraryRoles={libraryRoles}
+          collections={collections}
+          onCreated={(role): void =>
+            setState({
+              type: 'RoleState',
+              role,
+            })
+          }
+          onClose={(): void =>
+            setState({
+              type: 'MainState',
+            })
+          }
+        />
+      )}
       {state.type === 'RoleState' ? (
         typeof roles === 'object' ? (
           <RoleView
-            role={
-              typeof state.roleId === 'number'
-                ? roles[state.roleId]
-                : ({
-                    id: undefined,
-                    name: '',
-                    description: '',
-                    policies: [],
-                  } as const)
-            }
+            role={state.role}
             parentName={collection.get('collectionName') ?? ''}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>
@@ -228,10 +255,10 @@ export function CollectionView({
               )
             }
             onDelete={(): void =>
-              typeof state.roleId === 'number'
+              typeof state.role.id === 'number'
                 ? loading(
                     ping(
-                      `/permissions/role/${state.roleId}/`,
+                      `/permissions/role/${state.role.id}/`,
                       {
                         method: 'DELETE',
                       },
@@ -240,7 +267,7 @@ export function CollectionView({
                       .then((): void => setState({ type: 'MainState' }))
                       .then((): void =>
                         setRoles(
-                          removeKey(roles, defined(state.roleId).toString())
+                          removeKey(roles, defined(state.role.id).toString())
                         )
                       )
                   )
@@ -249,13 +276,13 @@ export function CollectionView({
             userRoles={userRoles}
             onOpenUser={handleOpenUser}
             onAddUser={(user): void =>
-              typeof userRoles === 'object' && typeof state.roleId === 'number'
+              typeof userRoles === 'object' && typeof state.role.id === 'number'
                 ? loading(
                     ping(
                       `/permissions/user_roles/${collection.id}/${user.id}/`,
                       {
                         method: 'PUT',
-                        body: [...userRoles[user.id].roles, state.roleId].map(
+                        body: [...userRoles[user.id].roles, state.role.id].map(
                           (id) => ({ id })
                         ),
                       },
@@ -266,7 +293,7 @@ export function CollectionView({
                           ...userRoles[user.id],
                           roles: [
                             ...userRoles[user.id].roles,
-                            defined(state.roleId),
+                            defined(state.role.id),
                           ],
                         })
                       )

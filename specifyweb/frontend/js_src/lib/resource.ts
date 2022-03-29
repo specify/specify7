@@ -6,10 +6,20 @@ import type {
   SerializedResource,
 } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
 import { getModel } from './schema';
 import { defined } from './types';
+
+/*
+ * TODO: experiment with an object singleton:
+ * There is only ever one instance of a record with the same table name
+ * and id. Any changes in one place propagate to all the other places where
+ * that record is used. Record is only fetched once and updates are kept track
+ * of. When requesting object fetch, return the previous fetched version, while
+ * fetching the new one.
+ */
 
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
@@ -71,10 +81,8 @@ export function resourceFromUri(
 }
 
 /** Assuming urls are constructed by ResourceBase.url method */
-export function idFromUrl(url: string): number | undefined {
-  const id = Number.parseInt(url.split('/').slice(-2)[0] ?? '');
-  return Number.isNaN(id) ? undefined : id;
-}
+export const idFromUrl = (url: string): number | undefined =>
+  f.parseInt(url.split('/').slice(-2)[0] ?? '');
 
 /**
  * This needs to exist due to type conflicts between AnySchema and table

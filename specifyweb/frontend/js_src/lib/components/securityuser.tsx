@@ -165,7 +165,6 @@ export function UserView({
   const loading = React.useContext(LoadingContext);
 
   /*
-   * FIXME: expose the system/collection access permission
    * FIXME: create role template > prompt to use a role from another collection
    * FIXME: role import/export
    */

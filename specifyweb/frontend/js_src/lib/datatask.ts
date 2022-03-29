@@ -27,13 +27,18 @@ const PermissionDeniedView = createBackboneView(PermissionDenied);
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
-async function recordSetView(id: string, index = '0'): Promise<void> {
+async function recordSetView(idString: string, index = '0'): Promise<void> {
   if (!hasToolPermission('recordSets', 'read')) {
     setCurrentView(new PermissionDeniedView());
     return;
   }
+  const id = Number.parseInt(idString);
+  if (typeof id === 'undefined') {
+    setCurrentView(new NotFoundView());
+    return;
+  }
   const recordSet = new schema.models.RecordSet.Resource({
-    id: Number.parseInt(id),
+    id,
   });
   return recordSet.fetchPromise().then((recordSet) =>
     typeof recordSet === 'undefined'
@@ -98,10 +103,11 @@ async function resourceView(
   const resource = new model.Resource({ id });
 
   const parameters = querystring.parse();
+  const recordSetId = f.parseInt(parameters.recordsetid);
   const recordSet =
-    typeof parameters.recordsetid === 'string'
+    typeof recordSetId === 'number'
       ? new schema.models.RecordSet.Resource({
-          id: Number.parseInt(parameters.recordsetid),
+          id: recordSetId,
         })
       : undefined;
   if (typeof recordSet === 'object') resource.recordsetid = recordSet.id;

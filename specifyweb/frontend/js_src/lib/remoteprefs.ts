@@ -1,3 +1,4 @@
+import { f } from './functools';
 import { load } from './initialcontext';
 import type { IR, R } from './types';
 
@@ -28,10 +29,7 @@ export function getBoolPref(key: string, defaultValue: boolean): boolean {
   return defaultValue;
 }
 
-export function getIntPref(key: string): number | undefined {
-  const value = preferences[key] as string | undefined;
-  const parsed = Number.parseInt(value ?? '');
-  return Number.isNaN(parsed) ? undefined : parsed;
-}
+export const getIntPref = (key: string): number | undefined =>
+  f.parseInt(preferences[key] ?? '');
 
 export const remotePrefs: IR<string> = preferences;

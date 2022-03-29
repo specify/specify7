@@ -17,9 +17,7 @@ export function OtherCollection({
   collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const accessibleCollections = new Set(
-    Object.keys(userInformation.availableCollections).map(
-      f.unary(Number.parseInt)
-    )
+    Object.keys(userInformation.availableCollections).map(f.parseInt)
   );
   const collections = resourceCollections.filter((collection) =>
     accessibleCollections.has(collection.id)

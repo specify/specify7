@@ -8,6 +8,7 @@ import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
 import type { IR } from './types';
 import { getAttribute } from './parseformcells';
+import { f } from './functools';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -83,15 +84,16 @@ const processFieldType: {
       ),
   }),
   TextArea(cell) {
-    const rows = Number.parseInt(getAttribute(cell, 'rows') ?? '');
+    const rows = f.parseInt(getAttribute(cell, 'rows') ?? '');
     return {
       type: 'TextArea',
       ...withStringDefault(cell),
-      rows: Number.isNaN(rows)
-        ? getAttribute(cell, 'uiType')?.toLowerCase() === 'textareabrief'
-          ? 1
-          : undefined
-        : rows,
+      rows:
+        typeof rows === 'undefined'
+          ? getAttribute(cell, 'uiType')?.toLowerCase() === 'textareabrief'
+            ? 1
+            : undefined
+          : rows,
     };
   },
   ComboBox: (cell) => ({
@@ -99,20 +101,15 @@ const processFieldType: {
     ...withStringDefault(cell),
     pickList: getAttribute(cell, 'pickList') ?? undefined,
   }),
-  Text(cell, properties) {
-    const min = Number.parseInt(properties.min ?? '');
-    const max = Number.parseInt(properties.max ?? '');
-    const step = Number.parseInt(properties.step ?? '');
-    return {
-      type: 'Text',
-      ...withStringDefault(cell),
-      min: Number.isNaN(min) ? undefined : min,
-      max: Number.isNaN(max) ? undefined : max,
-      // TODO: factor in this value when displaing a field
-      // TODO: figure out how this could be used for latlong fields
-      step: Number.isNaN(step) ? undefined : step,
-    };
-  },
+  Text: (cell, properties) => ({
+    type: 'Text',
+    ...withStringDefault(cell),
+    min: f.parseInt(properties.min ?? ''),
+    max: f.parseInt(properties.max ?? ''),
+    // TODO: factor in this value when displaing a field
+    // TODO: figure out how this could be used for latlong fields
+    step: f.parseInt(properties.step ?? ''),
+  }),
   QueryComboBox: (_cell, properties) => ({
     type: 'QueryComboBox',
     hasCloneButton: properties.clonebtn?.toLowerCase() === 'true',

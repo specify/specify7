@@ -163,12 +163,11 @@ export function useValidation<T extends Input = HTMLInputElement>(
  * ```
  */
 export function useAsyncState<T>(
-  // Can return backOut to cancel a state update
   callback: () => undefined | T | Promise<T | undefined>,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean,
   // Whether to reset state value to undefined while fetching new state
-  forceConsistency?: boolean
+  forceConsistency = false
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
@@ -179,12 +178,9 @@ export function useAsyncState<T>(
   React.useEffect(() => {
     if (forceConsistency) setState(undefined);
     const wrapped = loadingScreen ? loading : f.id;
-    const backOut = {};
     void wrapped(
       Promise.resolve(callback()).then((newState) =>
-        destructorCalled || newState === backOut
-          ? undefined
-          : setState(newState)
+        destructorCalled ? undefined : setState(newState)
       )
     );
 

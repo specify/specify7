@@ -21,11 +21,11 @@ import Backbone from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import { Button, className } from './components/basic';
-import { getModel, schema } from './schema';
+import {Button, className} from './components/basic';
+import {getModel, schema} from './schema';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import {NotFoundView} from './notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
@@ -35,26 +35,26 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { parseUploadPlan } from './uploadplanparser';
-import { capitalize, clamp, mappedFind } from './helpers';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon } from './icons';
+import {parseUploadPlan} from './uploadplanparser';
+import {capitalize, clamp, mappedFind} from './helpers';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
 import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
-import { loadingBar, LoadingView, showDialog } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { legacyNonJsxIcons } from './components/icons';
-import { LANGUAGE } from './localization/utils';
-import { defined, filterArray, IR, RA } from './types';
-import { crash } from './components/errorboundary';
-import { getTreeDefinitionItems } from './treedefinitions';
-import { serializeResource } from './datamodelutils';
-import { fetchPickList } from './picklistmixins';
-import { setCurrentView } from './specifyapp';
-import { ajax, Http, ping } from './ajax';
-import { hasPermission } from './permissions';
-import { wbViewTemplate } from './components/wbviewtemplate';
+import {loadingBar, LoadingView, showDialog} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined, filterArray} from './types';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
+import {serializeResource} from './datamodelutils';
+import {fetchPickList} from './picklistmixins';
+import {setCurrentView} from './specifyapp';
+import {ajax, Http, ping} from './ajax';
+import {hasPermission} from './permissions';
+import {wbViewTemplate} from './components/wbviewtemplate';
 
 const metaKeys = [
   'isNew',
@@ -1467,7 +1467,7 @@ const WBView = Backbone.View.extend({
       this.setDisambiguation(
         physicalRow,
         matches.mappingPath,
-        Number.parseInt(selected, 10)
+        Number.parseInt(selected)
       );
       this.startValidateRow(physicalRow);
     };
@@ -1488,7 +1488,7 @@ const WBView = Backbone.View.extend({
         this.setDisambiguation(
           physicalRow,
           matches.mappingPath,
-          Number.parseInt(selected, 10)
+          Number.parseInt(selected)
         );
         this.startValidateRow(physicalRow);
       }

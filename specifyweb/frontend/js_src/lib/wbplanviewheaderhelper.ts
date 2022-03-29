@@ -9,16 +9,7 @@ import wbText from './localization/workbench';
 import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import { Tables } from './datamodel';
-
-function formatUniqueifiedHeader(
-  headers: RA<string>,
-  header: string,
-  initialIndex: number
-): string {
-  let index = initialIndex;
-  while (headers.includes(`${header} (${index})`)) index += 1;
-  return `${header} (${index})`;
-}
+import { getUniqueName } from './wbuniquifyname';
 
 export const uniquifyHeaders = (
   headers: RA<string>,
@@ -30,19 +21,7 @@ export const uniquifyHeaders = (
       headers.indexOf(header) === index ||
       (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
         ? header
-        : formatUniqueifiedHeader(
-            headers,
-            header,
-            headers
-              .slice(0, index)
-              .reduce(
-                (numberOfOccurrences, headerOccurrence) =>
-                  header === headerOccurrence
-                    ? numberOfOccurrences + 1
-                    : numberOfOccurrences,
-                0
-              ) + 1
-          )
+        : getUniqueName(header, headers)
     );
 
 export function renameNewlyCreatedHeaders(

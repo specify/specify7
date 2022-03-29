@@ -4,6 +4,7 @@ import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
 import { getAttribute } from './parseformcells';
+import { f } from './functools';
 
 export let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
@@ -34,7 +35,7 @@ export const fetchContext = load<Document>(
                 ];
               if (typeof FieldClass === 'undefined') return undefined;
               return new FieldClass({
-                size: Number.parseInt(getAttribute(field, 'size') ?? '1'),
+                size: f.parseInt(getAttribute(field, 'size') ?? '') ?? 1,
                 value: getAttribute(field, 'value') ?? ' ',
                 autoIncrement: getAttribute(field, 'inc') === 'true',
                 byYear: getAttribute(field, 'byYear') === 'true',

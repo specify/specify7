@@ -24,16 +24,12 @@ import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
 import { hasTablePermission, hasToolPermission } from '../permissions';
+import { f } from '../functools';
 
-function getDefaultIndex(queryParameter: string, lastIndex: number): number {
-  const parameters = queryString.parse();
-  const index = Number.parseInt(parameters[queryParameter]);
-  return parameters[queryParameter] === 'end'
-    ? lastIndex
-    : Number.isNaN(index)
-    ? 0
-    : index;
-}
+const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
+  f.var(queryString.parse()[queryParameter], (index) =>
+    index === 'end' ? lastIndex : f.parseInt(index) ?? 0
+  );
 
 function setQueryParameter(queryParameter: string, index: number): void {
   const parameters = { [queryParameter]: index.toString() };

@@ -5,19 +5,18 @@ import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Institution, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { index, omit, removeKey, replaceKey } from '../helpers';
+import { omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import type { BackEndRole } from '../securityutils';
 import { decompressPolicies, processPolicies } from '../securityutils';
-import type { IR, RA } from '../types';
+import type { IR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import type { Role } from './securityrole';
 import { RoleView } from './securityrole';
@@ -27,30 +26,15 @@ export function InstitutionView({
   institution,
   users,
   onOpenUser: handleOpenUser,
+  libraryRoles,
+  onChangeLibraryRoles: handleChangeLibraryRoles,
 }: {
   readonly institution: SpecifyResource<Institution>;
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
+  readonly libraryRoles: IR<Role> | undefined;
+  readonly onChangeLibraryRoles: (roles: IR<Role>) => void;
 }): JSX.Element {
-  const [libraryRoles, setLibraryRoles] = useAsyncState<IR<Role>>(
-    React.useCallback(
-      async () =>
-        hasPermission('/permissions/library/roles', 'read')
-          ? ajax<RA<BackEndRole>>('/permissions/library_roles/', {
-              headers: { Accept: 'application/json' },
-            }).then(({ data }) =>
-              index(
-                data.map((role) => ({
-                  ...role,
-                  policies: processPolicies(role.policies),
-                }))
-              )
-            )
-          : undefined,
-      []
-    ),
-    false
-  );
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<'RoleState', { readonly roleId: number | undefined }>
@@ -170,7 +154,7 @@ export function InstitutionView({
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
                     ).then((): void =>
-                      setLibraryRoles(
+                      handleChangeLibraryRoles(
                         replaceKey(
                           libraryRoles,
                           defined(role.id).toString(),
@@ -190,7 +174,7 @@ export function InstitutionView({
                       },
                       { expectedResponseCodes: [Http.CREATED] }
                     ).then(({ data: role }) =>
-                      setLibraryRoles({
+                      handleChangeLibraryRoles({
                         ...libraryRoles,
                         [role.id]: {
                           ...role,
@@ -213,7 +197,7 @@ export function InstitutionView({
                     )
                       .then((): void => setState({ type: 'MainState' }))
                       .then((): void =>
-                        setLibraryRoles(
+                        handleChangeLibraryRoles(
                           removeKey(
                             libraryRoles,
                             defined(state.roleId).toString()
