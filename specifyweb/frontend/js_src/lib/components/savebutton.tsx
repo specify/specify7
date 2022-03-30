@@ -140,10 +140,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
-          disabled={isSaving}
+          disabled={isSaving || (model.isNew() && !saveRequired)}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
-          {saveRequired
+          {saveRequired || !model.isNew()
             ? formsText('saveAndAddAnother')
             : formsText('addAnother')}
         </ButtonComponent>

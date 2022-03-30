@@ -23,6 +23,8 @@ import {showDialog} from './components/modaldialog';
 import createBackboneView from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
 
+// TODO: rewrite to React
+
 const SaveButtonView = createBackboneView(SaveButton);
 const DeleteButtonView = createBackboneView(DeleteButton);
 
@@ -295,7 +297,7 @@ const ResourceList = Backbone.View.extend({
             const button = $(`<li role="treeitem">
                 <button
                     type="button"
-                    class="link"
+                    class="link ${className.headerGray}"
                 >
                     ${commonText('newResourceTitle')(this.ResourceModel.label)}
                 </button>
@@ -412,7 +414,7 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<button type="button" class="toggle-content link" data-appdir="global">
+            `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="global">
                 ${adminText('globalResourcesTitle')(this.resourceList.resources.length)}
             </button>`,
             this.resourceList.render().$el
@@ -455,7 +457,7 @@ const DisciplinesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-           `<button type="button" class="toggle-content link" data-appdir="disciplines">
+           `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="disciplines">
                 ${adminText('disciplineResourcesTitle')(this.count)}
             </button>`,
             $('<ul role="group" class="ml-4">').append(this.views.map(v => v.render().el))
@@ -576,14 +578,14 @@ const CollectionResourcesView = Backbone.View.extend({
     render() {
         this.el.role = 'treeitem';
         this.$el.append(
-            $(`<button type="button" class="toggle-content link">
+            $(`<button type="button" class="toggle-content link ${className.headerGray}">
                 ${this.collection.get('collectionname')}
                 <small>(${this.count})</small>
             </button>`).data('appdir', this.discipline.get('resource_uri')),
             $('<ul role="group" class="ml-4">').append(
                 this.resourceList.render().el.children,
                 $(`<li role="treeitem">
-                    <button type="button" class="toggle-content link" data-appdir="usertypes">
+                    <button type="button" class="toggle-content link ${className.headerGray}" data-appdir="usertypes">
                         ${adminText('userTypes')}
                         <small>(${this.userTypeView.count})</small>
                     </button>
@@ -593,7 +595,7 @@ const CollectionResourcesView = Backbone.View.extend({
                         this.userTypeView.render().el
                     ),
               $(`<li role="treeitem">
-                  <button type="button" class="toggle-content link" data-appdir="users">
+                  <button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                       ${adminText('users')}
                       <small>(${this.userView.count})</small>
                   </button>
@@ -675,7 +677,7 @@ const UserTypeResourcesView = Backbone.View.extend({
     render() {
         this.el.role = 'treeitem';
         this.$el.append(
-            $(`<button type="button" class="toggle-content link" data-appdir="users">
+            $(`<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                 ${this.usertype}
                 <small>(${this.count})</small>
             </button>`).data('appdir', `usertype-${this.usertype}`),
@@ -757,7 +759,7 @@ const UserResourcesView = Backbone.View.extend({
     render() {
         this.el.role = 'treeitem';
         this.$el.append(
-            $(`<button type="button" class="toggle-content link" data-appdir="users">
+            $(`<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                 ${this.user.get('name')}
                 <small>(${this.count})</small>
             </button>`).data('appdir', this.user.get('resource_uri')),
