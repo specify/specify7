@@ -20,12 +20,16 @@ import type { Tables } from './datamodel';
 import type { IR, RA } from './types';
 import type { MatchBehaviors } from './uploadplanparser';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
-import { defaultColumnOptions } from './wbplanviewlinesgetter';
+import {
+  defaultColumnOptions,
+  getLinesFromHeaders,
+} from './wbplanviewlinesgetter';
 import {
   deduplicateMappings,
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
+import { f } from './functools';
 
 const modifyLine = (
   state: MappingState,
@@ -140,11 +144,23 @@ type ToggleAllowNullsAction = Action<
   }
 >;
 
-type ChangeDefaultValue = Action<
-  'ChangeDefaultValue',
+type ChangeDefaultValueAction = Action<
+  'ChangeDefaultValueAction',
   {
     line: number;
     defaultValue: string | null;
+  }
+>;
+
+type UpdateLinesAction = Action<
+  'UpdateLinesAction',
+  { lines: RA<MappingLine> }
+>;
+
+type ReRunAutoMapperAction = Action<
+  'ReRunAutoMapperAction',
+  {
+    baseTableName: keyof Tables;
   }
 >;
 
@@ -166,7 +182,9 @@ export type MappingActions =
   | MustMatchPrefChangeAction
   | ChangeMatchBehaviorAction
   | ToggleAllowNullsAction
-  | ChangeDefaultValue;
+  | ChangeDefaultValueAction
+  | UpdateLinesAction
+  | ReRunAutoMapperAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
@@ -357,7 +375,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     }),
     changesMade: true,
   }),
-  ChangeDefaultValue: ({ state, action }) => ({
+  ChangeDefaultValueAction: ({ state, action }) => ({
     ...state,
     lines: modifyLine(state, action.line, {
       ...state.lines[action.line],
@@ -368,4 +386,23 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     }),
     changesMade: true,
   }),
+  UpdateLinesAction: ({ state, action: { lines } }) => ({
+    ...state,
+    lines,
+  }),
+  ReRunAutoMapperAction: ({ state, action: { baseTableName } }) =>
+    f.var(
+      getLinesFromHeaders({
+        headers: state.lines.map(({ headerName }) => headerName),
+        runAutoMapper: true,
+        baseTableName,
+      }),
+      (lines) => ({
+        ...state,
+        changesMade:
+          state.changesMade ||
+          JSON.stringify(state.lines) !== JSON.stringify(lines),
+        lines,
+      })
+    ),
 });

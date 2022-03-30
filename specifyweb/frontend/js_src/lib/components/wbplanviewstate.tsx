@@ -176,13 +176,6 @@ export const stateReducer = generateReducer<
             type: 'OpenBaseTableSelectionAction',
           })
         }
-        onReRunAutoMapper={(): void =>
-          state.dispatch({
-            type: 'SelectTableAction',
-            headers: state.lines.map(({ headerName }) => headerName),
-            baseTableName: state.baseTableName,
-          })
-        }
         onSave={async (lines, mustMatchPreferences): Promise<void> => {
           state.props.removeUnloadProtect();
           return savePlan({

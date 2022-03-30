@@ -135,7 +135,6 @@ export function WbPlanViewMapper(props: {
     lines: RA<MappingLine>,
     mustMatchPreferences: IR<boolean>
   ) => Promise<void>;
-  readonly onReRunAutoMapper: () => void;
   // Initial values for the state:
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
@@ -314,7 +313,12 @@ export function WbPlanViewMapper(props: {
                   mappingPathIsComplete(mappingPath)
                 )
               }
-              onClick={props.onReRunAutoMapper}
+              onClick={(): void =>
+                dispatch({
+                  type: 'ReRunAutoMapperAction',
+                  baseTableName: props.baseTableName,
+                })
+              }
             />
           </>
         )
@@ -540,7 +544,7 @@ export function WbPlanViewMapper(props: {
                       }),
                     onChangeDefaultValue: (defaultValue) =>
                       dispatch({
-                        type: 'ChangeDefaultValue',
+                        type: 'ChangeDefaultValueAction',
                         line,
                         defaultValue,
                       }),

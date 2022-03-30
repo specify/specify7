@@ -92,11 +92,13 @@ export function QueryBuilder({
     staleWhileRefresh: false,
   });
 
-  React.useEffect(() => {
-    queryResource.once('saverequired', () =>
-      dispatch({ type: 'SaveRequiredAction' })
-    );
-  }, [queryResource]);
+  React.useEffect(
+    () =>
+      queryResource.once('saverequired', () =>
+        dispatch({ type: 'SaveRequiredAction' })
+      ),
+    [queryResource]
+  );
 
   const setHasUnloadProtect = useUnloadProtect(
     state.saveRequired,

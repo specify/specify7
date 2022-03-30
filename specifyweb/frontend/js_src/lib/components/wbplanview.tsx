@@ -6,12 +6,13 @@
 
 import React from 'react';
 
+import { tap } from '../assert';
 import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import { reducer } from '../wbplanviewreducer';
 import type { UploadResult } from '../wbuploadedparser';
-import { stateReducer } from './wbplanviewstate';
 import { useTitle } from './hooks';
+import { stateReducer } from './wbplanviewstate';
 
 // General definitions
 export type Status = {
@@ -91,6 +92,6 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
   return stateReducer(<i />, {
     ...state,
     props,
-    dispatch,
+    dispatch: tap(dispatch),
   });
 }
