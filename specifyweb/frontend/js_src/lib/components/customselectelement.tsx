@@ -673,11 +673,7 @@ export function CustomSelectElement({
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'shadow-md max-h-[theme(spacing.64)]' : ''}
-        ${
-          customSelectType === 'SUGGESTION_LIST'
-            ? ''
-            : 'min-w-max rounded-t-none'
-        }
+        ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
       ref={listOfOptionsRef}
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}

@@ -6,13 +6,17 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../datamodelutils';
+import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
+import { NotFoundView } from '../notfoundview';
+import { hasTreeAccess } from '../permissions';
 import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
-import { schema } from '../schema';
+import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
+import { isTreeModel, treeRanksPromise } from '../treedefinitions';
 import type { Conformations, Row, Stats } from '../treeviewutils';
 import {
   deserializeConformation,
@@ -22,11 +26,11 @@ import {
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
-import { sortObjectsByKey, toggleItem } from '../helpers';
 import { Autocomplete } from './autocomplete';
 import { Button, Container, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId, useTitle } from './hooks';
+import { PermissionDenied } from './permissiondenied';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
@@ -304,4 +308,35 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 }
 
-export default createBackboneView(TreeView);
+function TreeViewWrapper({
+  table,
+}: {
+  readonly table: string;
+}): JSX.Element | null {
+  const [treeDefinitions] = useAsyncState(
+    React.useCallback(async () => treeRanksPromise, []),
+    true
+  );
+
+  const tableName = getModel(table)?.name;
+  const treeDefinition =
+    typeof treeDefinitions === 'object' &&
+    typeof tableName === 'string' &&
+    isTreeModel(tableName)
+      ? caseInsensitiveHash(treeDefinitions, tableName)
+      : undefined;
+
+  if (typeof tableName === 'undefined' || !isTreeModel(tableName))
+    return <NotFoundView />;
+  else if (!hasTreeAccess(tableName, 'read')) return <PermissionDenied />;
+  else
+    return typeof treeDefinition === 'object' ? (
+      <TreeView
+        tableName={tableName}
+        treeDefinitionId={treeDefinition.definition.id}
+        treeDefinitionItems={treeDefinition.ranks}
+      />
+    ) : null;
+}
+
+export default createBackboneView(TreeViewWrapper);

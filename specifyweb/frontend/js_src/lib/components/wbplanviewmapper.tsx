@@ -125,7 +125,7 @@ export const getDefaultMappingState = ({
 });
 
 export function WbPlanViewMapper(props: {
-  readonly readonly: boolean;
+  readonly isReadOnly: boolean;
   readonly dataset: Dataset;
   readonly removeUnloadProtect: () => void;
   readonly setUnloadProtect: () => void;
@@ -272,7 +272,7 @@ export function WbPlanViewMapper(props: {
     });
 
   const mapButtonEnabled =
-    !props.readonly &&
+    !props.isReadOnly &&
     state.lines.length > 0 &&
     typeof state.focusedLine === 'number' &&
     mappingPathIsComplete(state.mappingView);
@@ -295,7 +295,7 @@ export function WbPlanViewMapper(props: {
         </>
       }
       buttonsLeft={
-        props.readonly ? undefined : (
+        props.isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
             <Button.Simple
@@ -331,7 +331,7 @@ export function WbPlanViewMapper(props: {
             }
           />
           <MustMatch
-            readonly={props.readonly}
+            isReadOnly={props.isReadOnly}
             getMustMatchPreferences={(): IR<boolean> =>
               getMustMatchTables({
                 baseTableName: props.baseTableName,
@@ -363,7 +363,7 @@ export function WbPlanViewMapper(props: {
                 });
             }}
           />
-          {!props.readonly && (
+          {!props.isReadOnly && (
             <ValidationButton
               canValidate={state.lines.some(({ mappingPath }) =>
                 mappingPathIsComplete(mappingPath)
@@ -381,9 +381,9 @@ export function WbPlanViewMapper(props: {
             aria-haspopup="dialog"
             onClick={(): void => goBack(props.dataset.id)}
           >
-            {props.readonly ? wbText('dataEditor') : commonText('cancel')}
+            {props.isReadOnly ? wbText('dataEditor') : commonText('cancel')}
           </Button.Simple>
-          {!props.readonly && (
+          {!props.isReadOnly && (
             <Button.Simple
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
@@ -395,7 +395,7 @@ export function WbPlanViewMapper(props: {
       }
       onClick={handleClose}
     >
-      {!props.readonly && state.validationResults.length > 0 && (
+      {!props.isReadOnly && state.validationResults.length > 0 && (
         <ValidationResults
           baseTableName={props.baseTableName}
           validationResults={state.validationResults}
@@ -431,7 +431,7 @@ export function WbPlanViewMapper(props: {
             onChange({ isDoubleClick, ...rest }) {
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
-              else if (!props.readonly)
+              else if (!props.isReadOnly)
                 dispatch({
                   type: 'ChangeSelectElementValueAction',
                   line: 'mappingView',
@@ -485,7 +485,7 @@ export function WbPlanViewMapper(props: {
 
           const lineData = getMappingLineProps({
             customSelectType: 'CLOSED_LIST',
-            onChange: props.readonly
+            onChange: props.isReadOnly
               ? undefined
               : (payload): void =>
                   dispatch({
@@ -495,7 +495,7 @@ export function WbPlanViewMapper(props: {
                   }),
             onOpen: handleOpen,
             onClose: handleClose,
-            onAutoMapperSuggestionSelection: props.readonly
+            onAutoMapperSuggestionSelection: props.isReadOnly
               ? undefined
               : (suggestion: string): void =>
                   dispatch({
@@ -504,7 +504,7 @@ export function WbPlanViewMapper(props: {
                   }),
             openSelectElement,
             autoMapperSuggestions:
-              (!props.readonly && state.autoMapperSuggestions) || [],
+              (!props.isReadOnly && state.autoMapperSuggestions) || [],
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
@@ -524,7 +524,7 @@ export function WbPlanViewMapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    readonly: props.readonly,
+                    isReadOnly: props.isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({
@@ -577,7 +577,7 @@ export function WbPlanViewMapper(props: {
             <MappingLineComponent
               key={line}
               headerName={headerName}
-              readonly={props.readonly}
+              isReadOnly={props.isReadOnly}
               isFocused={line === state.focusedLine}
               onFocus={(): void =>
                 dispatch({
@@ -642,7 +642,7 @@ export function WbPlanViewMapper(props: {
           dispatch({ type: 'ToggleHiddenFieldsAction' })
         }
         onAddNewHeader={
-          props.readonly
+          props.isReadOnly
             ? undefined
             : (newHeaderName): void => {
                 dispatch({ type: 'AddNewHeaderAction', newHeaderName });

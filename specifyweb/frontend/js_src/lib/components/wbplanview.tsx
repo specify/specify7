@@ -11,6 +11,7 @@ import type { UploadPlan } from '../uploadplanparser';
 import { reducer } from '../wbplanviewreducer';
 import type { UploadResult } from '../wbuploadedparser';
 import { stateReducer } from './wbplanviewstate';
+import { useTitle } from './hooks';
 
 // General definitions
 export type Status = {
@@ -57,15 +58,12 @@ export type Dataset = DatasetBrief & {
   readonly visualorder: null | RA<number>;
 };
 
-export type WbPlanViewProps = WbPlanViewConstructorProps & {
+export type WbPlanViewProps = {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
   readonly setUnloadProtect: () => void;
   readonly removeUnloadProtect: () => void;
-  readonly readonly: boolean;
-};
-
-export type WbPlanViewConstructorProps = {
+  readonly isReadOnly: boolean;
   readonly dataset: Dataset;
 };
 
@@ -74,6 +72,7 @@ export type WbPlanViewConstructorProps = {
  */
 export function WbPlanView(props: WbPlanViewProps): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, { type: 'LoadingState' });
+  useTitle(props.dataset.name);
 
   React.useEffect(() => {
     if (props.uploadPlan)
@@ -87,8 +86,7 @@ export function WbPlanView(props: WbPlanViewProps): JSX.Element {
       dispatch({
         type: 'OpenBaseTableSelectionAction',
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.uploadPlan, props.headers]);
 
   return stateReducer(<i />, {
     ...state,

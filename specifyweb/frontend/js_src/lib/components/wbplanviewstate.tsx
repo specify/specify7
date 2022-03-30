@@ -163,7 +163,7 @@ export const stateReducer = generateReducer<
   MappingState: ({ action: state }) => {
     return (
       <WbPlanViewMapper
-        readonly={state.props.readonly}
+        isReadOnly={state.props.isReadOnly}
         setUnloadProtect={state.props.setUnloadProtect}
         removeUnloadProtect={state.props.removeUnloadProtect}
         changesMade={state.changesMade}

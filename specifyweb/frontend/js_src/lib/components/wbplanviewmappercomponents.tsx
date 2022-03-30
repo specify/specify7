@@ -190,13 +190,13 @@ export function EmptyDataSetDialog({
 export function mappingOptionsMenu({
   id,
   columnOptions,
-  readonly,
+  isReadOnly,
   onChangeMatchBehaviour: handleChangeMatchBehaviour,
   onToggleAllowNulls: handleToggleAllowNulls,
   onChangeDefaultValue: handleChangeDefaultValue,
 }: {
   readonly id: (suffix: string) => string;
-  readonly readonly: boolean;
+  readonly isReadOnly: boolean;
   readonly columnOptions: ColumnOptions;
   readonly onChangeMatchBehaviour: (matchBehavior: MatchBehaviors) => void;
   readonly onToggleAllowNulls: (allowNull: boolean) => void;
@@ -228,7 +228,7 @@ export function mappingOptionsMenu({
                     name="match-behavior"
                     value={id}
                     checked={columnOptions.matchBehavior === id}
-                    isReadOnly={readonly}
+                    isReadOnly={isReadOnly}
                     onChange={({ target }): void =>
                       handleChangeMatchBehaviour(target.value as MatchBehaviors)
                     }
@@ -246,8 +246,8 @@ export function mappingOptionsMenu({
         <Label.ForCheckbox>
           <Input.Checkbox
             checked={columnOptions.nullAllowed}
-            disabled={readonly}
-            onValueChange={readonly ? undefined : handleToggleAllowNulls}
+            disabled={isReadOnly}
+            onValueChange={isReadOnly ? undefined : handleToggleAllowNulls}
           />{' '}
           {wbText('allowNullValues')}
         </Label.ForCheckbox>
@@ -259,9 +259,9 @@ export function mappingOptionsMenu({
           <Label.ForCheckbox>
             <Input.Checkbox
               checked={columnOptions.default !== null}
-              disabled={readonly}
+              disabled={isReadOnly}
               onChange={
-                readonly
+                isReadOnly
                   ? undefined
                   : (): void =>
                       handleChangeDefaultValue(
@@ -279,8 +279,10 @@ export function mappingOptionsMenu({
                 value={columnOptions.default || ''}
                 title={wbText('defaultValue')}
                 aria-labelledby={id('default-value')}
-                onValueChange={readonly ? undefined : handleChangeDefaultValue}
-                disabled={readonly}
+                onValueChange={
+                  isReadOnly ? undefined : handleChangeDefaultValue
+                }
+                disabled={isReadOnly}
               />
             </>
           )}
@@ -365,7 +367,7 @@ export function ToggleMappingPath({
 }
 
 export function MustMatch({
-  readonly,
+  isReadOnly,
   /**
    * Recalculating tables available for MustMatch is expensive, so we only
    * do it when opening the dialog
@@ -374,7 +376,7 @@ export function MustMatch({
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly readonly: boolean;
+  readonly isReadOnly: boolean;
   readonly getMustMatchPreferences: () => IR<boolean>;
   readonly onChange: (mustMatchPreferences: IR<boolean>) => void;
   readonly onClose: () => void;
@@ -450,7 +452,7 @@ export function MustMatch({
                           <Input.Checkbox
                             checked={mustMatch}
                             id={id(`table-${tableName}`)}
-                            {...(readonly
+                            {...(isReadOnly
                               ? {
                                   disabled: true,
                                 }

@@ -47,7 +47,7 @@ type MappingLineBaseProps = {
   readonly onFocus: () => void;
   readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
-  readonly readonly: boolean;
+  readonly isReadOnly: boolean;
 };
 
 export type MappingElementProps = {
@@ -243,7 +243,7 @@ export function getMappingLineProps({
 export function MappingLineComponent({
   lineData,
   headerName,
-  readonly,
+  isReadOnly,
   isFocused,
   onFocus: handleFocus,
   onKeyDown: handleKeyDown,
@@ -267,7 +267,7 @@ export function MappingLineComponent({
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
           onClick={handleClearMapping}
-          disabled={readonly}
+          disabled={isReadOnly}
         >
           {icons.backspace}
         </Button.Simple>

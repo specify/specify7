@@ -160,8 +160,13 @@ export const className = {
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
+  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
 } as const;
 
+/**
+ * Components for Specify Form
+ * This is called DataEntry instead of Form because "Form" is already taken
+ */
 /* eslint-disable @typescript-eslint/naming-convention */
 export const DataEntry = {
   Grid: wrap<
@@ -216,6 +221,9 @@ export const DataEntry = {
       },
     })
   ),
+  Footer: wrap('FormFooter', 'div', className.formFooter, {
+    role: 'toolbar',
+  }),
   SubForm: wrap('DataEntry.SubForm', 'fieldset', 'contents'),
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
@@ -234,14 +242,6 @@ export const ErrorMessage = wrap(
   'flex gap-2 p-2 text-white bg-red-500 rounded',
   {
     role: 'alert',
-  }
-);
-export const FormFooter = wrap(
-  'FormFooter',
-  'div',
-  'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
-  {
-    role: 'toolbar',
   }
 );
 export const Form = wrap(

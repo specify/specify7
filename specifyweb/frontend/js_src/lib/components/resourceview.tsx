@@ -20,7 +20,6 @@ import {
   DataEntry,
   DialogContext,
   Form,
-  FormFooter,
   Link,
 } from './basic';
 import { LoadingContext } from './contexts';
@@ -321,11 +320,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
               {typeof deleteButton === 'object' ||
               typeof saveButtonElement === 'object' ||
               typeof extraButtons === 'object' ? (
-                <FormFooter>
+                <DataEntry.Footer>
                   {deleteButton}
                   {extraButtons ?? <span className="flex-1 -ml-2" />}
                   {saveButtonElement}
-                </FormFooter>
+                </DataEntry.Footer>
               ) : undefined}
             </>
           );
