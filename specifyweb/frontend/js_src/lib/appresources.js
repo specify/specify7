@@ -22,6 +22,7 @@ import {Button, className, darkMode, Submit} from './components/basic';
 import {showDialog} from './components/modaldialog';
 import createBackboneView from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
+import {hasToolPermission} from './permissions';
 
 // TODO: rewrite to React
 
@@ -149,7 +150,7 @@ const ResourceDataView = Backbone.View.extend({
                     $('.mimetype-input input', toolbar).val(this.model.get('mimetype'));
                 }
 
-                if (userInformation.isadmin) {
+                if (hasToolPermission('resources','create')) {
                     toolbar.append(
                       `<button type="button" class="load-file button">${adminText('loadFile')}</button>`
                     );
@@ -166,7 +167,7 @@ const ResourceDataView = Backbone.View.extend({
 
                 const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
                 var editor = ace.edit(editArea[0], {
-                    readOnly: !userInformation.isadmin,
+                    readOnly: !hasToolPermission('resources',this.model.isNew() ? 'create' : 'update')
                 });
                 editor.getSession().setMode(modeForResource(this.model));
                 editor.setValue(this.appresourceData.get('data'));
@@ -200,7 +201,7 @@ const ResourceDataView = Backbone.View.extend({
                     }
                 });
 
-                if(userInformation.isadmin){
+                if(hasToolPermission('resources', 'update')){
                     const saveButton = new SaveButtonView({
                         model: this.appresourceData,
                         canAddAnother: false,
@@ -214,12 +215,13 @@ const ResourceDataView = Backbone.View.extend({
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
-            userInformation.isadmin && buttonsDiv.prepend(
-                new DeleteButtonView({
-                    model: this.model,
-                    onDeleted: () => navigation.go('/specify/appresources/')
-                }).render().el
-            );
+            if(hasToolPermission('resources', 'delete'))
+                buttonsDiv.prepend(
+                    new DeleteButtonView({
+                        model: this.model,
+                        onDeleted: () => navigation.go('/specify/appresources/')
+                    }).render().el
+                );
 
             this.$el.append(buttonsDiv);
         });
@@ -293,7 +295,7 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (userInformation.isadmin){
+        if (hasToolPermission('resources','update')){
             const button = $(`<li role="treeitem">
                 <button
                     type="button"

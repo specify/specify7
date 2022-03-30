@@ -23,6 +23,7 @@ import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/modaldialog';
 import {getRelatedObjectCount} from './resource';
+import {hasPermission} from './permissions';
 
 // TODO: rewrite to React
 
@@ -35,7 +36,7 @@ var ReportListDialog = Backbone.View.extend({
         'click button.edit': 'editReport',
     },
     initialize: function() {
-        this.options.readOnly ||= !userInformation.isadmin;
+        this.options.readOnly ||= !hasPermission('/report','execute');
         var appResources = this.options.appResources;
         if (this.options.metaDataFilter) {
             var mdFilter = this.options.metaDataFilter;
