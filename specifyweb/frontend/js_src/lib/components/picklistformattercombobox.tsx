@@ -3,7 +3,6 @@ import React from 'react';
 import { fetchFormatters } from '../dataobjformatters';
 import { getModel } from '../schema';
 import type { RA } from '../types';
-import { defined } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from './combobox';
 import { crash } from './errorboundary';
@@ -14,26 +13,31 @@ export function PickListFormatterComboBox(
   props: DefaultComboBoxProps
 ): JSX.Element {
   const fetchItems = React.useCallback(async () => {
-    if (props.resource.get('type') === PickListTypes.ITEMS) return [];
+    if (props.resource.get('type') !== PickListTypes.TABLE) return [];
     const { formatters } = await fetchFormatters;
-    const model = defined(getModel(props.resource.get('tableName')));
-    return formatters
-      .filter(({ className }) => className === model.longName)
-      .map(({ name, title }) => ({
-        value: name ?? title ?? '',
-        title: title ?? name ?? '',
-      }));
+    const model = getModel(props.resource.get('tableName') ?? '');
+    return typeof model === 'object'
+      ? formatters
+          .filter(({ className }) => className === model.longName)
+          .map(({ name, title }) => ({
+            value: name ?? title ?? '',
+            title: title ?? name ?? '',
+          }))
+      : [];
   }, [props.resource]);
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
     fetchItems,
     false
   );
   React.useEffect(() => {
-    const handleChange = (): void =>
-      void fetchItems().then(setItems).catch(crash);
-    props.resource.on('change:tableName change:type', handleChange);
+    const handleChange = (): void => {
+      if (props.resource.get('type') !== PickListTypes.TABLE)
+        props.resource.set('formatter', null as never);
+      fetchItems().then(setItems).catch(crash);
+    };
+    props.resource.on('change:tablename change:type', handleChange);
     return (): void =>
-      props.resource.off('change:tableName change:type', handleChange);
+      props.resource.off('change:tablename change:type', handleChange);
   }, [props.resource, fetchItems, setItems]);
 
   return (

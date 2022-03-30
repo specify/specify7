@@ -125,7 +125,13 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
           createPickListItem(index.toString(), title)
         )
       ),
-      tableName: tablesPickList,
+      // Like tablesPickList, but tableName is the key
+      tableName: definePicklist(
+        '_TablesByName',
+        Object.values(schema.models).map(({ name, label }) =>
+          createPickListItem(name.toLowerCase(), label)
+        )
+      ),
       sortType: definePicklist(
         '_PickListSortType',
         pickListSortTypes.map((title, index) =>

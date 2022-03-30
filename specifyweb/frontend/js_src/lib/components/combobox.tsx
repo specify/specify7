@@ -17,6 +17,9 @@ import { PickListFormatterComboBox } from './picklistformattercombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { isResourceOfType } from '../specifymodel';
 import { UiField } from './uifield';
+import { PickListTableComboBox } from './picklisttablecombobox';
+import { Input } from './basic';
+import commonText from '../localization/common';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -96,13 +99,20 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
               ])
       }
     />
-  ) : null;
+  ) : (
+    <Input.Text
+      disabled
+      defaultValue={commonText('loading')}
+      required={props.isRequired}
+    />
+  );
 }
 
 export function ComboBox({
   fieldName,
   ...props
-}: DefaultComboBoxProps & {
+}: Omit<DefaultComboBoxProps, 'field'> & {
+  readonly field: LiteralField | Relationship | undefined;
   readonly fieldName: string | undefined;
 }): JSX.Element {
   const { resource, field, model } = props;
@@ -124,14 +134,24 @@ export function ComboBox({
         field={defined(schema.models.PickList.getField('formatter'))}
       />
     );
+  else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
+    return (
+      <PickListTableComboBox
+        {...props}
+        field={defined(schema.models.PickList.getField('tableName'))}
+      />
+    );
   else if (fieldName === 'definitionItem')
-    return <TreeLevelComboBox {...props} />;
+    return (
+      <TreeLevelComboBox
+        {...props}
+        field={defined(model.specifyModel.getField('definitionItem'))}
+      />
+    );
 
   const resolvedField =
     isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
       ? defined(schema.models.PickList.getField('type'))
-      : resource.specifyModel.name === 'PickList' && fieldName === 'tablesCBX'
-      ? defined(schema.models.PickList.getField('tableName'))
       : resource.specifyModel.name === 'Accession' &&
         fieldName === 'divisionCBX'
       ? defined(schema.models.Accession.getField('division'))
