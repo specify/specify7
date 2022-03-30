@@ -2550,6 +2550,7 @@ export default function loadDataset(
   refreshInitiatorAborted = false
 ) {
   legacyLoadingContext(
+    // TODO: intercept 403 (if dataset has been transfered to another user)
     ajax(
       `/api/workbench/dataset/${id}/`,
       { headers: { Accept: 'application/json' } },

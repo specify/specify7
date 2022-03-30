@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ping } from '../ajax';
+import { formData, Http, ping } from '../ajax';
 import Backbone from '../backbone';
 import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
@@ -12,6 +12,7 @@ import * as navigation from '../navigation';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
+import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { f } from '../functools';
 import { uniquifyDataSetName } from '../wbuniquifyname';
@@ -269,22 +270,29 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{wbText('changeOwner')}</Submit.Blue>
+          <Submit.Blue
+            form={id('form')}
+            disabled={typeof newOwner === 'undefined'}
+          >
+            {wbText('changeOwner')}
+          </Submit.Blue>
         </>
       }
     >
       <Form
+        id={id('form')}
         onSubmit={(): void =>
           loading(
-            ping(`/api/workbench/transfer/${dataset.id}/`, {
-              method: 'POST',
-              body: {
-                specifyuserid: newOwner,
+            ping(
+              `/api/workbench/transfer/${dataset.id}/`,
+              {
+                method: 'POST',
+                body: formData({
+                  specifyuserid: defined(newOwner).toString(),
+                }),
               },
-              headers: {
-                Accept: 'application/json',
-              },
-            }).then(() => setIsChanged(true))
+              { expectedResponseCodes: [Http.NO_CONTENT] }
+            ).then(() => setIsChanged(true))
           )
         }
       >
@@ -323,7 +331,7 @@ export default Backbone.View.extend({
     return this;
   },
   changeOwner() {
-    const handleClose = (): void => void this.changeOwner.remove();
+    const handleClose = (): void => void this.changeOwnerView.remove();
     this.changeOwnerView = new ChangeOwnerView({
       dataset: this.options.dataset,
       onClose: handleClose,
