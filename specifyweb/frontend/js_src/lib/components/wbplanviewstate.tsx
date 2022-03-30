@@ -100,7 +100,7 @@ export const stateReducer = generateReducer<
       header={wbText('selectBaseTableDialogTitle')}
       onClose={(): void => goBack(state.props.dataset.id)}
       className={{
-        container: dialogClassNames.narrowContainer,
+        container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
       buttons={
         <>
