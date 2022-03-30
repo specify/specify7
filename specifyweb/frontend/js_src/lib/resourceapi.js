@@ -92,8 +92,9 @@ function eventHandlerForToOne(related, field) {
         // Supress saveRequired trigger when setting default values for resource
         // Works for new resources only
         settingDefaultValues(callback){
-            if(this.isNew())
-                this._ignoreChanges = true;
+            if(!this.isNew())
+                return;
+            this._ignoreChanges = true;
             callback();
             this._ignoreChanges = false;
         },
@@ -191,8 +192,11 @@ function eventHandlerForToOne(related, field) {
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
         set: function(key, value, options) {
+            // Set may get called with "null" or "undefined"
+            const newValue = value ?? undefined;
+            const oldValue = this.attributes[key] ?? undefined;
             // Don't needlessly trigger unload protect if value didn't chane
-            if(typeof key === 'string' && this.attributes[key] === value)
+            if(typeof key === 'string' && oldValue === newValue)
                 return this;
             // make the keys case insensitive
             var attrs = {};

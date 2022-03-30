@@ -75,21 +75,22 @@ export function QueryComboBox({
 }): JSX.Element {
   const field = resource.specifyModel.getField(initialFieldName ?? '');
 
-  React.useEffect(() => {
-    if (!resource.isNew()) return;
-    resource.settingDefaultValues(() => {
-      if (field?.name === 'cataloger')
-        toTable(resource, 'CollectionObject')?.set(
-          'cataloger',
-          userInformation.agent.resource_uri
-        );
-      if (field?.name === 'receivedBy')
-        toTable(resource, 'LoanReturnPreparation')?.set(
-          'receivedBy',
-          userInformation.agent.resource_uri
-        );
-    });
-  }, [resource, field]);
+  React.useEffect(
+    () =>
+      resource.settingDefaultValues(() => {
+        if (field?.name === 'cataloger')
+          toTable(resource, 'CollectionObject')?.set(
+            'cataloger',
+            userInformation.agent.resource_uri
+          );
+        if (field?.name === 'receivedBy')
+          toTable(resource, 'LoanReturnPreparation')?.set(
+            'receivedBy',
+            userInformation.agent.resource_uri
+          );
+      }),
+    [resource, field]
+  );
 
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {

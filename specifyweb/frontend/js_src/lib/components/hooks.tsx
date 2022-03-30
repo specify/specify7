@@ -449,9 +449,9 @@ export function useResourceValue<
     );
 
     resource.settingDefaultValues(() => {
-      resource.isNew() && typeof defaultParser?.value !== 'undefined'
-        ? resource.set(fieldName, defaultParser.value as never)
-        : undefined;
+      typeof defaultParser?.value === 'undefined'
+        ? undefined
+        : resource.set(fieldName, defaultParser.value as never);
     });
 
     const refresh = (): void =>

@@ -9,6 +9,7 @@ import {
   monthFormat,
 } from '../dateformat';
 import { dayjs, getDateInputValue } from '../dayjs';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -19,7 +20,6 @@ import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
 import { useSaveBlockers } from './resource';
-import { f } from '../functools';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -109,7 +109,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   React.useEffect(() => {
     resource.settingDefaultValues(() =>
-      resource.isNew() && defaultValue === 'today'
+      defaultValue === 'today'
         ? resource.set(dateField, getDateInputValue(new Date()) as never)
         : undefined
     );
@@ -141,42 +141,46 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     };
   }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
 
-  const refIsFirstRender = React.useRef(true);
+  const renderCount = React.useRef(0);
   React.useEffect(() => {
+    renderCount.current += 1;
     /*
      * Don't update the value in the resource on the initial useEffect execution
      * since "moment" is still undefined
      */
-    if (refIsFirstRender.current)
-      return (): void => {
-        refIsFirstRender.current = false;
-      };
+    if (renderCount.current === 1) return;
 
-    if (typeof moment === 'undefined') {
-      resource.set(dateField, null as never);
-      if (typeof precisionField === 'string')
-        resource.set(precisionField, null as never);
-      resource.saveBlockers.remove(`invaliddate:${dateField}`);
-    } else if (moment.isValid()) {
-      const value = moment.format(databaseDateFormat);
-      resource.set(dateField, value as never);
-      if (typeof precisionField === 'string')
-        resource.set(precisionField, precisions[precision] as never);
-      resource.saveBlockers.remove(`invaliddate:${dateField}`);
-    } else {
-      const validationMessage =
-        precision === 'full'
-          ? formsText('requiredFormat')(fullDateFormat())
-          : precision === 'month-year'
-          ? formsText('requiredFormat')(monthFormat())
-          : formsText('invalidDate');
-      resource.saveBlockers.add(
-        `invaliddate:${dateField}`,
-        dateField,
-        validationMessage
-      );
+    // Don't trigger unload protect when setting default value
+    if (renderCount.current === 2 && resource.isNew())
+      resource.settingDefaultValues(process);
+    else process();
+
+    function process(): void {
+      if (typeof moment === 'undefined') {
+        resource.set(dateField, null as never);
+        if (typeof precisionField === 'string')
+          resource.set(precisionField, null as never);
+        resource.saveBlockers.remove(`invaliddate:${dateField}`);
+      } else if (moment.isValid()) {
+        const value = moment.format(databaseDateFormat);
+        resource.set(dateField, value as never);
+        if (typeof precisionField === 'string')
+          resource.set(precisionField, precisions[precision] as never);
+        resource.saveBlockers.remove(`invaliddate:${dateField}`);
+      } else {
+        const validationMessage =
+          precision === 'full'
+            ? formsText('requiredFormat')(fullDateFormat())
+            : precision === 'month-year'
+            ? formsText('requiredFormat')(monthFormat())
+            : formsText('invalidDate');
+        resource.saveBlockers.add(
+          `invaliddate:${dateField}`,
+          dateField,
+          validationMessage
+        );
+      }
     }
-    return undefined;
   }, [resource, moment, precision, dateField, precisionField]);
 
   function handleChange() {
