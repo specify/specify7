@@ -79,6 +79,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME,
     prePopulate?: boolean
   ): Promise<Collection<VALUE[number]>>;
+  settingDefaultValues: (callback: () => void) => void;
   set<
     FIELD_NAME extends
       | keyof SCHEMA['fields']

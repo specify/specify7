@@ -39,7 +39,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   }) => void;
 }): JSX.Element {
   const id = useId('save-button');
-  const [saveRequired, setSaveRequired] = React.useState(model.isNew());
+  const [saveRequired, setSaveRequired] = React.useState(false);
   useUnloadProtect(saveRequired, formsText('unsavedFormUnloadProtect'));
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
@@ -47,14 +47,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     const handleSaveRequired = (): void => setSaveRequired(true);
     model.on('saverequired', handleSaveRequired);
 
-    function handleChanged(): void {
+    function handleChanged(saveRequired = true): void {
+      if (saveRequired) handleSaveRequired();
       const onlyDeferredBlockers = Array.from(
         model.saveBlockers.blockingResources
       ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
       setSaveBlocked(!onlyDeferredBlockers);
     }
 
-    handleChanged();
+    handleChanged(false);
     model.on('blockerschanged', handleChanged);
     return (): void => {
       model.off('saverequired', handleSaveRequired);

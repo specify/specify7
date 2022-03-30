@@ -108,8 +108,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
-    if (resource.isNew() && defaultValue === 'today')
-      resource.set(dateField, getDateInputValue(new Date()) as never);
+    resource.settingDefaultValues(() =>
+      resource.isNew() && defaultValue === 'today'
+        ? resource.set(dateField, getDateInputValue(new Date()) as never)
+        : undefined
+    );
 
     function setInput(): void {
       const value = resource.get(dateField);

@@ -233,15 +233,10 @@ export function useTriggerState<T>(
 ): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = React.useState<T>(defaultValue);
 
-  /**
-   * Using React.useRef rather than React.useEffect with a [defaultValue]
-   * dependency because React.useEffect executes too late in the process
-   */
-  const previousDefaultValue = React.useRef<T>(defaultValue);
-  if (previousDefaultValue.current !== defaultValue) {
+  /* Using layout effect rather than useEffect to update the state earlier on */
+  React.useLayoutEffect(() => {
     setState(defaultValue);
-    previousDefaultValue.current = defaultValue;
-  }
+  }, [defaultValue]);
 
   return [state, setState];
 }
@@ -266,9 +261,13 @@ export function useUnloadProtect(
 
   React.useEffect(() => {
     if (!hasUnloadProtect) return undefined;
+    console.log(`Adding unload protect: ${message}`);
     const id = {};
     navigation.addUnloadProtect(id, message);
-    return (): void => navigation.removeUnloadProtect(id);
+    return (): void => {
+      console.log(`Removing unload protect: ${message}`);
+      navigation.removeUnloadProtect(id);
+    };
   }, [hasUnloadProtect, message]);
 
   const [callback, setCallback] = React.useState<(() => void) | undefined>(
@@ -408,8 +407,6 @@ export function useResourceValue<
         // Don't trigger unload protect needlessly
         if (oldValue !== parsedValue) {
           resource.set(fieldName, parsedValue as never);
-          // TODO: check if this is needed
-          resource.trigger('saverequired');
         }
       } else {
         setValidation(parseResults.reason);
@@ -451,8 +448,11 @@ export function useResourceValue<
         : resolveParser(field) ?? {}
     );
 
-    if (resource.isNew() && typeof defaultParser?.value !== 'undefined')
-      resource.set(fieldName, defaultParser.value as never);
+    resource.settingDefaultValues(() => {
+      resource.isNew() && typeof defaultParser?.value !== 'undefined'
+        ? resource.set(fieldName, defaultParser.value as never)
+        : undefined;
+    });
 
     const refresh = (): void =>
       setValue((resource.get(fieldName) as T | null) ?? undefined);

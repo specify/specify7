@@ -61,6 +61,7 @@ function eventHandlerForToOne(related, field) {
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
+        _ignoreChanges: false,  // Don't trigger saveRequried when setting default values
 
         constructor: function() {
             this.specifyModel = this.constructor.specifyModel;
@@ -79,7 +80,7 @@ function eventHandlerForToOne(related, field) {
             // unless they change because the resource is being fetched
             // or updated during a save
             this.on('change', function() {
-                if (!this._fetch && !this._save) {
+                if (!this._fetch && !this._save && !this._ignoreChanges) {
                     this.needsSaved = true;
                     this.trigger('saverequired');
                 }
@@ -87,6 +88,14 @@ function eventHandlerForToOne(related, field) {
 
             globalEvents.trigger('initresource', this);
             this.isNew() && globalEvents.trigger('newresource', this);
+        },
+        // Supress saveRequired trigger when setting default values for resource
+        // Works for new resources only
+        settingDefaultValues(callback){
+            if(this.isNew())
+                this._ignoreChanges = true;
+            callback();
+            this._ignoreChanges = false;
         },
         clone: function() {
             var self = this;
@@ -182,6 +191,9 @@ function eventHandlerForToOne(related, field) {
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
         set: function(key, value, options) {
+            // Don't needlessly trigger unload protect if value didn't chane
+            if(typeof key === 'string' && this.attributes[key] === value)
+                return this;
             // make the keys case insensitive
             var attrs = {};
             if (_.isObject(key) || key == null) {

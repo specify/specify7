@@ -1,5 +1,5 @@
 import { fetchCollection } from './collection';
-import type { Collection } from './datamodel';
+import type { Collection, CollectionObject } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
@@ -104,7 +104,7 @@ export const collectionsForResource = async (
       ])
   ) ??
   f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
-    toTable(resource, 'CollectionObject')
+    (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
       .then(collectionsInDomain)
   ) ??

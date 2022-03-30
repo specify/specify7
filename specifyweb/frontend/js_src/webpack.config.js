@@ -148,7 +148,7 @@ module.exports = (_env, argv)=>({
         new EmitInitPyPlugin(),
         // Don't split every async import into a separate bundle
         new webpack.optimize.LimitChunkCountPlugin({
-            maxChunks: 10,
+            maxChunks: argv.mode === 'development' ? 4 : 10,
         }),
         // Clean up build artifacts
         new CleanupPlugin(),
