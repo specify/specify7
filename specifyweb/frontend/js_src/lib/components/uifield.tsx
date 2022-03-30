@@ -123,7 +123,7 @@ export function Field({
         if (parser.type !== 'date' || event.type === 'paste')
           updateValue(input.value);
         else if (typeof parser.printFormatter === 'function')
-          updateValue(parser.printFormatter(input.value));
+          updateValue(parser.printFormatter(input.value, parser));
       }}
       onBlur={({ target }): void => {
         if (parser.type === 'date') updateValue(target.value);

@@ -139,4 +139,16 @@ export const f = {
     f.var(Number.parseInt(value), (number) =>
       Number.isNaN(number) ? undefined : number
     ),
+  /**
+   * Round a number to the nearest step value, where step could be a float
+   *
+   * @example
+   * ```js
+   * f.round(6, 2);  // 6
+   * f.round(5, 2);  // 6
+   * f.round(4, 2.1);  // 4.2
+   * ```
+   */
+  round: (number: number, step: number): number =>
+    Math.round(number / step) * step,
 } as const;

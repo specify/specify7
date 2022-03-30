@@ -105,7 +105,10 @@ const fieldRenderers: {
   }) {
     const [data] = useAsyncState(
       React.useCallback(
-        async () => getResourceAndField(resource, fieldName),
+        async () =>
+          getResourceAndField(resource, fieldName).then(
+            (values) => values ?? false
+          ),
         [resource, fieldName]
       ),
       false
@@ -114,8 +117,8 @@ const fieldRenderers: {
       <ComboBox
         id={id}
         model={resource}
-        resource={data.resource}
-        field={data.field}
+        resource={data === false ? resource : data.resource}
+        field={data === false ? undefined : data.field}
         fieldName={fieldName}
         pickListName={pickList}
         defaultValue={defaultValue}

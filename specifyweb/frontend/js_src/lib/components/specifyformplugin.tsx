@@ -76,10 +76,10 @@ const pluginRenderers: {
         )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
       : null;
   },
-  LatLonUI({ resource, mode, id }) {
+  LatLonUI({ resource, mode, id, pluginDefinition: { step } }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <LatLongUi resource={locality} mode={mode} id={id} />
+        <LatLongUi resource={locality} mode={mode} id={id} step={step} />
       )) ?? <WrongTable resource={resource} allowedTable="Locality" />
     );
   },
@@ -210,7 +210,7 @@ const pluginRenderers: {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
-      return <></>;
+      return null;
     } else
       return hasTablePermission('CollectionRelType', 'read') ? (
         <HostTaxonPlugin

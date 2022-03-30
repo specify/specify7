@@ -387,7 +387,12 @@ export function useResourceValue<
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
     function updateValue(newValue: T) {
-      setValue(newValue);
+      setValue(
+        (typeof parser?.type === 'number'
+          ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
+            newValue
+          : newValue) as T
+      );
       if (typeof fieldName !== 'string') return;
 
       const parseResults = parseValue(

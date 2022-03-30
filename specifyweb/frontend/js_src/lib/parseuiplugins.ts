@@ -6,10 +6,16 @@ import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';
 import type { IR } from './types';
+import { f } from './functools';
 
 export type UiPlugins = {
   readonly UserCollectionsUI: State<'UserCollectionsUI'>;
-  readonly LatLonUI: State<'LatLonUI'>;
+  readonly LatLonUI: State<
+    'LatLonUI',
+    {
+      readonly step: number | undefined;
+    }
+  >;
   readonly PartialDateUI: State<
     'PartialDateUI',
     {
@@ -66,7 +72,10 @@ const processUiPlugin: {
   }) => UiPlugins[KEY];
 } = {
   UserCollectionsUI: () => ({ type: 'UserCollectionsUI' }),
-  LatLonUI: () => ({ type: 'LatLonUI' }),
+  LatLonUI: ({ properties }) => ({
+    type: 'LatLonUI',
+    step: f.parseInt(properties.step ?? ''),
+  }),
   PartialDateUI: ({ properties, defaultValue }) => ({
     type: 'PartialDateUI',
     defaultValue: defaultValue?.toLowerCase() === 'today' ? 'today' : undefined,

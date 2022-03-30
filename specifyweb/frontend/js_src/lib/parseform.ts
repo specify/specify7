@@ -189,7 +189,7 @@ function postProcessRows(
               type: 'Blank',
               id: undefined,
               align: 'left',
-              colSpan: columns.length - row.length,
+              colSpan: columns.length - totalColumns,
               visible: false,
             }
           : undefined,

@@ -1,6 +1,13 @@
+/**
+ * A potentially overloaded file that is responsible for validating data,
+ * parsing it and formatting it
+ */
+
 import { error } from './assert';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
+import { f } from './functools';
+import { mappedFind, omit } from './helpers';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import queryText from './localization/query';
@@ -17,9 +24,8 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
-import { mappedFind, omit } from './helpers';
-import { f } from './functools';
 
+/** Makes sure a wrapped function would receive a string value */
 const stringGuard =
   (formatter: (value: string) => unknown) => (value: unknown) =>
     typeof value === 'string'
@@ -53,20 +59,28 @@ export type Parser = Partial<{
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
   readonly title: string;
-  // Format a value before validating it
+  /*
+   * Format a value before validating it. Formatters are applied in the order
+   * they are defined
+   */
   readonly formatters: RA<typeof formatter[string]>;
   // Validate the value
   readonly validators: RA<typeof validators[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
-  // Format the value for printing
-  readonly printFormatter: (value: unknown) => string;
+  // Format the value for use in read only contexts
+  readonly printFormatter: (value: unknown, parser: Parser) => string;
   readonly required: boolean;
   // Default value
   readonly value: string | number | boolean;
-  // This is different from field.getPickList() for date fields
+  // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
 }>;
+
+const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
+  typeof value === 'number' && typeof step === 'number'
+    ? f.round(value, step).toString()
+    : (value as number).toString();
 
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 
@@ -98,6 +112,7 @@ export const parsers: RR<
     formatters: [formatter.int],
     validators: [validators.number],
     value: 0,
+    printFormatter: numberPrintFormatter,
   },
 
   'java.lang.Double': {
@@ -105,6 +120,7 @@ export const parsers: RR<
     formatters: [formatter.float],
     validators: [validators.number],
     value: 0,
+    printFormatter: numberPrintFormatter,
   },
 
   'java.lang.Float': 'java.lang.Double',
@@ -117,6 +133,7 @@ export const parsers: RR<
     formatters: [formatter.int],
     validators: [validators.number],
     value: 0,
+    printFormatter: numberPrintFormatter,
   },
 
   'java.lang.Integer': {
@@ -127,6 +144,7 @@ export const parsers: RR<
     formatters: [formatter.int],
     validators: [validators.number],
     value: 0,
+    printFormatter: numberPrintFormatter,
   },
 
   'java.lang.Short': {
@@ -137,6 +155,7 @@ export const parsers: RR<
     formatters: [formatter.int],
     validators: [validators.number],
     value: 0,
+    printFormatter: numberPrintFormatter,
   },
 
   'java.lang.String': {
@@ -300,6 +319,12 @@ function formatterToParser(formatter: UiFormatter): Parser {
   };
 }
 
+/**
+ * Convert parser to HTML input field's validation attributes.
+ *
+ * @remarks
+ * The attributes work for usages both in React and non-React contexts
+ */
 export const getValidationAttributes = (parser: Parser): IR<string> =>
   typeof parser === 'object'
     ? {
@@ -337,25 +362,6 @@ export const getValidationAttributes = (parser: Parser): IR<string> =>
       }
     : {};
 
-export const addValidationAttributes = (
-  input: HTMLInputElement,
-  parser: Parser
-): void =>
-  Object.entries(getValidationAttributes(parser)).forEach(([key, value]) =>
-    input.setAttribute(key, value)
-  );
-
-export type ValidParseResult = {
-  readonly value: string;
-  readonly parsed: unknown;
-  readonly isValid: true;
-};
-export type InvalidParseResult = {
-  readonly value: string;
-  readonly isValid: false;
-  readonly reason: string;
-};
-
 /** Modify the parser to be able to parse multiple values separated by commas */
 export function pluralizeParser(rawParser: Parser): Parser {
   const { minLength, maxLength, ...parser } = rawParser;
@@ -380,6 +386,17 @@ export function pluralizeParser(rawParser: Parser): Parser {
       ),
     };
 }
+
+export type ValidParseResult = {
+  readonly value: string;
+  readonly parsed: unknown;
+  readonly isValid: true;
+};
+export type InvalidParseResult = {
+  readonly value: string;
+  readonly isValid: false;
+  readonly reason: string;
+};
 
 export function parseValue(
   parser: Parser,
@@ -466,7 +483,7 @@ export function fieldFormat(
     );
     if (parseResults.isValid)
       return (
-        resolvedParser.printFormatter?.(parseResults.parsed) ??
+        resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
         (parseResults.parsed as string)
       );
     else

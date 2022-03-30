@@ -11,7 +11,7 @@ import { Input, Select } from './basic';
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
 type Parsed = {
-  readonly format: () => string;
+  readonly format: (step: number | undefined) => string;
   readonly asFloat: () => number;
   readonly soCalledUnit: () => number;
 };
@@ -23,6 +23,7 @@ function Coordinate({
   fieldType,
   isReadOnly,
   onChange: handleChange,
+  step,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly coordinateField:
@@ -38,6 +39,7 @@ function Coordinate({
   readonly fieldType: 'Lat' | 'Long';
   readonly isReadOnly: boolean;
   readonly onChange: (parsed: string) => void;
+  readonly step: number | undefined;
 }): JSX.Element {
   const [coordinate, setCoordinate] = React.useState<string>(
     () =>
@@ -53,7 +55,9 @@ function Coordinate({
     const handleChange = (coordinate: string) =>
       onChange(
         coordinate,
-        (latlongutils[fieldType].parse(coordinate) as Parsed | null)?.format()
+        (latlongutils[fieldType].parse(coordinate) as Parsed | null)?.format(
+          step
+        )
       );
     const handleCoordinateTextChange = () =>
       handleChange(resource.get(coordinateTextField));
@@ -85,7 +89,7 @@ function Coordinate({
               | Parsed
               | undefined)
           : undefined;
-        onChange(value.trim(), parsed?.format());
+        onChange(value.trim(), parsed?.format(step));
 
         resource.set(coordinateTextField, value);
         resource.set(coordinateField, parsed?.asFloat() ?? null);
@@ -101,11 +105,13 @@ function CoordinatePoint({
   label,
   index,
   isReadOnly,
+  step,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly label: string;
   readonly index: 1 | 2;
   readonly isReadOnly: boolean;
+  readonly step: number | undefined;
 }): JSX.Element {
   const [latitude, setLatitude] = React.useState<string>(
     commonText('notApplicable')
@@ -128,6 +134,7 @@ function CoordinatePoint({
             fieldType={`Lat`}
             isReadOnly={isReadOnly}
             onChange={setLatitude}
+            step={step}
           />
         </label>
       </td>
@@ -143,6 +150,7 @@ function CoordinatePoint({
             fieldType={`Lat`}
             isReadOnly={isReadOnly}
             onChange={setLongitude}
+            step={step}
           />
         </label>
       </td>
@@ -159,10 +167,12 @@ export function LatLongUi({
   resource,
   mode,
   id,
+  step,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly mode: FormMode;
   readonly id: string | undefined;
+  readonly step: number | undefined;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
     () => resource.get('latLongType') ?? 'point'
@@ -222,6 +232,7 @@ export function LatLongUi({
             }
             index={1}
             isReadOnly={mode === 'view'}
+            step={step}
           />
           {coordinateType === 'point' ? undefined : (
             <CoordinatePoint
@@ -233,6 +244,7 @@ export function LatLongUi({
               }
               index={2}
               isReadOnly={mode === 'view'}
+              step={step}
             />
           )}
         </tbody>

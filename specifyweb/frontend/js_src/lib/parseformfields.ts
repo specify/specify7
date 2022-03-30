@@ -4,11 +4,11 @@
 
 import type { State } from 'typesafe-reducer';
 
+import { f } from './functools';
+import { getAttribute } from './parseformcells';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
 import type { IR } from './types';
-import { getAttribute } from './parseformcells';
-import { f } from './functools';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -106,8 +106,6 @@ const processFieldType: {
     ...withStringDefault(cell),
     min: f.parseInt(properties.min ?? ''),
     max: f.parseInt(properties.max ?? ''),
-    // TODO: factor in this value when displaing a field
-    // TODO: figure out how this could be used for latlong fields
     step: f.parseInt(properties.step ?? ''),
   }),
   QueryComboBox: (_cell, properties) => ({

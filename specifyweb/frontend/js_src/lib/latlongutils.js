@@ -2,6 +2,7 @@
 
 
 import _ from 'underscore';
+import {f} from './functools';
 
 export function Coord(flt) {
     // construct a coordinate from a single floating point number.
@@ -20,8 +21,8 @@ _.extend(Coord.prototype, {
         const decDegs = this.toDegs();
         return Math.abs(decDegs._components[0]) <= 180;
     },
-    format() {
-        return (this._sign < 0 ? "-" : "") + format(this._components);
+    format(step) {
+        return (this._sign < 0 ? "-" : "") + format(this._components, step);
     },
     _adjustTerms(n) {
         const result = Object.create(this);
@@ -75,9 +76,9 @@ Lat.prototype = _.extend(new Coord(), {
         if (Math.abs(decDegs._components[0]) > 90) return false;
         return Coord.prototype.isValid.call(this);
     },
-    format() {
+    format(step) {
         const dir = this._sign < 0 ? 'S' : 'N';
-        return [format(this._components), dir].join(' ');
+        return [format(this._components, step), dir].join(' ');
     },
     asLong() { return null; }
 });
@@ -93,9 +94,9 @@ export function Long(flt) {
 }
 
 Long.prototype = _.extend(new Coord(), {
-    format() {
+    format(step) {
         const dir = this._sign < 0 ? 'W' : 'E';
-        return [format(this._components), dir].join(' ');
+        return [format(this._components, step), dir].join(' ');
     },
     asLat() { return null; }
 });
@@ -121,9 +122,12 @@ function adjustTerms(x, n) {
     return x;
 }
 
-function format(ll) {
+function format(ll, step) {
+    const digits = ll.map(digit=>
+        typeof step === 'number' ? f.round(digit, step) : digit
+    );
     const signs = _(['° ', "' ", '" ']).first(ll.length);
-    return _(ll).chain().zip(signs).flatten().value().join('').trim();
+    return _(digits).chain().zip(signs).flatten().value().join('').trim();
 }
 
 function makeLatLong(sign, comps, dir) {
