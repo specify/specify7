@@ -3,7 +3,7 @@ import React from 'react';
 import { getModel } from '../schema';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListTypes } from './combobox';
+import { PickListTypes } from '../picklistmixins';
 import { PickListComboBox } from './picklist';
 
 export function PickListFieldComboBox(

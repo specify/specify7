@@ -12,7 +12,7 @@ import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
 import { f } from '../functools';
-import { DataEntry, FormHeader } from './basic';
+import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
 
@@ -99,13 +99,11 @@ export function SpecifyForm({
   viewName = resource.specifyModel.view,
   formType,
   mode,
-  hasHeader,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly hasHeader: boolean;
 }): JSX.Element {
   const viewDefinition = useViewDefinition({
     model: resource.specifyModel,
@@ -114,13 +112,7 @@ export function SpecifyForm({
     mode,
   });
 
-  return (
-    <RenderForm
-      resource={resource}
-      viewDefinition={viewDefinition}
-      hasHeader={hasHeader}
-    />
-  );
+  return <RenderForm resource={resource} viewDefinition={viewDefinition} />;
 }
 
 /**
@@ -130,11 +122,9 @@ export function SpecifyForm({
 export function RenderForm<SCHEMA extends AnySchema>({
   resource,
   viewDefinition,
-  hasHeader,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
-  readonly hasHeader: boolean;
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -145,8 +135,6 @@ export function RenderForm<SCHEMA extends AnySchema>({
   );
   return (
     <div className="gap-y-2 flex flex-col">
-      {/* FIXME: STYLE: check usages, consider removing it */}
-      {hasHeader && <FormHeader>{resource.specifyModel.name}</FormHeader>}
       {typeof viewDefinition === 'object' &&
       typeof loadedResource === 'object' ? (
         <DataEntry.Grid viewDefinition={viewDefinition}>

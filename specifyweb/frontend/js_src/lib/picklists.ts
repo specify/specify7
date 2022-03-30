@@ -1,4 +1,4 @@
-import { PickListTypes } from './components/combobox';
+import { createPickListItem, PickListTypes } from './picklistmixins';
 import { months } from './components/internationalization';
 import type { PickList, PickListItem, Tables } from './datamodel';
 import type { SerializedResource, TableFields } from './datamodelutils';
@@ -6,7 +6,6 @@ import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
 import formsText from './localization/forms';
 import { hasToolPermission } from './permissions';
-import { createPickListItem } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
 import { f } from './functools';

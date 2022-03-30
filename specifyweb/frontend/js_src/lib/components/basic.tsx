@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { error } from '../assert';
 import commonText from '../localization/common';
 import type { ViewDescription } from '../parseform';
 import type { Input as InputType } from '../saveblockers';
@@ -116,7 +115,8 @@ export const dialogIconTriggers = {
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
-const containerBackground = 'bg-gray-200 dark:bg-neutral-800';
+const hasAltBackground = 'has-alt-background';
+const containerBackground = `bg-gray-200 dark:bg-neutral-800 ${hasAltBackground}`;
 const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
   shadow-gray-500 rounded`;
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
@@ -125,6 +125,7 @@ const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
 const rootBackground = 'bg-white dark:bg-neutral-900';
 export const className = {
   rootBackground,
+  hasAltBackground,
   containerBackground,
   root: `flex flex-col h-screen overflow-hidden ${rootBackground} 
     text-neutral-900 dark:text-neutral-200`,
@@ -157,6 +158,8 @@ export const className = {
   formTitle: 'text-lg',
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
+  // These values must be synchronised with main.css
+  dataEntryGrid: 'data-entry-grid',
 } as const;
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -169,7 +172,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    'grid overflow-x-auto items-center py-5 gap-2',
+    `grid overflow-x-auto items-center py-5 gap-2`,
     ({ viewDefinition, ...props }) => ({
       ...props,
       style: {
@@ -179,6 +182,12 @@ export const DataEntry = {
         ...props.style,
       },
     })
+  ),
+  Header: wrap('DataEntry.Header', 'header', className.formHeader),
+  Title: wrap(
+    'DataEntry.Title',
+    'h2',
+    `${className.headerPrimary} ${className.formTitle}`
   ),
   Cell: wrap<
     'div',
@@ -213,6 +222,7 @@ export const DataEntry = {
     'legend',
     'gap-x-2 flex font-bold border-b border-gray-500 pt-5'
   ),
+  SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
 };
 export const Label = {
   Generic: wrap('Label.Generic', 'label', className.label),
@@ -234,7 +244,6 @@ export const FormFooter = wrap(
     role: 'toolbar',
   }
 );
-export const FormHeader = wrap('FormHeader', 'h2', className.formHeader);
 export const Form = wrap(
   'Form',
   'form',
@@ -524,8 +533,8 @@ export const Link = {
   ),
 } as const;
 
-export const DialogContext = React.createContext<(() => void) | undefined>(() =>
-  error('DialogContext can only be used by <Dialog> buttons')
+export const DialogContext = React.createContext<(() => void) | undefined>(
+  undefined
 );
 DialogContext.displayName = 'DialogContext';
 

@@ -1,11 +1,10 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { getPickListItems } from '../picklistmixins';
+import { getPickListItems, PickListTypes } from '../picklistmixins';
 import { pickLists } from '../picklists';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListTypes } from './combobox';
 import { PickListComboBox } from './picklist';
 
 export function PickListTableComboBox(

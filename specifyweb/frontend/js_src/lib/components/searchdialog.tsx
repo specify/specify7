@@ -118,7 +118,6 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           viewName={viewName}
           formType="form"
           mode="search"
-          hasHeader={false}
         />
         <Ul className="bg-white dark:bg-neutral-700 h-40 min-w-[275px] overflow-auto p-2">
           {isLoading || typeof results === 'undefined' ? (

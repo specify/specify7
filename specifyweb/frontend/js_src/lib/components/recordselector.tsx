@@ -17,11 +17,11 @@ import { LoadingContext } from './contexts';
 export function RecordSelectorButtons({
   onAdd: handleAdd,
   onDelete: handleDelete,
-  visitHref,
+  visitResource,
 }: {
   readonly onAdd: (() => void) | undefined | false;
   readonly onDelete: (() => void) | undefined | false;
-  readonly visitHref: string | undefined;
+  readonly visitResource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   return (
     <>
@@ -45,13 +45,13 @@ export function RecordSelectorButtons({
           disabled={typeof handleDelete === 'undefined'}
         />
       )}
-      {typeof visitHref === 'string' && (
+      {typeof visitResource === 'object' && !visitResource.isNew() ? (
         <Link.NewTab
-          href={visitHref}
+          href={visitResource.viewUrl()}
           aria-label={formsText('visit')}
           title={formsText('visit')}
         />
-      )}
+      ) : undefined}
     </>
   );
 }

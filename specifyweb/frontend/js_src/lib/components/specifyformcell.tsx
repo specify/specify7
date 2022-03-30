@@ -157,7 +157,6 @@ const cellRenderers: {
           model: resource.specifyModel,
         }}
         resource={resource}
-        hasHeader={false}
       />
     );
   },

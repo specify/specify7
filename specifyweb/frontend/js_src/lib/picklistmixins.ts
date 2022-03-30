@@ -1,6 +1,5 @@
 import { error } from './assert';
 import type { PickListItemSimple } from './components/combobox';
-import { PickListTypes } from './components/combobox';
 import type { PickList, PickListItem, Tables } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { addMissingFields, serializeResource } from './datamodelutils';
@@ -15,6 +14,15 @@ import { defined } from './types';
 import { sortObjectsByKey } from './helpers';
 import { f } from './functools';
 import { hasTablePermission } from './permissions';
+
+export const PickListTypes = {
+  // Items are defined in the PickListItems table
+  ITEMS: 0,
+  // Items are defined from formatted rows in some table
+  TABLE: 1,
+  // Items are defined from a column in some table
+  FIELDS: 2,
+} as const;
 
 export const createPickListItem = (
   // It's weird that value can be null, but that's what the data model says

@@ -5,7 +5,11 @@ import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode } from '../parseform';
-import { fetchPickList, getPickListItems } from '../picklistmixins';
+import {
+  fetchPickList,
+  getPickListItems,
+  PickListTypes,
+} from '../picklistmixins';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { RA } from '../types';
@@ -38,15 +42,6 @@ export type PickListItemSimple = {
   readonly value: string;
   readonly title: string;
 };
-
-export const PickListTypes = {
-  // Items are defined in the PickListItems table
-  ITEMS: 0,
-  // Items are defined from formatted rows in some table
-  TABLE: 1,
-  // Items are defined from a column in some table
-  FIELDS: 2,
-} as const;
 
 function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   const [pickList] = useAsyncState<SpecifyResource<PickList>>(
@@ -104,6 +99,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       disabled
       defaultValue={commonText('loading')}
       required={props.isRequired}
+      className={props.className}
     />
   );
 }

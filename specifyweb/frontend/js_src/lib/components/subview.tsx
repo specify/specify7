@@ -8,7 +8,7 @@ import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
-import { Icon } from './common';
+import { TableIcon } from './common';
 import { useAsyncState, useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
 
@@ -25,7 +25,7 @@ export function SubView({
   formType,
   isButton,
   viewName = field.relatedModel.view,
-  icon = field.relatedModel.getIcon(),
+  icon = field.relatedModel.name,
 }: {
   readonly field: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -77,8 +77,11 @@ export function SubView({
           aria-label={field.label}
           aria-pressed={isOpen}
           onClick={handleToggle}
+          className="w-fit"
         >
-          {parentFormType === 'form' && <Icon path={icon} title={undefined} />}
+          {parentFormType === 'form' && (
+            <TableIcon name={icon} tableLabel={undefined} />
+          )}
           <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
             {collection?.models.length ?? commonText('loading')}
           </span>

@@ -31,8 +31,37 @@
   [multiple],
   textarea,
   select {
-    @apply p-1 bg-gray-200 dark:bg-neutral-700 rounded accent-brand-200
-      dark:accent-brand-400 dark:border-none;
+    @apply p-1 rounded accent-brand-200 dark:accent-brand-400 dark:border-none
+      bg-gray-200 dark:bg-neutral-700;
+  }
+
+  .has-alt-background [type='text'],
+  .has-alt-background [type='email'],
+  .has-alt-background [type='url'],
+  .has-alt-background [type='password'],
+  .has-alt-background [type='number'],
+  .has-alt-background [type='date'],
+  .has-alt-background [type='datetime-local'],
+  .has-alt-background [type='month'],
+  .has-alt-background [type='search'],
+  .has-alt-background [type='tel'],
+  .has-alt-background [type='time'],
+  .has-alt-background [type='week'],
+  .has-alt-background [multiple],
+  .has-alt-background textarea,
+  .has-alt-background select,
+  :disabled:not(.icon), [readonly]
+  {
+    @apply bg-white dark:bg-neutral-900;
+  }
+
+  :disabled:not(.icon), [readonly] {
+    @apply cursor-not-allowed text-gray-700 dark:text-neutral-500 border
+      border-gray-500 dark:border-solid;
+  }
+
+  .has-alt-background :disabled:not(.icon), .has-alt-background [readonly] {
+    @apply bg-gray-200 dark:bg-neutral-800;
   }
 
   select {
@@ -60,11 +89,6 @@
 
   textarea {
     @apply w-full resize;
-  }
-
-  :disabled:not(.icon), [readonly] {
-    @apply cursor-not-allowed bg-gray-350 dark:bg-neutral-900 text-gray-700
-      dark:text-neutral-500;
   }
 
   :required {
@@ -103,7 +127,7 @@
   }
 
   [type='number'].webkit:not([readonly]):not(.no-arrows) {
-    @apply text-right relative pr-2.5
+    @apply text-right relative pr-2.5;
   }
 
   .button {

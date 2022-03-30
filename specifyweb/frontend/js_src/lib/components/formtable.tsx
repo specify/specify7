@@ -142,7 +142,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                       viewName={viewName}
                       formType="form"
                       mode={mode}
-                      hasHeader={false}
                     />
                   </DataEntry.Cell>
                 </>

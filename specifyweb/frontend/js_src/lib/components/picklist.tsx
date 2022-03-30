@@ -2,22 +2,22 @@ import React from 'react';
 
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import queryText from '../localization/query';
+import { hasToolPermission } from '../permissions';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
 import { Button, Input, Select } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListTypes } from './combobox';
+import { PickListTypes } from '../picklistmixins';
+import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
-import { LoadingContext } from './contexts';
-import { hasToolPermission } from '../permissions';
-import { f } from '../functools';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -145,6 +145,8 @@ export function PickListComboBox(
     ? props.onAdd
     : undefined;
 
+  const isDisabled = props.isDisabled || typeof props.items === 'undefined';
+
   return (
     <>
       {typeof handleAdd === 'undefined' ? (
@@ -162,7 +164,8 @@ export function PickListComboBox(
               ? updateValue(newValue)
               : undefined
           }
-          disabled={props.isDisabled || typeof props.items === 'undefined'}
+          disabled={isDisabled}
+          className={props.className}
         >
           {isExistingValue ? undefined : value === null ? (
             props.isRequired ? undefined : (

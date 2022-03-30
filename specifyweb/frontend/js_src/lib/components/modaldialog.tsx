@@ -308,24 +308,24 @@ export function Dialog({
         </div>
         {headerButtons}
       </span>
-      {/*
-       * "px-1 -mx-1" ensures that focus outline for checkboxes
-       * and other inputs is not cut-off
-       */}
-      <div
-        className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
-          dark:text-neutral-350 ${contentClassName}`}
-        ref={contentRef}
-        id={id('content')}
-      >
-        {children}
-      </div>
-      {typeof buttons !== 'undefined' && (
+      <DialogContext.Provider value={handleClose}>
+        {/*
+         * "px-1 -mx-1" ensures that focus outline for checkboxes
+         * and other inputs is not cut-off
+         */}
         <div
-          className={`gap-x-2 flex ${buttonContainerClassName}`}
-          ref={setButtonContainer}
+          className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
+          dark:text-neutral-350 ${contentClassName}`}
+          ref={contentRef}
+          id={id('content')}
         >
-          <DialogContext.Provider value={handleClose}>
+          {children}
+        </div>
+        {typeof buttons !== 'undefined' && (
+          <div
+            className={`gap-x-2 flex ${buttonContainerClassName}`}
+            ref={setButtonContainer}
+          >
             {typeof buttons === 'string' ? (
               // If button was passed directly as text, render it as Blue.Button
               <Button.DialogClose component={Button.Blue}>
@@ -334,9 +334,9 @@ export function Dialog({
             ) : (
               buttons
             )}
-          </DialogContext.Provider>
-        </div>
-      )}
+          </div>
+        )}
+      </DialogContext.Provider>
     </Modal>
   );
 }

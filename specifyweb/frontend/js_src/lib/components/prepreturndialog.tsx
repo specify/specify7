@@ -386,7 +386,6 @@ function PreparationReturn({
       <RenderForm
         resource={loanReturnPreparation.current}
         viewDefinition={metaDataFormDefinition}
-        hasHeader={false}
       />
       <table>
         <thead>

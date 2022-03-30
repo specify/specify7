@@ -5,24 +5,25 @@ import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
+import { hasPermission, hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
-import { f } from '../functools';
 import {
   Button,
-  className,
   Container,
   DataEntry,
+  DialogContext,
   Form,
   FormFooter,
-  H2,
   Link,
 } from './basic';
+import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
@@ -31,8 +32,6 @@ import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
-import { LoadingContext } from './contexts';
-import { hasPermission, hasTablePermission } from '../permissions';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -132,7 +131,6 @@ function BaseResourceView<SCHEMA extends AnySchema>({
     typeof resource === 'object' ? (
       <SpecifyForm
         resource={resource}
-        hasHeader={false}
         mode={mode}
         viewName={viewName}
         formType="form"
@@ -278,6 +276,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
+  /**
+   * Whether form is rendered in a dialog. Can't use props.dialog because
+   * it would be false for subviews inside the dialog
+   */
+  const isInDialog = typeof React.useContext(DialogContext) === 'function';
+
   return isDeleted ? (
     resourceDeletedDialog
   ) : (
@@ -294,6 +298,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
         saveButton,
         specifyNetworkBadge,
       }): JSX.Element => {
+        const saveButtonElement = saveButton?.({
+          canAddAnother,
+          onSaving: handleSaving,
+          onSaved: handleSaved,
+        });
         if (dialog === false) {
           const deleteButton =
             typeof resource === 'object' &&
@@ -305,11 +314,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 onDeleted={handleDelete}
               />
             ) : undefined;
-          const saveButtonElement = saveButton?.({
-            canAddAnother,
-            onSaving: handleSaving,
-            onSaved: handleSaved,
-          });
           const formattedChildren = (
             <>
               {form}
@@ -328,9 +332,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
           return isSubForm ? (
             <DataEntry.SubForm>
               <DataEntry.SubFormHeader>
-                <h3 className={className.formTitle}>
+                <DataEntry.SubFormTitle>
                   {titleOverride ?? title}
-                </h3>
+                </DataEntry.SubFormTitle>
                 {headerButtons}
                 {specifyNetworkBadge}
               </DataEntry.SubFormHeader>
@@ -338,20 +342,18 @@ export function ResourceView<SCHEMA extends AnySchema>({
             </DataEntry.SubForm>
           ) : (
             <Container.Generic className="w-fit overflow-y-auto">
-              <header className={className.formHeader}>
-                <H2 className={className.formTitle}>
-                  {titleOverride ?? title}
-                </H2>
+              <DataEntry.Header>
+                <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                 {headerButtons}
                 {specifyNetworkBadge}
-              </header>
+              </DataEntry.Header>
               {formattedChildren}
             </Container.Generic>
           );
         } else
           return (
             <Dialog
-              header={title}
+              header={titleOverride ?? title}
               modal={dialog === 'modal'}
               headerButtons={
                 <>
@@ -382,7 +384,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                         {commonText('close')}
                       </Button.Blue>
                     )}
-                    {saveButton}
+                    {saveButtonElement}
                   </>
                 )
               }

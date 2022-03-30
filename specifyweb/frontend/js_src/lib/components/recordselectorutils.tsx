@@ -158,10 +158,6 @@ export function IntegratedRecordSelector({
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
   const mode = augmentMode(initialMode, false, field.relatedModel.name);
-  /*
-   * FIXME: disable add and remove for dependent toOne
-   * FIXME: disable onAdd and onDelete if no permission
-   */
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -204,12 +200,7 @@ export function IntegratedRecordSelector({
             headerButtons={
               <>
                 <RecordSelectorButtons
-                  visitHref={
-                    typeof resource === 'object' &&
-                    (!isDependent || dialog !== false)
-                      ? resource.viewUrl()
-                      : undefined
-                  }
+                  visitResource={isDependent ? undefined : resource}
                   onDelete={
                     typeof resource === 'object' && mode !== 'view'
                       ? resource.isNew() ||
@@ -342,12 +333,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             headerButtons={
               <>
                 <RecordSelectorButtons
-                  visitHref={
-                    typeof resource === 'object' &&
-                    (!isDependent || dialog !== false)
-                      ? resource.viewUrl()
-                      : undefined
-                  }
+                  visitResource={isDependent ? undefined : resource}
                   onDelete={
                     typeof resource === 'object' && mode !== 'view'
                       ? resource.isNew() ||
