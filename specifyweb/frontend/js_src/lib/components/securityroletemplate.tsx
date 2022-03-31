@@ -7,7 +7,7 @@ import commonText from '../localization/common';
 import { fetchRoles } from '../securityutils';
 import type { IR } from '../types';
 import { getUniqueName } from '../wbuniquifyname';
-import { Button, H3, Select, Ul } from './basic';
+import { Button, H3, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import type { NewRole, Role } from './securityrole';
@@ -62,25 +62,28 @@ export function CreateRole({
       <section>
         <H3>{adminText('fromLibrary')}</H3>
         {typeof libraryRoles === 'object' ? (
-          <Select
-            onValueChange={(roleId): void =>
-              handleCreated({
-                id: undefined,
-                name: getUniqueName(libraryRoles[roleId].name, [
-                  libraryRoles[roleId].name,
-                ]),
-                description: libraryRoles[roleId].description,
-                policies: libraryRoles[roleId].policies,
-              })
-            }
-          >
-            <option />
-            {Object.values(libraryRoles).map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </Select>
+          Object.keys(libraryRoles).length === 0 ? (
+            commonText('none')
+          ) : (
+            <Ul>
+              {Object.entries(libraryRoles).map(([roleId, role]) => (
+                <li key={roleId}>
+                  <Button.LikeLink
+                    onClick={(): void =>
+                      handleCreated({
+                        id: undefined,
+                        name: getUniqueName(role.name, [role.name]),
+                        description: role.description,
+                        policies: role.policies,
+                      })
+                    }
+                  >
+                    {role.name}
+                  </Button.LikeLink>
+                </li>
+              ))}
+            </Ul>
+          )
         ) : (
           commonText('loading')
         )}
