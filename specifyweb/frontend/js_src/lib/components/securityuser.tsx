@@ -4,17 +4,20 @@ import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { replaceKey, sortFunction, toggleItem } from '../helpers';
+import { replaceItem, replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { collectionAccessResource, hasPermission } from '../permissions';
 import {
+  anyAction,
+  anyResource,
   decompressPolicies,
   fetchRoles,
   processPolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
+import { filterArray } from '../types';
 import {
   Button,
   className,
@@ -164,6 +167,12 @@ export function UserView({
   const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
 
+  const isSuperAdmin =
+    institutionPolicies?.some(
+      ({ resource, actions }) =>
+        resource === anyResource && actions.includes(anyAction)
+    ) ?? false;
+
   const hasCollectionAccess =
     userPolicies?.[collectionId].some(
       ({ resource, actions }) =>
@@ -224,18 +233,67 @@ export function UserView({
         }
       >
         <h3 className="text-xl">{`${adminText('user')} ${user.name}`}</h3>
-        {hasPermission('/permissions/policies/user', 'read') && (
-          <PoliciesView
-            header={adminText('institutionUserPolicies')}
-            policies={institutionPolicies}
-            isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
-            onChange={(policies): void =>
-              typeof userPolicies === 'object'
-                ? setInstitutionPolicies(policies)
-                : undefined
-            }
-          />
-        )}
+        <div>
+          <Label.ForCheckbox>
+            <Input.Checkbox
+              isReadOnly={!hasPermission(anyResource, anyAction)}
+              disabled={typeof institutionPolicies === 'undefined'}
+              onValueChange={(): void =>
+                hasPermission('/permissions/policies/user', 'update') &&
+                typeof institutionPolicies === 'object'
+                  ? setInstitutionPolicies(
+                      isSuperAdmin
+                        ? filterArray(
+                            institutionPolicies.map((policy) =>
+                              policy.resource === anyResource
+                                ? policy.actions.length === 1 &&
+                                  policy.actions.includes(anyAction)
+                                  ? undefined
+                                  : replaceKey(
+                                      policy,
+                                      'actions',
+                                      policy.actions.filter(
+                                        (action) => action !== anyAction
+                                      )
+                                    )
+                                : policy
+                            )
+                          )
+                        : f.var(
+                            institutionPolicies.findIndex(
+                              ({ resource }) => resource === anyResource
+                            ),
+                            (index) =>
+                              index === -1
+                                ? [
+                                    ...institutionPolicies,
+                                    {
+                                      resource: anyResource,
+                                      actions: [anyAction],
+                                    },
+                                  ]
+                                : replaceItem(
+                                    institutionPolicies,
+                                    index,
+                                    replaceKey(
+                                      institutionPolicies[index],
+                                      'actions',
+                                      [
+                                        ...institutionPolicies[index].actions,
+                                        anyAction,
+                                      ]
+                                    )
+                                  )
+                          )
+                    )
+                  : undefined
+              }
+              checked={isSuperAdmin}
+            />
+            {adminText('superAdmin')}
+          </Label.ForCheckbox>
+        </div>
+
         <Label.Generic>
           <span className={className.headerGray}>
             {commonText('collection')}

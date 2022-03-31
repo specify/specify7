@@ -10,6 +10,8 @@ import { load } from './initialcontext';
 import { fetchContext as schemaPromise, schema } from './schema';
 import { fetchContext as domainPromise } from './schemabase';
 import {
+  anyAction,
+  anyResource,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolDefinitions,
@@ -114,7 +116,7 @@ let operationPermissions: {
     typeof operationPolicies[RESOURCE][number],
     boolean
   >;
-};
+} & RR<typeof anyResource, RR<typeof anyAction, boolean>>;
 let tablePermissions: {
   readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
     typeof tableActions[number],
@@ -157,7 +159,10 @@ export const queryUserPermissions = async (
           collectionid: collectionId,
           userid: userId,
           queries: [
-            ...Object.entries(operationPolicies).map(([policy, actions]) => ({
+            ...[
+              ...Object.entries(operationPolicies),
+              [anyResource, [anyAction]],
+            ].map(([policy, actions]) => ({
               resource: policy,
               actions,
             })),

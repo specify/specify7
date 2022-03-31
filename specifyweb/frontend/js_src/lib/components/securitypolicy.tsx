@@ -6,7 +6,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import {
   actionToLabel,
-  anyAction,
+  anyResource,
   getRegistriesFromPath,
   partsToResourceName,
   resourceNameToParts,
@@ -81,7 +81,7 @@ function PolicyView({
                     permissions.map(
                       ([partName, { label }], _index, { length }) =>
                         // Don't show Any if there is only one other option
-                        partName === anyAction && length === 2 ? undefined : (
+                        partName === anyResource && length === 2 ? undefined : (
                           <option key={partName} value={partName}>
                             {label}
                           </option>

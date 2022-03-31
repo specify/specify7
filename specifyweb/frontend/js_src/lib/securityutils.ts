@@ -37,7 +37,7 @@ export const fetchRoles = async (
   );
 
 export const resourceToLabel = (resource: string): string =>
-  resource === anyAction
+  resource === anyResource
     ? adminText('allResources')
     : resource.startsWith(tablePermissionsPrefix)
     ? resourceNameToModel(resource).label
@@ -106,7 +106,7 @@ const buildRegistry = f.store(
                 index + 1 === length
                   ? {}
                   : {
-                      [anyAction]: {
+                      [anyResource]: {
                         label: commonText('all'),
                         children: {},
                         actions: getAllActions(
@@ -130,7 +130,7 @@ const buildRegistry = f.store(
         return registry;
       },
       {
-        [anyAction]: {
+        [anyResource]: {
           label: commonText('all'),
           children: {},
           actions: getAllActions(partsToResourceName([])),
@@ -291,6 +291,7 @@ export const actionToLabel = (action: string): string =>
 
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';
+export const anyResource = '%';
 export const permissionSeparator = '/';
 
 export const resourceNameToParts = (resourceName: string): RA<string> =>
@@ -300,8 +301,8 @@ export const resourceNameToModel = (resourceName: string): SpecifyModel =>
   defined(getModel(resourceNameToParts(resourceName)[1]));
 
 export const partsToResourceName = (parts: RA<string>): string =>
-  parts.length === 1 && parts[0] === anyAction
-    ? anyAction
+  parts.length === 1 && parts[0] === anyResource
+    ? anyResource
     : `${permissionSeparator}${parts.join(permissionSeparator)}`;
 
 export const tablePermissionsPrefix = `${permissionSeparator}table${permissionSeparator}`;

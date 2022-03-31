@@ -378,6 +378,12 @@ const adminText = createDictionary({
     ca: 'Unchanged roles:',
     'es-es': 'Unchanged roles:',
   },
+  superAdmin: {
+    'en-us': 'Super Admin',
+    'ru-ru': 'Super Admin',
+    ca: 'Super Admin',
+    'es-es': 'Super Admin',
+  },
 });
 
 export default adminText;
