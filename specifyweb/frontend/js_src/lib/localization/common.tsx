@@ -1730,6 +1730,12 @@ const commonText = createDictionary({
     ca: 'GitHub Wiki',
     'es-es': 'GitHub Wiki',
   },
+  dismiss: {
+    'en-us': 'Dismiss',
+    'ru-ru': 'Dismiss',
+    ca: 'Dismiss',
+    'es-es': 'Dismiss',
+  },
 });
 
 export default commonText;

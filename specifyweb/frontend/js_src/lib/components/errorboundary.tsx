@@ -300,14 +300,9 @@ function PermissionError({
       buttons={
         <>
           <Button.DialogClose component={Button.Red}>
-            {commonText('close')}
+            {commonText('goToHomepage')}
           </Button.DialogClose>
-          {process.env.NODE_ENV !== 'production' &&
-            typeof handleClose === 'function' && (
-              <Button.Blue onClick={handleClose}>
-                [development] dismiss
-              </Button.Blue>
-            )}
+          <Button.Red onClick={handleClose}>{commonText('dismiss')}</Button.Red>
         </>
       }
     >
