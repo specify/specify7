@@ -1,6 +1,7 @@
+import json
 from unittest import skip
 
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase, TransactionTestCase, Client
 from django.db.models import Max
 from django.db import connection
 
@@ -9,14 +10,6 @@ from specifyweb.permissions.models import UserPolicy
 
 class MainSetupTearDown:
     def setUp(self):
-        # Make all users superusers for testing purposes.
-        UserPolicy.objects.create(
-            collection=None,
-            specifyuser=None,
-            resource='%',
-            action='%',
-        )
-
         self.institution = models.Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -58,6 +51,13 @@ class MainSetupTearDown:
             isloggedinreport=False,
             name="testuser",
             password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+
+        UserPolicy.objects.create(
+            collection=None,
+            specifyuser=self.specifyuser,
+            resource='%',
+            action='%',
+        )
 
         self.agent = models.Agent.objects.create(
             agenttype=0,
@@ -433,3 +433,76 @@ class InlineApiTests(ApiTests):
 
 
     # version control on inlined resources should be tested
+
+
+class UserApiTests(ApiTests):
+    def setUp(self):
+        "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
+        super(UserApiTests, self).setUp()
+        from specifyweb.context import views
+        views.users_collections_for_sp6 = lambda cursor, userid: []
+
+    def test_set_user_agents(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/api/set_agents/{self.specifyuser.id}/',
+            data=[self.agent.id],
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 204)
+
+    def test_set_user_agents_missing_exception(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/api/set_agents/{self.specifyuser.id}/',
+            data=[],
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'MissingAgentForAccessibleCollection': {'missing_for_6': [], 'missing_for_7': [self.collection.id]}}
+        )
+
+    def test_set_user_agents_multiple_exception(self):
+        agent2 = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Test2",
+            lastname="User2",
+            division=self.division,
+            specifyuser=None)
+
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/api/set_agents/{self.specifyuser.id}/',
+            data=[self.agent.id, agent2.id],
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'MultipleAgentsException': [{'agentid1': self.agent.id, 'agentid2': agent2.id, 'divisonid': self.division.id}]}
+        )
+
+    def test_set_user_agents_in_use_exception(self):
+        user2 = models.Specifyuser.objects.create(
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/api/set_agents/{user2.id}/',
+            data=[self.agent.id],
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'AgentInUseException': [self.agent.id]}
+        )

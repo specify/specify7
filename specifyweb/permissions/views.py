@@ -9,9 +9,28 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from specifyweb.specify.views import openapi
+from specifyweb.specify import models as spmodels
 
 from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, NoAdminUsersException, check_permission_targets, registry, query
+
+
+Agent = getattr(spmodels, "Agent")
+Specifyuser = getattr(spmodels, "Specifyuser")
+
+def check_collection_access_against_agents(userid: int) -> None:
+    from specifyweb.context.views import users_collections_for_sp7
+    from specifyweb.specify.views import MissingAgentForAccessibleCollection
+
+    collections = users_collections_for_sp7(userid)
+    collections_with_agents = Agent.objects.select_for_update().filter(specifyuser_id=userid).values_list('division__disciplines__collections__id', flat=True)
+    missing = [
+        collectionid
+        for collectionid, _ in collections
+        if collectionid not in collections_with_agents
+    ]
+    if missing:
+        raise MissingAgentForAccessibleCollection({'missing_for_7': missing})
 
 class PolicyRegistry(LoginRequiredMixin, View):
     def get(self, request):
@@ -85,6 +104,8 @@ class UserPolicies(LoginRequiredMixin, View):
 
             if not models.UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
                 raise NoAdminUsersException()
+
+            check_collection_access_against_agents(userid)
 
         return http.HttpResponse('', status=204)
 
@@ -259,6 +280,8 @@ class UserRoles(LoginRequiredMixin, View):
                     role_id=role['id'],
                     specifyuser_id=userid)
 
+            check_collection_access_against_agents(userid)
+
         return http.HttpResponse('', status=204)
 
 user_roles = openapi(schema={
@@ -368,12 +391,19 @@ class Role(LoginRequiredMixin, View):
                 for action in actions:
                     r.policies.create(resource=resource, action=action)
 
+            affected_users = Specifyuser.objects.select_for_update().filter(roles__role=r).values_list('id', flat=True)
+            for userid in affected_users:
+                check_collection_access_against_agents(userid)
+
         return http.HttpResponse('', status=204)
 
     def delete(self, request, roleid: int) -> http.HttpResponse:
         r = models.Role.objects.get(id=roleid)
         check_permission_targets(r.collection_id, request.specify_user.id, [RolePT.delete])
+        affected_users = Specifyuser.objects.select_for_update().filter(roles__role=r).values_list('id', flat=True)
         r.delete()
+        # don't need to check collection access against agents because removing a role cannot give access to more collections
+        # at least without there being DENY policies
         return http.HttpResponse('', status=204)
 
 

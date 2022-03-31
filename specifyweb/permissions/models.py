@@ -34,7 +34,7 @@ class LibraryRole(models.Model):
         db_table = 'splibraryrole'
 
 class UserRole(models.Model):
-    specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
+    specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE, related_name="roles")
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
