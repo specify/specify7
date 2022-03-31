@@ -1,14 +1,15 @@
+import json
 import mimetypes
 from django import http
 from django.conf import settings
-from django.db import router
+from django.db import router, transaction, connection
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
 from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, check_permission_targets
+    PermissionTargetAction, PermissionsException, check_permission_targets
 from . import api, models
 from .specify_jar import specify_jar
 
@@ -164,6 +165,133 @@ def set_password(request, userid):
     user = models.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
+    return http.HttpResponse('', status=204)
+
+class SetAgentsException(PermissionsException):
+    http_status = 400
+
+    def to_json(self):
+        return {self.__class__.__name__: self.args[0]}
+
+class AgentInUseException(SetAgentsException):
+    "One of the agents being assigned is already assigned to another user."
+    pass
+
+class MultipleAgentsException(SetAgentsException):
+    "Attempting to assign more than one agent per division to the user."
+    pass
+
+class MissingAgentForAccessibleCollection(SetAgentsException):
+    "The user has access to a collection in a division that is not represented by any agent."
+    pass
+
+class SetUserAgentsPT(PermissionTarget):
+    resource = '/admin/user/agents'
+    update = PermissionTargetAction()
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "The list of agents to assign to the user represented by their ids.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "array",
+                        "items": {"type": "integer"},
+                        "description": "The agent ids."
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success",},
+            "400": {
+                "description": "The request was rejected.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "The error.",
+                            "properties": {
+                                AgentInUseException.__name__: {
+                                    'type': 'array',
+                                    'description': AgentInUseException.__doc__
+                                },
+                                MultipleAgentsException.__name__: {
+                                    'type': 'array',
+                                    'description': MultipleAgentsException.__doc__
+                                },
+                                MissingAgentForAccessibleCollection.__name__: {
+                                    'type': 'object',
+                                    'description': MissingAgentForAccessibleCollection.__doc__
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def set_user_agents(request, userid: int):
+    "Sets the agents to represent the user in different disciplines."
+    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
+
+    user = models.Specifyuser.objects.get(pk=userid)
+    new_agentids = json.loads(request.body)
+    cursor = connection.cursor()
+
+    with transaction.atomic():
+        # clear user's existing agents
+        models.Agent.objects.filter(specifyuser_id=userid).update(specifyuser_id=None)
+
+        # check if any of the agents to be assigned are used by other users
+        in_use = models.Agent.objects.select_for_update().filter(pk__in=new_agentids, specifyuser_id__isnull=False)
+        if in_use:
+            raise AgentInUseException([a.id for a in in_use])
+
+        # assign the new agents
+        models.Agent.objects.filter(pk__in=new_agentids).update(specifyuser_id=userid)
+
+        # check for multiple agents assigned to the user
+        cursor.execute(
+            """select divisionid, a1.agentid, a2.agentid
+            from agent a1 join agent a2 using (specifyuserid, divisionid)
+            where a1.agentid < a2.agentid and specifyuserid = %s
+            """, [userid]
+        )
+
+        multiple = [
+            {'divisonid': divisonid, 'agentid1': agentid1, 'agentid2': agentid2}
+            for divisonid, agentid1, agentid2 in cursor.fetchall()
+        ]
+        if multiple:
+            raise MultipleAgentsException(multiple)
+
+        # get the list of collections the agents belong to.
+        collections = models.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+
+        # check permissions for setting user agents in those collections.
+        for collectionid in collections:
+            check_permission_targets(collectionid, request.specify_user.id, [SetUserAgentsPT.update])
+
+        # make sure every collection the user is permitted to access has an assigned user.
+        missing_for_6 = [
+            collectionid
+            for collectionid, _ in users_collections_for_sp6(cursor, userid)
+            if collectionid not in collections
+        ]
+        missing_for_7 = [
+            collectionid
+            for collectionid, _ in users_collections_for_sp7(userid)
+            if collectionid not in collections
+        ]
+        if missing_for_6 or missing_for_7:
+            raise MissingAgentForAccessibleCollection({'missing_for_6': missing_for_6, 'missing_for_7': missing_for_7})
+
     return http.HttpResponse('', status=204)
 
 

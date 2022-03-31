@@ -3,7 +3,8 @@ import json
 from django.test import TestCase, Client
 
 from specifyweb.specify.api_tests import ApiTests
-from . import models
+from specifyweb.specify import models as spmodels
+from . import models, permissions, views
 
 class PermissionsApiTest(ApiTests):
     def test_set_user_policies(self) -> None:
@@ -31,7 +32,7 @@ class PermissionsApiTest(ApiTests):
             f'/permissions/user_policies/institution/{self.specifyuser.id}/',
             data={
                 '/table/%': ['%'],
-                '/field/%': ['%']
+                '%': ['%'],
             },
             content_type='application/json',
         )
@@ -40,7 +41,7 @@ class PermissionsApiTest(ApiTests):
         response = c.get(f'/permissions/user_policies/institution/{self.specifyuser.id}/')
         data = json.loads(response.content)
         self.assertEqual(data['/table/%'], ['%'])
-        self.assertEqual(data['/field/%'], ['%'])
+        self.assertEqual(data['%'], ['%'])
 
     def test_set_no_admin(self) -> None:
         c = Client()
@@ -334,3 +335,160 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 200)
 
         data = json.loads(response.content)
+
+    def test_add_access_to_new_collection_exception(self) -> None:
+        user2 = models.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+
+
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        response = c.put(
+            f'/permissions/user_policies/{self.collection.id}/{user2.id}/',
+            data={
+                permissions.CollectionAccessPT.resource: ["access"],
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+        )
+
+        agent2 = spmodels.Agent.objects.create( # type: ignore
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2)
+
+        response = c.put(
+            f'/permissions/user_policies/{self.collection.id}/{user2.id}/',
+            data={
+                permissions.CollectionAccessPT.resource: ["access"],
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+    def test_add_access_to_new_collection_via_role_exception(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/permissions/roles/{self.collection.id}/',
+            data={
+                'name': 'access collection',
+                'description': 'foo',
+                'policies': {
+                    permissions.CollectionAccessPT.resource: ["access"],
+                },
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+        role = json.loads(response.content)
+
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+
+        response = c.put(
+            f'/permissions/user_roles/{self.collection.id}/{user2.id}/',
+            data=[{'id': role['id']}],
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+        )
+
+        agent2 = spmodels.Agent.objects.create( # type: ignore
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2)
+
+        response = c.put(
+            f'/permissions/user_policies/{self.collection.id}/{user2.id}/',
+            data={
+                permissions.CollectionAccessPT.resource: ["access"],
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+    def test_add_access_to_new_collection_via_updated_role_exception(self) -> None:
+        c = Client()
+        c.force_login(self.specifyuser)
+        response = c.post(
+            f'/permissions/roles/{self.collection.id}/',
+            data={
+                'name': 'access collection',
+                'description': 'foo',
+                'policies': {
+                },
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+        role = json.loads(response.content)
+
+        user2 = spmodels.Specifyuser.objects.create( # type: ignore
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser2",
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
+
+        response = c.put(
+            f'/permissions/user_roles/{self.collection.id}/{user2.id}/',
+            data=[{'id': role['id']}],
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = c.put(
+            f'/permissions/role/{role["id"]}/',
+            data={
+                'name': 'access collection',
+                'description': 'foo',
+                'policies': {
+                    permissions.CollectionAccessPT.resource: ["access"],
+                },
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+        )
+
+        agent2 = spmodels.Agent.objects.create( # type: ignore
+            agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
+            specifyuser=user2)
+
+        response = c.put(
+            f'/permissions/role/{role["id"]}/',
+            data={
+                'name': 'access collection',
+                'description': 'foo',
+                'policies': {
+                    permissions.CollectionAccessPT.resource: ["access"],
+                },
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 204)
