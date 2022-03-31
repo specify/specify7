@@ -18,7 +18,8 @@ import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { LoadingScreen } from './modaldialog';
-import type { Role } from './securityrole';
+import { SecurityImportExport } from './securityimportexport';
+import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 
 // FIXME: UI for superuser
@@ -33,13 +34,54 @@ export function InstitutionView({
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
   readonly libraryRoles: IR<Role> | undefined;
-  readonly onChangeLibraryRoles: (roles: IR<Role>) => void;
+  readonly onChangeLibraryRoles: (
+    roles: IR<Role> | ((oldState: IR<Role>) => IR<Role>)
+  ) => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<'RoleState', { readonly roleId: number | undefined }>
   >({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
+
+  const updateRole = async (role: Role): Promise<void> =>
+    ping(
+      `/permissions/library_roles/${role.id}/`,
+      {
+        method: 'PUT',
+        body: {
+          ...role,
+          policies: decompressPolicies(role.policies),
+        },
+      },
+      { expectedResponseCodes: [Http.NO_CONTENT] }
+    ).then((): void =>
+      handleChangeLibraryRoles((roles) =>
+        replaceKey(defined(roles), role.id.toString(), role)
+      )
+    );
+
+  const createRole = async (role: NewRole): Promise<void> =>
+    ajax<BackEndRole>(
+      `/permissions/library_roles/`,
+      {
+        method: 'POST',
+        body: {
+          ...omit(role, ['id']),
+          policies: decompressPolicies(role.policies),
+        },
+        headers: { Accept: 'application/json' },
+      },
+      { expectedResponseCodes: [Http.CREATED] }
+    ).then(({ data: role }) =>
+      handleChangeLibraryRoles((roles) => ({
+        ...roles,
+        [role.id]: {
+          ...role,
+          policies: processPolicies(role.policies),
+        },
+      }))
+    );
 
   /*
    * TODO: securityCollection.tsx and securityInstitution.tsx are very similar
@@ -84,8 +126,8 @@ export function InstitutionView({
                   commonText('loading')
                 )}
               </div>
-              {hasPermission('/permissions/library/roles', 'create') && (
-                <div>
+              <div className="flex gap-2">
+                {hasPermission('/permissions/library/roles', 'create') && (
                   <Button.Green
                     onClick={(): void =>
                       setState({
@@ -94,10 +136,17 @@ export function InstitutionView({
                       })
                     }
                   >
-                    {commonText('add')}
+                    {commonText('create')}
                   </Button.Green>
-                </div>
-              )}
+                )}
+                <SecurityImportExport
+                  roles={libraryRoles}
+                  permissionName="/permissions/library/roles"
+                  baseName={institution.get('name') ?? ''}
+                  onUpdateRole={updateRole}
+                  onCreateRole={createRole}
+                />
+              </div>
             </section>
           )}
           <section className="flex flex-col gap-2">
@@ -144,45 +193,8 @@ export function InstitutionView({
             onSave={(role): void =>
               loading(
                 (typeof role.id === 'number'
-                  ? ping(
-                      `/permissions/library_role/${role.id}/`,
-                      {
-                        method: 'PUT',
-                        body: {
-                          ...role,
-                          policies: decompressPolicies(role.policies),
-                        },
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    ).then((): void =>
-                      handleChangeLibraryRoles(
-                        replaceKey(
-                          libraryRoles,
-                          defined(role.id).toString(),
-                          role as Role
-                        )
-                      )
-                    )
-                  : ajax<BackEndRole>(
-                      `/permissions/library_roles/`,
-                      {
-                        method: 'POST',
-                        body: {
-                          ...omit(role, ['id']),
-                          policies: decompressPolicies(role.policies),
-                        },
-                        headers: { Accept: 'application/json' },
-                      },
-                      { expectedResponseCodes: [Http.CREATED] }
-                    ).then(({ data: role }) =>
-                      handleChangeLibraryRoles({
-                        ...libraryRoles,
-                        [role.id]: {
-                          ...role,
-                          policies: processPolicies(role.policies),
-                        },
-                      })
-                    )
+                  ? updateRole(role as Role)
+                  : createRole(role)
                 ).then((): void => setState({ type: 'MainState' }))
               )
             }

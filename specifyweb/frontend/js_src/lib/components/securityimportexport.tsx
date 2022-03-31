@@ -4,8 +4,9 @@ import { f } from '../functools';
 import { group, omit, replaceItem, replaceKey } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
+import { hasPermission } from '../permissions';
 import type { IR, RA, RR } from '../types';
-import { defined } from '../types';
+import { defined, filterArray } from '../types';
 import { Button, Form, H3, Input, Label, Submit, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { downloadFile, FilePicker, fileToText } from './filepicker';
@@ -22,16 +23,18 @@ const categoryLabels = {
 
 export function SecurityImportExport({
   roles,
-  isReadOnly,
   baseName,
   onUpdateRole: handleUpdateRole,
   onCreateRole: handleCreateRole,
+  permissionName,
+  isReadOnly = false,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly isReadOnly: boolean;
   readonly baseName: string;
   readonly onUpdateRole: (role: Role) => void;
   readonly onCreateRole: (role: NewRole) => void;
+  readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
+  readonly isReadOnly?: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const loading = React.useContext(LoadingContext);
@@ -49,14 +52,16 @@ export function SecurityImportExport({
   const id = useId('security-import-export');
   return (
     <>
-      {!isReadOnly && (
-        <Button.Blue
-          disabled={typeof roles === 'undefined'}
-          onClick={handleOpen}
-        >
-          {commonText('import')}
-        </Button.Blue>
-      )}
+      {!isReadOnly &&
+        (hasPermission(permissionName, 'update') ||
+          hasPermission(permissionName, 'create')) && (
+          <Button.Blue
+            disabled={typeof roles === 'undefined'}
+            onClick={handleOpen}
+          >
+            {commonText('import')}
+          </Button.Blue>
+        )}
       <Button.Blue
         disabled={typeof roles === 'undefined'}
         onClick={(): void =>
@@ -156,26 +161,51 @@ export function SecurityImportExport({
                       .then((newRoles) =>
                         setNewRoles(
                           group(
-                            newRoles
-                              .map((newRole) =>
-                                replaceKey<Role | NewRole>(
-                                  newRole,
-                                  'id',
-                                  Object.values(roles ?? {})?.find(
-                                    ({ name }) => name === newRole.name
-                                  )?.id ?? undefined
+                            filterArray(
+                              newRoles
+                                .map((newRole) =>
+                                  replaceKey<Role | NewRole>(
+                                    newRole,
+                                    'id',
+                                    Object.values(roles ?? {})?.find(
+                                      ({ name }) => name === newRole.name
+                                    )?.id ?? undefined
+                                  )
                                 )
-                              )
-                              .map((newRole) => [
-                                typeof newRole.id === 'number'
-                                  ? JSON.stringify(
-                                      omit(defined(roles)[newRole.id], ['id'])
-                                    ) === JSON.stringify(omit(newRole, ['id']))
-                                    ? 'unchanged'
-                                    : 'changed'
-                                  : 'created',
-                                { role: newRole, isChecked: true },
-                              ])
+                                .map((newRole) =>
+                                  f.var(
+                                    typeof newRole.id === 'number'
+                                      ? JSON.stringify(
+                                          omit(defined(roles)[newRole.id], [
+                                            'id',
+                                          ])
+                                        ) ===
+                                        JSON.stringify(omit(newRole, ['id']))
+                                        ? 'unchanged'
+                                        : 'changed'
+                                      : 'created',
+                                    (groupName) =>
+                                      (groupName === 'changed' &&
+                                        !hasPermission(
+                                          permissionName,
+                                          'update'
+                                        )) ||
+                                      (groupName === 'created' &&
+                                        !hasPermission(
+                                          permissionName,
+                                          'create'
+                                        ))
+                                        ? undefined
+                                        : [
+                                            groupName,
+                                            {
+                                              role: newRole,
+                                              isChecked: true,
+                                            },
+                                          ]
+                                  )
+                                )
+                            )
                           )
                         )
                       )

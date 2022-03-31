@@ -239,7 +239,7 @@ export const Label = {
 export const ErrorMessage = wrap(
   'ErrorMessage',
   'div',
-  'flex gap-2 p-2 text-white bg-red-500 rounded',
+  'flex flex-col gap-2 p-2 text-white bg-red-500 rounded',
   {
     role: 'alert',
   }

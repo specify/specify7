@@ -16,6 +16,7 @@ import type { BackEndRole } from '../../securityutils';
 import { processPolicies } from '../../securityutils';
 import { setCurrentView } from '../../specifyapp';
 import type { IR, RA } from '../../types';
+import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
@@ -157,7 +158,13 @@ function SecurityPanel(): JSX.Element | null {
             institution={data.institution}
             users={users}
             libraryRoles={libraryRoles}
-            onChangeLibraryRoles={setLibraryRoles}
+            onChangeLibraryRoles={(newState) =>
+              setLibraryRoles(
+                typeof newState === 'function'
+                  ? newState(defined(libraryRoles))
+                  : newState
+              )
+            }
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',

@@ -218,7 +218,8 @@ export function RoleView({
         {typeof role.id === 'number' && (
           <SecurityImportExport
             roles={{ [role.id]: role as Role }}
-            isReadOnly
+            permissionName={permissionName}
+            isReadOnly={true}
             baseName={role.name ?? ''}
             onUpdateRole={f.never}
             onCreateRole={f.never}

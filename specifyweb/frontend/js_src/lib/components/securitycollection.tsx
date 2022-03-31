@@ -196,7 +196,7 @@ export function CollectionView({
                 )}
                 <SecurityImportExport
                   roles={roles}
-                  isReadOnly={!hasPermission('/permissions/roles', 'update')}
+                  permissionName="/permissions/roles"
                   baseName={collection.get('collectionName') ?? ''}
                   onUpdateRole={updateRole}
                   onCreateRole={createRole}
