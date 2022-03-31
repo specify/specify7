@@ -4,6 +4,7 @@ import type { Collection } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
+import { hasPermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
 import type { IR } from '../types';
 import { getUniqueName } from '../wbuniquifyname';
@@ -59,69 +60,73 @@ export function CreateRole({
       }
       onClose={handleClose}
     >
-      <section>
-        <H3>{adminText('fromLibrary')}</H3>
-        {typeof libraryRoles === 'object' ? (
-          Object.keys(libraryRoles).length === 0 ? (
-            commonText('none')
+      {hasPermission('/permissions/roles', 'copy_from_library') && (
+        <section>
+          <H3>{adminText('fromLibrary')}</H3>
+          {typeof libraryRoles === 'object' ? (
+            Object.keys(libraryRoles).length === 0 ? (
+              commonText('none')
+            ) : (
+              <Ul>
+                {Object.entries(libraryRoles).map(([roleId, role]) => (
+                  <li key={roleId}>
+                    <Button.LikeLink
+                      onClick={(): void =>
+                        handleCreated({
+                          id: undefined,
+                          name: getUniqueName(role.name, [role.name]),
+                          description: role.description,
+                          policies: role.policies,
+                        })
+                      }
+                    >
+                      {role.name}
+                    </Button.LikeLink>
+                  </li>
+                ))}
+              </Ul>
+            )
           ) : (
-            <Ul>
-              {Object.entries(libraryRoles).map(([roleId, role]) => (
-                <li key={roleId}>
-                  <Button.LikeLink
-                    onClick={(): void =>
-                      handleCreated({
-                        id: undefined,
-                        name: getUniqueName(role.name, [role.name]),
-                        description: role.description,
-                        policies: role.policies,
-                      })
-                    }
-                  >
-                    {role.name}
-                  </Button.LikeLink>
-                </li>
-              ))}
-            </Ul>
-          )
-        ) : (
-          commonText('loading')
-        )}
-      </section>
-      <section>
-        <H3>{adminText('fromExistingRole')}</H3>
-        {typeof roles === 'object' ? (
-          <div className="flex flex-col gap-2">
-            {roles
-              .filter(([_collection, roles]) => roles.length > 0)
-              .map(([collection, roles]) => (
-                <article key={collection.id}>
-                  {collection.get('collectionName')}
-                  <Ul>
-                    {roles.map((role) => (
-                      <li key={role.id}>
-                        <Button.LikeLink
-                          onClick={(): void =>
-                            handleCreated({
-                              id: undefined,
-                              name: getUniqueName(role.name, [role.name]),
-                              description: role.description,
-                              policies: role.policies,
-                            })
-                          }
-                        >
-                          {role.name}
-                        </Button.LikeLink>
-                      </li>
-                    ))}
-                  </Ul>
-                </article>
-              ))}
-          </div>
-        ) : (
-          commonText('loading')
-        )}
-      </section>
+            commonText('loading')
+          )}
+        </section>
+      )}
+      {hasPermission('/permissions/roles', 'create') && (
+        <section>
+          <H3>{adminText('fromExistingRole')}</H3>
+          {typeof roles === 'object' ? (
+            <div className="flex flex-col gap-4">
+              {roles
+                .filter(([_collection, roles]) => roles.length > 0)
+                .map(([collection, roles]) => (
+                  <article key={collection.id}>
+                    {collection.get('collectionName')}
+                    <Ul>
+                      {roles.map((role) => (
+                        <li key={role.id}>
+                          <Button.LikeLink
+                            onClick={(): void =>
+                              handleCreated({
+                                id: undefined,
+                                name: getUniqueName(role.name, [role.name]),
+                                description: role.description,
+                                policies: role.policies,
+                              })
+                            }
+                          >
+                            {role.name}
+                          </Button.LikeLink>
+                        </li>
+                      ))}
+                    </Ul>
+                  </article>
+                ))}
+            </div>
+          ) : (
+            commonText('loading')
+          )}
+        </section>
+      )}
     </Dialog>
   );
 }

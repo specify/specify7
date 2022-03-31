@@ -183,7 +183,8 @@ export function CollectionView({
                 )}
               </div>
               <div className="flex gap-2">
-                {hasPermission('/permissions/roles', 'create') && (
+                {hasPermission('/permissions/roles', 'create') ||
+                hasPermission('/permissions/roles', 'copy_from_library') ? (
                   <Button.Green
                     onClick={(): void =>
                       setState({
@@ -193,7 +194,7 @@ export function CollectionView({
                   >
                     {commonText('create')}
                   </Button.Green>
-                )}
+                ) : undefined}
                 <SecurityImportExport
                   roles={roles}
                   permissionName="/permissions/roles"
