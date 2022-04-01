@@ -160,11 +160,6 @@ export function Autocomplete<T>({
     }
   }
 
-  /*
-   * TODO: test this with ç
-   * TODO: move the list to the top if not enough space
-   */
-
   const itemProps = ensure<Partial<TagProps<'li'>>>()({
     className: `p-0.5 hover:text-brand-300 active:bg-gray-100
       dark:active:bg-neutral-800 hover:bg-brand-100 dark:hover:bg-brand-500
@@ -180,6 +175,15 @@ export function Autocomplete<T>({
     pendingValue.length > 0 &&
     pendingValue !== currentValue;
   const showList = isOpen && (showAdd || isLoading || filteredItems.length > 0);
+
+  const [isOverflowing, setIsOverflowing] = React.useState(false);
+  React.useEffect(() => {
+    if (showList && dataListRef.current !== null)
+      setIsOverflowing(
+        dataListRef.current.getBoundingClientRect().bottom >
+          document.body.clientHeight
+      );
+  }, [showList]);
 
   return (
     <div className={`relative ${containerClassName}`}>
@@ -223,7 +227,7 @@ export function Autocomplete<T>({
         className={`absolute z-10 w-full rounded cursor-pointer
           rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
           shadow-lg shadow-gray-400 dark:border dark:border-gray-500
-          ${showList ? '' : 'sr-only'}`}
+          ${showList ? '' : 'sr-only'} ${isOverflowing ? 'bottom-8' : ''}`}
         role="listbox"
         aria-label={ariaLabel}
         id={id}
