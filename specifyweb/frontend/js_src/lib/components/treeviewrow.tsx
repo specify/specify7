@@ -60,7 +60,7 @@ export function TreeRow({
 
   // Fetch children
   const isExpanded = Array.isArray(conformation);
-  const isLoading = isExpanded && Array.isArray(rows);
+  const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
   React.useEffect(() => {
     if (!isLoading) return undefined;
