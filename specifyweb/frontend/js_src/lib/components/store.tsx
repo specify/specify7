@@ -86,7 +86,7 @@ export function useStore<
         )
           deleteCallback(id, store[bucketName][id]).catch(crash);
         store[bucketName][id] = Promise.resolve(resolvedState);
-        store[bucketName].listeners.map(f.call);
+        store[bucketName].listeners.forEach(f.call);
         return resolvedState;
       });
     },

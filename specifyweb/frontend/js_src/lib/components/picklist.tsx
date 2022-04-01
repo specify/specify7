@@ -124,20 +124,12 @@ export function PickListComboBox(
 
   const autocompleteItems = React.useMemo(
     () =>
-      Object.fromEntries(
-        props.items
-          ?.filter(({ value }) => Boolean(value))
-          .map(
-            (item) =>
-              [
-                item.value,
-                {
-                  label: item.title,
-                  data: undefined,
-                },
-              ] as const
-          ) ?? []
-      ),
+      props.items
+        ?.filter(({ value }) => Boolean(value))
+        .map((item) => ({
+          label: item.title,
+          data: item.value,
+        })) ?? [],
     [props.items]
   );
 
@@ -183,15 +175,17 @@ export function PickListComboBox(
           ))}
         </Select>
       ) : (
-        <Autocomplete<undefined>
+        <Autocomplete<string>
           source={autocompleteItems}
           onNewValue={addNewValue}
-          onChange={updateValue}
+          onChange={({ data }): void => updateValue(data)}
+          forwardRef={validationRef}
+          aria-label={undefined}
+          value={value ?? ''}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
               id={props.id}
-              forwardRef={validationRef}
               name={props.pickList?.get('name') ?? props.pickListName}
               className={props.className}
               disabled={props.isDisabled || typeof props.items === 'undefined'}

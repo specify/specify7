@@ -30,7 +30,7 @@ import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
 import { getTreeDefinitionItems, treeRanksPromise } from '../treedefinitions';
-import type { IR, RA } from '../types';
+import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
@@ -108,7 +108,7 @@ export function QueryComboBox({
             filters: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               parent_id: treeResource.id,
-              orderby: 'rankId',
+              orderby: 'rankid',
             },
           });
           lowestChildRank = children
@@ -333,10 +333,8 @@ export function QueryComboBox({
 
   return (
     <div className="flex items-center">
-      <Autocomplete<undefined>
-        source={async (
-          value
-        ): Promise<IR<{ readonly label: string; readonly data: undefined }>> =>
+      <Autocomplete<number>
+        source={async (value) =>
           isLoaded && typeof typeSearch === 'object'
             ? Promise.all(
                 typeSearch.searchFieldsNames
@@ -386,32 +384,48 @@ export function QueryComboBox({
                     })
                   )
               ).then((responses) =>
-                Object.fromEntries(
-                  responses
-                    .flatMap(({ data: { results } }) => results)
-                    .map(([id, label]) => [
-                      id,
-                      {
-                        label,
-                        data: undefined,
-                      },
-                    ])
-                )
+                responses
+                  .flatMap(({ data: { results } }) => results)
+                  .map(([id, label]) => ({
+                    data: id,
+                    label,
+                  }))
               )
-            : {}
+            : []
         }
-        onChange={(value, data): void =>
-          typeof data === 'undefined' ? undefined : updateValue(value)
+        onChange={({ data }): void => updateValue(data)}
+        onNewValue={(value: string): void =>
+          field?.isRelationship === true
+            ? state.type === 'AddResourceState'
+              ? setState({ type: 'MainState' })
+              : setState({
+                  type: 'AddResourceState',
+                  resource: new field.relatedModel.Resource(
+                    f.maybe(
+                      typeof typeSearch === 'object'
+                        ? typeSearch.searchFields.find(
+                            (searchField) =>
+                              !searchField.isRelationship &&
+                              searchField.model === field.relatedModel
+                          )?.name
+                        : undefined,
+                      (fieldName) => ({ [fieldName]: value })
+                    ) ?? {}
+                  ),
+                })
+            : undefined
         }
+        value={formatted?.label ?? value?.toString() ?? ''}
+        forwardRef={validationRef}
+        aria-label={undefined}
       >
         {(props): JSX.Element => (
           <Input.Generic
             id={id}
-            value={formatted?.label ?? value?.toString() ?? ''}
-            forwardRef={validationRef}
             className="flex-1"
             required={isRequired}
             isReadOnly={
+              !isLoaded ||
               mode === 'view' ||
               formType === 'formTable' ||
               typeof typeSearch === 'undefined'

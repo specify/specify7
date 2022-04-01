@@ -1,185 +1,262 @@
+/**
+ * An accessible autocomplete.
+ * Previous implementation (see Git history) used <datalist> to provide
+ * autocomplete suggestions.
+ * While that had accessibility backed in, Firefox has a number of bugs
+ * with it's datalist implementation.
+ * Plus, that solution did not allow for displaying an "Add" option
+ * if no search results come up
+ *
+ * Consider revisiting <datalist> once browser support is improved
+ */
+
 import React from 'react';
 import _ from 'underscore';
 
-import type { IR, RA } from '../types';
-import { useId } from './hooks';
+import commonText from '../localization/common';
+import type { RA } from '../types';
+import { ensure } from '../types';
+import type { TagProps } from './basic';
+import { useBooleanState, useId, useTriggerState } from './hooks';
 
-let dataListCount = 0;
 const debounceRate = 300;
-const defaultLimit = 100;
 
-type Items<T> = RA<string> | IR<{ readonly label: string; readonly data: T }>;
+type Item<T> = {
+  readonly label: string;
+  readonly subLabel?: string;
+  readonly icon?: JSX.Element;
+  readonly data: T;
+};
 
 export function Autocomplete<T>({
   source,
   minLength = 1,
   delay = debounceRate,
+  forwardRef,
   onChange: handleChange,
   onNewValue: handleNewValue,
   children,
+  'aria-label': ariaLabel,
+  value: currentValue,
 }: {
-  readonly source: Items<T> | ((value: string) => Promise<Items<T>>);
+  readonly source: RA<Item<T>> | ((value: string) => Promise<RA<Item<T>>>);
   readonly minLength?: number;
   readonly delay?: number;
   readonly onNewValue?: (value: string) => void;
-  readonly onChange: (
-    value: string,
-    selected: {
-      readonly label: string;
-      readonly data: T;
-    }
-  ) => void;
+  readonly onChange: (item: Item<T>) => void;
+  readonly forwardRef?: React.Ref<HTMLInputElement>;
   readonly children: (props: {
+    readonly forwardRef: React.RefCallback<HTMLInputElement>;
+    readonly value: string;
     readonly type: 'search';
-    readonly autoComplete: 'on';
-    readonly list: string;
+    readonly autoComplete: 'off';
+    readonly 'aria-expanded': boolean;
+    readonly 'aria-autocomplete': 'list';
+    readonly 'aria-controls': string;
+    readonly 'aria-label': string | undefined;
+    readonly onClick: () => void;
     readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    readonly onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     readonly onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   }) => JSX.Element;
+  readonly 'aria-label': string | undefined;
+  readonly value: string;
 }): JSX.Element {
-  const id = useId('autocomplete-data-list');
-  const [results, setResults] = React.useState<
-    IR<{ readonly label: string; readonly data: T }>
-  >({});
-  const refDataList = React.useRef<HTMLDataListElement | null>(null);
+  const id = useId('autocomplete-data-list')('');
+  const [results, setResults] = React.useState<RA<Item<T>>>([]);
 
-  const updateResults = React.useCallback(function updateResults(
-    values: Items<T>
-  ): void {
-    const entries = Object.entries(values);
-    setResults((oldResults) =>
-      // Don't delete previous autocomplete results if no new results returned
-      Object.keys(oldResults).length > 0 && entries.length === 0
-        ? oldResults
-        : Array.isArray(values)
-        ? Object.fromEntries(
-            entries.map((value) => [
-              value,
-              {
-                label: value,
-                data: value,
-              },
-            ])
-          )
-        : values
-    );
-
-    return undefined;
-  },
-  []);
+  const updateItems = React.useCallback(
+    (items: RA<Item<T>>): void =>
+      setResults((oldItems) =>
+        // Don't delete previous autocomplete results if no new results returned
+        oldItems.length > 0 && items.length === 0 ? oldItems : items
+      ),
+    []
+  );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateResults(source);
-  }, [source, updateResults]);
+    if (Array.isArray(source)) updateItems(source);
+  }, [source, updateItems]);
 
-  function onKeyDown({ target }: React.KeyboardEvent): void {
-    if (typeof source !== 'function') return;
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const previousValue = React.useRef<string>(currentValue);
+  const handleRefreshItems = React.useCallback(
+    _.debounce(function onKeyDown({ target }: React.KeyboardEvent): void {
+      const input = target as HTMLInputElement;
 
-    const input = target as HTMLInputElement;
-    if (input.value.length < minLength) return;
+      if (typeof source !== 'function' || previousValue.current === input.value)
+        return;
 
-    void source(input.value).then(updateResults).catch(console.error);
+      handleLoading();
+      previousValue.current = input.value;
+
+      if (input.value.length < minLength) return;
+
+      void source(input.value)
+        .then(updateItems)
+        .catch(console.error)
+        .finally(handleLoaded);
+    }, delay),
+    []
+  );
+
+  const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
+
+  const [input, setInput] = React.useState<HTMLInputElement | null>(null);
+  const dataListRef = React.useRef<HTMLUListElement | null>(null);
+
+  const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
+  const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
+  const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
+
+  function handleKeyDown(
+    key: string,
+    newFilteredItems: RA<Item<T>> = filteredItems
+  ): void {
+    let newIndex = currentIndex;
+    if (key === 'Escape' || key === 'Enter') {
+      const newItem = newFilteredItems[currentIndex];
+      if (typeof newItem === 'object') handleChange(newItem);
+      handleClose();
+      input?.focus();
+    } else if (key === 'ArrowUp') newIndex = Math.max(currentIndex - 1, -1);
+    else if (key === 'ArrowDown') newIndex = currentIndex + 1;
+
+    if (newIndex !== currentIndex) {
+      const finalIndex =
+        (newFilteredItems.length + newIndex) % newFilteredItems.length;
+      setCurrentIndex(finalIndex);
+      (dataListRef.current?.children?.[finalIndex] as HTMLElement)?.focus();
+    }
   }
 
-  const handleKeyDown = React.useCallback(_.debounce(onKeyDown, delay), []);
+  /*
+   * TODO: test this with ç
+   * TODO: review here and usages to make sure value is what is saved in the DB
+   *       and label is what is being searched on
+   * TODO: allow sublabel
+   * TODO: allow icon
+   */
+
+  const itemProps = ensure<Partial<TagProps<'li'>>>()({
+    className: `p-0.5 hover:text-brand-200 active:text-brand-300 bg-neutral-600/50
+      hover:bg-neutral-700/50 disabled:cursor-default`,
+    role: 'options',
+    tabIndex: -1,
+  } as const);
+
+  const filterItems = (pendingValue: string) =>
+    results.filter(({ label }) =>
+      label.localeCompare(
+        pendingValue.slice(0, label.length),
+        window.navigator.language,
+        { sensitivity: 'base' }
+      )
+    );
+  const findItem = (filteredItems: RA<Item<T>>, pendingValue: string) =>
+    filteredItems.find(({ label }) =>
+      label.localeCompare(
+        pendingValue.slice(0, label.length),
+        window.navigator.language,
+        { sensitivity: 'base' }
+      )
+    );
 
   return (
-    <>
+    <div className="relative">
       {children({
-        type: 'search',
-        autoComplete: 'on',
-        list: id(''),
-        onKeyDown: handleKeyDown,
-        onChange: ({ target }): void => {
-          const input = target as HTMLInputElement;
-          const data = results[input.value] ?? results[input.value.trim()];
-          if (typeof data === 'object') handleChange(input.value, data);
+        forwardRef(input): void {
+          setInput(input);
+          if (typeof forwardRef === 'object' && forwardRef !== null)
+            // @ts-expect-error Assigning to ref manually
+            forwardRef.current = input;
+          else if (typeof forwardRef === 'function') forwardRef(input);
         },
-        onBlur: ({ target }): void => {
-          const input = target as HTMLInputElement;
-          const data = results[input.value] ?? results[input.value.trim()];
-          if (typeof data === 'undefined' && input.value.length > 0)
-            handleNewValue?.(input.value);
+        value: pendingValue,
+        type: 'search',
+        autoComplete: 'off',
+        'aria-expanded': isOpen,
+        'aria-autocomplete': 'list',
+        'aria-controls': id,
+        'aria-label': ariaLabel,
+        onKeyDown: (event) => {
+          const input = event.target as HTMLInputElement;
+          handleRefreshItems(event);
+          const filteredItems = filterItems(input.value);
+          setFilteredItems(filteredItems);
+          if (isOpen) handleKeyDown(event.key, filteredItems);
+          else handleOpen();
+          const item = findItem(filteredItems, input.value);
+          if (typeof item === 'object') handleChange(item);
+          else setPendingValue(input.value);
+        },
+        onClick: handleToggle,
+        onBlur: ({ target, relatedTarget }): void => {
+          if (relatedTarget !== dataListRef.current) handleClose();
+          const item = findItem(filteredItems, pendingValue);
+          if (typeof item === 'undefined' && target.value.length > 0)
+            if (typeof handleNewValue === 'function')
+              handleNewValue?.(target.value);
+            else setPendingValue('');
         },
       })}
-      <datalist id={id('')} ref={refDataList}>
-        {Object.entries(results).map(([value, { label }]) => (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        ))}
-      </datalist>
-    </>
+      <ul
+        className="backdrop-blur-2xl absolute z-10 w-full rounded cursor-pointer"
+        role="listbox"
+        aria-label={ariaLabel}
+        id={id}
+        ref={dataListRef}
+        onKeyDown={(event): void => {
+          // Meta keys
+          if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
+            handleKeyDown(event.key);
+          else {
+            input?.focus();
+            input?.dispatchEvent(event.nativeEvent);
+          }
+        }}
+        onBlur={({ relatedTarget }): void =>
+          relatedTarget === input ? undefined : handleClose()
+        }
+      >
+        {filteredItems.length === 0 ? (
+          isLoading ? (
+            <li aria-selected={false} aria-disabled={true} {...itemProps}>
+              {commonText('loading')}
+            </li>
+          ) : typeof handleNewValue === 'function' &&
+            pendingValue.length > 0 ? (
+            <li
+              aria-selected={false}
+              aria-posinset={1}
+              aria-setsize={1}
+              onClick={(): void => handleNewValue(pendingValue)}
+            >
+              {/* TODO: icon */}
+              {commonText('add')}
+            </li>
+          ) : undefined
+        ) : (
+          filteredItems.map((item, index, { length }) => (
+            <li
+              key={index}
+              aria-posinset={index + 1}
+              aria-setsize={length}
+              aria-selected={index === currentIndex}
+              onClick={(): void => {
+                handleChange(item);
+                setPendingValue(item.label);
+                handleClose();
+              }}
+              {...itemProps}
+            >
+              {/* TODO: icon */}
+              {/* TODO: sublabel */}
+              {item.label}
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
   );
-}
-
-export function autocomplete({
-  input,
-  source,
-  minLength = 1,
-  delay = debounceRate,
-  // Don't reQuery items on input
-  isStatic = false,
-  // Max number of entries
-  limit = defaultLimit,
-}: {
-  readonly input: HTMLInputElement;
-  readonly source: (value: string) => Promise<RA<string> | IR<string>>;
-  readonly minLength?: number;
-  readonly delay?: number;
-  readonly isStatic?: boolean;
-  readonly limit?: number;
-}): () => void {
-  const id = `autocomplete-data-list=${dataListCount}`;
-  dataListCount += 1;
-
-  const dataList = document.createElement('datalist');
-  dataList.id = id;
-  input.setAttribute('list', id);
-  const container = input.parentElement;
-  if (container === null) throw new Error('Input has no parent element');
-  container.append(dataList);
-  let lastValue: string | undefined = undefined;
-
-  function eventHandler(): void {
-    if (input.value.length < minLength || input.value === lastValue) return;
-
-    source(input.value)
-      .then((values) => {
-        const useKeys = !Array.isArray(values);
-        const entries = Object.entries(values);
-
-        // Don't delete previous autocomplete results if no new results returned
-        if (dataList.childElementCount > 0 && entries.length === 0)
-          return undefined;
-
-        if (input.value === lastValue) return undefined;
-        lastValue = input.value;
-
-        dataList.textContent = '';
-        const fragment = document.createDocumentFragment();
-        entries.slice(0, limit).forEach(([value, label]) => {
-          const option = document.createElement('option');
-          if (useKeys) {
-            option.value = value;
-            option.textContent = label;
-          } else option.value = label;
-          fragment.append(option);
-        });
-        dataList.append(fragment);
-        return undefined;
-      })
-      .catch(console.error);
-  }
-
-  eventHandler();
-  const throttledHandler = _.debounce(eventHandler, delay);
-  if (!isStatic) input.addEventListener('keydown', throttledHandler);
-  return (): void => {
-    if (!isStatic) input.removeEventListener('keydown', throttledHandler);
-    dataList.remove();
-    input.removeAttribute('list');
-  };
 }

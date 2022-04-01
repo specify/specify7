@@ -119,6 +119,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  const [searchValue, setSearchValue] = React.useState<string>('');
 
   return typeof rows === 'undefined' ? null : (
     <Container.Full>
@@ -127,30 +128,28 @@ function TreeView<SCHEMA extends AnyTree>({
         <H2>{table.label}</H2>
         {/* A react component that is also a TypeScript generic */}
         <Autocomplete<SpecifyResource<SCHEMA>>
+          value={searchValue}
           source={async (value) => {
             const collection = new table.LazyCollection({
               filters: { name__istartswith: value, orderby: 'name' },
               domainfilter: true,
             });
             return collection.fetchPromise().then(({ models }) =>
-              Object.fromEntries(
-                models.map((node) => {
-                  const rankDefinition = treeDefinitionItems.find(
-                    ({ rankId }) => rankId === node.get('rankId')
-                  );
-                  const rankName =
-                    rankDefinition?.title ??
-                    rankDefinition?.name ??
-                    node.get('name');
-                  return [
-                    node.get('fullName'),
-                    { label: rankName, data: node as SpecifyResource<SCHEMA> },
-                  ] as const;
-                })
-              )
+              models.map((node) => {
+                const rankDefinition = treeDefinitionItems.find(
+                  ({ rankId }) => rankId === node.get('rankId')
+                );
+                const rankName = rankDefinition?.title ?? rankDefinition?.name;
+                return {
+                  label: node.get('fullName'),
+                  subLabel: rankName,
+                  data: node as SpecifyResource<SCHEMA>,
+                };
+              })
             );
           }}
-          onChange={(_value, { data }): void => {
+          onChange={({ label, data }): void => {
+            setSearchValue(label);
             ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(
               `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
               {
@@ -174,13 +173,13 @@ function TreeView<SCHEMA extends AnyTree>({
               )
               .catch(console.error);
           }}
+          forwardRef={searchBoxRef}
+          aria-label={treeText('searchTreePlaceholder')}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
-              forwardRef={searchBoxRef}
               placeholder={treeText('searchTreePlaceholder')}
               title={treeText('searchTreePlaceholder')}
-              aria-label={treeText('searchTreePlaceholder')}
               {...inputProps}
             />
           )}
