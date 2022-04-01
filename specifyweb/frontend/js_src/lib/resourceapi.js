@@ -92,8 +92,6 @@ function eventHandlerForToOne(related, field) {
         // Supress saveRequired trigger when setting default values for resource
         // Works for new resources only
         settingDefaultValues(callback){
-            if(!this.isNew())
-                return;
             this._ignoreChanges = true;
             callback();
             this._ignoreChanges = false;

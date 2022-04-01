@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
+import { camelToHuman } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { defined } from '../types';
-import { camelToHuman } from '../helpers';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
@@ -140,7 +140,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
-          disabled={isSaving || (model.isNew() && !saveRequired)}
+          disabled={isSaving || !saveRequired}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
           {saveRequired || !model.isNew()
@@ -151,6 +151,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       <SubmitComponent
         form={formId}
         className={saveBlocked ? 'cursor-not-allowed' : undefined}
+        /*
+         * Don't disable the button if saveBlocked, so that clicking the button
+         * would make browser focus the invalid field
+         */
         disabled={isSaving || (!saveRequired && !saveBlocked)}
         onClick={(): void => form.classList.remove(className.notSubmittedForm)}
       >

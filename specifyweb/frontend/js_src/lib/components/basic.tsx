@@ -200,13 +200,15 @@ export const DataEntry = {
       colSpan: number;
       align: string;
       visible: boolean;
+      ariaLabel: string | undefined;
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, ...props }) => ({
+    ({ colSpan, align, visible, ariaLabel, ...props }) => ({
       ...props,
+      'aria-label': props['aria-label'] ?? ariaLabel,
       style: {
         visibility: visible ? undefined : 'hidden',
         gridColumn:

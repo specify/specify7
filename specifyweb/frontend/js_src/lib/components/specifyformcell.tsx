@@ -5,7 +5,6 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { localizeLabel } from '../localizeform';
 import type { FormMode, FormType } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
@@ -19,6 +18,7 @@ import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
+import { hasTablePermission } from '../permissions';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -29,6 +29,7 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
+    readonly ariaLabel: string | undefined;
   }) => JSX.Element | null;
 } = {
   Field({
@@ -51,25 +52,15 @@ const cellRenderers: {
       />
     );
   },
-  Label({
-    cellData: { text, labelForCellId, fieldName },
-    formatId,
-    id,
-    resource,
-    align,
-  }) {
-    const htmlFor =
-      typeof labelForCellId === 'string' ? formatId(labelForCellId) : undefined;
-    const { children, ...props } = localizeLabel({
-      text: text?.trim(),
-      id,
-      model: resource.specifyModel,
-      fieldName,
-    });
-    return children.length === 0 ? null : (
+  Label({ cellData: { text, labelForCellId, title }, formatId, align }) {
+    return typeof text === 'string' && text.length === 0 ? null : (
       <label
-        htmlFor={htmlFor}
-        {...props}
+        htmlFor={
+          typeof labelForCellId === 'string'
+            ? formatId(labelForCellId)
+            : undefined
+        }
+        title={title}
         style={{
           textAlign:
             align === 'right'
@@ -79,7 +70,7 @@ const cellRenderers: {
               : undefined,
         }}
       >
-        {children}
+        {text}
       </label>
     );
   },
@@ -94,7 +85,7 @@ const cellRenderers: {
     resource,
     mode,
     formType: parentFormType,
-    cellData: { fieldName, formType, isButton, icon, viewName },
+    cellData: { fieldName, formType, isButton, icon, viewName, sortField },
   }) {
     const field = defined(
       resource.specifyModel.getRelationship(fieldName ?? '')
@@ -125,26 +116,34 @@ const cellRenderers: {
       ),
       false
     );
-    return typeof interactionCollection ===
+    return hasTablePermission(field.relatedModel.name, 'read') ? (
+      typeof interactionCollection ===
       'undefined' ? null : interactionCollection === false ? (
-      <SubView
-        mode={mode}
-        isButton={isButton}
-        parentFormType={parentFormType}
-        formType={formType}
-        parentResource={resource}
-        field={field}
-        viewName={viewName}
-        icon={icon}
-      />
+        <SubView
+          mode={mode}
+          isButton={isButton}
+          parentFormType={parentFormType}
+          formType={formType}
+          parentResource={resource}
+          field={field}
+          viewName={viewName}
+          icon={icon}
+          sortField={sortField}
+        />
+      ) : (
+        <FormTableInteraction
+          mode={mode}
+          collection={interactionCollection}
+          dialog={false}
+          onDelete={undefined}
+          onClose={f.never}
+          sortField={sortField}
+        />
+      )
     ) : (
-      <FormTableInteraction
-        mode={mode}
-        collection={interactionCollection}
-        dialog={false}
-        onDelete={undefined}
-        onClose={f.never}
-      />
+      f.log(
+        `SubView hidden due to lack of read permissions to ${field.relatedModel.name} table`
+      ) ?? null
     );
   },
   Panel({ mode, formType, resource, cellData }) {

@@ -43,20 +43,23 @@ export type TableDefinition = {
   readonly relationships: RA<RelationshipDefinition>;
 };
 
-type CollectionConstructor<SCHEMA extends AnySchema> = new (props?: {
-  readonly related?: SpecifyResource<AnySchema>;
-  readonly field?: Relationship;
-  readonly filters?: Partial<
-    {
-      readonly orderby: string;
-      readonly domainfilter: boolean;
-    } & SCHEMA['fields'] &
-      CommonFields &
-      // This is required to allow for filters like leftSide__isnull
-      IR<string | boolean | number | null>
-  >;
-  readonly domainfilter?: boolean;
-}) => UnFetchedCollection<SCHEMA>;
+type CollectionConstructor<SCHEMA extends AnySchema> = new (
+  props?: {
+    readonly related?: SpecifyResource<AnySchema>;
+    readonly field?: Relationship;
+    readonly filters?: Partial<
+      {
+        readonly orderby: string;
+        readonly domainfilter: boolean;
+      } & SCHEMA['fields'] &
+        CommonFields &
+        // This is required to allow for filters like leftSide__isnull
+        IR<string | boolean | number | null>
+    >;
+    readonly domainfilter?: boolean;
+  },
+  models?: RA<SpecifyResource<AnySchema>>
+) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
   readonly fetchPromise: (filter?: {
@@ -72,6 +75,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly model: {
     readonly specifyModel: SpecifyModel<SCHEMA>;
   };
+  readonly constructor: CollectionConstructor<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
@@ -234,6 +238,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
+    if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().split('.');

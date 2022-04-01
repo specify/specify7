@@ -200,7 +200,13 @@ export function IntegratedRecordSelector({
             headerButtons={
               <>
                 <RecordSelectorButtons
-                  visitResource={isDependent ? undefined : resource}
+                  /*
+                   * If dialog is not false, the visit button would be added
+                   * by ResourceView
+                   */
+                  visitResource={
+                    isDependent && dialog === false ? undefined : resource
+                  }
                   onDelete={
                     typeof resource === 'object' && mode !== 'view'
                       ? resource.isNew() ||
@@ -210,7 +216,10 @@ export function IntegratedRecordSelector({
                       : undefined
                   }
                   onAdd={
-                    hasTablePermission(field.relatedModel.name, 'create')
+                    hasTablePermission(
+                      field.relatedModel.name,
+                      isDependent ? 'read' : 'create'
+                    )
                       ? mode === 'view' ||
                         (isToOne && collection.models.length > 0)
                         ? undefined

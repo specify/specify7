@@ -109,7 +109,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   React.useEffect(() => {
     resource.settingDefaultValues(() =>
-      defaultValue === 'today'
+      defaultValue === 'today' && resource.isNew()
         ? resource.set(dateField, getDateInputValue(new Date()) as never)
         : undefined
     );
@@ -151,8 +151,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     if (renderCount.current === 1) return;
 
     // Don't trigger unload protect when setting default value
-    if (renderCount.current === 2 && resource.isNew())
-      resource.settingDefaultValues(process);
+    if (renderCount.current === 2) resource.settingDefaultValues(process);
     else process();
 
     function process(): void {

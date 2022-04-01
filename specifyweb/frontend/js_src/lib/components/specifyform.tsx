@@ -15,6 +15,7 @@ import { f } from '../functools';
 import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
+import commonText from '../localization/common';
 
 /** A hardcoded view description for an attachment table */
 const getAttachmentFormDefinition = (
@@ -43,6 +44,7 @@ const getAttachmentFormDefinition = (
           colSpan: 1,
           align: 'left',
           visible: true,
+          ariaLabel: commonText('attachments'),
         },
       ],
     ],
@@ -143,7 +145,14 @@ export function RenderForm<SCHEMA extends AnySchema>({
             <div className="contents" key={index}>
               {cells.map(
                 (
-                  { colSpan, align, visible, id: cellId, ...cellData },
+                  {
+                    colSpan,
+                    align,
+                    visible,
+                    id: cellId,
+                    ariaLabel,
+                    ...cellData
+                  },
                   index
                 ) => (
                   <DataEntry.Cell
@@ -151,6 +160,11 @@ export function RenderForm<SCHEMA extends AnySchema>({
                     colSpan={colSpan}
                     align={align}
                     visible={visible}
+                    ariaLabel={
+                      viewDefinition?.formType === 'formTable'
+                        ? undefined
+                        : ariaLabel
+                    }
                   >
                     <FormCell
                       align={align}

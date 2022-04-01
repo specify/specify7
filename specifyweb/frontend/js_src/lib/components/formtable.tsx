@@ -6,7 +6,6 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { localizeLabel } from '../localizeform';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
@@ -15,36 +14,26 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry, H3 } from './basic';
+import { Button, DataEntry, H3, Link } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { replaceKey } from '../helpers';
 
 const cellToLabel = (
   model: SpecifyModel,
   cell: FormCellDefinition
 ): {
-  readonly children: string | undefined;
+  readonly text: string | undefined;
   readonly title: string | undefined;
 } => ({
-  ...(cell.type === 'Field' || cell.type === 'SubView'
-    ? localizeLabel({
-        text: undefined,
-        model,
-        fieldName: cell.fieldName,
-        id: cell.id,
-      })
-    : {
-        title: undefined,
-        children:
-          (cell.type === 'Label'
-            ? cell.text ?? cell.labelForCellId
-            : cell.type === 'Separator'
-            ? cell.label
-            : undefined) ?? cell.id,
-      }),
+  text: cell.ariaLabel,
+  title:
+    cell.type === 'Field' || cell.type === 'SubView'
+      ? model.getField(cell.fieldName ?? '')?.getLocalizedDesc()
+      : undefined,
 });
 
 export function FormTable<SCHEMA extends AnySchema>({
@@ -57,16 +46,18 @@ export function FormTable<SCHEMA extends AnySchema>({
   viewName = relationship.relatedModel.view,
   dialog,
   onClose: handleClose,
+  sortField,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
   readonly resources: RA<SpecifyResource<SCHEMA>>;
-  readonly onAdd: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onAdd: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
+  readonly sortField: string | undefined;
 }): JSX.Element {
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
@@ -87,11 +78,21 @@ export function FormTable<SCHEMA extends AnySchema>({
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
     ) : (
-      <DataEntry.Grid role="table" viewDefinition={viewDefinition}>
+      <DataEntry.Grid
+        role="table"
+        viewDefinition={replaceKey(viewDefinition, 'columns', [
+          undefined,
+          ...viewDefinition.columns,
+          undefined,
+          ...(isDependent ? [] : [undefined]),
+        ])}
+      >
         <div className="contents" role="row">
-          <div role="columnheader">{commonText('expand')}</div>
+          <div role="columnheader">
+            <span className="sr-only">{commonText('expand')}</span>
+          </div>
           {viewDefinition.rows[0].map((cell, index) => {
-            const { title, children } = cellToLabel(
+            const { text, title } = cellToLabel(
               relationship.relatedModel,
               cell
             );
@@ -103,14 +104,18 @@ export function FormTable<SCHEMA extends AnySchema>({
                 align={cell.align}
                 title={title}
                 visible={true}
+                ariaLabel={undefined}
                 // TODO: add column sorting option
               >
-                {children}
+                {text}
               </DataEntry.Cell>
             );
           })}
-          {mode !== 'edit' && (
-            <div role="columnheader">{commonText('remove')}</div>
+          {!isDependent && <div role="columnheader">{commonText('view')}</div>}
+          {mode !== 'view' && (
+            <div role="columnheader">
+              <span className="sr-only">{commonText('remove')}</span>
+            </div>
           )}
         </div>
         <div className="contents" role="rowgroup">
@@ -133,9 +138,12 @@ export function FormTable<SCHEMA extends AnySchema>({
                   </div>
                   <DataEntry.Cell
                     role="cell"
-                    colSpan={viewDefinition.columns.length}
+                    colSpan={
+                      viewDefinition.columns.length + (isDependent ? 0 : 1)
+                    }
                     align="left"
                     visible={true}
+                    ariaLabel={undefined}
                   >
                     <SpecifyForm
                       resource={resource}
@@ -171,6 +179,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={colSpan}
                         align={align}
                         visible={visible}
+                        ariaLabel={undefined}
                       >
                         <FormCell
                           align={align}
@@ -186,27 +195,47 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </DataEntry.Cell>
                     )
                   )}
+                  {!isDependent && (
+                    <div role="cell">
+                      {!resource.isNew() && (
+                        <Link.NewTab
+                          className="text-blue-500"
+                          title={formsText('visit')}
+                          aria-label={formsText('visit')}
+                          href={resource.viewUrl()}
+                        />
+                      )}
+                    </div>
+                  )}
                 </>
               )}
-              {mode === 'edit' && (
-                <div role="cell">
-                  <Button.Icon
-                    title={commonText('remove')}
-                    aria-label={commonText('remove')}
-                    icon="trash"
-                    onClick={(): void => handleDelete(resource)}
-                    disabled={
-                      !resource.isNew() &&
-                      !hasTablePermission(resource.specifyModel.name, 'delete')
-                    }
-                  />
-                </div>
-              )}
+              {mode !== 'view' &&
+                (resource.isNew() ||
+                  hasTablePermission(
+                    relationship.relatedModel.name,
+                    'delete'
+                  )) && (
+                  <div role="cell">
+                    <Button.Icon
+                      title={commonText('remove')}
+                      aria-label={commonText('remove')}
+                      icon="trash"
+                      onClick={(): void => handleDelete(resource)}
+                      disabled={
+                        !resource.isNew() &&
+                        !hasTablePermission(
+                          resource.specifyModel.name,
+                          'delete'
+                        )
+                      }
+                    />
+                  </div>
+                )}
             </div>
           ))}
           {resources.length === 0 && <p>{formsText('noData')}</p>}
         </div>
-        {state.type === 'SearchState' && (
+        {state.type === 'SearchState' ? (
           <SearchDialog
             forceCollection={undefined}
             extraFilters={undefined}
@@ -214,37 +243,40 @@ export function FormTable<SCHEMA extends AnySchema>({
             onClose={(): void => setState({ type: 'MainState' })}
             onSelected={(resource): void => {
               setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-              handleAdd(resource);
+              handleAdd?.(resource);
             }}
           />
-        )}
+        ) : undefined}
       </DataEntry.Grid>
     );
   const addButton =
+    typeof handleAdd === 'function' &&
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
       relationship.relatedModel.name,
       isDependent ? 'read' : 'create'
     ) ? (
-      <Button.LikeLink
+      <Button.Icon
         onClick={
           disableAdding
             ? undefined
             : isDependent
-            ? void setState({
-                type: 'SearchState',
-                resource: new relationship.relatedModel.Resource(),
-              })
+            ? (): void =>
+                setState({
+                  type: 'SearchState',
+                  resource: new relationship.relatedModel.Resource(),
+                })
             : (): void => {
                 const resource = new relationship.relatedModel.Resource();
                 setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-                handleAdd(resource);
+                handleAdd?.(resource);
               }
         }
-      >
-        {commonText('add')}
-      </Button.LikeLink>
+        title={commonText('add')}
+        aria-label={commonText('add')}
+        icon="plus"
+      />
     ) : undefined;
   return dialog === false ? (
     <DataEntry.SubForm>
@@ -282,24 +314,25 @@ export function FormTableCollection({
     | ((resource: SpecifyResource<AnySchema>) => void)
     | undefined;
 }): JSX.Element {
-  /*
-   * FIXME: disable add and remove for dependent toOne
-   * FIXME: disable onAdd and onDelete if no permission
-   */
+  const [records, setRecords] = React.useState(collection.models);
   const field = defined(collection.field?.getReverse());
   const isDependent = collection instanceof collectionapi.Dependent;
   const isToOne = !relationshipIsToMany(field);
-  const [records, setRecords] = React.useState(collection.models);
+  const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
       relationship={defined(collection.field?.getReverse())}
       isDependent={isDependent}
       resources={records}
-      onAdd={(resource): void => {
-        collection.add(resource);
-        setRecords(collection.models);
-        handleAdd?.(resource);
-      }}
+      onAdd={
+        disableAdding
+          ? undefined
+          : (resource): void => {
+              collection.add(resource);
+              setRecords(collection.models);
+              handleAdd?.(resource);
+            }
+      }
       onDelete={(resource): void => {
         collection.remove(resource);
         setRecords(collection.models);

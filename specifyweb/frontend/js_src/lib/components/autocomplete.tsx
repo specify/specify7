@@ -161,8 +161,8 @@ export function Autocomplete<T>({
   }
 
   const itemProps = ensure<Partial<TagProps<'li'>>>()({
-    className: `p-0.5 hover:text-brand-300 active:bg-gray-100
-      dark:active:bg-neutral-800 hover:bg-brand-100 dark:hover:bg-brand-500
+    className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
+      dark:hover:bg-neutral-800 active:bg-brand-100 dark:active:bg-brand-500
       disabled:cursor-default rounded`,
     role: 'options',
     tabIndex: -1,

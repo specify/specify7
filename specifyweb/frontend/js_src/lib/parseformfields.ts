@@ -76,7 +76,9 @@ const processFieldType: {
   Checkbox: (cell) => ({
     type: 'Checkbox',
     defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
-    label: getAttribute(cell, 'label'),
+    label: f.maybe(getAttribute(cell, 'label')?.trim(), (label) =>
+      label.length === 0 ? undefined : label
+    ),
     printOnSave:
       getAttribute(cell, 'ignore')?.toLowerCase() === 'true' &&
       ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(

@@ -44,7 +44,7 @@ export function FormTableInteraction(
               type: 0,
               dbtableid: 1,
               domainfilter: true,
-              orderby: '-timestampcreated',
+              orderby: props.sortField ?? '-timestampcreated',
             },
           });
           setRecordSetsPromise(

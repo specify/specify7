@@ -3,24 +3,24 @@ import React from 'react';
 import { error } from '../assert';
 import type { AnySchema, CommonFields } from '../datamodelutils';
 import { format } from '../dataobjformatters';
+import { f } from '../functools';
+import { sortObjectsByKey } from '../helpers';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import queryText from '../localization/query';
 import { getResourceViewUrl } from '../resource';
 import { queryCbxExtendedSearch } from '../specifyapi';
+import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { sortObjectsByKey } from '../helpers';
-import { f } from '../functools';
 import { Button, className, Form, Link, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { SpecifyForm } from './specifyform';
-import queryText from '../localization/query';
-import { SpecifyModel } from '../specifymodel';
 import { QueryBuilder } from './querybuilder';
 import { createQuery } from './querytask';
+import { SpecifyForm } from './specifyform';
 
 const dialogDefinitions = load<Element>(
   '/context/app.resource?name=DialogDefs',
@@ -119,10 +119,11 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           formType="form"
           mode="search"
         />
-        <Ul className="bg-white dark:bg-neutral-700 h-40 min-w-[275px] overflow-auto p-2">
-          {isLoading || typeof results === 'undefined' ? (
+        <Ul className="bg-white dark:bg-neutral-700 h-40 min-w-[275px] overflow-auto p-2 rounded">
+          {isLoading ? (
             <li>{commonText('loading')}</li>
-          ) : results.length === 0 ? (
+          ) : typeof results === 'undefined' ? undefined : results.length ===
+            0 ? (
             <li>${commonText('noResults')}</li>
           ) : (
             <>

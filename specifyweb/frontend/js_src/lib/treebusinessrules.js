@@ -74,7 +74,7 @@ function predictFullName(resource, options) {
         },
         init: function(resource) {
           resource.settingDefaultValues(()=>
-            resource.set('isaccepted', true)
+            resource.isNew() ? resource.set('isaccepted', true) : undefined
           )
         }
     };

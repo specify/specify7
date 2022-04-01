@@ -2,7 +2,6 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { localizeLabel } from '../localizeform';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Label } from './basic';
 import { useResourceValue } from './hooks';
@@ -38,12 +37,6 @@ export function PrintOnSave({
       })),
     [value, setFormMeta]
   );
-  const { children, title } = localizeLabel({
-    text,
-    id,
-    fieldName,
-    model,
-  });
   const input = (
     <Input.Checkbox
       id={id}
@@ -52,10 +45,12 @@ export function PrintOnSave({
       onValueChange={setValue}
     />
   );
-  return children.length > 0 ? (
-    <Label.ForCheckbox title={title}>
+  return typeof text === 'string' ? (
+    <Label.ForCheckbox
+      title={model.getField(fieldName ?? '')?.getLocalizedDesc()}
+    >
       {input}
-      {children}
+      {text}
     </Label.ForCheckbox>
   ) : (
     input
@@ -82,12 +77,6 @@ export function SpecifyFormCheckbox({
     fieldName,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
-  const { children, title } = localizeLabel({
-    text,
-    id,
-    fieldName,
-    model: resource.specifyModel,
-  });
   const input = (
     <Input.Checkbox
       forwardRef={validationRef}
@@ -100,10 +89,14 @@ export function SpecifyFormCheckbox({
       // Checkbox can not be required as checkbox does not have a "null" state
     />
   );
-  return children.length > 0 ? (
-    <Label.ForCheckbox title={title}>
+  return typeof text === 'string' ? (
+    <Label.ForCheckbox
+      title={resource.specifyModel
+        .getField(fieldName ?? '')
+        ?.getLocalizedDesc()}
+    >
       {input}
-      {children}
+      {text}
     </Label.ForCheckbox>
   ) : (
     input

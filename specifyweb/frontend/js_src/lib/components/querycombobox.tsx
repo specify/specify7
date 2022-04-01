@@ -78,6 +78,7 @@ export function QueryComboBox({
   React.useEffect(
     () =>
       resource.settingDefaultValues(() => {
+        if (!resource.isNew()) return;
         if (field?.name === 'cataloger')
           toTable(resource, 'CollectionObject')?.set(
             'cataloger',
@@ -188,7 +189,6 @@ export function QueryComboBox({
     false
   );
 
-  // TODO: consider the ORDER parameter from the query
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(
       () =>
@@ -215,7 +215,8 @@ export function QueryComboBox({
                       ?.split(',')
                       .map(f.trim)
                       .map(
-                        typeof typeSearch?.textContent === 'string'
+                        typeof typeSearch?.textContent === 'string' &&
+                          typeSearch.textContent.trim().length > 0
                           ? columnToFieldMapper(typeSearch.textContent)
                           : f.id
                       ) ?? [];
@@ -611,7 +612,7 @@ export function QueryComboBox({
         ) : state.type === 'AddResourceState' ? (
           <ResourceView
             isSubForm={false}
-            resource={formatted.resource}
+            resource={state.resource}
             canAddAnother={false}
             dialog="nonModal"
             onClose={(): void => setState({ type: 'MainState' })}

@@ -448,11 +448,11 @@ export function useResourceValue<
         : resolveParser(field) ?? {}
     );
 
-    resource.settingDefaultValues(() => {
-      typeof defaultParser?.value === 'undefined'
+    resource.settingDefaultValues(() =>
+      typeof defaultParser?.value === 'undefined' || !resource.isNew()
         ? undefined
-        : resource.set(fieldName, defaultParser.value as never);
-    });
+        : resource.set(fieldName, defaultParser.value as never)
+    );
 
     const refresh = (): void =>
       setValue((resource.get(fieldName) as T | null) ?? undefined);

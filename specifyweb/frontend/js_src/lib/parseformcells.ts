@@ -4,6 +4,7 @@
 
 import type { State } from 'typesafe-reducer';
 
+import { f } from './functools';
 import type { FormType, ParsedFormDefinition } from './parseform';
 import { formTypes, parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
@@ -13,7 +14,6 @@ import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { f } from './functools';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -48,6 +48,7 @@ export type CellTypes = {
     'Label',
     {
       text: string | undefined;
+      title: string | undefined;
       labelForCellId: string | undefined;
       fieldName: string | undefined;
     }
@@ -66,6 +67,7 @@ export type CellTypes = {
       isButton: boolean;
       icon: string | undefined;
       viewName: string | undefined;
+      sortField: string | undefined;
     }
   >;
   readonly Panel: State<'Panel', ParsedFormDefinition>;
@@ -104,10 +106,30 @@ const processCellType: {
       ''
     );
     const field = model?.getField(rawFieldName ?? '');
+    const fieldDefinition = parseFormField(cell, properties);
+    /*
+     * Some plugins overwrite the fieldName. In such cases, fieldName is
+     * commonly "this"
+     */
+    const fieldName =
+      fieldDefinition.type === 'Plugin' &&
+      fieldDefinition.pluginDefinition.type === 'LatLonUI'
+        ? undefined
+        : (fieldDefinition.type === 'Plugin'
+            ? fieldDefinition.pluginDefinition.type === 'PartialDateUI'
+              ? fieldDefinition.pluginDefinition.dateField
+              : fieldDefinition.pluginDefinition.type ===
+                  'CollectionRelOneToManyPlugin' ||
+                fieldDefinition.pluginDefinition.type === 'ColRelTypePlugin'
+              ? fieldDefinition.pluginDefinition.relationship
+              : undefined
+            : undefined) ??
+          field?.name ??
+          rawFieldName;
     return {
       type: 'Field',
-      fieldName: field?.name ?? rawFieldName,
-      fieldDefinition: parseFormField(cell, properties),
+      fieldName,
+      fieldDefinition,
       isRequired:
         getAttribute(cell, 'isRequired')?.toLowerCase() === 'true' ||
         field?.isRequiredBySchemaLocalization() ||
@@ -116,7 +138,12 @@ const processCellType: {
   },
   Label: ({ cell }) => ({
     type: 'Label',
-    text: getAttribute(cell, 'label'),
+    // This may be overwritten in postProcessRows
+    text: f.maybe(getAttribute(cell, 'label')?.trim(), (text) =>
+      text.length === 0 ? undefined : text
+    ),
+    // This would be set in postProcessRows
+    title: undefined,
     labelForCellId: getAttribute(cell, 'labelFor'),
     // This would be set in postProcessRows
     fieldName: undefined,
@@ -130,16 +157,21 @@ const processCellType: {
   SubView({ cell, model, properties }) {
     const rawFieldName = getAttribute(cell, 'name');
     const formType = getAttribute(cell, 'defaultType') ?? '';
+    const field = model?.getField(rawFieldName ?? '');
     return {
       type: 'SubView',
       formType:
         formTypes.find(
           (type) => type.toLowerCase() === formType.toLowerCase()
         ) ?? 'form',
-      fieldName: model?.getField(rawFieldName ?? '')?.name,
+      fieldName: field?.name,
       viewName: getAttribute(cell, 'viewName'),
       isButton: properties.btn?.toLowerCase() === 'true',
       icon: properties.icon,
+      sortField: field?.isRelationship
+        ? field?.relatedModel?.getField(properties.sortfield ?? '')?.name ??
+          undefined
+        : undefined,
     };
   },
   Panel: ({ cell, model }) => ({
@@ -167,6 +199,7 @@ export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;
   readonly visible: boolean;
+  readonly ariaLabel: string | undefined;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -207,5 +240,7 @@ export function parseFormCell(
       : 'left',
     visible: properties.visible?.toLowerCase() !== 'false',
     ...parsedCell({ cell: cellNode, model, properties }),
+    // This mag get filled out in postProcessRows or parseFormTableDefinition
+    ariaLabel: undefined,
   };
 }

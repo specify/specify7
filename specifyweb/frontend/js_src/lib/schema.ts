@@ -105,12 +105,12 @@ if (process.env.NODE_ENV !== 'production')
  */
 export function getModel(name: string): SpecifyModel | undefined {
   const lowerCase = name.toLowerCase();
-  return (
-    schema.models[name as keyof Tables] ??
-    Object.values(schema.models as unknown as IR<SpecifyModel>).find(
-      (model) => model.name.toLowerCase() === lowerCase
-    )
-  );
+  return name === ''
+    ? undefined
+    : schema.models[name as keyof Tables] ??
+        Object.values(schema.models as unknown as IR<SpecifyModel>).find(
+          (model) => model.name.toLowerCase() === lowerCase
+        );
 }
 
 export function getTreeModel(name: string): SpecifyModel<AnyTree> | undefined {

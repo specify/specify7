@@ -9,12 +9,13 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp } from '../helpers';
-import { Button, className, Input } from './basic';
+import { Button, className, Input, Link } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { LoadingContext } from './contexts';
 
 export function RecordSelectorButtons({
+  visitResource,
   onAdd: handleAdd,
   onDelete: handleDelete,
 }: {
@@ -24,6 +25,14 @@ export function RecordSelectorButtons({
 }): JSX.Element {
   return (
     <>
+      {typeof visitResource === 'object' && !visitResource.isNew() && (
+        <Link.NewTab
+          href={visitResource.viewUrl()}
+          aria-label={formsText('visit')}
+          title={formsText('visit')}
+          className="text-blue-500"
+        />
+      )}
       {handleAdd !== false && (
         <Button.Icon
           icon="plus"

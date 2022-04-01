@@ -86,7 +86,7 @@ export function Field({
     mode === 'view' ||
     resource !== model ||
     field?.isRelationship === true ||
-    field?.isReadOnly === true;
+    (field?.isReadOnly === true && mode !== 'search');
 
   const [formattedRelationship] = useAsyncState(
     React.useCallback(
@@ -138,6 +138,8 @@ export function Field({
         navigator.userAgent.includes('webkit') ? 'webkit' : ''
       }`}
       {...validationAttributes}
+      // This is undefined if resource.noValidation=true
+      type={validationAttributes.type ?? 'text'}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}
     />

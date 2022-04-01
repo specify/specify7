@@ -4,7 +4,9 @@
  */
 
 import { ajax, Http } from './ajax';
+import { f } from './functools';
 import { cachableUrl } from './initialcontext';
+import { localizeLabel } from './localizeform';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
   getAttribute,
@@ -14,9 +16,9 @@ import {
 import * as queryString from './querystring';
 import { getModel } from './schema';
 import { SpecifyModel } from './specifymodel';
+import * as stringLocalization from './stringlocalization';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
-import { f } from './functools';
 
 const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>
@@ -29,7 +31,7 @@ const getColumnDefinitions = (viewDefinition: Element): string =>
 export type ParsedFormDefinition = {
   // Define column sizes: either a number of pixels, or undefined for auto sizing
   readonly columns: RA<number | undefined>;
-  // Two dimensional grid of cells
+  // A two-dimensional grid of cells
   readonly rows: RA<RA<FormCellDefinition>>;
 };
 
@@ -37,11 +39,36 @@ function parseFormTableDefinition(
   viewDefinition: Element,
   model: SpecifyModel | undefined
 ): ParsedFormDefinition {
-  const cells = Array.from(
-    viewDefinition.querySelectorAll('cell[type="field"], cell[type="subview"]'),
-    parseFormCell.bind(undefined, model)
+  const { columns, rows } = parseFormDefinition(viewDefinition, model);
+  const labelsForCells = Object.fromEntries(
+    filterArray(
+      rows
+        .flat()
+        .map((cell) =>
+          cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+            ? [cell.labelForCellId, cell]
+            : undefined
+        )
+    )
   );
-  return postProcessRows(cells.map(f.undefined), [cells]);
+  return {
+    columns: columns.map(f.undefined),
+    rows: [
+      rows
+        .flat()
+        // FormTable consists of Fields and SubViews only
+        .filter(({ type }) => type === 'Field' || type === 'SubView')
+        .map((cell) => ({
+          ...cell,
+          // Reduce colSpan to 1 for all cells
+          colSpan: 1,
+          // Make sure SubViews are rendered as buttons
+          ...(cell.type === 'SubView' ? { isButton: true } : {}),
+          // Set ariaLabel for all cells (would be used in formTable headers)
+          ariaLabel: cell.ariaLabel ?? labelsForCells[cell.id ?? '']?.text,
+        })),
+    ],
+  };
 }
 
 export const parseFormDefinition = (
@@ -55,21 +82,28 @@ export const parseFormDefinition = (
         row.querySelectorAll('cell'),
         parseFormCell.bind(undefined, model)
       )
-    )
+    ),
+    model
   );
 
-// TODO: if field has no label, add aria-label
+/**
+ * Unfortunately, not all cell definitions can be parsed by looking at just
+ * one cell at a time.
+ * This method looks over all grid cells holistically and finishes parsing
+ * them or fixes discovered issues.
+ */
 function postProcessRows(
   columns: RA<number | undefined>,
-  rows: RA<RA<FormCellDefinition>>
+  rows: RA<RA<FormCellDefinition>>,
+  model: SpecifyModel | undefined
 ): ParsedFormDefinition {
-  const fieldsById: IR<
-    | {
-        readonly fieldName: string | undefined;
-        readonly labelOverride: string | undefined;
-      }
-    | undefined
-  > = Object.fromEntries(
+  // Index fieldNames and labelOverride for all cells by cellId
+  const fieldsById: IR<{
+    readonly fieldName: string | undefined;
+    readonly labelOverride: string | undefined;
+    // An alternative label to use, only if label is missing
+    readonly altLabel: string | undefined;
+  }> = Object.fromEntries(
     filterArray(
       rows.flatMap((row) =>
         row
@@ -81,120 +115,180 @@ function postProcessRows(
               cell.type === 'Field' && typeof cell.id === 'string'
           )
           .map((cell) =>
-            typeof cell.id === 'string'
+            typeof cell.id === 'string' && cell.type === 'Field'
               ? [
                   cell.id,
-                  cell.type === 'Field'
-                    ? {
-                        // Some plugins may override the fieldName
-                        fieldName:
-                          cell.fieldDefinition.type === 'Plugin' &&
-                          cell.fieldDefinition.pluginDefinition.type ===
-                            'LatLonUI'
-                            ? undefined
-                            : (cell.fieldDefinition.type === 'Plugin'
-                                ? cell.fieldDefinition.pluginDefinition.type ===
-                                  'PartialDateUI'
-                                  ? cell.fieldDefinition.pluginDefinition
-                                      .dateField
-                                  : cell.fieldDefinition.pluginDefinition
-                                      .type ===
-                                      'CollectionRelOneToManyPlugin' ||
-                                    cell.fieldDefinition.pluginDefinition
-                                      .type === 'ColRelTypePlugin'
-                                  ? cell.fieldDefinition.pluginDefinition
-                                      .relationship
-                                  : undefined
-                                : undefined) ?? cell.fieldName,
-                        // Checkbox definition can contain a label
-                        labelOverride:
-                          cell.fieldDefinition.type === 'Checkbox'
-                            ? cell.fieldDefinition.label
-                            : undefined,
-                      }
-                    : undefined,
+                  {
+                    fieldName: cell.fieldName,
+                    // Checkbox definition can contain a label
+                    labelOverride:
+                      cell.fieldDefinition.type === 'Checkbox'
+                        ? cell.fieldDefinition.label
+                        : undefined,
+                    /*
+                     * Default Accession view doesn't have a label for
+                     * Division ComboBox for some reason
+                     */
+                    altLabel:
+                      model?.name === 'Accession' &&
+                      cell.fieldName === 'divisionCBX'
+                        ? stringLocalization.localizeFrom(
+                            ['views', 'global_views'],
+                            'Division'
+                          )
+                        : undefined,
+                  },
                 ]
               : undefined
           )
       )
     )
   );
+  // TODO: if checkbox cell has a label, don't draw a label in checkbox
+  const newRows = rows.map<RA<FormCellDefinition>>((row, index) => {
+    const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
+    if (totalColumns > columns.length)
+      /*
+       * This may also happen if column had a colSpan in the view definition,
+       * since all colSpans undergo `Math.ceil(colSpan / 2)`, which may
+       * make total colSpan be larger than the number of defined columns
+       */
+      console.error(
+        `Row ${index}/${rows.length} has ${totalColumns} column(s), when
+          expected only ${columns.length}`,
+        { row, columns }
+      );
+    return filterArray([
+      ...row
+        /*
+         * Make sure total colSpan is not larger than the number of columns
+         * as that would mess up the grid
+         */
+        .reduce<{ readonly cells: typeof row; readonly remaining: number }>(
+          ({ cells, remaining }, cell) => ({
+            cells:
+              remaining < 0
+                ? cells
+                : [
+                    ...cells,
+                    {
+                      ...cell,
+                      colSpan: Math.min(remaining, cell.colSpan),
+                    },
+                  ],
+            remaining: remaining - (cell.colSpan ?? 1),
+          }),
+          { cells: [], remaining: columns.length }
+        )
+        .cells.map((cell, index) =>
+          /*
+           * If a Label without a labelForCellId attribute precedes a field with an
+           * ID, but no label, associate the label with that field
+           */
+          cell.type === 'Label' &&
+          typeof cell.labelForCellId === 'undefined' &&
+          typeof row[index + 1]?.id === 'number' &&
+          rows.every((row) =>
+            row.every(
+              (cell) =>
+                cell.type !== 'Label' ||
+                cell.labelForCellId !== row[index + 1].id
+            )
+          )
+            ? {
+                ...cell,
+                labelForCellId: row[index + 1].id,
+              }
+            : cell
+        )
+        .map((cell) =>
+          cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+            ? {
+                ...cell,
+                // Let some fields overwrite their label
+                text:
+                  fieldsById[cell.labelForCellId]?.labelOverride ??
+                  cell.text ??
+                  fieldsById[cell.labelForCellId]?.altLabel ??
+                  /*
+                   * Default Accession view doesn't have a label for
+                   * Division ComboBox for some reason
+                   */
+                  (model?.name === 'Accession' && cell.id === 'divLabel'
+                    ? stringLocalization.localizeFrom(
+                        ['views', 'global_views'],
+                        'Division'
+                      )
+                    : undefined) ??
+                  cell.labelForCellId,
+                // Get label fieldName from its field
+                fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+              }
+            : cell
+        )
+        .map((cell) =>
+          cell.type === 'Label' && typeof model === 'object'
+            ? {
+                ...cell,
+                ...localizeLabel({
+                  text: cell.text,
+                  id: cell.id,
+                  model,
+                  fieldName: cell.fieldName,
+                }),
+              }
+            : cell
+        ),
+      columns.length - totalColumns > 0
+        ? {
+            type: 'Blank',
+            id: undefined,
+            align: 'left',
+            colSpan: columns.length - totalColumns,
+            visible: false,
+            ariaLabel: undefined,
+          }
+        : undefined,
+    ]);
+  });
+  const labelsForCells = Object.fromEntries(
+    filterArray(
+      rows
+        .flat()
+        .map((cell) =>
+          cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+            ? [cell.labelForCellId, cell]
+            : undefined
+        )
+    )
+  );
   return {
     columns,
-    rows: rows.map((row, index) => {
-      const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
-      if (totalColumns > columns.length)
-        console.error(
-          `Row ${index}/${rows.length} has ${totalColumns} column(s), when
-          expected only ${columns.length}`,
-          { row, columns }
-        );
-      return filterArray([
-        ...row
-          /*
-           * Make sure total colSpan is not larger than the number of columns
-           * as that would mess up the grid
-           */
-          .reduce<{ readonly cells: typeof row; readonly remaining: number }>(
-            ({ cells, remaining }, cell) => ({
-              cells:
-                remaining < 0
-                  ? cells
-                  : [
-                      ...cells,
-                      {
-                        ...cell,
-                        colSpan: Math.min(remaining, cell.colSpan),
-                      },
-                    ],
-              remaining: remaining - (cell.colSpan ?? 1),
-            }),
-            { cells: [], remaining: columns.length }
-          )
-          .cells.map((cell, index) =>
-            /*
-             * If a Label without a labelForCellId attribute precedes a field with an
-             * ID, but no label, associate the label with that field
-             */
-            cell.type === 'Label' &&
-            typeof cell.labelForCellId === 'undefined' &&
-            typeof row[index + 1]?.id === 'number' &&
-            rows.every((row) =>
-              row.every(
-                (cell) =>
-                  cell.type !== 'Label' ||
-                  cell.labelForCellId !== row[index + 1].id
-              )
-            )
-              ? {
-                  ...cell,
-                  labelForCellId: row[index + 1].id,
-                }
-              : cell
-          )
-          .map((cell) =>
-            cell.type === 'Label' && typeof cell.labelForCellId === 'string'
-              ? {
-                  ...cell,
-                  // Let some fields overwrite their label
-                  text:
-                    fieldsById[cell.labelForCellId]?.labelOverride ?? cell.text,
-                  // Get label fieldName from its field
-                  fieldName: fieldsById[cell.labelForCellId]?.fieldName,
-                }
-              : cell
-          ),
-        columns.length - totalColumns > 0
-          ? {
-              type: 'Blank',
-              id: undefined,
-              align: 'left',
-              colSpan: columns.length - totalColumns,
-              visible: false,
+    rows: newRows.map((row) =>
+      row.map((cell) =>
+        typeof cell.id === 'undefined' ||
+        typeof labelsForCells[cell.id] === 'object'
+          ? cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
+            ? {
+                ...cell,
+                /*
+                 * Remove label from the checkbox field, if it already has an
+                 * associated label
+                 */
+                label: undefined,
+              }
+            : cell
+          : {
+              ...cell,
+              // If cell has a fieldName, but no associated label, set ariaLabel
+              ariaLabel:
+                cell.ariaLabel ??
+                (cell.type === 'Field' || cell.type === 'SubView'
+                  ? model?.getField(cell.fieldName ?? '')?.label
+                  : undefined),
             }
-          : undefined,
-      ]);
-    }),
+      )
+    ),
   };
 }
 
@@ -247,7 +341,7 @@ function processViewDefinition(
       formTypes.find(
         (type) => type.toLowerCase() === newFormType?.toLowerCase()
       ) ?? 'form',
-    mode: altView.mode,
+    mode: mode === 'search' ? mode : altView.mode,
     model: defined(
       getModel(
         SpecifyModel.parseClassName(
@@ -271,7 +365,7 @@ export function parseViewDefinition(
 ): ViewDescription {
   const { mode, formType, viewDefinition, model } = processViewDefinition(
     view,
-    defaultType,
+    defaultType.toLowerCase(),
     originalMode
   );
   const parser =

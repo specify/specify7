@@ -189,7 +189,7 @@ function SpecifyNetwork({
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}
         rel="opener noreferrer"
-        className="h-7 rounded-full"
+        className="h-7 justify-end"
         onClick={(event): void => {
           event.preventDefault();
           const link = (event.target as HTMLElement).closest('a')?.href;
@@ -203,7 +203,11 @@ function SpecifyNetwork({
           window.addEventListener('message', messageHandler);
         }}
       >
-        <img src="/static/img/specify_network_logo_long.svg" alt="" />
+        <img
+          src="/static/img/specify_network_logo_long.svg"
+          alt=""
+          className="w-3/5"
+        />
       </Link.Default>
     </>
   );

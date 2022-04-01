@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import type { FormMode, FormType } from '../parseform';
@@ -26,6 +27,7 @@ export function SubView({
   isButton,
   viewName = field.relatedModel.view,
   icon = field.relatedModel.name,
+  sortField,
 }: {
   readonly field: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -35,6 +37,7 @@ export function SubView({
   readonly isButton: boolean;
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
+  readonly sortField: string | undefined;
 }): JSX.Element {
   const [resourceUrl, setResourceUrl] = React.useState<string | null>('');
   React.useEffect(() => {
@@ -50,7 +53,25 @@ export function SubView({
     React.useCallback(async () => {
       if (resourceUrl === '') return undefined;
       else if (relationshipIsToMany(field))
-        return parentResource.rgetCollection(field.name);
+        return parentResource.rgetCollection(field.name).then((collection) => {
+          if (typeof sortField === 'undefined') return collection;
+          const isReverse = sortField.startsWith('-');
+          const fieldName = sortField.startsWith('-')
+            ? sortField.slice(1)
+            : sortField;
+          // Collection.prototype.clone does not copy the options, so we can't use it here
+          const models = Array.from(collection.models).sort(
+            sortFunction((resource) => resource.get(fieldName), isReverse)
+          );
+          const newCollection = new collection.constructor(
+            { field: collection.field, related: collection.related },
+            models
+          ) as Collection<AnySchema>;
+          parentResource.settingDefaultValues(() =>
+            parentResource.set(field.name, newCollection as never)
+          );
+          return newCollection;
+        });
       else {
         const resource = await parentResource.rgetPromise(field.name);
         const collection = (
