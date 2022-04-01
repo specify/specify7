@@ -99,7 +99,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
         default: {
           task: 'logout',
           title: commonText('logOut'),
-          basePath: '',
+          basePath: '/',
           view: '/accounts/logout',
           isOverlay: false,
           groupLabel: commonText('userAccount'),
@@ -109,7 +109,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
         default: {
           task: 'password_change',
           title: commonText('changePassword'),
-          basePath: '',
+          basePath: '/',
           view: '/accounts/logout',
           isOverlay: false,
           groupLabel: commonText('userAccount'),

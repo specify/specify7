@@ -212,13 +212,14 @@ function UserToolsColumn({
                         typeof view === 'string' ? view : `${basePath}${task}/`
                       }
                       className={
-                        typeof view === 'string'
-                          ? ''
+                        typeof view === 'string' && basePath === ''
+                          ? undefined
                           : className.navigationHandled
                       }
                       onClick={(event): void => {
-                        if (typeof view !== 'function') {
-                          handleClose();
+                        if (typeof view === 'string') {
+                          if (basePath === '/') window.location.assign(view);
+                          else handleClose();
                           return;
                         }
                         event.preventDefault();
