@@ -181,13 +181,14 @@ export function QueryComboBox({
                   }))
                 ),
               ]).then(([left, right]) => ({ left, right }));
-            })
+            }) ?? false
           : false,
       [resource]
     ),
     false
   );
 
+  // TODO: consider the ORDER parameter from the query
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(
       () =>
@@ -197,7 +198,7 @@ export function QueryComboBox({
               const typeSearch =
                 typeof initialTypeSearch === 'object'
                   ? initialTypeSearch
-                  : element.querySelector(`[name="${initialTypeSearch}]`);
+                  : element.querySelector(`[name="${initialTypeSearch}"]`);
 
               const relatedModel =
                 initialRelatedModel ??
@@ -255,6 +256,7 @@ export function QueryComboBox({
     field?.name,
     undefined
   );
+  // TOOD: fetch this from the back-end
   const [formatted] = useAsyncState<{
     readonly label: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -334,65 +336,77 @@ export function QueryComboBox({
   return (
     <div className="flex items-center">
       <Autocomplete<number>
-        source={async (value) =>
-          isLoaded && typeof typeSearch === 'object'
-            ? Promise.all(
-                typeSearch.searchFieldsNames
-                  .map((fieldName) =>
-                    makeQueryComboBoxQuery({
-                      fieldName,
-                      value,
-                      treeData:
-                        typeof treeData === 'object' ? treeData : undefined,
-                      typeSearch,
-                      specialConditions: getQueryComboBoxConditions({
-                        resource,
+        containerClassName="flex-1"
+        source={React.useCallback(
+          async (value) =>
+            isLoaded && typeof typeSearch === 'object'
+              ? Promise.all(
+                  typeSearch.searchFieldsNames
+                    .map((fieldName) =>
+                      makeQueryComboBoxQuery({
                         fieldName,
-                        collectionRelationships:
-                          typeof collectionRelationships === 'object'
-                            ? collectionRelationships
-                            : undefined,
+                        value,
                         treeData:
                           typeof treeData === 'object' ? treeData : undefined,
                         typeSearch,
-                        subViewRelationship,
-                      }),
-                    })
-                  )
-                  .map(serializeResource)
-                  .map((query) => ({
-                    ...query,
-                    fields: query.fields.map((field, index) => ({
-                      ...field,
-                      position: index,
-                    })),
-                  }))
-                  .map(async (query) =>
-                    ajax<{
-                      readonly results: RA<
-                        Readonly<[id: number, label: string]>
-                      >;
-                    }>('/stored_query/ephemeral/', {
-                      method: 'POST',
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      headers: { Accept: 'application/json' },
-                      body: keysToLowerCase({
-                        ...query,
-                        collectionId: forceCollection ?? relatedCollectionId,
-                        limit: 0,
-                      }),
-                    })
-                  )
-              ).then((responses) =>
-                responses
-                  .flatMap(({ data: { results } }) => results)
-                  .map(([id, label]) => ({
-                    data: id,
-                    label,
-                  }))
-              )
-            : []
-        }
+                        specialConditions: getQueryComboBoxConditions({
+                          resource,
+                          fieldName,
+                          collectionRelationships:
+                            typeof collectionRelationships === 'object'
+                              ? collectionRelationships
+                              : undefined,
+                          treeData:
+                            typeof treeData === 'object' ? treeData : undefined,
+                          typeSearch,
+                          subViewRelationship,
+                        }),
+                      })
+                    )
+                    .map(serializeResource)
+                    .map((query) => ({
+                      ...query,
+                      fields: query.fields.map((field, index) => ({
+                        ...field,
+                        position: index,
+                      })),
+                    }))
+                    .map(async (query) =>
+                      ajax<{
+                        readonly results: RA<
+                          Readonly<[id: number, label: string]>
+                        >;
+                      }>('/stored_query/ephemeral/', {
+                        method: 'POST',
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        headers: { Accept: 'application/json' },
+                        body: keysToLowerCase({
+                          ...query,
+                          collectionId: forceCollection ?? relatedCollectionId,
+                          limit: 0,
+                        }),
+                      })
+                    )
+                ).then((responses) =>
+                  responses
+                    .flatMap(({ data: { results } }) => results)
+                    .map(([id, label]) => ({
+                      data: id,
+                      label,
+                    }))
+                )
+              : [],
+          [
+            isLoaded,
+            typeSearch,
+            subViewRelationship,
+            collectionRelationships,
+            forceCollection,
+            relatedCollectionId,
+            resource,
+            treeData,
+          ]
+        )}
         onChange={({ data }): void => updateValue(data)}
         onNewValue={(value: string): void =>
           field?.isRelationship === true
@@ -422,7 +436,6 @@ export function QueryComboBox({
         {(props): JSX.Element => (
           <Input.Generic
             id={id}
-            className="flex-1"
             required={isRequired}
             isReadOnly={
               !isLoaded ||

@@ -70,6 +70,19 @@ declare namespace Intl {
 
     public format(value: Readonly<Date>): string;
   }
+
+  class Collator {
+    public constructor(
+      locales?: string | RA<string>,
+      options?: {
+        readonly sensitivity?: 'base' | 'accent' | 'case' | 'variant';
+        readonly caseFirst?: 'upper' | 'lower' | false;
+        readonly ignorePunctuation?: boolean;
+      }
+    );
+
+    public compare(left: string, right: string): -1 | 0 | 1;
+  }
 }
 
 const longDate = new Intl.DateTimeFormat(LANGUAGE, {
@@ -83,6 +96,7 @@ function getMonthNames(monthFormat: 'long' | 'short'): RA<string> {
     months.format(new Date(0, month, 2, 0, 0, 0))
   );
 }
+
 // Localized month names
 export const months = getMonthNames('long');
 
@@ -172,3 +186,9 @@ export function getRelativeDate(date: Readonly<Date>): string {
     return relativeDate.format(-Math.round(timePassed / MONTH), 'month');
   else return relativeDate.format(-Math.round(timePassed / YEAR), 'year');
 }
+
+export const compareStrings = new Intl.Collator(window.navigator.language, {
+  sensitivity: 'base',
+  caseFirst: 'upper',
+  ignorePunctuation: true,
+}).compare;

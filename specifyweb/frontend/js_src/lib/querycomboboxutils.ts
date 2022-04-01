@@ -37,6 +37,16 @@ export function makeQueryComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
+  const formattedField = QueryFieldSpec.fromPath([
+    relatedModel.name,
+    ...fieldName.split('.'),
+  ])
+    .toSpQueryField()
+    .set('isDisplay', false)
+    .set('startValue', typeof treeData === 'object' ? `%${value}` : value)
+    .set('operStart', queryFieldFilters.startsWith.id);
+  formattedField.noBusinessRules = true;
+
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),
@@ -54,7 +64,12 @@ export function makeQueryComboBoxQuery({
     .set('operStart', 0);
   displayField.noBusinessRules = true;
 
-  query.set('fields', [searchField, displayField, ...specialConditions]);
+  query.set('fields', [
+    formattedField,
+    searchField,
+    displayField,
+    ...specialConditions,
+  ]);
 
   return query;
 }

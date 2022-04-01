@@ -142,6 +142,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 const rankName = rankDefinition?.title ?? rankDefinition?.name;
                 return {
                   label: node.get('fullName'),
+                  searchValue: node.get('name'),
                   subLabel: rankName,
                   data: node as SpecifyResource<SCHEMA>,
                 };

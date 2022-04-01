@@ -14,14 +14,7 @@ import type { FormMode } from '../parseform';
 import { hasPermission, hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
-import {
-  Button,
-  Container,
-  DataEntry,
-  DialogContext,
-  Form,
-  Link,
-} from './basic';
+import { Button, Container, DataEntry, Form, Link } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
@@ -275,12 +268,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  /**
-   * Whether form is rendered in a dialog. Can't use props.dialog because
-   * it would be false for subviews inside the dialog
-   */
-  const isInDialog = typeof React.useContext(DialogContext) === 'function';
-
   return isDeleted ? (
     resourceDeletedDialog
   ) : (
@@ -297,13 +284,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
         saveButton,
         specifyNetworkBadge,
       }): JSX.Element => {
-        const saveButtonElement = saveButton?.({
-          canAddAnother,
-          onSaving: handleSaving,
-          onSaved: handleSaved,
-        });
+        const saveButtonElement = isSubForm
+          ? undefined
+          : saveButton?.({
+              canAddAnother,
+              onSaving: handleSaving,
+              onSaved: handleSaved,
+            });
         if (dialog === false) {
           const deleteButton =
+            !isSubForm &&
             typeof resource === 'object' &&
             !resource.isNew() &&
             hasTablePermission(resource.specifyModel.name, 'delete') ? (
@@ -357,9 +347,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
               headerButtons={
                 <>
                   {typeof resource === 'object' && !resource.isNew() && (
-                    <Link.NewTab href={resource.viewUrl()}>
-                      {formsText('visit')}
-                    </Link.NewTab>
+                    <Link.NewTab
+                      href={resource.viewUrl()}
+                      aria-label={formsText('visit')}
+                      title={formsText('visit')}
+                      className="text-blue-500"
+                    />
                   )}
                   {headerButtons}
                   {specifyNetworkBadge}

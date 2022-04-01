@@ -18,11 +18,15 @@ import type { RA } from '../types';
 import { ensure } from '../types';
 import type { TagProps } from './basic';
 import { useBooleanState, useId, useTriggerState } from './hooks';
+import { compareStrings } from './internationalization';
+import { icons } from './icons';
+import { f } from '../functools';
 
 const debounceRate = 300;
 
 type Item<T> = {
   readonly label: string;
+  readonly searchValue?: string;
   readonly subLabel?: string;
   readonly icon?: JSX.Element;
   readonly data: T;
@@ -35,6 +39,7 @@ export function Autocomplete<T>({
   forwardRef,
   onChange: handleChange,
   onNewValue: handleNewValue,
+  containerClassName = '',
   children,
   'aria-label': ariaLabel,
   value: currentValue,
@@ -45,7 +50,9 @@ export function Autocomplete<T>({
   readonly onNewValue?: (value: string) => void;
   readonly onChange: (item: Item<T>) => void;
   readonly forwardRef?: React.Ref<HTMLInputElement>;
+  readonly containerClassName?: string;
   readonly children: (props: {
+    readonly className: string;
     readonly forwardRef: React.RefCallback<HTMLInputElement>;
     readonly value: string;
     readonly type: 'search';
@@ -56,6 +63,7 @@ export function Autocomplete<T>({
     readonly 'aria-label': string | undefined;
     readonly onClick: () => void;
     readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    readonly onValueChange: (value: string) => void;
     readonly onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   }) => JSX.Element;
   readonly 'aria-label': string | undefined;
@@ -64,39 +72,64 @@ export function Autocomplete<T>({
   const id = useId('autocomplete-data-list')('');
   const [results, setResults] = React.useState<RA<Item<T>>>([]);
 
-  const updateItems = React.useCallback(
-    (items: RA<Item<T>>): void =>
-      setResults((oldItems) =>
-        // Don't delete previous autocomplete results if no new results returned
-        oldItems.length > 0 && items.length === 0 ? oldItems : items
-      ),
+  const filterItems = React.useCallback(
+    (newResults: typeof results, pendingValue: string) =>
+      pendingValue.length === 0
+        ? newResults
+        : newResults.filter(
+            ({ label, searchValue }) =>
+              label.includes(pendingValue) ||
+              (typeof searchValue === 'string' &&
+                compareStrings(
+                  label.slice(0, pendingValue.length),
+                  pendingValue
+                ) === 0)
+          ),
     []
+  );
+  const findItem = (filteredItems: RA<Item<T>>, pendingValue: string) =>
+    filteredItems.find(
+      ({ label }) => compareStrings(label, pendingValue) === 0
+    );
+
+  const updateItems = React.useCallback(
+    (items: RA<Item<T>>, pendingValue: string): void =>
+      setResults((oldItems) => {
+        // Don't delete previous autocomplete results if no new results returned
+        const newResults =
+          oldItems.length > 0 && items.length === 0 ? oldItems : items;
+        setFilteredItems(filterItems(newResults, pendingValue));
+        return newResults;
+      }),
+    [filterItems]
   );
 
   // Update source array on changes if statically supplied
   React.useEffect(() => {
-    if (Array.isArray(source)) updateItems(source);
+    if (Array.isArray(source)) updateItems(source, '');
   }, [source, updateItems]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const previousValue = React.useRef<string>(currentValue);
   const handleRefreshItems = React.useCallback(
-    _.debounce(function onKeyDown({ target }: React.KeyboardEvent): void {
-      const input = target as HTMLInputElement;
-
-      if (typeof source !== 'function' || previousValue.current === input.value)
+    _.debounce(function onKeyDown(
+      fetchItems: typeof source,
+      value: string
+    ): void {
+      if (typeof fetchItems !== 'function' || previousValue.current === value)
         return;
 
       handleLoading();
-      previousValue.current = input.value;
+      previousValue.current = value;
 
-      if (input.value.length < minLength) return;
+      if (value.length < minLength) return;
 
-      void source(input.value)
-        .then(updateItems)
+      void fetchItems(value)
+        .then((items) => updateItems(items, value))
         .catch(console.error)
         .finally(handleLoaded);
-    }, delay),
+    },
+    delay),
     []
   );
 
@@ -109,13 +142,10 @@ export function Autocomplete<T>({
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
 
-  function handleKeyDown(
-    key: string,
-    newFilteredItems: RA<Item<T>> = filteredItems
-  ): void {
+  function handleKeyDown(key: string): void {
     let newIndex = currentIndex;
     if (key === 'Escape' || key === 'Enter') {
-      const newItem = newFilteredItems[currentIndex];
+      const newItem = filteredItems[currentIndex];
       if (typeof newItem === 'object') handleChange(newItem);
       handleClose();
       input?.focus();
@@ -124,7 +154,7 @@ export function Autocomplete<T>({
 
     if (newIndex !== currentIndex) {
       const finalIndex =
-        (newFilteredItems.length + newIndex) % newFilteredItems.length;
+        (filteredItems.length + newIndex) % filteredItems.length;
       setCurrentIndex(finalIndex);
       (dataListRef.current?.children?.[finalIndex] as HTMLElement)?.focus();
     }
@@ -132,38 +162,27 @@ export function Autocomplete<T>({
 
   /*
    * TODO: test this with ç
-   * TODO: review here and usages to make sure value is what is saved in the DB
-   *       and label is what is being searched on
-   * TODO: allow sublabel
-   * TODO: allow icon
+   * TODO: move the list to the top if not enough space
    */
 
   const itemProps = ensure<Partial<TagProps<'li'>>>()({
-    className: `p-0.5 hover:text-brand-200 active:text-brand-300 bg-neutral-600/50
-      hover:bg-neutral-700/50 disabled:cursor-default`,
+    className: `p-0.5 hover:text-brand-300 active:bg-gray-100
+      dark:active:bg-neutral-800 hover:bg-brand-100 dark:hover:bg-brand-500
+      disabled:cursor-default rounded`,
     role: 'options',
     tabIndex: -1,
   } as const);
 
-  const filterItems = (pendingValue: string) =>
-    results.filter(({ label }) =>
-      label.localeCompare(
-        pendingValue.slice(0, label.length),
-        window.navigator.language,
-        { sensitivity: 'base' }
-      )
-    );
-  const findItem = (filteredItems: RA<Item<T>>, pendingValue: string) =>
-    filteredItems.find(({ label }) =>
-      label.localeCompare(
-        pendingValue.slice(0, label.length),
-        window.navigator.language,
-        { sensitivity: 'base' }
-      )
-    );
+  const showAdd =
+    filteredItems.length === 0 &&
+    !isLoading &&
+    typeof handleNewValue === 'function' &&
+    pendingValue.length > 0 &&
+    pendingValue !== currentValue;
+  const showList = isOpen && (showAdd || isLoading || filteredItems.length > 0);
 
   return (
-    <div className="relative">
+    <div className={`relative ${containerClassName}`}>
       {children({
         forwardRef(input): void {
           setInput(input);
@@ -172,6 +191,7 @@ export function Autocomplete<T>({
             forwardRef.current = input;
           else if (typeof forwardRef === 'function') forwardRef(input);
         },
+        className: 'w-full',
         value: pendingValue,
         type: 'search',
         autoComplete: 'off',
@@ -179,29 +199,31 @@ export function Autocomplete<T>({
         'aria-autocomplete': 'list',
         'aria-controls': id,
         'aria-label': ariaLabel,
-        onKeyDown: (event) => {
-          const input = event.target as HTMLInputElement;
-          handleRefreshItems(event);
-          const filteredItems = filterItems(input.value);
+        onKeyDown: (event) =>
+          isOpen ? handleKeyDown(event.key) : handleOpen(),
+        onValueChange(value) {
+          handleRefreshItems(source, value);
+          const filteredItems = filterItems(results, value);
           setFilteredItems(filteredItems);
-          if (isOpen) handleKeyDown(event.key, filteredItems);
-          else handleOpen();
-          const item = findItem(filteredItems, input.value);
+          const item = findItem(filteredItems, value);
           if (typeof item === 'object') handleChange(item);
-          else setPendingValue(input.value);
+          else setPendingValue(value);
         },
         onClick: handleToggle,
-        onBlur: ({ target, relatedTarget }): void => {
-          if (relatedTarget !== dataListRef.current) handleClose();
-          const item = findItem(filteredItems, pendingValue);
-          if (typeof item === 'undefined' && target.value.length > 0)
-            if (typeof handleNewValue === 'function')
-              handleNewValue?.(target.value);
-            else setPendingValue('');
+        onBlur({ relatedTarget }): void {
+          if (
+            relatedTarget !== null &&
+            dataListRef.current?.contains(relatedTarget as Node) === false
+          )
+            handleClose();
+          setPendingValue(currentValue);
         },
       })}
       <ul
-        className="backdrop-blur-2xl absolute z-10 w-full rounded cursor-pointer"
+        className={`absolute z-10 w-full rounded cursor-pointer
+          rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
+          shadow-lg shadow-gray-400 dark:border dark:border-gray-500
+          ${showList ? '' : 'sr-only'}`}
         role="listbox"
         aria-label={ariaLabel}
         id={id}
@@ -216,45 +238,68 @@ export function Autocomplete<T>({
           }
         }}
         onBlur={({ relatedTarget }): void =>
-          relatedTarget === input ? undefined : handleClose()
+          relatedTarget === null ||
+          input?.contains(relatedTarget as Node) === true
+            ? undefined
+            : handleClose()
         }
       >
-        {filteredItems.length === 0 ? (
-          isLoading ? (
-            <li aria-selected={false} aria-disabled={true} {...itemProps}>
-              {commonText('loading')}
-            </li>
-          ) : typeof handleNewValue === 'function' &&
-            pendingValue.length > 0 ? (
-            <li
-              aria-selected={false}
-              aria-posinset={1}
-              aria-setsize={1}
-              onClick={(): void => handleNewValue(pendingValue)}
-            >
-              {/* TODO: icon */}
-              {commonText('add')}
-            </li>
-          ) : undefined
-        ) : (
-          filteredItems.map((item, index, { length }) => (
-            <li
-              key={index}
-              aria-posinset={index + 1}
-              aria-setsize={length}
-              aria-selected={index === currentIndex}
-              onClick={(): void => {
-                handleChange(item);
-                setPendingValue(item.label);
-                handleClose();
-              }}
-              {...itemProps}
-            >
-              {/* TODO: icon */}
-              {/* TODO: sublabel */}
-              {item.label}
-            </li>
-          ))
+        {isOpen && (
+          <>
+            {isLoading && (
+              <li aria-selected={false} aria-disabled={true} {...itemProps}>
+                {commonText('loading')}
+              </li>
+            )}
+            {showAdd ? (
+              <li
+                aria-selected={false}
+                aria-posinset={1}
+                aria-setsize={1}
+                onClick={(): void => handleNewValue(pendingValue)}
+              >
+                <div className="flex items-center">
+                  <span className="text-green-500">{icons.plus}</span>
+                  {commonText('add')}
+                </div>
+              </li>
+            ) : (
+              filteredItems.map((item, index, { length }) => (
+                <li
+                  key={index}
+                  aria-posinset={index + 1}
+                  aria-setsize={length}
+                  aria-selected={index === currentIndex}
+                  onClick={(): void => {
+                    handleChange(item);
+                    setPendingValue(item.label);
+                    handleClose();
+                  }}
+                  {...itemProps}
+                >
+                  {f.var(
+                    typeof item.subLabel === 'string' ? (
+                      <div className="flex flex-col justify-center">
+                        {item.label}
+                        <span className="text-gray-500">{item.subLabel}</span>
+                      </div>
+                    ) : (
+                      item.label
+                    ),
+                    (content) =>
+                      typeof item.icon === 'string' ? (
+                        <div className="flex items-center">
+                          {item.icon}
+                          {content}
+                        </div>
+                      ) : (
+                        content
+                      )
+                  )}
+                </li>
+              ))
+            )}
+          </>
         )}
       </ul>
     </div>

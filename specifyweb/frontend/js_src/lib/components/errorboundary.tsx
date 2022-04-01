@@ -26,7 +26,7 @@ type ErrorBoundaryState =
     };
 
 export const supportLink =
-  process.env.NODE_ENV == 'test' ? (
+  process.env.NODE_ENV === 'test' ? (
     (undefined as unknown as JSX.Element)
   ) : (
     <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">

@@ -12,6 +12,7 @@ import { getIcon } from '../icons';
 import commonText from '../localization/common';
 import { getModel } from '../schema';
 import { icons } from './icons';
+import { compareStrings } from './internationalization';
 
 const MAX_HUE = 360;
 
@@ -108,7 +109,7 @@ export const compareValues = (
   valueLeft: string | undefined,
   valueRight: string | undefined
 ): number =>
-  (valueLeft ?? '').localeCompare(valueRight ?? '') * (ascending ? -1 : 1);
+  compareStrings(valueLeft ?? '', valueRight ?? '') * (ascending ? -1 : 1);
 
 export type SortConfig<FIELD_NAMES extends string> = {
   readonly sortField: FIELD_NAMES;

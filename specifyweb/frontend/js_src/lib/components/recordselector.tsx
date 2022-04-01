@@ -9,7 +9,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp } from '../helpers';
-import { Button, className, Input, Link } from './basic';
+import { Button, className, Input } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { LoadingContext } from './contexts';
@@ -17,7 +17,6 @@ import { LoadingContext } from './contexts';
 export function RecordSelectorButtons({
   onAdd: handleAdd,
   onDelete: handleDelete,
-  visitResource,
 }: {
   readonly onAdd: (() => void) | undefined | false;
   readonly onDelete: (() => void) | undefined | false;
@@ -45,13 +44,6 @@ export function RecordSelectorButtons({
           disabled={typeof handleDelete === 'undefined'}
         />
       )}
-      {typeof visitResource === 'object' && !visitResource.isNew() ? (
-        <Link.NewTab
-          href={visitResource.viewUrl()}
-          aria-label={formsText('visit')}
-          title={formsText('visit')}
-        />
-      ) : undefined}
     </>
   );
 }
