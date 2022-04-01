@@ -21,7 +21,7 @@ export function LeafletMap({
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
   readonly onClose?: () => void;
 }): JSX.Element {
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
 
   const [handleResize, setHandleResize] = React.useState<
     (() => void) | undefined
@@ -29,10 +29,11 @@ export function LeafletMap({
   const [isFullScreen, __, ___, handleToggleFullScreen] = useBooleanState();
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
-    if (containerRef.current === null) return undefined;
+    if (container === null) return undefined;
     let globalMap: L.Map | undefined;
     loading(
       showLeafletMap({
+        container,
         localityPoints,
         markerClickCallback,
       }).then((map) => {
@@ -42,7 +43,7 @@ export function LeafletMap({
       })
     );
     return (): void => void globalMap?.remove();
-  }, [loading, localityPoints, markerClickCallback]);
+  }, [container, loading, localityPoints, markerClickCallback]);
 
   return (
     <Dialog
@@ -56,7 +57,7 @@ export function LeafletMap({
       onResize={handleResize}
       onClose={handleClose}
     >
-      <div ref={containerRef} />
+      <div ref={setContainer} />
     </Dialog>
   );
 }

@@ -28,6 +28,7 @@ export function Contexts({
 }): JSX.Element {
   React.useEffect(() => Modal.setAppElement('#root'), []);
 
+  // Loading Context
   const holders = React.useRef<RA<number>>([]);
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
@@ -53,6 +54,7 @@ export function Contexts({
   );
   legacyContext = handle;
 
+  // Error Context
   const [errors, setErrors] = React.useState<RA<JSX.Element | undefined>>([]);
 
   const handleError = React.useCallback(

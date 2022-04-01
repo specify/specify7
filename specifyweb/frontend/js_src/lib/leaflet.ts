@@ -78,16 +78,17 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
     });
 
 export async function showLeafletMap({
+  container,
   localityPoints = [],
   markerClickCallback,
 }: {
+  readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
 }): Promise<L.Map> {
   const tileLayers = await leafletTileServersPromise;
 
-  const leafletMapContainer = document.createElement('div');
-  leafletMapContainer.classList.add(
+  container.classList.add(
     'overflow-hidden',
     'h-full',
     'min-h-[theme(spacing.80)]'
@@ -103,7 +104,7 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(leafletMapContainer, { maxZoom: 23 }).setView(
+  const map = L.map(container, { maxZoom: 23 }).setView(
     defaultCenter,
     defaultZoom
   );
@@ -114,7 +115,7 @@ export async function showLeafletMap({
   controlLayers.addTo(map);
 
   // Hide controls when printing map
-  leafletMapContainer
+  container
     .getElementsByClassName('leaflet-control-container')[0]
     ?.classList.add('print:hidden');
 
