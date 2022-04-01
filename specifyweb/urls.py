@@ -1,10 +1,9 @@
 from django.conf.urls import include, url
 from django.views.generic.base import RedirectView
-from django.contrib.auth import views as auth_views
 
-from .specify.views import support_login, images, properties
-from .context.views import choose_collection
+from .specify.views import images, properties
 
+from .accounts import urls as accounts_urls
 from .specify import urls as api_urls
 from .frontend import urls as frontend_urls, doc_urls
 from .workbench import urls as wb_urls
@@ -23,17 +22,6 @@ from .permissions.permissions import skip_collection_access_check
 urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
-    # log in and log out pages
-    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html')),
-    url(r'^accounts/logout/$', skip_collection_access_check(
-        auth_views.LogoutView.as_view(template_name='logout.html', next_page='/accounts/login/'))),
-    url(r'^accounts/password_change/$', skip_collection_access_check(
-        auth_views.PasswordChangeView.as_view(template_name='password_change.html', success_url='/'))),
-
-    url(r'^accounts/support_login/$', skip_collection_access_check(support_login)),
-
-    url(r'^accounts/choose_collection/$', skip_collection_access_check(choose_collection)),
-
     # just redirect root url to the main specify view
     url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
 
@@ -51,6 +39,7 @@ urlpatterns = [
     url(r'^documentation/', include(doc_urls)),
 
     # submodules
+    url(r'^accounts/', include(accounts_urls)),
     url(r'^api/workbench/', include(wb_urls)), # permissions added
     url(r'^express_search/', include(es_urls)),
     url(r'^context/', include(context_urls)),

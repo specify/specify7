@@ -24,7 +24,18 @@
     </p>
     {% endfor %}
     {% endif %}
-
+    {% if request.session.external_user %}
+    <p>
+      Hello{% if request.session.external_user.name %},
+      {{ request.session.external_user.name }}{% endif %}. There is
+      currently no Specify user associated with your
+      {{ request.session.external_user.provider_title }} account. If you
+      have a Specify user name and password, you can enter them below
+      to associate that user with your
+      {{ request.session.external_user.provider_title }} account for future
+      logins.
+    </p>
+    {% endif %}
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
       <div class="form-row">

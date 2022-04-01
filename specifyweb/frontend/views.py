@@ -4,11 +4,12 @@ import logging
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.conf import settings
-from django.utils import translation
+from django.utils import translation, crypto
 from django.utils.translation import gettext as _
+
 
 DIR = os.path.dirname(__file__)
 

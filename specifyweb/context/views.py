@@ -2,7 +2,7 @@ import json
 import os
 import re
 from typing import List, Tuple
-from django import forms
+
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout, views as auth_views
@@ -56,11 +56,36 @@ def users_collections_for_sp7(userid: int) -> List[Tuple[int, str]]:
 
 def set_users_collections_for_sp6(cursor, user, collectionids):
     with transaction.atomic():
-        cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [user.id])
-        cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
-                       'select spprincipalid from specifyuser_spprincipal)')
 
-        for collectionid in collectionids:
+        # Delete the principals for the user for all collections not
+        # in collectionids. (I think the principal represents the
+        # user's capacity wrt to a collection.)
+
+        # First delete the mappings from the user to the principals.
+        cursor.execute("delete specifyuser_spprincipal "
+                       "from specifyuser_spprincipal "
+                       "join spprincipal using (spprincipalid) "
+                       "where specifyuserid = %s and usergroupscopeid not in %s",
+                       [user.id, collectionids])
+
+        # Next delete the joins from the principals to any permissions.
+        cursor.execute("delete from spprincipal_sppermission where spprincipalid not in ("
+                       "select spprincipalid from specifyuser_spprincipal)")
+
+        # Finally delete all the principals that aren't connected to
+        # any user. This should just be the ones where the mappings
+        # were deleted above.
+        cursor.execute("delete from spprincipal where grouptype is null and spprincipalid not in ("
+                       "select spprincipalid from specifyuser_spprincipal)")
+
+        # Now to add any new principals. Which ones alerady exist?
+        cursor.execute("select usergroupscopeid from spprincipal "
+                       "join specifyuser_spprincipal using (spprincipalid) "
+                       "where grouptype is null and specifyuserid = %s",
+                       [user.id])
+        already_exist = set(r[0] for r in cursor.fetchall())
+
+        for collectionid in set(collectionids) - already_exist:
             principal = Spprincipal.objects.create(
                 groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
                 grouptype=None,
@@ -95,49 +120,6 @@ def user_collection_access_for_sp6(request, userid):
     collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
-
-class CollectionChoiceField(forms.ChoiceField):
-    widget = forms.RadioSelect
-    def label_from_instance(self, obj):
-        return obj.collectionname
-
-@login_maybe_required
-@require_http_methods(['GET', 'POST'])
-@never_cache
-def choose_collection(request):
-    "The HTML page for choosing which collection to log into. Presented after the main auth page."
-    redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
-    redirect_resp = HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
-        else settings.LOGIN_REDIRECT_URL
-    )
-
-    available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections.sort(key=lambda x: x[1])
-
-    if len(available_collections) < 1:
-        auth_logout(request)
-        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
-
-    if len(available_collections) == 1:
-        set_collection_cookie(redirect_resp, available_collections[0][0])
-        return redirect_resp
-
-    class Form(forms.Form):
-        collection = CollectionChoiceField(
-            choices=available_collections,
-            initial=request.COOKIES.get('collection', None))
-
-    if request.method == 'POST':
-        form = Form(data=request.POST)
-        if form.is_valid():
-            set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
-            return redirect_resp
-    else:
-        form = Form()
-
-    context = {'form': form, 'next': redirect_to}
-    return TemplateResponse(request, 'choose_collection.html', context)
 
 @openapi(schema={
     "get": {
