@@ -133,8 +133,8 @@ function SecurityPanel(): JSX.Element | null {
               {Object.values(data.collections)
                 .filter((collection) =>
                   // Only show collections you have access to
-                  userInformation.availableCollections.some(
-                    ([id]) => id === collection.id
+                  Object.keys(userInformation.availableCollections).some(
+                    ([id]) => f.parseInt(id) === collection.id
                   )
                 )
                 .map((collection) => (

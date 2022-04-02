@@ -35,9 +35,15 @@ Backbone.ajax = function (request): JQueryXHR {
         body: request.type === 'GET' ? undefined : request.data,
       }
     )
-      .then(({ data }) => request.success?.(data))
+      .then(({ data }) =>
+        typeof request.success === 'function'
+          ? request.success(data, 'success', undefined as never)
+          : undefined
+      )
       .catch((error) => {
-        request?.error?.(error, error, error);
+        typeof request.error === 'function'
+          ? request.error(error, 'error', undefined as never)
+          : undefined;
         throw error;
       })
   );

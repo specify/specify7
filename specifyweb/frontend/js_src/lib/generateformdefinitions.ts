@@ -43,6 +43,7 @@ const cellAttributes = {
   align: 'left',
   colSpan: 1,
   visible: true,
+  ariaLabel: undefined,
 } as const;
 
 function generateForm(
@@ -77,6 +78,7 @@ function generateForm(
                   text: field.label,
                   labelForCellId: field.name,
                   fieldName: field.name,
+                  title: field.getLocalizedDesc(),
                   ...cellAttributes,
                 },
               ],
@@ -111,6 +113,7 @@ function generateForm(
                 text: field.label,
                 labelForCellId: field.name,
                 fieldName: field.name,
+                title: field.getLocalizedDesc(),
                 ...cellAttributes,
               },
             ],
@@ -126,6 +129,7 @@ function generateForm(
                 isButton: true,
                 icon: undefined,
                 isRequired: false,
+                sortField: 'id',
                 fieldDefinition: {
                   type: 'SubView',
                 },
@@ -146,6 +150,7 @@ function getFieldDefinition(
     type: 'Field',
     fieldName: field.name,
     isRequired: false,
+    ariaLabel: undefined,
     fieldDefinition: {
       isReadOnly: false,
       ...(parser.type === 'checkbox'

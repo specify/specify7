@@ -5,10 +5,10 @@
  */
 
 import type { MappingLine } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import wbText from './localization/workbench';
 import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
-import { Tables } from './datamodel';
 import { getUniqueName } from './wbuniquifyname';
 
 export const uniquifyHeaders = (

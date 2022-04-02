@@ -29,7 +29,6 @@ const cellRenderers: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
     readonly align: typeof cellAlign[number];
-    readonly ariaLabel: string | undefined;
   }) => JSX.Element | null;
 } = {
   Field({

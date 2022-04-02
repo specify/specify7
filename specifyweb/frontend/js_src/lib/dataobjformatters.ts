@@ -8,6 +8,9 @@ import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
 import { getAttribute } from './parseformcells';
+import { f } from './functools';
+import { hasTablePermission } from './permissions';
+import commonText from './localization/common';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -136,28 +139,37 @@ export async function format<SCHEMA extends AnySchema>(
 
   return Promise.all(
     fields.map(async ({ fieldName, formatter, separator, fieldFormatter }) => {
-      const formatted = await (
-        resource.rgetPromise(fieldName) as Promise<
-          string | SpecifyResource<AnySchema> | undefined
-        >
-      ).then(async (value) => {
-        if (formatter.length > 0 && typeof value === 'object')
-          return (await format(value, formatter)) ?? '';
-        else {
-          const field = defined(
-            resource.specifyModel.getField(fieldName) as LiteralField
-          );
-          return fieldFormat(
-            field,
-            defined(resolveParser(field)),
-            value as string | undefined
-          );
-        }
-      });
       return `${separator}${
         typeof fieldFormatter === 'string' && fieldFormatter === ''
           ? ''
-          : formatted
+          : await f.var(
+              resource.specifyModel.getField(fieldName),
+              async (field) =>
+                typeof field === 'undefined' ||
+                !field.isRelationship ||
+                hasTablePermission(field.relatedModel.name, 'read')
+                  ? (
+                      resource.rgetPromise(fieldName) as Promise<
+                        string | SpecifyResource<AnySchema> | undefined
+                      >
+                    ).then(async (value) => {
+                      if (formatter.length > 0 && typeof value === 'object')
+                        return (await format(value, formatter)) ?? '';
+                      else {
+                        const field = defined(
+                          resource.specifyModel.getField(
+                            fieldName
+                          ) as LiteralField
+                        );
+                        return fieldFormat(
+                          field,
+                          defined(resolveParser(field)),
+                          value as string | undefined
+                        );
+                      }
+                    })
+                  : commonText('noPermission')
+            )
       }`;
     })
   ).then((values) => values.join(''));

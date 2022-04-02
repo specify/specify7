@@ -2,6 +2,8 @@ import React from 'react';
 
 import type { Loan, LoanPreparation } from '../datamodel';
 import { getDateInputValue } from '../dayjs';
+import { f } from '../functools';
+import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -16,7 +18,6 @@ import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
-import { replaceItem } from '../helpers';
 
 function formatCatNo(catNo: string): string {
   const field = schema.models.CollectionObject.getLiteralField('catalognumber');
@@ -26,78 +27,90 @@ function formatCatNo(catNo: string): string {
 const localize = <T extends string | undefined>(key: string, fallback?: T): T =>
   s.localizeFrom('resources', key, fallback) as T;
 
-const metaDataFormDefinition: ViewDescription = {
-  columns: Array.from<undefined>({ length: 4 }).fill(undefined),
-  rows: [
-    [
-      {
-        id: undefined,
-        colSpan: 1,
-        type: 'Label',
-        text: '',
-        labelForCellId: '1',
-        fieldName: 'receivedBy',
-        align: 'left',
-        visible: true,
-      },
-      {
-        id: '1',
-        align: 'left',
-        colSpan: 1,
-        type: 'Field',
-        fieldName: 'receivedBy',
-        isRequired: true,
-        visible: true,
-        fieldDefinition: {
-          isReadOnly: false,
-          type: 'QueryComboBox',
-          hasCloneButton: false,
-          typeSearch: 'Agent',
+const metaDataFormDefinition = f.store(
+  (): ViewDescription => ({
+    columns: Array.from<undefined>({ length: 4 }).fill(undefined),
+    rows: [
+      [
+        {
+          id: undefined,
+          colSpan: 1,
+          type: 'Label',
+          text: '',
+          labelForCellId: '1',
+          fieldName: 'receivedBy',
+          align: 'left',
+          visible: true,
+          ariaLabel: undefined,
+          title: undefined,
         },
-      },
-      {
-        id: undefined,
-        align: 'left',
-        colSpan: 1,
-        type: 'Label',
-        text: '',
-        labelForCellId: '2',
-        fieldName: 'returnedDate',
-        visible: true,
-      },
-      {
-        id: '2',
-        align: 'left',
-        colSpan: 1,
-        type: 'Field',
-        fieldName: 'returnedDate',
-        isRequired: true,
-        visible: true,
-        fieldDefinition: {
-          isReadOnly: false,
-          type: 'Text',
-          defaultValue: undefined,
-          min: undefined,
-          max: undefined,
-          step: undefined,
+        {
+          id: '1',
+          align: 'left',
+          colSpan: 1,
+          type: 'Field',
+          fieldName: 'receivedBy',
+          isRequired: true,
+          visible: true,
+          fieldDefinition: {
+            isReadOnly: false,
+            type: 'QueryComboBox',
+            hasCloneButton: false,
+            typeSearch: 'Agent',
+          },
+          ariaLabel: undefined,
         },
-      },
+        {
+          id: undefined,
+          align: 'left',
+          colSpan: 1,
+          type: 'Label',
+          text: '',
+          labelForCellId: '2',
+          fieldName: 'returnedDate',
+          visible: true,
+          ariaLabel: undefined,
+          title:
+            schema.models.LoanReturnPreparation.getField(
+              'returnedDate'
+            )?.getLocalizedDesc(),
+        },
+        {
+          id: '2',
+          align: 'left',
+          colSpan: 1,
+          type: 'Field',
+          fieldName: 'returnedDate',
+          isRequired: true,
+          visible: true,
+          fieldDefinition: {
+            isReadOnly: false,
+            type: 'Text',
+            defaultValue: undefined,
+            min: undefined,
+            max: undefined,
+            step: undefined,
+          },
+          ariaLabel: undefined,
+        },
+      ],
+      [
+        {
+          id: undefined,
+          align: 'left',
+          colSpan: 4,
+          type: 'Separator',
+          label: undefined,
+          visible: true,
+          ariaLabel: undefined,
+        },
+      ],
     ],
-    [
-      {
-        id: undefined,
-        align: 'left',
-        colSpan: 4,
-        type: 'Separator',
-        label: undefined,
-        visible: true,
-      },
-    ],
-  ],
-  formType: 'form',
-  mode: 'edit',
-  model: schema.models.LoanReturnPreparation,
-};
+    formType: 'form',
+    mode: 'edit',
+    model: schema.models.LoanReturnPreparation,
+  })
+);
 
 type RowState = {
   readonly resolve: number;
@@ -385,7 +398,7 @@ function PreparationReturn({
     >
       <RenderForm
         resource={loanReturnPreparation.current}
-        viewDefinition={metaDataFormDefinition}
+        viewDefinition={metaDataFormDefinition()}
       />
       <table>
         <thead>

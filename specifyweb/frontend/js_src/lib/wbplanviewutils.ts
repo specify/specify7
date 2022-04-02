@@ -14,13 +14,13 @@ import type {
   SelectElementPosition,
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
+import { f } from './functools';
 import * as navigation from './navigation';
 import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { uploadPlanBuilder } from './uploadplanbuilder';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
-import { f } from './functools';
 import {
   findDuplicateMappings,
   formatToManyIndex,

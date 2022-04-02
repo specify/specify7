@@ -45,8 +45,6 @@ declare global {
     ): RR<KEYS, VALUES>;
 
     // Prevent Object.keys() from widening the key type to string[]
-    keys<KEY extends string | number | symbol>(
-      object: RR<KEY, unknown>
-    ): RA<KEY>;
+    keys<KEY extends string>(object: RR<KEY, unknown>): RA<KEY>;
   }
 }

@@ -1,14 +1,17 @@
 /** Still work in progress */
+// TODO: remove these comments
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
 import React from 'react';
 
 import type { Tables } from '../datamodel';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { getModel } from '../schema';
 import { isFunction } from '../types';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
-import { f } from '../functools';
 
 type Buckets = {
   [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<

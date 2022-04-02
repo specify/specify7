@@ -1736,6 +1736,16 @@ const commonText = createDictionary({
     ca: 'Dismiss',
     'es-es': 'Dismiss',
   },
+  /*
+   * Used in field formatter if user doesn't have read access to the related
+   * table
+   */
+  noPermission: {
+    'en-us': 'NO PERMISSION',
+    'ru-ru': 'NO PERMISSION',
+    ca: 'NO PERMISSION',
+    'es-es': 'NO PERMISSION',
+  },
 });
 
 export default commonText;

@@ -146,9 +146,9 @@ export async function downloadFile(
   });
   const html = '<body>Foo</body>';
   document.body.append(iframe);
-  iframe.contentWindow.document.open();
-  iframe.contentWindow.document.write(html);
-  iframe.contentWindow.document.close();
+  iframe.contentWindow?.document.open();
+  iframe.contentWindow?.document.write(html);
+  iframe.contentWindow?.document.close();
 }
 
 export const fileToText = async (file: File): Promise<string> =>
