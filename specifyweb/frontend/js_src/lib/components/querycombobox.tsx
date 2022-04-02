@@ -9,7 +9,6 @@ import { f } from '../functools';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
-import formsText from '../localization/forms';
 import queryText from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
 import { getAttribute } from '../parseformcells';
@@ -35,7 +34,7 @@ import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
 import { Autocomplete } from './autocomplete';
-import { Button, Input } from './basic';
+import { DataEntry, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
 import { formatList } from './internationalization';
@@ -452,40 +451,28 @@ export function QueryComboBox({
       <span className="print:hidden contents">
         {mode === 'view' ? (
           formType === 'formTable' ? undefined : (
-            <Button.Icon
+            <DataEntry.View
               aria-pressed={state.type === 'ViewResourceState'}
               disabled={
                 typeof formatted?.resource === 'undefined' ||
                 typeof collectionRelationships === 'undefined'
               }
               onClick={handleOpenRelated}
-              title={commonText('view')}
-              aria-label={commonText('view')}
-              className="text-orange-400"
-              icon="eye"
             />
           )
         ) : (
           <>
-            <Button.Icon
+            <DataEntry.Edit
               aria-pressed={state.type === 'ViewResourceState'}
-              title={commonText('edit')}
               disabled={
                 typeof formatted?.resource === 'undefined' ||
                 typeof collectionRelationships === 'undefined'
               }
               onClick={handleOpenRelated}
-              aria-label={commonText('edit')}
-              className="text-orange-400"
-              icon="pencil"
             />
-            <Button.Icon
+            <DataEntry.Add
               aria-pressed={state.type === 'AddResourceState'}
-              title={commonText('add')}
-              aria-label={commonText('add')}
               disabled={field?.isRelationship !== true}
-              className="text-green-700"
-              icon="plus"
               onClick={(): void =>
                 field?.isRelationship === true
                   ? state.type === 'AddResourceState'
@@ -498,12 +485,8 @@ export function QueryComboBox({
               }
             />
             {hasCloneButton && (
-              <Button.Icon
-                title={formsText('clone')}
+              <DataEntry.Clone
                 disabled={typeof formatted?.resource === 'undefined'}
-                aria-label={formsText('clone')}
-                icon="clipboard"
-                className="text-amber-700"
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
@@ -514,13 +497,9 @@ export function QueryComboBox({
                 }
               />
             )}
-            <Button.Icon
-              title={commonText('search')}
-              aria-label={commonText('search')}
-              icon="search"
+            <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
               disabled={!isLoaded || typeof typeSearch !== 'object'}
-              className="text-blue-500"
               onClick={(): void =>
                 isLoaded && typeof typeSearch === 'object'
                   ? setState({

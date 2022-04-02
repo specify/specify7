@@ -231,7 +231,6 @@
     @apply flex items-center gap-x-1;
   }
 
-  /* TODO: test implications of this */
   .sr-only {
     top: 0;
   }

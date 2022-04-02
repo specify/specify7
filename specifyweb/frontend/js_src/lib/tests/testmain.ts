@@ -12,6 +12,7 @@ import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
 
+// FIXME: update tests so that they don't fail
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
   inputOutputSet: RA<[ARGUMENTS_TYPE, RETURN_TYPE]>,

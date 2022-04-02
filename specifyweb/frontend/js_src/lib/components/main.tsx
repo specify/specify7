@@ -39,6 +39,11 @@ export type MenuItem = Omit<UserTool, 'groupLabel'> & {
   readonly icon: JSX.Element;
 };
 
+/*
+ * TODO: move UI logic out of .ts files and into .tsx (e.i., fetching data
+ *  should be done in .tsx files so that a Loading Dialog can be displayed)
+ */
+
 const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
   .then(async () =>
     Promise.all([

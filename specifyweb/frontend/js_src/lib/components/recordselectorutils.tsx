@@ -17,13 +17,13 @@ import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button } from './basic';
+import { Button, DataEntry } from './basic';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
-import { BaseRecordSelector, RecordSelectorButtons } from './recordselector';
+import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
@@ -142,6 +142,7 @@ export function IntegratedRecordSelector({
   dialog,
   onClose: handleClose,
   formType,
+  sortField,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -153,6 +154,7 @@ export function IntegratedRecordSelector({
   readonly viewName?: string;
   readonly urlParameter?: string;
   readonly onClose: () => void;
+  readonly sortField: string | undefined;
 }): JSX.Element {
   const isDependent = collection instanceof collectionapi.Dependent;
   const field = defined(collection.field?.getReverse());
@@ -167,6 +169,7 @@ export function IntegratedRecordSelector({
       onAdd={undefined}
       onDelete={undefined}
       onClose={handleClose}
+      sortField={sortField}
     />
   ) : (
     <RecordSelectorFromCollection
@@ -199,34 +202,39 @@ export function IntegratedRecordSelector({
             }`}
             headerButtons={
               <>
-                <RecordSelectorButtons
+                <DataEntry.Visit
                   /*
                    * If dialog is not false, the visit button would be added
                    * by ResourceView
                    */
-                  visitResource={
+                  resource={
                     isDependent && dialog === false ? undefined : resource
                   }
-                  onDelete={
-                    typeof resource === 'object' && mode !== 'view'
-                      ? resource.isNew() ||
-                        hasTablePermission(resource.specifyModel.name, 'delete')
-                        ? handleRemove
-                        : false
-                      : undefined
-                  }
-                  onAdd={
-                    hasTablePermission(
-                      field.relatedModel.name,
-                      isDependent ? 'read' : 'create'
-                    )
-                      ? mode === 'view' ||
-                        (isToOne && collection.models.length > 0)
-                        ? undefined
-                        : handleAdd
-                      : false
-                  }
                 />
+                {hasTablePermission(
+                  field.relatedModel.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Add
+                    onClick={handleAdd}
+                    disabled={
+                      mode === 'view' ||
+                      (isToOne && collection.models.length > 0)
+                    }
+                  />
+                )}
+                {hasTablePermission(
+                  field.relatedModel.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Delete
+                    onClick={handleRemove}
+                    disabled={
+                      mode === 'view' ||
+                      (isToOne && collection.models.length > 0)
+                    }
+                  />
+                )}
                 <span className="flex-1 -ml-4" />
                 {!isToOne && slider}
               </>
@@ -341,18 +349,27 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             title={`${title} (${ids.length})`}
             headerButtons={
               <>
-                <RecordSelectorButtons
-                  visitResource={isDependent ? undefined : resource}
-                  onDelete={
-                    typeof resource === 'object' && mode !== 'view'
-                      ? resource.isNew() ||
-                        hasTablePermission(resource.specifyModel.name, 'delete')
-                        ? handleRemove
-                        : false
-                      : undefined
-                  }
-                  onAdd={mode === 'view' ? undefined : handleAdd}
+                <DataEntry.Visit
+                  resource={isDependent ? undefined : resource}
                 />
+                {hasTablePermission(
+                  model.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Add
+                    disabled={mode === 'view'}
+                    onClick={handleAdd}
+                  />
+                )}
+                {resource?.isNew() === true ||
+                hasTablePermission(model.name, 'delete') ? (
+                  <DataEntry.Delete
+                    disabled={
+                      typeof resource === 'undefined' && mode === 'view'
+                    }
+                    onClick={handleRemove}
+                  />
+                ) : undefined}
                 <span className="flex-1 -ml-4" />
                 {slider}
               </>
@@ -401,6 +418,7 @@ const fetchItems = async (
       ),
   }));
 
+// FIXME: test this
 export function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
   defaultResourceIndex,
@@ -486,11 +504,9 @@ export function RecordSet<SCHEMA extends AnySchema>({
             <>
               <Button.DialogClose>{commonText('close')}</Button.DialogClose>
               {hasToolPermission('recordSets', 'create') && (
-                <Button.Green
+                <DataEntry.Add
                   onClick={(): void => handleAdd(new rest.model.Resource())}
-                >
-                  {commonText('add')}
-                </Button.Green>
+                />
               )}
             </>
           }

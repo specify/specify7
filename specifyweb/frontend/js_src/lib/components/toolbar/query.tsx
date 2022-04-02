@@ -15,7 +15,16 @@ import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
 import { f } from '../../functools';
-import { Button, Form, Input, Link, Submit, Textarea, Ul } from '../basic';
+import {
+  Button,
+  DataEntry,
+  Form,
+  Input,
+  Link,
+  Submit,
+  Textarea,
+  Ul,
+} from '../basic';
 import { compareValues, SortIndicator, TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
 import { useAsyncState, useId, useTitle } from '../hooks';
@@ -153,13 +162,7 @@ function QueryList({
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (
-                <Button.Icon
-                  icon="pencil"
-                  role="link"
-                  aria-label={commonText('edit')}
-                  title={commonText('edit')}
-                  onClick={(): void => handleEdit(query)}
-                />
+                <DataEntry.Edit onClick={(): void => handleEdit(query)} />
               )}
             </td>
           </tr>

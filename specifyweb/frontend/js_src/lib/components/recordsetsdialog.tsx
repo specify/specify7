@@ -11,7 +11,7 @@ import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Link } from './basic';
+import { Button, className, DataEntry, Link } from './basic';
 import { TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState } from './hooks';
@@ -67,12 +67,7 @@ function Row({
       </td>
       <td>
         {typeof handleEdit === 'function' && (
-          <Button.Icon
-            title={commonText('edit')}
-            aria-label={commonText('edit')}
-            icon="pencil"
-            onClick={handleEdit}
-          />
+          <DataEntry.Edit onClick={handleEdit} />
         )}
       </td>
     </tr>

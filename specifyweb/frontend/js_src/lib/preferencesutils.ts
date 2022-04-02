@@ -30,7 +30,7 @@ export const getPrefValue = <
   preferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
-// TODO: save this on the back-end
+// FIXME: save this on the back-end
 let preferences: {
   [CATEGORY in keyof Preferences]?: {
     [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
@@ -91,7 +91,7 @@ function requestPreferencesSync(): void {
 
 const fetchAppResourceId = async (): Promise<number> =>
   ajax<number>(
-    // TODO: fetch prefs from the server
+    // FXME: fetch prefs from the server
     '',
     {
       method: 'GET',
@@ -113,7 +113,7 @@ async function syncPreferences(): Promise<void> {
   )
     .then(async (appResourceId) =>
       ping(
-        // TODO: fill in the URL
+        // FIXME: fill in the URL
         `${appResourceId}`,
         {
           method: 'PUT',
@@ -123,7 +123,7 @@ async function syncPreferences(): Promise<void> {
           },
         },
         {
-          // TODO: test if Http.CONFLICT is ever returned
+          // FIXME: test if Http.CONFLICT is ever returned
           expectedResponseCodes: [Http.OK, Http.CONFLICT],
         }
       )
@@ -144,7 +144,7 @@ function handlePreferencesUpdate(data: typeof preferences): void {
 
 const fetchPreferences = async (): Promise<typeof preferences> =>
   ajax<typeof preferences>(
-    // TODO: fill in the URL
+    // FIXME: fill in the URL
     '',
     {
       method: 'GET',
@@ -153,7 +153,7 @@ const fetchPreferences = async (): Promise<typeof preferences> =>
       },
     },
     {
-      // TODO: test what does the parser do on 404
+      // FIXME: test what does the parser do on 404
       expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
     }
   ).then(({ data, status }) => (status === Http.NOT_FOUND ? {} : data));

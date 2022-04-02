@@ -121,7 +121,7 @@ export function Dialog({
 }: {
   readonly isOpen?: boolean;
   readonly header: React.ReactNode;
-  // TODO: remove this and usages
+  // TODO: remove this and usages (remove all dialog titles)
   readonly title?: string;
   readonly headerButtons?: React.ReactNode;
   // TODO: review dialogs that don't need icons

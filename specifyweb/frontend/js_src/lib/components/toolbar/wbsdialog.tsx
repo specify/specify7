@@ -13,7 +13,7 @@ import * as navigation from '../../navigation';
 import type { RA } from '../../types';
 import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
-import { Button, className, Link } from '../basic';
+import { Button, className, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { SortIndicator } from '../common';
 import { DataSetMeta } from '../datasetmeta';
@@ -272,10 +272,7 @@ function DataSets({
                     </td>
                     <td>
                       {canImport && (
-                        <Button.Icon
-                          icon="pencil"
-                          aria-label={commonText('edit')}
-                          title={commonText('edit')}
+                        <DataEntry.Edit
                           onClick={(): void => handleShowMeta(dataset.id)}
                         />
                       )}

@@ -9,6 +9,9 @@ import type { UserTool } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 
+/**
+ * FIXME: finish this
+ * */
 function Preferences({
   onClose: handleClose,
 }: {
@@ -28,7 +31,7 @@ function Preferences({
         className="flex flex-col flex-1 gap-6 overflow-y-auto"
         id={id('form')}
         onSubmit={(): void =>
-          // TODO: save changes
+          // FIXME: save changes
           loading(Promise.resolve())
         }
       >

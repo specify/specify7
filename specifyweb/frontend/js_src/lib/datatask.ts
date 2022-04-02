@@ -3,14 +3,18 @@ import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { setTitle } from './components/hooks';
 import { OtherCollectionView } from './components/othercollectionview';
+import { PermissionDenied } from './components/permissiondenied';
 import createBackboneView from './components/reactbackboneextend';
 import { ShowResource } from './components/resourceview';
+import type { Tables } from './datamodel';
 import type { AnySchema } from './datamodelutils';
 import { collectionsForResource } from './domain';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
 import * as navigation from './navigation';
 import { NotFoundView } from './notfoundview';
+import { hasTablePermission, hasToolPermission } from './permissions';
 import * as querystring from './querystring';
 import { getResourceViewUrl } from './resource';
 import { router } from './router';
@@ -18,10 +22,6 @@ import { getModel, getModelById, schema } from './schema';
 import { setCurrentView } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
-import { f } from './functools';
-import { Tables } from './datamodel';
-import { hasTablePermission, hasToolPermission } from './permissions';
-import { PermissionDenied } from './components/permissiondenied';
 
 const PermissionDeniedView = createBackboneView(PermissionDenied);
 
@@ -58,7 +58,7 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
                       getModelById(recordSet.get('dbTableId')).name,
                       records[0].recordId
                     ),
-                    { recordSetId: id }
+                    { recordSetId: id.toString() }
                   ),
                   {
                     replace: true,
@@ -117,7 +117,7 @@ async function resourceView(
    * an unfilled view from being displayed.
    */
   return Promise.all([
-    // TODO: check if this is needed anymore
+    // FIXME: check if this is needed anymore
     resource.isNew() ? resource.fetchPromise() : undefined,
     recordSet?.fetchPromise(),
   ])

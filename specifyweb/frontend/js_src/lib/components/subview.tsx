@@ -127,6 +127,7 @@ export function SubView({
               : (): void => void parentResource.set(field.name, null as never)
           }
           onClose={handleClose}
+          sortField={sortField}
         />
       )}
     </SubViewContext.Provider>

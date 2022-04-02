@@ -22,6 +22,7 @@ import {
   Button,
   className,
   Container,
+  DataEntry,
   Form,
   Input,
   Label,
@@ -31,7 +32,6 @@ import {
 } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useUnloadProtect } from './hooks';
-import { icons } from './icons';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
@@ -378,17 +378,12 @@ export function UserView({
                         />
                         {role.name}
                       </Label.ForCheckbox>
-                      <Button.Simple
-                        className={`${className.blueButton} print:hidden`}
-                        title={commonText('edit')}
-                        aria-label={commonText('edit')}
+                      <DataEntry.Edit
                         // TODO: trigger unload protect
                         onClick={(): void =>
                           handleOpenRole(collectionId, role.id)
                         }
-                      >
-                        {icons.pencil}
-                      </Button.Simple>
+                      />
                     </li>
                   ))
                 : commonText('loading')}

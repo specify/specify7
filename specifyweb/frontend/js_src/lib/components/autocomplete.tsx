@@ -17,6 +17,7 @@ import commonText from '../localization/common';
 import type { RA } from '../types';
 import { ensure } from '../types';
 import type { TagProps } from './basic';
+import { className } from './basic';
 import { useBooleanState, useId, useTriggerState } from './hooks';
 import { compareStrings } from './internationalization';
 import { icons } from './icons';
@@ -263,7 +264,7 @@ export function Autocomplete<T>({
                 onClick={(): void => handleNewValue(pendingValue)}
               >
                 <div className="flex items-center">
-                  <span className="text-green-500">{icons.plus}</span>
+                  <span className={className.dataEntryAdd}>{icons.plus}</span>
                   {commonText('add')}
                 </div>
               </li>

@@ -58,13 +58,18 @@ const fetchEntries = f.store(
                   table:
                     action === 'NEW_GIFT'
                       ? 'Gift'
-                      : typeof action === 'string'
+                      : action === 'NEW_LOAN'
                       ? 'Loan'
-                      : await getView(getAttribute(entry, 'view') ?? '').then(
-                          (view) =>
-                            SpecifyModel.parseClassName(
-                              view.class
-                            ) as keyof Tables
+                      : defined(
+                          (await f
+                            .maybe(getAttribute(entry, 'view'), getView)
+                            ?.then(
+                              (view) =>
+                                SpecifyModel.parseClassName(
+                                  view.class
+                                ) as keyof Tables
+                            )) ??
+                            getModel(getAttribute(entry, 'table') ?? '')?.name
                         ),
                   label: getAttribute(entry, 'label'),
                   tooltip: getAttribute(entry, 'tooltip'),
@@ -149,10 +154,12 @@ function Interactions({
 
   React.useEffect(
     () =>
-      f.maybe(
-        entries.find(({ action }) => action === urlParameter),
-        ({ action, table }) => handleAction(defined(action), table)
-      ),
+      typeof urlParameter === 'string'
+        ? f.maybe(
+            entries.find(({ action }) => action === urlParameter),
+            ({ action, table }) => handleAction(defined(action), table)
+          )
+        : undefined,
     [urlParameter, entries]
   );
 
@@ -194,14 +201,14 @@ function Interactions({
                     : undefined
                 }
               >
+                {f.maybe(icon ?? table, (icon) => (
+                  <TableIcon name={icon} tableLabel={false} />
+                ))}
                 {typeof label === 'string'
                   ? s.localizeFrom('resources', label)
                   : typeof table === 'string'
                   ? getModel(table)?.label
                   : action}
-                {f.maybe(icon ?? table, (icon) => (
-                  <TableIcon name={icon} tableLabel={false} />
-                ))}
               </Link.Default>
             </li>
           ))}

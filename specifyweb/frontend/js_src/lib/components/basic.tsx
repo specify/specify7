@@ -1,12 +1,15 @@
 import React from 'react';
 
+import type { AnySchema } from '../datamodelutils';
+import { split } from '../helpers';
+import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
+import formsText from '../localization/forms';
 import type { ViewDescription } from '../parseform';
 import type { Input as InputType } from '../saveblockers';
 import type { IR, RA, RR } from '../types';
 import type { IconProps } from './icons';
 import { icons } from './icons';
-import { split } from '../helpers';
 
 export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
@@ -82,7 +85,7 @@ function wrap<
   return wrapped;
 }
 
-// TODO: make a react hook that listens for updates
+// FIXME: make a react hook that listens for updates
 const reduceMotion =
   typeof window === 'object'
     ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -90,8 +93,8 @@ const reduceMotion =
 export const transitionDuration = reduceMotion ? 0 : 100;
 
 /*
- * TODO: make a react hook that listens for updates
- * TODO: allow overwriting this in the UI
+ * FIXME: make a react hook that listens for updates
+ * FIXME: allow overwriting this in the UI
  */
 export const darkMode =
   typeof window === 'object'
@@ -121,8 +124,8 @@ const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
   shadow-gray-500 rounded`;
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-// TODO: reduce this once everything is using React
 const rootBackground = 'bg-white dark:bg-neutral-900';
+// TODO: reduce this once everything is using React. Cane move things into tailwind.config.js
 export const className = {
   rootBackground,
   hasAltBackground,
@@ -161,7 +164,32 @@ export const className = {
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
   formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
+  dataEntryAdd: 'text-green-700 print:hidden',
+  dataEntryView: 'text-orange-400 print:hidden',
+  dataEntryEdit: 'text-orange-400 print:hidden',
+  dataEntryClone: 'text-amber-700 print:hidden',
+  dataEntrySearch: 'text-blue-500 print:hidden',
+  dataEntryDelete: 'text-red-700 print:hidden',
+  dataEntryVisit: 'text-blue-700 print:hidden',
 } as const;
+
+const dataEntryButton =
+  (className: string, title: string, icon: keyof typeof icons) =>
+  (
+    props: Omit<
+      TagProps<'button'>,
+      'type' | 'title' | 'aria-label' | 'children'
+    >
+  ) =>
+    (
+      <Button.Icon
+        className={`${className} ${props.className ?? ''}`}
+        title={title}
+        aria-label={title}
+        icon={icon}
+        {...props}
+      />
+    );
 
 /**
  * Components for Specify Form
@@ -213,11 +241,11 @@ export const DataEntry = {
         visibility: visible ? undefined : 'hidden',
         gridColumn:
           colSpan === 1 ? undefined : `span ${colSpan} / span ${colSpan}`,
-        alignItems:
+        justifyContent:
           align === 'right'
             ? 'flex-end'
             : align === 'center'
-            ? 'flex-center'
+            ? 'center'
             : undefined,
         ...props.style,
       },
@@ -233,6 +261,38 @@ export const DataEntry = {
     'gap-x-2 flex font-bold border-b border-gray-500 pt-5'
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
+  Add: dataEntryButton(className.dataEntryAdd, commonText('add'), 'plus'),
+  View: dataEntryButton(className.dataEntryView, commonText('view'), 'eye'),
+  Edit: dataEntryButton(className.dataEntryEdit, commonText('edit'), 'pencil'),
+  Clone: dataEntryButton(
+    className.dataEntryClone,
+    formsText('clone'),
+    'clipboard'
+  ),
+  Search: dataEntryButton(
+    className.dataEntrySearch,
+    commonText('search'),
+    'search'
+  ),
+  Delete: dataEntryButton(
+    className.dataEntryDelete,
+    commonText('delete'),
+    'minus'
+  ),
+  Visit({
+    resource,
+  }: {
+    readonly resource: SpecifyResource<AnySchema> | undefined;
+  }) {
+    return typeof resource === 'object' && !resource.isNew() ? (
+      <Link.NewTab
+        href={resource.viewUrl()}
+        aria-label={formsText('visit')}
+        title={formsText('visit')}
+        className={className.dataEntryVisit}
+      />
+    ) : null;
+  },
 };
 export const Label = {
   Generic: wrap('Label.Generic', 'label', className.label),

@@ -20,7 +20,6 @@ import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { Contexts } from './contexts';
 import { f } from '../functools';
 
-// TODO: remove collections you don't have permission to from the list
 function ChooseCollection({
   data,
   nextUrl,

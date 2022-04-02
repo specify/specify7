@@ -162,7 +162,7 @@ function Results(): JSX.Element {
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
                 );
                 if (tableResult.definition.link !== null) {
-                  // TODO: test this
+                  // FIXME: test this
                   const linkFieldSpec = fieldSpecs.pop();
                   idFieldIndex = fieldSpecs.length + 1;
                   const relationship = defined(linkFieldSpec?.getField());

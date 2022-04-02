@@ -71,6 +71,7 @@ export const defaultRecordFilterFunction: FilterFunction = (
   resource.get('isCurrent');
 
 // TODO: make this type safe
+// FIXME: update this to check for read permissions
 async function recursiveResourceResolve(
   resource: any,
   mappingPath: MappingPath,

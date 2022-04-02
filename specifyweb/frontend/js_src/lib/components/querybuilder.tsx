@@ -41,13 +41,13 @@ import { hasPermission, hasToolPermission } from '../permissions';
 
 /*
  * Query Results:
- * TODO: query results editing & deleting & view in new tab
- * TODO: creating record set out of a subset of results
- * TODO: make query scrollable even while viewing the resutls
+ * FIXMe: query results editing & deleting & view in new tab
+ * FIXME: creating record set out of a subset of results
+ * FIXME: make query scrollable even while viewing the resutls
  * To Test:
- * TODO: test "any" filters in sp6 and sp7
- * TODO: test query reports
- * TODO: test using sp7 queries in sp6 and vice versa
+ * FIXME: test "any" filters in sp6 and sp7
+ * FIXME: test query reports
+ * FIXME: test using sp7 queries in sp6 and vice versa
  */
 
 export function QueryBuilder({

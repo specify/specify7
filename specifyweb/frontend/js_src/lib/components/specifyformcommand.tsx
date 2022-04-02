@@ -141,15 +141,15 @@ export function UiCommand({
   readonly label: string | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
 }): JSX.Element | null {
-  // TODO: call the component rather than function
+  const Command = commandRenderers[
+    commandDefinition.type
+  ] as typeof commandRenderers['GenerateLabel'];
   return (
-    commandRenderers[
-      commandDefinition.type
-    ] as typeof commandRenderers['GenerateLabel']
-  )({
-    resource,
-    id,
-    label,
-    commandDefinition: commandDefinition as UiCommands['GenerateLabel'],
-  });
+    <Command
+      resource={resource}
+      id={id}
+      label={label}
+      commandDefinition={commandDefinition as UiCommands['GenerateLabel']}
+    />
+  );
 }

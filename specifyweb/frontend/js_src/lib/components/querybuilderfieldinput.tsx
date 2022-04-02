@@ -255,9 +255,9 @@ function In({
 }
 
 /*
- * TODO: test all combination of data types and filters
+ * FIXME: test all combination of data types and filters
  *       (including pick lists)
- * TODO: test "any" and find out use of don't care
+ * FIXME: test "any" and find out use of don't care
  */
 export const queryFieldFilters: RR<
   QueryFieldFilter,
@@ -478,7 +478,7 @@ export function QueryLineFilter({
     const valueLength = filter.type === 'between' ? 2 : 1;
     if (filter.type !== 'in' && previousFilter.current === 'in')
       handleChange(
-        filter.startValue.split(',').slice(0, valueLength).join(',')
+        filter.startValue.split(',').slice(0, valueLength).join(', ')
       );
     previousFilter.current = filter.type;
   }, [handleChange, filter]);

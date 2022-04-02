@@ -46,7 +46,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
 
 export const initialContext = Promise.all([
   /*
-   * TODO: cache preferences and permissions
+   * FIXME: cache preferences
    * Fetch user preferences (NOT CACHED)
    */
   import('./preferencesutils'),

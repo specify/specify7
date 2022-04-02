@@ -128,28 +128,34 @@ function SecurityPanel(): JSX.Element | null {
             </Button.LikeLink>
           </section>
           <section>
-            {/* TODO: Remove collections you don't have access to from the sidebar */}
             <H3>{adminText('collections')}</H3>
             <ul>
-              {Object.values(data.collections).map((collection) => (
-                <li key={collection.cid}>
-                  <Button.LikeLink
-                    aria-pressed={
-                      state.type === 'CollectionState' &&
-                      state.collectionId === collection.id
-                    }
-                    onClick={(): void =>
-                      setState({
-                        type: 'CollectionState',
-                        collectionId: collection.id,
-                        initialRole: undefined,
-                      })
-                    }
-                  >
-                    {collection.get('collectionName')}
-                  </Button.LikeLink>
-                </li>
-              ))}
+              {Object.values(data.collections)
+                .filter((collection) =>
+                  // Only show collections you have access to
+                  userInformation.availableCollections.some(
+                    ([id]) => id === collection.id
+                  )
+                )
+                .map((collection) => (
+                  <li key={collection.cid}>
+                    <Button.LikeLink
+                      aria-pressed={
+                        state.type === 'CollectionState' &&
+                        state.collectionId === collection.id
+                      }
+                      onClick={(): void =>
+                        setState({
+                          type: 'CollectionState',
+                          collectionId: collection.id,
+                          initialRole: undefined,
+                        })
+                      }
+                    >
+                      {collection.get('collectionName')}
+                    </Button.LikeLink>
+                  </li>
+                ))}
             </ul>
           </section>
         </aside>

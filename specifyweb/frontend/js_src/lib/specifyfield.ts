@@ -159,10 +159,7 @@ abstract class FieldBase {
     };
   }
 
-  /*
-   * TODO: make sure this is displayed on forms in mouseovers
-   * Returns the description of the field from the schema config.
-   */
+  // Returns the description of the field from the schema config.
   public getLocalizedDesc(): string | undefined {
     const description = this.localization.desc;
     return description === null || typeof description === 'undefined'

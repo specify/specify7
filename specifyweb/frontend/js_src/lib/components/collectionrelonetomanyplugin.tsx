@@ -7,21 +7,21 @@ import type {
   CollectionRelationship,
 } from '../datamodel';
 import { format } from '../dataobjformatters';
+import { f } from '../functools';
+import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 // TODO: eliminate this type of imports
 import * as navigation from '../navigation';
+import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../functools';
-import { Button, className, Link } from './basic';
+import { Button, className, DataEntry, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
-import { removeItem } from '../helpers';
-import { hasTablePermission } from '../permissions';
 
 type Data = {
   readonly collectionObjects: RA<{
@@ -238,10 +238,7 @@ export function CollectionOneToManyPlugin({
         </tbody>
       </table>
       {hasTablePermission('CollectionRelationship', 'create') && (
-        <Button.Icon
-          title={commonText('add')}
-          aria-label={commonText('add')}
-          icon="plus"
+        <DataEntry.Add
           aria-pressed={state.type === 'SearchState'}
           onClick={(): void =>
             setState(

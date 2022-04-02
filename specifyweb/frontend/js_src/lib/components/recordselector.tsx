@@ -9,53 +9,10 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { clamp } from '../helpers';
-import { Button, className, Input, Link } from './basic';
+import { Button, className, Input } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { LoadingContext } from './contexts';
-
-export function RecordSelectorButtons({
-  visitResource,
-  onAdd: handleAdd,
-  onDelete: handleDelete,
-}: {
-  readonly onAdd: (() => void) | undefined | false;
-  readonly onDelete: (() => void) | undefined | false;
-  readonly visitResource: SpecifyResource<AnySchema> | undefined;
-}): JSX.Element {
-  return (
-    <>
-      {typeof visitResource === 'object' && !visitResource.isNew() && (
-        <Link.NewTab
-          href={visitResource.viewUrl()}
-          aria-label={formsText('visit')}
-          title={formsText('visit')}
-          className="text-blue-500"
-        />
-      )}
-      {handleAdd !== false && (
-        <Button.Icon
-          icon="plus"
-          className="text-green-700"
-          aria-label={commonText('add')}
-          title={commonText('add')}
-          onClick={handleAdd}
-          disabled={typeof handleAdd === 'undefined'}
-        />
-      )}
-      {handleDelete !== false && (
-        <Button.Icon
-          icon="minus"
-          className="text-red-700"
-          aria-label={commonText('delete')}
-          title={commonText('delete')}
-          onClick={handleDelete}
-          disabled={typeof handleDelete === 'undefined'}
-        />
-      )}
-    </>
-  );
-}
 
 export function Slider({
   value,

@@ -22,7 +22,6 @@ import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 
-// FIXME: UI for superuser
 export function InstitutionView({
   institution,
   users,
@@ -86,7 +85,6 @@ export function InstitutionView({
   /*
    * TODO: securityCollection.tsx and securityInstitution.tsx are very similar
    *   probably could merge them
-   * TODO: import/export for library roles
    */
   return (
     <Container.Base className="flex-1 overflow-y-auto">

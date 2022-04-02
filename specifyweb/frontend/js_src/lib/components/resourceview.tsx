@@ -14,7 +14,7 @@ import type { FormMode } from '../parseform';
 import { hasPermission, hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
-import { Button, Container, DataEntry, Form, Link } from './basic';
+import { Button, Container, DataEntry, Form } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
@@ -343,17 +343,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
           return (
             <Dialog
               header={titleOverride ?? title}
+              icon="none"
               modal={dialog === 'modal'}
               headerButtons={
                 <>
-                  {typeof resource === 'object' && !resource.isNew() && (
-                    <Link.NewTab
-                      href={resource.viewUrl()}
-                      aria-label={formsText('visit')}
-                      title={formsText('visit')}
-                      className="text-blue-500"
-                    />
-                  )}
+                  <DataEntry.Visit resource={resource} />
                   {headerButtons}
                   {specifyNetworkBadge}
                 </>

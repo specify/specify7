@@ -221,7 +221,7 @@ function AddChild<SCHEMA extends AnyTree>({
           onSaved={(addAnother): void => {
             if (addAnother) {
               handleClose();
-              // TODO: simplify this
+              // FIXME: simplify this
               setTimeout(handleOpen, 0);
               hasChanged.current = true;
             } else handleRefresh();

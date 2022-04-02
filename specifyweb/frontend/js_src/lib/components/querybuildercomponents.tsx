@@ -124,7 +124,6 @@ export function SaveQueryButtons({
   );
 }
 
-// TODO: allow selecting specific fields for record set creation
 export function MakeRecordSetButton({
   baseTableName,
   queryResource,

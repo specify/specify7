@@ -108,8 +108,8 @@ const processCellType: {
     const field = model?.getField(rawFieldName ?? '');
     const fieldDefinition = parseFormField(cell, properties);
     /*
-     * Some plugins overwrite the fieldName. In such cases, fieldName is
-     * commonly "this"
+     * Some plugins overwrite the fieldName. In such cases, the [name] attribute
+     * is commonly "this"
      */
     const fieldName =
       fieldDefinition.type === 'Plugin' &&

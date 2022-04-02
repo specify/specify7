@@ -3,6 +3,7 @@ import type { State } from 'typesafe-reducer';
 
 import collectionapi from '../collectionapi';
 import type { AnySchema } from '../datamodelutils';
+import { replaceKey, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -14,13 +15,14 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry, H3, Link } from './basic';
+import { Button, DataEntry, H3 } from './basic';
+import type { SortConfig } from './common';
+import { SortIndicator } from './common';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
-import { replaceKey } from '../helpers';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -39,14 +41,14 @@ const cellToLabel = (
 export function FormTable<SCHEMA extends AnySchema>({
   relationship,
   isDependent,
-  resources,
+  resources: unsortedResources,
   onAdd: handleAdd,
   onDelete: handleDelete,
   mode,
   viewName = relationship.relatedModel.view,
   dialog,
   onClose: handleClose,
-  sortField,
+  sortField = 'id',
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -59,6 +61,17 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly sortField: string | undefined;
 }): JSX.Element {
+  const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
+    sortField: sortField.startsWith('-') ? sortField.slice(1) : sortField,
+    ascending: !sortField.startsWith('-'),
+  });
+  const resources = Array.from(unsortedResources).sort(
+    sortFunction(
+      (resource) => resource.get(sortConfig.sortField),
+      !sortConfig.ascending
+    )
+  );
+
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
   const header = `${relationship.label} (${resources.length})`;
@@ -101,13 +114,30 @@ export function FormTable<SCHEMA extends AnySchema>({
                 role="columnheader"
                 key={index}
                 colSpan={cell.colSpan}
-                align={cell.align}
+                align="center"
                 title={title}
                 visible={true}
                 ariaLabel={undefined}
-                // TODO: add column sorting option
               >
-                {text}
+                {(cell.type === 'Field' || cell.type === 'SubView') &&
+                typeof cell.fieldName === 'string' ? (
+                  <Button.LikeLink
+                    onClick={(): void =>
+                      setSortConfig({
+                        sortField: defined(cell.fieldName),
+                        ascending: !sortConfig.ascending,
+                      })
+                    }
+                  >
+                    {text}
+                    <SortIndicator
+                      fieldName={cell.fieldName}
+                      sortConfig={sortConfig}
+                    />
+                  </Button.LikeLink>
+                ) : (
+                  text
+                )}
               </DataEntry.Cell>
             );
           })}
@@ -197,14 +227,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   )}
                   {!isDependent && (
                     <div role="cell">
-                      {!resource.isNew() && (
-                        <Link.NewTab
-                          className="text-blue-500"
-                          title={formsText('visit')}
-                          aria-label={formsText('visit')}
-                          href={resource.viewUrl()}
-                        />
-                      )}
+                      <DataEntry.Visit resource={resource} />
                     </div>
                   )}
                 </>
@@ -255,27 +278,24 @@ export function FormTable<SCHEMA extends AnySchema>({
     !disableAdding &&
     hasTablePermission(
       relationship.relatedModel.name,
-      isDependent ? 'read' : 'create'
+      isDependent ? 'create' : 'read'
     ) ? (
-      <Button.Icon
+      <DataEntry.Add
         onClick={
           disableAdding
             ? undefined
             : isDependent
-            ? (): void =>
-                setState({
-                  type: 'SearchState',
-                  resource: new relationship.relatedModel.Resource(),
-                })
-            : (): void => {
+            ? (): void => {
                 const resource = new relationship.relatedModel.Resource();
                 setExpandedRecords({ ...isExpanded, [resource.cid]: true });
                 handleAdd?.(resource);
               }
+            : (): void =>
+                setState({
+                  type: 'SearchState',
+                  resource: new relationship.relatedModel.Resource(),
+                })
         }
-        title={commonText('add')}
-        aria-label={commonText('add')}
-        icon="plus"
       />
     ) : undefined;
   return dialog === false ? (
@@ -314,7 +334,7 @@ export function FormTableCollection({
     | ((resource: SpecifyResource<AnySchema>) => void)
     | undefined;
 }): JSX.Element {
-  const [records, setRecords] = React.useState(collection.models);
+  const [records, setRecords] = React.useState(Array.from(collection.models));
   const field = defined(collection.field?.getReverse());
   const isDependent = collection instanceof collectionapi.Dependent;
   const isToOne = !relationshipIsToMany(field);
@@ -329,13 +349,13 @@ export function FormTableCollection({
           ? undefined
           : (resource): void => {
               collection.add(resource);
-              setRecords(collection.models);
+              setRecords(Array.from(collection.models));
               handleAdd?.(resource);
             }
       }
       onDelete={(resource): void => {
         collection.remove(resource);
-        setRecords(collection.models);
+        setRecords(Array.from(collection.models));
         handleDelete?.(resource);
       }}
       {...props}

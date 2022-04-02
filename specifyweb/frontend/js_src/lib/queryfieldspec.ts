@@ -1,5 +1,5 @@
 import type { MappingPath } from './components/wbplanviewmapper';
-import { insertItem } from './helpers';
+import { capitalize, insertItem, toLowerCase } from './helpers';
 import type { SpQueryField } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
@@ -10,7 +10,6 @@ import type { RA } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { resolveParser } from './uiparse';
-import { capitalize, toLowerCase } from './helpers';
 import {
   anyTreeRank,
   formatPartialField,
@@ -39,7 +38,7 @@ function extractDatePart(fieldName: string): {
   return Array.isArray(match)
     ? {
         fieldName: match[1],
-        datePart: match[2].replace('Numeric', '') as DatePart,
+        datePart: match[2].replace('Numeric', '').toLowerCase() as DatePart,
       }
     : {
         fieldName,

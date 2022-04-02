@@ -2,6 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import commonText from '../localization/common';
 import {
   filterFormatters,
@@ -11,7 +12,6 @@ import {
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA, RR } from '../types';
-import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import {
   Button,
   className,
@@ -525,6 +525,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   value: items[itemId].weblinkname,
                   values: { '': webLinks },
                 },
+                // TODO: replace with a Query Combo Box?
                 pickList: {
                   label: commonText('pickList'),
                   value: items[itemId].picklistname,
@@ -539,12 +540,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           icon="pencil"
                           title={commonText('edit')}
                           aria-label={commonText('edit')}
+                          className={className.dataEntryEdit}
                           href={`/specify/view/picklist/${currentPickListId}/`}
                         />
                       )}
                       <Link.Icon
                         icon="plus"
                         href="/specify/view/picklist/new/"
+                        className={className.dataEntryAdd}
                         title={commonText('add')}
                         aria-label={commonText('add')}
                       />

@@ -6,7 +6,6 @@
 import { ajax, Http } from './ajax';
 import { f } from './functools';
 import { cachableUrl } from './initialcontext';
-import { localizeLabel } from './localizeform';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import {
   getAttribute,
@@ -39,7 +38,7 @@ function parseFormTableDefinition(
   viewDefinition: Element,
   model: SpecifyModel | undefined
 ): ParsedFormDefinition {
-  const { columns, rows } = parseFormDefinition(viewDefinition, model);
+  const { rows } = parseFormDefinition(viewDefinition, model);
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -51,23 +50,32 @@ function parseFormTableDefinition(
         )
     )
   );
+  const row = rows
+    .flat()
+    // FormTable consists of Fields and SubViews only
+    .filter(({ type }) => type === 'Field' || type === 'SubView')
+    .map((cell) => ({
+      ...cell,
+      // Reduce colSpan to 1 for all cells
+      colSpan: 1,
+      // Make sure SubViews are rendered as buttons
+      ...(cell.type === 'SubView' ? { isButton: true } : {}),
+      // Set ariaLabel for all cells (would be used in formTable headers)
+      ariaLabel:
+        cell.ariaLabel ??
+        labelsForCells[cell.id ?? '']?.text ??
+        (cell.type === 'Field' || cell.type === 'SubView'
+          ? cell.fieldName
+          : undefined) ??
+        cell.id,
+      // Remove labels from checkboxes (as labels would be in the table header)
+      ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
+        ? { label: undefined }
+        : {}),
+    }));
   return {
-    columns: columns.map(f.undefined),
-    rows: [
-      rows
-        .flat()
-        // FormTable consists of Fields and SubViews only
-        .filter(({ type }) => type === 'Field' || type === 'SubView')
-        .map((cell) => ({
-          ...cell,
-          // Reduce colSpan to 1 for all cells
-          colSpan: 1,
-          // Make sure SubViews are rendered as buttons
-          ...(cell.type === 'SubView' ? { isButton: true } : {}),
-          // Set ariaLabel for all cells (would be used in formTable headers)
-          ariaLabel: cell.ariaLabel ?? labelsForCells[cell.id ?? '']?.text,
-        })),
-    ],
+    columns: row.map(f.undefined),
+    rows: [row],
   };
 }
 
@@ -144,7 +152,17 @@ function postProcessRows(
       )
     )
   );
-  // TODO: if checkbox cell has a label, don't draw a label in checkbox
+  const initialLabelsForCells = Object.fromEntries(
+    filterArray(
+      rows
+        .flat()
+        .map((cell) =>
+          cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+            ? [cell.labelForCellId, cell]
+            : undefined
+        )
+    )
+  );
   const newRows = rows.map<RA<FormCellDefinition>>((row, index) => {
     const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
     if (totalColumns > columns.length)
@@ -187,14 +205,9 @@ function postProcessRows(
            */
           cell.type === 'Label' &&
           typeof cell.labelForCellId === 'undefined' &&
-          typeof row[index + 1]?.id === 'number' &&
-          rows.every((row) =>
-            row.every(
-              (cell) =>
-                cell.type !== 'Label' ||
-                cell.labelForCellId !== row[index + 1].id
-            )
-          )
+          typeof row[index + 1]?.id === 'string' &&
+          typeof initialLabelsForCells[defined(row[index + 1].id)] ===
+            'undefined'
             ? {
                 ...cell,
                 labelForCellId: row[index + 1].id,
@@ -209,7 +222,19 @@ function postProcessRows(
                 text:
                   fieldsById[cell.labelForCellId]?.labelOverride ??
                   cell.text ??
-                  fieldsById[cell.labelForCellId]?.altLabel ??
+                  fieldsById[cell.labelForCellId]?.altLabel,
+                // Get label fieldName from its field
+                fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+              }
+            : cell
+        )
+        .map((cell) =>
+          cell.type === 'Label' && typeof model === 'object'
+            ? f.var(model.getField(cell.fieldName ?? ''), (field) => ({
+                ...cell,
+                text:
+                  cell.text ??
+                  field?.label ??
                   /*
                    * Default Accession view doesn't have a label for
                    * Division ComboBox for some reason
@@ -220,25 +245,18 @@ function postProcessRows(
                         'Division'
                       )
                     : undefined) ??
-                  cell.labelForCellId,
-                // Get label fieldName from its field
-                fieldName: fieldsById[cell.labelForCellId]?.fieldName,
-              }
-            : cell
-        )
-        .map((cell) =>
-          cell.type === 'Label' && typeof model === 'object'
-            ? {
-                ...cell,
-                ...localizeLabel({
-                  text: cell.text,
-                  id: cell.id,
-                  model,
-                  fieldName: cell.fieldName,
-                }),
-              }
+                  cell.fieldName ??
+                  cell.id ??
+                  cell.labelForCellId ??
+                  '',
+                title: field?.getLocalizedDesc(),
+              }))
             : cell
         ),
+      /**
+       * Add a necessary number of blank cells at the end so that the
+       * grid is not off when some row has fewer columns than in the definition.
+       */
       columns.length - totalColumns > 0
         ? {
             type: 'Blank',
@@ -280,12 +298,32 @@ function postProcessRows(
             : cell
           : {
               ...cell,
+              ...(cell.type === 'Field' &&
+              cell.fieldDefinition.type === 'Checkbox'
+                ? {
+                    fieldDefinition: {
+                      ...cell.fieldDefinition,
+                      /*
+                       * If checkbox does not have a label in a separate cell,
+                       * Get its label from the fieldName
+                       */
+                      label:
+                        cell.fieldDefinition.label ??
+                        model?.getField(cell.fieldName ?? '')?.label ??
+                        cell.ariaLabel,
+                    },
+                  }
+                : {}),
               // If cell has a fieldName, but no associated label, set ariaLabel
               ariaLabel:
-                cell.ariaLabel ??
-                (cell.type === 'Field' || cell.type === 'SubView'
-                  ? model?.getField(cell.fieldName ?? '')?.label
-                  : undefined),
+                // Don't add aria-label to checkboxes as they would already have a label
+                cell.type === 'Field' &&
+                cell.fieldDefinition.type === 'Checkbox'
+                  ? undefined
+                  : cell.ariaLabel ??
+                    (cell.type === 'Field' || cell.type === 'SubView'
+                      ? model?.getField(cell.fieldName ?? '')?.label
+                      : undefined),
             }
       )
     ),
