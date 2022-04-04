@@ -1746,6 +1746,12 @@ const commonText = createDictionary({
     ca: 'NO PERMISSION',
     'es-es': 'NO PERMISSION',
   },
+  scale: {
+    'en-us': 'Scale',
+    'ru-ru': 'Scale',
+    ca: 'Scale',
+    'es-es': 'Scale',
+  },
 });
 
 export default commonText;

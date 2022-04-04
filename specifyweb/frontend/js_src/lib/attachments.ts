@@ -24,7 +24,16 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   '/context/attachment_settings.json',
   'application/json'
 ).then((data) => {
-  if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  settings = {
+    collection: 'sp7demofish',
+    token_required_for_get: false,
+    read: 'https://demo-assets.specifycloud.org/fileget',
+    write: 'https://demo-assets.specifycloud.org/fileupload',
+    delete: 'https://demo-assets.specifycloud.org/filedelete',
+    getmetadata: 'https://demo-assets.specifycloud.org/getmetadata',
+    testkey: 'https://demo-assets.specifycloud.org/testkey',
+  };
+  // if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';

@@ -17,7 +17,7 @@ import { setCurrentView } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
-import { Button, Container, H2, Label, Link, Select } from './basic';
+import { Button, Container, H2, Input, Label, Link, Select } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
@@ -79,7 +79,7 @@ export function AttachmentCell({
   const loading = React.useContext(LoadingContext);
 
   return (
-    <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)] h-min">
+    <div className="relative">
       {typeof attachment === 'object' && (
         <>
           {typeof handleViewRecord === 'function' &&
@@ -174,6 +174,9 @@ export function AttachmentCell({
 }
 
 const preFetchDistance = 200;
+const defaultScale = 10;
+const minScale = 4;
+const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
@@ -239,12 +242,15 @@ export function AttachmentsView(): JSX.Element {
     false
   );
 
-  const [attachments, setAttachments] = React.useState<
-    RA<SpecifyResource<Attachment> | undefined>
-  >([]);
+  const [scale = defaultScale, setScale] = useCachedState({
+    bucketName: 'attachments',
+    cacheName: 'scale',
+    bucketType: 'localStorage',
+    defaultValue: defaultScale,
+    staleWhileRefresh: false,
+  });
 
   const collection = React.useMemo(() => {
-    setAttachments([]);
     return new schema.models.Attachment.LazyCollection({
       domainfilter: true,
       filters: {
@@ -259,41 +265,6 @@ export function AttachmentsView(): JSX.Element {
       },
     }) as Collection<Attachment>;
   }, [order, filter]);
-
-  const containerRef = React.useRef<HTMLElement | null>(null);
-
-  const [isComplete, handleIsComplete] = useBooleanState(false);
-  const fillPage = React.useCallback(
-    async () =>
-      // Fetch more attachments when within 200px of the bottom
-      containerRef.current !== null &&
-      !collection.isComplete() &&
-      containerRef.current.scrollTop + preFetchDistance >
-        containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? collection
-            .fetchPromise()
-            .then(({ models }) => setAttachments(Array.from(models)))
-            .then(() =>
-              collection.isComplete() ? handleIsComplete() : undefined
-            )
-            .catch(crash)
-        : undefined,
-    [collection, handleIsComplete]
-  );
-
-  React.useEffect(
-    () =>
-      // Fetch attachments while scroll bar is not visible
-      void (containerRef.current?.scrollHeight ===
-      containerRef.current?.clientHeight
-        ? fillPage().catch(crash)
-        : undefined),
-    [fillPage, attachments]
-  );
-
-  const [viewRecord, setViewRecord] = React.useState<
-    SpecifyResource<AnySchema> | undefined
-  >(undefined);
 
   return (
     <Container.Full>
@@ -380,10 +351,80 @@ export function AttachmentsView(): JSX.Element {
             </optgroup>
           </Select>
         </Label.ForCheckbox>
+        <span className="flex-1 -ml-2" />
+        <Label.ForCheckbox>
+          {commonText('scale')}
+          <Input.Generic
+            type="range"
+            min={minScale}
+            max={maxScale}
+            value={scale}
+            onValueChange={(value) => setScale(Number.parseInt(value))}
+          />
+        </Label.ForCheckbox>
       </header>
+      <Gallery collection={collection} scale={scale} />
+    </Container.Full>
+  );
+}
+
+function Gallery({
+  collection,
+  scale,
+}: {
+  readonly collection: Collection<AnySchema>;
+  readonly scale: number;
+}): JSX.Element {
+  const [attachments, setAttachments] = React.useState<
+    RA<SpecifyResource<Attachment> | undefined>
+  >([]);
+  // Reset attachments when collection changes
+  React.useEffect(() => setAttachments([]), [collection]);
+
+  const containerRef = React.useRef<HTMLElement | null>(null);
+
+  const [isComplete, handleIsComplete] = useBooleanState(false);
+  const fillPage = React.useCallback(
+    async () =>
+      // Fetch more attachments when within 200px of the bottom
+      containerRef.current !== null &&
+      !collection.isComplete() &&
+      containerRef.current.scrollTop + preFetchDistance >
+        containerRef.current.scrollHeight - containerRef.current.clientHeight
+        ? collection
+            .fetchPromise()
+            .then(({ models }) => setAttachments(Array.from(models)))
+            .then(() =>
+              collection.isComplete() ? handleIsComplete() : undefined
+            )
+            .catch(crash)
+        : undefined,
+    [collection, handleIsComplete]
+  );
+
+  React.useEffect(
+    () =>
+      // Fetch attachments while scroll bar is not visible
+      void (containerRef.current?.scrollHeight ===
+      containerRef.current?.clientHeight
+        ? fillPage().catch(crash)
+        : undefined),
+    [fillPage, attachments]
+  );
+
+  const [viewRecord, setViewRecord] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
+  return (
+    <>
       <Container.Base
         className="flex-1 !w-max-none overflow-y-auto gap-4 grid items-center
-          grid-cols-[repeat(auto-fit,minmax(150px,1fr))]"
+          grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]"
+        style={
+          {
+            '--scale': `${scale}rem`,
+          } as React.CSSProperties
+        }
         forwardRef={containerRef}
         onScroll={collection.isComplete() ? undefined : fillPage}
       >
@@ -410,7 +451,7 @@ export function AttachmentsView(): JSX.Element {
           mode="edit"
         />
       )}
-    </Container.Full>
+    </>
   );
 }
 

@@ -70,5 +70,6 @@ export type CacheDefinitions = {
       | State<'all'>
       | State<'unused'>
       | State<'byTable', { readonly tableName: keyof Tables }>;
+    readonly scale: number;
   };
 };
