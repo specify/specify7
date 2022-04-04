@@ -164,7 +164,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             idtoken=ext_user,
         )
         del request.session['invite_token']
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return http.HttpResponseRedirect('/accounts/choose_collection/')
 
     try:
@@ -189,7 +189,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     spuserexternalid.idtoken = ext_user
     spuserexternalid.save()
 
-    login(request, spuserexternalid.specifyuser)
+    login(request, spuserexternalid.specifyuser, backend='django.contrib.auth.backends.ModelBackend')
     return http.HttpResponseRedirect('/specify')
 
 @require_GET
@@ -316,7 +316,7 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
 
     user = authenticate(token=request.GET['token'])
     if user is not None:
-        login(request, user)
+        login(request, user, backend='specifyweb.specify.support_login.SupportLoginBackend')
         return http.HttpResponseRedirect('/')
     else:
         return http.HttpResponseForbidden()
