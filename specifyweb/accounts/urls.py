@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 
 from . import views
+from specifyweb.permissions.permissions import skip_collection_access_check
 
 
 urlpatterns = [
@@ -18,12 +19,24 @@ urlpatterns = [
     # OpenId Connect callback endpoint:
     path('oic_callback/', views.oic_callback),
 
-    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html', next_page='/accounts/login/')),
-    path('password_change/', auth_views.PasswordChangeView.as_view(
-        template_name='password_change.html', success_url='/')),
+    path(
+        'logout/',
+        skip_collection_access_check(auth_views.LogoutView.as_view(template_name='logout.html', next_page='/accounts/login/'))
+    ),
+
+    path(
+        'password_change/',
+        skip_collection_access_check(
+            auth_views.PasswordChangeView.as_view(
+                template_name='password_change.html', success_url='/'))
+    ),
+
+    path(
+        'choose_collection/',
+        skip_collection_access_check(views.choose_collection)
+    ),
 
     path('support_login/', views.support_login),
-    path('choose_collection/', views.choose_collection),
 
     # API endpoint to generate an invite link:
     path('invite_link/<int:userid>/', views.invite_link),
