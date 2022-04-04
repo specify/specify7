@@ -9,9 +9,9 @@ urlpatterns = [
     # the main business data API
     url(r'^specify_schema/openapi.json$', schema.openapi),
     url(r'^specify_schema/(?P<model>\w+)/$', schema.view),
-    url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource),
-    url(r'^specify/(?P<model>\w+)/$', views.collection),
-    url(r'^specify_rows/(?P<model>\w+)/$', views.rows),
+    url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
+    url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
+    url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
 
     url(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 
@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^test_error/', views.raise_error),
 
     # special tree apis
-    url(r'^specify_tree/(?P<tree>\w+)/', include([
+    url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
         url(r'^(?P<id>\d+)/merge/$', tree_views.merge),
         url(r'^(?P<id>\d+)/move/$', tree_views.move),

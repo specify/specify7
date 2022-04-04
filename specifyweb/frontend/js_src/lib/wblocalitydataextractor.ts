@@ -1,5 +1,12 @@
-import type { IR, R, RA } from './components/wbplanview';
+/**
+ * Extract data from locality and related columns in a Data Set in a format
+ * that can be displayed in the pop-up bubbles in Leaflet
+ *
+ * @module
+ */
+
 import type { MappingPath } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
@@ -9,6 +16,8 @@ import {
   getField,
   getLocalityData,
 } from './leafletutils';
+import type { IR, R, RA } from './types';
+import { filterArray } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
   findSubArray,
@@ -18,16 +27,16 @@ import {
 } from './wbplanviewmappinghelper';
 
 const addBaseTableName = (
-  baseTableName: string,
-  arrayOfMappings: RA<SplitMappingPath>
+  baseTableName: keyof Tables,
+  splitMappingPaths: RA<SplitMappingPath>
 ): RA<SplitMappingPath> =>
-  arrayOfMappings.map(({ mappingPath, ...rest }) => ({
+  splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
     mappingPath: [baseTableName, ...mappingPath],
   }));
 
 const matchLocalityPinFields = (
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<
   LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
 > =>
@@ -37,8 +46,8 @@ const matchLocalityPinFields = (
       pathToRelationship,
       matchedPathsToRelationship: Array.from(
         new Set(
-          arrayOfMappings
-            .map(({ mappingPath, canonicalMappingPath }) => {
+          filterArray(
+            splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
               const subArrayPosition = findSubArray(
                 canonicalMappingPath,
                 pathToRelationship
@@ -47,10 +56,7 @@ const matchLocalityPinFields = (
                 ? undefined
                 : mappingPathToString(mappingPath.slice(0, subArrayPosition));
             })
-            .filter(
-              (mappingPath): mappingPath is string =>
-                typeof mappingPath === 'string'
-            )
+          )
         ),
         splitJoinedMappingPath
       ),
@@ -64,47 +70,45 @@ export type SplitMappingPathWithFieldName = SplitMappingPath & {
   readonly canonicalMappingPath: MappingPath;
 };
 
-const filterArrayOfMappings = (
+const filterSplitMappingPaths = (
   matchedLocalityGroups: RA<
     LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
   >,
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<SplitMappingPathWithFieldName> =>
-  matchedLocalityGroups
-    .flatMap(({ matchedPathsToRelationship, pathsToFields }) =>
-      matchedPathsToRelationship.flatMap((mappingPath) =>
-        pathsToFields.flatMap((pathToField) =>
-          arrayOfMappings
-            .filter(
-              (splitMappingPath) =>
-                mappingPathToString(splitMappingPath.canonicalMappingPath) ===
-                mappingPathToString([
-                  ...mappingPath.filter(
-                    (mappingPathPart) => mappingPathPart !== ''
-                  ),
-                  ...pathToField,
-                ])
-            )
-            .map((splitMappingPath) => ({
-              ...splitMappingPath,
-              fieldName: mappingPathToString(
-                splitMappingPath.mappingPath.slice(-pathToField.length)
-              ),
-            }))
+  filterArray(
+    matchedLocalityGroups.flatMap(
+      ({ matchedPathsToRelationship, pathsToFields }) =>
+        matchedPathsToRelationship.flatMap((mappingPath) =>
+          pathsToFields.flatMap((pathToField) =>
+            splitMappingPaths
+              .filter(
+                (splitMappingPath) =>
+                  mappingPathToString(splitMappingPath.canonicalMappingPath) ===
+                  mappingPathToString([
+                    ...mappingPath.filter(
+                      (mappingPathPart) => mappingPathPart !== ''
+                    ),
+                    ...pathToField,
+                  ])
+              )
+              .map((splitMappingPath) => ({
+                ...splitMappingPath,
+                fieldName: mappingPathToString(
+                  splitMappingPath.mappingPath.slice(-pathToField.length)
+                ),
+              }))
+          )
         )
-      )
     )
-    .filter(
-      (splitMappingPath): splitMappingPath is SplitMappingPathWithFieldName =>
-        typeof splitMappingPath !== 'undefined'
-    );
+  );
 
 function groupLocalityColumns(
-  arrayOfMappings: RA<SplitMappingPathWithFieldName>
+  splitMappingPaths: RA<SplitMappingPathWithFieldName>
 ): RA<IR<string>> {
   const groupedLocalityColumns: R<R<string>> = {};
   const globalLocalityColumns: R<string> = {};
-  arrayOfMappings.forEach(({ mappingPath, fieldName, headerName }) => {
+  splitMappingPaths.forEach(({ mappingPath, fieldName, headerName }) => {
     const indexOfLocality = mappingPath.indexOf('locality');
     if (indexOfLocality === -1) globalLocalityColumns[fieldName] = headerName;
     else {
@@ -131,13 +135,13 @@ const filterInvalidLocalityColumnGroups = (
   );
 
 const findLocalityColumns = (
-  arrayOfMappings: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths
 ): RA<IR<string>> =>
   filterInvalidLocalityColumnGroups(
     groupLocalityColumns(
-      filterArrayOfMappings(
-        matchLocalityPinFields(arrayOfMappings),
-        arrayOfMappings
+      filterSplitMappingPaths(
+        matchLocalityPinFields(splitMappingPaths),
+        splitMappingPaths
       )
     )
   );
@@ -160,20 +164,20 @@ type SplitMappingPaths = RA<
 >;
 
 const addCanonicalMappingPaths = (
-  arrayOfMappings: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>
 ): SplitMappingPaths =>
-  arrayOfMappings.map(({ mappingPath, ...rest }) => ({
+  splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
     mappingPath,
     canonicalMappingPath: getCanonicalMappingPath(mappingPath),
   }));
 
 export const findLocalityColumnsInDataSet = (
-  baseTableName: string,
-  arrayOfMappings: RA<SplitMappingPath>
+  baseTableName: keyof Tables,
+  splitMappingPaths: RA<SplitMappingPath>
 ): RA<IR<string>> =>
   findLocalityColumns(
-    addCanonicalMappingPaths(addBaseTableName(baseTableName, arrayOfMappings))
+    addCanonicalMappingPaths(addBaseTableName(baseTableName, splitMappingPaths))
   );
 
 export const getLocalitiesDataFromSpreadsheet = (
@@ -197,7 +201,7 @@ export const getLocalitiesDataFromSpreadsheet = (
       )
   );
 
-// Aggregate tree ranks into a single full name
+/** Aggregate tree ranks into a single full name */
 function reshapeLocalityData(localityData: LocalityData): LocalityData {
   const localityDataEntries = Object.entries(localityData)
     .map(([mappingPathString, field]) => ({
@@ -231,28 +235,23 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
   );
 
   return Object.fromEntries(
-    localityDataEntries
-      .reduce<[string, Field<string | number>][]>(
-        (filteredEntries, { mappingPath, field }, index) => {
+    filterArray(
+      localityDataEntries
+        .map(({ mappingPath, field }, index) => {
           const mappingPathString = mappingPathToString(mappingPath);
           const { treeRankLocation, groupName } = treeRanks[index];
           if (treeRankLocation === -1)
-            filteredEntries.push([mappingPathString, field]);
+            return [mappingPathString, field] as const;
           else if (
             treeRanks.findIndex(
               (treeRank) => treeRank.groupName === groupName
             ) === index
           )
-            filteredEntries.push([
-              mappingPathString,
-              aggregatedTreeRanks[groupName],
-            ]);
-
-          return filteredEntries;
-        },
-        []
-      )
-      .reverse()
+            return [mappingPathString, aggregatedTreeRanks[groupName]] as const;
+          else return undefined;
+        })
+        .reverse()
+    )
   );
 }
 

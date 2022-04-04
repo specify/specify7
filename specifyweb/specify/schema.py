@@ -2,8 +2,8 @@
 
 from django import http
 from django.conf import settings
-from django.views.decorators.http import require_GET
 from django.utils.translation import gettext as _
+from django.views.decorators.http import require_GET
 from typing import Dict, List, Tuple, Union
 
 from .datamodel import (
@@ -34,6 +34,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
                 href="https://www.leverege.com/blogpost/what-is-an-api"
                 rel="noreferrer nofollow"
                 target="_blank"
+                title="(opens in new tab)"
               >
                 A brief</a
               >
@@ -42,6 +43,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
                 href="https://blog.usejournal.com/part-1-gentle-introduction-to-apis-for-non-technical-people-what-is-it-fde4d97a3083"
                 rel="noreferrer nofollow"
                 target="_blank"
+                title="(opens in new tab)"
                 >a not-so-brief</a
               >
               introduction to APIs for non-programmers.
@@ -150,7 +152,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
                     "required": False,
                     "schema": {
                         "type": "string",
@@ -199,6 +201,39 @@ def generate_openapi_for_tables():
                     table.django_name: table_to_schema(table)
                     for table in datamodel.tables
                 },
+                "_permission_denied_error": {
+                    "type": "object",
+                    "properties": {
+                        "NoMatchingRuleException": {
+                            "description": "One or more permissions checks failed during the request due to no policy rule matching the requested actions.",
+                            "type": "array",
+                            "items": {
+                                "description": "The action(s) which failed the permissions check.",
+                                "type": "object",
+                                "properties": {
+                                    "action": {
+                                        "type": "string",
+                                        "description": "The specific action which was not allowed."
+                                    },
+                                    "resource": {
+                                        "type": "string",
+                                        "description": "The resource to which the action applied."
+                                    },
+                                    "collectionid": {
+                                        "type": "integer",
+                                        "description": "The collection within which the action was applied."
+                                    },
+                                    "userid": {
+                                        "type": "integer",
+                                        "description": "The user attempting the action."
+                                    },
+                                },
+                                "additionalProperties": False,
+                                "required": ["collectionid", "userid", "resource", "action"],
+                            }
+                        }
+                    }
+                },
                 "_collection_get": {
                     "type": "object",
                     "properties": {
@@ -213,7 +248,7 @@ def generate_openapi_for_tables():
                                 },
                                 "total_count": {
                                     "type": "number",
-                                    "description": "Total Number of records from this table. The count depends on the value of 'domainfilter' query parameter",
+                                    "description": "Total number of records from this table. The count depends on the value of 'domainfilter' query parameter",
                                 },
                             },
                         }
@@ -319,7 +354,14 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 "get": {
                     "tags": [table.django_name],
                     "summary": f"Query multiple records from the {table.django_name} table",
-                    "description": f"Query multiple records from the {table.django_name} table",
+                    "description": (
+                        f"Query multiple records from the {table.django_name} table<br>"
+                        f"Filterring is supported by providing field values as GET parameters<br>"
+                        f"Example: /api/specify/sometable/?field=value. Advanced filtering "
+                        f"options are also supported (e.g. ?numericfield__gte=4). More filters "
+                        f"are documented here: "
+                        f"https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1"
+                    ),
                     "parameters": [
                         {"$ref": "#/components/parameters/limit"},
                         {"$ref": "#/components/parameters/offset"},
@@ -353,6 +395,14 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                     },
                                 },
                             },
+                        },
+                        "403": {
+                            "description": "Permission denied",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/_permission_denied_error" }
+                                }
+                            }
                         },
                     },
                 },

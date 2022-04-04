@@ -1,90 +1,100 @@
-/*
+/**
+ * WbPlanView helpers for dealing with the Data Model
+ *
+ * @module
+ */
+
+import type { MappingPath } from './components/wbplanviewmapper';
+import { schema } from './schema';
+import type { Relationship } from './specifyfield';
+import type { R, RA } from './types';
+import type { ColumnOptions } from './uploadplanparser';
+
+/**
  * Returns whether relationship is a -to-many
- *	(e.x. one-to-many or many-to-many)
+ *  (e.x. one-to-many or many-to-many)
  *
  */
-
-import { R } from './components/wbplanview';
-import type { RA } from './components/wbplanview';
-import type {
-  FullMappingPath,
-  MappingPath,
-  MappingType,
-  RelationshipType,
-} from './components/wbplanviewmapper';
-import type { ColumnOptions } from './uploadplantomappingstree';
-import dataModelStorage from './wbplanviewmodel';
-
 export const relationshipIsToMany = (
-  relationshipType?: RelationshipType | ''
-): boolean => (relationshipType ?? '').includes('-to-many');
+  relationship: Relationship | undefined
+): boolean =>
+  relationship?.type.includes('-to-many') === true ||
+  relationship?.type === 'zero-to-one';
 
-/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
-export const valueIsReferenceItem = (value?: string): boolean =>
-  value?.slice(0, dataModelStorage.referenceSymbol.length) ===
-    dataModelStorage.referenceSymbol || false;
+/** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
+export const valueIsToManyIndex = (value?: string): boolean =>
+  value?.slice(0, schema.referenceSymbol.length) === schema.referenceSymbol ||
+  false;
 
-/* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
+/** Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const valueIsTreeRank = (value: string): boolean =>
-  value?.startsWith(dataModelStorage.treeSymbol) || false;
+  value?.startsWith(schema.treeSymbol) || false;
 
-/*
- * Returns index from a complete reference item value (e.x #1 => 1)
- * Opposite of formatReferenceItem
- *
+/**
+ * Returns index from a formatted -to-many index value (e.x #1 => 1)
+ * Opposite of formatToManyIndex
  */
-export const getIndexFromReferenceItemName = (value: string): number =>
-  Number(value.slice(dataModelStorage.referenceSymbol.length));
+export const getNumberFromToManyIndex = (value: string): number =>
+  Number(value.slice(schema.referenceSymbol.length));
 
-/*
+/**
  * Returns tree rank name from a complete tree rank name
  * (e.x $Kingdom => Kingdom)
  * Opposite of formatTreeRank
  *
  */
 export const getNameFromTreeRankName = (value: string): string =>
-  value.slice(dataModelStorage.treeSymbol.length);
+  value.slice(schema.treeSymbol.length);
 
-/*
- * Returns a complete reference item from an index (e.x 1 => #1)
- * Opposite of getIndexFromReferenceItemName
- *
+/**
+ * Returns a formatted -to-many index from an index (e.x 1 => #1)
+ * Opposite of getNumberFromToManyIndex
  */
-export const formatReferenceItem = (index: number): string =>
-  `${dataModelStorage.referenceSymbol}${index}`;
+export const formatToManyIndex = (index: number): string =>
+  `${schema.referenceSymbol}${index}`;
 
-/*
+// Meta fields
+export const anyTreeRank = `${schema.fieldPartSeparator}any`;
+export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
+
+/**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
  * Opposite of getNameFromTreeRankName
  *
  */
 export const formatTreeRank = (rankName: string): string =>
-  `${dataModelStorage.treeSymbol}${rankName}`;
+  `${schema.treeSymbol}${rankName}`;
+
+// Match fields names like startDate_fullDate, but not _formatted
+export const valueIsPartialField = (value: string): boolean =>
+  value.includes(schema.fieldPartSeparator) &&
+  !value.startsWith(schema.fieldPartSeparator);
+
+export const formatPartialField = (fieldName: string, part: string): string =>
+  `${fieldName}${schema.fieldPartSeparator}${part}`;
+
+export function parsePartialField<PART extends string>(
+  value: string
+): Readonly<[fieldName: string, part: PART]> {
+  const split = value.split(schema.fieldPartSeparator);
+  if (split.length !== 2) throw new Error('failed to parse partial field');
+  return split as [string, PART];
+}
 
 export const mappingPathToString = (mappingPath: MappingPath): string =>
-  mappingPath.join(dataModelStorage.pathJoinSymbol);
+  mappingPath.join(schema.pathJoinSymbol);
 
 export const splitJoinedMappingPath = (string: string): MappingPath =>
-  string.split(dataModelStorage.pathJoinSymbol);
+  string.split(schema.pathJoinSymbol);
 
 export type SplitMappingPath = {
-  readonly mappingPath: MappingPath;
-  readonly mappingType: MappingType;
   readonly headerName: string;
+  readonly mappingPath: MappingPath;
   readonly columnOptions: ColumnOptions;
 };
 
-export const splitFullMappingPathComponents = (
-  fullMappingPath: FullMappingPath
-): SplitMappingPath => ({
-  mappingPath: fullMappingPath.slice(0, -3) as MappingPath,
-  mappingType: fullMappingPath[fullMappingPath.length - 3] as MappingType,
-  headerName: fullMappingPath[fullMappingPath.length - 2] as string,
-  columnOptions: fullMappingPath[fullMappingPath.length - 1] as ColumnOptions,
-});
-
-// Find the index of a subArray in array. On failure returns -1
+/** Find the index of a subArray in array. On failure returns -1 */
 export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
   array.findIndex((_, index) =>
     mappingPathToString(array.slice(index)).startsWith(
@@ -92,7 +102,7 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
     )
   );
 
-/*
+/**
  * Takes array of mappings and returns the indexes of duplicate mappings
  * Example:
  * if three lines have the same mapping, the indexes of the second and
@@ -101,46 +111,48 @@ export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
  *  duplicates except for the focused line get unmapped)
  */
 export const findDuplicateMappings = (
-  arrayOfMappings: RA<MappingPath>,
+  mappingPaths: RA<MappingPath>,
   focusedLine: number | false
 ): RA<number> => {
   const duplicateIndexes: number[] = [];
 
-  arrayOfMappings.reduce<string[]>(
-    (dictionaryOfMappings, mappingPath, index) => {
-      const stringMappingPath = mappingPathToString(mappingPath);
+  mappingPaths.reduce<string[]>((dictionaryOfMappings, mappingPath, index) => {
+    const stringMappingPath = mappingPathToString(mappingPath);
 
-      if (dictionaryOfMappings.includes(stringMappingPath))
-        duplicateIndexes.push(
-          typeof focusedLine === 'number' && focusedLine === index
-            ? dictionaryOfMappings.indexOf(stringMappingPath)
-            : index
-        );
-      else dictionaryOfMappings.push(stringMappingPath);
+    if (dictionaryOfMappings.includes(stringMappingPath))
+      duplicateIndexes.push(
+        typeof focusedLine === 'number' && focusedLine === index
+          ? dictionaryOfMappings.indexOf(stringMappingPath)
+          : index
+      );
+    else dictionaryOfMappings.push(stringMappingPath);
 
-      return dictionaryOfMappings;
-    },
-    []
-  );
+    return dictionaryOfMappings;
+  }, []);
 
   return duplicateIndexes;
 };
 
-// Replaces all to-many reference numbers with #1
+// Replaces all -to-many indexes with #1
 export const getCanonicalMappingPath = (
   mappingPath: MappingPath
 ): MappingPath =>
   mappingPath.map((mappingPathPart) =>
-    valueIsReferenceItem(mappingPathPart)
-      ? formatReferenceItem(1)
-      : mappingPathPart
+    valueIsToManyIndex(mappingPathPart) ? formatToManyIndex(1) : mappingPathPart
   );
 
-/*
- * Rebases -to-many reference numbers to make sure there are no skipped indexes
+export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
+  mappingPath.filter(
+    (mappingPathPart) =>
+      !valueIsToManyIndex(mappingPathPart) && !valueIsTreeRank(mappingPathPart)
+  );
+
+/**
+ * Rebases -to-many indexes to make sure there are no skipped indexes
  *
- * For example, given this input:
- * arrayOfMappings = [
+ * @example
+ * Given this input:
+ * mappingPaths = [
  *   ['locality','collectingevents','#2','startdate',
  *   ['locality','collectingevents','#3','startdate',
  * ]
@@ -151,28 +163,28 @@ export const getCanonicalMappingPath = (
  *   ['locality','collectingevents','#2','startdate',
  * ]
  */
-export function deflateArrayOfMappings(
-  arrayOfMappings: RA<MappingPath>
+export function deflateMappingPaths(
+  mappingPaths: RA<MappingPath>
 ): RA<MappingPath> {
   const changes: R<string> = {};
-  return arrayOfMappings.reduce<RA<MappingPath>>(
-    (arrayOfMappings, mappingPath, rowIndex) => {
+  return mappingPaths.reduce<RA<MappingPath>>(
+    (mappingPaths, mappingPath, rowIndex) => {
       let resetToManys = false;
       const newMappingPath = Array.from(mappingPath);
       mappingPath.forEach((mappingPathPart, partIndex) => {
-        if (!valueIsReferenceItem(mappingPathPart)) return;
+        if (!valueIsToManyIndex(mappingPathPart)) return;
         const subPath = mappingPathToString(
           newMappingPath.slice(0, partIndex + 1)
         );
-        if (resetToManys) changes[subPath] = formatReferenceItem(1);
+        if (resetToManys) changes[subPath] = formatToManyIndex(1);
         if (subPath in changes) {
           newMappingPath[partIndex] = changes[subPath];
           return;
         }
 
         const newIndex =
-          getIndexFromReferenceItemName(
-            arrayOfMappings
+          getNumberFromToManyIndex(
+            mappingPaths
               .slice(0, rowIndex)
               .reverse()
               .map((mappingPath) => mappingPath.slice(0, partIndex + 1))
@@ -181,15 +193,15 @@ export function deflateArrayOfMappings(
                   mappingPathToString(mappingPath.slice(0, -1)) ===
                   mappingPathToString(newMappingPath.slice(0, partIndex))
               )
-              ?.slice(-1)[0] ?? formatReferenceItem(0)
+              ?.slice(-1)[0] ?? formatToManyIndex(0)
           ) + 1;
-        if (newIndex >= getIndexFromReferenceItemName(mappingPathPart)) return;
+        if (newIndex >= getNumberFromToManyIndex(mappingPathPart)) return;
         resetToManys = true;
-        const newValue = formatReferenceItem(newIndex);
+        const newValue = formatToManyIndex(newIndex);
         changes[subPath] = newValue;
         newMappingPath[partIndex] = newValue;
       });
-      return [...arrayOfMappings, newMappingPath];
+      return [...mappingPaths, newMappingPath];
     },
     []
   );

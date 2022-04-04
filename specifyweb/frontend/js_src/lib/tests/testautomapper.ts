@@ -1,12 +1,12 @@
-import type { AutoMapperConstructorParameters } from '../automapper';
-import Automapper from '../automapper';
-import { loadDataModel, runTest } from './testmain';
+import {
+  AutoMapper,
+  type AutoMapperConstructorParameters,
+} from '../automapper';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
-    'Automapper',
+    'AutoMapper',
     [
       [
         [
@@ -90,8 +90,8 @@ export default function (): void {
               'Collector 4 Middle Initial',
               'Collector 4 Last Name',
             ],
-            baseTable: 'collectionobject',
-            scope: 'automapper',
+            baseTable: 'CollectionObject',
+            scope: 'autoMapper',
           },
         ],
         {
@@ -200,8 +200,6 @@ export default function (): void {
       ],
     ],
     (parameters: AutoMapperConstructorParameters) =>
-      new Automapper(parameters).map({
-        useCache: false,
-      })
+      new AutoMapper(parameters).map()
   );
 }

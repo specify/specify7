@@ -1,14 +1,13 @@
-import type { IR, RA } from '../components/wbplanview';
 import type { MappingLine } from '../components/wbplanviewmapper';
-import type { UploadPlan } from '../uploadplantomappingstree';
+import type { Tables } from '../datamodel';
+import type { IR, RA } from '../types';
+import type { UploadPlan } from '../uploadplanparser';
 import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewLinesGetter.getLinesFromHeaders',
     [
@@ -27,14 +26,13 @@ export default function (): void {
               'Species Author',
               'Subspecies Author',
             ],
-            runAutomapper: true,
-            baseTableName: 'collectionobject',
+            runAutoMapper: true,
+            baseTableName: 'CollectionObject',
           },
         ],
         [
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'BMSM No.',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -44,7 +42,6 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Class', 'name'],
-            mappingType: 'existingHeader',
             headerName: 'Class',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -54,7 +51,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Superfamily',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -64,7 +60,6 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
-            mappingType: 'existingHeader',
             headerName: 'Family',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -74,7 +69,6 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Genus', 'name'],
-            mappingType: 'existingHeader',
             headerName: 'Genus',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -84,7 +78,6 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Subgenus', 'name'],
-            mappingType: 'existingHeader',
             headerName: 'Subgenus',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -94,7 +87,6 @@ export default function (): void {
           },
           {
             mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
-            mappingType: 'existingHeader',
             headerName: 'Species',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -110,7 +102,6 @@ export default function (): void {
               '$Subspecies',
               'name',
             ],
-            mappingType: 'existingHeader',
             headerName: 'Subspecies',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -126,7 +117,6 @@ export default function (): void {
               '$Species',
               'author',
             ],
-            mappingType: 'existingHeader',
             headerName: 'Species Author',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -142,7 +132,6 @@ export default function (): void {
               '$Subspecies',
               'author',
             ],
-            mappingType: 'existingHeader',
             headerName: 'Subspecies Author',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -167,14 +156,13 @@ export default function (): void {
               'Species Author',
               'Subspecies Author',
             ],
-            runAutomapper: false,
-            baseTableName: 'collectionobject',
+            runAutoMapper: false,
+            baseTableName: 'CollectionObject',
           },
         ],
         [
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'BMSM No.',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -184,7 +172,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Class',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -194,7 +181,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Superfamily',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -204,7 +190,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Family',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -214,7 +199,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Genus',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -224,7 +208,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Subgenus',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -234,7 +217,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Species',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -244,7 +226,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Subspecies',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -254,7 +235,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Species Author',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -264,7 +244,6 @@ export default function (): void {
           },
           {
             mappingPath: ['0'],
-            mappingType: 'existingHeader',
             headerName: 'Subspecies Author',
             columnOptions: {
               matchBehavior: 'ignoreNever',
@@ -282,12 +261,9 @@ export default function (): void {
     'WbPlanViewLinesGetter.getLinesFromUploadPlan',
     [
       [
-        [
-          uploadPlan1.headers,
-          (uploadPlan1.uploadPlan as unknown) as UploadPlan,
-        ],
+        [uploadPlan1.headers, uploadPlan1.uploadPlan as unknown as UploadPlan],
         wbPlanViewLines1 as {
-          readonly baseTableName: string;
+          readonly baseTableName: keyof Tables;
           readonly lines: RA<MappingLine>;
           readonly mustMatchPreferences: IR<boolean>;
         },

@@ -1,10 +1,10 @@
 "use strict";
 
-var _      = require('underscore');
-var schema = require('./schema.js');
-var api    = require('./specifyapi.js');
+import _ from 'underscore';
+import {schema} from './schema';
+import {getPrepAvailability} from './specifyapi';
 
-    var interactionBusinessRules = {
+export default {
         previousReturned: [],
         previousResolved: [],
         getTotalLoaned: function(loanreturnprep) {
@@ -27,11 +27,11 @@ var api    = require('./specifyapi.js');
             if (interactionprep && interactionprep.get('preparation')) {
                 //return interactionprep.get('preparation').get('CountAmt');
                 var prepuri = interactionprep.get('preparation');
-                var pmod = schema.getModel('preparation');
+                var pmod = schema.models.Preparation;
                 var prepId = pmod.Resource.fromUri(prepuri).id;
                 var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
                 var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
-                api.getPrepAvailability(prepId, iprepId, iprepName).done(function(available) {
+                getPrepAvailability(prepId, iprepId, iprepName).then(function(available) {
                     if (typeof available != 'undefined' && Number(available[0])  < interactionprep.get('quantity')) {
                         interactionprep.set('quantity', Number(available[0]));
                     }
@@ -53,6 +53,4 @@ var api    = require('./specifyapi.js');
             }
         }
     };
-
-module.exports = interactionBusinessRules;
 

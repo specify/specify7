@@ -24,11 +24,11 @@ After adding new translatable strings, run the following command from inside the
 `specifyweb` directory to update the `.po` file for all locales:
 
 ```bash
-../ve/bin/python ../manage.py makemessages -l en_US --ignore js_src --ignore static
+../ve/bin/python ../manage.py makemessages -l en_US -l ru_RU -l ca --ignore js_src --ignore static
 ```
 
 If you have multiple locales, specify the locale name of each. Example:
-`-l en_US -l en_UK`.
+`-l en_US -l ru_RU -l ca`.
 
 Later, in production, run the following command from inside the
 `specifyweb` directory to compile the strings into an optimized `.mo` binary
@@ -52,6 +52,23 @@ translated values.
 
 NOTE: Keep in mind the difference between language codes and locale names.
 [More info](https://docs.djangoproject.com/en/3.1/topics/i18n/#term-locale-name)
+
+## Utilities
+
+### Get text from a dictionary as array
+
+1. Paste whole dictionary file content into an HTML <textbox>
+2. Assign the `textbox` variable to the HTML Textbox element
+3. Run this code in the DevTools console:
+
+   ```js
+   matches = Array.from(
+     textarea.value.matchAll(
+       /(?:msgid "([^"]+)"|msgid ""\n((?:.+\n)+)msgstr "")/g
+     )
+   ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
+   ```
+
 
 ## Additional resources
 

@@ -1,44 +1,19 @@
-{% load raven %}
-{% load script_manifest %}
-{% load i18n %}
+{% load raven %} {% load script_manifest %} {% load i18n %}
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-{% if use_raven %}
-  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
-{% endif %}
-  <script src="{% script_src 'main.js' %}"></script>
-</head>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    {% if use_raven %}
+    <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+    <script>
+      Raven.config("{% sentry_public_dsn %}").install();
+    </script>
+    {% endif %}
+    <script src="{% script_src 'main.js' %}"></script>
+  </head>
 
-<body>
-  <div id="root-app-container">
-    <header id="site-header">
-      <div id="site-header-main">
-        <a id="site-logo" href="/specify/" class="intercept-navigation"></a>
-
-        <div id="user-tools">
-          <div>
-            <button class="username magic-button"></button> <a class="login"></a>
-            <select class="collection-selector"></select>
-          </div>
-          <div>
-            <button
-              id="site-notifications"
-              class="magic-button"
-              disabled
-            ></button>
-            <form id="express-search" action="/specify/express_search/">
-              <input type="search" class="express-search-query" name="q" placeholder="{% trans 'Search' %}">
-            </form>
-          </div>
-        </div>
-      </div>
-      <nav id="site-nav"><ul><li id="header-loading">{% trans 'Specify is loading...' %}</li></ul></nav>
-    </header>
-    <div id="content">
-    </div>
-  </div>
-</body>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

@@ -1,8 +1,8 @@
 "use strict";
-var schema = require('./schema.js');
-var interactionBusinessRules = require('./interactionbusinessrules.js');
+import {schema} from './schema';
+import interactionBusinessRules from './interactionbusinessrules';
 
-module.exports = {
+export default Object.freeze({
         Accession: {
             uniqueIn: {
                 accessionnumber: 'division'
@@ -127,12 +127,12 @@ module.exports = {
                 }
             },
             customChecks: {
-                taxon: determination => determination.rget('taxon', true).pipe(
+                taxon: determination => determination.rget('taxon', true).then(
                     taxon => taxon == null ?
                         { valid: true, action() { determination.set('preferredtaxon', null); }}
                     : (function recur(taxon) {
                         return taxon.get('acceptedtaxon') != null ?
-                            taxon.rget('acceptedtaxon', true).pipe(recur)
+                            taxon.rget('acceptedtaxon', true).then(recur)
                             : { valid: true, action() { determination.set('preferredtaxon', taxon); }};
                     })(taxon)),
 
@@ -281,4 +281,4 @@ module.exports = {
                 agent: {field: 'borrow', otherfields: ['role']}
             }
         }
-    };
+    });

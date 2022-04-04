@@ -1,14 +1,23 @@
-import $ from 'jquery';
+/**
+ * Reports Data Set status using a modal dialog (uploading, validating, rolling
+ * back, failure, success)
+ */
+
 import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import { ajax, Http } from '../ajax';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import { ModalDialog } from './modaldialog';
+import { Button, Label, Progress } from './basic';
+import { useTitle } from './hooks';
+import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
+import { error } from '../assert';
 
+// How often to query back-end
 const REFRESH_RATE = 2000;
 
 type MainState = State<
@@ -41,34 +50,13 @@ const reducer = generateReducer<States, Actions>({
   }),
 });
 
-function ProgressBar({
-  current,
-  total,
+function WbStatus({
+  dataset,
+  onFinished: handleFinished,
 }: {
-  readonly current: number;
-  readonly total: number;
+  readonly dataset: Dataset;
+  readonly onFinished: (wasAborted: boolean) => void;
 }): JSX.Element {
-  const progressBarRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(
-    () =>
-      progressBarRef.current === null
-        ? undefined
-        : void $(progressBarRef.current).progressbar({
-            value: current,
-            max: total,
-          }),
-    [current, total, progressBarRef]
-  );
-
-  return (
-    <div>
-      <div ref={progressBarRef} />
-    </div>
-  );
-}
-
-function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
@@ -81,9 +69,12 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = (): void =>
-      void $.get(`/api/workbench/status/${dataset.id}/`).done(
-        (status: Status | null) => {
-          if (destructorCalled) return;
+      void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { Accept: 'application/json' },
+      })
+        .then(({ data: status }) => {
+          if (destructorCalled) return undefined;
           if (status === null)
             handleFinished(
               state.aborted === 'pending' || state.aborted === true
@@ -92,19 +83,22 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
             dispatch({ type: 'RefreshStatusAction', status });
             setTimeout(fetchStatus, REFRESH_RATE);
           }
-        }
-      );
+          return undefined;
+        })
+        .catch(console.error);
     fetchStatus();
     return (): void => {
       destructorCalled = true;
     };
-  }, [state.aborted, dataset.id, handleFinished]);
+  }, [state.aborted, dataset.id]);
 
   const title = {
     validating: wbText('wbStatusValidationDialogTitle'),
     uploading: wbText('wbStatusUploadDialogTitle'),
     unuploading: wbText('wbStatusUnuploadDialogTitle'),
   }[state.status.uploaderstatus.operation];
+
+  useTitle(title);
 
   const mappedOperation = {
     validating: wbText('validation'),
@@ -120,21 +114,20 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
 
   if (state.aborted === 'failed')
     return (
-      <ModalDialog
-        properties={{
-          title,
-          close: (): void => dispatch({ type: 'AbortAction', aborted: false }),
-        }}
+      <Dialog
+        header={title}
+        onClose={(): void => dispatch({ type: 'AbortAction', aborted: false })}
+        buttons={commonText('close')}
       >
         {wbText('wbStatusAbortFailed')(mappedOperation)}
-      </ModalDialog>
+      </Dialog>
     );
 
   let message;
   const current =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo.current
-      : 1;
+      : 0;
   const total =
     typeof state.status?.taskinfo === 'object'
       ? state.status.taskinfo?.total
@@ -156,73 +149,68 @@ function WbStatus({ dataset, onFinished: handleFinished }: Props): JSX.Element {
         total
       );
   } else
-    message = wbText('wbStatusErrorDialogMessage')(
-      // FAILED
-      mappedOperation,
-      JSON.stringify(state.status)
+    message = (
+      <>
+        {wbText('wbStatusErrorDialogMessage')(
+          // FAILED
+          mappedOperation
+        )}
+        <pre>{JSON.stringify(state.status, null, 2)}</pre>
+      </>
     );
 
   return (
-    <ModalDialog
-      properties={{
-        title,
-        dialogClass: 'ui-dialog-no-close',
-        buttons:
-          state.aborted === false
-            ? [
+    <Dialog
+      header={title}
+      buttons={
+        state.aborted === false ? (
+          <Button.Red
+            onClick={(): void => {
+              dispatch({
+                type: 'AbortAction',
+                aborted: 'pending',
+              });
+              ajax<'ok' | 'not running'>(
+                `/api/workbench/abort/${dataset.id}/`,
+                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  text: commonText('stop'),
-                  click: (): void => {
-                    dispatch({
-                      type: 'AbortAction',
-                      aborted: 'pending',
-                    });
-                    $.post(`/api/workbench/abort/${dataset.id}/`)
-                      .done(() =>
-                        dispatch({
-                          type: 'AbortAction',
-                          aborted: true,
-                        })
-                      )
-                      .fail((jqXHR) => {
-                        if (jqXHR.status !== 503) return;
-                        // @ts-expect-error
-                        jqXHR.errorHandled = true;
-                        dispatch({
-                          type: 'AbortAction',
-                          aborted: 'failed',
-                        });
-                      });
-                  },
-                },
-              ]
-            : [],
+                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
+                  strict: false,
+                }
+              )
+                .then(({ data, status }) =>
+                  status === Http.OK && ['ok', 'not running'].includes(data)
+                    ? dispatch({
+                        type: 'AbortAction',
+                        aborted: true,
+                      })
+                    : error('Invalid response')
+                )
+                .catch(() => {
+                  dispatch({
+                    type: 'AbortAction',
+                    aborted: 'failed',
+                  });
+                });
+            }}
+          >
+            {commonText('stop')}
+          </Button.Red>
+        ) : undefined
+      }
+      className={{
+        container: dialogClassNames.narrowContainer,
       }}
+      onClose={undefined}
     >
-      {message}
-      {state.status.taskstatus === 'PROGRESS' && (
-        <ProgressBar current={current} total={total} />
-      )}
-    </ModalDialog>
+      <Label.Generic aria-live="polite" aria-atomic={true}>
+        {message}
+        {state.status.taskstatus === 'PROGRESS' && (
+          <Progress value={current} max={total} />
+        )}
+      </Label.Generic>
+    </Dialog>
   );
 }
 
-type Props = Readonly<ConstructorProps>;
-type ConstructorProps = {
-  dataset: Dataset;
-  onFinished: (wasAborted: boolean) => void;
-};
-
-export default createBackboneView<Props, ConstructorProps, Props>({
-  moduleName: 'WbStatus',
-  className: 'wb-status',
-  initialize(self, { dataset, onFinished }) {
-    self.dataset = dataset;
-    self.onFinished = onFinished;
-  },
-  Component: WbStatus,
-  getComponentProps: (self) => ({
-    dataset: self.dataset,
-    onFinished: self.onFinished,
-  }),
-});
+export default createBackboneView(WbStatus);

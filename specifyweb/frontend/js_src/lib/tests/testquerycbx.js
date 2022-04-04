@@ -6,7 +6,7 @@
       module('querycbx');
       test1 = function() {
         var model, node;
-        node = '<input type=text class="specify-querycbx specify-field" name="cataloger" data-specify-initialize="name=Agent">';
+        node = '<input type="text" class="specify-querycbx specify-field" name="cataloger" data-specify-initialize="name=Agent">';
         model = new (api.Resource.forModel('CollectionObject'))({
           id: 100
         });
@@ -25,7 +25,7 @@
           ok(div.find('.querycbx-clone').is(':hidden'), 'clone button is hidden');
           control = div.find('input');
           ok(!(control.prop('readonly')), 'input is not readonly');
-          expectedSearchField = schema.getModel('Agent').getField('lastname').getLocalizedName();
+          expectedSearchField = getModel('Agent').getField('lastname').label;
           return equal(control.attr('title'), "Searches: " + expectedSearchField, 'tooltip is correct');
         });
       };

@@ -9,6 +9,7 @@ from django import http
 from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
+from specifyweb.permissions.permissions import check_table_permissions
 
 @login_maybe_required
 @require_GET
@@ -176,6 +177,10 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 def loan_return_all_items(request):
     """Causes all loan items to be marked returned based on various POST parameters.
     """
+    check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
+    check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "update")
+    check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
+
     if 'returnedDate' in request.POST:
         returned_date = str(request.POST['returnedDate'])
     else:

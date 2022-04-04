@@ -1,62 +1,60 @@
 import * as WbPlanViewMappingPreview from '../wbplanviewmappingpreview';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewMappingPreview.generateMappingPathPreview',
     [
-      [['collectionobject', ['catalognumber']], 'Catalog Number'],
-      [['collectionobject', ['guid']], 'Collection Object GUID'],
-      [['collectionobject', ['void']], 'Collection Object Void'],
+      [['CollectionObject', ['catalognumber']], 'Catalog Number'],
+      [['CollectionObject', ['guid']], 'Collection Object GUID'],
+      [['CollectionObject', ['void']], 'Collection Object Void'],
       [
-        ['collectionobject', ['someNonExistentField']],
+        ['CollectionObject', ['someNonExistentField']],
         'Some Non Existent Field',
       ],
-      [['collectionobject', ['name']], 'Collection Object'],
-      [['collectionobject', ['someDnaSequence']], 'Some DNA Sequence'],
+      [['CollectionObject', ['name']], 'Collection Object'],
+      [['CollectionObject', ['someDnaSequence']], 'Some DNA Sequence'],
       [
-        ['collectionobject', ['accession', 'accessionnumber']],
+        ['CollectionObject', ['accession', 'accessionnumber']],
         'Accession Number',
       ],
       [
-        ['collectionobject', ['accession', 'accessionagents', '#1', 'role']],
+        ['CollectionObject', ['accession', 'accessionagents', '#1', 'role']],
         'Accession Agents Role',
       ],
       [
         [
-          'collectionobject',
+          'CollectionObject',
           ['accession', 'accessionagents', '#1', 'agent', 'abbreviation'],
         ],
         'Accession Agents Abbreviation',
       ],
       [
         [
-          'collectionobject',
+          'CollectionObject',
           ['accession', 'accessioncitations', '#1', 'referencework', 'title'],
         ],
         'Accession Citations Reference Work Title',
       ],
       [
-        ['collectionobject', ['cataloger', 'addresses', '#1', 'address']],
+        ['CollectionObject', ['cataloger', 'addresses', '#1', 'address']],
         'Cataloger Address',
       ],
       [
         [
-          'collectionobject',
+          'CollectionObject',
           ['collectingevent', 'collectors', '#1', 'agent', 'abbreviation'],
         ],
         'Collectors Abbreviation',
       ],
       [
-        ['collectionobject', ['container', 'storage', '$Building', 'name']],
+        ['CollectionObject', ['container', 'storage', '$Building', 'name']],
         'Building',
       ],
-      [['taxon', ['$Kingdom', 'author']], 'Kingdom Author'],
+      [['Taxon', ['$Kingdom', 'author']], 'Kingdom Author'],
       [
         [
-          'accession',
+          'Accession',
           [
             'collectionobjects',
             '#1',
@@ -71,7 +69,7 @@ export default function (): void {
       ],
       [
         [
-          'accession',
+          'Accession',
           [
             'collectionobjects',
             '#2',
@@ -86,7 +84,7 @@ export default function (): void {
       ],
       [
         [
-          'accession',
+          'Accession',
           [
             'collectionobjects',
             '#99',
@@ -101,7 +99,7 @@ export default function (): void {
       ],
       [
         [
-          'collectionobject',
+          'CollectionObject',
           [
             'collectionobjectcitations',
             '#1',
@@ -112,12 +110,12 @@ export default function (): void {
         'Collection Object Citations Reference Work Type',
       ],
       [
-        ['collectionobject', ['dnasequences', '#1', 'ambiguousresidues']],
+        ['CollectionObject', ['dnasequences', '#1', 'ambiguousresidues']],
         'DNA Sequences Ambiguous',
       ],
       [
         [
-          'collectionobject',
+          'CollectionObject',
           ['exsiccataitems', '#1', 'exsiccata', 'referencework', 'title'],
         ],
         'Exsiccata Reference Work Title',

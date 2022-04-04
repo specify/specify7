@@ -6,7 +6,6 @@ specifyweb/settings/build_version.py
 specifyweb/settings/secret_key.py
 specifyweb/settings/debug.py
 specifyweb/frontend/locale/*/*.mo
-specifyweb/frontend/js_src/bower_components
 specifyweb/frontend/js_src/node_modules
 specifyweb/frontend/testBuild
 specifyweb/frontend/static/js

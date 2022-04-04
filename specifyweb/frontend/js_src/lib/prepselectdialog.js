@@ -1,35 +1,35 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+import $ from 'jquery';
+import _ from 'underscore';
+import React from 'react';
 
-var schema       = require('./schema.js');
-var navigation   = require('./navigation.js');
-var populateForm = require('./populateform.js');
-var api          = require('./specifyapi.js');
-var ResourceView = require('./resourceview.js');
-var FieldFormat  = require('./fieldformat.js');
-var PrepDialog   = require('./prepdialog.js');
-var app          = require('./specifyapp.js');
-const formsText = require('./localization/forms').default;
-const commonText = require('./localization/common').default;
+import {Button} from './components/basic';
+import {getModel, schema} from './schema';
+import {getInteractionsForPrepIds} from './specifyapi';
+import {setCurrentView} from './specifyapp';
+import {ResourceView, ShowResource,} from './components/resourceview';
+import PrepDialog from './prepdialog';
+import formsText from './localization/forms';
+import commonText from './localization/common';
+import {fieldFormat} from "./uiparse";
+import createBackboneView from './components/reactbackboneextend';
 
-module.exports =  PrepDialog.extend({
+const resourceView = createBackboneView(ResourceView);
+
+export default PrepDialog.extend({
         __name__: "PrepSelectDialog",
-        className: "prepselectdialog table-list-dialog",
         events: {
-            'click a.prepselect-unavailable': 'prepInteractions',
+            'click button.prepselect-unavailable': 'prepInteractions',
             'click :checkbox': 'prepCheck',
-            'click .ui-spinner-button': 'spun', //when not binding in finishRender()
-            'keyup .ui-spinner-input': 'putin', //when not binding in finishRender()
-            'keydown .prepselect-amt': 'prepselectKeyDown' 
+            'change .prepselect-amt': 'spun',
         },
         availabilityDblChk: false,
 
         processInteractionsPreps: function() {
             if (!this.availabilityDblChk) {
                 if (this.options.interactionresource) {
-                    var pmod = schema.getModel('preparation');
+                    var pmod = schema.models.Preparation;
                     var idxpreps = _.groupBy(this.options.preps, function(prep) {
                         return (new pmod.Resource({id: prep.preparationid})).url();
                     });
@@ -52,40 +52,17 @@ module.exports =  PrepDialog.extend({
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getTblHdr: function() {
-            return '<tr><th>  </th>'
-                + '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
-                + '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
-                + '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Selected', 'Selected') + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Available', 'Available') + '</th>'
-                + '<th>' + this.getProp('InteractionsTask.Unavailable', 'Unavailable') + '</th></tr>';
-        },
-        finishRender: function() {
-            var spinners = this.$(".prepselect-amt");
-            spinners.spinner(/*{
-                change: _.bind(function( evt ) {
-                    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-                    if (idx >= 0) {
-                        var val = new Number($(evt.currentTarget).attr('value'));
-                        var max = this.options.preps[idx].available;
-                        var min = 0;
-                        if (val > new Number(max)) {
-                            $(evt.currentTarget).attr('value', max);
-                        } else if (isNaN(val) || val < min) {
-                            $(evt.currentTarget).attr('value',  min);
-                        }
-                        this.$(':checkbox')[idx].checked = new Number($(evt.currentTarget).attr('value')) > 0;
-                    }
-                }, this),
-                spin: _.bind(function( evt, ui ) {
-                    var idx = this.$(".prepselect-amt").index(evt.target);
-                    if (idx >= 0) {
-                        var val = new Number($(ui).attr('value'));
-                        this.$(':checkbox')[idx].checked = val > 0;
-                    }
-                }, this)
-                              }*/);
-            spinners.width(50);
+            return `<thead>
+                <tr>
+                    <td></td>
+                    <th scope="col">${this.colobjModel.getField('catalognumber').label}</th>
+                    <th scope="col">${this.detModel.getField('taxon').label}</th>
+                    <th scope="col">${this.prepModel.getField('preptype').label}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
+                    <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
+                </tr>
+            </thead>`;
         },
 
         dialogEntry: function(iprep) {
@@ -94,42 +71,48 @@ module.exports =  PrepDialog.extend({
             var unavailableCnt = iprep.countamt - iprep.available;
             //if unavailable items, link to related interactions
             if (unavailableCnt != 0) {
-                unavailable.append($('<a>').text(unavailableCnt).addClass('prepselect-unavailable'));
+                unavailable.append($('<button>',{type: 'button', class: 'link'}).text(unavailableCnt).addClass('prepselect-unavailable'));
             } else {
                 unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
             }
             var entry = $('<tr>').append(
-                $('<td>').append($('<input>').attr('type', 'checkbox')),
-                $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
+                $('<td>').append($('<input>').attr('type', 'checkbox').attr('title',formsText('selectAll')).attr('aria-label',formsText('selectAll'))),
+                $('<td>').append(fieldFormat(this.colobjModel.getLiteralField('catalognumber'), undefined, iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
-                $('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
+                $('<td>').append($('<input type="number">')
+                    .attr('class', 'specify-field')
+                    .attr('value', '0')
+                    .attr('title',formsText('selectedAmount'))
+                    .attr('aria-label',formsText('selectedAmount'))
+                    .attr('max', iprep.available)
+                    .attr('min', 0)
+                    .addClass('prepselect-amt')),
                 $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
                 unavailable);
             return [entry];
         },
 
         buttons: function() {
-            var buttons = this.options.readOnly ? [] : [
-                { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
-                  title: formsText('selectAllAvailablePreparations') },
-                { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
-                  title: commonText('clearAll') },
-                { text: commonText('apply'), click: _.bind(this.makeInteraction, this),
-                  title: this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.getTextForObjToCreate()) }
-            ];
-            buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
-            return buttons;
-        },
-
-        getTextForObjToCreate: function() {
-            //need to be nicer
-            return this.options.action.attr('action');
+            return this.options.readOnly
+              ? <Button.Blue onClick={()=>this.dialog.remove()}>{commonText('close')}</Button.Blue>
+              : <>
+                <Button.Transparent onClick={()=>this.dialog.remove()}>{commonText('cancel')}</Button.Transparent>
+                <Button.Green title={formsText('selectAllAvailablePreparations')}
+                              onClick={_.bind(this.selectAll, this)}
+                >{this.getProp('SELECTALL')}</Button.Green>
+                <Button.Green title={commonText('clearAll')}
+                              onClick={_.bind(this.deSelectAll, this)}
+                >{this.getProp('DESELECTALL')}</Button.Green>
+                <Button.Green title={this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.options.action.name)}
+                              onClick={_.bind(this.makeInteraction, this)}
+                >{commonText('apply')}</Button.Green>
+            </>;
         },
 
         prepInteractionAnchor: function(model, interaction) {
             return $('<a/>', {
-                html: model.getLocalizedName() + ": " + interaction.visibleKey,
+                html: model.label + ": " + interaction.visibleKey,
                 click: _.bind(this.prepIactionDlg, this, model, interaction.key)
             });
         },
@@ -154,59 +137,18 @@ module.exports =  PrepDialog.extend({
 
         //events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    putin: function(evt) {
-        var isUpDownArrow = ["ArrowDown", "ArrowUp"].indexOf(evt.key) >= 0;
-        if (isUpDownArrow || !isNaN(String.fromCharCode(evt.which))) {
-            var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-            if (idx >= 0) {
-                if (!isUpDownArrow) {
-                    var val = new Number(evt.currentTarget.value);
-                    var max = this.options.preps[idx].available;
-                    var min = 0;
-                    if (val > new Number(max)) {
-                        evt.currentTarget.value = max + "";
-                    } else if (isNaN(val) || val < min) {
-                        evt.currentTarget.value = min + "";
-                    }
-                }
-                this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-            }
-        } else {
-            evt.preventDefault();
-        }
+    spun({target}) {
+        const row = target.closest('tr');
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        checkbox.checked = Number.parseInt(target.value) > 0;
     },
 
-    spun: function(evt) {
-        var rows = $(evt.target).parentsUntil("tbody");
-        var row = rows[rows.length - 1];
-        var idx = this.$("tr").index(row) - 1;
-        var ui = this.$(".prepselect-amt")[idx];
-        if (idx >= 0) {
-            var val = new Number(ui.value);
-            this.$(':checkbox')[idx].checked = val > 0;
-        }
-    },
-    
-        prepselectKeyDown: function( evt, a, b) {
-            if (isNaN(String.fromCharCode(evt.which))) {
-                if (["ArrowLeft", "ArrowRight"].indexOf(evt.key) == -1) {
-                    evt.preventDefault();
-                }
-            }
-        },
-
-        prepCheck: function( evt ) {
-            var idx = this.$(':checkbox').index( evt.target );
-            var available = this.options.preps[idx].available;
-            if (available <= 0) {
-                evt.preventDefault();
-            } else {
-                if (evt.target.checked) {
-                    $(this.$('.prepselect-amt')[idx])[0].value = available;
-                } else {
-                    $(this.$('.prepselect-amt')[idx])[0].value = 0;
-                }
-            }
+        prepCheck({target}) {
+            const row = target.closest('tr');
+            const index = Array.from(row.parentElement.children).indexOf(row);
+            const input = row.querySelector('.prepselect-amt');
+            const available = Math.max(0,this.options.preps[index].available);
+            input.value = target.checked ? available : 0;
         },
 
         prepInteractions: function(evt) {
@@ -242,7 +184,7 @@ module.exports =  PrepDialog.extend({
                         _.bind(this.prepIactionDlg, this)(m, single[0].key);
                     }
                 }, this);
-                api.getInteractionsForPrepIds(prepId).done(over);
+                getInteractionsForPrepIds(prepId).then(over);
             }
         },
 
@@ -252,7 +194,7 @@ module.exports =  PrepDialog.extend({
             for (var p=0; p < amounts.length; p++) {
                 amounts[p].value = this.options.preps[p].available ;
                 chks[p].checked = (this.options.preps[p].available  > 0);
-            };
+            }
         },
 
         deSelectAll: function() {
@@ -273,42 +215,26 @@ module.exports =  PrepDialog.extend({
                 filters: { id: key }
             });
             var _self = this;
-            irec.fetch().done(function() {
-                this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
-
+            irec.fetch().then(function() {
                 var resourceModel = irec.models[0];
 
-                new ResourceView({
-                    populateForm: populateForm,
-                    el: this.dialog,
-                    model: resourceModel,
-                    mode: 'view',
-                    noHeader: false
+                this.dialog = new resourceView({
+                    resource: resourceModel,
+                    mode: 'edit',
+                    dialog: 'nonModal',
+                    canAddAnother: true,
+                    onClose: ()=>this.dialog.remove(),
+                    onSaved: undefined,
+                    onDeleted: undefined,
+                    isSubForm: false,
                 }).render();
-
-                var _this = _self;
-                this.dialog.dialog({
-                    position: { my: "left top", at: "left+20 top+20", of: $('#content') },
-                    width: 'auto',
-                    close: function() { $(this).remove(); _this.dialog = null; },
-                    modal: true
-                }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                    evt.preventDefault();
-                    navigation.go(resourceModel.viewUrl());
-                    _this.dialog.dialog('close');
-                });
-
-                $('<a>', { href: resourceModel.viewUrl() })
-                    .addClass('intercept-navigation')
-                    .append(`<span class="ui-icon ui-icon-link">${formsText('linkInline')}</span>`)
-                    .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             });
         },
 
         makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
             var result = new itemModel.Resource();
             result.initialize();
-            var pmod = schema.getModel('preparation');
+            var pmod = schema.models.Preparation;
             var purl = (new pmod.Resource({id: iprep.preparationid})).url();
             result.set('preparation', purl);
             result.set('quantity', Number(amt));
@@ -340,12 +266,12 @@ module.exports =  PrepDialog.extend({
             if (this.options.interactionresource) {
                 interaction = this.options.interactionresource;
             } else {
-                var baseModel = schema.getModel(baseTbl);
+                var baseModel = getModel(baseTbl);
                 interaction = new baseModel.Resource();
                 interaction.initialize();
             }
             var itemModelName = baseTbl + 'preparation';
-            var itemModel = schema.getModel(itemModelName);
+            var itemModel = getModel(itemModelName);
             var items = [];
             var amounts = this.$(':input.prepselect-amt');
 
@@ -356,13 +282,15 @@ module.exports =  PrepDialog.extend({
                 }
             }
 
-            this.$el.dialog('close');
+            this.dialog.remove();
             if (this.options.interactionresource) {
                 this.options.itemcollection.add(items);
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
-                app.showResource(interaction, null, true);
+                setCurrentView(new showResource({resource: interaction, recordSet: undefined, pushUrl: true}));
             }
         }
     });
+
+const showResource = createBackboneView(ShowResource);

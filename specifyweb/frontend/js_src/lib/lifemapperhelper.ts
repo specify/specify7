@@ -1,16 +1,16 @@
-import type { R, RA } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Field, LocalityData } from './leafletutils';
-import { findArrayDivergencePoint } from './wbplanviewhelper';
+import type { R, RA } from './types';
+import { findArrayDivergencePoint } from './helpers';
 import {
-  deflateArrayOfMappings,
+  deflateMappingPaths,
   getCanonicalMappingPath,
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
 
 export function deflateLocalityData(localityData: LocalityData): LocalityData {
-  const deflatedMappingPaths = deflateArrayOfMappings(
+  const deflatedMappingPaths = deflateMappingPaths(
     Object.keys(localityData).map(splitJoinedMappingPath)
   );
   return Object.fromEntries(

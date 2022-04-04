@@ -1,13 +1,15 @@
-/*
+/**
  * Utility functions for rendering a Leaflet map
  *
+ * @module
  */
 
-import $ from 'jquery';
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
+import { ajax, Http } from './ajax';
 import * as cache from './cache';
-import type { IR, RA, RR } from './components/wbplanview';
+import { legacyNonJsxIcons } from './components/icons';
+import { cachableUrl, contextUnlockedPromise } from './initialcontext';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -17,16 +19,16 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
+import commonText from './localization/common';
 import localityText from './localization/locality';
-import { capitalize } from './wbplanviewhelper';
+import type { IR, RA, RR } from './types';
+import { capitalize } from './helpers';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 
 const DEFAULT_ZOOM = 5;
 
 // Try to fetch up-to-date tile servers. If fails, use the default tile servers
-let leafletMaps: typeof leafletTileServers | undefined;
-
-const parseLayersFromJson = (json: Record<string, any>) =>
+const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
   Object.fromEntries(
     Object.entries(json).map(([layerGroup, layers]) => [
       layerGroup,
@@ -51,63 +53,46 @@ const parseLayersFromJson = (json: Record<string, any>) =>
     ])
   ) as typeof leafletTileServers;
 
-export const getLeafletLayers = async (): Promise<typeof leafletTileServers> =>
-  typeof leafletMaps === 'undefined'
-    ? new Promise(async (resolve) =>
-        fetch('/context/app.resource?name=leaflet-layers')
-          .then(async (response) => response.json())
-          .then((data) => resolve((leafletMaps = parseLayersFromJson(data))))
-          .catch(async () =>
-            fetch(leafletLayersEndpoint)
-              .then(async (response) => response.json())
-              .then((data) =>
-                resolve((leafletMaps = parseLayersFromJson(data)))
-              )
-              .catch((error) => {
-                console.error(error);
-                resolve(leafletTileServers);
-              })
-          )
+export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
+  contextUnlockedPromise
+    .then(async () =>
+      ajax<IR<unknown>>(
+        cachableUrl('/context/app.resource?name=leaflet-layers'),
+        { headers: { Accept: 'application/json' } },
+        { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
       )
-    : Promise.resolve(leafletMaps);
+    )
+    .then(({ data, status }) =>
+      status === Http.NOT_FOUND
+        ? ajax<IR<unknown>>(
+            cachableUrl(leafletLayersEndpoint),
+            { headers: { Accept: 'application/json' } },
+            { strict: false }
+          ).then(({ data }) => data)
+        : data
+    )
+    .then(parseLayersFromJson)
+    .catch((error) => {
+      console.error(error);
+      return leafletTileServers;
+    });
 
 export async function showLeafletMap({
+  container,
   localityPoints = [],
   markerClickCallback,
-  leafletMapContainer,
 }: {
+  readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-  readonly leafletMapContainer: string | JQuery<HTMLDivElement> | undefined;
-}): Promise<L.Map | undefined> {
-  const tileLayers = await getLeafletLayers();
+}): Promise<L.Map> {
+  const tileLayers = await leafletTileServersPromise;
 
-  if (
-    typeof leafletMapContainer === 'string' &&
-    document.getElementById(leafletMapContainer) !== null
-  )
-    return undefined;
-
-  if (typeof leafletMapContainer !== 'object')
-    leafletMapContainer = $(
-      `<div ${
-        typeof leafletMapContainer === 'undefined'
-          ? ''
-          : `id="${leafletMapContainer}"`
-      }></div>`
-    );
-
-  leafletMapContainer.dialog({
-    width: 900,
-    height: 600,
-    title: localityText('geoMap'),
-    close() {
-      map.remove();
-      $(this).remove();
-    },
-  });
-
-  leafletMapContainer[0].style.overflow = 'hidden';
+  container.classList.add(
+    'overflow-hidden',
+    'h-full',
+    'min-h-[theme(spacing.80)]'
+  );
 
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
@@ -119,7 +104,7 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(leafletMapContainer[0], { maxZoom: 23 }).setView(
+  const map = L.map(container, { maxZoom: 23 }).setView(
     defaultCenter,
     defaultZoom
   );
@@ -128,6 +113,11 @@ export async function showLeafletMap({
     tileLayers.overlays
   );
   controlLayers.addTo(map);
+
+  // Hide controls when printing map
+  container
+    .getElementsByClassName('leaflet-control-container')[0]
+    ?.classList.add('print:hidden');
 
   addMarkersToMap(
     map,
@@ -140,7 +130,6 @@ export async function showLeafletMap({
     )
   );
 
-  addFullScreenButton(map);
   addPrintMapButton(map);
   rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
 
@@ -157,7 +146,7 @@ function rememberSelectedBaseLayers(
   const cacheName = `currentLayer${cacheSalt}` as const;
   const currentLayer = cache.get('leaflet', cacheName);
   const baseLayer =
-    (currentLayer !== false && currentLayer in layers
+    (typeof currentLayer === 'string' && currentLayer in layers
       ? layers[currentLayer]
       : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
   baseLayer.addTo(map);
@@ -176,7 +165,7 @@ function rememberSelectedOverlays(
     const layerName = Object.entries(layers).find(
       ([_, layerObject]) => layerObject === layer
     )?.[0];
-    if (typeof layerName !== 'undefined')
+    if (typeof layerName === 'string')
       cache.set(
         'leaflet',
         `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
@@ -201,31 +190,17 @@ function rememberSelectedOverlays(
   map.on('overlayremove', handleOverlayEvent);
 }
 
-function addFullScreenButton(map: L.Map): void {
+export function addFullScreenButton(
+  map: L.Map,
+  callback: (isEnabled: boolean) => void
+): void {
   // @ts-expect-error
-  new L.Control.FullScreen({ position: 'topleft' }).addTo(map);
+  new L.Control.FullScreen({ position: 'topleft', callback }).addTo(map);
 }
 
 function addPrintMapButton(map: L.Map): void {
   // @ts-expect-error
   new L.Control.PrintMap({ position: 'topleft' }).addTo(map);
-}
-
-function addDetailsButton(
-  container: HTMLDivElement,
-  map: L.Map,
-  [header, details]: [string, string]
-): Element {
-  // @ts-expect-error
-  L.control.details = (options) => new L.Control.Details(options);
-  // @ts-expect-error
-  L.control.details({ position: 'topleft' }).addTo(map);
-  const detailsContainer = container.getElementsByClassName(
-    'leaflet-details-container'
-  )[0];
-  detailsContainer.getElementsByTagName('summary')[0].textContent = header;
-  detailsContainer.getElementsByTagName('span')[0].innerHTML = details;
-  return detailsContainer;
 }
 
 const markerLayerName = [
@@ -291,14 +266,17 @@ export function addMarkersToMap(
           L.FeatureGroup
         ]
     )
-  ) as RR<MarkerLayerName, L.FeatureGroup>;
+  );
+
+  const groupsWithMarkers = new Set<string>();
 
   // Sort markers by layer groups
   markers.forEach((markers) =>
     Object.entries(markers).forEach(([markerGroupName, markers]) =>
-      (markers as Marker[]).forEach((marker) =>
-        layerGroups[markerGroupName as MarkerLayerName].addLayer(marker)
-      )
+      (markers as RA<Marker>).forEach((marker) => {
+        layerGroups[markerGroupName].addLayer(marker);
+        groupsWithMarkers.add(markerGroupName);
+      })
     )
   );
 
@@ -307,42 +285,40 @@ export function addMarkersToMap(
     [preferredOverlay]: true,
   });
 
-  const layerLabels: Exclude<typeof labels, undefined> =
-    typeof labels === 'undefined'
-      ? {
-          marker: localityText('occurrencePoints'),
-          polygon: localityText('occurrencePolygons'),
-          polygonBoundary: localityText('polygonBoundaries'),
-          errorRadius: localityText('errorRadius'),
-        }
-      : labels;
+  const defaultLabels = {
+    marker: localityText('occurrencePoints'),
+    polygon: localityText('occurrencePolygons'),
+    polygonBoundary: localityText('polygonBoundaries'),
+    errorRadius: localityText('errorRadius'),
+  };
+
   // Add layer groups' checkboxes to the layer control menu
-  Object.entries(layerLabels).forEach(([key, label]) =>
-    controlLayers.addOverlay(layerGroups[key as MarkerLayerName], label)
-  );
+  Object.entries(labels ?? defaultLabels)
+    .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
+    .forEach(([key, label]) =>
+      controlLayers.addOverlay(layerGroups[key], label ?? defaultLabels[key])
+    );
 }
 
 export function isValidAccuracy(
   latlongaccuracy: string | undefined
 ): latlongaccuracy is string {
   try {
-    if (
-      typeof latlongaccuracy === 'undefined' ||
-      Number.isNaN(Number.parseFloat(latlongaccuracy)) ||
-      Number.parseFloat(latlongaccuracy) < 1
-    )
-      return false;
+    return (
+      typeof latlongaccuracy !== 'undefined' &&
+      !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
+      Number.parseFloat(latlongaccuracy) >= 1
+    );
   } catch {
     return false;
   }
-  return true;
 }
 
 export type MarkerGroups = {
-  readonly marker: L.Marker[];
-  readonly polygon: (L.Polygon | L.Polyline)[];
-  readonly polygonBoundary: L.Marker[];
-  readonly errorRadius: L.Circle[];
+  readonly marker: RA<L.Marker>;
+  readonly polygon: RA<L.Polygon | L.Polyline>;
+  readonly polygonBoundary: RA<L.Marker>;
+  readonly errorRadius: RA<L.Circle>;
 };
 type Marker = L.Marker | L.Polygon | L.Polyline | L.Circle;
 
@@ -369,7 +345,7 @@ export const formatLocalityData = (
       )
       .filter(
         (entry): entry is [string, Field<string | number>] =>
-          typeof entry[1] !== 'undefined' && entry[1].value !== ''
+          typeof entry[1] === 'object' && entry[1].value !== ''
       )
       .map(([fieldName, field]) =>
         splitJoinedMappingPath(fieldName).includes('taxon')
@@ -383,7 +359,14 @@ export const formatLocalityData = (
           <a
             href="${viewUrl}"
             target="_blank"
-          >${localityText('viewRecord')}</a>`,
+            title="${commonText('opensInNewTab')}"
+          >
+            ${commonText('viewRecord')}
+            <span
+              title="${commonText('opensInNewTab')}"
+              aria-label="${commonText('opensInNewTab')}"
+            >${legacyNonJsxIcons.link}</span>
+          </a>`,
         ]
       : []),
   ].join('<br>');
@@ -397,7 +380,9 @@ export function getMarkersFromLocalityData({
   readonly markerClickCallback?: string | L.LeafletEventHandlerFn;
   readonly iconClass?: string;
 }): MarkerGroups {
-  const markers: MarkerGroups = {
+  const markers: {
+    readonly [KEY in keyof MarkerGroups]: MarkerGroups[KEY][number][];
+  } = {
     marker: [],
     polygon: [],
     polygonBoundary: [],
@@ -430,7 +415,7 @@ export function getMarkersFromLocalityData({
     return markers;
 
   const icon = new L.Icon.Default();
-  if (typeof iconClass !== 'undefined') icon.options.className = iconClass;
+  if (typeof iconClass === 'string') icon.options.className = iconClass;
 
   const createPoint = (latitude1: number, longitude1: number): L.Marker =>
     L.marker([latitude1, longitude1], {
@@ -485,94 +470,4 @@ export function getMarkersFromLocalityData({
     });
 
   return markers;
-}
-
-export type LayerConfig = {
-  readonly transparent: boolean;
-  readonly layerLabel: string;
-  readonly isDefault: boolean;
-  readonly tileLayer: {
-    readonly mapUrl: string;
-    readonly options: IR<unknown>;
-  };
-};
-
-export async function showCOMap(
-  mapContainer: Readonly<HTMLDivElement>,
-  listOfLayersRaw: RA<LayerConfig>,
-  details: [string, string] | undefined = undefined
-): Promise<[L.Map, L.Control.Layers, HTMLDivElement | undefined]> {
-  const tileLayers = await getLeafletLayers();
-
-  const listOfLayers: {
-    readonly transparent: boolean;
-    readonly layerLabel: string;
-    readonly tileLayer: L.TileLayer.WMS | L.TileLayer;
-  }[] = [
-    ...Object.entries(tileLayers.baseMaps).map(([layerLabel, tileLayer]) => ({
-      transparent: false,
-      layerLabel,
-      tileLayer,
-    })),
-    ...listOfLayersRaw.map(
-      ({ transparent, layerLabel, tileLayer: { mapUrl, options } }) => ({
-        transparent,
-        layerLabel,
-        tileLayer: L.tileLayer.wms(mapUrl, options),
-      })
-    ),
-    ...Object.entries(tileLayers.overlays).map(([layerLabel, tileLayer]) => ({
-      transparent: true,
-      layerLabel,
-      tileLayer,
-    })),
-  ];
-
-  const formatLayersDict = (
-    listOfLayers: {
-      transparent: boolean;
-      layerLabel: string;
-      tileLayer: L.TileLayer.WMS | L.TileLayer;
-    }[]
-  ) =>
-    Object.fromEntries(
-      listOfLayers.map(({ layerLabel, tileLayer }) => [layerLabel, tileLayer])
-    );
-
-  const overlayLayers = formatLayersDict(
-    listOfLayers.filter(({ transparent }) => transparent)
-  );
-  const baseLayers = formatLayersDict(
-    listOfLayers.filter(({ transparent }) => !transparent)
-  );
-
-  const map = L.map(mapContainer).setView([0, 0], 1);
-
-  const layerGroup = L.control.layers(baseLayers, overlayLayers);
-  layerGroup.addTo(map);
-
-  addFullScreenButton(map);
-  addPrintMapButton(map);
-  rememberSelectedBaseLayers(map, baseLayers, 'CoMap');
-  rememberSelectedOverlays(map, overlayLayers, {
-    [preferredOverlay]: true,
-    ...Object.fromEntries(
-      Object.keys(tileLayers.overlays).map((label) => [label, true])
-    ),
-  });
-
-  listOfLayersRaw
-    .filter(({ transparent, isDefault }) => transparent && isDefault)
-    .forEach(({ layerLabel }) => {
-      overlayLayers[layerLabel].addTo(map);
-    });
-
-  if (typeof details !== 'undefined')
-    return [
-      map,
-      layerGroup,
-      addDetailsButton(mapContainer, map, details) as HTMLDivElement,
-    ];
-
-  return [map, layerGroup, undefined];
 }

@@ -1,9 +1,10 @@
 "use strict";
 
 
-var _ = require('underscore');
+import _ from 'underscore';
+import {f} from './functools';
 
-function Coord(flt) {
+export function Coord(flt) {
     // construct a coordinate from a single floating point number.
     flt = flt || 0.0;
     this._sign = Math.sign(flt);
@@ -18,11 +19,10 @@ _.extend(Coord.prototype, {
             if (i > 0 && Math.abs(x) >= 60) return false;
         }
         const decDegs = this.toDegs();
-        if (Math.abs(decDegs._components[0]) > 180) return false;
-        return true;
+        return Math.abs(decDegs._components[0]) <= 180;
     },
-    format() {
-        return (this._sign < 0 ? "-" : "") + format(this._components);
+    format(step) {
+        return (this._sign < 0 ? "-" : "") + format(this._components, step);
     },
     _adjustTerms(n) {
         const result = Object.create(this);
@@ -64,8 +64,9 @@ Coord.parse = function(str) {
     return result && result.isValid() ? result : null;
 };
 
+export default Coord.parse;
 
-function Lat(flt) {
+export function Lat(flt) {
     Coord.call(this, flt);
 }
 
@@ -75,9 +76,9 @@ Lat.prototype = _.extend(new Coord(), {
         if (Math.abs(decDegs._components[0]) > 90) return false;
         return Coord.prototype.isValid.call(this);
     },
-    format() {
+    format(step) {
         const dir = this._sign < 0 ? 'S' : 'N';
-        return [format(this._components), dir].join(' ');
+        return [format(this._components, step), dir].join(' ');
     },
     asLong() { return null; }
 });
@@ -88,14 +89,14 @@ Lat.parse = function(str) {
 };
 
 
-function Long(flt) {
+export function Long(flt) {
     Coord.call(this, flt);
 }
 
 Long.prototype = _.extend(new Coord(), {
-    format() {
+    format(step) {
         const dir = this._sign < 0 ? 'W' : 'E';
-        return [format(this._components), dir].join(' ');
+        return [format(this._components, step), dir].join(' ');
     },
     asLat() { return null; }
 });
@@ -121,9 +122,12 @@ function adjustTerms(x, n) {
     return x;
 }
 
-function format(ll) {
+function format(ll, step) {
+    const digits = ll.map(digit=>
+        typeof step === 'number' ? f.round(digit, step) : digit
+    );
     const signs = _(['° ', "' ", '" ']).first(ll.length);
-    return _(ll).chain().zip(signs).flatten().value().join('').trim();
+    return _(digits).chain().zip(signs).flatten().value().join('').trim();
 }
 
 function makeLatLong(sign, comps, dir) {
@@ -179,6 +183,4 @@ function parse(str) {
     }
     return null; // No parser succeeded.
 }
-
-module.exports =  { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
 

@@ -7,15 +7,23 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 
-from ..specify.models import Collection
+from ..specify.models import Collection, Recordset
 from ..specify.api import toJson, uri_for_model
 from ..specify.views import login_maybe_required, apply_access_control
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, check_table_permissions
 
 from . import models
 from .queryfield import QueryField
 from .execution import execute, run_ephemeral_query, do_export, recordset
 
 logger = logging.getLogger(__name__)
+
+class QueryBuilderPt(PermissionTarget):
+    resource = "/querybuilder/query"
+    execute = PermissionTargetAction()
+    export_csv = PermissionTargetAction()
+    export_kml = PermissionTargetAction()
+    create_recordset = PermissionTargetAction()
 
 def value_from_request(field, get):
     try:
@@ -30,6 +38,7 @@ def query(request, id):
     """Executes and returns the results of query with id <id>.
     'limit' and 'offset' may be provided as GET parameters.
     """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
 
@@ -53,6 +62,7 @@ def query(request, id):
 @never_cache
 def ephemeral(request):
     """Executes and returns the results of the query provided as JSON in the POST body."""
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -66,6 +76,8 @@ def ephemeral(request):
 @never_cache
 def export_csv(request):
     """Executes and return as CSV the results of the query provided as JSON in the POST body."""
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.export_csv])
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -91,6 +103,8 @@ def export_csv(request):
 @never_cache
 def export_kml(request):
     """Executes and return as KML the results of the query provided as JSON in the POST body."""
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.export_kml])
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -100,7 +114,7 @@ def export_kml(request):
 
     abs_uri = request.build_absolute_uri('')
     the_host = abs_uri.replace(request.path_info,'')
-    
+
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
         logger.debug('forcing collection to %s', collection.collectionname)
@@ -122,6 +136,9 @@ def make_recordset(request):
     """Executes the query provided as JSON in the POST body and creates a
     recordset of the result. Redirects to the URL of the created recordset.
     """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
+    check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
     try:
         recordset_info = json.load(request)
     except ValueError as e:

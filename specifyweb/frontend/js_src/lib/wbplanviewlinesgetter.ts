@@ -1,10 +1,19 @@
+/**
+ * Helps create initial WbPlanView state based on Upload Plan or Data Set
+ * headers
+ *
+ * @module
+ *
+ */
+
 import type { AutoMapperResults } from './automapper';
-import Automapper from './automapper';
-import type { IR, RA } from './components/wbplanview';
+import { AutoMapper } from './automapper';
 import type { MappingLine } from './components/wbplanviewmapper';
-import type { ColumnOptions, UploadPlan } from './uploadplantomappingstree';
-import { uploadPlanToMappingsTree } from './uploadplantomappingstree';
-import { mappingsTreeToArrayOfSplitMappings } from './wbplanviewtreehelper';
+import type { Tables } from './datamodel';
+import type { IR, RA } from './types';
+import type { ColumnOptions, UploadPlan } from './uploadplanparser';
+import { parseUploadPlan } from './uploadplanparser';
+import { f } from './functools';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -19,71 +28,78 @@ export const columnOptionsAreDefault = (
     ([key, value]) => defaultColumnOptions[key as keyof ColumnOptions] === value
   );
 
+/** Produce WbPlanView line and (optionally) run autoMapper s*/
 export function getLinesFromHeaders({
   headers = [],
-  runAutomapper,
-  baseTableName = '',
+  runAutoMapper,
+  baseTableName = undefined,
 }: {
   readonly headers?: RA<string>;
 } & (
   | {
-      readonly runAutomapper: true;
-      readonly baseTableName: string;
+      readonly runAutoMapper: true;
+      readonly baseTableName: keyof Tables;
     }
   | {
-      readonly runAutomapper: false;
-      readonly baseTableName?: string;
+      readonly runAutoMapper: false;
+      readonly baseTableName?: keyof Tables;
     }
 )): RA<MappingLine> {
   const lines = headers.map(
     (headerName): MappingLine => ({
       mappingPath: ['0'],
-      mappingType: 'existingHeader',
       headerName,
       columnOptions: defaultColumnOptions,
     })
   );
 
-  if (!runAutomapper || typeof baseTableName === 'undefined') return lines;
+  if (!runAutoMapper || typeof baseTableName === 'undefined') return lines;
 
-  const automapperResults: AutoMapperResults = new Automapper({
+  const autoMapperResults: AutoMapperResults = new AutoMapper({
     headers,
     baseTable: baseTableName,
-    scope: 'automapper',
+    scope: 'autoMapper',
+    getMappedFields: f.array,
   }).map();
 
   return lines.map((line) => {
     const { headerName } = line;
-    const automapperMappingPaths = automapperResults[headerName];
-    return typeof automapperMappingPaths === 'undefined'
-      ? line
-      : {
-          mappingPath: automapperMappingPaths[0],
-          mappingType: 'existingHeader',
+    const autoMapperMappingPaths = autoMapperResults[headerName];
+    return Array.isArray(autoMapperMappingPaths)
+      ? {
+          mappingPath: autoMapperMappingPaths[0],
           headerName,
           columnOptions: defaultColumnOptions,
-        };
+        }
+      : line;
   });
 }
 
+/**
+ * Get WbPlanView lines from UploadPlan and data set headers
+ * Handles cases when UploadPlan from a different Data Set is reused:
+ *  - All headers present in the Data Set are included in the same order
+ *  - Headers present in the upload plan, but not in the Data Set are dropped
+ *  - Headers present in the Data Set but not in upload plan are included in
+ *    order (without AutoMapping)
+ */
 export function getLinesFromUploadPlan(
-  originalHeaders: RA<string> = [],
+  originalHeaders: RA<string>,
   uploadPlan: UploadPlan
 ): {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 } {
-  const { baseTableName, mappingsTree, mustMatchPreferences } =
-    uploadPlanToMappingsTree(originalHeaders, uploadPlan);
+  const { baseTable, lines, mustMatchPreferences } =
+    parseUploadPlan(uploadPlan);
 
-  const mappingLines = mappingsTreeToArrayOfSplitMappings(mappingsTree);
+  const headers =
+    originalHeaders.length === 0
+      ? lines.map(({ headerName }) => headerName)
+      : originalHeaders;
 
-  let headers = originalHeaders;
-  if (headers.length === 0)
-    headers = mappingLines.map(({ headerName }) => headerName);
-
-  const lines = mappingLines
+  const newLines = lines
     .map((splitMappingPath) => ({
       ...splitMappingPath,
       headerIndex: headers.indexOf(splitMappingPath.headerName),
@@ -94,17 +110,17 @@ export function getLinesFromUploadPlan(
         lines[headerIndex] = splitMappingPath;
         return lines;
       },
-      [
-        ...getLinesFromHeaders({
+      Array.from(
+        getLinesFromHeaders({
           headers,
-          runAutomapper: false,
-        }),
-      ]
+          runAutoMapper: false,
+        })
+      )
     );
 
   return {
-    baseTableName,
-    lines,
+    baseTableName: baseTable.name,
+    lines: newLines,
     mustMatchPreferences,
   };
 }

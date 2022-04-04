@@ -1,59 +1,54 @@
-import type { RR } from './components/wbplanview';
-import { snFrontendServer, snServer } from './lifemapperconfig';
-import lifemapperText from './localization/lifemapper';
+import type { CollectionObject } from './datamodel';
+import type { SpecifyResource } from './legacytypes';
+import { snServer } from './lifemapperconfig';
+import type { IR, RA } from './types';
 
 export const fetchLocalScientificName = async (
-  model: any,
+  model: SpecifyResource<CollectionObject>,
   defaultValue = ''
 ): Promise<string> =>
-  new Promise((resolve) => {
-    model
-      .rget('determinations')
-      .done(({ models: determinations }: any) =>
-        determinations.length === 0
-          ? resolve(defaultValue)
-          : determinations[0]
-              .rget('preferredTaxon.fullname')
-              .done((scientificName: string) =>
-                resolve(scientificName === null ? defaultValue : scientificName)
-              )
-      );
-  });
+  model.rgetCollection('determinations').then(({ models: determinations }) =>
+    determinations.length === 0
+      ? defaultValue
+      : determinations[0]
+          .rgetPromise('preferredTaxon')
+          .then((preferredTaxon) => preferredTaxon?.get('fullName'))
+          .then((scientificName) =>
+            typeof scientificName === 'string' ? scientificName : defaultValue
+          )
+  );
 
 export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,
   speciesName: string
 ): string =>
-  `${snFrontendServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}`;
+  `${snServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}&origin=${window.location.origin}`;
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
-export const formatIconRequest = (
-  providerName: string,
-  icon_status: 'active' | 'inactive' | 'hover'
-): string =>
-  `${snServer}/api/v1/badge?provider=${providerName}&icon_status=${icon_status}`;
-
-export const formatOccurrenceMapRequest = (
-  occurrenceScientificName: string
-): string =>
-  `${snServer}/api/v1/map/${encodeURIComponent(
-    occurrenceScientificName
-  )}?provider=lm`;
-
-export type LifemapperLayerTypes = 'vector' | 'raster';
-
-export const lifemapperLayerVariations: RR<
-  LifemapperLayerTypes,
-  { layerLabel: string; transparent: boolean; opacity?: number }
-> = {
-  raster: {
-    layerLabel: lifemapperText('projection'),
-    transparent: true,
-  },
-  vector: {
-    layerLabel: lifemapperText('occurrencePoints'),
-    transparent: true,
-  },
-};
+export async function fetchOccurrenceName(
+  model: SpecifyResource<CollectionObject>
+): Promise<string> {
+  return fetch(formatOccurrenceDataRequest(model.get('guid')), {
+    mode: 'cors',
+  })
+    .then(async (response) => response.json())
+    .then(
+      (response: {
+        readonly records: RA<{
+          readonly records: RA<IR<string>>;
+        }>;
+      }) =>
+        response.records
+          .filter(({ records }) => records.length > 0)
+          .map(({ records }) => records[0]['dwc:scientificName'])
+          .find((occurrenceName) => occurrenceName)
+    )
+    .catch(console.error)
+    .then(
+      (remoteOccurrence) => remoteOccurrence ?? fetchLocalScientificName(model)
+    )
+    .catch(console.error)
+    .then((occurrenceName) => occurrenceName ?? '');
+}

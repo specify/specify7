@@ -1,15 +1,20 @@
+import hmac
+import json
+import logging
+import requests
+import time
+from django.conf import settings
+from django.http import HttpResponse
+from django.utils.translation import gettext as _
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_http_methods
+from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
-from os.path import splitext
-import requests, time, hmac, json
-
-from django.http import HttpResponse
-from django.views.decorators.http import require_GET
-from django.views.decorators.cache import cache_control
-from django.conf import settings
-from django.utils.translation import gettext as _
 
 from specifyweb.specify.views import login_maybe_required, openapi
+
+logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
@@ -45,7 +50,7 @@ def get_collection():
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def get_settings(request):
     "Returns settings needed to access the asset server for this Specify instance."
@@ -77,7 +82,7 @@ def get_settings(request):
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def get_token(request):
     "Returns an asset server access token. Must be supplied 'filename' GET parameter."
     filename = request.GET['filename']
@@ -106,7 +111,7 @@ def get_token(request):
     }
 })
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def get_upload_params(request):
     "Returns information for uploading a file with GET parameter 'filename' to the asset server."
     filename = request.GET['filename']
@@ -157,10 +162,12 @@ def init():
     global server_urls
 
     if settings.WEB_ATTACHMENT_URL in (None, ''):
+        logger.info('Asset server is not configured')
         return
 
     r = requests.get(settings.WEB_ATTACHMENT_URL)
     if r.status_code != 200:
+        logger.error('Failed fetching asset server configuration')
         return
 
     update_time_delta(r)
@@ -168,6 +175,7 @@ def init():
     try:
         urls_xml = ElementTree.fromstring(r.text)
     except:
+        logger.error('Failed parsing the response')
         return
 
     server_urls = {url.attrib['type']: url.text
@@ -175,7 +183,8 @@ def init():
 
     try:
         test_key()
-    except AttachmentError:
+    except AttachmentError as error:
+        logger.error('%s', str(error))
         server_urls = None
 
 def test_key():
@@ -187,9 +196,9 @@ def test_key():
     if r.status_code == 200:
         return
     elif r.status_code == 403:
-        raise AttachmentError(_("Bad attachment key."))
+        raise AttachmentError("Bad attachment key.")
     else:
-        raise AttachmentError(_("Attachment key test failed."))
+        raise AttachmentError("Attachment key test failed.")
 
 init()
 

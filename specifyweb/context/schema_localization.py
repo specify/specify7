@@ -1,31 +1,114 @@
-from collections import defaultdict
-import json
+import logging
+logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.db import connection
 
-from specifyweb.specify.models import (
-    Splocalecontainer as Container,
-    Splocalecontaineritem as Item,
-    Splocaleitemstr as SpString)
 
-schema_localization_cache = {}
+def get_schema_languages():
+    cursor = connection.cursor()
 
-def get_schema_localization(collection, schematype):
+    cursor.execute("""
+    SELECT DISTINCT
+        lower(`language`),
+        lower(`country`),
+        lower(`variant`)
+    FROM splocaleitemstr;
+    """)
+
+    return list(cursor.fetchall())
+
+def get_schema_localization(collection, schematype, lang):
     disc = collection.discipline
-    if (disc, schematype) in schema_localization_cache:
-        return schema_localization_cache[(disc, schematype)]
-
-    lang = settings.SCHEMA_LANGUAGE
+    language, country = lang.lower().split('-') if '-' in lang else (lang, None)
 
     cursor = connection.cursor()
-    cursor.execute("""
-    select name, format, ishidden!=0, isuiformatter, picklistname, type, aggregator, defaultui, n.text, d.text
+
+    # # It's possible to generate the json in the DB as follows:
+
+    # cursor.execute("""
+    # select json_objectagg(
+    #   name, json_object(
+    #     'format', format,
+    #     'ishidden', ishidden != 0,
+    #     'isuiformatter', isuiformatter != 0,
+    #     'picklistname', picklistname,
+    #     'type', type,
+    #     'aggregator', aggregator,
+    #     'defaultui', defaultui,
+    #     'name', n.text,
+    #     'desc', d.text,
+    #     'items', json_merge('{}', items.items)
+    # ))
+    # from splocalecontainer
+    # left outer join (
+    #        select splocalecontainerid, json_objectagg(
+    #        lower(name), json_object(
+    #          'format', format,
+    #          'ishidden', ishidden != 0,
+    #          'isuiformatter', isuiformatter != 0,
+    #          'picklistname', picklistname,
+    #          'type', type,
+    #          'isrequired', isrequired != 0,
+    #          'weblinkname', weblinkname,
+    #          'name', n.text,
+    #          'desc', d.text
+    #       )) as items
+    #       from splocalecontaineritem item
+    #       left outer join splocaleitemstr n on n.splocalecontaineritemnameid = item.splocalecontaineritemid and n.language = %s
+    #       left outer join splocaleitemstr d on d.splocalecontaineritemdescid = item.splocalecontaineritemid and d.language = %s
+    #       group by splocalecontainerid
+    # ) items using (splocalecontainerid)
+    # left outer join splocaleitemstr n on n.splocalecontainernameid = splocalecontainerid and n.language = %s
+    # left outer join splocaleitemstr d on d.splocalecontainerdescid = splocalecontainerid and d.language = %s
+    # where schematype = %s and disciplineid = %s
+    # """, [lang, lang, lang, lang, schematype, disc.id])
+
+    # return cursor.fetchone()[0]
+
+    cursor.execute(f"""
+    select name, format, ishidden, isuiformatter, picklistname, type, aggregator, defaultui,
+           coalesce({'n1.text, ' if country is not None else ''} n2.text, n3.text, name),
+           coalesce({'d1.text, ' if country is not None else ''} d2.text, d3.text, name)
     from splocalecontainer
-    left outer join splocaleitemstr n on n.splocalecontainernameid = splocalecontainerid and n.language = %s
-    left outer join splocaleitemstr d on d.splocalecontainerdescid = splocalecontainerid and d.language = %s
-    where schematype = %s and disciplineid = %s;
-    """, [lang, lang, schematype, disc.id])
+
+    {'''
+    left outer join splocaleitemstr n1 on n1.splocalecontainernameid = splocalecontainerid
+    and n1.language = %(language)s
+    and n1.country = %(country)s
+    and n1.variant is null
+    '''  if country is not None else ''}
+
+    left outer join splocaleitemstr n2 on n2.splocalecontainernameid = splocalecontainerid
+    and n2.language = %(language)s
+    and n2.country is null
+    and n2.variant is null
+
+    left outer join splocaleitemstr n3 on n3.splocalecontainernameid = splocalecontainerid
+    and n3.language = 'en'
+    and n3.country is null
+    and n3.variant is null
+
+    {'''
+    left outer join splocaleitemstr d1 on d1.splocalecontainerdescid = splocalecontainerid
+    and d1.language = %(language)s
+    and d1.country = %(country)s
+    and d1.variant is null
+    ''' if country is not None else ''}
+
+    left outer join splocaleitemstr d2 on d2.splocalecontainerdescid = splocalecontainerid
+    and d2.language = %(language)s
+    and d2.country is null
+    and d2.variant is null
+
+    left outer join splocaleitemstr d3 on d3.splocalecontainerdescid = splocalecontainerid
+    and d3.language = 'en'
+    and d3.country is null
+    and d3.variant is null
+
+    where schematype = %(schematype)s and disciplineid = %(disciplineid)s
+    order by name
+    """, {'language': language, 'country': country, 'schematype': schematype, 'disciplineid': disc.id})
 
     cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui', 'name', 'desc')
 
@@ -34,22 +117,58 @@ def get_schema_localization(collection, schematype):
         for row in cursor.fetchall()
     }
 
-    cursor.execute("""
+    cursor.execute(f"""
     select container.name, item.name,
-           item.format, item.ishidden!=0, item.isuiformatter, item.picklistname,
-           item.type, item.isrequired, item.weblinkname, n.text, d.text
+           item.format, item.ishidden, item.isuiformatter, item.picklistname,
+           item.type, item.isrequired, item.weblinkname,
+           coalesce({'n1.text, ' if country is not None else ''} n2.text, n3.text, item.name),
+           coalesce({'d1.text, ' if country is not None else ''} d2.text, d3.text, item.name)
     from splocalecontainer container
     inner join splocalecontaineritem item on item.splocalecontainerid = container.splocalecontainerid
-    left outer join splocaleitemstr n on n.splocalecontaineritemnameid = item.splocalecontaineritemid and n.language = %s
-    left outer join splocaleitemstr d on d.splocalecontaineritemdescid = item.splocalecontaineritemid and d.language = %s
-    where schematype = %s and disciplineid = %s;
-    """, [lang, lang, schematype, disc.id])
+
+    {'''
+    left outer join splocaleitemstr n1 on n1.splocalecontaineritemnameid = splocalecontaineritemid
+    and n1.language = %(language)s
+    and n1.country = %(country)s
+    and n1.variant is null
+    '''  if country is not None else ''}
+
+    left outer join splocaleitemstr n2 on n2.splocalecontaineritemnameid = splocalecontaineritemid
+    and n2.language = %(language)s
+    and n2.country is null
+    and n2.variant is null
+
+    left outer join splocaleitemstr n3 on n3.splocalecontaineritemnameid = splocalecontaineritemid
+    and n3.language = 'en'
+    and n3.country is null
+    and n3.variant is null
+
+    {'''
+    left outer join splocaleitemstr d1 on d1.splocalecontaineritemdescid = splocalecontaineritemid
+    and d1.language = %(language)s
+    and d1.country = %(country)s
+    and d1.variant is null
+    ''' if country is not None else ''}
+
+    left outer join splocaleitemstr d2 on d2.splocalecontaineritemdescid = splocalecontaineritemid
+    and d2.language = %(language)s
+    and d2.country is null
+    and d2.variant is null
+
+    left outer join splocaleitemstr d3 on d3.splocalecontaineritemdescid = splocalecontaineritemid
+    and d3.language = 'en'
+    and d3.country is null
+    and d3.variant is null
+
+    where schematype = %(schematype)s and disciplineid = %(disciplineid)s
+    order by item.name
+    """, {'language': language, 'country': country, 'schematype': schematype, 'disciplineid': disc.id})
+
 
     ifields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'isrequired', 'weblinkname', 'name', 'desc')
 
     for row in cursor.fetchall():
         containers[row[0]]['items'][row[1].lower()] = {field: row[i+2] for i, field in enumerate(ifields)}
 
-    sl = schema_localization_cache[(disc, schematype)] = json.dumps(containers)
-    return sl
+    return containers
 

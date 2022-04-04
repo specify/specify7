@@ -19,9 +19,6 @@ DATABASE_PORT = ''
 MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
 
-# Select the schema localization language.
-SCHEMA_LANGUAGE = 'en'
-
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
 

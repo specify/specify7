@@ -18,11 +18,22 @@ from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
 from specifyweb.specify.views import apply_access_control, login_maybe_required, \
     openapi
 from specifyweb.specify import models as specify_models
-from ..notifications.models import Message
+from specifyweb.notifications.models import Message
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
+
+class DataSetPT(PermissionTarget):
+    resource = "/workbench/dataset"
+    create = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+    upload = PermissionTargetAction()
+    unupload = PermissionTargetAction()
+    validate = PermissionTargetAction()
+    transfer = PermissionTargetAction()
 
 def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
     n = ncols + 1 # extra row info such as disambiguation in hidden col at end
@@ -289,6 +300,8 @@ open_api_components = {
 def datasets(request) -> http.HttpResponse:
     """RESTful list of user's WB datasets. POSTing will create a new dataset."""
     if request.method == "POST":
+        check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.create])
+
         data = json.load(request)
 
         columns = data['columns']
@@ -464,6 +477,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
 
         if request.method == "PUT":
+            check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.update])
             attrs = json.load(request)
 
             if 'name' in attrs:
@@ -503,6 +517,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             return http.HttpResponse(status=204)
 
         if request.method == "DELETE":
+            check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.delete])
             if ds.uploaderstatus != None:
                 return http.HttpResponse('dataset in use by uploader', status=409)
             ds.delete()
@@ -581,6 +596,7 @@ def rows(request, ds_id: str) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     if request.method == "PUT":
+        check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.update])
         if ds.uploaderstatus is not None:
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if ds.was_uploaded():
@@ -627,8 +643,9 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    if request.specify_user.usertype != 'Manager' and not no_commit:
-        return http.HttpResponseForbidden("Only manager users may upload data sets.")
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+        DataSetPT.validate if no_commit else DataSetPT.upload
+    ])
 
     with transaction.atomic():
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
@@ -684,8 +701,7 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    if request.specify_user.usertype != 'Manager':
-        return http.HttpResponseForbidden("Only manager users may un-upload data sets.")
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.unupload])
 
     with transaction.atomic():
         ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
@@ -894,6 +910,7 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
 @require_POST
 def validate_row(request, ds_id: str) -> http.HttpResponse:
     "Validates a single row for dataset <ds_id>. The row data is passed as POST parameters."
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.validate])
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     collection = request.specify_collection
     bt, upload_plan = uploader.get_ds_upload_plan(collection, ds)
@@ -963,6 +980,8 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
     """Transfer dataset's ownership to a different user."""
     if 'specifyuserid' not in request.POST:
         return http.HttpResponseBadRequest("missing parameter: specifyuserid")
+
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.transfer])
 
     ds = get_object_or_404(models.Spdataset, id=ds_id)
     if ds.specifyuser != request.specify_user:

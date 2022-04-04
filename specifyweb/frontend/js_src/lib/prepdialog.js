@@ -1,49 +1,47 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var schema = require('./schema.js');
-var s      = require('./stringlocalization.js');
-const formsText = require('./localization/forms').default;
+import {schema} from './schema';
+import * as s from './stringlocalization';
+import formsText from './localization/forms';
+import {showDialog} from './components/modaldialog';
 
 
-module.exports =  Backbone.View.extend({
+export default Backbone.View.extend({
     __name__: "PrepDialog",
-    className: "prepdialog table-list-dialog",
     initialize() {
         Object.assign(this, {
-            colobjModel: schema.getModel("collectionobject"),
-            detModel: schema.getModel("determination"),
-            prepModel: schema.getModel("preparation"),
-            loanModel: schema.getModel("loan"),
-            giftModel: schema.getModel("gift"),
-            exchModel: schema.getModel("exchangeout")
+            colobjModel: schema.models.CollectionObject,
+            detModel: schema.models.Determination,
+            prepModel: schema.models.Preparation,
+            loanModel: schema.models.Loan,
+            giftModel: schema.models.Gift,
+            exchModel: schema.models.ExchangeOut
         });
     },
 
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         render: function() {
-            var table = $('<table>');
+            var table = $('<table class="w-full">');
             table.append(this.getTblHdr());
+            const tbody = $('<tbody>').appendTo(table);
             var makeEntry = this.dialogEntry.bind(this);
             _.each(this.options.preps, function(prep, index) {
                 _.each(makeEntry(prep, index), function(entry) {
-                    table.append(entry);
+                    tbody.append(entry);
                 });
             });
             this.$el.append(table);
-            this.$el.dialog({
-                modal: true,
-                close: function() { $(this).remove(); },
-                title: formsText('preparationsDialogTitle'),
-                maxHeight: 700,
-                width: 600,
-                buttons: this.buttons()
+            this.dialog = showDialog({
+                header: formsText('preparationsDialogTitle'),
+                buttons: this.buttons(),
+                onClose: ()=>this.dialog.remove(),
+                content: this.el,
             });
-            this.finishRender();
 
             return this;
         },

@@ -1,19 +1,15 @@
-import type { RA } from './components/wbplanview';
+/**
+ * Makes WB headers unique
+ *
+ * @module
+ */
+
 import type { MappingLine } from './components/wbplanviewmapper';
 import wbText from './localization/workbench';
+import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
-
-const formatUniqueifiedHeader = (
-  headers: RA<string>,
-  header: string,
-  initialIndex: number
-): string =>
-  `${header} (${
-    initialIndex +
-    (Array.from(Array.from({ length: 2 ** 10 }), (_, index) => index).find(
-      (index) => !headers.includes(`${header} (${initialIndex + index})`)
-    ) ?? 2 ** 10 + Math.floor(Math.random() * 2 ** 11))
-  })`;
+import { Tables } from './datamodel';
+import { getUniqueName } from './wbuniquifyname';
 
 export const uniquifyHeaders = (
   headers: RA<string>,
@@ -25,23 +21,11 @@ export const uniquifyHeaders = (
       headers.indexOf(header) === index ||
       (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
         ? header
-        : formatUniqueifiedHeader(
-            headers,
-            header,
-            headers
-              .slice(0, index)
-              .reduce(
-                (numberOfOccurrences, headerOccurrence) =>
-                  header === headerOccurrence
-                    ? numberOfOccurrences + 1
-                    : numberOfOccurrences,
-                0
-              ) + 1
-          )
+        : getUniqueName(header, headers)
     );
 
 export function renameNewlyCreatedHeaders(
-  baseTableName: string,
+  baseTableName: keyof Tables,
   headers: RA<string>,
   lines: RA<MappingLine>
 ): RA<MappingLine> {

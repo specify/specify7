@@ -1,16 +1,19 @@
-/*
- * TileServers and WMS servers that Leaflet should use
+/**
+ * TileServers and WMS servers that Leaflet should use as well as configuration
+ * for which fields to display in the pop-up bubbles
+ *
+ * @module
  *
  */
 
-import type { IR, RA, RR } from './components/wbplanview';
 import type { MappingPath } from './components/wbplanviewmapper';
 import L from './leafletextend';
+import type { IR, RA, RR } from './types';
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.6.0/leaflet-layers.json';
+  'https://files.specifysoftware.org/specify7/7.6.2/leaflet-layers.json';
 
-/*
+/**
  *
  * These layers are only used when:
  *  * Leaflet failed to fetch layers from:
@@ -23,7 +26,8 @@ export const leafletLayersEndpoint =
  * Documentation:
  * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
  *
- *
+ * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
+ * dark mode
  */
 export const leafletTileServers: RR<
   'baseMaps' | 'overlays',
@@ -35,7 +39,10 @@ export const leafletTileServers: RR<
       {
         maxZoom: 19,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="https://www.openstreetmap.org/copyright"' +
+          ' target="_blank">OpenStreetMap</a> contributors',
+        // Smartly inverts leaflet layer's color scheme when in dark-mode:
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Street Map (ESRI)': L.tileLayer(
@@ -44,6 +51,7 @@ export const leafletTileServers: RR<
         maxZoom: 23,
         attribution:
           'Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community',
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Topographic Map (ESRI)': L.tileLayer(
@@ -52,6 +60,7 @@ export const leafletTileServers: RR<
         maxZoom: 23,
         attribution:
           'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
+        className: 'dark:invert-leaflet-layer',
       }
     ),
     'Satellite Map (ESRI)': L.tileLayer(
@@ -66,7 +75,8 @@ export const leafletTileServers: RR<
       'https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
       {
         attribution:
-          '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+          '<a target="_blank" href="https://www.geoportail.gouv.fr/">' +
+          'Geoportail France</a>',
         bounds: [
           [-75, -180],
           [81, 180],
@@ -84,7 +94,8 @@ export const leafletTileServers: RR<
       {
         maxZoom: 20,
         attribution:
-          'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>',
+          'Tiles courtesy of the <a href="https://usgs.gov/"' +
+          ' target="_blank">U.S. Geological Survey</a>',
       }
     ),
     'Live Satellite Map (NASA/GIBS)': L.tileLayer(
@@ -92,7 +103,9 @@ export const leafletTileServers: RR<
       {
         attribution:
           'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System ' +
-          '(<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+          '(<a href="https://earthdata.nasa.gov" target="_blank">ESDIS</a>)' +
+          ' with' +
+          ' funding provided by NASA/HQ.',
         bounds: [
           [-85.051_128_777_6, -179.999_999_975],
           [85.051_128_777_6, 179.999_999_975],
@@ -121,7 +134,7 @@ export const leafletTileServers: RR<
 export const preferredBaseLayer = 'Satellite Map (ESRI)';
 export const preferredOverlay = 'Labels and boundaries';
 
-// These fields should be present for locality to be mappable
+/* These fields should be present for locality to be mappable */
 export const requiredLocalityColumns: RA<string> = [
   'locality.latitude1',
   'locality.longitude1',
@@ -135,7 +148,7 @@ export const mappingLocalityColumns: RA<string> = [
   'locality.latlongaccuracy',
 ];
 
-/*
+/**
  * The fields to display in a Leaflet pin's pop-up box
  * `pathToRelationship` is a mappingPath that shows how to get from
  * the table that contains the field to the locality table and vice versa.
@@ -146,13 +159,12 @@ export const mappingLocalityColumns: RA<string> = [
  * The order of fields in this array would determine the order in the pop-up
  * window
  */
-
 export type LocalityPinFields = {
   readonly pathToRelationship: MappingPath;
   readonly pathsToFields: RA<MappingPath>;
 };
 
-/*
+/**
  * Applies only to the Leaflet map on the Locality form and the CO
  *  Lifemapper badge.
  * Defined the maximum number of -to-many records to fetch at any point of the
@@ -161,7 +173,7 @@ export type LocalityPinFields = {
  */
 export const MAX_TO_MANY_INDEX = 10;
 
-/*
+/**
  * NOTE:
  * Leaflet map on the Locality form and the CO Lifemapper badge is going
  * to display `$rank > fullname` for a single rank that is attached to a given

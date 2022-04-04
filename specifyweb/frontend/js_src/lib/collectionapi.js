@@ -1,69 +1,39 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var assert   = require('./assert.js');
-var whenAll  = require('./whenall.js');
+import _ from 'underscore';
+import Backbone from './backbone';
+import {assert} from './assert';
 
 
-    var Base =  Backbone.Collection.extend({
+var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
-        getTotalCount: function() { return $.when(this.length); }
+        getTotalCount: function() { return Promise.resolve(this.length); }
     });
 
     function notSupported() { throw new Error("method is not supported"); }
 
     function fakeFetch() {
         console.error("fetch called on", this);
-        return $.when(null);
+        return Promise.resolve(null);
     }
 
     var collectionapi = {};
-
-    collectionapi.Static = Base.extend({
-        __name__: "StaticCollectionBase",
-        _initialized: false,
-        constructor: function(models, options) {
-            assert(_.isArray(models));
-            Base.call(this, models, options);
-            this._initialized = true;
-        },
-        isComplete: function() { return true; },
-        fetch: fakeFetch,
-        sync: notSupported,
-        add: function() {
-            this._initialized && notSupported();
-            Base.prototype.add.apply(this, arguments);
-        },
-        remove: notSupported,
-        reset: function() {
-            this._initialized && notSupported();
-            Base.prototype.reset.apply(this, arguments);
-        },
-        set: notSupported,
-        push: notSupported,
-        pop: notSupported,
-        unshift: notSupported,
-        shift: notSupported,
-        create: notSupported
-    });
 
     function setupToOne(collection, options) {
         collection.field = options.field;
         collection.related = options.related;
 
         assert(collection.field.model === collection.model.specifyModel, "field doesn't belong to model");
-        assert(collection.field.getRelatedModel() === collection.related.specifyModel, "field is not to related resource");
+        assert(collection.field.relatedModel === collection.related.specifyModel, "field is not to related resource");
     }
 
     collectionapi.Dependent = Base.extend({
         __name__: "DependentCollectionBase",
-        constructor: function(models, options) {
+        constructor: function(options, models=[]) {
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
-        initialize: function(models, options) {
+        initialize: function(_models, options) {
             this.on('add remove', function() {
                 this.trigger('saverequired');
             }, this);
@@ -102,7 +72,7 @@ var whenAll  = require('./whenall.js');
         isComplete: function() {
             return this.length === this._totalCount;
         },
-        parse: function(resp, xhr) {
+        parse: function(resp) {
             var objects;
             if (resp.meta) {
                 this._totalCount = resp.meta.total_count;
@@ -113,7 +83,6 @@ var whenAll  = require('./whenall.js');
                 objects = resp;
             }
 
-            this.hasData = true;
             return objects;
         },
         fetch: function(options) {
@@ -138,17 +107,21 @@ var whenAll  = require('./whenall.js');
 
             _(options).has('limit') && ( options.data.limit = options.limit );
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
-            return self._fetch.then(function() { self._fetch = null; });
+            return self._fetch.then(function() { self._fetch = null; return self; });
+        },
+        fetchPromise(options){
+            // Fetch if not fetching and convert deferred to promise
+            return this._fetch || this.isComplete() || this.related?.isNew() ? Promise.resolve(this) : this.fetch(options);
         },
         fetchIfNotPopulated: function() {
             var _this = this;
-            return (this._neverFetched ? this.fetch() : $.when(null)).pipe(function() {
+            return (this._neverFetched ? this.fetch() : Promise.resolve(null)).then(function() {
                 return _this;
             });
         },
         getTotalCount: function() {
-            if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
-            return this.fetchIfNotPopulated().pipe(function(_this) {
+            if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
+            return this.fetchIfNotPopulated().then(function(_this) {
                 return _this._totalCount;
             });
         }
@@ -156,7 +129,7 @@ var whenAll  = require('./whenall.js');
 
     collectionapi.ToOne = collectionapi.Lazy.extend({
         __name__: "LazyToOneCollectionBase",
-        initialize: function(models, options) {
+        initialize: function(_models, options) {
             setupToOne(this, options);
         },
         fetch: function() {
@@ -168,5 +141,4 @@ var whenAll  = require('./whenall.js');
         }
     });
 
-
-module.exports = collectionapi;
+    export default collectionapi;

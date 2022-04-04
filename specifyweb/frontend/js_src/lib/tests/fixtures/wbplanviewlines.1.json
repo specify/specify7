@@ -3,7 +3,6 @@
   "lines": [
     {
       "mappingPath": ["catalognumber"],
-      "mappingType": "existingHeader",
       "headerName": "BMSM No.",
       "columnOptions": {
         "matchBehavior": "ignoreWhenBlank",
@@ -13,7 +12,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Class", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Class",
       "columnOptions": {
         "matchBehavior": "ignoreAlways",
@@ -23,7 +21,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Superfamily",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -33,7 +30,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Family", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Family",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -43,7 +39,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Genus", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Genus",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -53,7 +48,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Subgenus", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Subgenus",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -63,7 +57,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Species", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Species",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -73,7 +66,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Subspecies", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Subspecies",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -83,7 +75,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Species", "author"],
-      "mappingType": "existingHeader",
       "headerName": "Species Author",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -93,7 +84,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "taxon", "$Subspecies", "author"],
-      "mappingType": "existingHeader",
       "headerName": "Subspecies Author",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -103,7 +93,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "determiner", "firstname"],
-      "mappingType": "existingHeader",
       "headerName": "Who ID First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -113,7 +102,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "determiner", "title"],
-      "mappingType": "existingHeader",
       "headerName": "Determiner 1 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -123,7 +111,6 @@
     },
     {
       "mappingPath": ["determinations", "#2", "determiner", "firstname"],
-      "mappingType": "existingHeader",
       "headerName": "Determiner 1 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -133,7 +120,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "determiner", "middleinitial"],
-      "mappingType": "existingHeader",
       "headerName": "Determiner 1 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -143,7 +129,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "determiner", "lastname"],
-      "mappingType": "existingHeader",
       "headerName": "Determiner 1 Last Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -153,7 +138,6 @@
     },
     {
       "mappingPath": ["determinations", "#2", "determineddate"],
-      "mappingType": "existingHeader",
       "headerName": "ID Date Verbatim",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -163,7 +147,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "determineddate"],
-      "mappingType": "existingHeader",
       "headerName": "ID Date",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -173,7 +156,6 @@
     },
     {
       "mappingPath": ["determinations", "#1", "typestatusname"],
-      "mappingType": "existingHeader",
       "headerName": "ID Status",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -189,7 +171,6 @@
         "$Country",
         "name"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Country",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -205,7 +186,6 @@
         "$State",
         "name"
       ],
-      "mappingType": "existingHeader",
       "headerName": "State/Prov/Pref",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -215,7 +195,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Region",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -225,7 +204,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Site",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -235,7 +213,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Sea Basin",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -251,7 +228,6 @@
         "$Continent",
         "name"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Continent/Ocean",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -261,7 +237,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Date Collected",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -271,7 +246,6 @@
     },
     {
       "mappingPath": ["collectingevent", "startdate"],
-      "mappingType": "existingHeader",
       "headerName": "Start Date Collected",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -281,7 +255,6 @@
     },
     {
       "mappingPath": ["collectingevent", "enddate"],
-      "mappingType": "existingHeader",
       "headerName": "End Date Collected",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -291,7 +264,6 @@
     },
     {
       "mappingPath": ["collectingevent", "method"],
-      "mappingType": "existingHeader",
       "headerName": "Collection Method",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -307,7 +279,6 @@
         "collectingevent",
         "method"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Verbatim Collecting method",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -317,7 +288,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "No. of Specimens",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -327,7 +297,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Live?",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -337,7 +306,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "W/Operc",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -347,7 +315,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Lot Description",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -357,7 +324,6 @@
     },
     {
       "mappingPath": ["preparations", "#1", "preptype", "name"],
-      "mappingType": "existingHeader",
       "headerName": "Prep Type 1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -367,7 +333,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "- Paired valves",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -377,7 +342,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "for bivalves - Single valves",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -387,7 +351,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Habitat",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -397,7 +360,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "minelevation"],
-      "mappingType": "existingHeader",
       "headerName": "Min Depth (M)",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -407,7 +369,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "maxelevation"],
-      "mappingType": "existingHeader",
       "headerName": "Max Depth (M)",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -417,7 +378,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Fossil?",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -427,7 +387,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Stratum",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -437,7 +396,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Sex / Age",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -447,7 +405,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Lot Status",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -457,7 +414,6 @@
     },
     {
       "mappingPath": ["accession", "accessionnumber"],
-      "mappingType": "existingHeader",
       "headerName": "Accession No.",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -467,7 +423,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Original Label",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -477,7 +432,6 @@
     },
     {
       "mappingPath": ["collectingevent", "remarks"],
-      "mappingType": "existingHeader",
       "headerName": "Remarks",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -487,7 +441,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Processed by",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -497,7 +450,6 @@
     },
     {
       "mappingPath": ["cataloger", "lastname"],
-      "mappingType": "existingHeader",
       "headerName": "Cataloged by",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -507,7 +459,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "DateCataloged",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -517,7 +468,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "latitude1"],
-      "mappingType": "existingHeader",
       "headerName": "Latitude1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -527,7 +477,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "latitude2"],
-      "mappingType": "existingHeader",
       "headerName": "Latitude2",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -537,7 +486,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "longitude1"],
-      "mappingType": "existingHeader",
       "headerName": "Longitude1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -547,7 +495,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "longitude2"],
-      "mappingType": "existingHeader",
       "headerName": "Longitude2",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -557,7 +504,6 @@
     },
     {
       "mappingPath": ["collectingevent", "locality", "latlongtype"],
-      "mappingType": "existingHeader",
       "headerName": "Lat Long Type",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -567,7 +513,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Station No.",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -577,7 +522,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Checked by",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -587,7 +531,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Label Printed",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -597,7 +540,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Not for publication on Web",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -607,7 +549,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Realm",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -617,7 +558,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Estimated",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -627,7 +567,6 @@
     },
     {
       "mappingPath": ["0"],
-      "mappingType": "existingHeader",
       "headerName": "Collected Verbatim",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -637,7 +576,6 @@
     },
     {
       "mappingPath": ["collectingevent", "collectors", "#1", "agent", "title"],
-      "mappingType": "existingHeader",
       "headerName": "Collector 1 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -653,7 +591,6 @@
         "agent",
         "firstname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 1 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -669,7 +606,6 @@
         "agent",
         "middleinitial"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 1 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -685,7 +621,6 @@
         "agent",
         "lastname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 1 Last Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -695,7 +630,6 @@
     },
     {
       "mappingPath": ["collectingevent", "collectors", "#2", "agent", "title"],
-      "mappingType": "existingHeader",
       "headerName": "Collector 2 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -711,7 +645,6 @@
         "agent",
         "firstname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 2 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -727,7 +660,6 @@
         "agent",
         "middleinitial"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 2 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -743,7 +675,6 @@
         "agent",
         "lastname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 2 Last name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -753,7 +684,6 @@
     },
     {
       "mappingPath": ["collectingevent", "collectors", "#3", "agent", "title"],
-      "mappingType": "existingHeader",
       "headerName": "Collector 3 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -769,7 +699,6 @@
         "agent",
         "firstname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 3 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -785,7 +714,6 @@
         "agent",
         "middleinitial"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 3 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -801,7 +729,6 @@
         "agent",
         "lastname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 3 Last Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -811,7 +738,6 @@
     },
     {
       "mappingPath": ["collectingevent", "collectors", "#4", "agent", "title"],
-      "mappingType": "existingHeader",
       "headerName": "Collector 4 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -827,7 +753,6 @@
         "agent",
         "firstname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 4 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -843,7 +768,6 @@
         "agent",
         "middleinitial"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 4 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -859,7 +783,6 @@
         "agent",
         "lastname"
       ],
-      "mappingType": "existingHeader",
       "headerName": "Collector 4 Last Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",

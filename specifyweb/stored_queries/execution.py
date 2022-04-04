@@ -1,25 +1,20 @@
+import csv
+import json
+import logging
 import os
 import re
-import logging
-import json
-import csv
 import xml.dom.minidom
-
 from collections import namedtuple
 from datetime import datetime
-
 from django.conf import settings
-
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from ..specify.models import Collection
-from ..notifications.models import Message
-
 from . import models
-from .queryfield import QueryField
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
-
+from .queryfield import QueryField
+from ..notifications.models import Message
+from ..specify.models import Collection
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +119,8 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         field_specs = field_specs_from_json(spquery['fields'])
         if exporttype == 'csv':
             query_to_csv(session, collection, user, tableid, field_specs, path,
-                         recordsetid=recordsetid, add_header=True, strip_id=True)
+                         recordsetid=recordsetid, add_header=True, strip_id=True,
+                         distinct=spquery['selectdistinct'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, add_header=True, strip_id=False)
@@ -148,10 +144,11 @@ def stored_query_to_csv(query_id, collection, user, path):
         field_specs = [QueryField.from_spqueryfield(field)
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        query_to_csv(session, collection, user, tableid, field_specs, path)
+        query_to_csv(session, collection, user, tableid, field_specs, path, distinct=spquery['selectdistinct'])
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
-                 recordsetid=None, add_header=False, strip_id=False, row_filter=None):
+                 recordsetid=None, add_header=False, strip_id=False, row_filter=None,
+                 distinct=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -159,7 +156,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     See build_query for details of the other accepted arguments.
     """
     set_group_concat_max_len(session)
-    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True, distinct=distinct)
 
     logger.debug('query_to_csv starting')
 
@@ -167,7 +164,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
         csv_writer = csv.writer(f)
         if add_header:
             header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
-            if not strip_id:
+            if not strip_id and not distinct:
                 header = ['id'] + header
             csv_writer.writerow(header)
 
@@ -175,7 +172,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             if row_filter is not None and not row_filter(row): continue
             encoded = [
                 re.sub('\r|\n', ' ', str(f))
-                for f in (row[1:] if strip_id else row)
+                for f in (row[1:] if strip_id and not distinct else row)
             ]
             csv_writer.writerow(encoded)
 
@@ -441,10 +438,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session)
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs)
-
-    if distinct:
-        query = query.distinct()
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
     if count_only:
         return {'count': query.count()}
@@ -456,7 +450,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)}
 
-def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False):
+def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -479,6 +473,8 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     will be filtered to items from the given record set unless None.
 
     replace_nulls = if True, replace null values with ""
+
+    distinct = if True, do not return record IDs and query distinct rows
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
@@ -486,7 +482,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(id_field),
+        query=session.query().distinct() if distinct else session.query(id_field),
     )
 
 

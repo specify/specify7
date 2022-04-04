@@ -29,14 +29,6 @@ def specify(request):
     )
     response = HttpResponse(resp)
 
-    language = translation.get_language()
-    if request.COOKIES.get('language') != language:
-        response.set_cookie(
-            'language',
-            language,
-            max_age=365 * 24 * 60 * 60
-        )
-
     return response
 
 

@@ -1,38 +1,33 @@
-import '../../css/wbuploaded.css';
+/**
+ * Workbench Upload results side bar with table counts
+ *
+ * @module
+ */
 
 import React from 'react';
 
+import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import dataModelStorage from '../wbplanviewmodel';
+import { getModel } from '../schema';
+import type { RR } from '../types';
+import { defined } from '../types';
+import { Button, H2, Ul } from './basic';
 import { TableIcon } from './common';
 import createBackboneView from './reactbackboneextend';
-import type { IR } from './wbplanview';
-
-type Props = Readonly<ConstructorProps>;
-
-type ConstructorProps = {
-  recordCounts: IR<number>;
-  onClose: () => void;
-  isUploaded: boolean;
-};
 
 function TableResults({
   tableName,
   recordCount,
 }: {
-  readonly tableName: string;
+  readonly tableName: keyof Tables;
   readonly recordCount: number;
 }): JSX.Element {
   return (
-    <div className="wb-uploaded-view-line">
-      <TableIcon
-        tableName={tableName.toLowerCase()}
-      />
-      <span>
-        {`${dataModelStorage.tables[tableName].label}: ${recordCount}`}
-      </span>
-    </div>
+    <li className="gap-x-1 flex items-center">
+      <TableIcon name={tableName} />
+      <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
+    </li>
   );
 }
 
@@ -40,20 +35,26 @@ function WbUploadedView({
   recordCounts,
   onClose: handleClose,
   isUploaded,
-}: Props): JSX.Element {
+}: {
+  readonly recordCounts: RR<keyof Tables, number>;
+  readonly onClose: () => void;
+  readonly isUploaded: boolean;
+}): JSX.Element {
   return (
-    <>
-      <h2>
-        {isUploaded
-          ? wbText('uploadResults')
-          : wbText('potentialUploadResults')}
-      </h2>
-      <p>
-        {isUploaded
-          ? wbText('wbUploadedDescription')
-          : wbText('wbUploadedPotentialDescription')}
-      </p>
-      <div className="wb-uploaded-view-content">
+    <div className="gap-y-4 w-60 flex flex-col h-full">
+      <div>
+        <H2>
+          {isUploaded
+            ? wbText('uploadResults')
+            : wbText('potentialUploadResults')}
+        </H2>
+        <p>
+          {isUploaded
+            ? wbText('wbUploadedDescription')
+            : wbText('wbUploadedPotentialDescription')}
+        </p>
+      </div>
+      <Ul className="gap-y-2 flex flex-col flex-1">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}
@@ -61,27 +62,10 @@ function WbUploadedView({
             recordCount={recordCount}
           />
         ))}
-      </div>
-      <button type="button" className="magic-button" onClick={handleClose}>
-        {commonText('close')}
-      </button>
-    </>
+      </Ul>
+      <Button.Simple onClick={handleClose}>{commonText('close')}</Button.Simple>
+    </div>
   );
 }
 
-export default createBackboneView<Props, ConstructorProps, Props>({
-  moduleName: 'WBUploadedView',
-  className: 'wb-uploaded',
-  initialize(self, { recordCounts, onClose, isUploaded }) {
-    self.recordCounts = recordCounts;
-    self.onClose = onClose;
-    self.isUploaded = isUploaded;
-  },
-  renderPre: (self) => self.el.classList.add('wb-uploaded-view'),
-  Component: WbUploadedView,
-  getComponentProps: (self) => ({
-    recordCounts: self.recordCounts,
-    onClose: self.onClose,
-    isUploaded: self.isUploaded,
-  }),
-});
+export default createBackboneView(WbUploadedView);

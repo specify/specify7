@@ -17,22 +17,25 @@ from .report_runner import urls as report_urls
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .export import urls as export_urls
+from .permissions import urls as permissions_urls
+from .permissions.permissions import skip_collection_access_check
 
 urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
     url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html')),
-    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(template_name='logout.html', next_page='/accounts/login/')),
-    url(r'^accounts/password_change/$', auth_views.PasswordChangeView.as_view(
-        template_name='password_change.html', success_url='/')),
+    url(r'^accounts/logout/$', skip_collection_access_check(
+        auth_views.LogoutView.as_view(next_page='/accounts/login/'))),
+    url(r'^accounts/password_change/$', skip_collection_access_check(
+        auth_views.PasswordChangeView.as_view(template_name='password_change.html', success_url='/'))),
 
-    url(r'^accounts/support_login/$', support_login),
+    url(r'^accounts/support_login/$', skip_collection_access_check(support_login)),
 
-    url(r'^accounts/choose_collection/$', choose_collection),
+    url(r'^accounts/choose_collection/$', skip_collection_access_check(choose_collection)),
 
     # just redirect root url to the main specify view
-    url(r'^$', RedirectView.as_view(url='/specify/')),
+    url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
@@ -48,15 +51,16 @@ urlpatterns = [
     url(r'^documentation/', include(doc_urls)),
 
     # submodules
-    url(r'^api/workbench/', include(wb_urls)),
+    url(r'^api/workbench/', include(wb_urls)), # permissions added
     url(r'^express_search/', include(es_urls)),
     url(r'^context/', include(context_urls)),
-    url(r'^stored_query/', include(query_urls)),
+    url(r'^stored_query/', include(query_urls)), # permissions added
     url(r'^attachment_gw/', include(attachment_urls)),
     url(r'^barvis/', include(tt_urls)),
-    url(r'^report_runner/', include(report_urls)),
-    url(r'^interactions/', include(interaction_urls)),
+    url(r'^report_runner/', include(report_urls)), # permissions added
+    url(r'^interactions/', include(interaction_urls)), # permissions added
     url(r'^notifications/', include(notification_urls)),
-    url(r'^export/', include(export_urls)),
+    url(r'^export/', include(export_urls)), # permissions added
+    url(r'^permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
 ]

@@ -40,6 +40,6 @@ webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
 
 typecheck:
-	$(MYPY) --follow-imports silent specifyweb/workbench specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py
+	$(MYPY) --follow-imports silent specifyweb/permissions specifyweb/workbench specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py specifyweb/specify/api.py
 
 .FORCE:

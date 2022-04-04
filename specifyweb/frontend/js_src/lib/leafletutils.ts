@@ -1,23 +1,27 @@
-/*
+/**
  * Utility functions for getting locality data from locality resource and
  * workbench dataset
  *
+ * @module
  */
 
-import type { IR, RA } from './components/wbplanview';
-import { MappingPath } from './components/wbplanviewmapper';
+import type { MappingPath } from './components/wbplanviewmapper';
 import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
   mappingLocalityColumns,
   requiredLocalityColumns,
 } from './leafletconfig';
+import type { IR, RA } from './types';
 import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 
-export type Field<T> = { readonly headerName: string; readonly value: T };
+export type Field<T extends Readonly<unknown>> = {
+  readonly headerName: string;
+  readonly value: T;
+};
 
 export type LocalityData = IR<Field<string | number>>;
 
@@ -31,7 +35,7 @@ export const getField = (
 export function formatCoordinate(coordinate: string): number {
   if (coordinate === '' || coordinate === '0') return 0;
 
-  const parsedCoordinate = latlongutils.parse(coordinate).toDegs() as {
+  const parsedCoordinate = latlongutils(coordinate).toDegs() as {
     _components: [number];
     _sign: 1 | -1;
   };
@@ -44,9 +48,7 @@ export const findRanksInMappings = (
   mappingPaths
     .map((mappingPath) => ({
       mappingPath,
-      treeRankLocation: mappingPath.findIndex((mappingPathPart) =>
-        valueIsTreeRank(mappingPathPart)
-      ),
+      treeRankLocation: mappingPath.findIndex(valueIsTreeRank),
     }))
     .map(({ mappingPath, treeRankLocation }) =>
       treeRankLocation === -1
@@ -69,8 +71,7 @@ export const getLocalityData = (
         ...Object.fromEntries(
           Object.keys(localityColumns)
             .filter(
-              (columnName) =>
-                !(mappingLocalityColumns as RA<string>).includes(columnName)
+              (columnName) => !mappingLocalityColumns.includes(columnName)
             )
             .map((columnName) => [columnName, getField(columnName)])
         ),

@@ -1,12 +1,14 @@
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import Backbone from './backbone';
 
-var assert = require('./assert.js');
-var api = require('./specifyapi.js');
-var querystring = require('./querystring.js');
+import {assert} from './assert';
+import {globalEvents} from './specifyapi';
+import * as querystring from './querystring';
+import {getResourceViewUrl, resourceFromUri} from './resource';
+import {getResourceAndField} from './components/resource';
 
-    function eventHandlerForToOne(related, field) {
+function eventHandlerForToOne(related, field) {
         return function(event) {
             var args = _.toArray(arguments);
 
@@ -32,7 +34,7 @@ var querystring = require('./querystring.js');
         };
     }
 
-    function eventHandlerForToMany(related, field) {
+    function eventHandlerForToMany(_related, field) {
         return function(event) {
             var args = _.toArray(arguments);
             switch (event) {
@@ -59,8 +61,9 @@ var querystring = require('./querystring.js');
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
+        _ignoreChanges: false,  // Don't trigger saveRequried when setting default values
 
-        constructor: function(attributes, options) {
+        constructor: function() {
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
@@ -76,15 +79,22 @@ var querystring = require('./querystring.js');
             // the resource needs to be saved if any of its fields change
             // unless they change because the resource is being fetched
             // or updated during a save
-            this.on('change', function(resource, options) {
-                if (!this._fetch && !this._save) {
+            this.on('change', function() {
+                if (!this._fetch && !this._save && !this._ignoreChanges) {
                     this.needsSaved = true;
                     this.trigger('saverequired');
                 }
             });
 
-            api.trigger('initresource', this);
-            this.isNew() && api.trigger('newresource', this);
+            globalEvents.trigger('initresource', this);
+            this.isNew() && globalEvents.trigger('newresource', this);
+        },
+        // Supress saveRequired trigger when setting default values for resource
+        // Works for new resources only
+        settingDefaultValues(callback){
+            this._ignoreChanges = true;
+            callback();
+            this._ignoreChanges = false;
         },
         clone: function() {
             var self = this;
@@ -104,7 +114,7 @@ var querystring = require('./querystring.js');
                     newResource.set(fieldName, related && related.clone());
                     break;
                 case 'one-to-many':
-                    newResource.rget(fieldName).done(function(newCollection) {
+                    newResource.rget(fieldName).then(function(newCollection) {
                         related.each(function(resource) { newCollection.add(resource.clone()); });
                     });
                     break;
@@ -124,12 +134,12 @@ var querystring = require('./querystring.js');
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
             return this.recordsetid == null ? url :
-                querystring.param(url, {recordsetid: this.recordsetid});
+                querystring.format(url, {recordsetid: this.recordsetid});
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return api.makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
+            return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
         },
         get: function(attribute) {
             // case insensitive
@@ -180,6 +190,12 @@ var querystring = require('./querystring.js');
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
         set: function(key, value, options) {
+            // Set may get called with "null" or "undefined"
+            const newValue = value ?? undefined;
+            const oldValue = this.attributes[key] ?? undefined;
+            // Don't needlessly trigger unload protect if value didn't chane
+            if(typeof key === 'string' && oldValue === newValue)
+                return this;
             // make the keys case insensitive
             var attrs = {};
             if (_.isObject(key) || key == null) {
@@ -229,7 +245,7 @@ var querystring = require('./querystring.js');
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
             const field = this.specifyModel.getField(fieldName);
-            const relatedModel = field.getRelatedModel();
+            const relatedModel = field.relatedModel;
 
             switch (field.type) {
             case 'one-to-many':
@@ -237,7 +253,7 @@ var querystring = require('./querystring.js');
                 var collectionOptions = { related: this, field: field.getReverse() };
 
                 if (field.isDependent()) {
-                    const collection = new relatedModel.DependentCollection(value, collectionOptions);
+                    const collection = new relatedModel.DependentCollection(collectionOptions, value);
                     this.storeDependent(field, collection);
                 } else {
                     console.warn("got unexpected inline data for independent collection field");
@@ -299,11 +315,20 @@ var querystring = require('./querystring.js');
             }
             return value;
         },
+        // get the value of the named field where the name may traverse related objects
+        // using dot notation. if the named field represents a resource or collection,
+        // then prePop indicates whether to return the named object or the contents of
+        // the field that represents it
         rget: function(fieldName, prePop) {
-            // get the value of the named field where the name may traverse related objects
-            // using dot notation. if the named field represents a resource or collection,
-            // then prePop indicates whether to return the named object or the contents of
-            // the field that represents it
+            return this.getRelated(fieldName, {prePop: prePop});
+        },
+        // TODO: remove the need for this
+        // Like "rget", but returns native promise
+        rgetPromise: function(fieldName, prePop) {
+            return this.getRelated(fieldName, {prePop: prePop});
+        },
+        // Duplicate definition for purposes of better typing:
+        rgetCollection: function(fieldName, prePop) {
             return this.getRelated(fieldName, {prePop: prePop});
         },
         getRelated: function(fieldName, options) {
@@ -313,10 +338,10 @@ var querystring = require('./querystring.js');
             });
             var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
 
-            var rget = function(_this) { return _this._rget(path, options); };
-
             // first make sure we actually have this object.
-            return this.fetchIfNotPopulated().pipe(rget).pipe(function(value) {
+            return this.fetchIfNotPopulated().then(function(_this) {
+                return _this._rget(path, options);
+            }).then(function(value) {
                 // if the requested value is fetchable, and prePop is true,
                 // fetch the value, otherwise return the unpopulated resource
                 // or collection
@@ -352,7 +377,7 @@ var querystring = require('./querystring.js');
             }
 
             var _this = this;
-            var related = field.getRelatedModel();
+            var related = field.relatedModel;
             switch (field.type) {
             case 'one-to-one':
             case 'many-to-one':
@@ -386,15 +411,15 @@ var querystring = require('./querystring.js');
                     }
 
                     if (this.isNew()) {
-                        toMany = new related.DependentCollection([], collectionOptions);
+                        toMany = new related.DependentCollection(collectionOptions, []);
                         this.storeDependent(field, toMany);
                         return toMany;
                     } else {
                         console.warn("expected dependent resource to be in cache");
                         var tempCollection = new related.ToOneCollection(collectionOptions);
-                        return tempCollection.fetch({ limit: 0 }).pipe(function() {
-                            return new related.DependentCollection(tempCollection.models, collectionOptions);
-                        }).done(function (toMany) { _this.storeDependent(field, toMany); });
+                        return tempCollection.fetch({ limit: 0 }).then(function() {
+                            return new related.DependentCollection(collectionOptions, tempCollection.models);
+                        }).then(function (toMany) { _this.storeDependent(field, toMany); });
                     }
                 }
             case 'zero-to-one':
@@ -415,7 +440,7 @@ var querystring = require('./querystring.js');
                 var collection = new related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
 
                 // fetch the collection and pretend like it is a single resource
-                return collection.fetchIfNotPopulated().pipe(function() {
+                return collection.fetchIfNotPopulated().then(function() {
                     var value = collection.isEmpty() ? null : collection.first();
                     if (field.isDependent()) {
                         console.warn("expect dependent resource to be in cache");
@@ -439,7 +464,7 @@ var querystring = require('./querystring.js');
 
             resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
 
-            resource._save.fail(function() {
+            resource._save.catch(function() {
                 resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
@@ -466,42 +491,31 @@ var querystring = require('./querystring.js');
         fetch: function(options) {
             // cache a reference to the ajax deferred and don't start fetching if we
             // already are.
-            var resource = this;
 
-            if (resource._fetch) return resource._fetch;
-            return resource._fetch = Backbone.Model.prototype.fetch.call(this, options).done(function() {
-                resource._fetch = null;
+            if (this._fetch) return this._fetch;
+            return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
+                this._fetch = null;
+                return this;
             });
         },
         fetchIfNotPopulated: function() {
             var resource = this;
             // if already populated, return the resource
-            if (resource.populated) return $.when(resource);
+            if (resource.populated) return Promise.resolve(resource);
 
             // if can't be populate by fetching, return the resource
-            if (resource.isNew()) return $.when(resource);
+            if (resource.isNew()) return Promise.resolve(resource);
 
             // fetch and return a deferred.
-            return resource.fetch().pipe(function() { return resource; });
+            return resource.fetch();
         },
-        parse: function(resp) {
-            // since we are putting in data, the resource in now populated
+        fetchPromise(options){
+            return this.fetchIfNotPopulated(options);
+        },
+        parse: function(_resp) {
+            // since we are putting in data, the resourcgfse in now populated
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
-        },
-        getRelatedObjectCount: function(fieldName) {
-            // return the number of objects represented by a to-many field
-            if (this.specifyModel.getField(fieldName).type !== 'one-to-many') {
-                throw new TypeError('field is not one-to-many');
-            }
-
-            // for unpersisted objects, this function doesn't make sense
-            if (this.isNew()) return $.when(undefined);
-
-            return this.rget(fieldName).pipe(function (collection) {
-                if (!collection) return 0;
-                return collection.getTotalCount();
-            });
         },
         sync: function(method, resource, options) {
             options = options || {};
@@ -513,51 +527,50 @@ var querystring = require('./querystring.js');
             case 'create':
                 // use the special recordSetId field to add the resource to a record set
                 if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = querystring.param(
+                    options.url = querystring.format(
                         options.url || resource.url(),
-                        {recordsetid: resource.recordSetId});
+                        {recordsetid: resource.recordsetid});
                 }
                 break;
             }
             return Backbone.sync(method, resource, options);
         },
-        getResourceAndField: function(fieldName) {
-            var field = this.specifyModel.getField(fieldName);
-
-            var path = fieldName.split('.');
-            var getResource = path.length == 1 ? this.fetchIfNotPopulated() : (
-                path.pop(), this.rget(path, true)
-            );
-
-            return getResource.pipe(function(resource) {
-                return [resource, field];
-            });
+        async getResourceAndField(fieldName) {
+            return getResourceAndField(this, fieldName);
         },
         placeInSameHierarchy: function(other) {
             var self = this;
-            var myPath = self.specifyModel.orgPath();
-            var otherPath = other.specifyModel.orgPath();
+            var myPath = self.specifyModel.getScopingPath();
+            var otherPath = other.specifyModel.getScopingPath();
             if (!myPath || !otherPath) return null;
             if (myPath.length > otherPath.length) return null;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();
-            return other.rget(diff.join('.')).done(function(common) {
+            return other.rget(diff.join('.')).then(function(common) {
                 self.set(_(diff).last(), common.url());
             });
+        },
+        getDependentResource(fieldName){
+            return this.dependentResources[fieldName.toLowerCase()];
         }
     }, {
         fromUri: function(uri, options) {
-            options || (options = {noBusinessRules: false});
-            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
-            assert(!_(match).isNull(), "Bad resource uri: " + uri);
-            assert(match[1] === this.specifyModel.name.toLowerCase());
-            return new this({ id: parseInt(match[2], 10) }, options);
+            const model = resourceFromUri(uri, options);
+            assert(model.specifyModel === this.specifyModel);
+            return model;
         },
-        idFromUrl: function(url) {
-            //assiming urls are constructed by ResourceBase.url method
-            var urlChunks = url.split('/');
-            return urlChunks[urlChunks.length - 2];
-        }
-
     });
 
-module.exports = ResourceBase;
+export default ResourceBase;
+
+export function promiseToXhr(promise) {
+  promise.done = function (fn) {
+    return promiseToXhr(promise.then(fn));
+  };
+  promise.fail = function (fn) {
+    return promiseToXhr(promise.then(null, fn));
+  };
+  promise.complete = function (fn) {
+    return promiseToXhr(promise.then(fn, fn));
+  };
+  return promise;
+}

@@ -51,7 +51,7 @@ class Datamodel(object):
         for table in self.tables:
             if table.tableId == table_id:
                 return table
-        raise TableDoesNotExistError(_("No table with id: %{table_id}d") % {'table_id':table_id})
+        raise TableDoesNotExistError(_("No table with id: %(table_id)d") % {'table_id':table_id})
 
     def reverse_relationship(self, relationship: 'Relationship') -> Optional['Relationship']:
         if hasattr(relationship, 'otherSideName'):

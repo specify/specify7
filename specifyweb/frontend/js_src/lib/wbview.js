@@ -1,63 +1,81 @@
+/**
+ * Entrypoint for the WorkBench
+ * Handles most user interactions
+ * Initializes the spreadsheet (using Handsontable library)
+ *
+ * @remarks
+ * hot refers to Handsontable
+ *
+ * @module
+ *
+ */
+
 'use strict';
 
-require('../css/workbench.css');
-require('../css/theme.css');
+import '../css/workbench.css';
 
-const $ = require('jquery');
-const _ = require('underscore');
-const Backbone = require('./backbone.js');
-const Q = require('q');
-const Handsontable = require('handsontable').default;
-const Papa = require('papaparse');
+import $ from 'jquery';
+import React from 'react';
+import _ from 'underscore';
+import Backbone from './backbone';
+import Handsontable from 'handsontable';
+import Papa from 'papaparse';
 
-require('handsontable/dist/handsontable.full.css');
-
-const schema = require('./schema.js');
-const app = require('./specifyapp.js');
-const userInfo = require('./userinfo.js');
-const DataSetMeta = require('./datasetmeta.js').default;
-const navigation = require('./navigation.js');
-const NotFoundView = require('./notfoundview.js');
-const WBUploadedView = require('./components/wbuploadedview').default;
-const dataModelStorage = require('./wbplanviewmodel').default;
-const WBStatus = require('./components/wbstatus').default;
-const WBUtils = require('./wbutils.js');
-const {
-  valueIsTreeRank,
-  mappingPathToString,
-  getNameFromTreeRankName,
-  formatReferenceItem,
+import {Button, className} from './components/basic';
+import {getModel, schema} from './schema';
+import DataSetMeta from './components/datasetmeta';
+import * as navigation from './navigation';
+import {NotFoundView} from './notfoundview';
+import WBUploadedView from './components/wbuploadedview';
+import WBStatus from './components/wbstatus';
+import WBUtils from './wbutils';
+import {
   formatTreeRank,
-} = require('./wbplanviewmappinghelper');
-const {
-  mappingsTreeToArrayOfSplitMappings,
-} = require('./wbplanviewtreehelper');
-const { uploadPlanToMappingsTree } = require('./uploadplantomappingstree');
-const { extractDefaultValues } = require('./wbplanviewhelper');
-const { getTableFromMappingPath } = require('./wbplanviewnavigator');
-const fetchDataModelPromise = require('./wbplanviewmodelfetcher').default;
-const { capitalize } = require('./wbplanviewhelper');
-const icons = require('./icons.js');
-const formatObj = require('./dataobjformatters.js').format;
-const template = require('./templates/wbview.html');
-const cache = require('./cache');
-const wbText = require('./localization/workbench').default;
-const commonText = require('./localization/common').default;
+  getNameFromTreeRankName,
+  mappingPathToString,
+  valueIsTreeRank,
+} from './wbplanviewmappinghelper';
+import {parseUploadPlan} from './uploadplanparser';
+import {capitalize, clamp, mappedFind} from './helpers';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon} from './icons';
+import * as cache from './cache';
+import wbText from './localization/workbench';
+import commonText from './localization/common';
+import {loadingBar, showDialog} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined, filterArray} from './types';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
+import {serializeResource} from './datamodelutils';
+import {fetchPickList} from './picklistmixins';
+import {setCurrentView} from './specifyapp';
+import {ajax, Http, ping} from './ajax';
+import {hasPermission} from './permissions';
+import {wbViewTemplate} from './components/wbviewtemplate';
+import {legacyLoadingContext} from './components/contexts';
 
-const getDefaultCellMeta = () => ({
-  // The value in this cell would be used to create a new record
-  isNew: false,
-  // This cell has been modified since last change
-  isModified: false,
-  // Whether the cells matches search query
-  isSearchResult: false,
-  // List of strings representing the validation errors
-  issues: [],
-});
+const metaKeys = [
+  'isNew',
+  'isModified',
+  'isSearchResult',
+  'issues',
+  'originalValue',
+];
+const defaultMetaValues = Object.freeze([
+  false,
+  false,
+  false,
+  Object.freeze([]),
+  undefined,
+]);
 
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
-  className: 'wbs-form content-no-shadow',
+  tagName: 'section',
+  className: `wbs-form ${className.containerFull}`,
   events: {
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',
@@ -78,15 +96,28 @@ const WBView = Backbone.View.extend({
   initialize({ dataset, refreshInitiatedBy, refreshInitiatorAborted }) {
     this.dataset = dataset;
     this.data = dataset.rows;
-    this.originalData = this.data.map((row) => Array.from(row));
-    if (this.data.length < 1) {
-      this.data.push(Array(this.dataset.columns.length).fill(null));
+    if (this.data.length === 0) {
+      this.data.push(Array.from(this.dataset.columns).fill(null));
     }
 
-    this.mappings = undefined;
+    this.mappings /* :
+      | undefined
+      | {
+        baseTable: SpecifyModel;
+        mustMatchTables: Set<keyof Tables>;
+        lines: RA<SplitMappingsPath>;
+        tableNames: RA<string>; // tableName of each column
+        mappedHeaders: RR<number, string>; // path to an icon for each header
+        coordinateColumns: RR<number, 'Lat'|'Long'>;
+        defaultValues: RR<number, string>;
+        treeRanks: IR<{
+          readonly physicalCol: number;
+          readonly rankId: number;
+        }>
+      }
+    */ = undefined;
+    this.stopLiveValidation();
     this.validationMode = this.dataset.rowresults == null ? 'off' : 'static';
-    this.liveValidationStack = [];
-    this.liveValidationActive = false;
     this.hasUnSavedChanges = false;
     this.sortConfigIsSet = false;
     this.undoRedoIsHandled = false;
@@ -117,22 +148,42 @@ const WBView = Backbone.View.extend({
     });
 
     /*
+     * If this.isUploaded, render() will:
      * Add the "Uploaded" label next to DS Name
      * Disable cell editing
      * Disable adding/removing rows
-     * Allow column sort
-     * Allow column move
-     * */
+     * Still allow column sort
+     * Still allow column move
+     *
+     */
     this.isUploaded =
       this.dataset.uploadresult !== null && this.dataset.uploadresult.success;
-    // Disallow all editing while this dialog is open
+    // Disallow all editing and some tools while this dialog is open
     this.uploadedView = undefined;
-    // Disallow all editing while this dialog is open
+    // Disallow all editing and all tools while this dialog is open
     this.coordinateConverterView = undefined;
 
     this.refreshInitiatedBy = refreshInitiatedBy;
     this.refreshInitiatorAborted = refreshInitiatorAborted;
-    this.uploadResults = {
+    this.uploadResults /*
+      :{
+        readonly ambiguousMatches: RA<{
+          readonly physicalCols: RA<number>,
+          readonly mappingPath: MappingPath,
+          readonly ids: RA<number>,
+          readonly key: string}>
+      };
+      recordCounts: IR<string>;
+      newRecords: RA<
+        RA<
+          Readonly<[
+            tableName: string,
+            id: number,
+            alternativeLabel: '' | string
+          ]>
+        >
+      >
+    */ = {
       ambiguousMatches: [],
       recordCounts: {},
       newRecords: {},
@@ -143,10 +194,9 @@ const WBView = Backbone.View.extend({
      * Even if throttling may not be needed for small Data Sets, wrapping the
      * function in _.throttle allows to not worry about calling it several
      * time in a very short amount of time.
-     * */
-    const throttleRate = Math.ceil(
-      Math.min(2000, Math.max(10, this.data.length / 10))
-    );
+     *
+     */
+    const throttleRate = Math.ceil(clamp(10, 2000, this.data.length / 10));
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
       throttleRate
@@ -155,104 +205,113 @@ const WBView = Backbone.View.extend({
   },
   render() {
     this.$el.append(
-      template({
-        is_uploaded: this.isUploaded,
-        is_manager: userInfo.usertype === 'Manager',
-        wbText,
-        commonText,
-      })
+      wbViewTemplate(
+        this.isUploaded || !hasPermission('/workbench/dataset', 'update')
+      )
     );
+    this.$el.attr('aria-label', commonText('workbench'));
 
+    /*
+     * HOT Comments for last column overflow outside the viewport for a moment
+     * before getting repositioned by the afterOnCellMouseOver event handler.
+     *
+     * Hiding overflow prevents scroll bar from flickering on cell mouse over
+     *
+     */
     document.body.classList.add('overflow-x-hidden');
 
     this.datasetmeta.render();
 
     if (this.dataset.uploaderstatus) this.openStatus();
 
-    this.cellMeta = Array.from({ length: this.dataset.rows.length }, () =>
-      Array.from({ length: this.dataset.columns.length }, getDefaultCellMeta)
-    );
+    this.cellMeta = [];
 
     if (this.refreshInitiatedBy && this.refreshInitiatorAborted)
       this.operationAbortedMessage();
 
     const initDataModelIntegration = () =>
-      this.hot.batch(() => {
-        if (!this.isUploaded && !(this.mappings?.arrayOfMappings.length > 0)) {
-          $(`<div>
-              ${wbText('noUploadPlanDialogHeader')}
-              ${wbText('noUploadPlanDialogMessage')}
-          </div>`).dialog({
-            title: wbText('noUploadPlanDialogTitle'),
-            modal: true,
-            buttons: {
-              [commonText('close')]: function () {
-                $(this).dialog('close');
-              },
-              [commonText('create')]: this.openPlan.bind(this),
-            },
-          });
-          this.$('.wb-validate, .wb-data-check')
-            .prop('disabled', true)
-            .prop('title', wbText('wbValidateUnavailable'));
-        } else {
-          this.$('.wb-validate, .wb-data-check').prop('disabled', false);
-          this.$('.wb-show-upload-view')
-            .prop('disabled', false)
-            .prop('title', undefined);
-        }
+      this.fetchPickLists().then((pickLists) =>
+        this.hot.batch(() => {
+          if (
+            !this.isUploaded &&
+            !(this.mappings?.lines.length > 0) &&
+            hasPermission('/workbench/dataset', 'update')
+          ) {
+            const dialog = showDialog({
+              title: wbText('noUploadPlanDialogTitle'),
+              header: wbText('noUploadPlanDialogHeader'),
+              onClose: () => dialog.remove(),
+              buttons: (
+                <>
+                  <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+                  <Button.Blue onClick={this.openPlan.bind(this)}>
+                    {commonText('create')}
+                  </Button.Blue>
+                </>
+              ),
+              content: wbText('noUploadPlanDialogMessage'),
+            });
+            this.$('.wb-validate, .wb-data-check')
+              .prop('disabled', true)
+              .prop('title', wbText('wbValidateUnavailable'));
+          } else {
+            this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+            this.$('.wb-show-upload-view')
+              .prop('disabled', false)
+              .prop('title', undefined);
+          }
 
-        // These methods update HOT's cells settings, which resets meta data
-        // Thus, need to run them first
-        this.identifyDefaultValues();
-        this.identifyPickLists();
+          /*
+           * These methods update HOT's cells settings, which resets meta data
+           * Thus, need to run them first
+           */
+          this.identifyDefaultValues();
+          this.identifyPickLists(pickLists);
 
-        if (this.dataset.rowresults) this.getValidationResults();
+          if (this.dataset.rowresults) this.getValidationResults();
 
-        // The rest goes in order of importance
-        this.identifyMappedHeaders();
-        if (this.dataset.visualorder?.some((column, index) => column !== index))
-          this.hot.updateSettings({
-            manualColumnMove: this.dataset.visualorder,
-          });
-        this.fetchSortConfig();
-        this.wbutils.findLocalityColumns();
-        this.identifyCoordinateColumns();
-        this.identifyTreeRanks();
+          // The rest goes in order of importance
+          this.identifyMappedHeaders();
+          // CHeck if any column is reordered
+          if (
+            this.dataset.visualorder?.some((column, index) => column !== index)
+          )
+            this.hot.updateSettings({
+              manualColumnMove: this.dataset.visualorder,
+            });
+          this.fetchSortConfig().catch(crash);
+          this.wbutils.findLocalityColumns();
+          this.identifyCoordinateColumns();
+          this.identifyTreeRanks();
+          this.wbutils.render();
 
-        this.trigger('loaded');
-        this.hotIsReady = true;
+          this.hotIsReady = true;
 
-        this.hotCommentsContainer =
-          document.getElementsByClassName('htComments')[0];
-      });
+          this.hotCommentsContainer =
+            document.getElementsByClassName('htComments')[0];
+        })
+      );
 
-    this.initHot().then(() => {
-      if (this.dataset.uploadplan) {
-        fetchDataModelPromise().then(() => {
-          this.mappings = uploadPlanToMappingsTree(
-            this.dataset.columns,
-            this.dataset.uploadplan
-          );
-          this.mappings.arrayOfMappings = mappingsTreeToArrayOfSplitMappings(
-            this.mappings.mappingsTree
-          );
+    legacyLoadingContext(
+      this.initHot().then(() => {
+        if (this.dataset.uploadplan) {
+          this.mappings = parseUploadPlan(this.dataset.uploadplan);
 
-          this.mappings.tableNames = this.mappings.arrayOfMappings.map(
+          this.mappings.tableNames = this.mappings.lines.map(
             ({ mappingPath }) =>
-              getTableFromMappingPath({
-                baseTableName: this.mappings.baseTableName,
-                mappingPath: mappingPath.slice(0, -1),
-              })
+              getTableFromMappingPath(
+                this.mappings.baseTable.name,
+                // Remove field name from mapping path
+                mappingPath.slice(0, -1)
+              )
           );
-
-          initDataModelIntegration();
-        });
-      } else initDataModelIntegration();
-    });
+        }
+        return initDataModelIntegration().catch(crash);
+      })
+    );
 
     this.updateValidationButton();
-    if (this.validationMode === 'static')
+    if (this.validationMode === 'static' && !this.isUploaded)
       this.wbutils.toggleCellTypes('invalidCells', 'remove');
 
     this.flushIndexedCellData = true;
@@ -260,44 +319,55 @@ const WBView = Backbone.View.extend({
 
     return this;
   },
-  initHot() {
+  // Initialize Handsontable
+  async initHot() {
     return new Promise((resolve) =>
+      /*
+       * HOT and Backbone appear to conflict, unless HOT init is wrapped in
+       * setTimeout(...,0)
+       */
       setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
           columns: Array.from(
+            // Last column is invisible and contains disambiguation metadata
             { length: this.dataset.columns.length + 1 },
             (_, physicalCol) => ({
+              // Get data from nth column for nth column
               data: physicalCol,
             })
           ),
           colHeaders: (physicalCol) => {
             const tableIcon = this.mappings?.mappedHeaders?.[physicalCol];
             const isMapped = typeof tableIcon !== 'undefined';
+            const mappingCol = this.physicalColToMappingCol(physicalCol);
             const tableName =
-              tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0] ||
-              tableIcon;
-            return `<div class="wb-col-header">
+              this.mappings?.tableNames[mappingCol] ??
+              tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+            const tableLabel = isMapped
+              ? getModel(tableName)?.label ?? tableName ?? ''
+              : '';
+            return `<div class="flex gap-x-1 items-center pl-4">
               ${
                 isMapped
                   ? `<img
-                      class="wb-header-icon"
-                      alt="${tableName}"
-                      src="${tableIcon}"
-                    >`
-                  : `<img
-                      class="wb-header-icon"
-                      alt="Unmapped Header"
-                      src="/static/img/stop_sign.svg"
-                    >`
+                class="w-table-icon h-table-icon"
+                alt="${tableLabel}"
+                src="${tableIcon}"
+              >`
+                  : `<span
+                class="text-red-600"
+                aria-label="wbText('unmappedColumn')"
+                title="wbText('unmappedColumn')"
+              >${legacyNonJsxIcons.ban}</span>`
               }
               <span class="wb-header-name columnSorting">
-                  ${this.dataset.columns[physicalCol]}
+                ${this.dataset.columns[physicalCol]}
               </span>
             </div>`;
           },
           hiddenColumns: {
-            // hide the disambiguation column
+            // Hide the disambiguation column
             columns: [this.dataset.columns.length],
             indicators: false,
             copyPasteEnabled: false,
@@ -307,11 +377,24 @@ const WBView = Backbone.View.extend({
             indicators: false,
             copyPasteEnabled: false,
           },
+          /*
+           * Force one empty row at the end of the spreadsheet
+           * (allows to add new rows easily)
+           */
           minSpareRows: 1,
           comments: {
             displayDelay: 100,
           },
+          /*
+           * Need htCommentCell to apply default HOT comment box styles
+           *
+           * Since comments are only used for invalid cells, comment boxes
+           * contain 'wb-invalid-cell' class
+           *
+           */
           commentedCellClassName: 'htCommentCell wb-invalid-cell',
+          placeholderCellClassName: 'htPlaceholder text-blue-500',
+          // Disable default styles
           invalidCellClassName: '-',
           rowHeaders: true,
           autoWrapCol: false,
@@ -321,9 +404,11 @@ const WBView = Backbone.View.extend({
           outsideClickDeselects: false,
           multiColumnSorting: true,
           sortIndicator: true,
+          language: LANGUAGE,
           contextMenu: {
             items: this.isUploaded
               ? {
+                  // Display uploaded record
                   upload_results: {
                     disableSelection: true,
                     isCommand: false,
@@ -340,38 +425,41 @@ const WBView = Backbone.View.extend({
 
                       if (
                         typeof createdRecords === 'undefined' ||
-                        this.cellMeta[physicalRow]?.[physicalCol]?.isNew !==
-                          true
+                        !this.getCellMeta(physicalRow, physicalCol, 'isNew')
                       ) {
                         wrapper.textContent = wbText(
                           'noUploadResultsAvailable'
                         );
-                        wrapper.style.whiteSpace = 'white-space';
                         wrapper.parentElement.classList.add('htDisabled');
                         const span = document.createElement('span');
                         span.style.display = 'none';
                         return span;
                       }
 
-                      wrapper.classList.add('wb-uploaded-view-context-menu');
+                      wrapper.setAttribute(
+                        'class',
+                        `${wrapper.getAttribute('class')} flex flex-col !m-0
+                        pb-1 wb-uploaded-view-context-menu`
+                      );
                       wrapper.innerHTML = createdRecords
                         .map(([tableName, recordId, label]) => {
                           const tableLabel =
                             label === ''
-                              ? dataModelStorage.tables[tableName].label
+                              ? defined(getModel(tableName)).label
                               : label;
-                          const tableIcon = icons.getIcon(tableName);
+                          const tableIcon = getIcon(tableName);
 
                           return `<a
+                            class="link"
                             href="/specify/view/${tableName}/${recordId}/"
                             target="_blank"
                           >
-                            <div
-                              class="table-icon table-icon-image"
-                              style="background-image: url('${tableIcon}')"
-                              title="${tableLabel}"
-                            ></div>
+                            <img class="w-6 h-6" src="${tableIcon}" alt="">
                             ${tableLabel}
+                            <span
+                              title="${commonText('opensInNewTab')}"
+                              aria-label="${commonText('opensInNewTab')}"
+                            >${legacyNonJsxIcons.link}</span>
                           </a>`;
                         })
                         .join('');
@@ -396,7 +484,7 @@ const WBView = Backbone.View.extend({
                       // If readonly
                       if (this.uploadedView || this.coordinateConverterView)
                         return true;
-                      // or if called on the last row
+                      // Or if called on the last row
                       const selectedRegions = this.wbutils.getSelectedRegions();
                       return (
                         selectedRegions.length === 1 &&
@@ -413,7 +501,7 @@ const WBView = Backbone.View.extend({
                       this.coordinateConverterView ||
                       !this.isAmbiguousCell(),
                     callback: (__, selection) =>
-                      this.disambiguateCell(selection),
+                      this.openDisambiguationDialog(selection),
                   },
                   separator_1: '---------',
                   fill_down: this.wbutils.fillCellsContextMenuItem(
@@ -439,7 +527,8 @@ const WBView = Backbone.View.extend({
           },
           licenseKey: 'non-commercial-and-evaluation',
           stretchH: 'all',
-          readOnly: this.isUploaded,
+          readOnly:
+            this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
           afterUndo: this.afterUndo.bind(this),
           afterRedo: this.afterRedo.bind(this),
           beforePaste: this.beforePaste.bind(this),
@@ -462,25 +551,31 @@ const WBView = Backbone.View.extend({
       }, 0)
     );
   },
-  remove() {
-    this.hot.destroy();
+  stopLiveValidation() {
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';
+  },
+  remove() {
+    this.hot.destroy();
+    this.hot = undefined;
+    this.wbutils.remove();
+    this.datasetmeta.remove();
+    this.uploadedView?.handleClose();
+    this.wbstatus?.();
+    this.stopLiveValidation();
     window.removeEventListener('resize', this.handleResize);
     document.body.classList.remove('overflow-x-hidden');
     Backbone.View.prototype.remove.call(this);
   },
+  // Match columns to respective table icons
   identifyMappedHeaders() {
     if (!this.mappings) return;
 
     this.mappings.mappedHeaders = Object.fromEntries(
-      this.mappings.tableNames.map((tableName, index) => [
-        // physicalCol
-        this.dataset.columns.indexOf(
-          this.mappings.arrayOfMappings[index].headerName
-        ),
-        icons.getIcon(tableName),
+      this.mappings.tableNames.map((tableName, mappingCol) => [
+        this.mappingColToPhysicalCol(mappingCol),
+        getIcon(tableName),
       ])
     );
   },
@@ -510,9 +605,12 @@ const WBView = Backbone.View.extend({
 
     this.mappings.defaultValues = Object.fromEntries(
       Object.entries(
-        typeof this.mappings.arrayOfMappings === 'undefined'
+        typeof this.mappings.lines === 'undefined'
           ? {}
-          : extractDefaultValues(this.mappings.arrayOfMappings, true)
+          : extractDefaultValues(
+              this.mappings.lines,
+              wbText('emptyStringInline')
+            )
       ).map(([headerName, defaultValue]) => [
         this.dataset.columns.indexOf(headerName),
         defaultValue,
@@ -526,26 +624,40 @@ const WBView = Backbone.View.extend({
           : { placeholder: this.mappings.defaultValues[index] },
     });
   },
-  identifyPickLists() {
-    if (!this.mappings) return;
-    const pickLists = Object.fromEntries(
+  async fetchPickLists() {
+    if (!this.mappings) return [];
+    return Promise.all(
       this.mappings.tableNames
         .map((tableName, index) => ({
           tableName,
-          fieldName:
-            this.mappings.arrayOfMappings[index].mappingPath.slice(-1)[0],
-          headerName: this.mappings.arrayOfMappings[index].headerName,
+          fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
+          headerName: this.mappings.lines[index].headerName,
         }))
-        .map(({ tableName, fieldName, headerName }) => ({
-          physicalCol: this.dataset.columns.indexOf(headerName),
-          pickList:
-            dataModelStorage.tables[tableName].fields[fieldName].pickList,
-        }))
-        .filter(({ pickList }) => typeof pickList !== 'undefined')
-        .map(Object.values)
+        .map(async ({ tableName, fieldName, headerName }) => {
+          const pickList = getModel(tableName)
+            ?.getField(fieldName)
+            ?.getPickList();
+          const definition =
+            typeof pickList === 'string'
+              ? await fetchPickList(pickList)
+              : undefined;
+          if (typeof definition === 'undefined') return undefined;
+          const serialized = serializeResource(definition);
+          return {
+            physicalCol: this.dataset.columns.indexOf(headerName),
+            pickList: {
+              readOnly: serialized.readOnly,
+              items: serialized.pickListItems.map(({ title }) => title),
+            },
+          };
+        })
+    ).then((items) =>
+      Object.fromEntries(filterArray(items).map(Object.values))
     );
+  },
+  identifyPickLists(pickLists) {
     this.hot.updateSettings({
-      cells: (_physicalRow, physicalCol, _prop) =>
+      cells: (_physicalRow, physicalCol, _property) =>
         physicalCol in pickLists
           ? {
               type: 'autocomplete',
@@ -562,7 +674,7 @@ const WBView = Backbone.View.extend({
     if (!this.mappings) return;
 
     this.mappings.treeRanks = Object.values(
-      this.mappings.arrayOfMappings
+      this.mappings.lines
         .map((splitMappingPath, index) => ({
           ...splitMappingPath,
           index,
@@ -581,9 +693,9 @@ const WBView = Backbone.View.extend({
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
           mappingGroup,
           physicalCol,
-          rankId: Object.keys(dataModelStorage.ranks[tableName]).indexOf(
-            rankName
-          ),
+          rankId: Object.keys(
+            defined(getTreeDefinitionItems(tableName))
+          ).findIndex(({ name }) => name === rankName),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
           groupedRanks[mappingGroup] ??= [];
@@ -593,10 +705,10 @@ const WBView = Backbone.View.extend({
     );
   },
   async fetchSortConfig() {
-    const currentCollection = await cache.getCurrentCollectionId();
+    if (!this.hot) return;
     const sortConfig = cache.get(
-      'workbench-sort-config',
-      `${currentCollection}_${this.dataset.id}`
+      'workBenchSortConfig',
+      `${schema.domainLevelIds.collection}_${this.dataset.id}`
     );
     if (!Array.isArray(sortConfig)) return;
     const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
@@ -607,65 +719,64 @@ const WBView = Backbone.View.extend({
   },
 
   // Hooks
-  afterRenderer(td, visualRow, visualCol, _prop, _value) {
+  afterRenderer(td, visualRow, visualCol, property, _value) {
     if (typeof this.hot === 'undefined') {
-      td.classList.add('wb-cell-unmapped');
+      td.classList.add('text-gray-500');
       return;
     }
     const physicalRow = this.hot.toPhysicalRow(visualRow);
-    const physicalCol = this.hot.toPhysicalColumn(visualCol);
+    const physicalCol =
+      typeof property === 'number'
+        ? property
+        : this.hot.toPhysicalColumn(visualCol);
     if (physicalCol >= this.dataset.columns.length) return;
-    const cellProperties = this.cellMeta[physicalRow][physicalCol];
-    if (cellProperties.isModified)
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', true, {
-        cell: td,
-        forceReRender: true,
+    const metaArray = this.cellMeta[physicalRow]?.[physicalCol];
+    if (this.getCellMetaFromArray(metaArray, 'isModified'))
+      this.runMetaUpdateEffects(td, 'isModified', true, visualRow, visualCol);
+    if (this.getCellMetaFromArray(metaArray, 'isNew'))
+      this.runMetaUpdateEffects(td, 'isNew', true, visualRow, visualCol);
+    if (this.getCellMetaFromArray(metaArray, 'isSearchResult'))
+      this.runMetaUpdateEffects(
+        td,
+        'isSearchResult',
+        true,
         visualRow,
-        visualCol,
-      });
-    if (cellProperties.isNew)
-      this.updateCellMeta(physicalRow, physicalCol, 'isNew', true, {
-        cell: td,
-        forceReRender: true,
-        visualRow,
-        visualCol,
-      });
-    if (cellProperties.isSearchResult)
-      this.updateCellMeta(physicalRow, physicalCol, 'isSearchResult', true, {
-        cell: td,
-        forceReRender: true,
-        visualRow,
-        visualCol,
-      });
+        visualCol
+      );
     if (typeof this.mappings?.mappedHeaders?.[physicalCol] === 'undefined')
-      td.classList.add('wb-cell-unmapped');
+      td.classList.add('text-gray-500');
     if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
       td.classList.add('wb-coordinate-cell');
   },
-  beforeValidate(value, _visualRow, prop) {
+  // Make HOT use defaultValues for validation if cell is empty
+  beforeValidate(value, _visualRow, property) {
     if (value) return value;
 
-    const visualCol = this.hot.propToCol(prop);
+    const visualCol = this.hot.propToCol(property);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
     return typeof this.mappings?.defaultValues[physicalCol] === 'undefined'
       ? value
       : this.mappings.defaultValues[physicalCol];
   },
-  afterValidate(isValid, value, visualRow, prop) {
-    const visualCol = this.hot.propToCol(prop);
+  afterValidate(isValid, value, visualRow, property) {
+    const visualCol = this.hot.propToCol(property);
 
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
-    const issues = this.cellMeta[physicalRow]?.[physicalCol]?.['issues'] ?? [];
-    const newIssues = [
-      ...new Set([
-        ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
-        ...issues.filter(
-          (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
-        ),
-      ]),
-    ];
+    const issues = this.getCellMeta(physicalRow, physicalCol, 'issues');
+    /*
+     * Don't duplicate picklistValidationFailed message if both front-end and
+     * back-end identified the same issue.
+     *
+     * This is the only type of validation that is done on the front-end
+     */
+    const newIssues = f.unique([
+      ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
+      ...issues.filter(
+        (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
+      ),
+    ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
       this.updateCellMeta(physicalRow, physicalCol, 'issues', newIssues);
   },
@@ -675,6 +786,13 @@ const WBView = Backbone.View.extend({
   afterRedo(data) {
     this.afterUndoRedo('redo', data);
   },
+  /*
+   * Any change to a row clears disambiguation results
+   * Clearing disambiguation creates a separate point in the undo/redo stack
+   * This runs undo twice when undoing a change that caused disambiguation
+   * clear and similarly redoes the change twice
+   *
+   */
   afterUndoRedo(type, data) {
     if (
       this.undoRedoIsHandled ||
@@ -692,16 +810,17 @@ const WBView = Backbone.View.extend({
     const oldValue = JSON.parse(oldData || '{}').disambiguation;
 
     /*
-     * Disambiguation results are cleared when value in that row changes.
+     * Disambiguation results are cleared when any cell in a row changes.
      * That change creates a separate point in the undo stack.
      * Thus, if HOT tries to undo disambiguation clearing, we need to
-     * also undo the change that caused the clearing in the first place
-     * */
+     * also need to undo the change that caused disambiguation clearing
+     */
     if (
       type === 'undo' &&
-      Object.keys(newValue ?? {}).length !== 0 &&
+      Object.keys(newValue ?? {}).length > 0 &&
       Object.keys(oldValue ?? {}).length === 0
     )
+      // HOT doesn't seem to like calling undo from inside of afterUndo
       setTimeout(() => {
         this.undoRedoIsHandled = true;
         this.hot.undo();
@@ -711,23 +830,32 @@ const WBView = Backbone.View.extend({
     else this.afterChangeDisambiguation(physicalRow);
   },
   beforePaste() {
-    return !this.uploadedView && !this.isUploaded;
+    return (
+      !this.uploadedView &&
+      !this.isUploaded &&
+      hasPermission('/workbench/dataset', 'update')
+    );
   },
+  /*
+   * If copying values from a 1x3 area and pasting into the last cell, HOT
+   * would create 2 invisible columns)
+   *
+   * This intercepts Paste to prevent creation of these columns
+   *
+   * This logic wasn't be put into beforePaste because it receives
+   * arguments that are inconvenient to work with
+   * */
   beforeChange(unfilteredChanges, source) {
     if (source !== 'CopyPaste.paste') return true;
-    /*
-     * This logic shouldn't be put into beforePaste because it receives
-     * arguments that are inconvenient to work with
-     * */
 
     const filteredChanges = unfilteredChanges.filter(
-      ([, prop]) => prop < this.dataset.columns.length
+      ([, property]) => property < this.dataset.columns.length
     );
     if (filteredChanges.length === unfilteredChanges.length) return true;
     this.hot.setDataAtCell(
-      filteredChanges.map(([visualRow, prop, _oldValue, newValue]) => [
+      filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
         visualRow,
-        this.hot.propToCol(prop),
+        this.hot.propToCol(property),
         newValue,
       ]),
       'CopyPaste.paste'
@@ -748,21 +876,27 @@ const WBView = Backbone.View.extend({
       return;
 
     const changes = unfilteredChanges
-      .map(([visualRow, prop, oldValue, newValue]) => ({
+      .map(([visualRow, property, oldValue, newValue]) => ({
         visualRow,
-        visualCol: this.hot.propToCol(prop),
+        visualCol: this.hot.propToCol(property),
         physicalRow: this.hot.toPhysicalRow(visualRow),
-        physicalCol: this.hot.toPhysicalColumn(this.hot.propToCol(prop)),
+        physicalCol:
+          typeof property === 'number'
+            ? property
+            : this.hot.toPhysicalColumn(this.hot.propToCol(property)),
         oldValue,
         newValue,
       }))
       .filter(
         ({ oldValue, newValue, visualCol }) =>
-          // Ignore cases when value didn't change
+          /*
+           * Ignore cases where value didn't change
+           * (happens when double click a cell and then click on another cell)
+           * */
           oldValue !== newValue &&
-          // or when value changed from null to empty
+          // Or where value changed from null to empty
           (oldValue !== null || newValue !== '') &&
-          // or the column does not exist
+          // Or the column does not exist (that can happen on paste)
           visualCol < this.dataset.columns.length
       );
 
@@ -772,11 +906,7 @@ const WBView = Backbone.View.extend({
       changes
         // Ignore changes to unmapped columns
         .filter(
-          ({ physicalCol }) =>
-            this.mappings?.arrayOfMappings.findIndex(
-              ({ headerName }) =>
-                this.dataset.columns.indexOf(headerName) === physicalCol
-            ) !== -1
+          ({ physicalCol }) => this.physicalColToMappingCol(physicalCol) !== -1
         )
         .sort(
           ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
@@ -785,26 +915,42 @@ const WBView = Backbone.View.extend({
         .map(({ physicalRow }) => physicalRow)
     );
 
+    /*
+     * Don't clear disambiguation when afterChange is triggered by
+     * this.hot.undo() from inside of this.afterUndoRedo()
+     */
     if (!this.undoRedoIsHandled)
       changedRows.forEach((physicalRow) =>
         this.clearDisambiguation(physicalRow)
       );
 
     changes.forEach(
-      ({ physicalRow, physicalCol, newValue, visualRow, visualCol }) => {
+      ({
+        visualRow,
+        visualCol,
+        physicalRow,
+        physicalCol,
+        oldValue,
+        newValue,
+      }) => {
+        if (
+          typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
+          'undefined'
+        )
+          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue);
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
         });
         if (
           this.wbutils.searchPreferences.search.liveUpdate &&
-          this.wbutils.searchQuery !== ''
+          typeof this.wbutils.searchQuery !== 'undefined'
         )
           this.updateCellMeta(
             physicalRow,
             physicalCol,
             'isSearchResult',
-            this.wbutils.searchFunction(this.wbutils.searchQuery, newValue),
+            this.wbutils.searchFunction(newValue),
             { visualRow, visualCol }
           );
       }
@@ -816,56 +962,54 @@ const WBView = Backbone.View.extend({
     if (this.dataset.uploadplan)
       changedRows.forEach((physicalRow) => this.startValidateRow(physicalRow));
   },
+  /*
+   * This may be called before full initialization of the workbench because
+   * of the minSpareRows setting in HOT. Thus, be sure to check if
+   * this.hotIsReady is true
+   *
+   * Also, I don't think this is ever called with amount > 1.
+   * Even if multiple new rows where created at once (e.x on paste), HOT calls
+   * this hook one row at a time
+   *
+   * Also, this function needs to be called before afterValidate, thus I used
+   * beforeCreateRow, instead of afterCreateRow
+   *
+   */
   beforeCreateRow(visualRowStart, amount, source) {
-    /*
-     * This may be called before full initialization of the workbench because
-     * of the minSpareRows setting in HOT. Thus, be sure to check if
-     * this.hotIsReady is true
-     *
-     * Also, I don't think this is ever called with amount > 1.
-     * Even if multiple new rows where created at once (e.x on paste), HOT calls
-     * this hook one row at a time
-     *
-     * Also, this function needs to be called before afterValidate, thus I used
-     * beforeCreateRow, instead of afterCreateRow
-     *
-     * */
-
     const addedRows = Array.from(
       { length: amount },
       (_, index) =>
         /*
-         * If HOT is not yet initialized, we can assume that physical row order
-         * and visual row order is the same
+         * If HOT is not yet fully initialized, we can assume that physical row
+         * order and visual row order is the same
          */
         this.hot?.toPhysicalRow(visualRowStart + index) ??
         visualRowStart + index
     ).sort();
 
     this.flushIndexedCellData = true;
-    addedRows.forEach((physicalRow) => {
-      this.cellMeta = [
-        ...this.cellMeta.slice(0, physicalRow),
-        this.dataset.columns.map(getDefaultCellMeta),
-        ...this.cellMeta.slice(physicalRow),
-      ];
-    });
+    addedRows
+      .filter((physicalRow) => physicalRow < this.cellMeta.length)
+      .forEach((physicalRow) => this.cellMeta.splice(physicalRow, 0, []));
     if (this.hotIsReady && source !== 'auto') this.spreadSheetChanged();
 
     return true;
   },
   beforeRemoveRow(visualRowStart, amount, source) {
+    // Get indexes of removed rows in reverse order
     const removedRows = Array.from({ length: amount }, (_, index) =>
       this.hot.toPhysicalRow(visualRowStart + index)
-    );
-    this.liveValidationStack = this.liveValidationStack.filter(
-      (physicalRow) => !removedRows.includes(physicalRow)
-    );
+    )
+      .filter((physicalRow) => physicalRow < this.cellMeta.length)
+      .sort()
+      .reverse();
+
+    removedRows.forEach((physicalRow) => {
+      this.cellMeta.splice(physicalRow, 1);
+      this.liveValidationStack.splice(physicalRow, 1);
+    });
 
     this.flushIndexedCellData = true;
-    this.cellMeta = this.cellMeta.filter(
-      (_, physicalRow) => !removedRows.includes(physicalRow)
-    );
 
     if (this.hotIsReady && source !== 'auto') {
       this.spreadSheetChanged();
@@ -874,14 +1018,13 @@ const WBView = Backbone.View.extend({
 
     return true;
   },
+  /*
+   * If a tree column is about to be sorted, overwrite the sort config by
+   * finding all lower level ranks of that tree (within the same -to-many)
+   * and sorting them in the same direction
+   */
   beforeColumnSort(currentSortConfig, newSortConfig) {
     this.flushIndexedCellData = true;
-
-    /*
-     * If a tree column is about to be sorted, overwrite the sort config by
-     * finding all lower level ranks of that tree and sorting them in the same
-     * direction
-     * */
 
     if (this.coordinateConverterView) return false;
 
@@ -903,15 +1046,16 @@ const WBView = Backbone.View.extend({
               )?.rankId,
               groupIndex,
             }))
-            .filter(({ rankId }) => typeof rankId !== 'undefined')?.[0],
+            .find(({ rankId }) => typeof rankId !== 'undefined'),
         }))
         // Filter out columns that aren't tree ranks
         .filter(({ rankGroup }) => typeof rankGroup !== 'undefined')
         /*
          * Filter out columns that didn't change
          * In the end, there should only be 0 or 1 columns
-         * */
-        .filter(({ sortOrder, visualCol }) => {
+         *
+         */
+        .find(({ sortOrder, visualCol }) => {
           const deltaColumnState = deltaSearchConfig.find(
             ({ column }) => column === visualCol
           );
@@ -919,7 +1063,7 @@ const WBView = Backbone.View.extend({
             typeof deltaColumnState === 'undefined' ||
             deltaColumnState.sortOrder !== sortOrder
           );
-        })[0];
+        });
 
     let changedTreeColumn = findTreeColumns(newSortConfig, currentSortConfig);
     let newSortOrderIsUnset = false;
@@ -934,7 +1078,8 @@ const WBView = Backbone.View.extend({
     /*
      * Filter out columns with higher rank than the changed column
      * (lower rankId corresponds to a higher tree rank)
-     * */
+     *
+     */
     const columnsToSort = this.mappings.treeRanks[
       changedTreeColumn.rankGroup.groupIndex
     ]
@@ -962,8 +1107,8 @@ const WBView = Backbone.View.extend({
 
     return false;
   },
+  // Cache sort config to preserve column sort order across sessions
   async afterColumnSort(_previousSortConfig, sortConfig) {
-    const currentCollection = await cache.getCurrentCollectionId();
     const physicalSortConfig = sortConfig.map(
       ({ column: visualCol, ...rest }) => ({
         ...rest,
@@ -971,8 +1116,8 @@ const WBView = Backbone.View.extend({
       })
     );
     cache.set(
-      'workbench-sort-config',
-      `${currentCollection}_${this.dataset.id}`,
+      'workBenchSortConfig',
+      `${schema.domainLevelIds.collection}_${this.dataset.id}`,
       physicalSortConfig,
       {
         overwrite: true,
@@ -981,14 +1126,16 @@ const WBView = Backbone.View.extend({
   },
   beforeColumnMove(_columnIndexes, _finalIndex, dropIndex) {
     return (
-      // Don't allow moving columns when readOnly
+      // Don't allow moving columns when isReadOnly
       !this.uploadedView &&
       !this.coordinateConverterView &&
-      // An ugly fix for jQuery dialogs conflicting with HOT
+      // An ugly fix for jQuery's dialogs conflicting with HOT
       (typeof dropIndex !== 'undefined' || this.hotIsReady === false)
     );
   },
+  // Save new visualOrder on the back end
   afterColumnMove(_columnIndexes, _finalIndex, dropIndex) {
+    // An ugly fix for jQuery's dialogs conflicting with HOT
     if (typeof dropIndex === 'undefined' || !this.hotIsReady) return;
 
     this.flushIndexedCellData = true;
@@ -999,33 +1146,39 @@ const WBView = Backbone.View.extend({
 
     if (
       this.dataset.visualorder == null ||
-      columnOrder.some((i, j) => i !== this.dataset.visualorder[j])
+      columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-        type: 'PUT',
-        data: JSON.stringify({ visualorder: columnOrder }),
-        dataType: 'json',
-        processData: false,
-      }).fail(this.checkDeletedFail.bind(this));
+      ping(
+        `/api/workbench/dataset/${this.dataset.id}/`,
+        {
+          method: 'PUT',
+          body: { visualorder: columnOrder },
+        },
+        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      ).then(this.checkDeletedFail.bind(this));
     }
   },
+  // Do not scroll the viewport to the last column after inserting a row
   afterPaste(data, coords) {
     const lastCoords = coords.slice(-1)[0];
     if (data.some((row) => row.length === this.dataset.columns.length))
-      // Do not scroll the viewport to the last column after inserting a row
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
-  // Reposition the comment box if it is overflowing
+  /*
+   * Reposition the comment box if it is overflowing
+   * See https://github.com/specify/specify7/issues/932
+   * */
   afterOnCellMouseOver(_event, coordinates, cell) {
     const physicalRow = this.hot.toPhysicalRow(coordinates.row);
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
 
     // Make sure cell has comments
-    if (this.cellMeta[physicalRow]?.[physicalCol]?.issues.length === 0) return;
+    if (this.getCellMeta(physicalRow, physicalCol, 'issues').length === 0)
+      return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = parseFloat(
+    const oneRem = Number.parseFloat(
       getComputedStyle(document.documentElement).fontSize
     );
 
@@ -1036,7 +1189,9 @@ const WBView = Backbone.View.extend({
       '--offset-right',
       `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
     );
-    this.hotCommentsContainer.classList.add('repositioned');
+    this.hotCommentsContainer.classList.add(
+      'right-[var(--offset-right)] !left-[unset]'
+    );
     if (this.hotCommentsContainerRepositionCallback) {
       clearTimeout(this.hotCommentsContainerRepositionCallback);
       this.hotCommentsContainerRepositionCallback = undefined;
@@ -1046,7 +1201,7 @@ const WBView = Backbone.View.extend({
    * Revert comment box's position to original state if needed.
    * The 10ms delay helps prevent visual artifacts when the mouse pointer
    * moves between cells.
-   * */
+   */
   afterOnCellMouseOut() {
     if (this.hotCommentsContainerRepositionCallback)
       clearTimeout(this.hotCommentsContainerRepositionCallback);
@@ -1054,24 +1209,85 @@ const WBView = Backbone.View.extend({
       this.hotCommentsContainer.style.getPropertyValue('--offset-right') !== ''
     )
       this.hotCommentsContainerRepositionCallback = setTimeout(
-        () => this.hotCommentsContainer.classList.remove('repositioned'),
+        () =>
+          this.hotCommentsContainer.classList.remove(
+            'right-[var(--offset-right)] !left-[unset]'
+          ),
         10
       );
   },
-  cellIsModified(physicalRow, physicalCol) {
-    // For now, only readonly picklists are validated on the front-end
-    const hasFrontEndValidationErrors = this.cellMeta[physicalRow][
-      physicalCol
-    ].issues.some((issue) =>
-      issue.endsWith(wbText('picklistValidationFailed')(''))
+  // Meta Data
+  getCellMeta(physicalRow, physicalCol, key) {
+    const index = metaKeys.indexOf(key);
+    return (
+      this.cellMeta[physicalRow]?.[physicalCol]?.[index] ??
+      defaultMetaValues[index]
     );
-    if (hasFrontEndValidationErrors) return false;
+  },
+  getCellMetaFromArray(metaCell, key) {
+    const index = metaKeys.indexOf(key);
+    return metaCell?.[index] ?? defaultMetaValues[index];
+  },
+  /*
+   * This does not run visual side effects
+   * For changing meta with side effects, use this.updateCellMeta
+   */
+  setCellMeta(physicalRow, physicalCol, key, value) {
+    const currentValue = this.getCellMeta(physicalRow, physicalCol, key);
 
+    const issuesChanged =
+      key === 'issues' &&
+      (currentValue.length !== value.length ||
+        JSON.stringify(currentValue) !== JSON.stringify(value));
+    const cellValueChanged = key === 'originalValue';
+    const metaValueChanged =
+      issuesChanged ||
+      cellValueChanged ||
+      (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
+        currentValue !== value);
+
+    if (!metaValueChanged) return false;
+
+    const index = metaKeys.indexOf(key);
+    this.cellMeta[physicalRow] ??= [];
+    this.cellMeta[physicalRow][physicalCol] ??= Array.from(defaultMetaValues);
+    this.cellMeta[physicalRow][physicalCol][index] = value;
+
+    this.flushIndexedCellData = true;
+
+    return true;
+  },
+  // Figuring out if a cell was modified is more complicated then it might seem
+  isCellModified(physicalRow, physicalCol) {
+    // For now, only readonly picklists are validated on the front-end
+    const hasFrontEndValidationErrors = this.getCellMeta(
+      physicalRow,
+      physicalCol,
+      'issues'
+    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed')('')));
+    if (hasFrontEndValidationErrors)
+      /*
+       * Since isModified state has higher priority then issues, we need to
+       * remove the isModified state if front end validation errors are to be
+       * visible
+       */
+      return false;
+
+    const originalCellValue = this.getCellMeta(
+      physicalRow,
+      physicalCol,
+      'originalValue'
+    );
     const cellValueChanged =
-      `${this.originalData[physicalRow]?.[physicalCol] ?? ''}` !==
-      `${this.data[physicalRow][physicalCol] ?? ''}`;
+      typeof originalCellValue !== 'undefined' &&
+      (originalCellValue?.toString() ?? '') !==
+        (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
+    /*
+     * If cell was disambiguated, it should show up as changed, even if value
+     * is unchanged
+     */
     return this.cellWasDisambiguated(physicalRow, physicalCol);
   },
   // Updates cell's isModified meta state
@@ -1085,66 +1301,21 @@ const WBView = Backbone.View.extend({
       visualCol = undefined,
     } = {}
   ) {
-    const isModified = this.cellIsModified(physicalRow, physicalCol);
-    if (this.cellMeta[physicalRow][physicalCol]['isModified'] !== isModified)
-      this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
-        visualRow,
-        visualCol,
-      });
+    const isModified = this.isCellModified(physicalRow, physicalCol);
+    this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
+      visualRow,
+      visualCol,
+    });
   },
-  updateCellMeta(
-    physicalRow,
-    physicalCol,
-    key,
-    value,
-    {
-      // Can optionally specify this to improve the performance
-      cell: initialCell = undefined,
-      /*
-       * Whether to try fetch cell and reRender it if there was meta value
-       * change.
-       * This is set to false only in WbUtils.searchCells when it knows
-       * for sure that cell is outside the viewport
-       * */
-      render = true,
-      /*
-       * Whether to run the effect even if meta value did not change
-       * Used inside of afterRenderer to apply meta styles to newly created
-       * cell
-       * */
-      forceReRender = false,
-      // Can optionally provide this to improve performance
-      visualRow: initialVisualRow = undefined,
-      // Can optionally provide this to improve performance
-      visualCol: initialVisualCol = undefined,
-    } = {}
-  ) {
-    const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
-    const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
-    const cell =
-      render && typeof initialCell === 'undefined'
-        ? this.hot.getCell(visualRow, visualCol)
-        : initialCell;
-
-    // Current value of the meta property
-    const currentValue = this.cellMeta[physicalRow][physicalCol][key];
-    // The value for which to run the sideEffect
-    let effectValue = value;
-    // The value to store in the metaObject
-    let metaValue = value;
-
-    // side effects
+  runMetaUpdateEffects(cell, key, value, visualRow, visualCol) {
     const effects = {
-      isNew: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell'),
-      isModified: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell'),
-      isSearchResult: (value) =>
-        cell?.classList[value === true ? 'add' : 'remove'](
-          'wb-search-match-cell'
-        ),
-      issues: (value) => {
-        cell?.classList[value.length === 0 ? 'remove' : 'add'](
+      isNew: () => cell.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
+      isModified: () =>
+        cell.classList[value ? 'add' : 'remove']('wb-modified-cell'),
+      isSearchResult: () =>
+        cell.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
+      issues: () => {
+        cell.classList[value.length === 0 ? 'remove' : 'add'](
           'wb-invalid-cell'
         );
         if (value.length === 0)
@@ -1174,21 +1345,36 @@ const WBView = Backbone.View.extend({
         `Tried to set unknown metaData record ${key}=${value} for cell
          ${visualRow}x${visualCol}`
       );
+    effects[key]();
+  },
+  updateCellMeta(
+    physicalRow,
+    physicalCol,
+    key,
+    value,
+    {
+      // Can optionally provide this to improve performance
+      cell: initialCell = undefined,
+      // Can optionally provide this to improve performance
+      visualRow: initialVisualRow = undefined,
+      // Can optionally provide this to improve performance
+      visualCol: initialVisualCol = undefined,
+    } = {}
+  ) {
+    const isValueChanged = this.setCellMeta(
+      physicalRow,
+      physicalCol,
+      key,
+      value
+    );
+    if (!isValueChanged) return false;
 
-    const valueIsChanged =
-      (['isNew', 'isModified', 'isSearchResult'].includes(key) &&
-        currentValue !== metaValue) ||
-      (key === 'issues' &&
-        (currentValue.length !== metaValue.length ||
-          JSON.stringify(currentValue) !== JSON.stringify(metaValue)));
+    const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
+    const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
+    const cell = initialCell ?? this.hot.getCell(visualRow, visualCol);
+    if (cell) this.runMetaUpdateEffects(cell, key, value, visualRow, visualCol);
 
-    // Do not run the side effect if state is already in it's correct position,
-    // unless asked to forceReRender
-    if (render && (forceReRender || valueIsChanged)) effects[key](effectValue);
-
-    this.cellMeta[physicalRow][physicalCol][key] = metaValue;
-
-    if (valueIsChanged) this.flushIndexedCellData = true;
+    return true;
   },
 
   // Disambiguation
@@ -1258,7 +1444,7 @@ const WBView = Backbone.View.extend({
       'Disambiguation.Set'
     );
   },
-  disambiguateCell([
+  openDisambiguationDialog([
     {
       start: { col: visualCol, row: visualRow },
     },
@@ -1271,11 +1457,11 @@ const WBView = Backbone.View.extend({
     const matches = this.uploadResults.ambiguousMatches[physicalRow].find(
       ({ physicalCols }) => physicalCols.includes(physicalCol)
     );
-    const tableName = getTableFromMappingPath({
-      baseTableName: this.mappings.baseTableName,
-      mappingPath: matches.mappingPath,
-    });
-    const model = schema.getModel(tableName);
+    const tableName = getTableFromMappingPath(
+      this.mappings.baseTable.name,
+      matches.mappingPath
+    );
+    const model = getModel(tableName);
     const resources = new model.LazyCollection({
       filters: { id__in: matches.ids.join(',') },
     });
@@ -1284,12 +1470,12 @@ const WBView = Backbone.View.extend({
       this.setDisambiguation(
         physicalRow,
         matches.mappingPath,
-        parseInt(selected, 10)
+        Number.parseInt(selected)
       );
       this.startValidateRow(physicalRow);
     };
     const doAll = (selected) => {
-      // loop backwards so the live validation will go from top to bottom
+      // Loop backwards so the live validation will go from top to bottom
       for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
         const physicalRow = this.hot.toPhysicalRow(visualRow);
         if (
@@ -1305,39 +1491,29 @@ const WBView = Backbone.View.extend({
         this.setDisambiguation(
           physicalRow,
           matches.mappingPath,
-          parseInt(selected, 10)
+          Number.parseInt(selected)
         );
         this.startValidateRow(physicalRow);
       }
     };
 
-    const content = $('<div class="da-container">');
-    resources.fetch({ limit: 0 }).done(() => {
-      if (resources.length < 1) {
-        $(`<div>
-            ${wbText('noDisambiguationResultsDialogHeader')}
-            ${wbText('noDisambiguationResultsDialogMessage')}
-        </div>`).dialog({
+    const content = $('<div class="flex flex-col">');
+    // TODO: this will fail if don't have read permission to that table
+    resources.fetch({ limit: 0 }).then(() => {
+      if (resources.length === 0) {
+        const dialog = showDialog({
           title: wbText('noDisambiguationResultsDialogTitle'),
-          modal: true,
-          close() {
-            $(this).remove();
-          },
-          buttons: [
-            {
-              text: commonText('close'),
-              click() {
-                $(this).dialog('close');
-              },
-            },
-          ],
+          header: wbText('noDisambiguationResultsDialogHeader'),
+          content: wbText('noDisambiguationResultsDialogMessage'),
+          buttons: commonText('close'),
+          onClose: () => dialog.remove(),
         });
         return;
       }
 
       resources.forEach((resource) => {
         const row = $(
-          `<label class="da-row">
+          `<label class="py-1">
             <input
               type="radio"
               class="da-option"
@@ -1347,75 +1523,80 @@ const WBView = Backbone.View.extend({
             <a
               href="${resource.viewUrl()}"
               target="_blank"
-            >ℹ️</a>
+              title="${commonText('view')}"
+              aria-label="${commonText('view')}"
+            >
+              ${legacyNonJsxIcons.informationCircle}
+              <span
+                title="${commonText('opensInNewTab')}"
+                aria-label="${commonText('opensInNewTab')}"
+              >${legacyNonJsxIcons.link}</span>
+            </a>
           <label/>`
         ).appendTo(content);
         if (model.getField('rankid')) {
           resource
             .rget('parent.fullname')
-            .done((parentName) =>
+            .then((parentName) =>
               row
                 .find('.label')
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
         } else {
-          formatObj(resource).done((formatted) =>
+          format(resource).then((formatted) =>
             row.find('.label').text(formatted)
           );
         }
       });
 
-      const dialog = $('<div>')
-        .append(content)
-        .dialog({
-          title: wbText('disambiguationDialogTitle'),
-          minWidth: 400,
-          minHeight: 300,
-          modal: true,
-          close() {
-            $(this).remove();
-            clearInterval(interval);
-          },
-          buttons: [
-            {
-              text: commonText('close'),
-              click() {
-                $(this).dialog('close');
-              },
-            },
-            {
-              text: commonText('apply'),
-              click() {
+      const dialog = showDialog({
+        header: wbText('disambiguationDialogTitle'),
+        onClose: () => {
+          dialog.remove();
+          clearInterval(interval);
+        },
+        content,
+        buttons: (
+          <>
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+            <Button.Blue
+              onClick={() => {
                 const selected = $('input.da-option:checked', this).val();
                 if (selected != null) {
                   doDA(selected);
-                  $(this).dialog('close');
+                  dialog.remove();
+                  clearInterval(interval);
                 }
-              },
-            },
-            {
-              id: 'applyAllButton',
-              text: commonText('applyAll'),
-              click() {
+              }}
+            >
+              {commonText('apply')}
+            </Button.Blue>
+            <Button.Blue
+              id="applyAllButton"
+              onClick={() => {
                 const selected = $('input.da-option:checked', this).val();
                 if (selected != null) {
                   doAll(selected);
-                  $(this).dialog('close');
+                  dialog.remove();
+                  clearInterval(interval);
                 }
-              },
-            },
-          ],
-        });
+              }}
+            >
+              {commonText('applyAll')}
+            </Button.Blue>
+          </>
+        ),
+      });
 
       let applyAllAvailable = true;
-      const applyAllButton = dialog.parent().find('#applyAllButton');
+      const applyAllButton = content.find('#applyAllButton');
 
       const updateIt = () => {
         const newState = this.liveValidationStack.length === 0;
         if (newState !== applyAllAvailable) {
           applyAllAvailable = newState;
-          applyAllButton.button('option', 'disabled', !newState);
-          applyAllButton[0][newState ? 'removeAttribute' : 'setAttribute'](
+          applyAllButton.disabled = !newState;
+          applyAllButton[newState ? 'removeAttribute' : 'setAttribute'](
             'title',
             wbText('applyAllUnavailable')
           );
@@ -1431,23 +1612,16 @@ const WBView = Backbone.View.extend({
     if (!this.dataset.rowresults) return;
 
     if (typeof this.uploadedView !== 'undefined') {
-      this.uploadedView.onClose();
+      this.uploadedView.handleClose();
       return;
     }
 
-    if (this.liveValidationStack.length !== 0) {
-      const dialog = $(`<div>
-        ${wbText('unavailableWhileValidating')}
-      </div>`).dialog({
-        title: wbText('results'),
-        modal: false,
-        close: () => dialog.dialog('destroy'),
-        buttons: [
-          {
-            text: commonText('close'),
-            click: () => dialog.dialog('destroy'),
-          },
-        ],
+    if (this.liveValidationStack.length > 0) {
+      const dialog = showDialog({
+        header: wbText('results'),
+        content: wbText('unavailableWhileValidating'),
+        onClose: () => dialog.remove(),
+        buttons: commonText('close'),
       });
       return;
     }
@@ -1491,7 +1665,7 @@ const WBView = Backbone.View.extend({
     const isReadOnly = this.hot.getSettings().readOnly;
     effects.push(() => this.hot.updateSettings({ readOnly: true }));
     effectsCleanup.push(() =>
-      this.hot.updateSettings({ readOnly: isReadOnly })
+      this.hot?.updateSettings({ readOnly: isReadOnly })
     );
 
     const initialHiddenRows = this.getHotPlugin('hiddenRows').getHiddenRows();
@@ -1499,27 +1673,23 @@ const WBView = Backbone.View.extend({
       this.getHotPlugin('hiddenColumns').getHiddenColumns();
     const rowsToInclude = new Set();
     const colsToInclude = new Set();
-    this.cellMeta.forEach((rowMeta, physicalRow) =>
-      rowMeta.forEach(({ isNew }, physicalCol) => {
-        if (!isNew) return;
-        rowsToInclude.add(physicalRow);
+    Object.entries(this.cellMeta).forEach(([physicalRow, rowMeta]) =>
+      rowMeta.forEach((metaArray, physicalCol) => {
+        if (!this.getCellMetaFromArray(metaArray, 'isNew')) return;
+        rowsToInclude.add(physicalRow | 0);
         colsToInclude.add(physicalCol);
       })
     );
-    const rowsToHide = Array.from(
-      { length: this.data.length },
-      (_, physicalRow) => physicalRow
-    )
+    const rowsToHide = this.data
+      .map((_, physicalRow) => physicalRow)
       .filter(
         (physicalRow) =>
           !rowsToInclude.has(physicalRow) &&
           !initialHiddenRows.includes(physicalRow)
       )
       .map(this.hot.toVisualRow);
-    const colsToHide = Array.from(
-      { length: this.dataset.columns.length },
-      (_, physicalCol) => physicalCol
-    )
+    const colsToHide = this.dataset.columns
+      .map((_, physicalCol) => physicalCol)
       .filter(
         (physicalCol) =>
           !colsToInclude.has(physicalCol) &&
@@ -1548,10 +1718,29 @@ const WBView = Backbone.View.extend({
         : undefined
     );
 
+    effects.push(() => {
+      event.target.ariaPressed = true;
+    });
+    effectsCleanup.push(() => {
+      event.target.ariaPressed = false;
+    });
+
     effects.push(() => this.el.classList.add('wb-show-upload-results'));
     effectsCleanup.push(() =>
       this.el.classList.remove('wb-show-upload-results')
     );
+
+    const uploadedViewWrapper = this.el.getElementsByClassName(
+      'wb-uploaded-view-wrapper'
+    )[0];
+    effects.push(() => {
+      uploadedViewWrapper.classList.remove('hidden');
+      uploadedViewWrapper.classList.add('contents');
+    });
+    effectsCleanup.push(() => {
+      uploadedViewWrapper.classList.remove('contents');
+      uploadedViewWrapper.classList.add('hidden');
+    });
 
     const runEffects = () =>
       [...effects, this.hot.render.bind(this.hot)].forEach((effect) =>
@@ -1562,152 +1751,151 @@ const WBView = Backbone.View.extend({
         (effectCleanup) => effectCleanup()
       );
 
-    const uploadedViewWrapper = this.el.getElementsByClassName(
-      'wb-uploaded-view-wrapper'
-    )[0];
-    uploadedViewWrapper.style.display = '';
-    uploadedViewWrapper.innerHTML = '<div></div>';
-
+    const handleClose = () => {
+      this.uploadedView.remove();
+      this.uploadedView = undefined;
+      runCleanup();
+    };
     this.uploadedView = new WBUploadedView({
-      el: uploadedViewWrapper.children[0],
       recordCounts: this.uploadResults.recordCounts,
       isUploaded: this.isUploaded,
-      onClose: () => {
-        this.uploadedView.remove();
-        this.uploadedView = undefined;
-        uploadedViewWrapper.style.display = 'none';
-        runCleanup();
-      },
+      onClose: handleClose,
     }).render();
+
+    uploadedViewWrapper.append(this.uploadedView.el);
+    this.uploadedView.handleClose = handleClose;
 
     runEffects();
   },
   openPlan() {
     navigation.go(`/workbench-plan/${this.dataset.id}/`);
   },
+  // For debugging only
   showPlan() {
     const dataset = this.dataset;
     const $this = this;
     const planJson = JSON.stringify(dataset.uploadplan, null, 4);
-    const dialog = $('<div>')
-      .append($('<textarea cols="120" rows="50">').text(planJson))
-      .dialog({
-        title: wbText('dataMapper'),
-        width: 'auto',
-        modal: true,
-        close() {
-          $(this).remove();
-        },
-        buttons: {
-          Save: () => {
-            dataset.uploadplan = JSON.parse($('textarea', dialog).val());
-            $.ajax(`/api/workbench/dataset/${dataset.id}/`, {
-              type: 'PUT',
-              data: JSON.stringify({ uploadplan: dataset.uploadplan }),
-              dataType: 'json',
-              processData: false,
-            }).fail(this.checkDeletedFail.bind(this));
-            dialog.dialog('close');
-            $this.trigger('refresh');
-          },
-          Close: () => dialog.dialog('close'),
-        },
-      });
+    const dialog = showDialog({
+      header: wbText('dataMapper'),
+      content: $('<textarea cols="120" rows="50">').text(planJson),
+      onClose: () => dialog.remove(),
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.Green
+            onClick={() => {
+              dataset.uploadplan = JSON.parse($('textarea', dialog).val());
+              ping(
+                `/api/workbench/dataset/${dataset.id}/`,
+                {
+                  method: 'PUT',
+                  body: { uploadplan: dataset.uploadplan },
+                },
+                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+              ).then(this.checkDeletedFail.bind(this));
+              dialog.remove();
+              $this.trigger('refresh');
+            }}
+          >
+            {commonText('save')}
+          </Button.Green>
+        </>
+      ),
+    });
   },
   changeOwner() {
-    this.datasetmeta.dataSetMeta.changeOwnerWindow.call(
-      this.datasetmeta.dataSetMeta
-    );
+    this.datasetmeta.changeOwner();
   },
 
   // Actions
+  // aka Rollback
   unupload() {
-    const dialog = $(`<div>
-      ${wbText('rollbackDialogHeader')}
-      ${wbText('rollbackDialogMessage')}
-    </div>`).dialog({
-      modal: true,
+    const dialog = showDialog({
       title: wbText('rollbackDialogTitle'),
-      close() {
-        $(this).remove();
-      },
-      buttons: {
-        [wbText('rollback')]: () => {
-          if (typeof this.uploadedView !== 'undefined') {
-            this.uploadedView.remove();
-            this.uploadedView = undefined;
-          }
-          $.post(`/api/workbench/unupload/${this.dataset.id}/`).then(() =>
-            this.openStatus('unupload')
-          );
-          dialog.remove();
-        },
-        [commonText('cancel')]() {
-          $(this).remove();
-        },
-      },
+      header: wbText('rollbackDialogHeader'),
+      content: wbText('rollbackDialogMessage'),
+      onClose: () => dialog.remove(),
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Red
+            onClick={() => {
+              ping(`/api/workbench/unupload/${this.dataset.id}/`, {
+                method: 'POST',
+              }).then(() => this.openStatus('unupload'));
+              dialog.remove();
+            }}
+          >
+            {commonText('rollback')}
+          </Button.Red>
+        </>
+      ),
     });
   },
-  upload(evt) {
-    const mode = $(evt.currentTarget).is('.wb-upload') ? 'upload' : 'validate';
-    if (this.mappings?.arrayOfMappings.length > 0) {
+  upload(event) {
+    const mode = $(event.currentTarget).is('.wb-upload')
+      ? 'upload'
+      : 'validate';
+    if (this.mappings?.lines.length > 0) {
       if (mode === 'upload') {
-        const dialog = $(`<div>
-          ${wbText('startUploadDialogHeader')}
-          ${wbText('startUploadDialogMessage')}
-        </div>`).dialog({
-          modal: true,
+        const dialog = showDialog({
           title: wbText('startUploadDialogTitle'),
-          close() {
-            dialog.remove();
-          },
-          buttons: {
-            [commonText('cancel')]() {
-              dialog.remove();
-            },
-            [wbText('upload')]: () => {
-              this.startUpload(mode);
-              dialog.remove();
-            },
-          },
+          header: wbText('startUploadDialogHeader'),
+          content: wbText('startUploadDialogMessage'),
+          onClose: () => dialog.remove(),
+          buttons: (
+            <>
+              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.Blue
+                onClick={() => {
+                  this.startUpload(mode);
+                  dialog.remove();
+                }}
+              >
+                {wbText('upload')}
+              </Button.Blue>
+            </>
+          ),
         });
       } else this.startUpload(mode);
     } else {
-      $(`<div>
-        ${wbText('noUploadPlanDialogHeader')}
-        ${wbText('noUploadPlanDialogMessage')}
-      </div>`).dialog({
+      const dialog = showDialog({
         title: wbText('noUploadPlanDialogTitle'),
-        modal: true,
-        buttons: {
-          [commonText('close')]: function () {
-            $(this).dialog('close');
-          },
-          [commonText('create')]: () => this.openPlan(),
-        },
+        header: wbText('noUploadPlanDialogHeader'),
+        content: wbText('noUploadPlanDialogMessage'),
+        onClose: () => dialog.remove(),
+        buttons: (
+          <>
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+            <Button.Blue onClick={() => this.openPlan()}>
+              {commonText('create')}
+            </Button.Blue>
+          </>
+        ),
       });
     }
   },
   startUpload(mode) {
-    this.clearAllMetaData();
-    this.liveValidationStack = [];
-    this.liveValidationActive = false;
-    this.validationMode = 'off';
+    this.stopLiveValidation();
     this.updateValidationButton();
-    $.post(`/api/workbench/${mode}/${this.dataset.id}/`)
-      .fail((jqxhr) => {
-        this.checkDeletedFail(jqxhr);
-        this.checkConflictFail(jqxhr);
+    ping(
+      `/api/workbench/${mode}/${this.dataset.id}/`,
+      {
+        method: 'POST',
+      },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
+    )
+      .then((statusCode) => {
+        this.checkDeletedFail(statusCode);
+        this.checkConflictFail(statusCode);
       })
-      .done(() => {
-        this.openStatus(mode);
-      });
+      .then(() => this.openStatus(mode));
   },
   openStatus(mode) {
     this.wbstatus = new WBStatus({
       dataset: {
         ...this.dataset,
-        // Create initial status if it doesn't yet exist
+        // Create initial status if it doesn't exist yet
         uploaderstatus: {
           uploaderstatus:
             this.dataset.uploaderstatus === null
@@ -1734,44 +1922,42 @@ const WBView = Backbone.View.extend({
       },
     }).render();
   },
-  delete: function () {
-    const dialog = $(`<div>
-      ${wbText('deleteDataSetDialogHeader')}
-      ${wbText('deleteDataSetDialogMessage')}
-    </div>`).dialog({
-      modal: true,
+  delete() {
+    const dialog = showDialog({
       title: wbText('deleteDataSetDialogTitle'),
-      close: () => dialog.remove(),
-      buttons: {
-        [commonText('delete')]: () => {
-          $.ajax(`/api/workbench/dataset/${this.dataset.id}/`, {
-            type: 'DELETE',
-          })
-            .done(() => {
-              this.$el.empty();
-              dialog.dialog('close');
-
-              $(`<div>
-                ${wbText('dataSetDeletedHeader')}
-                ${wbText('dataSetDeletedMessage')}
-              </div>`).dialog({
-                title: wbText('dataSetDeletedTitle'),
-                modal: true,
-                close: () => navigation.go('/'),
-                buttons: {
-                  [commonText('close')]: function () {
-                    $(this).dialog('close');
-                  },
+      header: wbText('deleteDataSetDialogHeader'),
+      content: wbText('deleteDataSetDialogMessage'),
+      onClose: () => dialog.remove(),
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Red
+            onClick={() => {
+              ping(
+                `/api/workbench/dataset/${this.dataset.id}/`,
+                {
+                  method: 'DELETE',
                 },
+                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+              ).then((status) => {
+                this.$el.empty();
+                dialog.remove();
+
+                if (!this.checkDeletedFail(status))
+                  showDialog({
+                    title: wbText('dataSetDeletedDialogTitle'),
+                    header: wbText('dataSetDeletedDialogHeader'),
+                    content: wbText('dataSetDeletedDialogMessage'),
+                    onClose: () => navigation.go('/'),
+                    buttons: commonText('close'),
+                  });
               });
-            })
-            .fail((jqxhr) => {
-              this.checkDeletedFail(jqxhr);
-              dialog.dialog('close');
-            });
-        },
-        [commonText('cancel')]: () => dialog.dialog('close'),
-      },
+            }}
+          >
+            {commonText('delete')}
+          </Button.Red>
+        </>
+      ),
     });
   },
   export() {
@@ -1780,7 +1966,7 @@ const WBView = Backbone.View.extend({
       data: this.dataset.rows,
     });
     const wbName = this.dataset.name;
-    const filename = wbName.match(/\.csv$/) ? wbName : wbName + '.csv';
+    const filename = wbName.endsWith('.csv') ? wbName : `${wbName}.csv`;
     const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = window.URL.createObjectURL(blob);
@@ -1788,73 +1974,74 @@ const WBView = Backbone.View.extend({
     a.click();
   },
   revertChanges() {
-    $(`<div>
-      ${wbText('revertChangesDialogHeader')}
-      ${wbText('revertChangesDialogMessage')}
-    </div>`).dialog({
-      modal: true,
+    const dialog = showDialog({
       title: wbText('revertChangesDialogTitle'),
-      close() {
-        $(this).remove();
-      },
-      buttons: {
-        [commonText('cancel')]() {
-          $(this).dialog('close');
-        },
-        [wbText('revert')]: () => {
-          navigation.removeUnloadProtect(this);
-          this.trigger('refresh');
-        },
-      },
+      header: wbText('revertChangesDialogHeader'),
+      content: wbText('revertChangesDialogMessage'),
+      onClose: () => dialog.remove(),
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Red
+            onClick={() => {
+              navigation.removeUnloadProtect(this);
+              this.trigger('refresh');
+            }}
+          >
+            {wbText('revert')}
+          </Button.Red>
+        </>
+      ),
     });
   },
-  saveClicked: function () {
-    this.save().done();
+  saveClicked() {
+    this.save().then();
   },
-  save: function () {
+  save() {
     // Clear validation
-    this.clearAllMetaData();
     this.dataset.rowresults = null;
-    this.validationMode = 'off';
+    this.stopLiveValidation();
     this.updateValidationButton();
 
     // Show saving progress bar
-    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: wbText('savingDialogTitle'),
-      modal: true,
-      dialogClass: 'ui-dialog-no-close',
-      close() {
-        $(this).remove();
-      },
+    const dialog = showDialog({
+      header: wbText('savingDialogTitle'),
+      onClose: () => dialog.remove(),
+      content: loadingBar,
+      buttons: undefined,
     });
-    $('.progress-bar', dialog).progressbar({ value: false });
 
-    //send data
-    return Q(
-      $.ajax(`/api/workbench/rows/${this.dataset.id}/`, {
-        data: JSON.stringify(this.data),
-        error: this.checkDeletedFail.bind(this),
-        type: 'PUT',
-      })
+    // Send data
+    return ping(
+      `/api/workbench/rows/${this.dataset.id}/`,
+      {
+        method: 'PUT',
+        body: this.data,
+      },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
     )
+      .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();
+        this.cellMeta = [];
+        this.wbutils.searchCells({ key: 'SettingsChange' });
+        this.hot.render();
       })
-      .finally(() => dialog.dialog('close'));
+      .finally(() => dialog.remove());
   },
 
   // Validation
-  toggleDataCheck() {
+  toggleDataCheck(event) {
     this.validationMode = this.validationMode === 'live' ? 'off' : 'live';
 
-    if (!(this.mappings?.arrayOfMappings.length > 0))
-      this.validationMode = 'off';
+    if (!(this.mappings?.lines.length > 0)) this.validationMode = 'off';
 
     this.uploadResults = {
       ambiguousMatches: [],
       recordCounts: {},
       newRecords: {},
     };
+    this.cellMeta = [];
 
     switch (this.validationMode) {
       case 'live':
@@ -1865,20 +2052,23 @@ const WBView = Backbone.View.extend({
         this.triggerLiveValidation();
         this.wbutils.toggleCellTypes('newCells', 'remove');
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
+        event.target.ariaPressed = true;
         break;
       case 'static':
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
+        event.target.ariaPressed = false;
         break;
       case 'off':
         this.liveValidationStack = [];
         this.liveValidationActive = false;
+        event.target.ariaPressed = false;
         break;
     }
 
-    this.clearAllMetaData();
+    this.hot.render();
     this.updateValidationButton();
   },
   startValidateRow(physicalRow) {
@@ -1899,14 +2089,15 @@ const WBView = Backbone.View.extend({
       const physicalRow = this.liveValidationStack.pop();
       if (physicalRow === null) return;
       const rowData = this.hot.getSourceDataAtRow(physicalRow);
-      Q(
-        $.post(
-          `/api/workbench/validate_row/${this.dataset.id}/`,
-          JSON.stringify(rowData)
+      ajax(`/api/workbench/validate_row/${this.dataset.id}/`, {
+        method: 'POST',
+        body: rowData,
+        headers: { Accept: 'application/json' },
+      })
+        .then(({ data: result }) =>
+          this.gotRowValidationResult(physicalRow, result)
         )
-      )
-        .then((result) => this.gotRowValidationResult(physicalRow, result))
-        .fin(pumpValidation);
+        .then(pumpValidation);
     };
 
     if (!this.liveValidationActive) {
@@ -1916,7 +2107,11 @@ const WBView = Backbone.View.extend({
   updateValidationButton() {
     if (this.validationMode === 'live')
       this.$('.wb-data-check').text(
-        wbText('dataCheckOn')(this.liveValidationStack.length)
+        `${wbText('dataCheckOn')}${
+          this.liveValidationStack.length > 0
+            ? ` (${this.liveValidationStack.length})`
+            : ''
+        }`()
       );
     else {
       this.$('.wb-data-check').text(wbText('dataCheck'));
@@ -1926,54 +2121,49 @@ const WBView = Backbone.View.extend({
     if (this.validationMode !== 'live' || this.hot.isDestroyed) return;
     this.uploadResults.ambiguousMatches[physicalRow] = [];
     this.hot.batch(() =>
-      this.applyRowValidationResults(physicalRow, result?.result, true)
+      this.applyRowValidationResults(physicalRow, result?.result)
     );
     this.updateCellInfoStats();
   },
   getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
     if (!persevering)
-      return this.mappings.arrayOfMappings
+      // Find all columns with the shared parent mapping path
+      return this.mappings.lines
         .filter(({ mappingPath }) =>
           mappingPathToString(mappingPath).startsWith(
             mappingPathToString(mappingPathFilter)
           )
         )
         .map(({ headerName }) => headerName);
-    let columns;
-    mappingPathFilter.some((_, index) => {
-      columns = this.mappings.arrayOfMappings
-        .filter(({ mappingPath }) =>
-          mappingPathToString(mappingPath).startsWith(
-            mappingPathToString(
-              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
+    return (
+      mappedFind(mappingPathFilter, (_, index) => {
+        const columns = this.mappings.lines
+          .filter(({ mappingPath }) =>
+            mappingPathToString(mappingPath).startsWith(
+              mappingPathToString(
+                mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
+              )
             )
           )
-        )
-        .map(({ headerName }) => headerName);
-      return columns.length !== 0;
-    });
-    if (columns.length === 0)
-      columns = this.mappings.arrayOfMappings.map(
-        ({ headerName }) => headerName
-      );
-    if (columns.length === 0) columns = this.dataset.columns;
-    return columns;
+          .map(({ headerName }) => headerName);
+        return columns.length > 0 ? undefined : columns;
+      }) ?? []
+    );
   },
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
     let columns = initialColumns.filter((column) => column);
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
+    if (columns.length === 0) columns = this.dataset.columns;
+    // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
       .filter((physicalCol) => physicalCol !== -1);
   },
-  applyRowValidationResults(physicalRow, result, isLive) {
-    const rowMeta = this.cellMeta[physicalRow];
-    const newRowMeta = rowMeta.map((cellMeta) => ({
-      ...getDefaultCellMeta(),
-      isModified: (isLive && cellMeta.isModified) ?? false,
-      isSearchResult: cellMeta.isSearchResult ?? false,
+  applyRowValidationResults(physicalRow, result) {
+    const rowMeta = this.dataset.columns.map(() => ({
+      isNew: false,
       issues: [],
     }));
 
@@ -1981,14 +2171,14 @@ const WBView = Backbone.View.extend({
       this.resolveValidationColumns(columns, inferColumnsCallback).forEach(
         (physicalCol) => {
           if (key === 'issues')
-            newRowMeta[physicalCol][key].push(capitalize(value));
-          else newRowMeta[physicalCol][key] = value;
+            rowMeta[physicalCol][key].push(capitalize(value));
+          else rowMeta[physicalCol][key] = value;
         }
       );
 
     if (result) this.parseRowValidationResults(result, setMeta, physicalRow);
 
-    newRowMeta.forEach((cellMeta, physicalCol) => {
+    rowMeta.forEach((cellMeta, physicalCol) => {
       Object.entries(cellMeta).map(([key, value]) =>
         this.updateCellMeta(physicalRow, physicalCol, key, value)
       );
@@ -2090,7 +2280,7 @@ const WBView = Backbone.View.extend({
           uploadResult,
           setMetaCallback,
           physicalRow,
-          [...mappingPath, fieldName, formatReferenceItem(toManyIndex + 1)]
+          [...mappingPath, fieldName, formatToManyIndex(toManyIndex + 1)]
         )
       )
     );
@@ -2104,16 +2294,29 @@ const WBView = Backbone.View.extend({
       return;
     }
 
-    this.hot.batch(() => {
-      this.dataset.rowresults.forEach((result, physicalRow) => {
-        this.applyRowValidationResults(physicalRow, result, false);
-      });
+    this.dataset.rowresults.forEach((result, physicalRow) => {
+      this.applyRowValidationResults(physicalRow, result);
     });
 
     void this.updateCellInfoStats();
   },
 
   // Helpers
+  /*
+   * MappingCol is the index of the lines line corresponding to
+   * a particular physicalCol. Since there can be unmapped columns, these
+   * indexes do not line up and need to be converted like this:
+   */
+  physicalColToMappingCol(physicalCol) {
+    return this.mappings?.lines.findIndex(
+      ({ headerName }) => headerName === this.dataset.columns[physicalCol]
+    );
+  },
+  mappingColToPhysicalCol(mappingCol) {
+    return this.mappings
+      ? this.dataset.columns.indexOf(this.mappings.lines[mappingCol].headerName)
+      : undefined;
+  },
   getHotPlugin(pluginName) {
     if (!this.hotPlugins[pluginName])
       this.hotPlugins[pluginName] = this.hot.getPlugin(pluginName);
@@ -2135,23 +2338,23 @@ const WBView = Backbone.View.extend({
       .prop('title', wbText('wbUploadedUnavailable'));
     navigation.addUnloadProtect(this, wbText('onExitDialogMessage'));
   },
-  checkDeletedFail(jqxhr) {
-    if (!jqxhr.errorHandled && jqxhr.status === 404) {
+  // Check if AJAX failed because Data Set was deleted
+  checkDeletedFail(statusCode) {
+    if (statusCode === Http.NOT_FOUND)
       this.$el.empty().append(wbText('dataSetDeletedOrNotFound'));
-      jqxhr.errorHandled = true;
-    }
+    return statusCode === Http.NOT_FOUND;
   },
-  checkConflictFail(jqxhr) {
-    if (!jqxhr.errorHandled && jqxhr.status === 409) {
+  // Check if AJAX failed because Data Set was modified by other session
+  checkConflictFail(statusCode) {
+    if (statusCode === Http.CONFLICT)
       /*
        * Upload/Validation/Un-Upload has been initialized by another session
        * Need to reload the page to display the new state
-       * */
+       */
       this.trigger('reload');
-      jqxhr.errorHandled = true;
-    }
+    return statusCode === Http.CONFLICT;
   },
-  spreadSheetUpToDate: function () {
+  spreadSheetUpToDate() {
     if (!this.hasUnSavedChanges) return;
     this.hasUnSavedChanges = false;
     this.$(
@@ -2166,28 +2369,33 @@ const WBView = Backbone.View.extend({
 
   // MetaData
   async updateCellInfoStats() {
-    const cellMeta = this.cellMeta.flat(2);
+    const cellMeta = this.cellMeta.flat();
 
     const cellCounts = {
       newCells: cellMeta.reduce(
-        (count, info) => count + (info.isNew ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
         0
       ),
       invalidCells: cellMeta.reduce(
-        (count, info) => count + (info.issues?.length ? 1 : 0),
+        (count, info) =>
+          count +
+          (this.getCellMetaFromArray(info, 'issues').length > 0 ? 1 : 0),
         0
       ),
       searchResults: cellMeta.reduce(
-        (count, info) => count + (info.isSearchResult ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isSearchResult') ? 1 : 0),
         0
       ),
       modifiedCells: cellMeta.reduce(
-        (count, info) => count + (info.isModified ? 1 : 0),
+        (count, info) =>
+          count + (this.getCellMetaFromArray(info, 'isModified') ? 1 : 0),
         0
       ),
     };
 
-    //update navigation information
+    // Update navigation information
     Object.values(
       this.el.getElementsByClassName('wb-navigation-total')
     ).forEach((navigationTotalElement) => {
@@ -2197,7 +2405,7 @@ const WBView = Backbone.View.extend({
       const navigationType = navigationContainer.getAttribute(
         'data-navigation-type'
       );
-      navigationTotalElement.innerText = cellCounts[navigationType];
+      navigationTotalElement.textContent = cellCounts[navigationType];
 
       if (cellCounts[navigationType] === 0) {
         const currentPositionElement =
@@ -2205,7 +2413,7 @@ const WBView = Backbone.View.extend({
             'wb-navigation-position'
           )?.[0];
         if (currentPositionElement !== 'undefined')
-          currentPositionElement.innerText = 0;
+          currentPositionElement.textContent = '0';
       }
     });
 
@@ -2259,19 +2467,12 @@ const WBView = Backbone.View.extend({
       },
     };
 
-    const title = messages[this.refreshInitiatedBy].title;
-    const header = messages[this.refreshInitiatedBy].header;
-    const message = messages[this.refreshInitiatedBy].message;
-    const dialog = $(`<div>
-        ${header}
-        ${message}
-    </div>`).dialog({
-      title,
-      modal: true,
-      width: 400,
-      buttons: {
-        [commonText('close')]: () => dialog.dialog('destroy'),
-      },
+    const dialog = showDialog({
+      title: messages[this.refreshInitiatedBy].title,
+      header: messages[this.refreshInitiatedBy].header,
+      content: messages[this.refreshInitiatedBy].message,
+      onClick: () => dialog.remove(),
+      buttons: commonText('close'),
     });
 
     this.refreshInitiatedBy = undefined;
@@ -2280,87 +2481,59 @@ const WBView = Backbone.View.extend({
   operationAbortedMessage() {
     if (!this.refreshInitiatedBy || !this.refreshInitiatorAborted) return;
 
-    const title =
-      this.refreshInitiatedBy === 'validate'
-        ? wbText('validationCanceledDialogTitle')
-        : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogTitle')
-        : wbText('uploadCanceledDialogTitle');
-    const header =
-      this.refreshInitiatedBy === 'validate'
-        ? wbText('validationCanceledDialogHeader')
-        : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogHeader')
-        : wbText('uploadCanceledDialogHeader');
-    const message =
-      this.refreshInitiatedBy === 'validate'
-        ? wbText('validationCanceledDialogMessage')
-        : this.refreshInitiatedBy === 'unupload'
-        ? wbText('rollbackCanceledDialogMessage')
-        : wbText('uploadCanceledDialogMessage');
-
-    const dialog = $(`<div>
-      ${header}
-      ${message}
-    </div>`).dialog({
-      title,
-      modal: true,
-      width: 400,
-      close: () => dialog.dialog('destroy'),
-      buttons: {
-        [commonText('close')]: () => dialog.dialog('destroy'),
-      },
+    const dialog = showDialog({
+      title:
+        this.refreshInitiatedBy === 'validate'
+          ? wbText('validationCanceledDialogTitle')
+          : this.refreshInitiatedBy === 'unupload'
+          ? wbText('rollbackCanceledDialogTitle')
+          : wbText('uploadCanceledDialogTitle'),
+      header:
+        this.refreshInitiatedBy === 'validate'
+          ? wbText('validationCanceledDialogHeader')
+          : this.refreshInitiatedBy === 'unupload'
+          ? wbText('rollbackCanceledDialogHeader')
+          : wbText('uploadCanceledDialogHeader'),
+      content:
+        this.refreshInitiatedBy === 'validate'
+          ? wbText('validationCanceledDialogMessage')
+          : this.refreshInitiatedBy === 'unupload'
+          ? wbText('rollbackCanceledDialogMessage')
+          : wbText('uploadCanceledDialogMessage'),
+      onClose: () => dialog.remove(),
+      buttons: commonText('close'),
     });
     this.refreshInitiatedBy = undefined;
     this.refreshInitiatorAborted = false;
   },
-  clearAllMetaData() {
-    if (this.hot.isDestroyed) return;
-    const { isSearchResult: _, ...partialDefaultCellMeta } =
-      getDefaultCellMeta();
-    const cellMeta = Object.entries(partialDefaultCellMeta);
-    const columnIndexes = this.dataset.columns.map(
-      (_, physicalCol) => physicalCol
-    );
-    this.uploadResults.ambiguousMatches = [];
-    this.hot.batch(() =>
-      Array.from({ length: this.hot.countRows() }, (_, physicalRow) =>
-        columnIndexes.forEach((physicalCol) =>
-          cellMeta.forEach(([key, value]) =>
-            this.updateCellMeta(physicalRow, physicalCol, key, value)
-          )
-        )
-      )
-    );
-    void this.updateCellInfoStats();
-  },
+  /*
+   * Returns this.cellMeta, but instead of indexing by physical row/col,
+   * indexes by visual row/col
+   *
+   * This is used for navigation among cells.
+   *
+   * Also, if navigation direction is set to ColByCol, the resulting array
+   * is transposed.
+   *
+   * this.flushIndexedCellData is set to true whenever visual indexes change
+   *
+   */
   getCellMetaObject() {
-    /*
-     * Return's this.cellMeta, but instead of being indexed by physical row/col
-     * indexes, the resulting array is indexed by visual row/col indexes.
-     *
-     * This is used for navigation among cells.
-     *
-     * Also, if the navigation direction is set to ColByCol, the resulting array
-     * is transposed.
-     * */
     if (this.flushIndexedCellData) {
-      const getPosition = (visualRow, visualCol, first) =>
+      const resolveIndex = (visualRow, visualCol, first) =>
         (this.wbutils.searchPreferences.navigation.direction === 'rowFirst') ===
         first
           ? visualRow
           : visualCol;
 
-      const [toVisualRow, toVisualColumn] =
-        this.wbutils.getToVisualConverters();
       const indexedCellMeta = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          const visualRow = toVisualRow[physicalRow];
-          const visualCol = toVisualColumn[physicalCol];
-          indexedCellMeta[getPosition(visualRow, visualCol, true)] ??= [];
-          indexedCellMeta[getPosition(visualRow, visualCol, true)][
-            getPosition(visualRow, visualCol, false)
+          const visualRow = this.hot.toVisualRow(physicalRow | 0);
+          const visualCol = this.hot.toVisualColumn(physicalCol | 0);
+          indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
+          indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
+            resolveIndex(visualRow, visualCol, false)
           ] = cellMeta;
         })
       );
@@ -2371,46 +2544,40 @@ const WBView = Backbone.View.extend({
   },
 });
 
-module.exports = function loadDataset(
+export default function loadDataset(
   id,
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false
 ) {
-  let dialog;
-
-  function showLoadingBar() {
-    dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-      title: wbText('dataSetLoadingDialogTitle'),
-      modal: true,
-      dialogClass: 'ui-dialog-no-close',
-      close() {
-        $(this).remove();
-      },
-    });
-    $('.progress-bar', dialog).progressbar({ value: false });
-  }
-
-  showLoadingBar();
-
-  $.get(`/api/workbench/dataset/${id}/`)
-    .done((dataset) => {
+  legacyLoadingContext(
+    // TODO: intercept 403 (if dataset has been transfered to another user)
+    ajax(
+      `/api/workbench/dataset/${id}/`,
+      { headers: { Accept: 'application/json' } },
+      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    ).then(({ data: dataset, status }) => {
+      if (status === Http.NOT_FOUND) {
+        setCurrentView(new NotFoundView());
+        return;
+      }
       const view = new WBView({
         dataset,
         refreshInitiatedBy,
         refreshInitiatorAborted,
-      })
-        .on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted))
-        .on('loaded', () => dialog.dialog('close'));
-      app.setCurrentView(view);
-      showLoadingBar();
+      }).on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted));
+      setCurrentView(view);
     })
-    .fail((jqXHR) => {
-      if (jqXHR.status === 404) {
-        jqXHR.errorHandled = true;
-        app.setCurrentView(new NotFoundView());
-        app.setTitle(commonText('pageNotFound'));
-        return '(not found)';
-      }
-      return jqXHR;
-    });
-};
+  );
+}
+
+const extractDefaultValues = (splitMappingPaths, emptyStringReplacement) =>
+  Object.fromEntries(
+    splitMappingPaths
+      .map(({ headerName, columnOptions }) => [
+        headerName,
+        columnOptions.default === ''
+          ? emptyStringReplacement
+          : columnOptions.default,
+      ])
+      .filter(([, defaultValue]) => defaultValue !== null)
+  );

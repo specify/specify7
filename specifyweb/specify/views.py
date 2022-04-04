@@ -1,15 +1,16 @@
 import mimetypes
+from django import http
+from django.conf import settings
+from django.db import router
+from django.db.models.deletion import Collector
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_http_methods, require_POST
 from functools import wraps
 
-from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.cache import cache_control
-from django.conf import settings
-from django import http
-from django.db.models.deletion import Collector
-from django.db import router
-
-from .specify_jar import specify_jar
+from specifyweb.permissions.permissions import PermissionTarget, \
+    PermissionTargetAction, check_permission_targets
 from . import api, models
+from .specify_jar import specify_jar
 
 
 def login_maybe_required(view):
@@ -79,7 +80,7 @@ def raise_error(request):
                     'scheduled hacking.')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def delete_blockers(request, model, id):
     """Returns a JSON list of fields on <model> that point to related
     resources which prevent the resource <id> of that model from being
@@ -95,12 +96,12 @@ def delete_blockers(request, model, id):
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def rows(request, model):
     "Returns tuples from the table for <model>."
     return api.rows(request, model)
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=365*24*60*60, public=True)
 def images(request, path):
     """Returns images and icons from the Specify thickclient jar file
@@ -114,13 +115,16 @@ def images(request, path):
     return http.HttpResponse(image, content_type=mimetype)
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=24*60*60, public=True)
 def properties(request, name):
     """Returns the <name>.properities file from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
 
+class SetPasswordPT(PermissionTarget):
+    resource = '/admin/user/password'
+    update = PermissionTargetAction()
 
 @openapi(schema={
     'post': {
@@ -156,14 +160,16 @@ def set_password(request, userid):
     POST parameter. Must be logged in as an admin, otherwise HTTP 403
     is returned.
     """
-    if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden()
-
+    check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
     user = models.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
 
+
+class Sp6AdminPT(PermissionTarget):
+    resource = '/admin/user/sp6/is_admin'
+    update = PermissionTargetAction()
 
 @openapi(schema={
     'post': {
@@ -200,9 +206,7 @@ def set_admin_status(request, userid):
     according to the 'admin_status' POST parameter. Must be logged in
     as an admin, otherwise HTTP 403 is returned.
     """
-    if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden()
-
+    check_permission_targets(None, request.specify_user.id, [Sp6AdminPT.update])
     user = models.Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
@@ -211,7 +215,7 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 def support_login(request):
     """If the ALLOW_SUPPORT_LOGIN setting is True, requesting this
     endpoint with a valid 'token' GET parameter will log in without a

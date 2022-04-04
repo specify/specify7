@@ -1,516 +1,214 @@
-/*
- *
+/**
  * Helpful methods for navigating though schema across a certain mapping path.
- * Helps define information needed to display wbplanview components
+ * Helps define information needed to display WbPlanView components
  *
- *
+ * @module
  */
 
-import * as cache from './cache';
-import type {
-  CustomSelectSubtype,
-  CustomSelectType,
-} from './components/customselectelement';
-import type { IR, R, RA } from './components/wbplanview';
+import type { CustomSelectSubtype } from './components/customselectelement';
+import { dateParts } from './components/internationalization';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './components/wbplanviewcomponents';
-import type {
-  AutomapperSuggestion,
-  MappingPath,
-  MappingPathWritable,
-  RelationshipType,
-  SelectElementPosition,
-} from './components/wbplanviewmapper';
-import type { GetMappedFieldsBind } from './components/wbplanviewmappercomponents';
-import type { ColumnOptions } from './uploadplantomappingstree';
-import { columnOptionsAreDefault } from './wbplanviewlinesgetter';
+import type { MappingPath } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
+import commonText from './localization/common';
+import queryText from './localization/query';
+import { getModel } from './schema';
+import type { Relationship } from './specifyfield';
+import type { SpecifyModel } from './specifymodel';
+import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
+import type { IR, RA } from './types';
+import { defined, filterArray } from './types';
 import {
-  formatReferenceItem,
+  anyTreeRank,
+  formatPartialField,
+  formattedEntry,
+  formatToManyIndex,
   formatTreeRank,
+  getGenericMappingPath,
   getNameFromTreeRankName,
-  mappingPathToString,
+  parsePartialField,
   relationshipIsToMany,
-  valueIsReferenceItem,
-  getCanonicalMappingPath,
+  valueIsPartialField,
+  valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import dataModelStorage from './wbplanviewmodel';
-import type {
-  DataModelField,
-  DataModelRelationship,
-} from './wbplanviewmodelfetcher';
 import {
-  getMaxToManyValue,
+  getMaxToManyIndex,
   isCircularRelationship,
-  isTooManyInsideOfTooMany,
-  tableIsTree,
 } from './wbplanviewmodelhelper';
+import { hasTreeAccess } from './permissions';
 
-type FindNextNavigationDirection<RETURN_STRUCTURE> = {
-  readonly finished: boolean;
-} & (
-  | {
-      readonly finished: true;
-      readonly finalData: RETURN_STRUCTURE[];
-    }
-  | {
-      readonly finished: false;
-      readonly payload: {
-        readonly nextTableName: string;
-        readonly nextParentTableName: string;
-        readonly nextRealPathElementName: string;
-        readonly nextPathElementName: string;
-      };
-    }
-);
+type NavigationCallbackPayload = {
+  readonly model: SpecifyModel;
+  readonly parentRelationship?: Relationship;
+};
 
-interface NavigationCallbackPayload<RETURN_TYPE> {
-  readonly tableName: string;
-  data?: RETURN_TYPE;
-  parentRelationshipType?: RelationshipType;
-  parentTableName?: string;
-}
-
-type NavigatorCallbackFunction<RETURN_STRUCTURE, RETURN_TYPE> = (
-  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>
+type NavigatorCallbackFunction<RETURN_TYPE> = (
+  callbackPayload: Readonly<NavigationCallbackPayload>
 ) => RETURN_TYPE;
 
-interface NavigationCallbacks<RETURN_STRUCTURE> {
-  /*
-   * Should return {boolean} specifying whether to run
-   * dataModel.navigatorInstance() for a particular mapping path part
-   */
-  readonly iterate: NavigatorCallbackFunction<RETURN_STRUCTURE, boolean>;
+type NavigationCallbacks = {
   // Should return undefined if next element does not exist
-  readonly getNextPathElement: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
+  readonly getNextDirection: (model: SpecifyModel) =>
     | {
         // The name of the next path element
-        readonly nextPathElementName: string;
-        /*
-         * If the next path element is not a field nor a relationship:
-         *   {undefined}.
-         * Else, {object} the information about a field from dataModel.tables
-         */
-        readonly nextPathElement: DataModelField;
+        readonly fieldName: string;
         /*
          * If nextPathElementName is not a field nor a relationships, {string}
          * current path element name.
          * Else nextPathElementName
          */
-        readonly nextRealPathElementName: string;
+        readonly partName: string;
       }
-    | undefined
-  >;
-  /*
-   * Formats internalPayload and returns it. Would be used as a return
-   * value for the navigator
-   */
-  readonly getFinalData: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    RETURN_STRUCTURE[]
-  >;
-  /*
-   * Commits callbackPayload.data to internalPayload and returns
-   * committed data
-   */
-  readonly getInstanceData: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    RETURN_STRUCTURE
-  >;
-  /*
-   * Commits callbackPayload.data to internalPayload and returns
-   * committed data
-   */
-  readonly commitInstanceData: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    RETURN_STRUCTURE
-  >;
-  /*
-   * Called inside of navigatorInstance before it calls callbacks for
-   * tree ranks / reference items / simple fields
-   */
-  readonly navigatorInstancePre: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    void
-  >;
+    | undefined;
   // Handles toMany children
-  readonly handleToManyChildren: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    void
-  >;
+  readonly handleToManyChildren: NavigatorCallbackFunction<void>;
   // Handles tree ranks children
-  readonly handleTreeRanks: NavigatorCallbackFunction<RETURN_STRUCTURE, void>;
+  readonly handleTreeRanks: NavigatorCallbackFunction<void>;
   // Handles fields and relationships
-  readonly handleSimpleFields: NavigatorCallbackFunction<
-    RETURN_STRUCTURE,
-    void
-  >;
-}
+  readonly handleSimpleFields: NavigatorCallbackFunction<void>;
+};
 
-function findNextNavigationDirection<RETURN_STRUCTURE>(
-  callbacks: Readonly<NavigationCallbacks<RETURN_STRUCTURE>>,
-  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>,
-  tableName: string,
-  parentTableName: string
-): FindNextNavigationDirection<RETURN_STRUCTURE> {
-  const nextPathElementsData = callbacks.getNextPathElement(callbackPayload);
-
-  if (typeof nextPathElementsData === 'undefined')
-    return {
-      finished: true,
-      finalData: callbacks.getFinalData(callbackPayload),
-    };
-
-  const { nextPathElementName, nextPathElement, nextRealPathElementName } =
-    nextPathElementsData;
-
-  let nextTableName = '';
-  let nextParentTableName = '';
-
-  if (
-    valueIsReferenceItem(nextPathElementName) ||
-    valueIsTreeRank(nextPathElementName)
-  ) {
-    nextTableName = tableName;
-    nextParentTableName = parentTableName;
-  } else if (
-    typeof nextPathElement !== 'undefined' &&
-    nextPathElement.isRelationship
-  ) {
-    nextTableName = nextPathElement.tableName;
-    nextParentTableName = tableName;
-  }
-
-  return {
-    finished: false,
-    payload: {
-      nextTableName,
-      nextParentTableName,
-      nextRealPathElementName,
-      nextPathElementName,
-    },
-  };
-}
-
-/*
+/**
  * Navigates though the schema according to a specified mapping path and
  * calls certain callbacks while doing that
+ *
+ * @remarks
+ * Unlike the navigator implemented in the AutoMapper, this navigator navigates
+ * with only one instance at a time (you can't fork the mapping path to visit
+ * fields from multiple relationships at once)
  */
-export function navigator<RETURN_STRUCTURE>({
+function navigator({
   callbacks,
   recursivePayload = undefined,
-  config: { baseTableName },
+  baseTableName,
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
-  readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  /*
-   * {object|undefined} used internally to make navigator call itself
-   * multiple times
-   */
+  readonly callbacks: NavigationCallbacks;
+  // Used internally to make navigator call itself multiple times
   readonly recursivePayload?: {
-    readonly tableName: string;
-    readonly parentTableName: string;
-    readonly parentTableRelationshipName: string;
-    readonly parentPathElementName: string;
+    readonly model: SpecifyModel;
+    readonly parentPartName: string;
+    readonly parentRelationship?: Relationship;
   };
-  readonly config: {
-    // The name of the base table to use
-    readonly baseTableName?: string;
-  };
-}): RETURN_STRUCTURE[] {
-  if (typeof dataModelStorage.tables === 'undefined')
-    throw new Error('WbPlanView Data Model is not initialized');
-
-  let tableName = '';
-  let parentTableName = '';
-  let parentTableRelationshipName = '';
-  let parentPathElementName = '';
-
-  if (typeof recursivePayload === 'undefined') {
-    if (typeof baseTableName === 'undefined')
-      throw new Error(
-        'Base table needs to be specified for a navigator to be able' +
-          ' to loop though schema'
-      );
-    tableName = baseTableName;
-  } else
-    ({
-      tableName,
-      parentTableName,
-      parentTableRelationshipName,
-      parentPathElementName,
-    } = recursivePayload);
-
-  /*
-   * An object that is shared between navigator, navigatorInstance and
-   * some callbacks
-   */
-  const callbackPayload = {
-    tableName,
-  };
-
-  if (callbacks.iterate(callbackPayload))
-    navigatorInstance<RETURN_STRUCTURE>({
-      tableName,
-      parentTableName,
-      parentTableRelationshipName,
-      parentPathElementName,
-      callbacks,
-      callbackPayload,
-    });
-
-  const nextNavigationDirection = findNextNavigationDirection<RETURN_STRUCTURE>(
-    callbacks,
-    callbackPayload,
-    tableName,
-    parentTableName
-  );
-
-  if (nextNavigationDirection.finished)
-    return nextNavigationDirection.finalData;
-
+  readonly baseTableName?: string;
+}): void {
   const {
-    nextPathElementName,
-    nextTableName,
-    nextParentTableName,
-    nextRealPathElementName,
-  } = nextNavigationDirection.payload;
+    model = defined(getModel(defined(baseTableName))),
+    parentRelationship = undefined,
+    parentPartName = '',
+  } = recursivePayload ?? {};
 
-  let schemaNavigatorResults: RETURN_STRUCTURE[] = [];
+  const next = callbacks.getNextDirection(model);
+  if (typeof next === 'undefined') return;
 
-  if (nextTableName !== '')
-    schemaNavigatorResults = navigator({
-      callbacks,
-      recursivePayload: {
-        tableName: nextTableName,
-        parentTableName: nextParentTableName,
-        parentTableRelationshipName: nextRealPathElementName,
-        parentPathElementName: nextPathElementName,
-      },
-      config: {},
-    });
+  const childrenAreToManyElements =
+    relationshipIsToMany(parentRelationship) &&
+    !valueIsToManyIndex(parentPartName);
 
-  return schemaNavigatorResults.length === 0
-    ? callbacks.getFinalData(callbackPayload)
-    : schemaNavigatorResults;
-}
+  const childrenAreRanks =
+    isTreeModel(model.name) && !valueIsTreeRank(parentPartName);
 
-function getNavigationChildrenTypes(
-  parentTableName: string,
-  parentTableRelationshipName: string,
-  parentPathElementName: string,
-  tableName: string
-) {
-  const parentRelationshipType: RelationshipType | undefined = (
-    dataModelStorage.tables[parentTableName]?.fields[
-      parentTableRelationshipName
-    ] as DataModelRelationship
-  )?.type;
-
-  return {
-    parentRelationshipType,
-    childrenAreToManyElements:
-      relationshipIsToMany(parentRelationshipType) &&
-      !valueIsReferenceItem(parentPathElementName),
-    childrenAreRanks:
-      tableIsTree(tableName) && !valueIsTreeRank(parentPathElementName),
+  const callbackPayload = {
+    model,
+    parentRelationship,
   };
-}
 
-function callNavigatorInstanceCallbacks<RETURN_STRUCTURE>(
-  childrenAreToManyElements: boolean,
-  childrenAreRanks: boolean,
-  callbacks: NavigationCallbacks<RETURN_STRUCTURE>,
-  callbackPayload: Readonly<NavigationCallbackPayload<RETURN_STRUCTURE>>
-): void {
   if (childrenAreToManyElements)
     callbacks.handleToManyChildren(callbackPayload);
   else if (childrenAreRanks) callbacks.handleTreeRanks(callbackPayload);
   else callbacks.handleSimpleFields(callbackPayload);
+
+  const isSpecial =
+    valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
+  const nextField = isSpecial
+    ? parentRelationship
+    : model.getField(next.fieldName);
+
+  const nextTable = isSpecial
+    ? model
+    : typeof nextField === 'object' && nextField.isRelationship
+    ? nextField.relatedModel
+    : undefined;
+
+  if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
+    navigator({
+      callbacks,
+      recursivePayload: {
+        model: nextTable,
+        parentRelationship: nextField,
+        parentPartName: next.partName,
+      },
+    });
 }
 
-/* Called by navigator if callback.iterate returned true */
-function navigatorInstance<RETURN_STRUCTURE>({
-  tableName,
-  parentTableName = '',
-  parentTableRelationshipName = '',
-  parentPathElementName = '',
-  callbacks,
-  callbackPayload,
-}: {
-  // The name of the current table
-  readonly tableName: string;
-  // Parent table name
-  readonly parentTableName?: string;
-  // NextRealPathElementName as returned by callbacks.getNextPathElement
-  readonly parentTableRelationshipName?: string;
-  // NextPathElementName as returned by callbacks.getNextPathElement
-  readonly parentPathElementName?: string;
-  // Callbacks (described in the navigator)
-  readonly callbacks: NavigationCallbacks<RETURN_STRUCTURE>;
-  // Callbacks payload (described in the navigator)
-  readonly callbackPayload: NavigationCallbackPayload<RETURN_STRUCTURE>;
-}): RETURN_STRUCTURE {
-  const {
-    parentRelationshipType,
-    childrenAreToManyElements,
-    childrenAreRanks,
-  } = getNavigationChildrenTypes(
-    parentTableName,
-    parentTableRelationshipName,
-    parentPathElementName,
-    tableName
+export function getTableFromMappingPath(
+  baseTableName: keyof Tables,
+  mappingPath: MappingPath
+): keyof Tables {
+  if (mappingPath.length === 0) return baseTableName;
+  const fieldName = valueIsPartialField(mappingPath.slice(-1)[0])
+    ? parsePartialField(mappingPath.slice(-1)[0])[0]
+    : mappingPath.slice(-1)[0];
+  const field = defined(
+    defined(getModel(baseTableName)).getField(
+      getGenericMappingPath([...mappingPath.slice(0, -1), fieldName]).join('.')
+    )
   );
-
-  if (childrenAreToManyElements && childrenAreRanks)
-    throw new Error('Unable to properly determine picklist type');
-
-  callbacks.navigatorInstancePre(callbackPayload);
-
-  callbackPayload.parentRelationshipType = parentRelationshipType;
-  callbackPayload.parentTableName = parentTableName;
-
-  callNavigatorInstanceCallbacks(
-    childrenAreToManyElements,
-    childrenAreRanks,
-    callbacks,
-    callbackPayload
-  );
-
-  const data = callbacks.getInstanceData(callbackPayload);
-  callbackPayload.data = data;
-  callbacks.commitInstanceData(callbackPayload);
-
-  return data;
+  return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
-export function getTableFromMappingPath({
-  baseTableName,
-  mappingPath,
-}: {
-  baseTableName: string;
-  mappingPath: MappingPath;
-}): string {
-  const trimmedMappingPath =
-    valueIsReferenceItem(mappingPath.slice(-1)[0]) ||
-    valueIsTreeRank(mappingPath.slice(-1)[0])
-      ? mappingPath.slice(0, -1)
-      : mappingPath;
+export type MappingLineData = Pick<
+  MappingElementProps,
+  'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
+>;
 
-  const canonicalMappingPath = getCanonicalMappingPath(trimmedMappingPath);
+const queryBuilderTreeFields = new Set(['fullName', 'author']);
 
-  const cacheName = mappingPathToString([
-    baseTableName,
-    ...canonicalMappingPath,
-  ]);
-  const results = cache.get('wbplanview-navigator-tables', cacheName);
-  if (typeof results === 'string') return results;
-
-  const tableName = getMappingLineData({
-    baseTableName,
-    mappingPath: canonicalMappingPath,
-  }).slice(-1)[0]?.tableName;
-
-  if (typeof tableName === 'undefined')
-    throw new Error('Unable to extract the table name from mapping path');
-
-  cache.set('wbplanview-navigator-tables', cacheName, tableName);
-
-  return tableName;
-}
-
-/*
+/**
  * Get data required to build a mapping line from a source mapping path
- * and other options
+ * Handles circular dependencies and must match tables
  */
 export function getMappingLineData({
   baseTableName,
-  mappingPath: readonlyMappingPath = ['0'],
-  openSelectElement,
-  iterate = false,
-  generateLastRelationshipData = true,
-  customSelectType = 'CLOSED_LIST',
-  handleChange,
-  handleOpen,
-  handleClose,
-  handleAutomapperSuggestionSelection,
+  mappingPath,
+  generateFieldData = 'all',
   getMappedFields,
-  automapperSuggestions,
   showHiddenFields = false,
   mustMatchPreferences = {},
-  columnOptions,
-  mappingOptionsMenuGenerator = undefined,
+  scope = 'wbPlanView',
 }: {
-  readonly baseTableName: string;
+  readonly baseTableName: keyof Tables;
   // The mapping path
-  readonly mappingPath?: MappingPath;
-  // Index of custom select element that should be open
-  readonly openSelectElement?: SelectElementPosition;
+  readonly mappingPath: MappingPath;
   /*
-   * {bool} if False, returns data only for the last element of the mapping
-   * path
-   * Else returns data for each mapping path part
+   * "none" - fieldsData would be an empty object
+   * "selectedOnly" - fieldsData would only have data for the selected field
+   * "all" - fieldsData has data for all files
    */
-  readonly iterate?: boolean;
-  /*
-   * {bool} whether to generate data for the last element of the mapping
-   * path if the last element is a relationship
-   */
-  readonly generateLastRelationshipData?: boolean;
-  readonly customSelectType?: CustomSelectType;
+  readonly generateFieldData: 'none' | 'selectedOnly' | 'all';
+  readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
   readonly showHiddenFields?: boolean;
-  readonly handleChange?: (
-    index: number,
-    newValue: string,
-    isRelationship: boolean,
-    currentTable: string,
-    newTable: string,
-    isDoubleClick: boolean
-  ) => void;
-  readonly handleOpen?: (index: number) => void;
-  readonly handleClose?: (index: number) => void;
-  readonly handleAutomapperSuggestionSelection?: (suggestion: string) => void;
-  readonly getMappedFields?: GetMappedFieldsBind;
-  readonly automapperSuggestions?: RA<AutomapperSuggestion>;
   readonly mustMatchPreferences?: IR<boolean>;
-  readonly columnOptions?: ColumnOptions;
-  readonly mappingOptionsMenuGenerator?: () => IR<HtmlGeneratorFieldData>;
-}): MappingElementProps[] {
+  // WbPlanView has readOnly fields removed
+  readonly scope?: 'queryBuilder' | 'wbPlanView';
+}): RA<MappingLineData> {
   const internalState: {
-    mappingPathPosition: number;
-    mappingLineData: MappingElementProps[];
-    customSelectType: CustomSelectType;
-    customSelectSubtype?: CustomSelectSubtype;
-    isOpen?: boolean;
-    nextMappingPathElement?: string;
-    defaultValue?: string;
-    currentMappingPathPart?: string;
-    resultFields: R<HtmlGeneratorFieldData>;
-    mappedFields: string[];
-    generateMappingOptionsMenu: boolean;
+    position: number;
+    mappingLineData: MappingLineData[];
+    mappedFields: RA<string>;
+    defaultValue: string;
+    parsedDefaultValue: Readonly<[fieldName: string, part: string | undefined]>;
   } = {
-    mappingPathPosition: -1,
+    position: -1,
     mappingLineData: [],
-    customSelectType,
     mappedFields: [],
-    resultFields: {},
-    isOpen: false,
-    generateMappingOptionsMenu: false,
+    defaultValue: '0',
+    parsedDefaultValue: ['0', undefined],
   };
-
-  const mappingPath: MappingPathWritable = Array.from(readonlyMappingPath);
-
-  const firstIterationRequirement = (): boolean =>
-    iterate ||
-    mappingPath.length === 0 ||
-    internalState.mappingPathPosition + 1 === mappingPath.length;
-
-  const secondIterationRequirement = (): boolean =>
-    generateLastRelationshipData ||
-    internalState.mappingPathPosition + 1 !== mappingPath.length;
 
   const isFieldVisible = (
     showHiddenFields: boolean,
@@ -520,319 +218,248 @@ export function getMappingLineData({
     showHiddenFields ||
     !isHidden ||
     // Show a default field, even if it is hidden
-    fieldName === internalState.defaultValue;
+    fieldName === internalState.parsedDefaultValue[0];
 
-  function fieldIsDefault(
-    fieldName: string,
-    defaultValue: string | undefined,
-    isRelationship: boolean
-  ): boolean {
-    const isDefault = fieldName === defaultValue;
-    if (isDefault)
-      internalState.generateMappingOptionsMenu =
-        !isRelationship && typeof mappingOptionsMenuGenerator !== 'undefined';
-    return isDefault;
-  }
+  const commitInstanceData = (
+    customSelectSubtype: CustomSelectSubtype,
+    model: SpecifyModel,
+    fieldsData: RA<Readonly<[string, HtmlGeneratorFieldData]> | undefined>
+  ): void =>
+    void internalState.mappingLineData.push({
+      customSelectSubtype,
+      selectLabel: model.label,
+      fieldsData: Object.fromEntries(filterArray(fieldsData)),
+      tableName: model.name,
+    });
 
-  const callbacks: NavigationCallbacks<MappingElementProps> = {
-    iterate: () => firstIterationRequirement() && secondIterationRequirement(),
+  const lastPartIndex =
+    mappingPath.slice(-1)[0] === '0'
+      ? mappingPath.length - 1
+      : mappingPath.length - 2;
 
-    getNextPathElement({ tableName }) {
-      internalState.mappingPathPosition += 1;
+  const callbacks: NavigationCallbacks = {
+    getNextDirection() {
+      if (internalState.position > lastPartIndex) return undefined;
 
-      let nextPathElementName = mappingPath[internalState.mappingPathPosition];
+      internalState.position += 1;
+      const nextPart = mappingPath[internalState.position];
+      internalState.parsedDefaultValue = valueIsPartialField(nextPart)
+        ? parsePartialField(nextPart)
+        : [nextPart, undefined];
+      internalState.defaultValue = nextPart;
 
-      if (typeof nextPathElementName == 'undefined') return undefined;
-
-      const formattedTreeRankName = formatTreeRank(nextPathElementName);
-      const treeRankName = getNameFromTreeRankName(formattedTreeRankName);
-      if (
-        tableIsTree(tableName) &&
-        typeof dataModelStorage.ranks[tableName][treeRankName] !== 'undefined'
-      ) {
-        nextPathElementName = formattedTreeRankName;
-        mappingPath[internalState.mappingPathPosition] = formattedTreeRankName;
-      }
+      const localMappingPath = mappingPath.slice(0, internalState.position);
+      internalState.mappedFields = getMappedFields?.(localMappingPath) ?? [];
 
       return {
-        nextPathElementName,
-        nextPathElement:
-          dataModelStorage.tables[tableName].fields[nextPathElementName],
-        nextRealPathElementName:
-          valueIsTreeRank(nextPathElementName) ||
-          valueIsReferenceItem(nextPathElementName)
-            ? mappingPath[internalState.mappingPathPosition - 1]
-            : nextPathElementName,
+        partName: nextPart,
+        fieldName:
+          valueIsTreeRank(nextPart) || valueIsToManyIndex(nextPart)
+            ? mappingPath[internalState.position - 1]
+            : nextPart,
       };
     },
 
-    navigatorInstancePre({ tableName }) {
-      internalState.isOpen =
-        openSelectElement?.index === internalState.mappingPathPosition + 1 ||
-        ['OPENED_LIST', 'BASE_TABLE_SELECTION_LIST'].includes(
-          internalState.customSelectType
-        );
+    handleToManyChildren({ model, parentRelationship }) {
+      const maxMappedElementNumber = getMaxToManyIndex([
+        ...internalState.mappedFields,
+        internalState.defaultValue,
+      ]);
 
-      internalState.customSelectSubtype = 'simple';
-
-      const localMappingPath = mappingPath.slice(
-        0,
-        internalState.mappingPathPosition + 1
-      );
-
-      internalState.nextMappingPathElement =
-        mappingPath[internalState.mappingPathPosition + 1];
-
-      if (typeof internalState.nextMappingPathElement === 'undefined')
-        internalState.defaultValue = '0';
-      else {
-        const formattedTreeRankName = formatTreeRank(
-          internalState.nextMappingPathElement
-        );
-        const treeRankName = getNameFromTreeRankName(formattedTreeRankName);
-        if (
-          tableIsTree(tableName) &&
-          typeof dataModelStorage.ranks[tableName][treeRankName] !== 'undefined'
-        ) {
-          internalState.nextMappingPathElement = formattedTreeRankName;
-          mappingPath[internalState.mappingPathPosition] =
-            formattedTreeRankName;
-        }
-
-        internalState.defaultValue = internalState.nextMappingPathElement;
-      }
-
-      internalState.currentMappingPathPart =
-        mappingPath[internalState.mappingPathPosition];
-      internalState.resultFields = {};
-      internalState.mappedFields =
-        typeof getMappedFields === 'function'
-          ? Object.keys(getMappedFields(localMappingPath))
+      const isToOne = parentRelationship?.type === 'zero-to-one';
+      const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
+      const additional =
+        maxMappedElementNumber < toManyLimit
+          ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText('add')]]
           : [];
 
-      internalState.generateMappingOptionsMenu = false;
-    },
-
-    handleToManyChildren({ tableName, parentTableName }) {
-      internalState.customSelectSubtype = 'toMany';
-
-      if (typeof internalState.nextMappingPathElement !== 'undefined')
-        internalState.mappedFields.push(internalState.nextMappingPathElement);
-
-      const maxMappedElementNumber = getMaxToManyValue(
-        internalState.mappedFields
-      );
-
-      for (let index = 1; index <= maxMappedElementNumber; index++) {
-        const mappedObjectName = formatReferenceItem(index);
-
-        internalState.resultFields[mappedObjectName] = {
-          label: mappedObjectName,
-          isEnabled: true,
-          isRequired: false,
-          isHidden: false,
-          isRelationship: true,
-          isDefault: mappedObjectName === internalState.defaultValue,
-          tableName,
-        };
-      }
-
-      /*
-       * Allow only a single -to-many reference number for `zero-to-one`
-       * relationships
-       */
-      if (
-        maxMappedElementNumber < 1 ||
-        !dataModelStorage.originalRelationships['zero-to-one']?.[
-          parentTableName ?? ''
-        ]?.includes(internalState.currentMappingPathPart ?? '')
-      )
-        internalState.resultFields.add = {
-          label: 'Add',
-          isEnabled: true,
-          isRequired: false,
-          isHidden: false,
-          isRelationship: true,
-          isDefault: false,
-          tableName,
-        };
-    },
-
-    handleTreeRanks({ tableName }) {
-      internalState.customSelectSubtype = 'tree';
-      const tableRanks = dataModelStorage.ranks[tableName];
-
-      internalState.resultFields = Object.fromEntries(
-        Object.entries(tableRanks).map(([rankName, { isRequired, title }]) => [
-          formatTreeRank(rankName),
-          {
-            label: title,
-            isEnabled: true,
-            isRequired: isRequired && !mustMatchPreferences[tableName],
-            isHidden: false,
-            isRelationship: true,
-            isDefault: formatTreeRank(rankName) === internalState.defaultValue,
-            tableName,
-          },
-        ])
+      commitInstanceData(
+        'toMany',
+        model,
+        generateFieldData === 'none'
+          ? []
+          : [
+              ...Array.from({ length: maxMappedElementNumber }, (_, index) => [
+                formatToManyIndex(index + 1),
+              ]),
+              ...additional,
+            ].map(([key, optionLabel = key]) => {
+              const isDefault = key === internalState.defaultValue;
+              return isDefault || generateFieldData === 'all'
+                ? [
+                    key,
+                    {
+                      optionLabel,
+                      isRelationship: true,
+                      isDefault,
+                      tableName: model.name,
+                    },
+                  ]
+                : undefined;
+            })
       );
     },
 
-    handleSimpleFields: ({
-      tableName,
-      parentTableName,
-      parentRelationshipType,
-    }) =>
-      (internalState.resultFields = Object.fromEntries(
-        Object.entries(dataModelStorage.tables[tableName].fields)
-          .filter(
-            ([
-              fieldName,
-              {
-                isRelationship,
-                type: relationshipType,
-                isHidden,
-                foreignName,
-                tableName: fieldTableName,
-              },
-            ]) =>
-              (!isRelationship ||
-                !isCircularRelationship({
-                  // Skip circular relationships
-                  targetTableName: fieldTableName,
-                  parentTableName,
-                  foreignName,
-                  relationshipKey: fieldName,
-                  currentMappingPathPart: internalState.currentMappingPathPart,
-                  tableName,
-                })) &&
-              /*
-               * Skip -to-many inside -to-many
-               * TODO: remove this once upload plan is ready
-               */
-              !isTooManyInsideOfTooMany(
-                relationshipType,
-                parentRelationshipType
-              ) &&
-              // Skip hidden fields when user decided to hide them
-              isFieldVisible(showHiddenFields, isHidden, fieldName)
-          )
-          .map(
-            ([
-              fieldName,
-              {
-                isRelationship,
-                isHidden,
-                isRequired,
-                label,
-                tableName: fieldTableName,
-              },
-            ]) => [
-              fieldName,
-              {
-                label: label,
-                // Enable field
-                isEnabled:
-                  // If it is not mapped
-                  !internalState.mappedFields.includes(fieldName) ||
-                  // Or is a relationship,
-                  isRelationship,
-                isRequired: isRequired && !mustMatchPreferences[tableName],
-                isHidden,
-                isDefault: fieldIsDefault(
-                  fieldName,
-                  internalState.defaultValue,
-                  isRelationship
-                ),
-                isRelationship,
-                tableName: fieldTableName,
-              },
+    handleTreeRanks({ model }) {
+      const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
+
+      commitInstanceData(
+        'tree',
+        model,
+        generateFieldData === 'none' ||
+          !hasTreeAccess(model.name as 'Geography', 'read')
+          ? []
+          : [
+              scope === 'queryBuilder' &&
+              (generateFieldData === 'all' ||
+                internalState.defaultValue === formatTreeRank(anyTreeRank))
+                ? [
+                    formatTreeRank(anyTreeRank),
+                    {
+                      optionLabel: queryText('anyRank'),
+                      isRelationship: true,
+                      isDefault:
+                        internalState.defaultValue ===
+                        formatTreeRank(anyTreeRank),
+                      isEnabled: !internalState.mappedFields.includes(
+                        formatTreeRank(anyTreeRank)
+                      ),
+                      tableName: model.name,
+                    },
+                  ]
+                : undefined,
+              ...defined(
+                getTreeDefinitionItems(model.name as 'Geography', false)
+              ).map(({ name, title }) =>
+                name === defaultValue || generateFieldData === 'all'
+                  ? ([
+                      formatTreeRank(name),
+                      {
+                        optionLabel: title ?? name,
+                        isRelationship: true,
+                        isDefault: name === defaultValue,
+                        tableName: model.name,
+                      },
+                    ] as const)
+                  : undefined
+              ),
             ]
-          )
-      )),
-
-    getInstanceData: ({ tableName }) => ({
-      customSelectType: internalState.customSelectType,
-      customSelectSubtype: internalState.customSelectSubtype,
-      selectLabel: dataModelStorage.tables[tableName].label,
-      fieldsData: internalState.resultFields,
-      tableName,
-      ...(internalState.isOpen
-        ? {
-            isOpen: true,
-            handleChange: handleChange?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-            handleClose: handleClose?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-            automapperSuggestions,
-            handleAutomapperSuggestionSelection,
-          }
-        : {
-            isOpen: false,
-            handleOpen: handleOpen?.bind(
-              undefined,
-              internalState.mappingPathPosition + 1
-            ),
-          }),
-    }),
-
-    commitInstanceData({ data }) {
-      if (typeof data === 'undefined')
-        throw new Error("No data to commit to navigator's state");
-      internalState.mappingLineData.push(data);
-      return data;
+      );
     },
 
-    getFinalData: () =>
-      internalState.generateMappingOptionsMenu
-        ? [
-            ...internalState.mappingLineData,
-            {
-              customSelectType: 'MAPPING_OPTIONS_LIST',
-              customSelectSubtype: 'simple',
-              fieldsData: mappingOptionsMenuGenerator!(),
-              defaultOption: {
-                optionName: 'mappingOptions',
-                optionLabel: '⚙',
-                tableName: '',
-                isRelationship: !columnOptionsAreDefault(columnOptions!),
-              },
-              ...(openSelectElement?.index ===
-              internalState.mappingLineData.length
-                ? {
-                    isOpen: true,
-                    handleChange: undefined,
-                    handleClose:
-                      handleClose &&
-                      handleClose.bind(
-                        undefined,
-                        internalState.mappingLineData.length
-                      ),
-                    automapperSuggestions,
-                    handleAutomapperSuggestionSelection,
-                  }
-                : {
-                    isOpen: false,
-                    handleOpen:
-                      handleOpen &&
-                      handleOpen.bind(
-                        undefined,
-                        internalState.mappingLineData.length
-                      ),
-                  }),
-            },
-          ]
-        : internalState.mappingLineData,
+    handleSimpleFields: ({ model, parentRelationship }) =>
+      commitInstanceData(
+        'simple',
+        model,
+        generateFieldData === 'none'
+          ? []
+          : [
+              scope === 'queryBuilder' &&
+              ((generateFieldData === 'all' &&
+                (!isTreeModel(model.name) ||
+                  mappingPath[internalState.position - 1] ==
+                    formatTreeRank(anyTreeRank) ||
+                  queryBuilderTreeFields.has(formattedEntry))) ||
+                internalState.defaultValue === formattedEntry)
+                ? [
+                    formattedEntry,
+                    {
+                      optionLabel: relationshipIsToMany(parentRelationship)
+                        ? queryText('aggregated')
+                        : queryText('formatted'),
+                      tableName: model.name,
+                      isRelationship: false,
+                      isDefault: internalState.defaultValue === formattedEntry,
+                      isEnabled:
+                        !internalState.mappedFields.includes(formattedEntry),
+                    },
+                  ]
+                : undefined,
+              ...model.fields
+                .filter(
+                  (field) =>
+                    (generateFieldData === 'all' ||
+                      field.name === internalState.parsedDefaultValue[0]) &&
+                    (!field.isRelationship ||
+                      typeof parentRelationship === 'undefined' ||
+                      (!isCircularRelationship(parentRelationship, field) &&
+                        !(
+                          relationshipIsToMany(field) &&
+                          relationshipIsToMany(parentRelationship)
+                        ))) &&
+                    isFieldVisible(
+                      showHiddenFields,
+                      field.overrides.isHidden,
+                      field.name
+                    ) &&
+                    // Display read only fields in query builder only
+                    (scope === 'queryBuilder' || !field.overrides.isReadOnly) &&
+                    // Hide most fields for non "any" tree ranks in query builder
+                    (scope !== 'queryBuilder' ||
+                      !isTreeModel(model.name) ||
+                      mappingPath[internalState.position - 1] ==
+                        formatTreeRank(anyTreeRank) ||
+                      queryBuilderTreeFields.has(field.name))
+                )
+                .flatMap((field) => {
+                  const fieldData = {
+                    optionLabel: field.label,
+                    // Enable field
+                    isEnabled:
+                      // If it is not mapped
+                      !internalState.mappedFields.includes(field.name) ||
+                      // Or is a relationship
+                      field.isRelationship,
+                    // All fields are optional in the query builder
+                    isRequired:
+                      scope !== 'queryBuilder' &&
+                      field.overrides.isRequired &&
+                      !mustMatchPreferences[model.name],
+                    isHidden: field.overrides.isHidden,
+                    isDefault: field.name === internalState.defaultValue,
+                    isRelationship: field.isRelationship,
+                    tableName: field.isRelationship
+                      ? field.relatedModel.name
+                      : undefined,
+                  };
+                  return scope === 'queryBuilder' && field.isTemporal()
+                    ? Object.entries(dateParts)
+                        .map(
+                          ([datePart, label]) =>
+                            [
+                              formatPartialField(field.name, datePart),
+                              {
+                                ...fieldData,
+                                optionLabel: `${fieldData.optionLabel}${
+                                  datePart === 'fullDate' ? '' : ` (${label})`
+                                }`,
+                                isDefault:
+                                  field.name ===
+                                    internalState.parsedDefaultValue[0] &&
+                                  datePart ===
+                                    internalState.parsedDefaultValue[1],
+                                isEnabled:
+                                  fieldData.isEnabled &&
+                                  !internalState.mappedFields.includes(
+                                    formatPartialField(field.name, datePart)
+                                  ),
+                              },
+                            ] as const
+                        )
+                        .filter(
+                          ([_fieldName, fieldData]) =>
+                            generateFieldData === 'all' || fieldData.isDefault
+                        )
+                    : ([[field.name, fieldData]] as const);
+                }),
+            ]
+      ),
   };
 
-  return navigator<MappingElementProps>({
+  navigator({
     callbacks,
-    config: {
-      baseTableName,
-    },
+    baseTableName,
   });
+
+  return internalState.mappingLineData;
 }

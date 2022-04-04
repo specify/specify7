@@ -1,51 +1,26 @@
-{% load raven %}
-{% load script_manifest %}
-{% load i18n %}
-{% trans 'Choose Collection' as title %}
+{% load raven %} {% load script_manifest %} {% load i18n %}
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-{% if use_raven %}
-  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
-{% endif %}
-  <script src="{% script_src 'choosecollection.js' %}"></script>
-  <title>{% blocktrans with title=title %}{{ title }} | Specify 7{% endblocktrans %}</title>
-</head>
-
-<body>
-  <header></header>
-  <div id="content">
-    {% if form.non_field_errors %}
-    {% for error in form.non_field_errors %}
-    <p class="errornote">
-      {{ error }}
-    </p>
-    {% endfor %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    {% if use_raven %}
+    <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+    <script>
+      Raven.config("{% sentry_public_dsn %}").install();
+    </script>
     {% endif %}
+    <script src="{% script_src 'choosecollection.js' %}"></script>
+  </head>
 
-    {% if form %}
-    <h2>{% trans 'Collection' %}</h2>
-    <form action="." method="post" id="choose-collection-form">
-      {% csrf_token %}
-      {{ form.collection.errors }}
-      {{ form.collection }}
-      <input type="hidden" name="next" value="{{ next }}" />
-      <div class="submit-row">
-        <input type="submit" value="{% trans 'Select' %}" />
-      </div>
-    </form>
-    {% else %}
-    <p>
-      {% blocktrans trimmed with next=next|urlencode %}
-      The logged in user has not been given access to any collections
-      in this database. You must
-      <a href="/accounts/login/?next={{ next }}">login</a> as another user.
-      {% endblocktrans %}
-    </p>
-    {% endif %}
-  </div>
-</body>
+  <body>
+    <div id="root"></div>
+
+    {{ form.non_field_errors|json_script:'form-errors' }}
+    {{ form.collection.errors|json_script:'collection-errors' }}
+    {{ available_collections|json_script:'available-collections' }}
+    {{ initial_value|json_script:'initial-value' }}
+    {{ next|json_script:'next-url' }}
+
+  </body>
 </html>
-

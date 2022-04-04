@@ -1,10 +1,12 @@
 import json
 import os
 import re
+from typing import List, Tuple
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout, views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import connection, transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
@@ -12,10 +14,13 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
 from django.template.response import TemplateResponse
 from django.urls import URLPattern, URLResolver
 from django.utils.http import is_safe_url
+from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
+    get_language_info
+from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_http_methods
-from django.utils.translation import gettext as _
+from django.views.decorators.http import require_http_methods
+from django.views.i18n import set_language
 
 from specifyweb.specify.models import Agent, Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
@@ -23,9 +28,11 @@ from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, skip_collection_access_check, query_pt, CollectionAccessPT
 from .app_resource import get_app_resource
 from .remote_prefs import get_remote_prefs
-from .schema_localization import get_schema_localization
+from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_view
 
 urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
@@ -33,7 +40,7 @@ urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def users_collections(cursor, user_id):
+def users_collections_for_sp6(cursor, user_id):
     cursor.execute("""
     select distinct c.usergroupscopeid, c.collectionname from collection c
     inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
@@ -44,7 +51,14 @@ def users_collections(cursor, user_id):
 
     return list(cursor.fetchall())
 
-def set_users_collections(cursor, user, collectionids):
+def users_collections_for_sp7(userid: int) -> List[Tuple[int, str]]:
+    return [
+        (c.id, c.collectionname)
+        for c in Collection.objects.all()
+        if query_pt(c.id, userid, CollectionAccessPT.access).allowed
+    ]
+
+def set_users_collections_for_sp6(cursor, user, collectionids):
     with transaction.atomic():
         cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [user.id])
         cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
@@ -62,22 +76,27 @@ def set_users_collections(cursor, user, collectionids):
             cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
                            'values (%s, %s)', [user.id, principal.id])
 
+class Sp6CollectionAccessPT(PermissionTarget):
+    resource = '/admin/user/sp6/collection_access'
+    read = PermissionTargetAction()
+    update = PermissionTargetAction()
+
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
-def user_collection_access(request, userid):
+def user_collection_access_for_sp6(request, userid):
     """Returns (GET) or sets (PUT) the list of collections user <userid>
     can log into. Requesting user must be an admin."""
-    if not request.specify_user.is_admin():
-        return HttpResponseForbidden()
+    check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.read])
     cursor = connection.cursor()
 
     if request.method == 'PUT':
+        check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.update])
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        set_users_collections(cursor, user, collections)
+        set_users_collections_for_sp6(cursor, user, collections)
 
-    collections = users_collections(cursor, userid)
+    collections = users_collections_for_sp6(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
 
@@ -97,7 +116,7 @@ def choose_collection(request):
         else settings.LOGIN_REDIRECT_URL
     )
 
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections = users_collections_for_sp7(request.specify_user.id)
     available_collections.sort(key=lambda x: x[1])
 
     if len(available_collections) < 1:
@@ -111,17 +130,21 @@ def choose_collection(request):
     class Form(forms.Form):
         collection = CollectionChoiceField(
             choices=available_collections,
-            initial=request.COOKIES.get('collection', None))
+            initial=request.COOKIES.get('collection', None)
+        )
+
+    context = {
+        'available_collections': available_collections,
+        'initial_value': request.COOKIES.get('collection', None),
+        'next': redirect_to
+    }
 
     if request.method == 'POST':
         form = Form(data=request.POST)
         if form.is_valid():
             set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
             return redirect_resp
-    else:
-        form = Form()
 
-    context = {'form': form, 'next': redirect_to}
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @openapi(schema={
@@ -197,6 +220,7 @@ def choose_collection(request):
 @require_http_methods(['GET', 'PUT'])
 @never_cache
 @ensure_csrf_cookie
+@skip_collection_access_check
 def api_login(request):
     """An API endpoint for logging in. GET returns the currently logged in user/collection if any.
     PUT logs into the request collection if possible.
@@ -233,7 +257,7 @@ def api_login(request):
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
     current = request.COOKIES.get('collection', None)
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections = users_collections_for_sp7(request.specify_user.id)
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.body))
@@ -251,7 +275,7 @@ def collection(request):
         return HttpResponse(json.dumps(response), content_type="application/json")
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @never_cache
 @cache_control(max_age=86400, private=True)
 def user(request):
@@ -259,7 +283,7 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
+    data['available_collections'] = users_collections_for_sp7(request.specify_user.id)
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
     if settings.RO_MODE or not request.user.is_authenticated:
@@ -267,7 +291,7 @@ def user(request):
     return HttpResponse(toJson(data), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @never_cache
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
@@ -286,7 +310,7 @@ def domain(request):
     return HttpResponse(json.dumps(domain), content_type='application/json')
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
@@ -303,7 +327,7 @@ def app_resource(request):
 
 
 @login_maybe_required
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
@@ -322,7 +346,7 @@ def available_related_searches(request):
 
 datamodel_json = None
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, public=True)
 def datamodel(request):
@@ -334,15 +358,20 @@ def datamodel(request):
 
     return HttpResponse(datamodel_json, content_type='application/json')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def schema_localization(request):
-    """Return the schema localization information for the logged in collection."""
-    sl = get_schema_localization(request.specify_collection, 0)
-    return HttpResponse(sl, content_type='application/json')
+    """Return the schema localization information for the logged in
+    collection.  If the `lang` parameter is present return the schema
+    localization for that language. The parameter should be of the
+    form ll[-cc] where ll is a language code and cc is an optional
+    country code.
+    """
+    lang = request.GET.get('lang', request.LANGUAGE_CODE)
+    return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def view(request):
@@ -361,15 +390,16 @@ def view(request):
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
+@skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
     spversion = Spversion.objects.get()
@@ -394,15 +424,32 @@ def system_info(request):
     return HttpResponse(json.dumps(info), content_type='application/json')
 
 PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
+PATH_GROUP_RE_EXTENDED = re.compile(r'<([^:]+):([^>]+)>')
 
 def parse_pattern(pattern):
     p_str = str(pattern.pattern)
     params = []
+
+    # Match old style django path params.
+    # eg r'^properties/(?P<name>.+).properties$'
     for match in PATH_GROUP_RE.finditer(p_str):
         p_str = p_str.replace(match.group(0), "{%s}" % match.group(1), 1)
-        params.append(match.group(1))
+        params.append((match.group(1), "string"))
+
+    # Match new style django path params w/ types.
+    # eg 'user_policies/<int:collectionid>/<int:userid>/'
+    for match in PATH_GROUP_RE_EXTENDED.finditer(p_str):
+        p_str = p_str.replace(match.group(0), "{%s}" % match.group(2), 1)
+        params.append((match.group(2), parse_type(match.group(1))))
 
     return p_str.strip('^$'), params
+
+def parse_type(django_type):
+    "Map django url param types to openAPI types."
+    return {
+        'int': 'integer',
+        'str': 'string',
+    }.get(django_type, "string")
 
 # most tags are generated automatically based on the URL, but here are some
 # exceptions:
@@ -516,10 +563,10 @@ def get_endpoints(
                         'in': 'path',
                         'required': True,
                         'schema': {
-                            'type': 'string'
+                            'type': api_type
                         }
                     }
-                    for param in preparams + params
+                    for param, api_type in preparams + params
                 ],
                 'get': {
                     **({
@@ -593,15 +640,39 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     }
 
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def api_endpoints(request):
     """Returns a JSON description of endpoints that have schema defined."""
     return JsonResponse(generate_openapi_for_endpoints(False))
 
 
-@require_GET
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 def api_endpoints_all(request):
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
+
+@require_http_methods(['GET', 'POST', 'HEAD'])
+@cache_control(max_age=86400, public=True)
+def languages(request):
+    """Get List of available languages OR set current language."""
+    if request.method == 'POST':
+        return set_language(request)
+    else:  # GET or HEAD
+        return JsonResponse({
+            code:{
+                **get_language_info(code),
+                'is_current': code==request.LANGUAGE_CODE
+            } for code, name in settings.LANGUAGES
+        })
+
+@require_http_methods(['GET', 'HEAD'])
+@cache_control(max_age=86400, public=True)
+def schema_language(request):
+    """Get list of schema languages, countries and variants."""
+    schema_languages = get_schema_languages()
+    return JsonResponse([
+        dict(zip(('language', 'country', 'variant'), row))
+        for row in schema_languages
+    ], safe=False)

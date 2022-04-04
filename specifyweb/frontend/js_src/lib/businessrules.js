@@ -1,18 +1,18 @@
 "use strict";
 
-var $                 = require('jquery');
-var _                 = require('underscore');
-var Q                 = require('q');
-var api               = require('./specifyapi.js');
-var saveblockers      = require('./saveblockers.js');
-var treeBusinessRules = require('./treebusinessrules.js');
-var rules             = require('./businessruledefs.js');
+import $ from 'jquery';
+import _ from 'underscore';
+import {globalEvents} from './specifyapi';
+import {SaveBlockers} from './saveblockers';
+import treeBusinessRules from './treebusinessrules';
+import rules from './businessruledefs';
 
-const formsText = require('./localization/forms').default;
+import formsText from './localization/forms';
+import {formatList} from './components/internationalization';
 
-    var enabled = true;
+var enabled = true;
 
-    api.on('initresource', function(resource) {
+    globalEvents.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
     });
 
@@ -20,7 +20,7 @@ const formsText = require('./localization/forms').default;
         var mgr;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
-        resource.saveBlockers = new saveblockers.SaveBlockers(resource);
+        resource.saveBlockers = new SaveBlockers(resource);
         mgr.isTreeNode && treeBusinessRules.init(resource);
         mgr.doCustomInit();
     };
@@ -28,7 +28,7 @@ const formsText = require('./localization/forms').default;
     function BusinessRuleMgr(resource) {
         this.resource = resource;
         this.rules = rules[this.resource.specifyModel.name];
-        this.pending = Q(null);
+        this.pending = Promise.resolve(null);
         this.fieldChangePromises = {};
         this.watchers = {};
         this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
@@ -36,7 +36,7 @@ const formsText = require('./localization/forms').default;
 
     _(BusinessRuleMgr.prototype).extend({
         addPromise: function(promise) {
-            this.pending = Q.allSettled([this.pending, promise]).thenResolve(null);
+            this.pending = Promise.allSettled([this.pending, promise]).then(()=>null);
         },
 
         setupEvents: function() {
@@ -54,12 +54,12 @@ const formsText = require('./localization/forms').default;
         },
         _invokeRule: function(ruleName, fieldName, args) {
             var rule = this.rules && this.rules[ruleName];
-            if (!rule) return Q('no rule: ' + ruleName);
+            if (!rule) return Promise.resolve('no rule: ' + ruleName);
             if (fieldName) {
                 rule = rule[fieldName];
-                if (!rule) return Q('no rule: ' + ruleName + ' for: ' + fieldName);
+                if (!rule) return Promise.resolve('no rule: ' + ruleName + ' for: ' + fieldName);
             }
-            return Q(rule.apply(this, args));
+            return Promise.resolve(rule.apply(this, args));
         },
 
         doCustomInit: function() {
@@ -91,14 +91,14 @@ const formsText = require('./localization/forms').default;
         checkField: function(fieldName) {
             fieldName = fieldName.toLowerCase();
 
-            var thisCheck = Q.defer();
+            const thisCheck  = flippedPromise();
             // thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
             //                                                         {field: fieldName, result: result}); });
-            this.addPromise(thisCheck.promise);
+            this.addPromise(thisCheck);
 
             // If another change happens while the previous check is pending,
             // that check is superseded by checking the new value.
-            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
+            this.fieldChangePromises[fieldName] && resoleFlippedPromise(this.fieldChangePromises[fieldName], 'superseded');
             this.fieldChangePromises[fieldName] = thisCheck;
 
             var checks = [
@@ -108,15 +108,15 @@ const formsText = require('./localization/forms').default;
 
             this.isTreeNode && checks.push(treeBusinessRules.run(this.resource, fieldName));
 
-            Q.all(checks).then(function(results) {
+            Promise.all(checks).then(function(results) {
                 // Only process these results if the change has not been superseded.
                 return (thisCheck === this.fieldChangePromises[fieldName]) &&
                     this.processCheckFieldResults(fieldName, results);
-            }.bind(this)).then(function() { thisCheck.resolve('finished'); });
+            }.bind(this)).then(function() { resoleFlippedPromise(thisCheck,'finished'); });
         },
         processCheckFieldResults: function(fieldName, results) {
             var resource = this.resource;
-            return Q.all(results.map(function(result) {
+            return Promise.all(results.map(function(result) {
                 if (!result) return null;
                 if (result.valid === false) {
                     resource.saveBlockers.add(result.key, fieldName, result.reason);
@@ -145,7 +145,7 @@ const formsText = require('./localization/forms').default;
                     return uniqueIn(field, _this.resource, fieldNames);
                 });
             }
-            Q.all(results).then(function(results) {
+            Promise.all(results).then(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
                     var event = dup.cid + ':' + fieldName;
                     if (_this.watchers[event]) return;
@@ -164,20 +164,25 @@ const formsText = require('./localization/forms').default;
 
 
     var combineUniquenessResults = function(deferredResults) {
-        return Q.all(deferredResults).then(function(results) {
+        return Promise.all(deferredResults).then(function(results) {
             var invalids = _.filter(results, function(result) { return !result.valid; });
-            return (invalids.length < 1) ? {valid: true} : {valid: false, reason: _(invalids).pluck('reason').join(', ')};
+            return invalids.length < 1
+                ? {valid: true}
+                : {
+                    valid: false,
+                    reason: formatList(_(invalids).pluck('reason'))
+                };
         });
     };
 
     var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
         const fieldName = parentFldInfo ?
-          parentFldInfo.getLocalizedName() :
+          parentFldInfo.label :
           formsText('database');
         return fldInfo.length > 1 ?
             formsText('valuesOfMustBeUniqueToField')(
               fieldName,
-              fldInfo.map(fld=>fld.getLocalizedName()),
+              formatList(fldInfo.map(fld=>fld.label)),
             ) :
             formsText('valueMustBeUniqueToField')(fieldName);
     };
@@ -192,7 +197,7 @@ const formsText = require('./localization/forms').default;
                 if (_.isNull(v) || typeof v == 'undefined')  {
                     return null;
                 } else {
-                    return _.isString(v) ? valueFieldInfo[idx].getRelatedModel().Resource.fromUri(v).id : v.id;
+                    return _.isString(v) ? valueFieldInfo[idx].relatedModel.Resource.fromUri(v).id : v.id;
                 }
             } else {
                 return undefined;
@@ -213,7 +218,7 @@ const formsText = require('./localization/forms').default;
                 valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
         }, true);
         if (allNullOrUndefinedToOnes) {
-            return Q(valid);
+            return Promise.resolve(valid);
         }
 
         var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
@@ -235,15 +240,15 @@ const formsText = require('./localization/forms').default;
 
         if (toOneField != null) {
             var haveLocalColl = (resource.collection && resource.collection.related &&
-                                 toOneFieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
+                                 toOneFieldInfo.relatedModel === resource.collection.related.specifyModel);
 
             var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
             if (dupes.length > 0) {
                 invalid.localDupes = dupes;
-                return Q(invalid);
+                return Promise.resolve(invalid);
             }
-            return Q(resource.rget(toOneField)).then(function(related) {
+            return resource.rget(toOneField).then(function(related) {
                 if (!related) return valid;
                 var filters = {};
                 for (var f = 0; f < valueField.length; f++) {
@@ -254,7 +259,7 @@ const formsText = require('./localization/forms').default;
                     field: toOneFieldInfo,
                     filters: filters
                 });
-                return Q(others.fetch()).then(function() {
+                return others.fetch().then(function() {
                     var inDatabase = others.chain().compact();
                     inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
                         return !(resource.collection.get(other.id));
@@ -274,7 +279,7 @@ const formsText = require('./localization/forms').default;
             var others = new resource.specifyModel.LazyCollection({
                 filters: filters
             });
-            return Q(others.fetch()).then(function() {
+            return others.fetch().then(function() {
                 if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
                     return invalid;
                 } else {
@@ -285,12 +290,23 @@ const formsText = require('./localization/forms').default;
     };
 
 
-module.exports = {
-        enable: function(e) {
-            return enabled = e;
-        },
-        areEnabled: function() {
-            return enabled;
-        }
-    };
+export function enable(e) {
+    return enabled = e;
+}
 
+/**
+ * A promise that can be resolved from outside the promise
+ * This is probably an anti-pattern and is included here only for compatability
+ * with the legacy promise implementation (Q.js)
+ */
+function flippedPromise() {
+  const promise = new Promise((resolve) =>
+      setTimeout(() => {
+          promise.resolve = resolve;
+      }, 0)
+  );
+  return promise;
+}
+
+const resoleFlippedPromise = (promise, ...args) =>
+  setTimeout(()=>promise.resolve(...args), 0);

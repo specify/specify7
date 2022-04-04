@@ -1,168 +1,226 @@
-import '../../css/lifemapper.css';
-
 import React from 'react';
+import type { Action, State } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 
-import { SN_SERVICES } from '../lifemapperconfig';
-import { prepareLifemapperProjectionMap } from '../lifemappermap';
-import { reducer } from '../lifemapperreducer';
+import type { CollectionObject, Taxon } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
+import { leafletTileServersPromise } from '../leaflet';
+import type { LocalityData } from '../leafletutils';
+import type { SpecifyResource } from '../legacytypes';
+import { snServer } from '../lifemapperconfig';
+import type { OccurrenceData } from '../lifemappermap';
+import { fetchLocalOccurrences } from '../lifemappermap';
 import {
-  fetchLocalScientificName,
+  fetchOccurrenceName,
   formatLifemapperViewPageRequest,
-  formatOccurrenceDataRequest,
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
-import type { MainState } from './lifemapperstate';
-import { stateReducer } from './lifemapperstate';
-import type { Props, ComponentProps } from './lifemapperwrapper';
-import type { IR, RA } from './wbplanview';
+import { getBoolPref } from '../remoteprefs';
+import { toTable } from '../specifymodel';
+import { getSystemInfo } from '../systeminfo';
+import type { IR, RA, RR } from '../types';
+import { Link } from './basic';
+import { ErrorBoundary } from './errorboundary';
+import { useBooleanState } from './hooks';
+import { Dialog } from './modaldialog';
+import { f } from '../functools';
 
-type FullAggregatorResponse = {
-  readonly records: RA<{
-    readonly count: number;
-    readonly provider: {
-      readonly code: string;
-    };
-    readonly records: RA<{
-      readonly 's2n:issues': IR<string>;
-      readonly 'dwc:scientificName': string;
-    }>;
-  }>;
+type LoadedAction = Action<'LoadedAction', { version: string }>;
+
+type GetPinInfoAction = Action<'GetPinInfoAction', { index: number }>;
+
+type IncomingMessage = LoadedAction | GetPinInfoAction;
+
+type IncomingMessageExtended = IncomingMessage & {
+  state: {
+    readonly sendMessage: (message: OutgoingMessage) => void;
+    readonly model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+    readonly occurrences: React.MutableRefObject<
+      RA<OccurrenceData> | undefined
+    >;
+  };
 };
 
-export function SpecifyNetworkBadge({
-  guid,
-  model,
-}: ComponentProps): JSX.Element {
+const dispatch = generateDispatch<IncomingMessageExtended>({
+  LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
+    void leafletTileServersPromise
+      .then(async (leafletLayers) =>
+        sendMessage({
+          type: 'BasicInformationAction',
+          systemInfo: getSystemInfo(),
+          // @ts-expect-error
+          leafletLayers: Object.fromEntries(
+            Object.entries(leafletLayers).map(([groupName, group]) => [
+              groupName,
+              Object.fromEntries(
+                Object.entries(group).map(([layerName, layer]) => [
+                  layerName,
+                  {
+                    // @ts-expect-error
+                    endpoint: layer._url,
+                    serverType: 'wmsParams' in layer ? 'wms' : 'tileServer',
+                    layerOptions: layer.options,
+                  },
+                ])
+              ),
+            ])
+          ),
+        })
+      )
+      .then(async () => fetchLocalOccurrences(model))
+      .then((fetchedOccurrenceData) => {
+        occurrences.current = fetchedOccurrenceData;
+        sendMessage({
+          type: 'LocalOccurrencesAction',
+          occurrences: fetchedOccurrenceData.map(
+            ({ fetchMoreData: _, ...rest }) => rest
+          ),
+        });
+      }),
+  GetPinInfoAction({ index, state: { sendMessage, occurrences } }) {
+    occurrences.current?.[index].fetchMoreData().then((localityData) =>
+      typeof localityData === 'object'
+        ? sendMessage({
+            type: 'PointDataAction',
+            index,
+            localityData,
+          })
+        : console.error('Failed to fetch locality data')
+    );
+  },
+});
+
+type BasicInformationAction = State<
+  'BasicInformationAction',
+  {
+    systemInfo: IR<unknown>;
+    leafletLayers: RR<
+      'baseMaps' | 'overlays',
+      IR<{
+        endpoint: string;
+        serverType: 'tileServer' | 'wms';
+        layerOptions: IR<unknown>;
+      }>
+    >;
+  }
+>;
+
+type LocalOccurrencesAction = State<
+  'LocalOccurrencesAction',
+  {
+    occurrences: RA<Omit<OccurrenceData, 'fetchMoreData'>>;
+  }
+>;
+
+type PointDataAction = State<
+  'PointDataAction',
+  {
+    index: number;
+    localityData: LocalityData;
+  }
+>;
+
+type OutgoingMessage =
+  | BasicInformationAction
+  | LocalOccurrencesAction
+  | PointDataAction;
+
+export const displaySpecifyNetwork = (
+  resource: SpecifyResource<AnySchema>
+): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
+  !getBoolPref('s2n.badges.disable', false) &&
+  !resource.isNew() &&
+  ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
+
+function SpecifyNetwork({
+  resource,
+}: {
+  readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+}): JSX.Element {
   const [occurrenceName, setOccurrenceName] = React.useState('');
+  const [hasFailure, handleFailure, handleNoFailure] = useBooleanState();
+  const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
-  React.useEffect(() => {
-    fetchOccurrenceName({ guid, model })
-      .then(setOccurrenceName)
-      .catch(console.error);
-  }, [guid, model]);
+  React.useEffect(
+    () =>
+      void f
+        .maybe(toTable(resource, 'CollectionObject'), fetchOccurrenceName)
+        ?.then(setOccurrenceName)
+        .catch(console.error),
+    [resource]
+  );
 
-  if (!guid) return <></>;
+  const messageHandler = React.useCallback(
+    (event: MessageEvent<IncomingMessage>): void => {
+      if (event.origin !== snServer || typeof event.data?.type !== 'string')
+        return;
+      const action = event.data;
+      dispatch({
+        ...action,
+        state: {
+          sendMessage: (message: OutgoingMessage) =>
+            (event.source as Window | null)?.postMessage(message, snServer),
+          model: resource,
+          occurrences,
+        },
+      });
+    },
+    [resource]
+  );
 
   return (
-    <a
-      href={formatLifemapperViewPageRequest(guid, occurrenceName)}
-      target="_blank"
-      title={lifemapperText('specifyNetwork')}
-      rel="noreferrer"
-      className="lifemapper-source-icon"
-    >
-      <img
-        src="/static/img/specify_network_logo_long.svg"
-        alt="Specify Network"
-      />
-    </a>
+    <>
+      <Dialog
+        isOpen={hasFailure}
+        title={lifemapperText('failedToOpenPopUpDialogTitle')}
+        header={lifemapperText('failedToOpenPopUpDialogHeader')}
+        onClose={handleNoFailure}
+        buttons={commonText('close')}
+      >
+        {lifemapperText('failedToOpenPopUpDialogMessage')}
+      </Dialog>
+      <Link.Default
+        href={formatLifemapperViewPageRequest(
+          toTable(resource, 'CollectionObject')?.get('guid') ?? '',
+          occurrenceName
+        )}
+        target="_blank"
+        title={lifemapperText('specifyNetwork')}
+        aria-label={lifemapperText('specifyNetwork')}
+        rel="opener noreferrer"
+        className="h-7 justify-end"
+        onClick={(event): void => {
+          event.preventDefault();
+          const link = (event.target as HTMLElement).closest('a')?.href;
+          if (!link) throw new Error('Failed to extract S^N Link');
+          const childWindow = window.open(link, '_blank') ?? undefined;
+          if (!childWindow) {
+            handleFailure();
+            return;
+          }
+          window.removeEventListener('message', messageHandler);
+          window.addEventListener('message', messageHandler);
+        }}
+      >
+        <img
+          src="/static/img/specify_network_logo_long.svg"
+          alt=""
+          className="w-3/5"
+        />
+      </Link.Default>
+    </>
   );
 }
 
-async function fetchOccurrenceName({
-  model,
-  guid,
-}: ComponentProps): Promise<string> {
-  return fetch(formatOccurrenceDataRequest(guid), {
-    mode: 'cors',
-  })
-    .then(async (response) => response.json())
-    .then((response: FullAggregatorResponse) =>
-      response.records
-        .filter(({ count }) => count > 0)
-        .map(({ records }) => records[0]['dwc:scientificName'])
-        .find((occurrenceName) => occurrenceName)
-    )
-    .catch(console.error)
-    .then(
-      (remoteOccurrence) => remoteOccurrence ?? fetchLocalScientificName(model)
-    )
-    .catch(console.error)
-    .then((occurrenceName) => occurrenceName ?? '');
-}
-
-export function Lifemapper({ model }: Props): JSX.Element | null {
-  const [state, dispatch] = React.useReducer(reducer, {
-    type: 'MainState',
-    badges: Object.fromEntries(
-      Object.entries(SN_SERVICES).map(([name, label]) => [
-        name,
-        {
-          label,
-          isOpen: false,
-          isActive: true,
-        },
-      ])
-    ),
-    mapInfo: commonText('loading'),
-  } as MainState);
-
-  // Fetch occurrence data
-  React.useEffect(() => {
-    new Promise<string | undefined>((resolve) =>
-      model.rget('fullName').then(resolve)
-    )
-      .then((occurrenceName) =>
-        dispatch({
-          type: 'SetOccurrenceNameAction',
-          occurrenceName: occurrenceName ?? '',
-        })
-      )
-      .catch(console.error);
-  }, [model]);
-
-  /*
-   * Fetch related CO records
-   * Fetch projection map
-   */
-  const occurrenceName =
-    state.type === 'MainState' ? state.occurrenceName : undefined;
-  const isOpen =
-    state.type === 'MainState' ? state.badges.lm.isOpen : undefined;
-  const mapInfo = state.type === 'MainState' ? state.mapInfo : undefined;
-  React.useEffect(() => {
-    if (
-      !Boolean(isOpen) ||
-      typeof occurrenceName === 'undefined' ||
-      typeof mapInfo === 'object'
-    )
-      return;
-
-    if (!occurrenceName) {
-      dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' });
-      dispatch({
-        type: 'MapLoadedAction',
-        mapInfo: `
-          ${lifemapperText('errorsOccurred')}\n
-          ${lifemapperText('noMap')}`,
-      });
-      return;
-    }
-
-    prepareLifemapperProjectionMap(occurrenceName, model)
-      .then((mapInfo) =>
-        dispatch({
-          type: 'MapLoadedAction',
-          mapInfo:
-            mapInfo.layers.length === 0 && mapInfo.markers.length === 0
-              ? `${lifemapperText('errorsOccurred')}\n\n
-                ${
-                  Object.keys(mapInfo.messages.errorDetails).length === 0
-                    ? Object.values(mapInfo.messages.errorDetails).join('\n')
-                    : lifemapperText('noMap')
-                }`
-              : mapInfo,
-        })
-      )
-      .catch(() => dispatch({ type: 'DisableBadgeAction', badgeName: 'lm' }));
-  }, [occurrenceName, mapInfo, isOpen, model]);
-
-  // eslint-disable-next-line unicorn/no-null
-  return stateReducer(null, {
-    ...state,
-    params: {
-      dispatch,
-    },
-  });
+export function SpecifyNetworkBadge({
+  resource,
+}: {
+  readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+}): JSX.Element {
+  return (
+    <ErrorBoundary silentErrors={true}>
+      <SpecifyNetwork resource={resource} />
+    </ErrorBoundary>
+  );
 }

@@ -1,27 +1,43 @@
-const $ = require('jquery');
-const _ = require('underscore');
-const Leaflet = require('./leaflet');
-const WbLocalityDataExtractor = require('./wblocalitydataextractor');
-const Backbone = require('./backbone.js');
-const latlongutils = require('./latlongutils.js');
-const WbPlanViewHelper = require('./wbplanviewhelper');
-const { findLocalityColumnsInDataSet } = require('./wblocalitydataextractor');
-const {
-  default: WbAdvancedSearch,
-  getInitialSearchPreferences,
-} = require('./components/wbadvancedsearch');
-const wbText = require('./localization/workbench').default;
-const commonText = require('./localization/common').default;
+/**
+ * Workbench Utilities:
+ * Search & Replace, GeoMap, GeoLocate, Coordinate Convertor
+ *
+ * @module
+ *
+ */
 
-module.exports = Backbone.View.extend({
+'use strict';
+
+import $ from 'jquery';
+import _ from 'underscore';
+import {
+  findLocalityColumnsInDataSet,
+  getLocalitiesDataFromSpreadsheet,
+  getLocalityColumnsFromSelectedCells,
+  getLocalityCoordinate,
+} from './wblocalitydataextractor';
+import Backbone from './backbone';
+import * as latlongutils from './latlongutils';
+import {camelToKebab, clamp, sortFunction} from './helpers';
+import {f} from './functools';
+import WbAdvancedSearch, {
+  getInitialSearchPreferences,
+} from './components/wbadvancedsearch';
+import wbText from './localization/workbench';
+import commonText from './localization/common';
+import {showDialog} from './components/modaldialog';
+import createBackboneView from './components/reactbackboneextend';
+import {LeafletMap} from './components/leaflet';
+
+const LeafletMapView = createBackboneView(LeafletMap);
+
+export default Backbone.View.extend({
   __name__: 'WbUtils',
-  className: 'wbs-utils',
   events: {
     'click .wb-cell-navigation': 'navigateCells',
     'click .wb-navigation-text': 'toggleCellTypes',
     'keydown .wb-search-query': 'searchCells',
     'keydown .wb-replace-value': 'replaceCells',
-    'click .wb-advanced-search': 'showAdvancedSearch',
     'click .wb-show-toolkit': 'toggleToolkit',
     'click .wb-geolocate': 'showGeoLocate',
     'click .wb-leafletmap': 'showLeafletMap',
@@ -31,43 +47,82 @@ module.exports = Backbone.View.extend({
     this.wbview = wbview;
 
     this.localityColumns = [];
-    this.searchQuery = '';
+    this.searchQuery = undefined;
+    this.rawSearchQuery = undefined;
     this.searchPreferences = getInitialSearchPreferences();
-    this.advancedSearch = undefined;
+    this.geoLocateDialog = undefined;
+    this.geoMapDialog = undefined;
     this.searchCells = _.debounce(
       this.searchCells,
-      Math.ceil(Math.min(200, Math.max(10, this.wbview.data.length / 20))),
+      Math.ceil(clamp(10, 200, this.wbview.data.length / 20)),
       false
     );
   },
   render() {
+    let initialNavigationDirection =
+      this.searchPreferences.navigation.direction;
+    this.advancedSearch = new WbAdvancedSearch({
+      el: this.el.getElementsByClassName('wb-advanced-search-wrapper')[0],
+      initialSearchPreferences: this.searchPreferences,
+      onChange: (newSearchPreferences) => {
+        this.searchPreferences = newSearchPreferences;
+        if (
+          this.searchPreferences.navigation.direction !==
+          initialNavigationDirection
+        ) {
+          this.wbview.flushIndexedCellData = true;
+          initialNavigationDirection =
+            this.searchPreferences.navigation.direction;
+        }
+        if (this.searchPreferences.search.liveUpdate)
+          this.searchCells({
+            key: 'SettingsChange',
+          });
+      },
+    }).render();
+
     return this;
+  },
+  remove() {
+    this.advancedSearch.remove();
+    Backbone.View.prototype.remove.call(this);
   },
   getSelectedLast() {
     let [currentRow, currentCol] = this.wbview.hot.getSelectedLast() ?? [0, 0];
     /*
-     * this.wbview.getSelectedLast() returns -1 when column's header or row's
+     * This.wbview.getSelectedLast() returns -1 when column's header or row's
      * number cell is selected
-     * */
+     *
+     */
     if (currentRow < 0) currentRow = 0;
     if (currentCol < 0) currentCol = 0;
     return [currentRow, currentCol];
   },
-  cellIsType(cellMeta, type) {
+  cellIsType(metaArray, type) {
     switch (type) {
       case 'invalidCells':
-        return cellMeta.issues.length > 0;
+        return this.wbview.getCellMetaFromArray(metaArray, 'issues').length > 0;
       case 'newCells':
-        return cellMeta.isNew === true;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isNew');
       case 'modifiedCells':
-        return cellMeta.isModified !== false;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isModified');
       case 'searchResults':
-        return cellMeta.isSearchResult === true;
+        return this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult');
       default:
         return false;
     }
   },
-  navigateCells(event, matchCurrentCell = false, currentCell = undefined) {
+  navigateCells(
+    event,
+    // If true and current cell is of correct type, don't navigate away
+    matchCurrentCell = false,
+    /*
+     * Overwrite what is considered to be a current cell
+     * Setting to [0,0] and matchCurrentCell=true allows navigation to the first
+     * cell of type (used on hitting "Enter" in the Search Box)
+     */
+    currentCell = undefined
+  ) {
     const button = event.target;
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
@@ -78,19 +133,17 @@ module.exports = Backbone.View.extend({
     const totalCountElement = buttonParent.getElementsByClassName(
       'wb-navigation-total'
     )[0];
-    const totalCount = parseInt(totalCountElement.innerText);
+    const totalCount = Number.parseInt(totalCountElement.textContent);
 
     const cellMetaObject = this.wbview.getCellMetaObject();
 
-    const orderIt =
-      direction === 'next'
-        ? (array) => array
-        : (array) => Array.from(array).reverse();
-
-    let matchedCell;
-    let cellIsTypeCount = 0;
-
-    const getPosition = (visualRow, visualCol, first) =>
+    /*
+     * The cellMetaObject is transposed if navigation direction is "Column
+     * first".
+     * In that case, the meaning of visualRow and visualCol is swapped.
+     * resolveIndex exists to resolve the canonical visualRow/visualCol
+     */
+    const resolveIndex = (visualRow, visualCol, first) =>
       (this.searchPreferences.navigation.direction === 'rowFirst') === first
         ? visualRow
         : visualCol;
@@ -98,8 +151,8 @@ module.exports = Backbone.View.extend({
     const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
 
     const [currentTransposedRow, currentTransposedCol] = [
-      getPosition(currentRow, currentCol, true),
-      getPosition(currentRow, currentCol, false),
+      resolveIndex(currentRow, currentCol, true),
+      resolveIndex(currentRow, currentCol, false),
     ];
 
     const compareRows =
@@ -116,32 +169,42 @@ module.exports = Backbone.View.extend({
         ? (visualCol) => visualCol <= currentTransposedCol
         : (visualCol) => visualCol < currentTransposedCol;
 
-    /*
-     * The cellMetaObject is transposed if navigation direction is "Column
-     * first".
-     * In that case, the meaning of visualRow and visualCol is swapped.
-     * getPosition exists to resolve the canonical visualRow/visualCol
-     */
-    orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
-      orderIt(Object.entries(metaRow)).find(([visualColString, cellMeta]) => {
-        // This is 10 times faster then Number.parseInt because of a slow
-        // Babel polyfill
-        const visualRow = visualRowString | 0;
-        const visualCol = visualColString | 0;
+    let matchedCell;
+    let cellIsTypeCount = 0;
 
-        const cellTypeMatches = this.cellIsType(cellMeta, type);
-        cellIsTypeCount += cellTypeMatches;
-        const foundIt =
-          cellTypeMatches &&
-          compareRows(visualRow) &&
-          (visualRow !== currentTransposedRow || compareCols(visualCol));
-        if (foundIt)
-          matchedCell = {
-            visualRow: getPosition(visualRow, visualCol, true),
-            visualCol: getPosition(visualRow, visualCol, false),
-          };
-        return foundIt;
-      })
+    const orderIt =
+      direction === 'next'
+        ? (array) => array
+        : (array) => Array.from(array).reverse();
+
+    orderIt(Object.entries(cellMetaObject)).find(
+      ([visualRowString, metaRow]) =>
+        metaRow &&
+        orderIt(Object.entries(metaRow)).find(
+          ([visualColString, metaArray]) => {
+            /*
+             * This is 10 times faster then Number.parseInt because of a slow
+             * Babel polyfill
+             */
+            const visualRow = visualRowString | 0;
+            const visualCol = visualColString | 0;
+
+            const cellTypeMatches = this.cellIsType(metaArray, type);
+            cellIsTypeCount += cellTypeMatches;
+
+            const isWithinBounds =
+              compareRows(visualRow) &&
+              (visualRow !== currentTransposedRow || compareCols(visualCol));
+
+            const matches = cellTypeMatches && isWithinBounds;
+            if (matches)
+              matchedCell = {
+                visualRow: resolveIndex(visualRow, visualCol, true),
+                visualCol: resolveIndex(visualRow, visualCol, false),
+              };
+            return matches;
+          }
+        )
     );
 
     let cellRelativePosition;
@@ -151,15 +214,15 @@ module.exports = Backbone.View.extend({
 
     const boundaryCell = direction === 'next' ? totalCount : 1;
 
-    const initialCellRelativePosition = parseInt(
-      currentPositionElement.innerText || '0'
+    const initialCellRelativePosition = Number.parseInt(
+      currentPositionElement.textContent || '0'
     );
     if (
       cellRelativePosition !== 0 ||
       initialCellRelativePosition !== boundaryCell ||
       totalCount === 0
     )
-      currentPositionElement.innerText = cellRelativePosition;
+      currentPositionElement.textContent = cellRelativePosition;
 
     if (typeof matchedCell === 'undefined') return false;
 
@@ -170,89 +233,103 @@ module.exports = Backbone.View.extend({
 
     return [matchedCell.visualRow, matchedCell.visualCol];
   },
-  toggleCellTypes(e, action = 'toggle') {
-    let buttonLabel;
-    if (typeof e === 'string') buttonLabel = e;
-    else {
-      const button = e.target;
-      const buttonContainer = button.closest('.wb-navigation-section');
-      buttonLabel = buttonContainer.getAttribute('data-navigation-type');
+  toggleCellTypes(event, action = 'toggle') {
+    let navigationType;
+    let buttonContainer;
+    if (typeof event === 'string') {
+      navigationType = event;
+      buttonContainer = this.el.querySelector(
+        `.wb-navigation-section[data-navigation-type="${navigationType}"]`
+      );
+    } else {
+      const button = event.target;
+      buttonContainer = button.closest('.wb-navigation-section');
+      navigationType = buttonContainer.getAttribute('data-navigation-type');
     }
-    const groupName = WbPlanViewHelper.camelToKebab(buttonLabel);
+    const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
     this.el.classList[action](cssClassName);
+    const newState = this.el.classList.contains(cssClassName);
+    const indicator =
+      buttonContainer.getElementsByClassName('wb-navigation-text')[0];
+    indicator.ariaPressed = newState;
+    indicator.classList[newState ? 'add' : 'remove']('brightness-50');
+    return newState;
   },
-  getToVisualConverters() {
-    const toVisualRow = Array.from(
-      { length: this.wbview.data.length },
-      (_, physicalRow) => this.wbview.hot.toVisualRow(physicalRow)
-    );
-    const toVisualColumn = Array.from(
-      { length: this.wbview.dataset.columns.length },
-      (_, physicalCol) => this.wbview.hot.toVisualColumn(physicalCol)
-    );
-    return [toVisualRow, toVisualColumn];
-  },
-  getToPhysicalConverters() {
-    const toPhysicalRow = Array.from(
-      { length: this.wbview.data.length },
-      (_, visualRow) => this.wbview.hot.toPhysicalRow(visualRow)
-    );
-    const toPhysicalColumn = Array.from(
-      { length: this.wbview.dataset.columns.length },
-      (_, visualCol) => this.wbview.hot.toPhysicalColumn(visualCol)
-    );
-    return [toPhysicalRow, toPhysicalColumn];
-  },
-  async searchCells(event) {
-    if (
-      typeof event.target !== 'undefined' &&
-      event.target.value === this.searchQuery &&
-      !['SettingsChange', 'Enter'].includes(event.key)
-    )
-      return;
-
-    if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
-      return;
-
-    const button = event.target;
-    const buttonContainer = button.parentElement;
-    const navigationContainer =
-      this.el.getElementsByClassName('wb-navigation')[0];
-    const navigationTotalElement = navigationContainer.getElementsByClassName(
-      'wb-navigation-total'
-    )[0];
+  parseSearchQuery() {
     const searchQueryElement =
-      buttonContainer.getElementsByClassName('wb-search-query')[0];
-    const navigationButton =
-      navigationContainer.getElementsByClassName('wb-cell-navigation');
+      this.el.getElementsByClassName('wb-search-query')[0];
+
+    this.rawSearchQuery = searchQueryElement.value;
 
     this.searchQuery = this.searchPreferences.search.useRegex
-      ? searchQueryElement.value
-      : searchQueryElement.value.trim();
+      ? this.rawSearchQuery
+      : this.rawSearchQuery.trim();
 
     if (this.searchQuery === '') {
-      navigationTotalElement.innerText = '0';
-      this.toggleCellTypes('searchResults', 'add');
+      this.searchQuery = undefined;
       return;
     }
 
     if (this.searchPreferences.search.useRegex)
       try {
-        RegExp(
-          this.searchPreferences.search.fullMatch
-            ? `^${this.searchQuery}$`
-            : this.searchQuery
+        if (this.searchPreferences.search.fullMatch) {
+          if (this.searchQuery[0] !== '^')
+            this.searchQuery = `^${this.searchQuery}`;
+          if (this.searchQuery.slice(-1) !== '$')
+            this.searchQuery = `${this.searchQuery}$`;
+        }
+        this.searchQuery = new RegExp(
+          this.searchQuery,
+          this.searchPreferences.search.caseSensitive ? '' : 'i'
         );
       } catch (error) {
-        searchQueryElement.classList.add('wb-search-query-invalid');
-        searchQueryElement.setAttribute('title', error.toString());
-        this.toggleCellTypes('searchResults', 'add');
+        searchQueryElement.setCustomValidity(error.message);
+        searchQueryElement.reportValidity();
+        this.searchQuery = undefined;
         return;
       }
-    searchQueryElement.classList.remove('wb-search-query-invalid');
-    searchQueryElement.removeAttribute('title');
+    else if (!this.searchPreferences.search.caseSensitive)
+      this.searchQuery = this.searchQuery.toLowerCase();
+
+    searchQueryElement.setCustomValidity('');
+
+    return this.searchQuery;
+  },
+  async searchCells(event) {
+    const searchQueryElement =
+      this.el.getElementsByClassName('wb-search-query')[0];
+
+    /*
+     * Don't rerun search on live search if search query did not change
+     * (e.x, if Ctrl/Cmd+A is clicked in the search box)
+     */
+    if (
+      searchQueryElement.value === this.rawSearchQuery &&
+      !['SettingsChange', 'Enter'].includes(event.key)
+    )
+      return;
+
+    // Don't handle onKeyDown event if live search is disabled
+    if (event.key !== 'Enter' && !this.searchPreferences.search.liveUpdate)
+      return;
+
+    const navigationContainer = this.el.querySelector(
+      '.wb-navigation-section[data-navigation-type="searchResults"]'
+    );
+    const navigationTotalElement = navigationContainer.getElementsByClassName(
+      'wb-navigation-total'
+    )[0];
+
+    if (typeof this.parseSearchQuery() === 'undefined') {
+      navigationTotalElement.textContent = '0';
+      this.toggleCellTypes('searchResults', 'add');
+      return;
+    }
     this.toggleCellTypes('searchResults', 'remove');
+
+    const navigationButton =
+      navigationContainer.getElementsByClassName('wb-cell-navigation');
 
     let resultsCount = 0;
     const data = this.wbview.dataset.rows;
@@ -264,26 +341,30 @@ module.exports = Backbone.View.extend({
       this.wbview.getHotPlugin('autoColumnSize').getFirstVisibleColumn() - 3;
     const lastVisibleColumn =
       this.wbview.getHotPlugin('autoColumnSize').getLastVisibleColumn() + 3;
-    const [toPhysicalRow, toPhysicalColumn] = this.getToPhysicalConverters();
+
     for (let visualRow = 0; visualRow < this.wbview.data.length; visualRow++) {
-      const physicalRow = toPhysicalRow[visualRow];
+      const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
       for (
         let visualCol = 0;
         visualCol < this.wbview.dataset.columns.length;
         visualCol++
       ) {
-        const physicalCol = toPhysicalColumn[visualCol];
-        const cellData = data[physicalRow][physicalCol] || '';
-        const searchValue = cellData
-          ? cellData
-          : this.wbview.mappings?.defaultValues[physicalCol] ?? '';
+        const physicalCol = this.wbview.hot.toPhysicalColumn(visualCol);
         const isSearchResult = this.searchFunction(
-          this.searchQuery,
-          searchValue
+          (data[physicalRow][physicalCol] ||
+            this.wbview.mappings?.defaultValues[physicalCol]) ??
+            ''
         );
 
         let cell = undefined;
         let render = false;
+
+        /*
+         * Calling this.wbview.hot.getCell only if cell is within the render
+         * bounds.
+         * While hot.getCell is supposed to check for this too, doing it this
+         * way makes search about 25% faster
+         */
         if (
           firstVisibleRow <= visualRow &&
           lastVisibleRow >= visualRow &&
@@ -291,17 +372,16 @@ module.exports = Backbone.View.extend({
           lastVisibleColumn >= visualCol
         ) {
           cell = this.wbview.hot.getCell(visualRow, visualCol);
-          render = !!cell;
+          render = Boolean(cell);
         }
 
-        this.wbview.updateCellMeta(
+        this.wbview[render ? 'updateCellMeta' : 'setCellMeta'](
           physicalRow,
           physicalCol,
           'isSearchResult',
           isSearchResult,
           {
             cell,
-            render,
             visualRow,
             visualCol,
           }
@@ -310,8 +390,9 @@ module.exports = Backbone.View.extend({
       }
     }
 
-    navigationTotalElement.innerText = resultsCount;
+    navigationTotalElement.textContent = resultsCount;
 
+    // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
       this.navigateCells(
         { target: navigationButton[1] },
@@ -337,14 +418,11 @@ module.exports = Backbone.View.extend({
     if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
       const modifications = [];
       Object.entries(this.wbview.cellMeta).forEach(([physicalRow, metaRow]) =>
-        Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          if (!cellMeta.isSearchResult) return;
-          const visualRow = this.wbview.hot.toVisualRow(
-            Number.parseInt(physicalRow)
-          );
-          const visualCol = this.wbview.hot.toVisualColumn(
-            Number.parseInt(physicalCol)
-          );
+        Object.entries(metaRow).forEach(([physicalCol, metaArray]) => {
+          if (!this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult'))
+            return;
+          const visualRow = this.wbview.hot.toVisualRow(physicalRow | 0);
+          const visualCol = this.wbview.hot.toVisualColumn(physicalCol | 0);
           const cellValue =
             this.wbview.hot.getDataAtCell(visualRow, visualCol) || '';
           // Don't replace cells with default values
@@ -372,14 +450,12 @@ module.exports = Backbone.View.extend({
       const physicalRow = this.wbview.hot.toPhysicalRow(currentRow);
       const physicalCol = this.wbview.hot.toPhysicalColumn(currentCol);
       let nextCell;
-      if (
-        this.cellIsType(
-          this.wbview.cellMeta[physicalRow][physicalCol],
-          'searchResults'
-        )
+      nextCell = this.cellIsType(
+        this.wbview.cellMeta[physicalRow]?.[physicalCol],
+        'searchResults'
       )
-        nextCell = [currentRow, currentCol];
-      else nextCell = nextCellOfType();
+        ? [currentRow, currentCol]
+        : nextCellOfType();
 
       if (!Array.isArray(nextCell)) return;
 
@@ -391,72 +467,28 @@ module.exports = Backbone.View.extend({
       nextCellOfType();
     }
   },
-  showAdvancedSearch() {
-    if (typeof this.advancedSearch !== 'undefined') return;
+  searchFunction(initialCellValue) {
+    let cellValue = initialCellValue ?? '';
 
-    let initialNavigationDirection =
-      this.searchPreferences.navigation.direction;
-    this.advancedSearch = new WbAdvancedSearch({
-      initialSearchPreferences: this.searchPreferences,
-      onChange: (newSearchPreferences) => {
-        this.searchPreferences = newSearchPreferences;
-        if (
-          this.searchPreferences.navigation.direction !==
-          initialNavigationDirection
-        ) {
-          this.wbview.flushIndexedCellData = true;
-          initialNavigationDirection =
-            this.searchPreferences.navigation.direction;
-        }
-        if (this.searchPreferences.search.liveUpdate) {
-          this.searchCells({
-            target: this.el.getElementsByClassName('wb-search-query')[0],
-            key: 'SettingsChange',
-          });
-        }
-      },
-      onClose: () => {
-        this.advancedSearch = undefined;
-      },
-    }).render();
-  },
-  searchFunction(initialSearchQuery, initialCellValue) {
-    let cellValue = initialCellValue;
-    let searchQuery = initialSearchQuery;
+    if (typeof this.searchQuery === 'undefined') return false;
 
-    if (cellValue === null) cellValue = '';
-
-    if (!this.searchPreferences.search.caseSensitive) {
+    if (!this.searchPreferences.search.caseSensitive)
       cellValue = cellValue.toLowerCase();
-      searchQuery = searchQuery.toLowerCase();
-    }
 
     if (this.searchPreferences.search.useRegex)
-      try {
-        return !!cellValue.match(
-          RegExp(
-            this.searchPreferences.search.fullMatch
-              ? `^(?:${searchQuery})$`
-              : searchQuery,
-            this.searchPreferences.search.caseSensitive ? '' : 'i'
-          )
-        );
-      } catch (error) {
-        // Ignore exceptions on invalid regex
-        if (error instanceof SyntaxError) return;
-        else throw error;
-      }
+      return cellValue.search(this.searchQuery) !== -1;
 
-    if (this.searchPreferences.search.fullMatch)
-      return cellValue === searchQuery;
-    else return cellValue.includes(searchQuery);
+    return this.searchPreferences.search.fullMatch
+      ? cellValue === this.searchQuery
+      : cellValue.includes(this.searchQuery);
   },
-  toggleToolkit() {
+  toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
-    if (toolkit.style.display === 'none') toolkit.style.display = '';
-    else toolkit.style.display = 'none';
+    event.target.ariaPressed = toolkit.style.display === 'none';
+    toolkit.style.display = toolkit.style.display === 'none' ? '' : 'none';
     this.wbview.handleResize();
   },
+  // Fill cells with a value
   fillCells({ startRow, endRow, col, value }) {
     this.wbview.hot.setDataAtCell(
       Array.from({ length: endRow - startRow }, (_, index) => [
@@ -479,9 +511,10 @@ module.exports = Backbone.View.extend({
       value: this.wbview.hot.getDataAtCell(props.endRow, props.col),
     });
   },
+  // Context menu item definitions (common for fillUp and fillDown)
   fillCellsContextMenuItem(name, handlerFunction, isDisabled) {
     return {
-      name: name,
+      name,
       disabled: () =>
         isDisabled() ||
         (this.wbview.hot
@@ -490,9 +523,9 @@ module.exports = Backbone.View.extend({
           false),
       callback: (_, selections) =>
         selections.forEach((selection) =>
-          [
-            ...Array(selection.end.col + 1 - selection.start.col).keys(),
-          ].forEach((index) =>
+          Array.from(
+            new Array(selection.end.col + 1 - selection.start.col).keys()
+          ).forEach((index) =>
             handlerFunction.bind(this)({
               startRow: selection.start.row,
               endRow: selection.end.row,
@@ -505,8 +538,8 @@ module.exports = Backbone.View.extend({
   findLocalityColumns() {
     this.localityColumns = this.wbview.mappings
       ? findLocalityColumnsInDataSet(
-          this.wbview.mappings.baseTableName,
-          this.wbview.mappings.arrayOfMappings
+          this.wbview.mappings.baseTable.name,
+          this.wbview.mappings.lines
         )
       : [];
 
@@ -516,7 +549,7 @@ module.exports = Backbone.View.extend({
       'wb-convert-coordinates'
     )[0];
 
-    if (this.localityColumns.length !== 0) {
+    if (this.localityColumns.length > 0) {
       leafletButton.disabled = false;
       if (this.wbview.isUploaded) {
         [geoLocaleButton, coordinateConverterButton].map((button) =>
@@ -538,7 +571,7 @@ module.exports = Backbone.View.extend({
     const visualHeaders = this.getVisualHeaders();
 
     const localityData =
-      WbLocalityDataExtractor.getLocalityCoordinate(
+      getLocalityCoordinate(
         this.wbview.hot.getDataAtRow(visualRow),
         visualHeaders,
         localityColumns
@@ -565,34 +598,29 @@ module.exports = Backbone.View.extend({
 
     return selectedRegions
       .map((values) => values.map((value) => Math.max(0, value)))
-      .map(([startRow, startCol, endRow, endCol]) =>
-        startRow < endRow
-          ? { startRow, startCol, endRow, endCol }
-          : { endRow, startCol, startRow, endCol }
-      )
-      .map(({ startCol, endCol, ...rest }) =>
-        startCol < endCol
-          ? { startCol, endCol, ...rest }
-          : { startCol: endCol, endCol: startCol, ...rest }
-      );
+      .map(([startRow, startCol, endRow, endCol]) => ({
+        startRow: Math.min(startRow, endRow),
+        endRow: Math.max(startRow, endRow),
+        startCol: Math.min(startCol, endCol),
+        endCol: Math.max(startCol, endCol),
+      }));
   },
-  showGeoLocate() {
-    // don't allow opening more than one window)
-    if ($('#geolocate-window').length !== 0) return;
-
+  // Generate Locality iterator. Able to handle multiple localities in a row
+  getSelectedLocalities(
+    // If false, treat single cell selection as entire spreadsheet selection
+    allowSingleCell
+  ) {
     const selectedRegions = this.getSelectedRegions();
 
-    const selectedHeaders = [
-      ...new Set(
+    const selectedHeaders = f.unique(
         selectedRegions.flatMap(({ startCol, endCol }) =>
           Array.from(
             { length: endCol - startCol + 1 },
             (_, index) => startCol + index
           )
         )
-      ),
-    ]
-      .sort()
+    )
+      .sort(sortFunction(f.id))
       .map(
         (visualCol) =>
           this.wbview.dataset.columns[
@@ -600,88 +628,129 @@ module.exports = Backbone.View.extend({
           ]
       );
 
-    const localityColumnGroups =
-      WbLocalityDataExtractor.getLocalityColumnsFromSelectedCells(
-        this.localityColumns,
-        selectedHeaders
-      );
-
-    if (localityColumnGroups.length === 0) return;
-
-    const selectedRows = [
-      ...new Set(
+    const selectedRows = f.unique(
         selectedRegions.flatMap(({ startRow, endRow }) =>
           Array.from(
             { length: endRow - startRow + 1 },
             (_, index) => startRow + index
           )
         )
-      ),
-    ].sort();
+      ).sort(sortFunction(f.id));
 
-    let localityIndex = 0;
+    const selectAll =
+      !allowSingleCell &&
+      selectedHeaders.length === 1 &&
+      selectedRows.length === 1;
 
-    const parseLocalityIndex = (localityIndex) => ({
-      localityColumns:
-        localityColumnGroups[localityIndex % localityColumnGroups.length],
-      visualRow:
-        selectedRows[Math.floor(localityIndex / localityColumnGroups.length)],
-    });
+    const localityColumnGroups = selectAll
+      ? this.localityColumns
+      : getLocalityColumnsFromSelectedCells(
+          this.localityColumns,
+          selectedHeaders
+        );
+    if (localityColumnGroups.length === 0) return undefined;
+
+    const visualRows = selectAll
+      ? Array.from({ length: this.wbview.hot.countRows() }, (_, index) => index)
+      : selectedRows;
+    const length = visualRows.length * localityColumnGroups.length;
+
+    return {
+      localityIndex: visualRows[0],
+      length,
+      isFirst: (index) => index === 0,
+      isLast: (index) => index + 1 >= length,
+      visualRows,
+      selectedHeaders,
+      localityColumnGroups,
+      parseLocalityIndex: (localityIndex) => ({
+        localityColumns:
+          localityColumnGroups[localityIndex % localityColumnGroups.length],
+        visualRow:
+          visualRows[Math.floor(localityIndex / localityColumnGroups.length)],
+      }),
+    };
+  },
+
+  showGeoLocate(event) {
+    // don't allow opening more than one window)
+    if (typeof this.geoLocateDialog !== 'undefined') {
+      this.geoLocateDialog.remove();
+      this.geoLocateDialog = undefined;
+      event.target.ariaPressed = false;
+      return;
+    }
+
+    event.target.ariaPressed = true;
+
+    const selection = this.getSelectedLocalities(true);
+
+    if (typeof selection === 'undefined') return;
 
     const getGeoLocateQueryURL = (localityIndex) =>
-      this.getGeoLocateQueryURL(parseLocalityIndex(localityIndex));
+      this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
-    const dialog = $(`<div />`, { id: 'geolocate-window' }).dialog({
-      width: 960,
-      height: 740,
-      title: wbText('geoLocateDialogTitle'),
-      close: function () {
-        $(this).remove();
+    const content = $('<div>');
+    this.geoLocateDialog = showDialog({
+      header: wbText('geoLocateDialogTitle'),
+      content,
+      buttons: commonText('close'),
+      onClose() {
         window.removeEventListener('message', handleGeolocateResult, false);
+        event.target.ariaPressed = false;
+        this.geoLocateDialog.remove();
+        this.geoLocateDialog = undefined;
       },
     });
 
     const updateGeolocate = (localityIndex) =>
-      dialog.html(`<iframe
-        style="
-            width: 100%;
-            height: 100%;
-            border: none;"
-        src="${getGeoLocateQueryURL(localityIndex)}"></iframe>`);
+      content.html(`<iframe class="w-full h-full"
+        title="${localityText('geoLocate')}"
+        src="${getGeoLocateQueryURL(localityIndex)}"
+      ></iframe>`);
 
     const updateSelectedRow = (localityIndex) =>
-      this.wbview.hot.selectRows(parseLocalityIndex(localityIndex).visualRow);
+      this.wbview.hot.selectRows(
+        selection.parseLocalityIndex(localityIndex).visualRow
+      );
 
     const updateButtons = (localityIndex) =>
-      dialog.dialog('option', 'buttons', [
-        {
-          text: commonText('previous'),
-          click: () => updateGeoLocate(localityIndex - 1),
-          disabled: localityIndex === 0,
-        },
-        {
-          text: commonText('next'),
-          click: () => updateGeoLocate(localityIndex + 1),
-          disabled:
-            localityIndex + 1 >=
-            selectedRows.length * localityColumnGroups.length,
-        },
-      ]);
+      this.geoLocateDialog.updateProps({
+        buttons: (
+          <>
+            <Button.Blue
+              onClick={() => updateGeoLocate(localityIndex - 1)}
+              disabled={selection.isFirst(localityIndex)}
+            >
+              {commonText('previous')}
+            </Button.Blue>
+            <Button.Blue
+              onClick={() => updateGeoLocate(localityIndex + 1)}
+              disabled={selection.isLast(localityIndex)}
+            >
+              {commonText('next')}
+            </Button.Blue>
+          </>
+        ),
+      });
 
     function updateGeoLocate(newLocalityIndex) {
-      localityIndex = newLocalityIndex;
+      selection.localityIndex = newLocalityIndex;
       updateGeolocate(newLocalityIndex);
       updateSelectedRow(newLocalityIndex);
       updateButtons(newLocalityIndex);
     }
-    updateGeoLocate(localityIndex);
+
+    updateGeoLocate(selection.localityIndex);
 
     const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
       const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
-      const { visualRow, localityColumns } = parseLocalityIndex(localityIndex);
+      const { visualRow, localityColumns } = selection.parseLocalityIndex(
+        selection.localityIndex
+      );
 
       this.wbview.hot.setDataAtCell(
         [
@@ -697,48 +766,51 @@ module.exports = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selectedRows.length * localityColumnGroups.length === 1)
-        dialog.dialog('close');
+      if (selection.length === 1) {
+        this.geoLocateDialog.remove();
+        this.geoLocateDialog = undefined;
+      }
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
   },
-  showLeafletMap() {
-    if ($('#leaflet-map').length !== 0) return;
+  showLeafletMap(event) {
+    if (typeof this.geoMapDialog !== 'undefined') {
+      this.geoMapDialog.remove();
+      this.geoMapDialog = undefined;
+      event.target.ariaPressed = false;
+      return;
+    }
+    event.target.ariaPressed = true;
 
-    const selectedRegions = this.getSelectedRegions();
-    let customRowNumbers = [];
-    const rows = selectedRegions.every(
-      ({ startCol, endCol }) =>
-        startCol === -1 ||
-        (startCol === 0 && endCol === this.wbview.dataset.columns.length - 1)
-    )
-      ? selectedRegions.flatMap(({ startRow, endRow }) =>
-          Array.from({ length: endRow - startRow + 1 }, (_, index) => {
-            customRowNumbers.push(startRow + index);
-            return this.wbview.hot.getDataAtRow(startRow + index);
-          })
-        )
-      : this.wbview.hot.getData();
+    const selection = this.getSelectedLocalities(false);
 
-    const localityPoints =
-      WbLocalityDataExtractor.getLocalitiesDataFromSpreadsheet(
-        this.localityColumns,
-        rows,
-        this.getVisualHeaders(),
-        customRowNumbers
-      );
+    if (typeof selection === 'undefined') return;
 
-    Leaflet.showLeafletMap({
+    const localityPoints = getLocalitiesDataFromSpreadsheet(
+      this.localityColumns,
+      selection.visualRows.map((visualRow) =>
+        this.wbview.hot.getDataAtRow(visualRow)
+      ),
+      this.getVisualHeaders(),
+      selection.visualRows
+    );
+
+    this.geoMapDialog = new LeafletMapView({
       localityPoints,
       markerClickCallback: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
+        if (typeof rowNumber !== 'number')
+          throw new Error('rowNumber must be a number');
         const [_currentRow, currentCol] = this.getSelectedLast();
         this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
-        // select entire row
+        // Select entire row
         this.wbview.hot.selectRows(rowNumber);
       },
-      leafletMapContainer: 'leaflet-map',
+      onClose: () => {
+        this.geoMapDialog = undefined;
+        event.target.ariaPressed = false;
+      },
     });
   },
   showCoordinateConversion() {
@@ -813,19 +885,20 @@ module.exports = Backbone.View.extend({
     ]
       .map((className) => this.el.getElementsByClassName(className)[0])
       .map((button) => [button, button.disabled]);
-    const originalReadOnlyState = this.wbview.readOnly;
+    const originalReadOnlyState = this.wbview.isReadOnly;
     this.wbview.hot.updateSettings({
       readOnly: true,
     });
     this.el.classList.add('wb-focus-coordinates');
 
     let numberOfChanges = 0;
+
     function cleanUp() {
       buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
       this.wbview.hot.updateSettings({
         readOnly: originalReadOnlyState,
       });
-      this.wbview.readOnly = originalReadOnlyState;
+      this.wbview.isReadOnly = originalReadOnlyState;
       this.el.classList.remove('wb-focus-coordinates');
     }
 
@@ -883,51 +956,52 @@ module.exports = Backbone.View.extend({
       closeDialog.call(this);
     }
 
-    this.wbview.coordinateConverterView = $(`<div>
-      ${wbText('coordinateConverterDialogHeader')}
-      <ul class="lat-long-format-options">
-        ${Object.values(options)
-          .map(
-            ({ optionName }, optionIndex) =>
-              `<li>
-                <label>
-                  <input
-                    type="radio"
-                    name="latlongformat"
-                    value="${optionIndex}"
-                  >
-                  ${optionName}
-                </label>
-              </li>`
-          )
-          .join('')}
-        <li>
-          <br>
-          <label>
-            <input type="checkbox" name="includesymbols">
-            ${wbText('includeDmsSymbols')}
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type="checkbox" name="applyToAll" checked>
-            ${commonText('applyAll')}
-          </label>
-        </li>
-      </ul>
-    </div>`).dialog({
-      title: wbText('coordinateConverterDialogTitle'),
-      close: revertChanges.bind(this),
-      width: 350,
-      buttons: [
-        {
-          text: commonText('cancel'),
-          click: revertChanges.bind(this),
-        },
-        { text: commonText('apply'), click: closeDialog.bind(this) },
-      ],
+    this.wbview.coordinateConverterView = showDialog({
+      modal: false,
+      header: wbText('coordinateConverterDialogTitle'),
+      onClose: revertChanges,
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue onClick={() => closeDialog}>
+            {commonText('apply')}
+          </Button.Blue>
+        </>
+      ),
+      content: $(`<div>
+        ${wbText('coordinateConverterDialogHeader')}
+        <ul role="list">
+          ${Object.values(options)
+            .map(
+              ({ optionName }, optionIndex) =>
+                `<li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="latlongformat"
+                      value="${optionIndex}"
+                    >
+                    ${optionName}
+                  </label>
+                </li>`
+            )
+            .join('')}
+          <li>
+            <br>
+            <label>
+              <input type="checkbox" name="includesymbols">
+              ${wbText('includeDmsSymbols')}
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" name="applyToAll" checked>
+              ${commonText('applyAll')}
+            </label>
+          </li>
+        </ul>
+      </div>`),
     });
-
     const handleOptionChange = () => {
       const includeSymbols = this.wbview.coordinateConverterView
         .find('input[name="includesymbols"]')
@@ -948,16 +1022,15 @@ module.exports = Backbone.View.extend({
         options[optionValue];
       const includeSymbolsFunction = includeSymbols
         ? (coordinate) => coordinate
-        : (coordinate) => coordinate.replace(/[^\w\s\-.]/gm, '');
+        : (coordinate) => coordinate.replace(/[^\s\w\-.]/g, '');
       const lastChar = (value) => value[value.length - 1];
       const removeLastChar = (value) => value.slice(0, -1);
-      const endsWith = (value, charset) =>
-        charset.indexOf(lastChar(value)) !== -1;
+      const endsWith = (value, charset) => charset.includes(lastChar(value));
       const stripCardinalDirections = (finalValue) =>
         showCardinalDirection
           ? finalValue
           : endsWith(finalValue, 'SW')
-          ? '-' + removeLastChar(finalValue)
+          ? `-${removeLastChar(finalValue)}`
           : endsWith(finalValue, 'NE')
           ? removeLastChar(finalValue)
           : finalValue;

@@ -1,196 +1,61 @@
 @import url('../node_modules/handsontable/dist/handsontable.full.css');
 
-/* LAYOUT */
-.wbs-form {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  row-gap: var(--size);
-}
-
-/* Header */
-.wbs-form .wb-header,
-.wb-name-container {
-  display: contents;
-}
-
-.wbs-form .wb-primary-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.wb-controls-left,
-.wb-controls-right,
-.wb-toolkit,
-.wb-toolkit-left,
-.wb-toolkit-right,
-.wb-navigation {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: var(--quarter-size);
-  row-gap: var(--half-size);
-}
-
-.wb-controls-right,
-.wb-navigation {
-  justify-content: flex-end;
-}
-
-.wb-toolkit-left {
-  justify-content: flex-start;
-}
-
-.wb-toolkit {
-  justify-content: space-between;
-}
-
-.wbs-form .wb-controls-left {
-  flex: 1;
-  font-size: var(--size);
-  overflow-y: auto;
-  white-space: nowrap;
-  flex-wrap: nowrap;
-}
-
-.wbs-form .wb-name {
-  overflow-y: auto;
-}
-
-.wbs-form .wb-controls-left span.ui-icon {
-  display: inline-block;
-  vertical-align: bottom;
-  margin-right: var(--half-size);
-}
-
-.wb-search-replace {
-  display: contents;
-}
-
-.wb-search-replace input {
-  margin: 0;
-}
-
-.wb-search-query-invalid {
-  background-color: var(--error);
-}
-
-/* Content */
-.wb-main-content {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  column-gap: var(--size);
-}
-
-.wb-spreadsheet {
-  flex: 1;
-  width: 100%;
-  overflow: hidden;
-}
-
-.wb-upload-view {
-  position: absolute;
-}
-
-/* HANDSONTABLE overwrites */
-.wbs-form .ht_clone_top {
-  z-index: 97;
-}
-
-.wbs-form .ht_clone_left {
-  z-index: 98;
-}
-
-.wbs-form .ht_clone_top_left_corner,
-.wbs-form .ht_clone_bottom_left_corner {
-  z-index: 99;
-}
-
-.htCore th > .relative {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  padding: 0;
+/* Show table icons in column headers */
+.htCore thead th > .relative {
+  @apply flex justify-center items-center;
 }
 
 .htCore .colHeader {
-  display: contents !important;
-}
-
-.htCore .colHeader .wb-col-header {
-  display: flex;
-  column-gap: var(--quarter-size);
-  align-items: center;
-  padding-left: var(--size);
-}
-
-.htCore .colHeader .wb-header-icon {
-  width: var(--table-icon-size);
-  height: var(--table-icon-size);
-  background-size: contain;
+  @apply !contents;
 }
 
 .handsontable .columnSorting {
   line-height: 20px;
 }
 
-.handsontable td .htAutocompleteArrow {
-  color: var(--t1);
-}
-
-.handsontable td .htAutocompleteArrow:hover {
-  color: var(--b4);
-}
-
-.htComments.repositioned {
-  --offset-right: 50vw;
-  right: var(--offset-right);
-  left: unset !important;
-}
-
 /* Sorting direction */
 .handsontable .columnSorting::before {
-  position: static !important;
-  order: 2;
-  margin-top: 5px !important;
-  padding-right: 2px;
-  background-position-x: center !important;
+  @apply order-2 !static pr-1 !mt-1 !bg-center;
 }
 
 /* Sorting priority index */
 .handsontable .columnSorting::after {
-  position: static !important;
-  order: 2;
-  margin-top: 8px !important;
-  margin-left: -10px;
+  @apply order-2 !static !mt-2 -ml-2;
+}
+
+/* Highlighted cells' headers */
+.handsontable tbody th.ht__highlight,
+.handsontable thead th.ht__highlight {
+  @apply bg-blue-400;
+}
+
+/* Picklists */
+.handsontable td .htAutocompleteArrow {
+  @apply text-black dark:text-white cursor-pointer;
+}
+
+.handsontable td .htAutocompleteArrow:hover {
+  @apply text-gray-500;
 }
 
 /* CONTENT styles */
-.handsontable .htPlaceholder {
-  color: var(--default-cell);
-}
-
-.wbs-form .wb-cell-unmapped {
-  color: var(--b4);
-}
-
+.wbs-form.wb-show-upload-results .wb-no-match-cell,
 .wbs-form.wb-focus-coordinates .wb-coordinate-cell {
-  color: var(--t1);
+  @apply text-black dark:text-white;
 }
+
+.handsontable .htDimmed {
+  @apply bg-gray-200 dark:bg-neutral-800;
+}
+
+/* Cell navigation */
 
 .wbs-form .wb-no-match-cell,
 .wbs-form .wb-modified-cell,
 .wbs-form .wb-invalid-cell,
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
-  background-color: var(--accent-color);
-}
-
-.handsontable tbody th.ht__highlight,
-.handsontable thead th.ht__highlight {
-  background-color: var(--highlighted-row);
-  color: var(--t1);
+  @apply bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states
@@ -215,77 +80,52 @@
   --accent-color: var(--search-result);
 }
 
-.wb-navigation-section {
-  display: flex;
+/* Handsontable dark mode */
+.handsontable td,
+.htContextMenu table tbody tr td {
+  @apply dark:bg-neutral-800 dark:border-neutral-500;
 }
 
-.wb-cell-navigation,
-.wb-navigation-text {
-  transition: var(--animation-duration);
-  cursor: pointer;
+.htContextMenu table tbody tr td {
+  @apply dark:text-white
 }
 
-.wb-cell-navigation {
-  border: 0;
-  padding: var(--half-size);
-  background: rgba(0, 0, 0, 0.1);
+.htContextMenu td.highlight,
+.handsontable.listbox tr td.current,
+.handsontable.listbox tr:hover td {
+  @apply dark:!bg-neutral-600;
 }
 
-.wb-cell-navigation:not([disabled]):hover,
-.wbs-form.wb-hide-new-cells
-  .wb-navigation-section[data-navigation-type='newCells']
-  .wb-navigation-text,
-.wbs-form.wb-hide-invalid-cells
-  .wb-navigation-section[data-navigation-type='invalidCells']
-  .wb-navigation-text,
-.wbs-form.wb-hide-modified-cells
-  .wb-navigation-section[data-navigation-type='modifiedCells']
-  .wb-navigation-text,
-.wbs-form.wb-hide-search-results
-  .wb-navigation-section[data-navigation-type='searchResults']
-  .wb-navigation-text {
-  background: rgba(0, 0, 0, 0.3);
+.handsontable td.htCustomMenuRenderer,
+.htContextMenu td.htDisabled:hover {
+  @apply dark:!bg-neutral-800;
 }
 
-.wb-cell-navigation[disabled] {
-  cursor: not-allowed;
+.handsontable th {
+  @apply dark:bg-neutral-900 dark:text-white dark:!border-neutral-800;
 }
 
-.wbs-form.wb-show-upload-results .htCore td:not(.wb-no-match-cell) {
-  background: unset;
+.handsontable tr:first-child td {
+  @apply dark:!border-t-neutral-600;
 }
 
-.wbs-form.wb-show-upload-results .wb-no-match-cell {
-  color: var(--t1);
+.handsontable td:first-of-type {
+  @apply dark:!border-l-neutral-600;
 }
 
-.wb-navigation-text {
-  display: grid;
-  grid-template-columns: auto 1fr auto 1fr auto;
-  align-items: center;
-  padding: 0 var(--quarter-size);
+.htContextMenu table.htCore,
+.htContextMenu td.htSeparator {
+  @apply dark:!border-neutral-500;
 }
 
-.wb-navigation-position {
-  text-align: center;
+.htCommentTextArea {
+  @apply dark:text-white cursor-auto dark:border-none dark:bg-neutral-800;
 }
 
-.wb-advanced-search {
-  font-size: var(--size);
-  padding-top: var(--quarter-size);
+.htCommentCell:after {
+  @apply dark:!border-t-white;
 }
 
-/* Disambiguation */
-.da-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.da-row {
-  padding: var(--quarter-size) 0;
-}
-
-/* Coordinate Converter */
-.lat-long-format-options {
-  padding: 0;
+.handsontableInput {
+  @apply bg-neutral-600 text-white;
 }

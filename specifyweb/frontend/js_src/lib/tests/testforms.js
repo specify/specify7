@@ -69,7 +69,7 @@ define([
                 var result = instProcessCell(false, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.children().first();
-                ok(control.is('input[type="button"]'), 'control is button input');
+                ok(control.is('button[type="button"]'), 'control is button input');
                 equal(control.attr('name'), 'ReturnLoan');
                 equal(control.attr('value'), 'Return Loan');
             });
@@ -85,7 +85,7 @@ define([
                 equal(control.attr('name'), 'aField', 'name is correct');
                 equal(control.prop('id'), 'specify-field-'+formNumber+'-1', 'id is correct');
                 ok(_.isUndefined(control.data('specify-initialize')), 'no initialize data');
-                ok(!control.hasClass('specify-required-field'), 'field is not required');
+                ok(!control[0].required, 'field is not required');
             });
         });});
 
@@ -99,7 +99,7 @@ define([
                 equal(control.attr('name'), 'aField', 'name is correct');
                 equal(control.prop('id'), 'specify-field-'+formNumber+'-1', 'id is correct');
                 equal(control.data('specify-initialize'), 'somedata', 'initialize data is correct');
-                ok(control.hasClass('specify-required-field'), 'field is required');
+                ok(control[0].required, 'field is required');
             });
         });});
 
@@ -245,7 +245,7 @@ define([
                 var result = instProcessCell(doingFormTable, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.find('.specify-field');
-                ok(control.is('input[type="button"]'), 'control is button');
+                ok(control.is('button[type="button"]'), 'control is button');
                 ok(control.hasClass('specify-uiplugin'), 'control has plugin class');
                 equal(control.prop('disabled'), doingFormTable, 'plugin is disabled iff doingFormTable');
             });

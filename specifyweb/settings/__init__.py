@@ -91,6 +91,8 @@ LOCALE_PATHS = (
 
 LANGUAGES = [
     ('en-us', 'English'),
+    ('ru-ru', 'русский'),
+    ('ca', 'català')
 ]
 
 SITE_ID = 1
@@ -102,6 +104,8 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+
+LANGUAGE_COOKIE_NAME='language'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -174,7 +178,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'specifyweb.context.middleware.ContextMiddleware'
+    'specifyweb.context.middleware.ContextMiddleware',
+    'specifyweb.permissions.middleware.PermissionsMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
@@ -185,6 +190,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'specifyweb.specify',
+    'specifyweb.permissions',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
     'specifyweb.express_search',
@@ -219,6 +225,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 JAVA_PATH = '/usr/bin/java'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 419430400  # 300mb
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100mb
 
 try:
     from .local_logging_settings import LOGGING

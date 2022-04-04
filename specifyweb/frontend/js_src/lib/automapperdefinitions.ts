@@ -1,60 +1,62 @@
-/*
- *
+/**
  * This file contains information to help auto-map imported XLSX and CSV files
- * to the Specify 6 data model. Originally Based on
+ * to the Specify 6 data model.
+ *
+ * @remarks
+ * Originally Based on
  * https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
  *
- *
+ * @module
  */
 
-import type { IR, RA, RR } from './components/wbplanview';
 import type {
-  AutomapperScope,
+  AutoMapperScope,
   MappingPath,
 } from './components/wbplanviewmapper';
+import type { Tables } from './datamodel';
+import type { AnyTree, TableFields } from './datamodelutils';
+import type { RA, RR } from './types';
 
 /*
- *  Automapper does 2 passes though the schema whenever it is asked to map
- *  some headers. This is needed to ensure priority mapping for some mapping
- *  paths. In particular, `shortcuts` and `tableSynonyms` are used on the
- *  first pass. The second path goes over `synonyms` and also does string
- *  comparison (matching)
+ * AutoMapper does 2 passes though the schema whenever it is asked to map
+ * some headers. This is needed to ensure priority mapping for some mapping
+ * paths. In particular, `shortcuts` and `tableSynonyms` are used on the
+ * first pass. The second path goes over `synonyms` and also does string
+ * comparison (matching)
  */
 
-export interface Options {
-  /*
-   * A structure for defining matching rules
-   * NOTE: All values must use lower case exclusively!
-   *
-   */
-
+/**
+ * A structure for defining matching rules
+ * NOTE: All values must use lower case exclusively!
+ */
+export type Options = {
   // Regex match (header.match(regex) !== null)
   readonly regex?: RA<RegExp>;
 
   // Exact string match (header===string)
   readonly string?: RA<string>;
 
-  // Substring match (header.indexOf(string)!==-1)
+  // Substring match (header.includes(string))
   readonly contains?: RA<string>;
 
   /*
    * NOTE: formattedHeaderFieldSynonym is also available as a matching
    * rule, but only for `synonym` rules. See more later in this file
    */
-}
+};
 
 // Main structure
 
-export interface TableSynonym {
+export type TableSynonym = {
   /*
    * Mapping path needed to reach <tableName>. Can include any number
    * of parents, up to base table
    */
   readonly mappingPathFilter: MappingPath;
   readonly synonyms: RA<string>;
-}
+};
 
-interface AutoMapperDefinitions {
+type AutoMapperDefinitions = {
   /*
    * NOTE: all keys and values in the definitions should use lower case
    * (since headers, table names and field names used by the mapper are
@@ -66,31 +68,27 @@ interface AutoMapperDefinitions {
   /*
    * Table Synonyms are to be used when a table has a different
    *   name in a particular context
-   * Also, since automapper runs through each table only once,
+   * Also, since autoMapper runs through each table only once,
    *   table synonyms can be used as a way bypass that limitation
    * Besides that, even though `synonyms` and matches are normally
    *   checked in the second pass, if a table has
    *   Table Synonyms, it's `synonyms` and matches would also
    *   be checked in the first pass
    */
-  readonly tableSynonyms: IR<
-    /*
-     * TableName (case-insensitive)
-     * Described earlier in the file
-     */
-    RA<TableSynonym>
-  >;
+  readonly tableSynonyms: Partial<RR<keyof Tables, RA<TableSynonym>>>;
 
   /*
    * Rank synonyms are used to when the same tree rank can have
    * different name depending on the discipline
    */
-  readonly rankSynonyms: IR<
-    // TableName (case-insensitive)
-    {
-      rankName: string;
-      synonyms: RA<string>;
-    }[]
+  readonly rankSynonyms: Partial<
+    RR<
+      AnyTree['tableName'],
+      RA<{
+        readonly rankName: string;
+        readonly synonyms: RA<string>;
+      }>
+    >
   >;
 
   /*
@@ -102,16 +100,13 @@ interface AutoMapperDefinitions {
    * Don't match list is of the highest priority and would cancel
    *   a mapping even if a shortcut, or a synonym was used
    */
-  readonly dontMatch: IR<
-    // TableName (case-insensitive)
-    IR<
-      /*
-       * FieldName (case-insensitive)
-       * Defined in wbplanviewmapper.tsx
-       */
-      RA<AutomapperScope>
-    >
-  >;
+  readonly dontMatch: {
+    readonly [TABLE_NAME in keyof Tables]?: {
+      readonly [FIELD_NAME in TableFields<
+        Tables[TABLE_NAME]
+      >]?: RA<AutoMapperScope>;
+    };
+  };
 
   /*
    * Don't map headers that match the regex
@@ -122,8 +117,7 @@ interface AutoMapperDefinitions {
    */
   readonly dontMap: Partial<
     RR<
-      // Defined in wbplanviewmapper.tsx
-      AutomapperScope,
+      AutoMapperScope,
       // Described earlier in the file
       { headers: Options }
     >
@@ -138,21 +132,21 @@ interface AutoMapperDefinitions {
    * Shortcut is followed only if header matched the comparisons
    *   and a path to tableName from baseTableName
    */
-  readonly shortcuts: IR<
-    // TableName (case-insensitive)
-    Partial<
-      RR<
-        // Defined in wbplanviewmapper.tsx
-        AutomapperScope,
-        {
-          /*
-           * Mapping path that is to be appended to the current path
-           * when shortcut is followed
-           */
-          mappingPath: MappingPath;
-          // Described earlier in the file
-          headers: Options;
-        }[]
+  readonly shortcuts: Partial<
+    RR<
+      keyof Tables,
+      Partial<
+        RR<
+          AutoMapperScope,
+          RA<{
+            /*
+             * Mapping path that is to be appended to the current path
+             * when shortcut is followed
+             */
+            readonly mappingPath: MappingPath;
+            readonly headers: Options;
+          }>
+        >
       >
     >
   >;
@@ -166,14 +160,11 @@ interface AutoMapperDefinitions {
    * Synonym is used only if header matched the comparisons and
    *   and there exists a path from tableName to baseTableName
    */
-  readonly synonyms: IR<
-    // TableName (case-insensitive)
-    IR<
-      // FieldName (case-insensitive)
-      Partial<
+  readonly synonyms: {
+    readonly [TABLE_NAME in keyof Tables]?: {
+      readonly [FIELD_NAME in TableFields<Tables[TABLE_NAME]>]?: Partial<
         RR<
-          // Defined in wbplanviewmapper.tsx
-          AutomapperScope,
+          AutoMapperScope,
           {
             headers: Options & {
               /*
@@ -181,7 +172,7 @@ interface AutoMapperDefinitions {
                * only for `synonym` definitions
                * Matches only if header is strictly
                * in one of the following forms:
-               *  - <fieldNameSynonym> <tableName>
+               *   - <fieldNameSynonym> <tableName>
                *   - <tableName> <fieldNameSynonym>
                *   - <tableName> <index> <fieldNameSynonym>
                *   - <tableName> <fieldNameSynonym> <index>
@@ -192,12 +183,12 @@ interface AutoMapperDefinitions {
             };
           }
         >
-      >
-    >
-  >;
-}
+      >;
+    };
+  };
+};
 
-const definitions: AutoMapperDefinitions = {
+export const autoMapperDefinitions: AutoMapperDefinitions = {
   tableSynonyms: {
     Agent: [
       {
@@ -324,13 +315,13 @@ const definitions: AutoMapperDefinitions = {
   },
   dontMatch: {
     Address: {
-      // Some ranks were mapped to Address instead of Geography
-      country: ['automapper'],
-      state: ['automapper'],
+      // These ranks were getting mapped to Address instead of Geography
+      country: ['autoMapper'],
+      state: ['autoMapper'],
     },
   },
   dontMap: {
-    automapper: {
+    autoMapper: {
       headers: {
         regex: [/^type[^a-z]*$/, /^remarks/, /^notes/],
       },
@@ -338,7 +329,7 @@ const definitions: AutoMapperDefinitions = {
   },
   shortcuts: {
     CollectionObject: {
-      automapper: [
+      autoMapper: [
         {
           mappingPath: ['cataloger', 'lastname'],
           headers: {
@@ -367,9 +358,9 @@ const definitions: AutoMapperDefinitions = {
     },
   },
   synonyms: {
-    DnaSequence: {
+    DNASequence: {
       genbankAccessionNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['genbank'],
           },
@@ -383,7 +374,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['middle'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['middle'],
           },
@@ -395,7 +386,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['first'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['first'],
           },
@@ -407,7 +398,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['last'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['last'],
           },
@@ -423,7 +414,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       startDate: {
-        automapper: {
+        autoMapper: {
           headers: {
             string: ['date'],
           },
@@ -442,7 +433,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       method: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['collection method'],
           },
@@ -453,8 +444,8 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      stationfieldnumber: {
-        automapper: {
+      stationFieldNumber: {
+        autoMapper: {
           headers: {
             regex: [
               /^(?:coll(?:ect(?:ing)?)?\.??(?: ev(?:ent)?)?\.?|field)?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
@@ -464,8 +455,8 @@ const definitions: AutoMapperDefinitions = {
       },
     },
     Accession: {
-      accessionnumber: {
-        automapper: {
+      accessionNumber: {
+        autoMapper: {
           headers: {
             regex: [/^acc(?:ession)?\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/],
             string: ['accession'],
@@ -475,21 +466,21 @@ const definitions: AutoMapperDefinitions = {
     },
     Locality: {
       maxElevation: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['max elev', 'max depth'],
           },
         },
       },
       minElevation: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['elev', 'depth'],
           },
         },
       },
       latitude1: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['latitude 1'],
             string: ['latitude', 'lat', 'lat1', 'lat 1'],
@@ -502,14 +493,14 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       latitude2: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['latitude 2'],
           },
         },
       },
       longitude1: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['longitude 1'],
             string: ['longitude', 'long', 'long1', 'long 1'],
@@ -522,14 +513,14 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       longitude2: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['longitude 2'],
           },
         },
       },
-      latlongmethod: {
-        automapper: {
+      latLongMethod: {
+        autoMapper: {
           headers: {
             contains: ['lat/long method'],
           },
@@ -540,8 +531,8 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      localityname: {
-        automapper: {
+      localityName: {
+        autoMapper: {
           headers: {
             string: ['localitynum', 'locality'],
           },
@@ -552,8 +543,8 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      namedplace: {
-        automapper: {
+      namedPlace: {
+        autoMapper: {
           headers: {
             contains: ['named place'],
           },
@@ -571,14 +562,14 @@ const definitions: AutoMapperDefinitions = {
     },
     CollectionObject: {
       fieldNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['field #', 'field no', 'field num'],
           },
         },
       },
       catalogedDate: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['catalog date', 'cataloged date', 'catalogued date'],
             string: ['cat date'],
@@ -586,7 +577,7 @@ const definitions: AutoMapperDefinitions = {
         },
       },
       catalogNumber: {
-        automapper: {
+        autoMapper: {
           headers: {
             regex: [
               /^(?:specimen|cat(?:alogu?e?)?)\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
@@ -599,29 +590,13 @@ const definitions: AutoMapperDefinitions = {
           },
         },
       },
-      altcatalognumber: {
-        automapper: {
+      altCatalogNumber: {
+        autoMapper: {
           headers: {
             regex: [
               /^alt(?:ernative)?\.? (?:specimen|cat(?:alogu?e?)?)\.?(?: (?:#|n(?:o|um(?:ber)?)?))?\.?$/,
             ],
             string: ['altcatno'],
-          },
-        },
-      },
-    },
-    Geography: {
-      state: {
-        automapper: {
-          headers: {
-            contains: ['state'],
-          },
-        },
-      },
-      continent: {
-        automapper: {
-          headers: {
-            contains: ['continent'],
           },
         },
       },
@@ -633,7 +608,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['date'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['date'],
           },
@@ -645,7 +620,7 @@ const definitions: AutoMapperDefinitions = {
             contains: ['status'],
           },
         },
-        automapper: {
+        autoMapper: {
           headers: {
             formattedHeaderFieldSynonym: ['status'],
           },
@@ -654,7 +629,7 @@ const definitions: AutoMapperDefinitions = {
     },
     PrepType: {
       name: {
-        automapper: {
+        autoMapper: {
           headers: {
             contains: ['preptype', 'prep ', 'preparation'],
           },
@@ -663,45 +638,3 @@ const definitions: AutoMapperDefinitions = {
     },
   },
 };
-
-/*
- * Method that converts all table names and field names in definitions to
- * lower case
- */
-function definitionsToLowercase(
-  definitions: AutoMapperDefinitions
-): AutoMapperDefinitions {
-  const keysToLowerCase = (object: object, levels = 1): object =>
-    Object.fromEntries(
-      Object.entries(object).map(([key, value]) => [
-        key.toLowerCase(),
-        levels > 1 ? keysToLowerCase(value, levels - 1) : value,
-      ])
-    );
-
-  /*
-   * Specify how deep to go into each branch when converting to lowerCase
-   */
-  const structureDepth: [
-    structureName: keyof typeof definitions,
-    depth: number
-  ][] = [
-    ['tableSynonyms', 1],
-    ['rankSynonyms', 1],
-    ['dontMatch', 1 + 1],
-    ['shortcuts', 1],
-    ['synonyms', 1 + 1],
-  ];
-  structureDepth.forEach(
-    ([structureName, depth]) =>
-      // @ts-expect-error
-      (definitions[structureName] = keysToLowerCase(
-        definitions[structureName],
-        depth
-      ))
-  );
-
-  return Object.freeze(definitions);
-}
-
-export default definitionsToLowercase(definitions);

@@ -1,55 +1,28 @@
 {% load raven %}
 {% load script_manifest %}
 {% load i18n %}
-{% trans 'Log In' as title %}
 <!DOCTYPE html>
-<html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
 {% if use_raven %}
-  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+  <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
   <script src="{% script_src 'login.js' %}"></script>
-  <title>{% blocktrans with title=title %}{{ title }} | Specify 7{% endblocktrans %}</title>
 </head>
 
 <body>
-  <header></header>
-  <div id="content">
-    {% if form.non_field_errors %}
-    {% for error in form.non_field_errors %}
-    <p class="errornote">
-      {{ error }}
-    </p>
-    {% endfor %}
-    {% endif %}
+  <div id="root"></div>
 
-    <form action="{{ app_path }}" method="post" id="login-form">
-      {% csrf_token %}
-      <div class="form-row">
-        <label for="id_username" class="required">{% trans 'Username' %}</label>
-        {{ form.username.errors }}
-        {{ form.username }}
-      </div>
-      <div class="form-row">
-        <label for="id_password" class="required">{% trans 'Password' %}</label>
-        {{ form.password.errors }}
-        {{ form.password }}
-        <input type="hidden" name="this_is_the_login_form" value="1" />
-        {% with nextUrl="/accounts/choose_collection/?next=" %}
-        <input
-          type="hidden"
-          name="next"
-          value="{{ nextUrl }}{{ next|cut:nextUrl|urlencode }}"
-        />
-        {% endwith %}
-      </div>
-      <div class="submit-row">
-        <input type="submit" value="{% trans 'Login' %}" />
-      </div>
-    </form>
-  </div>
+  {% get_available_languages as LANGUAGES %}
+  {{ LANGUAGES|json_script:'languages' }}
+  {{ form.non_field_errors|json_script:'form-errors' }}
+  {{ form.username.errors|json_script:'username-errors' }}
+  {{ form.password.errors|json_script:'password-errors' }}
+  {{ next|json_script:'next-url' }}
+  <script id="csrf-token">"{{ csrf_token }}"</script>
 </body>
 </html>
 

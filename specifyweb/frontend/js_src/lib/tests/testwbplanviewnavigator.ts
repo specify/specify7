@@ -1,31 +1,26 @@
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { loadDataModel, runTest } from './testmain';
+import { runTest } from './testmain';
 
 export default function (): void {
-  loadDataModel();
-
   runTest(
     'WbPlanViewNavigator.getMappingLineData',
     [
       [
         [
           {
-            baseTableName: 'collectionobject',
+            baseTableName: 'CollectionObject',
             mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
-            generateLastRelationshipData: true,
-            customSelectType: 'OPENED_LIST',
             showHiddenFields: false,
-            iterate: true,
+            generateFieldData: 'all',
           },
         ],
         JSON.stringify([
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Collection Object',
             fieldsData: {
               altcatalognumber: {
-                label: 'Alt Cat Number',
+                optionLabel: 'Alt Cat Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -33,7 +28,7 @@ export default function (): void {
                 isRelationship: false,
               },
               catalognumber: {
-                label: 'Catalog Number',
+                optionLabel: 'Catalog Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -41,7 +36,7 @@ export default function (): void {
                 isRelationship: false,
               },
               catalogeddate: {
-                label: 'Cataloged Date',
+                optionLabel: 'Cataloged Date',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -49,7 +44,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                label: 'GUID',
+                optionLabel: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -57,7 +52,7 @@ export default function (): void {
                 isRelationship: false,
               },
               projectnumber: {
-                label: 'Project Number',
+                optionLabel: 'Project Number',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -65,7 +60,7 @@ export default function (): void {
                 isRelationship: false,
               },
               accession: {
-                label: 'Accession',
+                optionLabel: 'Accession',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -74,7 +69,7 @@ export default function (): void {
                 tableName: 'accession',
               },
               cataloger: {
-                label: 'Cataloger',
+                optionLabel: 'Cataloger',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -83,7 +78,7 @@ export default function (): void {
                 tableName: 'agent',
               },
               collectionobjectattribute: {
-                label: 'Col Obj Attribute',
+                optionLabel: 'Col Obj Attribute',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -92,7 +87,7 @@ export default function (): void {
                 tableName: 'collectionobjectattribute',
               },
               collectingevent: {
-                label: 'Collecting Event',
+                optionLabel: 'Collecting Event',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -101,7 +96,7 @@ export default function (): void {
                 tableName: 'collectingevent',
               },
               determinations: {
-                label: 'Determinations',
+                optionLabel: 'Determinations',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -110,7 +105,7 @@ export default function (): void {
                 tableName: 'determination',
               },
               preparations: {
-                label: 'Preparations',
+                optionLabel: 'Preparations',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -123,12 +118,11 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'toMany',
             selectLabel: 'Determination',
             fieldsData: {
               '#1': {
-                label: '#1',
+                optionLabel: '#1',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -137,7 +131,7 @@ export default function (): void {
                 tableName: 'determination',
               },
               add: {
-                label: 'Add',
+                optionLabel: 'Add',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -150,12 +144,11 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Determination',
             fieldsData: {
               iscurrent: {
-                label: 'Current',
+                optionLabel: 'Current',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -163,7 +156,7 @@ export default function (): void {
                 isRelationship: false,
               },
               determineddate: {
-                label: 'Determined Date',
+                optionLabel: 'Determined Date',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -171,7 +164,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                label: 'GUID',
+                optionLabel: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -179,7 +172,7 @@ export default function (): void {
                 isRelationship: false,
               },
               typestatusname: {
-                label: 'Type Status',
+                optionLabel: 'Type Status',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -187,7 +180,7 @@ export default function (): void {
                 isRelationship: false,
               },
               determiner: {
-                label: 'Determiner',
+                optionLabel: 'Determiner',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -196,7 +189,7 @@ export default function (): void {
                 tableName: 'agent',
               },
               taxon: {
-                label: 'Taxon',
+                optionLabel: 'Taxon',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -209,12 +202,11 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'tree',
             selectLabel: 'Taxon',
             fieldsData: {
               $Kingdom: {
-                label: 'Kingdom',
+                optionLabel: 'Kingdom',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -223,7 +215,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Phylum: {
-                label: 'Phylum',
+                optionLabel: 'Phylum',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -232,7 +224,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subphylum: {
-                label: 'Subphylum',
+                optionLabel: 'Subphylum',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -241,7 +233,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Superclass: {
-                label: 'Superclass',
+                optionLabel: 'Superclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -250,7 +242,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Class: {
-                label: 'Class',
+                optionLabel: 'Class',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -259,7 +251,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subclass: {
-                label: 'Subclass',
+                optionLabel: 'Subclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -268,7 +260,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Infraclass: {
-                label: 'Infraclass',
+                optionLabel: 'Infraclass',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -277,7 +269,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Superorder: {
-                label: 'Superorder',
+                optionLabel: 'Superorder',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -286,7 +278,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Order: {
-                label: 'Order',
+                optionLabel: 'Order',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -295,7 +287,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Family: {
-                label: 'Family',
+                optionLabel: 'Family',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -304,7 +296,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subfamily: {
-                label: 'Subfamily',
+                optionLabel: 'Subfamily',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -313,7 +305,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Genus: {
-                label: 'Genus',
+                optionLabel: 'Genus',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -322,7 +314,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subgenus: {
-                label: 'Subgenus',
+                optionLabel: 'Subgenus',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -331,7 +323,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Species: {
-                label: 'Species',
+                optionLabel: 'Species',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -340,7 +332,7 @@ export default function (): void {
                 tableName: 'taxon',
               },
               $Subspecies: {
-                label: 'Subspecies',
+                optionLabel: 'Subspecies',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -353,12 +345,11 @@ export default function (): void {
             isOpen: true,
           },
           {
-            customSelectType: 'OPENED_LIST',
             customSelectSubtype: 'simple',
             selectLabel: 'Taxon',
             fieldsData: {
               author: {
-                label: 'Author',
+                optionLabel: 'Author',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -366,7 +357,7 @@ export default function (): void {
                 isRelationship: false,
               },
               commonname: {
-                label: 'Common Name',
+                optionLabel: 'Common Name',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -374,7 +365,7 @@ export default function (): void {
                 isRelationship: false,
               },
               fullname: {
-                label: 'Full Name',
+                optionLabel: 'Full Name',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -382,7 +373,7 @@ export default function (): void {
                 isRelationship: false,
               },
               guid: {
-                label: 'GUID',
+                optionLabel: 'GUID',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,
@@ -390,7 +381,7 @@ export default function (): void {
                 isRelationship: false,
               },
               name: {
-                label: 'Name',
+                optionLabel: 'Name',
                 isEnabled: true,
                 isRequired: true,
                 isHidden: false,
@@ -398,7 +389,7 @@ export default function (): void {
                 isRelationship: false,
               },
               source: {
-                label: 'Source',
+                optionLabel: 'Source',
                 isEnabled: true,
                 isRequired: false,
                 isHidden: false,

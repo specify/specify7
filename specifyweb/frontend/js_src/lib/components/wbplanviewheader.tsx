@@ -1,69 +1,60 @@
-import '../../css/theme.css';
+/**
+ * Base layout for WbPlanView
+ *
+ * @module
+ */
 
 import React from 'react';
 
-import type { IR } from './wbplanview';
-import type { WbPlanViewStates } from './wbplanviewstate';
+import { Container } from './basic';
+import { useId } from './hooks';
 
-export function WbPlanViewHeader({
-  stateType,
-  title,
-  buttonsLeft,
-  buttonsRight,
-}: {
-  readonly stateType: WbPlanViewStates['type'];
+export function Layout(props: {
+  readonly children: React.ReactNode;
+  readonly footer?: JSX.Element;
+  readonly onClick?: () => void;
+
   readonly title: string | JSX.Element;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
 }): JSX.Element {
+  const id = useId('wbplanview-header');
   return (
-    <div className={`wbplanview-header wbplanview-header-${stateType}`}>
-      <div className="wbplanview-ds-name-container">
-        <span className="wbplanview-ds-name v-center">{title}</span>
-        {buttonsLeft}
-      </div>
-      <div className="wbplanview-header-controls">{buttonsRight}</div>
-    </div>
-  );
-}
-
-export function Layout(props: {
-  readonly children: React.ReactNode;
-  readonly readonly: boolean;
-  readonly header: JSX.Element;
-  readonly footer?: JSX.Element;
-  readonly stateName: WbPlanViewStates['type'];
-  readonly handleClick?: () => void;
-  readonly extraContainerProps?: IR<unknown>;
-}): JSX.Element {
-  return (
-    <div
-      className={`wbplanview-event-listener ${
-        props.readonly ? 'wbplanview-readonly' : ''
-      }`}
+    <Container.Full
       onClick={
-        typeof props.handleClick === 'undefined'
-          ? undefined
-          : (event): void =>
+        typeof props.onClick === 'function'
+          ? (event): void =>
               (event.target as HTMLElement).closest(
                 '.custom-select-closed-list'
               ) === null &&
               (event.target as HTMLElement).closest(
-                '.custom-select-mapping-options-list'
-              ) === null &&
-              props.handleClick
-                ? props.handleClick()
+                '.custom-select-options-list'
+              ) === null
+                ? props.onClick?.()
                 : undefined
+          : undefined
       }
     >
-      {props.header}
+      <header className="gap-x-2 whitespace-nowrap flex">
+        <h2
+          className="gap-x-1 flex items-center overflow-x-auto"
+          id={id('name')}
+        >
+          {props.title}
+        </h2>
+        <div role="toolbar" className="contents">
+          {props.buttonsLeft}
+          <span className="flex-1 -ml-2" />
+          {props.buttonsRight}
+        </div>
+      </header>
       <div
-        className={`wbplanview-container wbplanview-container-${props.stateName}`}
-        {...props.extraContainerProps}
+        className="gap-y-4 flex flex-col flex-1 overflow-hidden"
+        aria-labelledby={id('name')}
       >
         {props.children}
       </div>
       {props.footer}
-    </div>
+    </Container.Full>
   );
 }
