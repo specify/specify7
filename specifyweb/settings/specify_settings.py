@@ -74,5 +74,34 @@ NOTIFICATION_TTL_DAYS = 7
 
 DISABLE_AUDITING = False
 
-OAUTH_LOGIN_PROVIDERS = None
+# Configure OpenID Connect SSO by defining
+# identity providers below. An empty dict
+# disables OIC login.
+OAUTH_LOGIN_PROVIDERS = {
+    # # Provider key represents the provider in the Specify system.
+    # 'google': {
+    #     # The title is displayed to the user in the UI.
+    #     'title': "Google",
+
+    #     # Obtain the client id and secret during the identity provider setup.
+    #     'client_id': "**********.apps.googleusercontent.com",
+    #     'client_secret': "*********************",
+
+    #     # Specify will look for the OIC discovery endpoint at the below
+    #     # url + '.well-known/openid-configuration'.
+    #     'config': "https://accounts.google.com",
+
+    #     # The OIC scopes to requests. Should include at least openid and email.
+    #     'scope': "openid email",
+    # },
+
+    # # A working Phantauth config for test purposes only.
+    # 'phantauth': {
+    #     'title': "Phantauth",
+    #     'config': "https://phantauth.net",
+    #     'scope': "openid profile email",
+    #     'client_id': "latlux~mqs8zoig_5e",
+    #     'client_secret': "82yHd4XA",
+    # },
+}
 
