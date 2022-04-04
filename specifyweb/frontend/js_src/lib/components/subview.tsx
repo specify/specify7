@@ -54,6 +54,11 @@ export function SubView({
       if (resourceUrl === '') return undefined;
       else if (relationshipIsToMany(field))
         return parentResource.rgetCollection(field.name).then((collection) => {
+          if (collection === null)
+            return new field.relatedModel.DependentCollection({
+              related: parentResource,
+              field: field.getReverse(),
+            }) as Collection<AnySchema>;
           if (typeof sortField === 'undefined') return collection;
           const isReverse = sortField.startsWith('-');
           const fieldName = sortField.startsWith('-')

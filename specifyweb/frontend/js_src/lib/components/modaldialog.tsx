@@ -296,7 +296,7 @@ export function Dialog({
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span
-        className={`handle flex flex-wrap gap-4' ${
+        className={`handle flex flex-wrap gap-4 ${
           isFullScreen ? '' : 'p-4 -m-4 cursor-move'
         }`}
       >

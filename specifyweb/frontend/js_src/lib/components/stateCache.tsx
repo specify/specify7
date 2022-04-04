@@ -11,6 +11,14 @@ type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
 /**
  * Like React.useState, but initial value is read from localStorage
  * and all changes are written back to localStorage
+ *
+ * @remarks
+ * Useful for remembering user preference or caching async operations
+ *
+ * defaultValue may be an async value. For this reason, useCachedState
+ * may return undefined if value is not in cache and defaultValue is not
+ * yet resolved.
+ * Can display some sort of loading message while the value is undefined
  */
 export function useCachedState<
   BUCKET_NAME extends string & keyof CacheDefinitions,

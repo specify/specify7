@@ -1,14 +1,14 @@
 import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
+import { f } from './functools';
+import { caseInsensitiveHash, sortObjectsByKey, unCapitalize } from './helpers';
 import type { SpecifyResource } from './legacytypes';
+import { fetchContext as fetchPermissions, hasTreeAccess } from './permissions';
 import { getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
-import { fetchContext as fetchPermissions, hasTreeAccess } from './permissions';
 import type { RA } from './types';
 import { defined } from './types';
-import { caseInsensitiveHash, sortObjectsByKey, unCapitalize } from './helpers';
-import { f } from './functools';
 
 export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds

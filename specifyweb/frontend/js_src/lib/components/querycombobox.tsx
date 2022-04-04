@@ -266,7 +266,7 @@ export function QueryComboBox({
         resource
           .rgetPromise<string, AnySchema>(field?.name ?? '', true)
           .then((resource) =>
-            typeof resource === 'undefined' ?? resource === null
+            typeof resource === 'undefined' || resource === null
               ? {
                   label: '',
                   resource: undefined,
@@ -580,6 +580,14 @@ export function QueryComboBox({
             resource={formatted.resource}
             canAddAnother={false}
             dialog="nonModal"
+            onSaving={
+              field?.isDependent()
+                ? (): false => {
+                    setState({ type: 'MainState' });
+                    return false;
+                  }
+                : undefined
+            }
             onClose={(): void => setState({ type: 'MainState' })}
             onSaved={undefined}
             onDeleted={(): void => {
@@ -594,6 +602,15 @@ export function QueryComboBox({
             resource={state.resource}
             canAddAnother={false}
             dialog="nonModal"
+            onSaving={
+              field?.isDependent()
+                ? (): false => {
+                    resource.set(defined(field?.name), state.resource as never);
+                    setState({ type: 'MainState' });
+                    return false;
+                  }
+                : undefined
+            }
             onClose={(): void => setState({ type: 'MainState' })}
             onSaved={(): void => {
               resource.set(defined(field?.name), state.resource as never);

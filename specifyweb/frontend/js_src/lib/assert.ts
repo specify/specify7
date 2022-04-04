@@ -38,3 +38,11 @@ export function breakpoint(): void {
 export const tap = <ARGS extends RA<never>, RETURN>(
   callback: (...args: ARGS) => RETURN
 ) => f.tap(breakpoint, callback);
+
+export function getStackTrace(): string {
+  try {
+    throw new Error('Testing');
+  } catch (error) {
+    return error.stack;
+  }
+}

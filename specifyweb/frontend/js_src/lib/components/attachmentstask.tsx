@@ -1,14 +1,15 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
 
 import * as attachments from '../attachments';
 import { fetchOriginalUrl } from '../attachments';
 import { fetchCollection } from '../collection';
 import type { Attachment, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
+import { hasTablePermission } from '../permissions';
 import { idFromUrl } from '../resource';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
@@ -16,16 +17,17 @@ import { setCurrentView } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
-import { f } from '../functools';
 import { Button, Container, H2, Label, Link, Select } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { loadingGif } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 import { ResourceView } from './resourceview';
-import { hasTablePermission } from '../permissions';
+import { originalAttachmentsView } from './specifyform';
+import { useCachedState } from './stateCache';
 
 const previewSize = 123;
 
@@ -77,7 +79,7 @@ export function AttachmentCell({
   const loading = React.useContext(LoadingContext);
 
   return (
-    <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)]">
+    <div className="relative min-w-[theme(spacing.10)] min-h-[theme(spacing.10)] h-min">
       {typeof attachment === 'object' && (
         <>
           {typeof handleViewRecord === 'function' &&
@@ -130,6 +132,7 @@ export function AttachmentCell({
               mode="edit"
               onDeleted={undefined}
               onSaved={undefined}
+              viewName={originalAttachmentsView}
             />
           )}
         </>
@@ -171,25 +174,33 @@ export function AttachmentCell({
 }
 
 const preFetchDistance = 200;
+const defaultSortOrder = '-timestampCreated';
+const defaultFilter = { type: 'all' } as const;
 
 export function AttachmentsView(): JSX.Element {
   useTitle(commonText('attachments'));
 
-  const [order, setOrder] = React.useState<
-    keyof Attachment['fields'] | `-${keyof Attachment['fields']}`
-  >('-timestampCreated');
+  const [order = defaultSortOrder, setOrder] = useCachedState({
+    bucketName: 'attachments',
+    cacheName: 'sortOrder',
+    bucketType: 'localStorage',
+    defaultValue: defaultSortOrder,
+    staleWhileRefresh: false,
+  });
 
-  const [filter, setFilter] = React.useState<
-    | State<'all'>
-    | State<'unused'>
-    | State<'byTable', { readonly tableName: keyof Tables }>
-  >({ type: 'all' });
+  const [filter = defaultFilter, setFilter] = useCachedState({
+    bucketName: 'attachments',
+    cacheName: 'filter',
+    bucketType: 'localStorage',
+    defaultValue: defaultFilter,
+    staleWhileRefresh: false,
+  });
 
   const tablesWithAttachments = React.useMemo(
     () =>
       filterArray(
         Object.keys(schema.models)
-          .filter((tableName) => tableName.endsWith('Attachments'))
+          .filter((tableName) => tableName.endsWith('Attachment'))
           .map((tableName) =>
             getModel(tableName.slice(0, -1 * 'Attachment'.length))
           )
@@ -204,18 +215,21 @@ export function AttachmentsView(): JSX.Element {
           all: fetchCollection('Attachment', { limit: 1 }).then<number>(
             ({ totalCount }) => totalCount
           ),
-          unused: fetchCollection('Attachment', { limit: 1 }).then<number>(
-            ({ totalCount }) => totalCount
-          ),
+          unused: fetchCollection(
+            'Attachment',
+            { limit: 1 },
+            { tableId__isNull: 'true' }
+          ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
               tablesWithAttachments
                 .filter(({ name }) => hasTablePermission(name, 'read'))
-                .map(({ name }) => [
+                .map(({ name, tableId }) => [
                   name,
-                  fetchCollection('Attachment', { limit: 1 }).then<number>(
-                    ({ totalCount }) => totalCount
-                  ),
+                  fetchCollection('Attachment', {
+                    limit: 1,
+                    tableID: tableId,
+                  }).then<number>(({ totalCount }) => totalCount),
                 ])
             )
           ),
@@ -225,52 +239,57 @@ export function AttachmentsView(): JSX.Element {
     false
   );
 
-  const collection = React.useMemo(
-    () =>
-      new schema.models.Attachment.LazyCollection({
-        domainfilter: true,
-        filters: {
-          orderby: order,
-          ...(filter.type === 'unused'
-            ? { tableId__isnull: true }
-            : filter.type === 'byTable'
-            ? {
-                tableId: schema.models[filter.tableName].tableId,
-              }
-            : {}),
-        },
-      }) as Collection<Attachment>,
-    [order, filter]
-  );
+  const [attachments, setAttachments] = React.useState<
+    RA<SpecifyResource<Attachment> | undefined>
+  >([]);
+
+  const collection = React.useMemo(() => {
+    setAttachments([]);
+    return new schema.models.Attachment.LazyCollection({
+      domainfilter: true,
+      filters: {
+        orderby: order.toLowerCase(),
+        ...(filter.type === 'unused'
+          ? { tableid__isnull: true }
+          : filter.type === 'byTable'
+          ? {
+              tableid: schema.models[filter.tableName].tableId,
+            }
+          : {}),
+      },
+    }) as Collection<Attachment>;
+  }, [order, filter]);
 
   const containerRef = React.useRef<HTMLElement | null>(null);
 
+  const [isComplete, handleIsComplete] = useBooleanState(false);
   const fillPage = React.useCallback(
     async () =>
       // Fetch more attachments when within 200px of the bottom
       containerRef.current !== null &&
       !collection.isComplete() &&
-      Math.max(
-        containerRef.current.scrollTop,
-        containerRef.current.clientHeight
-      ) +
-        preFetchDistance >
-        containerRef.current.scrollHeight
+      containerRef.current.scrollTop + preFetchDistance >
+        containerRef.current.scrollHeight - containerRef.current.clientHeight
         ? collection
             .fetchPromise()
             .then(({ models }) => setAttachments(Array.from(models)))
+            .then(() =>
+              collection.isComplete() ? handleIsComplete() : undefined
+            )
             .catch(crash)
         : undefined,
-    [collection]
+    [collection, handleIsComplete]
   );
 
-  const [attachments, setAttachments] = React.useState<
-    RA<SpecifyResource<Attachment> | undefined>
-  >([]);
-  React.useEffect(() => {
-    setAttachments([]);
-    fillPage().catch(crash);
-  }, [fillPage]);
+  React.useEffect(
+    () =>
+      // Fetch attachments while scroll bar is not visible
+      void (containerRef.current?.scrollHeight ===
+      containerRef.current?.clientHeight
+        ? fillPage().catch(crash)
+        : undefined),
+    [fillPage, attachments]
+  );
 
   const [viewRecord, setViewRecord] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -324,15 +343,23 @@ export function AttachmentsView(): JSX.Element {
           </Select>
         </Label.ForCheckbox>
         <Label.ForCheckbox>
-          <span className="sr-only">{formsText('order')}</span>
+          <span>{formsText('order')}</span>
           <Select
-            value={order.startsWith('-') ? order.slice(1) : order}
-            onValueChange={(value): void => setOrder(value as typeof order)}
+            value={order}
+            onValueChange={(value): void =>
+              setOrder(value as string & typeof order)
+            }
           >
             <option value="">{commonText('none')}</option>
             <optgroup label={commonText('ascending')}>
-              {schema.models.Attachment.fields
-                .filter(({ overrides }) => !overrides.isHidden)
+              {schema.models.Attachment.literalFields
+                .filter(
+                  /*
+                   * "order === name" is necessary in case Accession.timestampCreated
+                   * is a hidden field in the schema
+                   */
+                  ({ overrides, name }) => !overrides.isHidden || order === name
+                )
                 .map(({ name, label }) => (
                   <option value={name} key={name}>
                     {label}
@@ -340,8 +367,11 @@ export function AttachmentsView(): JSX.Element {
                 ))}
             </optgroup>
             <optgroup label={commonText('descending')}>
-              {schema.models.Attachment.fields
-                .filter(({ overrides }) => !overrides.isHidden)
+              {schema.models.Attachment.literalFields
+                .filter(
+                  ({ overrides, name }) =>
+                    !overrides.isHidden || order.slice(1) === name
+                )
                 .map(({ name, label }) => (
                   <option value={`-${name}`} key={name}>
                     {label}
@@ -361,11 +391,12 @@ export function AttachmentsView(): JSX.Element {
           <AttachmentCell
             key={index}
             attachment={attachment}
-            onViewRecord={(model, id) =>
+            onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
             }
           />
         ))}
+        {!isComplete && loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
         <ResourceView

@@ -118,7 +118,7 @@ export function CollectionSelector(): JSX.Element {
         }).then(({ data }) => data),
       []
     ),
-    true
+    false
   );
 
   return (
@@ -133,6 +133,9 @@ export function CollectionSelector(): JSX.Element {
         })
       }
     >
+      {typeof collections === 'undefined' && (
+        <option disabled>{commonText('loading')}</option>
+      )}
       {Array.from(collections?.available ?? [])
         .sort(sortFunction(([_id, name]) => name))
         .map(([id, name]) => (

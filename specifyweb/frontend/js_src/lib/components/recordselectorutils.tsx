@@ -208,7 +208,7 @@ export function IntegratedRecordSelector({
                    * by ResourceView
                    */
                   resource={
-                    isDependent && dialog === false ? undefined : resource
+                    isDependent || dialog === false ? undefined : resource
                   }
                 />
                 {hasTablePermission(
@@ -243,6 +243,14 @@ export function IntegratedRecordSelector({
             viewName={viewName}
             isSubForm={dialog === false}
             canAddAnother={false}
+            onSaving={
+              isDependent
+                ? (): false => {
+                    handleClose();
+                    return false;
+                  }
+                : undefined
+            }
             onSaved={undefined}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
             onClose={handleClose}

@@ -327,21 +327,19 @@ export function QueryResultsTable({
           />
         </div>
       )}
-      {isFetching && <QueryResultsLoading />}
+      {isFetching && loadingGif}
     </Container.Base>
   );
 }
 
-export function QueryResultsLoading(): JSX.Element {
-  return (
-    <img
-      src="/static/img/specify128spinner.gif"
-      alt={commonText('loading')}
-      className="w-10"
-      aria-live="polite"
-    />
-  );
-}
+export const loadingGif = (
+  <img
+    src="/static/img/specify128spinner.gif"
+    alt={commonText('loading')}
+    className="w-10"
+    aria-live="polite"
+  />
+);
 
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
@@ -458,7 +456,7 @@ export function QueryResultsWrapper({
 
   return typeof props === 'undefined' ? (
     queryRunCount === 0 ? null : (
-      <QueryResultsLoading />
+      loadingGif
     )
   ) : (
     <QueryResultsTable {...props} onSelected={handleSelected} />

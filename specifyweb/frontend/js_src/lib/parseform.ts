@@ -382,8 +382,12 @@ function processViewDefinition(
     mode: mode === 'search' ? mode : altView.mode,
     model: defined(
       getModel(
-        SpecifyModel.parseClassName(
-          defined(getAttribute(actualViewDefinition, 'class'))
+        f.var(
+          SpecifyModel.parseClassName(
+            defined(getAttribute(actualViewDefinition, 'class'))
+          ),
+          (modelName) =>
+            modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
         )
       )
     ),

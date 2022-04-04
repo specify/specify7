@@ -83,7 +83,6 @@ export function SpecifyFormCheckbox({
       id={id}
       name={fieldName}
       checked={value ?? false}
-      disabled={typeof value === 'undefined'}
       onValueChange={updateValue}
       isReadOnly={isReadOnly}
       // Checkbox can not be required as checkbox does not have a "null" state

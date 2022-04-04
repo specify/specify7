@@ -11,6 +11,7 @@ import { Button, className, H3, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { LoadingContext } from './contexts';
 
 function handleFocus(event: FocusEvent): void {
   const target = event.target as HTMLElement;
@@ -31,16 +32,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly model: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
   readonly form: HTMLFormElement;
-  readonly onSaving?: () => void;
+  // Returning false would cancel the save proces (allowing to trigger custom behaviour)
+  readonly onSaving?: () => void | undefined | boolean;
   readonly onSaved?: (payload: {
     readonly addAnother: boolean;
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
+  readonly onClick?: () => void;
 }): JSX.Element {
   const id = useId('save-button');
   const [saveRequired, setSaveRequired] = React.useState(false);
-  useUnloadProtect(saveRequired, formsText('unsavedFormUnloadProtect'));
+  const handleUnloadProtect = useUnloadProtect(
+    saveRequired,
+    formsText('unsavedFormUnloadProtect')
+  );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
@@ -94,7 +100,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       setShowBlockedDialog(true);
       return;
     }
-    setIsSaving(true);
 
     /*
      * This has to be done before saving so that the data we get back isn't copied.
@@ -102,15 +107,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      */
     const newResource = addAnother ? model.clone() : undefined;
     const wasNew = model.isNew();
-    handleSaving?.();
+
+    // Save process is canceled if false was returned
+    if (handleSaving?.() === false) return;
+
+    setIsSaving(true);
     model
       .save()
       .then(() =>
-        handleSaved?.({
-          addAnother,
-          newResource,
-          wasNew,
-        })
+        handleUnloadProtect(false, (): void =>
+          handleSaved?.({
+            addAnother,
+            newResource,
+            wasNew,
+          })
+        )
       )
       .then(() => setSaveRequired(false))
       .then(
@@ -123,9 +134,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       );
   }
 
+  const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
-    const callback = (event: SubmitEvent): void =>
-      void handleSubmit(event).catch(crash);
+    const callback = (event: SubmitEvent): void => loading(handleSubmit(event));
     form.addEventListener('submit', callback);
     return (): void => form.removeEventListener('submit', callback);
   }, [form, handleSubmit]);

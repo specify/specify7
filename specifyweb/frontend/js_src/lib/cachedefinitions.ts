@@ -5,10 +5,11 @@
  */
 
 import type hot from 'handsontable';
+import type { State } from 'typesafe-reducer';
 
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
-import type { SpQuery } from './datamodel';
+import type { Attachment, SpQuery, Tables } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { RA } from './types';
 
@@ -60,5 +61,14 @@ export type CacheDefinitions = {
     readonly listOfDataSets: SortConfig<
       'name' | 'dateCreated' | 'dateUploaded'
     >;
+  };
+  readonly attachments: {
+    readonly sortOrder:
+      | keyof Attachment['fields']
+      | `-${keyof Attachment['fields']}`;
+    readonly filter:
+      | State<'all'>
+      | State<'unused'>
+      | State<'byTable', { readonly tableName: keyof Tables }>;
   };
 };

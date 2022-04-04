@@ -70,7 +70,7 @@ const fetchToken = async (filename: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? ajax(querystring.format('/attachment_gw/get_token/', { filename }), {
         method: 'GET',
-        headers: { Accepts: 'test/plain' },
+        headers: { Accept: 'test/plain' },
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
 
@@ -155,7 +155,7 @@ export const uploadFile = async (
         }),
         {
           method: 'GET',
-          headers: { Accepts: 'application/json' },
+          headers: { Accept: 'application/json' },
         }
       ).then(({ data }) => {
         if (

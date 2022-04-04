@@ -1,7 +1,8 @@
-import { ajax, ping } from './ajax';
+import { ajax, Http, ping } from './ajax';
 import Backbone from './backbone';
 import * as businessRules from './businessrules';
 import { crash } from './components/errorboundary';
+import { f } from './functools';
 import * as navigation from './navigation';
 import { NotFoundView } from './notfoundview';
 import * as querystring from './querystring';
@@ -9,7 +10,6 @@ import { promiseToXhr } from './resourceapi';
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
 import { defined } from './types';
-import { f } from './functools';
 
 /*
  * Make Backbone use fetch() API instead of JQuery so that all errors
@@ -33,6 +33,9 @@ Backbone.ajax = function (request): JQueryXHR {
               : undefined,
         },
         body: request.type === 'GET' ? undefined : request.data,
+      },
+      {
+        expectedResponseCodes: [Http.OK, Http.CREATED, Http.NO_CONTENT],
       }
     )
       .then(({ data }) =>

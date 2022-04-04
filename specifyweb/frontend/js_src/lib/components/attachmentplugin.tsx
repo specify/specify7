@@ -13,6 +13,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
+import { hasTablePermission } from '../permissions';
 import { AttachmentCell } from './attachmentstask';
 import { Progress } from './basic';
 import { crash } from './errorboundary';
@@ -20,7 +21,6 @@ import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { hasTablePermission } from '../permissions';
 
 export function AttachmentPlugin({
   resource,
@@ -42,7 +42,7 @@ export function AttachmentPlugin({
     | State<'FileUpload', { file: File }>
   >(
     React.useCallback(
-      () =>
+      async () =>
         attachmentSettingsPromise.then(() =>
           attachmentsAvailable()
             ? (

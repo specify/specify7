@@ -47,7 +47,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     // Delete button component has to be created manually
     readonly saveButton?: (props: {
       readonly canAddAnother: boolean;
-      readonly onSaving?: () => void;
+      readonly onSaving?: () => void | undefined | false;
       readonly onSaved: (payload: {
         readonly addAnother: boolean;
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
@@ -92,7 +92,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
     }
 
     function updateTitle(): void {
-      if (typeof resource === 'undefined') return;
+      if (typeof resource === 'undefined') return undefined;
       const title = resource.isNew()
         ? commonText('newResourceTitle')(resource.specifyModel.label)
         : resource.specifyModel.label;
@@ -237,7 +237,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
   readonly dialog: false | 'modal' | 'nonModal';
-  readonly onSaving?: () => void;
+  readonly onSaving?: () => void | undefined | false;
   readonly onSaved:
     | ((payload: {
         readonly addAnother: boolean;

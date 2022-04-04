@@ -325,7 +325,9 @@ function eventHandlerForToOne(related, field) {
         // TODO: remove the need for this
         // Like "rget", but returns native promise
         rgetPromise: function(fieldName, prePop) {
-            return this.getRelated(fieldName, {prePop: prePop});
+            return this.getRelated(fieldName, {prePop: prePop})
+              // getRelated may return either undefined or null (yuk)
+              .then(data=>typeof data === 'undefined' ? null : data);
         },
         // Duplicate definition for purposes of better typing:
         rgetCollection: function(fieldName, prePop) {

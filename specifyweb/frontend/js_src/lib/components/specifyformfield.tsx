@@ -6,7 +6,8 @@ import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
 import type { IR } from '../types';
 import { defined } from '../types';
-import { getValidationAttributes, Parser } from '../uiparse';
+import type { Parser } from '../uiparse';
+import { getValidationAttributes } from '../uiparse';
 import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
 import { useAsyncState, useResourceValue } from './hooks';
@@ -182,6 +183,13 @@ const fieldRenderers: {
   },
   Plugin: UiPlugin,
   FilePicker({ id, mode, fieldName, isRequired }) {
+    /*
+     * Not sure how this is supposed to work, thus the field is rendered as
+     * disabled
+     *
+     * Probably could overwrite the behaviour on case-by-case basis depending
+     * on the fieldName
+     */
     return (
       <Input.Generic
         type="file"
@@ -189,6 +197,7 @@ const fieldRenderers: {
         isReadOnly={mode === 'view'}
         id={id}
         required={isRequired}
+        disabled={true}
       />
     );
   },

@@ -32,7 +32,7 @@ const getAttachmentFormDefinition = (
         {
           id: undefined,
           type: 'Field',
-          fieldName: '',
+          fieldName: undefined,
           fieldDefinition: {
             isReadOnly: false,
             type: 'Plugin',
@@ -49,6 +49,13 @@ const getAttachmentFormDefinition = (
       ],
     ],
   } as const);
+
+/**
+ * By default, Specify 7 replaces all ObjectAttachment forms with
+ * AttachmentPlugin. To see the original form, render SpecifyForm with
+ * viewName=originalAttachmentsView
+ */
+export const originalAttachmentsView = 'originalObjectAttachment';
 
 /**
  * A hook to get information needed to display a form
@@ -71,7 +78,11 @@ export function useViewDefinition({
       async () =>
         viewName === 'ObjectAttachment'
           ? getAttachmentFormDefinition(formType, mode)
-          : getView(viewName)
+          : getView(
+              viewName === originalAttachmentsView
+                ? 'ObjectAttachment'
+                : viewName
+            )
               .catch(f.undefined)
               .then((viewDefinition) =>
                 typeof viewDefinition === 'object'
