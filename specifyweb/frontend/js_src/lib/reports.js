@@ -326,11 +326,11 @@ function addRecordIdFilterToQuery(reportResources) {
         var tblModel = _.find(schema.models, function(m) {return m.tableId == options.tblId;});
         //newfield.set('allownulls', null);
         newfield.set('alwaysfilter', false);
-        newfield.set('columnalias', tblModel.idFieldName);
+        newfield.set('columnalias', tblModel.idField.name);
         newfield.set('contexttableident', options.tblId);
         //newfield.set('createdbyagent', samplefield.get('createdbyagent'));
         newfield.set('endvalue', null);
-        newfield.set('fieldname', tblModel.idFieldName);
+        newfield.set('fieldname', tblModel.idField.name);
         newfield.set('formatname', null);
         //newfield.set('id', -1);
         newfield.set('isdisplay', false);
@@ -346,7 +346,7 @@ function addRecordIdFilterToQuery(reportResources) {
         //newfield.set('resource_uri', null);
         newfield.set('sorttype', 0);
         newfield.set('startvalue', options.recordToPrintId.toString());
-        newfield.set('stringid',options.tblId + '.' + tblModel.name.toLowerCase() + '.' + tblModel.idFieldName);
+        newfield.set('stringid',options.tblId + '.' + tblModel.name.toLowerCase() + '.' + tblModel.idField.name);
         newfield.set('tablelist', options.tblId);
         //newfield.set('timestampcreated', samplefield.get('timestampcreated'));
         //newfield.set('timestampmodified', samplefield.get('timestampmodified'));

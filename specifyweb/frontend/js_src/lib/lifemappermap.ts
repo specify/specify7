@@ -12,6 +12,7 @@ import { schema } from './schema';
 import type { RA } from './types';
 import { f } from './functools';
 import { toTable } from './specifymodel';
+import { treeRanksPromise } from './treedefinitions';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -45,6 +46,8 @@ export const fetchLocalOccurrences = async (
     sorttype: 0,
     isnot: false,
   };
+
+  await treeRanksPromise;
 
   const {
     data: { results },

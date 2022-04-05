@@ -2,7 +2,10 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpQuery, Tables } from '../datamodel';
-import { AnySchema, keysToLowerCase } from '../datamodelutils';
+import type { AnySchema } from '../datamodelutils';
+import { keysToLowerCase } from '../datamodelutils';
+import { f } from '../functools';
+import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
@@ -16,17 +19,16 @@ import {
 } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
+import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
-import { f } from '../functools';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
+import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
-import { removeItem } from '../helpers';
-import { LoadingContext } from './contexts';
 
 function TableHeaderCell({
   fieldSpec,
@@ -186,9 +188,14 @@ export function QueryResultsTable({
               ? fetchPickList(fieldSpec.parser.pickListName)
               : undefined
           )
-        ).then(() => true),
+        ).then(f.true),
       [fieldSpecs]
     ),
+    true
+  );
+
+  const [treeRanksLoaded] = useAsyncState(
+    React.useCallback(async () => treeRanksPromise.then(f.true), []),
     true
   );
 
@@ -240,7 +247,10 @@ export function QueryResultsTable({
           />
         ) : undefined}
       </div>
-      {Array.isArray(results) && fieldSpecs.length > 0 && pickListsLoaded && (
+      {Array.isArray(results) &&
+      fieldSpecs.length > 0 &&
+      pickListsLoaded === true &&
+      treeRanksLoaded === true ? (
         <div
           role="table"
           className={`grid-table overflow-auto max-h-[75vh] border-b
@@ -334,7 +344,7 @@ export function QueryResultsTable({
             }}
           />
         </div>
-      )}
+      ) : undefined}
       {isFetching && loadingGif}
     </Container.Base>
   );

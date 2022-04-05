@@ -7,23 +7,25 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './datamodelutils';
+import { f } from './functools';
+import { camelToHuman } from './helpers';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
+import commonText from './localization/common';
 import ResourceBase from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { localization, schema } from './schema';
 import { unescape } from './schemabase';
 import { getTableOverwrite, modelViews } from './schemaoverrides';
-import type { LiteralField, Relationship } from './specifyfield';
+import type { Relationship } from './specifyfield';
 import {
   type FieldDefinition,
+  LiteralField,
   type RelationshipDefinition,
 } from './specifyfield';
-import type { IR, RA } from './types';
-import { defined } from './types';
-import { camelToHuman } from './helpers';
-import { f } from './functools';
 import { isTreeResource } from './treedefinitions';
+import type { IR, R, RA } from './types';
+import { defined } from './types';
 
 type FieldAlias = {
   readonly vname: string;
@@ -105,7 +107,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly name: SCHEMA['tableName'];
 
-  public readonly idFieldName: string;
+  public readonly idField: LiteralField;
 
   public readonly isSystem: boolean;
 
@@ -186,7 +188,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.name = SpecifyModel.parseClassName(
       this.longName
     ) as SCHEMA['tableName'];
-    this.idFieldName = tableDefinition.idFieldName;
     this.view = tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
@@ -213,7 +214,28 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    this.localization = localization[this.name.toLowerCase()] ?? { items: [] };
+    this.localization = localization[this.name.toLowerCase()] ?? { items: {} };
+    (this.localization.items as R<SchemaLocalization['items'][string]>)[
+      tableDefinition.idFieldName
+    ] ??= {
+      name: commonText('id'),
+      desc: null,
+      format: null,
+      picklistname: null,
+      weblinkname: null,
+      isrequired: true,
+      ishidden: true,
+    };
+
+    this.idField = new LiteralField(this, {
+      name: tableDefinition.idFieldName,
+      required: true,
+      type: 'java.lang.Integer',
+      column: tableDefinition.idFieldName,
+      indexed: true,
+      unique: true,
+      readOnly: false,
+    });
 
     this.label =
       typeof this.localization.name === 'string'
@@ -248,6 +270,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     // If can't find the field by name, try looking for aliases
     if (typeof field === 'undefined') {
+      if (unparsedName.toLowerCase() === this.idField.name.toLowerCase())
+        return this.idField;
+
       const alias = this.fieldAliases.find(
         (alias) => alias.vname.toLowerCase() === splitName[0]
       );

@@ -151,4 +151,5 @@ export const f = {
    */
   round: (number: number, step: number): number =>
     Math.round(number / step) * step,
+  true: (): true => true,
 } as const;

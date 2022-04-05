@@ -32,6 +32,7 @@ export type SchemaLocalization = {
     readonly ishidden: boolean;
   }>;
 };
+
 // The schema config / localization information is loaded dynamically.
 export let localization: IR<SchemaLocalization> = undefined!;
 

@@ -1752,6 +1752,12 @@ const commonText = createDictionary({
     ca: 'Scale',
     'es-es': 'Scale',
   },
+  id: {
+    'en-us': 'ID',
+    'ru-ru': 'ID',
+    ca: 'ID',
+    'es-es': 'ID',
+  },
 });
 
 export default commonText;

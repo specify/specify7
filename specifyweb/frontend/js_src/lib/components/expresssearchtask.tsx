@@ -162,13 +162,16 @@ function Results(): JSX.Element {
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
                 );
                 if (tableResult.definition.link !== null) {
-                  // FIXME: test this
-                  const linkFieldSpec = fieldSpecs.pop();
-                  idFieldIndex = fieldSpecs.length + 1;
-                  const relationship = defined(linkFieldSpec?.getField());
-                  if (!relationship.isRelationship)
-                    throw new Error('Unable to extract relationship');
-                  model = relationship.relatedModel;
+                  idFieldIndex = fieldSpecs.length - 1;
+                  const relationship = defined(
+                    fieldSpecs.slice(-1)[0]?.getField()
+                  );
+                  if (relationship.isRelationship)
+                    model = relationship.relatedModel;
+                  // If field is TaxonID
+                  else if (relationship === relationship.model.idField)
+                    model = relationship.model;
+                  else throw new Error('Unable to extract relationship');
                 }
 
                 return {
