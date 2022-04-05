@@ -1,5 +1,6 @@
-from time import time
 import logging
+from time import time
+
 logger = logging.getLogger(__name__)
 import re
 
@@ -106,7 +107,7 @@ class AuditLog(object):
                 parentrecordid=parentId,
                 parenttablenum=parentTbl,
                 recordid=obj.id,
-                recordversion=obj.version,
+                recordversion=obj.version if hasattr(obj, 'version') else 0,
                 tablenum=obj.specify_model.tableId,
                 createdbyagent_id=agent_id,
                 modifiedbyagent_id=agent_id)
