@@ -128,7 +128,7 @@ export function ShowLoansCommand({
       />
       {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
         <>
-          <H3>${formsText('exchanges')}</H3>
+          <H3>{formsText('exchanges')}</H3>
           <List
             resources={data.exchanges}
             fieldName="exchange"

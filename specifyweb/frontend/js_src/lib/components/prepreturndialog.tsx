@@ -203,7 +203,7 @@ function Row({
         <td className="text-center">
           {data?.prepType ?? commonText('loading')}
         </td>
-        <td className="text-center">${unresolved}</td>
+        <td className="text-center">{unresolved}</td>
         <td>
           <Input.Number
             value={returns}

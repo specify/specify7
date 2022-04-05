@@ -116,37 +116,18 @@ const formsText = createDictionary({
       The Record Set "${recordSetName}" contains no records.`,
   },
   emptyRecordSetMessage: {
-    'en-us': (
-      remove: (label: string) => string,
-      add: (label: string) => string
-    ) => `
-      You can ${remove('delete')} the record set or ${add('add')} records
-      to it.`,
-    'ru-ru': (
-      remove: (label: string) => string,
-      add: (label: string) => string
-    ) => `
-      Вы можете ${remove('удалить')} набор записей или
-      ${add('добавить')} к нему.`,
-    ca: (remove: (label: string) => string, add: (label: string) => string) => `
-      You can ${remove('delete')} the record set or ${add('add')} records
-      to it.`,
-    'es-es': (
-      remove: (label: string) => string,
-      add: (label: string) => string
-    ) => `
-      You can ${remove('delete')} the record set or ${add('add')} records
-      to it.`,
-  },
-  emptyRecordSetSecondMessage: {
-    'en-us': `Be aware that another user maybe getting ready to add records,
+    'en-us': `You can delete the record set or add records to it.
+      Be aware that another user maybe getting ready to add records,
       so only delete this record set if you are sure it is not to be used.`,
-    'ru-ru': `Имейте в виду, что другой пользователь, возможно, готовится
+    'ru-ru': `Вы можете удалить набор записей или добавить к нему.
+      Имейте в виду, что другой пользователь, возможно, готовится
       добавить объекты, поэтому удаляйте этот набор записей только в том случае,
       если вы уверены, что он не будет использованным.`,
-    ca: `Be aware that another user maybe getting ready to add records,
+    ca: `You can delete the record set or add records to it.
+      Be aware that another user maybe getting ready to add records,
       so only delete this record set if you are sure it is not to be used.`,
-    'es-es': `Be aware that another user maybe getting ready to add records,
+    'es-es': `You can delete the record set or add records to it.
+      Be aware that another user maybe getting ready to add records,
       so only delete this record set if you are sure it is not to be used.`,
   },
   checkingIfResourceCanBeDeleted: {

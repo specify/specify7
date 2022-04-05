@@ -56,7 +56,7 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
                   querystring.format(
                     getResourceViewUrl(
                       getModelById(recordSet.get('dbTableId')).name,
-                      records[0].recordId
+                      records[0]?.recordId ?? 'new'
                     ),
                     { recordSetId: id.toString() }
                   ),

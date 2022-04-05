@@ -124,7 +124,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             <li>{commonText('loading')}</li>
           ) : typeof results === 'undefined' ? undefined : results.length ===
             0 ? (
-            <li>${commonText('noResults')}</li>
+            <li>{commonText('noResults')}</li>
           ) : (
             <>
               {results.map(({ id, formatted, resource }) => (

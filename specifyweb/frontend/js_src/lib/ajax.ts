@@ -189,7 +189,7 @@ export function handleResponse<RESPONSE_TYPE = string>({
       };
     }
   } catch (error) {
-    handleAjaxError(error, response.url, strict);
+    handleAjaxError(error, response, strict);
   }
 }
 

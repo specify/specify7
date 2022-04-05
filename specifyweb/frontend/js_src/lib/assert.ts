@@ -1,5 +1,5 @@
-import type { RA } from './types';
 import { f } from './functools';
+import type { RA } from './types';
 
 export function assert(value: unknown, message?: string): void {
   if (!Boolean(value)) error(message ?? 'Assertion failed');
@@ -38,11 +38,3 @@ export function breakpoint(): void {
 export const tap = <ARGS extends RA<never>, RETURN>(
   callback: (...args: ARGS) => RETURN
 ) => f.tap(breakpoint, callback);
-
-export function getStackTrace(): string {
-  try {
-    throw new Error('Testing');
-  } catch (error) {
-    return error.stack;
-  }
-}

@@ -26,6 +26,7 @@ import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { removeItem } from '../helpers';
+import { LoadingContext } from './contexts';
 
 function TableHeaderCell({
   fieldSpec,
@@ -116,8 +117,9 @@ function ViewRecords({
       </Button.Simple>
       {isOpen && (
         <RecordSelectorFromIds
-          totalCount={totalCount}
+          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           ids={ids}
+          isAddingNew={false}
           defaultIndex={0}
           model={model}
           onAdd={undefined}
@@ -204,6 +206,8 @@ export function QueryResultsTable({
       .then(handleFetched)
       .catch(crash);
   }
+
+  const loading = React.useContext(LoadingContext);
 
   return (
     <Container.Base className="overflow-hidden">
@@ -297,7 +301,11 @@ export function QueryResultsTable({
             results={results}
             selectedRows={selectedRows}
             onSelected={(id, isSelected, isShiftClick): void => {
-              handleSelected?.(new model.Resource({ id }));
+              f.maybe(handleSelected, (callback) =>
+                loading(
+                  new model.Resource({ id }).fetchPromise().then(callback)
+                )
+              );
               if (!hasIdField) return;
               const rowIndex = results.findIndex(
                 (row) => row[queryIdField] === id

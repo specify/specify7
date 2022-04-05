@@ -217,7 +217,7 @@ export function Autocomplete<T>({
         onClick: handleToggle,
         onBlur({ relatedTarget }): void {
           if (
-            relatedTarget !== null &&
+            relatedTarget === null ||
             dataListRef.current?.contains(relatedTarget as Node) === false
           )
             handleClose();

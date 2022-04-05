@@ -127,9 +127,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   readonly noValidation?: boolean;
   save(): Promise<void>;
+  destroy(): Promise<void>;
   fetchPromise(): Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;
-  destroy(): Promise<void>;
   viewUrl(): string;
   isNew(): boolean;
   clone(): SpecifyResource<SCHEMA>;

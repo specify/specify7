@@ -49,7 +49,6 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
       readonly canAddAnother: boolean;
       readonly onSaving?: () => void | undefined | false;
       readonly onSaved: (payload: {
-        readonly addAnother: boolean;
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
       }) => void;
@@ -240,7 +239,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly onSaving?: () => void | undefined | false;
   readonly onSaved:
     | ((payload: {
-        readonly addAnother: boolean;
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
       }) => void)
@@ -437,6 +435,7 @@ export function ShowResource({
 
   const [recordSetItemIndex] = useAsyncState(
     React.useCallback(async () => {
+      if (resource.isNew()) return 0;
       const recordSetInfo = resource.get('recordset_info');
       return typeof recordSetInfo === 'object'
         ? fetchCollection(
@@ -454,46 +453,19 @@ export function ShowResource({
     true
   );
 
-  function handleSaved({
-    addAnother,
-    newResource,
-    wasNew,
-  }: {
-    readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<AnySchema> | undefined;
-    readonly wasNew: boolean;
-  }): void {
-    if (addAnother && typeof newResource === 'object')
-      setRecord({ resource: newResource, recordSet });
-    else if (wasNew) navigation.go(resource.viewUrl());
-    else {
-      const reloadResource = new resource.specifyModel.Resource({
-        id: resource.id,
-      });
-      reloadResource.recordsetid = resource.recordsetid;
-      reloadResource
-        .fetchPromise()
-        .then(async () => setRecord({ resource: reloadResource, recordSet }));
-    }
-  }
-
   return typeof recordSet === 'object' ? (
     typeof recordSetItemIndex === 'undefined' ? null : (
       <RecordSetView
         dialog={false}
         mode="edit"
         model={resource.specifyModel}
-        onClose={f.never}
+        onClose={(): void => navigation.go('/')}
         title={undefined}
         onAdd={f.void}
-        onDeleted={(newCount): void =>
-          newCount === 0 ? navigation.go('/') : undefined
-        }
         onSlide={f.void}
         recordSet={recordSet}
         defaultResourceIndex={recordSetItemIndex}
         canAddAnother={true}
-        onSaved={handleSaved}
       />
     )
   ) : (
@@ -506,7 +478,22 @@ export function ShowResource({
       mode="edit"
       viewName={resource.specifyModel.view}
       onDeleted={(): void => navigation.go('/')}
-      onSaved={handleSaved}
+      onSaved={({ wasNew, newResource }): void => {
+        if (typeof newResource === 'object')
+          setRecord({ resource: newResource, recordSet });
+        else if (wasNew) navigation.go(resource.viewUrl());
+        else {
+          const reloadResource = new resource.specifyModel.Resource({
+            id: resource.id,
+          });
+          reloadResource.recordsetid = resource.recordsetid;
+          reloadResource
+            .fetchPromise()
+            .then(async () =>
+              setRecord({ resource: reloadResource, recordSet })
+            );
+        }
+      }}
     />
   );
 }

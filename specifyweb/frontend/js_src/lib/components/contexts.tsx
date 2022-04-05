@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-import { error, getStackTrace } from '../assert';
+import { error } from '../assert';
 import { replaceItem } from '../helpers';
 import type { RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
@@ -38,12 +38,6 @@ export function Contexts({
       const holderId = holders.current.length;
       holders.current = [...holders.current, holderId];
       handleLoading();
-      if (process.env.NODE_ENV !== 'production')
-        console.log('Loading screen', {
-          promise,
-          holders: holders.current,
-          stackTrace: getStackTrace(),
-        });
       promise
         .catch((error: Error) => {
           crash(error);

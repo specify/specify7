@@ -372,7 +372,7 @@ function Gallery({
   collection,
   scale,
 }: {
-  readonly collection: Collection<AnySchema>;
+  readonly collection: Collection<Attachment>;
   readonly scale: number;
 }): JSX.Element {
   const [attachments, setAttachments] = React.useState<

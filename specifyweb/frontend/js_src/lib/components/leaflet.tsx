@@ -38,7 +38,9 @@ export function LeafletMap({
         markerClickCallback,
       }).then((map) => {
         globalMap = map;
-        setHandleResize(_.throttle(() => map.invalidateSize(), resizeThrottle));
+        setHandleResize(() =>
+          _.throttle(() => map.invalidateSize(), resizeThrottle)
+        );
         addFullScreenButton(map, () => handleToggleFullScreen);
       })
     );

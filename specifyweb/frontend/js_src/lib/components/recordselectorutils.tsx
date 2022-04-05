@@ -18,6 +18,7 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, DataEntry } from './basic';
+import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useBooleanState, useTriggerState } from './hooks';
@@ -25,6 +26,9 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
+import { schema } from '../schema';
+import { getResourceApiUrl } from '../resource';
+import { ping } from '../ajax';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(queryString.parse()[queryParameter], (index) =>
@@ -268,6 +272,7 @@ export function IntegratedRecordSelector({
  */
 export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   ids,
+  isAddingNew,
   onSlide: handleSlide,
   defaultIndex,
   model,
@@ -286,6 +291,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    * sets or query results with thousands of items)
    */
   readonly ids: RA<number | undefined>;
+  readonly isAddingNew: boolean;
   readonly defaultIndex?: number;
   readonly title: string | undefined;
   readonly dialog: false | 'modal' | 'nonModal';
@@ -295,7 +301,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly canAddAnother: boolean;
   readonly onSaved: (payload: {
-    readonly addAnother: boolean;
+    readonly resource: SpecifyResource<SCHEMA>;
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
@@ -310,7 +316,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       typeof id === 'undefined'
         ? undefined
         : new model.Resource({
-            id,
+            id: typeof id === 'number' ? id : undefined,
           })
     )
   );
@@ -321,7 +327,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) =>
         typeof id === 'undefined'
           ? undefined
-          : records[index] ?? new model.Resource({ id })
+          : records[index] ??
+            new model.Resource({ id: typeof id === 'number' ? id : undefined })
       )
     );
 
@@ -330,13 +337,20 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
+  const newResource = React.useMemo(
+    () => (isAddingNew ? new model.Resource({ id: undefined }) : undefined),
+    [isAddingNew, model]
+  );
+
   const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
 
   return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
       model={model}
-      records={records}
+      records={
+        typeof newResource === 'object' ? [...records, newResource] : records
+      }
       index={index}
       onSlide={(index: number): void => {
         setIndex(index);
@@ -373,7 +387,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 hasTablePermission(model.name, 'delete') ? (
                   <DataEntry.Delete
                     disabled={
-                      typeof resource === 'undefined' && mode === 'view'
+                      typeof resource === 'undefined' || mode === 'view'
                     }
                     onClick={handleRemove}
                   />
@@ -384,9 +398,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             }
             mode={mode}
             viewName={viewName}
-            isSubForm={dialog === false}
+            isSubForm={false}
             canAddAnother={canAddAnother}
-            onSaved={handleSaved}
+            onSaved={(payload): void =>
+              handleSaved({
+                ...payload,
+                resource: defined(resource),
+              })
+            }
             onDeleted={ids.length > 1 ? undefined : handleClose}
             onClose={handleClose}
           />
@@ -397,33 +416,27 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 }
 
-const fetchItems = async (
+const fetchItems = (
   recordSetId: number,
   offset: number
 ): Promise<
-  (
-    props:
-      | {
-          readonly ids: RA<number | undefined>;
-        }
-      | undefined
-  ) => { readonly totalCount: number; readonly ids: RA<number | undefined> }
+  (ids: RA<number | undefined>) => {
+    readonly ids: RA<number | undefined>;
+    readonly totalCount: number;
+  }
 > =>
   fetchCollection('RecordSetItem', {
     limit: DEFAULT_FETCH_LIMIT,
     recordSet: recordSetId,
     offset,
-  }).then(({ records, totalCount }) => ({ ids } = { ids: [] }) => ({
+  }).then(({ records, totalCount }) => (ids: RA<number | undefined>) => ({
     totalCount,
     ids: records
       .map(({ recordId }, index) => [offset + index, recordId] as const)
-      .reduce(
-        (items, [order, recordId]) => {
-          items[order] = recordId;
-          return items;
-        },
-        typeof ids === 'undefined' ? [] : Array.from(ids)
-      ),
+      .reduce((items, [order, recordId]) => {
+        items[order] = recordId;
+        return items;
+      }, Array.from(ids ?? [])),
   }));
 
 // FIXME: test this
@@ -435,8 +448,6 @@ export function RecordSet<SCHEMA extends AnySchema>({
   mode,
   onClose: handleClose,
   canAddAnother,
-  onSaved: handleSaved,
-  onDeleted: handleDeleted,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -446,6 +457,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
   | 'totalCount'
   | 'children'
   | 'onDelete'
+  | 'onSaved'
   | 'index'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
@@ -455,21 +467,20 @@ export function RecordSet<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly onClose: () => void;
   readonly canAddAnother: boolean;
-  readonly onSaved: (payload: {
-    readonly addAnother: boolean;
-    readonly newResource: SpecifyResource<SCHEMA> | undefined;
-    readonly wasNew: boolean;
-  }) => void;
-  readonly onDeleted: (newCount: number) => void;
 }): JSX.Element {
   const [items, setItems] = React.useState<
     | {
         readonly totalCount: number;
         readonly ids: RA<number | undefined>;
+        readonly isAddingNew: boolean;
       }
     | undefined
   >(undefined);
-  const { totalCount, ids } = items ?? { totalCount: 0, ids: [] };
+  const { totalCount, ids, isAddingNew } = items ?? {
+    totalCount: 0,
+    ids: [],
+    isAddingNew: false,
+  };
 
   const [index, setIndex] = React.useState(defaultResourceIndex ?? 0);
 
@@ -487,39 +498,86 @@ export function RecordSet<SCHEMA extends AnySchema>({
           previousIndex.current > index ? index - DEFAULT_FETCH_LIMIT : index
         )
       )
-        .then(setItems)
+        .then((updateIds) =>
+          setItems(
+            (
+              { ids, isAddingNew } = {
+                ids: [],
+                isAddingNew: false,
+                totalCount: 0,
+              }
+            ) => ({
+              ...updateIds(ids),
+              isAddingNew,
+            })
+          )
+        )
         .catch(crash);
     return (): void => {
       previousIndex.current = index;
     };
   }, [totalCount, currentRecordId, index, recordSet.id]);
 
-  function handleAdd(resource: SpecifyResource<SCHEMA>): void {
-    resource.recordsetid = recordSet.id;
-    setItems({ totalCount: totalCount + 1, ids: [...ids, resource.id] });
-    setIndex(totalCount);
-  }
+  const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
+    setItems(() => {
+      setIndex(totalCount + 1);
 
-  return totalCount === 0 ? (
+      if (resource.recordsetid !== recordSet.id) {
+        resource.recordsetid = recordSet.id;
+        if (!resource.isNew()) {
+          const recordSetItem = new schema.models.RecordSetItem.Resource({
+            recordId: resource.id,
+            recordSet: getResourceApiUrl('RecordSet', recordSet.id),
+          });
+          loading(recordSetItem.save());
+        }
+      }
+      return {
+        totalCount: totalCount + 1,
+        ids: typeof resource.id === 'undefined' ? ids : [...ids, resource.id],
+        isAddingNew: typeof resource.id === 'undefined',
+      };
+    });
+
+  const loading = React.useContext(LoadingContext);
+  return totalCount === 0 && !isAddingNew ? (
     typeof items === 'undefined' ? (
       <LoadingScreen />
     ) : (
       <p>
         <Dialog
-          header={formsText('emptyRecordSetHeader')}
+          header={formsText('emptyRecordSetHeader')(recordSet.get('name'))}
           onClose={(): void => history.back()}
           buttons={
             <>
               <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+              {hasToolPermission('recordSets', 'delete') && (
+                <Button.Red
+                  onClick={(): void =>
+                    loading(
+                      recordSet
+                        .destroy()
+                        .then(
+                          handleClose ??
+                            ((): void => navigation.go('/specify/'))
+                        )
+                    )
+                  }
+                >
+                  {commonText('delete')}
+                </Button.Red>
+              )}
               {hasToolPermission('recordSets', 'create') && (
-                <DataEntry.Add
+                <Button.Green
                   onClick={(): void => handleAdd(new rest.model.Resource())}
-                />
+                >
+                  {commonText('add')}
+                </Button.Green>
               )}
             </>
           }
         >
-          {formsText('emptyRecordSetSecondMessage')}
+          {formsText('emptyRecordSetMessage')}
         </Dialog>
         {formsText('noData')}
       </p>
@@ -528,31 +586,54 @@ export function RecordSet<SCHEMA extends AnySchema>({
     <RecordSelectorFromIds<SCHEMA>
       {...rest}
       ids={ids}
-      title={title}
+      title={title ?? recordSet.get('name')}
       isDependent={false}
+      isAddingNew={isAddingNew}
       dialog={dialog}
       mode={mode}
       canAddAnother={canAddAnother}
       onClose={handleClose}
       totalCount={totalCount}
       defaultIndex={defaultResourceIndex ?? 0}
-      onSaved={handleSaved}
+      onSaved={({ newResource, wasNew, resource }): void => {
+        if (wasNew) {
+          handleAdd(resource);
+          navigation.push(resource.viewUrl());
+        }
+        if (typeof newResource === 'object') handleAdd(newResource);
+      }}
       onAdd={hasToolPermission('recordSets', 'create') ? handleAdd : undefined}
       onDelete={
         recordSet.isNew() || hasToolPermission('recordSets', 'delete')
           ? (): void => {
-              setItems({
-                totalCount: totalCount - 1,
-                ids: removeItem(ids, index),
-              });
-              setIndex((previousIndex) =>
-                clamp(
-                  0,
-                  totalCount - 1,
-                  previousIndex > index ? index - 1 : index
-                )
-              );
-              handleDeleted(totalCount - 1);
+              if (isAddingNew)
+                setItems({ totalCount, ids, isAddingNew: false });
+              else
+                loading(
+                  fetchCollection('RecordSetItem', {
+                    limit: 1,
+                    recordId: ids[index],
+                    recordSet: recordSet.id,
+                  }).then(({ records }) =>
+                    ping(`/api/specify/recordsetitem/${records[0].id}/`, {
+                      method: 'DELETE',
+                    }).then(() => {
+                      setItems({
+                        totalCount: totalCount - 1,
+                        ids: removeItem(ids, index),
+                        isAddingNew: false,
+                      });
+                      setIndex((previousIndex) =>
+                        clamp(
+                          0,
+                          totalCount - 1,
+                          previousIndex > index ? index - 1 : index
+                        )
+                      );
+                      if (totalCount === 1) handleClose();
+                    })
+                  )
+                );
             }
           : undefined
       }

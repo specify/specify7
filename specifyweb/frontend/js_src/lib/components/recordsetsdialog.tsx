@@ -116,10 +116,10 @@ export function RecordSetsDialog({
             <thead>
               <tr>
                 <th scope="col">
-                  <span className="sr-only">${commonText('recordSet')}</span>
+                  <span className="sr-only">{commonText('recordSet')}</span>
                 </th>
                 <th scope="col">
-                  <span className="sr-only">${commonText('size')}</span>
+                  <span className="sr-only">{commonText('size')}</span>
                 </th>
                 <td />
               </tr>
@@ -147,7 +147,7 @@ export function RecordSetsDialog({
               ))}
               {data.totalCount !== data.recordSets.length && (
                 <tr>
-                  <td colSpan={3}>${commonText('listTruncated')}</td>
+                  <td colSpan={3}>{commonText('listTruncated')}</td>
                 </tr>
               )}
             </tbody>
@@ -210,10 +210,11 @@ export function RecordSetsDialog({
         deletionMessage={formsText('recordSetDeletionWarning')(
           state.recordSet.get('name')
         )}
-        canAddAnother={true}
+        canAddAnother={false}
         isSubForm={false}
         extraButtons={
-          hasToolPermission('queryBuilder', 'read') ? (
+          hasToolPermission('queryBuilder', 'read') &&
+          !state.recordSet.isNew() ? (
             <>
               <span className="flex-1 -ml-2" />
               <Button.Blue

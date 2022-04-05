@@ -274,9 +274,9 @@
   }
 
   .custom-select-group-hidden-fields, .custom-select-input-hidden {
-    --custom-select-b1: theme('colors.gray.300');
-    --custom-select-b2: theme('colors.gray.400');
-    --custom-select-accent: theme('colors.gray.500');
+    --custom-select-b1: theme('colors.gray.200');
+    --custom-select-b2: theme('colors.gray.300');
+    --custom-select-accent: theme('colors.gray.350');
     @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
       dark:[--custom-select-b2:theme('colors.neutral.700')]
       dark:[--custom-select-accent:theme('colors.neutral.600')];

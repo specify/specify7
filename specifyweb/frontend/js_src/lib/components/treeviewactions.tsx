@@ -264,9 +264,9 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
     <ResourceView
       resource={resource}
       dialog="modal"
-      onSaved={({ addAnother }): void => {
+      onSaved={({ newResource }): void => {
         handleClose();
-        handleSaved(addAnother);
+        handleSaved(typeof newResource === 'object');
       }}
       canAddAnother={true}
       onClose={handleClose}

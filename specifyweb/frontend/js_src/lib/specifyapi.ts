@@ -16,10 +16,9 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   forceCollection: number | undefined
 ): Promise<RA<SpecifyResource<SCHEMA>>> =>
   ajax<RA<SerializedModel<SCHEMA>>>(
-    `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
-    {
-      headers: { Accept: 'application/json' },
-      body: {
+    queryString.format(
+      `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
+      {
         ...Object.fromEntries(
           filterArray(
             Object.entries(templateResource.toJSON()).map(([key, value]) => {
@@ -31,9 +30,12 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
           )
         ),
         ...(typeof forceCollection === 'number'
-          ? { forcecollection: forceCollection }
+          ? { forcecollection: forceCollection.toString() }
           : {}),
-      },
+      }
+    ),
+    {
+      headers: { Accept: 'application/json' },
     }
   ).then(({ data: results }) =>
     results.map((result) => new templateResource.specifyModel.Resource(result))

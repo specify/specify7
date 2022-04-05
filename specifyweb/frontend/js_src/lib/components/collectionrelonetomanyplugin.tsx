@@ -139,7 +139,7 @@ export function CollectionOneToManyPlugin({
       async () => fetchOtherCollectionData(resource, relationship),
       [resource, relationship]
     ),
-    true
+    false
   );
 
   const [state, setState] = React.useState<

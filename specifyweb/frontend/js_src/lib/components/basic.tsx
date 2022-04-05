@@ -205,7 +205,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `grid overflow-x-auto items-center py-5 gap-2`,
+    `grid overflow-x-auto items-center py-5 gap-2 px-1 -ml-1`,
     ({ viewDefinition, ...props }) => ({
       ...props,
       style: {

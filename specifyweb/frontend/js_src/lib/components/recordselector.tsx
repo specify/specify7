@@ -1,18 +1,17 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
+import { clamp } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { defined } from '../types';
-import { clamp } from '../helpers';
 import { Button, className, Input } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
-import { LoadingContext } from './contexts';
 
 export function Slider({
   value,
@@ -107,14 +106,10 @@ export function Slider({
 
 function Search<SCHEMA extends AnySchema>({
   model,
-  otherSideName,
-  parentUrl,
   onAdd: handleAdd,
   onClose: handleClose,
 }: {
   readonly model: SpecifyModel<SCHEMA>;
-  readonly otherSideName: string;
-  readonly parentUrl: string;
   readonly onAdd: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -129,20 +124,14 @@ function Search<SCHEMA extends AnySchema>({
       ),
     [model]
   );
-  const loading = React.useContext(LoadingContext);
   return (
     <SearchDialog<SCHEMA>
       templateResource={resource}
       forceCollection={undefined}
       extraFilters={undefined}
       onSelected={(resource): void => {
-        resource.set(otherSideName, parentUrl as any);
-        loading(
-          resource
-            .save()
-            .then(() => handleAdd(resource))
-            .then(handleClose)
-        );
+        handleAdd(resource);
+        handleClose();
       }}
       onClose={handleClose}
     />
@@ -276,9 +265,12 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
         ) : state === 'addBySearch' && typeof handleAdded === 'function' ? (
           <Search
             model={model}
-            otherSideName={defined(field?.otherSideName)}
-            parentUrl={defined(relatedResource).url()}
             onAdd={(record): void => {
+              f.maybe(field?.otherSideName, (fieldName) =>
+                f.maybe(relatedResource?.url(), (url) =>
+                  record.set(fieldName, url as never)
+                )
+              );
               handleAdded(record);
               handleSlide(totalCount);
             }}

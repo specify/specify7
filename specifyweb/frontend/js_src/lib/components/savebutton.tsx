@@ -35,7 +35,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: () => void | undefined | boolean;
   readonly onSaved?: (payload: {
-    readonly addAnother: boolean;
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
@@ -117,7 +116,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       .then(() =>
         handleUnloadProtect(false, (): void =>
           handleSaved?.({
-            addAnother,
             newResource,
             wasNew,
           })

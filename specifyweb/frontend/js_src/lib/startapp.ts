@@ -26,7 +26,7 @@ Backbone.ajax = function (request): JQueryXHR {
       {
         method: request.type,
         headers: {
-          Accept: 'application/json',
+          Accept: request.type === 'DELETE' ? 'text/plain' : 'application/json',
           'Content-Type':
             typeof request.contentType === 'string'
               ? request.contentType

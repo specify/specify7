@@ -7,9 +7,12 @@
 
 import React from 'react';
 
+import { Http } from '../ajax';
 import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
+import { NotFoundView } from '../notfoundview';
+import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
 import { Button, Link } from './basic';
 import { displayError } from './contexts';
@@ -191,9 +194,17 @@ function formatError(
 
 export function handleAjaxError(
   error: unknown,
-  url: string,
+  response: Response,
   strict: boolean
 ): never {
+  const isNotFoundError =
+    response.status === Http.NOT_FOUND && process.env.NODE_ENV === 'production';
+  // In production, uncaught 404 errors redirect to the NOT FOUND page
+  if (isNotFoundError) {
+    clearUnloadProtect();
+    setCurrentView(new NotFoundView());
+    throw error;
+  }
   const permissionError = error as {
     readonly type: 'permissionDenied';
     readonly responseText: string;
@@ -205,7 +216,7 @@ export function handleAjaxError(
   if (isPermissionError) {
     const [errorObject, errorMessage] = formatPermissionsError(
       permissionError.responseText,
-      url
+      response.url
     );
     displayError(({ onClose: handleClose }) => (
       <PermissionError error={errorObject} onClose={handleClose} />
@@ -216,7 +227,7 @@ export function handleAjaxError(
     });
     throw error;
   }
-  const [errorObject, errorMessage] = formatError(error, url);
+  const [errorObject, errorMessage] = formatError(error, response.url);
   if (strict && !isPermissionError)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
