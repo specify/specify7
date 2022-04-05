@@ -40,7 +40,6 @@ export function Autocomplete<T>({
   forwardRef,
   onChange: handleChange,
   onNewValue: handleNewValue,
-  containerClassName = '',
   children,
   'aria-label': ariaLabel,
   value: currentValue,
@@ -51,9 +50,7 @@ export function Autocomplete<T>({
   readonly onNewValue?: (value: string) => void;
   readonly onChange: (item: Item<T>) => void;
   readonly forwardRef?: React.Ref<HTMLInputElement>;
-  readonly containerClassName?: string;
   readonly children: (props: {
-    readonly className: string;
     readonly forwardRef: React.RefCallback<HTMLInputElement>;
     readonly value: string;
     readonly type: 'search';
@@ -177,17 +174,46 @@ export function Autocomplete<T>({
     pendingValue !== currentValue;
   const showList = isOpen && (showAdd || isLoading || filteredItems.length > 0);
 
-  const [isOverflowing, setIsOverflowing] = React.useState(false);
   React.useEffect(() => {
-    if (showList && dataListRef.current !== null)
-      setIsOverflowing(
-        dataListRef.current.getBoundingClientRect().bottom >
-          document.body.clientHeight
-      );
-  }, [showList]);
+    if (dataListRef.current === null || input === null) return undefined;
+
+    const height = dataListRef.current.getBoundingClientRect().height;
+    const bodyHeight = document.body.clientHeight;
+
+    function handleScroll({
+      target,
+    }: {
+      readonly target: EventTarget | null;
+    }): void {
+      if (
+        !showList ||
+        dataListRef.current === null ||
+        input === null ||
+        target === dataListRef.current
+      )
+        return undefined;
+
+      // If this code turns out to be buggy, can just replace it with handleClose()
+      const { top, bottom, width } = input.getBoundingClientRect();
+      const isOverflowing = bottom + height > document.body.clientHeight;
+      if (isOverflowing) {
+        dataListRef.current.style.top = '';
+        dataListRef.current.style.bottom = `${bodyHeight - top}px`;
+      } else {
+        dataListRef.current.style.top = `${bottom}px`;
+        dataListRef.current.style.bottom = '';
+      }
+      dataListRef.current.style.width = `${width}px`;
+    }
+
+    handleScroll({ target: null });
+
+    window.addEventListener('scroll', handleScroll, true);
+    return (): void => window.addEventListener('scroll', handleScroll, true);
+  }, [showList, input]);
 
   return (
-    <div className={`relative ${containerClassName}`}>
+    <>
       {children({
         forwardRef(input): void {
           setInput(input);
@@ -196,7 +222,6 @@ export function Autocomplete<T>({
             forwardRef.current = input;
           else if (typeof forwardRef === 'function') forwardRef(input);
         },
-        className: 'w-full',
         value: pendingValue,
         type: 'search',
         autoComplete: 'off',
@@ -225,10 +250,10 @@ export function Autocomplete<T>({
         },
       })}
       <ul
-        className={`absolute z-10 w-full rounded cursor-pointer
+        className={`fixed z-10 w-full rounded cursor-pointer
           rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
           shadow-lg shadow-gray-400 dark:border dark:border-gray-500
-          ${showList ? '' : 'sr-only'} ${isOverflowing ? 'bottom-8' : ''}`}
+          ${showList ? '' : 'sr-only'}`}
         role="listbox"
         aria-label={ariaLabel}
         id={id}
@@ -307,6 +332,6 @@ export function Autocomplete<T>({
           </>
         )}
       </ul>
-    </div>
+    </>
   );
 }

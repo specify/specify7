@@ -336,7 +336,6 @@ export function QueryComboBox({
   return (
     <div className="flex items-center">
       <Autocomplete<number>
-        containerClassName="flex-1"
         source={React.useCallback(
           async (value) =>
             isLoaded && typeof typeSearch === 'object'
@@ -435,6 +434,7 @@ export function QueryComboBox({
       >
         {(props): JSX.Element => (
           <Input.Generic
+            className="flex-1"
             id={id}
             required={isRequired}
             isReadOnly={
