@@ -13,6 +13,8 @@ import * as navigation from '../navigation';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import * as queryString from '../querystring';
+import { deleteResource, getResourceApiUrl } from '../resource';
+import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
@@ -26,9 +28,6 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
-import { schema } from '../schema';
-import { getResourceApiUrl } from '../resource';
-import { ping } from '../ajax';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(queryString.parse()[queryParameter], (index) =>
@@ -233,10 +232,7 @@ export function IntegratedRecordSelector({
                 ) && (
                   <DataEntry.Delete
                     onClick={handleRemove}
-                    disabled={
-                      mode === 'view' ||
-                      (isToOne && collection.models.length > 0)
-                    }
+                    disabled={mode === 'view' || collection.models.length === 0}
                   />
                 )}
                 <span className="flex-1 -ml-4" />
@@ -284,6 +280,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onClose: handleClose,
   canAddAnother,
   onSaved: handleSaved,
+  onAdd: handleAdd,
+  onDelete: handleDelete,
   ...rest
 }: {
   /*
@@ -307,7 +305,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   }) => void;
 } & Omit<
   RecordSelectorProps<SCHEMA>,
-  'relatedResource' | 'records' | 'index' | 'children'
+  'records' | 'index' | 'children'
 >): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -337,24 +335,62 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
+  const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
+  React.useEffect(
+    () =>
+      setIndex((index) =>
+        isAddingNew ? rest.totalCount : Math.min(index, rest.totalCount - 1)
+      ),
+    [isAddingNew, rest.totalCount]
+  );
+
   const newResource = React.useMemo(
     () => (isAddingNew ? new model.Resource({ id: undefined }) : undefined),
     [isAddingNew, model]
   );
+  const currentResource = newResource ?? records[index];
 
-  const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
+  // Show a warning dialog if navigating away before saving the record
+  const [unloadProtect, setUnloadProtect] = React.useState<
+    (() => void) | undefined
+  >(undefined);
 
   return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
+      onAdd={
+        typeof handleAdd === 'function'
+          ? (resource): void => {
+              if (currentResource?.isNew() === true)
+                setUnloadProtect(() => () => handleAdd(resource));
+              else handleAdd(resource);
+            }
+          : undefined
+      }
+      onDelete={
+        typeof handleDelete === 'function'
+          ? (resource): void => {
+              if (currentResource?.isNew() === true)
+                setUnloadProtect(() => () => handleDelete(resource));
+              else handleDelete(resource);
+            }
+          : undefined
+      }
+      totalCount={rest.totalCount + (isAddingNew ? 1 : 0)}
+      index={index}
       model={model}
       records={
         typeof newResource === 'object' ? [...records, newResource] : records
       }
-      index={index}
       onSlide={(index: number): void => {
-        setIndex(index);
-        handleSlide?.(index);
+        function callback(): void {
+          setIndex(index);
+          handleSlide?.(index);
+        }
+
+        if (currentResource?.isNew() === true && currentResource.needsSaved)
+          setUnloadProtect(() => callback);
+        else callback();
       }}
     >
       {({
@@ -368,7 +404,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           <ResourceView
             resource={resource}
             dialog={dialog}
-            title={`${title} (${ids.length})`}
+            title={title}
             headerButtons={
               <>
                 <DataEntry.Visit
@@ -392,7 +428,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     onClick={handleRemove}
                   />
                 ) : undefined}
-                <span className="flex-1 -ml-4" />
+                {isAddingNew ? (
+                  <p className="flex-1">{formsText('creatingNewRecord')}</p>
+                ) : (
+                  <span className="flex-1 -ml-4" />
+                )}
                 {slider}
               </>
             }
@@ -410,13 +450,36 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             onClose={handleClose}
           />
           {dialogs}
+          {typeof unloadProtect === 'function' && (
+            <Dialog
+              header={formsText('recordSelectorUnloadProtectDialogHeader')}
+              onClose={(): void => setUnloadProtect(undefined)}
+              buttons={
+                <>
+                  <Button.DialogClose>
+                    {commonText('cancel')}
+                  </Button.DialogClose>
+                  <Button.Orange
+                    onClick={(): void => {
+                      unloadProtect();
+                      setUnloadProtect(undefined);
+                    }}
+                  >
+                    {formsText('ignoreAndContinue')}
+                  </Button.Orange>
+                </>
+              }
+            >
+              {formsText('recordSelectorUnloadProtectDialogMessage')}
+            </Dialog>
+          )}
         </>
       )}
     </BaseRecordSelector>
   );
 }
 
-const fetchItems = (
+const fetchItems = async (
   recordSetId: number,
   offset: number
 ): Promise<
@@ -440,10 +503,16 @@ const fetchItems = (
   }));
 
 // FIXME: test this
+const defaultRecordSetState = {
+  totalCount: 0,
+  ids: [],
+  isAddingNew: false,
+  index: 0,
+};
+
 export function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
   defaultResourceIndex,
-  title,
   dialog,
   mode,
   onClose: handleClose,
@@ -462,7 +531,6 @@ export function RecordSet<SCHEMA extends AnySchema>({
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly defaultResourceIndex: number | undefined;
-  readonly title: string | undefined;
   readonly dialog: false | 'modal' | 'nonModal';
   readonly mode: FormMode;
   readonly onClose: () => void;
@@ -473,16 +541,12 @@ export function RecordSet<SCHEMA extends AnySchema>({
         readonly totalCount: number;
         readonly ids: RA<number | undefined>;
         readonly isAddingNew: boolean;
+        readonly index: number;
       }
     | undefined
   >(undefined);
-  const { totalCount, ids, isAddingNew } = items ?? {
-    totalCount: 0,
-    ids: [],
-    isAddingNew: false,
-  };
-
-  const [index, setIndex] = React.useState(defaultResourceIndex ?? 0);
+  const { totalCount, ids, isAddingNew, index } =
+    items ?? defaultRecordSetState;
 
   // Fetch ID of record at current index
   const currentRecordId = ids[index];
@@ -499,18 +563,11 @@ export function RecordSet<SCHEMA extends AnySchema>({
         )
       )
         .then((updateIds) =>
-          setItems(
-            (
-              { ids, isAddingNew } = {
-                ids: [],
-                isAddingNew: false,
-                totalCount: 0,
-              }
-            ) => ({
-              ...updateIds(ids),
-              isAddingNew,
-            })
-          )
+          setItems(({ ids, isAddingNew, index } = defaultRecordSetState) => ({
+            ...updateIds(ids),
+            isAddingNew,
+            index,
+          }))
         )
         .catch(crash);
     return (): void => {
@@ -519,9 +576,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
   }, [totalCount, currentRecordId, index, recordSet.id]);
 
   const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
-    setItems(() => {
-      setIndex(totalCount + 1);
-
+    setItems(({ totalCount, ids } = defaultRecordSetState) => {
       if (resource.recordsetid !== recordSet.id) {
         resource.recordsetid = recordSet.id;
         if (!resource.isNew()) {
@@ -536,6 +591,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         totalCount: totalCount + 1,
         ids: typeof resource.id === 'undefined' ? ids : [...ids, resource.id],
         isAddingNew: typeof resource.id === 'undefined',
+        index: totalCount + 1,
       };
     });
 
@@ -586,7 +642,8 @@ export function RecordSet<SCHEMA extends AnySchema>({
     <RecordSelectorFromIds<SCHEMA>
       {...rest}
       ids={ids}
-      title={title ?? recordSet.get('name')}
+      relatedResource={recordSet}
+      title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
       isDependent={false}
       isAddingNew={isAddingNew}
       dialog={dialog}
@@ -607,37 +664,42 @@ export function RecordSet<SCHEMA extends AnySchema>({
         recordSet.isNew() || hasToolPermission('recordSets', 'delete')
           ? (): void => {
               if (isAddingNew)
-                setItems({ totalCount, ids, isAddingNew: false });
+                setItems({ totalCount, ids, isAddingNew: false, index });
               else
                 loading(
                   fetchCollection('RecordSetItem', {
                     limit: 1,
                     recordId: ids[index],
                     recordSet: recordSet.id,
-                  }).then(({ records }) =>
-                    ping(`/api/specify/recordsetitem/${records[0].id}/`, {
-                      method: 'DELETE',
-                    }).then(() => {
+                  })
+                    .then(async ({ records }) =>
+                      deleteResource('RecordSetItem', defined(records[0]).id)
+                    )
+                    .then(() => {
                       setItems({
                         totalCount: totalCount - 1,
                         ids: removeItem(ids, index),
                         isAddingNew: false,
-                      });
-                      setIndex((previousIndex) =>
-                        clamp(
+                        index: clamp(
                           0,
                           totalCount - 1,
-                          previousIndex > index ? index - 1 : index
-                        )
-                      );
+                          previousIndex.current > index ? index - 1 : index
+                        ),
+                      });
                       if (totalCount === 1) handleClose();
                     })
-                  )
                 );
             }
           : undefined
       }
-      onSlide={setIndex}
+      onSlide={(index): void =>
+        setItems({
+          totalCount,
+          ids,
+          isAddingNew: false,
+          index: Math.min(index, totalCount - 1),
+        })
+      }
     />
   );
 }

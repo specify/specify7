@@ -2,7 +2,10 @@ import type { AnySchema } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import type { R, RA } from './types';
 
-// TODO: only propagate for dependent resources
+/*
+ * Propagate a save blocker even for independent resources, because
+ * resources rendered in a subview don't have a "Save" button of their own
+ */
 function triggerOnParent(resource: SpecifyResource<AnySchema>) {
   return resource.parent?.trigger.bind(resource.parent);
 }

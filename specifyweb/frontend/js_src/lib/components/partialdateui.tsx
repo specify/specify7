@@ -108,6 +108,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
+    // This is needed in case resource changes
+    setInputValue('');
+
     resource.settingDefaultValues(() =>
       defaultValue === 'today' && resource.isNew()
         ? resource.set(dateField, getDateInputValue(new Date()) as never)
@@ -142,6 +145,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
 
   const renderCount = React.useRef(0);
+  React.useEffect(() => {
+    renderCount.current = 0;
+  }, [resource]);
   React.useEffect(() => {
     renderCount.current += 1;
     /*

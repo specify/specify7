@@ -1,4 +1,4 @@
-import { ajax, Http } from './ajax';
+import { ajax, Http, ping } from './ajax';
 import type { Tables } from './datamodel';
 import type {
   AnySchema,
@@ -36,6 +36,18 @@ export const fetchResource = async <
   ).then(({ data: record, status }) =>
     status === Http.NOT_FOUND ? undefined : serializeResource(record)
   );
+
+export const deleteResource = async (
+  tableName: keyof Tables,
+  id: number
+): Promise<void> =>
+  ping(
+    `/api/specify/${tableName.toLowerCase()}/${id}/`,
+    {
+      method: 'DELETE',
+    },
+    { expectedResponseCodes: [Http.NO_CONTENT] }
+  ).then(f.void);
 
 export function getResourceViewUrl(
   tableName: keyof Tables,

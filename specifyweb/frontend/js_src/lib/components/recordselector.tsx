@@ -9,7 +9,7 @@ import formsText from '../localization/forms';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { Button, className, Input } from './basic';
+import { Button, Input } from './basic';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 
@@ -17,12 +17,10 @@ export function Slider({
   value,
   count,
   onChange: handleChange,
-  onAdd: handleAdd,
 }: {
   readonly value: number;
   readonly count: number;
   readonly onChange: (newValue: number) => void;
-  readonly onAdd: (() => void) | undefined;
 }): JSX.Element {
   const [isBlank, setIsBlank] = React.useState<boolean>(false);
   return (
@@ -58,7 +56,11 @@ export function Slider({
           <Input.Number
             className="no-arrows dark:bg-neutral-600 absolute top-0 left-0 w-full h-full font-bold bg-white border-0"
             min="1"
-            max={count}
+            /*
+             * Count is 0 when input is invisible, which causes the field to be
+             * invalid (as min is 1) which inhibits form submission
+             */
+            max={Math.max(1, count)}
             step="1"
             // Convert 0-based indexing to 1-based
             value={isBlank ? '' : value + 1}
@@ -90,16 +92,6 @@ export function Slider({
       >
         ≫
       </Button.Simple>
-      {typeof handleAdd === 'function' && (
-        <Button.Simple
-          className={className.greenButton}
-          aria-label={formsText('createRecordButtonDescription')}
-          title={formsText('createRecordButtonDescription')}
-          onClick={handleAdd}
-        >
-          +
-        </Button.Simple>
-      )}
     </div>
   );
 }
@@ -231,7 +223,6 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
         }
         count={totalCount}
         onChange={handleSlide}
-        onAdd={undefined}
       />
     ),
     index,

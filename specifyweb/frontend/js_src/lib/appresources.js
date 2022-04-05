@@ -203,7 +203,7 @@ const ResourceDataView = Backbone.View.extend({
 
                 if(hasToolPermission('resources', 'update')){
                     const saveButton = new SaveButtonView({
-                        model: this.appresourceData,
+                        resource: this.appresourceData,
                         canAddAnother: false,
                         form: this.el,
                         onSaved: ()=>this.model.save(),

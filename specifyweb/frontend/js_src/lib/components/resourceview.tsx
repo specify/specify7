@@ -153,7 +153,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
         : ({ onSaving: handleSaving, onSaved: handleSaved, canAddAnother }) =>
             form === null || typeof resource === 'undefined' ? undefined : (
               <SaveButton
-                model={resource}
+                resource={resource}
                 form={form}
                 onSaving={handleSaving}
                 onSaved={(payload): void => {
@@ -322,8 +322,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 <DataEntry.SubFormTitle>
                   {titleOverride ?? title}
                 </DataEntry.SubFormTitle>
-                {headerButtons}
                 {specifyNetworkBadge}
+                {headerButtons}
               </DataEntry.SubFormHeader>
               {formattedChildren}
             </DataEntry.SubForm>
@@ -460,7 +460,6 @@ export function ShowResource({
         mode="edit"
         model={resource.specifyModel}
         onClose={(): void => navigation.go('/')}
-        title={undefined}
         onAdd={f.void}
         onSlide={f.void}
         recordSet={recordSet}

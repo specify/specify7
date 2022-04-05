@@ -510,10 +510,10 @@ const formsText = createDictionary({
   },
   // RecordSelector
   removeRecordDialogHeader: {
-    'en-us': 'Remove dependent record',
-    'ru-ru': 'Удалить зависимую запись',
-    ca: 'Remove dependent record',
-    'es-es': 'Remove dependent record',
+    'en-us': 'Remove record?',
+    'ru-ru': 'Удалить запись?',
+    ca: 'Remove record?',
+    'es-es': 'Remove record?',
   },
   removeRecordDialogMessage: {
     'en-us': 'Are you sure you want to remove this record?',
@@ -632,25 +632,6 @@ const formsText = createDictionary({
       Specify was unable to find the form definition to display this resource`,
     'es-es': `
       Specify was unable to find the form definition to display this resource`,
-  },
-  addingToRecordSet: {
-    'en-us': 'Adding to Record Set and Database',
-    'ru-ru': 'Добавление в набор записей и базу данных',
-    ca: 'Adding to Record Set and Database',
-    'es-es': 'Adding to Record Set and Database',
-  },
-  createRecordButtonDescription: {
-    'en-us': 'Create record and add to Record Set',
-    'ru-ru': 'Создать запись и добавить в Набор объектов',
-    ca: 'Create record and add to Record Set',
-    'es-es': 'Create record and add to Record Set',
-  },
-  recordSetAreaDescription: {
-    'en-us': (recordSetName: string): string => `Record Set: ${recordSetName}`,
-    'ru-ru': (recordSetName: string): string =>
-      `Набор объектов: ${recordSetName}`,
-    ca: (recordSetName: string): string => `Record Set: ${recordSetName}`,
-    'es-es': (recordSetName: string): string => `Record Set: ${recordSetName}`,
   },
   firstRecord: {
     'en-us': 'First Record',
@@ -1065,6 +1046,25 @@ const formsText = createDictionary({
     'ru-ru': 'Генерировать отчет при сохранении',
     ca: 'Generate Label on Save',
     'es-es': 'Generate Label on Save',
+  },
+  // FIXME: localize
+  recordSelectorUnloadProtectDialogHeader: {
+    'en-us': 'Proceed without saving?',
+    'ru-ru': 'Proceed without saving?',
+    ca: 'Proceed without saving?',
+    'es-es': 'Proceed without saving?',
+  },
+  recordSelectorUnloadProtectDialogMessage: {
+    'en-us': 'You might want to save this record before navigating away.',
+    'ru-ru': 'You might want to save this record before navigating away.',
+    ca: 'You might want to save this record before navigating away.',
+    'es-es': 'You might want to save this record before navigating away.',
+  },
+  creatingNewRecord: {
+    'en-us': 'Creating new record',
+    'ru-ru': 'Creating new record',
+    ca: 'Creating new record',
+    'es-es': 'Creating new record',
   },
 });
 

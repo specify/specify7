@@ -16,6 +16,7 @@ import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { FormCell } from './specifyformcell';
 import commonText from '../localization/common';
+import { loadingGif } from './queryresultstable';
 
 /** A hardcoded view description for an attachment table */
 const getAttachmentFormDefinition = (
@@ -192,7 +193,9 @@ export function RenderForm<SCHEMA extends AnySchema>({
             </div>
           ))}
         </DataEntry.Grid>
-      ) : undefined}
+      ) : (
+        loadingGif
+      )}
     </div>
   );
 }

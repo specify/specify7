@@ -8,28 +8,19 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
+import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { LoadingContext } from './contexts';
-
-function handleFocus(event: FocusEvent): void {
-  const target = event.target as HTMLElement;
-  /*
-   * Don't display "This is a required field" error or pattern
-   * mismatch message until input was interacted with
-   */
-  target.classList.remove('not-touched');
-}
 
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
-  model,
+  resource,
   canAddAnother,
   form,
   onSaving: handleSaving,
   onSaved: handleSaved,
 }: {
-  readonly model: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
   readonly form: HTMLFormElement;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
@@ -49,24 +40,26 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
+    setSaveRequired(false);
     const handleSaveRequired = (): void => setSaveRequired(true);
-    model.on('saverequired', handleSaveRequired);
+    resource.on('saverequired', handleSaveRequired);
 
+    setSaveBlocked(false);
     function handleChanged(saveRequired = true): void {
       if (saveRequired) handleSaveRequired();
       const onlyDeferredBlockers = Array.from(
-        model.saveBlockers.blockingResources
+        resource.saveBlockers.blockingResources
       ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
       setSaveBlocked(!onlyDeferredBlockers);
     }
 
     handleChanged(false);
-    model.on('blockerschanged', handleChanged);
+    resource.on('blockerschanged', handleChanged);
     return (): void => {
-      model.off('saverequired', handleSaveRequired);
-      model.off('blockerschanged', handleChanged);
+      resource.off('saverequired', handleSaveRequired);
+      resource.off('blockerschanged', handleChanged);
     };
-  }, [model]);
+  }, [resource]);
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
@@ -76,9 +69,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(() => {
     if (form.id === '') form.id = id('form');
     setFormId(form.id);
-
-    form.addEventListener('focusout', handleFocus);
-    return (): void => form.removeEventListener('focusout', handleFocus);
   }, [form, id]);
 
   async function handleSubmit(
@@ -89,9 +79,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     if (saveBlocked || (!saveRequired && !addAnother)) return;
 
-    await model.businessRuleMgr.pending;
+    await resource.businessRuleMgr.pending;
 
-    const blockingResources = Array.from(model.saveBlockers.blockingResources);
+    const blockingResources = Array.from(
+      resource.saveBlockers.blockingResources
+    );
     blockingResources.forEach((resource) =>
       resource.saveBlockers.fireDeferredBlockers()
     );
@@ -104,15 +96,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * This has to be done before saving so that the data we get back isn't copied.
      * Eg. autonumber fields, the id, etc.
      */
-    const newResource = addAnother ? model.clone() : undefined;
-    const wasNew = model.isNew();
+    const newResource = addAnother ? resource.clone() : undefined;
+    const wasNew = resource.isNew();
 
     // Save process is canceled if false was returned
     if (handleSaving?.() === false) return;
 
     setIsSaving(true);
-    model
-      .save()
+    (saveRequired ? resource.save() : Promise.resolve())
       .then(() =>
         handleUnloadProtect(false, (): void =>
           handleSaved?.({
@@ -149,10 +140,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
-          disabled={isSaving || !saveRequired}
+          disabled={isSaving}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
-          {saveRequired || !model.isNew()
+          {saveRequired || resource.isNew()
             ? formsText('saveAndAddAnother')
             : formsText('addAnother')}
         </ButtonComponent>
@@ -191,7 +182,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         >
           <p>{formsText('saveBlockedDialogMessage')}</p>
           <Ul>
-            {Array.from(model.saveBlockers.blockingResources, (resource) => (
+            {Array.from(resource.saveBlockers.blockingResources, (resource) => (
               <li key={resource.cid}>
                 <H3>{resource.specifyModel.label}</H3>
                 <dl>

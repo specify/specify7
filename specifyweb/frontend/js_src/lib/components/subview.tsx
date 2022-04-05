@@ -64,10 +64,10 @@ export function SubView({
           const fieldName = sortField.startsWith('-')
             ? sortField.slice(1)
             : sortField;
-          // Collection.prototype.clone does not copy the options, so we can't use it here
           const models = Array.from(collection.models).sort(
             sortFunction((resource) => resource.get(fieldName), isReverse)
           );
+          // Collection.prototype.clone does not pass the options, so we can't use it here
           const newCollection = new collection.constructor(
             { field: collection.field, related: collection.related },
             models
@@ -87,7 +87,8 @@ export function SubView({
               })
             : new field.relatedModel.LazyCollection()
         ) as Collection<AnySchema>;
-        if (typeof resource === 'object') collection.add(resource);
+        if (typeof resource === 'object' && resource !== null)
+          collection.add(resource);
         return collection;
       }
     }, [resourceUrl, parentResource, field]),
