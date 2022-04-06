@@ -85,9 +85,9 @@ export const parseFormDefinition = (
 ): ParsedFormDefinition =>
   postProcessRows(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    Array.from(viewDefinition.querySelectorAll('rows > row'), (row) =>
+    Array.from(viewDefinition.querySelectorAll(':scope > rows > row'), (row) =>
       Array.from(
-        row.querySelectorAll('cell'),
+        row.querySelectorAll(':scope > cell'),
         parseFormCell.bind(undefined, model)
       )
     ),
@@ -206,6 +206,12 @@ function postProcessRows(
           cell.type === 'Label' &&
           typeof cell.labelForCellId === 'undefined' &&
           typeof row[index + 1]?.id === 'string' &&
+          // Don't do this for plugins, as they may already have a label
+          f.var(
+            row[index + 1],
+            (cell) =>
+              cell.type !== 'Field' || cell.fieldDefinition.type !== 'Plugin'
+          ) &&
           typeof initialLabelsForCells[defined(row[index + 1].id)] ===
             'undefined'
             ? {
@@ -245,15 +251,22 @@ function postProcessRows(
                         'Division'
                       )
                     : undefined) ??
-                  cell.fieldName ??
-                  cell.id ??
-                  cell.labelForCellId ??
+                  (cell.fieldName?.toLowerCase() === 'this'
+                    ? undefined
+                    : cell.fieldName) ??
+                  // Use ID as label, if it is not a number
+                  (Number.isNaN(Number.parseInt(cell.id ?? ''))
+                    ? cell.id
+                    : undefined) ??
+                  (Number.isNaN(Number.parseInt(cell.labelForCellId ?? ''))
+                    ? cell.labelForCellId
+                    : undefined) ??
                   '',
                 title: field?.getLocalizedDesc(),
               }))
             : cell
         ),
-      /**
+      /*
        * Add a necessary number of blank cells at the end so that the
        * grid is not off when some row has fewer columns than in the definition.
        */
