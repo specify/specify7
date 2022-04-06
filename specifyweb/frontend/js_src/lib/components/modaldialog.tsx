@@ -214,7 +214,7 @@ export function Dialog({
         // Don't allow moving the dialog past the window bounds
         bounds="parent"
         // Allow moving the dialog when hovering over the header line
-        handle=".handle"
+        handle={`#${id('handle')}`}
         // Don't allow moving when in full-screen
         cancel=".full-screen"
         // Don't need any extra classNames
@@ -292,9 +292,10 @@ export function Dialog({
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span
-        className={`handle flex flex-wrap gap-4 ${
+        className={`flex flex-wrap gap-4 ${
           isFullScreen ? '' : 'p-4 -m-4 cursor-move'
         }`}
+        id={id('handle')}
       >
         <div className="flex items-center gap-2">
           {dialogIcons[iconType]}
