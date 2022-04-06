@@ -2,8 +2,9 @@ import logging
 import json
 from threading import Thread
 from datetime import datetime
+from collections import defaultdict
 
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 
@@ -14,7 +15,7 @@ from ..permissions.permissions import PermissionTarget, PermissionTargetAction, 
 
 from . import models
 from .queryfield import QueryField
-from .execution import execute, run_ephemeral_query, do_export, recordset
+from .execution import execute, run_ephemeral_query, do_export, recordset, return_loan_preps as rlp
 
 logger = logging.getLogger(__name__)
 
@@ -147,4 +148,24 @@ def make_recordset(request):
                           request.specify_user_agent, recordset_info)
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
+
+@require_POST
+@login_maybe_required
+@apply_access_control
+@never_cache
+def return_loan_preps(request):
+    try:
+        data = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    to_return = rlp(request.specify_collection, request.specify_user, request.specify_user_agent, data)
+
+    resp = defaultdict(lambda: {'loanpreparations': list()})
+    for lp_id, quantity, loan_id, loan_no in to_return:
+        item = resp[loan_id]
+        item['loannumber'] = loan_no
+        item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
+
+    return JsonResponse(resp, safe=False)
 
