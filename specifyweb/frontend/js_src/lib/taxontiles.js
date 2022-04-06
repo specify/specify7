@@ -5,8 +5,9 @@ import _ from 'underscore';
 import d3 from 'd3';
 
 import {schema} from './schema';
-import welcomeText from './localization/welcome';
 import {ajax} from './ajax';
+import {f} from './functools';
+import welcomeText from './localization/welcome';
 
 export default function makeTreeMap(container) {
   container.classList.add('h-[473px]');
@@ -47,7 +48,7 @@ export default function makeTreeMap(container) {
     data,
     genusRankID
   ]) {
-    const tree = buildTree(data[0]);
+    const tree = buildTree(data);
     const root = tree[0];
     const thres = tree[1];
     let makeName;
@@ -92,16 +93,22 @@ export default function makeTreeMap(container) {
         return d.children ? null : color(d.name);
       });
 
-    _.defer(function addToolTips() {
-      $('.treemap .node').tooltip({track: true, show: false, hide: false});
-    });
+    container.addEventListener('mouseover', ({target})=>
+      f.maybe(target.closest('.node')?.getAttribute('title'),
+          (textContent)=>title.textContent = textContent)
+    )
 
     $('<p>', {
       title: welcomeText('taxonTilesDescription')(thres),
-      class: 'absolute b-0 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
+      class: 'absolute top-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
+
+    const title = $('<p>', {
+      class: 'absolute bottom-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
+    })
+      .appendTo(div[0])[0]
   });
 }
 
@@ -126,20 +133,13 @@ function buildTree(data) {
   const nodes = [];
   const histo = [];
 
-  _.each(data, function (datum) {
-    let i = 0;
-    const node = {
-      id: datum[i++],
-      rankId: datum[i++],
-      parentId: datum[i++],
-      name: datum[i++],
-      count: datum[i++],
-      children: [],
-    };
+  _.each(data, function ([id, rankId, parentId, name, count]) {
+    const node = {id, rankId, parentId, name, count, children: []};
 
-    _.isNull(node.parentId) && roots.push(node);
-    nodes[node.id] = node;
-    histo[node.count] = (histo[node.count] || 0) + 1;
+    if(parentId === null) roots.push(node);
+    nodes[id] = node;
+    histo[count] ??= 0;
+    histo[count] += 1;
   });
 
   // This is to try to limit the number of treemap squares to ~1000. For some
