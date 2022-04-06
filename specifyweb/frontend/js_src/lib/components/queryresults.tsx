@@ -178,9 +178,10 @@ function QueryResult({
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
-              ['A'].includes((target as HTMLElement).tagName)
-                ? undefined
-                : handleSelected?.(!isSelected, shiftKey)
+              // Ignore clicks on the "View" links
+              (target as Element).closest('a') === null
+                ? handleSelected?.(!isSelected, shiftKey)
+                : undefined
           : undefined
       }
     >

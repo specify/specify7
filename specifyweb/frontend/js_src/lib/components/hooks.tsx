@@ -1,6 +1,8 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
+import { getDateInputValue } from '../dayjs';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
@@ -10,7 +12,7 @@ import type { Parser } from '../uiparse';
 import { parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { LoadingContext } from './contexts';
-import { f } from '../functools';
+import { FormContext } from './resourceview';
 
 const idStore: R<number> = {};
 
@@ -103,6 +105,17 @@ export function useValidation<T extends Input = HTMLInputElement>(
 
     input.addEventListener('input', handleChange);
     return (): void => input.removeEventListener('input', handleChange);
+  }, []);
+
+  // Display validation message on focus
+  React.useEffect(() => {
+    if (!inputRef.current) return undefined;
+    const input = inputRef.current;
+
+    const handleFocus = (): void => void input.reportValidity();
+
+    input.addEventListener('focus', handleFocus);
+    return (): void => input.removeEventListener('focus', handleFocus);
   }, []);
 
   const setValidation = React.useCallback(function setValidation(
@@ -382,16 +395,57 @@ export function useResourceValue<
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
+  const [{ triedToSubmit }] = React.useContext(FormContext);
+
+  /*
+   * Display saveBlocker validation errors only after field lost focus, not
+   * during typing
+   */
+  const [input, setInput] = React.useState<INPUT | null>(null);
+  const blockers = React.useRef<RA<string>>([]);
+  const handleBlur = React.useCallback(
+    (): void =>
+      blockers.current.length > 0 ? setValidation(blockers.current) : undefined,
+    [setValidation]
+  );
+  React.useEffect(() => {
+    if (typeof fieldName === 'undefined') return undefined;
+
+    function handleChange(): void {
+      if (typeof fieldName === 'undefined') return undefined;
+      blockers.current = resource.saveBlockers
+        .blockersForField(fieldName)
+        .filter(({ deferred }) => !deferred || triedToSubmit)
+        .map(({ reason }) => reason);
+      // Report validity only if not focused
+      if (document.activeElement !== inputRef.current) handleBlur();
+    }
+
+    resource.on('blockerschanged', handleChange);
+    return (): void => resource.off('blockerschanged', handleChange);
+  }, [triedToSubmit, resource, fieldName, handleBlur]);
+  React.useEffect(() => {
+    if (input === null || typeof fieldName === 'undefined') return undefined;
+    input.addEventListener('blur', handleBlur);
+    return (): void => input.removeEventListener('blur', handleBlur);
+  }, [input, setValidation, fieldName, handleBlur]);
+
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
     function updateValue(newValue: T) {
+      /*
+       * Converting ref to state so that React.useEffect can be triggered
+       * when needed
+       */
+      setInput(inputRef.current);
+
       setValue(
         (typeof parser?.type === 'number'
           ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
           : newValue) as T
       );
-      if (typeof fieldName !== 'string') return;
+      if (typeof fieldName === 'undefined') return;
 
       const parseResults = parseValue(
         parser,
@@ -401,12 +455,12 @@ export function useResourceValue<
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
+        if (inputRef.current?.validity.valid === false) return;
         const oldValue = resource.get(fieldName) ?? null;
         const parsedValue = parseResults.parsed as string;
         // Don't trigger unload protect needlessly
-        if (oldValue !== parsedValue) {
+        if (oldValue !== parsedValue)
           resource.set(fieldName, parsedValue as never);
-        }
       } else {
         setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
@@ -430,7 +484,7 @@ export function useResourceValue<
     };
   }, [defaultParser]);
 
-  // Listen for resource update. Set parser
+  // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
     if (typeof fieldName === 'undefined') return undefined;
 
@@ -441,16 +495,28 @@ export function useResourceValue<
         { resource }
       );
 
-    setParser(
+    /*
+     * Disable parser when validation is disabled. This is useful in search
+     * dialogs where space and quote characters are interpreted differently,
+     * thus validation for them should be disabled.
+     */
+    const parser =
       resource.noValidation === true || typeof field === 'undefined'
         ? {}
-        : resolveParser(field) ?? {}
-    );
+        : resolveParser(field) ?? {};
+    setParser(parser);
 
     resource.settingDefaultValues(() =>
       typeof defaultParser?.value === 'undefined' || !resource.isNew()
         ? undefined
-        : resource.set(fieldName, defaultParser.value as never)
+        : resource.set(
+            fieldName,
+            (defaultParser.value.toString().toLowerCase() === 'today'
+              ? parser.type === 'date'
+                ? getDateInputValue(new Date())
+                : defaultParser.value
+              : defaultParser.value) as never
+          )
     );
 
     const refresh = (): void =>

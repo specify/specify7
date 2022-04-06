@@ -148,7 +148,7 @@
           collectionobject.on('saveblocked:catalognumber', function(blocker) {
             var blockers;
             ok(true, 'save is blocked by catalognumber');
-            blockers = blocker.resource.saveBlockers.blockersForField('catalognumber');
+            blockers = blocker.resource.saveBlockers.blockersForField('catalogNumber');
             equal(blockers.length, 1, 'only one blocker');
             ok(blockers[0].reason, 'reason is given');
             return start();

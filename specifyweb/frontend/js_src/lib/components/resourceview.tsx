@@ -61,6 +61,9 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
 export type FormMeta = {
   // Undefined if form does not have a printOnSave button
   readonly printOnSave: undefined | boolean;
+  // Whether user tried to submit a form. This causes deferred save blockers
+  // to appear
+  readonly triedToSubmit: boolean;
 };
 
 export const FormContext = React.createContext<
@@ -70,7 +73,13 @@ export const FormContext = React.createContext<
       setMeta: (newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void
     ]
   >
->([{ printOnSave: false }, (): void => error('Form context is not defined')]);
+>([
+  {
+    printOnSave: false,
+    triedToSubmit: false,
+  },
+  (): void => error('Form context is not defined'),
+]);
 FormContext.displayName = 'FormContext';
 
 function BaseResourceView<SCHEMA extends AnySchema>({
@@ -116,6 +125,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
   const formMeta = React.useState<FormMeta>({
     printOnSave: undefined,
+    triedToSubmit: false,
   });
 
   const specifyForm =

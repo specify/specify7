@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
+import { replaceItem } from '../helpers';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
@@ -41,7 +42,6 @@ import {
   mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
-import { replaceItem } from '../helpers';
 
 // TODO: split this component into smaller components
 export function QueryLine({
@@ -341,10 +341,13 @@ export function QueryLine({
                   const newFilter = (target as HTMLSelectElement)
                     .value as QueryFieldFilter;
                   const startValue =
-                    filter.type === 'any' &&
-                    filtersWithDefaultValue.has(newFilter) &&
-                    filter.startValue === '' &&
-                    typeof fieldMeta.parser?.value === 'string'
+                    typeof queryFieldFilters[newFilter].component ===
+                    'undefined'
+                      ? ''
+                      : filter.type === 'any' &&
+                        filtersWithDefaultValue.has(newFilter) &&
+                        filter.startValue === '' &&
+                        typeof fieldMeta.parser?.value === 'string'
                       ? fieldMeta.parser.value
                       : filter.startValue;
                   handleFilterChange(index, {

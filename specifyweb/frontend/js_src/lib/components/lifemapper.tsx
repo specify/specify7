@@ -45,7 +45,7 @@ type IncomingMessageExtended = IncomingMessage & {
 const dispatch = generateDispatch<IncomingMessageExtended>({
   LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
     void leafletTileServersPromise
-      .then(async (leafletLayers) =>
+      .then((leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',
           systemInfo: getSystemInfo(),
@@ -171,11 +171,14 @@ function SpecifyNetwork({
     [resource]
   );
 
-  const getLink = (): string =>
-    formatLifemapperViewPageRequest(
-      toTable(resource, 'CollectionObject')?.get('guid') ?? '',
-      occurrenceName ?? ''
-    );
+  const getLink = React.useCallback(
+    (): string =>
+      formatLifemapperViewPageRequest(
+        toTable(resource, 'CollectionObject')?.get('guid') ?? '',
+        occurrenceName ?? ''
+      ),
+    [resource, occurrenceName]
+  );
 
   const handleClick = React.useCallback((): void => {
     const childWindow = window.open(getLink(), '_blank') ?? undefined;
@@ -183,9 +186,13 @@ function SpecifyNetwork({
       handleFailure();
       return;
     }
-    window.removeEventListener('message', messageHandler);
+    /*
+     * Note: this does not remove the previous event handler so that
+     * the Specify Network page can retrive information even after the form
+     * is closed, for as long as the browser tab is open
+     */
     window.addEventListener('message', messageHandler);
-  }, [messageHandler]);
+  }, [getLink, messageHandler, handleFailure]);
 
   // If link was clicked before resource was fully loaded, show loading message
   const [isPending, handlePending, handleNotPending] = useBooleanState();
@@ -215,7 +222,6 @@ function SpecifyNetwork({
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}
         rel="opener noreferrer"
-        className="h-7 justify-end"
         onClick={(event): void => {
           event.preventDefault();
           if (typeof occurrenceName === 'undefined') handlePending();
@@ -225,7 +231,7 @@ function SpecifyNetwork({
         <img
           src="/static/img/specify_network_logo_long.svg"
           alt=""
-          className="w-3/5"
+          className="h-7"
         />
       </Link.Default>
     </>

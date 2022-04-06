@@ -96,7 +96,9 @@ async function recursiveResourceResolve(
   )
     if (
       hasTablePermission(
-        resource?.specifyModel?.name ?? resource?.resource.specifyModel?.name,
+        resource?.specifyModel?.name ??
+          resource?.related?.specifyModel?.name ??
+          resource?.field?.model,
         'read'
       )
     )

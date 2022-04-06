@@ -24,7 +24,7 @@ import {
   getRelatedCollectionId,
   makeQueryComboBoxQuery,
 } from '../querycomboboxutils';
-import { fetchResource, idFromUrl } from '../resource';
+import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
@@ -335,7 +335,7 @@ export function QueryComboBox({
 
   return (
     <div className="flex items-center">
-      <Autocomplete<number>
+      <Autocomplete<string>
         source={React.useCallback(
           async (value) =>
             isLoaded && typeof typeSearch === 'object'
@@ -390,12 +390,16 @@ export function QueryComboBox({
                   responses
                     .flatMap(({ data: { results } }) => results)
                     .map(([id, label]) => ({
-                      data: id,
+                      data:
+                        field?.isRelationship === true
+                          ? getResourceApiUrl(field.relatedModel.name, id)
+                          : id.toString(),
                       label,
                     }))
                 )
               : [],
           [
+            field,
             isLoaded,
             typeSearch,
             subViewRelationship,
@@ -573,53 +577,52 @@ export function QueryComboBox({
           )}
         </Dialog>
       )}
-      {typeof formatted?.resource === 'object' ? (
-        state.type === 'ViewResourceState' ? (
-          <ResourceView
-            isSubForm={false}
-            resource={formatted.resource}
-            canAddAnother={false}
-            dialog="nonModal"
-            onSaving={
-              field?.isDependent()
-                ? (): false => {
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
-            onClose={(): void => setState({ type: 'MainState' })}
-            onSaved={undefined}
-            onDeleted={(): void => {
-              resource.set(defined(field?.name), null as never);
-              setState({ type: 'MainState' });
-            }}
-            mode={mode}
-          />
-        ) : state.type === 'AddResourceState' ? (
-          <ResourceView
-            isSubForm={false}
-            resource={state.resource}
-            canAddAnother={false}
-            dialog="nonModal"
-            onSaving={
-              field?.isDependent()
-                ? (): false => {
-                    resource.set(defined(field?.name), state.resource as never);
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
-            onClose={(): void => setState({ type: 'MainState' })}
-            onSaved={(): void => {
-              resource.set(defined(field?.name), state.resource as never);
-              setState({ type: 'MainState' });
-            }}
-            onDeleted={undefined}
-            mode={mode}
-          />
-        ) : undefined
+      {typeof formatted?.resource === 'object' &&
+      state.type === 'ViewResourceState' ? (
+        <ResourceView
+          isSubForm={false}
+          resource={formatted.resource}
+          canAddAnother={false}
+          dialog="nonModal"
+          onSaving={
+            field?.isDependent()
+              ? (): false => {
+                  setState({ type: 'MainState' });
+                  return false;
+                }
+              : undefined
+          }
+          onClose={(): void => setState({ type: 'MainState' })}
+          onSaved={undefined}
+          onDeleted={(): void => {
+            resource.set(defined(field?.name), null as never);
+            setState({ type: 'MainState' });
+          }}
+          mode={mode}
+        />
+      ) : state.type === 'AddResourceState' ? (
+        <ResourceView
+          isSubForm={false}
+          resource={state.resource}
+          canAddAnother={false}
+          dialog="nonModal"
+          onSaving={
+            field?.isDependent()
+              ? (): false => {
+                  resource.set(defined(field?.name), state.resource as never);
+                  setState({ type: 'MainState' });
+                  return false;
+                }
+              : undefined
+          }
+          onClose={(): void => setState({ type: 'MainState' })}
+          onSaved={(): void => {
+            resource.set(defined(field?.name), state.resource as never);
+            setState({ type: 'MainState' });
+          }}
+          onDeleted={undefined}
+          mode={mode}
+        />
       ) : undefined}
       {state.type === 'SearchState' ? (
         <SearchDialog

@@ -208,7 +208,8 @@ export const parsers: RR<
     step: 1,
     formatters: [formatter.int],
     validators: [validators.number],
-    value: new Date().getMonth().toString(),
+    // Caution: getMonth is 0-based
+    value: (new Date().getMonth() + 1).toString(),
   },
 
   day: {

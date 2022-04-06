@@ -13,6 +13,8 @@ import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 
+// TODO: handle case when there are save blockers for field that is not
+//   rendered on the form
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   canAddAnother,

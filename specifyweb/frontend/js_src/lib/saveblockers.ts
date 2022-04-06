@@ -101,7 +101,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields'] & string
   ): RA<string> {
     return Object.values(this.blockers)
-      .filter((blocker) => blocker.fieldName === fieldName)
+      .filter((blocker) => blocker.fieldName === fieldName.toLowerCase())
       .map((blocker) => blocker.reason);
   }
 
@@ -109,7 +109,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
     fieldName: keyof SCHEMA['fields'] & string
   ): RA<Blocker> {
     return Object.values(this.blockers).filter(
-      (blocker) => blocker.fieldName === fieldName
+      (blocker) => blocker.fieldName === fieldName.toLowerCase()
     );
   }
 
