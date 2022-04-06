@@ -1,27 +1,16 @@
-/**
- * An accessible autocomplete.
- * Previous implementation (see Git history) used <datalist> to provide
- * autocomplete suggestions.
- * While that had accessibility backed in, Firefox has a number of bugs
- * with it's datalist implementation.
- * Plus, that solution did not allow for displaying an "Add" option
- * if no search results come up
- *
- * Consider revisiting <datalist> once browser support is improved
- */
-
 import React from 'react';
 import _ from 'underscore';
 
+import { f } from '../functools';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { ensure } from '../types';
 import type { TagProps } from './basic';
-import { className } from './basic';
+import { className, DialogContext } from './basic';
 import { useBooleanState, useId, useTriggerState } from './hooks';
-import { compareStrings } from './internationalization';
 import { icons } from './icons';
-import { f } from '../functools';
+import { compareStrings } from './internationalization';
+import { dialogClassNames } from './modaldialog';
 
 const debounceRate = 300;
 
@@ -33,6 +22,23 @@ type Item<T> = {
   readonly data: T;
 };
 
+/**
+ * An accessible autocomplete.
+ *
+ * @remarks
+ * Previous implementation (see Git history) used <datalist> to provide
+ * autocomplete suggestions.
+ * While that had accessibility backed in, Firefox has a number of bugs
+ * with it's datalist implementation.
+ * Plus, that solution did not allow for displaying an "Add" option
+ * if no search results come up
+ *
+ * Consider revisiting <datalist> once browser support is improved
+ *
+ * Accessibility support was designed based on this article:
+ * https://a11y-guidelines.orange.com/en/articles/autocomplete-component/
+ *
+ */
 export function Autocomplete<T>({
   source,
   minLength = 1,
@@ -174,11 +180,35 @@ export function Autocomplete<T>({
     pendingValue !== currentValue;
   const showList = isOpen && (showAdd || isLoading || filteredItems.length > 0);
 
+  const isInDialog = typeof React.useContext(DialogContext) === 'function';
+
   React.useEffect(() => {
     if (dataListRef.current === null || input === null) return undefined;
 
-    const height = dataListRef.current.getBoundingClientRect().height;
-    const bodyHeight = document.body.clientHeight;
+    /*
+     * Assuming height does not change while the list is open for performance
+     * reasons
+     */
+    const listHeight = dataListRef.current.getBoundingClientRect().height;
+
+    /*
+     * This is needed because react-draggable library (used in dialogs) adds
+     * a CSS transform to a dialog, which causes position:fixed to be relative
+     * to dialog container, not viewPort
+     * See more: https://stackoverflow.com/q/2637058/8584605
+     */
+    const dialogContainer = isInDialog
+      ? document.getElementsByClassName(dialogClassNames.container)[0]
+      : undefined;
+    const { top: offsetTop = 0, bottom: dialogContainerBottom = 0 } =
+      dialogContainer?.getBoundingClientRect() ?? {};
+    const dialogContent = dialogContainer?.getElementsByClassName(
+      dialogClassNames.content
+    )[0];
+    const dialogBottom = dialogContent?.getBoundingClientRect().bottom ?? 0;
+    const containerHeight = isInDialog
+      ? dialogBottom
+      : document.body.clientHeight;
 
     function handleScroll({
       target,
@@ -189,28 +219,41 @@ export function Autocomplete<T>({
         !showList ||
         dataListRef.current === null ||
         input === null ||
+        // If it is the list itself that is being scrolled
         target === dataListRef.current
       )
-        return undefined;
+        return;
 
-      // If this code turns out to be buggy, can just replace it with handleClose()
-      const { top, bottom, width } = input.getBoundingClientRect();
-      const isOverflowing = bottom + height > document.body.clientHeight;
-      if (isOverflowing) {
-        dataListRef.current.style.top = '';
-        dataListRef.current.style.bottom = `${bodyHeight - top}px`;
-      } else {
-        dataListRef.current.style.top = `${bottom}px`;
-        dataListRef.current.style.bottom = '';
+      const { bottom: inputBottom, top: inputTop } =
+        input.getBoundingClientRect();
+      const isOverflowing = inputBottom + listHeight > containerHeight;
+      const inputOffset = isInDialog ? dialogContainerBottom - dialogBottom : 0;
+
+      /*
+       * Hide the list for non screen reader users when it goes below the
+       * dialog container so as not to cause content overflow
+       */
+      const shouldHide = isInDialog && inputTop > dialogBottom;
+      if (shouldHide) dataListRef.current.classList.add('sr-only');
+      else {
+        dataListRef.current.classList.remove('sr-only');
+        if (isOverflowing) {
+          dataListRef.current.style.top = '';
+          dataListRef.current.style.bottom = `${
+            containerHeight - inputTop + inputOffset
+          }px`;
+        } else {
+          dataListRef.current.style.top = `${inputBottom - offsetTop}px`;
+          dataListRef.current.style.bottom = '';
+        }
       }
-      dataListRef.current.style.width = `${width}px`;
     }
 
     handleScroll({ target: null });
 
     window.addEventListener('scroll', handleScroll, true);
     return (): void => window.addEventListener('scroll', handleScroll, true);
-  }, [showList, input]);
+  }, [showList, input, isInDialog]);
 
   return (
     <>
@@ -242,96 +285,100 @@ export function Autocomplete<T>({
         onClick: handleToggle,
         onBlur({ relatedTarget }): void {
           if (
-            relatedTarget === null ||
-            dataListRef.current?.contains(relatedTarget as Node) === false
+            process.env.NODE_ENV !== 'development' &&
+            (relatedTarget === null ||
+              dataListRef.current?.contains(relatedTarget as Node) === false)
           )
             handleClose();
           setPendingValue(currentValue);
         },
       })}
-      <ul
-        className={`fixed z-10 w-full rounded cursor-pointer
+      <div>
+        <ul
+          className={`fixed z-10 w-[inherit] rounded cursor-pointer
           rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
           shadow-lg shadow-gray-400 dark:border dark:border-gray-500
           ${showList ? '' : 'sr-only'}`}
-        role="listbox"
-        aria-label={ariaLabel}
-        id={id}
-        ref={dataListRef}
-        onKeyDown={(event): void => {
-          // Meta keys
-          if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
-            handleKeyDown(event.key);
-          else {
-            input?.focus();
-            input?.dispatchEvent(event.nativeEvent);
+          role="listbox"
+          aria-label={ariaLabel}
+          id={id}
+          ref={dataListRef}
+          onKeyDown={(event): void => {
+            // Meta keys
+            if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
+              handleKeyDown(event.key);
+            else {
+              input?.focus();
+              input?.dispatchEvent(event.nativeEvent);
+            }
+          }}
+          onBlur={({ relatedTarget }): void =>
+            process.env.NODE_ENV !== 'development' &&
+            (relatedTarget === null ||
+              input?.contains(relatedTarget as Node) === false)
+              ? handleClose()
+              : undefined
           }
-        }}
-        onBlur={({ relatedTarget }): void =>
-          relatedTarget === null ||
-          input?.contains(relatedTarget as Node) === true
-            ? undefined
-            : handleClose()
-        }
-      >
-        {isOpen && (
-          <>
-            {isLoading && (
-              <li aria-selected={false} aria-disabled={true} {...itemProps}>
-                {commonText('loading')}
-              </li>
-            )}
-            {showAdd ? (
-              <li
-                aria-selected={false}
-                aria-posinset={1}
-                aria-setsize={1}
-                onClick={(): void => handleNewValue(pendingValue)}
-              >
-                <div className="flex items-center">
-                  <span className={className.dataEntryAdd}>{icons.plus}</span>
-                  {commonText('add')}
-                </div>
-              </li>
-            ) : (
-              filteredItems.map((item, index, { length }) => (
+        >
+          {isOpen && (
+            <>
+              {isLoading && (
+                <li aria-selected={false} aria-disabled={true} {...itemProps}>
+                  {commonText('loading')}
+                </li>
+              )}
+              {showAdd ? (
                 <li
-                  key={index}
-                  aria-posinset={index + 1}
-                  aria-setsize={length}
-                  aria-selected={index === currentIndex}
-                  onClick={(): void => {
-                    handleChange(item);
-                    setPendingValue(item.label);
-                    handleClose();
-                  }}
-                  {...itemProps}
+                  aria-selected={false}
+                  aria-posinset={1}
+                  aria-setsize={1}
+                  onClick={(): void => handleNewValue(pendingValue)}
                 >
-                  {f.var(
-                    typeof item.subLabel === 'string' ? (
-                      <div className="flex flex-col justify-center">
-                        {item.label}
-                        <span className="text-gray-500">{item.subLabel}</span>
-                      </div>
-                    ) : (
-                      item.label
-                    ),
-                    (content) =>
-                      typeof item.icon === 'string' ? (
-                        <div className="flex items-center">
-                          {item.icon}
-                          {content}
+                  <div className="flex items-center">
+                    <span className={className.dataEntryAdd}>{icons.plus}</span>
+                    {commonText('add')}
+                  </div>
+                </li>
+              ) : (
+                filteredItems.map((item, index, { length }) => (
+                  <li
+                    key={index}
+                    aria-posinset={index + 1}
+                    aria-setsize={length}
+                    aria-selected={index === currentIndex}
+                    onClick={(): void => {
+                      handleChange(item);
+                      setPendingValue(item.label);
+                      handleClose();
+                    }}
+                    {...itemProps}
+                  >
+                    {f.var(
+                      typeof item.subLabel === 'string' ? (
+                        <div className="flex flex-col justify-center">
+                          {item.label}
+                          <span className="text-gray-500">{item.subLabel}</span>
                         </div>
                       ) : (
-                        content
-                      )
-                  )}
-                </li>
-              ))
-            )}
-          </>
-        )}
-      </ul>
+                        item.label
+                      ),
+                      (content) =>
+                        typeof item.icon === 'string' ? (
+                          <div className="flex items-center">
+                            {item.icon}
+                            {content}
+                          </div>
+                        ) : (
+                          content
+                        )
+                    )}
+                  </li>
+                ))
+              )}
+            </>
+          )}
+        </ul>
+      </div>
     </>
   );
 }
