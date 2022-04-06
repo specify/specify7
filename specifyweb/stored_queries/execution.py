@@ -9,10 +9,14 @@ from collections import namedtuple
 from datetime import datetime
 
 from django.conf import settings
+from django.db import transaction
+from django.db.models import F
 
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+from sqlalchemy import sql, orm
 
-from ..specify.models import Collection
+from ..specify.models import Collection, Loanpreparation, Loanreturnpreparation
+from ..specify.auditlog import auditlog
 from ..notifications.models import Message
 
 from . import models
@@ -436,6 +440,64 @@ def recordset(collection, user, user_agent, recordset_info):
         session.execute(ins)
 
     return new_rs_id
+
+def return_loan_preps(collection, user, agent, data):
+    spquery = data['query']
+    commit = data['commit']
+
+    tableid = spquery['contexttableid']
+    assert tableid == Loanpreparation.specify_model.tableId
+
+    with models.session_context() as session:
+        model = models.models_by_tableid[tableid]
+        id_field = getattr(model, model._id)
+
+        field_specs = field_specs_from_json(spquery['fields'])
+
+        query, __ = build_query(session, collection, user, tableid, field_specs)
+        lrp = orm.aliased(models.LoanReturnPreparation)
+        loan = orm.aliased(models.Loan)
+        query = query.join(loan).outerjoin(lrp)
+        unresolved = (model.quantity - sql.functions.coalesce(sql.functions.sum(lrp.quantityResolved), 0)).label('unresolved')
+        query = query.with_entities(id_field, unresolved, loan.loanId, loan.loanNumber).group_by(id_field)
+        to_return = [
+            (lp_id, quantity, loan_id, loan_no)
+            for lp_id, quantity, loan_id, loan_no in query
+            if quantity > 0
+        ]
+        class NoCommit(Exception):
+            pass
+        try:
+            with transaction.atomic():
+                for lp_id, quantity, _, _ in to_return:
+                    lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
+                    was_resolved = lp.isresolved
+                    lp.quantityresolved = lp.quantityresolved + quantity
+                    lp.quantityreturned = lp.quantityreturned + quantity
+                    lp.isresolved = True
+                    lp.save()
+
+                    auditlog.update(lp, agent, None, [
+                        {'field_name': 'quantityresolved', 'old_value': lp.quantityresolved - quantity, 'new_value': lp.quantityresolved},
+                        {'field_name': 'quantityreturned', 'old_value': lp.quantityreturned - quantity, 'new_value': lp.quantityreturned},
+                        {'field_name': 'isresolved', 'old_value': was_resolved, 'new_value': True},
+                    ])
+
+                    new_lrp = Loanreturnpreparation.objects.create(
+                        quantityresolved=quantity,
+                        quantityreturned=quantity,
+                        loanpreparation_id=lp_id,
+                        returneddate=data.get('returneddate', None),
+                        receivedby_id=data.get('receivedby', None),
+                        createdbyagent=agent,
+                        discipline=collection.discipline,
+                    )
+                    auditlog.insert(new_lrp, agent)
+                    if not commit:
+                        raise NoCommit()
+        except NoCommit:
+            pass
+        return to_return
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
