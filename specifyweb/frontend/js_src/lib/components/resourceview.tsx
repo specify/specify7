@@ -175,7 +175,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
               />
             ),
     specifyNetworkBadge:
-      typeof resource === 'object' &&
+      resource?.isNew() === false &&
       displaySpecifyNetwork(resource) &&
       hasTablePermission('Locality', 'read') &&
       hasPermission('/querybuilder/query', 'execute') &&
@@ -214,7 +214,7 @@ export const augmentMode = (
 export function ResourceView<SCHEMA extends AnySchema>({
   resource,
   extraButtons,
-  headerButtons = <span className="flex-1 -ml-4" />,
+  headerButtons,
   canAddAnother,
   deletionMessage,
   dialog = false,
@@ -231,7 +231,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
-  readonly headerButtons?: JSX.Element;
+  readonly headerButtons?: (
+    specifyNetworkBadge: JSX.Element | undefined
+  ) => JSX.Element;
   readonly canAddAnother: boolean;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
@@ -322,8 +324,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 <DataEntry.SubFormTitle>
                   {titleOverride ?? title}
                 </DataEntry.SubFormTitle>
-                {specifyNetworkBadge}
-                {headerButtons}
+                {headerButtons?.(specifyNetworkBadge) ?? (
+                  <>
+                    {specifyNetworkBadge}
+                    <span className="flex-1 -ml-4" />
+                  </>
+                )}
               </DataEntry.SubFormHeader>
               {formattedChildren}
             </DataEntry.SubForm>
@@ -331,8 +337,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
             <Container.Generic className="w-fit overflow-y-auto">
               <DataEntry.Header>
                 <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
-                {headerButtons}
-                {specifyNetworkBadge}
+                {headerButtons?.(specifyNetworkBadge) ?? (
+                  <>
+                    {specifyNetworkBadge}
+                    <span className="flex-1 -ml-4" />
+                  </>
+                )}
               </DataEntry.Header>
               {formattedChildren}
             </Container.Generic>
@@ -345,8 +355,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
               modal={dialog === 'modal'}
               headerButtons={
                 <>
-                  <DataEntry.Visit resource={resource} />
-                  {headerButtons}
+                  {headerButtons ?? (
+                    <>
+                      <DataEntry.Visit resource={resource} />
+                      <span className="flex-1 -ml-4" />
+                    </>
+                  )}
                   {specifyNetworkBadge}
                 </>
               }

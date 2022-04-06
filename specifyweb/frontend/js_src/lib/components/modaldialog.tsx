@@ -55,7 +55,7 @@ export function LoadingScreen({
   );
 }
 
-const commonContainer = `rounded resize overflow-y-hidden max-w-[90%]
+const commonContainer = `rounded resize overflow-hidden max-w-[90%]
   shadow-lg shadow-gray-500`;
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
@@ -86,10 +86,6 @@ export function Dialog({
   /*
    * Using isOpen prop instead of conditional rendering is optional, but it
    * allows for smooth dialog close animation
-   */
-  /*
-   * TODO: consider getting rid of this
-   * TODO: test if it works, and if animations could be made to work without it
    */
   isOpen = true,
   header,
@@ -260,13 +256,13 @@ export function Dialog({
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
       overlayClassName={{
         base: `w-screen h-screen absolute inset-0 flex items-center
-          justify-center ${
+          justify-center opacity-0 ${
             modal
               ? 'bg-gray-500/70 dark:bg-neutral-900/70'
               : 'pointer-events-none'
           }`,
-        afterOpen: `opacity-1`,
-        beforeClose: 'opacity-0',
+        afterOpen: 'opacity-100',
+        beforeClose: '!opacity-0',
       }}
       style={{ overlay: { zIndex } }}
       portalClassName=""
@@ -311,7 +307,10 @@ export function Dialog({
       <DialogContext.Provider value={handleClose}>
         {/*
          * "px-1 -mx-1" ensures that focus outline for checkboxes
-         * and other inputs is not cut-off
+         * and other inputs is not cut-off. You can also use "px-4 -mx-4" to
+         * place container scroll bar at the very edge of the dialog, which
+         * looks nice, but is bad UX, because misclics can trigger dialog
+         * close
          */}
         <div
           className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700

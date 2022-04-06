@@ -26,6 +26,7 @@ export type QueryFieldFilter =
   | 'lessOrEqual'
   | 'true'
   | 'false'
+  | 'dontCare'
   | 'between'
   | 'in'
   | 'contains'
@@ -360,6 +361,16 @@ export const queryFieldFilters: RR<
     types: ['checkbox'],
     resetToAny: false,
     hasParser: true,
+  },
+  dontCare: {
+    id: 8,
+    label: "Don't care",
+    description: undefined,
+    renderPickList: false,
+    // This never shows up in the UI. It is like "any" but for booleans
+    types: [],
+    resetToAny: true,
+    hasParser: false,
   },
   between: {
     id: 9,

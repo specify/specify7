@@ -127,7 +127,7 @@ function ViewRecords({
           onAdd={undefined}
           onDelete={handleDelete}
           onSlide={(index): void =>
-            index === ids.length - 1 ? handleFetchMore?.() : undefined
+            index >= ids.length - 1 ? handleFetchMore?.() : undefined
           }
           dialog="modal"
           onClose={handleClose}

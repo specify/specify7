@@ -250,7 +250,6 @@ export function Main({
 
       {showVersionMismatch && (
         <Dialog
-          isOpen={showVersionMismatch}
           title={commonText('versionMismatchDialogTitle')}
           header={commonText('versionMismatchDialogHeader')}
           onClose={(): void => setShowVersionMismatch(false)}

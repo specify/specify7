@@ -41,9 +41,8 @@ import { hasPermission, hasToolPermission } from '../permissions';
 
 /*
  * Query Results:
- * FIXMe: query results editing & deleting & view in new tab
+ * FIXME: query results editing & deleting
  * FIXME: creating record set out of a subset of results
- * FIXME: make query scrollable even while viewing the resutls
  * To Test:
  * FIXME: test "any" filters in sp6 and sp7
  * FIXME: test query reports

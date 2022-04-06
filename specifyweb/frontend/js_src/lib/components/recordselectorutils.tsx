@@ -92,6 +92,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   // Listen for changes to collection
   React.useEffect(() => {
     const updateRecords = (): void => setRecords(getRecords);
+    updateRecords();
     collection.on('add remove destroy', updateRecords);
     return (): void => collection.off('add remove destroy', updateRecords);
   }, [collection, getRecords]);
@@ -195,6 +196,7 @@ export function IntegratedRecordSelector({
         resource,
         onAdd: handleAdd,
         onRemove: handleRemove,
+        isLoading,
       }): JSX.Element => (
         <>
           <ResourceView
@@ -203,41 +205,50 @@ export function IntegratedRecordSelector({
             title={`${field?.label ?? collection.model.specifyModel?.label}${
               isToOne ? '' : ` (${collection.models.length})`
             }`}
-            headerButtons={
-              <>
-                <DataEntry.Visit
-                  /*
-                   * If dialog is not false, the visit button would be added
-                   * by ResourceView
-                   */
-                  resource={
-                    isDependent || dialog === false ? undefined : resource
-                  }
-                />
-                {hasTablePermission(
-                  field.relatedModel.name,
-                  isDependent ? 'create' : 'read'
-                ) && (
-                  <DataEntry.Add
-                    onClick={handleAdd}
-                    disabled={
-                      mode === 'view' ||
-                      (isToOne && collection.models.length > 0)
+            headerButtons={(specifyNetworkBadge) =>
+              isLoading ? (
+                <p aria-live="polite" className="flex-1">
+                  {commonText('loading')}
+                </p>
+              ) : (
+                <>
+                  <DataEntry.Visit
+                    /*
+                     * If dialog is not false, the visit button would be added
+                     * by ResourceView
+                     */
+                    resource={
+                      isDependent || dialog === false ? undefined : resource
                     }
                   />
-                )}
-                {hasTablePermission(
-                  field.relatedModel.name,
-                  isDependent ? 'create' : 'read'
-                ) && (
-                  <DataEntry.Delete
-                    onClick={handleRemove}
-                    disabled={mode === 'view' || collection.models.length === 0}
-                  />
-                )}
-                <span className="flex-1 -ml-4" />
-                {!isToOne && slider}
-              </>
+                  {hasTablePermission(
+                    field.relatedModel.name,
+                    isDependent ? 'create' : 'read'
+                  ) && (
+                    <DataEntry.Add
+                      onClick={handleAdd}
+                      disabled={
+                        mode === 'view' ||
+                        (isToOne && collection.models.length > 0)
+                      }
+                    />
+                  )}
+                  {hasTablePermission(
+                    field.relatedModel.name,
+                    isDependent ? 'create' : 'read'
+                  ) && (
+                    <DataEntry.Delete
+                      onClick={handleRemove}
+                      disabled={
+                        mode === 'view' || collection.models.length === 0
+                      }
+                    />
+                  )}
+                  {specifyNetworkBadge}
+                  <span className="flex-1 -ml-4" />
+                  {!isToOne && slider}
+                </>
+              )
             }
             mode={mode}
             viewName={viewName}
@@ -399,42 +410,50 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         resource,
         onAdd: handleAdd,
         onRemove: handleRemove,
+        isLoading,
       }): JSX.Element => (
         <>
           <ResourceView
             resource={resource}
             dialog={dialog}
             title={title}
-            headerButtons={
-              <>
-                <DataEntry.Visit
-                  resource={isDependent ? undefined : resource}
-                />
-                {hasTablePermission(
-                  model.name,
-                  isDependent ? 'create' : 'read'
-                ) && (
-                  <DataEntry.Add
-                    disabled={mode === 'view'}
-                    onClick={handleAdd}
+            headerButtons={(specifyNetworkBadge) =>
+              isLoading ? (
+                <p aria-live="polite" className="flex-1">
+                  {commonText('loading')}
+                </p>
+              ) : (
+                <>
+                  <DataEntry.Visit
+                    resource={isDependent ? undefined : resource}
                   />
-                )}
-                {resource?.isNew() === true ||
-                hasTablePermission(model.name, 'delete') ? (
-                  <DataEntry.Delete
-                    disabled={
-                      typeof resource === 'undefined' || mode === 'view'
-                    }
-                    onClick={handleRemove}
-                  />
-                ) : undefined}
-                {isAddingNew ? (
-                  <p className="flex-1">{formsText('creatingNewRecord')}</p>
-                ) : (
-                  <span className="flex-1 -ml-4" />
-                )}
-                {slider}
-              </>
+                  {hasTablePermission(
+                    model.name,
+                    isDependent ? 'create' : 'read'
+                  ) && (
+                    <DataEntry.Add
+                      disabled={mode === 'view'}
+                      onClick={handleAdd}
+                    />
+                  )}
+                  {resource?.isNew() === true ||
+                  hasTablePermission(model.name, 'delete') ? (
+                    <DataEntry.Delete
+                      disabled={
+                        typeof resource === 'undefined' || mode === 'view'
+                      }
+                      onClick={handleRemove}
+                    />
+                  ) : undefined}
+                  {specifyNetworkBadge}
+                  {isAddingNew ? (
+                    <p className="flex-1">{formsText('creatingNewRecord')}</p>
+                  ) : (
+                    <span className="flex-1 -ml-4" />
+                  )}
+                  {slider}
+                </>
+              )
             }
             mode={mode}
             viewName={viewName}
@@ -479,6 +498,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 }
 
+/**
+ * Fetch IDs of records in a record set a given position
+ */
 const fetchItems = async (
   recordSetId: number,
   offset: number
@@ -499,10 +521,16 @@ const fetchItems = async (
       .reduce((items, [order, recordId]) => {
         items[order] = recordId;
         return items;
-      }, Array.from(ids ?? [])),
+        /*
+         * Map over array to create a copy. Can't use Array.from because
+         * that decompresses a shallow array (ids is a shallow array because
+         * some record sets may have tens of thousands of items)
+         * Also, an array with 40k elements in a React State causes React
+         * DevTools to crash
+         */
+      }, ids.map(f.id) ?? []),
   }));
 
-// FIXME: test this
 const defaultRecordSetState = {
   totalCount: 0,
   ids: [],
@@ -539,6 +567,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const [items, setItems] = React.useState<
     | {
         readonly totalCount: number;
+        // Caution, this array can be sparse
         readonly ids: RA<number | undefined>;
         readonly isAddingNew: boolean;
         readonly index: number;
@@ -555,11 +584,13 @@ export function RecordSet<SCHEMA extends AnySchema>({
     if (typeof currentRecordId === 'undefined')
       fetchItems(
         recordSet.id,
-        // If new index is smaller (i.e, going back), fetch previous 20 elements
+        // If new index is smaller (i.e, going back), fetch previous 20 ids
         clamp(
           0,
           totalCount,
-          previousIndex.current > index ? index - DEFAULT_FETCH_LIMIT : index
+          previousIndex.current > index
+            ? index - DEFAULT_FETCH_LIMIT + 1
+            : index
         )
       )
         .then((updateIds) =>

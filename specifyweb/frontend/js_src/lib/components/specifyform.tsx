@@ -143,15 +143,35 @@ export function RenderForm<SCHEMA extends AnySchema>({
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
   );
+  const oldResourceRef = React.useRef<SpecifyResource<SCHEMA> | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    oldResourceRef.current = resource;
+  }, [resource]);
+
   const [loadedResource] = useAsyncState(
     React.useCallback(async () => resource.fetchPromise(), [resource]),
-    false
+    false,
+    true
   );
+  const isShowingOldResource =
+    typeof loadedResource === 'undefined' &&
+    typeof oldResourceRef.current === 'object';
+  const resolvedResource = loadedResource ?? oldResourceRef.current;
   return (
-    <div className="gap-y-2 flex flex-col">
+    <div className={isShowingOldResource ? 'relative' : undefined}>
+      {isShowingOldResource && (
+        <div className="top-10 absolute z-10 flex justify-center w-full">
+          {loadingGif}
+        </div>
+      )}
       {typeof viewDefinition === 'object' &&
-      typeof loadedResource === 'object' ? (
-        <DataEntry.Grid viewDefinition={viewDefinition}>
+      typeof resolvedResource === 'object' ? (
+        <DataEntry.Grid
+          viewDefinition={viewDefinition}
+          className={isShowingOldResource ? 'opacity-50' : undefined}
+        >
           {/* Cells are wrapped in rows for debugging purposes only */}
           {viewDefinition.rows.map((cells, index) => (
             <div className="contents" key={index}>
@@ -180,7 +200,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
                   >
                     <FormCell
                       align={align}
-                      resource={loadedResource}
+                      resource={resolvedResource}
                       mode={viewDefinition.mode}
                       formType={viewDefinition.formType}
                       cellData={cellData}

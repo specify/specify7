@@ -8,9 +8,9 @@ import taxonTiles from '../taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
+import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
-import { UserTool } from './main';
 
 const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
 const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
@@ -45,11 +45,14 @@ function WelcomeScreenContent(): JSX.Element {
 
 function AboutDialog({
   onClose: handleClose,
+  isOpen,
 }: {
   readonly onClose: () => void;
+  readonly isOpen: boolean;
 }): JSX.Element {
   return (
     <Dialog
+      isOpen={isOpen}
       title={welcomeText('aboutSpecifyDialogTitle')}
       header={commonText('specifySeven')}
       className={{
@@ -120,7 +123,7 @@ function AboutSpecify(): JSX.Element {
           alt={welcomeText('aboutSpecify')}
         />
       </Button.LikeLink>
-      {isOpen && <AboutDialog onClose={handleClose} />}
+      <AboutDialog onClose={handleClose} isOpen={isOpen} />
     </div>
   );
 }
@@ -153,7 +156,7 @@ const View = createBackboneView(AboutDialog);
 export const userTool: UserTool = {
   task: 'about',
   title: welcomeText('aboutSpecify'),
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose }) => new View({ onClose, isOpen: true }),
   isOverlay: true,
   groupLabel: commonText('documentation'),
 };

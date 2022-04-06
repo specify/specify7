@@ -116,23 +116,17 @@ async function resourceView(
    * We preload the resource and recordset to make sure they exist. this prevents
    * an unfilled view from being displayed.
    */
-  return Promise.all([
-    // FIXME: check if this is needed anymore
-    resource.isNew() ? resource.fetchPromise() : undefined,
-    recordSet?.fetchPromise(),
-  ])
-    .catch(crash)
-    .then(async () =>
-      checkLoggedInCollection(resource, (): void =>
-        setCurrentView(
-          new ResourceView({
-            resource,
-            recordSet,
-            pushUrl: true,
-          })
-        )
+  return checkLoggedInCollection(
+    resource,
+    async (): Promise<void> =>
+      setCurrentView(
+        new ResourceView({
+          resource,
+          recordSet: await recordSet?.fetchPromise(),
+          pushUrl: true,
+        })
       )
-    );
+  ).catch(crash);
 }
 
 async function viewResourceByGuid(
@@ -154,7 +148,7 @@ async function viewResourceByGuid(
             pushUrl: true,
           })
         )
-      );
+      ).catch(crash);
   });
 }
 

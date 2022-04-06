@@ -4,6 +4,7 @@ import { generateDispatch } from 'typesafe-reducer';
 
 import type { CollectionObject, Taxon } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -23,8 +24,7 @@ import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
-import { Dialog } from './modaldialog';
-import { f } from '../functools';
+import { Dialog, LoadingScreen } from './modaldialog';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -138,7 +138,9 @@ function SpecifyNetwork({
 }: {
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element {
-  const [occurrenceName, setOccurrenceName] = React.useState('');
+  const [occurrenceName, setOccurrenceName] = React.useState<
+    string | undefined
+  >(undefined);
   const [hasFailure, handleFailure, handleNoFailure] = useBooleanState();
   const occurrences = React.useRef<RA<OccurrenceData> | undefined>(undefined);
 
@@ -169,22 +171,46 @@ function SpecifyNetwork({
     [resource]
   );
 
+  const getLink = (): string =>
+    formatLifemapperViewPageRequest(
+      toTable(resource, 'CollectionObject')?.get('guid') ?? '',
+      occurrenceName ?? ''
+    );
+
+  const handleClick = React.useCallback((): void => {
+    const childWindow = window.open(getLink(), '_blank') ?? undefined;
+    if (!childWindow) {
+      handleFailure();
+      return;
+    }
+    window.removeEventListener('message', messageHandler);
+    window.addEventListener('message', messageHandler);
+  }, [messageHandler]);
+
+  // If link was clicked before resource was fully loaded, show loading message
+  const [isPending, handlePending, handleNotPending] = useBooleanState();
+  React.useEffect(() => {
+    if (isPending && typeof occurrenceName === 'string') {
+      handleNotPending();
+      handleClick();
+    }
+  }, [isPending, handleNotPending, handleClick, occurrenceName]);
+
   return (
     <>
-      <Dialog
-        isOpen={hasFailure}
-        title={lifemapperText('failedToOpenPopUpDialogTitle')}
-        header={lifemapperText('failedToOpenPopUpDialogHeader')}
-        onClose={handleNoFailure}
-        buttons={commonText('close')}
-      >
-        {lifemapperText('failedToOpenPopUpDialogMessage')}
-      </Dialog>
+      {isPending && <LoadingScreen />}
+      {hasFailure && (
+        <Dialog
+          title={lifemapperText('failedToOpenPopUpDialogTitle')}
+          header={lifemapperText('failedToOpenPopUpDialogHeader')}
+          onClose={handleNoFailure}
+          buttons={commonText('close')}
+        >
+          {lifemapperText('failedToOpenPopUpDialogMessage')}
+        </Dialog>
+      )}
       <Link.Default
-        href={formatLifemapperViewPageRequest(
-          toTable(resource, 'CollectionObject')?.get('guid') ?? '',
-          occurrenceName
-        )}
+        href={getLink()}
         target="_blank"
         title={lifemapperText('specifyNetwork')}
         aria-label={lifemapperText('specifyNetwork')}
@@ -192,15 +218,8 @@ function SpecifyNetwork({
         className="h-7 justify-end"
         onClick={(event): void => {
           event.preventDefault();
-          const link = (event.target as HTMLElement).closest('a')?.href;
-          if (!link) throw new Error('Failed to extract S^N Link');
-          const childWindow = window.open(link, '_blank') ?? undefined;
-          if (!childWindow) {
-            handleFailure();
-            return;
-          }
-          window.removeEventListener('message', messageHandler);
-          window.addEventListener('message', messageHandler);
+          if (typeof occurrenceName === 'undefined') handlePending();
+          else handleClick();
         }}
       >
         <img

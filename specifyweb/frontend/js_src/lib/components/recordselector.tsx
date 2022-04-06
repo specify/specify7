@@ -170,7 +170,6 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly totalCount: number;
 };
 
-// FIXME: STYLE: display old record with Loading message while loading new record
 export function BaseRecordSelector<SCHEMA extends AnySchema>({
   model,
   field,
@@ -227,7 +226,8 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     ),
     index,
     totalCount,
-    isLoading: typeof records[index] === 'object',
+    // FIXME: this is stuck at true for Record Set when going to length-1
+    isLoading: typeof records[index] === 'undefined',
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs: (

@@ -76,6 +76,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     addAnother = false
   ): Promise<void> {
     event.preventDefault();
+    event.stopPropagation();
 
     if (saveBlocked || (!saveRequired && !addAnother)) return;
 

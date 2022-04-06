@@ -2,6 +2,7 @@ import type { CollectionObject } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import { snServer } from './lifemapperconfig';
 import type { IR, RA } from './types';
+import { ajax } from './ajax';
 
 export const fetchLocalScientificName = async (
   model: SpecifyResource<CollectionObject>,
@@ -27,23 +28,30 @@ export const formatLifemapperViewPageRequest = (
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
-export async function fetchOccurrenceName(
+export const fetchOccurrenceName = (
   model: SpecifyResource<CollectionObject>
-): Promise<string> {
-  return fetch(formatOccurrenceDataRequest(model.get('guid')), {
-    mode: 'cors',
-  })
-    .then(async (response) => response.json())
-    .then(
-      (response: {
+): Promise<string> =>
+  model
+    .fetchPromise()
+    .then(async () =>
+      ajax<{
         readonly records: RA<{
           readonly records: RA<IR<string>>;
         }>;
-      }) =>
-        response.records
-          .filter(({ records }) => records.length > 0)
-          .map(({ records }) => records[0]['dwc:scientificName'])
-          .find((occurrenceName) => occurrenceName)
+      }>(
+        formatOccurrenceDataRequest(model.get('guid')),
+        {
+          mode: 'cors',
+          headers: { Accept: 'application/json' },
+        },
+        { strict: false }
+      )
+    )
+    .then(({ data }) =>
+      data.records
+        .filter(({ records }) => records.length > 0)
+        .map(({ records }) => records[0]['dwc:scientificName'])
+        .find((occurrenceName) => occurrenceName)
     )
     .catch(console.error)
     .then(
@@ -51,4 +59,3 @@ export async function fetchOccurrenceName(
     )
     .catch(console.error)
     .then((occurrenceName) => occurrenceName ?? '');
-}
