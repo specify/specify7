@@ -3,6 +3,7 @@
 var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
+const moment = require('moment');
 
 var schema             = require('./schema.js');
 var QueryFieldUI       = require('./queryfield.js');
@@ -15,6 +16,7 @@ var QueryResultsTable  = require('./queryresultstable.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var QuerySaveDialog    = require('./querysavedialog.js');
 var router             = require('./router.js');
+const populateForm = require('./populateform.js');
 const queryText = require('./localization/query').default;
 const commonText = require('./localization/common').default;
 
@@ -27,6 +29,7 @@ const commonText = require('./localization/common').default;
             'click .query-csv': 'searchDownload',
             'click .query-kml': 'searchDownload',
             'click .query-to-recordset': 'makeRecordSet',
+            'click .return-loan-preps': 'returnLoanPreps',
             'click .query-save': 'save',
             'click .query-save-as': 'saveAs',
             'click .field-add': 'addField',
@@ -63,7 +66,8 @@ const commonText = require('./localization/common').default;
             this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
             this.$('label[name="formatAuditsLabel"]').prop('hidden', this.query.get('contexttableid') != 530);
 
-
+            // only visible for loan preps
+            this.$('.return-loan-preps').prop('hidden', this.query.get('contexttableid') != 54);
             return this;
         },
         gotFields: function(spqueryfields) {
@@ -162,6 +166,74 @@ const commonText = require('./localization/common').default;
             this.fieldUIs.push(ui);
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
             this.updatePositions();
+        },
+        returnLoanPreps() {
+            const form = $(`
+<table data-specify-model="LoanReturnPreparation">
+  <tr>
+    <td class="specify-form-label"><label for="lrp-receivedby"></label></td>
+    <td>
+      <input type="text" class="specify-querycbx specify-field" name="receivedBy" id="lrp-receivedby" data-specify-initialize="name=Agent">
+    </td>
+    <td class="specify-form-label"><label for="lrp-date"></label></td>
+    <td><input type="text" class="specify-formattedtext specify-field" name="returnedDate" id="lrp-date"></td>
+  </tr>
+</table>
+<hr>
+`);
+            const data = {query: this.query.toJSON(), commit: false};
+            $.post('/stored_query/return_loan_preps/', JSON.stringify(data)).done((toReturn) => {
+                const dialog = $('<div>');
+                if (Object.entries(toReturn).length < 1) {
+                    dialog.text("There are no unresolved items to return.");
+                    dialog.dialog({
+                        title: "No items to return",
+                        modal: true,
+                        close(){ $(this).remove(); },
+                        buttons: {[commonText('close')]() { $(this).dialog('close'); }},
+                    })
+                    return;
+                }
+
+                const dummyLRP = new schema.models.LoanReturnPreparation.Resource({
+                    returneddate: moment().format('YYYY-MM-DD'),
+                    receivedby: userInfo.agent.resource_uri
+                });
+                populateForm(form, dummyLRP);
+                dialog.append(form);
+                for (const [loanid, info] of Object.entries(toReturn)) {
+                    const total = info.loanpreparations.reduce((count, {quantity}) => count + quantity, 0);
+                    const a = $('<a>').attr({href: `/specify/view/loan/${loanid}/`, target: "_blank"})
+                          .text(`Loan number: ${info.loannumber} Quantity: ${total}`);
+                    $('<p>').append(a).appendTo(dialog);
+                }
+                dialog.dialog({
+                    title: "Return items",
+                    width: 600,
+                    modal: true,
+                    close(){ $(this).remove(); },
+                    buttons: {
+                        Return() {
+                            $(this).dialog("option", {
+                                title: "Returning items...",
+                                buttons: [],
+                            });
+                            $('table', this).remove();
+                            data.commit = true;
+                            data.returneddate = dummyLRP.get('returneddate');
+                            data.receivedby = dummyLRP.get('receivedby') && schema.models.Agent.Resource.idFromUrl(dummyLRP.get('receivedby'));
+                            $.post('/stored_query/return_loan_preps/', JSON.stringify(data)).done((returned) => {
+                                $(this).dialog("option", {
+                                    title: "Items have been returned",
+                                    buttons: {[commonText('close')]() { $(this).dialog('close'); }},
+                                });
+                            });
+                        },
+                        [commonText('cancel')]() { $(this).dialog('close'); }
+                    }
+                });
+
+            });
         },
         makeRecordSet: function() {
             this.deleteIncompleteFields(() => this.makeRecordSet_());
