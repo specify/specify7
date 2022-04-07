@@ -10,6 +10,7 @@ import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
 import { Dialog } from './modaldialog';
+import { error } from '../assert';
 
 // TODO: handle case when there are save blockers for field that is not
 //   rendered on the form
@@ -109,7 +110,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     if (handleSaving?.() === false) return;
 
     setIsSaving(true);
-    // FIXME: test how save conflict is handled
     loading(
       (saveRequired ? resource.save(hasSaveConflict) : Promise.resolve())
         .then(() => {
@@ -122,6 +122,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         .then(() => setSaveRequired(false))
         .then(() => resource.trigger('saved'))
         .then(() => setIsSaving(false))
+        .catch((exception) =>
+          Object.getOwnPropertyDescriptor(exception ?? {}, 'handledBy')
+            ?.value === hasSaveConflict
+            ? undefined
+            : error(exception)
+        )
     );
   }
 

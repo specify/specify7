@@ -42,6 +42,7 @@ export function hijackBackboneAjax<T>(
 Backbone.ajax = function (request): JQueryXHR {
   if (typeof request === 'undefined') throw new Error('Undefined Request');
   const url = defined(request.url);
+  const requestCallbackCopy = requestCallback;
   return promiseToXhr(
     ajax(
       request.type === 'GET' && typeof request.data === 'object'
@@ -63,7 +64,7 @@ Backbone.ajax = function (request): JQueryXHR {
       }
     )
       .then(({ data, status }) => {
-        requestCallback?.(status);
+        requestCallbackCopy?.(status);
         if (status === Http.CONFLICT) throw new Error(data);
         else if (typeof request.success === 'function')
           request.success(data, 'success', undefined as never);
