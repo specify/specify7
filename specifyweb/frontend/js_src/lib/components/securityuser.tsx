@@ -160,7 +160,7 @@ export function UserView({
 
   const changesMade =
     changedPolices || changedRoles || changedInstitutionPolicies;
-  const setUnloadProtect = useUnloadProtect(
+  const unsetUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')
   );
@@ -412,8 +412,10 @@ export function UserView({
         <div className="flex gap-2">
           {changesMade ? (
             <Button.Gray
-              // TODO: improve unload protect workflow
-              onClick={(): void => setUnloadProtect(false, handleClose)}
+              onClick={(): void => {
+                unsetUnloadProtect();
+                handleClose();
+              }}
             >
               {commonText('cancel')}
             </Button.Gray>

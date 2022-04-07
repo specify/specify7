@@ -8,11 +8,10 @@ import React from 'react';
 
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
-import wbText from '../localization/workbench';
 import { NotFoundView } from '../notfoundview';
 import { hasPermission } from '../permissions';
 import { treeRanksPromise } from '../treedefinitions';
-import { useAsyncState, useUnloadProtect } from './hooks';
+import { useAsyncState } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
@@ -49,11 +48,6 @@ function WbPlanViewWrapper({
     true
   );
 
-  const setHasUnloadProtect = useUnloadProtect(
-    false,
-    wbText('unloadProtectMessage')
-  );
-
   return dataSet === false ? (
     <NotFoundView />
   ) : typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
@@ -73,8 +67,6 @@ function WbPlanViewWrapper({
           dataSet.uploadresult?.success) ??
         false
       }
-      removeUnloadProtect={(): void => setHasUnloadProtect(false)}
-      setUnloadProtect={(): void => setHasUnloadProtect(true)}
     />
   ) : null;
 }

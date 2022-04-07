@@ -28,7 +28,9 @@ import {
   mappingPathIsComplete,
 } from '../wbplanviewutils';
 import { Button, Ul } from './basic';
-import { useId } from './hooks';
+import { TableIcon } from './common';
+import { LoadingContext } from './contexts';
+import { useId, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import type { Dataset } from './wbplanview';
 import type { MappingElementProps } from './wbplanviewcomponents';
@@ -49,8 +51,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { TableIcon } from './common';
-import { LoadingContext } from './contexts';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -127,8 +127,6 @@ export const getDefaultMappingState = ({
 export function WbPlanViewMapper(props: {
   readonly isReadOnly: boolean;
   readonly dataset: Dataset;
-  readonly removeUnloadProtect: () => void;
-  readonly setUnloadProtect: () => void;
   readonly baseTableName: keyof Tables;
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
@@ -150,18 +148,24 @@ export function WbPlanViewMapper(props: {
     getDefaultMappingState
   );
 
+  const unsetUnloadProtect = useUnloadProtect(
+    state.changesMade,
+    wbText('unloadProtectMessage')
+  );
+
   // Set/unset unload protect
-  React.useEffect(() => {
-    if (state.changesMade) props.setUnloadProtect();
-    else props.removeUnloadProtect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.changesMade]);
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.lines);
   const listOfMappings = React.useRef<HTMLUListElement>(null);
 
   // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
+    /*
+     * TODO: replace this with this hack:
+     *   https://stackoverflow.com/questions/9364203/position-fixed-div-is-not-fixed-when-parent-rotates-or-translates
+     *   alternatively, I may get away with not setting "top" at all and just
+     *   letting browser do the positioning (while still having position:fixed)
+     */
     if (
       typeof state.autoMapperSuggestions === 'undefined' ||
       state.autoMapperSuggestions.length === 0
@@ -256,9 +260,10 @@ export function WbPlanViewMapper(props: {
 
   function handleSave(ignoreValidation: boolean): void {
     const validationResults = ignoreValidation ? [] : validate();
-    if (validationResults.length === 0)
+    if (validationResults.length === 0) {
+      unsetUnloadProtect();
       loading(props.onSave(state.lines, state.mustMatchPreferences));
-    else
+    } else
       dispatch({
         type: 'ValidationAction',
         validationResults,

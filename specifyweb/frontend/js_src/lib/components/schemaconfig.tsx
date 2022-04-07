@@ -2,13 +2,14 @@ import React from 'react';
 
 import { ajax, ping } from '../ajax';
 import { serializeResource } from '../datamodelutils';
+import commonText from '../localization/common';
 import { fetchPickLists } from '../picklists';
 import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
 import { crash } from './errorboundary';
-import { useId } from './hooks';
+import { useId, useUnloadProtect } from './hooks';
 import { stateReducer } from './schemaconfigstate';
 import type {
   CommonTableFields,
@@ -83,8 +84,6 @@ export function SchemaConfig({
   dataObjAggregators,
   onClose: handleClose,
   onSave: handleSave,
-  removeUnloadProtect,
-  setUnloadProtect,
 }: {
   readonly languages: IR<string>;
   readonly tables: IR<SpLocaleContainer>;
@@ -96,8 +95,6 @@ export function SchemaConfig({
   readonly dataObjAggregators: IR<DataObjectFormatter>;
   readonly onClose: () => void;
   readonly onSave: (language: string) => void;
-  readonly removeUnloadProtect: () => void;
-  readonly setUnloadProtect: () => void;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -217,21 +214,17 @@ export function SchemaConfig({
     };
   }, [state.type, stateLanguage, stateTable, tableId]);
 
-  // Set unload protect after changes were made
-  const changesMade =
+  const unsetUnloadProtect = useUnloadProtect(
     state.type === 'MainState'
       ? state.tableWasModified || state.modifiedItems.length > 0
-      : false;
-  React.useEffect(() => {
-    if (changesMade) setUnloadProtect();
-    return removeUnloadProtect;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [changesMade]);
+      : false,
+    commonText('unsavedSchemaUnloadProtect')
+  );
 
   // Save Changes
   React.useEffect(() => {
     if (state.type !== 'SavingState') return;
-    removeUnloadProtect();
+    unsetUnloadProtect();
 
     const saveString = async (
       resource: NewSpLocaleItemString | SpLocaleItemString
@@ -272,7 +265,7 @@ export function SchemaConfig({
     Promise.all(requests)
       .then(() => handleSave(state.language))
       .catch(crash);
-  }, [state.type]);
+  }, [state.type, unsetUnloadProtect]);
 
   return stateReducer(<i />, {
     ...state,

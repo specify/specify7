@@ -268,31 +268,20 @@ export function useReadyEffect(callback: () => void): void {
 export function useUnloadProtect(
   isEnabled: boolean,
   message: string
-): (isEnabled: boolean, callback?: () => void) => void {
-  const [hasUnloadProtect, setHasUnloadProtect] = useTriggerState(isEnabled);
-
-  React.useEffect(() => {
-    if (!hasUnloadProtect) return undefined;
-    console.log(`Adding unload protect: ${message}`);
-    const id = {};
-    navigation.addUnloadProtect(id, message);
-    return (): void => {
-      console.log(`Removing unload protect: ${message}`);
-      navigation.removeUnloadProtect(id);
-    };
-  }, [hasUnloadProtect, message]);
-
-  const [callback, setCallback] = React.useState<(() => void) | undefined>(
-    undefined
+): () => void {
+  const id = React.useRef({});
+  React.useEffect(
+    () =>
+      isEnabled
+        ? navigation.addUnloadProtect(id.current, message)
+        : navigation.removeUnloadProtect(id.current),
+    [isEnabled, message]
   );
-  if (typeof callback === 'function') {
-    callback();
-    setCallback(undefined);
-  }
-  return React.useCallback((isEnabled, callback) => {
-    setHasUnloadProtect(isEnabled);
-    setCallback(callback);
-  }, []);
+
+  return React.useCallback(
+    () => navigation.removeUnloadProtect(id.current),
+    []
+  );
 }
 
 /**

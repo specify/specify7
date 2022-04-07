@@ -164,8 +164,6 @@ export const stateReducer = generateReducer<
     return (
       <WbPlanViewMapper
         isReadOnly={state.props.isReadOnly}
-        setUnloadProtect={state.props.setUnloadProtect}
-        removeUnloadProtect={state.props.removeUnloadProtect}
         changesMade={state.changesMade}
         baseTableName={state.baseTableName}
         lines={state.lines}
@@ -177,7 +175,6 @@ export const stateReducer = generateReducer<
           })
         }
         onSave={async (lines, mustMatchPreferences): Promise<void> => {
-          state.props.removeUnloadProtect();
           return savePlan({
             dataset: state.props.dataset,
             baseTableName: state.baseTableName,

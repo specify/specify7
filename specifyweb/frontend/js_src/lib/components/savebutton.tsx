@@ -15,6 +15,8 @@ import { Dialog, LoadingScreen } from './modaldialog';
 
 // TODO: handle case when there are save blockers for field that is not
 //   rendered on the form
+// TODO: move this logic into ResourceView, so that <form> and button is
+//   defined in the same place
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   canAddAnother,
@@ -34,19 +36,20 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onClick?: () => void;
 }): JSX.Element {
   const id = useId('save-button');
-  const [saveRequired, setSaveRequired] = React.useState(false);
-  const handleUnloadProtect = useUnloadProtect(
+  const [saveRequired, setSaveRequired] = React.useState(resource.needsSaved);
+  const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
     formsText('unsavedFormUnloadProtect')
   );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
-    setSaveRequired(false);
+    setSaveRequired(resource.needsSaved);
     const handleSaveRequired = (): void => setSaveRequired(true);
     resource.on('saverequired', handleSaveRequired);
 
     setSaveBlocked(false);
+
     function handleChanged(saveRequired = true): void {
       if (saveRequired) handleSaveRequired();
       const onlyDeferredBlockers = Array.from(
@@ -107,15 +110,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     setIsSaving(true);
     (saveRequired ? resource.save() : Promise.resolve())
-      .then(() =>
-        handleUnloadProtect(false, (): void =>
-          handleSaved?.({
-            newResource,
-            wasNew,
-          })
-        )
-      )
+      .then(() => {
+        unsetUnloadProtect();
+        handleSaved?.({
+          newResource,
+          wasNew,
+        });
+      })
       .then(() => setSaveRequired(false))
+      .then(() => resource.trigger('saved'))
       .then(
         () => setIsSaving(false),
         (error: { readonly status: number; errorHandled: boolean }) => {

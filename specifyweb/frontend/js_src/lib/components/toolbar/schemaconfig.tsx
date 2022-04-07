@@ -11,7 +11,7 @@ import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
-import { useAsyncState, useTitle, useUnloadProtect } from '../hooks';
+import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import createBackboneView from '../reactbackboneextend';
 import type {
@@ -86,6 +86,7 @@ export type WithFieldInfo = {
 };
 
 const languagesUrl = cachableUrl('/context/schema/language/');
+
 function SchemaConfigWrapper({
   onClose: handleClose,
 }: Props): JSX.Element | null {
@@ -197,11 +198,6 @@ function SchemaConfigWrapper({
     true
   );
 
-  const setHasUnloadProtect = useUnloadProtect(
-    false,
-    commonText('unsavedSchemaUnloadProtect')
-  );
-
   return typeof languages === 'undefined' ||
     typeof tables === 'undefined' ||
     typeof formatters === 'undefined' ||
@@ -219,16 +215,12 @@ function SchemaConfigWrapper({
       dataObjFormatters={formatters}
       dataObjAggregators={aggregators}
       onClose={handleClose}
-      onSave={(language): void => {
-        setHasUnloadProtect(false, () =>
-          // Reload the page after schema changes
-          window.location.assign(
-            `/specify/task/schema-config/?language=${language}`
-          )
-        );
-      }}
-      removeUnloadProtect={(): void => setHasUnloadProtect(false)}
-      setUnloadProtect={(): void => setHasUnloadProtect(true)}
+      onSave={(language): void =>
+        // Reload the page after schema changes
+        window.location.assign(
+          `/specify/task/schema-config/?language=${language}`
+        )
+      }
     />
   );
 }

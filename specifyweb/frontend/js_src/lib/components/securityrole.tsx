@@ -73,7 +73,7 @@ export function RoleView({
   const changesMade =
     typeof role.id === 'undefined' ||
     JSON.stringify(initialRole) !== JSON.stringify(role);
-  const setUnloadProtect = useUnloadProtect(
+  const unsetUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')
   );
@@ -207,8 +207,10 @@ export function RoleView({
         ) : undefined}
         {changesMade ? (
           <Button.Red
-            // TODO: improve unload protect workflow
-            onClick={(): void => setUnloadProtect(false, handleClose)}
+            onClick={(): void => {
+              unsetUnloadProtect();
+              handleClose();
+            }}
           >
             {commonText('cancel')}
           </Button.Red>

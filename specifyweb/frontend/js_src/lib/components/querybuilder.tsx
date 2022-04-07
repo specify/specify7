@@ -99,7 +99,7 @@ export function QueryBuilder({
     [queryResource]
   );
 
-  const setHasUnloadProtect = useUnloadProtect(
+  const unsetUnloadProtect = useUnloadProtect(
     state.saveRequired,
     queryText('queryUnloadProtectDialogMessage')
   );
@@ -218,9 +218,10 @@ export function QueryBuilder({
             {!queryResource.isNew() && (
               <Button.Simple
                 disabled={!state.saveRequired}
-                onClick={(): void =>
-                  setHasUnloadProtect(false, () => window.location.reload())
-                }
+                onClick={(): void => {
+                  unsetUnloadProtect();
+                  window.location.reload();
+                }}
               >
                 {queryText('abandonChanges')}
               </Button.Simple>
@@ -230,7 +231,7 @@ export function QueryBuilder({
               queryResource={queryResource}
               fields={state.fields}
               saveRequired={state.saveRequired}
-              setHasUnloadProtect={setHasUnloadProtect}
+              unsetUnloadProtect={unsetUnloadProtect}
               getQueryFieldRecords={getQueryFieldRecords}
             />
           </header>

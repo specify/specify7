@@ -62,8 +62,6 @@ export type Dataset = DatasetBrief & {
 export type WbPlanViewProps = {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
-  readonly setUnloadProtect: () => void;
-  readonly removeUnloadProtect: () => void;
   readonly isReadOnly: boolean;
   readonly dataset: Dataset;
 };
