@@ -15,7 +15,7 @@ from django.db.models import F
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 from sqlalchemy import sql, orm
 
-from ..specify.models import Collection, Loanpreparation, Loanreturnpreparation
+from ..specify.models import Collection, Loan, Loanpreparation, Loanreturnpreparation
 from ..specify.auditlog import auditlog
 from ..notifications.models import Message
 
@@ -465,38 +465,45 @@ def return_loan_preps(collection, user, agent, data):
             for lp_id, quantity, loan_id, loan_no in query
             if quantity > 0
         ]
-        class NoCommit(Exception):
-            pass
-        try:
-            with transaction.atomic():
-                for lp_id, quantity, _, _ in to_return:
-                    lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
-                    was_resolved = lp.isresolved
-                    lp.quantityresolved = lp.quantityresolved + quantity
-                    lp.quantityreturned = lp.quantityreturned + quantity
-                    lp.isresolved = True
-                    lp.save()
+        if not commit:
+            return to_return
+        with transaction.atomic():
+            for lp_id, quantity, _, _ in to_return:
+                lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
+                was_resolved = lp.isresolved
+                lp.quantityresolved = lp.quantityresolved + quantity
+                lp.quantityreturned = lp.quantityreturned + quantity
+                lp.isresolved = True
+                lp.save()
 
-                    auditlog.update(lp, agent, None, [
-                        {'field_name': 'quantityresolved', 'old_value': lp.quantityresolved - quantity, 'new_value': lp.quantityresolved},
-                        {'field_name': 'quantityreturned', 'old_value': lp.quantityreturned - quantity, 'new_value': lp.quantityreturned},
-                        {'field_name': 'isresolved', 'old_value': was_resolved, 'new_value': True},
-                    ])
+                auditlog.update(lp, agent, None, [
+                    {'field_name': 'quantityresolved', 'old_value': lp.quantityresolved - quantity, 'new_value': lp.quantityresolved},
+                    {'field_name': 'quantityreturned', 'old_value': lp.quantityreturned - quantity, 'new_value': lp.quantityreturned},
+                    {'field_name': 'isresolved', 'old_value': was_resolved, 'new_value': True},
+                ])
 
-                    new_lrp = Loanreturnpreparation.objects.create(
-                        quantityresolved=quantity,
-                        quantityreturned=quantity,
-                        loanpreparation_id=lp_id,
-                        returneddate=data.get('returneddate', None),
-                        receivedby_id=data.get('receivedby', None),
-                        createdbyagent=agent,
-                        discipline=collection.discipline,
-                    )
-                    auditlog.insert(new_lrp, agent)
-                    if not commit:
-                        raise NoCommit()
-        except NoCommit:
-            pass
+                new_lrp = Loanreturnpreparation.objects.create(
+                    quantityresolved=quantity,
+                    quantityreturned=quantity,
+                    loanpreparation_id=lp_id,
+                    returneddate=data.get('returneddate', None),
+                    receivedby_id=data.get('receivedby', None),
+                    createdbyagent=agent,
+                    discipline=collection.discipline,
+                )
+                auditlog.insert(new_lrp, agent)
+            loans_to_close = Loan.objects.select_for_update().filter(
+                pk__in=set((loan_id for _, _, loan_id, _ in to_return)),
+                isclosed=False,
+            ).exclude(
+                loanpreparations__isresolved=False
+            )
+            for loan in loans_to_close:
+                loan.isclosed = True
+                loan.save()
+                auditlog.update(loan, agent, None, [
+                    {'field_name': 'isclosed', 'old_value': False, 'new_value': True},
+                ])
         return to_return
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
