@@ -317,7 +317,7 @@ const ResourceList = Backbone.View.extend({
                 specifyuser: userInformation.resource_uri,
                 spappresourcedir: directory.get('resource_uri')
             });
-            return resource.save().then(() => resource);
+            return resource.save();
         }).then(resource => {
             const resourceFieldName = this.ResourceModel.getField('spappresourcedatas').getReverse().name;
             const resourceData = new schema.models.SpAppResourceData.Resource({data: ""});
@@ -434,7 +434,7 @@ const GlobalResourcesView = Backbone.View.extend({
             usertype: 'Common'
         }, {noBusinessRules: true});
         directory.set({collection: null, discipline: null}); // The collection gets set automatically by the 'newresource' event on the api.
-        return directory.save().then(() => directory);
+        return directory.save();
     }
 });
 
@@ -528,7 +528,7 @@ const DisciplineResourcesView = Backbone.View.extend({
             discipline: this.discipline.get('resource_uri')
         }, {noBusinessRules: true});
         directory.set('collection', null); // The collection gets set automatically by the 'newresource' event on the api.
-        return directory.save().then(() => directory);
+        return directory.save();
     }
 });
 
@@ -616,7 +616,7 @@ const CollectionResourcesView = Backbone.View.extend({
             discipline: this.discipline.get('resource_uri'),
             collection: this.collection.get('resource_uri')
         }, {noBusinessRules: true});
-        return directory.save().then(() => directory);
+        return directory.save();
     }
 });
 
@@ -697,7 +697,7 @@ const UserTypeResourcesView = Backbone.View.extend({
             collection: this.collection.get('resource_uri'),
             usertype: this.usertype.toLowerCase()
         }, {noBusinessRules: true});
-        return directory.save().then(() => directory);
+        return directory.save();
     }
 });
 
@@ -780,7 +780,7 @@ const UserResourcesView = Backbone.View.extend({
             usertype: this.user.get('usertype').toLowerCase(),
             specifyuser: this.user.get('resource_uri')
         }, {noBusinessRules: true});
-        return directory.save().then(() => directory);
+        return directory.save();
     }
 });
 

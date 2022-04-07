@@ -109,6 +109,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     if (handleSaving?.() === false) return;
 
     setIsSaving(true);
+    // FIXME: test how save conflict is handled
     loading(
       (saveRequired ? resource.save(hasSaveConflict) : Promise.resolve())
         .then(() => {

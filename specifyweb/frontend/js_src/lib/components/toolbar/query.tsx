@@ -41,6 +41,9 @@ import {
   hasToolPermission,
 } from '../../permissions';
 import { cachableUrl } from '../../initialcontext';
+import { downloadFile, FilePicker, fileToText } from '../filepicker';
+import { omit } from '../../helpers';
+import { getUniqueName } from '../../wbuniquifyname';
 
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
@@ -199,7 +202,12 @@ type EditQueryState = State<
     queryModel: SpecifyResource<SpQuery>;
   }
 >;
-type States = ShowQueryListState | CreateQueryState | EditQueryState;
+type ImportQueryState = State<'ImportQueryState'>;
+type States =
+  | ShowQueryListState
+  | CreateQueryState
+  | EditQueryState
+  | ImportQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
@@ -236,8 +244,8 @@ export function QueryToolbarItem({
     type: 'ShowQueryListState',
   });
 
-  if (state.type === 'ShowQueryListState') {
-    return Array.isArray(queries) ? (
+  return state.type === 'ShowQueryListState' ? (
+    Array.isArray(queries) ? (
       <Dialog
         header={commonText('queriesDialogTitle')(queries.length)}
         onClose={handleClose}
@@ -276,9 +284,9 @@ export function QueryToolbarItem({
           getQuerySelectUrl={getQuerySelectUrl}
         />
       </Dialog>
-    ) : null;
-  } else if (state.type === 'CreateQueryState')
-    return Array.isArray(tablesToShow) ? (
+    ) : null
+  ) : state.type === 'CreateQueryState' ? (
+    Array.isArray(tablesToShow) ? (
       <Dialog
         onClose={handleClose}
         className={{
@@ -286,11 +294,20 @@ export function QueryToolbarItem({
         }}
         header={commonText('newQueryDialogTitle')}
         buttons={
-          <Button.Transparent
-            onClick={(): void => setState({ type: 'ShowQueryListState' })}
-          >
-            {commonText('cancel')}
-          </Button.Transparent>
+          <>
+            <Button.Transparent
+              onClick={(): void => setState({ type: 'ShowQueryListState' })}
+            >
+              {commonText('cancel')}
+            </Button.Transparent>
+            {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
+              <Button.Green
+                onClick={(): void => setState({ type: 'ImportQueryState' })}
+              >
+                {commonText('import')}
+              </Button.Green>
+            ) : undefined}
+          </>
         }
       >
         <ListOfTables
@@ -301,12 +318,17 @@ export function QueryToolbarItem({
       </Dialog>
     ) : (
       <LoadingScreen />
-    );
-  else if (state.type === 'EditQueryState' && !isReadOnly)
-    return (
-      <EditQueryDialog queryResource={state.queryModel} onClose={handleClose} />
-    );
-  else throw new Error('Invalid ToolbarQuery State type');
+    )
+  ) : state.type === 'EditQueryState' && !isReadOnly ? (
+    <EditQueryDialog queryResource={state.queryModel} onClose={handleClose} />
+  ) : state.type === 'ImportQueryState' ? (
+    <QueryImport
+      onClose={(): void => setState({ type: 'ShowQueryListState' })}
+      queries={queries}
+    />
+  ) : (
+    error('Invalid ToolbarQuery State type')
+  );
 }
 
 const QueryToolbarView = createBackboneView(QueryToolbarItem);
@@ -316,6 +338,7 @@ const menuItem: MenuItem = {
   title: commonText('queries'),
   icon: icons.documentSearch,
   isOverlay: true,
+  enabled: () => hasToolPermission('queryBuilder', 'read'),
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,
@@ -337,10 +360,28 @@ function EditQueryDialog({
     'default' | 'dwcaExport' | 'reportExport' | 'labelExport' | 'report'
   >('default');
 
+  const loading = React.useContext(LoadingContext);
   return state === 'default' ? (
     <ResourceView
       dialog="modal"
       canAddAnother={false}
+      extraButtons={
+        <>
+          <span className="flex-1 -ml-2" />
+          <Button.Green
+            onClick={(): void => {
+              loading(
+                downloadFile(
+                  `${queryResource.get('name')}.json`,
+                  JSON.stringify(queryResource.toJSON(), null, '\t')
+                )
+              );
+            }}
+          >
+            {commonText('export')}
+          </Button.Green>
+        </>
+      }
       resource={queryResource}
       onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
       onClose={handleClose}
@@ -377,6 +418,59 @@ function EditQueryDialog({
     />
   ) : (
     error('Invalid state')
+  );
+}
+
+function QueryImport({
+  onClose: handleClose,
+  queries,
+}: {
+  readonly onClose: () => void;
+  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  return typeof queries === 'object' ? (
+    <Dialog
+      header={commonText('import')}
+      onClose={handleClose}
+      buttons={commonText('cancel')}
+    >
+      <Form>
+        <FilePicker
+          acceptedFormats={['.json']}
+          onSelected={(file): void =>
+            loading(
+              fileToText(file)
+                .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
+                .then(
+                  async (query) =>
+                    new schema.models.SpQuery.Resource(omit(query, ['id']))
+                )
+                .then((queryResource) =>
+                  queryResource.set(
+                    'name',
+                    getUniqueName(
+                      queryResource.get('name'),
+                      queries.map(({ name }) => name),
+                      defined(schema.models.SpQuery.getLiteralField('name'))
+                        .length
+                    )
+                  )
+                )
+                .then((queryResource) => queryResource.save())
+                .then((queryResource) =>
+                  navigation.go(`/specify/query/${queryResource.id}/`)
+                )
+            )
+          }
+        />
+        <Submit.Green disabled className="sr-only">
+          {commonText('import')}
+        </Submit.Green>
+      </Form>
+    </Dialog>
+  ) : (
+    <LoadingScreen />
   );
 }
 

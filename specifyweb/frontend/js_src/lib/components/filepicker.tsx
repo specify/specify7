@@ -124,32 +124,33 @@ export function FilePicker({
  * https://stackoverflow.com/a/10433550/8584605
  *
  */
-export async function downloadFile(
-  fileName: string,
-  text: string
-): Promise<void> {
-  const iframe = document.createElement('iframe');
-  iframe.addEventListener('load', () => {
-    if (iframe.contentWindow === null) return;
-    const element = iframe.contentWindow.document.createElement('a');
-    element.setAttribute(
-      'href',
-      `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`
-    );
-    element.setAttribute('download', fileName);
+export const downloadFile = (fileName: string, text: string): Promise<void> =>
+  new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.addEventListener('load', () => {
+      if (iframe.contentWindow === null) return;
+      const element = iframe.contentWindow.document.createElement('a');
+      element.setAttribute(
+        'href',
+        `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`
+      );
+      element.setAttribute('download', fileName);
 
-    element.style.display = 'none';
-    iframe.contentWindow.document.body.append(element);
+      element.style.display = 'none';
+      iframe.contentWindow.document.body.append(element);
 
-    element.click();
-    setTimeout(() => iframe.remove(), 100);
+      element.click();
+      setTimeout(() => {
+        iframe.remove();
+        resolve();
+      }, 100);
+    });
+    const html = '<body></body>';
+    document.body.append(iframe);
+    iframe.contentWindow?.document.open();
+    iframe.contentWindow?.document.write(html);
+    iframe.contentWindow?.document.close();
   });
-  const html = '<body>Foo</body>';
-  document.body.append(iframe);
-  iframe.contentWindow?.document.open();
-  iframe.contentWindow?.document.write(html);
-  iframe.contentWindow?.document.close();
-}
 
 export const fileToText = async (file: File): Promise<string> =>
   new Promise((resolve, reject) => {

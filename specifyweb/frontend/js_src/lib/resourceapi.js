@@ -474,7 +474,7 @@ function eventHandlerForToOne(related, field) {
                 ? hijackBackboneAjax([Http.OK, Http.CONFLICT], save, (status) =>
                     status === Http.CONFLICT ? conflictCallback() : undefined
                   )
-                : save;
+                : save();
 
             resource._save.catch(function(error) {
                 resource._save = null;
@@ -485,7 +485,7 @@ function eventHandlerForToOne(related, field) {
                 resource._save = null;
             });
 
-            return resource._save;
+            return resource._save.then(()=>resource);
         },
         toJSON: function() {
             var self = this;

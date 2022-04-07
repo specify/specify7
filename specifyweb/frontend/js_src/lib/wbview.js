@@ -1995,7 +1995,7 @@ const WBView = Backbone.View.extend({
     });
   },
   saveClicked() {
-    this.save().then();
+    legacyLoadingContext(this.save());
   },
   save() {
     // Clear validation

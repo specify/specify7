@@ -10,6 +10,7 @@ const MAX_NAME_LENGTH = 64;
 export function getUniqueName(
   name: string,
   usedNames: RA<string>,
+  // Can get this number from SQL schema for a given field
   maxLength: number = Number.POSITIVE_INFINITY
 ): string {
   if (!usedNames.includes(name)) return name;
