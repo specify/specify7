@@ -99,9 +99,9 @@ const commonText = require('./localization/common').default;
             var $table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
             var appendIt = this.shouldShow.bind(this);
-            _.each(this.options.tables, function(table) {
+            _.each(this.options.tables, function(table, idx) {
                 if (appendIt(table)) {
-                    $table.append(makeEntry(table));
+                    $table.append(makeEntry(table, idx));
                 }
             });
             this.$el.append($table);
@@ -117,17 +117,17 @@ const commonText = require('./localization/common').default;
             //spauditlog is kind of a special case (in sp6 anyway) because its permissions are not user accessible.
             return table.attr('name').toLowerCase() != 'spauditlog' || userInfo.usertype == 'Manager';
         },
-        dialogEntry: function(table) {
+        dialogEntry: function(table, idx) {
             var model = schema.getModel(table.attr('name'));
             var img = $('<img>', { src: model.getIcon() });
-            var link = $('<a>').text(model.getLocalizedName());
+            var link = $('<a>').text(model.getLocalizedName()).data('idx', idx);
             var entry = $('<tr>').append(
                 $('<td>').append(img),
                 $('<td>').append(link));
             return entry;
         },
         selected: function(evt) {
-            var index = this.$('a').index(evt.currentTarget);
+            var index = $(evt.currentTarget).data('idx');
             this.$el.dialog('close');
             var table = this.options.tables[index];
             navigation.go('/query/new/' + table.attr('name').toLowerCase() + '/');
