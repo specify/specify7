@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { camelToHuman } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -112,7 +110,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     setIsSaving(true);
     loading(
-      (saveRequired ? resource.save() : Promise.resolve())
+      (saveRequired ? resource.save(hasSaveConflict) : Promise.resolve())
         .then(() => {
           unsetUnloadProtect();
           handleSaved?.({
@@ -123,12 +121,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         .then(() => setSaveRequired(false))
         .then(() => resource.trigger('saved'))
         .then(() => setIsSaving(false))
-        // FIXME: catch an error beforehand
-        .catch((error) => {
-          if (error.status !== Http.CONFLICT) return;
-          error.errorHandled = true;
-          hasSaveConflict();
-        })
     );
   }
 

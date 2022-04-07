@@ -2,20 +2,20 @@ import React from 'react';
 
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
+import { hasPermission, hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { toTable } from '../specifymodel';
-import { f } from '../functools';
 import { Button } from './basic';
+import { LoadingContext } from './contexts';
 import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
 import { ShowLoansCommand } from './showtranscommand';
-import { LoadingContext } from './contexts';
-import { hasPermission, hasTablePermission } from '../permissions';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
@@ -50,7 +50,7 @@ const commandRenderers: {
         <Button.Simple id={id} onClick={(): void => setRunReport(true)}>
           {label}
         </Button.Simple>
-        {(runReport && resource.isNew()) || !Boolean(resource.get('id')) ? (
+        {runReport && (resource.isNew() || !Boolean(resource.get('id'))) ? (
           <Dialog
             header={label}
             buttons={commonText('close')}

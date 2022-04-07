@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { ajax, isExternalUrl } from '../ajax';
+import { ajax } from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
+import { isExternalUrl } from '../navigation';
 import * as querystring from '../querystring';
 import { router } from '../router';
-import { setCurrentOverlay, setCurrentView } from '../specifyapp';
+import {
+  setCurrentOverlay,
+  setCurrentView,
+  switchCollection,
+} from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { group, sortFunction, split } from '../helpers';
@@ -128,7 +133,7 @@ export function CollectionSelector(): JSX.Element {
       aria-label={commonText('currentCollection')}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
-        navigation.switchCollection(Number.parseInt(value), '/', () => {
+        switchCollection(Number.parseInt(value), '/', () => {
           /* Nothing */
         })
       }

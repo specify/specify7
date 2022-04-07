@@ -181,7 +181,12 @@ function formatError(
         </React.Fragment>
       );
       errorMessage.push(statusText);
-    } else errorObject.push(<p className="raw">{error.toString()}</p>);
+    } else
+      errorObject.push(
+        <p className="raw" key="raw">
+          {error.toString()}
+        </p>
+      );
   }
 
   return [

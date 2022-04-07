@@ -1,4 +1,3 @@
-import { isExternalUrl, ping } from './ajax';
 import Backbone from './backbone';
 import { showDialog } from './components/modaldialog';
 import commonText from './localization/common';
@@ -10,6 +9,15 @@ import commonText from './localization/common';
  * 'undo' the popstate in the case that the user elects not to leave
  * the current context.
  */
+
+const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
+export const isExternalUrl = (url: string): boolean =>
+  // Relative url is not external. Passing a relative URL to new URL() throws
+  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
+    ? true
+    : reIsAbsolute.exec(url) === null
+    ? false
+    : new URL(url).origin !== window.location.origin;
 
 type State = {
   sequence?: number;
@@ -133,16 +141,6 @@ Backbone.history.checkUrl = function (event: any) {
   if (current === Backbone.history.fragment) return;
 
   /*
-   * This continuation "proceeds" to the popped history by updating
-   * the current sequence and then invoking the default Backbone
-   * popstate handler.
-   */
-  const proceed = (): void => {
-    sequence = poppedSequence;
-    checkUrl(event);
-  };
-
-  /*
    * This continuation "cancels" the popstate event by returning to
    * the point in history from whence it came. This will result in
    * another popstate event with the current sequence, which is
@@ -150,8 +148,15 @@ Backbone.history.checkUrl = function (event: any) {
    */
   const cancel = (): void => window.history.go(sequence - poppedSequence);
 
-  if (unloadBlockers.length > 0) confirmNavigation(proceed, cancel);
-  else proceed();
+  confirmNavigation((): void => {
+    /*
+     * This continuation "proceeds" to the popped history by updating
+     * the current sequence and then invoking the default Backbone
+     * popstate handler.
+     */
+    sequence = poppedSequence;
+    checkUrl(event);
+  }, cancel);
 };
 
 /*
@@ -189,10 +194,16 @@ function defaultConfirmNavigationHandler(
   });
 }
 
-function confirmNavigation(proceed: () => void, cancel: () => void): void {
-  const { confirmNavigationHandler } =
-    unloadBlockers[unloadBlockers.length - 1];
-  confirmNavigationHandler(proceed, cancel);
+export function confirmNavigation(
+  proceed: () => void,
+  cancel: () => void
+): void {
+  if (unloadBlockers.length === 0) proceed();
+  else {
+    const { confirmNavigationHandler } =
+      unloadBlockers[unloadBlockers.length - 1];
+    confirmNavigationHandler(proceed, cancel);
+  }
 }
 
 export function navigate(
@@ -234,23 +245,3 @@ export const push = (url: string): void =>
 
 export const getCurrentUrl = (): string =>
   `${window.location.pathname}${window.location.search}${window.location.hash}`;
-
-export function switchCollection(
-  collection: number,
-  nextUrl: string | undefined = undefined,
-  cancelCallback: () => void = (): void => {
-    /* Nothing */
-  }
-): void {
-  const cont = (): void =>
-    void ping('/context/collection/', {
-      method: 'POST',
-      body: collection.toString(),
-    }).then(() =>
-      typeof nextUrl === 'string'
-        ? window.location.assign(nextUrl)
-        : window.location.reload()
-    );
-  if (unloadBlockers.length > 0) confirmNavigation(cont, cancelCallback);
-  else cont();
-}

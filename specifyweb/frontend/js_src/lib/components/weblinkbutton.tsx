@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { isExternalUrl } from '../ajax';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
@@ -15,6 +14,7 @@ import { defined } from '../types';
 import { className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
+import { isExternalUrl } from '../navigation';
 
 export const webLinks = load<Element>(
   '/context/app.resource?name=WebLinks',

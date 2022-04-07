@@ -3,13 +3,13 @@ import React from 'react';
 import type { Collection } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import commonText from '../localization/common';
-import * as navigation from '../navigation';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
 import createBackboneView from './reactbackboneextend';
 import { f } from '../functools';
+import { switchCollection } from '../specifyapp';
 
 export function OtherCollection({
   collections: resourceCollections,
@@ -37,16 +37,15 @@ export function OtherCollection({
                   <li key={id}>
                     <Button.LikeLink
                       onClick={(): void =>
-                        navigation.switchCollection(collections[0].id)
+                        switchCollection(collections[0].id, undefined, () => {
+                          /* Nothing */
+                        })
                       }
                     >
                       {collectionName}
                     </Button.LikeLink>
                   </li>
                 ))}
-                <li>
-                  <a>{commonText('collection')}</a>
-                </li>
               </ul>
             </>
           ) : (
@@ -56,9 +55,7 @@ export function OtherCollection({
                   defined(collections[0].collectionName ?? undefined)
                 )}
                 <Button.LikeLink
-                  onClick={(): void =>
-                    navigation.switchCollection(collections[0].id)
-                  }
+                  onClick={(): void => switchCollection(collections[0].id)}
                 >
                   {commonText('open')}
                 </Button.LikeLink>

@@ -9,12 +9,36 @@ import * as querystring from './querystring';
 import { promiseToXhr } from './resourceapi';
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
-import { defined } from './types';
+import { defined, RA } from './types';
 
 /*
  * Make Backbone use fetch() API instead of JQuery so that all errors
  * can be handled consistently in a single place
  */
+let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> = [
+  Http.OK,
+  Http.CREATED,
+  Http.NO_CONTENT,
+];
+let requestCallback: ((status: number) => void) | undefined;
+
+/**
+ * Since arguments can't be passed directly to the Backbone.ajax call, this
+ * allows to partially intercept the call
+ */
+export function hijackBackboneAjax<T>(
+  responseCodes: RA<typeof Http[keyof typeof Http]>,
+  callback: () => T,
+  successCallback: (status: number) => void
+): T {
+  expectedResponseCodes = responseCodes;
+  requestCallback = successCallback;
+  const value = callback();
+  requestCallback = undefined;
+  expectedResponseCodes = [Http.OK, Http.CREATED, Http.NO_CONTENT];
+  return value;
+}
+
 Backbone.ajax = function (request): JQueryXHR {
   if (typeof request === 'undefined') throw new Error('Undefined Request');
   const url = defined(request.url);
@@ -35,14 +59,15 @@ Backbone.ajax = function (request): JQueryXHR {
         body: request.type === 'GET' ? undefined : request.data,
       },
       {
-        expectedResponseCodes: [Http.OK, Http.CREATED, Http.NO_CONTENT],
+        expectedResponseCodes,
       }
     )
-      .then(({ data }) =>
-        typeof request.success === 'function'
-          ? request.success(data, 'success', undefined as never)
-          : undefined
-      )
+      .then(({ data, status }) => {
+        requestCallback?.(status);
+        if (status === Http.CONFLICT) throw new Error(data);
+        else if (typeof request.success === 'function')
+          request.success(data, 'success', undefined as never);
+      })
       .catch((error) => {
         typeof request.error === 'function'
           ? request.error(error, 'error', undefined as never)

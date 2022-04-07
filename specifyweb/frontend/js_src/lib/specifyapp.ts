@@ -2,8 +2,9 @@ import $ from 'jquery';
 
 import type Backbone from './backbone';
 import { openDialogs } from './components/modaldialog';
-import { getCurrentUrl, push } from './navigation';
+import { confirmNavigation, getCurrentUrl, push } from './navigation';
 import { f } from './functools';
+import { ping } from './ajax';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;
@@ -54,3 +55,23 @@ export function setCurrentOverlay(view: Backbone.View, url: string): void {
   view.render();
   currentOverlay = view;
 }
+
+export const switchCollection = (
+  collection: number,
+  nextUrl: string | undefined = undefined,
+  cancelCallback: () => void = (): void => {
+    /* Nothing */
+  }
+): void =>
+  confirmNavigation(
+    (): void =>
+      void ping('/context/collection/', {
+        method: 'POST',
+        body: collection.toString(),
+      }).then(() =>
+        typeof nextUrl === 'string'
+          ? window.location.assign(nextUrl)
+          : window.location.reload()
+      ),
+    cancelCallback
+  );

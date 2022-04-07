@@ -12,8 +12,6 @@ import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-// TODO: eliminate this type of imports
-import * as navigation from '../navigation';
 import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -22,6 +20,7 @@ import { Button, className, DataEntry, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
+import { switchCollection } from '../specifyapp';
 
 type Data = {
   readonly collectionObjects: RA<{
@@ -186,7 +185,7 @@ export function CollectionOneToManyPlugin({
                           userInformation.availableCollections
                         ).map(f.parseInt);
                         if (collectionsIds.includes(data.otherCollection.id))
-                          navigation.switchCollection(
+                          switchCollection(
                             data.otherCollection.id,
                             relatedResource.viewUrl()
                           );

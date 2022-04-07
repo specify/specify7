@@ -126,7 +126,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   readonly noValidation?: boolean;
-  save(): Promise<void>;
+  save(conflictCallback?: () => void): Promise<void>;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;

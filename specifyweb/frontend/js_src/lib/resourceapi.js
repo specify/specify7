@@ -7,6 +7,8 @@ import {globalEvents} from './specifyapi';
 import * as querystring from './querystring';
 import {getResourceViewUrl, resourceFromUri} from './resource';
 import {getResourceAndField} from './components/resource';
+import {hijackBackboneAjax} from './startapp';
+import {Http} from './ajax';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -341,7 +343,7 @@ function eventHandlerForToOne(related, field) {
             var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
 
             // first make sure we actually have this object.
-            return this.fetchIfNotPopulated().then(function(_this) {
+            return this.fetch().then(function(_this) {
                 return _this._rget(path, options);
             }).then(function(value) {
                 // if the requested value is fetchable, and prePop is true,
@@ -349,9 +351,11 @@ function eventHandlerForToOne(related, field) {
                 // or collection
                 if (options.prePop) {
                     if (!value) return value; // ok if the related resource doesn't exist
-                    if (_(value.fetchIfNotPopulated).isFunction()) {
+                    else if (typeof value.fetchIfNotPopulated === 'function')
                         return value.fetchIfNotPopulated();
-                    } else {
+                    else if (typeof value.fetch === 'function')
+                        return value.fetch();
+                    else {
                         console.warn("rget(" + fieldName + ", prePop=true) where"
                                      + " resulting value has no fetch method");
                     }
@@ -456,7 +460,7 @@ function eventHandlerForToOne(related, field) {
                 return $.Deferred().reject('unhandled relationship type');
             }
         },
-        save: function() {
+        save(conflictCallback) {
             var resource = this;
             if (resource._save) {
                 throw new Error('resource is already being saved');
@@ -464,12 +468,19 @@ function eventHandlerForToOne(related, field) {
             var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
 
-            resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
+            const save = ()=>Backbone.Model.prototype.save.apply(resource, arguments);
+            resource._save =
+              typeof conflictCallback === 'function'
+                ? hijackBackboneAjax([Http.OK, Http.CONFLICT], save, (status) =>
+                    status === Http.CONFLICT ? conflictCallback() : undefined
+                  )
+                : save;
 
-            resource._save.catch(function() {
+            resource._save.catch(function(error) {
                 resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
+                throw error;
             }).then(function() {
                 resource._save = null;
             });

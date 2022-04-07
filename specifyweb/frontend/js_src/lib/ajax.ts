@@ -1,6 +1,7 @@
 import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
+import { isExternalUrl } from './navigation';
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
@@ -16,15 +17,6 @@ export function formData(data: IR<string | Blob>): FormData {
   return formData;
 }
 
-const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
-export const isExternalUrl = (url: string): boolean =>
-  // Relative url is not external. Passing a relative URL to new URL() throws
-  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
-    ? true
-    : reIsAbsolute.exec(url) === null
-    ? false
-    : new URL(url).origin !== window.location.origin;
-
 /* An enum of HTTP status code back-end commonly returns */
 export const Http = {
   // You may add others codes as needed
@@ -35,7 +27,7 @@ export const Http = {
   FORBIDDEN: 403,
   CONFLICT: 409,
   UNAVAILABLE: 503,
-};
+} as const;
 
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 

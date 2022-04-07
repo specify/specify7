@@ -12,6 +12,7 @@ import { collectionsForResource } from './domain';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
+// TODO: eliminate this type of imports
 import * as navigation from './navigation';
 import { NotFoundView } from './notfoundview';
 import { hasTablePermission, hasToolPermission } from './permissions';
@@ -19,7 +20,7 @@ import * as querystring from './querystring';
 import { getResourceViewUrl } from './resource';
 import { router } from './router';
 import { getModel, getModelById, schema } from './schema';
-import { setCurrentView } from './specifyapp';
+import { setCurrentView, switchCollection } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
 
@@ -175,7 +176,7 @@ async function byCatNumber(
         error('Multiple collections with code:', collections);
       const collection = collections.models[0];
       if (collection.id !== schema.domainLevelIds.collection) {
-        navigation.switchCollection(collection.id);
+        switchCollection(collection.id);
         return undefined;
       }
 
