@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { ajax } from '../ajax';
+import { ajax, isExternalUrl } from '../ajax';
 import commonText from '../localization/common';
 import * as navigation from '../navigation';
-import { isExternalUrl } from '../navigation';
 import * as querystring from '../querystring';
 import { router } from '../router';
 import {

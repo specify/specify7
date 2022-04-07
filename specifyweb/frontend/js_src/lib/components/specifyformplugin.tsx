@@ -260,11 +260,11 @@ const pluginRenderers: {
   },
   PaleoMap: PaleoLocationMapPlugin,
   UserInviteLinkUI({ resource, id }) {
-    return (
-      f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-        <UserInviteLinkPlugin user={specifyUser} id={id} />
-      )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-    );
+    return hasPermission('/admin/user/password', 'update')
+      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
+          <UserInviteLinkPlugin user={specifyUser} id={id} />
+        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
+      : null;
   },
   Unsupported({ pluginDefinition: { name }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();

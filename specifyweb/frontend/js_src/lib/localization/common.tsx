@@ -433,6 +433,35 @@ const commonText = createDictionary({
     ca: 'Iniciar Sessió',
     'es-es': 'Login',
   },
+  // FIXME: localize
+  oicWelcomeMessage: {
+    'en-us': (userName: string) => `
+      Hello, ${userName}! You've been invited to associate an external login to
+      your Specify user account. This will enable you to log in to Specify with
+      your chosen provider going forward.
+    `,
+    'ru-ru': (userName: string) => `
+      Hello, ${userName}! You've been invited to associate an external login to
+      your Specify user account. This will enable you to log in to Specify with
+      your chosen provider going forward.
+    `,
+    ca: (userName: string) => `
+      Hello, ${userName}! You've been invited to associate an external login to
+      your Specify user account. This will enable you to log in to Specify with
+      your chosen provider going forward.
+    `,
+    'es-es': (userName: string) => `
+      Hello, ${userName}! You've been invited to associate an external login to
+      your Specify user account. This will enable you to log in to Specify with
+      your chosen provider going forward.
+    `,
+  },
+  legacyLogin: {
+    'en-us': 'Sign in with Specify Account',
+    'ru-ru': 'Sign in with Specify Account',
+    ca: 'Sign in with Specify Account',
+    'es-es': 'Sign in with Specify Account',
+  },
 
   // Choose Collection
   chooseCollection: {
@@ -442,29 +471,29 @@ const commonText = createDictionary({
     'es-es': 'Choose Collection',
   },
   noAccessToCollections: {
-    'en-us': (loginLink: (label: string) => JSX.Element) => (
+    'en-us': (
       <>
         The logged in user has not been given access to any collections in this
-        database. You must {loginLink('login')} as another user.
+        database. You must login as another user.
       </>
     ),
-    'ru-ru': (loginLink: (label: string) => JSX.Element) => (
+    'ru-ru': (
       <>
         Пользователь, вошедший в систему, не получил доступа ни к каким
-        коллекциям в этой базе данных. Вы должны {loginLink('войти')} в систему
-        как другой пользователь.
+        коллекциям в этой базе данных. Вы должны войти в систему как другой
+        пользователь.
       </>
     ),
-    ca: (loginLink: (label: string) => JSX.Element) => (
+    ca: (
       <>
         L'usuari que ha iniciat sessió no té accés a cap col·lecció d'aquesta
-        base de dades. Heu {loginLink("d'iniciar sessió")} com un altre usuari.
+        base de dades. Heu d'iniciar sessió com un altre usuari.
       </>
     ),
-    'es-es': (loginLink: (label: string) => JSX.Element) => (
+    'es-es': (
       <>
         The logged in user has not been given access to any collections in this
-        database. You must {loginLink('login')} as another user.
+        database. You must login as another user.
       </>
     ),
   },

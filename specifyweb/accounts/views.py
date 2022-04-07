@@ -1,32 +1,30 @@
+import base64
+import hashlib
+import hmac
+import json
+import jwt
 import logging
 import requests
-import json
 import time
-import hmac
-import hashlib
-import base64
-import jwt
-
+from django import forms
+from django import http
+from django.conf import settings
+from django.contrib.auth import login, logout
+from django.db import connection
+from django.db.models import Max
+from django.shortcuts import render
+from django.template.response import TemplateResponse
+from django.utils import crypto
+from django.utils.http import is_safe_url, urlencode
+from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.http import require_GET, require_http_methods
 from typing import Union, Optional, Dict
 from typing_extensions import TypedDict
 
-from django import forms
-from django import http
-from django.db import connection
-from django.db.models import Max
-from django.conf import settings
-from django.utils import crypto
-from django.utils.http import is_safe_url, urlencode
-from django.shortcuts import render
-from django.contrib.auth import login, logout
-from django.template.response import TemplateResponse
-from django.views.decorators.http import require_GET, require_http_methods
-from django.views.decorators.cache import cache_control, never_cache
-
+from specifyweb.context.views import set_collection_cookie, \
+    users_collections_for_sp7
 from specifyweb.specify import models as spmodels
-from specifyweb.context.views import set_collection_cookie, users_collections
 from specifyweb.specify.views import login_maybe_required
-
 from .models import Spuserexternalid
 
 logger = logging.getLogger(__name__)
@@ -274,12 +272,8 @@ def choose_collection(request) -> http.HttpResponse:
         else settings.LOGIN_REDIRECT_URL
     )
 
-    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+    available_collections = users_collections_for_sp7(request.specify_user.id)
     available_collections.sort(key=lambda x: x[1])
-
-    if len(available_collections) < 1:
-        logout(request)
-        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
 
     if len(available_collections) == 1:
         set_collection_cookie(redirect_resp, available_collections[0][0])
@@ -295,10 +289,12 @@ def choose_collection(request) -> http.HttpResponse:
         if form.is_valid():
             set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
             return redirect_resp
-    else:
-        form = Form()
 
-    context = {'form': form, 'next': redirect_to}
+    context = {
+        'available_collections': available_collections,
+        'initial_value': request.COOKIES.get('collection', None),
+        'next': redirect_to
+    }
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_GET

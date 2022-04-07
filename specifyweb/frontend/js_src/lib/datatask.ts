@@ -222,6 +222,7 @@ const checkLoggedInCollection = async (
   )
     ? Promise.resolve(void callback())
     : collectionsForResource(resource).then((collections) =>
+        !Array.isArray(collections) ||
         collections.some(({ id }) => id === schema.domainLevelIds.collection)
           ? callback()
           : setCurrentView(

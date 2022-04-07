@@ -20,6 +20,7 @@ from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.views.i18n import set_language
+from typing import List, Tuple
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \

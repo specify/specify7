@@ -1,23 +1,29 @@
 import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
-import { isExternalUrl } from './navigation';
+
+const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
+export const isExternalUrl = (url: string): boolean =>
+  // Relative url is not external. Passing a relative URL to new URL() throws
+  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
+    ? true
+    : reIsAbsolute.exec(url) === null
+    ? false
+    : new URL(url).origin !== window.location.origin;
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-/*
- * TODO: make back-end accept both formData and JSON
- * TODO: add a central place for all API endpoint definitions
- */
+// TODO: add a central place for all API endpoint definitions
 
+//  TODO: make all back-end endpoints accept JSON
 export function formData(data: IR<string | Blob>): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => formData.append(key, value));
   return formData;
 }
 
-/* An enum of HTTP status code back-end commonly returns */
+/* An enum of HTTP status codes back-end commonly returns */
 export const Http = {
   // You may add others codes as needed
   OK: 200,

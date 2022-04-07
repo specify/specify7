@@ -60,12 +60,14 @@ export function Contexts({
     (error: (props: { readonly onClose: () => void }) => JSX.Element) =>
       setErrors((errors) => [
         ...errors,
-        error({
-          onClose: () =>
-            setErrors((newErrors) =>
-              replaceItem(newErrors, errors.length, undefined)
-            ),
-        }),
+        <React.Fragment key={errors.length}>
+          {error({
+            onClose: () =>
+              setErrors((newErrors) =>
+                replaceItem(newErrors, errors.length, undefined)
+              ),
+          })}
+        </React.Fragment>,
       ]),
     []
   );
@@ -77,7 +79,7 @@ export function Contexts({
     <ErrorBoundary>
       <ErrorContext.Provider value={handleError}>
         {errors}
-        <LoadingContext.Provider value={handle}>
+        <LoadingContext.Provider value={handle} key="loadingContext">
           <Dialog
             isOpen={isLoading}
             header={commonText('loading')}

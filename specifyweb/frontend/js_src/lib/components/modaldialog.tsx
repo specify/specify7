@@ -36,22 +36,17 @@ export const loadingBar = (
  * Modal dialog with a loading bar
  * @module
  */
-export function LoadingScreen({
-  isLoading = true,
-}: {
-  readonly isLoading?: boolean;
-}): null {
+export function LoadingScreen(): null {
   const loading = React.useContext(LoadingContext);
   const resolveRef = React.useRef<() => void>();
   React.useEffect(() => {
-    if (!isLoading) return undefined;
     loading(
       new Promise<void>((resolve) => {
         resolveRef.current = resolve;
       })
     );
     return (): void => resolveRef.current?.();
-  }, [isLoading, loading]);
+  }, [loading]);
 
   return null;
 }

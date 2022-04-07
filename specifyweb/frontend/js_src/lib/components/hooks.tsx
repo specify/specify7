@@ -108,11 +108,15 @@ export function useValidation<T extends Input = HTMLInputElement>(
   }, []);
 
   // Display validation message on focus
+  const isFirstFocus = React.useRef<boolean>(true);
   React.useEffect(() => {
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    const handleFocus = (): void => void input.reportValidity();
+    function handleFocus(): void {
+      if (isFirstFocus.current) isFirstFocus.current = false;
+      else input.reportValidity();
+    }
 
     input.addEventListener('focus', handleFocus);
     return (): void => input.removeEventListener('focus', handleFocus);

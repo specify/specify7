@@ -2,14 +2,13 @@ from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
+from .accounts import urls as accounts_urls
 from .attachment_gw import urls as attachment_urls
 from .barvis import urls as tt_urls
 from .context import urls as context_urls
-from .context.views import choose_collection
 from .export import urls as export_urls
 from .express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
-from .frontend.views import oic_login, oic_callback
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .permissions import urls as permissions_urls

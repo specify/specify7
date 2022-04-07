@@ -417,6 +417,12 @@ const adminText = createDictionary({
       them to log in for the first time.
     `,
   },
+  copyToClipboard: {
+    'en-us': 'Copy to clipboard',
+    'ru-ru': 'Copy to clipboard',
+    ca: 'Copy to clipboard',
+    'es-es': 'Copy to clipboard',
+  },
 });
 
 export default adminText;

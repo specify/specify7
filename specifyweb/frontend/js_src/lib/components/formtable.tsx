@@ -12,7 +12,7 @@ import type { FormCellDefinition } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
 import type { Relationship } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
-import type { IR, RA } from '../types';
+import type { IR, PartialBy, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button, DataEntry, H3 } from './basic';
@@ -324,15 +324,14 @@ export function FormTableCollection({
   onAdd: handleAdd,
   onDelete: handleDelete,
   ...props
-}: Omit<
-  Parameters<typeof FormTable>[0],
-  'resources' | 'relationship' | 'isDependent' | 'onAdd' | 'onDelete'
+}: PartialBy<
+  Omit<
+    Parameters<typeof FormTable>[0],
+    'resources' | 'relationship' | 'isDependent'
+  >,
+  'onAdd' | 'onDelete'
 > & {
   readonly collection: Collection<AnySchema>;
-  readonly onAdd: ((resource: SpecifyResource<AnySchema>) => void) | undefined;
-  readonly onDelete:
-    | ((resource: SpecifyResource<AnySchema>) => void)
-    | undefined;
 }): JSX.Element {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   const field = defined(collection.field?.getReverse());

@@ -10,23 +10,22 @@ import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
 
 export function UserInviteLinkPlugin({
-  specifyUser,
+  user,
   id,
 }: {
-  readonly specifyUser: SpecifyResource<SpecifyUser>;
+  readonly user: SpecifyResource<SpecifyUser>;
   readonly id: string | undefined;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);
 
-  // TODO: add permissions for this
   return (
     <>
       <Button.Simple
         id={id}
         onClick={(): void =>
           loading(
-            ajax(`/accounts/invite_link/${specifyUser.id}/`, {
+            ajax(`/accounts/invite_link/${user.id}/`, {
               headers: { Accept: 'text/plain' },
             }).then(({ data }) => setLink(data))
           )
@@ -42,9 +41,16 @@ export function UserInviteLinkPlugin({
           buttons={commonText('close')}
         >
           {adminText('userInviteLinkDialogMessage')}
-          <Input.Text isReadOnly className="w-full">
-            {link}
-          </Input.Text>
+          <div className="flex gap-2">
+            <Input.Text isReadOnly className="w-full" value={link} />
+            <Button.Blue
+              onClick={(): void => {
+                window.navigator.clipboard.writeText(link).catch(console.error);
+              }}
+            >
+              {adminText('copyToClipboard')}
+            </Button.Blue>
+          </div>
         </Dialog>
       )}
     </>

@@ -15,12 +15,17 @@ import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 import { H3 } from './basic';
+import { contextUnlockedPromise } from '../initialcontext';
 
-const relatedSearchesPromise = ajax<RA<string>>(
-  '/context/available_related_searches.json',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  { headers: { Accept: 'application/json' } }
-).then(({ data }) => data);
+const relatedSearchesPromise = contextUnlockedPromise
+  .then(() =>
+    ajax<RA<string>>(
+      '/context/available_related_searches.json',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { headers: { Accept: 'application/json' } }
+    )
+  )
+  .then(({ data }) => data);
 
 type FieldSpec = {
   readonly stringId: string;

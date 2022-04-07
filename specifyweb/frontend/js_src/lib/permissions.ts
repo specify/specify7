@@ -44,8 +44,23 @@ export const collectionAccessResource = '/system/sp7/collection';
 export const operationPolicies = {
   '/system/sp7/collection': ['access'],
   '/admin/user/password': ['update'],
+  // FIXME: integrate with this new permission:
+  '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
+  '/report': ['execute'],
+  '/export/dwca': ['execute'],
+  '/export/feed': ['force_update'],
+  '/permissions/policies/user': ['update', 'read'],
+  '/permissions/user/roles': ['update', 'read'],
+  '/permissions/roles': [
+    'create',
+    'read',
+    'update',
+    'delete',
+    'copy_from_library',
+  ],
+  '/permissions/library/roles': ['create', 'read', 'update', 'delete'],
   '/tree/mutation/taxon': [
     'merge',
     'move',
@@ -81,6 +96,12 @@ export const operationPolicies = {
     'unsynonymize',
     'repair',
   ],
+  '/querybuilder/query': [
+    'execute',
+    'export_csv',
+    'export_kml',
+    'create_recordset',
+  ],
   '/workbench/dataset': [
     'create',
     'update',
@@ -90,25 +111,6 @@ export const operationPolicies = {
     'validate',
     'transfer',
   ],
-  '/report': ['execute'],
-  '/querybuilder/query': [
-    'execute',
-    'export_csv',
-    'export_kml',
-    'create_recordset',
-  ],
-  '/export/dwca': ['execute'],
-  '/export/feed': ['force_update'],
-  '/permissions/policies/user': ['update', 'read'],
-  '/permissions/user/roles': ['update', 'read'],
-  '/permissions/roles': [
-    'create',
-    'read',
-    'update',
-    'delete',
-    'copy_from_library',
-  ],
-  '/permissions/library/roles': ['create', 'read', 'update', 'delete'],
 } as const;
 
 let operationPermissions: {

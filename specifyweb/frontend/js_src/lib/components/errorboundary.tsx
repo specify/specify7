@@ -14,6 +14,7 @@ import { clearUnloadProtect } from '../navigation';
 import { NotFoundView } from '../notfoundview';
 import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
+import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { displayError } from './contexts';
 import { Dialog } from './modaldialog';
@@ -202,6 +203,12 @@ export function handleAjaxError(
   response: Response,
   strict: boolean
 ): never {
+  /*
+   * If exception occurs because user has no agent, don't display the error
+   * message, so as not spawn a new dialog on top of the "No Agent" dialog
+   */
+  if (userInformation.agent === null) throw error;
+
   const isNotFoundError =
     response.status === Http.NOT_FOUND && process.env.NODE_ENV === 'production';
   // In production, uncaught 404 errors redirect to the NOT FOUND page

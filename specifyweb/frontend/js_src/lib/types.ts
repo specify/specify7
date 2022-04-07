@@ -24,7 +24,7 @@ export function defined<T>(value: T | undefined): T {
 export const filterArray = <T>(array: RA<T | undefined>): RA<T> =>
   array.filter((item): item is T => typeof item !== 'undefined');
 
-// Make some keys on a record optional
+/** Make some keys on a record optional */
 export type PartialBy<
   RECORD extends IR<unknown>,
   OPTIONAL_KEYS extends keyof RECORD
@@ -34,7 +34,7 @@ export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
 
-// "typeof value === 'function'" does not narrow the type in some cases
+/** "typeof value === 'function'" does not narrow the type in some cases */
 export const isFunction = <T>(
   value: T
 ): value is T & ((...args: RA<unknown>) => unknown) =>

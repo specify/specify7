@@ -13,6 +13,7 @@ import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { toggleItem } from '../helpers';
 import { hasPermission } from '../permissions';
+import { SerializedResource } from '../datamodelutils';
 
 function UserCollectionsUi({
   userId,
@@ -22,7 +23,7 @@ function UserCollectionsUi({
 }: {
   readonly userId: number;
   readonly selectedCollections: RA<number>;
-  readonly allCollections: RA<SpecifyResource<Collection>>;
+  readonly allCollections: RA<SerializedResource<Collection>>;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [selected, setSelected] =
@@ -67,7 +68,7 @@ function UserCollectionsUi({
                 'update'
               )}
             />
-            {collection.get('collectionName')}
+            {collection.collectionName}
           </Label.ForCheckbox>
         ))}
       </Form>
@@ -104,11 +105,7 @@ export function UserCollectionsPlugin({
         onClick={handleOpen}
         className="w-fit"
         disabled={
-          !user.get('isAdmin') ||
-          typeof user === 'undefined' ||
-          !Array.isArray(allCollections) ||
-          !Array.isArray(selectedCollections) ||
-          user.isNew()
+          typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
         }
         title={
           user.get('isAdmin')
@@ -122,19 +119,20 @@ export function UserCollectionsPlugin({
       >
         {adminText('collections')}
       </Button.Simple>
-      {isOpen &&
-      typeof user === 'object' &&
-      Array.isArray(allCollections) &&
-      Array.isArray(selectedCollections) ? (
-        <UserCollectionsUi
-          userId={user.id}
-          allCollections={allCollections}
-          selectedCollections={selectedCollections}
-          onClose={handleClose}
-        />
-      ) : (
-        <LoadingScreen />
-      )}
+      {isOpen ? (
+        typeof user === 'object' &&
+        typeof allCollections === 'object' &&
+        Array.isArray(selectedCollections) ? (
+          <UserCollectionsUi
+            userId={user.id}
+            allCollections={allCollections.records}
+            selectedCollections={selectedCollections}
+            onClose={handleClose}
+          />
+        ) : (
+          <LoadingScreen />
+        )
+      ) : undefined}
     </>
   );
 }

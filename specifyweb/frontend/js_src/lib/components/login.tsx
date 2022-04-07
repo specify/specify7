@@ -8,10 +8,12 @@ import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
+import { Contexts } from './contexts';
 import { useTitle, useValidation } from './hooks';
+import type { OicProvider } from './oiclogin';
+import { OicLogin } from './oiclogin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
-import { Contexts } from './contexts';
 
 function Login({
   data,
@@ -83,23 +85,42 @@ window.addEventListener('load', () => {
   root.setAttribute('class', className.root);
 
   const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
+  const providers = parseDjangoDump<RA<OicProvider>>('providers');
   ReactDOM.render(
     <React.StrictMode>
       <Contexts>
-        <Login
-          data={{
-            formErrors: parseDjangoDump('form-errors'),
-            inputErrors: parseDjangoDump('input-errors'),
-            passwordErrors: parseDjangoDump('password-errors'),
-            languages: parseDjangoDump('languages'),
-            csrfToken: parseDjangoDump('csrf-token'),
-          }}
-          nextUrl={
-            nextUrl.startsWith(nextDestination)
-              ? nextUrl
-              : `${nextDestination}${nextUrl}`
-          }
-        />
+        {providers.length > 0 ? (
+          <OicLogin
+            data={{
+              inviteToken: parseDjangoDump<'' | { readonly username: string }>(
+                'invite-token'
+              ),
+              providers,
+              languages: parseDjangoDump('languages'),
+              csrfToken: parseDjangoDump('csrf-token'),
+            }}
+            nextUrl={
+              nextUrl.startsWith(nextDestination)
+                ? nextUrl
+                : `${nextDestination}${nextUrl}`
+            }
+          />
+        ) : (
+          <Login
+            data={{
+              formErrors: parseDjangoDump('form-errors'),
+              inputErrors: parseDjangoDump('input-errors'),
+              passwordErrors: parseDjangoDump('password-errors'),
+              languages: parseDjangoDump('languages'),
+              csrfToken: parseDjangoDump('csrf-token'),
+            }}
+            nextUrl={
+              nextUrl.startsWith(nextDestination)
+                ? nextUrl
+                : `${nextDestination}${nextUrl}`
+            }
+          />
+        )}
       </Contexts>
     </React.StrictMode>,
     root

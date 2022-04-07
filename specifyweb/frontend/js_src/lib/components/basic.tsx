@@ -1,3 +1,10 @@
+/**
+ * Primitive React components from which all other components are built
+ *
+ * These primitive components wrap native DOM elements, while also adding
+ * custom styles and in some cases custom logic
+ */
+
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
@@ -16,7 +23,7 @@ export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   undefined | null
 >;
 
-/*
+/**
  * Forbid using regular "ref" since it needs to be forwarded
  * React.forwardRef has some typing issues when used with generics:
  * https://stackoverflow.com/questions/58469229/react-with-typescript-generics-while-using-react-forwardref/58473012
@@ -151,10 +158,8 @@ export const className = {
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
   greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
-  fancyButton: `active:bg-brand-300 active:dark:bg-brand-400 bg-gray-300 gap-2
-    hover:bg-brand-200 hover:dark:bg-brand:400 inline-flex dark:bg-neutral-500
-    dark:text-white justify-center items-center p-2 text-black cursor-pointer
-    rounded`,
+  fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
+    hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull: 'flex flex-col gap-4 h-full',
   containerBase: `${baseContainer}`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
@@ -357,6 +362,8 @@ export const Input = {
       readOnly?: never;
       isReadOnly?: boolean;
       type?: never;
+      // This is used to forbid accidentally passing children
+      children?: undefined;
     }
   >('Input.Radio', 'input', 'h-3 w-3', ({ isReadOnly, ...props }) => ({
     ...props,
@@ -374,6 +381,7 @@ export const Input = {
       readOnly?: never;
       isReadOnly?: boolean;
       type?: never;
+      children?: undefined;
     }
   >(
     'Input.Checkbox',
@@ -398,6 +406,7 @@ export const Input = {
       type?: 'If you need to specify type, use Input.Generic';
       readOnly?: never;
       isReadOnly?: boolean;
+      children?: undefined;
     }
   >(
     'Input.Text',
@@ -420,6 +429,7 @@ export const Input = {
       onValueChange?: (value: string) => void;
       readOnly?: never;
       isReadOnly?: boolean;
+      children?: undefined;
     }
   >(
     'Input.Generic',
@@ -475,6 +485,7 @@ export const Input = {
       type?: never;
       readOnly?: never;
       isReadOnly?: boolean;
+      children?: undefined;
     }
   >(
     'Input.Number',
@@ -630,6 +641,7 @@ export const Button = {
    * element should be announced as a link
    */
   LikeLink: button('Button.LikeLink', className.link),
+  Fancy: button('Button.LikeLink', `${niceButton} ${className.fancyButton}`),
   Transparent: button(
     'Button.Transparent',
     `${niceButton} ${className.transparentButton}`
@@ -677,7 +689,10 @@ const submitButton = (name: string, buttonClassName: string) =>
 export const Submit = {
   // Force passing children by nesting rather than through the [value] attribute
   Simple: submitButton('Submit.Simple', className.button),
-  Fancy: submitButton('Submit.Fancy', className.fancyButton),
+  Fancy: submitButton(
+    'Submit.Fancy',
+    `${niceButton} ${className.fancyButton} !inline`
+  ),
   Transparent: submitButton(
     'Submit.Transparent',
     `${niceButton} ${className.transparentButton}`

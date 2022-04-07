@@ -93,7 +93,7 @@ const collectionsInDomain = async (
 
 export const collectionsForResource = async (
   resource: SpecifyResource<AnySchema>
-): Promise<RA<SerializedResource<Collection>>> =>
+): Promise<RA<SerializedResource<Collection>> | undefined> =>
   f.maybe(
     (resource.get('collectionMemberId') as number | null) ?? undefined,
     async (collectionMemberId) =>
@@ -109,4 +109,4 @@ export const collectionsForResource = async (
   f.maybe(toTable(resource, 'Collection'), (collection) => [
     serializeResource(collection),
   ]) ??
-  Promise.resolve([]);
+  Promise.resolve(undefined);

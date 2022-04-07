@@ -7,19 +7,20 @@ import type {
   Division,
   SpecifyUser,
 } from '../datamodel';
+import { f } from '../functools';
+import { group } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
+import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { group } from '../helpers';
-import { f } from '../functools';
 import { Button, Form, Label, Submit, Ul } from './basic';
+import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
-import { LoadingContext } from './contexts';
 
 type Data = {
   readonly division: SpecifyResource<Division>;
@@ -152,30 +153,29 @@ function UserAgentsDialog({
         onSubmit={(): void =>
           loading(
             Promise.all(
-              entries.map((entry) =>
+              entries.flatMap((entry) =>
                 entry.address.get('agent') === entry.agent?.get('resource_uri')
                   ? undefined
-                  : entry.address
-                      .rgetPromise('agent', true)
-                      .then(async (newAgent) =>
-                        /*
-                         * The following is not atomic, but the ramifications of
-                         * one update succeeding without the other are not severe
-                         * enough to worry about. Someone will notice they can't
-                         * log in and then it can be fixed.
-                         */
-                        user
-                          .rgetCollection('agents', true)
-                          .then(async ({ models: agents }) =>
-                            Promise.all(
-                              agents.map(async (agent) =>
-                                agent.set('specifyUser', null).save()
-                              )
-                            ).then(() =>
-                              newAgent?.set('specifyUser', user).save()
-                            )
-                          )
-                      )
+                  : [
+                      f
+                        .maybe(
+                          f.maybe(entry.agent?.get('resource_uri'), idFromUrl),
+                          async (id) => {
+                            const oldAgent = new schema.models.Agent.Resource({
+                              id,
+                            });
+                            return oldAgent.fetch();
+                          }
+                        )
+                        ?.then((oldAgent) =>
+                          oldAgent.set('specifyUser', null).save()
+                        ),
+                      entry.address
+                        .rgetPromise('agent', true)
+                        .then((newAgent) =>
+                          newAgent?.set('specifyUser', user).save()
+                        ),
+                    ]
               )
             ).finally(handleClose)
           )

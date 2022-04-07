@@ -1,40 +1,26 @@
 {% load raven %}
 {% load script_manifest %}
+{% load i18n %}
 <!DOCTYPE html>
-<html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
 {% if use_raven %}
-  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+  <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
   <script src="{% script_src 'login.js' %}"></script>
-  <title>Log In | Specify 7</title>
 </head>
 
 <body>
-  <header></header>
-  <div id="content">
-    <form action="{{ app_path }}" method="post" id="login-form">
-      {% csrf_token %}
-      {% if 'invite_token' in request.session %}
-      <p>Hello, {{ request.session.invite_token.username }}! You've been invited to
-        associate an external login to your Specify user account. This will enable
-        you to log in to Specify with your chosen provider going forward.
-      </p>
-      {% endif %}
-      <p>Log in with one of the providers below:</p>
-      {% for p in providers %}
-      <label><input type="radio" name="provider" value="{{ p.provider }}"> {{ p.title }}</label>
-      {% endfor %}
-      {% if 'invite_token' not in request.session %}
-      <p>Or log in with a <a href="/accounts/legacy_login/">legacy</a> Specify user name and password.</p>
-      {% endif %}
-      <div class="submit-row">
-        <input type="submit" value="Login" />
-      </div>
-    </form>
-  </div>
+  <div id="root"></div>
+
+  {% get_available_languages as LANGUAGES %}
+  {{ providers|json_script:'providers' }}
+  {{ LANGUAGES|json_script:'languages' }}
+  {{ request.session.invite_token|json_script:'invite-token' }}
+  {{ next|json_script:'next-url' }}
+  <script id="csrf-token">"{{ csrf_token }}"</script>
 </body>
 </html>
-

@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
+import { f } from '../functools';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import {
@@ -15,10 +16,9 @@ import {
   Link,
   Submit,
 } from './basic';
+import { Contexts } from './contexts';
 import { useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
-import { Contexts } from './contexts';
-import { f } from '../functools';
 
 function ChooseCollection({
   data,
@@ -47,41 +47,50 @@ function ChooseCollection({
     [data.initialValue]
   );
 
+  const hasAccess = data.availableCollections.length > 0;
   return (
     <SplashScreen>
       <Form method="post">
         <h2>{commonText('chooseCollection')}</h2>
         {data.errors.length > 0 && <ErrorMessage>{data.errors}</ErrorMessage>}
-        {data.availableCollections.length === 0 ? (
-          <ErrorMessage>
-            {commonText('noAccessToCollections')((label: string) => (
-              <Link.Default href={`/accounts/login/?next=${data.nextUrl}`}>
-                {label}
-              </Link.Default>
-            ))}
-          </ErrorMessage>
+        {hasAccess ? (
+          <>
+            <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
+              {data.availableCollections.map(([id, label]) => (
+                <Label.ForCheckbox key={id}>
+                  <Input.Radio
+                    name="collection"
+                    value={id}
+                    checked={selectedCollection === id}
+                    onChange={(): void => setSelectedCollection(id)}
+                  />
+                  {label}
+                </Label.ForCheckbox>
+              ))}
+            </div>
+            <input
+              type="hidden"
+              name="csrfmiddlewaretoken"
+              value={csrfToken ?? ''}
+            />
+            <input type="hidden" name="next" value={nextUrl} />
+            <Submit.Fancy forwardRef={submitRef}>
+              {commonText('open')}
+            </Submit.Fancy>
+          </>
         ) : (
-          <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
-            {data.availableCollections.map(([id, label]) => (
-              <Label.ForCheckbox key={id}>
-                <Input.Radio
-                  name="collection"
-                  value={id}
-                  checked={selectedCollection === id}
-                  onChange={(): void => setSelectedCollection(id)}
-                />
-                {label}
-              </Label.ForCheckbox>
-            ))}
-          </div>
+          <>
+            <ErrorMessage>
+              <span>{commonText('noAccessToCollections')}</span>
+            </ErrorMessage>
+            <Link.LikeFancyButton
+              className={className.fancyButton}
+              href={`/accounts/login/?next=${data.nextUrl}`}
+            >
+              {commonText('login')}
+            </Link.LikeFancyButton>
+          </>
         )}
-        <input
-          type="hidden"
-          name="csrfmiddlewaretoken"
-          value={csrfToken ?? ''}
-        />
-        <input type="hidden" name="next" value={nextUrl} />
-        <Submit.Fancy forwardRef={submitRef}>{commonText('open')}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );
@@ -99,7 +108,9 @@ window.addEventListener('load', () => {
             errors: [
               parseDjangoDump<string>('form-errors'),
               parseDjangoDump<string>('collection-errors'),
-            ].filter(Boolean),
+            ]
+              .flat()
+              .filter(Boolean),
             availableCollections: parseDjangoDump('available-collections'),
             initialValue: parseDjangoDump('initial-value'),
             nextUrl: parseDjangoDump('next-url'),

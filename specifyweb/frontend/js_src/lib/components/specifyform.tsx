@@ -168,8 +168,11 @@ export function RenderForm<SCHEMA extends AnySchema>({
   const isShowingOldResource =
     typeof loadedResource === 'undefined' &&
     typeof oldResourceRef.current === 'object';
-  const showLoading = isLoading === true || isShowingOldResource;
   const resolvedResource = loadedResource ?? oldResourceRef.current;
+  const formIsLoaded =
+    typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
+  const showLoading =
+    formIsLoaded && (isLoading === true || isShowingOldResource);
   return (
     <div className={showLoading ? 'relative' : undefined}>
       {showLoading && (
@@ -177,8 +180,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
           {loadingGif}
         </div>
       )}
-      {typeof viewDefinition === 'object' &&
-      typeof resolvedResource === 'object' ? (
+      {formIsLoaded ? (
         <DataEntry.Grid
           viewDefinition={viewDefinition}
           className={showLoading ? 'opacity-50' : undefined}

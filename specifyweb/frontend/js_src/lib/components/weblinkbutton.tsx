@@ -14,7 +14,7 @@ import { defined } from '../types';
 import { className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
-import { isExternalUrl } from '../navigation';
+import { isExternalUrl } from '../ajax';
 
 export const webLinks = load<Element>(
   '/context/app.resource?name=WebLinks',

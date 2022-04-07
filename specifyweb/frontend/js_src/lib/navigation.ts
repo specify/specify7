@@ -1,23 +1,15 @@
 import Backbone from './backbone';
 import { showDialog } from './components/modaldialog';
 import commonText from './localization/common';
+import { isExternalUrl } from './ajax';
 
-/*
+/**
  * We introduce a sequence variable that is incremented and passed in
  * the state argument of each history.pushState invocation. When a
  * popstate event occurs, we can use the relative sequence values to
  * 'undo' the popstate in the case that the user elects not to leave
  * the current context.
  */
-
-const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
-export const isExternalUrl = (url: string): boolean =>
-  // Relative url is not external. Passing a relative URL to new URL() throws
-  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
-    ? true
-    : reIsAbsolute.exec(url) === null
-    ? false
-    : new URL(url).origin !== window.location.origin;
 
 type State = {
   sequence?: number;
@@ -73,7 +65,7 @@ export function clearUnloadProtect(): void {
   changeOnBeforeUnloadHandler(undefined);
 }
 
-/*
+/**
  * We are going to extend the window.history object to automatically
  * increment and store the sequence value on all pushState invocations.
  */
@@ -110,7 +102,7 @@ Backbone.history.history = Object.setPrototypeOf(
 // @ts-expect-error
 export const history = Backbone.history.history as typeof window.history;
 
-/*
+/**
  * Make the Backbone routing mechanisms ignore queryparams in urls
  * this gets rid of all that *splat cruft in the routes.
  */
@@ -120,7 +112,7 @@ Backbone.history.loadUrl = function (url: string | undefined) {
   return loadUrl.call(this, stripped);
 };
 
-/*
+/**
  * The Backbone history system binds checkUrl to the popstate
  * event. We replace it with a version that checks if unloadProtect is
  * set and optionally backs out the popstate in that case.
@@ -159,7 +151,7 @@ Backbone.history.checkUrl = function (event: any) {
   }, cancel);
 };
 
-/*
+/**
  * Open a dialog allowing the user to proceed with the navigation, or
  * remain on the same page. The proceed or cancel continuation will be
  * invoked accordingly. The unloadProtect variable will be cleared if

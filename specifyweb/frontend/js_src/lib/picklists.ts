@@ -141,9 +141,7 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     SpecifyUser: {
       userType: definePicklist(
         'UserType',
-        userTypes.map((title, index) =>
-          createPickListItem(index.toString(), title)
-        )
+        userTypes.map((title) => createPickListItem(title, title))
       ),
     },
   };

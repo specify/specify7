@@ -184,7 +184,7 @@ export function Main({
     getSystemInfo().specify6_version !== getSystemInfo().database_version
   );
 
-  const [showMissingAgent] = React.useState(userInformation.agent === null);
+  const [hasAgent] = React.useState(userInformation.agent !== null);
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
@@ -246,7 +246,6 @@ export function Main({
         </div>
         <HeaderItems menuItems={menuItems} />
       </header>
-      <main className="flex-1 p-4 overflow-auto" ref={mainRef} />
 
       {showVersionMismatch && (
         <Dialog
@@ -269,7 +268,9 @@ export function Main({
           <p>{commonText('versionMismatchSecondDialogMessage')}</p>
         </Dialog>
       )}
-      {showMissingAgent && (
+      {hasAgent ? (
+        <main className="flex-1 p-4 overflow-auto" ref={mainRef} />
+      ) : (
         <Dialog
           title={commonText('noAgentDialogTitle')}
           header={commonText('noAgentDialogHeader')}
@@ -282,6 +283,7 @@ export function Main({
               {commonText('logOut')}
             </Button.DialogClose>
           }
+          forceToTop={true}
         >
           {commonText('noAgentDialogMessage')}
         </Dialog>
