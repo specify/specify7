@@ -434,24 +434,30 @@ const commonText = createDictionary({
     'es-es': 'Login',
   },
   // FIXME: localize
+  helloMessage: {
+    'en-us': (userName: string) => `Hello, ${userName}!`,
+    'ru-ru': (userName: string) => `Hello, ${userName}!`,
+    ca: (userName: string) => `Hello, ${userName}!`,
+    'es-es': (userName: string) => `Hello, ${userName}!`,
+  },
   oicWelcomeMessage: {
-    'en-us': (userName: string) => `
-      Hello, ${userName}! You've been invited to associate an external login to
+    'en-us': `
+      You've been invited to associate an external login to
       your Specify user account. This will enable you to log in to Specify with
       your chosen provider going forward.
     `,
-    'ru-ru': (userName: string) => `
-      Hello, ${userName}! You've been invited to associate an external login to
+    'ru-ru': `
+      You've been invited to associate an external login to
       your Specify user account. This will enable you to log in to Specify with
       your chosen provider going forward.
     `,
-    ca: (userName: string) => `
-      Hello, ${userName}! You've been invited to associate an external login to
+    ca: `
+      You've been invited to associate an external login to
       your Specify user account. This will enable you to log in to Specify with
       your chosen provider going forward.
     `,
-    'es-es': (userName: string) => `
-      Hello, ${userName}! You've been invited to associate an external login to
+    'es-es': `
+      You've been invited to associate an external login to
       your Specify user account. This will enable you to log in to Specify with
       your chosen provider going forward.
     `,
@@ -461,6 +467,28 @@ const commonText = createDictionary({
     'ru-ru': 'Sign in with Specify Account',
     ca: 'Sign in with Specify Account',
     'es-es': 'Sign in with Specify Account',
+  },
+  unknownOicUser: {
+    'en-us': (providerName: string) => `There is currently no Specify user
+      associated with your ${providerName} account. If you have a Specify user
+      name and password, you can enter them below to associate that user with
+      your ${providerName} account for future logins.
+    `,
+    'ru-ru': (providerName: string) => `There is currently no Specify user
+      associated with your ${providerName} account. If you have a Specify user
+      name and password, you can enter them below to associate that user with
+      your ${providerName} account for future logins.
+    `,
+    ca: (providerName: string) => `There is currently no Specify user
+      associated with your ${providerName} account. If you have a Specify user
+      name and password, you can enter them below to associate that user with
+      your ${providerName} account for future logins.
+    `,
+    'es-es': (providerName: string) => `There is currently no Specify user
+      associated with your ${providerName} account. If you have a Specify user
+      name and password, you can enter them below to associate that user with
+      your ${providerName} account for future logins.
+    `,
   },
 
   // Choose Collection

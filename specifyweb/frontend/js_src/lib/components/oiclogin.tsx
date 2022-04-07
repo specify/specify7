@@ -41,7 +41,11 @@ export function OicLogin({
       />
       <Form method="post" forwardRef={formRef}>
         {typeof data.inviteToken === 'object' && (
-          <p>{commonText('oicWelcomeMessage')(data.inviteToken.username)}</p>
+          <p>
+            {commonText('helloMessage')(data.inviteToken.username)}
+            <br />
+            {commonText('oicWelcomeMessage')}
+          </p>
         )}
         <input
           type="hidden"

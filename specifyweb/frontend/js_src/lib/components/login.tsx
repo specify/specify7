@@ -22,6 +22,12 @@ function Login({
   readonly data: {
     readonly formErrors: RA<string>;
     readonly inputErrors: RA<string>;
+    readonly externalUser:
+      | ''
+      | {
+          readonly name: string;
+          readonly provider_title: string;
+        };
     readonly passwordErrors: RA<string>;
     readonly languages: RA<Readonly<[code: Language, name: string]>>;
     readonly csrfToken: string;
@@ -43,6 +49,13 @@ function Login({
         value={LANGUAGE}
         onChange={handleLanguageChange}
       />
+      {typeof data.externalUser === 'object' && (
+        <p>
+          {commonText('helloMessage')(data.externalUser.name)}
+          <br />
+          {commonText('unknownOicUser')(data.externalUser.provider_title)}
+        </p>
+      )}
       <Form method="post">
         <input
           type="hidden"
@@ -92,9 +105,7 @@ window.addEventListener('load', () => {
         {providers.length > 0 ? (
           <OicLogin
             data={{
-              inviteToken: parseDjangoDump<'' | { readonly username: string }>(
-                'invite-token'
-              ),
+              inviteToken: parseDjangoDump('invite-token'),
               providers,
               languages: parseDjangoDump('languages'),
               csrfToken: parseDjangoDump('csrf-token'),
@@ -110,6 +121,7 @@ window.addEventListener('load', () => {
             data={{
               formErrors: parseDjangoDump('form-errors'),
               inputErrors: parseDjangoDump('input-errors'),
+              externalUser: parseDjangoDump('external-user'),
               passwordErrors: parseDjangoDump('password-errors'),
               languages: parseDjangoDump('languages'),
               csrfToken: parseDjangoDump('csrf-token'),
