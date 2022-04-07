@@ -3,10 +3,11 @@ import Modal from 'react-modal';
 
 import { error } from '../assert';
 import { replaceItem } from '../helpers';
+import commonText from '../localization/common';
 import type { RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
-import { LoadingScreen } from './modaldialog';
+import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
@@ -77,7 +78,15 @@ export function Contexts({
       <ErrorContext.Provider value={handleError}>
         {errors}
         <LoadingContext.Provider value={handle}>
-          <LoadingScreen isLoading={isLoading} />
+          <Dialog
+            isOpen={isLoading}
+            header={commonText('loading')}
+            className={{ container: dialogClassNames.narrowContainer }}
+            buttons={undefined}
+            onClose={undefined}
+          >
+            {loadingBar}
+          </Dialog>
           {children}
         </LoadingContext.Provider>
       </ErrorContext.Provider>
@@ -85,11 +94,20 @@ export function Contexts({
   );
 }
 
+/**
+ * Display a modal loading dialog while promise is resolving.
+ * Also, catch and handle erros if promise is rejected.
+ * If multiple promises are resolving at the same time, the dialog is
+ * visible until all promises are resolved.
+ */
 export const LoadingContext = React.createContext<
   (promise: Promise<unknown>) => void
 >(() => error('Not defined'));
 LoadingContext.displayName = 'LoadingContext';
 
+/**
+ * Display a modal error message dialog
+ */
 export const ErrorContext = React.createContext<
   (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
 >(() => error('Not defined'));

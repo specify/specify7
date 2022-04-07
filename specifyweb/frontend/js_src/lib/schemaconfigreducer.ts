@@ -9,9 +9,9 @@ import type {
   WithFieldInfo,
   WithTableInfo,
 } from './components/toolbar/schemaconfig';
-import type { IR } from './types';
-import { sortObjectsByKey } from './helpers';
 import { f } from './functools';
+import { sortObjectsByKey } from './helpers';
+import type { IR } from './types';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -70,8 +70,6 @@ type ChangeFieldFormatAction = Action<
   }
 >;
 
-type SaveAction = Action<'SaveAction'>;
-
 export type Actions =
   | ChooseLanguageAction
   | AddLanguageAction
@@ -81,8 +79,7 @@ export type Actions =
   | ChangeItemAction
   | TableModifiedAction
   | FieldModifiedAction
-  | ChangeFieldFormatAction
-  | SaveAction;
+  | ChangeFieldFormatAction;
 
 export const reducer = generateReducer<States, Actions>({
   ChangeLanguageAction: () => ({
@@ -190,8 +187,4 @@ export const reducer = generateReducer<States, Actions>({
       },
     })
   ),
-  SaveAction: ensureState(['MainState'], ({ state }) => ({
-    ...state,
-    type: 'SavingState',
-  })),
 });

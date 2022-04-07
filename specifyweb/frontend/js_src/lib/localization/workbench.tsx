@@ -1729,6 +1729,22 @@ const wbText = createDictionary({
     ca: 'Updating trees...',
     'es-es': 'Updating trees...',
   },
+  // FIXME: localize
+  invalidTemplateDialogHeader: {
+    'en-us': 'No Uplan Plan',
+    'ru-ru': 'No Uplan Plan',
+    ca: 'No Uplan Plan',
+    'es-es': 'No Uplan Plan',
+  },
+  invalidTemplateDialogMessage: {
+    'en-us':
+      'Selected Data Set has no upload plan. Please select a different one.',
+    'ru-ru':
+      'Selected Data Set has no upload plan. Please select a different one.',
+    ca: 'Selected Data Set has no upload plan. Please select a different one.',
+    'es-es':
+      'Selected Data Set has no upload plan. Please select a different one.',
+  },
 });
 
 export default wbText;

@@ -1,57 +1,19 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import type { IR, RA } from '../types';
+import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
-import type { WbPlanViewActions } from '../wbplanviewreducer';
-import { goBack, savePlan } from '../wbplanviewutils';
 import { Button, Input, Label } from './basic';
 import { LoadingContext } from './contexts';
-import { Dialog, dialogClassNames, LoadingScreen } from './modaldialog';
+import { useBooleanState } from './hooks';
+import { Dialog, dialogClassNames } from './modaldialog';
+import { useCachedState } from './stateCache';
 import { WbsDialog } from './toolbar/wbsdialog';
-import type { Dataset, WbPlanViewProps } from './wbplanview';
+import type { Dataset } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
-import type { MappingLine } from './wbplanviewmapper';
-import { WbPlanViewMapper } from './wbplanviewmapper';
-
-// States
-
-type LoadingState = State<'LoadingState'>;
-
-type BaseTableSelectionState = State<
-  'BaseTableSelectionState',
-  {
-    showHiddenTables: boolean;
-  }
->;
-
-export type MappingState = State<
-  'MappingState',
-  {
-    changesMade: boolean;
-    baseTableName: keyof Tables;
-    lines: RA<MappingLine>;
-    mustMatchPreferences: IR<boolean>;
-  }
->;
-
-type TemplateSelectionState = State<'TemplateSelectionState'>;
-
-export type WbPlanViewStates =
-  | LoadingState
-  | BaseTableSelectionState
-  | TemplateSelectionState
-  | MappingState;
-
-type WbPlanViewStatesWithParameters = WbPlanViewStates & {
-  readonly dispatch: (action: WbPlanViewActions) => void;
-  readonly props: WbPlanViewProps;
-};
 
 function TemplateSelection({
   headers,
@@ -60,129 +22,106 @@ function TemplateSelection({
 }: {
   readonly headers: RA<string>;
   readonly onClose: () => void;
-  readonly onSelect: (
-    uploadPlan: UploadPlan | null,
-    headers: RA<string>
-  ) => void;
+  readonly onSelect: (uploadPlan: UploadPlan, headers: RA<string>) => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
+  const [isInvalid, handleInvalid, handleValid] = useBooleanState();
+
   return (
-    <WbsDialog
-      showTemplates={true}
-      onClose={handleClose}
-      onDataSetSelect={(id: number): void =>
-        loading(
-          ajax<Dataset>(`/api/workbench/dataset/${id}`, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'application/json' },
-          }).then(({ data: { uploadplan, columns, visualorder } }) =>
-            handleSelect(
-              uploadplan,
-              headers.length === 0 && Array.isArray(visualorder)
-                ? visualorder.map((visualCol) => columns[visualCol])
-                : headers
+    <>
+      {isInvalid && (
+        <Dialog
+          header={wbText('invalidTemplateDialogHeader')}
+          onClose={handleValid}
+          buttons={commonText('close')}
+        >
+          {wbText('invalidTemplateDialogMessage')}
+        </Dialog>
+      )}
+      <WbsDialog
+        showTemplates={true}
+        onClose={handleClose}
+        onDataSetSelect={(id: number): void =>
+          loading(
+            ajax<Dataset>(`/api/workbench/dataset/${id}`, {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              headers: { Accept: 'application/json' },
+            }).then(({ data: { uploadplan, columns, visualorder } }) =>
+              uploadplan === null
+                ? handleInvalid()
+                : handleSelect(
+                    uploadplan,
+                    headers.length === 0 && Array.isArray(visualorder)
+                      ? visualorder.map((visualCol) => columns[visualCol])
+                      : headers
+                  )
             )
           )
-        )
-      }
-    />
+        }
+      />
+    </>
   );
 }
 
-export const stateReducer = generateReducer<
-  JSX.Element,
-  WbPlanViewStatesWithParameters
->({
-  LoadingState: () => <LoadingScreen />,
-  BaseTableSelectionState: ({ action: state }) => (
+export function BaseTableSelection({
+  onClose: handleClose,
+  onSelectTemplate: handleSelectTemplate,
+  onSelected: handleSelected,
+  headers,
+}: {
+  readonly onClose: () => void;
+  readonly onSelectTemplate: (
+    uploadPlan: UploadPlan,
+    headers: RA<string>
+  ) => void;
+  readonly onSelected: (baseTableName: keyof Tables) => void;
+  readonly headers: RA<string>;
+}): JSX.Element {
+  const [showHiddenTables = true, setShowHiddenTables] = useCachedState({
+    bucketName: 'wbPlanViewUi',
+    cacheName: 'showHiddenTables',
+    bucketType: 'localStorage',
+    defaultValue: true,
+    staleWhileRefresh: false,
+  });
+
+  const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
+    useBooleanState();
+
+  return useTemplate ? (
+    <TemplateSelection
+      headers={headers}
+      onClose={handleDontUseTemplate}
+      onSelect={handleSelectTemplate}
+    />
+  ) : (
     <Dialog
       header={wbText('selectBaseTableDialogTitle')}
-      onClose={(): void => goBack(state.props.dataset.id)}
+      onClose={handleClose}
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue
-            onClick={(): void =>
-              state.dispatch({
-                type: 'UseTemplateAction',
-                dispatch: state.dispatch,
-              })
-            }
-          >
+          <Button.Blue onClick={handleUseTemplate}>
             {wbText('chooseExistingPlan')}
           </Button.Blue>
         </>
       }
     >
       <ListOfBaseTables
-        showHiddenTables={state.showHiddenTables}
-        onChange={(baseTableName: keyof Tables): void =>
-          state.dispatch({
-            type: 'SelectTableAction',
-            baseTableName,
-            headers: state.props.headers,
-          })
-        }
+        showHiddenTables={showHiddenTables}
+        onChange={handleSelected}
       />
       <Label.ForCheckbox>
         <Input.Checkbox
-          checked={state.showHiddenTables}
-          onChange={(): void =>
-            state.dispatch({
-              type: 'ToggleHiddenTablesAction',
-            })
-          }
+          checked={showHiddenTables}
+          onChange={(): void => setShowHiddenTables(!showHiddenTables)}
         />
         {wbText('showAdvancedTables')}
       </Label.ForCheckbox>
     </Dialog>
-  ),
-  TemplateSelectionState: ({ action: state }) => (
-    <TemplateSelection
-      headers={state.props.headers}
-      onClose={(): void =>
-        state.dispatch({
-          type: 'OpenBaseTableSelectionAction',
-          referrer: state.type,
-        })
-      }
-      onSelect={(uploadPlan, headers): void =>
-        state.dispatch({
-          type: 'OpenMappingScreenAction',
-          uploadPlan,
-          headers,
-          changesMade: true,
-        })
-      }
-    />
-  ),
-  MappingState: ({ action: state }) => {
-    return (
-      <WbPlanViewMapper
-        isReadOnly={state.props.isReadOnly}
-        changesMade={state.changesMade}
-        baseTableName={state.baseTableName}
-        lines={state.lines}
-        mustMatchPreferences={state.mustMatchPreferences}
-        dataset={state.props.dataset}
-        onChangeBaseTable={(): void =>
-          state.dispatch({
-            type: 'OpenBaseTableSelectionAction',
-          })
-        }
-        onSave={async (lines, mustMatchPreferences): Promise<void> => {
-          return savePlan({
-            dataset: state.props.dataset,
-            baseTableName: state.baseTableName,
-            lines,
-            mustMatchPreferences,
-          });
-        }}
-      />
-    );
-  },
-});
+  );
+}

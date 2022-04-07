@@ -5,14 +5,21 @@
  */
 
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
-import { tap } from '../assert';
-import type { RA } from '../types';
+import type { Tables } from '../datamodel';
+import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
-import { reducer } from '../wbplanviewreducer';
+import {
+  getLinesFromHeaders,
+  getLinesFromUploadPlan,
+} from '../wbplanviewlinesgetter';
+import { goBack, savePlan } from '../wbplanviewutils';
 import type { UploadResult } from '../wbuploadedparser';
-import { useTitle } from './hooks';
-import { stateReducer } from './wbplanviewstate';
+import { useLiveState, useTitle } from './hooks';
+import type { MappingLine } from './wbplanviewmapper';
+import { WbPlanViewMapper } from './wbplanviewmapper';
+import { BaseTableSelection } from './wbplanviewstate';
 
 // General definitions
 export type Status = {
@@ -69,27 +76,87 @@ export type WbPlanViewProps = {
 /**
  * Workbench Plan Mapper root component
  */
-export function WbPlanView(props: WbPlanViewProps): JSX.Element {
-  const [state, dispatch] = React.useReducer(reducer, { type: 'LoadingState' });
-  useTitle(props.dataset.name);
+export function WbPlanView({
+  dataset,
+  uploadPlan,
+  headers,
+  isReadOnly,
+}: WbPlanViewProps): JSX.Element {
+  useTitle(dataset.name);
 
-  React.useEffect(() => {
-    if (props.uploadPlan)
-      dispatch({
-        type: 'OpenMappingScreenAction',
-        uploadPlan: props.uploadPlan,
-        headers: props.headers,
-        changesMade: false,
-      });
-    else
-      dispatch({
-        type: 'OpenBaseTableSelectionAction',
-      });
-  }, [props.uploadPlan, props.headers]);
+  const [state, setState] = useLiveState<
+    | State<'SelectBaseTable'>
+    | State<
+        'MappingState',
+        {
+          changesMade: boolean;
+          baseTableName: keyof Tables;
+          lines: RA<MappingLine>;
+          mustMatchPreferences: IR<boolean>;
+        }
+      >
+  >(
+    React.useCallback(
+      () =>
+        uploadPlan
+          ? {
+              type: 'MappingState',
+              changesMade: false,
+              ...getLinesFromUploadPlan(headers, uploadPlan),
+            }
+          : {
+              type: 'SelectBaseTable',
+            },
+      [uploadPlan, headers]
+    )
+  );
 
-  return stateReducer(<i />, {
-    ...state,
-    props,
-    dispatch: tap(dispatch),
-  });
+  return state.type === 'SelectBaseTable' ? (
+    <BaseTableSelection
+      onClose={(): void => goBack(dataset.id)}
+      onSelectTemplate={(uploadPlan, headers): void =>
+        setState({
+          type: 'MappingState',
+          changesMade: true,
+          ...getLinesFromUploadPlan(headers, uploadPlan),
+        })
+      }
+      onSelected={(baseTableName): void =>
+        setState({
+          type: 'MappingState',
+          changesMade: true,
+          baseTableName,
+          lines: getLinesFromHeaders({
+            headers,
+            runAutoMapper: true,
+            baseTableName,
+          }),
+          mustMatchPreferences: {},
+        })
+      }
+      headers={headers}
+    />
+  ) : (
+    <WbPlanViewMapper
+      isReadOnly={isReadOnly}
+      changesMade={state.changesMade}
+      baseTableName={state.baseTableName}
+      lines={state.lines}
+      mustMatchPreferences={state.mustMatchPreferences}
+      dataset={dataset}
+      onChangeBaseTable={(): void =>
+        setState({
+          type: 'SelectBaseTable',
+        })
+      }
+      onSave={async (lines, mustMatchPreferences): Promise<void> => {
+        return savePlan({
+          dataset,
+          baseTableName: state.baseTableName,
+          lines,
+          mustMatchPreferences,
+        });
+      }}
+    />
+  );
 }

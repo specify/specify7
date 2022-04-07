@@ -8,7 +8,7 @@ import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
-import { crash } from './errorboundary';
+import { LoadingContext } from './contexts';
 import { useId, useUnloadProtect } from './hooks';
 import { stateReducer } from './schemaconfigstate';
 import type {
@@ -83,7 +83,7 @@ export function SchemaConfig({
   dataObjFormatters,
   dataObjAggregators,
   onClose: handleClose,
-  onSave: handleSave,
+  onSave: handleSaved,
 }: {
   readonly languages: IR<string>;
   readonly tables: IR<SpLocaleContainer>;
@@ -222,8 +222,10 @@ export function SchemaConfig({
   );
 
   // Save Changes
-  React.useEffect(() => {
-    if (state.type !== 'SavingState') return;
+  const loading = React.useContext(LoadingContext);
+
+  function handleSave(): void {
+    if (state.type !== 'MainState') return;
     unsetUnloadProtect();
 
     const saveString = async (
@@ -262,10 +264,8 @@ export function SchemaConfig({
         ]),
     ];
 
-    Promise.all(requests)
-      .then(() => handleSave(state.language))
-      .catch(crash);
-  }, [state.type, unsetUnloadProtect]);
+    loading(Promise.all(requests).then(() => handleSaved(state.language)));
+  }
 
   return stateReducer(<i />, {
     ...state,
@@ -279,6 +279,7 @@ export function SchemaConfig({
       uiFormatters,
       dataObjFormatters,
       dataObjAggregators,
+      handleSave,
     },
   });
 }

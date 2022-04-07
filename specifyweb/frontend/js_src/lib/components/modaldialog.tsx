@@ -9,7 +9,6 @@ import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
-import commonText from '../localization/common';
 import type { RA } from '../types';
 import {
   Button,
@@ -22,6 +21,7 @@ import {
 import { useId, useLiveState } from './hooks';
 import { dialogIcons } from './icons';
 import createBackboneView from './reactbackboneextend';
+import { LoadingContext } from './contexts';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -40,18 +40,20 @@ export function LoadingScreen({
   isLoading = true,
 }: {
   readonly isLoading?: boolean;
-}): JSX.Element {
-  return (
-    <Dialog
-      isOpen={isLoading}
-      header={commonText('loading')}
-      className={{ container: dialogClassNames.narrowContainer }}
-      buttons={undefined}
-      onClose={undefined}
-    >
-      {loadingBar}
-    </Dialog>
-  );
+}): null {
+  const loading = React.useContext(LoadingContext);
+  const resolveRef = React.useRef<() => void>();
+  React.useEffect(() => {
+    if (!isLoading) return undefined;
+    loading(
+      new Promise<void>((resolve) => {
+        resolveRef.current = resolve;
+      })
+    );
+    return (): void => resolveRef.current?.();
+  }, [isLoading, loading]);
+
+  return null;
 }
 
 const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';

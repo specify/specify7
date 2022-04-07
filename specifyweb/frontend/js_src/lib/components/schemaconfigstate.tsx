@@ -72,24 +72,12 @@ type MainState = State<
   }
 >;
 
-type SavingState = State<
-  'SavingState',
-  {
-    language: string;
-    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
-    tableWasModified: boolean;
-    modifiedItems: RA<number>;
-  }
->;
-
 export type States =
   | ChooseLanguageState
   | AddLanguageState
   | ChooseTableState
   | FetchingTableFieldState
-  | MainState
-  | SavingState;
+  | MainState;
 
 type StateWithParameters = States & {
   readonly parameters: {
@@ -98,6 +86,7 @@ type StateWithParameters = States & {
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
+    readonly handleSave: () => void;
     readonly webLinks: RA<Readonly<[string, string]>>;
     readonly uiFormatters: RA<UiFormatter>;
     readonly dataObjFormatters: IR<DataObjectFormatter>;
@@ -232,6 +221,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         uiFormatters,
         dataObjFormatters,
         dataObjAggregators,
+        handleSave,
       },
     },
   }) {
@@ -282,7 +272,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <li>
               <Button.Simple
                 disabled={!tableWasModified && modifiedItems.length === 0}
-                onClick={(): void => dispatch({ type: 'SaveAction' })}
+                onClick={handleSave}
               >
                 {commonText('save')}
               </Button.Simple>
@@ -601,8 +591,5 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         </div>
       </Container.Full>
     );
-  },
-  SavingState() {
-    return <LoadingScreen />;
   },
 });
