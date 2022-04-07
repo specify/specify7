@@ -91,7 +91,7 @@ async function recursiveResourceResolve(
     return [];
 
   if (
-    'fetchPromise' in resource &&
+    'fetch' in resource &&
     (typeof resource.related === 'undefined' || !resource.related.isNew())
   )
     if (
@@ -102,7 +102,7 @@ async function recursiveResourceResolve(
         'read'
       )
     )
-      await resource.fetchPromise();
+      await resource.fetch();
     else return [];
 
   if (valueIsTreeRank(currentPart[0])) {

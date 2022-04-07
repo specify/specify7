@@ -112,7 +112,7 @@ export function QueryComboBox({
             },
           });
           lowestChildRank = children
-            .fetchPromise({ limit: 1 })
+            .fetch({ limit: 1 })
             .then(({ models }) => models[0]?.get('rankId'));
         }
         const treeRanks = treeRanksPromise.then(() =>
@@ -164,7 +164,7 @@ export function QueryComboBox({
                 },
               });
               return Promise.all([
-                left.fetchPromise().then(({ models }) =>
+                left.fetch().then(({ models }) =>
                   models.map((relationship) => ({
                     id: relationship.id,
                     collection: idFromUrl(
@@ -172,7 +172,7 @@ export function QueryComboBox({
                     ),
                   }))
                 ),
-                right.fetchPromise().then(({ models }) =>
+                right.fetch().then(({ models }) =>
                   models.map((relationship) => ({
                     id: relationship.id,
                     collection: idFromUrl(
@@ -435,10 +435,10 @@ export function QueryComboBox({
         value={formatted?.label ?? value?.toString() ?? ''}
         forwardRef={validationRef}
         aria-label={undefined}
+        className="flex-1"
       >
         {(props): JSX.Element => (
           <Input.Generic
-            className="flex-1"
             id={id}
             required={isRequired}
             isReadOnly={

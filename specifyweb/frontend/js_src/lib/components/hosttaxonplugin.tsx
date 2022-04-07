@@ -37,7 +37,7 @@ export function HostTaxonPlugin({
         filters: { name: relationship },
       });
       return collection
-        .fetchPromise({ limit: 1 })
+        .fetch({ limit: 1 })
         .then(async ({ models }) =>
           models[0]?.rgetPromise('rightSideCollection')
         )

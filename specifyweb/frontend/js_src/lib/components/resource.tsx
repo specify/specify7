@@ -99,7 +99,7 @@ export async function getResourceAndField(
     path.length === 0
       ? Promise.resolve(undefined)
       : path.length == 1
-      ? model.fetchPromise()
+      ? model.fetch()
       : model.rgetPromise(path.slice(0, -1).join('.'), true);
 
   return getResource.then((resource) => {

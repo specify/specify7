@@ -133,7 +133,7 @@ export async function queryFromTree(
 ): Promise<SpecifyResource<SpQuery>> {
   const tree = defined(getTreeModel(tableName));
   const node = new tree.Resource({ id: nodeId });
-  await node.fetchPromise();
+  await node.fetch();
   const treeDefinitionItem = await node.rgetPromise('definitionItem', true);
 
   const model = schema.models.CollectionObject;

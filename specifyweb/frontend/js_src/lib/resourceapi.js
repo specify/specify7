@@ -490,29 +490,21 @@ function eventHandlerForToOne(related, field) {
             });
             return json;
         },
+        // Caches a reference to Promise so as not to start fetching twice
         fetch: function(options) {
-            // cache a reference to the ajax deferred and don't start fetching if we
-            // already are.
-
-            if (this._fetch) return this._fetch;
-            return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
-                this._fetch = null;
-                return this;
-            });
-        },
-        fetchIfNotPopulated: function() {
-            var resource = this;
-            // if already populated, return the resource
-            if (resource.populated) return Promise.resolve(resource);
-
-            // if can't be populate by fetching, return the resource
-            if (resource.isNew()) return Promise.resolve(resource);
-
-            // fetch and return a deferred.
-            return resource.fetch();
-        },
-        fetchPromise(options){
-            return this.fetchIfNotPopulated(options);
+            if(
+              // if already populated
+              this.populated ||
+              // or if can't be populated by fetching
+              this.isNew()
+            )
+                return Promise.resolve(this);
+            else if (this._fetch) return this._fetch;
+            else
+                return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
+                    this._fetch = null;
+                    return this;
+                });
         },
         parse: function(_resp) {
             // since we are putting in data, the resourcgfse in now populated

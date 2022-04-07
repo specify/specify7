@@ -36,6 +36,7 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
 ]);
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
+  readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
@@ -83,6 +84,7 @@ export const FormContext = React.createContext<
 FormContext.displayName = 'FormContext';
 
 function BaseResourceView<SCHEMA extends AnySchema>({
+  isLoading,
   resource,
   children,
   mode,
@@ -131,6 +133,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
   const specifyForm =
     typeof resource === 'object' ? (
       <SpecifyForm
+        isLoading={isLoading}
         resource={resource}
         mode={mode}
         viewName={viewName}
@@ -140,9 +143,21 @@ function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
+  const [isModified, handleModified, handleSaved] = useBooleanState(
+    resource?.needsSaved
+  );
+  React.useEffect(() => {
+    resource?.on('saverequired', handleModified);
+    resource?.on('saved', handleSaved);
+    return (): void => {
+      resource?.off('saverequired', handleModified);
+      resource?.off('saved', handleSaved);
+    };
+  }, [resource, handleModified, handleSaved]);
+
   const loading = React.useContext(LoadingContext);
   return children({
-    isModified: resource?.needsSaved ?? false,
+    isModified,
     title,
     formElement: form,
     form: isSubForm ? (
@@ -222,6 +237,7 @@ export const augmentMode = (
     : initialMode;
 
 export function ResourceView<SCHEMA extends AnySchema>({
+  isLoading,
   resource,
   extraButtons,
   headerButtons,
@@ -238,6 +254,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isSubForm,
   title: titleOverride,
 }: {
+  readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
@@ -282,6 +299,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resourceDeletedDialog
   ) : (
     <BaseResourceView
+      isLoading={isLoading}
       resource={resource}
       mode={mode}
       viewName={viewName}
@@ -336,8 +354,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 </DataEntry.SubFormTitle>
                 {headerButtons?.(specifyNetworkBadge) ?? (
                   <>
-                    {specifyNetworkBadge}
                     <span className="flex-1 -ml-4" />
+                    {specifyNetworkBadge}
                   </>
                 )}
               </DataEntry.SubFormHeader>
@@ -349,8 +367,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                 {headerButtons?.(specifyNetworkBadge) ?? (
                   <>
-                    {specifyNetworkBadge}
                     <span className="flex-1 -ml-4" />
+                    {specifyNetworkBadge}
                   </>
                 )}
               </DataEntry.Header>
@@ -365,7 +383,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               modal={dialog === 'modal'}
               headerButtons={
                 <>
-                  {headerButtons ?? (
+                  {headerButtons?.(specifyNetworkBadge) ?? (
                     <>
                       <DataEntry.Visit resource={resource} />
                       <span className="flex-1 -ml-4" />
@@ -382,7 +400,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
                     hasTablePermission(resource.specifyModel.name, 'delete') ? (
                       <DeleteButton model={resource} onDeleted={handleDelete} />
                     ) : undefined}
-                    {extraButtons}
                     {isModified ? (
                       <Button.Red onClick={handleClose}>
                         {commonText('cancel')}
@@ -392,6 +409,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                         {commonText('close')}
                       </Button.Blue>
                     )}
+                    {extraButtons ?? <span className="flex-1 -ml-2" />}
                     {saveButtonElement}
                   </>
                 )
@@ -511,7 +529,7 @@ export function ShowResource({
           });
           reloadResource.recordsetid = resource.recordsetid;
           reloadResource
-            .fetchPromise()
+            .fetch()
             .then(async () =>
               setRecord({ resource: reloadResource, recordSet })
             );

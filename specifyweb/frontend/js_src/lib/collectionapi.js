@@ -85,15 +85,16 @@ var Base =  Backbone.Collection.extend({
 
             return objects;
         },
-        fetch: function(options) {
-            var self = this;
-            self.neverFetched = false;
+        fetch(options) {
+            this._neverFetched = false;
 
-            if (self._fetch) throw new Error('already fetching');
+            if(this._fetch)
+                return this._fetch;
+            else if(this.isComplete() || this.related?.isNew())
+                return Promise.resolve(this);
 
-            if (self.isComplete()) {
+            if (this.isComplete())
                 console.error("fetching for already filled collection");
-            }
 
             options || (options =  {});
 
@@ -102,22 +103,16 @@ var Base =  Backbone.Collection.extend({
             options.silent = true;
             assert(options.at == null);
 
-            options.data = options.data || _.extend({domainfilter: self.domainfilter}, self.filters);
-            options.data.offset = self.length;
+            options.data = options.data || _.extend({domainfilter: this.domainfilter}, this.filters);
+            options.data.offset = this.length;
 
             _(options).has('limit') && ( options.data.limit = options.limit );
-            self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
-            return self._fetch.then(function() { self._fetch = null; return self; });
+            this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
+            return this._fetch.then(() => { this._fetch = null; return this; });
         },
-        fetchPromise(options){
-            // Fetch if not fetching and convert deferred to promise
-            return this._fetch || this.isComplete() || this.related?.isNew() ? Promise.resolve(this) : this.fetch(options);
-        },
-        fetchIfNotPopulated: function() {
-            var _this = this;
-            return (this._neverFetched ? this.fetch() : Promise.resolve(null)).then(function() {
-                return _this;
-            });
+        fetchIfNotPopulated() {
+            if(this._neverFetched) return Promise.resolve(this);
+            else return this.fetch();
         },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);

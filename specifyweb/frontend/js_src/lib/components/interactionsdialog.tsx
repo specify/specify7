@@ -138,7 +138,7 @@ function Interactions({
         setState({
           type: 'InteractionState',
           recordSetsPromise: recordSets
-            .fetchPromise({ limit: 5000 })
+            .fetch({ limit: 5000 })
             .then((collection) => ({
               recordSets: collection.models,
               totalCount: defined(collection._totalCount),

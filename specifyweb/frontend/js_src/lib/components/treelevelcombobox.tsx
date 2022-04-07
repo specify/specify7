@@ -23,7 +23,7 @@ async function fetchPossibleRanks(
       ...(lowestChildRank > 0 ? { rankid__lt: lowestChildRank } : {}),
     },
   });
-  return children.fetchPromise({ limit: 0 }).then(({ models }) =>
+  return children.fetch({ limit: 0 }).then(({ models }) =>
     // Remove ranks after enforced rank
     models
       .slice(0, models.findIndex((model) => model.get('isEnforced')) + 1)

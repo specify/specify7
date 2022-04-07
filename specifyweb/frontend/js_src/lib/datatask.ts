@@ -40,7 +40,7 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
   const recordSet = new schema.models.RecordSet.Resource({
     id,
   });
-  return recordSet.fetchPromise().then((recordSet) =>
+  return recordSet.fetch().then((recordSet) =>
     typeof recordSet === 'undefined'
       ? setCurrentView(new NotFoundView())
       : checkLoggedInCollection(
@@ -122,7 +122,7 @@ async function resourceView(
       setCurrentView(
         new ResourceView({
           resource,
-          recordSet: await recordSet?.fetchPromise(),
+          recordSet: await recordSet?.fetch(),
           pushUrl: true,
         })
       )
@@ -134,7 +134,7 @@ async function viewResourceByGuid(
   guid: string
 ): Promise<void> {
   const collection = new model.LazyCollection({ filters: { guid } });
-  return collection.fetchPromise({ limit: 1 }).then(({ models }) => {
+  return collection.fetch({ limit: 1 }).then(({ models }) => {
     if (models.length === 0) {
       setCurrentView(new NotFoundView());
       setTitle(commonText('pageNotFound'));
@@ -167,7 +167,7 @@ async function byCatNumber(
     filters: { code: collection },
   });
   return collectionLookup
-    .fetchPromise({ limit: 1 })
+    .fetch({ limit: 1 })
     .then((collections) => {
       if (collections.models.length === 0)
         error('Unable to find the collection');
@@ -194,7 +194,7 @@ async function byCatNumber(
           filters: { catalognumber: catNumber },
           domainfilter: true,
         });
-      return collectionObjects.fetchPromise({ limit: 1 }).then(({ models }) => {
+      return collectionObjects.fetch({ limit: 1 }).then(({ models }) => {
         if (models.length === 0) error('Unable to find collection object');
         setCurrentView(
           new ResourceView({

@@ -589,7 +589,7 @@ function getAppResources(options){
     else
         appRs.url = () => "/report_runner/get_reports/";
 
-    return appRs.fetchPromise();
+    return appRs.fetch();
 }
 
 export default function reports(options = {}) {

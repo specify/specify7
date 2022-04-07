@@ -392,7 +392,7 @@ function Gallery({
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
         ? collection
-            .fetchPromise()
+            .fetch()
             .then(({ models }) => setAttachments(Array.from(models)))
             .then(() =>
               collection.isComplete() ? handleIsComplete() : undefined

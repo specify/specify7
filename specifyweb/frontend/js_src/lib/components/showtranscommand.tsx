@@ -87,10 +87,10 @@ export function ShowLoansCommand({
         : undefined;
       return f
         .all({
-          openLoans: openLoanPreps?.fetchPromise(),
-          resolvedLoans: resolvedLoanPreps?.fetchPromise(),
-          gifts: giftPreps?.fetchPromise(),
-          exchanges: exchPreps?.fetchPromise(),
+          openLoans: openLoanPreps?.fetch(),
+          resolvedLoans: resolvedLoanPreps?.fetch(),
+          gifts: giftPreps?.fetch(),
+          exchanges: exchPreps?.fetch(),
         })
         .then(({ openLoans, resolvedLoans, gifts, exchanges }) => ({
           openLoans: openLoans?.models,

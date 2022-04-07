@@ -128,7 +128,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly noValidation?: boolean;
   save(): Promise<void>;
   destroy(): Promise<void>;
-  fetchPromise(): Promise<SpecifyResource<SCHEMA>>;
+  fetch(): Promise<SpecifyResource<SCHEMA>>;
   readonly populated: boolean;
   viewUrl(): string;
   isNew(): boolean;

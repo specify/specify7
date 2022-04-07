@@ -75,9 +75,7 @@ const collectionsInDomain = async (
       .then((collection) => [serializeResource(collection)])
   ) ??
   f.maybe(toTable(domainResource, 'Collection'), (collection) =>
-    collection
-      .fetchPromise()
-      .then((collection) => [serializeResource(collection)])
+    collection.fetch().then((collection) => [serializeResource(collection)])
   ) ??
   fetchCollection(
     'Collection',

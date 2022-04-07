@@ -11,7 +11,7 @@ import { toTable } from '../specifymodel';
 import { f } from '../functools';
 import { Button } from './basic';
 import { useBooleanState } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
 import { ShowLoansCommand } from './showtranscommand';
 import { LoadingContext } from './contexts';
@@ -38,7 +38,7 @@ const commandRenderers: {
           tblId: resource.specifyModel.tableId,
           recordToPrintId: resource.get('id'),
           autoSelectSingle: true,
-        }).then((view) => {
+        }).then((view: { readonly render: () => void }) => {
           setRunReport(false);
           view.render();
         })
@@ -50,18 +50,14 @@ const commandRenderers: {
         <Button.Simple id={id} onClick={(): void => setRunReport(true)}>
           {label}
         </Button.Simple>
-        {runReport ? (
-          resource.isNew() || !Boolean(resource.get('id')) ? (
-            <Dialog
-              header={label}
-              buttons={commonText('close')}
-              onClose={(): void => setRunReport(false)}
-            >
-              {formsText('reportsCanNotBePrintedDialogMessage')}
-            </Dialog>
-          ) : (
-            <LoadingScreen />
-          )
+        {(runReport && resource.isNew()) || !Boolean(resource.get('id')) ? (
+          <Dialog
+            header={label}
+            buttons={commonText('close')}
+            onClose={(): void => setRunReport(false)}
+          >
+            {formsText('reportsCanNotBePrintedDialogMessage')}
+          </Dialog>
         ) : undefined}
       </>
     ) : null;

@@ -35,7 +35,7 @@ export default function makeTreeMap(container) {
     filters: {name: 'Genus'},
   });
 
-  const getGenusRankID = genusTreeDefItem.fetchPromise({limit: 1}).then(() =>
+  const getGenusRankID = genusTreeDefItem.fetch({limit: 1}).then(() =>
     genusTreeDefItem.length > 0
       ? genusTreeDefItem.at(0).get('rankid')
       : null

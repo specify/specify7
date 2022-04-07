@@ -32,7 +32,7 @@ export const fetchOccurrenceName = (
   model: SpecifyResource<CollectionObject>
 ): Promise<string> =>
   model
-    .fetchPromise()
+    .fetch()
     .then(async () =>
       ajax<{
         readonly records: RA<{

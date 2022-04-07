@@ -38,10 +38,10 @@ function SecurityPanel(): JSX.Element | null {
         new schema.models.Collection.LazyCollection();
       return f.all({
         institution: institutionCollection
-          .fetchPromise({ limit: 1 })
+          .fetch({ limit: 1 })
           .then(({ models }) => models[0]),
         collections: collectionsCollection
-          .fetchPromise({ limit: 0 })
+          .fetch({ limit: 0 })
           .then(({ models }) =>
             Object.fromEntries(
               models

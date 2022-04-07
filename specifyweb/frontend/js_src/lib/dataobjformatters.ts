@@ -114,7 +114,7 @@ export async function format<SCHEMA extends AnySchema>(
   formatterName?: string
 ): Promise<string | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
-  await resource.fetchPromise();
+  await resource.fetch();
   const resolvedFormatterName =
     formatterName ?? resource.specifyModel.getFormat();
 

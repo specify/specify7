@@ -49,7 +49,7 @@ export function FormTableInteraction(
           });
           setRecordSetsPromise(
             recordSets
-              .fetchPromise({ limit: 5000 })
+              .fetch({ limit: 5000 })
               .then(({ models, _totalCount }) => ({
                 recordSets: models,
                 totalCount: defined(_totalCount),

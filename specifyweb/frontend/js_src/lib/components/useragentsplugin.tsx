@@ -79,7 +79,7 @@ function UserAgentsDialog({
       return f
         .all({
           division: collections
-            .fetchPromise({ limit: 0 })
+            .fetch({ limit: 0 })
             .then(async ({ models }) =>
               Promise.all(
                 models.map(async (collection) =>

@@ -11,7 +11,7 @@ import { Button, className, H3, Submit, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useBooleanState, useId, useUnloadProtect } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
+import { Dialog } from './modaldialog';
 
 // TODO: handle case when there are save blockers for field that is not
 //   rendered on the form
@@ -76,6 +76,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     setFormId(form.id);
   }, [form, id]);
 
+  const loading = React.useContext(LoadingContext);
+
   async function handleSubmit(
     event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
     addAnother = false
@@ -109,27 +111,27 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     if (handleSaving?.() === false) return;
 
     setIsSaving(true);
-    (saveRequired ? resource.save() : Promise.resolve())
-      .then(() => {
-        unsetUnloadProtect();
-        handleSaved?.({
-          newResource,
-          wasNew,
-        });
-      })
-      .then(() => setSaveRequired(false))
-      .then(() => resource.trigger('saved'))
-      .then(
-        () => setIsSaving(false),
-        (error: { readonly status: number; errorHandled: boolean }) => {
+    loading(
+      (saveRequired ? resource.save() : Promise.resolve())
+        .then(() => {
+          unsetUnloadProtect();
+          handleSaved?.({
+            newResource,
+            wasNew,
+          });
+        })
+        .then(() => setSaveRequired(false))
+        .then(() => resource.trigger('saved'))
+        .then(() => setIsSaving(false))
+        // FIXME: catch an error beforehand
+        .catch((error) => {
           if (error.status !== Http.CONFLICT) return;
           error.errorHandled = true;
           hasSaveConflict();
-        }
-      );
+        })
+    );
   }
 
-  const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
     const callback = (event: SubmitEvent): void => loading(handleSubmit(event));
     form.addEventListener('submit', callback);
@@ -140,9 +142,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
   return (
     <>
-      {typeof handleSaving === 'undefined' && isSaving ? (
-        <LoadingScreen />
-      ) : undefined}
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}

@@ -134,7 +134,7 @@ function TreeView<SCHEMA extends AnyTree>({
               filters: { name__istartswith: value, orderby: 'name' },
               domainfilter: true,
             });
-            return collection.fetchPromise().then(({ models }) =>
+            return collection.fetch().then(({ models }) =>
               models.map((node) => {
                 const rankDefinition = treeDefinitionItems.find(
                   ({ rankId }) => rankId === node.get('rankId')
@@ -176,6 +176,7 @@ function TreeView<SCHEMA extends AnyTree>({
           }}
           forwardRef={searchBoxRef}
           aria-label={treeText('searchTreePlaceholder')}
+          className={undefined}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic

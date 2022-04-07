@@ -130,7 +130,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
     React.useCallback(
       (id: number) => {
         const resource = new defined(getModel(tableName)).Resource({ id });
-        return resource.fetchPromise();
+        return resource.fetch();
       },
       [tableName]
     ),

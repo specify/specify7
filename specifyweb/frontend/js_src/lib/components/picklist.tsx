@@ -182,6 +182,7 @@ export function PickListComboBox(
           forwardRef={validationRef}
           aria-label={undefined}
           value={value ?? ''}
+          className={props.className}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
@@ -189,7 +190,6 @@ export function PickListComboBox(
               name={props.pickList?.get('name') ?? props.pickListName}
               disabled={props.isDisabled || typeof props.items === 'undefined'}
               isReadOnly={props.mode === 'view'}
-              className={props.className}
               required={
                 ('required' in validationAttributes || props.isRequired) &&
                 props.mode !== 'search'

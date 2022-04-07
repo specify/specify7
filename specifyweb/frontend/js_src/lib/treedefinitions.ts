@@ -66,7 +66,7 @@ export const treeRanksPromise = Promise.all([
   fetchDomain,
   fetchPermissions,
 ])
-  .then(() => getDomainResource('discipline')?.fetchPromise())
+  .then(() => getDomainResource('discipline')?.fetch())
   .then((discipline) => {
     if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
       disciplineTrees = commonTrees;

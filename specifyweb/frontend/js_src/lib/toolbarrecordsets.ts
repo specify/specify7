@@ -26,7 +26,7 @@ const menuItem: MenuItem = {
     });
     return new RecordSetsView({
       recordSetsPromise: recordSets
-        .fetchPromise({ limit: 5000 })
+        .fetch({ limit: 5000 })
         .then(({ models, _totalCount }) => ({
           recordSets: models,
           totalCount: _totalCount ?? models.length,

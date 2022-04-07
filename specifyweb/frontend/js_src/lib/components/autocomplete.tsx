@@ -46,6 +46,7 @@ export function Autocomplete<T>({
   forwardRef,
   onChange: handleChange,
   onNewValue: handleNewValue,
+  className: containerClassName,
   children,
   'aria-label': ariaLabel,
   value: currentValue,
@@ -56,7 +57,9 @@ export function Autocomplete<T>({
   readonly onNewValue?: (value: string) => void;
   readonly onChange: (item: Item<T>) => void;
   readonly forwardRef?: React.Ref<HTMLInputElement>;
+  readonly className: string | undefined;
   readonly children: (props: {
+    readonly className: string;
     readonly forwardRef: React.RefCallback<HTMLInputElement>;
     readonly value: string;
     readonly type: 'search';
@@ -224,8 +227,11 @@ export function Autocomplete<T>({
       )
         return;
 
-      const { bottom: inputBottom, top: inputTop } =
-        input.getBoundingClientRect();
+      const {
+        bottom: inputBottom,
+        top: inputTop,
+        width: inputWidth,
+      } = input.getBoundingClientRect();
       const isOverflowing = inputBottom + listHeight > containerHeight;
       const inputOffset = isInDialog ? dialogContainerBottom - dialogBottom : 0;
 
@@ -246,6 +252,7 @@ export function Autocomplete<T>({
           dataListRef.current.style.top = `${inputBottom - offsetTop}px`;
           dataListRef.current.style.bottom = '';
         }
+        dataListRef.current.style.width = `${inputWidth}px`;
       }
     }
 
@@ -256,7 +263,7 @@ export function Autocomplete<T>({
   }, [showList, input, isInDialog]);
 
   return (
-    <>
+    <div className={containerClassName}>
       {children({
         forwardRef(input): void {
           setInput(input);
@@ -265,6 +272,7 @@ export function Autocomplete<T>({
             forwardRef.current = input;
           else if (typeof forwardRef === 'function') forwardRef(input);
         },
+        className: 'w-full',
         value: pendingValue,
         type: 'search',
         autoComplete: 'off',
@@ -288,97 +296,96 @@ export function Autocomplete<T>({
             process.env.NODE_ENV !== 'development' &&
             (relatedTarget === null ||
               dataListRef.current?.contains(relatedTarget as Node) === false)
-          )
+          ) {
             handleClose();
-          setPendingValue(currentValue);
+            setPendingValue(currentValue);
+          }
         },
       })}
-      <div>
-        <ul
-          className={`fixed z-10 w-[inherit] rounded cursor-pointer
+      <ul
+        className={`fixed z-10 w-[inherit] rounded cursor-pointer
           rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
           shadow-lg shadow-gray-400 dark:border dark:border-gray-500
           ${showList ? '' : 'sr-only'}`}
-          role="listbox"
-          aria-label={ariaLabel}
-          id={id}
-          ref={dataListRef}
-          onKeyDown={(event): void => {
-            // Meta keys
-            if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
-              handleKeyDown(event.key);
-            else {
-              input?.focus();
-              input?.dispatchEvent(event.nativeEvent);
-            }
-          }}
-          onBlur={({ relatedTarget }): void =>
-            process.env.NODE_ENV !== 'development' &&
-            (relatedTarget === null ||
-              input?.contains(relatedTarget as Node) === false)
-              ? handleClose()
-              : undefined
+        role="listbox"
+        aria-label={ariaLabel}
+        id={id}
+        ref={dataListRef}
+        onKeyDown={(event): void => {
+          // Meta keys
+          if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
+            handleKeyDown(event.key);
+          else {
+            input?.focus();
+            input?.dispatchEvent(event.nativeEvent);
           }
-        >
-          {isOpen && (
-            <>
-              {isLoading && (
-                <li aria-selected={false} aria-disabled={true} {...itemProps}>
-                  {commonText('loading')}
-                </li>
-              )}
-              {showAdd ? (
+        }}
+        onBlur={({ relatedTarget }): void =>
+          process.env.NODE_ENV !== 'development' &&
+          (relatedTarget === null ||
+            input?.contains(relatedTarget as Node) === false)
+            ? handleClose()
+            : undefined
+        }
+      >
+        {isOpen && (
+          <>
+            {isLoading && (
+              <li aria-selected={false} aria-disabled={true} {...itemProps}>
+                {commonText('loading')}
+              </li>
+            )}
+            {showAdd ? (
+              <li
+                aria-selected={false}
+                aria-posinset={1}
+                aria-setsize={1}
+                onClick={(): void => handleNewValue(pendingValue)}
+              >
+                <div className="flex items-center">
+                  <span className={className.dataEntryAdd}>{icons.plus}</span>
+                  {commonText('add')}
+                </div>
+              </li>
+            ) : (
+              filteredItems.map((item, index, { length }) => (
                 <li
-                  aria-selected={false}
-                  aria-posinset={1}
-                  aria-setsize={1}
-                  onClick={(): void => handleNewValue(pendingValue)}
+                  key={index}
+                  aria-posinset={index + 1}
+                  aria-setsize={length}
+                  aria-selected={index === currentIndex}
+                  onClick={(): void => {
+                    handleChange(item);
+                    setPendingValue(item.label);
+                    handleClose();
+                  }}
+                  {...itemProps}
                 >
-                  <div className="flex items-center">
-                    <span className={className.dataEntryAdd}>{icons.plus}</span>
-                    {commonText('add')}
-                  </div>
-                </li>
-              ) : (
-                filteredItems.map((item, index, { length }) => (
-                  <li
-                    key={index}
-                    aria-posinset={index + 1}
-                    aria-setsize={length}
-                    aria-selected={index === currentIndex}
-                    onClick={(): void => {
-                      handleChange(item);
-                      setPendingValue(item.label);
-                      handleClose();
-                    }}
-                    {...itemProps}
-                  >
-                    {f.var(
-                      typeof item.subLabel === 'string' ? (
-                        <div className="flex flex-col justify-center">
-                          {item.label}
-                          <span className="text-gray-500">{item.subLabel}</span>
+                  {f.var(
+                    typeof item.subLabel === 'string' ? (
+                      <div className="flex flex-col justify-center">
+                        {item.label}
+                        <span className="text-gray-500">{item.subLabel}</span>
+                      </div>
+                    ) : (
+                      item.label
+                    ),
+                    (content) =>
+                      typeof item.icon === 'string' ? (
+                        <div className="flex items-center">
+                          {item.icon}
+                          {content}
                         </div>
                       ) : (
-                        item.label
-                      ),
-                      (content) =>
-                        typeof item.icon === 'string' ? (
-                          <div className="flex items-center">
-                            {item.icon}
-                            {content}
-                          </div>
-                        ) : (
-                          content
-                        )
-                    )}
-                  </li>
-                ))
-              )}
-            </>
-          )}
-        </ul>
-      </div>
-    </>
+                        content
+                      )
+                  )}
+                </li>
+              ))
+            )}
+          </>
+        )}
+      </ul>
+    </div>
   );
 }

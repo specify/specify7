@@ -164,7 +164,7 @@ export const fetchPickLists = async (): Promise<typeof pickLists> =>
                 domainfilter: true,
               },
             }),
-            async (collection) => collection.fetchPromise({ limit: 0 })
+            async (collection) => collection.fetch({ limit: 0 })
           )
         : Promise.resolve({ models: [] })
       ).then(async ({ models }) => {

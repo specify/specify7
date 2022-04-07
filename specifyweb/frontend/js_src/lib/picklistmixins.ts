@@ -109,7 +109,7 @@ async function fetchFromTable(
   const collection = new model.LazyCollection({
     domainfilter: hasHierarchyField(model),
   });
-  return collection.fetchPromise({ limit }).then(async ({ models }) =>
+  return collection.fetch({ limit }).then(async ({ models }) =>
     Promise.all(
       models.map(async (model) =>
         format(model, pickList.get('formatter') ?? undefined).then((title) => ({

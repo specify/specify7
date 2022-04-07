@@ -64,7 +64,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
-  readonly fetchPromise: (filter?: {
+  readonly fetch: (filter?: {
     readonly limit: number;
   }) => Promise<Collection<SCHEMA>>;
 };
@@ -90,9 +90,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   toJSON<V extends IR<unknown>>(): RA<V>;
   add(resource: SpecifyResource<SCHEMA>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
-  fetchPromise(filter?: {
-    readonly limit: number;
-  }): Promise<Collection<SCHEMA>>;
+  fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
   trigger(eventName: string): void;
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;

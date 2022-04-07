@@ -26,7 +26,7 @@ async function resourceToLink(
 ): Promise<JSX.Element | string> {
   const resource = new model.Resource({ id });
   return resource
-    .fetchPromise()
+    .fetch()
     .then(format)
     .then((string) => (
       <Link.NewTab href={resource.viewUrl()}>{string ?? id}</Link.NewTab>

@@ -16,7 +16,6 @@ import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState, useLiveState } from './hooks';
-import { LoadingScreen } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import createBackboneView from './reactbackboneextend';
 import { PermissionDenied } from './permissiondenied';
@@ -37,7 +36,7 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
       const recordSet = new schema.models.RecordSet.Resource({
         id: recordSetId,
       });
-      return recordSet.fetchPromise();
+      return recordSet.fetch();
     }, []),
     true
   );
@@ -53,7 +52,7 @@ function QueryBuilderWrapper({
   recordSet?: SpecifyResource<RecordSet> | false;
 }): JSX.Element | null {
   const [isLoaded = false] = useAsyncState(
-    async () => fetchPickLists().then(() => true),
+    async () => fetchPickLists().then(f.true),
     true
   );
 
@@ -75,7 +74,7 @@ function QueryBuilderById({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
-      return query.fetchPromise().catch((error) => {
+      return query.fetch().catch((error) => {
         if (error.status === Http.NOT_FOUND) setCurrentView(new NotFoundView());
         else throw error;
         return undefined;
@@ -119,7 +118,11 @@ export function createQuery(
   return query;
 }
 
-function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
+function NewQuery({
+  tableName,
+}: {
+  readonly tableName: string;
+}): JSX.Element | null {
   const [query] = useLiveState<SpecifyResource<SpQuery> | undefined>(
     React.useCallback(() => {
       const model = getModel(tableName);
@@ -132,9 +135,8 @@ function NewQuery({ tableName }: { readonly tableName: string }): JSX.Element {
   );
   const recordSet = useQueryRecordSet();
 
-  return typeof query === 'undefined' || typeof recordSet === 'undefined' ? (
-    <LoadingScreen />
-  ) : hasTablePermission(
+  return typeof query === 'undefined' ||
+    typeof recordSet === 'undefined' ? null : hasTablePermission(
       getModelById(query.get('contextTableId')).name,
       'read'
     ) ? (

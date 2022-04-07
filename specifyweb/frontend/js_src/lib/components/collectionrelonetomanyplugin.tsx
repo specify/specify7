@@ -69,7 +69,7 @@ export async function fetchOtherCollectionData(
     filters: { name: relationship },
   });
   const { relationshipType, left, right } = await collection
-    .fetchPromise({ limit: 1 })
+    .fetch({ limit: 1 })
     .then(async ({ models: [relationshipType] }) =>
       f.all({
         relationshipType,
@@ -112,7 +112,7 @@ export async function fetchOtherCollectionData(
   });
   return {
     collectionObjects: await items
-      .fetchPromise()
+      .fetch()
       .then(async ({ models }) => processRelationships(models, otherSide)),
     otherCollection: {
       id: otherCollection.id,

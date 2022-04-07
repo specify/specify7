@@ -152,7 +152,7 @@ export const fetchLocalOccurrences = async (
               id: localityId,
             });
             return fetchLocalityDataFromLocalityResource(
-              await locality.fetchPromise(),
+              await locality.fetch(),
               false,
               (mappingPathParts, resource) =>
                 (typeof resource?.specifyModel?.name !== 'string' ||

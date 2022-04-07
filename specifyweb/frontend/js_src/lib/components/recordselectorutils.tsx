@@ -82,7 +82,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   React.useEffect(() => {
     if (isLazy)
       collection
-        .fetchPromise()
+        .fetch()
         .then(handleLoaded)
         .then(() => setRecords(getRecords))
         .catch(crash);
@@ -129,7 +129,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
           index === collection.models.length - 1 &&
           !collection.isComplete()
         )
-          collection.fetchPromise().catch(crash);
+          collection.fetch().catch(crash);
         handleSlide?.(index);
       }}
     >
@@ -200,60 +200,57 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
+            isLoading={isLoading}
             resource={resource}
             dialog={dialog}
             title={`${field?.label ?? collection.model.specifyModel?.label}${
               isToOne ? '' : ` (${collection.models.length})`
             }`}
-            headerButtons={(specifyNetworkBadge) =>
-              isLoading ? (
-                <p aria-live="polite" className="flex-1">
-                  {commonText('loading')}
-                </p>
-              ) : (
-                <>
-                  <DataEntry.Visit
-                    /*
-                     * If dialog is not false, the visit button would be added
-                     * by ResourceView
-                     */
-                    resource={
-                      isDependent || dialog === false ? undefined : resource
+            headerButtons={(specifyNetworkBadge): JSX.Element => (
+              <>
+                <DataEntry.Visit
+                  /*
+                   * If dialog is not false, the visit button would be added
+                   * by ResourceView
+                   */
+                  resource={
+                    isDependent || dialog === false ? undefined : resource
+                  }
+                />
+                {hasTablePermission(
+                  field.relatedModel.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Add
+                    onClick={handleAdd}
+                    disabled={
+                      mode === 'view' ||
+                      (isToOne && collection.models.length > 0)
                     }
                   />
-                  {hasTablePermission(
-                    field.relatedModel.name,
-                    isDependent ? 'create' : 'read'
-                  ) && (
-                    <DataEntry.Add
-                      onClick={handleAdd}
-                      disabled={
-                        mode === 'view' ||
-                        (isToOne && collection.models.length > 0)
-                      }
-                    />
-                  )}
-                  {hasTablePermission(
-                    field.relatedModel.name,
-                    isDependent ? 'create' : 'read'
-                  ) && (
-                    <DataEntry.Delete
-                      onClick={handleRemove}
-                      disabled={
-                        mode === 'view' || collection.models.length === 0
-                      }
-                    />
-                  )}
-                  {specifyNetworkBadge}
-                  <span className="flex-1 -ml-4" />
-                  {!isToOne && slider}
-                </>
-              )
-            }
+                )}
+                {hasTablePermission(
+                  field.relatedModel.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Delete
+                    onClick={handleRemove}
+                    disabled={mode === 'view' || collection.models.length === 0}
+                  />
+                )}
+                <span className="flex-1 -ml-4" />
+                {specifyNetworkBadge}
+                {!isToOne && slider}
+              </>
+            )}
             mode={mode}
             viewName={viewName}
             isSubForm={dialog === false}
             canAddAnother={false}
+            /*
+             * Don't save the resource on save button click if it is a dependent
+             * resource
+             */
             onSaving={
               isDependent
                 ? (): false => {
@@ -262,7 +259,7 @@ export function IntegratedRecordSelector({
                   }
                 : undefined
             }
-            onSaved={undefined}
+            onSaved={handleClose}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
             onClose={handleClose}
           />
@@ -414,47 +411,42 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       }): JSX.Element => (
         <>
           <ResourceView
+            isLoading={isLoading}
             resource={resource}
             dialog={dialog}
             title={title}
-            headerButtons={(specifyNetworkBadge) =>
-              isLoading ? (
-                <p aria-live="polite" className="flex-1">
-                  {commonText('loading')}
-                </p>
-              ) : (
-                <>
-                  <DataEntry.Visit
-                    resource={isDependent ? undefined : resource}
+            headerButtons={(specifyNetworkBadge): JSX.Element => (
+              <>
+                <DataEntry.Visit
+                  resource={isDependent ? undefined : resource}
+                />
+                {hasTablePermission(
+                  model.name,
+                  isDependent ? 'create' : 'read'
+                ) && (
+                  <DataEntry.Add
+                    disabled={mode === 'view'}
+                    onClick={handleAdd}
                   />
-                  {hasTablePermission(
-                    model.name,
-                    isDependent ? 'create' : 'read'
-                  ) && (
-                    <DataEntry.Add
-                      disabled={mode === 'view'}
-                      onClick={handleAdd}
-                    />
-                  )}
-                  {resource?.isNew() === true ||
-                  hasTablePermission(model.name, 'delete') ? (
-                    <DataEntry.Delete
-                      disabled={
-                        typeof resource === 'undefined' || mode === 'view'
-                      }
-                      onClick={handleRemove}
-                    />
-                  ) : undefined}
-                  {specifyNetworkBadge}
-                  {isAddingNew ? (
-                    <p className="flex-1">{formsText('creatingNewRecord')}</p>
-                  ) : (
-                    <span className="flex-1 -ml-4" />
-                  )}
-                  {slider}
-                </>
-              )
-            }
+                )}
+                {resource?.isNew() === true ||
+                hasTablePermission(model.name, 'delete') ? (
+                  <DataEntry.Delete
+                    disabled={
+                      typeof resource === 'undefined' || mode === 'view'
+                    }
+                    onClick={handleRemove}
+                  />
+                ) : undefined}
+                {isAddingNew ? (
+                  <p className="flex-1">{formsText('creatingNewRecord')}</p>
+                ) : (
+                  <span className="flex-1 -ml-4" />
+                )}
+                {specifyNetworkBadge}
+                {slider}
+              </>
+            )}
             mode={mode}
             viewName={viewName}
             isSubForm={false}

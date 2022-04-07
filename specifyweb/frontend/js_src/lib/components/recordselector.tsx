@@ -226,7 +226,6 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     ),
     index,
     totalCount,
-    // FIXME: this is stuck at true for Record Set when going to length-1
     isLoading: typeof records[index] === 'undefined',
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],

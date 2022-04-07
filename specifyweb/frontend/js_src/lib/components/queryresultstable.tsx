@@ -312,9 +312,7 @@ export function QueryResultsTable({
             selectedRows={selectedRows}
             onSelected={(id, isSelected, isShiftClick): void => {
               f.maybe(handleSelected, (callback) =>
-                loading(
-                  new model.Resource({ id }).fetchPromise().then(callback)
-                )
+                loading(new model.Resource({ id }).fetch().then(callback))
               );
               if (!hasIdField) return;
               const rowIndex = results.findIndex(
