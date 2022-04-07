@@ -5,11 +5,10 @@
 import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';
-import type { IR } from './types';
 import { f } from './functools';
+import type { IR } from './types';
 
 export type UiPlugins = {
-  readonly UserCollectionsUI: State<'UserCollectionsUI'>;
   readonly LatLonUI: State<
     'LatLonUI',
     {
@@ -52,12 +51,8 @@ export type UiPlugins = {
       readonly relationship: string | undefined;
     }
   >;
-  readonly PasswordUI: State<'PasswordUI'>;
-  readonly UserAgentsUI: State<'UserAgentsUI'>;
-  readonly AdminStatusUI: State<'AdminStatusUI'>;
   readonly LocalityGoogleEarth: State<'LocalityGoogleEarth'>;
   readonly PaleoMap: State<'PaleoMap'>;
-  readonly UserInviteLinkUI: State<'UserInviteLinkUI'>;
   readonly Unsupported: State<
     'Unsupported',
     {
@@ -72,7 +67,6 @@ const processUiPlugin: {
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
-  UserCollectionsUI: () => ({ type: 'UserCollectionsUI' }),
   LatLonUI: ({ properties }) => ({
     type: 'LatLonUI',
     step: f.parseInt(properties.step ?? ''),
@@ -108,12 +102,8 @@ const processUiPlugin: {
     type: 'HostTaxonPlugin',
     relationship: properties.relname,
   }),
-  PasswordUI: () => ({ type: 'PasswordUI' }),
-  UserAgentsUI: () => ({ type: 'UserAgentsUI' }),
-  AdminStatusUI: () => ({ type: 'AdminStatusUI' }),
   LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
   PaleoMap: () => ({ type: 'PaleoMap' }),
-  UserInviteLinkUI: () => ({ type: 'UserInviteLinkUI' }),
   Unsupported: ({ properties }) => ({
     type: 'Unsupported',
     name: properties.name,

@@ -51,12 +51,14 @@ export type AnySchema = {
 };
 
 /** A union of all field names of a given schema */
-export type TableFields<SCHEMA extends AnySchema> =
-  | keyof SCHEMA['fields']
-  | keyof SCHEMA['toOneDependent']
-  | keyof SCHEMA['toOneIndependent']
-  | keyof SCHEMA['toManyDependent']
-  | keyof SCHEMA['toManyIndependent'];
+export type TableFields<SCHEMA extends AnySchema> = string &
+  (
+    | keyof SCHEMA['fields']
+    | keyof SCHEMA['toOneDependent']
+    | keyof SCHEMA['toOneIndependent']
+    | keyof SCHEMA['toManyDependent']
+    | keyof SCHEMA['toManyIndependent']
+  );
 
 /**
  * Represents any tree table schema

@@ -2,16 +2,14 @@
 Provides a function that returns the appropriate view for a given context
 hierarchy level. Depends on the user and logged in collectien of the request.
 """
-import os
 import logging
+import os
+from django.http import Http404
+from django.utils.encoding import force_bytes
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
-from django.http import Http404
-from django.utils.encoding import force_bytes
-
 from specifyweb.specify.models import Spappresourcedata
-
 from . import app_resource as AR
 
 logger = logging.getLogger(__name__)
@@ -22,7 +20,7 @@ def get_view(collection, user, viewname):
     # setup a generator that looks for the view in the proper discovery order
     matches = ((viewset, view, src, level)
                # db first, then disk
-               for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'), (web_only, 'web_only'))
+               for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'))
                # then by directory level
                for level in AR.DIR_LEVELS
                # then in the viewset files in a given directory level
@@ -112,9 +110,6 @@ def load_viewsets(collection, user, level):
                 pass
 
     return viewsets()
-
-def web_only(collection, user, level):
-    return [get_viewset_from_file(os.path.dirname(__file__), 'web_only_views.xml')]
 
 def get_viewset_from_file(path, filename):
     """Just load the XML for a viewset from path and pull out the root."""

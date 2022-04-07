@@ -124,7 +124,6 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
       import('./toolbar/preferences'),
       import('./toolbar/schemaconfig'),
       // Administration
-      import('./toolbar/users'),
       import('./toolbar/resources'),
       import('./toolbar/security').then(({ userTool }) => ({
         default: userTool,

@@ -61,7 +61,6 @@ type Actions =
     >
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
-  | Action<'SaveRequiredAction'>
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
   | Action<
       'ChangeFieldAction',
@@ -128,10 +127,6 @@ export const reducer = generateReducer<MainState, Actions>({
             state.fields[action.line],
             ...state.fields.slice(action.line + 2),
           ],
-  }),
-  SaveRequiredAction: ({ state }) => ({
-    ...state,
-    saveRequired: true,
   }),
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,

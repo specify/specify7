@@ -2,11 +2,10 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../ajax';
-import { fetchCollection } from '../../collection';
 import type { SpecifyUser } from '../../datamodel';
-import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
 import { index } from '../../helpers';
+import type { SpecifyResource } from '../../legacytypes';
 import adminText from '../../localization/admin';
 import commonText from '../../localization/common';
 import { hasPermission } from '../../permissions';
@@ -77,14 +76,11 @@ function SecurityPanel(): JSX.Element | null {
       >
   >({ type: 'MainState' });
 
-  const [users] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpecifyUser', { limit: 0 })
-          .then(async ({ records }) => records)
-          .then(index),
-      []
-    ),
+  const [users] = useAsyncState<IR<SpecifyResource<SpecifyUser>>>(
+    React.useCallback(async () => {
+      const users = new schema.models.SpecifyUser.LazyCollection();
+      return users.fetch({ limit: 0 }).then(({ models }) => index(models));
+    }, []),
     false
   );
 
@@ -164,7 +160,7 @@ function SecurityPanel(): JSX.Element | null {
             institution={data.institution}
             users={users}
             libraryRoles={libraryRoles}
-            onChangeLibraryRoles={(newState) =>
+            onChangeLibraryRoles={(newState): void =>
               setLibraryRoles(
                 typeof newState === 'function'
                   ? newState(defined(libraryRoles))
@@ -201,7 +197,15 @@ function SecurityPanel(): JSX.Element | null {
             user={users[state.userId]}
             collections={data.collections}
             initialCollection={state.initialCollection}
-            onClose={(): void => setState({ type: 'MainState' })}
+            onClose={(newUser): void =>
+              typeof newUser === 'undefined'
+                ? setState({ type: 'MainState' })
+                : setState({
+                    type: 'UserState',
+                    initialCollection: state.initialCollection,
+                    userId: newUser.id,
+                  })
+            }
             onOpenRole={(collectionId, roleId): void =>
               setState({
                 type: 'CollectionState',

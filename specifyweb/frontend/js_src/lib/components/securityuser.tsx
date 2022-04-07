@@ -2,13 +2,17 @@ import React from 'react';
 
 import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { replaceItem, replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import { collectionAccessResource, hasPermission } from '../permissions';
+import {
+  collectionAccessResource,
+  hasPermission,
+  hasTablePermission,
+} from '../permissions';
+import { schema } from '../schema';
 import {
   anyAction,
   anyResource,
@@ -17,7 +21,8 @@ import {
   processPolicies,
 } from '../securityutils';
 import type { IR, RA } from '../types';
-import { filterArray } from '../types';
+import { defined, filterArray } from '../types';
+import { AdminStatusPlugin } from './adminstatusplugin';
 import {
   Button,
   className,
@@ -27,14 +32,20 @@ import {
   Input,
   Label,
   Select,
-  Submit,
   Ul,
 } from './basic';
+import { ComboBox } from './combobox';
 import { LoadingContext } from './contexts';
-import { useAsyncState, useUnloadProtect } from './hooks';
+import { DeleteButton } from './deletebutton';
+import { useAsyncState, useIsModified, useUnloadProtect } from './hooks';
+import { PasswordPlugin } from './passwordplugin';
+import { augmentMode, BaseResourceView } from './resourceview';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
+import { UserAgentsPlugin } from './useragentsplugin';
+import { UserCollectionsPlugin } from './usercollectionsplugin';
+import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
 export function UserView({
   user,
@@ -43,11 +54,11 @@ export function UserView({
   onOpenRole: handleOpenRole,
   onClose: handleClose,
 }: {
-  readonly user: SerializedResource<SpecifyUser>;
+  readonly user: SpecifyResource<SpecifyUser>;
   readonly initialCollection: number;
   readonly collections: IR<SpecifyResource<Collection>>;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
-  readonly onClose: () => void;
+  readonly onClose: (user?: SpecifyResource<SpecifyUser>) => void;
 }): JSX.Element {
   // Fetching roles from all collections
   const [collectionRoles] = useAsyncState(
@@ -70,7 +81,9 @@ export function UserView({
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/user/roles', 'read')
+        user.isNew()
+          ? {}
+          : hasPermission('/permissions/user/roles', 'read')
           ? Promise.all(
               Object.values(collections).map(async (collection) =>
                 fetchRoles(collection.id, user.id).then(
@@ -88,7 +101,7 @@ export function UserView({
                 return userRoles;
               })
           : undefined,
-      [user.id, collections]
+      [user, collections]
     ),
     false
   );
@@ -105,7 +118,9 @@ export function UserView({
   const [userPolicies, setUserPolicies] = useAsyncState(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/policies/user', 'read')
+        user.isNew()
+          ? {}
+          : hasPermission('/permissions/policies/user', 'read')
           ? Promise.all(
               Object.values(collections).map(async (collection) =>
                 ajax<IR<RA<string>>>(
@@ -124,7 +139,7 @@ export function UserView({
                 return policies;
               })
           : undefined,
-      [user.id, collections]
+      [user, collections]
     ),
     false
   );
@@ -138,7 +153,9 @@ export function UserView({
   const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/policies/user', 'read')
+        user.isNew()
+          ? []
+          : hasPermission('/permissions/policies/user', 'read')
           ? ajax<IR<RA<string>>>(
               `/permissions/user_policies/institution/${user.id}/`,
               {
@@ -159,7 +176,10 @@ export function UserView({
     JSON.stringify(institutionPolicies);
 
   const changesMade =
-    changedPolices || changedRoles || changedInstitutionPolicies;
+    useIsModified(user) ||
+    changedPolices ||
+    changedRoles ||
+    changedInstitutionPolicies;
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
     commonText('leavePageDialogMessage')
@@ -178,6 +198,8 @@ export function UserView({
       ({ resource, actions }) =>
         resource === collectionAccessResource && actions.includes('access')
     ) ?? false;
+
+  const mode = augmentMode('edit', user?.isNew(), 'SpecifyUser');
 
   return (
     <Container.Base className="flex-1 overflow-y-auto">
@@ -228,209 +250,315 @@ export function UserView({
                     { expectedResponseCodes: [Http.NO_CONTENT] }
                   )
                 : undefined,
-            ]).then(handleClose)
+            ]).then(f.zero(handleClose))
           )
         }
       >
-        <h3 className="text-xl">{`${adminText('user')} ${user.name}`}</h3>
-        <div>
-          <Label.ForCheckbox>
-            <Input.Checkbox
-              isReadOnly={!hasPermission(anyResource, anyAction)}
-              disabled={typeof institutionPolicies === 'undefined'}
-              onValueChange={(): void =>
-                hasPermission('/permissions/policies/user', 'update') &&
-                typeof institutionPolicies === 'object'
-                  ? setInstitutionPolicies(
-                      isSuperAdmin
-                        ? filterArray(
-                            institutionPolicies.map((policy) =>
-                              policy.resource === anyResource
-                                ? policy.actions.length === 1 &&
-                                  policy.actions.includes(anyAction)
-                                  ? undefined
-                                  : replaceKey(
-                                      policy,
-                                      'actions',
-                                      policy.actions.filter(
-                                        (action) => action !== anyAction
+        <BaseResourceView
+          isLoading={false}
+          resource={user}
+          mode={mode}
+          isSubForm={true}
+        >
+          {({ title, saveButton, form }): JSX.Element => {
+            return (
+              <>
+                <DataEntry.Header>
+                  <h3 className="text-xl">{`${adminText('user')} ${title}`}</h3>
+                </DataEntry.Header>
+                {form}
+                <section>
+                  <h4 className={className.headerGray}>
+                    {commonText('actions')}
+                  </h4>
+                  <div className="flex gap-2">
+                    {/* FIXME: update this to force consistency */}
+                    {hasPermission('/admin/user/password', 'update') && (
+                      <PasswordPlugin user={user} />
+                    )}
+                    {hasPermission('/admin/user/password', 'update') && (
+                      <UserInviteLinkPlugin user={user} />
+                    )}
+                    {/* FIXME: update this to force consistency (and use new agents endpoint) */}
+                    <UserAgentsPlugin
+                      user={user}
+                      mode={mode}
+                      isRequired={hasCollectionAccess}
+                    />
+                    <Label.ForCheckbox>
+                      <Input.Checkbox
+                        isReadOnly={!hasPermission(anyResource, anyAction)}
+                        disabled={typeof institutionPolicies === 'undefined'}
+                        onValueChange={(): void =>
+                          hasPermission(
+                            '/permissions/policies/user',
+                            'update'
+                          ) && typeof institutionPolicies === 'object'
+                            ? setInstitutionPolicies(
+                                isSuperAdmin
+                                  ? filterArray(
+                                      institutionPolicies.map((policy) =>
+                                        policy.resource === anyResource
+                                          ? policy.actions.length === 1 &&
+                                            policy.actions.includes(anyAction)
+                                            ? undefined
+                                            : replaceKey(
+                                                policy,
+                                                'actions',
+                                                policy.actions.filter(
+                                                  (action) =>
+                                                    action !== anyAction
+                                                )
+                                              )
+                                          : policy
                                       )
                                     )
-                                : policy
-                            )
-                          )
-                        : f.var(
-                            institutionPolicies.findIndex(
-                              ({ resource }) => resource === anyResource
-                            ),
-                            (index) =>
-                              index === -1
-                                ? [
-                                    ...institutionPolicies,
-                                    {
-                                      resource: anyResource,
-                                      actions: [anyAction],
-                                    },
-                                  ]
-                                : replaceItem(
-                                    institutionPolicies,
-                                    index,
-                                    replaceKey(
-                                      institutionPolicies[index],
-                                      'actions',
-                                      [
-                                        ...institutionPolicies[index].actions,
-                                        anyAction,
-                                      ]
+                                  : f.var(
+                                      institutionPolicies.findIndex(
+                                        ({ resource }) =>
+                                          resource === anyResource
+                                      ),
+                                      (index) =>
+                                        index === -1
+                                          ? [
+                                              ...institutionPolicies,
+                                              {
+                                                resource: anyResource,
+                                                actions: [anyAction],
+                                              },
+                                            ]
+                                          : replaceItem(
+                                              institutionPolicies,
+                                              index,
+                                              replaceKey(
+                                                institutionPolicies[index],
+                                                'actions',
+                                                [
+                                                  ...institutionPolicies[index]
+                                                    .actions,
+                                                  anyAction,
+                                                ]
+                                              )
+                                            )
                                     )
-                                  )
-                          )
-                    )
-                  : undefined
-              }
-              checked={isSuperAdmin}
-            />
-            {adminText('superAdmin')}
-          </Label.ForCheckbox>
-        </div>
-
-        <Label.Generic>
-          <span className={className.headerGray}>
-            {commonText('collection')}
-          </span>
-          <Select
-            value={collectionId}
-            onValueChange={(value): void =>
-              setCollectionId(Number.parseInt(value))
-            }
-          >
-            {Object.values(collections).map((collection) => (
-              <option key={collection.id} value={collection.id}>
-                {collection.get('collectionName')}
-              </option>
-            ))}
-          </Select>
-        </Label.Generic>
-        <div>
-          <Label.ForCheckbox>
-            <Input.Checkbox
-              isReadOnly={
-                !hasPermission('/permissions/policies/user', 'update') ||
-                typeof userPolicies === 'undefined'
-              }
-              onValueChange={
-                hasPermission('/permissions/policies/user', 'update')
-                  ? (): void =>
-                      setUserPolicies(
-                        typeof userPolicies === 'object'
-                          ? replaceKey(
-                              userPolicies,
-                              collectionId,
-                              hasCollectionAccess
-                                ? userPolicies[collectionId].filter(
-                                    ({ resource }) =>
-                                      resource !== collectionAccessResource
-                                  )
-                                : [
-                                    ...userPolicies[collectionId],
-                                    {
-                                      resource: collectionAccessResource,
-                                      actions: ['access'],
-                                    },
-                                  ]
-                            )
-                          : undefined
-                      )
-                  : undefined
-              }
-              checked={hasCollectionAccess}
-            />
-            {adminText('collectionAccess')}
-          </Label.ForCheckbox>
-        </div>
-        {hasPermission('/permissions/user/roles', 'read') && (
-          <fieldset className="flex flex-col gap-2">
-            <legend className={className.headerGray}>
-              {adminText('userRoles')}:
-            </legend>
-            <Ul className="flex flex-col gap-1">
-              {typeof collectionRoles === 'object' &&
-              typeof userRoles === 'object'
-                ? collectionRoles[collectionId].map((role) => (
-                    <li key={role.id} className="flex items-center gap-2">
-                      <Label.ForCheckbox>
-                        <Input.Checkbox
-                          disabled={
-                            !hasPermission('/permissions/user/roles', 'update')
-                          }
-                          checked={userRoles[collectionId].includes(role.id)}
-                          onValueChange={(): void =>
-                            setUserRoles(
-                              replaceKey(
-                                userRoles,
-                                collectionId.toString(),
-                                Array.from(
-                                  toggleItem(userRoles[collectionId], role.id)
-                                ).sort(sortFunction(f.id))
                               )
-                            )
-                          }
-                        />
-                        {role.name}
-                      </Label.ForCheckbox>
-                      <DataEntry.Edit
-                        // TODO: trigger unload protect
-                        onClick={(): void =>
-                          handleOpenRole(collectionId, role.id)
+                            : undefined
                         }
+                        checked={isSuperAdmin}
                       />
-                    </li>
-                  ))
-                : commonText('loading')}
-            </Ul>
-          </fieldset>
-        )}
-        {hasPermission('/permissions/policies/user', 'read') && (
-          <PoliciesView
-            policies={userPolicies?.[collectionId]}
-            isReadOnly={!hasPermission('/permissions/policies/user', 'update')}
-            onChange={(policies): void =>
-              typeof userPolicies === 'object'
-                ? setUserPolicies(
-                    replaceKey(userPolicies, collectionId, policies)
-                  )
-                : undefined
-            }
-          />
-        )}
-        <PreviewPermissions
-          userId={user.id}
-          collectionId={collectionId}
-          changesMade={changesMade}
-          onOpenRole={(roleId): void => handleOpenRole(collectionId, roleId)}
-        />
-        <div className="flex gap-2">
-          {changesMade ? (
-            <Button.Gray
-              onClick={(): void => {
-                unsetUnloadProtect();
-                handleClose();
-              }}
-            >
-              {commonText('cancel')}
-            </Button.Gray>
-          ) : (
-            <Button.Blue onClick={handleClose}>
-              {commonText('close')}
-            </Button.Blue>
-          )}
-          {hasPermission('/permissions/policies/user', 'update') ||
-          hasPermission('/permissions/user/roles', 'update') ? (
-            <Submit.Green disabled={!changesMade}>
-              {commonText('save')}
-            </Submit.Green>
-          ) : undefined}
-        </div>
+                      {adminText('superAdmin')}
+                    </Label.ForCheckbox>
+                  </div>
+                </section>
+                {/* TODO: allow editing linkages with external accounts */}
+
+                <Label.Generic>
+                  <span className={className.headerGray}>
+                    {commonText('collection')}
+                  </span>
+                  <Select
+                    value={collectionId}
+                    onValueChange={(value): void =>
+                      setCollectionId(Number.parseInt(value))
+                    }
+                  >
+                    {Object.values(collections).map((collection) => (
+                      <option key={collection.id} value={collection.id}>
+                        {collection.get('collectionName')}
+                      </option>
+                    ))}
+                  </Select>
+                </Label.Generic>
+                <div>
+                  <Label.ForCheckbox>
+                    <Input.Checkbox
+                      isReadOnly={
+                        !hasPermission(
+                          '/permissions/policies/user',
+                          'update'
+                        ) || typeof userPolicies === 'undefined'
+                      }
+                      onValueChange={
+                        hasPermission('/permissions/policies/user', 'update')
+                          ? (): void =>
+                              setUserPolicies(
+                                typeof userPolicies === 'object'
+                                  ? replaceKey(
+                                      userPolicies,
+                                      collectionId,
+                                      hasCollectionAccess
+                                        ? userPolicies[collectionId].filter(
+                                            ({ resource }) =>
+                                              resource !==
+                                              collectionAccessResource
+                                          )
+                                        : [
+                                            ...userPolicies[collectionId],
+                                            {
+                                              resource:
+                                                collectionAccessResource,
+                                              actions: ['access'],
+                                            },
+                                          ]
+                                    )
+                                  : undefined
+                              )
+                          : undefined
+                      }
+                      checked={hasCollectionAccess}
+                    />
+                    {adminText('collectionAccess')}
+                  </Label.ForCheckbox>
+                </div>
+                {hasPermission('/permissions/user/roles', 'read') && (
+                  <fieldset className="flex flex-col gap-2">
+                    <legend className={className.headerGray}>
+                      {adminText('userRoles')}:
+                    </legend>
+                    <Ul className="flex flex-col gap-1">
+                      {typeof collectionRoles === 'object' &&
+                      typeof userRoles === 'object'
+                        ? collectionRoles[collectionId].map((role) => (
+                            <li
+                              key={role.id}
+                              className="flex items-center gap-2"
+                            >
+                              <Label.ForCheckbox>
+                                <Input.Checkbox
+                                  disabled={
+                                    !hasPermission(
+                                      '/permissions/user/roles',
+                                      'update'
+                                    )
+                                  }
+                                  checked={userRoles[collectionId].includes(
+                                    role.id
+                                  )}
+                                  onValueChange={(): void =>
+                                    setUserRoles(
+                                      replaceKey(
+                                        userRoles,
+                                        collectionId.toString(),
+                                        Array.from(
+                                          toggleItem(
+                                            userRoles[collectionId],
+                                            role.id
+                                          )
+                                        ).sort(sortFunction(f.id))
+                                      )
+                                    )
+                                  }
+                                />
+                                {role.name}
+                              </Label.ForCheckbox>
+                              <DataEntry.Edit
+                                // TODO: trigger unload protect
+                                onClick={(): void =>
+                                  handleOpenRole(collectionId, role.id)
+                                }
+                              />
+                            </li>
+                          ))
+                        : commonText('loading')}
+                    </Ul>
+                  </fieldset>
+                )}
+                {hasPermission('/permissions/policies/user', 'read') && (
+                  <PoliciesView
+                    policies={userPolicies?.[collectionId]}
+                    isReadOnly={
+                      !hasPermission('/permissions/policies/user', 'update')
+                    }
+                    onChange={(policies): void =>
+                      typeof userPolicies === 'object'
+                        ? setUserPolicies(
+                            replaceKey(userPolicies, collectionId, policies)
+                          )
+                        : undefined
+                    }
+                  />
+                )}
+                <PreviewPermissions
+                  userId={user.id}
+                  collectionId={collectionId}
+                  changesMade={changesMade}
+                  onOpenRole={(roleId): void =>
+                    handleOpenRole(collectionId, roleId)
+                  }
+                />
+                <section className="flex flex-col gap-2">
+                  <h4 className={className.headerGray}>
+                    {adminText('legacyPermissions')}
+                  </h4>
+                  <div className="flex gap-2">
+                    <AdminStatusPlugin user={user} mode={mode} />
+                    {hasPermission(
+                      '/admin/user/sp6/collection_access',
+                      'read'
+                    ) && <UserCollectionsPlugin user={user} />}
+                  </div>
+                  {f.var(
+                    defined(
+                      schema.models.SpecifyUser.getLiteralField('userType')
+                    ),
+                    (userType) => (
+                      <Label.Generic title={userType.getLocalizedDesc()}>
+                        {userType.label}
+                        <ComboBox
+                          id={undefined}
+                          model={user}
+                          resource={user}
+                          field={userType}
+                          fieldName={userType.name}
+                          pickListName={undefined}
+                          defaultValue={undefined}
+                          className="w-full"
+                          mode={mode}
+                          isRequired={true}
+                          isDisabled={false}
+                        />
+                      </Label.Generic>
+                    )
+                  )}
+                </section>
+                <DataEntry.Footer>
+                  {changesMade ? (
+                    <Button.Gray
+                      onClick={(): void => {
+                        unsetUnloadProtect();
+                        handleClose();
+                      }}
+                    >
+                      {commonText('cancel')}
+                    </Button.Gray>
+                  ) : (
+                    <Button.Blue onClick={f.zero(handleClose)}>
+                      {commonText('close')}
+                    </Button.Blue>
+                  )}
+                  {!user.isNew() &&
+                  // FIXME: notify parent of resource deletion
+                  hasTablePermission(user.specifyModel.name, 'delete') ? (
+                    <DeleteButton
+                      model={user}
+                      onDeleted={f.zero(handleClose)}
+                    />
+                  ) : undefined}
+                  <span className="flex-1 -ml-2" />
+                  {hasPermission('/permissions/policies/user', 'update') ||
+                  hasPermission('/permissions/user/roles', 'update')
+                    ? saveButton?.({
+                        canAddAnother: true,
+                        onSaving: console.error,
+                        onSaved: ({ newResource }) => handleClose(newResource),
+                        disabled: !changesMade,
+                      })
+                    : undefined}
+                </DataEntry.Footer>
+              </>
+            );
+          }}
+        </BaseResourceView>
       </Form>
     </Container.Base>
   );

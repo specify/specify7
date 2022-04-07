@@ -423,6 +423,12 @@ const adminText = createDictionary({
     ca: 'Copy to clipboard',
     'es-es': 'Copy to clipboard',
   },
+  legacyPermissions: {
+    'en-us': 'Specify 6 Permissions',
+    'ru-ru': 'Specify 6 Permissions',
+    ca: 'Specify 6 Permissions',
+    'es-es': 'Specify 6 Permissions',
+  },
 });
 
 export default adminText;

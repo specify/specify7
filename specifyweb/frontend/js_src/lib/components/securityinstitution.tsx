@@ -4,7 +4,6 @@ import type { State } from 'typesafe-reducer';
 import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Institution, SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
@@ -30,7 +29,7 @@ export function InstitutionView({
   onChangeLibraryRoles: handleChangeLibraryRoles,
 }: {
   readonly institution: SpecifyResource<Institution>;
-  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
+  readonly users: IR<SpecifyResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
   readonly libraryRoles: IR<Role> | undefined;
   readonly onChangeLibraryRoles: (
@@ -159,10 +158,12 @@ export function InstitutionView({
                       hasPermission('/permissions/policies/user', 'update') ||
                       hasPermission('/permissions/user/roles', 'update')
                   )
-                  .map(({ id, name }) => (
-                    <li key={id}>
-                      <Button.LikeLink onClick={(): void => handleOpenUser(id)}>
-                        {name}
+                  .map((user) => (
+                    <li key={user.id}>
+                      <Button.LikeLink
+                        onClick={(): void => handleOpenUser(user.id)}
+                      >
+                        {user.get('name')}
                       </Button.LikeLink>
                     </li>
                   ))}

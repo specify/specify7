@@ -11,10 +11,8 @@ import { Dialog } from './modaldialog';
 
 export function UserInviteLinkPlugin({
   user,
-  id,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
-  readonly id: string | undefined;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);
@@ -22,7 +20,6 @@ export function UserInviteLinkPlugin({
   return (
     <>
       <Button.Simple
-        id={id}
         onClick={(): void =>
           loading(
             ajax(`/accounts/invite_link/${user.id}/`, {
@@ -30,7 +27,6 @@ export function UserInviteLinkPlugin({
             }).then(({ data }) => setLink(data))
           )
         }
-        className="w-fit"
       >
         {adminText('createInviteLink')}
       </Button.Simple>

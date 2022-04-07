@@ -8,7 +8,12 @@ import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
-import { useBooleanState, useId, useUnloadProtect } from './hooks';
+import {
+  useBooleanState,
+  useId,
+  useIsModified,
+  useUnloadProtect,
+} from './hooks';
 import { Dialog } from './modaldialog';
 import { error } from '../assert';
 
@@ -22,6 +27,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   form,
   onSaving: handleSaving,
   onSaved: handleSaved,
+  disabled,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
@@ -33,9 +39,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     readonly wasNew: boolean;
   }) => void;
   readonly onClick?: () => void;
+  readonly disabled?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
-  const [saveRequired, setSaveRequired] = React.useState(resource.needsSaved);
+  const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
     formsText('unsavedFormUnloadProtect')
@@ -43,26 +50,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
-    setSaveRequired(resource.needsSaved);
-    const handleSaveRequired = (): void => setSaveRequired(true);
-    resource.on('saverequired', handleSaveRequired);
-
     setSaveBlocked(false);
 
-    function handleChanged(saveRequired = true): void {
-      if (saveRequired) handleSaveRequired();
+    function handleChanged(): void {
       const onlyDeferredBlockers = Array.from(
         resource.saveBlockers.blockingResources
       ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
       setSaveBlocked(!onlyDeferredBlockers);
     }
 
-    handleChanged(false);
+    handleChanged();
     resource.on('blockerschanged', handleChanged);
-    return (): void => {
-      resource.off('saverequired', handleSaveRequired);
-      resource.off('blockerschanged', handleChanged);
-    };
+    return (): void => resource.off('blockerschanged', handleChanged);
   }, [resource]);
 
   const [isSaving, setIsSaving] = React.useState(false);
@@ -119,7 +118,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             wasNew,
           });
         })
-        .then(() => setSaveRequired(false))
         .then(() => resource.trigger('saved'))
         .then(() => setIsSaving(false))
         .catch((exception) =>
@@ -144,7 +142,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {canAddAnother && (
         <ButtonComponent
           className={saveBlocked ? 'cursor-not-allowed' : undefined}
-          disabled={isSaving}
+          disabled={disabled || isSaving}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
           {saveRequired || resource.isNew()
@@ -159,7 +157,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
          * Don't disable the button if saveBlocked, so that clicking the button
          * would make browser focus the invalid field
          */
-        disabled={isSaving || (!saveRequired && !saveBlocked)}
+        disabled={disabled || isSaving || (!saveRequired && !saveBlocked)}
         onClick={(): void => form.classList.remove(className.notSubmittedForm)}
       >
         {commonText('save')}

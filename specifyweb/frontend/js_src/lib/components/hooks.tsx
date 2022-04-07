@@ -529,3 +529,22 @@ export function useResourceValue<
     parser,
   } as const;
 }
+
+export function useIsModified(
+  resource: SpecifyResource<AnySchema> | undefined
+): boolean {
+  const [saveRequired, handleNeedsSaving, handleSaved] = useBooleanState(
+    resource?.needsSaved
+  );
+
+  React.useEffect(() => {
+    resource?.on('saverequired', handleNeedsSaving);
+    resource?.on('saved', handleSaved);
+    return (): void => {
+      resource?.off('saverequired', handleNeedsSaving);
+      resource?.off('saved', handleSaved);
+    };
+  }, [resource, handleNeedsSaving, handleSaved]);
+
+  return saveRequired;
+}

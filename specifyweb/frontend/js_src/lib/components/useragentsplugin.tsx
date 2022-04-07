@@ -12,7 +12,7 @@ import { group } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import type { FormMode, FormType } from '../parseform';
+import type { FormMode } from '../parseform';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -35,11 +35,9 @@ function Entry({
   address,
   isRequired,
   mode,
-  formType,
 }: Data & {
   readonly isRequired: boolean;
   readonly mode: FormMode;
-  readonly formType: FormType;
 }): JSX.Element {
   return (
     <li>
@@ -50,7 +48,7 @@ function Entry({
           fieldName="agent"
           resource={address}
           mode={mode}
-          formType={formType}
+          formType="form"
           isRequired={isRequired}
           relatedModel={schema.models.Agent}
           forceCollection={collection.id}
@@ -65,13 +63,11 @@ function UserAgentsDialog({
   user,
   onClose: handleClose,
   mode,
-  formType,
   isRequired,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly onClose: () => void;
   readonly mode: FormMode;
-  readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element | null {
   const [entries] = useAsyncState<RA<Data>>(
@@ -187,7 +183,6 @@ function UserAgentsDialog({
               key={entry.division.id}
               {...entry}
               mode={mode}
-              formType={formType}
               isRequired={isRequired}
             />
           ))}
@@ -199,23 +194,17 @@ function UserAgentsDialog({
 
 export function UserAgentsPlugin({
   user,
-  id,
   mode,
-  formType,
   isRequired,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
-  readonly id: string | undefined;
   readonly mode: FormMode;
-  readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Simple
-        className="w-fit"
-        id={id}
         disabled={user.isNew()}
         title={
           user.isNew()
@@ -231,7 +220,6 @@ export function UserAgentsPlugin({
           user={user}
           onClose={handleClose}
           mode={mode}
-          formType={formType}
           isRequired={isRequired}
         />
       )}

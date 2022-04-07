@@ -6,50 +6,17 @@ import React from 'react';
 
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
-import { f } from '../functools';
+import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
-import { FormCell } from './specifyformcell';
-import commonText from '../localization/common';
 import { loadingGif } from './queryresultstable';
-
-/** A hardcoded view description for an attachment table */
-const getAttachmentFormDefinition = (
-  formType: FormType,
-  mode: FormMode
-): ViewDescription =>
-  ({
-    columns: [undefined],
-    formType,
-    mode,
-    model: undefined,
-    rows: [
-      [
-        {
-          id: undefined,
-          type: 'Field',
-          fieldName: undefined,
-          fieldDefinition: {
-            isReadOnly: false,
-            type: 'Plugin',
-            pluginDefinition: {
-              type: 'AttachmentPlugin',
-            },
-          },
-          isRequired: false,
-          colSpan: 1,
-          align: 'left',
-          visible: true,
-          ariaLabel: commonText('attachments'),
-        },
-      ],
-    ],
-  } as const);
+import { FormCell } from './specifyformcell';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -78,7 +45,12 @@ export function useViewDefinition({
     React.useCallback(
       async () =>
         viewName === 'ObjectAttachment'
-          ? getAttachmentFormDefinition(formType, mode)
+          ? {
+              ...webOnlyViews().ObjectAttachment,
+              model,
+              formType,
+              mode,
+            }
           : getView(
               viewName === originalAttachmentsView
                 ? 'ObjectAttachment'
@@ -97,7 +69,16 @@ export function useViewDefinition({
                     : error(
                         'View definition model does not match resource model'
                       )
-                  : autoGenerateViewDefinition(model, formType, mode)
+                  : f.maybe(
+                      webOnlyViews()[viewName as keyof typeof webOnlyViews],
+                      ({ columns, rows }) => ({
+                        columns,
+                        rows,
+                        formType,
+                        mode,
+                        model,
+                      })
+                    ) ?? autoGenerateViewDefinition(model, formType, mode)
               ),
       [viewName, formType, mode, model]
     ),

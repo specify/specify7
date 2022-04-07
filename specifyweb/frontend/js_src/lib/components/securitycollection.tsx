@@ -3,7 +3,6 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { index, omit, removeKey, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -38,7 +37,7 @@ export function CollectionView({
 }: {
   readonly collection: SpecifyResource<Collection>;
   readonly initialRoleId: number | undefined;
-  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
+  readonly users: IR<SpecifyResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
   readonly collections: IR<SpecifyResource<Collection>>;
   readonly libraryRoles: IR<Role> | undefined;
@@ -227,7 +226,7 @@ export function CollectionView({
                             <Button.LikeLink
                               onClick={(): void => handleOpenUser(user.id)}
                             >
-                              {user.name}
+                              {user.get('name')}
                             </Button.LikeLink>
                           </li>
                         ))}

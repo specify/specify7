@@ -113,7 +113,6 @@ export function PasswordPlugin({
   return (
     <>
       <Button.Simple
-        className="w-fit"
         disabled={user.isNew()}
         title={
           user.isNew()

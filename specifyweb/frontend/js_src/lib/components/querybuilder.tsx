@@ -2,10 +2,12 @@ import React from 'react';
 
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import wbText from '../localization/workbench';
+import { hasPermission, hasToolPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
@@ -23,7 +25,12 @@ import {
   transitionDuration,
 } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState, useTitle, useUnloadProtect } from './hooks';
+import {
+  useAsyncState,
+  useIsModified,
+  useTitle,
+  useUnloadProtect,
+} from './hooks';
 import { icons } from './icons';
 import {
   MakeRecordSetButton,
@@ -36,8 +43,6 @@ import { useResource } from './resource';
 import { useCachedState } from './stateCache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-import { replaceItem } from '../helpers';
-import { hasPermission, hasToolPermission } from '../permissions';
 
 /*
  * Query Results:
@@ -91,16 +96,10 @@ export function QueryBuilder({
     staleWhileRefresh: false,
   });
 
-  React.useEffect(
-    () =>
-      queryResource.once('saverequired', () =>
-        dispatch({ type: 'SaveRequiredAction' })
-      ),
-    [queryResource]
-  );
+  const saveRequired = useIsModified(queryResource) || state.saveRequired;
 
   const unsetUnloadProtect = useUnloadProtect(
-    state.saveRequired,
+    saveRequired,
     queryText('queryUnloadProtectDialogMessage')
   );
 
@@ -217,7 +216,7 @@ export function QueryBuilder({
             ) : undefined}
             {!queryResource.isNew() && (
               <Button.Simple
-                disabled={!state.saveRequired}
+                disabled={!saveRequired}
                 onClick={(): void => {
                   unsetUnloadProtect();
                   window.location.reload();
@@ -230,7 +229,7 @@ export function QueryBuilder({
               isReadOnly={isReadOnly}
               queryResource={queryResource}
               fields={state.fields}
-              saveRequired={state.saveRequired}
+              saveRequired={saveRequired}
               unsetUnloadProtect={unsetUnloadProtect}
               getQueryFieldRecords={getQueryFieldRecords}
             />

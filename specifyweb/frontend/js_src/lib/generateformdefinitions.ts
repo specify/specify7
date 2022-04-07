@@ -2,6 +2,7 @@
  * If form definition is missing, this code will generate one on the fyl
  */
 
+import type { AnySchema, TableFields } from './datamodelutils';
 import commonText from './localization/common';
 import type {
   FormMode,
@@ -12,25 +13,36 @@ import type {
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import type { LiteralField } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
-import { resolveParser } from './uiparse';
+import type { RA } from './types';
 import { filterArray } from './types';
+import { resolveParser } from './uiparse';
 
-export function autoGenerateViewDefinition(
-  model: SpecifyModel,
+export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
+  model: SpecifyModel<SCHEMA>,
   formType: FormType,
-  mode: FormMode
+  mode: FormMode,
+  fieldsToSkip: RA<TableFields<SCHEMA>> = []
 ): ViewDescription {
   return {
-    ...(formType === 'form' ? generateForm : generateFormTable)(model, mode),
+    ...(formType === 'form' ? generateForm : generateFormTable)(
+      model,
+      mode,
+      fieldsToSkip
+    ),
     formType,
     mode,
     model,
   };
 }
 
-function generateFormTable(model: SpecifyModel): ParsedFormDefinition {
+function generateFormTable(
+  model: SpecifyModel,
+  _mode: FormMode,
+  fieldsToSkip: RA<string>
+): ParsedFormDefinition {
   const fields = model.literalFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
+    (field) =>
+      !field.isHidden && !field.isReadOnly && !fieldsToSkip.includes(field.name)
   );
   return {
     columns: Array.from(fields).fill(undefined),
@@ -48,18 +60,25 @@ const cellAttributes = {
 
 function generateForm(
   model: SpecifyModel,
-  mode: FormType
+  mode: FormType,
+  fieldsToSkip: RA<string>
 ): ParsedFormDefinition {
   const fields = model.literalFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
+    (field) =>
+      !field.isHidden && !field.isReadOnly && !fieldsToSkip.includes(field.name)
   );
   const relationships = model.relationships.filter(
-    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
+    (field) =>
+      !field.isHidden &&
+      !field.isReadOnly &&
+      !fieldsToSkip.includes(field.name) &&
+      field.isDependent()
   );
+  const skipLabels = fields.length === 0 || relationships.length === 0;
   return {
     columns: [undefined],
     rows: filterArray([
-      fields.length === 0
+      skipLabels
         ? undefined
         : [
             {
@@ -95,7 +114,7 @@ function generateForm(
           field[0].fieldDefinition.type === 'Checkbox' ? undefined : label,
           field,
         ]),
-      relationships.length === 0
+      skipLabels
         ? undefined
         : [
             {

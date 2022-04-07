@@ -14,11 +14,9 @@ import { hasTablePermission } from '../permissions';
 export function AdminStatusPlugin({
   user: resource,
   mode,
-  id,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly mode: FormMode;
-  readonly id: string | undefined;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [user, setUser] = useResource(resource);
@@ -28,7 +26,6 @@ export function AdminStatusPlugin({
     <>
       <Button.Simple
         className="w-fit"
-        id={id}
         disabled={
           mode === 'view' ||
           !hasTablePermission('SpecifyUser', 'update') ||

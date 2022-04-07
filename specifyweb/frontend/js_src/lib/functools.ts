@@ -15,12 +15,18 @@ export const f = {
   /** Call first argument */
   exec: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],
+  /** Create a new version of the passed function that accepts only 1 argument */
   unary:
     <ARGUMENT, RETURN>(
       callback: (argument: ARGUMENT) => RETURN
     ): ((argument: ARGUMENT) => RETURN) =>
     (argument) =>
       callback(argument),
+  /** Create a new version of the passed function that does not accept arguments */
+  zero:
+    <RETURN>(callback: () => RETURN) =>
+    () =>
+      callback(),
   id: <T>(value: T): T => value,
   trim: (value: string) => value.trim(),
   /**

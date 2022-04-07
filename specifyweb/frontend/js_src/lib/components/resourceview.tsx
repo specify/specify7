@@ -18,7 +18,7 @@ import { Button, Container, DataEntry, Form } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
-import { useAsyncState, useBooleanState, useId } from './hooks';
+import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
 import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
@@ -42,7 +42,6 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly viewName?: string;
   readonly isSubForm: boolean;
   readonly children: (props: {
-    readonly isModified: boolean;
     readonly formElement: HTMLFormElement | null;
     readonly title: string;
     // Delete button component has to be created manually
@@ -53,6 +52,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
       }) => void;
+      readonly disabled?: boolean;
     }) => JSX.Element | undefined;
     readonly form: JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
@@ -83,7 +83,7 @@ export const FormContext = React.createContext<
 ]);
 FormContext.displayName = 'FormContext';
 
-function BaseResourceView<SCHEMA extends AnySchema>({
+export function BaseResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
   children,
@@ -143,21 +143,8 @@ function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
-  const [isModified, handleModified, handleSaved] = useBooleanState(
-    resource?.needsSaved
-  );
-  React.useEffect(() => {
-    resource?.on('saverequired', handleModified);
-    resource?.on('saved', handleSaved);
-    return (): void => {
-      resource?.off('saverequired', handleModified);
-      resource?.off('saved', handleSaved);
-    };
-  }, [resource, handleModified, handleSaved]);
-
   const loading = React.useContext(LoadingContext);
   return children({
-    isModified,
     title,
     formElement: form,
     form: isSubForm ? (
@@ -175,7 +162,12 @@ function BaseResourceView<SCHEMA extends AnySchema>({
     saveButton:
       mode === 'view' && form !== null && typeof resource === 'undefined'
         ? undefined
-        : ({ onSaving: handleSaving, onSaved: handleSaved, canAddAnother }) =>
+        : ({
+            onSaving: handleSaving,
+            onSaved: handleSaved,
+            canAddAnother,
+            disabled,
+          }) =>
             form === null || typeof resource === 'undefined' ? undefined : (
               <SaveButton
                 resource={resource}
@@ -197,6 +189,7 @@ function BaseResourceView<SCHEMA extends AnySchema>({
                   canAddAnother &&
                   !NO_ADD_ANOTHER.has(resource.specifyModel.name)
                 }
+                disabled={disabled}
               />
             ),
     specifyNetworkBadge:
@@ -293,6 +286,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     handleDeleted();
   }
 
+  const isModified = useIsModified(resource);
+
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
   return isDeleted ? (
@@ -305,13 +300,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       viewName={viewName}
       isSubForm={isSubForm}
     >
-      {({
-        isModified,
-        form,
-        title,
-        saveButton,
-        specifyNetworkBadge,
-      }): JSX.Element => {
+      {({ form, title, saveButton, specifyNetworkBadge }): JSX.Element => {
         const saveButtonElement = isSubForm
           ? undefined
           : saveButton?.({

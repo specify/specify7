@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
 import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
@@ -16,10 +16,9 @@ import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
 import { useLiveState, useUnloadProtect } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
+import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
-import { SecurityImportExport } from './securityimportexport';
-import { f } from '../functools';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -33,7 +32,7 @@ export type Role = NewRole & {
 };
 
 export type UserRoles = IR<{
-  readonly user: SerializedResource<SpecifyUser>;
+  readonly user: SpecifyResource<SpecifyUser>;
   readonly roles: RA<number>;
 }>;
 
@@ -148,7 +147,7 @@ export function RoleView({
                         // TODO: trigger unload protect
                         onClick={(): void => handleOpenUser(user.id)}
                       >
-                        {user.name}
+                        {user.get('name')}
                       </Button.LikeLink>
                     </li>
                   ))}

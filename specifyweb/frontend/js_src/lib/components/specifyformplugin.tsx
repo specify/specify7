@@ -9,9 +9,8 @@ import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes } from '../parseformfields';
 import type { UiPlugins } from '../parseuiplugins';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissions';
 import { toTable } from '../specifymodel';
-import { AdminStatusPlugin } from './adminstatusplugin';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
 import { CollectionOneToManyPlugin } from './collectionrelonetomanyplugin';
@@ -24,11 +23,7 @@ import { LeafletPlugin } from './leafletplugin';
 import { Dialog } from './modaldialog';
 import { PaleoLocationMapPlugin } from './paleolocationplugin';
 import { PartialDateUi } from './partialdateui';
-import { PasswordPlugin } from './passwordplugin';
-import { UserAgentsPlugin } from './useragentsplugin';
-import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { WebLinkButton } from './weblinkbutton';
-import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
 function WrongTable({
   resource,
@@ -70,13 +65,6 @@ const pluginRenderers: {
     readonly isRequired: boolean;
   }) => JSX.Element | null;
 } = {
-  UserCollectionsUI({ resource }) {
-    return hasPermission('/admin/user/sp6/collection_access', 'read')
-      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-          <UserCollectionsPlugin user={specifyUser} />
-        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-      : null;
-  },
   LatLonUI({ resource, mode, id, pluginDefinition: { step } }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
@@ -224,33 +212,6 @@ const pluginRenderers: {
         />
       ) : null;
   },
-  PasswordUI({ resource }) {
-    return hasPermission('/admin/user/password', 'update')
-      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-          <PasswordPlugin user={specifyUser} />
-        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-      : null;
-  },
-  UserAgentsUI({ resource, mode, formType, id, isRequired }) {
-    return hasTablePermission('Agent', 'read')
-      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-          <UserAgentsPlugin
-            user={specifyUser}
-            id={id}
-            mode={mode}
-            formType={formType}
-            isRequired={isRequired}
-          />
-        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-      : null;
-  },
-  AdminStatusUI({ resource, mode, id }) {
-    return hasPermission('/admin/user/sp6/is_admin', 'update')
-      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-          <AdminStatusPlugin user={specifyUser} id={id} mode={mode} />
-        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-      : null;
-  },
   LocalityGoogleEarth({ resource, id }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
@@ -259,13 +220,6 @@ const pluginRenderers: {
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
-  UserInviteLinkUI({ resource, id }) {
-    return hasPermission('/admin/user/password', 'update')
-      ? f.maybe(toTable(resource, 'SpecifyUser'), (specifyUser) => (
-          <UserInviteLinkPlugin user={specifyUser} id={id} />
-        )) ?? <WrongTable resource={resource} allowedTable="SpecifyUser" />
-      : null;
-  },
   Unsupported({ pluginDefinition: { name }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
