@@ -23,6 +23,17 @@ type Item<T> = {
 };
 
 /**
+ * Get the nearest scrollable parent.
+ * Adapted from https://stackoverflow.com/a/35940276/8584605
+ */
+const getScrollParent = (node: Element | undefined): Element =>
+  node === undefined
+    ? document.body
+    : node.scrollHeight > node.clientHeight
+    ? node
+    : getScrollParent(node.parentElement ?? undefined);
+
+/**
  * An accessible autocomplete.
  *
  * @remarks
@@ -185,6 +196,10 @@ export function Autocomplete<T>({
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
+  /*
+   * Reposition the autocomplete box as needed
+   * Not handling resize events as onBlur would close the list box on resize
+   */
   React.useEffect(() => {
     if (dataListRef.current === null || input === null) return undefined;
 
@@ -194,24 +209,19 @@ export function Autocomplete<T>({
      */
     const listHeight = dataListRef.current.getBoundingClientRect().height;
 
+    const scrollableParent = getScrollParent(input);
+    const { top: parentTop, bottom: parentBottom } =
+      scrollableParent.getBoundingClientRect();
+
     /*
      * This is needed because react-draggable library (used in dialogs) adds
      * a CSS transform to a dialog, which causes position:fixed to be relative
      * to dialog container, not viewPort
      * See more: https://stackoverflow.com/q/2637058/8584605
      */
-    const dialogContainer = isInDialog
-      ? document.getElementsByClassName(dialogClassNames.container)[0]
-      : undefined;
+    const dialogContainer = input?.closest(`.${dialogClassNames.container}`);
     const { top: offsetTop = 0, bottom: dialogContainerBottom = 0 } =
       dialogContainer?.getBoundingClientRect() ?? {};
-    const dialogContent = dialogContainer?.getElementsByClassName(
-      dialogClassNames.content
-    )[0];
-    const dialogBottom = dialogContent?.getBoundingClientRect().bottom ?? 0;
-    const containerHeight = isInDialog
-      ? dialogBottom
-      : document.body.clientHeight;
 
     function handleScroll({
       target,
@@ -232,21 +242,21 @@ export function Autocomplete<T>({
         top: inputTop,
         width: inputWidth,
       } = input.getBoundingClientRect();
-      const isOverflowing = inputBottom + listHeight > containerHeight;
-      const inputOffset = isInDialog ? dialogContainerBottom - dialogBottom : 0;
+      const isOverflowing = inputBottom + listHeight > parentBottom;
+      const inputOffset = isInDialog ? dialogContainerBottom - parentBottom : 0;
 
       /*
        * Hide the list for non screen reader users when it goes below the
-       * dialog container so as not to cause content overflow
+       * container so as not to cause content overflow
        */
-      const shouldHide = isInDialog && inputTop > dialogBottom;
+      const shouldHide = inputTop > parentBottom || inputBottom < parentTop;
       if (shouldHide) dataListRef.current.classList.add('sr-only');
       else {
         dataListRef.current.classList.remove('sr-only');
         if (isOverflowing) {
           dataListRef.current.style.top = '';
           dataListRef.current.style.bottom = `${
-            containerHeight - inputTop + inputOffset
+            parentBottom - inputTop + inputOffset
           }px`;
         } else {
           dataListRef.current.style.top = `${inputBottom - offsetTop}px`;
@@ -259,7 +269,7 @@ export function Autocomplete<T>({
     handleScroll({ target: null });
 
     window.addEventListener('scroll', handleScroll, true);
-    return (): void => window.addEventListener('scroll', handleScroll, true);
+    return (): void => window.removeEventListener('scroll', handleScroll, true);
   }, [showList, input, isInDialog]);
 
   return (
@@ -276,12 +286,12 @@ export function Autocomplete<T>({
         value: pendingValue,
         type: 'search',
         autoComplete: 'off',
-        'aria-expanded': isOpen,
+        'aria-expanded': showList,
         'aria-autocomplete': 'list',
         'aria-controls': id,
         'aria-label': ariaLabel,
         onKeyDown: (event) =>
-          isOpen ? handleKeyDown(event.key) : handleOpen(),
+          showList ? handleKeyDown(event.key) : handleOpen(),
         onValueChange(value) {
           handleRefreshItems(source, value);
           const filteredItems = filterItems(results, value);
@@ -328,7 +338,7 @@ export function Autocomplete<T>({
             : undefined
         }
       >
-        {isOpen && (
+        {showList && (
           <>
             {isLoading && (
               <li aria-selected={false} aria-disabled={true} {...itemProps}>
