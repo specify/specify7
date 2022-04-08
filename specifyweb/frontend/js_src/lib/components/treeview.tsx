@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -9,7 +10,6 @@ import type {
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
-import { NotFoundView } from '../notfoundview';
 import { hasTreeAccess } from '../permissions';
 import * as querystring from '../querystring';
 import { getIntPref, getPref } from '../remoteprefs';
@@ -29,12 +29,12 @@ import { Autocomplete } from './autocomplete';
 import { Button, Container, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId, useTitle } from './hooks';
+import { NotFound } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
 import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 
 const defaultCacheValue = [] as const;
 
@@ -334,7 +334,7 @@ function TreeViewWrapper({
       : undefined;
 
   if (typeof tableName === 'undefined' || !isTreeModel(tableName))
-    return <NotFoundView />;
+    return <NotFound />;
   else if (!hasTreeAccess(tableName, 'read')) return <PermissionDenied />;
   else
     return typeof treeDefinition === 'object' ? (

@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { ajax, Http } from '../ajax';
+import { f } from '../functools';
+import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
@@ -8,7 +10,7 @@ import { fetchResource, parseResourceUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { Button, Form, Label, Submit, Ul } from './basic';
+import { Button, ErrorMessage, Form, Label, Submit, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useId } from './hooks';
 import { Dialog } from './modaldialog';
@@ -23,6 +25,7 @@ export type SetAgentsResponse = Partial<{
     readonly agentid2: number;
   }>;
   MissingAgentForAccessibleCollection: {
+    readonly all_accessible_divisions: RA<number>;
     readonly missing_for_6: RA<number>;
     readonly missing_for_7: RA<number>;
   };
@@ -52,10 +55,7 @@ export function UserAgentsDialog({
                 fetchResource('Division', divisionId).then((division) => ({
                   division: defined(division),
                   isRequired:
-                    response.MissingAgentForAccessibleCollection?.missing_for_6.includes(
-                      divisionId
-                    ) === true ||
-                    response.MissingAgentForAccessibleCollection?.missing_for_7.includes(
+                    response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
                       divisionId
                     ) === true,
                   ...rest,
@@ -90,7 +90,7 @@ export function UserAgentsDialog({
         onSubmit={(): void =>
           loading(
             ajax(
-              `/api/set_agents/${userId}`,
+              `/api/set_agents/${userId}/`,
               {
                 method: 'POST',
                 headers: {},
@@ -130,6 +130,10 @@ export function UserAgentsDialog({
                 forceCollection={collections[0]}
                 typeSearch="Agent"
               />
+              {f.includes(
+                response.AgentInUseException ?? [],
+                parseResourceUrl(address.get('agent') ?? '')?.[1]
+              ) && <ErrorMessage>{adminText('agentInUse')}</ErrorMessage>}
             </Label.Generic>
           ))}
         </Ul>

@@ -11,7 +11,7 @@ import { Http } from '../ajax';
 import { breakpoint } from '../assert';
 import commonText from '../localization/common';
 import { clearUnloadProtect } from '../navigation';
-import { NotFoundView } from '../notfoundview';
+import { NotFoundView } from './notfoundview';
 import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
@@ -75,7 +75,7 @@ function ErrorDialog({
         <br />
         {commonText('errorBoundaryDialogSecondMessage')(supportLink)}
       </p>
-      <details className="flex-1 whitespace-pre-wrap">
+      <details className="contents whitespace-pre-wrap">
         <summary>{commonText('errorMessage')}</summary>
         {children}
       </details>
@@ -191,7 +191,7 @@ function formatError(
   }
 
   return [
-    <div key="object" className="gap-y-2 flex flex-col h-full">
+    <div key="object" className="gap-y-2 flex flex-col flex-1">
       {errorObject}
     </div>,
     errorMessage.join('\n'),

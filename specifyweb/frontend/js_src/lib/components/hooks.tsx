@@ -19,6 +19,12 @@ const idStore: R<number> = {};
 /**
  * A hook that returns a unique string ID generator that is unique
  * and unchanging for the lifecycle of a component
+ *
+ * @remarks
+ * No matter which prefix is chosen, the final id is guaranteed to be unique
+ * among all components. Thus, you shouldn't worry about prefixes being globally
+ * unique. The specific prefix does not matter at all, except it makes debugging
+ * easier.
  */
 export function useId(prefix: string): (suffix: string) => string {
   const id = React.useRef(-1);
@@ -181,9 +187,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
 export function useAsyncState<T>(
   callback: () => undefined | T | Promise<T | undefined>,
   // Show the loading screen while the promise is being resolved
-  loadingScreen: boolean,
-  // Whether to reset state value to undefined while fetching new state
-  forceConsistency = false
+  loadingScreen: boolean
 ): [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
@@ -192,7 +196,8 @@ export function useAsyncState<T>(
   const loading = React.useContext(LoadingContext);
 
   React.useEffect(() => {
-    if (forceConsistency) setState(undefined);
+    // If callback changes, state is reset while new state is fetching
+    setState(undefined);
     const wrapped = loadingScreen ? loading : f.id;
     void wrapped(
       Promise.resolve(callback()).then((newState) =>
@@ -204,7 +209,7 @@ export function useAsyncState<T>(
     return (): void => {
       destructorCalled = true;
     };
-  }, [callback, loading, loadingScreen, forceConsistency]);
+  }, [callback, loading, loadingScreen]);
 
   return [state, setState];
 }
@@ -538,11 +543,11 @@ export function useIsModified(
   );
 
   React.useEffect(() => {
-    resource?.on('saverequired', handleNeedsSaving);
-    resource?.on('saved', handleSaved);
+    resource?.on('saverequired fakesaverequired', handleNeedsSaving);
+    resource?.on('saved fakesaved', handleSaved);
     return (): void => {
-      resource?.off('saverequired', handleNeedsSaving);
-      resource?.off('saved', handleSaved);
+      resource?.off('saverequired fakesaverequired', handleNeedsSaving);
+      resource?.off('saved fakesaved', handleSaved);
     };
   }, [resource, handleNeedsSaving, handleSaved]);
 

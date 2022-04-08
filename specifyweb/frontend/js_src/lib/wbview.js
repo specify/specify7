@@ -25,7 +25,7 @@ import {Button, className} from './components/basic';
 import {getModel, schema} from './schema';
 import DataSetMeta from './components/datasetmeta';
 import * as navigation from './navigation';
-import {NotFoundView} from './notfoundview';
+import {NotFoundView} from './components/notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';

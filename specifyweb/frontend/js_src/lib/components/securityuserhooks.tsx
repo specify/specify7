@@ -49,7 +49,7 @@ export function useUserRoles(
 ): [
   userRoles: IR<RA<number>> | undefined,
   setUserRoles: (value: IR<RA<number>>) => void,
-  initialRoles: { current: IR<RA<number>> },
+  initialRoles: React.RefObject<IR<RA<number>>>,
   hasChanges: boolean
 ] {
   const initialUserRoles = React.useRef<IR<RA<number>>>({});
@@ -57,7 +57,9 @@ export function useUserRoles(
     React.useCallback(
       async () =>
         userResource.isNew()
-          ? {}
+          ? Object.fromEntries(
+              Object.values(collections).map(({ id }) => [id, []])
+            )
           : hasPermission('/permissions/user/roles', 'read')
           ? Promise.all(
               Object.values(collections).map(async (collection) =>
@@ -103,7 +105,7 @@ export type UserAgents = RA<{
 
 // Fetch User Agents in all Collections
 export function useUserAgents(
-  userId: number,
+  userId: number | undefined,
   collections: IR<SerializedResource<Collection>>
 ): UserAgents | undefined {
   const [userAgents] = useAsyncState(
@@ -131,19 +133,22 @@ export function useUserAgents(
             ).then(f.flat)
           ),
           async (divisions) =>
-            fetchCollection(
-              'Agent',
-              {
-                limit: 1,
-                specifyUser: userId,
-              },
-              {
-                division__in: divisions.map(([id]) => id).join(','),
-              }
-            ).then(({ records }) =>
+            (typeof userId === 'number'
+              ? fetchCollection(
+                  'Agent',
+                  {
+                    limit: 1,
+                    specifyUser: userId,
+                  },
+                  {
+                    division__in: divisions.map(([id]) => id).join(','),
+                  }
+                ).then(({ records }) => records)
+              : Promise.resolve([])
+            ).then((agents) =>
               f.var(
                 Object.fromEntries(
-                  records.map((agent) => [
+                  agents.map((agent) => [
                     defined(parseResourceUrl(agent.division))[1],
                     agent,
                   ])
@@ -176,7 +181,7 @@ export function useUserPolicies(
 ): [
   userPolicies: IR<RA<Policy>> | undefined,
   setUserPolicies: (value: IR<RA<Policy>> | undefined) => void,
-  initialPolicies: { current: IR<RA<Policy>> },
+  initialPolicies: React.RefObject<IR<RA<Policy>>>,
   hasChanges: boolean
 ] {
   const initialUserPolicies = React.useRef<IR<RA<Policy>>>({});
@@ -184,7 +189,9 @@ export function useUserPolicies(
     React.useCallback(
       async () =>
         userResource.isNew()
-          ? {}
+          ? Object.fromEntries(
+              Object.values(collections).map(({ id }) => [id, []])
+            )
           : hasPermission('/permissions/policies/user', 'read')
           ? Promise.all(
               Object.values(collections).map(async (collection) =>
@@ -222,7 +229,6 @@ export function useUserInstitutionalPolicies(
 ): [
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
-  initialInstitutionPolicies: { current: RA<Policy> },
   hasChanges: boolean
 ] {
   const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
@@ -243,7 +249,7 @@ export function useUserInstitutionalPolicies(
               return policies;
             })
           : undefined,
-      [userResource.id]
+      [userResource]
     ),
     false
   );
@@ -254,7 +260,6 @@ export function useUserInstitutionalPolicies(
   return [
     institutionPolicies,
     setInstitutionPolicies,
-    initialInstitutionPolicies,
     changedInstitutionPolicies,
   ];
 }

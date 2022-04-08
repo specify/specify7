@@ -35,7 +35,6 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly values: RA<string>;
 };
 
-// TODO: add ability to create new resource
 export function SearchDialog<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = [],

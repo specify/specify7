@@ -31,8 +31,7 @@ export function useCollection<SCHEMA extends AnySchema>(
       sizeRef.current = 0;
       return callback();
     }, [callback]),
-    false,
-    true
+    false
   );
 
   const fetchMore = React.useCallback(

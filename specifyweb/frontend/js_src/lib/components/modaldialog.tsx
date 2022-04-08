@@ -271,11 +271,12 @@ export function Dialog({
       }}
       style={{ overlay: { zIndex } }}
       portalClassName=""
+      // "overflow-x-hidden" is necessary for the "resize" handle to appear
       className={`bg-gradient-to-bl from-gray-200 dark:from-neutral-800
         via-white dark:via-neutral-900 to-white dark:to-neutral-900
         outline-none flex flex-col p-4 gap-y-2 ${containerClassName}
         dark:text-neutral-200 dark:border dark:border-neutral-700
-        text-neutral-900 ${dialogClassNames.container}
+        text-neutral-900 overflow-x-hidden ${dialogClassNames.container}
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
       `}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}

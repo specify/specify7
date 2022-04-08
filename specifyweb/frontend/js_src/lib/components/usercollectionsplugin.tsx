@@ -2,36 +2,46 @@ import React from 'react';
 
 import { ajax, ping } from '../ajax';
 import { fetchCollection } from '../collection';
-import type { Collection, SpecifyUser } from '../datamodel';
+import type { SpecifyUser } from '../datamodel';
+import { toggleItem } from '../helpers';
+import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
+import { hasPermission } from '../permissions';
 import type { RA } from '../types';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
-import { Dialog, LoadingScreen } from './modaldialog';
-import { toggleItem } from '../helpers';
-import { hasPermission } from '../permissions';
-import { SerializedResource } from '../datamodelutils';
-import { SpecifyResource } from '../legacytypes';
+import { Dialog } from './modaldialog';
 
 function UserCollectionsUi({
   userId,
-  selectedCollections,
-  allCollections,
   onClose: handleClose,
 }: {
   readonly userId: number;
-  readonly selectedCollections: RA<number>;
-  readonly allCollections: RA<SerializedResource<Collection>>;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [selected, setSelected] =
-    React.useState<RA<number>>(selectedCollections);
+  const [allCollections] = useAsyncState(
+    React.useCallback(
+      async () => fetchCollection('Collection', { limit: 0 }),
+      []
+    ),
+    true
+  );
+  const [selected, setSelected] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<RA<number>>(`/context/user_collection_access_for_sp6/${userId}/`, {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data),
+      [userId]
+    ),
+    true
+  );
   const id = useId('user-collection-ui');
   const loading = React.useContext(LoadingContext);
 
-  return (
+  return typeof allCollections === 'object' && Array.isArray(selected) ? (
     <Dialog
       header={adminText('userCollectionsPluginDialogTitle')}
       onClose={handleClose}
@@ -56,7 +66,7 @@ function UserCollectionsUi({
           )
         }
       >
-        {allCollections.map((collection) => (
+        {allCollections.records.map((collection) => (
           <Label.ForCheckbox key={collection.id}>
             <Input.Checkbox
               checked={selected.includes(collection.id)}
@@ -73,66 +83,36 @@ function UserCollectionsUi({
         ))}
       </Form>
     </Dialog>
-  );
+  ) : null;
 }
-
-const fetchAllCollections = async () =>
-  fetchCollection('Collection', { limit: 0 });
 
 export function UserCollectionsPlugin({
   user,
-  isNew,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
-  readonly isNew: boolean;
 }): JSX.Element {
-  const [allCollections] = useAsyncState(fetchAllCollections, false);
-  const [selectedCollections] = useAsyncState(
-    React.useCallback(
-      async () =>
-        ajax<RA<number>>(
-          `/context/user_collection_access_for_sp6/${user.id}/`,
-          {
-            headers: { Accept: 'application/json' },
-          }
-        ).then(({ data }) => data),
-      [user.id]
-    ),
-    false
-  );
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Simple
         onClick={handleOpen}
         className="w-fit"
-        disabled={typeof user === 'undefined' || user.get('isAdmin') || isNew}
+        disabled={
+          typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
+        }
         title={
           user.get('isAdmin')
             ? adminText('notAvailableOnAdmins')
             : typeof user === 'undefined'
             ? commonText('loading')
-            : isNew
+            : user.isNew()
             ? adminText('saveUserFirst')
             : undefined
         }
       >
         {adminText('setCollections')}
       </Button.Simple>
-      {isOpen ? (
-        typeof user === 'object' &&
-        typeof allCollections === 'object' &&
-        Array.isArray(selectedCollections) ? (
-          <UserCollectionsUi
-            userId={user.id}
-            allCollections={allCollections.records}
-            selectedCollections={selectedCollections}
-            onClose={handleClose}
-          />
-        ) : (
-          <LoadingScreen />
-        )
-      ) : undefined}
+      {isOpen && <UserCollectionsUi userId={user.id} onClose={handleClose} />}
     </>
   );
 }

@@ -4,7 +4,7 @@ import * as businessRules from './businessrules';
 import { crash } from './components/errorboundary';
 import { f } from './functools';
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import { NotFoundView } from './components/notfoundview';
 import * as querystring from './querystring';
 import { promiseToXhr } from './resourceapi';
 import { router } from './router';

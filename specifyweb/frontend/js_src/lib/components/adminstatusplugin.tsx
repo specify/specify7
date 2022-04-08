@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ajax } from '../ajax';
+import { ajax, formData } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
@@ -45,9 +45,9 @@ export function AdminStatusPlugin({
         loading(
           ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
             method: 'POST',
-            body: {
-              admin_status: !user.isAdmin,
-            },
+            body: formData({
+              admin_status: user.isAdmin ? 'false' : 'true',
+            }),
             headers: {
               Accept: 'text/plain',
             },

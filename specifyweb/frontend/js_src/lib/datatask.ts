@@ -1,7 +1,6 @@
 import { error } from './assert';
 import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
-import { setTitle } from './components/hooks';
 import { OtherCollectionView } from './components/othercollectionview';
 import { PermissionDenied } from './components/permissiondenied';
 import createBackboneView from './components/reactbackboneextend';
@@ -11,10 +10,9 @@ import type { AnySchema } from './datamodelutils';
 import { collectionsForResource } from './domain';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import commonText from './localization/common';
 // TODO: eliminate this type of imports
 import * as navigation from './navigation';
-import { NotFoundView } from './notfoundview';
+import { NotFoundView } from './components/notfoundview';
 import { hasTablePermission, hasToolPermission } from './permissions';
 import * as querystring from './querystring';
 import { getResourceViewUrl } from './resource';
@@ -138,7 +136,6 @@ async function viewResourceByGuid(
   return collection.fetch({ limit: 1 }).then(({ models }) => {
     if (models.length === 0) {
       setCurrentView(new NotFoundView());
-      setTitle(commonText('pageNotFound'));
       return undefined;
     } else
       return checkLoggedInCollection(models[0], (): void =>

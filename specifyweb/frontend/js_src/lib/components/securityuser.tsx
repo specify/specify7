@@ -4,19 +4,20 @@ import type { State } from 'typesafe-reducer';
 import { ajax, formData, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { replaceKey } from '../helpers';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
+import { parseResourceUrl } from '../resource';
 import { decompressPolicies } from '../securityutils';
 import type { IR } from '../types';
 import { defined, filterArray } from '../types';
-import { Button, className, Container, DataEntry, Form } from './basic';
+import { Button, className, Container, DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { useIsModified, useUnloadProtect } from './hooks';
+import { useBooleanState, useIsModified } from './hooks';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { deserializeResource } from './resource';
 import { augmentMode, BaseResourceView } from './resourceview';
@@ -37,9 +38,9 @@ import {
   useUserPolicies,
   useUserRoles,
 } from './securityuserhooks';
+import type { SetAgentsResponse } from './useragentsplugin';
+import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
-import { SetAgentsResponse, UserAgentsDialog } from './useragentsplugin';
-import { parseResourceUrl } from '../resource';
 
 // TODO: allow editing linkages with external accounts
 export function UserView({
@@ -48,12 +49,19 @@ export function UserView({
   collections,
   onOpenRole: handleOpenRole,
   onClose: handleClose,
+  onDelete: handleDelete,
+  onSave: handleSave,
 }: {
   readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollection: number;
   readonly collections: IR<SerializedResource<Collection>>;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
-  readonly onClose: (user?: SpecifyResource<SpecifyUser> | false) => void;
+  readonly onClose: () => void;
+  readonly onDelete: () => void;
+  readonly onSave: (
+    changedUser: SerializedResource<SpecifyUser>,
+    user?: SerializedResource<SpecifyUser>
+  ) => void;
 }): JSX.Element {
   const collectionRoles = useCollectionRoles(collections);
   const userResource = React.useMemo(() => deserializeResource(user), [user]);
@@ -65,19 +73,23 @@ export function UserView({
   const [
     institutionPolicies,
     setInstitutionPolicies,
-    initialInstitutionPolicies,
     changedInstitutionPolicies,
   ] = useUserInstitutionalPolicies(userResource);
+  const [changedAgent, handleChangedAgent] = useBooleanState();
 
-  const changesMade =
-    useIsModified(userResource) ||
-    changedPolicies ||
-    changedRoles ||
-    changedInstitutionPolicies;
-  const unsetUnloadProtect = useUnloadProtect(
-    changesMade,
-    commonText('leavePageDialogMessage')
-  );
+  const previewAffected =
+    changedPolicies || changedRoles || changedInstitutionPolicies;
+  const isChanged = changedAgent || previewAffected;
+  const changesMade = useIsModified(userResource) || isChanged;
+  React.useEffect(() => {
+    if (isChanged || userResource.needsSaved)
+      /*
+       * Make "Save" button active without changing resource's needsSaved
+       * to true
+       */
+      userResource.trigger('fakesaverequired');
+    else userResource.trigger('fakesaved');
+  }, [userResource, isChanged]);
   const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
 
@@ -96,248 +108,251 @@ export function UserView({
       >
     | State<'SettingPassword'>
   >({ type: 'Main' });
-  // FIXME: make sure agents are set before saving
 
   return (
     <Container.Base className="flex-1 gap-4 overflow-y-auto">
-      <Form className="contents">
-        <BaseResourceView
-          isLoading={false}
-          resource={userResource}
-          mode={mode}
-          isSubForm={true}
-        >
-          {({ title, saveButton, form }): JSX.Element => {
-            return (
-              <>
-                <div>
-                  <DataEntry.Header>
-                    <h3 className="text-xl">{`${adminText(
-                      'user'
-                    )} ${title}`}</h3>
-                  </DataEntry.Header>
-                  {form}
-                  <section>
-                    <h4 className={className.headerGray}>
-                      {commonText('actions')}
-                    </h4>
-                    <div className="flex gap-2">
-                      {hasPermission('/admin/user/password', 'update') && (
-                        <PasswordPlugin onSet={setPassword} />
-                      )}
-                      {hasPermission('/admin/user/password', 'update') && (
-                        <UserInviteLinkPlugin user={user} />
-                      )}
-                      <SetSuperAdmin
-                        institutionPolicies={institutionPolicies}
-                        onChange={setInstitutionPolicies}
-                      />
-                    </div>
-                  </section>
-                </div>
-                <SetCollection
+      <BaseResourceView
+        isLoading={false}
+        resource={userResource}
+        mode={mode}
+        isSubForm={false}
+      >
+        {({ title, saveButton, form }): JSX.Element => {
+          return (
+            <>
+              <div>
+                <DataEntry.Header>
+                  <h3 className="text-xl">{`${adminText('user')} ${title}`}</h3>
+                </DataEntry.Header>
+                {form}
+                <section>
+                  <h4 className={className.headerGray}>
+                    {commonText('actions')}
+                  </h4>
+                  <div className="flex gap-2">
+                    {hasPermission('/admin/user/password', 'update') && (
+                      <PasswordPlugin onSet={setPassword} />
+                    )}
+                    {hasPermission('/admin/user/password', 'update') && (
+                      <UserInviteLinkPlugin user={user} />
+                    )}
+                    <SetSuperAdmin
+                      institutionPolicies={institutionPolicies}
+                      onChange={setInstitutionPolicies}
+                    />
+                  </div>
+                </section>
+              </div>
+              <SetCollection
+                collectionId={collectionId}
+                collections={collections}
+                onChange={setCollectionId}
+              />
+              <CollectionAccess
+                userPolicies={userPolicies}
+                onChange={setUserPolicies}
+                onChangedAgent={handleChangedAgent}
+                collectionId={collectionId}
+                userAgents={userAgents}
+                mode={mode}
+              />
+              {hasPermission('/permissions/user/roles', 'read') && (
+                <UserRoles
+                  collectionRoles={collectionRoles}
                   collectionId={collectionId}
-                  collections={collections}
-                  onChange={setCollectionId}
+                  userRoles={userRoles}
+                  onChange={setUserRoles}
+                  onOpenRole={handleOpenRole}
                 />
-                <CollectionAccess
-                  userPolicies={userPolicies}
-                  onChange={setUserPolicies}
-                  collectionId={collectionId}
-                  userAgents={userAgents}
-                  mode={mode}
-                />
-                {hasPermission('/permissions/user/roles', 'read') && (
-                  <UserRoles
-                    collectionRoles={collectionRoles}
-                    collectionId={collectionId}
-                    userRoles={userRoles}
-                    onChange={setUserRoles}
-                    onOpenRole={handleOpenRole}
-                  />
-                )}
-                {hasPermission('/permissions/policies/user', 'read') && (
-                  <PoliciesView
-                    policies={userPolicies?.[collectionId]}
-                    isReadOnly={
-                      !hasPermission('/permissions/policies/user', 'update')
-                    }
-                    onChange={(policies): void =>
-                      typeof userPolicies === 'object'
-                        ? setUserPolicies(
-                            replaceKey(
-                              userPolicies,
-                              collectionId.toString(),
-                              policies
-                            )
+              )}
+              {hasPermission('/permissions/policies/user', 'read') && (
+                <PoliciesView
+                  policies={userPolicies?.[collectionId]}
+                  isReadOnly={
+                    !hasPermission('/permissions/policies/user', 'update')
+                  }
+                  onChange={(policies): void =>
+                    typeof userPolicies === 'object'
+                      ? setUserPolicies(
+                          replaceKey(
+                            userPolicies,
+                            collectionId.toString(),
+                            policies
                           )
-                        : undefined
-                    }
-                  />
-                )}
+                        )
+                      : undefined
+                  }
+                />
+              )}
+              {typeof user.id === 'number' && (
                 <PreviewPermissions
                   userId={user.id}
                   collectionId={collectionId}
-                  changesMade={changesMade}
+                  changesMade={previewAffected}
                   onOpenRole={(roleId): void =>
                     handleOpenRole(collectionId, roleId)
                   }
                 />
-                <LegacyPermissions userResource={userResource} mode={mode} />
-                <DataEntry.Footer>
-                  {changesMade ? (
-                    <Button.Gray
-                      onClick={(): void => {
-                        unsetUnloadProtect();
-                        handleClose();
-                      }}
-                    >
-                      {commonText('cancel')}
-                    </Button.Gray>
-                  ) : (
-                    <Button.Blue onClick={f.zero(handleClose)}>
-                      {commonText('close')}
-                    </Button.Blue>
-                  )}
-                  {!userResource.isNew() &&
-                  hasTablePermission('SpecifyUser', 'delete') ? (
-                    <DeleteButton
-                      model={userResource}
-                      onDeleted={f.zero(handleClose)}
-                    />
-                  ) : undefined}
-                  <span className="flex-1 -ml-2" />
-                  {hasPermission('/permissions/policies/user', 'update') ||
-                  hasPermission('/permissions/user/roles', 'update') ||
-                  mode === 'edit'
-                    ? saveButton?.({
-                        canAddAnother: true,
-                        onSaving() {
-                          if (
-                            userResource.isNew() &&
-                            typeof password === 'undefined'
-                          ) {
-                            setState({
-                              type: 'SetPasswordDialog',
-                            });
-                            return false;
-                          }
-                          return undefined;
-                        },
-                        disabled:
-                          !changesMade || typeof userAgents === 'undefined',
-                        onSaved: ({ newResource }) =>
-                          loading(
-                            Promise.all([
-                              typeof password === 'string' && password !== ''
-                                ? ping(
-                                    `/api/set_password/${user.id}/`,
-                                    {
-                                      method: 'POST',
-                                      body: formData({ password }),
-                                    },
-                                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                                  )
-                                : undefined,
-                              ...Object.entries(userRoles ?? {})
-                                .filter(
-                                  ([collectionId, roles]) =>
-                                    JSON.stringify(roles) !==
-                                    JSON.stringify(
-                                      initialUserRoles.current?.[collectionId]
-                                    )
+              )}
+              <LegacyPermissions userResource={userResource} mode={mode} />
+              <DataEntry.Footer>
+                {changesMade ? (
+                  <Button.Gray onClick={handleClose}>
+                    {commonText('cancel')}
+                  </Button.Gray>
+                ) : (
+                  <Button.Blue onClick={handleClose}>
+                    {commonText('close')}
+                  </Button.Blue>
+                )}
+                {!userResource.isNew() &&
+                hasTablePermission('SpecifyUser', 'delete') ? (
+                  <DeleteButton model={userResource} onDeleted={handleDelete} />
+                ) : undefined}
+                <span className="flex-1 -ml-2" />
+                {hasPermission('/permissions/policies/user', 'update') ||
+                hasPermission('/permissions/user/roles', 'update') ||
+                mode === 'edit'
+                  ? saveButton?.({
+                      canAddAnother: true,
+                      onSaving() {
+                        if (
+                          userResource.isNew() &&
+                          typeof password === 'undefined'
+                        ) {
+                          setState({
+                            type: 'SetPasswordDialog',
+                          });
+                          return false;
+                        }
+                        return undefined;
+                      },
+                      disabled:
+                        !changesMade || typeof userAgents === 'undefined',
+                      onSaved: ({ newResource }) =>
+                        loading(
+                          ajax(
+                            `/api/set_agents/${userResource.id}/`,
+                            {
+                              method: 'POST',
+                              headers: {},
+                              body: filterArray(
+                                defined(userAgents).map(
+                                  ({ address }) =>
+                                    parseResourceUrl(
+                                      address.get('agent') ?? ''
+                                    )?.[1]
                                 )
-                                .map(async ([collectionId, roles]) =>
-                                  ping(
-                                    `/permissions/user_roles/${collectionId}/${user.id}/`,
-                                    {
-                                      method: 'PUT',
-                                      body: roles.map((id) => ({ id })),
-                                    },
-                                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                                  )
-                                ),
-                              ...Object.entries(userPolicies ?? {})
-                                .filter(
-                                  ([collectionId, policies]) =>
-                                    JSON.stringify(policies) !==
-                                    JSON.stringify(
-                                      initialUserPolicies.current?.[
-                                        collectionId
-                                      ]
+                              ),
+                            },
+                            {
+                              expectedResponseCodes: [
+                                Http.NO_CONTENT,
+                                Http.BAD_REQUEST,
+                              ],
+                            }
+                          ).then(({ data, status }) =>
+                            status === Http.BAD_REQUEST
+                              ? setState({
+                                  type: 'SettingAgents',
+                                  response: JSON.parse(data),
+                                })
+                              : Promise.all([
+                                  typeof password === 'string' &&
+                                  password !== ''
+                                    ? ping(
+                                        `/api/set_password/${userResource.id}/`,
+                                        {
+                                          method: 'POST',
+                                          body: formData({ password }),
+                                        },
+                                        {
+                                          expectedResponseCodes: [
+                                            Http.NO_CONTENT,
+                                          ],
+                                        }
+                                      )
+                                    : undefined,
+                                  ...Object.entries(userRoles ?? {})
+                                    .filter(
+                                      ([collectionId, roles]) =>
+                                        JSON.stringify(roles) !==
+                                        JSON.stringify(
+                                          initialUserRoles.current?.[
+                                            collectionId
+                                          ]
+                                        )
                                     )
-                                )
-                                .map(async ([collectionId, policies]) =>
-                                  ping(
-                                    `/permissions/user_policies/${collectionId}/${user.id}/`,
-                                    {
-                                      method: 'PUT',
-                                      body: decompressPolicies(policies),
-                                    },
-                                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                                  )
-                                ),
-                              Array.isArray(institutionPolicies) &&
-                              changedInstitutionPolicies
-                                ? ping(
-                                    `/permissions/user_policies/institution/${user.id}/`,
-                                    {
-                                      method: 'PUT',
-                                      body: decompressPolicies(
-                                        institutionPolicies
-                                      ),
-                                    },
-                                    { expectedResponseCodes: [Http.NO_CONTENT] }
-                                  )
-                                : undefined,
-                            ])
-                              .then(async () =>
-                                ajax(
-                                  `/api/set_agents/${user.id}`,
-                                  {
-                                    method: 'POST',
-                                    headers: {},
-                                    body: filterArray(
-                                      defined(userAgents).map(
-                                        ({ address }) =>
-                                          parseResourceUrl(
-                                            address.get('agent') ?? ''
-                                          )?.[1]
+                                    .map(async ([collectionId, roles]) =>
+                                      ping(
+                                        `/permissions/user_roles/${collectionId}/${userResource.id}/`,
+                                        {
+                                          method: 'PUT',
+                                          body: roles.map((id) => ({ id })),
+                                        },
+                                        {
+                                          expectedResponseCodes: [
+                                            Http.NO_CONTENT,
+                                          ],
+                                        }
                                       )
                                     ),
-                                  },
-                                  {
-                                    expectedResponseCodes: [
-                                      Http.OK,
-                                      Http.NO_CONTENT,
-                                    ],
-                                  }
+                                  ...Object.entries(userPolicies ?? {})
+                                    .filter(
+                                      ([collectionId, policies]) =>
+                                        JSON.stringify(policies) !==
+                                        JSON.stringify(
+                                          initialUserPolicies.current?.[
+                                            collectionId
+                                          ]
+                                        )
+                                    )
+                                    .map(async ([collectionId, policies]) =>
+                                      ping(
+                                        `/permissions/user_policies/${collectionId}/${userResource.id}/`,
+                                        {
+                                          method: 'PUT',
+                                          body: decompressPolicies(policies),
+                                        },
+                                        {
+                                          expectedResponseCodes: [
+                                            Http.NO_CONTENT,
+                                          ],
+                                        }
+                                      )
+                                    ),
+                                  Array.isArray(institutionPolicies) &&
+                                  changedInstitutionPolicies
+                                    ? ping(
+                                        `/permissions/user_policies/institution/${userResource.id}/`,
+                                        {
+                                          method: 'PUT',
+                                          body: decompressPolicies(
+                                            institutionPolicies
+                                          ),
+                                        },
+                                        {
+                                          expectedResponseCodes: [
+                                            Http.NO_CONTENT,
+                                          ],
+                                        }
+                                      )
+                                    : undefined,
+                                ]).then(() =>
+                                  handleSave(
+                                    serializeResource(userResource),
+                                    f.maybe(newResource, serializeResource)
+                                  )
                                 )
-                              )
-                              .then(({ data, status }) => {
-                                // Mark resources as saved
-                                initialUserRoles.current = userRoles ?? {};
-                                initialUserPolicies.current =
-                                  userPolicies ?? {};
-                                initialInstitutionPolicies.current =
-                                  institutionPolicies ?? [];
-                                if (status === Http.OK)
-                                  handleClose(newResource);
-                                else
-                                  setState({
-                                    type: 'SettingAgents',
-                                    response: JSON.parse(data),
-                                  });
-                              })
-                          ),
-                      })
-                    : undefined}
-                </DataEntry.Footer>
-              </>
-            );
-          }}
-        </BaseResourceView>
-      </Form>
+                          )
+                        ),
+                    })
+                  : undefined}
+              </DataEntry.Footer>
+            </>
+          );
+        }}
+      </BaseResourceView>
       {state.type === 'SetPasswordDialog' && (
         <SetPasswordPrompt
           onClose={(): void => setState({ type: 'Main' })}

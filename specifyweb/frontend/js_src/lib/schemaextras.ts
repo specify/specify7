@@ -215,4 +215,17 @@ export const schemaExtras: IR<
 
     return [[], [preferredTaxonOf]];
   },
+  SpecifyUser: (model) => [
+    [
+      new LiteralField(model, {
+        name: 'isAdmin',
+        required: true,
+        readOnly: true,
+        type: 'java.lang.Boolean',
+        indexed: false,
+        unique: false,
+      }),
+    ],
+    [],
+  ],
 };

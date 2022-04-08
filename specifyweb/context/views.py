@@ -238,6 +238,7 @@ def collection(request):
     """Allows the frontend to query or set the logged in collection."""
     current = request.COOKIES.get('collection', None)
     available_collections = users_collections_for_sp7(request.specify_user.id)
+    available_collections.sort(key=lambda x: x[1])
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.body))

@@ -174,10 +174,7 @@ export function LegacyPermissions({
       <div className="flex gap-2">
         <AdminStatusPlugin user={userResource} mode={mode} />
         {hasPermission('/admin/user/sp6/collection_access', 'read') && (
-          <UserCollectionsPlugin
-            user={userResource}
-            isNew={userResource.isNew()}
-          />
+          <UserCollectionsPlugin user={userResource} />
         )}
       </div>
       {f.var(
@@ -261,12 +258,14 @@ export function SetCollection({
 export function CollectionAccess({
   userPolicies,
   onChange: handleChange,
+  onChangedAgent: handleChangeAgent,
   collectionId,
   userAgents,
   mode,
 }: {
   readonly userPolicies: IR<RA<Policy>> | undefined;
   readonly onChange: (userPolicies: IR<RA<Policy>> | undefined) => void;
+  readonly onChangedAgent: () => void;
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
   readonly mode: FormMode;
@@ -279,6 +278,13 @@ export function CollectionAccess({
   const collectionAddress = userAgents?.find(({ collections }) =>
     collections.includes(collectionId)
   )?.address;
+
+  React.useEffect(() => {
+    collectionAddress?.on('change:agent', handleChangeAgent);
+    return (): void =>
+      collectionAddress?.off('change:agent', handleChangeAgent);
+  }, [collectionAddress, handleChangeAgent]);
+
   return (
     <div className="flex flex-col gap-4">
       <Label.ForCheckbox>

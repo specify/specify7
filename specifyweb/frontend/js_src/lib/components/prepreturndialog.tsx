@@ -177,8 +177,7 @@ function Row({
     false
   );
 
-  const [showRemarks, _handleShow, _handleHide, handleToggle] =
-    useBooleanState();
+  const [showRemarks, _, __, handleToggle] = useBooleanState();
 
   return (
     <>

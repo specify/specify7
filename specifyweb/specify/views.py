@@ -234,6 +234,13 @@ class SetUserAgentsPT(PermissionTarget):
                                     'type': 'object',
                                     'description': MissingAgentForAccessibleCollection.__doc__,
                                     'properties': {
+                                        'all_accessible_divisions': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
                                         'missing_for_6': {
                                             'type': 'array',
                                             'items': {

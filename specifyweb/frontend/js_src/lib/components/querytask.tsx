@@ -5,7 +5,7 @@ import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import queryText from '../localization/query';
-import { NotFoundView } from '../notfoundview';
+import { NotFoundView } from './notfoundview';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import * as querystring from '../querystring';
@@ -51,10 +51,7 @@ function QueryBuilderWrapper({
   query: SpecifyResource<SpQuery>;
   recordSet?: SpecifyResource<RecordSet> | false;
 }): JSX.Element | null {
-  const [isLoaded = false] = useAsyncState(
-    async () => fetchPickLists().then(f.true),
-    true
-  );
+  const isLoaded = typeof useAsyncState(fetchPickLists, true)[0] === 'object';
 
   return isLoaded ? (
     <QueryBuilder

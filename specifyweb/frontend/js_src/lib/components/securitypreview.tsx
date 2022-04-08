@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import { capitalize, group } from '../helpers';
+import { group } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { PermissionsQueryItem } from '../permissions';
@@ -324,21 +324,23 @@ function PreviewOperations({
         query
           .filter(({ resource }) => !(resource in getTablePermissions()))
           .map(({ resource, ...rest }) => [resource, rest] as const)
-      ).reduce<R<WritableTree>>((registry, [resource, actions]) => {
+      ).reduce<R<WritableTree>>((tree, [resource, actions]) => {
         const resourceParts = resourceNameToParts(resource);
         resourceParts.reduce<R<WritableTree>>(
           (place, part, index, { length }) => {
             place[part] ??= {
-              label: capitalize(part),
+              label: resourceToLabel(
+                partsToResourceName(resourceParts.slice(0, index + 1))
+              ),
               children: {},
               resource: partsToResourceName(resourceParts.slice(0, index)),
               actions: index + 1 === length ? actions : [],
             };
             return place[part].children;
           },
-          registry
+          tree
         );
-        return registry;
+        return tree;
       }, {}),
     [query]
   );

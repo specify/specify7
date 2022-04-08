@@ -2,7 +2,9 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../ajax';
+import { fetchCollection } from '../../collection';
 import type { SpecifyUser } from '../../datamodel';
+import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
 import { index, removeKey } from '../../helpers';
 import adminText from '../../localization/admin';
@@ -23,8 +25,6 @@ import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { UserView } from '../securityuser';
-import { fetchCollection } from '../../collection';
-import { SerializedResource, serializeResource } from '../../datamodelutils';
 
 function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -68,7 +68,7 @@ function SecurityPanel(): JSX.Element | null {
         'UserState',
         {
           readonly initialCollection: number;
-          readonly userId: number;
+          readonly user: SerializedResource<SpecifyUser>;
         }
       >
   >({ type: 'MainState' });
@@ -170,7 +170,7 @@ function SecurityPanel(): JSX.Element | null {
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',
-                userId,
+                user: defined(users)[userId],
                 initialCollection: Object.values(data.collections)[0].id,
               })
             }
@@ -186,7 +186,7 @@ function SecurityPanel(): JSX.Element | null {
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',
-                userId,
+                user: defined(users)[userId],
                 initialCollection: state.collectionId,
               })
             }
@@ -194,26 +194,26 @@ function SecurityPanel(): JSX.Element | null {
         )}
         {state.type === 'UserState' && typeof users === 'object' ? (
           <UserView
-            user={users[state.userId]}
+            user={state.user}
             collections={data.collections}
             initialCollection={state.initialCollection}
-            onClose={(newUser): void => {
-              if (typeof newUser === 'undefined')
-                setState({ type: 'MainState' });
-              else if (newUser === false) {
-                setUsers(removeKey(users, state.userId.toString()));
-                setState({ type: 'MainState' });
-              } else {
-                setUsers({
-                  ...users,
-                  [newUser.id.toString()]: serializeResource(newUser),
-                });
+            onClose={(): void => setState({ type: 'MainState' })}
+            onDelete={(): void => {
+              setUsers(removeKey(users, state.user.id.toString()));
+              setState({ type: 'MainState' });
+            }}
+            onSave={(changedUser, newUser): void => {
+              setUsers({
+                ...users,
+                [changedUser.id.toString()]: changedUser,
+              });
+              if (typeof newUser === 'object')
                 setState({
                   type: 'UserState',
                   initialCollection: state.initialCollection,
-                  userId: newUser.id,
+                  user: newUser,
                 });
-              }
+              else setState({ type: 'MainState' });
             }}
             onOpenRole={(collectionId, roleId): void =>
               setState({

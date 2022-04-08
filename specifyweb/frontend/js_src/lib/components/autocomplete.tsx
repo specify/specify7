@@ -242,8 +242,6 @@ export function Autocomplete<T>({
         top: inputTop,
         width: inputWidth,
       } = input.getBoundingClientRect();
-      const isOverflowing = inputBottom + listHeight > parentBottom;
-      const inputOffset = isInDialog ? dialogContainerBottom - parentBottom : 0;
 
       /*
        * Hide the list for non screen reader users when it goes below the
@@ -253,15 +251,15 @@ export function Autocomplete<T>({
       if (shouldHide) dataListRef.current.classList.add('sr-only');
       else {
         dataListRef.current.classList.remove('sr-only');
-        if (isOverflowing) {
-          dataListRef.current.style.top = '';
-          dataListRef.current.style.bottom = `${
-            parentBottom - inputTop + inputOffset
-          }px`;
-        } else {
-          dataListRef.current.style.top = `${inputBottom - offsetTop}px`;
-          dataListRef.current.style.bottom = '';
-        }
+        const isOverflowing = inputBottom + listHeight > parentBottom;
+        const inputOffset = isInDialog
+          ? dialogContainerBottom - parentBottom
+          : 0;
+        dataListRef.current.style.top = `${
+          isOverflowing
+            ? inputTop - listHeight - inputOffset
+            : inputBottom - offsetTop
+        }px`;
         dataListRef.current.style.width = `${inputWidth}px`;
       }
     }

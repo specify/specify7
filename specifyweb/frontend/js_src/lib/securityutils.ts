@@ -3,7 +3,7 @@ import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
 import { f } from './functools';
-import { capitalize, group, lowerToHuman, toLowerCase } from './helpers';
+import { group, lowerToHuman, toLowerCase } from './helpers';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import queryText from './localization/query';
@@ -37,13 +37,11 @@ export const fetchRoles = async (
   );
 
 export const resourceToLabel = (resource: string): string =>
-  resource === anyResource
-    ? adminText('allResources')
-    : resource.startsWith(tablePermissionsPrefix)
-    ? resourceNameToModel(resource).label
-    : getRegistriesFromPath(resourceNameToParts(resource))
-        .map((part) => part?.label)
-        .join(' ');
+  f.var(
+    resourceNameToParts(resource),
+    (parts) =>
+      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.slice(-1)[0]].label
+  ) ?? adminText('resource');
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -71,7 +69,7 @@ type WritableRegistry = {
   readonly groupName: string;
 };
 
-/** Build a registry of all permissions, their labels and possible values */
+/** Build a registry of all permissions, their labels and possible actions */
 const buildRegistry = f.store(
   (): IR<Registry> =>
     [
@@ -91,7 +89,7 @@ const buildRegistry = f.store(
       })),
       ...Object.entries(operationPolicies).map(([resource, actions]) => ({
         resource,
-        localized: resourceNameToParts(resource).map(capitalize),
+        localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,
         groupName: '',
       })),
