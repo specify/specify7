@@ -6,7 +6,21 @@ from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify import models as spmodels
 from . import models, permissions, views
 
-class PermissionsApiTest(ApiTests):
+class PermissionsApiTests(ApiTests):
+    maxDiff = None
+
+    def setUp(self):
+        "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
+        super(PermissionsApiTests, self).setUp()
+        from specifyweb.context import views
+        self._users_collections_for_sp6 = views.users_collections_for_sp6
+        views.users_collections_for_sp6 = lambda cursor, userid: []
+
+    def tearDown(self):
+        from specifyweb.context import views
+        views.users_collections_for_sp6 = self._users_collections_for_sp6
+        super(PermissionsApiTests, self).tearDown()
+
     def test_set_user_policies(self) -> None:
         c = Client()
         c.force_login(self.specifyuser)
@@ -357,7 +371,12 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'userid': user2.id,
+                'missing_for_6': [],
+                'missing_for_7': [self.collection.id],
+                'all_accessible_divisions': [self.division.id],
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore
@@ -408,7 +427,12 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'missing_for_7': [self.collection.id],
+                'missing_for_6': [],
+                'all_accessible_divisions': [self.division.id],
+                'userid': user2.id,
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore
@@ -470,7 +494,12 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'missing_for_7': [self.collection.id],
+                'missing_for_6': [],
+                'all_accessible_divisions': [self.division.id],
+                'userid': user2.id,
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore

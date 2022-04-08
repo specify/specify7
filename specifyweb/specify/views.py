@@ -1,6 +1,7 @@
 import mimetypes
 import json
 from functools import wraps
+from typing import List
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import cache_control
@@ -239,8 +240,6 @@ class SetUserAgentsPT(PermissionTarget):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
-
     user = models.Specifyuser.objects.get(pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
@@ -279,31 +278,36 @@ def set_user_agents(request, userid: int):
         for collectionid in collections:
             check_permission_targets(collectionid, request.specify_user.id, [SetUserAgentsPT.update])
 
-        # make sure every collection the user is permitted to access has an assigned user.
-        sp6_collections = users_collections_for_sp6(cursor, userid)
-        sp7_collections = users_collections_for_sp7(userid)
-        missing_for_6 = [
-            collectionid
-            for collectionid, _ in sp6_collections
-            if collectionid not in collections
-        ]
-        missing_for_7 = [
-            collectionid
-            for collectionid, _ in sp7_collections
-            if collectionid not in collections
-        ]
-        if missing_for_6 or missing_for_7:
-            all_divisions = models.Division.objects.filter(
-                disciplines__collections__id__in=[cid for cid, _ in (sp6_collections + sp7_collections)]
-            ).values_list('id', flat=True)
-            raise MissingAgentForAccessibleCollection({
-                'missing_for_6': missing_for_6,
-                'missing_for_7': missing_for_7,
-                'all_accessible_divisions': list(all_divisions),
-            })
+        check_accessible_collections_have_agents(userid, collections)
 
     return http.HttpResponse('', status=204)
 
+def check_accessible_collections_have_agents(userid: int, collections_with_agents: List[int]) -> None:
+    "make sure every collection the user is permitted to access has an assigned agent."
+    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
+
+    sp6_collections = users_collections_for_sp6(connection.cursor(), userid)
+    sp7_collections = users_collections_for_sp7(userid)
+    missing_for_6 = [
+        collectionid
+        for collectionid, _ in sp6_collections
+        if collectionid not in collections_with_agents
+    ]
+    missing_for_7 = [
+        collectionid
+        for collectionid, _ in sp7_collections
+        if collectionid not in collections_with_agents
+    ]
+    if missing_for_6 or missing_for_7:
+        all_divisions = models.Division.objects.filter(
+            disciplines__collections__id__in=[cid for cid, _ in (sp6_collections + sp7_collections)]
+        ).values_list('id', flat=True)
+        raise MissingAgentForAccessibleCollection({
+            'userid': userid,
+            'missing_for_6': missing_for_6,
+            'missing_for_7': missing_for_7,
+            'all_accessible_divisions': list(all_divisions),
+        })
 
 class Sp6AdminPT(PermissionTarget):
     resource = '/admin/user/sp6/is_admin'

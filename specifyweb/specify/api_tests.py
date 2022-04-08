@@ -440,7 +440,13 @@ class UserApiTests(ApiTests):
         "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
         super(UserApiTests, self).setUp()
         from specifyweb.context import views
+        self._users_collections_for_sp6 = views.users_collections_for_sp6
         views.users_collections_for_sp6 = lambda cursor, userid: []
+
+    def tearDown(self):
+        from specifyweb.context import views
+        views.users_collections_for_sp6 = self._users_collections_for_sp6
+        super(UserApiTests, self).tearDown()
 
     def test_set_user_agents(self):
         c = Client()
@@ -466,7 +472,8 @@ class UserApiTests(ApiTests):
             {'MissingAgentForAccessibleCollection': {
                 'all_accessible_divisions': [self.division.id],
                 'missing_for_6': [],
-                'missing_for_7': [self.collection.id]
+                'missing_for_7': [self.collection.id],
+                'userid': self.specifyuser.id,
             }}
         )
 
