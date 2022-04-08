@@ -4,7 +4,6 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import { schema } from '../schema';
 import type { RA } from '../types';
 import { sortObjectsByKey } from '../helpers';
 import { f } from '../functools';
@@ -12,6 +11,8 @@ import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { hasTablePermission } from '../permissions';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
+import { deserializeResource } from './resource';
 
 function List({
   resources,
@@ -64,41 +65,54 @@ export function ShowLoansCommand({
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [data] = useAsyncState(
-    React.useCallback(async () => {
-      const openLoanPreps = hasTablePermission('LoanPreparation', 'read')
-        ? new schema.models.LoanPreparation.LazyCollection({
-            filters: { preparation_id: resource.get('id'), isresolved: false },
-          })
-        : undefined;
-      const resolvedLoanPreps = hasTablePermission('LoanPreparation', 'read')
-        ? new schema.models.LoanPreparation.LazyCollection({
-            filters: { preparation_id: resource.get('id'), isresolved: true },
-          })
-        : undefined;
-      const giftPreps = hasTablePermission('GiftPreparation', 'read')
-        ? new schema.models.GiftPreparation.LazyCollection({
-            filters: { preparation_id: resource.get('id') },
-          })
-        : undefined;
-      const exchPreps = hasTablePermission('ExchangeOutPrep', 'read')
-        ? new schema.models.ExchangeOutPrep.LazyCollection({
-            filters: { preparation_id: resource.get('id') },
-          })
-        : undefined;
-      return f
-        .all({
-          openLoans: openLoanPreps?.fetch(),
-          resolvedLoans: resolvedLoanPreps?.fetch(),
-          gifts: giftPreps?.fetch(),
-          exchanges: exchPreps?.fetch(),
-        })
-        .then(({ openLoans, resolvedLoans, gifts, exchanges }) => ({
-          openLoans: openLoans?.models,
-          resolvedLoans: resolvedLoans?.models,
-          gifts: gifts?.models,
-          exchanges: exchanges?.models,
-        }));
-    }, [resource]),
+    React.useCallback(
+      async () =>
+        f.all({
+          openLoans: hasTablePermission('LoanPreparation', 'read')
+            ? fetchCollection(
+                'LoanPreparation',
+                {
+                  isResolved: false,
+                  limit: DEFAULT_FETCH_LIMIT,
+                },
+                {
+                  preparation_id: resource.get('id'),
+                }
+              ).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+          resolvedLoans: hasTablePermission('LoanPreparation', 'read')
+            ? fetchCollection(
+                'LoanPreparation',
+                {
+                  isResolved: true,
+                  limit: DEFAULT_FETCH_LIMIT,
+                },
+                {
+                  preparation_id: resource.get('id'),
+                }
+              ).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+          gifts: hasTablePermission('GiftPreparation', 'read')
+            ? fetchCollection(
+                'GiftPreparation',
+                { limit: DEFAULT_FETCH_LIMIT },
+                {
+                  preparation_id: resource.get('id'),
+                }
+              ).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+          exchanges: hasTablePermission('GiftPreparation', 'read')
+            ? fetchCollection(
+                'GiftPreparation',
+                { limit: DEFAULT_FETCH_LIMIT },
+                {
+                  preparation_id: resource.get('id'),
+                }
+              ).then(({ records }) => records.map(deserializeResource))
+            : undefined,
+        }),
+      [resource]
+    ),
     true
   );
 

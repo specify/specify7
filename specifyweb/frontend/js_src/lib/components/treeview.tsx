@@ -7,7 +7,6 @@ import type {
   SerializedResource,
 } from '../datamodelutils';
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
-import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import { NotFoundView } from '../notfoundview';
@@ -35,6 +34,7 @@ import createBackboneView from './reactbackboneextend';
 import { useCachedState } from './stateCache';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 
 const defaultCacheValue = [] as const;
 
@@ -127,28 +127,34 @@ function TreeView<SCHEMA extends AnyTree>({
         <TableIcon name={table.name} />
         <H2>{table.label}</H2>
         {/* A react component that is also a TypeScript generic */}
-        <Autocomplete<SpecifyResource<SCHEMA>>
+        <Autocomplete<SerializedResource<SCHEMA>>
           value={searchValue}
-          source={async (value) => {
-            const collection = new table.LazyCollection({
-              filters: { name__istartswith: value, orderby: 'name' },
-              domainfilter: true,
-            });
-            return collection.fetch().then(({ models }) =>
-              models.map((node) => {
+          source={async (value) =>
+            fetchCollection(
+              table.name,
+              {
+                limit: DEFAULT_FETCH_LIMIT,
+                orderBy: 'name',
+                domainFilter: true,
+              },
+              {
+                name__iStartsWith: value,
+              }
+            ).then(({ records }) =>
+              records.map((node) => {
                 const rankDefinition = treeDefinitionItems.find(
-                  ({ rankId }) => rankId === node.get('rankId')
+                  ({ rankId }) => rankId === node.rankId
                 );
                 const rankName = rankDefinition?.title ?? rankDefinition?.name;
                 return {
-                  label: node.get('fullName'),
-                  searchValue: node.get('name'),
+                  label: node.fullName ?? node.name,
+                  searchValue: node.name,
                   subLabel: rankName,
-                  data: node as SpecifyResource<SCHEMA>,
+                  data: node as SerializedResource<SCHEMA>,
                 };
               })
-            );
-          }}
+            )
+          }
           onChange={({ label, data }): void => {
             setSearchValue(label);
             ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(

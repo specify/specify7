@@ -152,7 +152,9 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
           >
         | Exclude<SCHEMA['toOneDependent'][KEY], SCHEMA>
     : KEY extends keyof SCHEMA['toOneIndependent']
-    ? string | Exclude<SCHEMA['toOneIndependent'][KEY], SCHEMA>
+    ? SCHEMA['toOneIndependent'][KEY] extends null
+      ? string | null
+      : string
     : KEY extends keyof SCHEMA['toManyDependent']
     ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
     : KEY extends keyof SCHEMA['toManyIndependent']

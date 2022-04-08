@@ -1,34 +1,27 @@
 import React from 'react';
 
-import { formData, Http, ping } from '../ajax';
-import type { SpecifyUser } from '../datamodel';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { Button, Form, Input, Label, Submit } from './basic';
-import { useBooleanState, useId, useTitle } from './hooks';
+import { useBooleanState, useId, useTitle, useValidation } from './hooks';
 import { Dialog } from './modaldialog';
-import { LoadingContext } from './contexts';
 
 export const MIN_PASSWORD_LENGTH = 6;
 
-function PasswordResetDialog({
-  userId,
+export function PasswordResetDialog({
+  onSet: handleSet,
   onClose: handleClose,
 }: {
-  readonly userId: number;
+  readonly onSet: (password: string) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
   useTitle(adminText('setPassword'));
 
   const id = useId('password-reset-dialog');
 
-  const passwordRef = React.useRef<HTMLInputElement | null>(null);
-  const repeatPasswordRef = React.useRef<HTMLInputElement | null>(null);
-
   const [password, setPassword] = React.useState('');
   const [repeatPassword, setRepeatPassword] = React.useState('');
-  const loading = React.useContext(LoadingContext);
+  const { validationRef, setValidation } = useValidation();
 
   return (
     <Dialog
@@ -44,26 +37,12 @@ function PasswordResetDialog({
       <Form
         className="contents"
         id={id('form')}
-        onSubmit={(): void =>
-          password.length < MIN_PASSWORD_LENGTH
-            ? passwordRef.current?.setCustomValidity(
-                adminText('passwordLengthError')
-              )
-            : password === repeatPassword
-            ? loading(
-                ping(
-                  `/api/set_password/${userId}/`,
-                  {
-                    method: 'POST',
-                    body: formData({ password }),
-                  },
-                  { expectedResponseCodes: [Http.NO_CONTENT] }
-                ).then(handleClose)
-              )
-            : repeatPasswordRef.current?.setCustomValidity(
-                adminText('passwordsDoNotMatchError')
-              )
-        }
+        onSubmit={(): void => {
+          if (password === repeatPassword) {
+            handleSet(password);
+            handleClose();
+          } else setValidation(adminText('passwordsDoNotMatchError'));
+        }}
       >
         <Label.Generic>
           {adminText('password')}
@@ -72,8 +51,7 @@ function PasswordResetDialog({
             required
             autoComplete="new-password"
             value={password}
-            minLength={6}
-            forwardRef={passwordRef}
+            minLength={MIN_PASSWORD_LENGTH}
             onChange={({ target }): void => {
               setPassword(target.value);
               target.setCustomValidity('');
@@ -87,8 +65,8 @@ function PasswordResetDialog({
             required
             autoComplete="new-password"
             value={repeatPassword}
-            minLength={6}
-            forwardRef={repeatPasswordRef}
+            minLength={MIN_PASSWORD_LENGTH}
+            forwardRef={validationRef}
             onChange={({ target }): void => {
               setRepeatPassword(target.value);
               target.setCustomValidity('');
@@ -105,25 +83,19 @@ function PasswordResetDialog({
 }
 
 export function PasswordPlugin({
-  user,
+  onSet: handleSet,
 }: {
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly onSet: (password: string) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Simple
-        disabled={user.isNew()}
-        title={
-          user.isNew()
-            ? adminText('saveUserBeforeSettingPasswordError')
-            : undefined
-        }
-        onClick={handleOpen}
-      >
+      <Button.Simple onClick={handleOpen}>
         {adminText('setPassword')}
       </Button.Simple>
-      {isOpen && <PasswordResetDialog userId={user.id} onClose={handleClose} />}
+      {isOpen && (
+        <PasswordResetDialog onSet={handleSet} onClose={handleClose} />
+      )}
     </>
   );
 }

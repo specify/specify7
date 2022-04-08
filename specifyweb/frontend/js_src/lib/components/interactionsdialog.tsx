@@ -3,11 +3,15 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
 import { error } from '../assert';
+import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
+import { f } from '../functools';
+import { cachableUrl } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import { getView } from '../parseform';
 import { getAttribute } from '../parseformcells';
+import { hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
 import { getModel, schema } from '../schema';
@@ -16,15 +20,13 @@ import * as s from '../stringlocalization';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../functools';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { hasTablePermission } from '../permissions';
-import { cachableUrl } from '../initialcontext';
+import { deserializeResource } from './resource';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -126,23 +128,19 @@ function Interactions({
         const model = isRecordSetAction
           ? schema.models.CollectionObject
           : schema.models.Loan;
-        const recordSets = new schema.models.RecordSet.LazyCollection({
-          filters: {
-            specifyuser: userInformation.id,
-            type: 0,
-            dbtableid: model.tableId,
-            domainfilter: true,
-            orderby: '-timestampcreated',
-          },
-        });
         setState({
           type: 'InteractionState',
-          recordSetsPromise: recordSets
-            .fetch({ limit: 5000 })
-            .then((collection) => ({
-              recordSets: collection.models,
-              totalCount: defined(collection._totalCount),
-            })),
+          recordSetsPromise: fetchCollection('RecordSet', {
+            specifyUser: userInformation.id,
+            type: 0,
+            dbTableId: model.tableId,
+            domainFilter: true,
+            orderBy: '-timestampCreated',
+            limit: 5000,
+          }).then(({ records, totalCount }) => ({
+            recordSets: records.map(deserializeResource),
+            totalCount,
+          })),
           table: model.name,
           actionModel: defined(getModel(table)),
           action,

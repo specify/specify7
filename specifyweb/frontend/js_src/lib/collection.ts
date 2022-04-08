@@ -7,9 +7,12 @@ import type {
   SerializedResource,
 } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
+import { f } from './functools';
 import * as queryString from './querystring';
+import { parseResourceUrl } from './resource';
+import { schema } from './schema';
 import type { IR, RA, RR } from './types';
-import { filterArray } from './types';
+import { defined, filterArray } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = {
   readonly limit: number;
@@ -33,6 +36,11 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = {
 
 export const DEFAULT_FETCH_LIMIT = 20;
 
+export type SerializedCollection<SCHEMA extends AnySchema> = {
+  readonly records: RA<SerializedResource<SCHEMA>>;
+  readonly totalCount: number;
+};
+
 export const fetchCollection = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME]
@@ -45,10 +53,7 @@ export const fetchCollection = async <
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
   advancedFilters: IR<string | number> = {}
-): Promise<{
-  readonly records: RA<SerializedResource<SCHEMA>>;
-  readonly totalCount: number;
-}> =>
+): Promise<SerializedCollection<SCHEMA>> =>
   ajax<{
     readonly meta: {
       readonly limit: number;
@@ -86,3 +91,33 @@ export const fetchCollection = async <
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
   }));
+
+export const fetchRelated = async <
+  SCHEMA extends AnySchema,
+  RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']
+>(
+  resource: SerializedResource<SCHEMA>,
+  relationshipName: RELATIONSHIP
+): Promise<{
+  readonly records: RA<
+    SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
+  >;
+  readonly totalCount: number;
+}> =>
+  f.var(
+    defined(
+      schema.models[
+        defined(parseResourceUrl(resource.resource_uri as string))[0]
+      ].getRelationship(relationshipName)
+    ),
+    async (relationship) =>
+      fetchCollection(relationship.relatedModel.name, {
+        limit: DEFAULT_FETCH_LIMIT,
+        [defined(relationship.getReverse()).name]: resource.id,
+      })
+  ) as Promise<{
+    readonly records: RA<
+      SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
+    >;
+    readonly totalCount: number;
+  }>;

@@ -221,6 +221,9 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
 /**
  * Creates a new object with a given key replaced.
  * Unlike object decomposition, this would preserve the order of keys
+ *
+ * @remarks
+ * If targetKey is not present in the object, new key won't be created
  */
 export const replaceKey = <T extends IR<unknown>>(
   object: T,

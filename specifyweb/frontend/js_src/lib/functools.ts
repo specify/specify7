@@ -128,7 +128,12 @@ export const f = {
   call: <RETURN>(callback: () => RETURN): RETURN => callback(),
   /**
    * Wrap a pure function that does not need any arguments in this
-   * call to remember and return its return value
+   * call to remember and return its return value.
+   *
+   * Useful not just for perfornance reasons, but also for delaying evaluation
+   * of an object untill the first time it is needed (i.e., if object is in
+   * the global scope, and depends on the datamodel, delaying evaluation
+   * allows for creation of the object only after schema is loaded)
    */
   store:
     <RETURN>(callback: () => RETURN): (() => RETURN) =>

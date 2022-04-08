@@ -204,7 +204,7 @@ export function useAsyncState<T>(
     return (): void => {
       destructorCalled = true;
     };
-  }, [callback, loading, loadingScreen]);
+  }, [callback, loading, loadingScreen, forceConsistency]);
 
   return [state, setState];
 }

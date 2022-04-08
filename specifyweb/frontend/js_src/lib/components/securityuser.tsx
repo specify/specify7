@@ -1,12 +1,15 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
-import { ajax, Http, ping } from '../ajax';
+import { ajax, formData, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { replaceItem, replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
+import formsText from '../localization/forms';
 import {
   collectionAccessResource,
   hasPermission,
@@ -38,7 +41,8 @@ import { ComboBox } from './combobox';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { useAsyncState, useIsModified, useUnloadProtect } from './hooks';
-import { PasswordPlugin } from './passwordplugin';
+import { Dialog } from './modaldialog';
+import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { augmentMode, BaseResourceView } from './resourceview';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
@@ -46,6 +50,7 @@ import { PreviewPermissions } from './securitypreview';
 import { UserAgentsPlugin } from './useragentsplugin';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
+import { deserializeResource } from './resource';
 
 export function UserView({
   user,
@@ -54,12 +59,13 @@ export function UserView({
   onOpenRole: handleOpenRole,
   onClose: handleClose,
 }: {
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollection: number;
-  readonly collections: IR<SpecifyResource<Collection>>;
+  readonly collections: IR<SerializedResource<Collection>>;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
-  readonly onClose: (user?: SpecifyResource<SpecifyUser>) => void;
+  readonly onClose: (user?: SpecifyResource<SpecifyUser> | false) => void;
 }): JSX.Element {
+  const userResource = React.useMemo(() => deserializeResource(user), [user]);
   // Fetching roles from all collections
   const [collectionRoles] = useAsyncState(
     React.useCallback(
@@ -81,7 +87,7 @@ export function UserView({
   const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
     React.useCallback(
       async () =>
-        user.isNew()
+        userResource.isNew()
           ? {}
           : hasPermission('/permissions/user/roles', 'read')
           ? Promise.all(
@@ -118,7 +124,7 @@ export function UserView({
   const [userPolicies, setUserPolicies] = useAsyncState(
     React.useCallback(
       async () =>
-        user.isNew()
+        userResource.isNew()
           ? {}
           : hasPermission('/permissions/policies/user', 'read')
           ? Promise.all(
@@ -139,7 +145,7 @@ export function UserView({
                 return policies;
               })
           : undefined,
-      [user, collections]
+      [userResource, collections]
     ),
     false
   );
@@ -153,11 +159,11 @@ export function UserView({
   const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
     React.useCallback(
       async () =>
-        user.isNew()
+        userResource.isNew()
           ? []
           : hasPermission('/permissions/policies/user', 'read')
           ? ajax<IR<RA<string>>>(
-              `/permissions/user_policies/institution/${user.id}/`,
+              `/permissions/user_policies/institution/${userResource.id}/`,
               {
                 headers: { Accept: 'application/json' },
               }
@@ -167,7 +173,7 @@ export function UserView({
               return policies;
             })
           : undefined,
-      [user.id]
+      [userResource.id]
     ),
     false
   );
@@ -176,7 +182,7 @@ export function UserView({
     JSON.stringify(institutionPolicies);
 
   const changesMade =
-    useIsModified(user) ||
+    useIsModified(userResource) ||
     changedPolices ||
     changedRoles ||
     changedInstitutionPolicies;
@@ -272,9 +278,8 @@ export function UserView({
                     {commonText('actions')}
                   </h4>
                   <div className="flex gap-2">
-                    {/* FIXME: update this to force consistency */}
                     {hasPermission('/admin/user/password', 'update') && (
-                      <PasswordPlugin user={user} />
+                      <PasswordPlugin onSet={setPassword} />
                     )}
                     {hasPermission('/admin/user/password', 'update') && (
                       <UserInviteLinkPlugin user={user} />
@@ -364,7 +369,7 @@ export function UserView({
                   >
                     {Object.values(collections).map((collection) => (
                       <option key={collection.id} value={collection.id}>
-                        {collection.get('collectionName')}
+                        {collection.collectionName}
                       </option>
                     ))}
                   </Select>
@@ -491,11 +496,16 @@ export function UserView({
                     {adminText('legacyPermissions')}
                   </h4>
                   <div className="flex gap-2">
-                    <AdminStatusPlugin user={user} mode={mode} />
+                    <AdminStatusPlugin user={userResource} mode={mode} />
                     {hasPermission(
                       '/admin/user/sp6/collection_access',
                       'read'
-                    ) && <UserCollectionsPlugin user={user} />}
+                    ) && (
+                      <UserCollectionsPlugin
+                        user={user}
+                        isNew={userResource.isNew()}
+                      />
+                    )}
                   </div>
                   {f.var(
                     defined(
@@ -506,8 +516,8 @@ export function UserView({
                         {userType.label}
                         <ComboBox
                           id={undefined}
-                          model={user}
-                          resource={user}
+                          model={userResource}
+                          resource={userResource}
                           field={userType}
                           fieldName={userType.name}
                           pickListName={undefined}
@@ -536,11 +546,10 @@ export function UserView({
                       {commonText('close')}
                     </Button.Blue>
                   )}
-                  {!user.isNew() &&
-                  // FIXME: notify parent of resource deletion
-                  hasTablePermission(user.specifyModel.name, 'delete') ? (
+                  {!userResource.isNew() &&
+                  hasTablePermission('SpecifyUser', 'delete') ? (
                     <DeleteButton
-                      model={user}
+                      model={userResource}
                       onDeleted={f.zero(handleClose)}
                     />
                   ) : undefined}

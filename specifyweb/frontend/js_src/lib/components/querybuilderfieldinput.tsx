@@ -258,7 +258,7 @@ function In({
 /*
  * FIXME: test all combination of data types and filters
  *       (including pick lists)
- * FIXME: test "any" and find out use of don't care
+ * FIXME: test "any"
  */
 export const queryFieldFilters: RR<
   QueryFieldFilter,

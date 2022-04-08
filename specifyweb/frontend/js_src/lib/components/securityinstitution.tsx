@@ -4,8 +4,8 @@ import type { State } from 'typesafe-reducer';
 import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Institution, SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { omit, removeKey, replaceKey } from '../helpers';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -28,8 +28,8 @@ export function InstitutionView({
   libraryRoles,
   onChangeLibraryRoles: handleChangeLibraryRoles,
 }: {
-  readonly institution: SpecifyResource<Institution>;
-  readonly users: IR<SpecifyResource<SpecifyUser>> | undefined;
+  readonly institution: SerializedResource<Institution>;
+  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
   readonly libraryRoles: IR<Role> | undefined;
   readonly onChangeLibraryRoles: (
@@ -89,7 +89,7 @@ export function InstitutionView({
     <Container.Base className="flex-1 overflow-y-auto">
       {state.type === 'MainState' ? (
         <>
-          <h3 className="text-xl">{institution.get('name')}</h3>
+          <h3 className="text-xl">{institution.name}</h3>
           {hasPermission('/permissions/library/roles', 'read') && (
             <section className="flex flex-col gap-2">
               <div>
@@ -139,7 +139,7 @@ export function InstitutionView({
                 <SecurityImportExport
                   roles={libraryRoles}
                   permissionName="/permissions/library/roles"
-                  baseName={institution.get('name') ?? ''}
+                  baseName={institution.name ?? ''}
                   onUpdateRole={updateRole}
                   onCreateRole={createRole}
                 />
@@ -163,7 +163,7 @@ export function InstitutionView({
                       <Button.LikeLink
                         onClick={(): void => handleOpenUser(user.id)}
                       >
-                        {user.get('name')}
+                        {user.name}
                       </Button.LikeLink>
                     </li>
                   ))}
@@ -186,7 +186,7 @@ export function InstitutionView({
                     policies: [],
                   } as const)
             }
-            parentName={institution.get('name') ?? adminText('institution')}
+            parentName={institution.name ?? adminText('institution')}
             userRoles={undefined}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>

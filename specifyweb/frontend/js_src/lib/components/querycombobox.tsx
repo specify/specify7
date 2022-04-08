@@ -43,6 +43,7 @@ import { ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -101,32 +102,29 @@ export function QueryComboBox({
       )
         return false;
       if (field?.name == 'parent') {
-        let lowestChildRank: Promise<number | undefined>;
-        if (treeResource.isNew()) lowestChildRank = Promise.resolve(undefined);
-        else {
-          const children = new treeResource.specifyModel.LazyCollection({
-            filters: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              parent_id: treeResource.id,
-              orderby: 'rankid',
-            },
-          });
-          lowestChildRank = children
-            .fetch({ limit: 1 })
-            .then(({ models }) => models[0]?.get('rankId'));
-        }
-        const treeRanks = treeRanksPromise.then(() =>
-          defined(
-            getTreeDefinitionItems(treeResource.specifyModel.name, false)
-          ).map((rank) => ({
-            rankId: rank.rankId,
-            isEnforced: rank.isEnforced ?? false,
-          }))
-        );
-        return lowestChildRank.then(async (rank) => ({
-          lowestChildRank: rank,
-          treeRanks: await treeRanks,
-        }));
+        return f.all({
+          lowestChildRank: treeResource.isNew()
+            ? Promise.resolve(undefined)
+            : fetchCollection(
+                treeResource.specifyModel.name,
+                {
+                  limit: 1,
+                  orderBy: 'rankId',
+                },
+                {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  parent_id: treeResource.id,
+                }
+              ).then(({ records }) => records[0]?.rankId),
+          treeRanks: treeRanksPromise.then(() =>
+            defined(
+              getTreeDefinitionItems(treeResource.specifyModel.name, false)
+            ).map((rank) => ({
+              rankId: rank.rankId,
+              isEnforced: rank.isEnforced ?? false,
+            }))
+          ),
+        });
       } else if (field?.name == 'acceptedParent') {
         // Don't need to do anything. Form system prevents lookups/edits
       } else if (
@@ -150,38 +148,40 @@ export function QueryComboBox({
     React.useCallback(
       () =>
         hasTablePermission('CollectionRelType', 'read')
-          ? f.maybe(toTable(resource, 'CollectionRelationship'), async () => {
-              const left = new schema.models.CollectionRelType.LazyCollection({
-                filters: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  leftsidecollection_id: schema.domainLevelIds.collection,
-                },
-              });
-              const right = new schema.models.CollectionRelType.LazyCollection({
-                filters: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  rightsidecollection_id: schema.domainLevelIds.collection,
-                },
-              });
-              return Promise.all([
-                left.fetch().then(({ models }) =>
-                  models.map((relationship) => ({
+          ? f.maybe(toTable(resource, 'CollectionRelationship'), async () =>
+              f.all({
+                left: fetchCollection(
+                  'CollectionRelType',
+                  { limit: DEFAULT_FETCH_LIMIT },
+                  {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    leftsidecollection_id: schema.domainLevelIds.collection,
+                  }
+                ).then(({ records }) =>
+                  records.map((relationship) => ({
                     id: relationship.id,
                     collection: idFromUrl(
-                      relationship.get('rightSideCollection') ?? ''
+                      relationship.rightSideCollection ?? ''
                     ),
                   }))
                 ),
-                right.fetch().then(({ models }) =>
-                  models.map((relationship) => ({
+                right: fetchCollection(
+                  'CollectionRelType',
+                  { limit: DEFAULT_FETCH_LIMIT },
+                  {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    rightsidecollection_id: schema.domainLevelIds.collection,
+                  }
+                ).then(({ records }) =>
+                  records.map((relationship) => ({
                     id: relationship.id,
                     collection: idFromUrl(
-                      relationship.get('leftSideCollection') ?? ''
+                      relationship.leftSideCollection ?? ''
                     ),
                   }))
                 ),
-              ]).then(([left, right]) => ({ left, right }));
-            }) ?? false
+              })
+            ) ?? false
           : false,
       [resource]
     ),

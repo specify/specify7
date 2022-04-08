@@ -8,6 +8,9 @@ import { defined } from '../types';
 import { Input } from './basic';
 import { useAsyncState } from './hooks';
 import { QueryComboBox } from './querycombobox';
+import { f } from '../functools';
+import { fetchCollection } from '../collection';
+import { deserializeResource } from './resource';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -32,17 +35,20 @@ export function HostTaxonPlugin({
   readonly formType: FormType;
 }): JSX.Element {
   const [rightSideCollection] = useAsyncState(
-    React.useCallback(async () => {
-      const collection = new schema.models.CollectionRelType.LazyCollection({
-        filters: { name: relationship },
-      });
-      return collection
-        .fetch({ limit: 1 })
-        .then(async ({ models }) =>
-          models[0]?.rgetPromise('rightSideCollection')
-        )
-        .then((collection) => collection?.get('id'));
-    }, [relationship]),
+    React.useCallback(
+      async () =>
+        fetchCollection('CollectionRelType', {
+          limit: 1,
+          name: relationship,
+        })
+          .then(async ({ records }) =>
+            f
+              .maybe(records[0], deserializeResource)
+              ?.rgetPromise('rightSideCollection')
+          )
+          .then((collection) => collection?.get('id')),
+      [relationship]
+    ),
     false
   );
   return typeof rightSideCollection === 'undefined' ? (

@@ -1,8 +1,14 @@
 import React from 'react';
 
-import type { AnySchema, SerializedResource } from '../datamodelutils';
+import type {
+  AnySchema,
+  SerializedModel,
+  SerializedResource,
+} from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
+import { parseResourceUrl } from '../resource';
+import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';
 import { defined } from '../types';
@@ -50,6 +56,13 @@ export function useResource<SCHEMA extends AnySchema>(
 
   return [resource, setResource];
 }
+
+export const deserializeResource = <SCHEMA extends AnySchema>(
+  resource: SerializedResource<SCHEMA> | SerializedModel<SCHEMA>
+) =>
+  new schema.models[
+    defined(parseResourceUrl(resource.resource_uri?.toString() ?? ''))[0]
+  ].Resource(resource);
 
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({

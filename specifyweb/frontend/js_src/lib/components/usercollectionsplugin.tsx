@@ -3,7 +3,6 @@ import React from 'react';
 import { ajax, ping } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Collection, SpecifyUser } from '../datamodel';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import type { RA } from '../types';
@@ -81,8 +80,10 @@ const fetchAllCollections = async () =>
 
 export function UserCollectionsPlugin({
   user,
+  isNew,
 }: {
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly user: SerializedResource<SpecifyUser>;
+  readonly isNew: boolean;
 }): JSX.Element {
   const [allCollections] = useAsyncState(fetchAllCollections, false);
   const [selectedCollections] = useAsyncState(
@@ -104,15 +105,13 @@ export function UserCollectionsPlugin({
       <Button.Simple
         onClick={handleOpen}
         className="w-fit"
-        disabled={
-          typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
-        }
+        disabled={typeof user === 'undefined' || user.isAdmin || isNew}
         title={
-          user.get('isAdmin')
+          user.isAdmin
             ? adminText('notAvailableOnAdmins')
             : typeof user === 'undefined'
             ? commonText('loading')
-            : user.isNew()
+            : isNew
             ? adminText('saveUserFirst')
             : undefined
         }

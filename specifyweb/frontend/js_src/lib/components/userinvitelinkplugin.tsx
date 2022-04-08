@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { Button, Input } from './basic';
@@ -12,7 +11,7 @@ import { Dialog } from './modaldialog';
 export function UserInviteLinkPlugin({
   user,
 }: {
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly user: SerializedResource<SpecifyUser>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);

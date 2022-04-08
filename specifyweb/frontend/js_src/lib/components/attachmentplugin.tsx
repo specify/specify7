@@ -8,7 +8,8 @@ import {
   uploadFile,
 } from '../attachments';
 import type { Attachment } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
+import type { AnySchema, SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -38,7 +39,7 @@ export function AttachmentPlugin({
   const [state, setState] = useAsyncState<
     | State<'AddAttachment'>
     | State<'Unavailable'>
-    | State<'DisplayAttachment', { attachment: SpecifyResource<Attachment> }>
+    | State<'DisplayAttachment', { attachment: SerializedResource<Attachment> }>
     | State<'FileUpload', { file: File }>
   >(
     React.useCallback(
@@ -51,7 +52,10 @@ export function AttachmentPlugin({
               ).then((attachment) =>
                 attachment === null
                   ? { type: 'AddAttachment' }
-                  : { type: 'DisplayAttachment', attachment }
+                  : {
+                      type: 'DisplayAttachment',
+                      attachment: serializeResource(attachment),
+                    }
               )
             : { type: 'Unavailable' }
         ),
@@ -68,15 +72,17 @@ export function AttachmentPlugin({
       state?.type === 'FileUpload'
         ? void uploadFile(state.file, setUploadProgress)
             .then((attachment) => {
+              if (typeof resource === 'object')
+                attachment?.set('tableID', resource.specifyModel.tableId);
               if (typeof attachment === 'undefined')
                 setState({ type: 'Unavailable' });
               else {
-                setState({
-                  type: 'DisplayAttachment',
-                  attachment,
-                });
                 handleUploadComplete?.(attachment);
                 resource?.set('attachment', attachment as never);
+                setState({
+                  type: 'DisplayAttachment',
+                  attachment: serializeResource(attachment),
+                });
               }
             })
             .catch(crash)

@@ -9,6 +9,8 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { FormTableCollection } from './formtable';
 import { InteractionDialog } from './interactiondialog';
+import { fetchCollection } from '../collection';
+import { deserializeResource } from './resource';
 
 export function FormTableInteraction(
   props: Omit<Parameters<typeof FormTableCollection>[0], 'onAdd'>
@@ -37,25 +39,23 @@ export function FormTableInteraction(
       ) : undefined}
       <FormTableCollection
         {...props}
-        onAdd={(): void => {
-          const recordSets = new schema.models.RecordSet.LazyCollection({
-            filters: {
-              specifyuser: userInformation.id,
-              type: 0,
-              dbtableid: 1,
-              domainfilter: true,
-              orderby: props.sortField ?? '-timestampcreated',
-            },
-          });
+        onAdd={(): void =>
           setRecordSetsPromise(
-            recordSets
-              .fetch({ limit: 5000 })
-              .then(({ models, _totalCount }) => ({
-                recordSets: models,
-                totalCount: defined(_totalCount),
-              }))
-          );
-        }}
+            fetchCollection('RecordSet', {
+              specifyUser: userInformation.id,
+              type: 0,
+              dbTableId: 1,
+              domainFilter: true,
+              orderBy:
+                (props.sortField as keyof SCHEMA['fields']) ??
+                '-timestampcreated',
+              limit: 5000,
+            }).then(({ records, totalCount }) => ({
+              recordSets: records.map(deserializeResource),
+              totalCount,
+            }))
+          )
+        }
       />
     </>
   );

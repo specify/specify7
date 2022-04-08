@@ -2,9 +2,13 @@ import React from 'react';
 
 import * as attachments from '../attachments';
 import { fetchOriginalUrl } from '../attachments';
-import { fetchCollection } from '../collection';
+import {
+  DEFAULT_FETCH_LIMIT,
+  fetchCollection,
+  fetchRelated,
+} from '../collection';
 import type { Attachment, Tables } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
+import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
@@ -14,7 +18,7 @@ import { idFromUrl } from '../resource';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
 import { setCurrentView } from '../specifyapp';
-import type { Collection, SpecifyModel } from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
 import { Button, Container, H2, Input, Label, Link, Select } from './basic';
@@ -28,20 +32,38 @@ import createBackboneView from './reactbackboneextend';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './stateCache';
+import { caseInsensitiveHash } from '../helpers';
+import { deserializeResource } from './resource';
+import { useCollection } from './collection';
 
 const previewSize = 123;
+
+const tablesWithAttachments = f.store(() =>
+  filterArray(
+    Object.keys(schema.models)
+      .filter((tableName) => tableName.endsWith('Attachment'))
+      .map((tableName) =>
+        getModel(tableName.slice(0, -1 * 'Attachment'.length))
+      )
+  )
+);
 
 export function AttachmentCell({
   attachment,
   onViewRecord: handleViewRecord,
 }: {
-  readonly attachment: SpecifyResource<Attachment> | undefined;
+  readonly attachment: SerializedResource<Attachment> | undefined;
   readonly onViewRecord:
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
 }): JSX.Element {
-  const tableId = attachment?.get('tableID') ?? undefined;
-  const model = typeof tableId === 'number' ? getModelById(tableId) : undefined;
+  const tableId = attachment?.tableID ?? undefined;
+  const model =
+    typeof tableId === 'number'
+      ? f.var(getModelById(tableId), (model) =>
+          tablesWithAttachments().includes(model) ? model : undefined
+        )
+      : undefined;
 
   const [thumbnail] = useAsyncState(
     React.useCallback(
@@ -75,8 +97,13 @@ export function AttachmentCell({
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
 
   const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = attachment?.get('title') ?? thumbnail?.alt;
+  const title = attachment?.title ?? thumbnail?.alt;
   const loading = React.useContext(LoadingContext);
+
+  const resource = React.useMemo(
+    () => f.maybe(attachment, deserializeResource),
+    [attachment]
+  );
 
   return (
     <div className="relative">
@@ -92,15 +119,19 @@ export function AttachmentCell({
                   typeof model === 'undefined'
                     ? handleMetaToggle()
                     : loading(
-                        attachment
-                          .rgetCollection(
-                            `${model.name as 'agent'}Attachments`,
-                            true
-                          )
-                          .then(({ models }) =>
-                            idFromUrl(
-                              models[0].get(model.name as 'agent') ?? ''
-                            )
+                        fetchRelated(
+                          attachment,
+                          `${model.name as 'agent'}Attachments`
+                        )
+                          .then(({ records }) =>
+                            typeof records[0] === 'object'
+                              ? idFromUrl(
+                                  caseInsensitiveHash(
+                                    records[0],
+                                    model.name as 'agent'
+                                  ) ?? ''
+                                )
+                              : undefined
                           )
                           .then((id) =>
                             typeof id === 'number'
@@ -124,7 +155,7 @@ export function AttachmentCell({
           {isMetaOpen && (
             <ResourceView
               title={title}
-              resource={attachment}
+              resource={resource}
               dialog="modal"
               onClose={handleMetaClose}
               canAddAnother={false}
@@ -156,7 +187,7 @@ export function AttachmentCell({
           <img
             className="object-contain max-w-full max-h-full"
             src={thumbnail.src}
-            alt={attachment?.get('title') ?? thumbnail.alt}
+            alt={attachment?.title ?? thumbnail.alt}
             style={{
               width: `${thumbnail.width}px`,
               height: `${thumbnail.height}px`,
@@ -199,18 +230,6 @@ export function AttachmentsView(): JSX.Element {
     staleWhileRefresh: false,
   });
 
-  const tablesWithAttachments = React.useMemo(
-    () =>
-      filterArray(
-        Object.keys(schema.models)
-          .filter((tableName) => tableName.endsWith('Attachment'))
-          .map((tableName) =>
-            getModel(tableName.slice(0, -1 * 'Attachment'.length))
-          )
-      ),
-    []
-  );
-
   const [collectionSizes] = useAsyncState(
     React.useCallback(
       async () =>
@@ -225,7 +244,7 @@ export function AttachmentsView(): JSX.Element {
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
-              tablesWithAttachments
+              tablesWithAttachments()
                 .filter(({ name }) => hasTablePermission(name, 'read'))
                 .map(({ name, tableId }) => [
                   name,
@@ -237,7 +256,7 @@ export function AttachmentsView(): JSX.Element {
             )
           ),
         }),
-      [tablesWithAttachments]
+      []
     ),
     false
   );
@@ -250,21 +269,28 @@ export function AttachmentsView(): JSX.Element {
     staleWhileRefresh: false,
   });
 
-  const collection = React.useMemo(() => {
-    return new schema.models.Attachment.LazyCollection({
-      domainfilter: true,
-      filters: {
-        orderby: order.toLowerCase(),
-        ...(filter.type === 'unused'
-          ? { tableid__isnull: true }
-          : filter.type === 'byTable'
-          ? {
-              tableid: schema.models[filter.tableName].tableId,
-            }
-          : {}),
-      },
-    }) as Collection<Attachment>;
-  }, [order, filter]);
+  const [collection, fetchMore] = useCollection(
+    React.useCallback(
+      (offset) =>
+        fetchCollection(
+          'Attachment',
+          {
+            domainFilter: true,
+            offset,
+            orderBy: order,
+            limit: DEFAULT_FETCH_LIMIT,
+          },
+          filter.type === 'unused'
+            ? { tableId__isNull: 'true' }
+            : filter.type === 'byTable'
+            ? {
+                tableId: schema.models[filter.tableName].tableId,
+              }
+            : {}
+        ),
+      [order, filter]
+    )
+  );
 
   return (
     <Container.Full>
@@ -300,7 +326,7 @@ export function AttachmentsView(): JSX.Element {
               </option>
             )}
             <optgroup label={commonText('tables')}>
-              {tablesWithAttachments
+              {tablesWithAttachments()
                 .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
                 .map(({ name, label }) => (
                   <option value={name} key={name}>
@@ -363,43 +389,38 @@ export function AttachmentsView(): JSX.Element {
           />
         </Label.ForCheckbox>
       </header>
-      <Gallery collection={collection} scale={scale} />
+      <Gallery
+        attachments={collection?.records ?? []}
+        isComplete={collection?.totalCount === collection?.records.length}
+        onFetchMore={fetchMore}
+        scale={scale}
+      />
     </Container.Full>
   );
 }
 
 function Gallery({
-  collection,
+  attachments,
+  onFetchMore: handleFetchMore,
   scale,
+  isComplete,
 }: {
-  readonly collection: Collection<Attachment>;
+  readonly attachments: RA<SerializedResource<Attachment>>;
+  readonly onFetchMore: () => Promise<void>;
   readonly scale: number;
+  readonly isComplete: boolean;
 }): JSX.Element {
-  const [attachments, setAttachments] = React.useState<
-    RA<SpecifyResource<Attachment> | undefined>
-  >([]);
-  // Reset attachments when collection changes
-  React.useEffect(() => setAttachments([]), [collection]);
-
   const containerRef = React.useRef<HTMLElement | null>(null);
 
-  const [isComplete, handleIsComplete] = useBooleanState(false);
   const fillPage = React.useCallback(
     async () =>
       // Fetch more attachments when within 200px of the bottom
       containerRef.current !== null &&
-      !collection.isComplete() &&
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? collection
-            .fetch()
-            .then(({ models }) => setAttachments(Array.from(models)))
-            .then(() =>
-              collection.isComplete() ? handleIsComplete() : undefined
-            )
-            .catch(crash)
+        ? handleFetchMore().catch(crash)
         : undefined,
-    [collection, handleIsComplete]
+    [handleFetchMore]
   );
 
   React.useEffect(
@@ -426,7 +447,7 @@ function Gallery({
           } as React.CSSProperties
         }
         forwardRef={containerRef}
-        onScroll={collection.isComplete() ? undefined : fillPage}
+        onScroll={isComplete ? undefined : fillPage}
       >
         {attachments.map((attachment, index) => (
           <AttachmentCell

@@ -3,9 +3,9 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { index, omit, removeKey, replaceKey } from '../helpers';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -35,11 +35,11 @@ export function CollectionView({
   collections,
   libraryRoles,
 }: {
-  readonly collection: SpecifyResource<Collection>;
+  readonly collection: SerializedResource<Collection>;
   readonly initialRoleId: number | undefined;
-  readonly users: IR<SpecifyResource<SpecifyUser>> | undefined;
+  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
-  readonly collections: IR<SpecifyResource<Collection>>;
+  readonly collections: IR<SerializedResource<Collection>>;
   readonly libraryRoles: IR<Role> | undefined;
 }): JSX.Element {
   const [roles, setRoles] = useAsyncState<IR<Role>>(
@@ -150,7 +150,7 @@ export function CollectionView({
     <Container.Base className="flex-1 overflow-y-auto">
       {state.type === 'MainState' && (
         <>
-          <h3 className="text-xl">{collection.get('collectionName')}</h3>
+          <h3 className="text-xl">{collection.collectionName}</h3>
           {hasPermission('/permissions/roles', 'read') && (
             <section className="flex flex-col gap-2">
               <div>
@@ -197,7 +197,7 @@ export function CollectionView({
                 <SecurityImportExport
                   roles={roles}
                   permissionName="/permissions/roles"
-                  baseName={collection.get('collectionName') ?? ''}
+                  baseName={collection.collectionName ?? ''}
                   onUpdateRole={updateRole}
                   onCreateRole={createRole}
                 />
@@ -226,7 +226,7 @@ export function CollectionView({
                             <Button.LikeLink
                               onClick={(): void => handleOpenUser(user.id)}
                             >
-                              {user.get('name')}
+                              {user.name}
                             </Button.LikeLink>
                           </li>
                         ))}
@@ -258,7 +258,7 @@ export function CollectionView({
         typeof roles === 'object' ? (
           <RoleView
             role={state.role}
-            parentName={collection.get('collectionName') ?? ''}
+            parentName={collection.collectionName ?? ''}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>
               loading(

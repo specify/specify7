@@ -476,7 +476,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                       setUnloadProtect(undefined);
                     }}
                   >
-                    {formsText('ignoreAndContinue')}
+                    {formsText('ignore')}
                   </Button.Orange>
                 </>
               }

@@ -9,8 +9,7 @@ import { serializeResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
-import { getModel } from './schema';
-import { defined } from './types';
+import { getModel, schema } from './schema';
 
 /*
  * TODO: experiment with an object singleton:
@@ -77,9 +76,10 @@ export function parseResourceUrl(
   const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/
     .exec(resourceUrl)
     ?.slice(1);
-  return typeof parsed === 'undefined'
-    ? parsed
-    : [parsed[0] as keyof Tables, Number.parseInt(parsed[1])];
+  const tableName = getModel(parsed?.[0] ?? '')?.name;
+  return Array.isArray(parsed) && typeof tableName === 'string'
+    ? [tableName, Number.parseInt(parsed[1])]
+    : undefined;
 }
 
 export function resourceFromUri(
@@ -89,7 +89,7 @@ export function resourceFromUri(
   const parsed = parseResourceUrl(resourceUrl);
   if (typeof parsed === 'undefined') return undefined;
   const [tableName, id] = parsed;
-  return new (defined(getModel(tableName)).Resource)({ id }, options);
+  return new schema.models[tableName].Resource({ id }, options);
 }
 
 /** Assuming urls are constructed by ResourceBase.url method */

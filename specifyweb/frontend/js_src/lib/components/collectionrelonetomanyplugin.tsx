@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type {
   Collection,
   CollectionObject,
@@ -14,13 +15,14 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
+import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
+import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
-import { switchCollection } from '../specifyapp';
 
 type Data = {
   readonly collectionObjects: RA<{
@@ -64,12 +66,12 @@ export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string
 ): Promise<Data> {
-  const collection = new schema.models.CollectionRelType.LazyCollection({
-    filters: { name: relationship },
-  });
-  const { relationshipType, left, right } = await collection
-    .fetch({ limit: 1 })
-    .then(async ({ models: [relationshipType] }) =>
+  const { relationshipType, left, right } = await fetchCollection(
+    'CollectionRelType',
+    { name: relationship, limit: 1 }
+  )
+    .then(({ records }) => deserializeResource(records[0]))
+    .then(async (relationshipType) =>
       f.all({
         relationshipType,
         left: relationshipType.rgetPromise('leftSideCollection'),
@@ -97,8 +99,10 @@ export async function fetchOtherCollectionData(
   const otherCollection = relatedCollection;
   const formattedCollection = format(otherCollection);
 
-  const items = new schema.models.CollectionRelationship.LazyCollection({
-    filters:
+  return {
+    collectionObjects: await fetchCollection(
+      'CollectionRelationship',
+      { limit: DEFAULT_FETCH_LIMIT },
       side == 'left'
         ? {
             leftside_id: resource.id,
@@ -107,12 +111,10 @@ export async function fetchOtherCollectionData(
         : {
             rightside_id: resource.id,
             collectionreltype_id: relationshipType.id,
-          },
-  });
-  return {
-    collectionObjects: await items
-      .fetch()
-      .then(async ({ models }) => processRelationships(models, otherSide)),
+          }
+    ).then(async ({ records }) =>
+      processRelationships(records.map(deserializeResource), otherSide)
+    ),
     otherCollection: {
       id: otherCollection.id,
       href: otherCollection.viewUrl(),

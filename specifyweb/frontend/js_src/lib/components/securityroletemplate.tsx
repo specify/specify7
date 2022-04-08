@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { Collection } from '../datamodel';
-import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission } from '../permissions';
@@ -12,6 +11,7 @@ import { Button, H3, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import type { NewRole, Role } from './securityrole';
+import { SerializedResource } from '../datamodelutils';
 
 export function CreateRole({
   libraryRoles,
@@ -20,7 +20,7 @@ export function CreateRole({
   onClose: handleClose,
 }: {
   readonly libraryRoles: IR<Role> | undefined;
-  readonly collections: IR<SpecifyResource<Collection>>;
+  readonly collections: IR<SerializedResource<Collection>>;
   readonly onCreated: (role: NewRole | Role) => void;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -100,7 +100,7 @@ export function CreateRole({
                 .filter(([_collection, roles]) => roles.length > 0)
                 .map(([collection, roles]) => (
                   <article key={collection.id}>
-                    {collection.get('collectionName')}
+                    {collection.collectionName}
                     <Ul>
                       {roles.map((role) => (
                         <li key={role.id}>

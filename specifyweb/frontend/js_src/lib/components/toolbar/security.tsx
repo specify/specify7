@@ -4,13 +4,11 @@ import type { State } from 'typesafe-reducer';
 import { ajax } from '../../ajax';
 import type { SpecifyUser } from '../../datamodel';
 import { f } from '../../functools';
-import { index } from '../../helpers';
-import type { SpecifyResource } from '../../legacytypes';
+import { index, removeKey } from '../../helpers';
 import adminText from '../../localization/admin';
 import commonText from '../../localization/common';
 import { hasPermission } from '../../permissions';
 import { router } from '../../router';
-import { schema } from '../../schema';
 import type { BackEndRole } from '../../securityutils';
 import { processPolicies } from '../../securityutils';
 import { setCurrentView } from '../../specifyapp';
@@ -25,35 +23,34 @@ import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { UserView } from '../securityuser';
+import { fetchCollection } from '../../collection';
+import { SerializedResource, serializeResource } from '../../datamodelutils';
 
 function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
 
   const [data] = useAsyncState(
-    React.useCallback(async () => {
-      const institutionCollection =
-        new schema.models.Institution.LazyCollection();
-      const collectionsCollection =
-        new schema.models.Collection.LazyCollection();
-      return f.all({
-        institution: institutionCollection
-          .fetch({ limit: 1 })
-          .then(({ models }) => models[0]),
-        collections: collectionsCollection
-          .fetch({ limit: 0 })
-          .then(({ models }) =>
-            Object.fromEntries(
-              models
-                .filter((collection) =>
-                  Object.keys(userInformation.availableCollections).includes(
-                    collection.id.toString()
-                  )
-                )
-                .map((collection) => [collection.id, collection])
-            )
+    React.useCallback(
+      async () =>
+        f.all({
+          institution: fetchCollection('Institution', { limit: 1 }).then(
+            ({ records }) => records[0]
           ),
-      });
-    }, []),
+          collections: fetchCollection('Collection', { limit: 0 }).then(
+            ({ records }) =>
+              Object.fromEntries(
+                records
+                  .filter((collection) =>
+                    Object.keys(userInformation.availableCollections).includes(
+                      collection.id.toString()
+                    )
+                  )
+                  .map((collection) => [collection.id, collection])
+              )
+          ),
+        }),
+      []
+    ),
     true
   );
 
@@ -76,11 +73,14 @@ function SecurityPanel(): JSX.Element | null {
       >
   >({ type: 'MainState' });
 
-  const [users] = useAsyncState<IR<SpecifyResource<SpecifyUser>>>(
-    React.useCallback(async () => {
-      const users = new schema.models.SpecifyUser.LazyCollection();
-      return users.fetch({ limit: 0 }).then(({ models }) => index(models));
-    }, []),
+  const [users, setUsers] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpecifyUser', { limit: 0 }).then(({ records }) =>
+          index(records)
+        ),
+      []
+    ),
     false
   );
 
@@ -120,7 +120,7 @@ function SecurityPanel(): JSX.Element | null {
                 })
               }
             >
-              {data.institution.get('name')}
+              {data.institution.name}
             </Button.LikeLink>
           </section>
           <section>
@@ -133,8 +133,8 @@ function SecurityPanel(): JSX.Element | null {
                     ([id]) => f.parseInt(id) === collection.id
                   )
                 )
-                .map((collection) => (
-                  <li key={collection.cid}>
+                .map((collection, index) => (
+                  <li key={index}>
                     <Button.LikeLink
                       aria-pressed={
                         state.type === 'CollectionState' &&
@@ -148,7 +148,7 @@ function SecurityPanel(): JSX.Element | null {
                         })
                       }
                     >
-                      {collection.get('collectionName')}
+                      {collection.collectionName}
                     </Button.LikeLink>
                   </li>
                 ))}
@@ -197,15 +197,24 @@ function SecurityPanel(): JSX.Element | null {
             user={users[state.userId]}
             collections={data.collections}
             initialCollection={state.initialCollection}
-            onClose={(newUser): void =>
-              typeof newUser === 'undefined'
-                ? setState({ type: 'MainState' })
-                : setState({
-                    type: 'UserState',
-                    initialCollection: state.initialCollection,
-                    userId: newUser.id,
-                  })
-            }
+            onClose={(newUser): void => {
+              if (typeof newUser === 'undefined')
+                setState({ type: 'MainState' });
+              else if (newUser === false) {
+                setUsers(removeKey(users, state.userId.toString()));
+                setState({ type: 'MainState' });
+              } else {
+                setUsers({
+                  ...users,
+                  [newUser.id.toString()]: serializeResource(newUser),
+                });
+                setState({
+                  type: 'UserState',
+                  initialCollection: state.initialCollection,
+                  userId: newUser.id,
+                });
+              }
+            }}
             onOpenRole={(collectionId, roleId): void =>
               setState({
                 type: 'CollectionState',

@@ -158,8 +158,7 @@ class SetPasswordPT(PermissionTarget):
 @require_POST
 def set_password(request, userid):
     """Set <userid> specify user's password to the value in the 'password'
-    POST parameter. Must be logged in as an admin, otherwise HTTP 403
-    is returned.
+    POST parameter.
     """
     check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
     user = models.Specifyuser.objects.get(pk=userid)

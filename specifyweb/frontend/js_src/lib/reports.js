@@ -24,6 +24,7 @@ import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/modaldialog';
 import {getRelatedObjectCount} from './resource';
 import {hasPermission} from './permissions';
+import {serializeResource} from './datamodelutils';
 
 // TODO: rewrite to React
 
@@ -565,11 +566,10 @@ function fixupImages(reportXML) {
             if (!attachment) {
                 missingAttachments.push(filename);
                 imageUrl = badImageUrl;
-            } else {
+            } else
                 imageUrl = attachmentsAvailable() ?
-                    '"' + formatAttachmentUrl(attachment, undefined) + '"' :
+                    '"' + formatAttachmentUrl(serializeResource(attachment), undefined) + '"' :
                     badImageUrl;
-            }
             _.each(imageExprs, function(e) { e.text(imageUrl); });
         });
         return {

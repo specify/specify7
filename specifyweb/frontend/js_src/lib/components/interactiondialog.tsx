@@ -336,7 +336,7 @@ export function InteractionDialog({
                     })
                   }
                 >
-                  {formsText('ignoreAndContinue')}
+                  {formsText('ignore')}
                 </Button.Blue>
               </>
             )

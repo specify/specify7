@@ -1,38 +1,41 @@
 import React from 'react';
 
+import { fetchCollection } from '../collection';
+import type { Geography } from '../datamodel';
 import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
+import { hasTreeAccess } from '../permissions';
+import { toTreeTable } from '../specifymodel';
 import { isTreeResource } from '../treedefinitions';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
-import { toTreeTable } from '../specifymodel';
-import { Geography } from '../datamodel';
-import { hasTreeAccess } from '../permissions';
 
-async function fetchPossibleRanks(
+const fetchPossibleRanks = async (
   lowestChildRank: number,
   parentTreeDefItem: SpecifyResource<FilterTablesByEndsWith<'TreeDefItem'>>,
   treeDefinitionId: number
-): Promise<RA<PickListItemSimple>> {
-  const children = new parentTreeDefItem.specifyModel.LazyCollection({
-    filters: {
-      rankid__gt: parentTreeDefItem.get('rankId'),
-      treedef: treeDefinitionId,
-      orderby: 'rankid',
-      ...(lowestChildRank > 0 ? { rankid__lt: lowestChildRank } : {}),
+): Promise<RA<PickListItemSimple>> =>
+  fetchCollection(
+    parentTreeDefItem.specifyModel.name,
+    {
+      limit: 0,
+      treeDef: treeDefinitionId,
+      orderBy: 'rankId',
     },
-  });
-  return children.fetch({ limit: 0 }).then(({ models }) =>
+    {
+      rankid__gt: parentTreeDefItem.get('rankId'),
+      ...(lowestChildRank > 0 ? { rankid__lt: lowestChildRank } : {}),
+    }
+  ).then(({ records }) =>
     // Remove ranks after enforced rank
-    models
-      .slice(0, models.findIndex((model) => model.get('isEnforced')) + 1)
+    records
+      .slice(0, records.findIndex((model) => model.isEnforced) + 1)
       .map((model) => ({
-        value: model.url(),
-        title: model.get('title') ?? model.get('name'),
+        value: model.resource_uri,
+        title: model.title ?? model.name,
       }))
   );
-}
 
 export const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>

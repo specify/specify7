@@ -8,6 +8,7 @@ import * as querystring from './querystring';
 import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';
+import { SerializedResource } from './datamodelutils';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -74,73 +75,66 @@ const fetchToken = async (filename: string): Promise<string | undefined> =>
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
 
-export async function fetchThumbnail(
-  attachment: SpecifyResource<Attachment>,
+export const fetchThumbnail = async (
+  attachment: SerializedResource<Attachment>,
   scale = 256
 ): Promise<
   | {
       readonly src: string;
-      readonly alt: string;
+      readonly alt: string | undefined;
       readonly width: number;
       readonly height: number;
     }
   | undefined
-> {
-  const mimetype = attachment.get('mimeType');
-  if (typeof mimetype === 'string' && !thumbnailable.has(mimetype))
-    return {
-      ...iconForMimeType(mimetype),
-      width: scale,
-      height: scale,
-    };
-
-  const attachmentLocation = attachment.get('attachmentLocation');
-
-  return typeof attachmentLocation === 'string'
-    ? fetchToken(attachmentLocation).then((token) =>
+> =>
+  typeof attachment.mimeType === 'string' &&
+  !thumbnailable.has(attachment.mimeType)
+    ? {
+        ...iconForMimeType(attachment.mimeType),
+        width: scale,
+        height: scale,
+      }
+    : typeof attachment.attachmentLocation === 'string'
+    ? fetchToken(attachment.attachmentLocation).then((token) =>
         typeof settings === 'object'
           ? {
               src: querystring.format(settings.read, {
                 coll: settings.collection,
                 type: 'T',
-                filename: attachmentLocation,
+                filename: attachment.attachmentLocation ?? '',
                 scale: scale.toString(),
                 ...(typeof token === 'string' ? { token } : {}),
               }),
-              alt: attachmentLocation,
+              alt: attachment.attachmentLocation ?? undefined,
               width: scale,
               height: scale,
             }
           : undefined
       )
     : undefined;
-}
 
 export const formatAttachmentUrl = (
-  attachment: SpecifyResource<Attachment>,
+  attachment: SerializedResource<Attachment>,
   token: string | undefined
 ): string | undefined =>
   typeof settings === 'object'
     ? querystring.format(settings.read, {
         coll: settings.collection,
         type: 'O',
-        filename: attachment.get('attachmentLocation'),
-        downloadname: attachment.get('origFilename')?.replace(/^.*[/\\]/, ''),
+        filename: attachment.attachmentLocation ?? '',
+        downloadname: attachment.origFilename?.replace(/^.*[/\\]/, ''),
         ...(typeof token === 'string' ? { token } : {}),
       })
     : undefined;
 
-export async function fetchOriginalUrl(
-  attachment: SpecifyResource<Attachment>
-): Promise<string | undefined> {
-  const attachmentLocation = attachment.get('attachmentLocation');
-
-  return typeof attachmentLocation === 'string'
-    ? fetchToken(attachmentLocation).then((token) =>
+export const fetchOriginalUrl = async (
+  attachment: SerializedResource<Attachment>
+): Promise<string | undefined> =>
+  typeof attachment.attachmentLocation === 'string'
+    ? fetchToken(attachment.attachmentLocation).then((token) =>
         formatAttachmentUrl(attachment, token)
       )
     : Promise.resolve(undefined);
-}
 
 export const uploadFile = async (
   file: File,

@@ -141,23 +141,11 @@ const adminText = createDictionary({
     ca: 'Set Password',
     'es-es': 'Set Password',
   },
-  passwordLengthError: {
-    'en-us': 'Password must have at least six characters.',
-    'ru-ru': 'Пароль должен состоять не менее чем из шести символов.',
-    ca: 'Password must have at least six characters.',
-    'es-es': 'Password must have at least six characters.',
-  },
   passwordsDoNotMatchError: {
     'en-us': 'Passwords do not match.',
     'ru-ru': 'Пароли не соответствуют.',
     ca: 'Passwords do not match.',
     'es-es': 'Passwords do not match.',
-  },
-  saveUserBeforeSettingPasswordError: {
-    'en-us': 'Save user before setting password.',
-    'ru-ru': 'Сохраните пользователя перед установкой пароля.',
-    ca: 'Save user before setting password.',
-    'es-es': 'Save user before setting password.',
   },
   // PasswordChange
   password: {
@@ -428,6 +416,16 @@ const adminText = createDictionary({
     'ru-ru': 'Specify 6 Permissions',
     ca: 'Specify 6 Permissions',
     'es-es': 'Specify 6 Permissions',
+  },
+  setPasswordDialogMessage: {
+    'en-us': `Consider setting a password for this user. Users without a password
+      won't be able to sign in`,
+    'ru-ru': `Consider setting a password for this user. Users without a password
+      won't be able to sign in`,
+    ca: `Consider setting a password for this user. Users without a password
+      won't be able to sign in`,
+    'es-es': `Consider setting a password for this user. Users without a password
+      won't be able to sign in`,
   },
 });
 

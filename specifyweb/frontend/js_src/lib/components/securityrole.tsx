@@ -19,6 +19,7 @@ import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
+import { SerializedResource } from '../datamodelutils';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -32,7 +33,7 @@ export type Role = NewRole & {
 };
 
 export type UserRoles = IR<{
-  readonly user: SpecifyResource<SpecifyUser>;
+  readonly user: SerializedResource<SpecifyUser>;
   readonly roles: RA<number>;
 }>;
 
@@ -147,7 +148,7 @@ export function RoleView({
                         // TODO: trigger unload protect
                         onClick={(): void => handleOpenUser(user.id)}
                       >
-                        {user.get('name')}
+                        {user.name}
                       </Button.LikeLink>
                     </li>
                   ))}

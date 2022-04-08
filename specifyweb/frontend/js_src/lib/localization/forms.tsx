@@ -218,11 +218,11 @@ const formsText = createDictionary({
     ca: 'There are problems with the entry:',
     'es-es': 'There are problems with the entry:',
   },
-  ignoreAndContinue: {
-    'en-us': 'Ignore and continue',
-    'ru-ru': 'Игнорировать и продолжить',
-    ca: 'Ignore and continue',
-    'es-es': 'Ignore and continue',
+  ignore: {
+    'en-us': 'Ignore',
+    'ru-ru': 'Игнорировать',
+    ca: 'Ignore',
+    'es-es': 'Ignore',
   },
   recordSetCaption: {
     'en-us': (count: number) =>
@@ -917,12 +917,6 @@ const formsText = createDictionary({
     'ru-ru': 'Подключить к агенту',
     ca: 'Set Agents',
     'es-es': 'Set Agents',
-  },
-  setAgentsDisabledButtonDescription: {
-    'en-us': 'Save user before adding agents.',
-    'ru-ru': 'Сохраните пользователя перед добавлением агентов.',
-    ca: 'Save user before adding agents.',
-    'es-es': 'Save user before adding agents.',
   },
   userAgentsPluginDialogTitle: {
     'en-us': 'Set User Agents',
