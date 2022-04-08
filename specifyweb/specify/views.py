@@ -303,18 +303,27 @@ def set_user_agents(request, userid: int):
             check_permission_targets(collectionid, request.specify_user.id, [SetUserAgentsPT.update])
 
         # make sure every collection the user is permitted to access has an assigned user.
+        sp6_collections = users_collections_for_sp6(cursor, userid)
+        sp7_collections = users_collections_for_sp7(userid)
         missing_for_6 = [
             collectionid
-            for collectionid, _ in users_collections_for_sp6(cursor, userid)
+            for collectionid, _ in sp6_collections
             if collectionid not in collections
         ]
         missing_for_7 = [
             collectionid
-            for collectionid, _ in users_collections_for_sp7(userid)
+            for collectionid, _ in sp7_collections
             if collectionid not in collections
         ]
         if missing_for_6 or missing_for_7:
-            raise MissingAgentForAccessibleCollection({'missing_for_6': missing_for_6, 'missing_for_7': missing_for_7})
+            all_divisions = models.Division.objects.filter(
+                disciplines__collections__id__in=[cid for cid, _ in (sp6_collections + sp7_collections)]
+            ).values_list('id', flat=True)
+            raise MissingAgentForAccessibleCollection({
+                'missing_for_6': missing_for_6,
+                'missing_for_7': missing_for_7,
+                'all_accessible_divisions': list(all_divisions),
+            })
 
     return http.HttpResponse('', status=204)
 

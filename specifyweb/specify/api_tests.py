@@ -463,7 +463,11 @@ class UserApiTests(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_6': [], 'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'all_accessible_divisions': [self.division.id],
+                'missing_for_6': [],
+                'missing_for_7': [self.collection.id]
+            }}
         )
 
     def test_set_user_agents_multiple_exception(self):
