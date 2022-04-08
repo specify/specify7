@@ -433,10 +433,9 @@ const commonText = createDictionary({
     ca: 'Iniciar Sessió',
     'es-es': 'Login',
   },
-  // FIXME: localize
   helloMessage: {
     'en-us': (userName: string) => `Hello, ${userName}!`,
-    'ru-ru': (userName: string) => `Hello, ${userName}!`,
+    'ru-ru': (userName: string) => `Привет, ${userName}!`,
     ca: (userName: string) => `Hello, ${userName}!`,
     'es-es': (userName: string) => `Hello, ${userName}!`,
   },
@@ -447,9 +446,9 @@ const commonText = createDictionary({
       your chosen provider going forward.
     `,
     'ru-ru': `
-      You've been invited to associate an external login to
-      your Specify user account. This will enable you to log in to Specify with
-      your chosen provider going forward.
+      Вам было предложено связать внешний логин с вашей учетной записью
+      пользователя Specify. Это позволит вам войти в Specify с выбранным вами
+      провайдером в будущем.
     `,
     ca: `
       You've been invited to associate an external login to
@@ -464,7 +463,7 @@ const commonText = createDictionary({
   },
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
-    'ru-ru': 'Sign in with Specify Account',
+    'ru-ru': 'Войти с помощью Профиля Specify',
     ca: 'Sign in with Specify Account',
     'es-es': 'Sign in with Specify Account',
   },
@@ -474,10 +473,11 @@ const commonText = createDictionary({
       name and password, you can enter them below to associate that user with
       your ${providerName} account for future logins.
     `,
-    'ru-ru': (providerName: string) => `There is currently no Specify user
-      associated with your ${providerName} account. If you have a Specify user
-      name and password, you can enter them below to associate that user with
-      your ${providerName} account for future logins.
+    'ru-ru': (providerName: string) => `В настоящее время нет пользователя
+      Specify, связанного с вашей учетной записью ${providerName}. Если у вас
+      есть Specify имя пользователя и пароль, вы можете ввести их ниже, чтобы
+      связать этого пользователя с вашей учетной записью ${providerName} для
+      будущих входов в систему.
     `,
     ca: (providerName: string) => `There is currently no Specify user
       associated with your ${providerName} account. If you have a Specify user
@@ -1714,82 +1714,81 @@ const commonText = createDictionary({
     ca: "You don't have permission to perform this action.",
     'es-es': "You don't have permission to perform this action.",
   },
-  // FIXME: localize
   userAccount: {
     'en-us': 'User Account',
-    'ru-ru': 'User Account',
+    'ru-ru': 'Учетная запись',
     ca: 'User Account',
     'es-es': 'User Account',
   },
   customization: {
     'en-us': 'Customization',
-    'ru-ru': 'Customization',
+    'ru-ru': 'Настройка',
     ca: 'Customization',
     'es-es': 'Customization',
   },
   administration: {
     'en-us': 'Administrative Tools',
-    'ru-ru': 'Administrative Tools',
+    'ru-ru': 'Управления',
     ca: 'Administrative Tools',
     'es-es': 'Administrative Tools',
   },
   export: {
     'en-us': 'Export',
-    'ru-ru': 'Export',
+    'ru-ru': 'Экспорт',
     ca: 'Export',
     'es-es': 'Export',
   },
   import: {
     'en-us': 'Import',
-    'ru-ru': 'Import',
+    'ru-ru': 'Импорт',
     ca: 'Import',
     'es-es': 'Import',
   },
   documentation: {
     'en-us': 'Documentation',
-    'ru-ru': 'Documentation',
+    'ru-ru': 'Документация',
     ca: 'Documentation',
     'es-es': 'Documentation',
   },
   developers: {
     'en-us': 'Developer Tools',
-    'ru-ru': 'Developer Tools',
+    'ru-ru': 'Инструменты разработчика',
     ca: 'Developer Tools',
     'es-es': 'Developer Tools',
   },
   forum: {
     'en-us': 'Forum',
-    'ru-ru': 'Forum',
+    'ru-ru': 'Форум',
     ca: 'Forum',
     'es-es': 'Forum',
   },
-  cleanCache: {
-    'en-us': 'Clean Cache',
-    'ru-ru': 'Clean Cache',
-    ca: 'Clean Cache',
-    'es-es': 'Clean Cache',
+  clearCache: {
+    'en-us': 'Clear Cache',
+    'ru-ru': 'Очистить кеш',
+    ca: 'Clear Cache',
+    'es-es': 'Clear Cache',
   },
-  cleanedCacheDialogMessage: {
+  cleanerCacheDialogMessage: {
     'en-us': 'Cache has been cleaned. Please reload the page.',
-    'ru-ru': 'Cache has been cleaned. Please reload the page.',
+    'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
     ca: 'Cache has been cleaned. Please reload the page.',
     'es-es': 'Cache has been cleaned. Please reload the page.',
   },
   reload: {
     'en-us': 'Reload',
-    'ru-ru': 'Reload',
+    'ru-ru': 'Перезагрузить',
     ca: 'Reload',
     'es-es': 'Reload',
   },
   githubWiki: {
     'en-us': 'GitHub Wiki',
-    'ru-ru': 'GitHub Wiki',
+    'ru-ru': 'GitHub Вики',
     ca: 'GitHub Wiki',
     'es-es': 'GitHub Wiki',
   },
   dismiss: {
     'en-us': 'Dismiss',
-    'ru-ru': 'Dismiss',
+    'ru-ru': 'Отклонить',
     ca: 'Dismiss',
     'es-es': 'Dismiss',
   },
@@ -1799,19 +1798,19 @@ const commonText = createDictionary({
    */
   noPermission: {
     'en-us': 'NO PERMISSION',
-    'ru-ru': 'NO PERMISSION',
+    'ru-ru': 'ОТСУТСТВУЕТ РАЗРЕШЕНИЕ',
     ca: 'NO PERMISSION',
     'es-es': 'NO PERMISSION',
   },
   scale: {
     'en-us': 'Scale',
-    'ru-ru': 'Scale',
+    'ru-ru': 'Масштаб',
     ca: 'Scale',
     'es-es': 'Scale',
   },
   id: {
     'en-us': 'ID',
-    'ru-ru': 'ID',
+    'ru-ru': 'ИД',
     ca: 'ID',
     'es-es': 'ID',
   },

@@ -245,112 +245,111 @@ const adminText = createDictionary({
     ca: 'Note: preview may be out of date.',
     'es-es': 'Note: preview may be out of date.',
   },
-  // FIXME: localize
   userPolicies: {
     'en-us': 'User policies',
-    'ru-ru': 'User policies',
+    'ru-ru': 'Пользовательские политики',
     ca: 'User policies',
     'es-es': 'User policies',
   },
   institutionUserPolicies: {
     'en-us': 'Institution-wide User policies:',
-    'ru-ru': 'Institution-wide User policies:',
+    'ru-ru': 'Общеучрежденческие политики пользователей:',
     ca: 'Institution-wide User policies:',
     'es-es': 'Institution-wide User policies:',
   },
   allUsers: {
     'en-us': 'All Users',
-    'ru-ru': 'All Users',
+    'ru-ru': 'Все пользователи',
     ca: 'All Users',
     'es-es': 'All Users',
   },
   thisUser: {
     'en-us': 'This user',
-    'ru-ru': 'This user',
+    'ru-ru': 'Этот пользователь',
     ca: 'This user',
     'es-es': 'This user',
   },
   action: {
     'en-us': 'Action',
-    'ru-ru': 'Action',
+    'ru-ru': 'Действие',
     ca: 'Action',
     'es-es': 'Action',
   },
   resource: {
     'en-us': 'Resource',
-    'ru-ru': 'Resource',
+    'ru-ru': 'Ресурс',
     ca: 'Resource',
     'es-es': 'Resource',
   },
   allCollections: {
-    'en-us': 'All Collectins',
-    'ru-ru': 'All Collectins',
-    ca: 'All Collectins',
-    'es-es': 'All Collectins',
+    'en-us': 'All Collections',
+    'ru-ru': 'Все коллекции',
+    ca: 'All Collections',
+    'es-es': 'All Collections',
   },
   thisCollection: {
     'en-us': 'This collection',
-    'ru-ru': 'This collection',
+    'ru-ru': 'Эта коллекция',
     ca: 'This collection',
     'es-es': 'This collection',
   },
   allResources: {
     'en-us': 'All Resources',
-    'ru-ru': 'All Resources',
+    'ru-ru': 'Все ресурсы',
     ca: 'All Resources',
     'es-es': 'All Resources',
   },
   allActions: {
     'en-us': 'All Actions',
-    'ru-ru': 'All Actions',
+    'ru-ru': 'Все действия',
     ca: 'All Actions',
     'es-es': 'All Actions',
   },
   none: {
     'en-us': 'none',
-    'ru-ru': 'none',
+    'ru-ru': 'ничто',
     ca: 'none',
     'es-es': 'none',
   },
   collectionAccess: {
     'en-us': 'Collection Access',
-    'ru-ru': 'Collection Access',
+    'ru-ru': 'Доступ к коллекции',
     ca: 'Collection Access',
     'es-es': 'Collection Access',
   },
   createRoleDialogHeader: {
     'en-us': 'Create Role',
-    'ru-ru': 'Create Role',
+    'ru-ru': 'Создать роль',
     ca: 'Create Role',
     'es-es': 'Create Role',
   },
   newRole: {
     'en-us': 'New Role',
-    'ru-ru': 'New Role',
+    'ru-ru': 'Новая роль',
     ca: 'New Role',
     'es-es': 'New Role',
   },
   fromLibrary: {
     'en-us': 'From library:',
-    'ru-ru': 'From library:',
+    'ru-ru': 'Из библиотеки:',
     ca: 'From library:',
     'es-es': 'From library:',
   },
   fromExistingRole: {
     'en-us': 'From an existing role:',
-    'ru-ru': 'From an existing role:',
+    'ru-ru': 'Из существующей роли:',
     ca: 'From an existing role:',
     'es-es': 'From an existing role:',
   },
   fromScratch: {
     'en-us': 'From scratch',
-    'ru-ru': 'From scratch',
+    'ru-ru': 'С нуля',
     ca: 'From scratch',
     'es-es': 'From scratch',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
-    'ru-ru': 'Create new roles:',
+    'ru-ru': 'Будут созданы новые роли:',
     ca: 'Create new roles:',
     'es-es': 'Create new roles:',
   },
@@ -362,28 +361,27 @@ const adminText = createDictionary({
   },
   unchangedRoles: {
     'en-us': 'Unchanged roles:',
-    'ru-ru': 'Unchanged roles:',
+    'ru-ru': 'Эти роли будут обновлены:',
     ca: 'Unchanged roles:',
     'es-es': 'Unchanged roles:',
   },
   superAdmin: {
     'en-us': 'Super Admin',
-    'ru-ru': 'Super Admin',
+    'ru-ru': 'Супер администратор',
     ca: 'Super Admin',
     'es-es': 'Super Admin',
   },
 
-  // FIXME: localize
   // UserInviteLinkPlugin
   createInviteLink: {
     'en-us': 'Create Invite Link',
-    'ru-ru': 'Create Invite Link',
+    'ru-ru': 'Создать пригласительную ссылку',
     ca: 'Create Invite Link',
     'es-es': 'Create Invite Link',
   },
   userInviteLinkDialogHeader: {
     'en-us': 'User Invite Link',
-    'ru-ru': 'User Invite Link',
+    'ru-ru': 'Ссылка для приглашения пользователя',
     ca: 'User Invite Link',
     'es-es': 'User Invite Link',
   },
@@ -393,8 +391,8 @@ const adminText = createDictionary({
       them to log in for the first time.
     `,
     'ru-ru': (username: string) => `
-      Send the following link to ${username} to allow
-      them to log in for the first time.
+      Отправьте эту ссылку ${username}, чтобы разрешить
+      им войти в систему в первый раз.
     `,
     ca: (username: string) => `
       Send the following link to ${username} to allow
@@ -407,21 +405,21 @@ const adminText = createDictionary({
   },
   copyToClipboard: {
     'en-us': 'Copy to clipboard',
-    'ru-ru': 'Copy to clipboard',
+    'ru-ru': 'Скопировать в буфер обмена',
     ca: 'Copy to clipboard',
     'es-es': 'Copy to clipboard',
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',
-    'ru-ru': 'Specify 6 Permissions',
+    'ru-ru': 'Specify 6 Разрешения',
     ca: 'Specify 6 Permissions',
     'es-es': 'Specify 6 Permissions',
   },
   setPasswordDialogMessage: {
     'en-us': `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
-    'ru-ru': `Consider setting a password for this user. Users without a password
-      won't be able to sign in`,
+    'ru-ru': `Не забудьте установить пароль для этого пользователя. Пользователи
+      без пароля не смогут войти`,
     ca: `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
     'es-es': `Consider setting a password for this user. Users without a password
@@ -429,7 +427,7 @@ const adminText = createDictionary({
   },
   setCollections: {
     'en-us': 'Set Collections',
-    'ru-ru': 'Set Collections',
+    'ru-ru': 'Коллекции',
     ca: 'Set Collections',
     'es-es': 'Set Collections',
   },

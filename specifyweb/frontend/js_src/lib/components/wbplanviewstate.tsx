@@ -32,7 +32,7 @@ function TemplateSelection({
     <>
       {isInvalid && (
         <Dialog
-          header={wbText('invalidTemplateDialogHeader')}
+          header={wbText('noUploadPlanDialogHeader')}
           onClose={handleValid}
           buttons={commonText('close')}
         >

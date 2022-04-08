@@ -1041,22 +1041,21 @@ const formsText = createDictionary({
     ca: 'Generate Label on Save',
     'es-es': 'Generate Label on Save',
   },
-  // FIXME: localize
   recordSelectorUnloadProtectDialogHeader: {
     'en-us': 'Proceed without saving?',
-    'ru-ru': 'Proceed without saving?',
+    'ru-ru': 'Продолжить без сохранения?',
     ca: 'Proceed without saving?',
     'es-es': 'Proceed without saving?',
   },
   recordSelectorUnloadProtectDialogMessage: {
     'en-us': 'You might want to save this record before navigating away.',
-    'ru-ru': 'You might want to save this record before navigating away.',
+    'ru-ru': 'Не забудьте сохранить эту запись, прежде чем закрыть ее.',
     ca: 'You might want to save this record before navigating away.',
     'es-es': 'You might want to save this record before navigating away.',
   },
   creatingNewRecord: {
     'en-us': 'Creating new record',
-    'ru-ru': 'Creating new record',
+    'ru-ru': 'Создание новой записи',
     ca: 'Creating new record',
     'es-es': 'Creating new record',
   },

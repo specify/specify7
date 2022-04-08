@@ -30,11 +30,11 @@ function CacheBuster(): JSX.Element | null {
 
   return isLoaded ? (
     <Dialog
-      header={commonText('cleanCache')}
+      header={commonText('clearCache')}
       onClose={(): void => window.location.reload()}
       buttons={commonText('reload')}
     >
-      {commonText('cleanedCacheDialogMessage')}
+      {commonText('cleanerCacheDialogMessage')}
     </Dialog>
   ) : null;
 }
@@ -43,7 +43,7 @@ const View = createBackboneView(CacheBuster);
 
 const userTool: UserTool = {
   task: 'cache-buster',
-  title: commonText('cleanCache'),
+  title: commonText('clearCache'),
   isOverlay: false,
   view: () => new View(),
   groupLabel: commonText('developers'),
