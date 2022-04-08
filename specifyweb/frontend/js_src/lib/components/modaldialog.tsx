@@ -54,7 +54,6 @@ export function LoadingScreen(): null {
 const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   container: 'dialog-container',
-  content: 'dialog-content',
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
   narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]
@@ -323,7 +322,7 @@ export function Dialog({
          */}
         <div
           className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
-          dark:text-neutral-350 ${contentClassName} ${dialogClassNames.content}`}
+          dark:text-neutral-350 ${contentClassName}`}
           ref={contentRef}
           id={id('content')}
         >

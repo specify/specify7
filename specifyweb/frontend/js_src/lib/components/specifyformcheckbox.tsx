@@ -31,7 +31,7 @@ export function PrintOnSave({
   const [, setFormMeta] = React.useContext(FormContext);
   React.useEffect(
     () =>
-      setFormMeta((meta) => ({
+      setFormMeta?.((meta) => ({
         ...meta,
         printOnSave: value,
       })),
@@ -85,7 +85,7 @@ export function SpecifyFormCheckbox({
       checked={value ?? false}
       onValueChange={updateValue}
       isReadOnly={isReadOnly}
-      // Checkbox can not be required as checkbox does not have a "null" state
+      // Checkbox cannot be required as checkbox does not have a "null" state
     />
   );
   return typeof text === 'string' ? (

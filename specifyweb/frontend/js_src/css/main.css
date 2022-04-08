@@ -35,23 +35,23 @@
       bg-gray-200 dark:bg-neutral-700;
   }
 
-  .has-alt-background [type='text'],
-  .has-alt-background [type='email'],
-  .has-alt-background [type='url'],
-  .has-alt-background [type='password'],
-  .has-alt-background [type='number'],
-  .has-alt-background [type='date'],
-  .has-alt-background [type='datetime-local'],
-  .has-alt-background [type='month'],
-  .has-alt-background [type='search'],
-  .has-alt-background [type='tel'],
-  .has-alt-background [type='time'],
-  .has-alt-background [type='week'],
-  .has-alt-background [multiple],
-  .has-alt-background textarea,
-  .has-alt-background select,
-  :disabled:not(.icon), [readonly]
-  {
+  .has-alt-background [type='text']:not(:required),
+  .has-alt-background [type='email']:not(:required),
+  .has-alt-background [type='url']:not(:required),
+  .has-alt-background [type='password']:not(:required),
+  .has-alt-background [type='number']:not(:required),
+  .has-alt-background [type='date']:not(:required),
+  .has-alt-background [type='datetime-local']:not(:required),
+  .has-alt-background [type='month']:not(:required),
+  .has-alt-background [type='search']:not(:required),
+  .has-alt-background [type='tel']:not(:required),
+  .has-alt-background [type='time']:not(:required),
+  .has-alt-background [type='week']:not(:required),
+  .has-alt-background [multiple]:not(:required),
+  .has-alt-background textarea:not(:required),
+  .has-alt-background select:not(:required),
+  :disabled:not(.icon),
+  [readonly] {
     @apply bg-white dark:bg-neutral-900;
   }
 

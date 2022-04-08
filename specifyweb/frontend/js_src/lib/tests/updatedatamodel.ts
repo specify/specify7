@@ -45,19 +45,21 @@ export function regenerate(): string {
           toOneIndependent: 'RR<never, never>',
           toManyDependent: 'RR<never, never>',
           toManyIndependent: 'RR<never, never>',
-          ...group(
-            relationships.map((relationship) => [
-              `${relationship.type.endsWith('-to-many') ? 'toMany' : 'toOne'}${
-                relationship.isDependent() ? 'Dependent' : 'Independent'
-              }`,
-              `readonly ${relationship.name}:${
-                relationship.type.endsWith('-to-many')
-                  ? `RA<${relationship.relatedModel.name}>`
-                  : `${relationship.relatedModel.name}${
-                      relationship.isRequired ? '' : '|null'
-                    }`
-              }`,
-            ])
+          ...Object.fromEntries(
+            group(
+              relationships.map((relationship) => [
+                `${
+                  relationship.type.endsWith('-to-many') ? 'toMany' : 'toOne'
+                }${relationship.isDependent() ? 'Dependent' : 'Independent'}`,
+                `readonly ${relationship.name}:${
+                  relationship.type.endsWith('-to-many')
+                    ? `RA<${relationship.relatedModel.name}>`
+                    : `${relationship.relatedModel.name}${
+                        relationship.isRequired ? '' : '|null'
+                      }`
+                }`,
+              ])
+            )
           ),
         })
           .sort(sortFunction(([groupName]) => keyOrder.indexOf(groupName)))

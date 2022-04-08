@@ -13,6 +13,7 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import { toggleItem } from '../helpers';
 import { hasPermission } from '../permissions';
 import { SerializedResource } from '../datamodelutils';
+import { SpecifyResource } from '../legacytypes';
 
 function UserCollectionsUi({
   userId,
@@ -82,7 +83,7 @@ export function UserCollectionsPlugin({
   user,
   isNew,
 }: {
-  readonly user: SerializedResource<SpecifyUser>;
+  readonly user: SpecifyResource<SpecifyUser>;
   readonly isNew: boolean;
 }): JSX.Element {
   const [allCollections] = useAsyncState(fetchAllCollections, false);
@@ -105,9 +106,9 @@ export function UserCollectionsPlugin({
       <Button.Simple
         onClick={handleOpen}
         className="w-fit"
-        disabled={typeof user === 'undefined' || user.isAdmin || isNew}
+        disabled={typeof user === 'undefined' || user.get('isAdmin') || isNew}
         title={
-          user.isAdmin
+          user.get('isAdmin')
             ? adminText('notAvailableOnAdmins')
             : typeof user === 'undefined'
             ? commonText('loading')
@@ -116,7 +117,7 @@ export function UserCollectionsPlugin({
             : undefined
         }
       >
-        {adminText('collections')}
+        {adminText('setCollections')}
       </Button.Simple>
       {isOpen ? (
         typeof user === 'object' &&

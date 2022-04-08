@@ -53,13 +53,14 @@ export function findRequiredMissingFields(
 
   if (typeof mappings === 'undefined') return [];
 
-  const indexedMappings = group(
+  const mappingEntries = group(
     mappings.map((line) => [line[0], line.slice(1)] as const)
   );
+  const indexedMappings = Object.fromEntries(mappingEntries);
 
   // Handle -to-many references
   if (valueIsToManyIndex(mappings[0][0]))
-    return Object.entries(indexedMappings).flatMap(([index, mappings]) =>
+    return mappingEntries.flatMap(([index, mappings]) =>
       findRequiredMissingFields(
         tableName,
         mappings,

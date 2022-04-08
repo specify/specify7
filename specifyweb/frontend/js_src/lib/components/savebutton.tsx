@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AnySchema } from '../datamodelutils';
-import { camelToHuman } from '../helpers';
+import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -16,6 +16,7 @@ import {
 } from './hooks';
 import { Dialog } from './modaldialog';
 import { error } from '../assert';
+import { FormContext } from './resourceview';
 
 // TODO: handle case when there are save blockers for field that is not
 //   rendered on the form
@@ -75,11 +76,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   }, [form, id]);
 
   const loading = React.useContext(LoadingContext);
+  const [formContext, setFormContext] = React.useContext(FormContext);
 
   async function handleSubmit(
     event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
     addAnother = false
   ): Promise<void> {
+    setFormContext?.(replaceKey(formContext, 'triedToSubmit', true));
     event.preventDefault();
     event.stopPropagation();
 

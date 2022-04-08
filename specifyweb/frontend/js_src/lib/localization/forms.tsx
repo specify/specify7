@@ -442,10 +442,10 @@ const formsText = createDictionary({
     'es-es': 'Are you sure you want to permanently delete this item(s)?',
   },
   deleteConfirmationDialogMessage: {
-    'en-us': 'This action can not be undone.',
+    'en-us': 'This action cannot be undone.',
     'ru-ru': 'Это действие не может быть отменено.',
-    ca: 'This action can not be undone.',
-    'es-es': 'This action can not be undone.',
+    ca: 'This action cannot be undone.',
+    'es-es': 'This action cannot be undone.',
   },
   // PartialDateUi
   datePrecision: {
@@ -855,16 +855,16 @@ const formsText = createDictionary({
   },
   wrongTablePluginDialogMessage: {
     'en-us': (currentTable: string, correctTable: string) => `
-      The plugin can not be used on the ${currentTable} form.
+      The plugin cannot be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
     'ru-ru': (currentTable: string, correctTable: string) => `
       Этот плагин нельзя использовать в форме ${currentTable}. Его можно
       использовать только в форме ${correctTable}.`,
     ca: (currentTable: string, correctTable: string) => `
-      This plugin can not be used on the ${currentTable} form.
+      This plugin cannot be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
     'es-es': (currentTable: string, correctTable: string) => `
-      This plugin can not be used on the ${currentTable} form.
+      This plugin cannot be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
   },
   pluginName: {

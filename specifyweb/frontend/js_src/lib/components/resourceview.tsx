@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -71,7 +70,7 @@ export const FormContext = React.createContext<
   Readonly<
     [
       meta: FormMeta,
-      setMeta: (newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void
+      setMeta: ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void) | undefined
     ]
   >
 >([
@@ -79,7 +78,7 @@ export const FormContext = React.createContext<
     printOnSave: false,
     triedToSubmit: false,
   },
-  (): void => error('Form context is not defined'),
+  undefined,
 ]);
 FormContext.displayName = 'FormContext';
 

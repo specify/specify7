@@ -16,10 +16,10 @@ const adminText = createDictionary({
     'es-es': 'Remove Admin',
   },
   canNotRemoveYourself: {
-    'en-us': 'You can not revoke your own admin status',
+    'en-us': 'You cannot revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный статус администратора',
     ca: "No podeu revocar el vostre estat d'administrador",
-    'es-es': 'You can not revoke your own admin status',
+    'es-es': 'You cannot revoke your own admin status',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -426,6 +426,12 @@ const adminText = createDictionary({
       won't be able to sign in`,
     'es-es': `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
+  },
+  setCollections: {
+    'en-us': 'Set Collections',
+    'ru-ru': 'Set Collections',
+    ca: 'Set Collections',
+    'es-es': 'Set Collections',
   },
 });
 

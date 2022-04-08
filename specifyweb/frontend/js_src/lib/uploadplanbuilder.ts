@@ -6,6 +6,7 @@
  */
 
 import type { Tables } from './datamodel';
+import { group, omit, split, toLowerCase } from './helpers';
 import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
@@ -19,7 +20,6 @@ import type {
   UploadPlan,
   UploadTable,
 } from './uploadplanparser';
-import { group, omit, split, toLowerCase } from './helpers';
 import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
@@ -157,18 +157,18 @@ export const uploadPlanBuilder = (
   ),
 });
 
-const indexMappings = (mappings: RA<SplitMappingPath>) =>
-  Object.entries(
-    group(
-      mappings.map(
-        ({ mappingPath, ...rest }) =>
-          [
-            mappingPath[0],
-            {
-              ...rest,
-              mappingPath: mappingPath.slice(1),
-            },
-          ] as const
-      )
+const indexMappings = (
+  mappings: RA<SplitMappingPath>
+): RA<Readonly<[string, RA<SplitMappingPath>]>> =>
+  group(
+    mappings.map(
+      ({ mappingPath, ...rest }) =>
+        [
+          mappingPath[0],
+          {
+            ...rest,
+            mappingPath: mappingPath.slice(1),
+          },
+        ] as const
     )
   );

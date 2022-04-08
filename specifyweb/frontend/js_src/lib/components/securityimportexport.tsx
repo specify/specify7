@@ -160,51 +160,53 @@ export function SecurityImportExport({
                       .then<RA<Role>>(f.unary(JSON.parse))
                       .then((newRoles) =>
                         setNewRoles(
-                          group(
-                            filterArray(
-                              newRoles
-                                .map((newRole) =>
-                                  replaceKey<Role | NewRole>(
-                                    newRole,
-                                    'id',
-                                    Object.values(roles ?? {})?.find(
-                                      ({ name }) => name === newRole.name
-                                    )?.id ?? undefined
+                          Object.fromEntries(
+                            group(
+                              filterArray(
+                                newRoles
+                                  .map((newRole) =>
+                                    replaceKey<Role | NewRole>(
+                                      newRole,
+                                      'id',
+                                      Object.values(roles ?? {})?.find(
+                                        ({ name }) => name === newRole.name
+                                      )?.id ?? undefined
+                                    )
                                   )
-                                )
-                                .map((newRole) =>
-                                  f.var(
-                                    typeof newRole.id === 'number'
-                                      ? JSON.stringify(
-                                          omit(defined(roles)[newRole.id], [
-                                            'id',
-                                          ])
-                                        ) ===
-                                        JSON.stringify(omit(newRole, ['id']))
-                                        ? 'unchanged'
-                                        : 'changed'
-                                      : 'created',
-                                    (groupName) =>
-                                      (groupName === 'changed' &&
-                                        !hasPermission(
-                                          permissionName,
-                                          'update'
-                                        )) ||
-                                      (groupName === 'created' &&
-                                        !hasPermission(
-                                          permissionName,
-                                          'create'
-                                        ))
-                                        ? undefined
-                                        : [
-                                            groupName,
-                                            {
-                                              role: newRole,
-                                              isChecked: true,
-                                            },
-                                          ]
+                                  .map((newRole) =>
+                                    f.var(
+                                      typeof newRole.id === 'number'
+                                        ? JSON.stringify(
+                                            omit(defined(roles)[newRole.id], [
+                                              'id',
+                                            ])
+                                          ) ===
+                                          JSON.stringify(omit(newRole, ['id']))
+                                          ? 'unchanged'
+                                          : 'changed'
+                                        : 'created',
+                                      (groupName) =>
+                                        (groupName === 'changed' &&
+                                          !hasPermission(
+                                            permissionName,
+                                            'update'
+                                          )) ||
+                                        (groupName === 'created' &&
+                                          !hasPermission(
+                                            permissionName,
+                                            'create'
+                                          ))
+                                          ? undefined
+                                          : [
+                                              groupName,
+                                              {
+                                                role: newRole,
+                                                isChecked: true,
+                                              },
+                                            ]
+                                    )
                                   )
-                                )
+                              )
                             )
                           )
                         )

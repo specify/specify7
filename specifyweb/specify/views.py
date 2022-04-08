@@ -215,15 +215,40 @@ class SetUserAgentsPT(PermissionTarget):
                             "properties": {
                                 AgentInUseException.__name__: {
                                     'type': 'array',
-                                    'description': AgentInUseException.__doc__
+                                    'description': AgentInUseException.__doc__,
+                                    'items': {'type': 'integer'},
                                 },
                                 MultipleAgentsException.__name__: {
                                     'type': 'array',
-                                    'description': MultipleAgentsException.__doc__
+                                    'description': MultipleAgentsException.__doc__,
+                                    'items': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'divisionid': {'type': 'number'},
+                                            'agentid1': {'type': 'number'},
+                                            'agentid2': {'type': 'number'},
+                                        },
+                                    },
                                 },
                                 MissingAgentForAccessibleCollection.__name__: {
                                     'type': 'object',
-                                    'description': MissingAgentForAccessibleCollection.__doc__
+                                    'description': MissingAgentForAccessibleCollection.__doc__,
+                                    'properties': {
+                                        'missing_for_6': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
+                                        'missing_for_7': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
+                                    },
                                 }
                             }
                         }

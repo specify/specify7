@@ -3,11 +3,11 @@ import { queryFieldFilters } from './components/querybuilderfieldinput';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
+import { group, sortObjectsByKey } from './helpers';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
 import type { Parser } from './uiparse';
-import { group, sortObjectsByKey } from './helpers';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
@@ -22,8 +22,8 @@ export const flippedSortTypes = {
 
 export type QueryField = {
   /*
-   * Used only as a React [key] prop in order to optimize rendering when query
-   * lines move
+   * ID is used only as a React [key] prop in order to optimize rendering when
+   * query lines move
    */
   readonly id: number;
   readonly mappingPath: MappingPath;
@@ -41,46 +41,44 @@ export type QueryField = {
 export function parseQueryFields(
   queryFields: RA<SerializedResource<SpQueryField>>
 ): RA<QueryField> {
-  return Object.values(
-    group(
-      sortObjectsByKey(Array.from(queryFields), 'position').map(
-        ({ id, isNot, isDisplay, ...field }) => {
-          const fieldSpec = QueryFieldSpec.fromStringId(
-            field.stringId,
-            field.isRelFld ?? false
-          );
+  return group(
+    sortObjectsByKey(Array.from(queryFields), 'position').map(
+      ({ id, isNot, isDisplay, ...field }) => {
+        const fieldSpec = QueryFieldSpec.fromStringId(
+          field.stringId,
+          field.isRelFld ?? false
+        );
 
-          // Back-end treats empty startValue as any for many filters
-          const resetToAny =
-            field.startValue === '' &&
-            Object.values(queryFieldFilters).find(
-              ({ id }) => id == field.operStart
-            )?.resetToAny === true;
+        // Back-end treats empty startValue as any for many filters
+        const resetToAny =
+          field.startValue === '' &&
+          Object.values(queryFieldFilters).find(
+            ({ id }) => id == field.operStart
+          )?.resetToAny === true;
 
-          return [
-            mappingPathToString(fieldSpec.toMappingPath()),
-            {
-              id,
-              mappingPath: fieldSpec.toMappingPath(),
-              sortType: sortTypes[field.sortType],
-              filter: {
-                type: resetToAny
-                  ? 'any'
-                  : defined(
-                      Object.entries(queryFieldFilters).find(
-                        ([_, { id }]) => id === field.operStart
-                      )
-                    )[0],
-                isNot,
-                startValue: field.startValue ?? '',
-              },
-              isDisplay,
+        return [
+          mappingPathToString(fieldSpec.toMappingPath()),
+          {
+            id,
+            mappingPath: fieldSpec.toMappingPath(),
+            sortType: sortTypes[field.sortType],
+            filter: {
+              type: resetToAny
+                ? 'any'
+                : defined(
+                    Object.entries(queryFieldFilters).find(
+                      ([_, { id }]) => id === field.operStart
+                    )
+                  )[0],
+              isNot,
+              startValue: field.startValue ?? '',
             },
-          ] as const;
-        }
-      )
+            isDisplay,
+          },
+        ] as const;
+      }
     )
-  ).map((groupedFields) => ({
+  ).map(([_mappingPath, groupedFields]) => ({
     ...groupedFields[0],
     filters: groupedFields.map(({ filter }) => filter),
   }));

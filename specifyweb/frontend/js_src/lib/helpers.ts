@@ -148,17 +148,23 @@ export const split = <ITEM>(
       [[], []]
     );
 
-/** Convert an array of [key,value] tuples to a Dict[key, value[]]*/
-export const group = <KEY extends PropertyKey, VALUE>(
+/**
+ * Convert an array of [key,value] tuples to a RA<[key, RA<value>]>
+ *
+ * @remarks
+ * KEY doesn't have to be a string. It can be of any time
+ */
+export const group = <KEY, VALUE>(
   entries: RA<Readonly<[key: KEY, value: VALUE]>>
-): RR<KEY, RA<VALUE>> =>
-  entries.reduce(
-    (grouped, [key, value]) => ({
-      ...grouped,
-      [key]: [...(grouped[key] ?? []), value],
-    }),
-    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-    {} as RR<KEY, RA<VALUE>>
+): RA<Readonly<[key: KEY, values: RA<VALUE>]>> =>
+  Array.from(
+    entries
+      .reduce<Map<KEY, RA<VALUE>>>(
+        (grouped, [key, value]) =>
+          grouped.set(key, [...(grouped.get(key) ?? []), value]),
+        new Map()
+      )
+      .entries()
   );
 
 // Find a value in an array, and return it's mapped variant

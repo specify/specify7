@@ -265,10 +265,8 @@ export function UserTools({
    * very well supported
    */
   const [leftColumn, rightColumn] = split(
-    Object.entries(
-      group(
-        userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
-      )
+    group(
+      userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
     ),
     (_item, index, { length }) => index >= length / 2
   );

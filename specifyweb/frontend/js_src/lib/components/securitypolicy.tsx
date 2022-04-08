@@ -69,12 +69,10 @@ function PolicyView({
                 required
               >
                 <option value="" key="0" />
-                {Object.entries(
-                  group(
-                    Object.entries(defined(registry)).map(
-                      ([partName, { groupName, ...rest }]) =>
-                        [groupName, [partName, rest]] as const
-                    )
+                {group(
+                  Object.entries(defined(registry)).map(
+                    ([partName, { groupName, ...rest }]) =>
+                      [groupName, [partName, rest]] as const
                   )
                 ).map(([groupName, permissions]) =>
                   f.var(

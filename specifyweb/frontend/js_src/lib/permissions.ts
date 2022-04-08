@@ -44,7 +44,6 @@ export const collectionAccessResource = '/system/sp7/collection';
 export const operationPolicies = {
   '/system/sp7/collection': ['access'],
   '/admin/user/password': ['update'],
-  // FIXME: integrate with this new permission:
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
@@ -188,13 +187,11 @@ export const fetchContext = domainPromise
   )
   .then((query) =>
     split(
-      Object.entries(
-        group(
-          query.map((result) => [
-            result.resource,
-            [result.action, result.allowed] as const,
-          ])
-        )
+      group(
+        query.map((result) => [
+          result.resource,
+          [result.action, result.allowed] as const,
+        ])
       ).map(
         ([resource, actions]) =>
           [resource, Object.fromEntries(actions)] as const

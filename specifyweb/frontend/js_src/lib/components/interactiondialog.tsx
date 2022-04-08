@@ -4,6 +4,8 @@ import type { State } from 'typesafe-reducer';
 import { ajax } from '../ajax';
 import type { CollectionObject, Loan, RecordSet } from '../datamodel';
 import type { AnySchema, FilterTablesByEndsWith } from '../datamodelutils';
+import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
@@ -27,14 +29,12 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { sortFunction } from '../helpers';
-import { f } from '../functools';
 import { Button, className, H3, Link, Textarea } from './basic';
+import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { LoadingContext } from './contexts';
 
 export function InteractionDialog({
   recordSetsPromise,

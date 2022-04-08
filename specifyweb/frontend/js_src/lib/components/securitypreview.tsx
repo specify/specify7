@@ -195,15 +195,13 @@ function PreviewTables({
 }): JSX.Element {
   const table = React.useMemo<RA<Readonly<[keyof Tables, IR<Cell>]>>>(
     () =>
-      Object.entries(
-        group(
-          query
-            .filter(({ resource }) => resource in getTablePermissions())
-            .map(
-              (entry) =>
-                [resourceNameToModel(entry.resource).name, entry] as const
-            )
-        )
+      group(
+        query
+          .filter(({ resource }) => resource in getTablePermissions())
+          .map(
+            (entry) =>
+              [resourceNameToModel(entry.resource).name, entry] as const
+          )
       ).map(
         ([tableName, items]) =>
           [
@@ -322,12 +320,10 @@ function PreviewOperations({
 }): JSX.Element {
   const tree = React.useMemo(
     () =>
-      Object.entries(
-        group(
-          query
-            .filter(({ resource }) => !(resource in getTablePermissions()))
-            .map(({ resource, ...rest }) => [resource, rest] as const)
-        )
+      group(
+        query
+          .filter(({ resource }) => !(resource in getTablePermissions()))
+          .map(({ resource, ...rest }) => [resource, rest] as const)
       ).reduce<R<WritableTree>>((registry, [resource, actions]) => {
         const resourceParts = resourceNameToParts(resource);
         resourceParts.reduce<R<WritableTree>>(

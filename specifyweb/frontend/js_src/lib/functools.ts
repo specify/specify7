@@ -163,4 +163,5 @@ export const f = {
   round: (number: number, step: number): number =>
     Math.round(number / step) * step,
   true: (): true => true,
+  flat: <T>(array: RA<RA<T>>): RA<T> => array.flat(),
 } as const;

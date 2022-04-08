@@ -186,20 +186,18 @@ const toolTables = f.store(
  * back-end
  */
 export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
-  Object.entries(
-    group(
-      compressPermissionQuery(
-        Object.entries(policies).flatMap(([resource, actions]) =>
-          actions.map((action) => ({
-            resource,
-            action,
-            allowed: true,
-            matching_role_policies: [],
-            matching_user_policies: [],
-          }))
-        )
-      ).map(({ resource, action }) => [resource, action])
-    )
+  group(
+    compressPermissionQuery(
+      Object.entries(policies).flatMap(([resource, actions]) =>
+        actions.map((action) => ({
+          resource,
+          action,
+          allowed: true,
+          matching_role_policies: [],
+          matching_user_policies: [],
+        }))
+      )
+    ).map(({ resource, action }) => [resource, action])
   ).map(([resource, actions]) => ({ resource, actions }));
 
 /** Convert virtual tool policies back to real system table policies */
