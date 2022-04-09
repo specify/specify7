@@ -25,7 +25,6 @@ export type CacheDefinitions = {
     readonly mappingViewHeight: number;
   };
   readonly queryBuilder: {
-    readonly showHiddenTables: boolean;
     readonly showHiddenFields: boolean;
     readonly mappingViewHeight: number;
   };
@@ -58,9 +57,7 @@ export type CacheDefinitions = {
     readonly listOfQueries: SortConfig<
       keyof SpQuery['fields'] & ('name' | 'timestampCreated')
     >;
-    readonly listOfDataSets: SortConfig<
-      'name' | 'dateCreated' | 'dateUploaded'
-    >;
+    readonly: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>;
   };
   readonly attachments: {
     readonly sortOrder:

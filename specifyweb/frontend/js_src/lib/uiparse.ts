@@ -32,12 +32,16 @@ const stringGuard =
       ? formatter(value)
       : error('Value is not a string');
 
-export const formatter: IR<(value: unknown) => unknown> = {
-  trim: stringGuard(f.trim),
-  toLowerCase: stringGuard((value) => value.toLowerCase()),
-  int: stringGuard(Number.parseInt),
-  float: stringGuard(Number.parseFloat),
-} as const;
+export const formatter = f.store(
+  (): IR<(value: unknown) => unknown> =>
+    ({
+      trim: stringGuard(f.trim),
+      toLowerCase: stringGuard((value) => value.toLowerCase()),
+      toUpperCase: stringGuard((value) => value.toLowerCase()),
+      int: stringGuard(Number.parseInt),
+      float: stringGuard(Number.parseFloat),
+    } as const)
+);
 
 export const validators: IR<(value: unknown) => undefined | string> = {
   number: (value) =>
@@ -63,7 +67,7 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<ReturnType<typeof formatter>[string]>;
   // Validate the value
   readonly validators: RA<typeof validators[string]>;
   // Format the value after formatting it
@@ -84,149 +88,147 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
 
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 
-export const parsers: RR<
-  ExtendedJavaType,
-  ExtendedJavaType | Parser | (() => Parser)
-> = {
-  // TODO: test validation of boolean fields
-  'java.lang.Boolean': {
-    type: 'checkbox',
-    pattern: /\s+(?:true|false|yes|no)\s+/i,
-    title: formsText('illegalBool'),
-    formatters: [formatter.toLowerCase],
-    parser: stringGuard((value) => ['yes', 'true'].includes(value)),
-    printFormatter: (value) =>
-      typeof value === 'undefined'
-        ? ''
-        : Boolean(value)
-        ? queryText('yes')
-        : commonText('no'),
-    value: false,
-  },
+export const parsers = f.store(
+  (): RR<ExtendedJavaType, ExtendedJavaType | Parser | (() => Parser)> => ({
+    'java.lang.Boolean': {
+      type: 'checkbox',
+      pattern: /\s+(?:true|false|yes|no)\s+/i,
+      title: formsText('illegalBool'),
+      formatters: [formatter().toLowerCase],
+      parser: stringGuard((value) => ['yes', 'true'].includes(value)),
+      printFormatter: (value) =>
+        typeof value === 'undefined'
+          ? ''
+          : Boolean(value)
+          ? queryText('yes')
+          : commonText('no'),
+      value: false,
+    },
 
-  'java.lang.Byte': {
-    type: 'number',
-    min: 0,
-    max: 255,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: 0,
-    printFormatter: numberPrintFormatter,
-  },
+    'java.lang.Byte': {
+      type: 'number',
+      min: 0,
+      max: 255,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: 0,
+      printFormatter: numberPrintFormatter,
+    },
 
-  'java.lang.Double': {
-    type: 'number',
-    formatters: [formatter.float],
-    validators: [validators.number],
-    value: 0,
-    printFormatter: numberPrintFormatter,
-  },
+    'java.lang.Double': {
+      type: 'number',
+      formatters: [formatter().float],
+      validators: [validators.number],
+      value: 0,
+      printFormatter: numberPrintFormatter,
+    },
 
-  'java.lang.Float': 'java.lang.Double',
+    'java.lang.Float': 'java.lang.Double',
 
-  'java.lang.Long': {
-    type: 'number',
-    min: Number.MIN_SAFE_INTEGER,
-    max: Number.MAX_SAFE_INTEGER,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: 0,
-    printFormatter: numberPrintFormatter,
-  },
+    'java.lang.Long': {
+      type: 'number',
+      min: Number.MIN_SAFE_INTEGER,
+      max: Number.MAX_SAFE_INTEGER,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: 0,
+      printFormatter: numberPrintFormatter,
+    },
 
-  'java.lang.Integer': {
-    type: 'number',
-    min: -(2 ** 31),
-    max: 2 ** 31,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: 0,
-    printFormatter: numberPrintFormatter,
-  },
+    'java.lang.Integer': {
+      type: 'number',
+      min: -(2 ** 31),
+      max: 2 ** 31,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: 0,
+      printFormatter: numberPrintFormatter,
+    },
 
-  'java.lang.Short': {
-    type: 'number',
-    min: -1 << 15,
-    max: 1 << 15,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: 0,
-    printFormatter: numberPrintFormatter,
-  },
+    'java.lang.Short': {
+      type: 'number',
+      min: -1 << 15,
+      max: 1 << 15,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: 0,
+      printFormatter: numberPrintFormatter,
+    },
 
-  'java.lang.String': {
-    type: 'text',
-    maxLength: 2 ** 31 - 1,
-    value: '',
-  },
+    'java.lang.String': {
+      type: 'text',
+      maxLength: 2 ** 31 - 1,
+      value: '',
+    },
 
-  'java.math.BigDecimal': 'java.lang.Double',
+    'java.math.BigDecimal': 'java.lang.Double',
 
-  'java.sql.Timestamp': () => ({
-    type: 'date',
-    minLength: fullDateFormat().length,
-    maxLength: fullDateFormat().length,
-    formatters: [
-      formatter.toLowerCase,
-      stringGuard((value) =>
-        value === 'today' ? dayjs() : dayjs(value, fullDateFormat(), true)
-      ),
-    ],
-    validators: [
-      (value) =>
-        (value as any).isValid()
-          ? undefined
-          : formsText('requiredFormat')(fullDateFormat()),
-    ],
-    title: formsText('requiredFormat')(fullDateFormat()),
-    parser: (value) => (value as any).format(databaseDateFormat),
-    value: dayjs().format(databaseDateFormat),
-  }),
+    'java.sql.Timestamp': () => ({
+      type: 'date',
+      minLength: fullDateFormat().length,
+      maxLength: fullDateFormat().length,
+      formatters: [
+        formatter().toLowerCase,
+        stringGuard((value) =>
+          value === 'today' ? dayjs() : dayjs(value, fullDateFormat(), true)
+        ),
+      ],
+      validators: [
+        (value) =>
+          (value as any).isValid()
+            ? undefined
+            : formsText('requiredFormat')(fullDateFormat()),
+      ],
+      title: formsText('requiredFormat')(fullDateFormat()),
+      parser: (value) => (value as any).format(databaseDateFormat),
+      value: dayjs().format(databaseDateFormat),
+    }),
 
-  'java.util.Calendar': 'java.sql.Timestamp',
+    'java.util.Calendar': 'java.sql.Timestamp',
 
-  'java.util.Date': 'java.sql.Timestamp',
+    'java.util.Date': 'java.sql.Timestamp',
 
-  year: {
-    type: 'number',
-    min: 1,
-    max: 9999,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: new Date().getFullYear().toString(),
-  },
+    year: {
+      type: 'number',
+      min: 1,
+      max: 9999,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: new Date().getFullYear().toString(),
+    },
 
-  month: {
-    type: 'number',
-    min: 1,
-    max: 12,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    // Caution: getMonth is 0-based
-    value: (new Date().getMonth() + 1).toString(),
-  },
+    month: {
+      type: 'number',
+      min: 1,
+      max: 12,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      // Caution: getMonth is 0-based
+      value: (new Date().getMonth() + 1).toString(),
+    },
 
-  day: {
-    type: 'number',
-    min: 1,
-    max: 31,
-    step: 1,
-    formatters: [formatter.int],
-    validators: [validators.number],
-    value: new Date().getDate().toString(),
-  },
+    day: {
+      type: 'number',
+      min: 1,
+      max: 31,
+      step: 1,
+      formatters: [formatter().int],
+      validators: [validators.number],
+      value: new Date().getDate().toString(),
+    },
 
-  text: {
-    type: 'text',
-    value: '',
-  },
-};
+    text: {
+      type: 'text',
+      value: '',
+    },
+  })
+);
 
 type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly type: ExtendedJavaType | RelationshipType;
@@ -234,8 +236,8 @@ type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
 };
 
 export function parserFromType(fieldType: ExtendedJavaType): Parser {
-  let parser = parsers[fieldType];
-  if (typeof parser === 'string') parser = parsers[parser];
+  let parser = parsers()[fieldType];
+  if (typeof parser === 'string') parser = parsers()[parser];
   if (typeof parser === 'function') parser = parser();
   if (typeof parser !== 'object') parser = { type: 'text' };
   return parser;
@@ -253,7 +255,7 @@ export function resolveParser(
     typeof fullField.datePart === 'string' &&
     fullField.datePart !== 'fullDate'
   )
-    parser = parsers[fullField.datePart] as Parser;
+    parser = parsers()[fullField.datePart] as Parser;
 
   const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {

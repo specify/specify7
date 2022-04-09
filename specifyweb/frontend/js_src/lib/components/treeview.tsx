@@ -12,7 +12,7 @@ import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import { hasTreeAccess } from '../permissions';
 import * as querystring from '../querystring';
-import { getIntPref, getPref } from '../remoteprefs';
+import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
@@ -87,8 +87,7 @@ function TreeView<SCHEMA extends AnyTree>({
   useTitle(treeText('treeViewTitle')(table.label));
 
   // Node sort order
-  const sortOrderFieldName = `${tableName}.treeview_sort_field`;
-  const sortField = getPref(sortOrderFieldName, 'name');
+  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${treeDefinitionId}`;
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
@@ -96,12 +95,14 @@ function TreeView<SCHEMA extends AnyTree>({
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getIntPref(`TreeEditor.Rank.Threshold.${tableName}`);
+  const statsThreshold = getPref(
+    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+  );
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
-      typeof statsThreshold === 'undefined' || statsThreshold > rankId
-        ? Promise.resolve({})
-        : fetchStats(`${baseUrl}/${nodeId}/stats/`),
+      rankId >= statsThreshold
+        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+        : Promise.resolve({}),
     [baseUrl, statsThreshold]
   );
 

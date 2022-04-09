@@ -2,7 +2,7 @@ import React from 'react';
 
 import commonText from '../localization/common';
 import welcomeText from '../localization/welcome';
-import { getBoolPref, getPref } from '../remoteprefs';
+import { getPref } from '../remoteprefs';
 import { getSystemInfo } from '../systeminfo';
 import taxonTiles from '../taxontiles';
 import { Button, H3, Link } from './basic';
@@ -12,12 +12,8 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
 
-const DO_TAXON_TILES = getBoolPref('sp7.doTaxonTiles', false);
-const defaultWelcomeScreenImage = '/static/img/icons_as_background_splash.png';
-const welcomeScreenUrl = getPref(
-  'sp7.welcomeScreenUrl',
-  defaultWelcomeScreenImage
-);
+const DO_TAXON_TILES = getPref('sp7.doTaxonTiles');
+const welcomeScreenUrl = getPref('sp7.welcomeScreenUrl');
 
 function WelcomeScreenContent(): JSX.Element {
   const [isValidUrl, setIsValidUrl] = React.useState(false);

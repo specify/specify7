@@ -130,10 +130,15 @@ export const f = {
    * Wrap a pure function that does not need any arguments in this
    * call to remember and return its return value.
    *
-   * Useful not just for perfornance reasons, but also for delaying evaluation
-   * of an object untill the first time it is needed (i.e., if object is in
+   * @remarks
+   * Useful not just for performance reasons, but also for delaying evaluation
+   * of an object until the first time it is needed (i.e., if object is in
    * the global scope, and depends on the datamodel, delaying evaluation
    * allows for creation of the object only after schema is loaded)
+   *
+   * Additionally, this function has commonly used to avoid circular by delaying
+   * creation of an object until it is needed for the first time.
+   *
    */
   store:
     <RETURN>(callback: () => RETURN): (() => RETURN) =>

@@ -17,7 +17,6 @@ import {
 } from '../lifemapperutills';
 import commonText from '../localization/common';
 import lifemapperText from '../localization/lifemapper';
-import { getBoolPref } from '../remoteprefs';
 import { toTable } from '../specifymodel';
 import { getSystemInfo } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
@@ -25,6 +24,7 @@ import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { getPref } from '../remoteprefs';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -129,7 +129,7 @@ type OutgoingMessage =
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema>
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  !getBoolPref('s2n.badges.disable', false) &&
+  getPref('s2n.badges.enabled') &&
   !resource.isNew() &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
 

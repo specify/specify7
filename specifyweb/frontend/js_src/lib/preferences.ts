@@ -183,7 +183,7 @@ export const preferenceDefinitions = {
               type: 'number',
               min: 0,
               step: 1,
-              formatters: [formatter.int],
+              formatters: [formatter().int],
               validators: [validators.number],
             },
           }),

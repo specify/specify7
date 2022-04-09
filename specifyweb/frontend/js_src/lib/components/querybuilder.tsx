@@ -49,6 +49,7 @@ import { MappingView } from './wbplanviewmappercomponents';
  * FIXME: query results editing & deleting
  * FIXME: creating record set out of a subset of results
  * To Test:
+ * FIXME: test #318
  * FIXME: test "any" filters in sp6 and sp7
  * FIXME: test query reports
  * FIXME: test using sp7 queries in sp6 and vice versa
