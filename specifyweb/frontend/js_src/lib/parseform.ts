@@ -163,7 +163,7 @@ function postProcessRows(
         )
     )
   );
-  const newRows = rows.map<RA<FormCellDefinition>>((row, index) => {
+  const newRows = rows.map<RA<FormCellDefinition>>((row, rowIndex) => {
     const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
     if (totalColumns > columns.length)
       /*
@@ -172,7 +172,7 @@ function postProcessRows(
        * make total colSpan be larger than the number of defined columns
        */
       console.error(
-        `Row ${index}/${rows.length} has ${totalColumns} column(s), when
+        `Row ${rowIndex}/${rows.length} has ${totalColumns} column(s), when
           expected only ${columns.length}`,
         { row, columns }
       );
@@ -203,21 +203,35 @@ function postProcessRows(
            * If a Label without a labelForCellId attribute precedes a field with an
            * ID, but no label, associate the label with that field
            */
-          cell.type === 'Label' &&
-          typeof cell.labelForCellId === 'undefined' &&
-          typeof row[index + 1]?.id === 'string' &&
-          // Don't do this for plugins, as they may already have a label
-          f.var(
-            row[index + 1],
-            (cell) =>
-              cell.type !== 'Field' || cell.fieldDefinition.type !== 'Plugin'
-          ) &&
-          typeof initialLabelsForCells[defined(row[index + 1].id)] ===
-            'undefined'
-            ? {
-                ...cell,
-                labelForCellId: row[index + 1].id,
-              }
+          cell.type === 'Label' && typeof cell.labelForCellId === 'undefined'
+            ? typeof row[index + 1]?.id === 'string' &&
+              // Don't do this for plugins, as they may already have a label
+              f.var(
+                row[index + 1],
+                (cell) =>
+                  cell.type !== 'Field' ||
+                  cell.fieldDefinition.type !== 'Plugin'
+              ) &&
+              typeof initialLabelsForCells[defined(row[index + 1].id)] ===
+                'undefined'
+              ? {
+                  // Assocate label with a field that follows it
+                  ...cell,
+                  labelForCellId: row[index + 1].id,
+                }
+              : columns.length === 1 &&
+                typeof row[rowIndex + 1]?.id === 'string' &&
+                typeof initialLabelsForCells[defined(row[rowIndex + 1].id)] ===
+                  'undefined'
+              ? {
+                  /*
+                   * Similar, but associate label with cell in next row, if
+                   * there is only one column
+                   */
+                  ...cell,
+                  labelForCellId: row[rowIndex + 1].id,
+                }
+              : cell
             : cell
         )
         .map((cell) =>
@@ -284,7 +298,7 @@ function postProcessRows(
   });
   const labelsForCells = Object.fromEntries(
     filterArray(
-      rows
+      newRows
         .flat()
         .map((cell) =>
           cell.type === 'Label' && typeof cell.labelForCellId === 'string'

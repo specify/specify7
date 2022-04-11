@@ -8,6 +8,7 @@ import type {
   SerializedResource,
 } from '../datamodelutils';
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
+import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
 import * as navigation from '../navigation';
 import { hasTreeAccess } from '../permissions';
@@ -26,13 +27,16 @@ import {
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
 import { Autocomplete } from './autocomplete';
-import { Button, Container, H2, Input } from './basic';
+import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState, useId, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { NotFound } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
 import createBackboneView from './reactbackboneextend';
+import { deserializeResource } from './resource';
+import { ResourceView } from './resourceview';
 import { useCachedState } from './stateCache';
+import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
 
@@ -40,11 +44,11 @@ const defaultCacheValue = [] as const;
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
-  treeDefinitionId,
+  treeDefinition,
   treeDefinitionItems,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly treeDefinitionId: number;
+  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
@@ -88,7 +92,9 @@ function TreeView<SCHEMA extends AnyTree>({
 
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${treeDefinitionId}`;
+  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+    treeDefinition.id
+  }`;
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(`${baseUrl}/${parentId}/${sortField}`),
@@ -122,12 +128,17 @@ function TreeView<SCHEMA extends AnyTree>({
   const toolbarButtonRef = React.useRef<HTMLButtonElement | null>(null);
   const [searchValue, setSearchValue] = React.useState<string>('');
 
+  const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
+
   return typeof rows === 'undefined' ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
         <TableIcon name={table.name} />
-        <H2>{table.label}</H2>
-        {/* A react component that is also a TypeScript generic */}
+        <H2 title={treeDefinition.get('remarks') ?? undefined}>
+          {treeDefinition.get('name')}
+        </H2>
+        <EditTreeDefinition treeDefinition={treeDefinition} />
+        {/* A React component that is also a TypeScript generic */}
         <Autocomplete<SerializedResource<SCHEMA>>
           value={searchValue}
           source={async (value) =>
@@ -194,6 +205,12 @@ function TreeView<SCHEMA extends AnyTree>({
           )}
         </Autocomplete>
         <span className="flex-1 -ml-2" />
+        <Button.Simple
+          onClick={handleToggleEditingRanks}
+          aria-pressed={isEditingRanks}
+        >
+          {treeText('editRanks')}
+        </Button.Simple>
         <TreeViewActions<SCHEMA>
           tableName={tableName}
           focusRef={toolbarButtonRef}
@@ -256,6 +273,10 @@ function TreeView<SCHEMA extends AnyTree>({
                     (name) => name[0]
                   )}
                 </Button.LikeLink>
+                {isEditingRanks &&
+                collapsedRanks?.includes(rank.rankId) !== true ? (
+                  <EditTreeRank rank={rank} />
+                ) : undefined}
               </div>
             ))}
           </div>
@@ -316,6 +337,32 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 }
 
+function EditTreeRank({
+  rank,
+}: {
+  readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <ResourceView
+          resource={resource}
+          mode="edit"
+          canAddAnother={false}
+          dialog="modal"
+          onClose={handleClose}
+          onSaved={(): void => window.location.reload()}
+          onDeleted={undefined}
+          isSubForm={false}
+        />
+      )}
+    </>
+  );
+}
+
 function TreeViewWrapper({
   table,
 }: {
@@ -341,7 +388,7 @@ function TreeViewWrapper({
     return typeof treeDefinition === 'object' ? (
       <TreeView
         tableName={tableName}
-        treeDefinitionId={treeDefinition.definition.id}
+        treeDefinition={treeDefinition.definition}
         treeDefinitionItems={treeDefinition.ranks}
       />
     ) : null;

@@ -9,7 +9,7 @@ import { serializeResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
-import { getModel, schema } from './schema';
+import { getModel } from './schema';
 
 /*
  * TODO: experiment with an object singleton:
@@ -80,16 +80,6 @@ export function parseResourceUrl(
   return Array.isArray(parsed) && typeof tableName === 'string'
     ? [tableName, Number.parseInt(parsed[1])]
     : undefined;
-}
-
-export function resourceFromUri(
-  resourceUrl: string,
-  options = { noBusinessRules: false }
-): SpecifyResource<AnySchema> | undefined {
-  const parsed = parseResourceUrl(resourceUrl);
-  if (typeof parsed === 'undefined') return undefined;
-  const [tableName, id] = parsed;
-  return new schema.models[tableName].Resource({ id }, options);
 }
 
 /** Assuming urls are constructed by ResourceBase.url method */

@@ -30,10 +30,10 @@ const fetchPossibleRanks = async (
   ).then(({ records }) =>
     // Remove ranks after enforced rank
     records
-      .slice(0, records.findIndex((model) => model.isEnforced) + 1)
-      .map((model) => ({
-        value: model.resource_uri,
-        title: model.title ?? model.name,
+      .slice(0, records.findIndex((resource) => resource.isEnforced) + 1)
+      .map((resource) => ({
+        value: resource.resource_uri,
+        title: resource.title ?? resource.name,
       }))
   );
 
@@ -47,7 +47,7 @@ export const fetchLowestChildRank = async (
         .then(({ models }) =>
           models.length === 0
             ? -1
-            : Math.min(...models.map((model) => model.get('rankId')))
+            : Math.min(...models.map((resource) => resource.get('rankId')))
         );
 
 export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
@@ -68,14 +68,13 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         // Parent is undefined for root tree node
         .then(async (parent) =>
           (parent as SpecifyResource<Geography> | undefined)?.rgetPromise(
-            'definitionItem',
-            true
+            'definitionItem'
           )
         )
         .then((treeDefinitionItem) =>
           typeof treeDefinitionItem === 'object'
             ? treeDefinitionItem
-                .rgetPromise('treeDef', true)
+                .rgetPromise('treeDef')
                 .then(async ({ id }) =>
                   lowestChildRank.then(async (rankId) =>
                     fetchPossibleRanks(

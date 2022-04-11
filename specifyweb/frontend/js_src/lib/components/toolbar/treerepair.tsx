@@ -1,20 +1,26 @@
 import React from 'react';
 
 import { ping } from '../../ajax';
+import type { TaxonTreeDef } from '../../datamodel';
+import type { FilterTablesByEndsWith } from '../../datamodelutils';
+import { f } from '../../functools';
+import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
+import { hasTreeAccess } from '../../permissions';
 import * as querystring from '../../querystring';
-import { getTreeModel } from '../../schema';
-import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
-import { defined } from '../../types';
-import { Button, className, Link, Ul } from '../basic';
+import {
+  getDisciplineTrees,
+  treeDefinitions,
+  treeRanksPromise,
+} from '../../treedefinitions';
+import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
-import { useAsyncState, useTitle } from '../hooks';
+import { LoadingContext } from '../contexts';
+import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { LoadingContext } from '../contexts';
-import { f } from '../../functools';
-import { hasTreeAccess } from '../../permissions';
+import { ResourceView } from '../resourceview';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -33,10 +39,6 @@ export function TreeSelectDialog({
     true
   );
 
-  const trees = Object.fromEntries(
-    getDisciplineTrees().map((tree) => [tree, defined(getTreeModel(tree))])
-  );
-
   return typeof treeRanks === 'object' ? (
     <Dialog
       header={title}
@@ -49,30 +51,42 @@ export function TreeSelectDialog({
     >
       <nav>
         <Ul>
-          {Object.entries(trees)
-            .filter(([_tree, { name }]) => hasTreeAccess(name, 'update'))
-            .map(([tree, model]) => (
-              <li key={tree}>
-                <Link.Default
-                  href={getLink(tree)}
-                  className={
-                    typeof handleClick === 'function'
-                      ? className.navigationHandled
-                      : undefined
-                  }
-                  onClick={(event): void => {
-                    if (typeof handleClick === 'undefined') return;
-                    event.preventDefault();
-                    loading(
-                      Promise.resolve(handleClick(tree)).then(handleClose)
-                    );
-                  }}
-                >
-                  <TableIcon name={tree} tableLabel={false} />
-                  {model.label}
-                </Link.Default>
-              </li>
-            ))}
+          {getDisciplineTrees()
+            .filter((treeName) => hasTreeAccess(treeName, 'update'))
+            .map((treeName) =>
+              f.var(
+                treeDefinitions[treeName]
+                  .definition as SpecifyResource<TaxonTreeDef>,
+                (treeDefinition) => (
+                  <li key={treeName}>
+                    <div className="flex gap-2">
+                      <Link.Default
+                        href={getLink(treeName)}
+                        className={`flex-1 ${
+                          typeof handleClick === 'function'
+                            ? className.navigationHandled
+                            : undefined
+                        }`}
+                        onClick={(event): void => {
+                          if (typeof handleClick === 'undefined') return;
+                          event.preventDefault();
+                          loading(
+                            Promise.resolve(handleClick(treeName)).then(
+                              handleClose
+                            )
+                          );
+                        }}
+                        title={treeDefinition.get('remarks') ?? undefined}
+                      >
+                        <TableIcon name={treeName} tableLabel={false} />
+                        {treeDefinition.get('name')}
+                      </Link.Default>
+                      <EditTreeDefinition treeDefinition={treeDefinition} />
+                    </div>
+                  </li>
+                )
+              )
+            )}
         </Ul>
       </nav>
     </Dialog>
@@ -105,6 +119,31 @@ function RepairTree({
       // TODO: handle this sort of thing though the routing library
       getLink={(tree): string => `/specify/task/repair-tree/?tree=${tree}`}
     />
+  );
+}
+
+export function EditTreeDefinition({
+  treeDefinition,
+}: {
+  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <ResourceView
+          resource={treeDefinition}
+          mode="edit"
+          canAddAnother={false}
+          dialog="modal"
+          onClose={handleClose}
+          onSaved={(): void => window.location.reload()}
+          onDeleted={undefined}
+          isSubForm={false}
+        />
+      )}
+    </>
   );
 }
 

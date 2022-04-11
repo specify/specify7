@@ -26,15 +26,6 @@ export let treeDefinitions: {
   };
 } = undefined!;
 
-// TODO: setup mock calls for testing
-export const setupForTests = async () =>
-  import('./tests/fixtures/treedefinitions.json').then((ranks) => {
-    Object.entries(ranks).forEach(([treeName, treeRanks]) => {
-      // @ts-expect-error
-      treeDefinitions[treeName] = treeRanks;
-    });
-  });
-
 const treeScopes = {
   /* eslint-disable @typescript-eslint/naming-convention */
   Geography: 'discipline',
@@ -80,29 +71,21 @@ export const treeRanksPromise = Promise.all([
             disciplineTrees.includes(treeName) &&
             hasTreeAccess(treeName, 'read')
         )
-        .map(async ([treeName, definitionLevel]) => {
-          const domainResource = getDomainResource(
-            definitionLevel as 'discipline'
-          );
-          return typeof domainResource === 'object'
-            ? domainResource
-                .rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
-                .then(async (model) =>
-                  Promise.all([
-                    model,
-                    model.rgetCollection('treeDefItems', true),
-                  ])
-                )
-                .then(([treeDefinition, { models }]) => ({
-                  definition: treeDefinition,
-                  ranks: sortObjectsByKey(
-                    Array.from(models, serializeResource),
-                    'rankId'
-                  ),
-                }))
-                .then((ranks) => [treeName, ranks] as const)
-            : undefined;
-        })
+        .map(async ([treeName, definitionLevel]) =>
+          getDomainResource(definitionLevel as 'discipline')
+            ?.rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
+            .then(async (model) =>
+              Promise.all([model, model.rgetCollection('treeDefItems')])
+            )
+            .then(([treeDefinition, { models }]) => ({
+              definition: treeDefinition,
+              ranks: sortObjectsByKey(
+                Array.from(models, serializeResource),
+                'rankId'
+              ),
+            }))
+            .then((ranks) => [treeName, ranks] as const)
+        )
     )
   )
   .then((ranks) => {

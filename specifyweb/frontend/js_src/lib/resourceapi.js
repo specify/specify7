@@ -5,10 +5,11 @@ import Backbone from './backbone';
 import {assert} from './assert';
 import {globalEvents} from './specifyapi';
 import * as querystring from './querystring';
-import {getResourceViewUrl, resourceFromUri} from './resource';
+import {getResourceViewUrl, parseResourceUrl} from './resource';
 import {getResourceAndField} from './components/resource';
 import {hijackBackboneAjax} from './startapp';
 import {Http} from './ajax';
+import {schema} from './schema';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -326,14 +327,14 @@ function eventHandlerForToOne(related, field) {
         },
         // TODO: remove the need for this
         // Like "rget", but returns native promise
-        rgetPromise: function(fieldName, prePop) {
+        rgetPromise: function(fieldName, prePop = true) {
             return this.getRelated(fieldName, {prePop: prePop})
               // getRelated may return either undefined or null (yuk)
               .then(data=>typeof data === 'undefined' ? null : data);
         },
         // Duplicate definition for purposes of better typing:
-        rgetCollection: function(fieldName, prePop) {
-            return this.getRelated(fieldName, {prePop: prePop});
+        rgetCollection: function(fieldName) {
+            return this.getRelated(fieldName, {prePop: true});
         },
         getRelated: function(fieldName, options) {
             options || (options = {
@@ -563,7 +564,13 @@ function eventHandlerForToOne(related, field) {
         }
     }, {
         fromUri: function(uri, options) {
-            const model = resourceFromUri(uri, options);
+            const parsed = parseResourceUrl(uri);
+            if (typeof parsed === 'undefined') return undefined;
+            const [tableName, id] = parsed;
+            const model = new schema.models[tableName].Resource(
+               { id },
+              options
+            );
             assert(model.specifyModel === this.specifyModel);
             return model;
         },
