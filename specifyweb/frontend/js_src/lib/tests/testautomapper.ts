@@ -3,6 +3,7 @@ import {
   type AutoMapperConstructorParameters,
 } from '../automapper';
 import { runTest } from './testmain';
+import { RA } from '../types';
 
 export default function (): void {
   runTest(
@@ -11,6 +12,7 @@ export default function (): void {
       [
         [
           {
+            getMappedFields: (): RA<never> => [],
             headers: [
               'BMSM No.',
               'Class',

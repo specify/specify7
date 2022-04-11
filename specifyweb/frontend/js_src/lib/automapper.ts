@@ -16,13 +16,13 @@ import type {
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
+import { f } from './functools';
+import { findArrayDivergencePoint } from './helpers';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { defined, filterArray } from './types';
-import { findArrayDivergencePoint } from './helpers';
-import { f } from './functools';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -37,7 +37,7 @@ import { isCircularRelationship } from './wbplanviewmodelhelper';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
-type AutoMapperConstructorBaseParameters = {
+export type AutoMapperConstructorParameters = {
   // Array of strings that represent headers
   readonly headers: RA<string>;
   // Base table name
@@ -60,29 +60,12 @@ type AutoMapperConstructorBaseParameters = {
    * Scope to use for definitions. More info in autoMapperdefinitions.ts
    */
   readonly scope?: AutoMapperScope;
+  /*
+   * Whether to check if the field is already mapped (outside AutoMapper,
+   * in the mapping tree)
+   */
+  readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 };
-
-type AutoMapperConstructorCheckExistingParameters =
-  AutoMapperConstructorBaseParameters & {
-    /*
-     * Whether to check if the field is already mapped (outside AutoMapper,
-     * in the mapping tree)
-     */
-    readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
-  };
-
-type AutoMapperConstructorDontCheckExistingParameters =
-  AutoMapperConstructorBaseParameters & {
-    /*
-     * Whether to check if the field is already mapped (outside AutoMapper,
-     * in the mapping tree)
-     */
-    readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
-  };
-
-export type AutoMapperConstructorParameters =
-  | AutoMapperConstructorCheckExistingParameters
-  | AutoMapperConstructorDontCheckExistingParameters;
 
 export type AutoMapperResults = R<MappingPath[]>;
 

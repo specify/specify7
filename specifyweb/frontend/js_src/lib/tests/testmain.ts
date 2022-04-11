@@ -1,18 +1,17 @@
 import QUnit from 'qunit';
 
-import { setupForTests } from '../treedefinitions';
 import type { RA } from '../types';
 import testAutoMapper from './testautomapper';
 import testLatLongUtils from './testlatlongutils';
-import testMappingsTreeToUploadPlan from './testmappingstreetouploadplan';
-import testUploadPlanToMappingsTree from './testuploadplantomappingstree';
-import testWbPlanViewHelper from './testwbplanviewhelper';
+import testUploadPlanParser from './testuploadplanparser';
+import testUploadPlanBuilder from './testuploadplanbuilder';
 import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
 import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
+import { initialContext, unlockInitialContext } from '../initialcontext';
+import { crash } from '../components/errorboundary';
 
-// FIXME: update tests so that they don't fail
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
   inputOutputSet: RA<[ARGUMENTS_TYPE, RETURN_TYPE]>,
@@ -27,12 +26,12 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 }
 
 async function runTests(): Promise<void> {
-  await setupForTests();
+  unlockInitialContext();
+  await initialContext.catch(crash);
 
   testLatLongUtils();
-  testMappingsTreeToUploadPlan();
-  testUploadPlanToMappingsTree();
-  testWbPlanViewHelper();
+  testUploadPlanParser();
+  testUploadPlanBuilder();
   testWbPlanViewLinesGetter();
   testWbPlanViewModelHelper();
   testWbPlanViewNavigator();

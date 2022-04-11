@@ -75,8 +75,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     VALUE extends (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'])[FIELD_NAME]
   >(
-    fieldName: FIELD_NAME,
-    prePopulate?: boolean
+    fieldName: FIELD_NAME
   ): Promise<Collection<VALUE[number]>>;
   settingDefaultValues: (callback: () => void) => void;
   set<
