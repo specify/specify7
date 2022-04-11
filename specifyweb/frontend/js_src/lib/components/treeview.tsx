@@ -156,6 +156,7 @@ function TreeView<SCHEMA extends AnyTree>({
               })
             )
           }
+          onCleared={(): void => setSearchValue('')}
           onChange={({ label, data }): void => {
             setSearchValue(label);
             ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(
@@ -183,7 +184,6 @@ function TreeView<SCHEMA extends AnyTree>({
           }}
           forwardRef={searchBoxRef}
           aria-label={treeText('searchTreePlaceholder')}
-          className={undefined}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic

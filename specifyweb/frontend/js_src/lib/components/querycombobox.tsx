@@ -256,7 +256,7 @@ export function QueryComboBox({
     field?.name,
     undefined
   );
-  // TOOD: fetch this from the back-end
+  // TODO: fetch this from the back-end
   const [formatted] = useAsyncState<{
     readonly label: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -435,10 +435,10 @@ export function QueryComboBox({
         value={formatted?.label ?? value?.toString() ?? ''}
         forwardRef={validationRef}
         aria-label={undefined}
-        className="flex-1"
       >
         {(props): JSX.Element => (
           <Input.Generic
+            className="flex-1"
             id={id}
             required={isRequired}
             isReadOnly={

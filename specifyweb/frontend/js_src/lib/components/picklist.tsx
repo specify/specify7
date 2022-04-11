@@ -8,12 +8,12 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import queryText from '../localization/query';
 import { hasToolPermission } from '../permissions';
+import { PickListTypes } from '../picklistmixins';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
 import { Button, Input, Select } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListTypes } from '../picklistmixins';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
@@ -42,7 +42,7 @@ export function PickListComboBox(
     (value: string): void =>
       void props.resource.set(
         props.field.name,
-        (value === '' && props.isRequired
+        (value === '' && !props.isRequired
           ? null
           : validationAttributes.type === 'number'
           ? f.parseInt(value) ?? null
@@ -179,13 +179,14 @@ export function PickListComboBox(
           source={autocompleteItems}
           onNewValue={addNewValue}
           onChange={({ data }): void => updateValue(data)}
+          onCleared={(): void => updateValue('')}
           forwardRef={validationRef}
           aria-label={undefined}
           value={value ?? ''}
-          className={props.className}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
+              className={props.className}
               id={props.id}
               name={props.pickList?.get('name') ?? props.pickListName}
               disabled={props.isDisabled || typeof props.items === 'undefined'}
