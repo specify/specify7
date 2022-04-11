@@ -25,6 +25,8 @@ from specifyweb.context.views import set_collection_cookie, \
     users_collections_for_sp7
 from specifyweb.context.views import set_collection_cookie, \
     users_collections_for_sp7
+from specifyweb.permissions.permissions import PermissionTarget, \
+    PermissionTargetAction, check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
@@ -226,11 +228,15 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     login(request, spuserexternalid.specifyuser, backend='django.contrib.auth.backends.ModelBackend')
     return http.HttpResponseRedirect('/specify')
 
+class InviteLinkPT(PermissionTarget):
+    resource = "/admin/user/invite_link"
+    create = PermissionTargetAction()
+
 @require_GET
+@login_maybe_required
 def invite_link(request, userid:int) -> http.HttpResponse:
     """API endpoint for generating an invite link."""
-    if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden()
+    check_permission_targets(None, request.specify_user.id, [InviteLinkPT.create])
     # The id field of the spuserexternalid table is used as a non
     # repeating number to prevent replay of invite tokens. For this to
     # work, the external id records shouldn't be deleted as that would
@@ -274,6 +280,12 @@ def use_invite_link(request) -> http.HttpResponse:
     request.session['invite_token'] = token
     return http.HttpResponseRedirect('/accounts/login/')
 
+
+class UserOICProvidersPT(PermissionTarget):
+    resource = "/admin/user/oic_providers"
+    read = PermissionTargetAction()
+    # an update action could be added to enable/disable certain providers.
+
 @openapi(schema={
     "get": {
         "responses": {
@@ -300,10 +312,12 @@ def use_invite_link(request) -> http.HttpResponse:
     }
 })
 @require_GET
-def user_providers(request: http.HttpRequest, userid: int) -> http.HttpResponse:
+@login_maybe_required
+def user_providers(request, userid: int) -> http.HttpResponse:
     """Return a list of configured identity providers
     which the specified user has registered identities with.
     """
+    check_permission_targets(None, request.specify_user.id, [UserOICProvidersPT.read])
     providers = [
         {'provider': p, 'title': d['title']}
         for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
