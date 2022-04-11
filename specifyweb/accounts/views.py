@@ -23,8 +23,10 @@ from typing_extensions import TypedDict
 
 from specifyweb.context.views import set_collection_cookie, \
     users_collections_for_sp7
+from specifyweb.context.views import set_collection_cookie, \
+    users_collections_for_sp7
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
 
 logger = logging.getLogger(__name__)
@@ -115,6 +117,40 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
         for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
     ]
     return render(request, "oic_login.html", context={'providers': providers})
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns a list of configured OIC identity providers.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "provider": { "type": "string" },
+                                    "title": { "type": "string" },
+                                },
+                                "required": ["provider", "title"],
+                                "additionalProperties": False,
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+@require_GET
+def oic_providers(request: http.HttpRequest) -> http.HttpResponse:
+    "Return a list of configured identity providers."
+    providers = [
+        {'provider': p, 'title': d['title']}
+        for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
+    ]
+    return http.JsonResponse(providers, safe=False)
 
 @require_GET
 def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
@@ -238,6 +274,42 @@ def use_invite_link(request) -> http.HttpResponse:
     request.session['invite_token'] = token
     return http.HttpResponseRedirect('/accounts/login/')
 
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns a list of the OIC identity providers with identities linked the user.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items":  {
+                                "type": "object",
+                                "properties": {
+                                    "provider": { "type": "string" },
+                                    "title": { "type": "string" },
+                                },
+                                "required": ["provider", "title"],
+                                "additionalProperties": False,
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+@require_GET
+def user_providers(request: http.HttpRequest, userid: int) -> http.HttpResponse:
+    """Return a list of configured identity providers
+    which the specified user has registered identities with.
+    """
+    providers = [
+        {'provider': p, 'title': d['title']}
+        for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
+        if p in Spuserexternalid.objects.filter(specifyuser_id=userid).values_list('provider', flat=True)
+    ]
+    return http.JsonResponse(providers, safe=False)
 
 class CollectionChoiceField(forms.ChoiceField):
     widget = forms.RadioSelect

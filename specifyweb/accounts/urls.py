@@ -42,4 +42,11 @@ urlpatterns = [
 
     # Invite links point here:
     path('use_invite_link/', views.use_invite_link),
+
+    # Return a list of configured identity providers.
+    path('oic_providers/', views.oic_providers),
+
+    # Return a list of configured identity providers
+    # which the specified user has registered identities with.
+    path('oic_providers/<int:userid>/', views.user_providers),
 ]
