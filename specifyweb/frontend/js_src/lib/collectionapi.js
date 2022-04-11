@@ -111,8 +111,7 @@ var Base =  Backbone.Collection.extend({
             return this._fetch.then(() => { this._fetch = null; return this; });
         },
         fetchIfNotPopulated() {
-            if(this._neverFetched) return Promise.resolve(this);
-            else return this.fetch();
+            return this._neverFetched ? this.fetch() : Promise.resolve(this);
         },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);

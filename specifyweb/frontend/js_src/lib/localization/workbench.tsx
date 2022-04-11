@@ -54,12 +54,6 @@ const wbText = createDictionary({
     ca: 'Validating',
     'es-es': 'Validating',
   },
-  results: {
-    'en-us': 'Results',
-    'ru-ru': 'Результаты',
-    ca: 'Results',
-    'es-es': 'Results',
-  },
   disambiguate: {
     'en-us': 'Disambiguate',
     'ru-ru': 'Устранить Неоднозначность',
@@ -107,12 +101,6 @@ const wbText = createDictionary({
     'ru-ru': 'Сменить владельца',
     ca: 'Change Owner',
     'es-es': 'Change Owner',
-  },
-  export: {
-    'en-us': 'Export',
-    'ru-ru': 'Экспорт',
-    ca: 'Export',
-    'es-es': 'Export',
   },
   convertCoordinates: {
     'en-us': 'Convert Coordinates',

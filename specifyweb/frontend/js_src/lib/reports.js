@@ -491,7 +491,7 @@ var QueryParamsDialog = Backbone.View.extend({
             content: this.el,
             onClose: () => this.dialog.remove(),
             buttons: <>
-                <Button.DialogClose>{formsText('cancel')}</Button.DialogClose>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
                 <Button.Blue onClick={()=>{this.dialog.remove(); this.runReport()}}>{formsText('runReport')}</Button.Blue>
             </>,
         });

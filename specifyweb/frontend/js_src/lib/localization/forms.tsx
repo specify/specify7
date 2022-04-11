@@ -11,12 +11,6 @@ import { createDictionary } from './utils';
 
 const formsText = createDictionary({
   // Attachments
-  filter: {
-    'en-us': 'Filter',
-    'ru-ru': 'Фильтрировать',
-    ca: 'Filter',
-    'es-es': 'Filter',
-  },
   order: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
@@ -35,12 +29,6 @@ const formsText = createDictionary({
     ca: 'Uploading...',
     'es-es': 'Uploading...',
   },
-  openDataDialogTitle: {
-    'en-us': 'Opening...',
-    'ru-ru': 'Открытие...',
-    ca: 'Opening...',
-    'es-es': 'Opening...',
-  },
   noAttachments: {
     'en-us': 'There are no attachments',
     'ru-ru': 'В вашей коллекции нет вложений',
@@ -52,12 +40,6 @@ const formsText = createDictionary({
     'ru-ru': 'Клонировать',
     ca: 'Clone',
     'es-es': 'Clone',
-  },
-  linkInline: {
-    'en-us': 'link',
-    'ru-ru': 'ссылка',
-    ca: 'link',
-    'es-es': 'link',
   },
   // BusinessRules
   valueMustBeUniqueToField: {
@@ -89,13 +71,6 @@ const formsText = createDictionary({
     'ru-ru': 'Объект коллекции',
     ca: 'Collection Object',
     'es-es': 'Collection Object',
-  },
-  // "set" as in "Set Value"
-  set: {
-    'en-us': 'Set',
-    'ru-ru': 'Установить',
-    ca: 'Set',
-    'es-es': 'Set',
   },
   // Data Model
   specifySchema: {
@@ -194,12 +169,6 @@ const formsText = createDictionary({
     ca: (modelName: string) => `Create ${modelName}`,
     'es-es': (modelName: string) => `Create ${modelName}`,
   },
-  invalid: {
-    'en-us': 'Invalid:',
-    'ru-ru': 'Неверный:',
-    ca: 'Invalid:',
-    'es-es': 'Invalid:',
-  },
   missing: {
     'en-us': 'Missing:',
     'ru-ru': 'Отсутствует:',
@@ -217,12 +186,6 @@ const formsText = createDictionary({
     'ru-ru': 'Обнаружены ошибки:',
     ca: 'There are problems with the entry:',
     'es-es': 'There are problems with the entry:',
-  },
-  ignore: {
-    'en-us': 'Ignore',
-    'ru-ru': 'Игнорировать',
-    ca: 'Ignore',
-    'es-es': 'Ignore',
   },
   recordSetCaption: {
     'en-us': (count: number) =>
@@ -250,12 +213,6 @@ const formsText = createDictionary({
     'ru-ru': 'Добавить несвязанный элемент',
     ca: 'Add unassociated item',
     'es-es': 'Add unassociated item',
-  },
-  actionNotSupported: {
-    'en-us': (actionName: string) => `${actionName} is not supported.`,
-    'ru-ru': (actionName: string) => `${actionName} не поддерживается.`,
-    ca: (actionName: string) => `${actionName} is not supported.`,
-    'es-es': (actionName: string) => `${actionName} is not supported.`,
   },
   // Loan Return
   preparationsDialogTitle: {
@@ -345,18 +302,6 @@ const formsText = createDictionary({
     'ru-ru': 'Решенный',
     ca: 'Resolved Amount',
     'es-es': 'Resolved Amount',
-  },
-  receivedBy: {
-    'en-us': 'Received by',
-    'ru-ru': 'Получено',
-    ca: 'Received by',
-    'es-es': 'Received by',
-  },
-  dateResolved: {
-    'en-us': 'Date resolved',
-    'ru-ru': 'Дата разрешения',
-    ca: 'Date resolved',
-    'es-es': 'Date resolved',
   },
   // PaleoLocationPlugin
   paleoMap: {
@@ -528,12 +473,6 @@ const formsText = createDictionary({
     ca: (count: number) => `Record Sets (${count})`,
     'es-es': (count: number) => `Record Sets (${count})`,
   },
-  createRecordSetButtonDescription: {
-    'en-us': 'Create a new record set',
-    'ru-ru': 'Создать новый набор объектов',
-    ca: 'Create a new record set',
-    'es-es': 'Create a new record set',
-  },
   recordSetDeletionWarning: {
     'en-us': (recordSetName: string) => `
       The record set "${recordSetName}" will be deleted. The referenced
@@ -617,22 +556,6 @@ const formsText = createDictionary({
     'es-es': 'Run Report',
   },
   // ResourceView
-  missingFormDefinitionPageHeader: {
-    'en-us': 'Missing form definition',
-    'ru-ru': 'Отсутствует определение формы',
-    ca: 'Missing form definition',
-    'es-es': 'Missing form definition',
-  },
-  missingFormDefinitionPageContent: {
-    'en-us': `
-      Specify was unable to find the form definition to display this resource`,
-    'ru-ru': `
-      Specify не удалось найти определение формы для отображения этого ресурса`,
-    ca: `
-      Specify was unable to find the form definition to display this resource`,
-    'es-es': `
-      Specify was unable to find the form definition to display this resource`,
-  },
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первый объект',
@@ -656,23 +579,6 @@ const formsText = createDictionary({
     'ru-ru': 'Следующий объект',
     ca: 'Next Record',
     'es-es': 'Next Record',
-  },
-  currentPositionInTheRecordSet: {
-    'en-us': 'Current Position in the Record Set',
-    'ru-ru': 'Текущая позиция в наборе объектов',
-    ca: 'Current Position in the Record Set',
-    'es-es': 'Current Position in the Record Set',
-  },
-  // Current index in the record set
-  aOutOfB: {
-    'en-us': (current: number, total: number): string =>
-      `${current} out of ${total}`,
-    'ru-ru': (current: number, total: number): string =>
-      `${current} из ${total}`,
-    ca: (current: number, total: number): string =>
-      `${current} out of ${total}`,
-    'es-es': (current: number, total: number): string =>
-      `${current} out of ${total}`,
   },
   currentRecord: {
     'en-us': (total: number): string => `Current object (out of ${total})`,
@@ -874,12 +780,6 @@ const formsText = createDictionary({
     'es-es': 'Plugin name:',
   },
   // SubViewHeader
-  link: {
-    'en-us': 'Link',
-    'ru-ru': 'Ссылка',
-    ca: 'Link',
-    'es-es': 'Link',
-  },
   visit: {
     'en-us': 'Visit',
     'ru-ru': 'Открыть',
@@ -912,12 +812,6 @@ const formsText = createDictionary({
     'es-es': `Value must be a number`,
   },
   // UserAgentsPlugin
-  setAgents: {
-    'en-us': 'Set Agents',
-    'ru-ru': 'Подключить к агенту',
-    ca: 'Set Agents',
-    'es-es': 'Set Agents',
-  },
   userAgentsPluginDialogTitle: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
@@ -975,18 +869,6 @@ const formsText = createDictionary({
     ca: 'Insert',
     'es-es': 'Insert',
   },
-  update: {
-    'en-us': 'Update',
-    'ru-ru': 'Обновлено',
-    ca: 'Update',
-    'es-es': 'Update',
-  },
-  delete: {
-    'en-us': 'Delete',
-    'ru-ru': 'Удалено',
-    ca: 'Delete',
-    'es-es': 'Delete',
-  },
   treeMerge: {
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',
@@ -1029,12 +911,6 @@ const formsText = createDictionary({
     ca: 'Additional results omitted',
     'es-es': 'Additional results omitted',
   },
-  openOriginal: {
-    'en-us': 'Open original',
-    'ru-ru': 'Открыть оригинал',
-    ca: 'Open original',
-    'es-es': 'Open original',
-  },
   reportOnSave: {
     'en-us': 'Generate Label on Save',
     'ru-ru': 'Генерировать отчет при сохранении',
@@ -1058,6 +934,19 @@ const formsText = createDictionary({
     'ru-ru': 'Создание новой записи',
     ca: 'Creating new record',
     'es-es': 'Creating new record',
+  },
+  // FIXME: localize
+  forward: {
+    'en-us': 'Forward',
+    'ru-ru': 'Forward',
+    ca: 'Forward',
+    'es-es': 'Forward',
+  },
+  reverse: {
+    'en-us': 'Reverse',
+    'ru-ru': 'Reverse',
+    ca: 'Reverse',
+    'es-es': 'Reverse',
   },
 });
 

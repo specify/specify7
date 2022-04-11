@@ -476,7 +476,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                       setUnloadProtect(undefined);
                     }}
                   >
-                    {formsText('ignore')}
+                    {commonText('ignore')}
                   </Button.Orange>
                 </>
               }

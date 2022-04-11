@@ -17,6 +17,10 @@ import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { loadingGif } from './queryresultstable';
 import { FormCell } from './specifyformcell';
+import { hijackBackboneAjax } from '../startapp';
+import { Http } from '../ajax';
+import { setCurrentView } from '../specifyapp';
+import { NotFoundView } from './notfoundview';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -142,7 +146,18 @@ export function RenderForm<SCHEMA extends AnySchema>({
   }, [resource]);
 
   const [loadedResource] = useAsyncState(
-    React.useCallback(async () => resource.fetch(), [resource]),
+    React.useCallback(
+      async () =>
+        hijackBackboneAjax(
+          [Http.OK, Http.NOT_FOUND],
+          async () => resource.fetch(),
+          (status) =>
+            status === Http.NOT_FOUND
+              ? setCurrentView(new NotFoundView())
+              : undefined
+        ),
+      [resource]
+    ),
     false
   );
   const isShowingOldResource =

@@ -199,7 +199,10 @@ export function UserView({
                 )}
                 {!userResource.isNew() &&
                 hasTablePermission('SpecifyUser', 'delete') ? (
-                  <DeleteButton model={userResource} onDeleted={handleDelete} />
+                  <DeleteButton
+                    resource={userResource}
+                    onDeleted={handleDelete}
+                  />
                 ) : undefined}
                 <span className="flex-1 -ml-2" />
                 {(hasPermission('/permissions/policies/user', 'update') ||

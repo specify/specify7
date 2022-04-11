@@ -187,8 +187,11 @@ export function getRelativeDate(date: Readonly<Date>): string {
   else return relativeDate.format(-Math.round(timePassed / YEAR), 'year');
 }
 
-export const compareStrings = new Intl.Collator(window.navigator.language, {
-  sensitivity: 'base',
-  caseFirst: 'upper',
-  ignorePunctuation: true,
-}).compare;
+export const compareStrings = new Intl.Collator(
+  typeof window === 'object' ? window.navigator.language : 'en-us',
+  {
+    sensitivity: 'base',
+    caseFirst: 'upper',
+    ignorePunctuation: true,
+  }
+).compare;

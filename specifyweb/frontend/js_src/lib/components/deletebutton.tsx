@@ -13,11 +13,11 @@ import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import { LoadingContext } from './contexts';
 
 export function DeleteButton<SCHEMA extends AnySchema>({
-  model,
+  resource,
   deletionMessage = formsText('deleteConfirmationDialogMessage'),
   onDeleted: handleDeleted,
 }: {
-  readonly model: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
   readonly onDeleted?: () => void;
 }): JSX.Element {
@@ -25,15 +25,15 @@ export function DeleteButton<SCHEMA extends AnySchema>({
     React.useCallback(
       async () =>
         ajax<RA<string>>(
-          `/api/delete_blockers/${model.specifyModel.name.toLowerCase()}/${
-            model.id
+          `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+            resource.id
           }/`,
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { Accept: 'application/json' },
           }
         ).then(({ data }) => data),
-      [model]
+      [resource]
     ),
     false
   );
@@ -72,7 +72,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               <>
                 <Button.Red
                   onClick={(): void =>
-                    loading(model.destroy().then(handleDeleted))
+                    loading(resource.destroy().then(handleDeleted))
                   }
                 >
                   {commonText('delete')}

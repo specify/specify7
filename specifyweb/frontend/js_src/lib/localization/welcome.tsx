@@ -193,12 +193,6 @@ const welcomeText = createDictionary({
     ca: 'Database Name:',
     'es-es': 'Database Name:',
   },
-  institution: {
-    'en-us': 'Institution:',
-    'ru-ru': 'Учреждение:',
-    ca: 'Institution:',
-    'es-es': 'Institution:',
-  },
   discipline: {
     'en-us': 'Discipline:',
     'ru-ru': 'Дисциплина:',

@@ -47,7 +47,7 @@ const processRelationships = async (
   Promise.all(
     relationships.map(async (relationship) =>
       relationship
-        .rgetPromise(`${otherSide}Side`, true)
+        .rgetPromise(`${otherSide}Side`)
         .then((collectionObject) => [relationship, collectionObject] as const)
     )
   ).then(async (resources) =>

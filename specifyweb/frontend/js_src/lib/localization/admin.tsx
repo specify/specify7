@@ -148,12 +148,6 @@ const adminText = createDictionary({
     'es-es': 'Passwords do not match.',
   },
   // PasswordChange
-  password: {
-    'en-us': 'Password',
-    'ru-ru': 'Пароль',
-    ca: 'Password',
-    'es-es': 'Password',
-  },
   confirmPassword: {
     'en-us': 'Confirm',
     'ru-ru': 'Подтвердить',
@@ -251,12 +245,6 @@ const adminText = createDictionary({
     ca: 'User policies',
     'es-es': 'User policies',
   },
-  institutionUserPolicies: {
-    'en-us': 'Institution-wide User policies:',
-    'ru-ru': 'Общеучрежденческие политики пользователей:',
-    ca: 'Institution-wide User policies:',
-    'es-es': 'Institution-wide User policies:',
-  },
   allUsers: {
     'en-us': 'All Users',
     'ru-ru': 'Все пользователи',
@@ -292,12 +280,6 @@ const adminText = createDictionary({
     'ru-ru': 'Эта коллекция',
     ca: 'This collection',
     'es-es': 'This collection',
-  },
-  allResources: {
-    'en-us': 'All Resources',
-    'ru-ru': 'Все ресурсы',
-    ca: 'All Resources',
-    'es-es': 'All Resources',
   },
   allActions: {
     'en-us': 'All Actions',

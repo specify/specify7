@@ -5,6 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
+import formsText from './localization/forms';
 import { getAttribute } from './parseformcells';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
@@ -73,18 +74,22 @@ const processFieldType: {
     properties: IR<string | undefined>
   ) => FieldTypes[KEY];
 } = {
-  Checkbox: (cell) => ({
-    type: 'Checkbox',
-    defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
-    label: f.maybe(getAttribute(cell, 'label')?.trim(), (label) =>
-      label.length === 0 ? undefined : label
-    ),
-    printOnSave:
+  Checkbox: (cell) =>
+    f.var(
       getAttribute(cell, 'ignore')?.toLowerCase() === 'true' &&
-      ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-        getAttribute(cell, 'name')?.toLowerCase() ?? ''
-      ),
-  }),
+        ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
+          getAttribute(cell, 'name')?.toLowerCase() ?? ''
+        ),
+      (printOnSave) => ({
+        type: 'Checkbox',
+        defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
+        label:
+          f.maybe(getAttribute(cell, 'label')?.trim(), (label) =>
+            label.length === 0 ? undefined : label
+          ) ?? (printOnSave ? formsText('reportOnSave') : undefined),
+        printOnSave,
+      })
+    ),
   TextArea(cell) {
     const rows = f.parseInt(getAttribute(cell, 'rows') ?? '');
     return {

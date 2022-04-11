@@ -21,24 +21,6 @@ const queryText = createDictionary({
     ca: (fieldNames: string) => `Searches: ${fieldNames}`,
     'es-es': (fieldNames: string) => `Searches: ${fieldNames}`,
   },
-  selectFields: {
-    'en-us': 'Select Field...',
-    'ru-ru': 'Выбрать поле...',
-    ca: 'Select Field...',
-    'es-es': 'Select Field...',
-  },
-  treeRankAuthor: {
-    'en-us': (rankName: string) => `${rankName} Author`,
-    'ru-ru': (rankName: string) => `${rankName} Автор`,
-    ca: (rankName: string) => `${rankName} Author`,
-    'es-es': (rankName: string) => `${rankName} Author`,
-  },
-  selectOp: {
-    'en-us': 'Select Op...',
-    'ru-ru': 'Выберите оп...',
-    ca: 'Select Op...',
-    'es-es': 'Select Op...',
-  },
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
@@ -254,12 +236,6 @@ const queryText = createDictionary({
     ca: 'Distinct',
     'es-es': 'Distinct',
   },
-  format: {
-    'en-us': 'Format',
-    'ru-ru': 'Формат',
-    ca: 'Format',
-    'es-es': 'Format',
-  },
   createCsv: {
     'en-us': 'Create CSV',
     'ru-ru': 'Создать CSV',
@@ -291,12 +267,6 @@ const queryText = createDictionary({
     'es-es': 'Save As',
   },
   // QueryField
-  expandButtonDescription: {
-    'en-us': 'Field is valid and will be saved. Click to expand',
-    'ru-ru': 'Поле действительное и будет сохранено. Нажмите, чтобы раскрить',
-    ca: 'Field is valid and will be saved. Click to expand',
-    'es-es': 'Field is valid and will be saved. Click to expand',
-  },
   anyRank: {
     'en-us': '(any rank)',
     'ru-ru': '(любой ранг)',
@@ -345,31 +315,7 @@ const queryText = createDictionary({
     ca: 'Show in results',
     'es-es': 'Show in results',
   },
-  treeRanks: {
-    'en-us': 'Tree Ranks',
-    'ru-ru': 'Ранги на дереве',
-    ca: "Ranks d'arbres",
-    'es-es': 'Tree Ranks',
-  },
-  extract: {
-    'en-us': 'Extract...',
-    'ru-ru': 'Извлекать...',
-    ca: 'Extract...',
-    'es-es': 'Extract...',
-  },
   // QueryResultsTable
-  results: {
-    'en-us': 'Results',
-    'ru-ru': 'Результаты',
-    ca: 'Results',
-    'es-es': 'Results',
-  },
-  editQuery: {
-    'en-us': 'Edit Query',
-    'ru-ru': 'Показать определение запроса',
-    ca: 'Edit Query',
-    'es-es': 'Edit Query',
-  },
   aggregated: {
     'en-us': '(aggregated)',
     'ru-ru': '(совокупный)',
@@ -487,12 +433,6 @@ const queryText = createDictionary({
     'ru-ru': 'Пустой',
     ca: 'Empty',
     'es-es': 'Empty',
-  },
-  datePart: {
-    'en-us': 'Date Part',
-    'ru-ru': 'Дата',
-    ca: 'Date Part',
-    'es-es': 'Date Part',
   },
   and: {
     'en-us': 'and',

@@ -115,8 +115,7 @@ const fetchPaleoData = async (
         toTable(resource, 'Locality') ??
         (await f.maybe(
           toTable(resource, 'CollectingEvent'),
-          async (collectingEvent) =>
-            collectingEvent.rgetPromise('locality', true)
+          async (collectingEvent) => collectingEvent.rgetPromise('locality')
         )) ??
         (await f.maybe(
           toTable(resource, 'CollectionObject'),
@@ -124,7 +123,7 @@ const fetchPaleoData = async (
             collectionObject
               .rgetPromise('collectingEvent')
               .then((collectingEvent) =>
-                collectingEvent?.rgetPromise('locality', true)
+                collectingEvent?.rgetPromise('locality')
               )
         )) ??
         'InvalidTableState';
@@ -143,9 +142,7 @@ const fetchPaleoData = async (
        */
       const chronosStrat = await resource
         .rgetPromise('paleoContext')
-        .then((paleoContext) =>
-          paleoContext?.rgetPromise('chronosStrat', true)
-        );
+        .then((paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
       const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
       const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
 

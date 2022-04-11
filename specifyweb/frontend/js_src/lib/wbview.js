@@ -392,8 +392,8 @@ const WBView = Backbone.View.extend({
            * contain 'wb-invalid-cell' class
            *
            */
-          commentedCellClassName: 'htCommentCell wb-invalid-cell',
-          placeholderCellClassName: 'htPlaceholder text-blue-500',
+          commentedCellClassName: 'htCommentCell',
+          placeholderCellClassName: 'htPlaceholder',
           // Disable default styles
           invalidCellClassName: '-',
           rowHeaders: true,
@@ -1618,7 +1618,7 @@ const WBView = Backbone.View.extend({
 
     if (this.liveValidationStack.length > 0) {
       const dialog = showDialog({
-        header: wbText('results'),
+        header: commonText('results'),
         content: wbText('unavailableWhileValidating'),
         onClose: () => dialog.remove(),
         buttons: commonText('close'),
@@ -1773,28 +1773,31 @@ const WBView = Backbone.View.extend({
   // For debugging only
   showPlan() {
     const dataset = this.dataset;
-    const $this = this;
     const planJson = JSON.stringify(dataset.uploadplan, null, 4);
+    const textarea = $('<textarea cols="120" rows="50">').text(planJson)[0];
     const dialog = showDialog({
       header: wbText('dataMapper'),
-      content: $('<textarea cols="120" rows="50">').text(planJson),
+      content: textarea,
       onClose: () => dialog.remove(),
       buttons: (
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Button.Green
             onClick={() => {
-              dataset.uploadplan = JSON.parse($('textarea', dialog).val());
+              dataset.uploadplan = JSON.parse(textarea.value);
               ping(
                 `/api/workbench/dataset/${dataset.id}/`,
                 {
                   method: 'PUT',
                   body: { uploadplan: dataset.uploadplan },
                 },
-                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-              ).then(this.checkDeletedFail.bind(this));
-              dialog.remove();
-              $this.trigger('refresh');
+                { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
+              )
+                .then(this.checkDeletedFail.bind(this))
+                .then(() => {
+                  this.trigger('refresh');
+                  dialog.remove();
+                });
             }}
           >
             {commonText('save')}
@@ -1826,7 +1829,7 @@ const WBView = Backbone.View.extend({
               dialog.remove();
             }}
           >
-            {commonText('rollback')}
+            {wbText('rollback')}
           </Button.Red>
         </>
       ),

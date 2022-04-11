@@ -7,7 +7,6 @@ import { replaceItem, replaceKey, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
-import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { collectionAccessResource, hasPermission } from '../permissions';
 import { schema } from '../schema';
@@ -217,7 +216,7 @@ export function SetPasswordPrompt({
       onClose={handleClose}
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{formsText('ignore')}</Button.Red>
+          <Button.Red onClick={handleIgnore}>{commonText('ignore')}</Button.Red>
           <Button.Green onClick={handleSet}>
             {adminText('setPassword')}
           </Button.Green>

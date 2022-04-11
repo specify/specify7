@@ -147,28 +147,24 @@ function Row({
                 prepType: '',
               }
             : {
-                ...(await loanPreparation
-                  .rgetPromise('collectionObject', true)
-                  .then<{
-                    readonly catalogNumber: string;
-                    readonly taxon: string;
-                  }>(async (collectionObject) => ({
-                    catalogNumber: formatCatNo(
-                      collectionObject.get('catalogNumber')
-                    ),
-                    taxon: await collectionObject
-                      .rgetCollection('determinations')
-                      .then(({ models }) =>
-                        models
-                          .find((determination) =>
-                            determination.get('isCurrent')
-                          )
-                          ?.rgetPromise('preferredTaxon', true)
-                      )
-                      .then((taxon) => taxon?.get('fullName') ?? ''),
-                  }))),
+                ...(await loanPreparation.rgetPromise('collectionObject').then<{
+                  readonly catalogNumber: string;
+                  readonly taxon: string;
+                }>(async (collectionObject) => ({
+                  catalogNumber: formatCatNo(
+                    collectionObject.get('catalogNumber')
+                  ),
+                  taxon: await collectionObject
+                    .rgetCollection('determinations')
+                    .then(({ models }) =>
+                      models
+                        .find((determination) => determination.get('isCurrent'))
+                        ?.rgetPromise('preferredTaxon')
+                    )
+                    .then((taxon) => taxon?.get('fullName') ?? ''),
+                }))),
                 prepType: await loanPreparation
-                  .rgetPromise('prepType', true)
+                  .rgetPromise('prepType')
                   .then((prepType) => prepType.get('name')),
               }
         ),
@@ -455,7 +451,7 @@ export function LoanReturn({
     React.useCallback(
       async () =>
         resource
-          .rgetCollection('loanPreparations', true)
+          .rgetCollection('loanPreparations')
           .then(({ models }) =>
             models.filter(
               (preparation) =>

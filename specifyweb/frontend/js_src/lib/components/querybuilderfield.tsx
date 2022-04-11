@@ -329,11 +329,11 @@ export function QueryLine({
               <Select
                 aria-label={
                   queryFieldFilters[field.filters[index].type].description ??
-                  queryText('filter')
+                  commonText('filter')
                 }
                 title={
                   queryFieldFilters[field.filters[index].type].description ??
-                  queryText('filter')
+                  commonText('filter')
                 }
                 value={filter.type}
                 className={customSelectElementBackground}

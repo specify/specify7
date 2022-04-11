@@ -336,7 +336,7 @@ export function InteractionDialog({
                     })
                   }
                 >
-                  {formsText('ignore')}
+                  {commonText('ignore')}
                 </Button.Blue>
               </>
             )

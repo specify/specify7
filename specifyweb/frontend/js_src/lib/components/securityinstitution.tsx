@@ -186,7 +186,7 @@ export function InstitutionView({
                     policies: [],
                   } as const)
             }
-            parentName={institution.name ?? adminText('institution')}
+            parentName={institution.name ?? commonText('institution')}
             userRoles={undefined}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>

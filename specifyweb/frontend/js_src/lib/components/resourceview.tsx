@@ -297,7 +297,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             !resource.isNew() &&
             hasTablePermission(resource.specifyModel.name, 'delete') ? (
               <DeleteButton
-                model={resource}
+                resource={resource}
                 deletionMessage={deletionMessage}
                 onDeleted={handleDelete}
               />
@@ -369,7 +369,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
                     {typeof resource === 'object' &&
                     !resource.isNew() &&
                     hasTablePermission(resource.specifyModel.name, 'delete') ? (
-                      <DeleteButton model={resource} onDeleted={handleDelete} />
+                      <DeleteButton
+                        resource={resource}
+                        onDeleted={handleDelete}
+                      />
                     ) : undefined}
                     {isModified ? (
                       <Button.Red onClick={handleClose}>

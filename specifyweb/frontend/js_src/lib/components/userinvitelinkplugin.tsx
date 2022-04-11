@@ -36,7 +36,7 @@ export function UserInviteLinkPlugin({
           onClose={(): void => setLink(undefined)}
           buttons={commonText('close')}
         >
-          {adminText('userInviteLinkDialogMessage')}
+          {adminText('userInviteLinkDialogMessage')(user.name)}
           <div className="flex gap-2">
             <Input.Text isReadOnly className="w-full" value={link} />
             <Button.Blue

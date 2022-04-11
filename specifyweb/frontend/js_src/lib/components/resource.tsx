@@ -59,26 +59,33 @@ export function useResource<SCHEMA extends AnySchema>(
 
 export const deserializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedResource<SCHEMA> | SerializedModel<SCHEMA>
-) =>
+): SpecifyResource<SCHEMA> =>
   new schema.models[
-    defined(parseResourceUrl(resource.resource_uri?.toString() ?? ''))[0]
+    /**
+     * This assertion, while not required by TypeScript, is needed to fix
+     * a typechecking performance issue (it was taking 5s to typecheck this
+     * line according to TypeScript trace analyzer)
+     */
+    defined(
+      parseResourceUrl(resource.resource_uri?.toString() ?? '')
+    )[0] as SCHEMA['tableName']
   ].Resource(resource);
 
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({
-  model,
+  resource,
   fieldName,
 }: {
-  readonly model: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>('');
   React.useEffect(() => {
     const handleChange = (): void =>
-      setErrors(model.saveBlockers.getFieldErrors(fieldName).join('\n'));
-    model.on('blockerschanged', handleChange);
-    return (): void => model.off('blockerschanged', handleChange);
-  }, [model, fieldName]);
+      setErrors(resource.saveBlockers.getFieldErrors(fieldName).join('\n'));
+    resource.on('blockerschanged', handleChange);
+    return (): void => resource.off('blockerschanged', handleChange);
+  }, [resource, fieldName]);
   return errors;
 }
 
@@ -113,7 +120,7 @@ export async function getResourceAndField(
       ? Promise.resolve(undefined)
       : path.length == 1
       ? model.fetch()
-      : model.rgetPromise(path.slice(0, -1).join('.'), true);
+      : model.rgetPromise(path.slice(0, -1).join('.'));
 
   return getResource.then((resource) => {
     const field = model.specifyModel.getField(fieldName ?? '');

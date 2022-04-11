@@ -35,7 +35,9 @@ type IncomingMessage = LoadedAction | GetPinInfoAction;
 type IncomingMessageExtended = IncomingMessage & {
   state: {
     readonly sendMessage: (message: OutgoingMessage) => void;
-    readonly model: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
+    readonly resource:
+      | SpecifyResource<CollectionObject>
+      | SpecifyResource<Taxon>;
     readonly occurrences: React.MutableRefObject<
       RA<OccurrenceData> | undefined
     >;
@@ -43,7 +45,7 @@ type IncomingMessageExtended = IncomingMessage & {
 };
 
 const dispatch = generateDispatch<IncomingMessageExtended>({
-  LoadedAction: ({ state: { sendMessage, model, occurrences } }) =>
+  LoadedAction: ({ state: { sendMessage, resource, occurrences } }) =>
     void leafletTileServersPromise
       .then((leafletLayers) =>
         sendMessage({
@@ -68,7 +70,7 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
           ),
         })
       )
-      .then(async () => fetchLocalOccurrences(model))
+      .then(async () => fetchLocalOccurrences(resource))
       .then((fetchedOccurrenceData) => {
         occurrences.current = fetchedOccurrenceData;
         sendMessage({
@@ -163,7 +165,7 @@ function SpecifyNetwork({
         state: {
           sendMessage: (message: OutgoingMessage) =>
             (event.source as Window | null)?.postMessage(message, snServer),
-          model: resource,
+          resource,
           occurrences,
         },
       });

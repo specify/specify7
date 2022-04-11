@@ -297,12 +297,6 @@ const commonText = createDictionary({
     ca: 'Generate',
     'es-es': 'Generate',
   },
-  loadingInline: {
-    'en-us': '(loading...)',
-    'ru-ru': '(загрузка...)',
-    ca: '(loading...)',
-    'es-es': '(loading...)',
-  },
   listTruncated: {
     'en-us': '(list truncated)',
     'ru-ru': '(список усечен)',
@@ -899,18 +893,6 @@ const commonText = createDictionary({
     ca: 'Size',
     'es-es': 'Size',
   },
-  manageUsers: {
-    'en-us': 'Manage Users',
-    'ru-ru': 'Управление пользователями',
-    ca: 'Manage Users',
-    'es-es': 'Manage Users',
-  },
-  manageUsersDialogTitle: {
-    'en-us': 'Manage Users',
-    'ru-ru': 'Управление пользователями',
-    ca: 'Manage Users',
-    'es-es': 'Manage Users',
-  },
   workbench: {
     'en-us': 'WorkBench',
     'ru-ru': 'WorkBench',
@@ -1340,12 +1322,6 @@ const commonText = createDictionary({
       </>
     ),
   },
-  changeLanguage: {
-    'en-us': 'Change Language',
-    'ru-ru': 'Изменить Язык',
-    ca: 'Change Language',
-    'es-es': 'Change Language',
-  },
   schemaConfig: {
     'en-us': 'Schema Config',
     'ru-ru': 'Конфигурация схемы',
@@ -1515,12 +1491,6 @@ const commonText = createDictionary({
     'ru-ru': 'Создано пользователем',
     ca: "Creat per l'usuari",
     'es-es': 'User Defined',
-  },
-  default: {
-    'en-us': 'Default',
-    'ru-ru': 'Умолчание',
-    ca: 'Per defecte',
-    'es-es': 'Default',
   },
   addLanguage: {
     'en-us': 'Add Language',
@@ -1813,6 +1783,24 @@ const commonText = createDictionary({
     'ru-ru': 'ИД',
     ca: 'ID',
     'es-es': 'ID',
+  },
+  institution: {
+    'en-us': 'Institution:',
+    'ru-ru': 'Учреждение:',
+    ca: 'Institution:',
+    'es-es': 'Institution:',
+  },
+  filter: {
+    'en-us': 'Filter',
+    'ru-ru': 'Фильтрировать',
+    ca: 'Filter',
+    'es-es': 'Filter',
+  },
+  results: {
+    'en-us': 'Results',
+    'ru-ru': 'Результаты',
+    ca: 'Results',
+    'es-es': 'Results',
   },
 });
 

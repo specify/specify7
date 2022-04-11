@@ -264,7 +264,7 @@ export function QueryComboBox({
     React.useCallback(
       async () =>
         resource
-          .rgetPromise<string, AnySchema>(field?.name ?? '', true)
+          .rgetPromise<string, AnySchema>(field?.name ?? '')
           .then((resource) =>
             typeof resource === 'undefined' || resource === null
               ? {

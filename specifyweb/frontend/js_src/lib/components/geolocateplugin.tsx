@@ -135,7 +135,7 @@ async function getGeoLocateData(
   ): Promise<IR<string>> =>
     f
       .all({
-        parent: geography.rgetPromise('parent', true),
+        parent: geography.rgetPromise('parent'),
         geographyDefinition: geography.rgetPromise('definitionItem', true),
       })
       .then(async ({ parent, geographyDefinition }) => {
@@ -152,11 +152,11 @@ async function getGeoLocateData(
     typeof point === 'undefined'
       ? undefined
       : resource
-          .rgetPromise('geoCoordDetails', true)
+          .rgetPromise('geoCoordDetails')
           .then((details) => details?.get('maxUncertaintyEst') ?? '');
 
   const geography = resource
-    .rgetPromise('geography', true)
+    .rgetPromise('geography')
     .then((geography) =>
       geography === null ? undefined : constructGeography(geography)
     );

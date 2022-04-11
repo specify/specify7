@@ -45,7 +45,7 @@ export function PasswordResetDialog({
         }}
       >
         <Label.Generic>
-          {adminText('password')}
+          {commonText('password')}
           <Input.Generic
             type="password"
             required

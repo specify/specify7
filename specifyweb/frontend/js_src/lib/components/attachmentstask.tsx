@@ -297,7 +297,7 @@ export function AttachmentsView(): JSX.Element {
       <header className="gap-x-2 flex items-center">
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>
-          <span className="sr-only">{formsText('filter')}</span>
+          <span className="sr-only">{commonText('filter')}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
             onValueChange={(filter): void =>
@@ -458,7 +458,9 @@ function Gallery({
             }
           />
         ))}
-        {!isComplete && loadingGif}
+        {isComplete
+          ? attachments.length === 0 && <p>{formsText('noAttachments')}</p>
+          : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
         <ResourceView

@@ -5,7 +5,6 @@ import formsText from '../../localization/forms';
 import { router } from '../../router';
 import { getModel, schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
-import type { Relationship } from '../../specifyfield';
 import type { SpecifyModel } from '../../specifymodel';
 import { className, Container, H2, H3, Link } from '../basic';
 import createBackboneView from '../reactbackboneextend';
@@ -15,21 +14,6 @@ import { RA } from '../../types';
 import { TableIcon } from '../common';
 import { UserTool } from '../main';
 import { useTitle } from '../hooks';
-
-function RelationshipLink({
-  relationship,
-  label,
-}: {
-  readonly relationship: Relationship;
-  readonly label?: string;
-}): JSX.Element | null {
-  const related = relationship.relatedModel;
-  return typeof related === 'object' ? (
-    <Link.Default href={`/specify/datamodel/${related.name.toLowerCase()}/`}>
-      {label ?? related.name}
-    </Link.Default>
-  ) : null;
-}
 
 function Table({
   children,
@@ -148,7 +132,11 @@ function DataModelView({
         ]}
       >
         {model.relationships.map((field) => (
-          <div key={field.name} role="row">
+          <Link.Default
+            key={field.name}
+            role="row"
+            href={`/specify/datamodel/${field.name.toLowerCase()}/`}
+          >
             {[
               field.name,
               field.label,
@@ -158,16 +146,13 @@ function DataModelView({
               booleanFormatter(field.isRequired),
               field.type,
               field.dbColumn,
-              <RelationshipLink relationship={field} />,
-              <RelationshipLink
-                relationship={field}
-                label={field.otherSideName}
-              />,
+              field.relatedModel.name,
+              field.otherSideName,
               booleanFormatter(field.dependent),
             ].map((label, index) => (
               <Cell key={index}>{label}</Cell>
             ))}
-          </div>
+          </Link.Default>
         ))}
       </Table>
     </Container.Full>

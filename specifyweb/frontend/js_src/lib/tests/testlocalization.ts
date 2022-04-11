@@ -38,12 +38,7 @@ const localizationDirectory = path.join(libraryDirectory, 'localization');
 const compiledLocalizationDirectory = '../localization';
 
 // Directories that contain front-end source code (non-recursively)
-const directoriesToScan = [
-  './',
-  './components',
-  './templates',
-  '/components/toolbar',
-];
+const directoriesToScan = ['./', './components', '/components/toolbar'];
 
 // Decide whether verbose mode should be turned on
 const verbose = process.argv[2] === '--verbose';

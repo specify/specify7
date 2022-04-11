@@ -111,7 +111,7 @@ function SecurityPanel(): JSX.Element | null {
       <div className="flex flex-1 h-0 gap-4">
         <aside className={`${className.containerBase} overflow-auto`}>
           <section>
-            <H3>{adminText('institution')}</H3>
+            <H3>{commonText('institution')}</H3>
             <Button.LikeLink
               aria-pressed={state.type === 'InstitutionState'}
               onClick={(): void =>

@@ -4,6 +4,7 @@ import { error } from '../assert';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
+import commonText from '../localization/common';
 import type { FormMode } from '../parseform';
 import {
   fetchPickList,
@@ -12,18 +13,17 @@ import {
 } from '../picklistmixins';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
+import { isResourceOfType } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
+import { Input } from './basic';
 import { useAsyncState, useLiveState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
-import { TreeLevelComboBox } from './treelevelcombobox';
-import { isResourceOfType } from '../specifymodel';
-import { UiField } from './uifield';
 import { PickListTableComboBox } from './picklisttablecombobox';
-import { Input } from './basic';
-import commonText from '../localization/common';
+import { TreeLevelComboBox } from './treelevelcombobox';
+import { UiField } from './uifield';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

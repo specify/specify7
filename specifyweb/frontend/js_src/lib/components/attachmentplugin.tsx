@@ -47,8 +47,7 @@ export function AttachmentPlugin({
         attachmentSettingsPromise.then(() =>
           attachmentsAvailable()
             ? (
-                resource?.rgetPromise('attachment', true) ??
-                Promise.resolve(null)
+                resource?.rgetPromise('attachment') ?? Promise.resolve(null)
               ).then((attachment) =>
                 attachment === null
                   ? { type: 'AddAttachment' }

@@ -149,7 +149,7 @@ const isScrolledBottom = (scrollable: HTMLElement): boolean =>
 
 export function QueryResultsTable({
   model,
-  label = queryText('results'),
+  label = commonText('results'),
   hasIdField,
   fetchResults,
   totalCount,

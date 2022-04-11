@@ -356,7 +356,7 @@ export function WbPlanViewMapper(props: {
             }
             onClose={(): void => {
               /*
-               * Since setting table as must match causes all of it's fields to
+               * Since setting table as must match causes all of its fields to
                * be optional, we may have to rerun validation on
                * mustMatchPreferences changes
                */
@@ -411,8 +411,7 @@ export function WbPlanViewMapper(props: {
           onSave={(): void => handleSave(true)}
           onDismissValidation={(): void =>
             dispatch({
-              type: 'ValidationAction',
-              validationResults: [],
+              type: 'ClearValidationAction',
             })
           }
           getMappedFields={getMappedFieldsBind}

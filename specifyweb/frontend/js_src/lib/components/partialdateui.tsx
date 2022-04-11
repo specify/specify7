@@ -94,7 +94,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   );
 
   const errors = useSaveBlockers({
-    model: resource,
+    resource,
     fieldName: dateField as string,
   });
   const { inputRef, validationRef } = useValidation(errors);

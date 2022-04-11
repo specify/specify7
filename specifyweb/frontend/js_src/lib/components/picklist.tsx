@@ -93,7 +93,7 @@ export function PickListComboBox(
   }, [props.items, props.resource]);
 
   const errors = useSaveBlockers({
-    model: props.model,
+    resource: props.model,
     fieldName: props.field.name,
   });
   const remote = props.resource !== props.model;

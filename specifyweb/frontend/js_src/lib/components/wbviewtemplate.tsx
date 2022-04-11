@@ -84,7 +84,7 @@ function WbView({ isUploaded }: { readonly isUploaded: boolean }): JSX.Element {
           disabled
           title={wbText('wbUploadedUnavailable')}
         >
-          {wbText('results')}
+          {commonText('results')}
         </Button.Simple>
         {isUploaded ? (
           hasPermission('/workbench/dataset', 'unupload') && (
@@ -135,7 +135,7 @@ function WbView({ isUploaded }: { readonly isUploaded: boolean }): JSX.Element {
           </Button.Simple>
         )}
         <Button.Simple className="wb-export-data-set">
-          {wbText('export')}
+          {commonText('export')}
         </Button.Simple>
         {hasPermission('/workbench/dataset', 'delete') && (
           <Button.Simple aria-haspopup="dialog" className="wb-delete-data-set">
