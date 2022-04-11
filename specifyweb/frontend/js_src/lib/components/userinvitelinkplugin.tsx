@@ -7,6 +7,7 @@ import commonText from '../localization/common';
 import { Button, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
+import { SerializedResource } from '../datamodelutils';
 
 export function UserInviteLinkPlugin({
   user,

@@ -522,7 +522,7 @@ function eventHandlerForToOne(related, field) {
                 });
         },
         parse: function(_resp) {
-            // since we are putting in data, the resourcgfse in now populated
+            // Since we are putting in data, the resource in now populated
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },

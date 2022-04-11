@@ -42,17 +42,8 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isSubForm: boolean;
   readonly children: (props: {
     readonly formElement: HTMLFormElement | null;
+    readonly formMeta: FormMeta;
     readonly title: string;
-    // Delete button component has to be created manually
-    readonly saveButton?: (props: {
-      readonly canAddAnother: boolean;
-      readonly onSaving?: () => void | undefined | false;
-      readonly onSaved: (payload: {
-        readonly newResource: SpecifyResource<SCHEMA> | undefined;
-        readonly wasNew: boolean;
-      }) => void;
-      readonly disabled?: boolean;
-    }) => JSX.Element | undefined;
     readonly form: JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
@@ -70,7 +61,9 @@ export const FormContext = React.createContext<
   Readonly<
     [
       meta: FormMeta,
-      setMeta: ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void) | undefined
+      setMeta:
+        | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)
+        | undefined
     ]
   >
 >([
@@ -142,10 +135,10 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
-  const loading = React.useContext(LoadingContext);
   return children({
     title,
     formElement: form,
+    formMeta: formMeta[0],
     form: isSubForm ? (
       specifyForm
     ) : (
@@ -158,39 +151,6 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
         </Form>
       </FormContext.Provider>
     ),
-    saveButton:
-      mode === 'view' && form !== null && typeof resource === 'undefined'
-        ? undefined
-        : ({
-            onSaving: handleSaving,
-            onSaved: handleSaved,
-            canAddAnother,
-            disabled,
-          }) =>
-            form === null || typeof resource === 'undefined' ? undefined : (
-              <SaveButton
-                resource={resource}
-                form={form}
-                onSaving={handleSaving}
-                onSaved={(payload): void => {
-                  if (formMeta[0].printOnSave === true)
-                    loading(
-                      reports({
-                        tblId: resource.specifyModel.tableId,
-                        recordToPrintId: resource.id,
-                        autoSelectSingle: true,
-                        done: (): void => handleSaved(payload),
-                      }).then((view) => view.render())
-                    );
-                  else handleSaved(payload);
-                }}
-                canAddAnother={
-                  canAddAnother &&
-                  !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-                }
-                disabled={disabled}
-              />
-            ),
     specifyNetworkBadge:
       resource?.isNew() === false &&
       displaySpecifyNetwork(resource) &&
@@ -288,6 +248,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const isModified = useIsModified(resource);
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
+  const loading = React.useContext(LoadingContext);
 
   return isDeleted ? (
     resourceDeletedDialog
@@ -299,14 +260,36 @@ export function ResourceView<SCHEMA extends AnySchema>({
       viewName={viewName}
       isSubForm={isSubForm}
     >
-      {({ form, title, saveButton, specifyNetworkBadge }): JSX.Element => {
-        const saveButtonElement = isSubForm
-          ? undefined
-          : saveButton?.({
-              canAddAnother,
-              onSaving: handleSaving,
-              onSaved: handleSaved,
-            });
+      {({
+        form,
+        formElement,
+        formMeta,
+        title,
+        specifyNetworkBadge,
+      }): JSX.Element => {
+        const saveButtonElement =
+          !isSubForm && typeof resource === 'object' && formElement !== null ? (
+            <SaveButton
+              resource={resource}
+              form={formElement}
+              canAddAnother={
+                canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
+              }
+              onSaving={handleSaving}
+              onSaved={(payload): void => {
+                if (formMeta.printOnSave === true)
+                  loading(
+                    reports({
+                      tblId: resource.specifyModel.tableId,
+                      recordToPrintId: resource.id,
+                      autoSelectSingle: true,
+                      done: (): void => handleSaved(payload),
+                    }).then((view) => view.render())
+                  );
+                else handleSaved(payload);
+              }}
+            />
+          ) : undefined;
         if (dialog === false) {
           const deleteButton =
             !isSubForm &&

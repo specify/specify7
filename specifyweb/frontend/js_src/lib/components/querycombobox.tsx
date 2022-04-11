@@ -411,6 +411,7 @@ export function QueryComboBox({
           ]
         )}
         onChange={({ data }): void => updateValue(data)}
+        onCleared={(): void => updateValue('')}
         onNewValue={(value: string): void =>
           field?.isRelationship === true
             ? state.type === 'AddResourceState'

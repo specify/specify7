@@ -81,6 +81,7 @@ export function UserAgentsDialog({
         </>
       }
     >
+      <p>{adminText('setAgentsDialogMessage')}</p>
       {/* Not formatting this error nicely, as it shouldn't ever happen */}
       {Array.isArray(response.MultipleAgentsException) && (
         <pre>{JSON.stringify(response, null, '2')}</pre>

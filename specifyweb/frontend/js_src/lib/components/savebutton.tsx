@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -15,13 +17,14 @@ import {
   useUnloadProtect,
 } from './hooks';
 import { Dialog } from './modaldialog';
-import { error } from '../assert';
 import { FormContext } from './resourceview';
 
-// TODO: handle case when there are save blockers for field that is not
-//   rendered on the form
-// TODO: move this logic into ResourceView, so that <form> and button is
-//   defined in the same place
+/*
+ * TODO: handle case when there are save blockers for field that is not
+ *   rendered on the form
+ * TODO: move this logic into ResourceView, so that <form> and button is
+ *   defined in the same place
+ */
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   canAddAnother,
@@ -29,6 +32,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   disabled,
+  saveRequired: externalSaveRequired,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
@@ -41,6 +45,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   }) => void;
   readonly onClick?: () => void;
   readonly disabled?: boolean;
+  /*
+   * Can enable Save button even if no save is required (i.e., when there were
+   * changes to fields that are not stored with the resource
+   */
+  readonly saveRequired?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -86,7 +95,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     event.preventDefault();
     event.stopPropagation();
 
-    if (saveBlocked || (!saveRequired && !addAnother)) return;
+    if (saveBlocked || (!saveRequired && !externalSaveRequired && !addAnother))
+      return;
 
     await resource.businessRuleMgr.pending;
 
@@ -113,7 +123,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     setIsSaving(true);
     loading(
-      (saveRequired ? resource.save(hasSaveConflict) : Promise.resolve())
+      (resource.needsSaved ? resource.save(hasSaveConflict) : Promise.resolve())
         .then(() => {
           unsetUnloadProtect();
           handleSaved?.({
@@ -123,11 +133,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         })
         .then(() => resource.trigger('saved'))
         .then(() => setIsSaving(false))
-        .catch((exception) =>
-          Object.getOwnPropertyDescriptor(exception ?? {}, 'handledBy')
-            ?.value === hasSaveConflict
+        .catch((error_) =>
+          Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===
+          hasSaveConflict
             ? undefined
-            : error(exception)
+            : error(error_)
         )
     );
   }
@@ -148,7 +158,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           disabled={isSaving}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
-          {saveRequired || resource.isNew()
+          {saveRequired || externalSaveRequired || resource.isNew()
             ? formsText('saveAndAddAnother')
             : formsText('addAnother')}
         </ButtonComponent>
@@ -160,7 +170,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
          * Don't disable the button if saveBlocked, so that clicking the button
          * would make browser focus the invalid field
          */
-        disabled={disabled || isSaving || (!saveRequired && !saveBlocked)}
+        disabled={
+          disabled ||
+          isSaving ||
+          (!saveRequired && !externalSaveRequired && !saveBlocked)
+        }
         onClick={(): void => form.classList.remove(className.notSubmittedForm)}
       >
         {commonText('save')}

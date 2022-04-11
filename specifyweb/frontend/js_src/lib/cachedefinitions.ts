@@ -57,7 +57,9 @@ export type CacheDefinitions = {
     readonly listOfQueries: SortConfig<
       keyof SpQuery['fields'] & ('name' | 'timestampCreated')
     >;
-    readonly: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>;
+    readonly listOfDataSets: SortConfig<
+      'name' | 'dateCreated' | 'dateUploaded'
+    >;
   };
   readonly attachments: {
     readonly sortOrder:

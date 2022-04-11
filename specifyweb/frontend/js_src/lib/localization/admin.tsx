@@ -431,12 +431,18 @@ const adminText = createDictionary({
     ca: 'Set Collections',
     'es-es': 'Set Collections',
   },
-  // FIXME:: localize
+  // FIXME: localize
   agentInUse: {
     'en-us': 'This agent is already associated with a different user.',
     'ru-ru': 'This agent is already associated with a different user',
     ca: 'This agent is already associated with a different user',
     'es-es': 'This agent is already associated with a different user',
+  },
+  setAgentsDialogMessage: {
+    'en-us': 'Please set the following agents before proceeding:',
+    'ru-ru': 'Please set the following agents before proceeding:',
+    ca: 'Please set the following agents before proceeding:',
+    'es-es': 'Please set the following agents before proceeding:',
   },
 });
 

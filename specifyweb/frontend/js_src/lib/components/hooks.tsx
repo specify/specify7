@@ -543,11 +543,11 @@ export function useIsModified(
   );
 
   React.useEffect(() => {
-    resource?.on('saverequired fakesaverequired', handleNeedsSaving);
-    resource?.on('saved fakesaved', handleSaved);
+    resource?.on('saverequired', handleNeedsSaving);
+    resource?.on('saved', handleSaved);
     return (): void => {
-      resource?.off('saverequired fakesaverequired', handleNeedsSaving);
-      resource?.off('saved fakesaved', handleSaved);
+      resource?.off('saverequired', handleNeedsSaving);
+      resource?.off('saved', handleSaved);
     };
   }, [resource, handleNeedsSaving, handleSaved]);
 

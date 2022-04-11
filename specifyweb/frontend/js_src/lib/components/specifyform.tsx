@@ -143,8 +143,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
 
   const [loadedResource] = useAsyncState(
     React.useCallback(async () => resource.fetch(), [resource]),
-    false,
-    true
+    false
   );
   const isShowingOldResource =
     typeof loadedResource === 'undefined' &&

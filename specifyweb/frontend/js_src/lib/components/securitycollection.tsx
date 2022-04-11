@@ -50,8 +50,7 @@ export function CollectionView({
           : undefined,
       [collection.id]
     ),
-    false,
-    true
+    false
   );
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
@@ -75,8 +74,7 @@ export function CollectionView({
       [collection.id, users]
     ),
     // Display loading screen while loading a role
-    typeof initialRoleId === 'number',
-    true
+    typeof initialRoleId === 'number'
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>

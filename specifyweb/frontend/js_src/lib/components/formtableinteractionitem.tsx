@@ -47,8 +47,7 @@ export function FormTableInteraction(
               dbTableId: 1,
               domainFilter: true,
               orderBy:
-                (props.sortField as keyof SCHEMA['fields']) ??
-                '-timestampcreated',
+                (props.sortField as '-timestampCreated') ?? '-timestampCreated',
               limit: 5000,
             }).then(({ records, totalCount }) => ({
               recordSets: records.map(deserializeResource),
