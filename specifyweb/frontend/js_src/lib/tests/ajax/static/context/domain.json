@@ -1,0 +1,10 @@
+{
+  "collection": 4,
+  "discipline": 3,
+  "division": 2,
+  "institution": 1,
+  "embeddedCollectingEvent": false,
+  "embeddedPaleoContext": true,
+  "paleoContextChildTable": "collectionobject",
+  "catalogNumFormatName": "CatalogNumberNumeric"
+}

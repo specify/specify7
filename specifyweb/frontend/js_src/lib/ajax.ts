@@ -3,11 +3,13 @@ import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
 
 const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
+export const isRelativeUrl = (url: string): boolean =>
+  reIsAbsolute.exec(url) === null;
 export const isExternalUrl = (url: string): boolean =>
   // Relative url is not external. Passing a relative URL to new URL() throws
   ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
     ? true
-    : reIsAbsolute.exec(url) === null
+    : isRelativeUrl(url)
     ? false
     : new URL(url).origin !== window.location.origin;
 
@@ -38,7 +40,7 @@ export const Http = {
 
 export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
 
-type ResponseObject<RESPONSE_TYPE> = {
+export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*
    * Parsed response (parser is selected based on the value of options.headers.Accept:
    *   - application/json - json
@@ -91,37 +93,42 @@ export const ajax = async <RESPONSE_TYPE = string>(
      */
     readonly strict?: boolean;
   } = {}
-): Promise<ResponseObject<RESPONSE_TYPE>> =>
-  fetch(url, {
-    ...options,
-    body:
-      typeof options.body === 'object' && !(options.body instanceof FormData)
-        ? JSON.stringify(options.body)
-        : options.body,
-    headers: {
-      ...(typeof options.body === 'object' &&
-      !(options.body instanceof FormData)
-        ? {
-            'Content-Type': 'application/json',
-          }
-        : {}),
-      ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
-        ? {}
-        : { 'X-CSRFToken': csrfToken }),
-      ...headers,
-      ...(typeof accept === 'string' ? { Accept: accept } : {}),
-    },
-  })
-    .then(async (response) => Promise.all([response, response.text()]))
-    .then(([response, text]: [Response, string]) =>
-      handleResponse({
-        expectedResponseCodes,
-        accept,
-        strict,
-        response,
-        text,
+): Promise<AjaxResponseObject<RESPONSE_TYPE>> =>
+  process.env.NODE_ENV === 'test'
+    ? import('./tests/ajax').then(async ({ interceptRequest }) =>
+        interceptRequest<RESPONSE_TYPE>(url)
+      )
+    : fetch(url, {
+        ...options,
+        body:
+          typeof options.body === 'object' &&
+          !(options.body instanceof FormData)
+            ? JSON.stringify(options.body)
+            : options.body,
+        headers: {
+          ...(typeof options.body === 'object' &&
+          !(options.body instanceof FormData)
+            ? {
+                'Content-Type': 'application/json',
+              }
+            : {}),
+          ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
+            ? {}
+            : { 'X-CSRFToken': csrfToken }),
+          ...headers,
+          ...(typeof accept === 'string' ? { Accept: accept } : {}),
+        },
       })
-    );
+        .then(async (response) => Promise.all([response, response.text()]))
+        .then(([response, text]: [Response, string]) =>
+          handleResponse({
+            expectedResponseCodes,
+            accept,
+            strict,
+            response,
+            text,
+          })
+        );
 
 export function handleResponse<RESPONSE_TYPE = string>({
   expectedResponseCodes,
@@ -135,7 +142,7 @@ export function handleResponse<RESPONSE_TYPE = string>({
   readonly response: Response;
   readonly strict: boolean;
   readonly text: string;
-}): ResponseObject<RESPONSE_TYPE> {
+}): AjaxResponseObject<RESPONSE_TYPE> {
   try {
     if (expectedResponseCodes.includes(response.status)) {
       if (response.ok && accept === 'application/json') {

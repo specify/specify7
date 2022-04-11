@@ -1,0 +1,9 @@
+{
+  "available": [
+    [98304, "KU Fish Observation Collection"],
+    [65536, "KU Fish Teaching Collection"],
+    [32768, "KU Fish Tissue Collection"],
+    [4, "KU Fish Voucher Collection"]
+  ],
+  "current": 4
+}

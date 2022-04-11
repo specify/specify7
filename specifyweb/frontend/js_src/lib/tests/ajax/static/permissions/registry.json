@@ -1,0 +1,70 @@
+{
+  "/system/sp7/collection": ["access"],
+  "/admin/user/password": ["update"],
+  "/admin/user/agents": ["update"],
+  "/admin/user/sp6/is_admin": ["update"],
+  "/admin/user/sp6/collection_access": ["read", "update"],
+  "/report": ["execute"],
+  "/export/dwca": ["execute"],
+  "/export/feed": ["force_update"],
+  "/permissions/policies/user": ["update", "read"],
+  "/permissions/user/roles": ["update", "read"],
+  "/permissions/roles": [
+    "create",
+    "read",
+    "update",
+    "delete",
+    "copy_from_library"
+  ],
+  "/permissions/library/roles": ["create", "read", "update", "delete"],
+  "/tree/mutation/taxon": [
+    "merge",
+    "move",
+    "synonymize",
+    "unsynonymize",
+    "repair"
+  ],
+  "/tree/mutation/geography": [
+    "merge",
+    "move",
+    "synonymize",
+    "unsynonymize",
+    "repair"
+  ],
+  "/tree/mutation/storage": [
+    "merge",
+    "move",
+    "synonymize",
+    "unsynonymize",
+    "repair"
+  ],
+  "/tree/mutation/geologictimeperiod": [
+    "merge",
+    "move",
+    "synonymize",
+    "unsynonymize",
+    "repair"
+  ],
+  "/tree/mutation/lithostrat": [
+    "merge",
+    "move",
+    "synonymize",
+    "unsynonymize",
+    "repair"
+  ],
+  "/querybuilder/query": [
+    "execute",
+    "export_csv",
+    "export_kml",
+    "create_recordset"
+  ],
+  "/workbench/dataset": [
+    "create",
+    "update",
+    "delete",
+    "upload",
+    "unupload",
+    "validate",
+    "transfer"
+  ]
+}

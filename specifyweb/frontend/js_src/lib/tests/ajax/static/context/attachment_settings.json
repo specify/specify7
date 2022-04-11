@@ -1,0 +1,9 @@
+{
+  "collection": "KU Fish Voucher Collection",
+  "token_required_for_get": false,
+  "read": "http://host.docker.internal:80/fileget",
+  "write": "http://host.docker.internal:80/fileupload",
+  "delete": "http://host.docker.internal:80/filedelete",
+  "getmetadata": "http://host.docker.internal:80/getmetadata",
+  "testkey": "http://host.docker.internal:80/testkey"
+}

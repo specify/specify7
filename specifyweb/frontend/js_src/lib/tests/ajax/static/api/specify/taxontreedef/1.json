@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "fullnamedirection": 1,
+  "name": "Fish taxonomy tree",
+  "remarks": "Tree converted from kufish_6",
+  "timestampcreated": "2012-08-09T12:30:07",
+  "timestampmodified": "2012-08-09T12:30:07",
+  "version": 12,
+  "createdbyagent": null,
+  "modifiedbyagent": null,
+  "treeentries": "/api/specify/taxon/?definition=1",
+  "treedefitems": "/api/specify/taxontreedefitem/?treedef=1",
+  "resource_uri": "/api/specify/taxontreedef/1/"
+}

@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "fullnamedirection": 1,
+  "name": "Sample storage tree",
+  "remarks": "This definition is merely for demonstration purposes.  Consult documentation or support staff for instructions on creating one tailored for an institutions specific needs.",
+  "timestampcreated": "2012-08-09T12:29:16",
+  "timestampmodified": "2012-08-09T12:29:16",
+  "version": 7,
+  "createdbyagent": null,
+  "modifiedbyagent": null,
+  "institutions": "/api/specify/institution/?storagetreedef=1",
+  "treeentries": "/api/specify/storage/?definition=1",
+  "treedefitems": "/api/specify/storagetreedefitem/?treedef=1",
+  "resource_uri": "/api/specify/storagetreedef/1/"
+}

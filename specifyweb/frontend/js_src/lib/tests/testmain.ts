@@ -1,16 +1,15 @@
 import QUnit from 'qunit';
 
+import { initialContext, unlockInitialContext } from '../initialcontext';
 import type { RA } from '../types';
 import testAutoMapper from './testautomapper';
 import testLatLongUtils from './testlatlongutils';
-import testUploadPlanParser from './testuploadplanparser';
 import testUploadPlanBuilder from './testuploadplanbuilder';
+import testUploadPlanParser from './testuploadplanparser';
 import testWbPlanViewLinesGetter from './testwbplanviewlinesgetter';
 import testWbPlanViewTreePreview from './testwbplanviewmappingpreview';
 import testWbPlanViewModelHelper from './testwbplanviewmodelhelper';
 import testWbPlanViewNavigator from './testwbplanviewnavigator';
-import { initialContext, unlockInitialContext } from '../initialcontext';
-import { crash } from '../components/errorboundary';
 
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
@@ -27,7 +26,7 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 
 async function runTests(): Promise<void> {
   unlockInitialContext();
-  await initialContext.catch(crash);
+  await initialContext;
 
   testLatLongUtils();
   testUploadPlanParser();
