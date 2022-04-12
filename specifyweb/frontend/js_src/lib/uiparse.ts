@@ -24,6 +24,7 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
+import { parseRelativeDate } from './relativedate';
 
 /** Makes sure a wrapped function would receive a string value */
 const stringGuard =
@@ -174,7 +175,12 @@ export const parsers = f.store(
       formatters: [
         formatter().toLowerCase,
         stringGuard((value) =>
-          value === 'today' ? dayjs() : dayjs(value, fullDateFormat(), true)
+          (
+            f.maybe(
+              parseRelativeDate(value.trim().toLowerCase()),
+              (date) => f.maybe(date, dayjs) ?? dayjs()
+            ) ?? dayjs()
+          ).format(databaseDateFormat)
         ),
       ],
       validators: [

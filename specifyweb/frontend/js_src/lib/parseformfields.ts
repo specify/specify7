@@ -45,7 +45,7 @@ export type FieldTypes = {
     'Text',
     {
       readonly defaultValue: string | undefined;
-      // These are used by number input box:
+      // These are used by numeric fields only:
       readonly min: number | undefined;
       readonly max: number | undefined;
       readonly step: number | undefined;

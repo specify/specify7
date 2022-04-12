@@ -6,6 +6,7 @@ import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';
 import { f } from './functools';
+import { parseRelativeDate } from './relativedate';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -18,7 +19,7 @@ export type UiPlugins = {
     'PartialDateUI',
     {
       readonly dateField: string | undefined;
-      readonly defaultValue: 'today' | undefined;
+      readonly defaultValue: Date | undefined;
       readonly precisionField: string | undefined;
       readonly defaultPrecision: PartialDatePrecision;
     }
@@ -72,7 +73,10 @@ const processUiPlugin: {
   }),
   PartialDateUI: ({ getProperty, defaultValue }) => ({
     type: 'PartialDateUI',
-    defaultValue: defaultValue?.toLowerCase() === 'today' ? 'today' : undefined,
+    defaultValue: f.maybe(
+      defaultValue?.trim().toLowerCase(),
+      parseRelativeDate
+    ),
     dateField: getProperty('df')?.toLowerCase(),
     precisionField: getProperty('tp')?.toLowerCase(),
     defaultPrecision: f.var(

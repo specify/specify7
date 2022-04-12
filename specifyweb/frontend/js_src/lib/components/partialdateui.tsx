@@ -81,7 +81,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly dateField: keyof SCHEMA['fields'] & string;
   readonly precisionField: (keyof SCHEMA['fields'] & string) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
-  readonly defaultValue: 'today' | undefined;
+  readonly defaultValue: Date | undefined;
   readonly isReadOnly: boolean;
   readonly id: string | undefined;
 }): JSX.Element {
@@ -112,8 +112,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setInputValue('');
 
     resource.settingDefaultValues(() =>
-      defaultValue === 'today' && resource.isNew()
-        ? resource.set(dateField, getDateInputValue(new Date()) as never)
+      typeof defaultValue === 'object' && resource.isNew()
+        ? resource.set(dateField, getDateInputValue(defaultValue) as never)
         : undefined
     );
 

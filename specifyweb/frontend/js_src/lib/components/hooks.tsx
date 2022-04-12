@@ -18,6 +18,7 @@ import { parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { LoadingContext } from './contexts';
 import { FormContext } from './resourceview';
+import { parseRelativeDate } from '../relativedate';
 
 const idStore: R<number> = {};
 
@@ -514,10 +515,12 @@ export function useResourceValue<
         ? undefined
         : resource.set(
             fieldName,
-            (defaultParser.value.toString().toLowerCase() === 'today'
-              ? parser.type === 'date'
-                ? getDateInputValue(new Date())
-                : defaultParser.value
+            (parser.type === 'date'
+              ? getDateInputValue(
+                  parseRelativeDate(
+                    defaultParser.value?.toString().trim().toLowerCase() ?? ''
+                  ) ?? new Date()
+                )
               : defaultParser.value) as never
           )
     );
