@@ -64,6 +64,9 @@ export type Stats = RR<
   }
 >;
 
+/**
+ * Fetch tree node usage stats
+ */
 export const fetchStats = async (url: string): Promise<Stats> =>
   ajax<RA<Readonly<[number, number, number]>>>(
     url,

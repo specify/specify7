@@ -1,4 +1,4 @@
-/*
+/**
  * This is a composition model that loads the Specify datamodel JSON and
  * reifies it into the objects defined in specifymodel.ts and
  * specifyfield.ts.

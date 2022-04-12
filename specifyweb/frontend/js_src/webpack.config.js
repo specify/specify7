@@ -1,3 +1,7 @@
+/**
+ * WebPack config for development and production
+ */
+
 'use strict';
 
 const path = require('path');

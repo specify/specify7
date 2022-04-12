@@ -1,3 +1,7 @@
+/**
+ * Parse user permissions
+ */
+
 import { ajax } from './ajax';
 import { error } from './assert';
 import { PermissionDenied } from './components/permissiondenied';

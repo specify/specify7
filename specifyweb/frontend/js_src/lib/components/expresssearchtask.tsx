@@ -1,3 +1,7 @@
+/**
+ * Express Search UI
+ */
+
 import React from 'react';
 
 import { ajax } from '../ajax';

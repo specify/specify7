@@ -1,3 +1,7 @@
+/**
+ * Fetch basic SpecifyUser information
+ */
+
 import type { Agent } from './datamodel';
 import type { SerializedModel } from './datamodelutils';
 import { load } from './initialcontext';

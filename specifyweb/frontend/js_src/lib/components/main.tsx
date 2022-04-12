@@ -1,3 +1,7 @@
+/**
+ * The root React wrapper for the app
+ */
+
 import type Backbone from 'backbone';
 import React from 'react';
 
@@ -105,7 +109,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
           task: 'logout',
           title: commonText('logOut'),
           basePath: '/',
-          view: '/accounts/logout',
+          view: '/accounts/logout/',
           isOverlay: false,
           groupLabel: commonText('userAccount'),
         },
@@ -115,7 +119,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
           task: 'password_change',
           title: commonText('changePassword'),
           basePath: '/',
-          view: '/accounts/logout',
+          view: '/accounts/password_change/',
           isOverlay: false,
           groupLabel: commonText('userAccount'),
         },

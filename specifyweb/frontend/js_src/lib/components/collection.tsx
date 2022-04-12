@@ -6,6 +6,9 @@ import { f } from '../functools';
 import { defined } from '../types';
 import { useAsyncState } from './hooks';
 
+/**
+ * A hook for fetching a collection of resources in a paginated way
+ */
 export function useCollection<SCHEMA extends AnySchema>(
   fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>
 ): Readonly<[SerializedCollection<SCHEMA> | undefined, () => Promise<void>]> {

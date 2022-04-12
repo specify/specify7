@@ -1,3 +1,7 @@
+/**
+ * Fixes for various issues with default TypeScript declaration fils
+ */
+
 import type { IR, RA, RR } from './types';
 
 declare global {

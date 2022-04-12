@@ -1,3 +1,7 @@
+/**
+ * Force reload cachable resources
+ */
+
 import React from 'react';
 
 import { Http, ping } from '../../ajax';

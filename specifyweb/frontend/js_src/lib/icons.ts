@@ -1,3 +1,9 @@
+/**
+ * Various icons
+ *
+ * Icons are stored in https://github.com/specify/specify6/tree/master/src/edu/ku/brc/specify/images
+ */
+
 import { load } from './initialcontext';
 import type { RA } from './types';
 
@@ -5,6 +11,10 @@ const iconGroups = {} as Record<IconGroup, Document>;
 
 export const fetchContext = Promise.all(
   Object.entries({
+    /**
+     * These files are defined in Specify 6 code here:
+     * https://github.com/specify/specify6/blob/master/config/
+     */
     datamodel: 'icons_datamodel.xml',
     discipline: 'icons_disciplines.xml',
     imgproc: 'icons_imgproc.xml',

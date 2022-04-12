@@ -1,3 +1,7 @@
+/**
+ * Define links to the Swagger UI pages
+ **/
+
 import commonText from '../../localization/common';
 import type { RA } from '../../types';
 import type { UserTool } from '../main';

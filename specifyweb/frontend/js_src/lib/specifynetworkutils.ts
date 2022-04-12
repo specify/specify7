@@ -1,8 +1,9 @@
 import type { CollectionObject } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import { snServer } from './lifemapperconfig';
 import type { IR, RA } from './types';
 import { ajax } from './ajax';
+
+export const snServer = 'https://broker.spcoco.org';
 
 export const fetchLocalScientificName = async (
   model: SpecifyResource<CollectionObject>,

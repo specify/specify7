@@ -1,3 +1,7 @@
+/**
+ * Type definitions for files that aren't yet converted to TypeScript
+ */
+
 import type {
   AnySchema,
   CommonFields,

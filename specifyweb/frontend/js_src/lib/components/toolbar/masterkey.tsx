@@ -1,3 +1,7 @@
+/**
+ * Generate master key
+ **/
+
 import React from 'react';
 
 import { ajax, formData, Http } from '../../ajax';

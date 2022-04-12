@@ -1,3 +1,8 @@
+/**
+ * Set user's access to collections in Specify 6
+ * This does not affect Specify 7
+ */
+
 import React from 'react';
 
 import { ajax, ping } from '../ajax';

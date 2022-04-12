@@ -11,10 +11,6 @@ import { router } from './router';
 import { setCurrentView } from './specifyapp';
 import { defined, RA } from './types';
 
-/*
- * Make Backbone use fetch() API instead of JQuery so that all errors
- * can be handled consistently in a single place
- */
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
 let requestCallback: ((status: number) => void) | undefined;
@@ -36,6 +32,10 @@ export function hijackBackboneAjax<T>(
   return value;
 }
 
+/**
+ * Makes Backbone use fetch() API instead of JQuery so that all errors
+ * can be handled consistently in a single place
+ */
 Backbone.ajax = function (request): JQueryXHR {
   if (typeof request === 'undefined') throw new Error('Undefined Request');
   const url = defined(request.url);

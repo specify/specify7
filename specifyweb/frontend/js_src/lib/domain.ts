@@ -15,6 +15,9 @@ import { crash } from './components/errorboundary';
 import { f } from './functools';
 import { hasTablePermission } from './permissions';
 
+/**
+ * Some tasks to do after a new resoure is created
+ */
 globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
   const domainField = resource.specifyModel.getScopingRelationship();
   const parentResource = domainField
@@ -92,6 +95,10 @@ const collectionsInDomain = async (
     }
   ).then(({ records }) => records);
 
+/**
+ * @returns a list of collections the resource belongs too.
+ * @returns undefined if resource is not scoped to a collection
+ */
 export const collectionsForResource = async (
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<SerializedResource<Collection>> | undefined> =>

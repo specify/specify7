@@ -6,7 +6,7 @@ import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode } from '../parseform';
-import { fetchResource, parseResourceUrl } from '../resource';
+import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
@@ -31,6 +31,10 @@ export type SetAgentsResponse = Partial<{
   };
 }>;
 
+/**
+ * If user is missing agents for some accessible collections, this dialog
+ * would ask them to assign the missing agents
+ */
 export function UserAgentsDialog({
   userAgents,
   userId,
@@ -96,9 +100,8 @@ export function UserAgentsDialog({
                 method: 'POST',
                 headers: {},
                 body: filterArray(
-                  defined(userAgents).map(
-                    ({ address }) =>
-                      parseResourceUrl(address.get('agent') ?? '')?.[1]
+                  defined(userAgents).map(({ address }) =>
+                    idFromUrl(address.get('agent') ?? '')
                   )
                 ),
               },
@@ -133,7 +136,7 @@ export function UserAgentsDialog({
               />
               {f.includes(
                 response.AgentInUseException ?? [],
-                parseResourceUrl(address.get('agent') ?? '')?.[1]
+                idFromUrl(address.get('agent') ?? '')
               ) && <ErrorMessage>{adminText('agentInUse')}</ErrorMessage>}
             </Label.Generic>
           ))}

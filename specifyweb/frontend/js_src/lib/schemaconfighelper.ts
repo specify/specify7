@@ -23,6 +23,9 @@ let newStringId = 1;
 const defaultLanguage = 'en';
 const defaultCountry = null;
 
+/**
+ * Fetch localized strings for a given field and language
+ */
 const fetchString = async (
   url: string,
   language: string,
@@ -53,6 +56,9 @@ const fetchString = async (
     };
   });
 
+/**
+ * Fetch all strings for a field
+ */
 export const fetchStrings = async <
   T extends { readonly names: string; readonly descs: string }
 >(
@@ -74,6 +80,10 @@ export const fetchStrings = async <
     )
   );
 
+/**
+ * Need to set resource URL before a SpLocaleItemString can be sent to the back
+ * end
+ */
 export function prepareNewString({
   parent,
   id: _id,
@@ -101,6 +111,9 @@ export const formatAggregators = (
     ])
   );
 
+/**
+ * Filter down defined formatters
+ */
 export const filterFormatters = (
   formatters: IR<DataObjectFormatter>,
   tableName: keyof Tables
@@ -114,6 +127,12 @@ export const filterFormatters = (
       .map(([name, { title }]) => [name, title] as const)
   );
 
+/**
+ * Determine what kind of item SpLocalItem is based on what fields it has
+ *
+ * Assuming it can't be multiple types at once
+ *
+ */
 export function getItemType(item: SpLocaleItem): ItemType {
   if (item.weblinkname !== null) return 'webLink';
   else if (item.picklistname !== null) return 'pickList';
@@ -137,20 +156,23 @@ export function isFormatterAvailable(
   else return false;
 }
 
-const relationshipTypes: IR<string> = {
+export const localizedRelationshipTypes: IR<string> = {
   'one-to-one': commonText('oneToOne'),
   'one-to-many': commonText('oneToMany'),
   'many-to-one': commonText('manyToOne'),
   'many-to-many': commonText('manyToMany'),
 };
 
+/**
+ * Localize Java type name for presenting in the UI
+ */
 export function javaTypeToHuman(
   type: string | null,
   relatedModelName: string | undefined
 ): string {
   if (type === null) return '';
-  else if (type in relationshipTypes)
-    return `${relationshipTypes[type]} (${relatedModelName ?? ''})`;
+  else if (type in localizedRelationshipTypes)
+    return `${localizedRelationshipTypes[type]} (${relatedModelName ?? ''})`;
   else if (type.startsWith('java')) return type.split('.').slice(-1)[0];
   else return type;
 }

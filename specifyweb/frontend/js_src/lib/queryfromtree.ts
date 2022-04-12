@@ -127,6 +127,10 @@ const defaultFields: RR<
   ],
 };
 
+/**
+ * Generate a Query for fetchign Collection Objects associated with a given
+ * tree node
+ */
 export async function queryFromTree(
   tableName: AnyTree['tableName'],
   nodeId: number

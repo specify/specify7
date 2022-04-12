@@ -20,6 +20,9 @@ import { getModel } from './schema';
  * fetching the new one.
  */
 
+/**
+ * Fetch a single resource from the back-end
+ */
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME]
@@ -48,6 +51,9 @@ export const deleteResource = async (
     { expectedResponseCodes: [Http.NO_CONTENT] }
   ).then(f.void);
 
+/**
+ * Generate a URL to view the resource in the front-end
+ */
 export function getResourceViewUrl(
   tableName: keyof Tables,
   resourceId: number | 'new' = 'new',
@@ -59,6 +65,9 @@ export function getResourceViewUrl(
     : url;
 }
 
+/**
+ * Generate a URL for working with a resource through a back-end API
+ */
 export function getResourceApiUrl(
   tableName: keyof Tables,
   resourceId: number,
@@ -82,13 +91,12 @@ export function parseResourceUrl(
     : undefined;
 }
 
-/** Assuming urls are constructed by ResourceBase.url method */
 export const idFromUrl = (url: string): number | undefined =>
-  f.parseInt(url.split('/').slice(-2)[0] ?? '');
+  parseResourceUrl(url)?.[1];
 
 /**
- * This needs to exist due to type conflicts between AnySchema and table
- * schemas defined in datamodel.ts
+ * This needs to exist outside of Resorce definition due to type conflicts
+ * between AnySchema and table schemas defined in datamodel.ts
  */
 export const resourceToJson = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>

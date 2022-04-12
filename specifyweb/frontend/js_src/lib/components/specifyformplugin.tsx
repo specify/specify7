@@ -197,7 +197,7 @@ const pluginRenderers: {
   }) {
     if (typeof relationship === 'undefined') {
       console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
+        "Can't display HostTaxonPlugin because initialize.relname is not set"
       );
       return null;
     } else

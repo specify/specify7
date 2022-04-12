@@ -35,6 +35,9 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly values: RA<string>;
 };
 
+/**
+ * Display a resource search dialog
+ */
 export function SearchDialog<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = [],

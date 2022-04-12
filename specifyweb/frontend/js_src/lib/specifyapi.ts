@@ -1,3 +1,7 @@
+/**
+ * Wrappers for some back-end API endpoints
+ */
+
 import _ from 'underscore';
 
 import { ajax } from './ajax';

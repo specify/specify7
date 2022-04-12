@@ -2,7 +2,7 @@ import { ajax } from './ajax';
 import type { DatasetBrief } from './components/wbplanview';
 import type { RA } from './types';
 import { filterArray } from './types';
-import { escapeRegExp } from './escaperegexp';
+import { escapeRegExp } from './helpers';
 import { f } from './functools';
 
 const MAX_NAME_LENGTH = 64;

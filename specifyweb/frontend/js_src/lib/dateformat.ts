@@ -1,3 +1,7 @@
+/**
+ * Read the preferred date format from remote prefs
+ */
+
 import { getPref } from './remoteprefs';
 
 export const databaseDateFormat = 'YYYY-MM-DD';

@@ -1,3 +1,7 @@
+/**
+ * Utilities for dealing with user preferences
+ */
+
 import { ajax, Http, ping } from './ajax';
 import { crash } from './components/errorboundary';
 import { prefUpdateListeners } from './components/preferenceshooks';

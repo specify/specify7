@@ -1,3 +1,8 @@
+/**
+ * Save Blocker is an error on resource that prevents it from being saved
+ * and needs to be resolved by the user
+ */
+
 import type { AnySchema } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import type { R, RA } from './types';

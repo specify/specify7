@@ -1,3 +1,7 @@
+/**
+ * Classes for a specify field
+ */
+
 import type { PickList, Tables } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import { getFrontEndPickLists } from './picklists';

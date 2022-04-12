@@ -1,3 +1,7 @@
+/**
+ * Actions reducer for the Query Builder
+ */
+
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 

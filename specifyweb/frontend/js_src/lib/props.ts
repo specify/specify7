@@ -1,4 +1,8 @@
-import { escapeRegExp } from './escaperegexp';
+/**
+ * Parsers for Java *.properties files
+ */
+
+import { escapeRegExp } from './helpers';
 
 function reForKey(key: string): RegExp {
   return new RegExp(`^${escapeRegExp(key)}\\s*[\\s=:]\\s*(.*)$`, 'm');

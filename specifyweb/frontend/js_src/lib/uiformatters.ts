@@ -1,4 +1,8 @@
-import { escapeRegExp } from './escaperegexp';
+/**
+ * Parse and use Specify 6 UI Formatters
+ */
+
+import { escapeRegExp } from './helpers';
 import { load } from './initialcontext';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';

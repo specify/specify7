@@ -12,6 +12,12 @@ import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 import { LoadingContext } from './contexts';
 
+/**
+ * A button to delele a resorce
+ * Prompts before deletion
+ * Checks for delete blockers (other resources depending on this one) before
+ * deletion
+ */
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
   deletionMessage = formsText('deleteConfirmationDialogMessage'),

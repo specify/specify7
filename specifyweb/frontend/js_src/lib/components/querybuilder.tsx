@@ -40,7 +40,7 @@ import {
 import { QueryFields } from './querybuilderfields';
 import { QueryResultsWrapper } from './queryresultstable';
 import { useResource } from './resource';
-import { useCachedState } from './stateCache';
+import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 

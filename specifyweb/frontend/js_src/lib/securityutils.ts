@@ -36,6 +36,9 @@ export const fetchRoles = async (
     }))
   );
 
+/**
+ * Localize a resource name
+ */
 export const resourceToLabel = (resource: string): string =>
   resource.startsWith(tablePermissionsPrefix)
     ? /*
@@ -289,6 +292,9 @@ export const compressPermissionQuery = (
     ]
   );
 
+/**
+ * Localize action name
+ */
 export const actionToLabel = (action: string): string =>
   action === anyAction ? adminText('allActions') : lowerToHuman(action);
 
@@ -314,6 +320,10 @@ export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
 ): `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}` =>
   `${tablePermissionsPrefix}${toLowerCase(tableName)}`;
 
+/**
+ * Get a union of all actions that can be done on descendants of a given
+ * permission resource type
+ */
 const getAllActions = (path: string): RA<string> =>
   path.startsWith(`${permissionSeparator}${toolPermissionPrefix}`)
     ? tableActions

@@ -160,6 +160,9 @@ const parseUploadable = (
     ? parseTreeTypes(model, uploadPlan, makeMustMatch, mappingPath)
     : parseUploadTableTypes(model, uploadPlan, makeMustMatch, mappingPath);
 
+/**
+ * Break down upload plan into components that are easier to manipulate
+ */
 export function parseUploadPlan(uploadPlan: UploadPlan): {
   baseTable: SpecifyModel;
   lines: RA<SplitMappingPath>;

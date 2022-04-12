@@ -1,3 +1,7 @@
+/**
+ * Various tools to help internationalize the application
+ */
+
 import React from 'react';
 
 import commonText from '../localization/common';

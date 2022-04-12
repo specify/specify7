@@ -38,6 +38,9 @@ const cellToLabel = (
       : undefined,
 });
 
+/**
+ * Show several records in "grid view"
+ */
 export function FormTable<SCHEMA extends AnySchema>({
   relationship,
   isDependent,

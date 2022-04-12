@@ -1,5 +1,5 @@
-import type { QueryFieldFilter } from './components/querybuilderfieldinput';
-import { queryFieldFilters } from './components/querybuilderfieldinput';
+import type { QueryFieldFilter } from './components/querybuilderfieldfilter';
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';

@@ -1,3 +1,7 @@
+/**
+ * Tree repair dialog
+ */
+
 import React from 'react';
 
 import { ping } from '../../ajax';

@@ -1,4 +1,4 @@
-/*
+/**
  * Extracts data from localities and related records in a format that can be
  * shown in pop-up bubbles in Leaflet
  *
@@ -17,7 +17,7 @@ import {
   getLocalityData,
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
-import { deflateLocalityData } from './lifemapperhelper';
+import { deflateLocalityData } from './specifynetworkhelper';
 import { hasTablePermission, hasTreeAccess } from './permissions';
 import { getTreeDefinitionItems, treeRanksPromise } from './treedefinitions';
 import type { RA } from './types';

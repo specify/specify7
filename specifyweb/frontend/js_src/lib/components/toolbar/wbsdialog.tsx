@@ -23,7 +23,7 @@ import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
-import { useCachedState } from '../stateCache';
+import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 import { hasPermission } from '../../permissions';
 

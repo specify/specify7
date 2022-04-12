@@ -1,3 +1,8 @@
+/**
+ * Display a Specify Network page and handle communication back and force
+ * though cross-tab communication (window message passing)
+ */
+
 import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
@@ -8,15 +13,15 @@ import { f } from '../functools';
 import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
-import { snServer } from '../lifemapperconfig';
-import type { OccurrenceData } from '../lifemappermap';
-import { fetchLocalOccurrences } from '../lifemappermap';
+import type { OccurrenceData } from '../specifynetworkmap';
+import { fetchLocalOccurrences } from '../specifynetworkmap';
 import {
   fetchOccurrenceName,
   formatLifemapperViewPageRequest,
-} from '../lifemapperutills';
+  snServer,
+} from '../specifynetworkutils';
 import commonText from '../localization/common';
-import lifemapperText from '../localization/lifemapper';
+import specifyNetworkText from '../localization/specifynetwork';
 import { toTable } from '../specifymodel';
 import { getSystemInfo } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
@@ -210,19 +215,19 @@ function SpecifyNetwork({
       {isPending && <LoadingScreen />}
       {hasFailure && (
         <Dialog
-          title={lifemapperText('failedToOpenPopUpDialogTitle')}
-          header={lifemapperText('failedToOpenPopUpDialogHeader')}
+          title={specifyNetworkText('failedToOpenPopUpDialogTitle')}
+          header={specifyNetworkText('failedToOpenPopUpDialogHeader')}
           onClose={handleNoFailure}
           buttons={commonText('close')}
         >
-          {lifemapperText('failedToOpenPopUpDialogMessage')}
+          {specifyNetworkText('failedToOpenPopUpDialogMessage')}
         </Dialog>
       )}
       <Link.Default
         href={getLink()}
         target="_blank"
-        title={lifemapperText('specifyNetwork')}
-        aria-label={lifemapperText('specifyNetwork')}
+        title={specifyNetworkText('specifyNetwork')}
+        aria-label={specifyNetworkText('specifyNetwork')}
         rel="opener noreferrer"
         onClick={(event): void => {
           event.preventDefault();

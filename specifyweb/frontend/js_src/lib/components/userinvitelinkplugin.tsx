@@ -9,6 +9,10 @@ import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
 import { SerializedResource } from '../datamodelutils';
 
+/**
+ * Generate an invite link for a given user to connect their Specify account to
+ * a third party identity provider
+ */
 export function UserInviteLinkPlugin({
   user,
 }: {

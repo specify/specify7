@@ -1,3 +1,7 @@
+/**
+ * Class for a specify model (a database table)
+ */
+
 import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
 import type {

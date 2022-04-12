@@ -1,3 +1,7 @@
+/**
+ * Parse URL Query parameters
+ */
+
 import { keysToLowerCase } from './datamodelutils';
 import type { IR } from './types';
 

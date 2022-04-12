@@ -1,3 +1,7 @@
+/**
+ * The entrypoint for the login endpoint
+ */
+
 import '../../css/main.css';
 
 import React from 'react';

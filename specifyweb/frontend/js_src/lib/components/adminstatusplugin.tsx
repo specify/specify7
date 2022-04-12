@@ -1,3 +1,8 @@
+/**
+ * Set whether user is a super admin in Specify 6.
+ * This does not affect Specify 7
+ */
+
 import React from 'react';
 
 import { ajax, formData } from '../ajax';

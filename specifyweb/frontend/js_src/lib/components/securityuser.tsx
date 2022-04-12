@@ -10,7 +10,7 @@ import { replaceKey } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { parseResourceUrl } from '../resource';
+import { idFromUrl } from '../resource';
 import { decompressPolicies } from '../securityutils';
 import type { IR } from '../types';
 import { defined, filterArray } from '../types';
@@ -241,11 +241,8 @@ export function UserView({
                             method: 'POST',
                             headers: {},
                             body: filterArray(
-                              defined(userAgents).map(
-                                ({ address }) =>
-                                  parseResourceUrl(
-                                    address.get('agent') ?? ''
-                                  )?.[1]
+                              defined(userAgents).map(({ address }) =>
+                                idFromUrl(address.get('agent') ?? '')
                               )
                             ),
                           },

@@ -1,3 +1,7 @@
+/**
+ * Helpers for dealing with browsers' native Validation API
+ */
+
 import { className } from './components/basic';
 import type { Input } from './saveblockers';
 

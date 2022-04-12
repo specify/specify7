@@ -1,3 +1,7 @@
+/**
+ * Edit user preferences
+ */
+
 import React from 'react';
 
 import commonText from '../../localization/common';

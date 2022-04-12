@@ -1,3 +1,7 @@
+/**
+ * Components for App's header and user tools
+ */
+
 import React from 'react';
 
 import { ajax, isExternalUrl } from '../ajax';

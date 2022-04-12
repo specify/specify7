@@ -1,3 +1,7 @@
+/**
+ * Entry point for the password change view
+ */
+
 import '../../css/main.css';
 
 import React from 'react';

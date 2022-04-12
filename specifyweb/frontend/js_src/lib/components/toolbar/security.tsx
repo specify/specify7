@@ -1,3 +1,7 @@
+/**
+ * Entrypoint for the Security Panel
+ */
+
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 

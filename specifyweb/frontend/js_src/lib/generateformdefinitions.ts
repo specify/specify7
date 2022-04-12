@@ -1,7 +1,3 @@
-/**
- * If form definition is missing, this code will generate one on the fyl
- */
-
 import type { AnySchema, TableFields } from './datamodelutils';
 import commonText from './localization/common';
 import type {
@@ -17,6 +13,9 @@ import type { RA } from './types';
 import { filterArray } from './types';
 import { resolveParser } from './uiparse';
 
+/**
+ * If form definition is missing, this function will generate one on the fly
+ */
 export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
   model: SpecifyModel<SCHEMA>,
   formType: FormType,
@@ -50,6 +49,7 @@ function generateFormTable(
   };
 }
 
+// Common cell attributes
 const cellAttributes = {
   id: undefined,
   align: 'left',
@@ -160,6 +160,9 @@ function generateForm(
   };
 }
 
+/**
+ * Generate definition for a non-relationship field
+ */
 function getFieldDefinition(
   field: LiteralField
 ): FormCellDefinition & CellTypes['Field'] {

@@ -184,7 +184,7 @@ const processCellType: {
   }),
   /**
    * This function never actually gets called
-   * Blank cell type is used by postProcessRows if definition row has fewer
+   * Blank cell type is used by postProcessRows if row definition has fewer
    * cells than defined columns
    */
   Blank: () => ({ type: 'Blank' }),

@@ -1,3 +1,9 @@
+/**
+ * Piggy-back on Specify 6 UI localization
+ *
+ * This is needed as some .xml files depend on it
+ */
+
 import { load } from './initialcontext';
 import { LANGUAGE } from './localization/utils';
 import { getProperty } from './props';

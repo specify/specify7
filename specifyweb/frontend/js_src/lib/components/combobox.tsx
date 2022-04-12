@@ -1,3 +1,7 @@
+/**
+ * Specify form PickList
+ */
+
 import React from 'react';
 
 import { error } from '../assert';

@@ -1,3 +1,7 @@
+/**
+ * Force export feed update
+ */
+
 import React from 'react';
 
 import { ping } from '../../ajax';

@@ -1,10 +1,3 @@
-/**
- * Helper function for converting from mapping tree
- * (internal structure used in WbPlanView) to upload plan
- *
- * @module
- */
-
 import type { Tables } from './datamodel';
 import { group, omit, split, toLowerCase } from './helpers';
 import { getModel } from './schema';
@@ -141,6 +134,9 @@ const toUploadable = (
         ] as const,
       ]);
 
+/**
+ * Build an upload plan from individual mapping lines
+ */
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,

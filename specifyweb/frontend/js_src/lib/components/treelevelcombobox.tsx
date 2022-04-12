@@ -50,6 +50,9 @@ export const fetchLowestChildRank = async (
             : Math.min(...models.map((resource) => resource.get('rankId')))
         );
 
+/**
+ * Pick list to chose a tree rank for a tree node
+ */
 export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(
     undefined

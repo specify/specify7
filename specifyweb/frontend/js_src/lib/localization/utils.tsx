@@ -33,6 +33,12 @@ type GetValueType<VALUE extends Value> = VALUE extends RR<
   : never;
 export type Dictionary = IR<Value>;
 
+/**
+ * Handle case when localization string is not found.
+ * This should never happen if:
+ *   all typescript errors are fixed
+ *   and ./tests/testlocalization.ts did not find any errors
+ */
 function assertExhaustive(key: string): never {
   /*
    * If a .ts or .tsx file tries to access a non-existing key, a
@@ -70,6 +76,10 @@ function assertExhaustive(key: string): never {
   } else throw new Error(errorMessage);
 }
 
+/**
+ * Wrap localization strings in a resolver.
+ * Localization string may accept some arguments.
+ */
 export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   const resolver = <KEY extends string & keyof typeof dictionary>(
     key: KEY

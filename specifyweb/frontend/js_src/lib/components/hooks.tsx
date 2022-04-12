@@ -1,3 +1,8 @@
+/**
+ * Definitions for React hooks that are used extensively throughout the
+ * application
+ */
+
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';

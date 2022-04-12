@@ -1,3 +1,7 @@
+/**
+ * Display a list of queries
+ */
+
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
@@ -34,7 +38,7 @@ import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
-import { useCachedState } from '../stateCache';
+import { useCachedState } from '../statecache';
 import {
   hasPermission,
   hasTablePermission,

@@ -1,3 +1,8 @@
+/**
+ * Fetch tree definitions (and tree ranks) for all fields accessible in a
+ * given discipline.
+ */
+
 import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';

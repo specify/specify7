@@ -25,6 +25,11 @@ import { FormContext } from './resourceview';
  * TODO: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
  */
+/**
+ * A button to save a resource
+ * Checks for save blockers and validation errors
+ * Handles save conflicts
+ */
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   canAddAnother,

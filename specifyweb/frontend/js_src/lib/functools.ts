@@ -1,7 +1,7 @@
-/** A storage for f.store */
 import { breakpoint, error } from './assert';
 import type { IR, RA } from './types';
 
+/** A storage for f.store */
 const store = new Map<() => unknown, unknown>();
 
 /**

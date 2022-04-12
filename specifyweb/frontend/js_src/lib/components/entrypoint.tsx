@@ -1,3 +1,7 @@
+/**
+ * Entrypoint for the main front-end endpoint
+ */
+
 import '../../css/main.css';
 
 import React from 'react';

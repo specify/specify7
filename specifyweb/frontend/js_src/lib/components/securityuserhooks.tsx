@@ -8,11 +8,7 @@ import { f } from '../functools';
 import { group, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { hasPermission } from '../permissions';
-import {
-  fetchResource,
-  getResourceApiUrl,
-  parseResourceUrl,
-} from '../resource';
+import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import { fetchRoles, processPolicies } from '../securityutils';
 import type { IR, RA, RR } from '../types';
@@ -116,13 +112,13 @@ export function useUserAgents(
             await Promise.all(
               group(
                 Object.values(collections).map((collection) => [
-                  defined(parseResourceUrl(collection.discipline))[1],
+                  defined(idFromUrl(collection.discipline)),
                   collection.id,
                 ])
               ).map(async ([disciplineId, collections]) =>
                 fetchResource('Discipline', disciplineId).then((discipline) =>
                   f.var(
-                    defined(parseResourceUrl(defined(discipline).division))[1],
+                    defined(idFromUrl(defined(discipline).division)),
                     (divisionId) =>
                       collections.map(
                         (collectionId) => [divisionId, collectionId] as const
@@ -149,7 +145,7 @@ export function useUserAgents(
               f.var(
                 Object.fromEntries(
                   agents.map((agent) => [
-                    defined(parseResourceUrl(agent.division))[1],
+                    defined(idFromUrl(agent.division)),
                     agent,
                   ])
                 ),
@@ -266,7 +262,7 @@ export function useUserInstitutionalPolicies(
   ];
 }
 
-export function useUserProviders(userId: number): IR<boolean> {
+export function useUserProviders(userId: number): IR<boolean> | undefined {
   const [providers] = useAsyncState<IR<boolean>>(
     React.useCallback(
       async () =>

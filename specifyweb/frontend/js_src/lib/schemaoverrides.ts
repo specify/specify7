@@ -2,7 +2,7 @@
  * Configuration for what schema tables and fields are accessible in the WB
  *
  * @remarks
- * Replaces the need for Sp6 Workbench Schema
+ * Replaces the need for separate Workbench Schema like in Specify 6
  *
  * @module
  */

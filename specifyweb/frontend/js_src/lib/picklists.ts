@@ -1,3 +1,7 @@
+/**
+ * Fetch back-end pick lists and define front-end pick lists
+ */
+
 import { createPickListItem, PickListTypes } from './picklistmixins';
 import { months } from './components/internationalization';
 import type { PickList, PickListItem, Tables } from './datamodel';

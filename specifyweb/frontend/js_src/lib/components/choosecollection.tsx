@@ -1,3 +1,7 @@
+/**
+ * The entrypoint for the choose collection endpoint
+ */
+
 import '../../css/main.css';
 
 import React from 'react';

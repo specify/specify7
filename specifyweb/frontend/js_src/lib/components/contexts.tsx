@@ -1,3 +1,7 @@
+/**
+ * Provide contexts used by other components
+ */
+
 import React from 'react';
 import Modal from 'react-modal';
 

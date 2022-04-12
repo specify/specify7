@@ -1,3 +1,7 @@
+/**
+ * A wrapper for Backbone's routing API
+ */
+
 import Backbone from './backbone';
 import { showDialog } from './components/modaldialog';
 import commonText from './localization/common';

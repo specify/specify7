@@ -1,3 +1,7 @@
+/**
+ * Definitions for User Interface preferences (scoped to a SpecifyUser)
+ */
+
 import {
   handleLanguageChange,
   LanguagePreferencesItem,

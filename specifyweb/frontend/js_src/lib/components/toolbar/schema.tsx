@@ -1,3 +1,7 @@
+/**
+ * Data Model viewer
+ */
+
 import React from 'react';
 
 import type { Tables } from '../../datamodel';
@@ -14,6 +18,10 @@ import { RA } from '../../types';
 import { TableIcon } from '../common';
 import { UserTool } from '../main';
 import { useTitle } from '../hooks';
+import {
+  javaTypeToHuman,
+  localizedRelationshipTypes,
+} from '../../schemaconfighelper';
 
 function Table({
   children,
@@ -106,7 +114,7 @@ function DataModelView({
               booleanFormatter(field.isHidden),
               booleanFormatter(field.isReadOnly),
               booleanFormatter(field.isRequired),
-              field.type,
+              javaTypeToHuman(field.type, undefined),
               field.length,
               field.dbColumn,
             ].map((label, index) => (
@@ -144,7 +152,7 @@ function DataModelView({
               booleanFormatter(field.isHidden),
               booleanFormatter(field.isReadOnly),
               booleanFormatter(field.isRequired),
-              field.type,
+              localizedRelationshipTypes[field.type] ?? field.type,
               field.dbColumn,
               field.relatedModel.name,
               field.otherSideName,

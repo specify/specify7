@@ -1,6 +1,12 @@
+/**
+ * List of text encodings. Used by workbench uploader
+ */
+
 import type { RA } from './types';
 
-// From https://encoding.spec.whatwg.org/
+/**
+ * Taken from https://encoding.spec.whatwg.org/
+ */
 const table: RA<{
   encodings: RA<{
     labels: RA<string>;

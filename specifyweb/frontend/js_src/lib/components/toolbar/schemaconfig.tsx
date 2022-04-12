@@ -1,3 +1,7 @@
+/**
+ * Schema Configuration
+ */
+
 import React from 'react';
 
 import { ajax } from '../../ajax';

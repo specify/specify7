@@ -1,3 +1,7 @@
+/**
+ * Load critical resources on app start up
+ */
+
 import type { MimeType } from './ajax';
 
 /*

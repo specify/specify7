@@ -1,3 +1,7 @@
+/**
+ * React action reducer for Schema Config
+ */
+
 import type { Action } from 'typesafe-reducer';
 import { ensureState, generateReducer } from 'typesafe-reducer';
 

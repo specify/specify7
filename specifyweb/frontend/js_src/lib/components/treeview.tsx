@@ -35,7 +35,7 @@ import { PermissionDenied } from './permissiondenied';
 import createBackboneView from './reactbackboneextend';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
-import { useCachedState } from './stateCache';
+import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';

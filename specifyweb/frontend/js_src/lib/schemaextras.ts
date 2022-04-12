@@ -1,3 +1,7 @@
+/**
+ * Defines front-end only fields and misc front-end only schema mutations
+ */
+
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';

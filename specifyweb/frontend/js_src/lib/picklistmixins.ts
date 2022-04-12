@@ -1,3 +1,7 @@
+/**
+ * Pick list item fetching code
+ */
+
 import { error } from './assert';
 import type { PickListItemSimple } from './components/combobox';
 import type { PickList, PickListItem, Tables } from './datamodel';

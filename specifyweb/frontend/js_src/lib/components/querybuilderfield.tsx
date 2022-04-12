@@ -28,12 +28,12 @@ import { iconClassName, icons } from './icons';
 import type {
   QueryFieldFilter,
   QueryFieldType,
-} from './querybuilderfieldinput';
+} from './querybuilderfieldfilter';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
   QueryLineFilter,
-} from './querybuilderfieldinput';
+} from './querybuilderfieldfilter';
 import createBackboneView from './reactbackboneextend';
 import {
   getMappingLineProps,

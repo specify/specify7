@@ -1,3 +1,7 @@
+/**
+ * Attachments viewer
+ */
+
 import React from 'react';
 
 import * as attachments from '../attachments';
@@ -31,7 +35,7 @@ import { loadingGif } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
-import { useCachedState } from './stateCache';
+import { useCachedState } from './statecache';
 import { caseInsensitiveHash } from '../helpers';
 import { deserializeResource } from './resource';
 import { useCollection } from './collection';

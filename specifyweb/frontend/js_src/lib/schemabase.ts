@@ -1,11 +1,11 @@
-/*
+/**
  * This module provides base structure for the description of the
  * Specify datamodel and schema. It is supplemented by the definitions
  * in specifymodel.ts and specifyfield.ts in the module schema.ts
  * which actually loads and generates the schema model objects.
  */
 
-/*
+/**
  * This module also contains scoping information indicating the
  * current collection, ..., institution information. This probably
  * belongs in a separate module because it's not really related to the

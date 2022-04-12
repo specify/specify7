@@ -1,4 +1,4 @@
-/*
+/**
  * Error Boundary for React Components. Catches exceptions and provides a
  * stack trace
  *

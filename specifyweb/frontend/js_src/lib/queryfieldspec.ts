@@ -1,3 +1,7 @@
+/**
+ * Query Field spec is a Specify 6 concept for a query field.
+ */
+
 import type { MappingPath } from './components/wbplanviewmapper';
 import { capitalize, insertItem, toLowerCase } from './helpers';
 import type { SpQueryField } from './datamodel';

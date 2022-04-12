@@ -1,3 +1,7 @@
+/**
+ * Login screen when using third party identity providers
+ */
+
 import React from 'react';
 
 import commonText from '../localization/common';

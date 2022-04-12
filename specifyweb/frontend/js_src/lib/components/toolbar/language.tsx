@@ -1,3 +1,7 @@
+/**
+ * Change current UI language
+ */
+
 import React from 'react';
 
 import { ajax, ping } from '../../ajax';

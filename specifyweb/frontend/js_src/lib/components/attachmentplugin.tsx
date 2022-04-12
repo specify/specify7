@@ -1,3 +1,7 @@
+/**
+ * Attachments form plugin
+ */
+
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 

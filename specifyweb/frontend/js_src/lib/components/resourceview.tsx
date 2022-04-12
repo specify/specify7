@@ -18,7 +18,7 @@ import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from './lifemapper';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
 import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';

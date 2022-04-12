@@ -1,5 +1,5 @@
 /**
- * A React wrapper for jQuery's dialogs
+ * React Dialogs
  *
  * @module
  */

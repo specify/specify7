@@ -1,3 +1,7 @@
+/**
+ * Do DWCA export
+ */
+
 import React from 'react';
 
 import { formData, Http, ping } from '../../ajax';

@@ -263,3 +263,6 @@ export const removeKey = <T extends IR<unknown>>(
 /** Convert an array of objects with IDs into a dictionary */
 export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
   Object.fromEntries(data.map((item) => [item.id, item]));
+
+export const escapeRegExp = (string: string): string =>
+  string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');

@@ -1,3 +1,7 @@
+/**
+ * Fetch remote prefs file (a global preferences file)
+ */
+
 import { load } from './initialcontext';
 import type { JavaType } from './specifyfield';
 import type { IR, R, RA } from './types';
@@ -63,6 +67,10 @@ export function getPref<KEY extends keyof Definitions>(key: KEY): TypeOf<KEY> {
 
 export const remotePrefs: IR<string> = preferences;
 
+/**
+ * A list of remote prefs that Specify 7 recognizes.
+ * There are many more that are Specify 6 specific.
+ */
 export const remotePrefsDefinitions = f.store(
   () =>
     ({
@@ -182,6 +190,9 @@ export const remotePrefsDefinitions = f.store(
     } as const)
 );
 
+/**
+ * Remote prefs that are scoped to a collection
+ */
 export const collectionPrefsDefinitions = {
   // Like CO_CREATE_COA_${collectionId}
   CO_CREATE_COA: {

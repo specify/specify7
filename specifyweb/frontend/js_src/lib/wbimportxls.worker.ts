@@ -1,5 +1,5 @@
 /**
- * Web-Worker for parsed XLSX files
+ * Web-Worker for parsing XLS/XLSX files
  *
  * @module
  */

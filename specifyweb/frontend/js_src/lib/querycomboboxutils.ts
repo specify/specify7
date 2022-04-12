@@ -1,4 +1,4 @@
-import { queryFieldFilters } from './components/querybuilderfieldinput';
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { SpQuery, SpQueryField } from './datamodel';
 import type { AnySchema } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';

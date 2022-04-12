@@ -1,3 +1,7 @@
+/**
+ * Utilities for parsing and converting latitudes and longitudes
+ */
+
 "use strict";
 
 

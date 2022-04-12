@@ -65,6 +65,9 @@ const fetchForms = f.store(
     })
 );
 
+/**
+ * A dialog presenting a list of data forms
+ */
 export function FormsDialog({
   onSelected: handleSelected,
   onClose: handleClose,

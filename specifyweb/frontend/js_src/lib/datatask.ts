@@ -1,3 +1,7 @@
+/**
+ * Handle URLs that correspond to displaying a resource or a record set
+ */
+
 import { error } from './assert';
 import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
@@ -79,6 +83,8 @@ const newResourceView = async (tableName: string): Promise<void> =>
 /**
  * Shows user's individual resources which can optionally be in the context of
  * some recordset
+ *
+ * id may be a record id, or GUID (for Collection Objects)
  */
 async function resourceView(
   modelName: string,

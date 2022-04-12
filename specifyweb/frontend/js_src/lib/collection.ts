@@ -41,13 +41,19 @@ export type SerializedCollection<SCHEMA extends AnySchema> = {
   readonly totalCount: number;
 };
 
+/**
+ * Fetch a collection of resources from the back-end. Can also provide filters
+ */
 export const fetchCollection = async <
   TABLE_NAME extends keyof Tables,
   SCHEMA extends Tables[TABLE_NAME]
 >(
   modelName: TABLE_NAME,
+  // Basic filters. Type-safe
   filters: CollectionFetchFilters<SCHEMA>,
-  /*
+  /**
+   * Advanced filters, not type-safe.
+   *
    * Can query relationships by separating fields with "__"
    * Can query partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
@@ -92,6 +98,13 @@ export const fetchCollection = async <
     totalCount: meta.total_count,
   }));
 
+/**
+ * Fetch a related collection via an relationship independent -to-many
+ * relationship
+ *
+ * Dependent collections are sent along by the api when requesting the parent
+ * resource
+ */
 export const fetchRelated = async <
   SCHEMA extends AnySchema,
   RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']

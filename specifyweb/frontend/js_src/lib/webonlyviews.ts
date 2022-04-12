@@ -1,3 +1,7 @@
+/**
+ * Definitions for front-end form views.
+ */
+
 import { f } from './functools';
 import { autoGenerateViewDefinition } from './generateformdefinitions';
 import commonText from './localization/common';

@@ -11,6 +11,9 @@ import createBackboneView from './reactbackboneextend';
 import { f } from '../functools';
 import { switchCollection } from '../specifyapp';
 
+/**
+ * Asks user to switch collection to view a resource
+ */
 export function OtherCollection({
   collections: resourceCollections,
 }: {

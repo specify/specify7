@@ -1,8 +1,12 @@
+/**
+ * Localization strings for the Specify Network integration
+ */
+
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const lifemapperText = createDictionary({
+const specifyNetworkText = createDictionary({
   specifyNetwork: {
     'en-us': 'Specify Network (opens in new tab)',
     'ru-ru': 'Specify Network (открывается в новой вкладке)',
@@ -41,4 +45,4 @@ const lifemapperText = createDictionary({
   },
 });
 
-export default lifemapperText;
+export default specifyNetworkText;

@@ -1,3 +1,7 @@
+/**
+ * Fetch basic server information
+ */
+
 import { Http, ping } from './ajax';
 import { load } from './initialcontext';
 import * as querystring from './querystring';

@@ -1,3 +1,7 @@
+/**
+ * Format a resource using resource formatters defined in Specify 6
+ */
+
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
 import { cachableUrl, contextUnlockedPromise } from './initialcontext';

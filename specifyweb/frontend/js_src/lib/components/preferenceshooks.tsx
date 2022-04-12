@@ -1,3 +1,8 @@
+/**
+ * React Hooks to listen to preferences changes
+ * (this allows to change UI preferences without restarting the application)
+ */
+
 import React from 'react';
 
 import type { Preferences } from '../preferences';
