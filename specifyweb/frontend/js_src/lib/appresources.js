@@ -218,7 +218,7 @@ const ResourceDataView = Backbone.View.extend({
             if(hasToolPermission('resources', 'delete'))
                 buttonsDiv.prepend(
                     new DeleteButtonView({
-                        model: this.model,
+                        resource: this.model,
                         onDeleted: () => navigation.go('/specify/appresources/')
                     }).render().el
                 );

@@ -129,3 +129,16 @@
 .handsontableInput {
   @apply bg-neutral-600 text-white;
 }
+
+/*
+ * Handsontable allows customizing classNames of various components, but it
+ * doesn't allow setting more than one className
+ * See https://github.com/handsontable/handsontable/discussions/7738
+ */
+.htPlaceholder {
+  @apply text-blue-500;
+}
+
+.htCommentCell {
+  @apply wb-invalid-cell;
+}

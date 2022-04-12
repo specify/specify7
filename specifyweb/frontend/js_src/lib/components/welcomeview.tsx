@@ -86,7 +86,7 @@ function AboutDialog({
               ],
               [welcomeText('schemaVersion'), getSystemInfo().schema_version],
               [welcomeText('databaseName'), getSystemInfo().database],
-              [commmonText('institution'), getSystemInfo().institution],
+              [commonText('institution'), getSystemInfo().institution],
               [welcomeText('discipline'), getSystemInfo().discipline],
               [welcomeText('collection'), getSystemInfo().collection],
               [

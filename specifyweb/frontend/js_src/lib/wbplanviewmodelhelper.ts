@@ -7,19 +7,19 @@
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
+import { group } from './helpers';
+import { hasTreeAccess } from './permissions';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
-import { group } from './helpers';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
   relationshipIsToMany,
   valueIsToManyIndex,
 } from './wbplanviewmappinghelper';
-import { hasTreeAccess } from './permissions';
 
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
@@ -97,12 +97,12 @@ export function findRequiredMissingFields(
       const localPath = [...path, relationship.name];
 
       if (
-        (typeof parentRelationship === 'object' &&
-          // Disable circular relationships
-          isCircularRelationship(parentRelationship, relationship)) ||
-        // Skip -to-many inside -to-many
-        (relationshipIsToMany(parentRelationship) &&
-          relationshipIsToMany(relationship))
+        typeof parentRelationship === 'object' &&
+        // Disable circular relationships
+        (isCircularRelationship(parentRelationship, relationship) ||
+          // Skip -to-many inside -to-many
+          (relationshipIsToMany(parentRelationship) &&
+            relationshipIsToMany(relationship)))
       )
         return [];
 
@@ -122,7 +122,7 @@ export function findRequiredMissingFields(
       else return [];
     }),
     ...filterArray(
-      model.fields.map((field) =>
+      model.literalFields.map((field) =>
         !(field.name in indexedMappings) &&
         field.overrides.isRequired &&
         !mustMatchPreferences[tableName]

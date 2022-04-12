@@ -5,7 +5,9 @@
  */
 
 import { error } from './assert';
+import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
+import { f } from './functools';
 import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
@@ -13,8 +15,6 @@ import { LiteralField, Relationship } from './specifyfield';
 import { SpecifyModel, type TableDefinition } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
-import { f } from './functools';
-import { Tables } from './datamodel';
 
 export type SchemaLocalization = {
   readonly name: string | null;

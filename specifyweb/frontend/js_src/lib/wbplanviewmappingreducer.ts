@@ -15,8 +15,9 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './components/wbplanviewmapper';
-import { replaceItem } from './helpers';
 import type { Tables } from './datamodel';
+import { f } from './functools';
+import { replaceItem } from './helpers';
 import type { IR, RA } from './types';
 import type { MatchBehaviors } from './uploadplanparser';
 import { uniquifyHeaders } from './wbplanviewheaderhelper';
@@ -29,7 +30,6 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
-import { f } from './functools';
 
 const modifyLine = (
   state: MappingState,
@@ -57,6 +57,8 @@ type ValidationAction = Action<
   'ValidationAction',
   { validationResults: RA<MappingPath> }
 >;
+
+type ClearValidationAction = Action<'ClearValidationAction'>;
 
 type ClearMappingLineAction = Action<
   'ClearMappingLineAction',
@@ -169,6 +171,7 @@ export type MappingActions =
   | ToggleHiddenFieldsAction
   | ResetMappingsAction
   | ValidationAction
+  | ClearValidationAction
   | ClearMappingLineAction
   | FocusLineAction
   | MappingViewMapAction
@@ -202,6 +205,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     validationResults,
     mappingsAreValidated: validationResults.length === 0,
+  }),
+  ClearValidationAction: ({ state }) => ({
+    ...state,
+    validationResults: [],
   }),
   ResetMappingsAction: ({ state }) => ({
     ...state,

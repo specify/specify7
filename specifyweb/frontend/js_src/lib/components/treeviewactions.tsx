@@ -27,7 +27,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   ranks,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;
+  readonly focusRef: React.MutableRefObject<HTMLElement | null>;
   readonly onRefresh: () => void;
   readonly focusedRow: Row | undefined;
   readonly ranks: RA<number>;
@@ -61,6 +61,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 focusedRow.nodeId
               }/`}
               target="_blank"
+              forwardRef={(element): void => {
+                focusRef.current = element;
+              }}
             >
               {commonText('query')}
             </Link.LikeButton>
@@ -119,7 +122,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           <Button.Simple
             disabled={disableButtons || (!isSynonym && focusedRow.children > 0)}
-            forwardRef={focusRef}
             onClick={
               disableButtons || (!isSynonym && focusedRow.children > 0)
                 ? undefined
@@ -289,7 +291,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   readonly tableName: SCHEMA['tableName'];
   readonly actionRow: Row;
   readonly type: Exclude<Action, 'add' | 'edit'>;
-  readonly focusRef: React.MutableRefObject<HTMLButtonElement | null>;
+  readonly focusRef: React.MutableRefObject<HTMLElement | null>;
   readonly focusedRow: Row;
   readonly onCancelAction: () => void;
   readonly onCompleteAction: () => void;
@@ -330,7 +332,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
   return (
     <menu className="contents">
       <Button.Simple
-        forwardRef={focusRef}
+        forwardRef={(element): void => {
+          focusRef.current = element;
+        }}
         disabled={disabled}
         onClick={disabled ? undefined : (): void => setShowPrompt(true)}
         title={

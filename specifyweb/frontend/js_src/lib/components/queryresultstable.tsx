@@ -8,7 +8,6 @@ import { f } from '../functools';
 import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
-import queryText from '../localization/query';
 import { fetchPickList } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import {

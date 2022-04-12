@@ -30,8 +30,8 @@ const pickListTypes = [
 
 const auditLogActions = [
   formsText('insert'),
-  formsText('update'),
-  formsText('delete'),
+  commonText('update'),
+  commonText('delete'),
   formsText('treeMerge'),
   formsText('treeMove'),
   formsText('treeSynonymize'),
@@ -98,6 +98,11 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     )
   );
 
+  const fullNameDirection = definePicklist('_fullNameDirection', [
+    createPickListItem('-1', formsText('reverse')),
+    createPickListItem('1', formsText('forward')),
+  ]);
+
   frontEndPickLists = {
     Agent: {
       agentType: definePicklist(
@@ -144,6 +149,11 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
+    GeographyTreeDef: { fullNameDirection },
+    GeologicTimePeriodTreeDef: { fullNameDirection },
+    LithoStratTreeDef: { fullNameDirection },
+    StorageTreeDef: { fullNameDirection },
+    TaxonTreeDef: { fullNameDirection },
   };
 
   return [

@@ -125,7 +125,7 @@ function TreeView<SCHEMA extends AnyTree>({
   );
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
-  const toolbarButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  const toolbarButtonRef = React.useRef<HTMLElement | null>(null);
   const [searchValue, setSearchValue] = React.useState<string>('');
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
@@ -236,6 +236,8 @@ function TreeView<SCHEMA extends AnyTree>({
         onFocus={(event): void => {
           // Don't handle bubbled events
           if (event.currentTarget !== event.target) return;
+          // If user wants to edit tree ranks, allow tree ranks to receive focus
+          if (isEditingRanks) return;
           event.preventDefault();
           // Unset and set focus path to trigger a useEffect hook in <TreeNode>
           setFocusPath([-1]);
