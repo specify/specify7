@@ -71,7 +71,7 @@ const withStringDefault = (
 const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (
     cell: Element,
-    properties: IR<string | undefined>
+    getProperty: (name: string) => string | undefined
   ) => FieldTypes[KEY];
 } = {
   Checkbox: (cell) =>
@@ -108,22 +108,22 @@ const processFieldType: {
     ...withStringDefault(cell),
     pickList: getAttribute(cell, 'pickList') ?? undefined,
   }),
-  Text: (cell, properties) => ({
+  Text: (cell, getProperty) => ({
     type: 'Text',
     ...withStringDefault(cell),
-    min: f.parseInt(properties.min ?? ''),
-    max: f.parseInt(properties.max ?? ''),
-    step: f.parseInt(properties.step ?? ''),
+    min: f.parseInt(getProperty('min') ?? ''),
+    max: f.parseInt(getProperty('max') ?? ''),
+    step: f.parseInt(getProperty('step') ?? ''),
   }),
-  QueryComboBox: (_cell, properties) => ({
+  QueryComboBox: (_cell, getProperty) => ({
     type: 'QueryComboBox',
-    hasCloneButton: properties.clonebtn?.toLowerCase() === 'true',
-    typeSearch: properties.name,
+    hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
+    typeSearch: getProperty('name'),
   }),
-  Plugin: (cell, properties) => ({
+  Plugin: (cell, getProperty) => ({
     type: 'Plugin',
     pluginDefinition: parseUiPlugin(
-      properties,
+      getProperty,
       withStringDefault(cell).defaultValue
     ),
   }),
@@ -151,7 +151,7 @@ export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
 
 export function parseFormField(
   cell: Element,
-  properties: IR<string | undefined>
+  getProperty: (name: string) => string | undefined
 ): FormFieldDefinition {
   let uiType = getAttribute(cell, 'uiType') ?? undefined;
   if (typeof uiType === 'undefined') {
@@ -171,6 +171,6 @@ export function parseFormField(
 
   return {
     isReadOnly,
-    ...parser(cell, properties),
+    ...parser(cell, getProperty),
   };
 }

@@ -6,7 +6,6 @@ import type { State } from 'typesafe-reducer';
 
 import type { PartialDatePrecision } from './components/partialdateui';
 import { f } from './functools';
-import type { IR } from './types';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -63,61 +62,63 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly properties: IR<string | undefined>;
+    readonly getProperty: (name: string) => string | undefined;
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
-  LatLonUI: ({ properties }) => ({
+  LatLonUI: ({ getProperty }) => ({
     type: 'LatLonUI',
-    step: f.parseInt(properties.step ?? ''),
+    step: f.parseInt(getProperty('step') ?? ''),
   }),
-  PartialDateUI: ({ properties, defaultValue }) => ({
+  PartialDateUI: ({ getProperty, defaultValue }) => ({
     type: 'PartialDateUI',
     defaultValue: defaultValue?.toLowerCase() === 'today' ? 'today' : undefined,
-    dateField: properties.df?.toLowerCase(),
-    precisionField: properties.tp?.toLowerCase(),
-    defaultPrecision: ['year', 'month-year'].includes(
-      properties.defaultprecision?.toLowerCase() ?? ''
-    )
-      ? (properties.defaultprecision?.toLowerCase() as 'year' | 'month-year')
-      : 'full',
+    dateField: getProperty('df')?.toLowerCase(),
+    precisionField: getProperty('tp')?.toLowerCase(),
+    defaultPrecision: f.var(
+      getProperty('defaultPrecision')?.toLowerCase(),
+      (defaultPrecision) =>
+        f.includes(['year', 'month-year'], defaultPrecision)
+          ? (defaultPrecision as 'year' | 'month-year')
+          : 'full'
+    ),
   }),
-  CollectionRelOneToManyPlugin: ({ properties }) => ({
+  CollectionRelOneToManyPlugin: ({ getProperty }) => ({
     type: 'CollectionRelOneToManyPlugin',
-    relationship: properties.relname,
+    relationship: getProperty('relName'),
   }),
   // Collection one-to-one Relationship plugin
-  ColRelTypePlugin: ({ properties }) => ({
+  ColRelTypePlugin: ({ getProperty }) => ({
     type: 'ColRelTypePlugin',
-    relationship: properties.relname,
+    relationship: getProperty('relName'),
   }),
   LocalityGeoRef: () => ({ type: 'LocalityGeoRef' }),
-  WebLinkButton: ({ properties }) => ({
+  WebLinkButton: ({ getProperty }) => ({
     type: 'WebLinkButton',
-    webLink: properties.weblink,
-    icon: properties.icon ?? 'WebLink',
+    webLink: getProperty('webLink'),
+    icon: getProperty('icon') ?? 'WebLink',
   }),
   AttachmentPlugin: () => ({ type: 'AttachmentPlugin' }),
-  HostTaxonPlugin: ({ properties }) => ({
+  HostTaxonPlugin: ({ getProperty }) => ({
     type: 'HostTaxonPlugin',
-    relationship: properties.relname,
+    relationship: getProperty('relName'),
   }),
   LocalityGoogleEarth: () => ({ type: 'LocalityGoogleEarth' }),
   PaleoMap: () => ({ type: 'PaleoMap' }),
-  Unsupported: ({ properties }) => ({
+  Unsupported: ({ getProperty }) => ({
     type: 'Unsupported',
-    name: properties.name,
+    name: getProperty('name'),
   }),
 };
 
 export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
-  properties: IR<string | undefined>,
+  getProperty: (name: string) => string | undefined,
   defaultValue: string | undefined
 ): PluginDefinition {
   const uiCommand =
-    processUiPlugin[(properties.name ?? '') as keyof UiPlugins] ??
+    processUiPlugin[(getProperty('name') ?? '') as keyof UiPlugins] ??
     processUiPlugin.Unsupported;
-  return uiCommand({ properties, defaultValue });
+  return uiCommand({ getProperty, defaultValue });
 }

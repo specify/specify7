@@ -32,7 +32,7 @@ export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     filterArray(
       props.split(';').map((line) => /([^=]+)=(.+)/.exec(line)?.slice(1, 3))
-    )
+    ).map(([key, value]) => [key.toLowerCase(), value])
   );
 
 export type CellTypes = {
@@ -96,17 +96,17 @@ const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: Element;
     readonly model: SpecifyModel | undefined;
-    readonly properties: IR<string | undefined>;
+    readonly getProperty: (name: string) => string | undefined;
   }) => CellTypes[KEY];
 } = {
-  Field({ cell, model, properties }) {
+  Field({ cell, model, getProperty }) {
     const rawFieldName = getAttribute(cell, 'name')?.replace(
       // Hack for QueryComboBox search fields that have spurious prefixes.
       /^(\w+\.)*/,
       ''
     );
     const field = model?.getField(rawFieldName ?? '');
-    const fieldDefinition = parseFormField(cell, properties);
+    const fieldDefinition = parseFormField(cell, getProperty);
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
@@ -154,7 +154,7 @@ const processCellType: {
       label.trim().length === 0 ? undefined : label
     ),
   }),
-  SubView({ cell, model, properties }) {
+  SubView({ cell, model, getProperty }) {
     const rawFieldName = getAttribute(cell, 'name');
     const formType = getAttribute(cell, 'defaultType') ?? '';
     const field = model?.getField(rawFieldName ?? '');
@@ -166,10 +166,10 @@ const processCellType: {
         ) ?? 'form',
       fieldName: field?.name,
       viewName: getAttribute(cell, 'viewName'),
-      isButton: properties.btn?.toLowerCase() === 'true',
-      icon: properties.icon,
+      isButton: getProperty('btn')?.toLowerCase() === 'true',
+      icon: getProperty('icon'),
       sortField: field?.isRelationship
-        ? field?.relatedModel?.getField(properties.sortfield ?? '')?.name ??
+        ? field?.relatedModel?.getField(getProperty('sortField') ?? '')?.name ??
           undefined
         : undefined,
     };
@@ -228,8 +228,10 @@ export function parseFormCell(
   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
   );
+  const getProperty = (name: string): string | undefined =>
+    properties[name.toLowerCase()];
   const colSpan = f.parseInt(getAttribute(cellNode, 'colspan') ?? '');
-  const align = properties.align?.toLowerCase();
+  const align = getProperty('align')?.toLowerCase();
   return {
     id: getAttribute(cellNode, 'id'),
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
@@ -238,8 +240,8 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
-    visible: properties.visible?.toLowerCase() !== 'false',
-    ...parsedCell({ cell: cellNode, model, properties }),
+    visible: getProperty('visible')?.toLowerCase() !== 'false',
+    ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
   };
