@@ -49,7 +49,7 @@ export function useUserRoles(
 ): [
   userRoles: IR<RA<number>> | undefined,
   setUserRoles: (value: IR<RA<number>>) => void,
-  initialRoles: React.RefObject<IR<RA<number>>>,
+  initialRoles: React.MutableRefObject<IR<RA<number>>>,
   hasChanges: boolean
 ] {
   const initialUserRoles = React.useRef<IR<RA<number>>>({});
@@ -181,7 +181,7 @@ export function useUserPolicies(
 ): [
   userPolicies: IR<RA<Policy>> | undefined,
   setUserPolicies: (value: IR<RA<Policy>> | undefined) => void,
-  initialPolicies: React.RefObject<IR<RA<Policy>>>,
+  initialPolicies: React.MutableRefObject<IR<RA<Policy>>>,
   hasChanges: boolean
 ] {
   const initialUserPolicies = React.useRef<IR<RA<Policy>>>({});
@@ -229,6 +229,7 @@ export function useUserInstitutionalPolicies(
 ): [
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
+  initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
   hasChanges: boolean
 ] {
   const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
@@ -260,6 +261,41 @@ export function useUserInstitutionalPolicies(
   return [
     institutionPolicies,
     setInstitutionPolicies,
+    initialInstitutionPolicies,
     changedInstitutionPolicies,
   ];
+}
+
+export function useUserProviders(userId: number): IR<boolean> {
+  const [providers] = useAsyncState<IR<boolean>>(
+    React.useCallback(
+      async () =>
+        f
+          .all({
+            allProviders: ajax<
+              RA<{ readonly provider: string; readonly title: string }>
+            >('/accounts/oic_providers/', {
+              method: 'GET',
+              headers: { Accept: 'application/json' },
+            }).then(({ data }) => data),
+            userProviders: ajax<
+              RA<{ readonly provider: string; readonly title: string }>
+            >(`/accounts/oic_providers/${userId}/`, {
+              method: 'GET',
+              headers: { Accept: 'application/json' },
+            }).then(({ data }) => data),
+          })
+          .then(({ allProviders, userProviders }) =>
+            Object.fromEntries(
+              allProviders.map(({ title, provider }) => [
+                title,
+                userProviders.some((entry) => entry.provider === provider),
+              ])
+            )
+          ),
+      [userId]
+    ),
+    false
+  );
+  return providers;
 }

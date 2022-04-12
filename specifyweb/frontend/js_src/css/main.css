@@ -61,7 +61,7 @@
   }
 
   .has-alt-background :disabled:not(.icon), .has-alt-background [readonly] {
-    @apply bg-gray-200 dark:bg-neutral-800;
+    @apply !bg-gray-200 dark:!bg-neutral-800;
   }
 
   select {

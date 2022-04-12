@@ -47,6 +47,8 @@ export const operationPolicies = {
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
+  '/admin/user/invite_link': ['create'],
+  '/admin/user/oic_providers': ['read'],
   '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],

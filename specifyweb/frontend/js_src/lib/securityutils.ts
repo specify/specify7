@@ -37,11 +37,18 @@ export const fetchRoles = async (
   );
 
 export const resourceToLabel = (resource: string): string =>
-  f.var(
-    resourceNameToParts(resource),
-    (parts) =>
-      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.slice(-1)[0]].label
-  ) ?? adminText('resource');
+  resource.startsWith(tablePermissionsPrefix)
+    ? /*
+       * "getRegistriesFromPath" does not work for tool tables, so have to
+       * handle that case here
+       */
+      resourceNameToModel(resource).label
+    : f.var(
+        resourceNameToParts(resource),
+        (parts) =>
+          getRegistriesFromPath(parts)[parts.length - 1]?.[parts.slice(-1)[0]]
+            .label
+      ) ?? adminText('resource');
 
 /**
  * Convert a part like ['table','locality'] to an array of information for

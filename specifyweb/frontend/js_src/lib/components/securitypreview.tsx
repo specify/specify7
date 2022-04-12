@@ -349,11 +349,13 @@ function PreviewOperations({
 
 export function PreviewPermissions({
   userId,
+  userVersion,
   collectionId,
   changesMade,
   onOpenRole: handleOpenRole,
 }: {
   readonly userId: number;
+  readonly userVersion: number;
   readonly collectionId: number;
   readonly changesMade: boolean;
   readonly onOpenRole: (roleId: number) => void;
@@ -364,7 +366,8 @@ export function PreviewPermissions({
         queryUserPermissions(userId, collectionId).then(
           compressPermissionQuery
         ),
-      [userId, collectionId]
+      // Force requery user permissions when user is saved
+      [userId, collectionId, userVersion]
     ),
     false
   );

@@ -30,6 +30,7 @@ import {
   SetCollection,
   SetPasswordPrompt,
   SetSuperAdmin,
+  UserIdentityProviders,
   UserRoles,
 } from './securityusercomponents';
 import {
@@ -70,10 +71,11 @@ export function UserView({
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections);
-  const userAgents = useUserAgents(user.id, collections);
+  const userAgents = useUserAgents(userResource.id, collections);
   const [
     institutionPolicies,
     setInstitutionPolicies,
+    initialInstitutionPolicies,
     changedInstitutionPolicies,
   ] = useUserInstitutionalPolicies(userResource);
   const [changedAgent, handleChangedAgent] = useBooleanState();
@@ -125,7 +127,7 @@ export function UserView({
                     {hasPermission('/admin/user/password', 'update') && (
                       <PasswordPlugin onSet={setPassword} />
                     )}
-                    {hasPermission('/admin/user/password', 'update') && (
+                    {hasPermission('/admin/user/invite_link', 'create') && (
                       <UserInviteLinkPlugin user={user} />
                     )}
                     <SetSuperAdmin
@@ -135,6 +137,9 @@ export function UserView({
                   </div>
                 </section>
               </div>
+              {hasPermission('/admin/user/oic_providers', 'read') && (
+                <UserIdentityProviders userId={user.id} />
+              )}
               <SetCollection
                 collectionId={collectionId}
                 collections={collections}
@@ -176,9 +181,10 @@ export function UserView({
                   }
                 />
               )}
-              {typeof user.id === 'number' && (
+              {typeof userResource.id === 'number' && (
                 <PreviewPermissions
-                  userId={user.id}
+                  userId={userResource.id}
+                  userVersion={user.version ?? 0}
                   collectionId={collectionId}
                   changesMade={previewAffected}
                   onOpenRole={(roleId): void =>
@@ -333,12 +339,21 @@ export function UserView({
                                       }
                                     )
                                   : undefined,
-                              ]).then(() =>
-                                handleSave(
-                                  serializeResource(userResource),
-                                  f.maybe(newResource, serializeResource)
+                              ])
+                                .then(() =>
+                                  handleSave(
+                                    serializeResource(userResource),
+                                    f.maybe(newResource, serializeResource)
+                                  )
                                 )
-                              )
+                                .then(() => {
+                                  if (typeof newResource === 'object') return;
+                                  initialUserRoles.current = userRoles ?? {};
+                                  initialUserPolicies.current =
+                                    userPolicies ?? {};
+                                  initialInstitutionPolicies.current =
+                                    institutionPolicies ?? [];
+                                })
                         )
                       )
                     }
@@ -368,7 +383,7 @@ export function UserView({
       {state.type === 'SettingAgents' && (
         <UserAgentsDialog
           userAgents={userAgents}
-          userId={user.id}
+          userId={userResource.id}
           onClose={(): void => setState({ type: 'Main' })}
           mode={mode}
           response={state.response}

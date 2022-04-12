@@ -28,7 +28,7 @@ import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
-import { UserAgents } from './securityuserhooks';
+import { UserAgents, useUserProviders } from './securityuserhooks';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 
 export function SetSuperAdmin({
@@ -340,5 +340,31 @@ export function CollectionAccess({
         )}
       </Label.Generic>
     </div>
+  );
+}
+
+export function UserIdentityProviders({
+  userId,
+}: {
+  readonly userId: number;
+}): JSX.Element | null {
+  const providers = useUserProviders(userId);
+  return typeof providers === 'undefined' ||
+    Object.entries(providers).length === 0 ? null : (
+    <fieldset className="flex flex-col gap-2">
+      <legend className={className.headerGray}>
+        {adminText('externalIdentityProviders')}
+      </legend>
+      <Ul className="flex flex-col gap-1">
+        {Object.entries(providers).map(([title, isEnabled], index) => (
+          <li key={index}>
+            <Label.ForCheckbox>
+              <Input.Checkbox isReadOnly checked={isEnabled} />
+              {title}
+            </Label.ForCheckbox>
+          </li>
+        ))}
+      </Ul>
+    </fieldset>
   );
 }

@@ -426,6 +426,12 @@ const adminText = createDictionary({
     ca: 'Please set the following agents before proceeding:',
     'es-es': 'Please set the following agents before proceeding:',
   },
+  externalIdentityProviders: {
+    'en-us': 'External identity providers:',
+    'ru-ru': 'External identity providers:',
+    ca: 'External identity providers:',
+    'es-es': 'External identity providers:',
+  },
 });
 
 export default adminText;

@@ -213,7 +213,6 @@ function SecurityPanel(): JSX.Element | null {
                   initialCollection: state.initialCollection,
                   user: newUser,
                 });
-              else setState({ type: 'MainState' });
             }}
             onOpenRole={(collectionId, roleId): void =>
               setState({
