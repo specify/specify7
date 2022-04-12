@@ -3,7 +3,7 @@ import type { Collection, CollectionObject } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
-import { getCollectionPreference } from './remoteprefs';
+import { getCollectionPref } from './remoteprefs';
 import { fetchResource } from './resource';
 import { schema } from './schema';
 import { globalEvents } from './specifyapi';
@@ -36,7 +36,7 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   const colId = parentResource.get('id');
   if (
-    getCollectionPreference('CO_CREATE_COA', colId) &&
+    getCollectionPref('CO_CREATE_COA', colId) &&
     hasTablePermission('CollectionObjectAttribute', 'create')
   ) {
     const attribute = new schema.models.CollectionObjectAttribute.Resource();
@@ -45,7 +45,7 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
   }
 
   if (
-    getCollectionPreference('CO_CREATE_PREP', colId) &&
+    getCollectionPref('CO_CREATE_PREP', colId) &&
     hasTablePermission('Preparation', 'create')
   )
     collectionObject
@@ -56,7 +56,7 @@ globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
       .catch(crash);
 
   if (
-    getCollectionPreference('CO_CREATE_DET', colId) &&
+    getCollectionPref('CO_CREATE_DET', colId) &&
     hasTablePermission('Determination', 'create')
   )
     collectionObject

@@ -13,6 +13,11 @@ import { f } from '../functools';
 import { leafletTileServersPromise } from '../leaflet';
 import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
+import commonText from '../localization/common';
+import specifyNetworkText from '../localization/specifynetwork';
+import { getCollectionPref } from '../remoteprefs';
+import { schema } from '../schema';
+import { toTable } from '../specifymodel';
 import type { OccurrenceData } from '../specifynetworkmap';
 import { fetchLocalOccurrences } from '../specifynetworkmap';
 import {
@@ -20,16 +25,12 @@ import {
   formatLifemapperViewPageRequest,
   snServer,
 } from '../specifynetworkutils';
-import commonText from '../localization/common';
-import specifyNetworkText from '../localization/specifynetwork';
-import { toTable } from '../specifymodel';
 import { getSystemInfo } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { getPref } from '../remoteprefs';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -136,7 +137,7 @@ type OutgoingMessage =
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema>
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  getPref('s2n.badges.enabled') &&
+  getCollectionPref('S2n.S2nOn', schema.domainLevelIds.collection) &&
   !resource.isNew() &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
 

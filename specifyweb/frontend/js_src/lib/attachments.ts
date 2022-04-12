@@ -9,6 +9,7 @@ import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';
 import { SerializedResource } from './datamodelutils';
+import { getPref } from './remoteprefs';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -203,6 +204,7 @@ export const uploadFile = async (
               attachmentlocation: data.attachmentlocation,
               mimetype: file.type,
               origfilename: file.name,
+              isPublic: getPref('attachment.is_public_default'),
             })
         );
       })

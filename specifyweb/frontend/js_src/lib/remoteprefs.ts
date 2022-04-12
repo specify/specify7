@@ -2,12 +2,13 @@
  * Fetch remote prefs file (a global preferences file)
  */
 
+import { f } from './functools';
 import { load } from './initialcontext';
 import type { JavaType } from './specifyfield';
 import type { IR, R, RA } from './types';
+import { defined } from './types';
 import type { Parser } from './uiparse';
 import { formatter, parsers, parseValue } from './uiparse';
-import { f } from './functools';
 
 const preferences: R<string> = {};
 
@@ -25,44 +26,60 @@ export const fetchContext = load<string>(
 );
 
 type Definitions = ReturnType<typeof remotePrefsDefinitions>;
-type TypeOf<KEY extends keyof Definitions> =
-  Definitions[KEY]['defaultValue'] extends string
+type CollectionDefinitions = typeof collectionPrefsDefinitions;
+type Definition = {
+  readonly defaultValue: boolean | string | number;
+  readonly formatters?: RA<(value: unknown) => unknown>;
+  readonly parser?: JavaType;
+};
+type TypeOf<DEFINITION extends Definition> =
+  DEFINITION['defaultValue'] extends string
     ? string
-    : Definitions[KEY]['defaultValue'] extends number
+    : DEFINITION['defaultValue'] extends number
     ? number
     : boolean;
 
-export function getPref<KEY extends keyof Definitions>(key: KEY): TypeOf<KEY> {
-  const value =
-    typeof preferences[key] === 'string'
-      ? ('formatter' in remotePrefsDefinitions()[key]
-          ? (
-              remotePrefsDefinitions()[key] as {
-                readonly formatter: RA<(value: unknown) => unknown>;
-              }
-            ).formatter
-          : []
-        ).reduce<unknown>(
-          (value, formatter) => formatter(value),
-          preferences[key]
-        )
-      : undefined;
+type DefinitionOf<KEY extends keyof Definitions | keyof CollectionDefinitions> =
+  KEY extends keyof Definitions
+    ? Definitions[KEY]
+    : KEY extends keyof CollectionDefinitions
+    ? CollectionDefinitions[KEY]
+    : never;
+
+export const getPref = <KEY extends keyof Definitions>(
+  key: KEY
+): TypeOf<Definitions[KEY]> =>
+  parsePref(preferences[key], defined(remotePrefsDefinitions()[key])) as TypeOf<
+    Definitions[KEY]
+  >;
+
+export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
+  key: KEY,
+  collectionId: number
+): TypeOf<DefinitionOf<KEY>> {
+  const fullKey = `${key}${collectionPrefsDefinitions[key].separator}${collectionId}`;
+  return parsePref(
+    preferences[fullKey],
+    defined(collectionPrefsDefinitions[key])
+  ) as TypeOf<DefinitionOf<KEY>>;
+}
+
+function parsePref(
+  rawValue: boolean | string | number | undefined,
+  { defaultValue, formatters, parser }: Definition
+): string | boolean | number {
+  const value = (formatters ?? []).reduce<unknown>(
+    (value, formatter) => formatter(value),
+    rawValue
+  );
   const parsed =
-    'parser' in remotePrefsDefinitions()[key] && typeof value !== 'undefined'
-      ? parseValue(
-          parsers()[
-            (remotePrefsDefinitions()[key] as { readonly parser: JavaType })
-              .parser
-          ] as Parser,
-          undefined,
-          value as string
-        )
+    typeof parser === 'string' && typeof value !== 'undefined'
+      ? parseValue(parsers()[parser] as Parser, undefined, value as string)
       : undefined;
-  return (
-    parsed?.isValid === true
-      ? parsed.parsed
-      : remotePrefsDefinitions()[key].defaultValue
-  ) as TypeOf<KEY>;
+  return (parsed?.isValid === true ? parsed.parsed : defaultValue) as
+    | string
+    | number
+    | boolean;
 }
 
 export const remotePrefs: IR<string> = preferences;
@@ -77,12 +94,12 @@ export const remotePrefsDefinitions = f.store(
       'ui.formatting.scrdateformat': {
         description: 'Full Date format',
         defaultValue: 'YYYY-MM-DD',
-        formatter: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter().trim, formatter().toUpperCase],
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
         defaultValue: 'MM/YYYY',
-        formatter: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter().trim, formatter().toUpperCase],
       },
       'ui.formatting.accessible_date_input': {
         description:
@@ -96,35 +113,30 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: true,
         parser: 'java.lang.Boolean',
       },
-      's2n.badges.enabled': {
-        description: 'Whether to enable Specify Network Badge',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-      },
       'GeologicTimePeriod.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatter: [formatter().trim],
+        formatters: [formatter().trim],
       },
       'Taxon.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatter: [formatter().trim],
+        formatters: [formatter().trim],
       },
       'Geography.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatter: [formatter().trim],
+        formatters: [formatter().trim],
       },
       'LithoStrat.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatter: [formatter().trim],
+        formatters: [formatter().trim],
       },
       'Storage.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatter: [formatter().trim],
+        formatters: [formatter().trim],
       },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
@@ -168,6 +180,11 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: '/static/img/icons_as_background_splash.png',
         formatter: [formatter().trim],
       },
+      'attachment.is_public_default': {
+        description: 'Whether new Attachments are public by default',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+      },
       // These are used on back end only
       'auditing.do_audits': {
         description: 'Whether Audit Log is enabled',
@@ -196,27 +213,30 @@ export const remotePrefsDefinitions = f.store(
 export const collectionPrefsDefinitions = {
   // Like CO_CREATE_COA_${collectionId}
   CO_CREATE_COA: {
+    separator: '_',
     description:
       'Whether to create Collection Object Attributes when Collection Object is created',
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
   CO_CREATE_PREP: {
+    separator: '_',
     description:
       'Whether to create Preparation when Collection Object is created',
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
   CO_CREATE_DET: {
+    separator: '_',
     description:
       'Whether to create Determination when Collection Object is created',
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
+  'S2n.S2nOn': {
+    separator: '.',
+    description: 'Whether to enable Specify Network Badge',
+    defaultValue: true,
+    parser: 'java.lang.Boolean',
+  },
 } as const;
-
-export const getCollectionPreference = (
-  key: keyof typeof collectionPrefsDefinitions,
-  collectionId: number
-): boolean =>
-  remotePrefs[`${key}_${collectionId}`]?.trim().toLowerCase() === 'true';
