@@ -1,3 +1,7 @@
+"""
+A few non-business data resource end points
+"""
+
 import json
 import mimetypes
 from django import http

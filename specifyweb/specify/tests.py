@@ -1,8 +1,11 @@
+"""
+Test suite entry point
+"""
+
+from django.conf import settings
+from django.test import TestCase
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
-
-from django.test import TestCase
-from django.conf import settings
 
 from .api_tests import *
 from .test_load_datamodel import *

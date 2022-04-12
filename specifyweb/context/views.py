@@ -1,3 +1,7 @@
+"""
+Defines the resources that are provided by this subsystem
+"""
+
 import json
 import os
 import re

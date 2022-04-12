@@ -1,11 +1,14 @@
+"""
+Base class for related search
+"""
+
 import logging
 
 from ..specify.models import datamodel
-
+from ..stored_queries.execution import build_query
+from ..stored_queries.query_ops import QueryOps
 from ..stored_queries.queryfield import QueryField
 from ..stored_queries.queryfieldspec import QueryFieldSpec
-from ..stored_queries.query_ops import QueryOps
-from ..stored_queries.execution import build_query
 
 logger = logging.getLogger(__name__)
 

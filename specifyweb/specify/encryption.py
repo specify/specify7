@@ -1,9 +1,13 @@
-# See edu.ku.brc.helpers.Encryption and rfc2898
+"""
+Handles Specify user passowrd crypto
 
-from itertools import islice
-from hashlib import md5
+See src/edu.ku.brc.helpers.Encryption in github.edu/specify/specify6 and rfc2898
+"""
+
 from Crypto.Cipher import DES
 from Crypto.Random.random import randint
+from hashlib import md5
+from itertools import islice
 
 ITERATION_COUNT = 1000
 

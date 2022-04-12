@@ -1,9 +1,11 @@
+# Entrypoint for the routing of the app
+
 from django.conf.urls import include, url
 
-from . import views
-from . import tree_views
 from . import master_key
 from . import schema
+from . import tree_views
+from . import views
 
 urlpatterns = [
     # the main business data API

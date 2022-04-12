@@ -1,10 +1,15 @@
-from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, NamedTuple, Callable
-from typing_extensions import TypedDict
+"""
+Implements the RESTful business data API
+"""
 
-from urllib.parse import urlencode
 import json
-import re
 import logging
+import re
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
+    NamedTuple, Callable
+from typing_extensions import TypedDict
+from urllib.parse import urlencode
+
 logger = logging.getLogger(__name__)
 
 from django import forms

@@ -1,8 +1,13 @@
+"""
+Modules for filtering resources by the collection logged in
+"""
+
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, Attachment
 from . import scoping
+from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, \
+    Attachment
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 

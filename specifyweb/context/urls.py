@@ -1,3 +1,7 @@
+"""
+Defines the urls for the app context subsystem
+"""
+
 from django.conf.urls import include, url
 
 from . import views

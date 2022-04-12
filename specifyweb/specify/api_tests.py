@@ -1,12 +1,16 @@
+"""
+Tests for api.py
+"""
+
 import json
+from django.db import connection
+from django.db.models import Max
+from django.test import TestCase, TransactionTestCase, Client
 from unittest import skip
 
-from django.test import TestCase, TransactionTestCase, Client
-from django.db.models import Max
-from django.db import connection
-
-from specifyweb.specify import api, models
 from specifyweb.permissions.models import UserPolicy
+from specifyweb.specify import api, models
+
 
 class MainSetupTearDown:
     def setUp(self):

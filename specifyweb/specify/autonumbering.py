@@ -1,7 +1,11 @@
+"""
+Autonumbering logic
+"""
 
-from typing import List, Tuple, Sequence
 
 import logging
+from typing import List, Tuple, Sequence
+
 logger = logging.getLogger(__name__)
 
 from .lock_tables import lock_tables

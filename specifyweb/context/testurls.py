@@ -1,3 +1,7 @@
+"""
+Provides urls to access the mocked views
+"""
+
 from django.conf.urls import url
 
 from . import testsviews as views

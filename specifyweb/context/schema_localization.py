@@ -1,3 +1,7 @@
+"""
+Provide the proper Schema Localization to the front-end
+"""
+
 import logging
 logger = logging.getLogger(__name__)
 

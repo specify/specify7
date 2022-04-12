@@ -1,24 +1,23 @@
+"""
+Implements the express search mechanism
+"""
+
 import logging
-from xml.etree import ElementTree
-
-from sqlalchemy.sql.expression import or_, and_
-
+from django import forms
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET
-from django import forms
-
-from ..specify.models import datamodel, Collection
-from ..specify.api import toJson
-from ..specify.views import login_maybe_required
-
-from ..context.app_resource import get_app_resource
-
-from ..stored_queries import models
-from ..stored_queries.queryfieldspec import QueryFieldSpec
-from ..stored_queries.execution import filter_by_collection
+from functools import reduce
+from sqlalchemy.sql.expression import or_, and_
+from xml.etree import ElementTree
 
 from .search_terms import parse_search_str
-from functools import reduce
+from ..context.app_resource import get_app_resource
+from ..specify.api import toJson
+from ..specify.models import datamodel, Collection
+from ..specify.views import login_maybe_required
+from ..stored_queries import models
+from ..stored_queries.execution import filter_by_collection
+from ..stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 

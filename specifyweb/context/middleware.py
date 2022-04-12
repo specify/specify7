@@ -1,9 +1,13 @@
+"""
+Adds information about the specify user to incoming requests
+"""
+
+from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.utils.functional import SimpleLazyObject
-from django.conf import settings
 
-from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.filter_by_col import filter_by_collection
+from specifyweb.specify.models import Collection, Specifyuser, Agent
 
 
 def get_cached(attr, func, request):

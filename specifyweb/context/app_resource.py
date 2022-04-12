@@ -1,13 +1,15 @@
 """
+Logic for finding App Resources
+
 Specify Application resources are hierarchical in nature and may be stored in either the
 database or the filesystem with database resources taking precedence over the filesystem.
 """
-import os, errno
+import errno
 import logging
+import os
+from django.conf import settings
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
-
-from django.conf import settings
 
 from specifyweb.specify.models import Spappresourcedir, Spappresourcedata
 

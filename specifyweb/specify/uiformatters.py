@@ -1,12 +1,17 @@
+"""
+Supports autonumbering mechanism
+"""
 
-import re, logging
+
+import logging
+import re
+from datetime import date
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
 from typing import NamedTuple, List, Optional, Sequence
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
-from django.db import connection
-from django.core.exceptions import ObjectDoesNotExist
 
-from datetime import date
 logger = logging.getLogger(__name__)
 
 from specifyweb.context.app_resource import get_app_resource

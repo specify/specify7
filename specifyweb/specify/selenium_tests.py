@@ -1,10 +1,16 @@
-import os
-from selenium.webdriver.support.ui import WebDriverWait
+"""
+Browser automation testing
 
+I don't think this is used anymore
+"""
+
+import os
 from django.test import LiveServerTestCase
+from selenium.webdriver.support.ui import WebDriverWait
 
 from .api_tests import MainSetupTearDown
 from .selenium_testsuite_runner import SeleniumTestSuiteRunner as TestRunner
+
 
 def jquery_selector(selector):
     return lambda driver: driver.execute_script('''return $('%s')[0]''' % selector)
