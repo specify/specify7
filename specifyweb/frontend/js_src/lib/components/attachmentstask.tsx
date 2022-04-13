@@ -395,7 +395,10 @@ export function AttachmentsView(): JSX.Element {
       </header>
       <Gallery
         attachments={collection?.records ?? []}
-        isComplete={collection?.totalCount === collection?.records.length}
+        isComplete={
+          typeof collection === 'object' &&
+          collection.totalCount === collection.records.length
+        }
         onFetchMore={fetchMore}
         scale={scale}
       />
