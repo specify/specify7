@@ -230,7 +230,7 @@ export function Dialog({
         <div {...props}>{children}</div>
       </Draggable>
     ),
-    []
+    [id]
   );
 
   const [buttonContainer, setButtonContainer] =
@@ -352,11 +352,9 @@ export function Dialog({
 /** Wrapper for using React dialog in Backbone views */
 function LegacyDialogWrapper({
   content,
-  buttons,
   ...props
-}: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children' | 'buttons'> & {
+}: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children'> & {
   readonly content: HTMLElement | typeof jQuery | string;
-  readonly buttons: undefined | string | JSX.Element;
 }): JSX.Element {
   const [contentElement, setContentElement] =
     React.useState<HTMLElement | null>(null);
@@ -373,14 +371,11 @@ function LegacyDialogWrapper({
   return (
     <Dialog
       {...props}
-      isOpen={true}
       contentRef={setContentElement}
-      buttons={buttons}
       className={{
         ...props.className,
-        container: `${
-          props.className?.container ?? dialogClassNames.normalContainer
-        } legacy-dialog`,
+        container:
+          props.className?.container ?? dialogClassNames.normalContainer,
       }}
     >
       {''}

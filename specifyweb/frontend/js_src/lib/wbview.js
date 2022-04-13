@@ -1609,7 +1609,7 @@ const WBView = Backbone.View.extend({
   },
 
   // Tools
-  displayUploadedView() {
+  displayUploadedView(event) {
     if (!this.dataset.rowresults) return;
 
     if (typeof this.uploadedView !== 'undefined') {
@@ -2416,7 +2416,7 @@ const WBView = Backbone.View.extend({
           navigationContainer.getElementsByClassName(
             'wb-navigation-position'
           )?.[0];
-        if (currentPositionElement !== 'undefined')
+        if (typeof currentPositionElement === 'object')
           currentPositionElement.textContent = '0';
       }
     });
@@ -2475,7 +2475,7 @@ const WBView = Backbone.View.extend({
       title: messages[this.refreshInitiatedBy].title,
       header: messages[this.refreshInitiatedBy].header,
       content: messages[this.refreshInitiatedBy].message,
-      onClick: () => dialog.remove(),
+      onClose: () => dialog.remove(),
       buttons: commonText('close'),
     });
 
