@@ -2,9 +2,9 @@ import json
 from jsonschema import validate # type: ignore
 from typing import List, Dict, Any, NamedTuple, Union
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase, get_table, cols_and_rows
 from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
+from ..upload import do_upload
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
 from ..upload_plan_schema import schema, parse_plan
 
@@ -55,15 +55,15 @@ class OneToOneTests(UploadTestsBase):
     def test_onetoone_uploading(self) -> None:
         plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             dict(catno='0', sfn='1'),
             dict(catno='1', sfn='1'),
             dict(catno='2', sfn='2'),
             dict(catno='3', sfn='2'),
             # dict(catno='4', sfn='2'), # This fails because the CE has multiple matches
-        ]
+        ])
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         ces = set()
         for r in results:
             assert isinstance(r.record_result, Uploaded), r
@@ -76,15 +76,15 @@ class OneToOneTests(UploadTestsBase):
     def test_manytoone_uploading(self) -> None:
         plan = parse_plan(self.collection, self.plan(one_to_one=False)).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             dict(catno='0', sfn='1'),
             dict(catno='1', sfn='1'),
             dict(catno='2', sfn='2'),
             dict(catno='3', sfn='2'),
             dict(catno='4', sfn='2'),
-        ]
+        ])
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Uploaded, Matched, Uploaded, Matched, Matched]):
             assert isinstance(r.record_result, Uploaded)
@@ -96,17 +96,17 @@ class OneToOneTests(UploadTestsBase):
     def test_onetoone_with_null(self) -> None:
         plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             dict(catno='0', sfn='1'),
             dict(catno='1', sfn='1'),
             dict(catno='2', sfn='2'),
             dict(catno='3', sfn=''),
             dict(catno='4', sfn=''),
-        ]
+        ])
 
         ce_count_before_upload = get_table('Collectingevent').objects.count()
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Uploaded, Uploaded, Uploaded, NullRecord, NullRecord]):
             assert isinstance(r.record_result, Uploaded)

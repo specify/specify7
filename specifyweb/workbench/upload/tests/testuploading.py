@@ -15,11 +15,11 @@ from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, No
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv
+from ..upload import do_upload
 from ..parsing import filter_and_upload
 from ..upload_plan_schema import schema, parse_plan, parse_column_options
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase, get_table, cols_and_rows
 
 class TreeMatchingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -131,11 +131,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -161,11 +161,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'State': 'Texas', 'City': 'Austin'},
             {'State': 'Missouri', 'City': 'Columbia'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         self.assertEqual(
             results[0].record_result,
             FailedBusinessRule(
@@ -193,11 +193,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'State': 'Missouri', 'City': 'Springfield'},
             {'State': 'Illinois', 'City': 'Springfield'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Matched)
         self.assertEqual(self.springmo.id, results[0].record_result.get_id())
@@ -214,11 +214,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'City': 'Springfield'},
             {'City': 'Springfield'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, MatchedMultiple)
             self.assertEqual(set([self.springmo.id, self.springill.id]), set(r.record_result.ids))
@@ -236,10 +236,10 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Springfield'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, Matched)
             self.assertEqual(self.springmo.id, r.record_result.id)
@@ -256,11 +256,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -282,11 +282,11 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Shawnee', 'City': 'Topeka'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
 
@@ -310,10 +310,10 @@ class TreeMatchingTests(UploadTestsBase):
         )
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Rogersville'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(self.greene.id, get_table('Geography').objects.get(id=results[0].get_id()).parent_id)
 
@@ -333,13 +333,13 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'guid': str(uuid4()), 'height': "100"},
             {'guid': str(uuid4()), 'height': "100"},
             {'guid': str(uuid4()), 'height': "100"},
             {'guid': str(uuid4()), 'height': "200"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         aias = [get_table('Attachment').objects.get(id=r.get_id()).attachmentimageattribute_id for r in results]
@@ -359,13 +359,13 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'guid': str(uuid4()), 'integer': "100"},
             {'guid': str(uuid4()), 'integer': "100"},
             {'guid': str(uuid4()), 'integer': "100"},
             {'guid': str(uuid4()), 'integer': "200"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         ctas = [get_table('Collectingtrip').objects.get(id=r.get_id()).collectingtripattribute_id for r in results]
@@ -401,18 +401,18 @@ class OneToOneAttributeTests(UploadTestsBase):
                 )
             }
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
             {'guid': str(uuid4()), 'integer': "200", 'catno': '1', 'preptype': 'tissue'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         pas = [get_table('Preparation').objects.get(id=r.get_id()).preparationattribute_id for r in results]
         self.assertTrue(all(pa is not None for pa in pas), "All prep attributes got created.")
-        self.assertEqual(len(data), len(pas), "Each prep gets a prep attribute.")
+        self.assertEqual(len(data[1]), len(pas), "Each prep gets a prep attribute.")
         self.assertEqual(len(pas), len(set(pas)), "The preparation attributes are not shared.")
 
 
@@ -430,18 +430,18 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': "1", 'number': "100"},
             {'catno': "2", 'number': "100"},
             {'catno': "3", 'number': "100"},
             {'catno': "4", 'number': "200"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
         self.assertTrue(all(coa is not None for coa in coas), "All the COAs were created.")
-        self.assertEqual(len(data), len(coas), "Each collection object gets an attribute row.")
+        self.assertEqual(len(data[1]), len(coas), "Each collection object gets an attribute row.")
         self.assertEqual(len(coas), len(set(coas)), "The collection object attributes are not shared.")
 
     def test_collectingeventattribute(self) -> None:
@@ -458,13 +458,13 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'sfn': "1", 'number': "100"},
             {'sfn': "2", 'number': "100"},
             {'sfn': "3", 'number': "100"},
             {'sfn': "4", 'number': "200"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         ceas = [get_table('Collectingevent').objects.get(id=r.get_id()).collectingeventattribute_id for r in results]
@@ -501,10 +501,10 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'sfn': "", 'number': "100"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, MatchedMultiple)
 
@@ -539,10 +539,10 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'sfn': "1", 'number': "100"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Matched)
 
@@ -561,12 +561,12 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toMany={}
             )}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': "1", 'number': "100"},
             {'catno': "2", 'number': "100"},
             {'catno': "", 'number': "100"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
@@ -607,12 +607,12 @@ class UploadTests(UploadTestsBase):
 
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar'},
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertTrue(all(d.iscurrent for d in dets), "created determinations have iscurrent = true by default")
 
@@ -649,12 +649,12 @@ class UploadTests(UploadTestsBase):
 
         validate(plan_json, schema)
         scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
-        ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, scoped_plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertFalse(any(d.iscurrent for d in dets), "created determinations have iscurrent = false by override")
 
@@ -689,12 +689,12 @@ class UploadTests(UploadTestsBase):
                     )}),
             ]}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'author2': "Philomungus"},
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
         self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
@@ -730,12 +730,12 @@ class UploadTests(UploadTestsBase):
                     )}),
             ]}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'on1': '1', 'author2': "Philomungus", 'on2': '0'},
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
         self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
@@ -799,7 +799,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(excludes, [])
 
     def test_big(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
@@ -827,7 +827,7 @@ class UploadTests(UploadTestsBase):
 5091,Gastropoda,Muricoidea,Marginellidae,Prunum,,donovani,,"(Olsson, 1967)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,2,0,0,Dry; shell,Dry,,,,,,1,,,,150,,,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,25/10/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
 5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
+        upload_results = do_upload(self.collection, next(reader), reader, self.example_plan, self.agent.id)
         uploaded_catnos = []
         for r in upload_results:
             self.assertIsInstance(r.record_result, Uploaded)
@@ -1061,7 +1061,7 @@ class UploadTests(UploadTestsBase):
 
 
     def test_rollback_bad_rows(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
@@ -1071,7 +1071,7 @@ class UploadTests(UploadTestsBase):
         co_entries = get_table('Spauditlog').objects.filter(tablenum=get_table('Collectionobject').specify_model.tableId)
         self.assertEqual(0, co_entries.count(), "No collection objects in audit log yet.")
 
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
+        upload_results = do_upload(self.collection, next(reader), reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
         for result in upload_results:
@@ -1099,7 +1099,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(0, get_table('collector').objects.filter(id=collector_result.get_id()).count())
 
     def test_disallow_partial(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
@@ -1114,7 +1114,7 @@ class UploadTests(UploadTestsBase):
             get_table('collector').objects.count(),
         ]
 
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, allow_partial=False)
+        upload_results = do_upload(self.collection, next(reader), reader, self.example_plan, self.agent.id, allow_partial=False)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
 

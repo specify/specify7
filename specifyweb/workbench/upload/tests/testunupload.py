@@ -1,8 +1,8 @@
 from specifyweb.specify import auditcodes
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase, get_table, cols_and_rows
 from ..upload_result import Uploaded, ParseFailures, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv, unupload_record
+from ..upload import do_upload, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
 from ..tomany import ToManyRecord
@@ -51,21 +51,21 @@ class UnUploadTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
             {'catno': '3', 'habitat': 'Marsh'},
             {'catno': '4', 'habitat': 'Lake'},
             {'catno': '5', 'habitat': 'marsh'},
             {'catno': '6', 'habitat': 'lake'},
-        ]
+        ])
 
         self.assertEqual(0,
                          get_table('Spauditlog').objects.filter(tablenum=get_table('Picklistitem').specify_model.tableId
                          ).count(),
                          "No picklistitems in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "There are now three items in the picklist.")
@@ -110,19 +110,19 @@ class UnUploadTests(UploadTestsBase):
             }
         ).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Douglass'},
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Missouri', 'Co': 'Greene'},
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Missouri', 'Co': 'Christian'},
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Johnson'},
-        ]
+        ])
 
         self.assertEqual(0,
                          get_table('Spauditlog').objects.filter(tablenum=get_table('Geography').specify_model.tableId
                          ).count(),
                          "No geography in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertEqual(9,
                          get_table('Spauditlog').objects.filter(
@@ -214,10 +214,10 @@ class UnUploadTests(UploadTestsBase):
             toMany={}
         ).apply_scoping(self.collection)
 
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
-        ]
+        ])
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in reversed(results):
             unupload_record(result, self.agent)

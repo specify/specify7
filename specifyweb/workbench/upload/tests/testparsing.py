@@ -10,9 +10,9 @@ from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, MYSQL_TO_YEAR
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase, get_table, cols_and_rows
 from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, ParseFailure, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
+from ..upload import do_upload
 from ..parsing import parse_coord, parse_date, ParseResult as PR, ParseFailure as PF
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
@@ -145,18 +145,18 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
             {'catno': '3', 'habitat': 'Marsh'},
             {'catno': '4', 'habitat': 'Lake'},
             {'catno': '5', 'habitat': 'marsh'},
             {'catno': '6', 'habitat': 'lake'},
-        ]
+        ])
 
         self.assertEqual(0, get_table('Spauditlog').objects.filter(tablenum=get_table('Picklistitem').specify_model.tableId).count(), "No picklistitems in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
             self.assertIsInstance(result.record_result, Uploaded)
@@ -188,14 +188,14 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
             {'catno': '3', 'habitat': 'Stream'},
             {'catno': '4', 'habitat': 'Ocean'},
             {'catno': '5', 'habitat': 'Lagoon'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -213,14 +213,14 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '123'},
             {'catno': '234'},
             {'catno': 'foo'},
             {'catno': 'bar'},
             {'catno': '567'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result, expected in zip(results, [Uploaded, Uploaded, ParseFailures, ParseFailures, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
@@ -238,15 +238,15 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
             {'catno': '2', 'bool': 'bogus', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
             {'catno': '3', 'bool': 'true', 'integer': 'bogus', 'float': '24.5', 'decimal': '10.23'},
             {'catno': '4', 'bool': 'true', 'integer': '10', 'float': '24.5bogus', 'decimal': '10.23'},
             {'catno': '5', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23bogus'},
             {'catno': '6', 'bool': 'true', 'integer': '10.5', 'float': '24.5', 'decimal': '10.23'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         for result in results[1:]:
             self.assertIsInstance(result.record_result, ParseFailures)
@@ -259,14 +259,14 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'catno': '1', 'habitat': 'River'},
             {'catno': '', 'habitat': 'River'},
             {'catno': '3', 'habitat': ''},
             {'catno': '', 'habitat': ''},
             {'catno': '5', 'habitat': 'Lagoon'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result, expected in zip(results, [Uploaded, ParseFailures, ParseFailures, NullRecord, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
@@ -281,12 +281,12 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'title': "Mr.", 'lastname': 'Doe'},
             {'title': "Dr.", 'lastname': 'Zoidberg'},
             {'title': "Hon.", 'lastname': 'Juju'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         result0 = results[0].record_result
         assert isinstance(result0, Uploaded)
@@ -338,14 +338,14 @@ class ParsingTests(UploadTestsBase):
             self.assertEqual(parse_coord(k), v)
 
     def test_parsing_errors_reported(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
+        upload_results = do_upload(self.collection, next(reader),reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, ParseFailures)
         for result in upload_results:
@@ -355,22 +355,22 @@ class ParsingTests(UploadTestsBase):
 
 
     def test_multiple_parsing_errors_reported(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, ,bad date,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
+        upload_results = do_upload(self.collection, next(reader), reader, self.example_plan, self.agent.id)
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
         self.assertEqual([ParseFailure(message='date value must contain four digit year: foobar', column='Start Date Collected'), ParseFailure(message='date value must contain four digit year: bad date', column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
-        reader = csv.DictReader(io.StringIO(
+        reader = csv.reader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, ,,,USA,,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,128° 06.07' N,,191° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
+        upload_results = do_upload(self.collection, next(reader), reader, self.example_plan, self.agent.id)
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
@@ -387,14 +387,14 @@ class ParsingTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
             {'agenttype': "Extra Terrestrial", 'lastname': 'Zoidberg'},
             {'agenttype': "other", 'lastname': 'Juju'},
             {'agenttype': "group", 'lastname': 'Van Halen'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         result0 = results[0].record_result
         assert isinstance(result0, Uploaded)
@@ -424,11 +424,11 @@ class ParsingTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': 'L.'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', column='Species Author')]))
@@ -464,12 +464,12 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank author.")
@@ -487,12 +487,12 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Subspecies=dict(name=parse_column_options('Subspecies')),
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.', 'Subspecies': 'a'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': '', 'Subspecies': 'a'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus', 'Subspecies': 'a'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank author.")
@@ -508,12 +508,12 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank author.")
@@ -528,13 +528,13 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': ''},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, ParseFailures, "Second record fails due to blank author.")
@@ -550,12 +550,12 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None))
             )
         ).apply_scoping(self.collection)
-        data  = [
+        data  = cols_and_rows([
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite different author.")
@@ -574,12 +574,12 @@ class MatchingBehaviorTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -599,13 +599,13 @@ class MatchingBehaviorTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
             {'lastname': 'Smith', 'firstname': ''},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -630,12 +630,12 @@ class MatchingBehaviorTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -654,12 +654,12 @@ class MatchingBehaviorTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -681,12 +681,12 @@ class DefaultTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -708,13 +708,13 @@ class DefaultTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'John'},
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -738,12 +738,12 @@ class DefaultTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -766,12 +766,12 @@ class DefaultTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -795,12 +795,12 @@ class NullAllowedTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
             {'lastname': 'Doe', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -819,14 +819,14 @@ class NullAllowedTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},
             {'lastname': 'Doe3', 'firstname': 'Stream'},
             {'lastname': 'Doe1', 'firstname': ''},
             {'lastname': 'Doe1', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
@@ -847,14 +847,14 @@ class NullAllowedTests(UploadTestsBase):
             toOne={},
             toMany={}
         ).apply_scoping(self.collection)
-        data = [
+        data = cols_and_rows([
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},
             {'lastname': 'Doe3', 'firstname': 'Stream'},
             {'lastname': 'Doe1', 'firstname': ''},
             {'lastname': 'Doe1', 'firstname': 'Stream'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        ])
+        results = do_upload(self.collection, *data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema)
 
