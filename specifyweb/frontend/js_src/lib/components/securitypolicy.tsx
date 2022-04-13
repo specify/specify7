@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { group, removeItem, replaceItem } from '../helpers';
+import { group, removeItem, replaceItem, toggleItem } from '../helpers';
 import adminText from '../localization/admin';
 import commonText from '../localization/common';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../securityutils';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { Button, className, Select, selectMultipleSize } from './basic';
+import { Button, className, Input, Label, Select, Ul } from './basic';
 import { icons } from './icons';
 
 export type Policy = {
@@ -101,24 +101,31 @@ function PolicyView({
         )}
         {Array.isArray(possibleActions) && possibleActions.length > 0 && (
           <li className="contents">
-            <Select
-              value={possibleActions.length > 1 ? actions : actions[0] ?? ''}
-              multiple={possibleActions.length > 1}
-              size={Math.min(possibleActions.length, selectMultipleSize)}
-              onValuesChange={(actions): void =>
-                handleChange({
-                  resource,
-                  actions,
-                })
-              }
-              required
-            >
+            {/* Math.min(possibleActions.length, selectMultipleSize) */}
+            <Ul>
               {possibleActions.map((action) => (
-                <option key={action} value={action}>
-                  {actionToLabel(action)}
-                </option>
+                <li key={action}>
+                  <Label.ForCheckbox>
+                    <Input.Checkbox
+                      onValueChange={(): void =>
+                        handleChange({
+                          resource,
+                          actions: toggleItem(actions, action),
+                        })
+                      }
+                      checked={actions.includes(action)}
+                      /*
+                       * If not checkboxes are checked, mark all as required.
+                       * This prevents creation of policies without any
+                       * actions
+                       */
+                      required={actions.length === 0}
+                    />
+                    {actionToLabel(action)}
+                  </Label.ForCheckbox>
+                </li>
               ))}
-            </Select>
+            </Ul>
           </li>
         )}
       </ul>
