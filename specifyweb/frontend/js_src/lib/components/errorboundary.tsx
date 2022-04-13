@@ -10,7 +10,7 @@ import React from 'react';
 import { Http } from '../ajax';
 import { breakpoint } from '../assert';
 import commonText from '../localization/common';
-import { clearUnloadProtect } from '../navigation';
+import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { setCurrentView } from '../specifyapp';
 import type { RA } from '../types';

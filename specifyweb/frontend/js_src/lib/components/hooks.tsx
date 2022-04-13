@@ -10,7 +10,7 @@ import { getDateInputValue } from '../dayjs';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';

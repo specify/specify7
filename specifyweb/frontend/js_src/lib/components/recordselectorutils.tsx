@@ -9,7 +9,7 @@ import { clamp, removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import * as queryString from '../querystring';

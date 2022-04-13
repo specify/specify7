@@ -13,7 +13,7 @@ import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
-import * as navigation from '../../navigation';
+import * as navigation from '../navigation';
 import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';

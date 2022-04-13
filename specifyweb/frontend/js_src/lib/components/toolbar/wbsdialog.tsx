@@ -9,7 +9,7 @@ import React from 'react';
 import { ajax, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
-import * as navigation from '../../navigation';
+import * as navigation from '../navigation';
 import type { RA } from '../../types';
 import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';

@@ -156,13 +156,24 @@ export function QueryBuilder({
 
   // Scroll down to query results when pressed the "Query" button
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(() => {
-    if (state.queryRunCount !== 0 && containerRef.current !== null)
-      containerRef.current.scrollTo({
-        top: containerRef.current.clientHeight,
-        behavior: transitionDuration === 0 ? 'auto' : 'smooth',
-      });
-  }, [state.queryRunCount]);
+  React.useEffect(
+    () =>
+      /*
+       * "setTimeout" is needed to circumvent React's default scroll position
+       * restoration functionality
+       */
+      void setTimeout(() => {
+        if (state.queryRunCount !== 0 && containerRef.current !== null)
+          if (typeof containerRef.current.scrollTo === 'function')
+            containerRef.current.scrollTo({
+              top: containerRef.current.scrollHeight,
+              behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+            });
+          else
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }),
+    [state.queryRunCount]
+  );
 
   useTitle(query.name);
 

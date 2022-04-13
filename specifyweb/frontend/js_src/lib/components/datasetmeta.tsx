@@ -8,7 +8,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';

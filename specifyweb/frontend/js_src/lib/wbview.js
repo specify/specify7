@@ -24,12 +24,13 @@ import Papa from 'papaparse';
 import {Button, className} from './components/basic';
 import {getModel, schema} from './schema';
 import DataSetMeta from './components/datasetmeta';
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import {NotFoundView} from './components/notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
 import WBUtils from './wbutils';
 import {
+  formatToManyIndex,
   formatTreeRank,
   getNameFromTreeRankName,
   mappingPathToString,
@@ -2021,7 +2022,7 @@ const WBView = Backbone.View.extend({
         method: 'PUT',
         body: this.data,
       },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
     )
       .then((status) => this.checkDeletedFail(status))
       .then(() => {

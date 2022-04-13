@@ -15,7 +15,7 @@ import { collectionsForResource } from './domain';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 // TODO: eliminate this type of imports
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import { NotFoundView } from './components/notfoundview';
 import { hasTablePermission, hasToolPermission } from './permissions';
 import * as querystring from './querystring';

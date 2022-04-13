@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 
 import { initialContext, unlockInitialContext } from '../initialcontext';
 import commonText from '../localization/common';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import startApp from '../startapp';
 import { className } from './basic';
 import { Contexts } from './contexts';

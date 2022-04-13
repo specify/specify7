@@ -15,7 +15,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { f } from './functools';
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';

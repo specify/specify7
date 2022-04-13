@@ -11,7 +11,7 @@ import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import { ajax, Http } from '../ajax';
 import { encodings } from '../encodings';
 import wbText from '../localization/workbench';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { f } from '../functools';

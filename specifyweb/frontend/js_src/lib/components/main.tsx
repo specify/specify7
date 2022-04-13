@@ -6,7 +6,7 @@ import type Backbone from 'backbone';
 import React from 'react';
 
 import commonText from '../localization/common';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import { fetchContext as userPermission } from '../permissions';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';

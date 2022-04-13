@@ -14,7 +14,7 @@ import {schema} from './schema';
 import {SaveButton} from './components/savebutton';
 import {DeleteButton} from './components/deletebutton';
 import {userInformation} from './userinfo';
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from './components/hooks';

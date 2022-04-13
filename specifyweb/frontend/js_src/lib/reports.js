@@ -18,7 +18,7 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 
 import {csrfToken} from './csrftoken';
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/modaldialog';

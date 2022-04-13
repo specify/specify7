@@ -5,7 +5,7 @@
 import type { MimeType } from './ajax';
 
 /*
- * This belong to ./components/toolbar/cachebuster.tsx but was moved here
+ * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
  * due to circular dependency issues
  */
 export const cachableUrls: Set<string> = new Set();
@@ -31,7 +31,7 @@ export const unlockInitialContext = (): void => unlock();
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   contextUnlockedPromise
     .then(
-      () =>
+      async () =>
         /*
          * Using async import to avoid circular dependency
          * TODO: find a better solution

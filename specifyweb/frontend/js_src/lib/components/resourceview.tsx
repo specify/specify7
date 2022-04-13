@@ -8,7 +8,7 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import reports from '../reports';

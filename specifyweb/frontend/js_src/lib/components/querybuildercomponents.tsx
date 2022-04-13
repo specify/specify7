@@ -6,7 +6,7 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
 import { getModel, schema } from '../schema';

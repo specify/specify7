@@ -2,10 +2,12 @@
  * A wrapper for Backbone's routing API
  */
 
-import Backbone from './backbone';
-import { showDialog } from './components/modaldialog';
-import commonText from './localization/common';
-import { isExternalUrl } from './ajax';
+import Backbone from '../backbone';
+import { showDialog } from './modaldialog';
+import commonText from '../localization/common';
+import { isExternalUrl } from '../ajax';
+import { Button } from './basic';
+import React from 'react';
 
 /**
  * We introduce a sequence variable that is incremented and passed in
@@ -176,17 +178,19 @@ function defaultConfirmNavigationHandler(
       cancel?.();
     },
     forceToTop: true,
-    buttons: [
-      commonText('cancel'),
-      {
-        text: commonText('leave'),
-        style: 'Red',
-        onClick() {
-          dialog.remove();
-          proceed();
-        },
-      },
-    ],
+    buttons: (
+      <>
+        <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+        <Button.Red
+          onClick={(): void => {
+            dialog.remove();
+            proceed();
+          }}
+        >
+          {commonText('leave')}
+        </Button.Red>
+      </>
+    ),
   });
 }
 

@@ -3,7 +3,7 @@ import Backbone from './backbone';
 import * as businessRules from './businessrules';
 import { crash } from './components/errorboundary';
 import { f } from './functools';
-import * as navigation from './navigation';
+import * as navigation from './components/navigation';
 import { NotFoundView } from './components/notfoundview';
 import * as querystring from './querystring';
 import { promiseToXhr } from './resourceapi';

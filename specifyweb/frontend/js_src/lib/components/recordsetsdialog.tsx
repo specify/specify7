@@ -6,7 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 // TODO: phase out this style of imports:
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';

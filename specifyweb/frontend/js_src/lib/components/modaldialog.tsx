@@ -9,13 +9,11 @@ import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
-import type { RA } from '../types';
 import {
   Button,
   className,
   DialogContext,
   dialogIconTriggers,
-  Submit,
   transitionDuration,
 } from './basic';
 import { LoadingContext } from './contexts';
@@ -350,15 +348,6 @@ export function Dialog({
   );
 }
 
-type ButtonDefinition = {
-  readonly style: Exclude<keyof typeof Submit, 'Fancy'>;
-  readonly type?: 'button' | 'submit';
-  readonly className?: string;
-  readonly form?: string;
-  readonly text: string;
-  readonly onClick: 'dialogClose' | (() => void);
-};
-
 // TODO: get rid of this once everything is using React
 /** Wrapper for using React dialog in Backbone views */
 function LegacyDialogWrapper({
@@ -367,52 +356,8 @@ function LegacyDialogWrapper({
   ...props
 }: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children' | 'buttons'> & {
   readonly content: HTMLElement | typeof jQuery | string;
-  readonly buttons:
-    | JSX.Element
-    | string
-    | undefined
-    | RA<string | ButtonDefinition>;
+  readonly buttons: undefined | string | JSX.Element;
 }): JSX.Element {
-  const dialogButtons =
-    typeof buttons === 'object' ? (
-      <>
-        {Array.isArray(buttons)
-          ? buttons
-              .map<ButtonDefinition>((button) =>
-                typeof button === 'string'
-                  ? {
-                      style: 'Transparent',
-                      text: button,
-                      onClick: 'dialogClose',
-                    }
-                  : button
-              )
-              .map(
-                (
-                  { type = 'button', style, className, onClick, text },
-                  index
-                ) => {
-                  const Component =
-                    type === 'button' ? Button[style] : Submit[style];
-                  return (
-                    <Component
-                      key={index}
-                      className={className}
-                      onClick={
-                        onClick === 'dialogClose' ? props.onClose : onClick
-                      }
-                    >
-                      {text}
-                    </Component>
-                  );
-                }
-              )
-          : buttons}
-      </>
-    ) : (
-      buttons
-    );
-
   const [contentElement, setContentElement] =
     React.useState<HTMLElement | null>(null);
   React.useEffect(
@@ -430,7 +375,7 @@ function LegacyDialogWrapper({
       {...props}
       isOpen={true}
       contentRef={setContentElement}
-      buttons={dialogButtons}
+      buttons={buttons}
       className={{
         ...props.className,
         container: `${

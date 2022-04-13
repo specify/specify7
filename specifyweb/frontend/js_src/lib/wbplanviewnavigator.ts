@@ -380,11 +380,12 @@ export function getMappingLineData({
                * are visisble
                */
               internalState.defaultValue === model.idField.name ||
-              isFieldVisible(
-                showHiddenFields,
-                model.idField.overrides.isHidden,
-                model.idField.name
-              )
+              (generateFieldData === 'all' &&
+                isFieldVisible(
+                  showHiddenFields,
+                  model.idField.overrides.isHidden,
+                  model.idField.name
+                ))
                 ? [
                     model.idField.name,
                     {

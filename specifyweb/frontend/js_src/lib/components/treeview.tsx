@@ -10,7 +10,7 @@ import type {
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
-import * as navigation from '../navigation';
+import * as navigation from './navigation';
 import { hasTreeAccess } from '../permissions';
 import * as querystring from '../querystring';
 import { getPref } from '../remoteprefs';

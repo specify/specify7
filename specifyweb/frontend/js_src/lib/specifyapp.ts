@@ -2,7 +2,11 @@ import $ from 'jquery';
 
 import type Backbone from './backbone';
 import { openDialogs } from './components/modaldialog';
-import { confirmNavigation, getCurrentUrl, push } from './navigation';
+import {
+  confirmNavigation,
+  getCurrentUrl,
+  push,
+} from './components/navigation';
 import { f } from './functools';
 import { ping } from './ajax';
 
