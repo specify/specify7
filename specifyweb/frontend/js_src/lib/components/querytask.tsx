@@ -161,7 +161,7 @@ function QueryBuilderFromTree({
   );
 
   return typeof query === 'undefined' ? null : hasTreeAccess(
-      getModelById(query.get('contextTableId')).name as 'Geography',
+      defined(getModel(tableName)).name as 'Geography',
       'read'
     ) ? (
     <QueryBuilderWrapper query={query} />
@@ -190,7 +190,6 @@ export default function Routes(): void {
         : new PermissionDeniedView()
     )
   );
-  // FIXME: test this:
   router.route(
     'query/fromtree/:table/:id/',
     'queryFromTree',

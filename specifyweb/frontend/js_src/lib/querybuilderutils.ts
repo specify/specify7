@@ -43,7 +43,7 @@ export function parseQueryFields(
 ): RA<QueryField> {
   return group(
     sortObjectsByKey(Array.from(queryFields), 'position').map(
-      ({ id, isNot, isDisplay, ...field }) => {
+      ({ id, isNot, isDisplay, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
           field.isRelFld ?? false
@@ -59,7 +59,7 @@ export function parseQueryFields(
         return [
           mappingPathToString(fieldSpec.toMappingPath()),
           {
-            id,
+            id: id ?? index,
             mappingPath: fieldSpec.toMappingPath(),
             sortType: sortTypes[field.sortType],
             filter: {
