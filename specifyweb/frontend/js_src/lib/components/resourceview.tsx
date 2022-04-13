@@ -10,7 +10,7 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import * as navigation from '../navigation';
 import type { FormMode } from '../parseform';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
 import { Button, Container, DataEntry, Form } from './basic';
@@ -151,14 +151,9 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
         </Form>
       </FormContext.Provider>
     ),
-    specifyNetworkBadge:
-      resource?.isNew() === false &&
-      displaySpecifyNetwork(resource) &&
-      hasTablePermission('Locality', 'read') &&
-      hasPermission('/querybuilder/query', 'execute') &&
-      ['CollectionObject', 'Locality'].includes(resource.specifyModel.name) ? (
-        <SpecifyNetworkBadge resource={resource} />
-      ) : undefined,
+    specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
+      <SpecifyNetworkBadge resource={resource} />
+    ) : undefined,
   });
 }
 

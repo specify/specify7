@@ -31,6 +31,7 @@ import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { hasPermission, hasTablePermission } from '../permissions';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -135,10 +136,12 @@ type OutgoingMessage =
   | PointDataAction;
 
 export const displaySpecifyNetwork = (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema> | undefined
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
   getCollectionPref('S2n.S2nOn', schema.domainLevelIds.collection) &&
-  !resource.isNew() &&
+  hasTablePermission('Locality', 'read') &&
+  hasPermission('/querybuilder/query', 'execute') &&
+  resource?.isNew() === false &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
 
 function SpecifyNetwork({
@@ -154,8 +157,13 @@ function SpecifyNetwork({
 
   React.useEffect(
     () =>
-      void f
-        .maybe(toTable(resource, 'CollectionObject'), fetchOccurrenceName)
+      void (
+        f.maybe(toTable(resource, 'Taxon'), async (resource) =>
+          resource
+            .fetch()
+            .then((resource) => resource.get('fullName') ?? undefined)
+        ) ?? f.maybe(toTable(resource, 'CollectionObject'), fetchOccurrenceName)
+      )
         ?.then(setOccurrenceName)
         .catch(console.error),
     [resource]

@@ -30,9 +30,9 @@ export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
 
 export const fetchOccurrenceName = (
-  model: SpecifyResource<CollectionObject>
+  resource: SpecifyResource<CollectionObject>
 ): Promise<string> =>
-  model
+  resource
     .fetch()
     .then(async () =>
       ajax<{
@@ -40,7 +40,7 @@ export const fetchOccurrenceName = (
           readonly records: RA<IR<string>>;
         }>;
       }>(
-        formatOccurrenceDataRequest(model.get('guid')),
+        formatOccurrenceDataRequest(resource.get('guid')),
         {
           mode: 'cors',
           headers: { Accept: 'application/json' },
@@ -56,7 +56,8 @@ export const fetchOccurrenceName = (
     )
     .catch(console.error)
     .then(
-      (remoteOccurrence) => remoteOccurrence ?? fetchLocalScientificName(model)
+      (remoteOccurrence) =>
+        remoteOccurrence ?? fetchLocalScientificName(resource)
     )
     .catch(console.error)
     .then((occurrenceName) => occurrenceName ?? '');

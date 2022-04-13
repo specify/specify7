@@ -356,10 +356,6 @@ function eventHandlerForToOne(related, field) {
                         return value.fetchIfNotPopulated();
                     else if (typeof value.fetch === 'function')
                         return value.fetch();
-                    else {
-                        console.warn("rget(" + fieldName + ", prePop=true) where"
-                                     + " resulting value has no fetch method");
-                    }
                 }
                 return value;
             });
