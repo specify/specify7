@@ -2,8 +2,9 @@
  * Fetch remote prefs file (a global preferences file)
  */
 
+import { ajax } from './ajax';
 import { f } from './functools';
-import { load } from './initialcontext';
+import { cachableUrl } from './initialcontext';
 import type { JavaType } from './specifyfield';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
@@ -12,10 +13,15 @@ import { formatter, parsers, parseValue } from './uiparse';
 
 const preferences: R<string> = {};
 
-export const fetchContext = load<string>(
-  '/context/remoteprefs.properties',
-  'text/plain'
-).then((text) =>
+/*
+ * Not using load() from initialContext here because remote prefs are needed
+ * on the choose collection screen (intiai lcontext is not unlocked for that
+ * endpoint)
+ */
+export const fetchContext = ajax(
+  cachableUrl('/context/remoteprefs.properties'),
+  { headers: { Accept: 'text/plain' } }
+).then(({ data: text }) =>
   text
     .split('\n')
     .filter((line) => !line.startsWith('#'))
@@ -182,6 +188,12 @@ export const remotePrefsDefinitions = f.store(
       },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+      },
+      'ALWAYS.ASK.COLL': {
+        description:
+          'Whether to always ask which collection to use on the sign in screen',
         defaultValue: true,
         parser: 'java.lang.Boolean',
       },

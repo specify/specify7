@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import { csrfToken } from '../csrftoken';
 import { f } from '../functools';
 import commonText from '../localization/common';
+import { fetchContext as fetchRemotePrefs, getPref } from '../remoteprefs';
 import type { RA } from '../types';
 import {
   className,
@@ -21,7 +22,7 @@ import {
   Submit,
 } from './basic';
 import { Contexts } from './contexts';
-import { useTitle } from './hooks';
+import { useAsyncState, useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 
 function ChooseCollection({
@@ -51,10 +52,30 @@ function ChooseCollection({
     [data.initialValue]
   );
 
+  const [remotePrefsFetched] = useAsyncState(
+    React.useCallback(async () => fetchRemotePrefs.then(f.true), []),
+    false
+  );
+
+  /*
+   * If there is a remotepref to not ask for collection every time,
+   * submit the form as soon as loaded
+   */
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+  React.useEffect(
+    () =>
+      remotePrefsFetched &&
+      !getPref('ALWAYS.ASK.COLL') &&
+      typeof f.parseInt(data.initialValue ?? '') === 'number'
+        ? formRef.current?.submit()
+        : undefined,
+    [remotePrefsFetched, data.initialValue]
+  );
+
   const hasAccess = data.availableCollections.length > 0;
   return (
     <SplashScreen>
-      <Form method="post">
+      <Form method="post" forwardRef={formRef}>
         <h2>{commonText('chooseCollection')}</h2>
         {data.errors.length > 0 && <ErrorMessage>{data.errors}</ErrorMessage>}
         {hasAccess ? (
