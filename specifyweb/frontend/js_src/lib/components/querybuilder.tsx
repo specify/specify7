@@ -9,21 +9,16 @@ import queryText from '../localization/query';
 import wbText from '../localization/workbench';
 import { hasPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
-import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
+import {
+  mutateLineData,
+  scrollToBottom,
+  unParseQueryFields,
+} from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
-import {
-  Button,
-  Container,
-  Form,
-  H2,
-  Input,
-  Label,
-  Submit,
-  transitionDuration,
-} from './basic';
+import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
 import { TableIcon } from './common';
 import {
   useAsyncState,
@@ -164,13 +159,7 @@ export function QueryBuilder({
        */
       void setTimeout(() => {
         if (state.queryRunCount !== 0 && containerRef.current !== null)
-          if (typeof containerRef.current.scrollTo === 'function')
-            containerRef.current.scrollTo({
-              top: containerRef.current.scrollHeight,
-              behavior: transitionDuration === 0 ? 'auto' : 'smooth',
-            });
-          else
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+          scrollToBottom(containerRef.current);
       }),
     [state.queryRunCount]
   );

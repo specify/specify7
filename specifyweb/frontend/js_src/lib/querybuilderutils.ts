@@ -11,6 +11,7 @@ import type { Parser } from './uiparse';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
+import { transitionDuration } from './components/basic';
 
 export type SortTypes = undefined | 'ascending' | 'descending';
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -228,3 +229,12 @@ export const mutateLineData = (
   lineData.filter(
     ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
   );
+
+export function scrollToBottom(element: HTMLElement): void {
+  if (typeof element.scrollTo === 'function')
+    element.scrollTo({
+      top: element.scrollHeight,
+      behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+    });
+  else element.scrollTop = element.scrollHeight;
+}

@@ -15,6 +15,7 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Ul } from './basic';
 import { icons } from './icons';
+import { scrollToBottom } from '../querybuilderutils';
 
 export type Policy = {
   readonly resource: string;
@@ -38,7 +39,7 @@ function PolicyView({
     registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
   return (
     <li className="flex flex-wrap gap-2">
-      <ul className="contents">
+      <Ul className="contents">
         {filterArray(registryParts).map((registry, index) =>
           Object.keys(registry).length === 0 ? undefined : (
             <li key={index} className="contents">
@@ -128,7 +129,7 @@ function PolicyView({
             </Ul>
           </li>
         )}
-      </ul>
+      </Ul>
       <Button.Simple
         className={`${className.redButton} print:hidden`}
         title={commonText('remove')}
@@ -152,12 +153,26 @@ export function PoliciesView({
   readonly onChange: (policies: RA<Policy>) => void;
   readonly header?: string;
 }): JSX.Element {
+  const listRef = React.useRef<HTMLUListElement | null>(null);
+  const policyCountRef = React.useRef<number>(policies?.length ?? 0);
+  // Scroll the list to bottom when new policy is added
+  React.useEffect(() => {
+    if (
+      (policies?.length ?? 0) > policyCountRef.current &&
+      listRef.current !== null
+    )
+      scrollToBottom(listRef.current);
+    policyCountRef.current = policies?.length ?? 0;
+  }, [policies]);
   return (
     <fieldset className="flex flex-col gap-2">
       <h4 className={className.headerGray}>{header}</h4>
       {Array.isArray(policies) ? (
         <>
-          <ul className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]">
+          <Ul
+            className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]"
+            forwardRef={listRef}
+          >
             {policies.map((policy, index) => (
               <PolicyView
                 key={index}
@@ -172,7 +187,7 @@ export function PoliciesView({
                 }
               />
             ))}
-          </ul>
+          </Ul>
           {!isReadOnly && (
             <div>
               <Button.Green
