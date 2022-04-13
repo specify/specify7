@@ -15,6 +15,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import commonText from './localization/common';
 import queryText from './localization/query';
+import { hasTreeAccess } from './permissions';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -39,7 +40,6 @@ import {
   getMaxToManyIndex,
   isCircularRelationship,
 } from './wbplanviewmodelhelper';
-import { hasTreeAccess } from './permissions';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -372,6 +372,30 @@ export function getMappingLineData({
                       isDefault: internalState.defaultValue === formattedEntry,
                       isEnabled:
                         !internalState.mappedFields.includes(formattedEntry),
+                    },
+                  ]
+                : undefined,
+              /*
+               * Add ID field to the list if it is selected or hidden fields
+               * are visisble
+               */
+              internalState.defaultValue === model.idField.name ||
+              isFieldVisible(
+                showHiddenFields,
+                model.idField.overrides.isHidden,
+                model.idField.name
+              )
+                ? [
+                    model.idField.name,
+                    {
+                      optionLabel: commonText('id'),
+                      tableName: model.name,
+                      isRelationship: false,
+                      isDefault:
+                        internalState.defaultValue === model.idField.name,
+                      isEnabled:
+                        !internalState.mappedFields.includes(formattedEntry),
+                      isHidden: true,
                     },
                   ]
                 : undefined,
