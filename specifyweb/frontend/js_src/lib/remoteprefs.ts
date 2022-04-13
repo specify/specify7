@@ -71,12 +71,14 @@ export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
 }
 
 function parsePref(
-  rawValue: boolean | string | number | undefined,
+  rawValue: string | undefined,
   { defaultValue, formatters, parser }: Definition
 ): string | boolean | number {
-  const value = (formatters ?? []).reduce<unknown>(
-    (value, formatter) => formatter(value),
-    rawValue
+  const value = f.maybe(rawValue, (rawValue) =>
+    (formatters ?? []).reduce<unknown>(
+      (value, formatter) => formatter(value),
+      rawValue
+    )
   );
   const parsed =
     typeof parser === 'string' && typeof value !== 'undefined'

@@ -7,7 +7,7 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
 import wbText from '../localization/workbench';
-import { hasPermission, hasToolPermission } from '../permissions';
+import { hasPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import { mutateLineData, unParseQueryFields } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
@@ -205,16 +205,6 @@ export function QueryBuilder({
               queryResource={queryResource}
               getQueryFieldRecords={getQueryFieldRecords}
             />
-            {!isReadOnly &&
-            hasPermission('/querybuilder/query', 'create_recordset') &&
-            hasToolPermission('recordSets', 'create') ? (
-              <MakeRecordSetButton
-                baseTableName={state.baseTableName}
-                fields={state.fields}
-                queryResource={queryResource}
-                getQueryFieldRecords={getQueryFieldRecords}
-              />
-            ) : undefined}
             {!queryResource.isNew() && (
               <Button.Simple
                 disabled={!saveRequired}
@@ -401,6 +391,17 @@ export function QueryBuilder({
                   })
                 );
               }}
+              createRecordSet={
+                !isReadOnly &&
+                hasPermission('/querybuilder/query', 'create_recordset') ? (
+                  <MakeRecordSetButton
+                    baseTableName={state.baseTableName}
+                    fields={state.fields}
+                    queryResource={queryResource}
+                    getQueryFieldRecords={getQueryFieldRecords}
+                  />
+                ) : undefined
+              }
             />
           )}
         </div>

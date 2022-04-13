@@ -108,6 +108,7 @@ function TableResults({
                   }
                 ).then(({ data }) => data[model.name].results)
               }
+              onCreateRecordSet={undefined}
             />
           </details>
         ))

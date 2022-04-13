@@ -1,13 +1,16 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
-import type { SpQuery, Tables } from '../datamodel';
+import type { RecordSet, SpQuery, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase } from '../datamodelutils';
 import { f } from '../functools';
 import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
+import queryText from '../localization/query';
+import * as navigation from '../navigation';
+import { hasToolPermission } from '../permissions';
 import { fetchPickList } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import {
@@ -17,17 +20,21 @@ import {
   unParseQueryFields,
 } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
+import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
+import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
+import { Dialog, loadingBar } from './modaldialog';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
+import { ResourceView } from './resourceview';
 
 function TableHeaderCell({
   fieldSpec,
@@ -141,6 +148,98 @@ function ViewRecords({
   );
 }
 
+function CreateRecordSet({
+  getIds,
+  baseTableName,
+}: {
+  readonly getIds: () => RA<number>;
+  readonly baseTableName: keyof Tables;
+}): JSX.Element {
+  const [state, setState] = React.useState<
+    undefined | 'editing' | 'saving' | 'saved'
+  >(undefined);
+
+  const [recordSet, setRecordSet] = React.useState<
+    SpecifyResource<RecordSet> | undefined
+  >(undefined);
+
+  return (
+    <>
+      <Button.Simple
+        aria-haspopup="dialog"
+        onClick={(): void => {
+          setState('editing');
+
+          const recordSet = new schema.models.RecordSet.Resource();
+          recordSet.set('dbTableId', defined(getModel(baseTableName)).tableId);
+          recordSet.set(
+            'recordSetItems',
+            getIds().map(
+              (id) =>
+                new schema.models.RecordSetItem.Resource({
+                  recordId: id,
+                })
+            )
+          );
+          setRecordSet(recordSet);
+        }}
+      >
+        {queryText('makeRecordSet')}
+      </Button.Simple>
+      {typeof state === 'string' ? (
+        state === 'editing' || state === 'saving' ? (
+          <>
+            {typeof recordSet === 'object' && (
+              <ResourceView
+                dialog="modal"
+                canAddAnother={false}
+                resource={recordSet}
+                onSaving={(): void => setState('saving')}
+                onSaved={(): void => setState('saved')}
+                onClose={(): void => setState(undefined)}
+                onDeleted={f.never}
+                mode="edit"
+                isSubForm={false}
+              />
+            )}
+            {state === 'saving' && (
+              <Dialog
+                title={queryText('recordSetToQueryDialogTitle')}
+                header={queryText('recordSetToQueryDialogHeader')}
+                onClose={(): void => setState(undefined)}
+                buttons={undefined}
+              >
+                {queryText('recordSetToQueryDialogMessage')}
+                {loadingBar}
+              </Dialog>
+            )}
+          </>
+        ) : state === 'saved' && typeof recordSet === 'object' ? (
+          <Dialog
+            title={queryText('recordSetCreatedDialogTitle')}
+            header={queryText('recordSetCreatedDialogHeader')}
+            onClose={(): void => setState(undefined)}
+            buttons={
+              <>
+                <Button.DialogClose>{commonText('no')}</Button.DialogClose>
+                <Button.Blue
+                  onClick={(): void =>
+                    navigation.go(`/specify/recordset/${recordSet.id}/`)
+                  }
+                >
+                  {commonText('open')}
+                </Button.Blue>
+              </>
+            }
+          >
+            {queryText('recordSetCreatedDialogMessage')}
+          </Dialog>
+        ) : undefined
+      ) : undefined}
+    </>
+  );
+}
+
 const threshold = 20;
 const isScrolledBottom = (scrollable: HTMLElement): boolean =>
   scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >
@@ -157,6 +256,7 @@ export function QueryResultsTable({
   sortConfig,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  createRecordSet,
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
@@ -173,6 +273,7 @@ export function QueryResultsTable({
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
+  readonly createRecordSet: JSX.Element | undefined;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
   const [results, setResults] = useTriggerState(initialData);
@@ -224,26 +325,47 @@ export function QueryResultsTable({
             : `${selectedRows.size}/${totalCount}`
         })`}</H3>
         <div className="flex-1 -ml-2" />
-        {hasIdField &&
-        Array.isArray(results) &&
-        typeof handleSelected === 'undefined' ? (
-          <ViewRecords
-            selectedRows={selectedRows}
-            results={results}
-            model={model}
-            onFetchMore={isFetching ? undefined : fetchMore}
-            onDelete={(index): void => {
-              setResults(removeItem(results, index));
-              setSelectedRows(
-                new Set(
-                  Array.from(selectedRows).filter(
-                    (id) => id !== results[index][queryIdField]
-                  )
+        {hasIdField && Array.isArray(results) && results.length > 0 ? (
+          <>
+            {selectedRows.size > 0
+              ? hasToolPermission('recordSets', 'create') && (
+                  <CreateRecordSet
+                    /*
+                     * This is needed so that IDs are in the same order as they
+                     * are in query results (selectedRows set may be out of order
+                     * if records were selected out of order)
+                     */
+                    getIds={(): RA<number> =>
+                      defined(results)
+                        .filter((result) =>
+                          selectedRows.has(result[queryIdField] as number)
+                        )
+                        .map((result) => result[queryIdField] as number)
+                    }
+                    baseTableName={fieldSpecs[0].baseTable.name}
+                  />
                 )
-              );
-            }}
-            totalCount={totalCount}
-          />
+              : createRecordSet}
+            {typeof handleSelected === 'undefined' && (
+              <ViewRecords
+                selectedRows={selectedRows}
+                results={results}
+                model={model}
+                onFetchMore={isFetching ? undefined : fetchMore}
+                onDelete={(index): void => {
+                  setResults(removeItem(results, index));
+                  setSelectedRows(
+                    new Set(
+                      Array.from(selectedRows).filter(
+                        (id) => id !== results[index][queryIdField]
+                      )
+                    )
+                  );
+                }}
+                totalCount={totalCount}
+              />
+            )}
+          </>
         ) : undefined}
       </div>
       {Array.isArray(results) &&
@@ -310,10 +432,21 @@ export function QueryResultsTable({
             results={results}
             selectedRows={selectedRows}
             onSelected={(id, isSelected, isShiftClick): void => {
-              f.maybe(handleSelected, (callback) =>
-                loading(new model.Resource({ id }).fetch().then(callback))
-              );
-              if (!hasIdField) return;
+              /*
+               * If a custom select handler is set, fetch the resource and call
+               * the handler
+               */
+              if (typeof handleSelected === 'function') {
+                loading(
+                  new model.Resource({ id }).fetch().then(handleSelected)
+                );
+                return;
+              }
+
+              /*
+               * If shift/ctrl/cmd key was held during click, toggle all rows
+               * between the current one, and the last selected one
+               */
               const rowIndex = results.findIndex(
                 (row) => row[queryIdField] === id
               );
@@ -368,6 +501,7 @@ export function QueryResultsWrapper({
   recordSetId,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  createRecordSet,
 }: {
   readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
@@ -380,6 +514,7 @@ export function QueryResultsWrapper({
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
+  readonly createRecordSet: JSX.Element | undefined;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (offset: number) =>
@@ -457,6 +592,7 @@ export function QueryResultsWrapper({
           initialData,
           sortConfig: fields.map((field) => field.sortType),
           onSortChange: handleSortChange,
+          createRecordSet,
         })
       )
       .catch(crash);

@@ -469,19 +469,23 @@ function eventHandlerForToOne(related, field) {
             var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
 
+            let errorHandled = false;
             const save = ()=>Backbone.Model.prototype.save.apply(resource, []);
             resource._save =
               typeof conflictCallback === 'function'
-                ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>
-                    status === Http.CONFLICT ? conflictCallback() : undefined
-                  )
+                ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
+                      if(status === Http.CONFLICT) {
+                          conflictCallback()
+                          errorHandled = true;
+                      }
+                  })
                 : save();
 
             resource._save.catch(function(error) {
                 resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
-                if(typeof conflictCallback === 'function')
+                if(typeof conflictCallback === 'function' && errorHandled)
                     Object.defineProperty(error, 'handledBy', {
                       value: conflictCallback,
                     });

@@ -174,13 +174,11 @@ export const parsers = f.store(
       maxLength: fullDateFormat().length,
       formatters: [
         formatter().toLowerCase,
-        stringGuard((value) =>
-          (
-            f.maybe(
-              parseRelativeDate(value.trim().toLowerCase()),
-              (date) => f.maybe(date, dayjs) ?? dayjs()
+        stringGuard(
+          (value) =>
+            f.maybe(parseRelativeDate(value.trim().toLowerCase()), (date) =>
+              f.maybe(date, dayjs)
             ) ?? dayjs()
-          ).format(databaseDateFormat)
         ),
       ],
       validators: [

@@ -103,13 +103,12 @@ var ReportListDialog = Backbone.View.extend({
             this.dialog?.remove();
             this.dialog = showDialog({
                 header: title,
-                onClose: () => {this.dialog.remove(); this.options.done() },
+                onClose: () => {this.dialog.remove(); this.options.done?.() },
                 buttons: commonText('close'),
                 content: this.el,
             });
-        } else {
-            this.options.done && this.options.done();
-        }
+        } else
+            this.options.done?.();
     },
     makeEntry: function(icon, appResource) {
         const img = $('<img>', {src: icon});
