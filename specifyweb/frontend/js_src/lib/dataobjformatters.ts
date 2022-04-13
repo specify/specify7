@@ -50,68 +50,73 @@ export type Aggregator = {
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
-}> = contextUnlockedPromise
-  .then(async () =>
-    ajax<Document>(
-      cachableUrl('/context/app.resource?name=DataObjFormatters'),
-      {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Accept: 'application/xml' },
-      }
-    )
-  )
-  .then(({ data: definitions }) => ({
-    formatters: filterArray(
-      Array.from(definitions.getElementsByTagName('format'), (formatter) => {
-        const switchElement = formatter.getElementsByTagName('switch')[0];
-        if (typeof switchElement === 'undefined') return undefined;
-        const isSingle =
-          getAttribute(switchElement, 'single')?.trim() !== 'false';
-        const field = getAttribute(switchElement, 'field')?.trim();
-        const fields = Array.from(
-          switchElement.getElementsByTagName('fields'),
-          (fields) => ({
-            value: getAttribute(fields, 'value'),
-            fields: Array.from(
-              fields.getElementsByTagName('field'),
-              (field) => ({
-                fieldName: field.textContent?.trim() ?? '',
-                separator: getAttribute(field, 'sep') ?? '',
-                formatter: getAttribute(field, 'formatter')?.trim() ?? '',
-                fieldFormatter: getAttribute(field, 'format')?.trim(),
-              })
-            ).filter(({ fieldName }) => fieldName.length > 0),
-          })
-        ).filter(({ fields }) => fields.length > 0);
-        // External DataObjFormatters are not supported
-        if (fields.length === 0) return undefined;
-        return {
-          name: getAttribute(formatter, 'name')?.trim(),
-          title: getAttribute(formatter, 'title')?.trim(),
-          className: getAttribute(formatter, 'class')?.trim(),
-          isDefault: getAttribute(formatter, 'default')?.trim() === 'true',
-          fields,
-          switchFieldName:
-            typeof field === 'string' && !isSingle ? field : undefined,
-        };
-      })
-    ),
-    aggregators: filterArray(
-      Array.from(
-        definitions.getElementsByTagName('aggregator'),
-        (aggregator) => {
-          return {
-            name: getAttribute(aggregator, 'name')?.trim(),
-            title: getAttribute(aggregator, 'title')?.trim(),
-            className: getAttribute(aggregator, 'class')?.trim(),
-            isDefault: getAttribute(aggregator, 'default')?.trim() === 'true',
-            separator: getAttribute(aggregator, 'separator') ?? '',
-            format: getAttribute(aggregator, 'format') ?? '',
-          };
+}> = contextUnlockedPromise.then(async (entrypoint) =>
+  entrypoint === 'main'
+    ? ajax<Document>(
+        cachableUrl('/context/app.resource?name=DataObjFormatters'),
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/xml' },
         }
-      )
-    ),
-  }));
+      ).then(({ data: definitions }) => ({
+        formatters: filterArray(
+          Array.from(
+            definitions.getElementsByTagName('format'),
+            (formatter) => {
+              const switchElement = formatter.getElementsByTagName('switch')[0];
+              if (typeof switchElement === 'undefined') return undefined;
+              const isSingle =
+                getAttribute(switchElement, 'single')?.trim() !== 'false';
+              const field = getAttribute(switchElement, 'field')?.trim();
+              const fields = Array.from(
+                switchElement.getElementsByTagName('fields'),
+                (fields) => ({
+                  value: getAttribute(fields, 'value'),
+                  fields: Array.from(
+                    fields.getElementsByTagName('field'),
+                    (field) => ({
+                      fieldName: field.textContent?.trim() ?? '',
+                      separator: getAttribute(field, 'sep') ?? '',
+                      formatter: getAttribute(field, 'formatter')?.trim() ?? '',
+                      fieldFormatter: getAttribute(field, 'format')?.trim(),
+                    })
+                  ).filter(({ fieldName }) => fieldName.length > 0),
+                })
+              ).filter(({ fields }) => fields.length > 0);
+              // External DataObjFormatters are not supported
+              if (fields.length === 0) return undefined;
+              return {
+                name: getAttribute(formatter, 'name')?.trim(),
+                title: getAttribute(formatter, 'title')?.trim(),
+                className: getAttribute(formatter, 'class')?.trim(),
+                isDefault:
+                  getAttribute(formatter, 'default')?.trim() === 'true',
+                fields,
+                switchFieldName:
+                  typeof field === 'string' && !isSingle ? field : undefined,
+              };
+            }
+          )
+        ),
+        aggregators: filterArray(
+          Array.from(
+            definitions.getElementsByTagName('aggregator'),
+            (aggregator) => {
+              return {
+                name: getAttribute(aggregator, 'name')?.trim(),
+                title: getAttribute(aggregator, 'title')?.trim(),
+                className: getAttribute(aggregator, 'class')?.trim(),
+                isDefault:
+                  getAttribute(aggregator, 'default')?.trim() === 'true',
+                separator: getAttribute(aggregator, 'separator') ?? '',
+                format: getAttribute(aggregator, 'format') ?? '',
+              };
+            }
+          )
+        ),
+      }))
+    : undefined
+);
 
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,

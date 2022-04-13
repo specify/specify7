@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import _ from 'underscore';
 import Backbone from './backbone';
 
@@ -401,7 +400,7 @@ function eventHandlerForToOne(related, field) {
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : toOne;
             case 'one-to-many':
                 if (path.length !== 1) {
-                    return $.Deferred().reject("can't traverse into a collection using dot notation");
+                    return Promise.reject("can't traverse into a collection using dot notation");
                 }
 
                 // is the collection cached?
@@ -454,7 +453,7 @@ function eventHandlerForToOne(related, field) {
                 });
             default:
                 console.error("unhandled relationship type: " + field.type);
-                return $.Deferred().reject('unhandled relationship type');
+                return Promise.reject('unhandled relationship type');
             }
         },
         save(conflictCallback) {

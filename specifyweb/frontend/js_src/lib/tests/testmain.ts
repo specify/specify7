@@ -25,7 +25,7 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 }
 
 async function runTests(): Promise<void> {
-  unlockInitialContext();
+  unlockInitialContext('main');
   await initialContext;
 
   testLatLongUtils();

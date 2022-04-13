@@ -3,6 +3,7 @@
  */
 
 import type { MimeType } from './ajax';
+import { defined } from './types';
 
 /*
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -19,34 +20,50 @@ export function cachableUrl(url: string): string {
   return url;
 }
 
-let unlock: () => void;
+export let entrypointName:
+  | 'main'
+  | 'login'
+  | 'chooseCollection'
+  | 'passwordChange';
+
+export const getEntrypointName = (): typeof entrypointName =>
+  defined(entrypointName);
+
+let unlock: (entrypoint: typeof entrypointName) => void;
 
 // Context is unlocked for main entrypoint only
-export const contextUnlockedPromise = new Promise<void>((resolve) => {
-  unlock = resolve;
+export const contextUnlockedPromise = new Promise<typeof entrypointName>(
+  (resolve) => {
+    unlock = resolve;
+  }
+);
+
+export const foreverPromise = new Promise<any>(() => {
+  /* Never resolve it */
 });
 
-export const unlockInitialContext = (): void => unlock();
+export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
+  unlock(entrypoint);
 
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
-  contextUnlockedPromise
-    .then(
-      async () =>
-        /*
+  contextUnlockedPromise.then(async (entrypoint) =>
+    entrypoint === 'main'
+      ? /*
          * Using async import to avoid circular dependency
          * TODO: find a better solution
          */
         import('./ajax')
-    )
-    .then(async ({ ajax }) =>
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      ajax<T>(cachableUrl(path), { headers: { Accept: mimeType } })
-    )
-    .then(({ data }) => {
-      // eslint-disable-next-line no-console
-      console.log('initial context:', path);
-      return data;
-    });
+          .then(async ({ ajax }) =>
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            ajax<T>(cachableUrl(path), { headers: { Accept: mimeType } })
+          )
+          .then(({ data }) => {
+            // eslint-disable-next-line no-console
+            console.log('initial context:', path);
+            return data;
+          })
+      : (foreverPromise as Promise<T>)
+  );
 
 export const initialContext = Promise.all([
   /*

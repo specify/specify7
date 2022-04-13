@@ -18,6 +18,9 @@ import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
+import { unlockInitialContext } from '../initialcontext';
+
+unlockInitialContext('login');
 
 function Login({
   data,

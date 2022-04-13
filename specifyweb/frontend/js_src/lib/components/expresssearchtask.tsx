@@ -19,17 +19,17 @@ import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 import { H3 } from './basic';
-import { contextUnlockedPromise } from '../initialcontext';
+import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
 
-const relatedSearchesPromise = contextUnlockedPromise
-  .then(() =>
-    ajax<RA<string>>(
-      '/context/available_related_searches.json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      { headers: { Accept: 'application/json' } }
-    )
-  )
-  .then(({ data }) => data);
+const relatedSearchesPromise = contextUnlockedPromise.then((entrypoint) =>
+  entrypoint === 'main'
+    ? ajax<RA<string>>(
+        '/context/available_related_searches.json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { headers: { Accept: 'application/json' } }
+      ).then(({ data }) => data)
+    : (foreverPromise as Promise<RA<string>>)
+);
 
 type FieldSpec = {
   readonly stringId: string;
@@ -108,7 +108,7 @@ function TableResults({
                   }
                 ).then(({ data }) => data[model.name].results)
               }
-              onCreateRecordSet={undefined}
+              createRecordSet={undefined}
             />
           </details>
         ))

@@ -54,28 +54,29 @@ const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
   ) as typeof leafletTileServers;
 
 export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
-  contextUnlockedPromise
-    .then(async () =>
-      ajax<IR<unknown>>(
-        cachableUrl('/context/app.resource?name=leaflet-layers'),
-        { headers: { Accept: 'application/json' } },
-        { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-      )
-    )
-    .then(({ data, status }) =>
-      status === Http.NOT_FOUND
-        ? ajax<IR<unknown>>(
-            cachableUrl(leafletLayersEndpoint),
-            { headers: { Accept: 'application/json' } },
-            { strict: false }
-          ).then(({ data }) => data)
-        : data
-    )
-    .then(parseLayersFromJson)
-    .catch((error) => {
-      console.error(error);
-      return leafletTileServers;
-    });
+  contextUnlockedPromise.then(async (entrypoint) =>
+    entrypoint === 'main'
+      ? ajax<IR<unknown>>(
+          cachableUrl('/context/app.resource?name=leaflet-layers'),
+          { headers: { Accept: 'application/json' } },
+          { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+        )
+          .then(({ data, status }) =>
+            status === Http.NOT_FOUND
+              ? ajax<IR<unknown>>(
+                  cachableUrl(leafletLayersEndpoint),
+                  { headers: { Accept: 'application/json' } },
+                  { strict: false }
+                ).then(({ data }) => data)
+              : data
+          )
+          .then(parseLayersFromJson)
+          .catch((error) => {
+            console.error(error);
+            return leafletTileServers;
+          })
+      : undefined
+  );
 
 export async function showLeafletMap({
   container,

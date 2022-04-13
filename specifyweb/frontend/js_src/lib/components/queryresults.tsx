@@ -4,7 +4,6 @@ import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -111,7 +110,7 @@ function QueryResultCell({
       }
     >
       {value === null
-        ? commonText('nullInline')
+        ? undefined
         : typeof fieldSpec === 'undefined' || typeof value === 'object'
         ? value
         : formatted}

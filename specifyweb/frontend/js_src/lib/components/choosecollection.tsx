@@ -24,6 +24,9 @@ import {
 import { Contexts } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
+import { unlockInitialContext } from '../initialcontext';
+
+unlockInitialContext('chooseCollection');
 
 function ChooseCollection({
   data,

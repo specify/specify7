@@ -18,7 +18,7 @@ import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
 
-unlockInitialContext();
+unlockInitialContext('main');
 
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');

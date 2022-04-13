@@ -1,6 +1,5 @@
 "use strict";
 
-import $ from 'jquery';
 import _ from 'underscore';
 import {globalEvents} from './specifyapi';
 import {SaveBlockers} from './saveblockers';
@@ -188,7 +187,7 @@ var enabled = true;
     };
 
     var uniqueIn = function(toOneField, resource, valueFieldArg) {
-        var valueField = $.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
+        var valueField = Array.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
         var value = _.map(valueField, function(v) { return resource.get(v);});
         var valueFieldInfo = _.map(valueField, function(v) { return resource.specifyModel.getField(v); });
         var valueIsToOne = _.map(valueFieldInfo, function(fi) { return fi.type === 'many-to-one'; });

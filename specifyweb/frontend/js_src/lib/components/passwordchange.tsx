@@ -15,6 +15,9 @@ import { ErrorBoundary } from './errorboundary';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
+import { unlockInitialContext } from '../initialcontext';
+
+unlockInitialContext('passwordChange');
 
 function ChangePassword({
   data,

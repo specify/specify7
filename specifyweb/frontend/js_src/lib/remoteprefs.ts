@@ -4,7 +4,7 @@
 
 import { ajax } from './ajax';
 import { f } from './functools';
-import { cachableUrl } from './initialcontext';
+import { cachableUrl, contextUnlockedPromise } from './initialcontext';
 import type { JavaType } from './specifyfield';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
@@ -15,20 +15,23 @@ const preferences: R<string> = {};
 
 /*
  * Not using load() from initialContext here because remote prefs are needed
- * on the choose collection screen (intiai lcontext is not unlocked for that
+ * on the choose collection screen (intiail context is not unlocked for that
  * endpoint)
  */
-export const fetchContext = ajax(
-  cachableUrl('/context/remoteprefs.properties'),
-  { headers: { Accept: 'text/plain' } }
-).then(({ data: text }) =>
-  text
-    .split('\n')
-    .filter((line) => !line.startsWith('#'))
-    .forEach((line) => {
-      const match = /([^=]+)=(.+)/.exec(line);
-      if (match) preferences[match[1]] = match[2];
-    })
+export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
+  entrypoint === 'main' || entrypoint === 'chooseCollection'
+    ? ajax(cachableUrl('/context/remoteprefs.properties'), {
+        headers: { Accept: 'text/plain' },
+      }).then(({ data: text }) =>
+        text
+          .split('\n')
+          .filter((line) => !line.startsWith('#'))
+          .forEach((line) => {
+            const match = /([^=]+)=(.+)/.exec(line);
+            if (match) preferences[match[1]] = match[2];
+          })
+      )
+    : undefined
 );
 
 type Definitions = ReturnType<typeof remotePrefsDefinitions>;
@@ -92,6 +95,7 @@ function parsePref(
 
 export const remotePrefs: IR<string> = preferences;
 
+// TODO: Some of these things don't make sense as global prefs. Move them to user prefs
 /**
  * A list of remote prefs that Specify 7 recognizes.
  * There are many more that are Specify 6 specific.
