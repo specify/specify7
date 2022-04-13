@@ -4,7 +4,11 @@
 
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
-import { cachableUrl, contextUnlockedPromise } from './initialcontext';
+import {
+  cachableUrl,
+  contextUnlockedPromise,
+  foreverPromise,
+} from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
@@ -115,7 +119,10 @@ export const fetchFormatters: Promise<{
           )
         ),
       }))
-    : undefined
+    : (foreverPromise as Promise<{
+        readonly formatters: RA<Formatter>;
+        readonly aggregators: RA<Aggregator>;
+      }>)
 );
 
 export async function format<SCHEMA extends AnySchema>(
@@ -141,8 +148,8 @@ export async function format<SCHEMA extends AnySchema>(
     typeof formatter.switchFieldName === 'string'
       ? formatter.fields.find(
           ({ value }) =>
-            (value ?? '') ===
-            (resource.get(formatter.switchFieldName ?? '') ?? '')
+            (value?.toString() ?? '') ===
+            (resource.get(formatter.switchFieldName ?? '') ?? '').toString()
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
