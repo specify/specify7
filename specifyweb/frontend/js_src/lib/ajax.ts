@@ -2,16 +2,13 @@ import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
 
-const reIsAbsolute = /^(?:[a-z]+:)?\/\//i;
-export const isRelativeUrl = (url: string): boolean =>
-  reIsAbsolute.exec(url) === null;
 export const isExternalUrl = (url: string): boolean =>
-  // Relative url is not external. Passing a relative URL to new URL() throws
-  ['blob:', 'data:'].some((scheme) => url.startsWith(scheme))
-    ? true
-    : isRelativeUrl(url)
-    ? false
-    : new URL(url).origin !== window.location.origin;
+  /*
+   * Blob URLs may point to the same origin, but should be treated as external
+   * by the navigator
+   */
+  url.startsWith('blob:') ||
+  new URL(url, window.location.origin).origin !== window.location.origin;
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
