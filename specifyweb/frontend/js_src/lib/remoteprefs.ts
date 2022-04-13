@@ -103,6 +103,8 @@ export const remotePrefsDefinitions = f.store(
         description: 'Full Date format',
         defaultValue: 'YYYY-MM-DD',
         formatters: [formatter().trim, formatter().toUpperCase],
+        // Indicates that this remote pref is shared with Specify 6
+        isLegacy: true,
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
@@ -125,56 +127,66 @@ export const remotePrefsDefinitions = f.store(
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter().trim],
+        isLegacy: true,
       },
       'Taxon.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter().trim],
+        isLegacy: true,
       },
       'Geography.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter().trim],
+        isLegacy: true,
       },
       'LithoStrat.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter().trim],
+        isLegacy: true,
       },
       'Storage.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
         formatters: [formatter().trim],
+        isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.Taxon': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.Geography': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.LithoStrat': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.Storage': {
         description:
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
       },
       'sp7.doTaxonTiles': {
         description: 'Whether to display Taxon Tiles on the welcome page',
@@ -192,23 +204,27 @@ export const remotePrefsDefinitions = f.store(
         description: 'Whether new Attachments are public by default',
         defaultValue: true,
         parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       'ALWAYS.ASK.COLL': {
         description:
           'Whether to always ask which collection to use on the sign in screen',
         defaultValue: true,
         parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       // These are used on back end only
       'auditing.do_audits': {
         description: 'Whether Audit Log is enabled',
         defaultValue: true,
         parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       'auditing.audit_field_updates': {
         description: 'Whether Audit Log records field value changes',
         defaultValue: true,
         parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       // This is actually stored in Global Prefs:
       /*
@@ -216,6 +232,7 @@ export const remotePrefsDefinitions = f.store(
        *   description: 'Number of month to store audit log entries for',
        *   defaultValue: 99999,
        *   parser: 'java.lang.Long',
+       *   isLegacy: true,
        * },
        */
     } as const)
