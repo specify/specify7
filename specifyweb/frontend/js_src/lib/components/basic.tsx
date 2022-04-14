@@ -411,7 +411,7 @@ export const Input = {
   >(
     'Input.Text',
     'input',
-    className.notTouchedInput,
+    `${className.notTouchedInput} w-full`,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'text',
@@ -434,7 +434,7 @@ export const Input = {
   >(
     'Input.Generic',
     'input',
-    className.notTouchedInput,
+    `${className.notTouchedInput} w-full`,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       ...withHandleBlur(props.onBlur),
@@ -490,7 +490,7 @@ export const Input = {
   >(
     'Input.Number',
     'input',
-    className.notTouchedInput,
+    `${className.notTouchedInput} w-full`,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'number',
@@ -538,7 +538,7 @@ export const Select = wrap<
 >(
   'Select',
   'select',
-  className.notTouchedInput,
+  `${className.notTouchedInput} w-full`,
   ({ onValueChange, onValuesChange, ...props }) => ({
     ...props,
     /*

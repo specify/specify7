@@ -357,7 +357,7 @@ function postProcessRows(
   };
 }
 
-function processViewDefinition(
+export function processViewDefinition(
   view: ViewDefinition,
   formType: FormType,
   mode: FormMode
@@ -384,7 +384,7 @@ function processViewDefinition(
   let viewDefinition;
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
-    return getAttribute(viewDefinition, 'type') === formType;
+    return getAttribute(viewDefinition, 'type') === formType.toLowerCase();
   });
   if (typeof altView === 'undefined' || typeof viewDefinition === 'undefined') {
     console.error('No altView for defaultType:', formType);
@@ -434,7 +434,7 @@ export function parseViewDefinition(
 ): ViewDescription {
   const { mode, formType, viewDefinition, model } = processViewDefinition(
     view,
-    defaultType.toLowerCase(),
+    defaultType,
     originalMode
   );
   const parser =
@@ -489,6 +489,6 @@ export const getView = async (name: string): Promise<ViewDefinition> =>
         return data;
       });
 
-export const formTypes = ['form', 'formTable'];
+export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'view' | 'search';

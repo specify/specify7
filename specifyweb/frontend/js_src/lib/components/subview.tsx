@@ -91,7 +91,7 @@ export function SubView({
           collection.add(resource);
         return collection;
       }
-    }, [resourceUrl, parentResource, field]),
+    }, [sortField, resourceUrl, parentResource, field]),
     false
   );
 

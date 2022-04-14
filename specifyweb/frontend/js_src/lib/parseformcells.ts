@@ -6,7 +6,7 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
 import type { FormType, ParsedFormDefinition } from './parseform';
-import { formTypes, parseFormDefinition } from './parseform';
+import { parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
 import { parseFormField } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
@@ -100,11 +100,7 @@ const processCellType: {
   }) => CellTypes[KEY];
 } = {
   Field({ cell, model, getProperty }) {
-    const rawFieldName = getAttribute(cell, 'name')?.replace(
-      // Hack for QueryComboBox search fields that have spurious prefixes.
-      /^(\w+\.)*/,
-      ''
-    );
+    const rawFieldName = getAttribute(cell, 'name');
     const field = model?.getField(rawFieldName ?? '');
     const fieldDefinition = parseFormField(cell, getProperty);
     /*
@@ -123,9 +119,7 @@ const processCellType: {
                 fieldDefinition.pluginDefinition.type === 'ColRelTypePlugin'
               ? fieldDefinition.pluginDefinition.relationship
               : undefined
-            : undefined) ??
-          field?.name ??
-          rawFieldName;
+            : undefined) ?? rawFieldName;
     return {
       type: 'Field',
       fieldName,
@@ -160,10 +154,7 @@ const processCellType: {
     const field = model?.getField(rawFieldName ?? '');
     return {
       type: 'SubView',
-      formType:
-        formTypes.find(
-          (type) => type.toLowerCase() === formType.toLowerCase()
-        ) ?? 'form',
+      formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
       fieldName: field?.name,
       viewName: getAttribute(cell, 'viewName'),
       isButton: getProperty('btn')?.toLowerCase() === 'true',

@@ -6,8 +6,9 @@ import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
-import { getView, parseViewDefinition } from '../parseform';
+import { getView, processViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
+import { hasTablePermission } from '../permissions';
 import type { Collection } from '../specifymodel';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
@@ -18,7 +19,6 @@ import { RenderForm } from './specifyform';
 import { UiCommand } from './specifyformcommand';
 import { FormField } from './specifyformfield';
 import { SubView } from './subview';
-import { hasTablePermission } from '../permissions';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -89,6 +89,26 @@ const cellRenderers: {
     const field = defined(
       resource.specifyModel.getRelationship(fieldName ?? '')
     );
+
+    /*
+     * SubView is turned into formTable if formTable is the default FormType for
+     * the related table
+     */
+    const [actualFormType] = useAsyncState<FormType>(
+      React.useCallback(
+        async () =>
+          getView(field.relatedModel.view)
+            .then((viewDefinition) =>
+              typeof viewDefinition === 'object'
+                ? processViewDefinition(viewDefinition, formType, mode)
+                : undefined
+            )
+            .then((definition) => definition?.formType ?? 'form'),
+        [field.relatedModel, formType, mode]
+      ),
+      false
+    );
+
     const [interactionCollection] = useAsyncState<
       false | Collection<AnySchema>
     >(
@@ -98,26 +118,17 @@ const cellRenderers: {
           ['LoanPreparation', 'GiftPreparation'].includes(
             field.relatedModel.name
           )
-            ? resource.rgetCollection(field.name).then(async (collection) =>
-                getView(field.relatedModel.view)
-                  .then((viewDefinition) =>
-                    // The form has to actually be built to tell if it is a formTable.
-                    typeof viewDefinition === 'object'
-                      ? parseViewDefinition(viewDefinition, formType, mode)
-                      : undefined
-                  )
-                  .then((definition) =>
-                    definition?.formType === 'table' ? collection : undefined
-                  )
-              )
+            ? resource.rgetCollection(field.name)
             : false,
-        [field, resource, formType, mode]
+        [field, resource]
       ),
       false
     );
+
     return hasTablePermission(field.relatedModel.name, 'read') ? (
-      typeof interactionCollection ===
-      'undefined' ? null : interactionCollection === false ? (
+      typeof interactionCollection === 'undefined' ||
+      typeof actualFormType === 'undefined' ? null : interactionCollection ===
+          false || actualFormType === 'form' ? (
         <SubView
           mode={mode}
           isButton={isButton}

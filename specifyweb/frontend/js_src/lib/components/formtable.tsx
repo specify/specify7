@@ -84,6 +84,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     formType: 'formTable',
     mode,
   });
+
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
   const [state, setState] = React.useState<
@@ -183,6 +184,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       viewName={viewName}
                       formType="form"
                       mode={mode}
+                      forceFormType={true}
                     />
                   </DataEntry.Cell>
                 </>

@@ -111,7 +111,7 @@ var Base =  Backbone.Collection.extend({
             return this._fetch.then(() => { this._fetch = null; return this; });
         },
         fetchIfNotPopulated() {
-            return this._neverFetched ? this.fetch() : Promise.resolve(this);
+            return this._neverFetched && this.related?.isNew() !== true ? this.fetch() : Promise.resolve(this);
         },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
@@ -127,9 +127,8 @@ var Base =  Backbone.Collection.extend({
             setupToOne(this, options);
         },
         fetch: function() {
-            if (this.related.isNew()) {
-                throw new Error("can't fetch collection related to unpersisted resource");
-            }
+            if (this.related.isNew())
+                console.error("can't fetch collection related to unpersisted resource");
             this.filters[this.field.name.toLowerCase()] = this.related.id;
             return collectionapi.Lazy.prototype.fetch.apply(this, arguments);
         }
