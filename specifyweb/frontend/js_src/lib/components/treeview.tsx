@@ -72,6 +72,7 @@ function TreeView<SCHEMA extends AnyTree>({
   });
   const conformation = deserializeConformation(rawConformation);
 
+  // TODO: update query string in URL on initial load if has cached conformation
   function updateConformation(value: Conformations | undefined): void {
     if (typeof value === 'object') {
       const encoded = serializeConformation(value);

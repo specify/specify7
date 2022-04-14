@@ -23,7 +23,7 @@ function RepairTree({
       onClose={handleClose}
       onClick={undefined}
       title={commonText('treesDialogTitle')}
-      getLink={(tree): string => `/specify/tree/${tree}/`}
+      getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
     />
   );
 }
