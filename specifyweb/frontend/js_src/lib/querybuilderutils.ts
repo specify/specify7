@@ -182,9 +182,6 @@ export const unParseQueryFields = (
           ({ id }) => id === originalField.operStart
         )?.resetToAny === true
           ? originalField.operStart
-          : fieldSpec.parser.type === 'checkbox'
-          ? // TODO: test if this is needed
-            queryFieldFilters.dontCare.id
           : undefined;
 
       const hasFilters = field.filters.some(({ type }) => type !== 'any');
