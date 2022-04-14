@@ -5,6 +5,7 @@ import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from '../picklistmixins';
 import { PickListComboBox } from './picklist';
+import { resourceOn } from '../resource';
 
 export function PickListFieldComboBox(
   props: DefaultComboBoxProps
@@ -22,16 +23,15 @@ export function PickListFieldComboBox(
     [props.resource]
   );
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);
-  React.useEffect(() => {
-    const handleChange = () => {
-      if (props.resource.get('type') !== PickListTypes.FIELDS)
-        props.resource.set('fieldName', null as never);
-      setItems(getItems);
-    };
-    props.resource.on('change:tablename change:type', handleChange);
-    return (): void =>
-      props.resource.off('change:tablename change:type', handleChange);
-  }, [props.resource, getItems]);
+  React.useEffect(
+    () =>
+      resourceOn(props.resource, 'change:tableName change:type', () => {
+        if (props.resource.get('type') !== PickListTypes.FIELDS)
+          props.resource.set('fieldName', null as never);
+        setItems(getItems);
+      }),
+    [props.resource, getItems]
+  );
 
   return (
     <PickListComboBox

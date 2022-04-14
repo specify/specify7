@@ -12,6 +12,7 @@ import { Button } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
+import { resourceOn } from '../resource';
 
 export const SubViewContext = React.createContext<Relationship | undefined>(
   undefined
@@ -40,14 +41,16 @@ export function SubView({
   readonly sortField: string | undefined;
 }): JSX.Element {
   const [resourceUrl, setResourceUrl] = React.useState<string | null>('');
-  React.useEffect(() => {
-    const handleChange = (): void =>
-      setResourceUrl(parentResource.get('field'));
-    parentResource.on(`change:${field.name.toLowerCase()}`, handleChange);
-    handleChange();
-    return (): void =>
-      parentResource.off(`change:${field.name.toLowerCase()}`, handleChange);
-  }, [parentResource, field]);
+  React.useEffect(
+    () =>
+      resourceOn(
+        parentResource,
+        `change:${field.name}`,
+        (): void => setResourceUrl(parentResource.get('field')),
+        true
+      ),
+    [parentResource, field]
+  );
 
   const [collection] = useAsyncState(
     React.useCallback(async () => {

@@ -18,6 +18,7 @@ import {
 } from './hooks';
 import { Dialog } from './modaldialog';
 import { FormContext } from './resourceview';
+import { resourceOn } from '../resource';
 
 /*
  * TODO: handle case when there are save blockers for field that is not
@@ -66,17 +67,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [saveBlocked, setSaveBlocked] = React.useState(false);
   React.useEffect(() => {
     setSaveBlocked(false);
-
-    function handleChanged(): void {
-      const onlyDeferredBlockers = Array.from(
-        resource.saveBlockers.blockingResources
-      ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
-      setSaveBlocked(!onlyDeferredBlockers);
-    }
-
-    handleChanged();
-    resource.on('blockerschanged', handleChanged);
-    return (): void => resource.off('blockerschanged', handleChanged);
+    return resourceOn(
+      resource,
+      'blockersChanged',
+      (): void => {
+        const onlyDeferredBlockers = Array.from(
+          resource.saveBlockers.blockingResources
+        ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
+        setSaveBlocked(!onlyDeferredBlockers);
+      },
+      true
+    );
   }, [resource]);
 
   const [isSaving, setIsSaving] = React.useState(false);

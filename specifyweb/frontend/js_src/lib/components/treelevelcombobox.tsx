@@ -10,6 +10,7 @@ import { isTreeResource } from '../treedefinitions';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
+import { resourceOn } from '../resource';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,
@@ -65,39 +66,42 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     )
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
-    const handleFetch = (): void =>
-      void resource
-        .rgetPromise('parent')
-        // Parent is undefined for root tree node
-        .then(async (parent) =>
-          (parent as SpecifyResource<Geography> | undefined)?.rgetPromise(
-            'definitionItem'
+    const destructor = resourceOn(
+      props.model,
+      'change:parent',
+      (): void =>
+        void resource
+          .rgetPromise('parent')
+          // Parent is undefined for root tree node
+          .then(async (parent) =>
+            (parent as SpecifyResource<Geography> | undefined)?.rgetPromise(
+              'definitionItem'
+            )
           )
-        )
-        .then((treeDefinitionItem) =>
-          typeof treeDefinitionItem === 'object'
-            ? treeDefinitionItem
-                .rgetPromise('treeDef')
-                .then(async ({ id }) =>
-                  lowestChildRank.then(async (rankId) =>
-                    fetchPossibleRanks(
-                      rankId,
-                      treeDefinitionItem as SpecifyResource<
-                        FilterTablesByEndsWith<'TreeDefItem'>
-                      >,
-                      id
+          .then((treeDefinitionItem) =>
+            typeof treeDefinitionItem === 'object'
+              ? treeDefinitionItem
+                  .rgetPromise('treeDef')
+                  .then(async ({ id }) =>
+                    lowestChildRank.then(async (rankId) =>
+                      fetchPossibleRanks(
+                        rankId,
+                        treeDefinitionItem as SpecifyResource<
+                          FilterTablesByEndsWith<'TreeDefItem'>
+                        >,
+                        id
+                      )
                     )
                   )
-                )
-            : []
-        )
-        .then((items) => (destructorCalled ? undefined : setItems(items)));
-    props.model.on('change:parent', handleFetch);
-    handleFetch();
+              : []
+          )
+          .then((items) => (destructorCalled ? undefined : setItems(items))),
+      true
+    );
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
-      props.model.off('change:parent', handleFetch);
+      destructor();
     };
   }, [props.model]);
 

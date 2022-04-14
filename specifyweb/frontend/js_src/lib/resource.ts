@@ -10,6 +10,7 @@ import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import * as queryString from './querystring';
 import { getModel } from './schema';
+import { RA } from './types';
 
 /*
  * TODO: experiment with an object singleton:
@@ -128,3 +129,23 @@ export async function getRelatedObjectCount<SCHEMA extends AnySchema>(
  * business rules and validation
  * prevent fetching multiple at the same time
  */
+
+export function resourceOn(
+  resource: {
+    readonly on: (
+      eventName: string,
+      callback: (...args: RA<any>) => void
+    ) => void;
+    readonly off: (
+      eventName?: string,
+      callback?: (...args: RA<any>) => void
+    ) => void;
+  },
+  event: string,
+  callback: (...args: RA<never>) => void,
+  immediate = false
+): () => void {
+  if (immediate) callback();
+  resource.on(event.toLowerCase(), callback as () => void);
+  return (): void => resource.off(event.toLowerCase(), callback as () => void);
+}

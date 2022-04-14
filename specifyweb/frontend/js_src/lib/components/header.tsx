@@ -21,6 +21,7 @@ import { Button, className, Form, H3, Input, Link, Select, Ul } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
+import { resourceOn } from '../resource';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -42,14 +43,14 @@ export function HeaderItems({
   const [activeTask, setActiveTask] = React.useState<string | undefined>(
     undefined
   );
-  React.useEffect(() => {
-    const callback = (route: string) => {
-      if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
-      else setActiveTask(routeMappings[route] ?? undefined);
-    };
-    router.on('route', callback);
-    return (): void => void router.off('route', callback);
-  }, [menuItems]);
+  React.useEffect(
+    () =>
+      resourceOn(router, 'route', (route: string) => {
+        if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
+        else setActiveTask(routeMappings[route] ?? undefined);
+      }),
+    [menuItems]
+  );
 
   return (
     <nav

@@ -8,6 +8,7 @@ import { PickListTypes } from '../picklistmixins';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
+import { resourceOn } from '../resource';
 
 export function PickListFormatterComboBox(
   props: DefaultComboBoxProps
@@ -29,16 +30,15 @@ export function PickListFormatterComboBox(
     fetchItems,
     false
   );
-  React.useEffect(() => {
-    const handleChange = (): void => {
-      if (props.resource.get('type') !== PickListTypes.TABLE)
-        props.resource.set('formatter', null as never);
-      fetchItems().then(setItems).catch(crash);
-    };
-    props.resource.on('change:tablename change:type', handleChange);
-    return (): void =>
-      props.resource.off('change:tablename change:type', handleChange);
-  }, [props.resource, fetchItems, setItems]);
+  React.useEffect(
+    () =>
+      resourceOn(props.resource, 'change:tableName change:type', (): void => {
+        if (props.resource.get('type') !== PickListTypes.TABLE)
+          props.resource.set('formatter', null as never);
+        fetchItems().then(setItems).catch(crash);
+      }),
+    [props.resource, fetchItems, setItems]
+  );
 
   return (
     <PickListComboBox

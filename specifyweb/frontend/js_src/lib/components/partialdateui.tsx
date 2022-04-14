@@ -20,6 +20,7 @@ import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
 import { useSaveBlockers } from './resource';
+import { resourceOn } from '../resource';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -117,30 +118,34 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         : undefined
     );
 
-    function setInput(): void {
-      const value = resource.get(dateField);
-      setMoment(
-        value === null ? undefined : dayjs(value, databaseDateFormat, true)
-      );
-    }
-
-    const changePrecision = (): void =>
-      setPrecision(
-        reversePrecision[resource.get(precisionField ?? '') as 1 | 2 | 3] ??
-          defaultPrecision
-      );
-
-    resource.on(`change:${dateField}`, setInput);
-    if (typeof precisionField === 'string')
-      resource.on(`change:${precisionField}`, changePrecision);
-
-    setInput();
-    changePrecision();
+    const destructor = resourceOn(
+      resource,
+      `change:${dateField}`,
+      (): void => {
+        const value = resource.get(dateField);
+        setMoment(
+          value === null ? undefined : dayjs(value, databaseDateFormat, true)
+        );
+      },
+      true
+    );
+    const precisionDestructor =
+      typeof precisionField === 'string'
+        ? resourceOn(
+            resource,
+            `change:${precisionField}`,
+            (): void =>
+              setPrecision(
+                reversePrecision[resource.get(precisionField) as 1 | 2 | 3] ??
+                  defaultPrecision
+              ),
+            true
+          )
+        : undefined;
 
     return (): void => {
-      resource.off(`change:${dateField}`, setInput);
-      if (typeof precisionField === 'string')
-        resource.off(`change:${precisionField}`, changePrecision);
+      destructor();
+      precisionDestructor?.();
     };
   }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
 

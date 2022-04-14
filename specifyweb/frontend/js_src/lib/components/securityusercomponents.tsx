@@ -30,6 +30,7 @@ import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 import { UserAgents, useUserProviders } from './securityuserhooks';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
+import { resourceOn } from '../resource';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -277,11 +278,13 @@ export function CollectionAccess({
     collections.includes(collectionId)
   )?.address;
 
-  React.useEffect(() => {
-    collectionAddress?.on('change:agent', handleChangeAgent);
-    return (): void =>
-      collectionAddress?.off('change:agent', handleChangeAgent);
-  }, [collectionAddress, handleChangeAgent]);
+  React.useEffect(
+    () =>
+      typeof collectionAddress === 'object'
+        ? resourceOn(collectionAddress, 'change:parent', handleChangeAgent)
+        : undefined,
+    [collectionAddress, handleChangeAgent]
+  );
 
   return (
     <div className="flex flex-col gap-4">

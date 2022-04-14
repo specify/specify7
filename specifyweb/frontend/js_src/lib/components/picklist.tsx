@@ -18,6 +18,7 @@ import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
+import { resourceOn } from '../resource';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -72,14 +73,10 @@ export function PickListComboBox(
 
   // Listen for external changes to the field
   React.useEffect(() => {
-    const handleChange = (): void => setValue(getValue);
-    props.resource.on(`change:${props.field.name.toLowerCase()}`, handleChange);
     void props.resource.businessRuleMgr.checkField(props.field.name);
-    return (): void =>
-      props.resource.off(
-        `change:${props.field.name.toLowerCase()}`,
-        handleChange
-      );
+    return resourceOn(props.resource, `change:${props.field.name}`, (): void =>
+      setValue(getValue)
+    );
   }, [props.resource, props.field.name, getValue]);
 
   // Warn on duplicates

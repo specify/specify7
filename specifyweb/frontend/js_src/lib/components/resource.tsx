@@ -7,7 +7,7 @@ import type {
 } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { parseResourceUrl } from '../resource';
+import { parseResourceUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';
@@ -79,13 +79,16 @@ export function useSaveBlockers({
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
 }): string {
-  const [errors, setErrors] = React.useState<string>('');
-  React.useEffect(() => {
-    const handleChange = (): void =>
-      setErrors(resource.saveBlockers.getFieldErrors(fieldName).join('\n'));
-    resource.on('blockerschanged', handleChange);
-    return (): void => resource.off('blockerschanged', handleChange);
-  }, [resource, fieldName]);
+  const [errors, setErrors] = React.useState<string>(() =>
+    resource.saveBlockers.getFieldErrors(fieldName).join('\n')
+  );
+  React.useEffect(
+    () =>
+      resourceOn(resource, 'blockersChanged', (): void =>
+        setErrors(resource.saveBlockers.getFieldErrors(fieldName).join('\n'))
+      ),
+    [resource, fieldName]
+  );
   return errors;
 }
 

@@ -15,6 +15,7 @@ import { className, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 import { isExternalUrl } from '../ajax';
+import { resourceOn } from '../resource';
 
 export const webLinks = load<Element>(
   '/context/app.resource?name=WebLinks',
@@ -132,16 +133,17 @@ export function WebLinkButton({
       });
     }
 
-    const setLink = (): void =>
-      void buildUrl().then((url) =>
-        setUrl({
-          url,
-          isExternal: isExternalUrl(url),
-        })
-      );
-
-    resource.on('change', setLink);
-    return (): void => resource.off('change', setLink);
+    return resourceOn(
+      resource,
+      'change',
+      (): void =>
+        void buildUrl().then((url) =>
+          setUrl({
+            url,
+            isExternal: isExternalUrl(url),
+          })
+        )
+    );
   }, [resource, fieldName, data, formType]);
 
   return (

@@ -19,6 +19,7 @@ import { isInputTouched } from '../validationmessages';
 import { LoadingContext } from './contexts';
 import { FormContext } from './resourceview';
 import { parseRelativeDate } from '../relativedate';
+import { resourceOn } from '../resource';
 
 const idStore: R<number> = {};
 
@@ -412,22 +413,21 @@ export function useResourceValue<
       blockers.current.length > 0 ? setValidation(blockers.current) : undefined,
     [setValidation]
   );
-  React.useEffect(() => {
-    if (typeof fieldName === 'undefined') return undefined;
-
-    function handleChange(): void {
-      if (typeof fieldName === 'undefined') return undefined;
-      blockers.current = resource.saveBlockers
-        .blockersForField(fieldName)
-        .filter(({ deferred }) => !deferred || triedToSubmit)
-        .map(({ reason }) => reason);
-      // Report validity only if not focused
-      if (document.activeElement !== inputRef.current) handleBlur();
-    }
-
-    resource.on('blockerschanged', handleChange);
-    return (): void => resource.off('blockerschanged', handleChange);
-  }, [triedToSubmit, resource, fieldName, handleBlur]);
+  React.useEffect(
+    () =>
+      typeof fieldName === 'string'
+        ? resourceOn(resource, 'blockersChanged', (): void => {
+            if (typeof fieldName === 'undefined') return undefined;
+            blockers.current = resource.saveBlockers
+              .blockersForField(fieldName)
+              .filter(({ deferred }) => !deferred || triedToSubmit)
+              .map(({ reason }) => reason);
+            // Report validity only if not focused
+            if (document.activeElement !== inputRef.current) handleBlur();
+          })
+        : undefined,
+    [triedToSubmit, resource, fieldName, handleBlur]
+  );
   React.useEffect(() => {
     if (input === null || typeof fieldName === 'undefined') return undefined;
     input.addEventListener('blur', handleBlur);
@@ -525,12 +525,12 @@ export function useResourceValue<
           )
     );
 
-    const refresh = (): void =>
-      setValue((resource.get(fieldName) as T | null) ?? undefined);
-
-    resource.on(`change:${fieldName}`, refresh);
-    refresh();
-    return (): void => resource.off(`change:${fieldName}`, refresh);
+    return resourceOn(
+      resource,
+      `change:${fieldName}`,
+      (): void => setValue((resource.get(fieldName) as T | null) ?? undefined),
+      true
+    );
   }, [resource, fieldName, defaultParser]);
 
   return {
@@ -550,14 +550,21 @@ export function useIsModified(
     resource?.needsSaved
   );
 
-  React.useEffect(() => {
-    resource?.on('saverequired', handleNeedsSaving);
-    resource?.on('saved', handleSaved);
-    return (): void => {
-      resource?.off('saverequired', handleNeedsSaving);
-      resource?.off('saved', handleSaved);
-    };
-  }, [resource, handleNeedsSaving, handleSaved]);
+  React.useEffect(
+    () =>
+      typeof resource === 'object'
+        ? resourceOn(resource, 'saveRequired', handleNeedsSaving)
+        : undefined,
+    [resource, handleNeedsSaving]
+  );
+
+  React.useEffect(
+    () =>
+      typeof resource === 'object'
+        ? resourceOn(resource, 'saved', handleSaved)
+        : undefined,
+    [resource, handleSaved]
+  );
 
   return saveRequired;
 }

@@ -12,7 +12,7 @@ import * as navigation from './navigation';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import reports from '../reports';
-import { getResourceViewUrl } from '../resource';
+import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, Container, DataEntry, Form } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
@@ -93,26 +93,27 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       return;
     }
 
-    function updateTitle(): void {
-      if (typeof resource === 'undefined') return undefined;
-      const title = resource.isNew()
-        ? commonText('newResourceTitle')(resource.specifyModel.label)
-        : resource.specifyModel.label;
-      format(resource)
-        .then(
-          (formatted) =>
-            `${title}${typeof formatted === 'string' ? `: ${formatted}` : ''}`
-        )
-        .then((title) => {
-          setTitle(title);
-          return undefined;
-        })
-        .catch(crash);
-    }
-
-    resource.on('change', updateTitle);
-    updateTitle();
-    return (): void => resource.off('change', updateTitle);
+    return resourceOn(
+      resource,
+      'change',
+      (): void => {
+        if (typeof resource === 'undefined') return undefined;
+        const title = resource.isNew()
+          ? commonText('newResourceTitle')(resource.specifyModel.label)
+          : resource.specifyModel.label;
+        format(resource)
+          .then(
+            (formatted) =>
+              `${title}${typeof formatted === 'string' ? `: ${formatted}` : ''}`
+          )
+          .then((title) => {
+            setTitle(title);
+            return undefined;
+          })
+          .catch(crash);
+      },
+      true
+    );
   }, [resource]);
 
   const id = useId('resource-view');

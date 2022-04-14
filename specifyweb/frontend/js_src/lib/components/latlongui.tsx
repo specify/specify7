@@ -7,6 +7,7 @@ import commonText from '../localization/common';
 import localityText from '../localization/locality';
 import type { FormMode } from '../parseform';
 import { Input, Select } from './basic';
+import { resourceOn } from '../resource';
 
 type CoordinateType = 'point' | 'line' | 'rectangle';
 
@@ -52,30 +53,31 @@ function Coordinate({
     handleChange(raw === '' ? commonText('notApplicable') : formatted ?? '???');
 
   React.useEffect(() => {
-    const handleChange = (coordinate: string) =>
+    const handleChange = (coordinate: string): void =>
       onChange(
         coordinate,
         (latlongutils[fieldType].parse(coordinate) as Parsed | null)?.format(
           step
         )
       );
-    const handleCoordinateTextChange = () =>
-      handleChange(resource.get(coordinateTextField));
-    resource.on(`change: ${coordinateTextField}`, handleCoordinateTextChange);
-    const handleCoordinateChange = () =>
-      handleChange(resource.get(coordinateField)?.toString() ?? '');
-    resource.on(`change: ${coordinateField}`, handleCoordinateChange);
+    const textDestructor = resourceOn(
+      resource,
+      `change: ${coordinateTextField}`,
+      (): void => handleChange(resource.get(coordinateTextField))
+    );
+    const destructor = resourceOn(
+      resource,
+      `change: ${coordinateField}`,
+      (): void => handleChange(resource.get(coordinateField)?.toString() ?? '')
+    );
 
     // Update parent's Preview column with initial values on the first render
     handleChange(coordinate);
     return (): void => {
-      resource.off(
-        `change: ${coordinateTextField}`,
-        handleCoordinateTextChange
-      );
-      resource.off(`change: ${coordinateField}`, handleCoordinateChange);
+      textDestructor();
+      destructor();
     };
-  }, [coordinateField, coordinateTextField, fieldType]);
+  }, [resource, step, coordinateField, coordinateTextField, fieldType]);
 
   return (
     <Input.Text
@@ -178,15 +180,16 @@ export function LatLongUi({
     () => resource.get('latLongType') ?? 'point'
   );
 
-  React.useEffect(() => {
-    const handleChange = (): void =>
-      setCoordinateType(
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        (resource.get('latLongType') as CoordinateType) ?? 'point'
-      );
-    resource.on('change: latlongtype', handleChange);
-    return (): void => resource.off('change: latlongtype', handleChange);
-  }, [resource]);
+  React.useEffect(
+    () =>
+      resourceOn(resource, 'change:latLongType', (): void =>
+        setCoordinateType(
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (resource.get('latLongType') as CoordinateType) ?? 'point'
+        )
+      ),
+    [resource]
+  );
 
   return (
     <fieldset>

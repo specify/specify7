@@ -13,7 +13,7 @@ import * as navigation from './navigation';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import * as queryString from '../querystring';
-import { deleteResource, getResourceApiUrl } from '../resource';
+import { deleteResource, getResourceApiUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
@@ -90,12 +90,16 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   }, [collection, isLazy, getRecords, handleLoaded]);
 
   // Listen for changes to collection
-  React.useEffect(() => {
-    const updateRecords = (): void => setRecords(getRecords);
-    updateRecords();
-    collection.on('add remove destroy', updateRecords);
-    return (): void => collection.off('add remove destroy', updateRecords);
-  }, [collection, getRecords]);
+  React.useEffect(
+    () =>
+      resourceOn(
+        collection,
+        'add remove destroy',
+        (): void => setRecords(getRecords),
+        true
+      ),
+    [collection, getRecords]
+  );
 
   const [index, setIndex] = useTriggerState(
     defaultIndex ?? collection._totalCount ?? 0
