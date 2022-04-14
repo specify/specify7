@@ -12,4 +12,5 @@ urlpatterns = [
     path('library_roles/', views.library_roles),
     path('registry/', views.policy_registry),
     path('query/', views.query_view),
+    path('list_admins/', views.list_admins),
 ]

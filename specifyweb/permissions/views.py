@@ -4,7 +4,7 @@ from typing import Dict, Union, Optional
 from collections import defaultdict
 
 from django import http
-from django.db import transaction
+from django.db import transaction, connection
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -31,6 +31,77 @@ def check_collection_access_against_agents(userid: int) -> None:
     ]
     if missing:
         raise MissingAgentForAccessibleCollection({'missing_for_7': missing})
+
+class ListAdmins(LoginRequiredMixin, View):
+    def get(self, request):
+        sp7_admins = models.UserPolicy.objects.filter(collection=None, resource='%', action='%')\
+            .values_list("specifyuser_id", "specifyuser__name").distinct()
+
+        cursor = connection.cursor()
+        cursor.execute("""
+        SELECT specifyuserid, specifyuser.name
+        FROM specifyuser_spprincipal
+        JOIN spprincipal USING (SpPrincipalId)
+        JOIN specifyuser USING (SpecifyUserId)
+        WHERE spprincipal.Name = 'Administrator'
+        """, [])
+        sp6_admins = cursor.fetchall()
+
+        return http.JsonResponse({
+            'sp7_admins': [
+                {'userid': userid, 'username': username}
+                for userid, username in sp7_admins
+            ],
+            'sp6_admins': [
+                {'userid': userid, 'username': username}
+                for userid, username in sp6_admins
+            ]
+        })
+
+list_admins = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns the super user admins for the database.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "sp7_admins": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "userid": { "type": "integer" },
+                                            "username": { "type": "string" },
+                                        },
+                                        "required": ["userid", "username"],
+                                        "additionalProperties": False,
+                                    }
+                                },
+                                "sp6_admins": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "userid": { "type": "integer" },
+                                            "username": { "type": "string" },
+                                        },
+                                        "required": ["userid", "username"],
+                                        "additionalProperties": False,
+                                    }
+                                }
+                            },
+                            "required": ["sp7_admins", "sp6_admins"],
+                            "additionalProperties": False,
+                        }
+                    }
+                }
+            }
+        }
+    }
+})(ListAdmins.as_view())
 
 class PolicyRegistry(LoginRequiredMixin, View):
     def get(self, request):
