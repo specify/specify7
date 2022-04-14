@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { f } from '../functools';
 import commonText from '../localization/common';
 import type { RA } from '../types';
 import { ensure } from '../types';
@@ -341,40 +340,75 @@ export function Autocomplete<T>({
                   </div>
                 </li>
               ) : (
-                filteredItems.map((item, index, { length }) => (
-                  <li
-                    key={index}
-                    aria-posinset={index + 1}
-                    aria-setsize={length}
-                    aria-selected={index === currentIndex}
-                    onClick={(): void => {
-                      handleChange(item);
-                      setPendingValue(item.label);
-                      handleClose();
-                    }}
-                    {...itemProps}
-                  >
-                    {f.var(
-                      typeof item.subLabel === 'string' ? (
-                        <div className="flex flex-col justify-center">
-                          {item.label}
-                          <span className="text-gray-500">{item.subLabel}</span>
+                filteredItems.map((item, index, { length }) => {
+                  /**
+                   * Highlight relevant part of the string.
+                   * Note, if item.searchValue and item.value is different,
+                   * label might not be highlighted even if it matched
+                   */
+                  // TODO: allow disabling this
+                  const label = item.label
+                    // Convert to lower case as search may be case-insensitive
+                    .toLowerCase()
+                    .split(pendingValue.toLowerCase())
+                    .map((part, index, parts) => {
+                      const startIndex = parts
+                        .slice(0, index)
+                        .join(pendingValue).length;
+                      const offsetStartIndex =
+                        startIndex + (index === 0 ? 0 : pendingValue.length);
+                      const endIndex =
+                        startIndex +
+                        part.length +
+                        (index === 0 ? 0 : pendingValue.length);
+                      return (
+                        <React.Fragment key={index}>
+                          {/* Reconstruct the value in original casing */}
+                          {item.label.slice(offsetStartIndex, endIndex)}
+                          {index + 1 !== parts.length && (
+                            <span className="text-brand-300">
+                              {item.label.slice(
+                                endIndex,
+                                endIndex + pendingValue.length
+                              )}
+                            </span>
+                          )}
+                        </React.Fragment>
+                      );
+                    });
+                  const fullLabel =
+                    typeof item.subLabel === 'string' ? (
+                      <div className="flex flex-col justify-center">
+                        {label}
+                        <span className="text-gray-500">{item.subLabel}</span>
+                      </div>
+                    ) : (
+                      label
+                    );
+                  return (
+                    <li
+                      key={index}
+                      aria-posinset={index + 1}
+                      aria-setsize={length}
+                      aria-selected={index === currentIndex}
+                      onClick={(): void => {
+                        handleChange(item);
+                        setPendingValue(item.label);
+                        handleClose();
+                      }}
+                      {...itemProps}
+                    >
+                      {typeof item.icon === 'string' ? (
+                        <div className="flex items-center">
+                          {item.icon}
+                          {fullLabel}
                         </div>
                       ) : (
-                        item.label
-                      ),
-                      (content) =>
-                        typeof item.icon === 'string' ? (
-                          <div className="flex items-center">
-                            {item.icon}
-                            {content}
-                          </div>
-                        ) : (
-                          content
-                        )
-                    )}
-                  </li>
-                ))
+                        fullLabel
+                      )}
+                    </li>
+                  );
+                })
               )}
             </>
           )}
