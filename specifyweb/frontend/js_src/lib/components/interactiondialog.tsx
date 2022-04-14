@@ -317,7 +317,7 @@ export function InteractionDialog({
               />
             ) : (
               <>
-                ${formsText('problemsFound')}
+                {formsText('problemsFound')}
                 {Object.entries(state.problems).map(
                   ([header, problems], index) => (
                     <React.Fragment key={index}>
