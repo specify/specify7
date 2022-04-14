@@ -7,16 +7,18 @@ from specifyweb.specify.datamodel import datamodel
 from .models import LibraryRole, Role, UserPolicy, LibraryRolePolicy, RolePolicy, UserRole
 from .permissions import CollectionAccessPT
 
+def wipe_permissions() -> None:
+    RolePolicy.objects.all().delete()
+    UserRole.objects.all().delete()
+    Role.objects.all().delete()
+    LibraryRolePolicy.objects.all().delete()
+    LibraryRole.objects.all().delete()
+    UserPolicy.objects.all().delete()
+
 def initialize(wipe: bool=False) -> None:
     with transaction.atomic():
         if wipe:
-            RolePolicy.objects.all().delete()
-            UserRole.objects.all().delete()
-            Role.objects.all().delete()
-            LibraryRolePolicy.objects.all().delete()
-            LibraryRole.objects.all().delete()
-            UserPolicy.objects.all().delete()
-
+            wipe_permissions()
         create_admins()
         create_roles()
         assign_users_to_roles()

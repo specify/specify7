@@ -41,7 +41,6 @@ from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_view
 
-urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
@@ -593,6 +592,8 @@ def generate_openapi_for_endpoints(all_endpoints=False):
     Params:
         all_endpoints: whether to include endpoints that don't have OpenAPI schema
     """
+    urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
+
     components = { }
 
     def merge_components_local(endpoint_components):

@@ -10,5 +10,4 @@ class Migration(migrations.Migration):
         ('permissions', '0004_auto_20220407_1927'),
     ]
 
-    operations = [
-    ]
+    operations = [] # type: ignore

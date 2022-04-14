@@ -4,9 +4,20 @@ from django.test import TestCase, Client
 
 from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify import models as spmodels
-from . import models, permissions, views
+from . import models, permissions, views, initialize
 
 class PermissionsApiTest(ApiTests):
+    def setUp(self):
+        super(PermissionsApiTest, self).setUp()
+        initialize.wipe_permissions()
+
+        models.UserPolicy.objects.create(
+            collection=None,
+            specifyuser=self.specifyuser,
+            resource='%',
+            action='%',
+        )
+
     def test_set_user_policies(self) -> None:
         c = Client()
         c.force_login(self.specifyuser)

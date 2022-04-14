@@ -21,10 +21,6 @@ from django.views.decorators.http import require_GET, require_http_methods
 from typing import Union, Optional, Dict
 from typing_extensions import TypedDict
 
-from specifyweb.context.views import set_collection_cookie, \
-    users_collections_for_sp7
-from specifyweb.context.views import set_collection_cookie, \
-    users_collections_for_sp7
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify import models as spmodels
@@ -339,6 +335,8 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
+    from specifyweb.context.views import set_collection_cookie, users_collections_for_sp7
+
     if 'external_user' in request.session and request.user.is_authenticated:
         # This will be set if the user logged in with an external IdP
         # that returned an unknown identity. They only get here if
