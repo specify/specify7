@@ -138,72 +138,77 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeDefinition.get('name')}
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
-        {/* A React component that is also a TypeScript generic */}
-        <Autocomplete<SerializedResource<SCHEMA>>
-          value={searchValue}
-          source={async (value) =>
-            fetchCollection(
-              table.name,
-              {
-                limit: DEFAULT_FETCH_LIMIT,
-                orderBy: 'name',
-                domainFilter: true,
-              },
-              {
-                name__iStartsWith: value,
-              }
-            ).then(({ records }) =>
-              records.map((node) => {
-                const rankDefinition = treeDefinitionItems.find(
-                  ({ rankId }) => rankId === node.rankId
-                );
-                const rankName = rankDefinition?.title ?? rankDefinition?.name;
-                return {
-                  label: node.fullName ?? node.name,
-                  searchValue: node.name,
-                  subLabel: rankName,
-                  data: node as SerializedResource<SCHEMA>,
-                };
-              })
-            )
-          }
-          onCleared={(): void => setSearchValue('')}
-          onChange={({ label, data }): void => {
-            setSearchValue(label);
-            ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(
-              `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            )
-              .then(({ data }) =>
-                setFocusPath(
-                  sortObjectsByKey(
-                    Object.values(data).filter(
-                      (
-                        node
-                      ): node is {
-                        readonly rankid: number;
-                        readonly id: number;
-                      } => typeof node === 'object'
-                    ),
-                    'rankid'
-                  ).map(({ id }) => id)
-                )
+        <div>
+          {/* A React component that is also a TypeScript generic */}
+          <Autocomplete<SerializedResource<SCHEMA>>
+            value={searchValue}
+            source={async (value) =>
+              fetchCollection(
+                table.name,
+                {
+                  limit: DEFAULT_FETCH_LIMIT,
+                  orderBy: 'name',
+                  domainFilter: true,
+                },
+                {
+                  name__iStartsWith: value,
+                }
+              ).then(({ records }) =>
+                records.map((node) => {
+                  const rankDefinition = treeDefinitionItems.find(
+                    ({ rankId }) => rankId === node.rankId
+                  );
+                  const rankName =
+                    rankDefinition?.title ?? rankDefinition?.name;
+                  return {
+                    label: node.fullName ?? node.name,
+                    searchValue: node.name,
+                    subLabel: rankName,
+                    data: node as SerializedResource<SCHEMA>,
+                  };
+                })
               )
-              .catch(console.error);
-          }}
-          forwardRef={searchBoxRef}
-          aria-label={treeText('searchTreePlaceholder')}
-        >
-          {(inputProps): JSX.Element => (
-            <Input.Generic
-              placeholder={treeText('searchTreePlaceholder')}
-              title={treeText('searchTreePlaceholder')}
-              {...inputProps}
-            />
-          )}
-        </Autocomplete>
+            }
+            onCleared={(): void => setSearchValue('')}
+            onChange={({ label, data }): void => {
+              setSearchValue(label);
+              ajax<
+                IR<{ readonly rankid: number; readonly id: number } | string>
+              >(
+                `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
+                {
+                  headers: { Accept: 'application/json' },
+                }
+              )
+                .then(({ data }) =>
+                  setFocusPath(
+                    sortObjectsByKey(
+                      Object.values(data).filter(
+                        (
+                          node
+                        ): node is {
+                          readonly rankid: number;
+                          readonly id: number;
+                        } => typeof node === 'object'
+                      ),
+                      'rankid'
+                    ).map(({ id }) => id)
+                  )
+                )
+                .catch(console.error);
+            }}
+            forwardRef={searchBoxRef}
+            aria-label={treeText('searchTreePlaceholder')}
+          >
+            {(inputProps): JSX.Element => (
+              <Input.Generic
+                placeholder={treeText('searchTreePlaceholder')}
+                title={treeText('searchTreePlaceholder')}
+                {...inputProps}
+              />
+            )}
+          </Autocomplete>
+        </div>
         <span className="flex-1 -ml-2" />
         <Button.Simple
           onClick={handleToggleEditingRanks}

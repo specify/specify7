@@ -42,7 +42,7 @@ export function UserInviteLinkPlugin({
         >
           {adminText('userInviteLinkDialogMessage')(user.name)}
           <div className="flex gap-2">
-            <Input.Text isReadOnly className="w-full" value={link} />
+            <Input.Text isReadOnly value={link} />
             <Button.Blue
               onClick={(): void => {
                 window.navigator.clipboard.writeText(link).catch(console.error);

@@ -189,7 +189,6 @@ export function LegacyPermissions({
               fieldName={userType.name}
               pickListName={undefined}
               defaultValue={undefined}
-              className="w-full"
               mode={mode}
               isRequired={true}
               isDisabled={false}

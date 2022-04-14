@@ -157,7 +157,6 @@ export function PickListComboBox(
               : undefined
           }
           disabled={isDisabled}
-          className={props.className}
         >
           {isExistingValue ? undefined : value === null ? (
             props.isRequired ? undefined : (
@@ -186,7 +185,6 @@ export function PickListComboBox(
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
-              className={props.className}
               id={props.id}
               name={props.pickList?.get('name') ?? props.pickListName}
               disabled={props.isDisabled || typeof props.items === 'undefined'}

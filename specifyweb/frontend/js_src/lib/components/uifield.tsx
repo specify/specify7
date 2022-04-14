@@ -134,9 +134,7 @@ export function Field({
        * Disable text-align: right in non webkit browsers
        * as they don't support spinner's arrow customization
        */
-      className={`w-full ${
-        navigator.userAgent.includes('webkit') ? 'webkit' : ''
-      }`}
+      className={navigator.userAgent.includes('webkit') ? 'webkit' : ''}
       {...validationAttributes}
       // This is undefined if resource.noValidation=true
       type={validationAttributes.type ?? 'text'}

@@ -36,7 +36,6 @@ export type DefaultComboBoxProps = {
   readonly field: LiteralField | Relationship;
   readonly pickListName: string | undefined;
   readonly defaultValue: string | undefined;
-  readonly className: string | undefined;
   readonly mode: FormMode;
   readonly isRequired: boolean;
   readonly isDisabled: boolean;
@@ -103,7 +102,6 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       disabled
       defaultValue={commonText('loading')}
       required={props.isRequired}
-      className={props.className}
     />
   );
 }

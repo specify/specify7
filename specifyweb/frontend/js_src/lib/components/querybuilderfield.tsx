@@ -326,48 +326,50 @@ export function QueryLine({
                   {icons.ban}
                 </Button.Simple>
               )}
-              <Select
-                aria-label={
-                  queryFieldFilters[field.filters[index].type].description ??
-                  commonText('filter')
-                }
-                title={
-                  queryFieldFilters[field.filters[index].type].description ??
-                  commonText('filter')
-                }
-                value={filter.type}
-                className={customSelectElementBackground}
-                onChange={({ target }): void => {
-                  const newFilter = (target as HTMLSelectElement)
-                    .value as QueryFieldFilter;
-                  const startValue =
-                    typeof queryFieldFilters[newFilter].component ===
-                    'undefined'
-                      ? ''
-                      : filter.type === 'any' &&
-                        filtersWithDefaultValue.has(newFilter) &&
-                        filter.startValue === '' &&
-                        typeof fieldMeta.parser?.value === 'string'
-                      ? fieldMeta.parser.value
-                      : filter.startValue;
-                  handleFilterChange(index, {
-                    ...field.filters[index],
-                    type: newFilter,
-                    startValue,
-                  });
-                }}
-              >
-                {Object.entries(queryFieldFilters).map(
-                  ([filterName, { label, types }]) =>
-                    !Array.isArray(types) ||
-                    (typeof fieldMeta.fieldType === 'string' &&
-                      types.includes(fieldMeta.fieldType)) ? (
-                      <option key={filterName} value={filterName}>
-                        {label}
-                      </option>
-                    ) : undefined
-                )}
-              </Select>
+              <div>
+                <Select
+                  aria-label={
+                    queryFieldFilters[field.filters[index].type].description ??
+                    commonText('filter')
+                  }
+                  title={
+                    queryFieldFilters[field.filters[index].type].description ??
+                    commonText('filter')
+                  }
+                  value={filter.type}
+                  className={customSelectElementBackground}
+                  onChange={({ target }): void => {
+                    const newFilter = (target as HTMLSelectElement)
+                      .value as QueryFieldFilter;
+                    const startValue =
+                      typeof queryFieldFilters[newFilter].component ===
+                      'undefined'
+                        ? ''
+                        : filter.type === 'any' &&
+                          filtersWithDefaultValue.has(newFilter) &&
+                          filter.startValue === '' &&
+                          typeof fieldMeta.parser?.value === 'string'
+                        ? fieldMeta.parser.value
+                        : filter.startValue;
+                    handleFilterChange(index, {
+                      ...field.filters[index],
+                      type: newFilter,
+                      startValue,
+                    });
+                  }}
+                >
+                  {Object.entries(queryFieldFilters).map(
+                    ([filterName, { label, types }]) =>
+                      !Array.isArray(types) ||
+                      (typeof fieldMeta.fieldType === 'string' &&
+                        types.includes(fieldMeta.fieldType)) ? (
+                        <option key={filterName} value={filterName}>
+                          {label}
+                        </option>
+                      ) : undefined
+                  )}
+                </Select>
+              </div>
               {typeof fieldMeta.parser === 'object' && (
                 <QueryLineFilter
                   filter={field.filters[index]}

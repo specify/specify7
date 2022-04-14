@@ -155,7 +155,7 @@ function QueryInputField({
         {...validationAttributes}
         value={value}
         // This is the actual input that is visible to user
-        className="absolute inset-0 w-full"
+        className="absolute inset-0"
       />
     </span>
   );

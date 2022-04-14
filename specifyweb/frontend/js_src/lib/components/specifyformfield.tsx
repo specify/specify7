@@ -123,7 +123,6 @@ const fieldRenderers: {
         fieldName={fieldName}
         pickListName={pickList}
         defaultValue={defaultValue}
-        className="w-full"
         mode={mode}
         isRequired={isRequired}
         isDisabled={false}

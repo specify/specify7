@@ -34,7 +34,7 @@ function ReasonExplanation({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="grid-table grid-cols-[repeat(3,auto)] border border-gray-500 w-full"
+        className="grid-table grid-cols-[repeat(3,auto)] border border-gray-500"
         role="table"
       >
         <div role="row">
