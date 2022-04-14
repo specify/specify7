@@ -70,8 +70,23 @@ export class UiFormatter {
     this.fields = fields;
   }
 
-  public value(): string {
+  /**
+   * Value or wildcard (placeholders)
+   */
+  public valueOrWild(): string {
     return this.fields.map((field) => field.value).join('');
+  }
+
+  /**
+   * Filter out wildcard field (returns only non-default values)
+   */
+  public value(): string {
+    return this.fields
+      .filter(
+        (field) => new RegExp(field.wildRegexp()).exec(field.value) === null
+      )
+      .map((field) => field.value)
+      .join('');
   }
 
   public parseRegexp(): string {
@@ -146,7 +161,7 @@ abstract class Field {
     return this.autoIncrement || this.byYear;
   }
 
-  protected wildRegexp(): string {
+  public wildRegexp(): string {
     return escapeRegExp(this.value);
   }
 

@@ -308,7 +308,7 @@ export function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
 function formatterToParser(formatter: UiFormatter): Parser {
   const regExpString = formatter.parseRegexp();
   const title = formsText('requiredFormat')(
-    formatter.pattern() ?? formatter.value()
+    formatter.pattern() ?? formatter.valueOrWild()
   );
 
   return {

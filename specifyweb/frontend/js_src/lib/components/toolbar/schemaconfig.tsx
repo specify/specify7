@@ -193,7 +193,7 @@ function SchemaConfigWrapper({
             .map(([name, formatter]) => ({
               name,
               isSystem: formatter.isSystem,
-              value: formatter.value(),
+              value: formatter.valueOrWild(),
             }))
             .filter(({ value }) => value)
         ),
