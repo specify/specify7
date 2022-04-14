@@ -104,11 +104,6 @@ export function Autocomplete<T>({
           ),
     []
   );
-  const findItem = (filteredItems: RA<Item<T>>, pendingValue: string) =>
-    filteredItems.find(
-      ({ label }) => compareStrings(label, pendingValue) === 0
-    );
-
   const updateItems = React.useCallback(
     (items: RA<Item<T>>, pendingValue: string): void =>
       setResults((oldItems) => {
@@ -279,9 +274,7 @@ export function Autocomplete<T>({
           handleRefreshItems(source, value);
           const filteredItems = filterItems(results, value);
           setFilteredItems(filteredItems);
-          const item = findItem(filteredItems, value);
-          if (typeof item === 'object') handleChange(item);
-          else setPendingValue(value);
+          setPendingValue(value);
         },
         onClick: handleToggle,
         onBlur({ relatedTarget }): void {
