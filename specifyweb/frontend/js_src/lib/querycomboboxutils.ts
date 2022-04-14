@@ -11,7 +11,7 @@ import { toTable, toTreeTable } from './specifymodel';
 import type { RA } from './types';
 import { userInformation } from './userinfo';
 
-export function makeQueryComboBoxQuery({
+export function makeComboBoxQuery({
   fieldName,
   value,
   treeData,
@@ -37,39 +37,21 @@ export function makeQueryComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  const formattedField = QueryFieldSpec.fromPath([
-    relatedModel.name,
-    ...fieldName.split('.'),
-  ])
-    .toSpQueryField()
-    .set('isDisplay', false)
-    .set('startValue', typeof treeData === 'object' ? `%${value}` : value)
-    .set('operStart', queryFieldFilters.startsWith.id);
-  formattedField.noBusinessRules = true;
-
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),
   ])
     .toSpQueryField()
     .set('isDisplay', false)
-    .set('startValue', typeof treeData === 'object' ? `%${value}` : value)
-    .set('operStart', queryFieldFilters.startsWith.id);
-  searchField.noBusinessRules = true;
+    .set('startValue', `%${value}%`)
+    .set('operStart', queryFieldFilters.like.id);
 
   const displayField = QueryFieldSpec.fromPath([relatedModel.name])
     .toSpQueryField()
     .set('isDisplay', true)
-    .set('sortType', 1)
-    .set('operStart', 0);
-  displayField.noBusinessRules = true;
+    .set('sortType', 1);
 
-  query.set('fields', [
-    formattedField,
-    searchField,
-    displayField,
-    ...specialConditions,
-  ]);
+  query.set('fields', [searchField, displayField, ...specialConditions]);
 
   return query;
 }

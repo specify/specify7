@@ -27,6 +27,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -100,7 +101,7 @@ export class QueryFieldSpec {
       .set('isDisplay', true)
       .set('isNot', false)
       .set('startValue', '')
-      .set('operStart', 1)
+      .set('operStart', queryFieldFilters.any.id)
       .set('sortType', 0)
       .set('tableList', attributes.tableList)
       .set('stringId', attributes.stringId)

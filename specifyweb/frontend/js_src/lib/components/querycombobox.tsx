@@ -2,6 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
@@ -22,7 +23,7 @@ import type {
 import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
-  makeQueryComboBoxQuery,
+  makeComboBoxQuery,
 } from '../querycomboboxutils';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
@@ -43,7 +44,6 @@ import { ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -342,7 +342,7 @@ export function QueryComboBox({
               ? Promise.all(
                   typeSearch.searchFieldsNames
                     .map((fieldName) =>
-                      makeQueryComboBoxQuery({
+                      makeComboBoxQuery({
                         fieldName,
                         value,
                         treeData:
@@ -387,15 +387,24 @@ export function QueryComboBox({
                       })
                     )
                 ).then((responses) =>
-                  responses
-                    .flatMap(({ data: { results } }) => results)
-                    .map(([id, label]) => ({
-                      data:
-                        field?.isRelationship === true
-                          ? getResourceApiUrl(field.relatedModel.name, id)
-                          : id.toString(),
-                      label,
-                    }))
+                  /*
+                   * If there are multiple search fields, and they returned a record
+                   * With the same id, Object.entries(Object.fromEntries(...)) would
+                   * Remove duplicate records
+                   * TODO: simplify this once query builder support OR filters
+                   *   across different fields
+                   */
+                  Object.entries(
+                    Object.fromEntries(
+                      responses.flatMap(({ data: { results } }) => results)
+                    )
+                  ).map(([id, label]) => ({
+                    data:
+                      field?.isRelationship === true
+                        ? getResourceApiUrl(field.relatedModel.name, id)
+                        : id,
+                    label,
+                  }))
                 )
               : [],
           [

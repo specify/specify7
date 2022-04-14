@@ -71,7 +71,7 @@ export function getResourceViewUrl(
  */
 export function getResourceApiUrl(
   tableName: keyof Tables,
-  resourceId: number,
+  resourceId: number | string,
   recordSetId?: number
 ): string {
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
