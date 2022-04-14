@@ -6,7 +6,11 @@ import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
-import { getValidationAttributes, parseValue } from '../uiparse';
+import {
+  getValidationAttributes,
+  parseValue,
+  pluralizeParser,
+} from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
 import { omit } from '../helpers';
 import { f } from '../functools';
@@ -242,10 +246,14 @@ function In({
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element {
+  const pluralizedParser = React.useMemo(
+    () => pluralizeParser(parser),
+    [parser]
+  );
   return (
     <QueryInputField
       currentValue={filter.startValue}
-      parser={parser}
+      parser={pluralizedParser}
       pickListItems={pickListItems}
       label={queryText('startValue')}
       fieldName={fieldName}
