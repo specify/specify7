@@ -163,42 +163,21 @@ function postProcessRows(
         )
     )
   );
+  // If some row has extra columns, add new columns to the definition
+  const newColumns = [
+    ...columns,
+    ...Array.from({
+      length:
+        Math.max(
+          ...rows.map((row) => f.sum(row.map(({ colSpan }) => colSpan ?? 1)))
+        ) - columns.length,
+    }).fill(undefined),
+  ];
   const newRows = rows.map<RA<FormCellDefinition>>((row, rowIndex) => {
     const totalColumns = f.sum(row.map(({ colSpan }) => colSpan ?? 1));
-    if (totalColumns > columns.length)
-      /*
-       * This may also happen if column had a colSpan in the view definition,
-       * since all colSpans undergo `Math.ceil(colSpan / 2)`, which may
-       * make total colSpan be larger than the number of defined columns
-       */
-      console.error(
-        `Row ${rowIndex}/${rows.length} has ${totalColumns} column(s), when
-          expected only ${columns.length}`,
-        { row, columns }
-      );
     return filterArray([
       ...row
-        /*
-         * Make sure total colSpan is not larger than the number of columns
-         * as that would mess up the grid
-         */
-        .reduce<{ readonly cells: typeof row; readonly remaining: number }>(
-          ({ cells, remaining }, cell) => ({
-            cells:
-              remaining < 0
-                ? cells
-                : [
-                    ...cells,
-                    {
-                      ...cell,
-                      colSpan: Math.min(remaining, cell.colSpan),
-                    },
-                  ],
-            remaining: remaining - (cell.colSpan ?? 1),
-          }),
-          { cells: [], remaining: columns.length }
-        )
-        .cells.map((cell, index) =>
+        .map((cell, index) =>
           /*
            * If a Label without a labelForCellId attribute precedes a field with an
            * ID, but no label, associate the label with that field
@@ -219,7 +198,7 @@ function postProcessRows(
                   ...cell,
                   labelForCellId: row[index + 1].id,
                 }
-              : columns.length === 1 &&
+              : newColumns.length === 1 &&
                 typeof row[rowIndex + 1]?.id === 'string' &&
                 typeof initialLabelsForCells[defined(row[rowIndex + 1].id)] ===
                   'undefined'
@@ -250,7 +229,7 @@ function postProcessRows(
                     }
                   : {}),
                 // Don't right align labels if there is only one column
-                align: columns.length === 1 ? 'left' : cell.align,
+                align: newColumns.length === 1 ? 'left' : cell.align,
               }
             : cell
         )
@@ -290,12 +269,12 @@ function postProcessRows(
        * Add a necessary number of blank cells at the end so that the
        * grid is not off when some row has fewer columns than in the definition.
        */
-      columns.length - totalColumns > 0
+      newColumns.length - totalColumns > 0
         ? {
             type: 'Blank',
             id: undefined,
             align: 'left',
-            colSpan: columns.length - totalColumns,
+            colSpan: newColumns.length - totalColumns,
             visible: false,
             ariaLabel: undefined,
           }
@@ -314,7 +293,7 @@ function postProcessRows(
     )
   );
   return {
-    columns,
+    columns: newColumns,
     rows: newRows.map((row) =>
       row.map((cell) =>
         typeof cell.id === 'undefined' ||
