@@ -183,6 +183,7 @@ export const augmentMode = (
       : 'view'
     : initialMode;
 
+// TODO: update title to match current resource
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,

@@ -4,6 +4,9 @@ import _ from 'underscore';
 import { ajax } from './ajax';
 import { transitionDuration } from './components/basic';
 import type { RA, RR } from './types';
+import { filterArray } from './types';
+import treeText from './localization/tree';
+import { formatNumber } from './components/internationalization';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -182,3 +185,22 @@ export function mapKey(
 
   return action;
 }
+
+export const formatTreeStats = (
+  nodeStats: Stats[number],
+  isLeaf: boolean
+): {
+  readonly title: string;
+  readonly text: string;
+} => ({
+  title: filterArray([
+    `${treeText('directCollectionObjectCount')}: ${nodeStats.directCount}`,
+    isLeaf
+      ? undefined
+      : `${treeText('indirectCollectionObjectCount')}: ${nodeStats.childCount}`,
+  ]).join('\n'),
+  text: `(${filterArray([
+    nodeStats.directCount,
+    isLeaf ? undefined : formatNumber(nodeStats.childCount),
+  ]).join(', ')})`,
+});
