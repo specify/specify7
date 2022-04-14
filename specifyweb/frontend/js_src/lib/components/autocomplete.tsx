@@ -55,6 +55,7 @@ export function Autocomplete<T>({
   minLength = 1,
   delay = debounceRate,
   forwardRef,
+  filterItems: shouldFilterItems,
   onChange: handleChange,
   onNewValue: handleNewValue,
   onCleared: handleCleared,
@@ -69,6 +70,7 @@ export function Autocomplete<T>({
   readonly onChange: (item: Item<T>) => void;
   readonly onCleared?: () => void;
   readonly forwardRef?: React.Ref<HTMLInputElement>;
+  readonly filterItems: boolean;
   readonly children: (props: {
     readonly forwardRef: React.RefCallback<HTMLInputElement>;
     readonly value: string;
@@ -93,16 +95,18 @@ export function Autocomplete<T>({
     (newResults: typeof results, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
-        : newResults.filter(
+        : shouldFilterItems
+        ? newResults.filter(
             ({ label, searchValue }) =>
-              label.includes(pendingValue) ||
+              label.toLowerCase().includes(pendingValue) ||
               (typeof searchValue === 'string' &&
                 compareStrings(
                   label.slice(0, pendingValue.length),
                   pendingValue
                 ) === 0)
-          ),
-    []
+          )
+        : newResults,
+    [shouldFilterItems]
   );
   const updateItems = React.useCallback(
     (items: RA<Item<T>>, pendingValue: string): void =>

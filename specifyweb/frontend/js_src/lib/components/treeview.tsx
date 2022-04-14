@@ -142,6 +142,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <div>
           {/* A React component that is also a TypeScript generic */}
           <Autocomplete<SerializedResource<SCHEMA>>
+            filterItems={false}
             value={searchValue}
             source={async (value) =>
               fetchCollection(

@@ -172,6 +172,7 @@ export function PickListComboBox(
         </Select>
       ) : (
         <Autocomplete<string>
+          filterItems={true}
           source={autocompleteItems}
           onNewValue={addNewValue}
           onChange={({ data }): void => updateValue(data)}

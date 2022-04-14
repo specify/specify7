@@ -14,13 +14,13 @@ import { userInformation } from './userinfo';
 export function makeComboBoxQuery({
   fieldName,
   value,
-  treeData,
+  isTreeTable,
   typeSearch: { relatedModel },
   specialConditions,
 }: {
   readonly fieldName: string;
   readonly value: string;
-  readonly treeData: QueryComboBoxTreeData | undefined;
+  readonly isTreeTable: boolean;
   readonly typeSearch: TypeSearch;
   readonly specialConditions: RA<SpecifyResource<SpQueryField>>;
 }): SpecifyResource<SpQuery> {
@@ -37,14 +37,18 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
+  // TODO allow customizing this part
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),
   ])
     .toSpQueryField()
     .set('isDisplay', false)
-    .set('startValue', `%${value}%`)
-    .set('operStart', queryFieldFilters.like.id);
+    .set('startValue', isTreeTable ? `%${value}` : value)
+    .set(
+      'operStart',
+      isTreeTable ? queryFieldFilters.like.id : queryFieldFilters.startsWith.id
+    );
 
   const displayField = QueryFieldSpec.fromPath([relatedModel.name])
     .toSpQueryField()

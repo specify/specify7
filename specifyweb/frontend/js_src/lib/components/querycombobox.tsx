@@ -29,7 +29,11 @@ import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
-import { getTreeDefinitionItems, treeRanksPromise } from '../treedefinitions';
+import {
+  getTreeDefinitionItems,
+  isTreeModel,
+  treeRanksPromise,
+} from '../treedefinitions';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
@@ -336,6 +340,7 @@ export function QueryComboBox({
   return (
     <div className="flex items-center">
       <Autocomplete<string>
+        filterItems={false}
         source={React.useCallback(
           async (value) =>
             isLoaded && typeof typeSearch === 'object'
@@ -345,8 +350,7 @@ export function QueryComboBox({
                       makeComboBoxQuery({
                         fieldName,
                         value,
-                        treeData:
-                          typeof treeData === 'object' ? treeData : undefined,
+                        isTreeTable: isTreeModel(resource.specifyModel.name),
                         typeSearch,
                         specialConditions: getQueryComboBoxConditions({
                           resource,
