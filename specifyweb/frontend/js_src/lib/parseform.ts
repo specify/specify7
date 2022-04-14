@@ -235,16 +235,22 @@ function postProcessRows(
             : cell
         )
         .map((cell) =>
-          cell.type === 'Label' && typeof cell.labelForCellId === 'string'
+          cell.type === 'Label'
             ? {
                 ...cell,
-                // Let some fields overwrite their label
-                text:
-                  fieldsById[cell.labelForCellId]?.labelOverride ??
-                  cell.text ??
-                  fieldsById[cell.labelForCellId]?.altLabel,
-                // Get label fieldName from its field
-                fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+                ...(typeof cell.labelForCellId === 'string'
+                  ? {
+                      // Let some fields overwrite their label
+                      text:
+                        fieldsById[cell.labelForCellId]?.labelOverride ??
+                        cell.text ??
+                        fieldsById[cell.labelForCellId]?.altLabel,
+                      // Get label fieldName from its field
+                      fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+                    }
+                  : {}),
+                // Don't right align labels if there is only one column
+                align: columns.length === 1 ? 'left' : cell.align,
               }
             : cell
         )
