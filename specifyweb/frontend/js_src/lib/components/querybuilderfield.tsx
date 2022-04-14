@@ -370,19 +370,21 @@ export function QueryLine({
                   )}
                 </Select>
               </div>
-              {typeof fieldMeta.parser === 'object' && (
-                <QueryLineFilter
-                  filter={field.filters[index]}
-                  fieldName={mappingPathToString(field.mappingPath)}
-                  parser={fieldMeta.parser}
-                  onChange={(startValue): void =>
-                    handleFilterChange(index, {
-                      ...field.filters[index],
-                      startValue,
-                    })
-                  }
-                />
-              )}
+              <div>
+                {typeof fieldMeta.parser === 'object' && (
+                  <QueryLineFilter
+                    filter={field.filters[index]}
+                    fieldName={mappingPathToString(field.mappingPath)}
+                    parser={fieldMeta.parser}
+                    onChange={(startValue): void =>
+                      handleFilterChange(index, {
+                        ...field.filters[index],
+                        startValue,
+                      })
+                    }
+                  />
+                )}
+              </div>
             </div>
           ))}
         </div>
