@@ -285,6 +285,7 @@ export function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
     [
       ...Object.entries(base),
       ...Object.entries(extra),
+      ['required', base?.required === true || extra?.required === true],
       ...concat.map((key) => [
         key,
         [...(base[key] ?? []), ...(extra[key] ?? [])],
