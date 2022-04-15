@@ -235,11 +235,9 @@ const fetchListOfUsers = async (): Promise<
 function ChangeOwner({
   dataset,
   onClose: handleClose,
-  onChanged: handleChanged,
 }: {
   readonly dataset: Dataset;
   readonly onClose: () => void;
-  readonly onChanged: () => void;
 }): JSX.Element | null {
   const [users] = useAsyncState<RA<SerializedResource<SpecifyUser>>>(
     fetchListOfUsers,
@@ -255,7 +253,7 @@ function ChangeOwner({
     <Dialog
       title={wbText('dataSetOwnerChangedDialogTitle')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
-      onClose={handleChanged}
+      onClose={(): void => goTo('/specify/')}
       buttons={commonText('close')}
     >
       <p>{wbText('dataSetOwnerChangedDialogMessage')}</p>
@@ -334,7 +332,6 @@ export const DataSetNameView = Backbone.View.extend({
     this.changeOwnerView = new ChangeOwnerView({
       dataset: this.options.dataset,
       onClose: handleClose,
-      onChanged: (): void => goTo('/specify/'),
     }).render();
   },
   remove() {

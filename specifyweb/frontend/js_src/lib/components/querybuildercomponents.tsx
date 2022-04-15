@@ -15,7 +15,7 @@ import { userInformation } from '../userinfo';
 import { f } from '../functools';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
-import { Button } from './basic';
+import { Button, className, Link } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
@@ -197,13 +197,12 @@ export function MakeRecordSetButton({
             buttons={
               <>
                 <Button.DialogClose>{commonText('no')}</Button.DialogClose>
-                <Button.Blue
-                  onClick={(): void =>
-                    goTo(`/specify/recordset/${recordSet.id}/`)
-                  }
+                <Link.LikeButton
+                  className={className.blueButton}
+                  href={`/specify/recordset/${recordSet.id}/`}
                 >
                   {commonText('open')}
-                </Button.Blue>
+                </Link.LikeButton>
               </>
             }
           >

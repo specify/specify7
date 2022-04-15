@@ -459,7 +459,7 @@ function QueryImport({
                     )
                   )
                 )
-                .then((queryResource) => queryResource.save())
+                .then(async (queryResource) => queryResource.save())
                 .then((queryResource) =>
                   goTo(`/specify/query/${queryResource.id}/`)
                 )

@@ -15,7 +15,17 @@ import {
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { group, sortFunction, split } from '../helpers';
-import { Button, className, Form, H3, Input, Link, Select, Ul } from './basic';
+import {
+  Button,
+  className,
+  Form,
+  H3,
+  Input,
+  Link,
+  Select,
+  Submit,
+  Ul,
+} from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
@@ -184,6 +194,7 @@ export function ExpressSearch(): JSX.Element {
         value={searchQuery}
         onValueChange={setSearchQuery}
       />
+      <Submit.Blue className="sr-only">{commonText('search')}</Submit.Blue>
     </Form>
   );
 }

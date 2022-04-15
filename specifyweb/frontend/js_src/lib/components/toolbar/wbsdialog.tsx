@@ -7,10 +7,11 @@
 import React from 'react';
 
 import { ajax, Http } from '../../ajax';
+import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { hasPermission } from '../../permissions';
 import type { RA } from '../../types';
-import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
@@ -21,11 +22,10 @@ import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
+import { goTo } from '../navigation';
 import { createBackboneView } from '../reactbackboneextend';
 import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
-import { hasPermission } from '../../permissions';
-import { goTo } from '../navigation';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -209,9 +209,12 @@ function DataSets({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           {canImport && (
             <>
-              <Button.Blue onClick={(): void => goTo('/workbench-import/')}>
+              <Link.LikeFancyButton
+                className={className.blueButton}
+                href={'/workbench-import/'}
+              >
                 {wbText('importFile')}
-              </Button.Blue>
+              </Link.LikeFancyButton>
               <Button.Blue onClick={createEmptyDataSet}>
                 {wbText('createNew')}
               </Button.Blue>

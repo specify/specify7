@@ -21,7 +21,7 @@ import {Backbone} from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {Button, className} from './components/basic';
+import {Button, className, Link} from './components/basic';
 import {getModel, schema} from './schema';
 import {DataSetNameView} from './components/datasetmeta';
 import {NotFoundView} from './components/notfoundview';
@@ -58,7 +58,7 @@ import {legacyLoadingContext} from './components/contexts';
 import {
   addUnloadProtect,
   goTo,
-  removeUnloadProtect
+  removeUnloadProtect,
 } from './components/navigation';
 import {getCache, setCache} from './cache';
 import {f} from './functools';
@@ -86,7 +86,6 @@ const WBView = Backbone.View.extend({
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',
     'click .wb-data-check': 'toggleDataCheck',
-    'click .wb-plan': 'openPlan',
     'click .wb-show-plan': 'showPlan',
     'click .wb-revert': 'revertChanges',
     'click .wb-save': 'saveClicked',
@@ -212,7 +211,8 @@ const WBView = Backbone.View.extend({
   render() {
     this.$el.append(
       wbViewTemplate(
-        this.isUploaded || !hasPermission('/workbench/dataset', 'update')
+        this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
+        this.dataset.id,
       )
     );
     this.$el.attr('aria-label', commonText('workbench'));
@@ -250,9 +250,12 @@ const WBView = Backbone.View.extend({
               buttons: (
                 <>
                   <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Button.Blue onClick={this.openPlan.bind(this)}>
+                  <Link.LikeFancyButton
+                    className={className.blueButton}
+                    href={`/workbench-plan/${this.dataset.id}/`}
+                  >
                     {commonText('create')}
-                  </Button.Blue>
+                  </Link.LikeFancyButton>
                 </>
               ),
               content: wbText('noUploadPlanDialogMessage'),
@@ -1772,9 +1775,6 @@ const WBView = Backbone.View.extend({
 
     runEffects();
   },
-  openPlan() {
-    goTo(`/workbench-plan/${this.dataset.id}/`);
-  },
   // For debugging only
   showPlan() {
     const dataset = this.dataset;
@@ -1875,9 +1875,12 @@ const WBView = Backbone.View.extend({
         buttons: (
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Button.Blue onClick={() => this.openPlan()}>
+            <Link.LikeFancyButton
+              className={className.blueButton}
+              href={`/workbench-plan/${this.dataset.id}/`}
+            >
               {commonText('create')}
-            </Button.Blue>
+            </Link.LikeFancyButton>
           </>
         ),
       });

@@ -10,7 +10,7 @@ import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { wbText } from '../localization/workbench';
 import { hasPermission } from '../permissions';
-import { Button, Input } from './basic';
+import { Button, Input, Link } from './basic';
 
 function Navigation({
   name,
@@ -49,7 +49,13 @@ function Navigation({
   );
 }
 
-function WbView({ isUploaded }: { readonly isUploaded: boolean }): JSX.Element {
+function WbView({
+  isUploaded,
+  dataSetId,
+}: {
+  readonly isUploaded: boolean;
+  readonly dataSetId: number;
+}): JSX.Element {
   return (
     <>
       <div
@@ -66,9 +72,9 @@ function WbView({ isUploaded }: { readonly isUploaded: boolean }): JSX.Element {
         </Button.Simple>
         <span className="flex-1 -ml-1" />
         <Button.Simple className="wb-show-plan hidden">Show Plan</Button.Simple>
-        <Button.Simple className="button wb-plan">
+        <Link.LikeButton href={`/workbench-plan/${dataSetId}/`}>
           {wbText('dataMapper')}
-        </Button.Simple>
+        </Link.LikeButton>
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
           <Button.Simple
             aria-haspopup="dialog"
@@ -215,5 +221,10 @@ function WbView({ isUploaded }: { readonly isUploaded: boolean }): JSX.Element {
   );
 }
 
-export const wbViewTemplate = (isUploaded: boolean): string =>
-  ReactDOMServer.renderToStaticMarkup(<WbView isUploaded={isUploaded} />);
+export const wbViewTemplate = (
+  isUploaded: boolean,
+  dataSetId: number
+): string =>
+  ReactDOMServer.renderToStaticMarkup(
+    <WbView isUploaded={isUploaded} dataSetId={dataSetId} />
+  );

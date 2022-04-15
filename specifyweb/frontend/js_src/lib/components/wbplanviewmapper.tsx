@@ -23,10 +23,9 @@ import {
   fetchAutoMapperSuggestions,
   getMappedFields,
   getMustMatchTables,
-  goBack,
   mappingPathIsComplete,
 } from '../wbplanviewutils';
-import { Button, Ul } from './basic';
+import { Button, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useId, useUnloadProtect } from './hooks';
@@ -387,12 +386,12 @@ export function WbPlanViewMapper(props: {
               }
             />
           )}
-          <Button.Simple
+          <Link.LikeButton
             aria-haspopup="dialog"
-            onClick={(): void => goBack(props.dataset.id)}
+            href={`/workbench/${props.dataset.id}/`}
           >
             {props.isReadOnly ? wbText('dataEditor') : commonText('cancel')}
-          </Button.Simple>
+          </Link.LikeButton>
           {!props.isReadOnly && (
             <Button.Simple
               disabled={!state.changesMade}
