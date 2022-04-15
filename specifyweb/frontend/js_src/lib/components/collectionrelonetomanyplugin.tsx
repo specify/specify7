@@ -160,7 +160,7 @@ export function CollectionOneToManyPlugin({
   >({ type: 'MainState' });
 
   return (
-    <>
+    <div className="bg-white rounded">
       <table>
         <thead>
           <tr>
@@ -294,6 +294,6 @@ export function CollectionOneToManyPlugin({
           }}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -57,14 +57,12 @@ export function OtherCollection({
                 {commonText('loginToProceed')(
                   defined(collections[0].collectionName ?? undefined)
                 )}
-                <Button.LikeLink
-                  onClick={(): void => switchCollection(collections[0].id)}
-                >
-                  {commonText('open')}
-                </Button.LikeLink>
-                .
               </p>
-              `);
+              <Button.Blue
+                onClick={(): void => switchCollection(collections[0].id)}
+              >
+                {commonText('open')}
+              </Button.Blue>
             </>
           )}
         </>
