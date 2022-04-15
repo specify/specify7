@@ -38,26 +38,6 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-/*
- * Query Results:
- * FIXME: query results editing & deleting
- * FIXME: creating record set out of a subset of results
- * To Test:
- * FIXME: test #318
- * FIXME: test "any" filters in sp6 and sp7
- * FIXME: test query reports
- * FIXME: test using sp7 queries in sp6 and vice versa
- */
-/*
- * Query Results:
- * FIXME: query results editing & deleting
- * FIXME: creating record set out of a subset of results
- * To Test:
- * FIXME: test #318
- * FIXME: test "any" filters in sp6 and sp7
- * FIXME: test query reports
- * FIXME: test using sp7 queries in sp6 and vice versa
- */
 
 /*
  * Query Results:
@@ -69,7 +49,6 @@ import { MappingView } from './wbplanviewmappercomponents';
  * FIXME: test query reports
  * FIXME: test using sp7 queries in sp6 and vice versa
  */
-
 export function QueryBuilder({
   query: queryResource,
   isReadOnly,

@@ -12,7 +12,7 @@ import { Button, className, Form, Link, Submit } from './basic';
 import { useTitle } from './hooks';
 import { SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
-import { formatUrl } from '../querystring';
+import { formatUrl, parseUrl } from '../querystring';
 
 export type OicProvider = {
   readonly provider: string;
@@ -79,7 +79,7 @@ export function OicLogin({
           <Link.LikeFancyButton
             className={className.fancyButton}
             href={formatUrl('/accounts/legacy_login/', {
-              next: encodeURIComponent(nextUrl),
+              next: parseUrl().next,
             })}
           >
             {commonText('legacyLogin')}
