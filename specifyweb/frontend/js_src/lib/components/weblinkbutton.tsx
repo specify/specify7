@@ -23,10 +23,12 @@ export const webLinks = load<Element>(
 ).then((xml) =>
   Object.fromEntries(
     Array.from(
-      xml.querySelectorAll('vector > webLinkDef'),
+      xml.querySelectorAll('vector > weblinkdef'),
       (definition) =>
         [
-          defined(definition.querySelector('> name')?.textContent ?? undefined),
+          defined(
+            definition.querySelector(':scope > name')?.textContent ?? undefined
+          ),
           definition,
         ] as const
     )
@@ -73,7 +75,8 @@ export function WebLinkButton({
       const definition = await webLinks.then(
         (definitions) => definitions[webLinkName ?? '']
       );
-      const title = definition?.querySelector('> desc')?.textContent ?? '';
+      const title =
+        definition?.querySelector(':scope > desc')?.textContent ?? '';
       if (typeof definition === 'undefined')
         console.error("Couldn't determine weblink", {
           resource,
