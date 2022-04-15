@@ -9,6 +9,7 @@ import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
 import { hasToolPermission } from '../permissions';
 import { PickListTypes } from '../picklistmixins';
+import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
@@ -18,7 +19,6 @@ import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { useSaveBlockers, useValidationAttributes } from './resource';
-import { resourceOn } from '../resource';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -157,9 +157,7 @@ export function PickListComboBox(
           disabled={isDisabled}
         >
           {isExistingValue ? undefined : value === null ? (
-            props.isRequired ? undefined : (
-              <option key="nullValue" />
-            )
+            <option key="nullValue" />
           ) : (
             <option key="invalidValue">
               {queryText('invalidPicklistValue')(value)}

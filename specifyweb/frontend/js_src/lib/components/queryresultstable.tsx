@@ -25,7 +25,7 @@ import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import {Button, className, Container, H3, Link} from './basic';
+import { Button, className, Container, H3, Link } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
@@ -34,7 +34,6 @@ import { Dialog, loadingBar } from './modaldialog';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { ResourceView } from './resourceview';
-import { goTo } from './navigation';
 
 function TableHeaderCell({
   fieldSpec,
@@ -222,7 +221,10 @@ function CreateRecordSet({
             buttons={
               <>
                 <Button.DialogClose>{commonText('no')}</Button.DialogClose>
-                <Link.LikeFancyButton className={className.blueButton} href={`/specify/recordset/${recordSet.id}/`}>
+                <Link.LikeFancyButton
+                  className={className.blueButton}
+                  href={`/specify/recordset/${recordSet.id}/`}
+                >
                   {commonText('open')}
                 </Link.LikeFancyButton>
               </>

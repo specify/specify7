@@ -65,6 +65,7 @@ function TemplateSelection({
 }
 
 export function BaseTableSelection({
+  onClose: handleClose,
   onSelectTemplate: handleSelectTemplate,
   onSelected: handleSelected,
   headers,
