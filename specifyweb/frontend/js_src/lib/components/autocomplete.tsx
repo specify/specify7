@@ -97,7 +97,7 @@ export function Autocomplete<T>({
         : shouldFilterItems
         ? newResults.filter(
             ({ label, searchValue }) =>
-              label.toLowerCase().includes(pendingValue) ||
+              label.toLowerCase().includes(pendingValue.toLowerCase()) ||
               (typeof searchValue === 'string' &&
                 compareStrings(
                   label.slice(0, pendingValue.length),
@@ -153,9 +153,9 @@ export function Autocomplete<T>({
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
 
+  const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
-  const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
 
   function handleKeyDown(key: string): void {
     let newIndex = currentIndex;

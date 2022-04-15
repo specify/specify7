@@ -93,8 +93,8 @@ export function PickListComboBox(
     resource: props.model,
     fieldName: props.field.name,
   });
-  const remote = props.resource !== props.model;
-  const { validationRef } = useValidation(remote ? '' : errors);
+  const isRemote = props.resource !== props.model;
+  const { validationRef } = useValidation(isRemote ? '' : errors);
 
   const [pendingNewValue, setPendingNewValue] = React.useState<
     string | undefined
@@ -116,8 +116,9 @@ export function PickListComboBox(
     else throw new Error('adding item to wrong type of picklist');
   }
 
+  const currentValue = props.items?.find((item) => item.value === value);
   const isExistingValue =
-    props.items?.some((item) => item.value === value) ?? true;
+    typeof props.items === 'undefined' || typeof currentValue === 'object';
 
   const autocompleteItems = React.useMemo(
     () =>
@@ -179,7 +180,7 @@ export function PickListComboBox(
           onCleared={(): void => updateValue('')}
           forwardRef={validationRef}
           aria-label={undefined}
-          value={value ?? ''}
+          value={currentValue?.title ?? value ?? ''}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
