@@ -14,7 +14,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, PartialBy, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry, H3 } from './basic';
+import { Button, DataEntry } from './basic';
 import type { SortConfig } from './common';
 import { SortIndicator } from './common';
 import { useId } from './hooks';
@@ -295,7 +295,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
-        <H3>{header}</H3>
+        <DataEntry.SubFormTitle>{header}</DataEntry.SubFormTitle>
         {addButton}
       </DataEntry.SubFormHeader>
       {children}

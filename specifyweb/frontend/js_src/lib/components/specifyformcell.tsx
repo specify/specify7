@@ -12,7 +12,7 @@ import { hasTablePermission } from '../permissions';
 import type { Collection } from '../specifymodel';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { H3 } from './basic';
+import { DataEntry } from './basic';
 import { FormTableInteraction } from './formtableinteractionitem';
 import { useAsyncState } from './hooks';
 import { RenderForm } from './specifyform';
@@ -75,7 +75,9 @@ const cellRenderers: {
   },
   Separator({ cellData: { label } }) {
     return typeof label === 'string' ? (
-      <H3 className="border-b border-gray-500">{label}</H3>
+      <DataEntry.SubFormTitle className="border-b border-gray-500">
+        {label}
+      </DataEntry.SubFormTitle>
     ) : (
       <hr className="w-full border-b border-gray-500" />
     );

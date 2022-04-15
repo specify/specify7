@@ -163,7 +163,7 @@ export const className = {
   containerFull: 'flex flex-col gap-4 h-full',
   containerBase: `${baseContainer}`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
-  formTitle: 'text-lg',
+  formTitle: 'text-lg font-bold',
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
