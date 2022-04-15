@@ -276,7 +276,10 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     // If can't find the field by name, try looking for aliases
     if (typeof field === 'undefined') {
-      if (unparsedName.toLowerCase() === this.idField.name.toLowerCase())
+      if (
+        unparsedName.toLowerCase() === this.idField.name.toLowerCase() ||
+        unparsedName.toLowerCase() === 'id'
+      )
         return this.idField;
 
       const alias = this.fieldAliases.find(

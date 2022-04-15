@@ -92,7 +92,6 @@ export function Field({
   readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-  console.log(resource, field?.name);
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field?.name,

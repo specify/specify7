@@ -2,9 +2,11 @@
  * Query Field spec is a Specify 6 concept for a query field.
  */
 
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
-import { capitalize, insertItem, toLowerCase } from './helpers';
 import type { SpQueryField } from './datamodel';
+import { f } from './functools';
+import { capitalize, insertItem, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
@@ -27,7 +29,6 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { queryFieldFilters } from './components/querybuilderfieldfilter';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -79,7 +80,21 @@ export class QueryFieldSpec {
       this.treeRank !== anyTreeRank &&
       this.getField()?.name === 'fullName'
         ? undefined
-        : `${this.getField()?.name ?? ''}${
+        : `${
+            f.maybe(this.getField(), (field) =>
+              /*
+               * Back-end expects "taxonId" and other id fields for tree ranks
+               * to be called "ID" (case-sensitive)
+               */
+              typeof this.treeRank === 'string'
+                ? field === field.model.idField
+                  ? 'ID'
+                  : field.name === 'author'
+                  ? 'Author'
+                  : field.name
+                : field.name
+            ) ?? ''
+          }${
             typeof this.datePart === 'string' && this.datePart !== 'fullDate'
               ? `Numeric${capitalize(this.datePart)}`
               : ''
