@@ -194,7 +194,7 @@ export function Main({
     typeof userTools === 'undefined' ? null : (
     <>
       <Button.Simple
-        className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only"
+        className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only z-10"
         onClick={(): void => {
           if (!mainRef.current) return;
           mainRef.current.setAttribute('tabindex', '-1');
