@@ -90,7 +90,7 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 
 export const parsers = f.store(
-  (): RR<ExtendedJavaType, ExtendedJavaType | Parser | (() => Parser)> => ({
+  (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
     'java.lang.Boolean': {
       type: 'checkbox',
       pattern: /\s+(?:true|false|yes|no)\s+/i,
@@ -168,7 +168,7 @@ export const parsers = f.store(
 
     'java.math.BigDecimal': 'java.lang.Double',
 
-    'java.sql.Timestamp': () => ({
+    'java.sql.Timestamp': {
       type: 'date',
       minLength: fullDateFormat().length,
       maxLength: fullDateFormat().length,
@@ -190,7 +190,7 @@ export const parsers = f.store(
       title: formsText('requiredFormat')(fullDateFormat()),
       parser: (value) => (value as any).format(databaseDateFormat),
       value: dayjs().format(databaseDateFormat),
-    }),
+    },
 
     'java.util.Calendar': 'java.sql.Timestamp',
 
@@ -242,7 +242,6 @@ type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
 export function parserFromType(fieldType: ExtendedJavaType): Parser {
   let parser = parsers()[fieldType];
   if (typeof parser === 'string') parser = parsers()[parser];
-  if (typeof parser === 'function') parser = parser();
   if (typeof parser !== 'object') parser = { type: 'text' };
   return parser;
 }

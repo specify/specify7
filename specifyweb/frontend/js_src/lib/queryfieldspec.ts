@@ -54,7 +54,7 @@ function extractDatePart(fieldName: string): {
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyModel;
 
-  private joinPath: RA<LiteralField | Relationship> = [];
+  public joinPath: RA<LiteralField | Relationship> = [];
 
   public table: SpecifyModel;
 

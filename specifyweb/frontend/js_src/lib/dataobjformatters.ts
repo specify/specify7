@@ -219,7 +219,7 @@ export async function aggregate(
   if (typeof aggregator === 'undefined')
     throw new Error('Aggregator not found');
 
-  if (!collection.isComplete()) throw new Error('Collection is incomplete');
+  if (!collection.isComplete()) console.error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>

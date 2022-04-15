@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
-import { format } from '../dataobjformatters';
+import { aggregate, format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
@@ -12,6 +12,9 @@ import { getValidationAttributes, mergeParsers } from '../uiparse';
 import { Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';
 import { getResourceAndField } from './resource';
+import { QueryFieldSpec } from '../queryfieldspec';
+import { relationshipIsToMany } from '../wbplanviewmappinghelper';
+import { Collection } from '../specifymodel';
 
 export function UiField({
   id,
@@ -34,9 +37,33 @@ export function UiField({
     false
   );
 
+  /*
+   * If tried to render a -to-many field, display a readOnly aggregated
+   * collection
+   */
+  const [aggregated] = useAsyncState(
+    React.useCallback(
+      async () =>
+        typeof data === 'object' && typeof fieldName === 'string'
+          ? 'models' in data.resource
+            ? aggregate(data.resource as unknown as Collection<AnySchema>)
+            : QueryFieldSpec.fromPath([
+                resource.specifyModel.name,
+                ...fieldName.split('.'),
+              ]).joinPath.some(
+                (field) => field.isRelationship && relationshipIsToMany(field)
+              )
+            ? data.resource.rgetCollection(data.field.name).then(aggregate)
+            : false
+          : undefined,
+      [data, fieldName]
+    ),
+    false
+  );
+
   return typeof data === 'undefined' ? (
-    <Input.Text disabled id={id} />
-  ) : (
+    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+  ) : aggregated === false ? (
     <Field
       id={id}
       model={resource}
@@ -45,6 +72,8 @@ export function UiField({
       parser={parser}
       mode={mode}
     />
+  ) : (
+    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
   );
 }
 
@@ -63,6 +92,7 @@ export function Field({
   readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
+  console.log(resource, field?.name);
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field?.name,
