@@ -100,7 +100,18 @@ const processCellType: {
   }) => CellTypes[KEY];
 } = {
   Field({ cell, model, getProperty }) {
-    const rawFieldName = getAttribute(cell, 'name');
+    let rawFieldName = getAttribute(cell, 'name');
+    const parts = rawFieldName?.split('.');
+    /*
+     * If model is attachment, and field name is attachment.type, replace it
+     * with "type"
+     */
+    if (
+      Array.isArray(parts) &&
+      parts.length > 1 &&
+      parts[0].toLowerCase() === model?.name.toLowerCase()
+    )
+      rawFieldName = parts?.slice(1).join('.');
     const field = model?.getField(rawFieldName ?? '');
     const fieldDefinition = parseFormField(cell, getProperty);
     /*
