@@ -62,7 +62,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.model);
     if (
       typeof resource === 'undefined' ||
-      hasTreeAccess(resource.specifyModel.name, 'read')
+      !hasTreeAccess(resource.specifyModel.name, 'read')
     )
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
@@ -93,7 +93,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                       )
                     )
                   )
-              : []
+              : undefined
           )
           .then((items) => (destructorCalled ? undefined : setItems(items))),
       true
@@ -108,6 +108,10 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
+      isRequired={
+        props.model.specifyModel.getRelationship('definitionItem')
+          ?.isRequired ?? true
+      }
       items={items}
       onAdd={undefined}
       pickList={undefined}

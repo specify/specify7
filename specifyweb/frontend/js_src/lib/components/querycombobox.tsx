@@ -31,7 +31,7 @@ import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
 import {
   getTreeDefinitionItems,
-  isTreeModel,
+  isTreeResource,
   treeRanksPromise,
 } from '../treedefinitions';
 import type { RA } from '../types';
@@ -350,7 +350,7 @@ export function QueryComboBox({
                       makeComboBoxQuery({
                         fieldName,
                         value,
-                        isTreeTable: isTreeModel(resource.specifyModel.name),
+                        isTreeTable: isTreeResource(resource),
                         typeSearch,
                         specialConditions: getQueryComboBoxConditions({
                           resource,

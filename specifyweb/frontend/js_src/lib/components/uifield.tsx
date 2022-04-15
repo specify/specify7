@@ -73,11 +73,7 @@ export function Field({
   React.useEffect(
     () =>
       setAttributes(
-        getValidationAttributes(
-          mergeParsers(parser, {
-            ...defaultParser,
-          }) ?? {}
-        )
+        getValidationAttributes(mergeParsers(parser, defaultParser ?? {}) ?? {})
       ),
     [parser, defaultParser]
   );
