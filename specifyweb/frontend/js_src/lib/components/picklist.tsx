@@ -139,7 +139,7 @@ export function PickListComboBox(
 
   return (
     <>
-      {typeof handleAdd === 'undefined' ? (
+      {typeof handleAdd === 'undefined' || isDisabled ? (
         <Select
           id={props.id}
           // "null" value is represented as an empty string
