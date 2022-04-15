@@ -1543,11 +1543,10 @@ const WBView = Backbone.View.extend({
                 .find('.label')
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
-        } else {
+        } else
           format(resource).then((formatted) =>
             row.find('.label').text(formatted)
           );
-        }
       });
 
       const dialog = showDialog({

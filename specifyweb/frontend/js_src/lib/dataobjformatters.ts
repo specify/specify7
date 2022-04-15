@@ -153,42 +153,53 @@ export async function format<SCHEMA extends AnySchema>(
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
-  return Promise.all(
-    fields.map(async ({ fieldName, formatter, separator, fieldFormatter }) => {
-      return `${separator}${
-        typeof fieldFormatter === 'string' && fieldFormatter === ''
-          ? ''
-          : await f.var(
-              resource.specifyModel.getField(fieldName),
-              async (field) =>
-                typeof field === 'undefined' ||
-                !field.isRelationship ||
-                hasTablePermission(field.relatedModel.name, 'read')
-                  ? (
-                      resource.rgetPromise(fieldName) as Promise<
-                        string | SpecifyResource<AnySchema> | undefined
-                      >
-                    ).then(async (value) => {
-                      if (formatter.length > 0 && typeof value === 'object')
-                        return (await format(value, formatter)) ?? '';
-                      else {
-                        const field = defined(
-                          resource.specifyModel.getField(
-                            fieldName
-                          ) as LiteralField
-                        );
-                        return fieldFormat(
-                          field,
-                          defined(resolveParser(field)),
-                          value as string | undefined
-                        );
-                      }
-                    })
-                  : commonText('noPermission')
-            )
-      }`;
-    })
-  ).then((values) => values.join(''));
+  return fields
+    .map(({ fieldName }) => resource.get(fieldName))
+    .every(
+      (value) => typeof value === 'undefined' || value === null || value === ''
+    )
+    ? undefined
+    : Promise.all(
+        fields.map(
+          async ({ fieldName, formatter, separator, fieldFormatter }) => {
+            return `${separator}${
+              typeof fieldFormatter === 'string' && fieldFormatter === ''
+                ? ''
+                : await f.var(
+                    resource.specifyModel.getField(fieldName),
+                    async (field) =>
+                      typeof field === 'undefined' ||
+                      !field.isRelationship ||
+                      hasTablePermission(field.relatedModel.name, 'read')
+                        ? (
+                            resource.rgetPromise(fieldName) as Promise<
+                              string | SpecifyResource<AnySchema> | undefined
+                            >
+                          ).then(async (value) => {
+                            if (
+                              formatter.length > 0 &&
+                              typeof value === 'object'
+                            )
+                              return (await format(value, formatter)) ?? '';
+                            else {
+                              const field = defined(
+                                resource.specifyModel.getField(
+                                  fieldName
+                                ) as LiteralField
+                              );
+                              return fieldFormat(
+                                field,
+                                defined(resolveParser(field)),
+                                value as string | undefined
+                              );
+                            }
+                          })
+                        : commonText('noPermission')
+                  )
+            }`;
+          }
+        )
+      ).then((values) => values.join(''));
 }
 
 export async function aggregate(
@@ -214,5 +225,5 @@ export async function aggregate(
     collection.models.map(async (resource) =>
       format(resource, aggregator.format)
     )
-  ).then((formatted) => formatted.join(aggregator.separator));
+  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
 }
