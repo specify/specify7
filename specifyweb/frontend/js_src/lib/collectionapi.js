@@ -14,7 +14,7 @@ var Base =  Backbone.Collection.extend({
 
     function fakeFetch() {
         console.error("fetch called on", this);
-        return Promise.resolve(null);
+        return Promise.resolve(this);
     }
 
     var collectionapi = {};
@@ -127,8 +127,10 @@ var Base =  Backbone.Collection.extend({
             setupToOne(this, options);
         },
         fetch: function() {
-            if (this.related.isNew())
+            if (this.related.isNew()){
                 console.error("can't fetch collection related to unpersisted resource");
+                return this;
+            }
             this.filters[this.field.name.toLowerCase()] = this.related.id;
             return collectionapi.Lazy.prototype.fetch.apply(this, arguments);
         }
