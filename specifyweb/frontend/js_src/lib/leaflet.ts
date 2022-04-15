@@ -9,7 +9,11 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 import { ajax, Http } from './ajax';
 import * as cache from './cache';
 import { legacyNonJsxIcons } from './components/icons';
-import { cachableUrl, contextUnlockedPromise } from './initialcontext';
+import {
+  cachableUrl,
+  contextUnlockedPromise,
+  foreverPromise,
+} from './initialcontext';
 import {
   leafletLayersEndpoint,
   leafletTileServers,
@@ -75,7 +79,7 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
             console.error(error);
             return leafletTileServers;
           })
-      : undefined
+      : (foreverPromise as Promise<typeof leafletTileServers>)
   );
 
 export async function showLeafletMap({

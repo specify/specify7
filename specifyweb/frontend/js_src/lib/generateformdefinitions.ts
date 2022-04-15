@@ -60,7 +60,7 @@ const cellAttributes = {
 
 function generateForm(
   model: SpecifyModel,
-  mode: FormType,
+  mode: FormMode,
   fieldsToSkip: RA<string>
 ): ParsedFormDefinition {
   const fields = model.literalFields.filter(
