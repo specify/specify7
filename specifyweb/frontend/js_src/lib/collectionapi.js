@@ -7,14 +7,14 @@ import {assert} from './assert';
 
 var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
-        getTotalCount: function() { return Promise.resolve(this.length); }
+        getTotalCount() { return Promise.resolve(this.length); }
     });
 
     function notSupported() { throw new Error("method is not supported"); }
 
-    function fakeFetch() {
+    async function fakeFetch() {
         console.error("fetch called on", this);
-        return Promise.resolve(this);
+        return this;
     }
 
     var collectionapi = {};
@@ -29,11 +29,11 @@ var Base =  Backbone.Collection.extend({
 
     collectionapi.Dependent = Base.extend({
         __name__: "DependentCollectionBase",
-        constructor: function(options, models=[]) {
+        constructor(options, models=[]) {
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
-        initialize: function(_models, options) {
+        initialize(_models, options) {
             this.on('add remove', function() {
                 this.trigger('saverequired');
             }, this);
@@ -51,7 +51,7 @@ var Base =  Backbone.Collection.extend({
                 _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
             }, this);
         },
-        isComplete: function() { return true; },
+        isComplete() { return true; },
         fetch: fakeFetch,
         sync: notSupported,
         create: notSupported
@@ -60,19 +60,19 @@ var Base =  Backbone.Collection.extend({
     collectionapi.Lazy = Base.extend({
         __name__: "LazyCollectionBase",
         _neverFetched: true,
-        constructor: function(options) {
+        constructor(options) {
             options || (options = {});
             Base.call(this, null, options);
             this.filters = options.filters || {};
             this.domainfilter = !!options.domainfilter;
         },
-        url: function() {
+        url() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
         },
-        isComplete: function() {
+        isComplete() {
             return this.length === this._totalCount;
         },
-        parse: function(resp) {
+        parse(resp) {
             var objects;
             if (resp.meta) {
                 this._totalCount = resp.meta.total_count;
@@ -85,7 +85,7 @@ var Base =  Backbone.Collection.extend({
 
             return objects;
         },
-        fetch(options) {
+        async fetch(options) {
             this._neverFetched = false;
 
             if(this._fetch)
@@ -110,10 +110,10 @@ var Base =  Backbone.Collection.extend({
             this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
             return this._fetch.then(() => { this._fetch = null; return this; });
         },
-        fetchIfNotPopulated() {
-            return this._neverFetched && this.related?.isNew() !== true ? this.fetch() : Promise.resolve(this);
+        async fetchIfNotPopulated() {
+            return this._neverFetched && this.related?.isNew() !== true ? this.fetch() : this;
         },
-        getTotalCount: function() {
+        getTotalCount() {
             if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
             return this.fetchIfNotPopulated().then(function(_this) {
                 return _this._totalCount;
@@ -123,10 +123,10 @@ var Base =  Backbone.Collection.extend({
 
     collectionapi.ToOne = collectionapi.Lazy.extend({
         __name__: "LazyToOneCollectionBase",
-        initialize: function(_models, options) {
+        initialize(_models, options) {
             setupToOne(this, options);
         },
-        fetch: function() {
+        async fetch() {
             if (this.related.isNew()){
                 console.error("can't fetch collection related to unpersisted resource");
                 return this;

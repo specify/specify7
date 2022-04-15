@@ -65,12 +65,12 @@ function eventHandlerForToOne(related, field) {
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
         _ignoreChanges: false,  // Don't trigger saveRequried when setting default values
 
-        constructor: function() {
+        constructor() {
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
         },
-        initialize: function(attributes, options) {
+        initialize(attributes, options) {
             this.noBusinessRules = options && options.noBusinessRules;
             this.noValidation = options && options.noValidation;
 
@@ -98,7 +98,7 @@ function eventHandlerForToOne(related, field) {
             callback();
             this._ignoreChanges = false;
         },
-        clone: function() {
+        clone() {
             var self = this;
             var newResource = Backbone.Model.prototype.clone.call(self);
             delete newResource.id;
@@ -129,7 +129,7 @@ function eventHandlerForToOne(related, field) {
             });
             return newResource;
         },
-        url: function() {
+        url() {
             // returns the api uri for this resource. if the resource is newly created
             // (no id), return the uri for the collection it belongs to
             // If url form changes, see idFromUrl method
@@ -138,21 +138,21 @@ function eventHandlerForToOne(related, field) {
             return this.recordsetid == null ? url :
                 querystring.format(url, {recordsetid: this.recordsetid});
         },
-        viewUrl: function() {
+        viewUrl() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
             return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
         },
-        get: function(attribute) {
+        get(attribute) {
             // case insensitive
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },
-        storeDependent: function(field, related) {
+        storeDependent(field, related) {
             assert(field.isDependent());
             var setter = (field.type === 'one-to-many') ? "_setDependentToMany" : "_setDependentToOne";
             this[setter](field, related);
         },
-        _setDependentToOne: function(field, related) {
+        _setDependentToOne(field, related) {
             var oldRelated = this.dependentResources[field.name.toLowerCase()];
             if (!related) {
                 if (oldRelated) {
@@ -183,7 +183,7 @@ function eventHandlerForToOne(related, field) {
                 throw new Error("setDependentToOne: unhandled field type: " + field.type);
             }
         },
-        _setDependentToMany: function(field, toMany) {
+        _setDependentToMany(field, toMany) {
             var oldToMany = this.dependentResources[field.name.toLowerCase()];
             oldToMany && oldToMany.off("all", null, this);
 
@@ -191,7 +191,7 @@ function eventHandlerForToOne(related, field) {
             this.dependentResources[field.name.toLowerCase()] = toMany;
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
-        set: function(key, value, options) {
+        set(key, value, options) {
             // Set may get called with "null" or "undefined"
             const newValue = value ?? undefined;
             const oldValue = this.attributes[key] ?? undefined;
@@ -225,7 +225,7 @@ function eventHandlerForToOne(related, field) {
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
-        _handleField: function(value, fieldName) {
+        _handleField(value, fieldName) {
             if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return [fieldName, value]; // special fields
 
             var field = this.specifyModel.getField(fieldName);
@@ -244,7 +244,7 @@ function eventHandlerForToOne(related, field) {
             }
             return [fieldName, value];
         },
-        _handleInlineDataOrResource: function(value, fieldName) {
+        _handleInlineDataOrResource(value, fieldName) {
             // TODO: check type of value
             const field = this.specifyModel.getField(fieldName);
             const relatedModel = field.relatedModel;
@@ -297,7 +297,7 @@ function eventHandlerForToOne(related, field) {
                           "on", this, "value is", value);
             return value;
         },
-        _handleUri: function(value, fieldName) {
+        _handleUri(value, fieldName) {
             var field = this.specifyModel.getField(fieldName);
             var oldRelated = this.dependentResources[fieldName];
 
@@ -321,21 +321,21 @@ function eventHandlerForToOne(related, field) {
         // using dot notation. if the named field represents a resource or collection,
         // then prePop indicates whether to return the named object or the contents of
         // the field that represents it
-        rget: function(fieldName, prePop) {
+        async rget(fieldName, prePop) {
             return this.getRelated(fieldName, {prePop: prePop});
         },
         // TODO: remove the need for this
         // Like "rget", but returns native promise
-        rgetPromise: function(fieldName, prePop = true) {
+        async rgetPromise(fieldName, prePop = true) {
             return this.getRelated(fieldName, {prePop: prePop})
               // getRelated may return either undefined or null (yuk)
               .then(data=>typeof data === 'undefined' ? null : data);
         },
         // Duplicate definition for purposes of better typing:
-        rgetCollection: function(fieldName) {
+        async rgetCollection(fieldName) {
             return this.getRelated(fieldName, {prePop: true});
         },
-        getRelated: function(fieldName, options) {
+        async getRelated(fieldName, options) {
             options || (options = {
                 prePop: false,
                 noBusinessRules: false
@@ -359,7 +359,7 @@ function eventHandlerForToOne(related, field) {
                 return value;
             });
         },
-        _rget: function(path, options) {
+        async _rget(path, options) {
             var fieldName = path[0].toLowerCase();
             var field = this.specifyModel.getField(fieldName);
             field && (fieldName = field.name.toLowerCase()); // in case fieldName is an alias
@@ -491,7 +491,7 @@ function eventHandlerForToOne(related, field) {
 
             return resource._save.then(()=>resource);
         },
-        toJSON: function() {
+        toJSON() {
             var self = this;
             var json = Backbone.Model.prototype.toJSON.apply(self, arguments);
 
@@ -506,7 +506,7 @@ function eventHandlerForToOne(related, field) {
             return json;
         },
         // Caches a reference to Promise so as not to start fetching twice
-        fetch: function(options) {
+        async fetch(options) {
             if(
               // if already populated
               this.populated ||
@@ -521,12 +521,12 @@ function eventHandlerForToOne(related, field) {
                     return this;
                 });
         },
-        parse: function(_resp) {
+        parse(_resp) {
             // Since we are putting in data, the resource in now populated
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },
-        sync: function(method, resource, options) {
+        async sync(method, resource, options) {
             options = options || {};
             switch (method) {
             case 'delete':
@@ -547,7 +547,7 @@ function eventHandlerForToOne(related, field) {
         async getResourceAndField(fieldName) {
             return getResourceAndField(this, fieldName);
         },
-        placeInSameHierarchy: function(other) {
+        placeInSameHierarchy(other) {
             var self = this;
             var myPath = self.specifyModel.getScopingPath();
             var otherPath = other.specifyModel.getScopingPath();
@@ -562,7 +562,7 @@ function eventHandlerForToOne(related, field) {
             return this.dependentResources[fieldName.toLowerCase()];
         }
     }, {
-        fromUri: function(uri, options) {
+        fromUri(uri, options) {
             const parsed = parseResourceUrl(uri);
             if (typeof parsed === 'undefined') return undefined;
             const [tableName, id] = parsed;
