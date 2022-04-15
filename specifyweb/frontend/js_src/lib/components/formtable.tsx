@@ -94,6 +94,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
+    ) : resources.length === 0 ? (
+      <p>{formsText('noData')}</p>
     ) : (
       <DataEntry.Grid
         role="table"
@@ -261,20 +263,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 )}
             </div>
           ))}
-          {resources.length === 0 && <p>{formsText('noData')}</p>}
         </div>
-        {state.type === 'SearchState' ? (
-          <SearchDialog
-            forceCollection={undefined}
-            extraFilters={undefined}
-            templateResource={state.resource}
-            onClose={(): void => setState({ type: 'MainState' })}
-            onSelected={(resource): void => {
-              setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-              handleAdd?.(resource);
-            }}
-          />
-        ) : undefined}
       </DataEntry.Grid>
     );
   const addButton =
@@ -310,6 +299,18 @@ export function FormTable<SCHEMA extends AnySchema>({
         {addButton}
       </DataEntry.SubFormHeader>
       {children}
+      {state.type === 'SearchState' ? (
+        <SearchDialog
+          forceCollection={undefined}
+          extraFilters={undefined}
+          templateResource={state.resource}
+          onClose={(): void => setState({ type: 'MainState' })}
+          onSelected={(resource): void => {
+            setExpandedRecords({ ...isExpanded, [resource.cid]: true });
+            handleAdd?.(resource);
+          }}
+        />
+      ) : undefined}
     </DataEntry.SubForm>
   ) : (
     <Dialog
