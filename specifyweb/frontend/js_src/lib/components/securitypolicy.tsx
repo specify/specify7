@@ -15,7 +15,7 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Ul } from './basic';
 import { icons } from './icons';
-import { scrollToBottom } from '../querybuilderutils';
+import { smoothScroll } from '../querybuilderutils';
 
 export type Policy = {
   readonly resource: string;
@@ -161,7 +161,7 @@ export function PoliciesView({
       (policies?.length ?? 0) > policyCountRef.current &&
       listRef.current !== null
     )
-      scrollToBottom(listRef.current);
+      smoothScroll(listRef.current, listRef.current.scrollHeight);
     policyCountRef.current = policies?.length ?? 0;
   }, [policies]);
   return (

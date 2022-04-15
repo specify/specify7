@@ -12,11 +12,9 @@ import React from 'react';
 import type { Tables } from '../datamodel';
 import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
-import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { camelToKebab, upperToKebab } from '../helpers';
-import { transitionDuration } from './basic';
 import {
   TableIcon,
   tableIconEmpty,
@@ -24,6 +22,7 @@ import {
   tableIconUndefined,
 } from './common';
 import { icons } from './icons';
+import { scrollIntoView } from '../treeviewutils';
 
 type Properties =
   /*
@@ -705,38 +704,8 @@ export function CustomSelectElement({
         'custom-select-option-selected'
       )?.[0] as undefined | HTMLElement;
 
-      if (typeof selectedOption === 'object') {
-        // The current line and half a line before it should be visible
-        const minGoodOffsetTop = Math.max(
-          0,
-          selectedOption.offsetTop +
-            selectedOption.offsetHeight -
-            listOfOptionsRef.current.offsetHeight
-        );
-        const maxGoodOffsetTop =
-          selectedOption.offsetTop -
-          selectedOption.offsetHeight -
-          listOfOptionsRef.current.offsetTop;
-
-        // Change scrollTop only if current option is not visible
-        if (
-          minGoodOffsetTop > listOfOptionsRef.current.scrollTop ||
-          listOfOptionsRef.current.scrollTop > maxGoodOffsetTop
-        )
-          /*
-           * Make selected option appear at the middle of the list, if possible
-           */
-          selectedOption.scrollTo({
-            top:
-              minGoodOffsetTop === 0
-                ? 0
-                : Math.floor(
-                    minGoodOffsetTop + (maxGoodOffsetTop - minGoodOffsetTop) / 2
-                  ),
-            behavior: transitionDuration === 0 ? 'auto' : 'smooth',
-          });
+      if (typeof selectedOption === 'object')
         scrollIntoView(selectedOption, 'nearest');
-      }
       previousDefaultOption.current = defaultOption;
     }
   }, [defaultOption, has]);

@@ -169,9 +169,10 @@ export function Autocomplete<T>({
 
     if (newIndex !== currentIndex) {
       const finalIndex =
-        (filteredItems.length + newIndex) % filteredItems.length;
+        (filteredItems.length + newIndex) % Math.max(filteredItems.length, 1);
       setCurrentIndex(finalIndex);
-      (dataListRef.current?.children?.[finalIndex] as HTMLElement)?.focus();
+      const item = dataListRef.current?.children?.[finalIndex];
+      (item as HTMLElement)?.focus();
     }
   }
 
@@ -305,12 +306,12 @@ export function Autocomplete<T>({
           ref={dataListRef}
           onKeyDown={(event): void => {
             // Meta keys
-            if (['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key))
+            if (
+              ['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key)
+            ) {
+              event.preventDefault();
               handleKeyDown(event.key);
-            else {
-              input?.focus();
-              input?.dispatchEvent(event.nativeEvent);
-            }
+            } else input?.focus();
           }}
           onBlur={({ relatedTarget }): void =>
             process.env.NODE_ENV !== 'development' &&

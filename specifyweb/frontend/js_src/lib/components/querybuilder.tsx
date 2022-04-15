@@ -11,7 +11,7 @@ import { hasPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import {
   mutateLineData,
-  scrollToBottom,
+  smoothScroll,
   unParseQueryFields,
 } from '../querybuilderutils';
 import type { SpecifyModel } from '../specifymodel';
@@ -158,7 +158,7 @@ export function QueryBuilder({
        */
       void setTimeout(() => {
         if (state.queryRunCount !== 0 && containerRef.current !== null)
-          scrollToBottom(containerRef.current);
+          smoothScroll(containerRef.current, containerRef.current.scrollHeight);
       }),
     [state.queryRunCount]
   );

@@ -227,10 +227,10 @@ export const mutateLineData = (
     ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
   );
 
-export function scrollToBottom(element: HTMLElement): void {
+export function smoothScroll(element: HTMLElement, top: number): void {
   if (typeof element.scrollTo === 'function')
     element.scrollTo({
-      top: element.scrollHeight,
+      top,
       behavior: transitionDuration === 0 ? 'auto' : 'smooth',
     });
   else element.scrollTop = element.scrollHeight;

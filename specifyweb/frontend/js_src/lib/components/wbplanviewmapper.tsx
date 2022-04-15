@@ -51,6 +51,7 @@ import {
   ValidationResults,
 } from './wbplanviewmappercomponents';
 import { getCache } from '../cache';
+import { smoothScroll } from '../querybuilderutils';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -656,8 +657,10 @@ export function WbPlanViewMapper(props: {
                 dispatch({ type: 'AddNewHeaderAction', newHeaderName });
                 // Scroll listOfMappings to the bottom
                 if (listOfMappings.current)
-                  listOfMappings.current.scrollTop =
-                    listOfMappings.current.scrollHeight;
+                  smoothScroll(
+                    listOfMappings.current,
+                    listOfMappings.current.scrollHeight
+                  );
               }
         }
       />
