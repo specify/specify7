@@ -11,7 +11,7 @@ import { getResourceViewUrl } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
 import { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { defined } from '../types';
+import { defined, filterArray } from '../types';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -40,28 +40,29 @@ const fetchForms = f.store(
           // I don't think the non-sidebar items are ever used in Sp6.
           .filter((item) => getAttribute(item, 'sideBar') === 'true')
           .map(async (view) =>
-            getView(getAttribute(view, 'view') ?? '').then<FormEntry>(
-              (form: { readonly class: string }) => {
-                const modelName = SpecifyModel.parseClassName(
-                  form.class
-                ) as keyof Tables;
-                const model = defined(getModel(modelName));
+            getView(getAttribute(view, 'view') ?? '').then<
+              FormEntry | undefined
+            >((form) => {
+              if (typeof form === 'undefined') return undefined;
+              const modelName = SpecifyModel.parseClassName(
+                form.class
+              ) as keyof Tables;
+              const model = defined(getModel(modelName));
 
-                return {
-                  iconName:
-                    (getAttribute(view, 'iconName') as
-                      | keyof Tables
-                      | undefined) ??
-                    model.name ??
-                    undefined,
-                  viewUrl: getResourceViewUrl(modelName),
-                  title: getAttribute(view, 'title') ?? '',
-                  table: model.name,
-                };
-              }
-            )
+              return {
+                iconName:
+                  (getAttribute(view, 'iconName') as
+                    | keyof Tables
+                    | undefined) ??
+                  model.name ??
+                  undefined,
+                viewUrl: getResourceViewUrl(modelName),
+                title: getAttribute(view, 'title') ?? '',
+                table: model.name,
+              };
+            })
           )
-      );
+      ).then(filterArray);
     })
 );
 

@@ -65,11 +65,12 @@ const fetchEntries = f.store(
                       : defined(
                           (await f
                             .maybe(getAttribute(entry, 'view'), getView)
-                            ?.then(
-                              (view) =>
-                                SpecifyModel.parseClassName(
-                                  view.class
-                                ) as keyof Tables
+                            ?.then((view) =>
+                              typeof view === 'object'
+                                ? (SpecifyModel.parseClassName(
+                                    view.class
+                                  ) as keyof Tables)
+                                : undefined
                             )) ??
                             getModel(getAttribute(entry, 'table') ?? '')?.name
                         ),

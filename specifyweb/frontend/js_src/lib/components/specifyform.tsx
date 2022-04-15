@@ -60,7 +60,6 @@ export function useViewDefinition({
                 ? 'ObjectAttachment'
                 : viewName
             )
-              .catch(f.undefined)
               .then((viewDefinition) =>
                 typeof viewDefinition === 'object'
                   ? parseViewDefinition(viewDefinition, formType, mode)

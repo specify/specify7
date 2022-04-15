@@ -451,8 +451,10 @@ export type ViewDefinition = {
   readonly viewsetSource: string;
 };
 
-const views: R<ViewDefinition> = {};
-export const getView = async (name: string): Promise<ViewDefinition> =>
+const views: R<ViewDefinition | undefined> = {};
+export const getView = async (
+  name: string
+): Promise<ViewDefinition | undefined> =>
   name in views
     ? Promise.resolve(views[name])
     : ajax<ViewDefinition>(
@@ -469,9 +471,8 @@ export const getView = async (name: string): Promise<ViewDefinition> =>
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
         }
       ).then(({ data, status }) => {
-        if (status === Http.NOT_FOUND) throw new Error('Form not found');
-        views[name] = data;
-        return data;
+        views[name] = status === Http.NOT_FOUND ? undefined : data;
+        return views[name];
       });
 
 export const formTypes = ['form', 'formTable'] as const;
