@@ -1,6 +1,6 @@
 "use strict";
 import _ from 'underscore';
-import treeText from './localization/tree';
+import {treeText} from './localization/tree';
 import {ajax} from './ajax';
 import {formatUrl} from './querystring';
 
@@ -44,7 +44,7 @@ function predictFullName(resource, options) {
         );
 }
 
-    var treeBusinessRules = {
+    export const treeBusinessRules = {
         isTreeNode: function(resource) {
             var model;
             model = resource.specifyModel;
@@ -78,6 +78,4 @@ function predictFullName(resource, options) {
           )
         }
     };
-
-export default treeBusinessRules;
 

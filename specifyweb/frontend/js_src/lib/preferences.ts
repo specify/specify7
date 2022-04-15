@@ -6,11 +6,11 @@ import {
   handleLanguageChange,
   LanguagePreferencesItem,
 } from './components/toolbar/language';
-import commonText from './localization/common';
-import preferencesText from './localization/preferences';
+import { commonText } from './localization/common';
+import { preferencesText } from './localization/preferences';
 import type { Language } from './localization/utils';
 import { DEFAULT_LANGUAGE, languages } from './localization/utils';
-import wbText from './localization/workbench';
+import { wbText } from './localization/workbench';
 import type { IR, RA } from './types';
 import { ensure } from './types';
 import type { Parser } from './uiparse';

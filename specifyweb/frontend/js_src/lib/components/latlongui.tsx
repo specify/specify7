@@ -3,8 +3,8 @@ import React from 'react';
 import type { Locality } from '../datamodel';
 import { Lat, Long } from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import localityText from '../localization/locality';
+import { commonText } from '../localization/common';
+import { localityText } from '../localization/locality';
 import type { FormMode } from '../parseform';
 import { Input, Select } from './basic';
 import { resourceOn } from '../resource';
@@ -87,7 +87,7 @@ function Coordinate({
         setCoordinate(value);
         const hasValue = value.trim() !== '';
         const parsed = hasValue
-          ? ((latlongutils[fieldType].parse(value) ?? undefined) as
+          ? (((fieldType === 'Lat' ? Lat : Long).parse(value) ?? undefined) as
               | Parsed
               | undefined)
           : undefined;

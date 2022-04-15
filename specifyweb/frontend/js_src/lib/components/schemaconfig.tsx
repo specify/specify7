@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ajax, ping } from '../ajax';
 import { serializeResource } from '../datamodelutils';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
 import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';

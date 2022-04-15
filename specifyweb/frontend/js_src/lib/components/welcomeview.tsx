@@ -1,16 +1,16 @@
 import React from 'react';
 
-import commonText from '../localization/common';
-import welcomeText from '../localization/welcome';
+import { commonText } from '../localization/common';
+import { welcomeText } from '../localization/welcome';
 import { getPref } from '../remoteprefs';
 import { getSystemInfo } from '../systeminfo';
-import taxonTiles from '../taxontiles';
+import { makeTreeMap } from '../taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 
 const DO_TAXON_TILES = getPref('sp7.doTaxonTiles');
 const welcomeScreenUrl = getPref('sp7.welcomeScreenUrl');
@@ -124,14 +124,14 @@ function AboutSpecify(): JSX.Element {
   );
 }
 
-function WelcomeView(): JSX.Element {
+function Welcome(): JSX.Element {
   useTitle(welcomeText('pageTitle'));
 
   const refTaxonTilesContainer = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     if (DO_TAXON_TILES && refTaxonTilesContainer.current !== null)
-      taxonTiles(refTaxonTilesContainer.current);
+      makeTreeMap(refTaxonTilesContainer.current);
   }, []);
 
   return (
@@ -146,7 +146,7 @@ function WelcomeView(): JSX.Element {
   );
 }
 
-export default createBackboneView(WelcomeView);
+export const WelcomeView = createBackboneView(Welcome);
 const View = createBackboneView(AboutDialog);
 
 export const userTool: UserTool = {

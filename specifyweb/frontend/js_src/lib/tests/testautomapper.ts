@@ -5,7 +5,7 @@ import {
 import { runTest } from './testmain';
 import { RA } from '../types';
 
-export default function (): void {
+export function testAutoMapper(): void {
   runTest(
     'AutoMapper',
     [

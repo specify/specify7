@@ -39,7 +39,7 @@ function ForwardProps<PROPS extends IR<unknown>>({
   return <Component {...props} />;
 }
 
-const createBackboneView = <PROPS extends IR<unknown>>(
+export const createBackboneView = <PROPS extends IR<unknown>>(
   Component: (props: PROPS) => JSX.Element | null,
   makeParentContents = true
 ): new (props?: PROPS & { readonly el?: HTMLElement }) => View & {
@@ -99,8 +99,6 @@ const createBackboneView = <PROPS extends IR<unknown>>(
       }
     },
   }[Component.name]);
-
-export default createBackboneView;
 
 /**
  * Render a non-react component inside of React

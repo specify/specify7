@@ -1,7 +1,7 @@
 "use strict";
 
 import $ from 'jquery';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 import _ from 'underscore';
 import ace from 'brace';
 import 'brace/mode/xml';
@@ -14,12 +14,12 @@ import {schema} from './schema';
 import {SaveButton} from './components/savebutton';
 import {DeleteButton} from './components/deletebutton';
 import {userInformation} from './userinfo';
-import adminText from './localization/admin';
-import commonText from './localization/common';
+import {adminText} from './localization/admin';
+import {commonText} from './localization/common';
 import {setTitle} from './components/hooks';
 import {Button, className, darkMode, Submit} from './components/basic';
 import {showDialog} from './components/modaldialog';
-import createBackboneView from './components/reactbackboneextend';
+import {createBackboneView} from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
 import {hasToolPermission} from './permissions';
 import {goTo} from './components/navigation';

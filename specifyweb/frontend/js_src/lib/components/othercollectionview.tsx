@@ -2,12 +2,12 @@ import React from 'react';
 
 import type { Collection } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import { f } from '../functools';
 import { switchCollection } from '../specifyapp';
 

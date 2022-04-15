@@ -2,8 +2,8 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
 import { getAttribute } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
@@ -15,7 +15,6 @@ import { defined, filterArray } from '../types';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog, dialogClassNames } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 import { cachableUrl } from '../initialcontext';
 import { useAsyncState } from './hooks';
 import { f } from '../functools';
@@ -119,5 +118,3 @@ export function FormsDialog({
     </Dialog>
   ) : null;
 }
-
-export default createBackboneView(FormsDialog);

@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';

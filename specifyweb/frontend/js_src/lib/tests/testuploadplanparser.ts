@@ -7,7 +7,7 @@ import mappingLines1 from './fixtures/mappinglines.1.json';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import { runTest } from './testmain';
 
-export default function (): void {
+export function testUploadPlanParser(): void {
   runTest(
     'UploadPlanParser.parseUploadPlan',
     [

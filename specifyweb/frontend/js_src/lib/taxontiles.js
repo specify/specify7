@@ -7,9 +7,9 @@ import d3 from 'd3';
 import {schema} from './schema';
 import {ajax} from './ajax';
 import {f} from './functools';
-import welcomeText from './localization/welcome';
+import {welcomeText} from './localization/welcome';
 
-export default function makeTreeMap(container) {
+export function makeTreeMap(container) {
   container.classList.add('h-[473px]');
 
   const color = d3.scale.category20c();

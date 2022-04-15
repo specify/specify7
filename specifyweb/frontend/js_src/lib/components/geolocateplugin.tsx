@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { Geography, Locality } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import localityText from '../localization/locality';
+import { commonText } from '../localization/common';
+import { localityText } from '../localization/locality';
 import { schema } from '../schema';
 import type { IR } from '../types';
 import { filterArray } from '../types';

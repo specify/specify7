@@ -12,7 +12,7 @@ import type {
 } from './components/toolbar/schemaconfig';
 import type { Tables } from './datamodel';
 import type { Aggregator, Formatter } from './dataobjformatters';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import type { JavaType } from './specifyfield';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';

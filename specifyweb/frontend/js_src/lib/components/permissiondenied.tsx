@@ -1,6 +1,6 @@
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { Container } from './basic';
 
 export function PermissionDenied(): JSX.Element {

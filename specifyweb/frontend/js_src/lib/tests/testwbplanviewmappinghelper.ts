@@ -8,7 +8,7 @@ import {
   valueIsTreeRank,
 } from '../wbplanviewmappinghelper';
 
-export default function (): void {
+export function testWbPlanViewMappingHelper(): void {
   runTest(
     'WbPlanViewMappingHelper.valueIsToManyIndex',
     [

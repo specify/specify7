@@ -6,8 +6,8 @@ import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { index, omit, removeKey, replaceKey } from '../helpers';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import type { BackEndRole } from '../securityutils';
 import {

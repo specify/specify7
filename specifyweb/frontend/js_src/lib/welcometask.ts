@@ -1,9 +1,9 @@
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
 
-export default function () {
+export function task() {
   router.route('', 'welcome', function () {
-    import('./components/welcomeview').then(({ default: WelcomeView }) =>
+    import('./components/welcomeview').then(({ WelcomeView }) =>
       setCurrentView(new WelcomeView({}))
     );
   });

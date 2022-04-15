@@ -10,7 +10,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const welcomeText = createDictionary({
+export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
     'ru-ru': 'Добро пожаловать',
@@ -218,5 +218,3 @@ const welcomeText = createDictionary({
     'es-es': 'Browser',
   },
 });
-
-export default welcomeText;

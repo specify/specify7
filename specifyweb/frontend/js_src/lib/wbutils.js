@@ -16,22 +16,26 @@ import {
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
+import {Button} from './components/basic';
 import {Lat, Long} from './latlongutils';
 import {camelToKebab, clamp, sortFunction} from './helpers';
 import {f} from './functools';
-import WbAdvancedSearch, {
+import {
   getInitialSearchPreferences,
+  WbAdvancedSearch,
 } from './components/wbadvancedsearch';
-import wbText from './localization/workbench';
-import commonText from './localization/common';
+import {wbText} from './localization/workbench';
+import {commonText} from './localization/common';
 import {showDialog} from './components/modaldialog';
-import createBackboneView from './components/reactbackboneextend';
+import {createBackboneView} from './components/reactbackboneextend';
 import {LeafletMap} from './components/leaflet';
+import {localityText} from './localization/locality';
 
+const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
 
-export default Backbone.View.extend({
+export const WBUtils = Backbone.View.extend({
   __name__: 'WbUtils',
   events: {
     'click .wb-cell-navigation': 'navigateCells',
@@ -61,7 +65,7 @@ export default Backbone.View.extend({
   render() {
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
-    this.advancedSearch = new WbAdvancedSearch({
+    this.advancedSearch = new wbSearchView({
       el: this.el.getElementsByClassName('wb-advanced-search-wrapper')[0],
       initialSearchPreferences: this.searchPreferences,
       onChange: (newSearchPreferences) => {

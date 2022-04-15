@@ -2,9 +2,9 @@ import React from 'react';
 
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';

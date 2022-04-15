@@ -8,7 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const preferencesText = createDictionary({
+export const preferencesText = createDictionary({
   general: {
     'en-us': 'General',
     'ru-ru': 'Основные',
@@ -76,5 +76,3 @@ const preferencesText = createDictionary({
     'es-es': 'no preference',
   },
 });
-
-export default preferencesText;

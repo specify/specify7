@@ -7,7 +7,7 @@ function appResources(type: 'appResources' | 'viewSets', id?: string) {
   );
 }
 
-export default function () {
+export function task() {
   router.route('appresources/', 'appresources', () =>
     appResources('appResources')
   );

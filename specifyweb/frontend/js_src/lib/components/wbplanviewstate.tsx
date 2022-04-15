@@ -2,8 +2,8 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import type { RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import { Button, Input, Label } from './basic';

@@ -5,12 +5,12 @@
 import React from 'react';
 
 import { ajax, formData, Http } from '../../ajax';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 
 function MasterKey({
@@ -114,12 +114,10 @@ function ShowKey({
 
 const MasterKeyView = createBackboneView(MasterKey);
 
-const toolBarItem: UserTool = {
+export const userTool: UserTool = {
   task: 'master-key',
   title: commonText('generateMasterKey'),
   isOverlay: true,
   view: ({ onClose }) => new MasterKeyView({ onClose }),
   groupLabel: commonText('administration'),
 };
-
-export default toolBarItem;

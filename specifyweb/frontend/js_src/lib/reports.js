@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 
 import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
@@ -14,8 +14,8 @@ import {
     formatAttachmentUrl
 } from './attachments';
 import {userInformation} from './userinfo';
-import formsText from './localization/forms';
-import commonText from './localization/common';
+import {formsText} from './localization/forms';
+import {commonText} from './localization/common';
 
 import {csrfToken} from './csrftoken';
 import {legacyNonJsxIcons} from './components/icons';
@@ -591,7 +591,7 @@ function getAppResources(options){
     return appRs.fetch();
 }
 
-export default function reports(options = {}) {
+export function reports(options = {}) {
     return getAppResources(options).then((appResources) =>
         new ReportListDialog(_.extend(options, {appResources}))
     )

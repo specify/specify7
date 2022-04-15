@@ -12,7 +12,7 @@ import { fetchCollection } from '../../collection';
 import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
@@ -35,7 +35,7 @@ import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../statecache';
 import {
@@ -337,7 +337,7 @@ export function QueryToolbarItem({
 
 const QueryToolbarView = createBackboneView(QueryToolbarItem);
 
-const menuItem: MenuItem = {
+export const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
   icon: icons.documentSearch,
@@ -350,8 +350,6 @@ const menuItem: MenuItem = {
       isReadOnly: false,
     }),
 };
-
-export default menuItem;
 
 function EditQueryDialog({
   queryResource,

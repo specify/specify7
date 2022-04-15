@@ -3,7 +3,7 @@ import React from 'react';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';

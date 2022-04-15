@@ -8,7 +8,7 @@ import { error } from '../assert';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
 import {
   fetchPickList,

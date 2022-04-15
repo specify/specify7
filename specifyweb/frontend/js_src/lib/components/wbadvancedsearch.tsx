@@ -6,13 +6,12 @@
 
 import React from 'react';
 
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { Button, H2, Input, Label, Select } from './basic';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
 import { getCache, setCache } from '../cache';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
@@ -192,7 +191,7 @@ function PreferencesDialog({
   );
 }
 
-function WbAdvancedSearch({
+export function WbAdvancedSearch({
   onChange: handleChange,
   initialSearchPreferences,
 }: {
@@ -232,5 +231,3 @@ function WbAdvancedSearch({
     </>
   );
 }
-
-export default createBackboneView(WbAdvancedSearch);

@@ -5,7 +5,7 @@ import { ajax } from './ajax';
 import { transitionDuration } from './components/basic';
 import type { RA, RR } from './types';
 import { filterArray } from './types';
-import treeText from './localization/tree';
+import { treeText } from './localization/tree';
 import { formatNumber } from './components/internationalization';
 
 export const fetchRows = async (fetchUrl: string) =>

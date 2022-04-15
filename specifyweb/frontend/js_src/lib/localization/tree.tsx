@@ -8,7 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const treeText = createDictionary({
+export const treeText = createDictionary({
   badStructure: {
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
@@ -252,5 +252,3 @@ const treeText = createDictionary({
     'es-es': 'Edit Ranks',
   },
 });
-
-export default treeText;

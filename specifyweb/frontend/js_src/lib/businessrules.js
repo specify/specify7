@@ -3,10 +3,10 @@
 import _ from 'underscore';
 import {globalEvents} from './specifyapi';
 import {SaveBlockers} from './saveblockers';
-import treeBusinessRules from './treebusinessrules';
-import rules from './businessruledefs';
+import {treeBusinessRules} from './treebusinessrules';
+import {businessRuleDefs} from './businessruledefs';
 
-import formsText from './localization/forms';
+import {formsText} from './localization/forms';
 import {formatList} from './components/internationalization';
 
 var enabled = true;
@@ -26,7 +26,7 @@ var enabled = true;
 
     function BusinessRuleMgr(resource) {
         this.resource = resource;
-        this.rules = rules[this.resource.specifyModel.name];
+        this.rules = businessRuleDefs[this.resource.specifyModel.name];
         this.pending = Promise.resolve(null);
         this.fieldChangePromises = {};
         this.watchers = {};

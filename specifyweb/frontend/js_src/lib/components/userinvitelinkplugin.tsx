@@ -2,8 +2,8 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import { Button, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';

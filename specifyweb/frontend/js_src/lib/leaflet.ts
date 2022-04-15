@@ -22,8 +22,8 @@ import {
 } from './leafletconfig';
 import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
-import commonText from './localization/common';
-import localityText from './localization/locality';
+import { commonText } from './localization/common';
+import { localityText } from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { capitalize } from './helpers';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';

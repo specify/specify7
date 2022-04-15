@@ -5,12 +5,12 @@
 import React from 'react';
 
 import { ping } from '../../ajax';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { Button } from '../basic';
 import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 import { hasPermission } from '../../permissions';
 
@@ -63,7 +63,7 @@ function ForceUpdateFeed({
 
 const View = createBackboneView(ForceUpdateFeed);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'force-update-feed',
   title: commonText('updateExportFeed'),
   enabled: () => hasPermission('/export/feed', 'force_update'),
@@ -71,5 +71,3 @@ const userTool: UserTool = {
   view: ({ onClose }) => new View({ onClose }),
   groupLabel: commonText('export'),
 };
-
-export default userTool;

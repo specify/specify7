@@ -8,7 +8,7 @@ import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const queryText = createDictionary({
+export const queryText = createDictionary({
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
@@ -465,5 +465,3 @@ const queryText = createDictionary({
     'es-es': 'Query Builder',
   },
 });
-
-export default queryText;

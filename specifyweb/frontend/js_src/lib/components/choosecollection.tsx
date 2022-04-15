@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
 import { f } from '../functools';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { fetchContext as fetchRemotePrefs, getPref } from '../remoteprefs';
 import type { RA } from '../types';
 import {

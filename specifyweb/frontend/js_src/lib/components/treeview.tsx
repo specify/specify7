@@ -9,7 +9,7 @@ import type {
 } from '../datamodelutils';
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import treeText from '../localization/tree';
+import { treeText } from '../localization/tree';
 import { hasTreeAccess } from '../permissions';
 import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
@@ -30,7 +30,7 @@ import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { NotFound } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { useCachedState } from './statecache';
@@ -401,4 +401,4 @@ function TreeViewWrapper({
     ) : null;
 }
 
-export default createBackboneView(TreeViewWrapper);
+export const treeView = createBackboneView(TreeViewWrapper);

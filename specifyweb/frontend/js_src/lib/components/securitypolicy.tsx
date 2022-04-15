@@ -2,8 +2,8 @@ import React from 'react';
 
 import { f } from '../functools';
 import { group, removeItem, replaceItem, toggleItem } from '../helpers';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import {
   actionToLabel,
   anyResource,

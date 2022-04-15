@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import { spanNumber } from '../helpers';
 import { getIcon } from '../icons';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { getModel } from '../schema';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';

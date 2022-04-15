@@ -4,7 +4,7 @@ import { Http } from '../ajax';
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import queryText from '../localization/query';
+import { queryText } from '../localization/query';
 import { NotFoundView } from './notfoundview';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
@@ -16,7 +16,7 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState, useLiveState } from './hooks';
 import { QueryBuilder } from './querybuilder';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import { PermissionDenied } from './permissiondenied';
 import {
   hasPermission,
@@ -173,7 +173,7 @@ function QueryBuilderFromTree({
 const QueryFromTree = createBackboneView(QueryBuilderFromTree);
 const PermissionDeniedView = createBackboneView(PermissionDenied);
 
-export default function Routes(): void {
+export function task(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
     setCurrentView(
       hasPermission('/querybuilder/query', 'execute') &&

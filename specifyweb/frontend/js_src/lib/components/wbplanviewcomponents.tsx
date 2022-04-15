@@ -7,8 +7,8 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { schema } from '../schema';
 import type { IR, R, RA } from '../types';
 import type { MappingLineData } from '../wbplanviewnavigator';

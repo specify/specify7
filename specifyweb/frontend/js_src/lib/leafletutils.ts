@@ -6,7 +6,6 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import latlongutils from './latlongutils';
 import { isValidAccuracy } from './leaflet';
 import {
   mappingLocalityColumns,
@@ -17,6 +16,7 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
+import { parseCoord } from './latlongutils';
 
 export type Field<T extends Readonly<unknown>> = {
   readonly headerName: string;
@@ -35,7 +35,7 @@ export const getField = (
 export function formatCoordinate(coordinate: string): number {
   if (coordinate === '' || coordinate === '0') return 0;
 
-  const parsedCoordinate = latlongutils(coordinate).toDegs() as {
+  const parsedCoordinate = parseCoord(coordinate).toDegs() as {
     _components: [number];
     _sign: 1 | -1;
   };

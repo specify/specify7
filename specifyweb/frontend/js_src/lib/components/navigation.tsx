@@ -2,9 +2,9 @@
  * A wrapper for Backbone's routing API
  */
 
-import Backbone from '../backbone';
+import { Backbone } from '../backbone';
 import { showDialog } from './modaldialog';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { isExternalUrl } from '../ajax';
 import { Button } from './basic';
 import React from 'react';

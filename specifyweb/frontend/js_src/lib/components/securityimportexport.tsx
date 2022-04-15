@@ -2,8 +2,8 @@ import React from 'react';
 
 import { f } from '../functools';
 import { group, omit, replaceItem, replaceKey } from '../helpers';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import { hasPermission } from '../permissions';
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';

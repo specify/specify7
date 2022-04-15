@@ -1,6 +1,6 @@
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 
 export function SplashScreen({
   children,

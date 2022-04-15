@@ -4,11 +4,11 @@
 
 import React from 'react';
 
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { useTitle } from '../hooks';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';
 
 function RepairTree({
@@ -30,12 +30,10 @@ function RepairTree({
 
 const View = createBackboneView(RepairTree);
 
-const menuItem: MenuItem = {
+export const menuItem: MenuItem = {
   task: 'tree',
   title: commonText('trees'),
   icon: icons.tree,
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
 };
-
-export default menuItem;

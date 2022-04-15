@@ -17,17 +17,17 @@ import '../css/workbench.css';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
 import {Button, className} from './components/basic';
 import {getModel, schema} from './schema';
-import DataSetMeta from './components/datasetmeta';
+import {DataSetNameView} from './components/datasetmeta';
 import {NotFoundView} from './components/notfoundview';
-import WBUploadedView from './components/wbuploadedview';
-import WBStatus from './components/wbstatus';
-import WBUtils from './wbutils';
+import {WbUploadedView} from './components/wbuploadedview';
+import {WbStatusView} from './components/wbstatus';
+import {WBUtils} from './wbutils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -39,8 +39,8 @@ import {parseUploadPlan} from './uploadplanparser';
 import {capitalize, clamp, mappedFind} from './helpers';
 import {getTableFromMappingPath} from './wbplanviewnavigator';
 import {getIcon} from './icons';
-import wbText from './localization/workbench';
-import commonText from './localization/common';
+import {wbText} from './localization/workbench';
+import {commonText} from './localization/common';
 import {loadingBar, showDialog} from './components/modaldialog';
 import {format} from './dataobjformatters';
 import {legacyNonJsxIcons} from './components/icons';
@@ -61,6 +61,7 @@ import {
   removeUnloadProtect
 } from './components/navigation';
 import {getCache, setCache} from './cache';
+import {f} from './functools';
 
 const metaKeys = [
   'isNew',
@@ -143,7 +144,7 @@ const WBView = Backbone.View.extend({
     });
     this.wbstatus = undefined;
 
-    this.datasetmeta = new DataSetMeta({
+    this.datasetmeta = new DataSetNameView({
       dataset: this.dataset,
       el: this.el,
       getRowCount: () =>
@@ -1760,7 +1761,7 @@ const WBView = Backbone.View.extend({
       this.uploadedView = undefined;
       runCleanup();
     };
-    this.uploadedView = new WBUploadedView({
+    this.uploadedView = new WbUploadedView({
       recordCounts: this.uploadResults.recordCounts,
       isUploaded: this.isUploaded,
       onClose: handleClose,
@@ -1899,7 +1900,7 @@ const WBView = Backbone.View.extend({
       .then(() => this.openStatus(mode));
   },
   openStatus(mode) {
-    this.wbstatus = new WBStatus({
+    this.wbstatus = new WbStatusView({
       dataset: {
         ...this.dataset,
         // Create initial status if it doesn't exist yet
@@ -2551,7 +2552,7 @@ const WBView = Backbone.View.extend({
   },
 });
 
-export default function loadDataset(
+export function loadDataset(
   id,
   refreshInitiatedBy = undefined,
   refreshInitiatorAborted = false

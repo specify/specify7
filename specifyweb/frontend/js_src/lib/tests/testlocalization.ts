@@ -67,7 +67,7 @@ function error(value: string): void {
   console.error(`\u001B[31m${value}\u001B[0m\n\n`);
 }
 
-const reDictionaryName = /export default (?<dictionaryName>\w+);/;
+const reDictionaryName = /export const (?<dictionaryName>\w+) =/;
 
 log(`Looking for localization dictionaries in ${localizationDirectory}`);
 

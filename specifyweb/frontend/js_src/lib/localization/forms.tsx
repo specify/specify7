@@ -9,7 +9,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const formsText = createDictionary({
+export const formsText = createDictionary({
   // Attachments
   order: {
     'en-us': 'Order By',
@@ -949,5 +949,3 @@ const formsText = createDictionary({
     'es-es': 'Reverse',
   },
 });
-
-export default formsText;

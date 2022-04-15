@@ -4,7 +4,7 @@ import mappingLines1 from './fixtures/mappinglines.1.json';
 import { runTest } from './testmain';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 
-export default function (): void {
+export function testWbPlanViewModelHelper(): void {
   runTest(
     'WbPlanViewModelHelper.findRequiredMissingFields',
     [

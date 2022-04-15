@@ -3,7 +3,7 @@ import React from 'react';
 import type { AnySchema } from '../datamodelutils';
 import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { FormMode, FormType } from '../parseform';
 import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';

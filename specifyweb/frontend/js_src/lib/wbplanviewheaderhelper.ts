@@ -6,7 +6,7 @@
 
 import type { MappingLine } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import wbText from './localization/workbench';
+import { wbText } from './localization/workbench';
 import type { RA } from './types';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import { getUniqueName } from './wbuniquifyname';

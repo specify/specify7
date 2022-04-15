@@ -8,7 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const adminText = createDictionary({
+export const adminText = createDictionary({
   removeAdmin: {
     'en-us': 'Remove Admin',
     'ru-ru': 'Забрать администратора',
@@ -433,5 +433,3 @@ const adminText = createDictionary({
     'es-es': 'External identity providers:',
   },
 });
-
-export default adminText;

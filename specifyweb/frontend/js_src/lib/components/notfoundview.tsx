@@ -1,8 +1,8 @@
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { Container, H2 } from './basic';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 
 export function NotFound(): JSX.Element {
   return (

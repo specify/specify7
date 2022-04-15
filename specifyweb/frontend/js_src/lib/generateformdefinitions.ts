@@ -1,5 +1,5 @@
 import type { AnySchema, TableFields } from './datamodelutils';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import type {
   FormMode,
   FormType,

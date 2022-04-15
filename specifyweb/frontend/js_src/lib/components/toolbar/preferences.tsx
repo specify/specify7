@@ -4,18 +4,18 @@
 
 import React from 'react';
 
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import type { GenericPreferencesCategories } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
 import { Button, Container, Form, H2, H3, Submit } from '../basic';
 import { useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 
-/**
+/*
  * FIXME: finish this
- * */
+ */
 function Preferences({
   onClose: handleClose,
 }: {
@@ -88,12 +88,10 @@ function Preferences({
 
 const PreferencesView = createBackboneView(Preferences);
 
-const toolBarItem: UserTool = {
+export const userTool: UserTool = {
   task: 'preferences',
   title: commonText('preferences'),
   isOverlay: false,
   view: ({ onClose }) => new PreferencesView({ onClose }),
   groupLabel: commonText('customization'),
 };
-
-export default toolBarItem;

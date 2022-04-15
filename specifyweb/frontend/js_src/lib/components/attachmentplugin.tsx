@@ -15,8 +15,8 @@ import type { Attachment } from '../datamodel';
 import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { AttachmentCell } from './attachmentstask';
@@ -25,7 +25,7 @@ import { crash } from './errorboundary';
 import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 
 export function AttachmentPlugin({
   resource,

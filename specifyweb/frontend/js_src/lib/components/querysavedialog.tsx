@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import queryText from '../localization/query';
+import { commonText } from '../localization/common';
+import { queryText } from '../localization/query';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';

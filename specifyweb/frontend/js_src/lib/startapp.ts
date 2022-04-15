@@ -1,5 +1,5 @@
 import { ajax, Http, ping } from './ajax';
-import Backbone from './backbone';
+import { Backbone } from './backbone';
 import { crash } from './components/errorboundary';
 import { f } from './functools';
 import { NotFoundView } from './components/notfoundview';
@@ -92,7 +92,7 @@ const tasksPromise = Promise.all([
   import('./wbplantask'),
   import('./appresourcetask'),
   import('./components/toolbar/security'),
-]).then((tasks) => (): void => tasks.forEach(({ default: task }) => task()));
+]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
 
 router
   .route('*whatever', 'notFound', function () {
@@ -102,7 +102,7 @@ router
     void ping('/api/test_error/');
   });
 
-export default function appStart(): void {
+export function startApp(): void {
   console.info('specify app starting');
   enableBusinessRules(true);
   tasksPromise.then(f.call).then(startNavigation).catch(crash);

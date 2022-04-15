@@ -5,13 +5,13 @@
 import React from 'react';
 
 import { formData, Http, ping } from '../../ajax';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { hasPermission } from '../../permissions';
 
 const liftGetResource = async (
@@ -153,7 +153,7 @@ function ExportStarted({
 
 const View = createBackboneView(MakeDwca);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'make-dwca',
   title: commonText('makeDwca'),
   enabled: () => hasPermission('/export/dwca', 'execute'),
@@ -161,5 +161,3 @@ const userTool: UserTool = {
   view: ({ onClose }) => new View({ onClose }),
   groupLabel: commonText('export'),
 };
-
-export default userTool;

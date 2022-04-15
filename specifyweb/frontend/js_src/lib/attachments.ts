@@ -3,7 +3,7 @@ import type { Attachment } from './datamodel';
 import { getIcon } from './icons';
 import { load } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';

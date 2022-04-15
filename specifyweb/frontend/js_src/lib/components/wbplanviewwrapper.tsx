@@ -12,7 +12,7 @@ import { NotFound } from './notfoundview';
 import { hasPermission } from '../permissions';
 import { treeRanksPromise } from '../treedefinitions';
 import { useAsyncState } from './hooks';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 
@@ -71,4 +71,4 @@ function WbPlanViewWrapper({
   ) : null;
 }
 
-export default createBackboneView(WbPlanViewWrapper);
+export const WrappedWbPlanView = createBackboneView(WbPlanViewWrapper);

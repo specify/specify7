@@ -2,11 +2,11 @@ import { ajax } from './ajax';
 import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
 import { cachableUrl } from './initialcontext';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import { hasPermission } from './permissions';
 import { ReportsView } from './reports';
 
-export default ajax<{ readonly available: boolean }>(
+export const menuItem = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
   {
     headers: { Accept: 'application/json' },

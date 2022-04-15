@@ -6,11 +6,11 @@ import React from 'react';
 
 import { Http, ping } from '../../ajax';
 import { cachableUrls } from '../../initialcontext';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { useAsyncState } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 
 function CacheBuster(): JSX.Element | null {
   const [isLoaded] = useAsyncState(
@@ -45,12 +45,10 @@ function CacheBuster(): JSX.Element | null {
 
 const View = createBackboneView(CacheBuster);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'cache-buster',
   title: commonText('clearCache'),
   isOverlay: false,
   view: () => new View(),
   groupLabel: commonText('developers'),
 };
-
-export default userTool;

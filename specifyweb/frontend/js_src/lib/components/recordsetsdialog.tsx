@@ -3,8 +3,8 @@ import type { State } from 'typesafe-reducer';
 
 import type { RecordSet } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';

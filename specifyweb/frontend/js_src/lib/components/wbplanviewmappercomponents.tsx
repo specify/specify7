@@ -1,8 +1,8 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';

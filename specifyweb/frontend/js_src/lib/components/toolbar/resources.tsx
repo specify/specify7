@@ -4,12 +4,12 @@
 
 import React from 'react';
 
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { hasToolPermission } from '../../permissions';
 
 function AppResourceDialog({
@@ -40,7 +40,7 @@ function AppResourceDialog({
 
 const View = createBackboneView(AppResourceDialog);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'resources',
   title: commonText('resources'),
   isOverlay: true,
@@ -48,5 +48,3 @@ const userTool: UserTool = {
   enabled: () => hasToolPermission('resources', 'read'),
   groupLabel: commonText('administration'),
 };
-
-export default userTool;

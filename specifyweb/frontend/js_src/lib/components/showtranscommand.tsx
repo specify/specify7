@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { RA } from '../types';
 import { sortObjectsByKey } from '../helpers';
 import { f } from '../functools';

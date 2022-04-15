@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { ajax, isExternalUrl } from '../ajax';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { router } from '../router';
 import {
   setCurrentOverlay,

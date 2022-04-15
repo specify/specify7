@@ -9,15 +9,15 @@ import {getModel, schema} from './schema';
 import {getInteractionsForPrepIds} from './specifyapi';
 import {setCurrentView} from './specifyapp';
 import {ResourceView, ShowResource,} from './components/resourceview';
-import PrepDialog from './prepdialog';
-import formsText from './localization/forms';
-import commonText from './localization/common';
+import {PrepDialog} from './prepdialog';
+import {formsText} from './localization/forms';
+import {commonText} from './localization/common';
 import {fieldFormat} from "./uiparse";
-import createBackboneView from './components/reactbackboneextend';
+import {createBackboneView} from './components/reactbackboneextend';
 
 const resourceView = createBackboneView(ResourceView);
 
-export default PrepDialog.extend({
+export const PrepSelectDialog = PrepDialog.extend({
         __name__: "PrepSelectDialog",
         events: {
             'click button.prepselect-unavailable': 'prepInteractions',

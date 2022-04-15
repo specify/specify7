@@ -5,7 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
-import formsText from './localization/forms';
+import { formsText } from './localization/forms';
 import { getAttribute } from './parseformcells';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';

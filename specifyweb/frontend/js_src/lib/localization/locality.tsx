@@ -8,7 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const localityText = createDictionary({
+export const localityText = createDictionary({
   // Leaflet
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
@@ -148,5 +148,3 @@ const localityText = createDictionary({
     'es-es': 'Toggle Full Screen',
   },
 });
-
-export default localityText;

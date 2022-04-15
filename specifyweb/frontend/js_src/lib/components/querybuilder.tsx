@@ -4,9 +4,9 @@ import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import queryText from '../localization/query';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { queryText } from '../localization/query';
+import { wbText } from '../localization/workbench';
 import { hasPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import {
@@ -38,6 +38,26 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
+/*
+ * Query Results:
+ * FIXME: query results editing & deleting
+ * FIXME: creating record set out of a subset of results
+ * To Test:
+ * FIXME: test #318
+ * FIXME: test "any" filters in sp6 and sp7
+ * FIXME: test query reports
+ * FIXME: test using sp7 queries in sp6 and vice versa
+ */
+/*
+ * Query Results:
+ * FIXME: query results editing & deleting
+ * FIXME: creating record set out of a subset of results
+ * To Test:
+ * FIXME: test #318
+ * FIXME: test "any" filters in sp6 and sp7
+ * FIXME: test query reports
+ * FIXME: test using sp7 queries in sp6 and vice versa
+ */
 
 /*
  * Query Results:

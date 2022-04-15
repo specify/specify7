@@ -19,7 +19,7 @@ import {
 import { LoadingContext } from './contexts';
 import { useId, useLiveState } from './hooks';
 import { dialogIcons } from './icons';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (

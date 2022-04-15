@@ -10,7 +10,7 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import wbText from '../localization/workbench';
+import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
 import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';

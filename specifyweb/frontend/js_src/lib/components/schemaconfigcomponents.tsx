@@ -1,6 +1,6 @@
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Form, Input, Label, Select, Submit } from './basic';
 import { useId } from './hooks';

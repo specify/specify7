@@ -3,7 +3,7 @@ import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { sortFunction, sortObjectsByKey, split } from '../helpers';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import {
   filterFormatters,
   getItemType,

@@ -4,7 +4,7 @@ import _ from 'underscore';
 import {schema} from './schema';
 import {getPrepAvailability} from './specifyapi';
 
-export default {
+export const interactionBusinessRules = {
         previousReturned: [],
         previousResolved: [],
         getTotalLoaned: function(loanreturnprep) {

@@ -5,7 +5,7 @@ const assert = QUnit.assert;
 
 import * as latlongutils from '../latlongutils';
 
-export default function() {
+export function testLatLongUtils() {
     QUnit.module('latlongutils.parse');
     var parse = latlongutils.Coord.parse;
 

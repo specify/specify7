@@ -18,7 +18,7 @@ import { fieldFormat, resolveParser } from './uiparse';
 import { getAttribute } from './parseformcells';
 import { f } from './functools';
 import { hasTablePermission } from './permissions';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 
 export type Formatter = {
   readonly name: string | undefined;

@@ -1,11 +1,11 @@
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
 
-export default function Routes(): void {
+export function task(): void {
   router.route('tree/:table/', 'tree', async (table: string) =>
-    import('./components/treeview').then(({ default: TreeView }) =>
+    import('./components/treeview').then(({ treeView }) =>
       setCurrentView(
-        new TreeView({
+        new treeView({
           table,
         })
       )

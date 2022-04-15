@@ -1,15 +1,15 @@
 import { icons } from './components/icons';
 import type { MenuItem } from './components/main';
-import createBackboneView from './components/reactbackboneextend';
+import { createBackboneView } from './components/reactbackboneextend';
 import { RecordSetsDialog } from './components/recordsetsdialog';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import { schema } from './schema';
 import { userInformation } from './userinfo';
 import { hasToolPermission } from './permissions';
 
 const RecordSetsView = createBackboneView(RecordSetsDialog);
 
-const menuItem: MenuItem = {
+export const menuItem: MenuItem = {
   task: 'recordsets',
   title: commonText('recordSets'),
   icon: icons.collection,
@@ -36,5 +36,3 @@ const menuItem: MenuItem = {
     }).render();
   },
 };
-
-export default menuItem;

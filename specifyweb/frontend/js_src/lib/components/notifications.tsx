@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax, formData, ping } from '../ajax';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';

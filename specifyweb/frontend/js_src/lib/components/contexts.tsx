@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 
 import { error } from '../assert';
 import { replaceItem } from '../helpers';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';

@@ -1,8 +1,8 @@
 import React from 'react';
 
 import type { Collection } from '../datamodel';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import { hasPermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
 import type { IR } from '../types';

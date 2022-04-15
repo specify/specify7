@@ -5,7 +5,7 @@
 import { ajax } from './ajax';
 import { error } from './assert';
 import { PermissionDenied } from './components/permissiondenied';
-import createBackboneView from './components/reactbackboneextend';
+import { createBackboneView } from './components/reactbackboneextend';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import { f } from './functools';

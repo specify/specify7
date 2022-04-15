@@ -1,8 +1,8 @@
 "use strict";
 import {schema} from './schema';
-import interactionBusinessRules from './interactionbusinessrules';
+import {interactionBusinessRules} from './interactionbusinessrules';
 
-export default Object.freeze({
+export const businessRuleDefs = Object.freeze({
         Accession: {
             uniqueIn: {
                 accessionnumber: 'division'

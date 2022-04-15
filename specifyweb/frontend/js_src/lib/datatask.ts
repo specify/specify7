@@ -7,7 +7,7 @@ import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { OtherCollectionView } from './components/othercollectionview';
 import { PermissionDenied } from './components/permissiondenied';
-import createBackboneView from './components/reactbackboneextend';
+import { createBackboneView } from './components/reactbackboneextend';
 import { ShowResource } from './components/resourceview';
 import type { Tables } from './datamodel';
 import type { AnySchema } from './datamodelutils';
@@ -127,7 +127,6 @@ async function resourceView(
         new ResourceView({
           resource,
           recordSet: await recordSet?.fetch(),
-          pushUrl: true,
         })
       )
   ).catch(crash);
@@ -148,7 +147,6 @@ async function viewResourceByGuid(
           new ResourceView({
             resource: models[0],
             recordSet: undefined,
-            pushUrl: true,
           })
         )
       ).catch(crash);
@@ -203,7 +201,6 @@ async function byCatNumber(
           new ResourceView({
             resource: models[0],
             recordSet: undefined,
-            pushUrl: true,
           })
         );
         return undefined;
@@ -236,7 +233,7 @@ const checkLoggedInCollection = async (
 
 const ResourceView = createBackboneView(ShowResource);
 
-export default function routes(): void {
+export function task(): void {
   router.route('recordset/:id/', 'recordSetView', recordSetView);
   router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
   router.route('view/:model/:id/', 'resourceView', resourceView);

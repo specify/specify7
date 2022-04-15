@@ -1,7 +1,7 @@
 import React from 'react';
 
-import commonText from '../localization/common';
-import treeText from '../localization/tree';
+import { commonText } from '../localization/common';
+import { treeText } from '../localization/tree';
 import type { Conformations, KeyAction, Row, Stats } from '../treeviewutils';
 import { formatTreeStats, mapKey, scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';

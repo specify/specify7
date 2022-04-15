@@ -10,7 +10,7 @@ import {
   getLinesFromUploadPlan,
 } from '../wbplanviewlinesgetter';
 
-export default function (): void {
+export function testWbPlanViewLinesGetter(): void {
   runTest(
     'WbPlanViewLinesGetter.getLinesFromHeaders',
     [

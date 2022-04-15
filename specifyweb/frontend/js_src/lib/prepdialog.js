@@ -2,15 +2,15 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 
 import {schema} from './schema';
-import formsText from './localization/forms';
+import {formsText} from './localization/forms';
 import {showDialog} from './components/modaldialog';
 import {localizeFrom} from './stringlocalization';
 
 
-export default Backbone.View.extend({
+export const PrepDialog = Backbone.View.extend({
     __name__: "PrepDialog",
     initialize() {
         Object.assign(this, {

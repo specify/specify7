@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { formData, Http, ping } from '../ajax';
-import Backbone from '../backbone';
+import { Backbone } from '../backbone';
 import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -28,7 +28,7 @@ import {
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
@@ -225,8 +225,6 @@ function DataSetName({
   );
 }
 
-const DataSetNameView = createBackboneView(DataSetName);
-
 const fetchListOfUsers = async (): Promise<
   RA<SerializedResource<SpecifyUser>>
 > =>
@@ -317,13 +315,14 @@ function ChangeOwner({
   );
 }
 
+const WrappedDataSetName = createBackboneView(DataSetName);
 const ChangeOwnerView = createBackboneView(ChangeOwner);
 
 // A wrapper for DS Meta for embedding in the WB
-export default Backbone.View.extend({
+export const DataSetNameView = Backbone.View.extend({
   __name__: 'DataSetNameView',
   render() {
-    this.dataSetMeta = new DataSetNameView({
+    this.dataSetMeta = new WrappedDataSetName({
       el: this.el.getElementsByClassName('wb-name-container')[0],
       dataset: this.options.dataset,
       getRowCount: this.options.getRowCount,

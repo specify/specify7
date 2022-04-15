@@ -1,14 +1,13 @@
 import React from 'react';
 
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
-import collectionapi from '../collectionapi';
 import type { RecordSet as RecordSetSchema } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
 import { clamp, removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import { deleteResource, getResourceApiUrl, resourceOn } from '../resource';
@@ -28,6 +27,7 @@ import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
 import { formatUrl, parseUrl } from '../querystring';
 import { goTo, pushUrl } from './navigation';
+import { DependentCollection, LazyCollection } from '../collectionapi';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(parseUrl()[queryParameter], (index) =>
@@ -73,8 +73,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const [records, setRecords] =
     React.useState<RA<SpecifyResource<SCHEMA> | undefined>>(getRecords);
 
-  const isDependent = collection instanceof collectionapi.Dependent;
-  const isLazy = collection instanceof collectionapi.Lazy;
+  const isDependent = collection instanceof DependentCollection;
+  const isLazy = collection instanceof LazyCollection;
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
 
@@ -164,7 +164,7 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: string | undefined;
 }): JSX.Element {
-  const isDependent = collection instanceof collectionapi.Dependent;
+  const isDependent = collection instanceof DependentCollection;
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
   const mode = augmentMode(initialMode, false, field.relatedModel.name);

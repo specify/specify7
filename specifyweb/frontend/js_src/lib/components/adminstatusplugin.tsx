@@ -8,7 +8,7 @@ import React from 'react';
 import { ajax, formData } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
-import adminText from '../localization/admin';
+import { adminText } from '../localization/admin';
 import type { FormMode } from '../parseform';
 import { hasPermission } from '../permissions';
 import { userInformation } from '../userinfo';

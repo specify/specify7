@@ -11,7 +11,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const commonText = createDictionary({
+export const commonText = createDictionary({
   specifySeven: {
     'en-us': 'Specify 7',
     'ru-ru': 'Specify 7',
@@ -1803,5 +1803,3 @@ const commonText = createDictionary({
     'es-es': 'Results',
   },
 });
-
-export default commonText;

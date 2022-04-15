@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import { group } from '../helpers';
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import type { PermissionsQueryItem } from '../permissions';
 import {
   getTablePermissions,

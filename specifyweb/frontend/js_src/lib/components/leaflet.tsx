@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { addFullScreenButton, showLeafletMap } from '../leaflet';
 import type L from '../leafletextend';
 import type { LocalityData } from '../leafletutils';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { LoadingContext } from './contexts';
 import { useBooleanState } from './hooks';

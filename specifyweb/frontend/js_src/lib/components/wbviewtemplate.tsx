@@ -6,9 +6,9 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import commonText from '../localization/common';
-import localityText from '../localization/locality';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { localityText } from '../localization/locality';
+import { wbText } from '../localization/workbench';
 import { hasPermission } from '../permissions';
 import { Button, Input } from './basic';
 

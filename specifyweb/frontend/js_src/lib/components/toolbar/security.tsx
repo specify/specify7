@@ -11,8 +11,8 @@ import type { SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
 import { index, removeKey } from '../../helpers';
-import adminText from '../../localization/admin';
-import commonText from '../../localization/common';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
 import { hasPermission } from '../../permissions';
 import { router } from '../../router';
 import type { BackEndRole } from '../../securityutils';
@@ -24,7 +24,7 @@ import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
@@ -242,6 +242,6 @@ export const userTool: UserTool = {
   groupLabel: commonText('administration'),
 };
 
-export default function Routes(): void {
+export function task(): void {
   router.route('security/', 'security', () => setCurrentView(new View()));
 }

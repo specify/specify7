@@ -10,7 +10,7 @@ import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const wbText = createDictionary({
+export const wbText = createDictionary({
   // Buttons
   rollback: {
     'en-us': 'Roll Back',
@@ -1727,5 +1727,3 @@ const wbText = createDictionary({
       'Selected Data Set has no upload plan. Please select a different one.',
   },
 });
-
-export default wbText;

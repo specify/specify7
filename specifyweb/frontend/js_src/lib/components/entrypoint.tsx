@@ -8,8 +8,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { initialContext, unlockInitialContext } from '../initialcontext';
-import commonText from '../localization/common';
-import startApp from '../startapp';
+import { commonText } from '../localization/common';
+import { startApp } from '../startapp';
 import { className } from './basic';
 import { Contexts } from './contexts';
 import { crash } from './errorboundary';

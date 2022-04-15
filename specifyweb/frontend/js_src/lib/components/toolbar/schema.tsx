@@ -5,14 +5,14 @@
 import React from 'react';
 
 import type { Tables } from '../../datamodel';
-import formsText from '../../localization/forms';
+import { formsText } from '../../localization/forms';
 import { router } from '../../router';
 import { getModel, schema } from '../../schema';
 import { setCurrentView } from '../../specifyapp';
 import type { SpecifyModel } from '../../specifymodel';
 import { className, Container, H2, H3, Link } from '../basic';
-import createBackboneView from '../reactbackboneextend';
-import commonText from '../../localization/common';
+import { createBackboneView } from '../reactbackboneextend';
+import { commonText } from '../../localization/common';
 import { fieldFormat, resolveParser } from '../../uiparse';
 import { RA } from '../../types';
 import { TableIcon } from '../common';
@@ -216,12 +216,12 @@ function view(model: string | undefined): void {
   );
 }
 
-export default function Routes(): void {
+export function task(): void {
   router.route('datamodel/:model/', 'datamodel', view);
   router.route('datamodel/', 'datamodel', view);
 }
 
-export const toolBarItem: UserTool = {
+export const userTool: UserTool = {
   task: 'schema',
   title: commonText('datamodel'),
   isOverlay: false,

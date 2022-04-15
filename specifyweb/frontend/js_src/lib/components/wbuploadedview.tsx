@@ -7,14 +7,14 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
 import type { RR } from '../types';
 import { defined } from '../types';
 import { Button, H2, Ul } from './basic';
 import { TableIcon } from './common';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 
 function TableResults({
   tableName,
@@ -31,7 +31,7 @@ function TableResults({
   );
 }
 
-function WbUploadedView({
+function WbUploaded({
   recordCounts,
   onClose: handleClose,
   isUploaded,
@@ -68,4 +68,4 @@ function WbUploadedView({
   );
 }
 
-export default createBackboneView(WbUploadedView);
+export const WbUploadedView = createBackboneView(WbUploaded);

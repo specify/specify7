@@ -7,7 +7,7 @@ import React from 'react';
 import { ajax } from '../../ajax';
 import type { Tables } from '../../datamodel';
 import { fetchFormatters } from '../../dataobjformatters';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import { schema } from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
@@ -16,7 +16,7 @@ import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import type {
   DataObjectFormatter,
   NewSpLocaleItemString,
@@ -230,12 +230,10 @@ function SchemaConfigWrapper({
 
 const View = createBackboneView(SchemaConfigWrapper);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'schema-config',
   title: commonText('schemaConfig'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   groupLabel: commonText('customization'),
 };
-
-export default userTool;

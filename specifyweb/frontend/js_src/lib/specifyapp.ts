@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import type Backbone from './backbone';
+import type Backbone from 'backbone';
 import { openDialogs } from './components/modaldialog';
 import {
   confirmNavigation,

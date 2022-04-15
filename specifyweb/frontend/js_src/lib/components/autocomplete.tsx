@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { ensure } from '../types';
 import type { TagProps } from './basic';

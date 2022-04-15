@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 
 import {assert} from './assert';
 import {globalEvents} from './specifyapi';
@@ -57,7 +57,7 @@ function eventHandlerForToOne(related, field) {
     }
 
 
-    var ResourceBase = Backbone.Model.extend({
+    export const ResourceBase = Backbone.Model.extend({
         __name__: "ResourceBase",
         populated: false,   // indicates if this resource has data
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
@@ -574,8 +574,6 @@ function eventHandlerForToOne(related, field) {
             return model;
         },
     });
-
-export default ResourceBase;
 
 export function promiseToXhr(promise) {
   promise.done = function (fn) {

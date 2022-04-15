@@ -15,7 +15,7 @@ import 'leaflet.markercluster/dist/leaflet.markercluster';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
 
-import localityText from './localization/locality';
+import { localityText } from './localization/locality';
 import { legacyNonJsxIcons } from './components/icons';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */

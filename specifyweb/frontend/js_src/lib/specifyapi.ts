@@ -5,7 +5,7 @@
 import _ from 'underscore';
 
 import { ajax } from './ajax';
-import Backbone from './backbone';
+import { Backbone } from './backbone';
 import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import type { RA } from './types';

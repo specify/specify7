@@ -1,7 +1,7 @@
 import React from 'react';
 
-import adminText from '../localization/admin';
-import commonText from '../localization/common';
+import { adminText } from '../localization/admin';
+import { commonText } from '../localization/common';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useBooleanState, useId, useTitle, useValidation } from './hooks';
 import { Dialog } from './modaldialog';

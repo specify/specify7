@@ -1,12 +1,11 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import collectionapi from '../collectionapi';
 import type { AnySchema } from '../datamodelutils';
 import { replaceKey, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
@@ -23,6 +22,7 @@ import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { DependentCollection } from '../collectionapi';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -341,7 +341,7 @@ export function FormTableCollection({
 }): JSX.Element {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   const field = defined(collection.field?.getReverse());
-  const isDependent = collection instanceof collectionapi.Dependent;
+  const isDependent = collection instanceof DependentCollection;
   const isToOne = !relationshipIsToMany(field);
   const disableAdding = isToOne && records.length > 0;
   return (

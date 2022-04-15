@@ -11,8 +11,8 @@ import {
 import { dayjs, getDateInputValue } from '../dayjs';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import type { RR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';

@@ -2,7 +2,7 @@ import { router } from './router';
 import { crash } from './components/errorboundary';
 import { f } from './functools';
 
-export default function (): void {
+export function task(): void {
   router.route(
     'workbench/:id/',
     'workbench',
@@ -14,7 +14,7 @@ export default function (): void {
             ({ treeRanksPromise }) => treeRanksPromise
           ),
         })
-        .then(({ wbView: { default: wbView } }) => wbView(Number.parseInt(id)))
+        .then(({ wbView: { loadDataset } }) => loadDataset(Number.parseInt(id)))
         .catch(crash)
   );
 }

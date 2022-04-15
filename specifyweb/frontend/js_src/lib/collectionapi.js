@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from 'underscore';
-import Backbone from './backbone';
+import {Backbone} from './backbone';
 import {assert} from './assert';
 
 
@@ -17,8 +17,6 @@ var Base =  Backbone.Collection.extend({
         return this;
     }
 
-    var collectionapi = {};
-
     function setupToOne(collection, options) {
         collection.field = options.field;
         collection.related = options.related;
@@ -27,7 +25,7 @@ var Base =  Backbone.Collection.extend({
         assert(collection.field.relatedModel === collection.related.specifyModel, "field is not to related resource");
     }
 
-    collectionapi.Dependent = Base.extend({
+    export const DependentCollection = Base.extend({
         __name__: "DependentCollectionBase",
         constructor(options, models=[]) {
             assert(_.isArray(models));
@@ -57,7 +55,7 @@ var Base =  Backbone.Collection.extend({
         create: notSupported
     });
 
-    collectionapi.Lazy = Base.extend({
+    export const LazyCollection = Base.extend({
         __name__: "LazyCollectionBase",
         _neverFetched: true,
         constructor(options) {
@@ -121,7 +119,7 @@ var Base =  Backbone.Collection.extend({
         }
     });
 
-    collectionapi.ToOne = collectionapi.Lazy.extend({
+    export const ToOneCollection = LazyCollection.extend({
         __name__: "LazyToOneCollectionBase",
         initialize(_models, options) {
             setupToOne(this, options);
@@ -132,8 +130,6 @@ var Base =  Backbone.Collection.extend({
                 return this;
             }
             this.filters[this.field.name.toLowerCase()] = this.related.id;
-            return collectionapi.Lazy.prototype.fetch.apply(this, arguments);
+            return LazyCollection.prototype.fetch.apply(this, arguments);
         }
     });
-
-    export default collectionapi;

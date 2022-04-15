@@ -8,12 +8,12 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { ajax, Http } from '../ajax';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { Button, Label, Progress } from './basic';
 import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
 import { error } from '../assert';
 
@@ -213,4 +213,4 @@ function WbStatus({
   );
 }
 
-export default createBackboneView(WbStatus);
+export const WbStatusView = createBackboneView(WbStatus);

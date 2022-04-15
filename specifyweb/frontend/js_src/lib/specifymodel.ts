@@ -2,7 +2,6 @@
  * Class for a specify model (a database table)
  */
 
-import collectionapi from './collectionapi';
 import type { Tables } from './datamodel';
 import type {
   AnySchema,
@@ -15,8 +14,8 @@ import { f } from './functools';
 import { camelToHuman } from './helpers';
 import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
-import commonText from './localization/common';
-import ResourceBase from './resourceapi';
+import { commonText } from './localization/common';
+import { ResourceBase } from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { localization, schema } from './schema';
 import { unescape } from './schemabase';
@@ -30,6 +29,11 @@ import {
 import { isTreeResource } from './treedefinitions';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
+import {
+  DependentCollection,
+  LazyCollection,
+  ToOneCollection,
+} from './collectionapi';
 
 type FieldAlias = {
   readonly vname: string;
@@ -201,17 +205,17 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       { specifyModel: this }
     );
 
-    this.LazyCollection = collectionapi.Lazy.extend({
+    this.LazyCollection = LazyCollection.extend({
       __name__: `${this.name}LazyCollection`,
       model: this.Resource,
     });
 
-    this.DependentCollection = collectionapi.Dependent.extend({
+    this.DependentCollection = DependentCollection.extend({
       __name__: `${this.name}DependentCollection`,
       model: this.Resource,
     });
 
-    this.ToOneCollection = collectionapi.ToOne.extend({
+    this.ToOneCollection = ToOneCollection.extend({
       __name__: `${this.name}ToOneCollection`,
       model: this.Resource,
     });

@@ -6,7 +6,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-const specifyNetworkText = createDictionary({
+export const specifyNetworkText = createDictionary({
   specifyNetwork: {
     'en-us': 'Specify Network (opens in new tab)',
     'ru-ru': 'Specify Network (открывается в новой вкладке)',
@@ -44,5 +44,3 @@ const specifyNetworkText = createDictionary({
     `,
   },
 });
-
-export default specifyNetworkText;

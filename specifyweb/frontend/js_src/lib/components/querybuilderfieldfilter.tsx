@@ -1,7 +1,7 @@
 import React from 'react';
 
-import commonText from '../localization/common';
-import queryText from '../localization/query';
+import { commonText } from '../localization/common';
+import { queryText } from '../localization/query';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
 import type { RA, RR } from '../types';

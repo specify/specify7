@@ -9,7 +9,7 @@ import type { TaxonTreeDef } from '../../datamodel';
 import type { FilterTablesByEndsWith } from '../../datamodelutils';
 import { f } from '../../functools';
 import type { SpecifyResource } from '../../legacytypes';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import { hasTreeAccess } from '../../permissions';
 import {
   getDisciplineTrees,
@@ -22,7 +22,7 @@ import { LoadingContext } from '../contexts';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { parseUrl } from '../../querystring';
 
@@ -155,12 +155,10 @@ export function EditTreeDefinition({
 
 const View = createBackboneView(RepairTree);
 
-const userTool: UserTool = {
+export const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose }),
   groupLabel: commonText('administration'),
 };
-
-export default userTool;

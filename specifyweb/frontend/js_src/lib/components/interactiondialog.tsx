@@ -7,9 +7,9 @@ import type { AnySchema, FilterTablesByEndsWith } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import commonText from '../localization/common';
-import formsText from '../localization/forms';
-import PrepSelectDialog from '../prepselectdialog';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
+import { PrepSelectDialog } from '../prepselectdialog';
 import { getResourceViewUrl } from '../resource';
 import { getModel } from '../schema';
 import {

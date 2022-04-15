@@ -68,7 +68,7 @@ Coord.parse = function(str) {
     return result && result.isValid() ? result : null;
 };
 
-export default Coord.parse;
+export const parseCoord = Coord.parse;
 
 export function Lat(flt) {
     Coord.call(this, flt);

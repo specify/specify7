@@ -10,7 +10,7 @@ import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 
 import { ajax, Http } from '../ajax';
 import { encodings } from '../encodings';
-import wbText from '../localization/workbench';
+import { wbText } from '../localization/workbench';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { f } from '../functools';
@@ -18,7 +18,7 @@ import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, H3, Input, Select } from './basic';
 import { FilePicker } from './filepicker';
 import { useTitle } from './hooks';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { goTo } from './navigation';
 
@@ -500,7 +500,7 @@ function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
 
-export default createBackboneView(function WbImportView() {
+export const WbImportView = createBackboneView(function WbImportView() {
   useTitle(wbText('importDataSet'));
   return <WbImport />;
 });

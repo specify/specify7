@@ -13,8 +13,8 @@ import type {
 } from './components/wbplanviewcomponents';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import commonText from './localization/common';
-import queryText from './localization/query';
+import { commonText } from './localization/common';
+import { queryText } from './localization/query';
 import { hasTreeAccess } from './permissions';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';

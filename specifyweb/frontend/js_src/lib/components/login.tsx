@@ -7,7 +7,7 @@ import '../../css/main.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';

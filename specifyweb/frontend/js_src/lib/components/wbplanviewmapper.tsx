@@ -9,8 +9,8 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { Tables } from '../datamodel';
-import commonText from '../localization/common';
-import wbText from '../localization/workbench';
+import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
 import type { IR, RA } from '../types';
 import { defined } from '../types';

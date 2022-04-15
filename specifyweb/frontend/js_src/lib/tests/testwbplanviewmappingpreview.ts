@@ -1,7 +1,7 @@
 import { runTest } from './testmain';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 
-export default function (): void {
+export function testWbPlanViewTreePreview(): void {
   runTest(
     'WbPlanViewMappingPreview.generateMappingPathPreview',
     [

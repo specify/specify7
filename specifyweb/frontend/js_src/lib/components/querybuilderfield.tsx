@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import { replaceItem } from '../helpers';
-import commonText from '../localization/common';
-import queryText from '../localization/query';
+import { commonText } from '../localization/common';
+import { queryText } from '../localization/query';
 import type { QueryField } from '../querybuilderutils';
 import { mutateLineData, sortTypes } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
@@ -34,7 +34,7 @@ import {
   queryFieldFilters,
   QueryLineFilter,
 } from './querybuilderfieldfilter';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import {
   getMappingLineProps,
   MappingElement,

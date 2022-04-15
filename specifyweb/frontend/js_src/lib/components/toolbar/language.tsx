@@ -6,7 +6,7 @@ import React from 'react';
 
 import { ajax, ping } from '../../ajax';
 import { csrfToken } from '../../csrftoken';
-import commonText from '../../localization/common';
+import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages } from '../../localization/utils';
 import type { PreferenceItemComponent } from '../../preferences';

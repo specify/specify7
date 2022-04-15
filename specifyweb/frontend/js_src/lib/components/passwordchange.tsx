@@ -8,7 +8,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { ErrorBoundary } from './errorboundary';

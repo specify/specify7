@@ -5,7 +5,7 @@
 import type Backbone from 'backbone';
 import React from 'react';
 
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { fetchContext as userPermission } from '../permissions';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
@@ -56,27 +56,21 @@ const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
       import('./toolbar/trees'),
       import('../toolbarrecordsets'),
       import('./toolbar/query'),
-      import('../toolbarreport').then(async ({ default: menuItem }) => ({
-        default: await menuItem,
+      import('../toolbarreport').then(async ({ menuItem }) => ({
+        menuItem: await menuItem,
       })),
-      import('../toolbarattachments').then(
-        async ({ default: menuItemPromise }) => ({
-          default: await menuItemPromise,
-        })
-      ),
+      import('../toolbarattachments').then(async ({ menuItem }) => ({
+        menuItem: await menuItem,
+      })),
       import('./toolbar/wbsdialog'),
     ])
   )
-  .then(processMenuItems);
+  .then((items) => processMenuItems(items.map(({ menuItem }) => menuItem)));
 
-function processMenuItems<T extends UserTool | MenuItem>(
-  items: RA<{ readonly default: T }>
-): RA<T> {
-  const filtered = items
-    .map(({ default: item }) => item)
-    .filter(({ enabled }) =>
-      typeof enabled === 'function' ? enabled() : enabled !== false
-    );
+function processMenuItems<T extends UserTool | MenuItem>(items: RA<T>): RA<T> {
+  const filtered = items.filter(({ enabled }) =>
+    typeof enabled === 'function' ? enabled() : enabled !== false
+  );
 
   filtered.forEach(({ task, view }) =>
     router.route(
@@ -105,7 +99,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
     Promise.all([
       // User Account
       {
-        default: {
+        userTool: {
           task: 'logout',
           title: commonText('logOut'),
           basePath: '/',
@@ -115,7 +109,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
         },
       },
       {
-        default: {
+        userTool: {
           task: 'password_change',
           title: commonText('changePassword'),
           basePath: '/',
@@ -129,18 +123,16 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
       import('./toolbar/schemaconfig'),
       // Administration
       import('./toolbar/resources'),
-      import('./toolbar/security').then(({ userTool }) => ({
-        default: userTool,
-      })),
+      import('./toolbar/security'),
       import('./toolbar/treerepair'),
       import('./toolbar/masterkey'),
       // Export
       import('./toolbar/dwca'),
       import('./toolbar/forceupdate'),
       // Documentation
-      import('./welcomeview').then(({ userTool }) => ({ default: userTool })),
+      import('./welcomeview'),
       {
-        default: {
+        userTool: {
           task: 'discourse',
           title: commonText('forum'),
           basePath: '',
@@ -150,15 +142,13 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
         },
       },
       // Developers
-      import('./toolbar/schema').then(({ toolBarItem }) => ({
-        default: toolBarItem,
-      })),
+      import('./toolbar/schema'),
       import('./toolbar/cachebuster'),
-      import('./toolbar/swagger').then(({ toolbarItems }) =>
-        toolbarItems.map((item) => ({ default: item }))
+      import('./toolbar/swagger').then(({ userTools }) =>
+        userTools.map((userTool) => ({ userTool }))
       ),
       {
-        default: {
+        userTool: {
           task: 'password_change',
           title: commonText('githubWiki'),
           basePath: '',
@@ -170,7 +160,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
     ])
   )
   .then((items) => items.flat())
-  .then(processMenuItems);
+  .then((items) => processMenuItems(items.map(({ userTool }) => userTool)));
 
 export function Main({
   onLoaded: handleLoaded,

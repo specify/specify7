@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
-import commonText from '../localization/common';
+import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { router } from '../router';
 import { getModel } from '../schema';
@@ -15,7 +15,7 @@ import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
-import createBackboneView from './reactbackboneextend';
+import { createBackboneView } from './reactbackboneextend';
 import { H3 } from './basic';
 import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
 import { formatUrl, parseUrl } from '../querystring';
@@ -221,7 +221,7 @@ function Results(): JSX.Element {
 
 const ResultsView = createBackboneView(Results);
 
-export default function (): void {
+export function task(): void {
   router.route('express_search/', 'esearch', function () {
     setCurrentView(new ResultsView({}));
   });

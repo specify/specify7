@@ -7,8 +7,8 @@
 import React from 'react';
 
 import { ajax, Http } from '../../ajax';
-import commonText from '../../localization/common';
-import wbText from '../../localization/workbench';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
 import type { RA } from '../../types';
 import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
@@ -21,7 +21,7 @@ import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
-import createBackboneView from '../reactbackboneextend';
+import { createBackboneView } from '../reactbackboneextend';
 import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 import { hasPermission } from '../../permissions';
@@ -318,12 +318,10 @@ export function WbsDialog({
 
 const View = createBackboneView(WbsDialog);
 
-const menuItem: MenuItem = {
+export const menuItem: MenuItem = {
   task: 'workbenches',
   title: commonText('workbench'),
   icon: icons.table,
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),
 };
-
-export default menuItem;

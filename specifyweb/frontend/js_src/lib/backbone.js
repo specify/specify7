@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import Backbone from 'backbone';
+import BackboneBase from 'backbone';
 
 // https://stackoverflow.com/questions/14866014/debugging-javascript-backbone-and-marionette
 
@@ -15,7 +15,7 @@ import Backbone from 'backbone';
         return fn(constructor);
     }
 
-    var originalExtend = Backbone.View.extend;
+    var originalExtend = BackboneBase.View.extend;
     var nameProp = '__name__';
     var newExtend = function(protoProps, classProps) {
         if (protoProps && protoProps.hasOwnProperty(nameProp)) {
@@ -32,7 +32,7 @@ import Backbone from 'backbone';
         return originalExtend.call(this, protoProps, classProps);
     };
 
-    Backbone.Model.extend = Backbone.Collection.extend = Backbone.Router.extend = Backbone.View.extend = newExtend;
+    BackboneBase.Model.extend = BackboneBase.Collection.extend = BackboneBase.Router.extend = BackboneBase.View.extend = newExtend;
 
-Backbone.$ = $;
-export default Backbone;
+BackboneBase.$ = $;
+export const Backbone = BackboneBase;

@@ -4,7 +4,7 @@
 
 import { f } from './functools';
 import { autoGenerateViewDefinition } from './generateformdefinitions';
-import commonText from './localization/common';
+import { commonText } from './localization/common';
 import type { ParsedFormDefinition } from './parseform';
 import { schema } from './schema';
 import type { IR } from './types';
