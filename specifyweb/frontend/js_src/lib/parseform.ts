@@ -63,14 +63,17 @@ function parseFormTableDefinition(
       // Set ariaLabel for all cells (would be used in formTable headers)
       ariaLabel:
         cell.ariaLabel ??
+        (cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
+          ? cell.fieldDefinition.label
+          : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? cell.fieldName
+          ? model?.getField(cell.fieldName ?? '')?.label ?? cell.fieldName
           : undefined) ??
         cell.id,
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
-        ? { label: undefined }
+        ? { fieldDefinition: { ...cell.fieldDefinition, label: undefined } }
         : {}),
     }));
   return {
