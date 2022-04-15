@@ -6,7 +6,7 @@ import { Button, Form, Input, Label, Submit } from './basic';
 import { useBooleanState, useId, useTitle, useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 
-export const MIN_PASSWORD_LENGTH = 6;
+export const MIN_PASSWORD_LENGTH = 8;
 
 export function PasswordResetDialog({
   onSet: handleSet,
