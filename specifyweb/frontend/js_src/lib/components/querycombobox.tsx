@@ -446,7 +446,7 @@ export function QueryComboBox({
                 })
             : undefined
         }
-        value={formatted?.label ?? value?.toString() ?? ''}
+        value={formatted?.label ?? commonText('loading') ?? ''}
         forwardRef={validationRef}
         aria-label={undefined}
       >
@@ -459,7 +459,8 @@ export function QueryComboBox({
               !isLoaded ||
               mode === 'view' ||
               formType === 'formTable' ||
-              typeof typeSearch === 'undefined'
+              typeof typeSearch === 'undefined' ||
+              typeof formatted === 'undefined'
             }
             {...getValidationAttributes(parser)}
             {...props}
