@@ -5,7 +5,7 @@ import { openDialogs } from './components/modaldialog';
 import {
   confirmNavigation,
   getCurrentUrl,
-  push,
+  pushUrl,
 } from './components/navigation';
 import { f } from './functools';
 import { ping } from './ajax';
@@ -27,7 +27,7 @@ export function setCurrentView(view: Backbone.View): void {
   currentOverlay?.remove();
   currentOverlay = undefined;
   if (typeof overlayUrl === 'string' && typeof previousUrl === 'string') {
-    if (getCurrentUrl() === overlayUrl) push(previousUrl);
+    if (getCurrentUrl() === overlayUrl) pushUrl(previousUrl);
     overlayUrl = undefined;
     previousUrl = undefined;
   }
@@ -54,7 +54,7 @@ let overlayUrl: string | undefined;
 export function setCurrentOverlay(view: Backbone.View, url: string): void {
   previousUrl = getCurrentUrl();
   overlayUrl = url;
-  push(url);
+  pushUrl(url);
   currentOverlay?.remove();
   view.render();
   currentOverlay = view;

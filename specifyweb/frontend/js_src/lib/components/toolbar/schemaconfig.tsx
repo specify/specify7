@@ -9,7 +9,6 @@ import type { Tables } from '../../datamodel';
 import { fetchFormatters } from '../../dataobjformatters';
 import commonText from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
-import * as querystring from '../../querystring';
 import { schema } from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
@@ -28,6 +27,7 @@ import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
 import { f } from '../../functools';
 import { cachableUrl } from '../../initialcontext';
+import { parseUrl } from '../../querystring';
 
 type Props = {
   readonly onClose: () => void;
@@ -94,8 +94,7 @@ const languagesUrl = cachableUrl('/context/schema/language/');
 function SchemaConfigWrapper({
   onClose: handleClose,
 }: Props): JSX.Element | null {
-  const { language: defaultLanguage, table: defaultTable } =
-    querystring.parse();
+  const { language: defaultLanguage, table: defaultTable } = parseUrl();
 
   useTitle(commonText('schemaConfig'));
 

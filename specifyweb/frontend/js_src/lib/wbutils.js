@@ -17,7 +17,7 @@ import {
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
 import Backbone from './backbone';
-import * as latlongutils from './latlongutils';
+import {Lat, Long} from './latlongutils';
 import {camelToKebab, clamp, sortFunction} from './helpers';
 import {f} from './functools';
 import WbAdvancedSearch, {
@@ -1042,7 +1042,7 @@ export default Backbone.View.extend({
           if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
-            const coordinate = latlongutils[columnRole].parse(originalValue);
+            const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(originalValue);
             if (coordinate)
               value = includeSymbolsFunction(
                 stripCardinalDirections(

@@ -8,7 +8,6 @@ import type { SerializedResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
-import * as navigation from './navigation';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -34,6 +33,7 @@ import type { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
 import { TableIcon } from './common';
+import { goTo } from './navigation';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
@@ -335,7 +335,7 @@ export default Backbone.View.extend({
     this.changeOwnerView = new ChangeOwnerView({
       dataset: this.options.dataset,
       onClose: handleClose,
-      onChanged: (): void => navigation.go('/specify/'),
+      onChanged: (): void => goTo('/specify/'),
     }).render();
   },
   remove() {

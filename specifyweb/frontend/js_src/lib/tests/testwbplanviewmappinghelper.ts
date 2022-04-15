@@ -1,6 +1,12 @@
 import { schema } from '../schema';
-import * as WbPlanViewMappingHelper from '../wbplanviewmappinghelper';
 import { runTest } from './testmain';
+import {
+  findDuplicateMappings,
+  getNameFromTreeRankName,
+  getNumberFromToManyIndex,
+  valueIsToManyIndex,
+  valueIsTreeRank,
+} from '../wbplanviewmappinghelper';
 
 export default function (): void {
   runTest(
@@ -12,7 +18,7 @@ export default function (): void {
       [['collectionobject'], false],
       [[`${schema.treeSymbol}Kingdom`], false],
     ],
-    WbPlanViewMappingHelper.valueIsToManyIndex
+    valueIsToManyIndex
   );
 
   runTest(
@@ -25,7 +31,7 @@ export default function (): void {
       [[`${schema.treeSymbol}Kingdom`], true],
       [[`${schema.treeSymbol}County`], true],
     ],
-    WbPlanViewMappingHelper.valueIsTreeRank
+    valueIsTreeRank
   );
 
   runTest(
@@ -36,7 +42,7 @@ export default function (): void {
       [[`${schema.referenceSymbol}0`], 0],
       [[`${schema.referenceSymbol}00`], 0],
     ],
-    WbPlanViewMappingHelper.getNumberFromToManyIndex
+    getNumberFromToManyIndex
   );
 
   runTest(
@@ -45,7 +51,7 @@ export default function (): void {
       [[`${schema.treeSymbol}Kingdom`], 'Kingdom'],
       [[`${schema.treeSymbol}County`], 'County'],
     ],
-    WbPlanViewMappingHelper.getNameFromTreeRankName
+    getNameFromTreeRankName
   );
 
   runTest(
@@ -85,6 +91,6 @@ export default function (): void {
         [0, 4],
       ],
     ],
-    WbPlanViewMappingHelper.findDuplicateMappings
+    findDuplicateMappings
   );
 }

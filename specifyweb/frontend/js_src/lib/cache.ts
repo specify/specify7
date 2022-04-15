@@ -120,7 +120,7 @@ function fetchBucket(
  * Get value of cacheName in the bucketName
  * Bucket names and cache names are defined in CacheDefinitions
  */
-export const get: {
+export const getCache: {
   // Overload with a default value
   <
     BUCKET_NAME extends string & keyof CacheDefinitions,
@@ -166,7 +166,7 @@ export const get: {
 
 /** Get value of cacheName in the bucketName */
 // Overload with defaultValue
-export function genericGet<T>(
+function genericGet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
@@ -178,7 +178,7 @@ export function genericGet<T>(
   }
 ): T;
 // Overload without defaultValue (returns T|undefined)
-export function genericGet<T = never>(
+function genericGet<T = never>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
@@ -190,7 +190,7 @@ export function genericGet<T = never>(
       }
     | undefined
 ): T | undefined;
-export function genericGet<T>(
+function genericGet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
@@ -252,7 +252,7 @@ type SetOptions = {
   readonly version?: string;
 };
 
-export const set = <
+export const setCache = <
   BUCKET_NAME extends string & keyof CacheDefinitions,
   CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
 >(
@@ -269,7 +269,7 @@ export const set = <
   );
 
 /** Set's cacheValue as cache value under cacheName in `bucketName` */
-export function genericSet<T>(
+function genericSet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache

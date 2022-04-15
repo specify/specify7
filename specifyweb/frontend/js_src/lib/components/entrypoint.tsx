@@ -9,7 +9,6 @@ import ReactDOM from 'react-dom';
 
 import { initialContext, unlockInitialContext } from '../initialcontext';
 import commonText from '../localization/common';
-import * as navigation from './navigation';
 import startApp from '../startapp';
 import { className } from './basic';
 import { Contexts } from './contexts';
@@ -17,6 +16,7 @@ import { crash } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
+import { goTo } from './navigation';
 
 unlockInitialContext('main');
 
@@ -29,7 +29,7 @@ function handleClick(event: Readonly<MouseEvent>): void {
     !link.classList.contains(className.navigationHandled)
   ) {
     event.preventDefault();
-    navigation.go(link.href);
+    goTo(link.href);
   }
 }
 

@@ -5,9 +5,9 @@ import _ from 'underscore';
 import Backbone from './backbone';
 
 import {schema} from './schema';
-import * as s from './stringlocalization';
 import formsText from './localization/forms';
 import {showDialog} from './components/modaldialog';
+import {localizeFrom} from './stringlocalization';
 
 
 export default Backbone.View.extend({
@@ -57,7 +57,7 @@ export default Backbone.View.extend({
         //<<<<<<<<<<<<<<<<<<<<<<< events
 
         getProp: function(key, fallback) {
-            return s.localizeFrom('resources', key, fallback);
+            return localizeFrom('resources', key, fallback);
         }
     });
 

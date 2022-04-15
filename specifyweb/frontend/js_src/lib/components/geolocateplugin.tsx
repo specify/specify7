@@ -4,7 +4,6 @@ import type { Geography, Locality } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
-import * as querystring from '../querystring';
 import { schema } from '../schema';
 import type { IR } from '../types';
 import { filterArray } from '../types';
@@ -14,6 +13,7 @@ import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
+import { formatUrl } from '../querystring';
 
 function GeoLocate({
   resource,
@@ -108,9 +108,10 @@ function GeoLocate({
       <iframe
         title={localityText('geoLocate')}
         // GEOLocate doesn't like '|' to be uri escaped.
-        src={querystring
-          .format('https://www.geo-locate.org/web/webgeoreflight.aspx', data)
-          .replace(/%7c/gi, '|')}
+        src={formatUrl(
+          'https://www.geo-locate.org/web/webgeoreflight.aspx',
+          data
+        ).replace(/%7c/gi, '|')}
         // TODO: check these dimensions. Figure out if can make flexible
         style={{ width: '908px', height: '653px' }}
       />

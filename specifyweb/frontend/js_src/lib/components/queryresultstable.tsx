@@ -9,7 +9,6 @@ import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import * as navigation from './navigation';
 import { hasToolPermission } from '../permissions';
 import { fetchPickList } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
@@ -35,6 +34,7 @@ import { Dialog, loadingBar } from './modaldialog';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { ResourceView } from './resourceview';
+import { goTo } from './navigation';
 
 function TableHeaderCell({
   fieldSpec,
@@ -224,7 +224,7 @@ function CreateRecordSet({
                 <Button.DialogClose>{commonText('no')}</Button.DialogClose>
                 <Button.Blue
                   onClick={(): void =>
-                    navigation.go(`/specify/recordset/${recordSet.id}/`)
+                    goTo(`/specify/recordset/${recordSet.id}/`)
                   }
                 >
                   {commonText('open')}

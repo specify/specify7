@@ -13,11 +13,11 @@ import type {
 import type { Tables } from './datamodel';
 import type { Aggregator, Formatter } from './dataobjformatters';
 import commonText from './localization/common';
-import * as querystring from './querystring';
 import type { JavaType } from './specifyfield';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { f } from './functools';
+import { parseUrl } from './querystring';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -90,7 +90,7 @@ export function prepareNewString({
   ...object
 }: NewSpLocaleItemString): NewSpLocaleItemString {
   if (typeof parent === 'undefined') throw new Error('String has no parent');
-  const [parentName, parentId] = Object.entries(querystring.parse(parent))[0];
+  const [parentName, parentId] = Object.entries(parseUrl(parent))[0];
   return {
     ...object,
     [parentName]: `/api/specify/splocalecontaineritem/${parentId}/`,

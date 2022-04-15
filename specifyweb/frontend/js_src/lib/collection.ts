@@ -8,11 +8,11 @@ import type {
 } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import { f } from './functools';
-import * as queryString from './querystring';
 import { parseResourceUrl } from './resource';
 import { schema } from './schema';
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
+import { formatUrl } from './querystring';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = {
   readonly limit: number;
@@ -69,7 +69,7 @@ export const fetchCollection = async <
     };
     readonly objects: RA<SerializedModel<SCHEMA>>;
   }>(
-    queryString.format(
+    formatUrl(
       `/api/specify/${modelName.toLowerCase()}/`,
       Object.fromEntries(
         filterArray(

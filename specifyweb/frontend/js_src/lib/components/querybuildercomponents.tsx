@@ -6,7 +6,6 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import queryText from '../localization/query';
-import * as navigation from './navigation';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
 import { getModel, schema } from '../schema';
@@ -22,6 +21,7 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 import { hasPermission } from '../permissions';
+import { goTo } from './navigation';
 
 function QueryButton({
   disabled,
@@ -91,7 +91,7 @@ export function SaveQueryButtons({
           onClose={(): void => setShowDialog(false)}
           onSaved={(queryId: number): void => {
             unsetUnloadProtect();
-            navigation.go(`/specify/query/${queryId}/`);
+            goTo(`/specify/query/${queryId}/`);
           }}
           query={queryResource}
         />
@@ -199,7 +199,7 @@ export function MakeRecordSetButton({
                 <Button.DialogClose>{commonText('no')}</Button.DialogClose>
                 <Button.Blue
                   onClick={(): void =>
-                    navigation.go(`/specify/recordset/${recordSet.id}/`)
+                    goTo(`/specify/recordset/${recordSet.id}/`)
                   }
                 >
                   {commonText('open')}

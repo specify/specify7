@@ -5,8 +5,6 @@ import type { RecordSet } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-// TODO: phase out this style of imports:
-import * as navigation from './navigation';
 import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
@@ -20,6 +18,7 @@ import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
 import { hasToolPermission } from '../permissions';
+import { goTo } from './navigation';
 
 function Row({
   recordSet,
@@ -199,7 +198,7 @@ export function RecordSetsDialog({
         }
         onDeleted={undefined}
         onSaved={(): void =>
-          navigation.go(
+          goTo(
             getResourceViewUrl(
               getModelById(state.recordSet.get('dbTableId')).name,
               state.recordSet.id
@@ -243,7 +242,7 @@ export function RecordSetsDialog({
           contextTableId: state.recordSet.get('dbTableId'),
         }}
         onNewQuery={(): void =>
-          navigation.go(
+          goTo(
             `/specify/query/new/${getModelById(
               state.recordSet.get('dbTableId')
             ).name.toLowerCase()}/?recordsetid=${state.recordSet.id}`

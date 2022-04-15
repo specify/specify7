@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { Locality } from '../datamodel';
-import * as latlongutils from '../latlongutils';
+import { Lat, Long } from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import localityText from '../localization/locality';
@@ -56,9 +56,9 @@ function Coordinate({
     const handleChange = (coordinate: string): void =>
       onChange(
         coordinate,
-        (latlongutils[fieldType].parse(coordinate) as Parsed | null)?.format(
-          step
-        )
+        (
+          (fieldType === 'Lat' ? Lat : Long).parse(coordinate) as Parsed | null
+        )?.format(step)
       );
     const textDestructor = resourceOn(
       resource,

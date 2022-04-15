@@ -13,7 +13,6 @@ import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
-import * as navigation from '../navigation';
 import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
@@ -48,6 +47,7 @@ import { cachableUrl } from '../../initialcontext';
 import { downloadFile, FilePicker, fileToText } from '../filepicker';
 import { omit } from '../../helpers';
 import { getUniqueName } from '../../wbuniquifyname';
+import { goTo } from '../navigation';
 
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
@@ -387,7 +387,7 @@ function EditQueryDialog({
         </>
       }
       resource={queryResource}
-      onSaved={(): void => navigation.go(`/query/${queryResource.id}/`)}
+      onSaved={(): void => goTo(`/query/${queryResource.id}/`)}
       onClose={handleClose}
       onDeleted={handleClose}
       mode="edit"
@@ -463,7 +463,7 @@ function QueryImport({
                 )
                 .then((queryResource) => queryResource.save())
                 .then((queryResource) =>
-                  navigation.go(`/specify/query/${queryResource.id}/`)
+                  goTo(`/specify/query/${queryResource.id}/`)
                 )
             )
           }
@@ -566,7 +566,7 @@ function QueryExport({
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
-                navigation.go(`/specify/appresources/${appResource.id}/`)
+                goTo(`/specify/appresources/${appResource.id}/`)
               )
           )
         }

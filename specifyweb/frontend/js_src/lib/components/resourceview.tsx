@@ -7,9 +7,8 @@ import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
-import formsText from '../localization/forms';
-import * as navigation from './navigation';
 import type { FormMode } from '../parseform';
+import formsText from '../localization/forms';
 import { hasTablePermission } from '../permissions';
 import reports from '../reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
@@ -23,6 +22,7 @@ import { Dialog } from './modaldialog';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
+import { goTo, pushUrl } from './navigation';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -163,9 +163,7 @@ const resourceDeletedDialog = (
     title={commonText('resourceDeletedDialogTitle')}
     header={commonText('resourceDeletedDialogHeader')}
     buttons={commonText('close')}
-    onClose={(): void => {
-      navigation.go('/');
-    }}
+    onClose={(): void => goTo('/')}
   >
     {commonText('resourceDeletedDialogMessage')}
   </Dialog>
@@ -421,11 +419,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
 export function ShowResource({
   resource: initialResource,
   recordSet: initialRecordSet,
-  pushUrl,
 }: {
   resource: SpecifyResource<AnySchema>;
   recordSet: SpecifyResource<RecordSet> | undefined;
-  pushUrl: boolean;
 }): JSX.Element | null {
   const [{ resource, recordSet }, setRecord] = React.useState({
     resource: initialResource,
@@ -434,16 +430,14 @@ export function ShowResource({
 
   React.useEffect(
     () =>
-      pushUrl
-        ? navigation.push(
-            getResourceViewUrl(
-              resource.specifyModel.name,
-              resource.id,
-              recordSet?.id
-            )
-          )
-        : undefined,
-    [resource, recordSet, pushUrl]
+      pushUrl(
+        getResourceViewUrl(
+          resource.specifyModel.name,
+          resource.id,
+          recordSet?.id
+        )
+      ),
+    [resource, recordSet]
   );
 
   const [recordSetItemIndex] = useAsyncState(
@@ -472,7 +466,7 @@ export function ShowResource({
         dialog={false}
         mode="edit"
         model={resource.specifyModel}
-        onClose={(): void => navigation.go('/')}
+        onClose={(): void => goTo('/')}
         onAdd={f.void}
         onSlide={f.void}
         recordSet={recordSet}
@@ -489,11 +483,11 @@ export function ShowResource({
       isSubForm={false}
       mode="edit"
       viewName={resource.specifyModel.view}
-      onDeleted={(): void => navigation.go('/')}
+      onDeleted={(): void => goTo('/')}
       onSaved={({ wasNew, newResource }): void => {
         if (typeof newResource === 'object')
           setRecord({ resource: newResource, recordSet });
-        else if (wasNew) navigation.go(resource.viewUrl());
+        else if (wasNew) goTo(resource.viewUrl());
         else {
           const reloadResource = new resource.specifyModel.Resource({
             id: resource.id,

@@ -16,7 +16,6 @@ import reports from '../reports';
 import { getResourceViewUrl } from '../resource';
 import { getModel, schema } from '../schema';
 import { SpecifyModel } from '../specifymodel';
-import * as s from '../stringlocalization';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -27,6 +26,7 @@ import { useAsyncState, useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { deserializeResource } from './resource';
+import { localizeFrom } from '../stringlocalization';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -179,7 +179,7 @@ function Interactions({
               key={index}
               title={
                 typeof tooltip === 'string'
-                  ? s.localizeFrom('resources', tooltip)
+                  ? localizeFrom('resources', tooltip)
                   : undefined
               }
             >
@@ -204,7 +204,7 @@ function Interactions({
                   <TableIcon name={icon} tableLabel={false} />
                 ))}
                 {typeof label === 'string'
-                  ? s.localizeFrom('resources', label)
+                  ? localizeFrom('resources', label)
                   : typeof table === 'string'
                   ? getModel(table)?.label
                   : action}

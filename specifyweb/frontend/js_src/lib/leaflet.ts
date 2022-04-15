@@ -7,7 +7,6 @@
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import { ajax, Http } from './ajax';
-import * as cache from './cache';
 import { legacyNonJsxIcons } from './components/icons';
 import {
   cachableUrl,
@@ -28,6 +27,7 @@ import localityText from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { capitalize } from './helpers';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
+import { getCache, setCache } from './cache';
 
 const DEFAULT_ZOOM = 5;
 
@@ -149,7 +149,7 @@ function rememberSelectedBaseLayers(
   cacheSalt: LeafletCacheSalt
 ): void {
   const cacheName = `currentLayer${cacheSalt}` as const;
-  const currentLayer = cache.get('leaflet', cacheName);
+  const currentLayer = getCache('leaflet', cacheName);
   const baseLayer =
     (typeof currentLayer === 'string' && currentLayer in layers
       ? layers[currentLayer]
@@ -157,7 +157,7 @@ function rememberSelectedBaseLayers(
   baseLayer.addTo(map);
 
   map.on('baselayerchange', ({ name }: { readonly name: string }) => {
-    cache.set('leaflet', cacheName, name, { overwrite: true });
+    setCache('leaflet', cacheName, name, { overwrite: true });
   });
 }
 
@@ -171,7 +171,7 @@ function rememberSelectedOverlays(
       ([_, layerObject]) => layerObject === layer
     )?.[0];
     if (typeof layerName === 'string')
-      cache.set(
+      setCache(
         'leaflet',
         `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
         type === 'overlayadd',
@@ -183,7 +183,7 @@ function rememberSelectedOverlays(
 
   Object.keys(layers)
     .filter((layerName) =>
-      cache.get(
+      getCache(
         'leaflet',
         `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
         { defaultValue: defaultOverlays[layerName] ?? false }

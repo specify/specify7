@@ -187,4 +187,3 @@ function parse(str) {
     }
     return null; // No parser succeeded.
 }
-

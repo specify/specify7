@@ -2,7 +2,7 @@
 import _ from 'underscore';
 import treeText from './localization/tree';
 import {ajax} from './ajax';
-import * as querystring from './querystring';
+import {formatUrl} from './querystring';
 
 function predictFullName(resource, options) {
     const treeName = resource.specifyModel.name.toLowerCase();
@@ -17,7 +17,7 @@ function predictFullName(resource, options) {
             }
             if (resource.get('name') == null) return null;
             return ajax(
-                querystring.format(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
+                formatUrl(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
                 {
                   name: resource.get('name'),
                     treedefitemid: defitem.id

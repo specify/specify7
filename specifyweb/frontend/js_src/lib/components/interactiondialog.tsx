@@ -19,7 +19,6 @@ import {
 import type { LiteralField } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
-import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import type { InvalidParseResult, ValidParseResult } from '../uiparse';
@@ -35,6 +34,7 @@ import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
+import { localize } from '../stringlocalization';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -210,11 +210,11 @@ export function InteractionDialog({
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
-      header={s.localize('InteractionsTask.LN_RET_TITLE')}
+      header={localize('InteractionsTask.LN_RET_TITLE')}
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      {s.localize('InteractionsTask.RET_LN_SV').replace('%d', state.result)}
+      {localize('InteractionsTask.RET_LN_SV').replace('%d', state.result)}
     </Dialog>
   ) : (
     <RecordSetsDialog

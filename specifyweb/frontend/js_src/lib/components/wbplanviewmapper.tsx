@@ -8,7 +8,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import * as cache from '../cache';
 import type { Tables } from '../datamodel';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
@@ -51,6 +50,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { getCache } from '../cache';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -109,10 +109,10 @@ export const getDefaultMappingState = ({
   readonly mustMatchPreferences: IR<boolean>;
 }): MappingState => ({
   type: 'MappingState',
-  showHiddenFields: cache.get('wbPlanViewUi', 'showHiddenFields', {
+  showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields', {
     defaultValue: false,
   }),
-  showMappingView: cache.get('wbPlanViewUi', 'showMappingView', {
+  showMappingView: getCache('wbPlanViewUi', 'showMappingView', {
     defaultValue: true,
   }),
   mappingView: ['0'],

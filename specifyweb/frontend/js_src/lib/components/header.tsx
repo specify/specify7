@@ -6,8 +6,6 @@ import React from 'react';
 
 import { ajax, isExternalUrl } from '../ajax';
 import commonText from '../localization/common';
-import * as navigation from './navigation';
-import * as querystring from '../querystring';
 import { router } from '../router';
 import {
   setCurrentOverlay,
@@ -22,6 +20,8 @@ import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
 import { resourceOn } from '../resource';
+import { formatUrl, parseUrl } from '../querystring';
+import { goTo } from './navigation';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -158,18 +158,18 @@ export function CollectionSelector(): JSX.Element {
 
 export function ExpressSearch(): JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState<string>(
-    () => querystring.parse().q ?? ''
+    () => parseUrl().q ?? ''
   );
   return (
     <Form
       onSubmit={(): void => {
         const query = searchQuery.trim();
         if (query.length === 0) return;
-        const url = querystring.format('/specify/express_search/', {
+        const url = formatUrl('/specify/express_search/', {
           // eslint-disable-next-line id-length
           q: query,
         });
-        navigation.go(url);
+        goTo(url);
       }}
       className="contents"
       action="/specify/express_search/"

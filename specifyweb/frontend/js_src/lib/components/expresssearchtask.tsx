@@ -7,12 +7,10 @@ import React from 'react';
 import { ajax } from '../ajax';
 import commonText from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
-import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
-import * as s from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { useAsyncState, useTitle } from './hooks';
@@ -20,6 +18,8 @@ import { QueryResultsTable } from './queryresultstable';
 import createBackboneView from './reactbackboneextend';
 import { H3 } from './basic';
 import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
+import { formatUrl, parseUrl } from '../querystring';
+import { localizeFrom } from '../stringlocalization';
 
 const relatedSearchesPromise = contextUnlockedPromise.then((entrypoint) =>
   entrypoint === 'main'
@@ -98,7 +98,7 @@ function TableResults({
                 offset: number
               ): Promise<RA<RA<string | number>>> =>
                 ajax<IR<QueryTableResult>>(
-                  querystring.format(ajaxUrl, {
+                  formatUrl(ajaxUrl, {
                     name: model.name,
                     offset: offset.toString(),
                   }),
@@ -120,8 +120,8 @@ function TableResults({
 function Results(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
-  const query = querystring.parse().q;
-  const ajaxUrl = querystring.format('/express_search/', { q: query });
+  const query = parseUrl().q;
+  const ajaxUrl = formatUrl('/express_search/', { q: query });
 
   const [primaryResults] = useAsyncState<RA<RawQueryTableResult>>(
     React.useCallback(
@@ -150,7 +150,7 @@ function Results(): JSX.Element {
           .then(async (relatedSearches) =>
             Promise.all(
               relatedSearches.map(async (tableName) => {
-                const ajaxUrl = querystring.format('/express_search/related/', {
+                const ajaxUrl = formatUrl('/express_search/related/', {
                   q: query,
                   name: tableName,
                 });
@@ -187,7 +187,7 @@ function Results(): JSX.Element {
                 return {
                   model,
                   idFieldIndex,
-                  caption: s.localizeFrom(
+                  caption: localizeFrom(
                     'expresssearch',
                     tableResult.definition.name
                   ),

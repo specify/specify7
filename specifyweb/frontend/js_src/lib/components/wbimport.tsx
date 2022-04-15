@@ -11,7 +11,6 @@ import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
 import { ajax, Http } from '../ajax';
 import { encodings } from '../encodings';
 import wbText from '../localization/workbench';
-import * as navigation from './navigation';
 import type { IR } from '../types';
 import { uniquifyHeaders } from '../wbplanviewheaderhelper';
 import { f } from '../functools';
@@ -21,6 +20,7 @@ import { FilePicker } from './filepicker';
 import { useTitle } from './hooks';
 import createBackboneView from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { goTo } from './navigation';
 
 const PREVIEW_SIZE = 100;
 
@@ -183,9 +183,7 @@ class WbImport extends Component<{}, WbImportState> {
           { expectedResponseCodes: [Http.CREATED] }
         )
       )
-      .then(({ data: { id } }) => {
-        navigation.go(`/workbench/${id}/`);
-      });
+      .then(({ data: { id } }) => goTo(`/workbench/${id}/`));
   }
 
   update(action: Action) {

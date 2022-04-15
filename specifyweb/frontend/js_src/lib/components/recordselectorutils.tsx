@@ -9,10 +9,8 @@ import { clamp, removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
 import formsText from '../localization/forms';
-import * as navigation from './navigation';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
-import * as queryString from '../querystring';
 import { deleteResource, getResourceApiUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
@@ -28,15 +26,17 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
+import { formatUrl, parseUrl } from '../querystring';
+import { goTo, pushUrl } from './navigation';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
-  f.var(queryString.parse()[queryParameter], (index) =>
+  f.var(parseUrl()[queryParameter], (index) =>
     index === 'end' ? lastIndex : f.parseInt(index) ?? 0
   );
 
 function setQueryParameter(queryParameter: string, index: number): void {
   const parameters = { [queryParameter]: index.toString() };
-  navigation.push(queryString.format(window.location.href, parameters));
+  pushUrl(formatUrl(window.location.href, parameters));
 }
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -640,10 +640,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                     loading(
                       recordSet
                         .destroy()
-                        .then(
-                          handleClose ??
-                            ((): void => navigation.go('/specify/'))
-                        )
+                        .then(handleClose ?? ((): void => goTo('/specify/')))
                     )
                   }
                 >
@@ -682,7 +679,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
       onSaved={({ newResource, wasNew, resource }): void => {
         if (wasNew) {
           handleAdd(resource);
-          navigation.push(resource.viewUrl());
+          pushUrl(resource.viewUrl());
         }
         if (typeof newResource === 'object') handleAdd(newResource);
       }}

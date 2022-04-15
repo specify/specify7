@@ -8,9 +8,9 @@ import type {
 import { serializeResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import * as queryString from './querystring';
 import { getModel } from './schema';
 import { RA } from './types';
+import { formatUrl } from './querystring';
 
 /*
  * TODO: experiment with an object singleton:
@@ -62,7 +62,7 @@ export function getResourceViewUrl(
 ): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? queryString.format(url, { recordsetid: recordSetId.toString() })
+    ? formatUrl(url, { recordsetid: recordSetId.toString() })
     : url;
 }
 
@@ -76,7 +76,7 @@ export function getResourceApiUrl(
 ): string {
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? queryString.format(url, { recordsetid: recordSetId.toString() })
+    ? formatUrl(url, { recordsetid: recordSetId.toString() })
     : url;
 }
 

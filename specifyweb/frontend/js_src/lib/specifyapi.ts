@@ -8,9 +8,9 @@ import { ajax } from './ajax';
 import Backbone from './backbone';
 import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
-import * as queryString from './querystring';
 import type { RA } from './types';
 import { filterArray } from './types';
+import { formatUrl } from './querystring';
 
 export const globalEvents = _.extend({}, Backbone.Events);
 
@@ -20,7 +20,7 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   forceCollection: number | undefined
 ): Promise<RA<SpecifyResource<SCHEMA>>> =>
   ajax<RA<SerializedModel<SCHEMA>>>(
-    queryString.format(
+    formatUrl(
       `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
       {
         ...Object.fromEntries(
@@ -136,7 +136,7 @@ export const fetchRows = async <SCHEMA extends AnySchema>(
   }
 ): Promise<RA<RA<string>>> =>
   ajax<RA<RA<string>>>(
-    queryString.format(`/api/specify_rows/${table.toLowerCase()}/`, {
+    formatUrl(`/api/specify_rows/${table.toLowerCase()}/`, {
       fields: fields.join(',').toLowerCase(),
       limit: limit.toString(),
       distinct: distinct ? 'true' : 'false',

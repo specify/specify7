@@ -11,7 +11,6 @@ import { f } from '../../functools';
 import type { SpecifyResource } from '../../legacytypes';
 import commonText from '../../localization/common';
 import { hasTreeAccess } from '../../permissions';
-import * as querystring from '../../querystring';
 import {
   getDisciplineTrees,
   treeDefinitions,
@@ -25,6 +24,7 @@ import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import createBackboneView from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
+import { parseUrl } from '../../querystring';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -111,7 +111,7 @@ function RepairTree({
 
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
-    const { tree } = querystring.parse();
+    const { tree } = parseUrl();
     if (typeof tree === 'undefined') return;
     loading(handleClick(tree).then(handleClose));
   }, [loading, handleClose]);

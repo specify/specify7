@@ -9,7 +9,6 @@ import React from 'react';
 import { ajax, Http } from '../../ajax';
 import commonText from '../../localization/common';
 import wbText from '../../localization/workbench';
-import * as navigation from '../navigation';
 import type { RA } from '../../types';
 import { sortFunction } from '../../helpers';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
@@ -26,6 +25,7 @@ import createBackboneView from '../reactbackboneextend';
 import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 import { hasPermission } from '../../permissions';
+import { goTo } from '../navigation';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -48,7 +48,7 @@ const createEmptyDataSet = async (): Promise<void> =>
     {
       expectedResponseCodes: [Http.CREATED],
     }
-  ).then(({ data: { id } }) => navigation.go(`/workbench-plan/${id}/`));
+  ).then(({ data: { id } }) => goTo(`/workbench-plan/${id}/`));
 
 /** Wrapper for Data Set Meta */
 function DsMeta({
@@ -209,9 +209,7 @@ function DataSets({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           {canImport && (
             <>
-              <Button.Blue
-                onClick={(): void => navigation.go('/workbench-import/')}
-              >
+              <Button.Blue onClick={(): void => goTo('/workbench-import/')}>
                 {wbText('importFile')}
               </Button.Blue>
               <Button.Blue onClick={createEmptyDataSet}>

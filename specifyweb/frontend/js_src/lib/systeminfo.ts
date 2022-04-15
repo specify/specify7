@@ -4,7 +4,7 @@
 
 import { Http, ping } from './ajax';
 import { load } from './initialcontext';
-import * as querystring from './querystring';
+import { formatUrl } from './querystring';
 
 type SystemInfo = {
   readonly version: string;
@@ -30,7 +30,7 @@ export const fetchContext = load<SystemInfo>(
   systemInfo = data;
   if (systemInfo.stats_url !== null)
     ping(
-      querystring.format(systemInfo.stats_url, {
+      formatUrl(systemInfo.stats_url, {
         version: systemInfo.version,
         dbVersion: systemInfo.database_version,
         institution: systemInfo.institution,

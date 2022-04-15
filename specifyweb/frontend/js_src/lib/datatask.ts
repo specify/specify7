@@ -14,17 +14,16 @@ import type { AnySchema } from './datamodelutils';
 import { collectionsForResource } from './domain';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-// TODO: eliminate this type of imports
-import * as navigation from './components/navigation';
 import { NotFoundView } from './components/notfoundview';
 import { hasTablePermission, hasToolPermission } from './permissions';
-import * as querystring from './querystring';
 import { getResourceViewUrl } from './resource';
 import { router } from './router';
 import { getModel, getModelById, schema } from './schema';
 import { setCurrentView, switchCollection } from './specifyapp';
 import type { SpecifyModel } from './specifymodel';
 import { defined } from './types';
+import { formatUrl, parseUrl } from './querystring';
+import { navigate } from './components/navigation';
 
 const PermissionDeniedView = createBackboneView(PermissionDenied);
 
@@ -55,8 +54,8 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
               limit: 1,
             })
               .then(({ records }) =>
-                navigation.navigate(
-                  querystring.format(
+                navigate(
+                  formatUrl(
                     getResourceViewUrl(
                       getModelById(recordSet.get('dbTableId')).name,
                       records[0]?.recordId ?? 'new'
@@ -107,7 +106,7 @@ async function resourceView(
 
   const resource = new model.Resource({ id });
 
-  const parameters = querystring.parse();
+  const parameters = parseUrl();
   const recordSetId = f.parseInt(parameters.recordsetid);
   const recordSet =
     typeof recordSetId === 'number'

@@ -7,7 +7,6 @@
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import * as cache from './cache';
 import type {
   AutoMapperSuggestion,
   MappingLine,
@@ -30,6 +29,7 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
+import { setCache } from './cache';
 
 const modifyLine = (
   state: MappingState,
@@ -192,7 +192,8 @@ export type MappingActions =
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
     ...state,
-    showMappingView: cache.set(
+    // TODO: replace setState calls in reducers with useCachedState hooks
+    showMappingView: setCache(
       'wbPlanViewUi',
       'showMappingView',
       action.isVisible,
@@ -281,7 +282,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   }),
   ToggleHiddenFieldsAction: ({ state }) => ({
     ...state,
-    showHiddenFields: cache.set(
+    showHiddenFields: setCache(
       'wbPlanViewUi',
       'showHiddenFields',
       !state.showHiddenFields,

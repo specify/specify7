@@ -3,12 +3,12 @@ import Backbone from './backbone';
 
 import {assert} from './assert';
 import {globalEvents} from './specifyapi';
-import * as querystring from './querystring';
 import {getResourceViewUrl, parseResourceUrl} from './resource';
 import {getResourceAndField} from './components/resource';
 import {hijackBackboneAjax} from './startapp';
 import {Http} from './ajax';
 import {schema} from './schema';
+import {formatUrl} from './querystring';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -136,7 +136,7 @@ function eventHandlerForToOne(related, field) {
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
             return this.recordsetid == null ? url :
-                querystring.format(url, {recordsetid: this.recordsetid});
+                formatUrl(url, {recordsetid: this.recordsetid});
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
@@ -536,7 +536,7 @@ function eventHandlerForToOne(related, field) {
             case 'create':
                 // use the special recordSetId field to add the resource to a record set
                 if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = querystring.format(
+                    options.url = formatUrl(
                         options.url || resource.url(),
                         {recordsetid: resource.recordsetid});
                 }

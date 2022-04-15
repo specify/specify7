@@ -4,8 +4,7 @@
 
 import React from 'react';
 
-import * as attachments from '../attachments';
-import { fetchOriginalUrl } from '../attachments';
+import { fetchOriginalUrl, fetchThumbnail } from '../attachments';
 import {
   DEFAULT_FETCH_LIMIT,
   fetchCollection,
@@ -74,7 +73,7 @@ export function AttachmentCell({
       () =>
         typeof attachment === 'undefined'
           ? undefined
-          : attachments.fetchThumbnail(attachment, previewSize),
+          : fetchThumbnail(attachment, previewSize),
       [attachment]
     ),
     false

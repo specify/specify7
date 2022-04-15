@@ -289,7 +289,7 @@ var enabled = true;
     };
 
 
-export function enable(e) {
+export function enableBusinessRules(e) {
     return enabled = e;
 }
 

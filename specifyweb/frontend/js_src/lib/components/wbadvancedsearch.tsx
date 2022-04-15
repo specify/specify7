@@ -6,7 +6,6 @@
 
 import React from 'react';
 
-import * as cache from '../cache';
 import commonText from '../localization/common';
 import wbText from '../localization/workbench';
 import { Button, H2, Input, Label, Select } from './basic';
@@ -14,6 +13,7 @@ import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import createBackboneView from './reactbackboneextend';
+import { getCache, setCache } from '../cache';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -46,7 +46,7 @@ const CACHE_VERSION = '1';
  * Fetch cached search config or create a new one
  */
 export const getInitialSearchPreferences = (): SearchPreferences =>
-  cache.get('workbench', 'searchProperties', {
+  getCache('workbench', 'searchProperties', {
     defaultValue: {
       navigation: {
         direction: 'columnFirst',
@@ -205,7 +205,7 @@ function WbAdvancedSearch({
 
   React.useEffect(() => {
     handleChange(searchPreferences);
-    cache.set('workbench', 'searchProperties', searchPreferences, {
+    setCache('workbench', 'searchProperties', searchPreferences, {
       overwrite: true,
       version: CACHE_VERSION,
     });

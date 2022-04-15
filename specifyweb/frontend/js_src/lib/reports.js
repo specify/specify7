@@ -18,13 +18,13 @@ import formsText from './localization/forms';
 import commonText from './localization/common';
 
 import {csrfToken} from './csrftoken';
-import * as navigation from './components/navigation';
 import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/modaldialog';
 import {getRelatedObjectCount} from './resource';
 import {hasPermission} from './permissions';
 import {serializeResource} from './datamodelutils';
+import {goTo} from './components/navigation';
 
 // TODO: rewrite to React
 
@@ -138,7 +138,7 @@ var ReportListDialog = Backbone.View.extend({
     editReport(evt) {
         evt.preventDefault();
         const appResource = $(evt.currentTarget).closest('tr').data('resource');
-        navigation.go(`/specify/appresources/${appResource.id}/`);
+        goTo(`/specify/appresources/${appResource.id}/`);
     },
     getReport: function(appResource, action) {
         var reports = new schema.models.SpReport.LazyCollection({

@@ -24,7 +24,6 @@ import Papa from 'papaparse';
 import {Button, className} from './components/basic';
 import {getModel, schema} from './schema';
 import DataSetMeta from './components/datasetmeta';
-import * as navigation from './components/navigation';
 import {NotFoundView} from './components/notfoundview';
 import WBUploadedView from './components/wbuploadedview';
 import WBStatus from './components/wbstatus';
@@ -40,7 +39,6 @@ import {parseUploadPlan} from './uploadplanparser';
 import {capitalize, clamp, mappedFind} from './helpers';
 import {getTableFromMappingPath} from './wbplanviewnavigator';
 import {getIcon} from './icons';
-import * as cache from './cache';
 import wbText from './localization/workbench';
 import commonText from './localization/common';
 import {loadingBar, showDialog} from './components/modaldialog';
@@ -57,6 +55,12 @@ import {ajax, Http, ping} from './ajax';
 import {hasPermission} from './permissions';
 import {wbViewTemplate} from './components/wbviewtemplate';
 import {legacyLoadingContext} from './components/contexts';
+import {
+  addUnloadProtect,
+  goTo,
+  removeUnloadProtect
+} from './components/navigation';
+import {getCache, setCache} from './cache';
 
 const metaKeys = [
   'isNew',
@@ -707,7 +711,7 @@ const WBView = Backbone.View.extend({
   },
   async fetchSortConfig() {
     if (!this.hot) return;
-    const sortConfig = cache.get(
+    const sortConfig = getCache(
       'workBenchSortConfig',
       `${schema.domainLevelIds.collection}_${this.dataset.id}`
     );
@@ -1116,7 +1120,7 @@ const WBView = Backbone.View.extend({
         physicalCol: this.hot.toPhysicalColumn(visualCol),
       })
     );
-    cache.set(
+    setCache(
       'workBenchSortConfig',
       `${schema.domainLevelIds.collection}_${this.dataset.id}`,
       physicalSortConfig,
@@ -1768,7 +1772,7 @@ const WBView = Backbone.View.extend({
     runEffects();
   },
   openPlan() {
-    navigation.go(`/workbench-plan/${this.dataset.id}/`);
+    goTo(`/workbench-plan/${this.dataset.id}/`);
   },
   // For debugging only
   showPlan() {
@@ -1951,7 +1955,7 @@ const WBView = Backbone.View.extend({
                     title: wbText('dataSetDeletedDialogTitle'),
                     header: wbText('dataSetDeletedDialogHeader'),
                     content: wbText('dataSetDeletedDialogMessage'),
-                    onClose: () => navigation.go('/'),
+                    onClose: () => goTo('/'),
                     buttons: commonText('close'),
                   });
               });
@@ -1987,7 +1991,7 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
             onClick={() => {
-              navigation.removeUnloadProtect(this);
+              removeUnloadProtect(this);
               this.trigger('refresh');
             }}
           >
@@ -2339,7 +2343,7 @@ const WBView = Backbone.View.extend({
     this.$('.wb-show-upload-view')
       .prop('disabled', true)
       .prop('title', wbText('wbUploadedUnavailable'));
-    navigation.addUnloadProtect(this, wbText('onExitDialogMessage'));
+    addUnloadProtect(this, wbText('onExitDialogMessage'));
   },
   // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(statusCode) {
@@ -2367,7 +2371,7 @@ const WBView = Backbone.View.extend({
       .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     this.$('.wb-revert').prop('disabled', true);
-    navigation.removeUnloadProtect(this);
+    removeUnloadProtect(this);
   },
 
   // MetaData

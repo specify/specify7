@@ -10,7 +10,6 @@ import { getDateInputValue } from '../dayjs';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import commonText from '../localization/common';
-import * as navigation from './navigation';
 import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
@@ -20,6 +19,7 @@ import { LoadingContext } from './contexts';
 import { FormContext } from './resourceview';
 import { parseRelativeDate } from '../relativedate';
 import { resourceOn } from '../resource';
+import { addUnloadProtect, removeUnloadProtect } from './navigation';
 
 const idStore: R<number> = {};
 
@@ -289,15 +289,12 @@ export function useUnloadProtect(
   React.useEffect(
     () =>
       isEnabled
-        ? navigation.addUnloadProtect(id.current, message)
-        : navigation.removeUnloadProtect(id.current),
+        ? addUnloadProtect(id.current, message)
+        : removeUnloadProtect(id.current),
     [isEnabled, message]
   );
 
-  return React.useCallback(
-    () => navigation.removeUnloadProtect(id.current),
-    []
-  );
+  return React.useCallback(() => removeUnloadProtect(id.current), []);
 }
 
 /**

@@ -10,9 +10,7 @@ import type {
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import treeText from '../localization/tree';
-import * as navigation from './navigation';
 import { hasTreeAccess } from '../permissions';
-import * as querystring from '../querystring';
 import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -39,6 +37,8 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { formatUrl, parseUrl } from '../querystring';
+import { pushUrl } from './navigation';
 
 const defaultCacheValue = [] as const;
 
@@ -76,15 +76,13 @@ function TreeView<SCHEMA extends AnyTree>({
   function updateConformation(value: Conformations | undefined): void {
     if (typeof value === 'object') {
       const encoded = serializeConformation(value);
-      navigation.push(
-        querystring.format(window.location.href, { conformation: encoded })
-      );
+      pushUrl(formatUrl(window.location.href, { conformation: encoded }));
       setConformation(encoded);
     } else setConformation('');
   }
 
   React.useEffect(() => {
-    const { conformation } = querystring.parse();
+    const { conformation } = parseUrl();
     if (typeof conformation === 'string' && conformation.length > 0)
       updateConformation(deserializeConformation(conformation));
   }, []);

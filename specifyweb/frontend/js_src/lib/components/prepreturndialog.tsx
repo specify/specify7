@@ -9,7 +9,6 @@ import commonText from '../localization/common';
 import formsText from '../localization/forms';
 import type { ViewDescription } from '../parseform';
 import { schema } from '../schema';
-import * as s from '../stringlocalization';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { fieldFormat } from '../uiparse';
@@ -18,6 +17,7 @@ import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
+import { localizeFrom } from '../stringlocalization';
 
 function formatCatNo(catNo: string): string {
   const field = schema.models.CollectionObject.getLiteralField('catalognumber');
@@ -25,7 +25,7 @@ function formatCatNo(catNo: string): string {
 }
 
 const localize = <T extends string | undefined>(key: string, fallback?: T): T =>
-  s.localizeFrom('resources', key, fallback) as T;
+  localizeFrom('resources', key, fallback) as T;
 
 const metaDataFormDefinition = f.store(
   (): ViewDescription => ({

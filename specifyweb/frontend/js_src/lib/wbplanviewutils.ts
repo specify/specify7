@@ -15,7 +15,6 @@ import type {
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { f } from './functools';
-import * as navigation from './components/navigation';
 import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
@@ -30,6 +29,7 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
+import { goTo } from './components/navigation';
 
 export async function savePlan({
   dataset,
@@ -106,7 +106,7 @@ export async function savePlan({
 }
 
 export const goBack = (dataSetId: number): void =>
-  navigation.go(`/workbench/${dataSetId}/`);
+  goTo(`/workbench/${dataSetId}/`);
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicateMappings(

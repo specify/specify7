@@ -14,7 +14,6 @@ import {schema} from './schema';
 import {SaveButton} from './components/savebutton';
 import {DeleteButton} from './components/deletebutton';
 import {userInformation} from './userinfo';
-import * as navigation from './components/navigation';
 import adminText from './localization/admin';
 import commonText from './localization/common';
 import {setTitle} from './components/hooks';
@@ -23,6 +22,7 @@ import {showDialog} from './components/modaldialog';
 import createBackboneView from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
 import {hasToolPermission} from './permissions';
+import {goTo} from './components/navigation';
 
 // TODO: rewrite to React
 
@@ -219,7 +219,7 @@ const ResourceDataView = Backbone.View.extend({
                 buttonsDiv.prepend(
                     new DeleteButtonView({
                         resource: this.model,
-                        onDeleted: () => navigation.go('/specify/appresources/')
+                        onDeleted: () => goTo('/specify/appresources/')
                     }).render().el
                 );
 
@@ -324,7 +324,7 @@ const ResourceList = Backbone.View.extend({
             resourceData.set(resourceFieldName, resource.get('resource_uri'));
             return resourceData.save().then(() => resource);
         }).then(resource => {
-            navigation.go(makeUrl(resource));
+            goTo(makeUrl(resource));
         });
     },
     openNameDialog() {

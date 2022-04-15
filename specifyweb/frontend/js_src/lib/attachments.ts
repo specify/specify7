@@ -4,12 +4,12 @@ import { getIcon } from './icons';
 import { load } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import commonText from './localization/common';
-import * as querystring from './querystring';
 import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';
 import { SerializedResource } from './datamodelutils';
 import { getPref } from './remoteprefs';
+import { formatUrl } from './querystring';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -70,7 +70,7 @@ function iconForMimeType(mimetype: string): {
 
 const fetchToken = async (filename: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
-    ? ajax(querystring.format('/attachment_gw/get_token/', { filename }), {
+    ? ajax(formatUrl('/attachment_gw/get_token/', { filename }), {
         method: 'GET',
         headers: { Accept: 'text/plain' },
       }).then(({ data }) => data)
@@ -99,7 +99,7 @@ export const fetchThumbnail = async (
     ? fetchToken(attachment.attachmentLocation).then((token) =>
         typeof settings === 'object'
           ? {
-              src: querystring.format(settings.read, {
+              src: formatUrl(settings.read, {
                 coll: settings.collection,
                 type: 'T',
                 filename: attachment.attachmentLocation ?? '',
@@ -119,7 +119,7 @@ export const formatAttachmentUrl = (
   token: string | undefined
 ): string | undefined =>
   typeof settings === 'object'
-    ? querystring.format(settings.read, {
+    ? formatUrl(settings.read, {
         coll: settings.collection,
         type: 'O',
         filename: attachment.attachmentLocation ?? '',
@@ -145,7 +145,7 @@ export const uploadFile = async (
     ? ajax<
         Partial<{ readonly token: string; readonly attachmentlocation: string }>
       >(
-        querystring.format('/attachment_gw/get_upload_params/', {
+        formatUrl('/attachment_gw/get_upload_params/', {
           filename: file.name,
         }),
         {

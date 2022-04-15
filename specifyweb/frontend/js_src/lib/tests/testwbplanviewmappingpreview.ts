@@ -1,5 +1,5 @@
-import * as WbPlanViewMappingPreview from '../wbplanviewmappingpreview';
 import { runTest } from './testmain';
+import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 
 export default function (): void {
   runTest(
@@ -121,6 +121,6 @@ export default function (): void {
         'Exsiccata Reference Work Title',
       ],
     ],
-    WbPlanViewMappingPreview.generateMappingPathPreview
+    generateMappingPathPreview
   );
 }

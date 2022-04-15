@@ -6,7 +6,6 @@ import type Backbone from 'backbone';
 import React from 'react';
 
 import commonText from '../localization/common';
-import * as navigation from './navigation';
 import { fetchContext as userPermission } from '../permissions';
 import { router } from '../router';
 import { setCurrentView } from '../specifyapp';
@@ -23,6 +22,7 @@ import {
 } from './header';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { Notifications } from './notifications';
+import { goTo } from './navigation';
 
 export type UserTool = {
   readonly task: string;
@@ -84,10 +84,10 @@ function processMenuItems<T extends UserTool | MenuItem>(
       'startTask',
       (urlParameter: string) =>
         typeof view === 'string'
-          ? navigation.go(view)
+          ? goTo(view)
           : setCurrentView(
               view({
-                onClose: (): void => navigation.go('/specify'),
+                onClose: (): void => goTo('/specify'),
                 urlParameter,
               })
             )

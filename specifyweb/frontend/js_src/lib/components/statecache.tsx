@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { BucketType } from '../cache';
-import * as cache from '../cache';
+import { getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
 import { isFunction } from '../types';
 import { crash } from './errorboundary';
@@ -49,7 +49,7 @@ export function useCachedState<
   const [state, setState] = React.useState<
     CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined
   >(() =>
-    cache.get(bucketName, cacheName, {
+    getCache(bucketName, cacheName, {
       defaultSetOptions: {
         bucketType,
       },
@@ -59,7 +59,7 @@ export function useCachedState<
   const setCachedState = React.useCallback(
     (newValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]) =>
       setState(
-        cache.set(bucketName, cacheName, newValue, {
+        setCache(bucketName, cacheName, newValue, {
           bucketType,
           overwrite: true,
         })

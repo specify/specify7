@@ -12,12 +12,12 @@ import {
   parseFormCell,
   processColumnDefinition,
 } from './parseformcells';
-import * as queryString from './querystring';
 import { getModel } from './schema';
 import { SpecifyModel } from './specifymodel';
-import * as stringLocalization from './stringlocalization';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
+import { formatUrl } from './querystring';
+import { localizeFrom } from './stringlocalization';
 
 const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>
@@ -140,10 +140,7 @@ function postProcessRows(
                     altLabel:
                       model?.name === 'Accession' &&
                       cell.fieldName === 'divisionCBX'
-                        ? stringLocalization.localizeFrom(
-                            ['views', 'global_views'],
-                            'Division'
-                          )
+                        ? localizeFrom(['views', 'global_views'], 'Division')
                         : undefined,
                   },
                 ]
@@ -245,10 +242,7 @@ function postProcessRows(
                    * Division ComboBox for some reason
                    */
                   (model?.name === 'Accession' && cell.id === 'divLabel'
-                    ? stringLocalization.localizeFrom(
-                        ['views', 'global_views'],
-                        'Division'
-                      )
+                    ? localizeFrom(['views', 'global_views'], 'Division')
                     : undefined) ??
                   (cell.fieldName?.toLowerCase() === 'this'
                     ? undefined
@@ -462,7 +456,7 @@ export const getView = async (
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
          */
-        cachableUrl(queryString.format('/context/view.json', { name })),
+        cachableUrl(formatUrl('/context/view.json', { name })),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },

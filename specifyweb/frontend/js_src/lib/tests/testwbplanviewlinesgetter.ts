@@ -2,10 +2,13 @@ import type { MappingLine } from '../components/wbplanviewmapper';
 import type { Tables } from '../datamodel';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
-import * as WbPlanViewLinesGetter from '../wbplanviewlinesgetter';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
 import { runTest } from './testmain';
+import {
+  getLinesFromHeaders,
+  getLinesFromUploadPlan,
+} from '../wbplanviewlinesgetter';
 
 export default function (): void {
   runTest(
@@ -254,7 +257,7 @@ export default function (): void {
         ],
       ],
     ],
-    WbPlanViewLinesGetter.getLinesFromHeaders
+    getLinesFromHeaders
   );
 
   runTest(
@@ -269,6 +272,6 @@ export default function (): void {
         },
       ],
     ],
-    WbPlanViewLinesGetter.getLinesFromUploadPlan
+    getLinesFromUploadPlan
   );
 }

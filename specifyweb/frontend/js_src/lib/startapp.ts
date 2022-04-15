@@ -1,15 +1,15 @@
 import { ajax, Http, ping } from './ajax';
 import Backbone from './backbone';
-import * as businessRules from './businessrules';
 import { crash } from './components/errorboundary';
 import { f } from './functools';
-import * as navigation from './components/navigation';
 import { NotFoundView } from './components/notfoundview';
-import * as querystring from './querystring';
 import { promiseToXhr } from './resourceapi';
 import { router } from './router';
 import { setCurrentView } from './specifyapp';
 import { defined, RA } from './types';
+import { formatUrl } from './querystring';
+import { startNavigation } from './components/navigation';
+import { enableBusinessRules } from './businessrules';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
@@ -43,7 +43,7 @@ Backbone.ajax = function (request): JQueryXHR {
   return promiseToXhr(
     ajax(
       request.type === 'GET' && typeof request.data === 'object'
-        ? querystring.format(url, request.data ?? {})
+        ? formatUrl(url, request.data ?? {})
         : url,
       {
         method: request.type,
@@ -104,9 +104,6 @@ router
 
 export default function appStart(): void {
   console.info('specify app starting');
-  businessRules.enable(true);
-  tasksPromise
-    .then(f.call)
-    .then(() => navigation.start())
-    .catch(crash);
+  enableBusinessRules(true);
+  tasksPromise.then(f.call).then(startNavigation).catch(crash);
 }

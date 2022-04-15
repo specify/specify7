@@ -235,12 +235,12 @@ export function navigate(
   else cont();
 }
 
-export const start = (): void =>
+export const startNavigation = (): void =>
   void Backbone.history.start({ pushState: true, root: '/specify/' });
 
-export const go = (url: string): void => navigate(url, { trigger: true });
+export const goTo = (url: string): void => navigate(url, { trigger: true });
 
-export const push = (url: string): void =>
+export const pushUrl = (url: string): void =>
   navigate(url, { trigger: false, replace: true });
 
 export const getCurrentUrl = (): string =>

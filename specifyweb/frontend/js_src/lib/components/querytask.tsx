@@ -8,7 +8,6 @@ import queryText from '../localization/query';
 import { NotFoundView } from './notfoundview';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
-import * as querystring from '../querystring';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
 import { setCurrentView } from '../specifyapp';
@@ -26,12 +25,13 @@ import {
   hasTreeAccess,
 } from '../permissions';
 import { f } from '../functools';
+import { parseUrl } from '../querystring';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;
-      const recordSetId = f.parseInt(querystring.parse().recordsetid ?? '');
+      const recordSetId = f.parseInt(parseUrl().recordsetid ?? '');
       if (typeof recordSetId === 'undefined') return false;
       const recordSet = new schema.models.RecordSet.Resource({
         id: recordSetId,
