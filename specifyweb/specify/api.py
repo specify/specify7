@@ -540,7 +540,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
 
         if isinstance(val, list):
-            assert obj.specify_model.get_field(field_name).dependent, \
+            assert isinstance(obj, models.Recordset) or obj.specify_model.get_field(field_name).dependent, \
                    "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
         else:
             # The field contains something other than nested data.

@@ -390,6 +390,20 @@ class InlineApiTests(ApiTests):
         co = models.Collectionobject.objects.get(id=obj.id)
         self.assertEqual(co.collectionobjectattribute, coa)
 
+    def test_create_recordset_with_inlined_items(self):
+        obj = api.create_obj(self.collection, self.agent, 'recordset', {
+            'name': "Test",
+            'dbtableid': 1,
+            'specifyuser': f'/api/specify/specifyuser/{self.specifyuser.id}/',
+            'type': 0,
+            'recordsetitems': [
+                {'recordid': 123},
+                {'recordid': 124},
+            ]
+        })
+        rs = models.Recordset.objects.get(pk=obj.id)
+        self.assertEqual(set([123, 124]), set(rs.recordsetitems.values_list('recordid', flat=True)))
+
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
             collectionmemberid=self.collection.id,
