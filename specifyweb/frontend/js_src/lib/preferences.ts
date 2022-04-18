@@ -77,6 +77,7 @@ export const preferenceDefinitions = {
           language: defineItem<Language>({
             title: commonText('language'),
             requiresReload: true,
+            // TODO: add ability to make pref visible only to admins
             visible: true,
             defaultValue: DEFAULT_LANGUAGE,
             onChange: handleLanguageChange,

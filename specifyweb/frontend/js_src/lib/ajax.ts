@@ -1,6 +1,8 @@
 import { handleAjaxError } from './components/errorboundary';
 import { csrfToken } from './csrftoken';
 import type { IR, PartialBy, RA } from './types';
+import { formatList } from './components/internationalization';
+import { f } from './functools';
 
 export const isExternalUrl = (url: string): boolean =>
   /*
@@ -185,9 +187,9 @@ export function handleResponse<RESPONSE_TYPE = string>({
       console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',
-        statusText: `Invalid response code ${
-          response.status
-        }. Expected one of [${expectedResponseCodes.join(', ')}]. Response:`,
+        statusText: `Invalid response code ${response.status}. Expected${
+          expectedResponseCodes.length === 1 ? '' : 'one of '
+        } ${formatList(expectedResponseCodes.map(f.toString))}. Response:`,
         responseText: text,
       };
     }

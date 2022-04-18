@@ -87,10 +87,12 @@ export class QueryFieldSpec {
                * to be called "ID" (case-sensitive)
                */
               typeof this.treeRank === 'string'
-                ? field === field.model.idField
+                ? field === field.model.idField && this.treeRank !== anyTreeRank
                   ? 'ID'
                   : field.name === 'author'
                   ? 'Author'
+                  : field.name === 'fullName'
+                  ? ''
                   : field.name
                 : field.name
             ) ?? ''

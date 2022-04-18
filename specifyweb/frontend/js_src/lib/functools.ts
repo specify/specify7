@@ -169,4 +169,7 @@ export const f = {
     Math.round(number / step) * step,
   true: (): true => true,
   flat: <T>(array: RA<RA<T>>): RA<T> => array.flat(),
+  toString: (value: unknown): string =>
+    (value as undefined | { readonly toString: () => string })?.toString() ??
+    '',
 } as const;
