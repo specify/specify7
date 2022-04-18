@@ -1,9 +1,10 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
-import { ajax } from '../ajax';
+import { ajax, Http } from '../ajax';
 import type { RecordSet, SpQuery, Tables } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
-import { keysToLowerCase } from '../datamodelutils';
+import type { AnySchema, SerializedModel } from '../datamodelutils';
+import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -155,85 +156,95 @@ function CreateRecordSet({
   readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    undefined | 'editing' | 'saving' | 'saved'
-  >(undefined);
-
-  const [recordSet, setRecordSet] = React.useState<
-    SpecifyResource<RecordSet> | undefined
-  >(undefined);
+    | State<'Main'>
+    | State<'Editing', { recordSet: SpecifyResource<RecordSet> }>
+    | State<'Saving'>
+    | State<'Saved', { recordSetId: number }>
+  >({ type: 'Main' });
 
   return (
     <>
       <Button.Simple
         aria-haspopup="dialog"
-        onClick={(): void => {
-          setState('editing');
-
-          const recordSet = new schema.models.RecordSet.Resource();
-          recordSet.set('dbTableId', defined(getModel(baseTableName)).tableId);
-          recordSet.set(
-            'recordSetItems',
-            getIds().map(
-              (id) =>
-                new schema.models.RecordSetItem.Resource({
-                  recordId: id,
-                })
-            )
-          );
-          setRecordSet(recordSet);
-        }}
+        onClick={(): void =>
+          setState({
+            type: 'Editing',
+            recordSet: new schema.models.RecordSet.Resource(),
+          })
+        }
       >
         {queryText('makeRecordSet')}
       </Button.Simple>
-      {typeof state === 'string' ? (
-        state === 'editing' || state === 'saving' ? (
-          <>
-            {typeof recordSet === 'object' && (
-              <ResourceView
-                dialog="modal"
-                canAddAnother={false}
-                resource={recordSet}
-                onSaving={(): void => setState('saving')}
-                onSaved={(): void => setState('saved')}
-                onClose={(): void => setState(undefined)}
-                onDeleted={f.never}
-                mode="edit"
-                isSubForm={false}
-              />
-            )}
-            {state === 'saving' && (
-              <Dialog
-                title={queryText('recordSetToQueryDialogTitle')}
-                header={queryText('recordSetToQueryDialogHeader')}
-                onClose={(): void => setState(undefined)}
-                buttons={undefined}
+      {state.type === 'Editing' && (
+        <ResourceView
+          dialog="modal"
+          canAddAnother={false}
+          resource={state.recordSet}
+          onSaving={(): void => {
+            setState({ type: 'Saving' });
+            void ajax<SerializedModel<RecordSet>>(
+              '/api/specify/recordset/',
+              {
+                method: 'POST',
+                body: keysToLowerCase({
+                  ...serializeResource(state.recordSet),
+                  version: 1,
+                  dbTableId: defined(getModel(baseTableName)).tableId,
+                  recordSetItems: getIds().map((id) => ({
+                    recordId: id,
+                  })),
+                }),
+                headers: { Accept: 'application/json' },
+              },
+              { expectedResponseCodes: [Http.CREATED] }
+            )
+              .then(({ data: { id } }) =>
+                setState({
+                  type: 'Saved',
+                  recordSetId: id,
+                })
+              )
+              .catch(crash);
+            return false;
+          }}
+          onSaved={f.never}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={f.never}
+          mode="edit"
+          isSubForm={false}
+        />
+      )}
+      {state.type === 'Saving' && (
+        <Dialog
+          title={queryText('recordSetToQueryDialogTitle')}
+          header={queryText('recordSetToQueryDialogHeader')}
+          onClose={(): void => setState({ type: 'Main' })}
+          buttons={undefined}
+        >
+          {queryText('recordSetToQueryDialogMessage')}
+          {loadingBar}
+        </Dialog>
+      )}
+      {state.type === 'Saved' && (
+        <Dialog
+          title={queryText('recordSetCreatedDialogTitle')}
+          header={queryText('recordSetCreatedDialogHeader')}
+          onClose={(): void => setState({ type: 'Main' })}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText('no')}</Button.DialogClose>
+              <Link.LikeFancyButton
+                className={className.blueButton}
+                href={`/specify/recordset/${state.recordSetId}/`}
               >
-                {queryText('recordSetToQueryDialogMessage')}
-                {loadingBar}
-              </Dialog>
-            )}
-          </>
-        ) : state === 'saved' && typeof recordSet === 'object' ? (
-          <Dialog
-            title={queryText('recordSetCreatedDialogTitle')}
-            header={queryText('recordSetCreatedDialogHeader')}
-            onClose={(): void => setState(undefined)}
-            buttons={
-              <>
-                <Button.DialogClose>{commonText('no')}</Button.DialogClose>
-                <Link.LikeFancyButton
-                  className={className.blueButton}
-                  href={`/specify/recordset/${recordSet.id}/`}
-                >
-                  {commonText('open')}
-                </Link.LikeFancyButton>
-              </>
-            }
-          >
-            {queryText('recordSetCreatedDialogMessage')}
-          </Dialog>
-        ) : undefined
-      ) : undefined}
+                {commonText('open')}
+              </Link.LikeFancyButton>
+            </>
+          }
+        >
+          {queryText('recordSetCreatedDialogMessage')}
+        </Dialog>
+      )}
     </>
   );
 }
