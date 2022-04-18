@@ -162,6 +162,7 @@ export function Autocomplete<T>({
   ): void {
     let newIndex = currentIndex;
     if (event.key === 'Escape' || event.key === 'Enter') {
+      event.preventDefault();
       const newItem = filteredItems[currentIndex];
       if (typeof newItem === 'object') handleChange(newItem);
       handleClose();

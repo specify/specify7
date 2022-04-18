@@ -202,7 +202,6 @@ async function getGeoLocateData(
           h: '400',
           georef: 'run',
           locality: resource.get('localityName') ?? '',
-          tab: 'results',
           ...geography,
           ...(Array.isArray(point)
             ? {
