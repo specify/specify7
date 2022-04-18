@@ -443,12 +443,11 @@ export function ShowResource({
   const [recordSetItemIndex] = useAsyncState(
     React.useCallback(async () => {
       if (resource.isNew()) return 0;
-      const recordSetInfo = resource.get('recordset_info');
-      return typeof recordSetInfo === 'object'
+      return typeof recordSet === 'object'
         ? fetchCollection(
             'RecordSetItem',
             {
-              recordSet: recordSetInfo.recordsetid,
+              recordSet: recordSet.id,
               limit: 1,
             },
             { recordId__lt: resource.id }
@@ -456,7 +455,7 @@ export function ShowResource({
             .then(({ totalCount }) => totalCount)
             .catch(crash)
         : undefined;
-    }, [resource]),
+    }, [recordSet, resource]),
     true
   );
 
