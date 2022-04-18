@@ -46,7 +46,7 @@ export function Slider({
       >
         &lt;
       </Button.Simple>
-      <div className="grid font-bold items-center grid-cols-[1fr_auto_1fr]">
+      <div className="grid font-bold items-center grid-cols-[1fr_auto_1fr] gap-1">
         <label
           className={`h-full relative after:invisible after:p-2
             after:content-[attr(data-value)]`}
@@ -54,7 +54,8 @@ export function Slider({
         >
           <span className="sr-only">{formsText('currentRecord')(count)}</span>
           <Input.Number
-            className="no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full font-bold bg-white border-0"
+            className={`no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full
+              font-bold bg-white border-0 text-center`}
             min="1"
             /*
              * Count is 0 when input is invisible, which causes the field to be
