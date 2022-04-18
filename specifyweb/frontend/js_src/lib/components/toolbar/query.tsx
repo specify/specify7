@@ -5,7 +5,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax } from '../../ajax';
+import { ajax, formData, Http } from '../../ajax';
 import { error } from '../../assert';
 import type { CollectionFetchFilters } from '../../collection';
 import { fetchCollection } from '../../collection';
@@ -547,18 +547,22 @@ function QueryExport({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ajax<SerializedResource<SpReport>>('/report_runner/create/', {
-              method: 'POST',
-              body: {
-                queryid: queryResource.id,
-                mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
-                name: name.trim(),
+            ajax<SerializedResource<SpReport>>(
+              '/report_runner/create/',
+              {
+                method: 'POST',
+                body: formData({
+                  queryid: queryResource.id.toString(),
+                  mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
+                  name: name.trim(),
+                }),
+                headers: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  Accept: 'application/json',
+                },
               },
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                Accept: 'application/json',
-              },
-            })
+              { expectedResponseCodes: [Http.CREATED] }
+            )
               .then(async ({ data: reportJson }) => {
                 const report = new schema.models.SpReport.Resource(reportJson);
                 return report.rgetPromise('appResource');
