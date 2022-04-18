@@ -450,7 +450,8 @@ export function useResourceValue<
         (parser.type === 'number'
           ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
-          : ['checkbox', 'date'].includes(parser.type) && parseResults.isValid
+          : ['checkbox', 'date'].includes(parser.type ?? '') &&
+            parseResults.isValid
           ? parseResults.parsed
           : newValue) as T
       );
@@ -460,7 +461,8 @@ export function useResourceValue<
         resource.saveBlockers?.remove(key);
         if (inputRef.current?.validity.valid === false) return;
         const parsedValue = parseResults.parsed as string;
-        resource.set(fieldName, parsedValue as never);
+        if (resource.get(fieldName) !== newValue)
+          resource.set(fieldName, parsedValue as never);
       } else {
         setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);

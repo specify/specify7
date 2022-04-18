@@ -157,17 +157,21 @@ export function Autocomplete<T>({
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
 
-  function handleKeyDown(key: string): void {
+  function handleKeyDown(
+    event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
+  ): void {
     let newIndex = currentIndex;
-    if (key === 'Escape' || key === 'Enter') {
+    if (event.key === 'Escape' || event.key === 'Enter') {
       const newItem = filteredItems[currentIndex];
       if (typeof newItem === 'object') handleChange(newItem);
       handleClose();
       input?.focus();
-    } else if (key === 'ArrowUp') newIndex = Math.max(currentIndex - 1, -1);
-    else if (key === 'ArrowDown') newIndex = currentIndex + 1;
+    } else if (event.key === 'ArrowUp')
+      newIndex = Math.max(currentIndex - 1, -1);
+    else if (event.key === 'ArrowDown') newIndex = currentIndex + 1;
 
     if (newIndex !== currentIndex) {
+      event.preventDefault();
       const finalIndex =
         (filteredItems.length + newIndex) % Math.max(filteredItems.length, 1);
       setCurrentIndex(finalIndex);
@@ -271,8 +275,7 @@ export function Autocomplete<T>({
         'aria-autocomplete': 'list',
         'aria-controls': id,
         'aria-label': ariaLabel,
-        onKeyDown: (event) =>
-          showList ? handleKeyDown(event.key) : handleOpen(),
+        onKeyDown: (event) => (showList ? handleKeyDown(event) : handleOpen()),
         onValueChange(value) {
           if (value === '' && pendingValue.length > 1) handleCleared?.();
           handleRefreshItems(source, value);
@@ -309,8 +312,7 @@ export function Autocomplete<T>({
             if (
               ['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key)
             ) {
-              event.preventDefault();
-              handleKeyDown(event.key);
+              handleKeyDown(event);
             } else input?.focus();
           }}
           onBlur={({ relatedTarget }): void =>

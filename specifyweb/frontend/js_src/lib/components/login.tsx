@@ -101,8 +101,11 @@ const nextDestination = '/accounts/choose_collection/?next=';
 
 window.addEventListener('load', () => {
   const root = document.getElementById('root');
-  if (root === null) throw new Error('Unable to find root element');
+  const portalRoot = document.getElementById('portal-root');
+  if (root === null || portalRoot === null)
+    throw new Error('Unable to find root element');
   root.setAttribute('class', className.root);
+  portalRoot.setAttribute('class', className.rootText);
 
   const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
   const providers = parseDjangoDump<RA<OicProvider>>('providers');

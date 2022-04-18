@@ -133,12 +133,13 @@ const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const rootBackground = 'bg-white dark:bg-neutral-900';
 // TODO: reduce this once everything is using React. Cane move things into tailwind.config.js
+const rootText = 'text-neutral-900 dark:text-neutral-200';
 export const className = {
+  rootText,
   rootBackground,
   hasAltBackground,
   containerBackground,
-  root: `flex flex-col h-screen overflow-hidden ${rootBackground} 
-    text-neutral-900 dark:text-neutral-200`,
+  root: `flex flex-col h-screen overflow-hidden ${rootBackground} ${rootText}`,
   // Do not show validation errors until tried to submit the form
   notSubmittedForm: 'not-submitted',
   // Or field lost focus

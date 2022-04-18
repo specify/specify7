@@ -241,6 +241,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               resource.saveBlockers.remove(`invaliddate:${dateField}`);
             }}
             onBlur={(): void => {
+              if (typeof momemnt === 'undefined') return;
               let newMoment = dayjs(moment);
               if (precision === 'year' || precision === 'month-year')
                 newMoment = newMoment.month(0);
