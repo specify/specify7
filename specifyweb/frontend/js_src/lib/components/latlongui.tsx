@@ -62,17 +62,24 @@ function Coordinate({
       );
     const textDestructor = resourceOn(
       resource,
-      `change: ${coordinateTextField}`,
-      (): void => handleChange(resource.get(coordinateTextField))
+      `change:${coordinateTextField}`,
+      (): void => {
+        setCoordinate(
+          resource.get(coordinateTextField) ??
+            resource.get(coordinateField)?.toString() ??
+            ''
+        );
+        handleChange(resource.get(coordinateTextField));
+      },
+      // Update parent's Preview column with initial values on first render
+      true
     );
     const destructor = resourceOn(
       resource,
-      `change: ${coordinateField}`,
+      `change:${coordinateField}`,
       (): void => handleChange(resource.get(coordinateField)?.toString() ?? '')
     );
 
-    // Update parent's Preview column with initial values on the first render
-    handleChange(coordinate);
     return (): void => {
       textDestructor();
       destructor();
