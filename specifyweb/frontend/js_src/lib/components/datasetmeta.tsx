@@ -138,8 +138,7 @@ export function DataSetMeta({
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>
           <span>
-            {wbText('numberOfRows')}
-            <i>{formatNumber(getRowCount())}</i>
+            {wbText('numberOfRows')} <i>{formatNumber(getRowCount())}</i>
           </span>
           <span>
             {wbText('numberOfColumns')}{' '}
