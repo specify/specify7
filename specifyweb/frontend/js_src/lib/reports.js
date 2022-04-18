@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import {Backbone} from './backbone';
+import React from 'react';
 
 import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
@@ -24,6 +25,8 @@ import {showDialog} from './components/modaldialog';
 import {getRelatedObjectCount} from './resource';
 import {hasPermission} from './permissions';
 import {serializeResource} from './datamodelutils';
+import {f} from './functools';
+import {parseQueryFields} from './querybuilderutils';
 
 // TODO: rewrite to React
 
@@ -462,19 +465,27 @@ var QueryParamsDialog = Backbone.View.extend({
         this.recordSetId = options.recordSetId;
         this.model = getModel(this.query.get('contextname'));
 
-        var makeFieldUI = (function(spqueryfield) {
-            return new QueryLineView({
-                forReport: true,
-                parentView: this,
-                model: this.model,
-                spqueryfield: spqueryfield,
-            });
-        }).bind(this);
-
-        this.fieldUIsP = this.query.rget('fields').then(function(spqueryfields) {
-            spqueryfields.each(function(field) { field.set('isdisplay', true); });
-            return spqueryfields.map(makeFieldUI);
-        });
+        this.fieldUIs = parseQueryFields(serializeResource(this.query).fields)
+          .map(field=>({...field, isDisplay: true}))
+          .map((field, index)=>
+              new QueryLineView({
+                baseTableName: this.model.name,
+                field,
+                fieldHash: index.toString(),
+                onChange: f.void,
+                onMappingChange: f.void,
+                onRemove: undefined,
+                onOpen: f.void,
+                onClose: f.void,
+                onLineFocus: f.void,
+                onMoveUp: undefined,
+                onMoveDown: undefined,
+                isFocused: false,
+                openedElement: undefined,
+                showHiddenFields: false,
+                getMappedFields: ()=>[],
+          })
+      );
     },
     render: function() {
         this.$el.append('<ul role="list">');
@@ -488,20 +499,15 @@ var QueryParamsDialog = Backbone.View.extend({
                 <Button.Blue onClick={()=>{this.dialog.remove(); this.runReport()}}>{formsText('runReport')}</Button.Blue>
             </>,
         });
-        var ul = this.$('ul');
-        this.fieldUIsP.then(function(fieldUIs) {
-            _.invoke(fieldUIs, 'render');
-            ul.append.apply(ul, _.pluck(fieldUIs, 'el'));
-        });
+        this.$('ul').append(this.fieldUIs.map(field=>field.render().el));
         return this;
     },
     runReport: function() {
-        var runReportWithFields = runReport.bind(null, this.reportResources, this.recordSetId);
-        this.fieldUIsP.then(runReportWithFields);
+        runReport(this.reportResources, this.recordSetId);
     }
 });
 
-function runReport(reportResources, recordSetId, _fieldUIs) {
+function runReport(reportResources, recordSetId) {
     var query = reportResources.query;
     if (_.isFunction(query.set)) {
         query.set('limit', 0);
