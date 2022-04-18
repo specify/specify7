@@ -1,3 +1,4 @@
+import { transitionDuration } from './components/basic';
 import type { QueryFieldFilter } from './components/querybuilderfieldfilter';
 import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
@@ -11,7 +12,6 @@ import type { Parser } from './uiparse';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
-import { transitionDuration } from './components/basic';
 
 export type SortTypes = undefined | 'ascending' | 'descending';
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -191,7 +191,7 @@ export const unParseQueryFields = (
           hasFilters ? filter.type !== 'any' : index === 0
         )
         .map(
-          ({ type, startValue, isNot }) =>
+          ({ type, startValue, isNot }, index) =>
             ({
               ...commonData,
               operStart:
@@ -205,6 +205,11 @@ export const unParseQueryFields = (
                     )[1].id,
               startValue,
               isNot,
+              /*
+               * Prevent OR conditions from returning separate column in the
+               * results
+               */
+              isDisplay: commonData.isDisplay && index === 0,
               // TODO: add missing nullable fields here
             } as unknown as SerializedResource<SpQueryField>)
         );
