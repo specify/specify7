@@ -11,6 +11,7 @@ import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
 import { resourceOn } from '../resource';
+import { f } from '../functools';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,
@@ -30,12 +31,16 @@ const fetchPossibleRanks = async (
     }
   ).then(({ records }) =>
     // Remove ranks after enforced rank
-    records
-      .slice(0, records.findIndex((resource) => resource.isEnforced) + 1)
-      .map((resource) => ({
-        value: resource.resource_uri,
-        title: resource.title ?? resource.name,
-      }))
+    f.var(
+      records.findIndex((resource) => resource.isEnforced) + 1,
+      (enforcedIndex) =>
+        (enforcedIndex === 0 ? records : records.slice(0, enforcedIndex)).map(
+          (resource) => ({
+            value: resource.resource_uri,
+            title: resource.title ?? resource.name,
+          })
+        )
+    )
   );
 
 export const fetchLowestChildRank = async (
