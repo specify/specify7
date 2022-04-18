@@ -106,7 +106,14 @@ export function FormTable<SCHEMA extends AnySchema>({
           ...(isDependent ? [] : [undefined]),
         ])}
       >
-        <div className="contents" role="row">
+        <div
+          className={
+            resources.length === 1 && isExpanded[resources[0].cid]
+              ? 'sr-only'
+              : 'contents'
+          }
+          role="row"
+        >
           <div role="columnheader">
             <span className="sr-only">{commonText('expand')}</span>
           </div>
