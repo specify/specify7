@@ -493,31 +493,23 @@ export const commonText = createDictionary({
     'es-es': 'Choose Collection',
   },
   noAccessToCollections: {
-    'en-us': (
-      <>
-        The logged in user has not been given access to any collections in this
-        database. You must login as another user.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Пользователь, вошедший в систему, не получил доступа ни к каким
-        коллекциям в этой базе данных. Вы должны войти в систему как другой
-        пользователь.
-      </>
-    ),
-    ca: (
-      <>
-        L'usuari que ha iniciat sessió no té accés a cap col·lecció d'aquesta
-        base de dades. Heu d'iniciar sessió com un altre usuari.
-      </>
-    ),
-    'es-es': (
-      <>
-        The logged in user has not been given access to any collections in this
-        database. You must login as another user.
-      </>
-    ),
+    'en-us': `
+      The logged in user has not been given access to any collections in this
+      database. You must login as another user.
+    `,
+    'ru-ru': `
+      Пользователь, вошедший в систему, не получил доступа ни к каким
+      коллекциям в этой базе данных. Вы должны войти в систему как другой
+      пользователь.
+    `,
+    ca: `
+      L'usuari que ha iniciat sessió no té accés a cap col·lecció d'aquesta
+      base de dades. Heu d'iniciar sessió com un altre usuari.
+    `,
+    'es-es': `
+      The logged in user has not been given access to any collections in this
+      database. You must login as another user.
+    `,
   },
 
   // Change Password

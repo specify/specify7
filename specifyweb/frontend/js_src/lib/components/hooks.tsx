@@ -440,28 +440,27 @@ export function useResourceValue<
        */
       setInput(inputRef.current);
 
-      setValue(
-        (typeof parser?.type === 'number'
-          ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
-            newValue
-          : newValue) as T
-      );
-      if (typeof fieldName === 'undefined') return;
-
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
         newValue?.toString() ?? ''
       );
+
+      setValue(
+        (parser.type === 'number'
+          ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
+            newValue
+          : ['checkbox', 'date'].includes(parser.type) && parseResults.isValid
+          ? parseResults.parsed
+          : newValue) as T
+      );
+      if (typeof fieldName === 'undefined') return;
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
         if (inputRef.current?.validity.valid === false) return;
-        const oldValue = resource.get(fieldName) ?? null;
         const parsedValue = parseResults.parsed as string;
-        // Don't trigger unload protect needlessly
-        if (oldValue !== parsedValue)
-          resource.set(fieldName, parsedValue as never);
+        resource.set(fieldName, parsedValue as never);
       } else {
         setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
@@ -487,7 +486,7 @@ export function useResourceValue<
 
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
-    if (typeof fieldName === 'undefined') return undefined;
+    if (typeof fieldName === 'undefined') return;
 
     const field = resource.specifyModel.getField(fieldName);
     if (typeof field === 'undefined')
@@ -521,14 +520,20 @@ export function useResourceValue<
               : defaultParser.value) as never
           )
     );
-
-    return resourceOn(
-      resource,
-      `change:${fieldName}`,
-      (): void => setValue((resource.get(fieldName) as T | null) ?? undefined),
-      true
-    );
   }, [resource, fieldName, defaultParser]);
+
+  React.useEffect(
+    () =>
+      typeof fieldName === 'string'
+        ? resourceOn(
+            resource,
+            `change:${fieldName}`,
+            (): void => updateValue(resource.get(fieldName) ?? ('' as T)),
+            true
+          )
+        : undefined,
+    [fieldName, updateValue, resource]
+  );
 
   return {
     value,

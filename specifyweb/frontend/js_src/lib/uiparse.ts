@@ -95,7 +95,7 @@ export const parsers = f.store(
       type: 'checkbox',
       pattern: /\s+(?:true|false|yes|no)\s+/i,
       title: formsText('illegalBool'),
-      formatters: [formatter().toLowerCase],
+      formatters: [formatter().toLowerCase, formatter().trim],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
         typeof value === 'undefined'
@@ -174,11 +174,11 @@ export const parsers = f.store(
       maxLength: fullDateFormat().length,
       formatters: [
         formatter().toLowerCase,
+        formatter().trim,
         stringGuard(
           (value) =>
-            f.maybe(parseRelativeDate(value.trim().toLowerCase()), (date) =>
-              f.maybe(date, dayjs)
-            ) ?? dayjs()
+            f.maybe(parseRelativeDate(value), (date) => f.maybe(date, dayjs)) ??
+            dayjs()
         ),
       ],
       validators: [
