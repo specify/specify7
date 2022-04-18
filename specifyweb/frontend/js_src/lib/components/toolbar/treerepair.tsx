@@ -25,6 +25,7 @@ import { Dialog } from '../modaldialog';
 import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { parseUrl } from '../../querystring';
+import { userInformation } from '../../userinfo';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -159,6 +160,7 @@ export const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
   isOverlay: true,
+  enabled: () => userInformation.isadmin,
   view: ({ onClose }) => new View({ onClose }),
   groupLabel: commonText('administration'),
 };

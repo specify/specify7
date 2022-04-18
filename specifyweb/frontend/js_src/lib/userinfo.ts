@@ -10,6 +10,8 @@ import type { IR, RA, Writable } from './types';
 export type UserInfo = {
   // NOTE: some userInfo properties are not listed here
   readonly id: number;
+  // Whether user is super admin in Sp7. Different from Sp6
+  readonly isadmin: boolean;
   readonly isauthenticated: boolean;
   readonly availableCollections: IR<string>;
   // eslint-disable-next-line @typescript-eslint/naming-convention

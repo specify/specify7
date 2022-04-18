@@ -31,6 +31,7 @@ import type { Role } from './securityrole';
 import { UserAgents, useUserProviders } from './securityuserhooks';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 import { resourceOn } from '../resource';
+import { userInformation } from '../userinfo';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -49,10 +50,11 @@ export function SetSuperAdmin({
     <Label.ForCheckbox>
       <Input.Checkbox
         isReadOnly={!hasPermission(anyResource, anyAction)}
-        disabled={typeof institutionPolicies === 'undefined'}
+        disabled={
+          typeof institutionPolicies === 'undefined' || !userInformation.isadmin
+        }
         onValueChange={(): void =>
-          hasPermission('/permissions/policies/user', 'update') &&
-          typeof institutionPolicies === 'object'
+          userInformation.isadmin && typeof institutionPolicies === 'object'
             ? handleChange(
                 isSuperAdmin
                   ? filterArray(
