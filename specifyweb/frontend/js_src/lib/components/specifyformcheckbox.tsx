@@ -84,7 +84,9 @@ export function SpecifyFormCheckbox({
       name={fieldName}
       checked={value ?? false}
       onValueChange={updateValue}
-      isReadOnly={isReadOnly}
+      isReadOnly={
+        isReadOnly || resource.specifyModel.getField(fieldName)?.isReadOnly
+      }
       // Checkbox cannot be required as checkbox does not have a "null" state
     />
   );

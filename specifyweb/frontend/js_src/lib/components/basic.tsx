@@ -372,7 +372,8 @@ export const Input = {
     readOnly: isReadOnly,
     // Disable onChange when readOnly
     onChange(event): void {
-      if (props.disabled !== true) props.onChange?.(event);
+      if (props.disabled !== true || isReadOnly === true)
+        props.onChange?.(event);
     },
   })),
   Checkbox: wrap<
@@ -393,7 +394,7 @@ export const Input = {
       type: 'checkbox',
       onChange(event): void {
         // Disable onChange when readOnly
-        if (props.disabled === true) return;
+        if (props.disabled === true || isReadOnly === true) return;
         onValueChange?.((event.target as HTMLInputElement).checked);
         props.onChange?.(event);
       },

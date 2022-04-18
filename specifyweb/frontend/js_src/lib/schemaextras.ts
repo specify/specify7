@@ -2,23 +2,50 @@
  * Defines front-end only fields and misc front-end only schema mutations
  */
 
+import type { Tables } from './datamodel';
+import type { FilterTablesByEndsWith } from './datamodelutils';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
-import type { IR, RA } from './types';
-import { defined } from './types';
+import type { RA } from './types';
+import { defined, filterArray } from './types';
 
-export const schemaExtras: IR<
-  (
-    model: SpecifyModel
+const treeDefinitionFields = [
+  'fullNameSeparator',
+  'isEnforced',
+  'isInFullName',
+  'textAfter',
+  'textBefore',
+];
+
+const treeDefItem = (
+  model: SpecifyModel<FilterTablesByEndsWith<'TreeDefItem'>>
+) =>
+  [
+    [],
+    [],
+    (): void =>
+      filterArray(
+        treeDefinitionFields.map((fieldName) =>
+          model.getLiteralField(fieldName)
+        )
+      ).forEach((field) => {
+        field.isReadOnly = true;
+        field.overrides.isReadOnly = true;
+      }),
+  ] as const;
+
+export const schemaExtras: {
+  readonly [TABLE_NAME in keyof Tables]?: (
+    model: SpecifyModel<Tables[TABLE_NAME]>
   ) => Readonly<
     [
       fields: RA<LiteralField>,
       relationships: RA<Relationship>,
       callback?: () => void
     ]
-  >
-> = {
+  >;
+} = {
   Agent(model) {
     const catalogerOf = new Relationship(model, {
       name: 'catalogerOf',
@@ -61,7 +88,7 @@ export const schemaExtras: IR<
     return [
       [],
       [currentDetermination],
-      () => {
+      (): void => {
         const collection = defined(model.getRelationship('collection'));
         collection.otherSideName = 'collectionObjects';
 
@@ -88,7 +115,7 @@ export const schemaExtras: IR<
   Accession: (model) => [
     [],
     [],
-    () => {
+    (): void => {
       defined(model.getRelationship('division')).otherSideName = 'accessions';
     },
   ],
@@ -199,7 +226,7 @@ export const schemaExtras: IR<
     return [
       [isOnLoan],
       [],
-      () => {
+      (): void => {
         const preptype = defined(model.getRelationship('preptype'));
         preptype.otherSideName = 'preparations';
       },
@@ -232,4 +259,9 @@ export const schemaExtras: IR<
     ],
     [],
   ],
+  GeographyTreeDefItem: treeDefItem,
+  StorageTreeDefItem: treeDefItem,
+  TaxonTreeDefItem: treeDefItem,
+  GeologicTimePeriodTreeDefItem: treeDefItem,
+  LithoStratTreeDefItem: treeDefItem,
 };

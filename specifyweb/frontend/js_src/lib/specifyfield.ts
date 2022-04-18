@@ -78,7 +78,7 @@ abstract class FieldBase {
 
   public isHidden: boolean;
 
-  public readonly isReadOnly: boolean;
+  public isReadOnly: boolean;
 
   public readonly isRequired: boolean;
 
