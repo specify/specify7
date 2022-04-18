@@ -330,21 +330,17 @@ const ResourceList = Backbone.View.extend({
     openNameDialog() {
         const thisCreateResource = name => this.createResource(name);
 
-        const createResource = function(event) {
-            event.preventDefault();
-            dialog.remove();
-            thisCreateResource( $('input', this).val() );
-        };
-
-        const dialog = showDialog({
-            title: adminText('createResourceDialogTitle'),
-            header: adminText('createResourceDialogHeader'),
-            content: $(`<form id="app-resources-new-resource-form" class="${className.notSubmittedForm}">
+        const content = $(`<form id="app-resources-new-resource-form" class="${className.notSubmittedForm}">
                 <label class="${className.label}">
                     ${adminText('newResourceName')}
                     <input type="text" spellcheck="on" required>
                 </label>
-            </form>`),
+            </form>`);
+
+        const dialog = showDialog({
+            title: adminText('createResourceDialogTitle'),
+            header: adminText('createResourceDialogHeader'),
+            content,
             onClose: ()=>dialog.remove(),
             buttons: <>
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -352,7 +348,11 @@ const ResourceList = Backbone.View.extend({
             </>,
         });
 
-        $('form', dialog).submit(createResource);
+        content[0]?.addEventListener('submit', (event)=>{
+            event.preventDefault();
+            dialog.remove();
+            thisCreateResource( $('input', this).val() );
+        })
     }
 });
 
