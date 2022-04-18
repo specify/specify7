@@ -71,8 +71,7 @@ const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
 /**
- * TODO: disable outside click detection while resizing the dialog
- *
+ * Modal or non-modal dialog. Highly customizable. Used all over the place
  * @remarks
  * Note, if the same components renders a <Dialog>, and on the next render
  * instead renders a different <Dialog> with the same parent, React would
@@ -254,6 +253,27 @@ export function Dialog({
     }, [defaultIconType, buttons, buttonContainer])
   );
 
+  const overlayElement: Props['overlayElement'] = React.useCallback(
+    (props, contentElement) => (
+      <div
+        {...props}
+        onMouseDown={(event): void => {
+          if (
+            modal &&
+            typeof handleClose === 'function' &&
+            event.target === event.currentTarget
+          ) {
+            event.preventDefault();
+            handleClose();
+          } else props?.onMouseDown?.(event);
+        }}
+      >
+        {contentElement}
+      </div>
+    ),
+    [modal, handleClose]
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -279,7 +299,14 @@ export function Dialog({
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
       `}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
-      shouldCloseOnOverlayClick={modal && typeof handleClose === 'function'}
+      /*
+       * Can't use outside click detection that comes with this plugin
+       * because of https://github.com/specify/specify7/issues/1248.
+       * (it listens on click, not on mouse down)
+       */
+      shouldCloseOnOverlayClick={false}
+      // Instead, a custom onMouseDown handler is set up for this element
+      overlayElement={overlayElement}
       aria={{
         labelledby: id('header'),
         describedby: id('content'),
