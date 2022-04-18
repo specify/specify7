@@ -71,4 +71,8 @@ export type CacheDefinitions = {
       | State<'byTable', { readonly tableName: keyof Tables }>;
     readonly scale: number;
   };
+  readonly geoLocate: {
+    readonly width: number;
+    readonly height: number;
+  };
 };

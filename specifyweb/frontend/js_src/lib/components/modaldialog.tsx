@@ -112,7 +112,7 @@ export function Dialog({
   } = {},
   /* Force dialog to stay on top of all others. Useful for exception messages */
   forceToTop = false,
-  contentRef,
+  forwardRef: { content: contentRef, container: externalContainerRef } = {},
 }: {
   readonly isOpen?: boolean;
   readonly header: React.ReactNode;
@@ -145,7 +145,10 @@ export function Dialog({
     readonly header?: string;
   };
   readonly forceToTop?: boolean;
-  readonly contentRef?: React.Ref<HTMLDivElement>;
+  readonly forwardRef?: {
+    readonly content?: React.Ref<HTMLDivElement>;
+    readonly container?: React.RefCallback<HTMLDivElement>;
+  };
 }): JSX.Element {
   const id = useId('modal');
 
@@ -321,6 +324,8 @@ export function Dialog({
         setContainer(container ?? null);
         // Save to React.useRef so that React Draggable can have immediate access
         containerRef.current = container ?? null;
+        if (typeof externalContainerRef === 'function')
+          externalContainerRef(container ?? null);
       }}
       contentElement={draggableContainer}
     >
@@ -398,7 +403,7 @@ function LegacyDialogWrapper({
   return (
     <Dialog
       {...props}
-      contentRef={setContentElement}
+      forwardRef={{ content: setContentElement }}
       className={{
         ...props.className,
         container:

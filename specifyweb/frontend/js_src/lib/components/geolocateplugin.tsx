@@ -14,7 +14,12 @@ import { Dialog } from './modaldialog';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
 import { formatUrl } from '../querystring';
+import { useCachedState } from './statecache';
 
+const defaultWidth = 940;
+const defaultHeight = 670;
+
+// TODO: merge this with GeoLocate code in the WB once WB is using react
 function GeoLocate({
   resource,
   onClose: handleClose,
@@ -87,7 +92,22 @@ function GeoLocate({
 
     window.addEventListener('message', listener);
     return (): void => window.removeEventListener('message', listener);
-  }, [data, handleClose, resource]);
+  }, [loading, data, handleClose, resource]);
+
+  const [width = defaultWidth, setWidth] = useCachedState({
+    bucketName: 'geoLocate',
+    cacheName: 'width',
+    bucketType: 'localStorage',
+    defaultValue: defaultWidth,
+    staleWhileRefresh: false,
+  });
+  const [height = defaultHeight, setHeight] = useCachedState({
+    bucketName: 'geoLocate',
+    cacheName: 'height',
+    bucketType: 'localStorage',
+    defaultValue: defaultHeight,
+    staleWhileRefresh: false,
+  });
 
   return typeof data === 'undefined' ? null : data === false ? (
     <Dialog
@@ -103,7 +123,19 @@ function GeoLocate({
       header={localityText('geoLocate')}
       modal={false}
       onClose={handleClose}
+      onResize={(container): void => {
+        setWidth(container.clientWidth);
+        setHeight(container.clientHeight);
+      }}
       buttons={commonText('close')}
+      // TODO: consider adding a hook to remember dialog size and position
+      forwardRef={{
+        container(container): void {
+          if (container === null) return;
+          container.style.width = `${width}px`;
+          container.style.height = `${height}px`;
+        },
+      }}
     >
       <iframe
         title={localityText('geoLocate')}
@@ -112,8 +144,7 @@ function GeoLocate({
           'https://www.geo-locate.org/web/webgeoreflight.aspx',
           data
         ).replace(/%7c/gi, '|')}
-        // TODO: check these dimensions. Figure out if can make flexible
-        style={{ width: '908px', height: '653px' }}
+        className="h-full"
       />
     </Dialog>
   );

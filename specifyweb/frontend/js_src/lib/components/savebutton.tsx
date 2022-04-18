@@ -6,6 +6,7 @@ import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { LoadingContext } from './contexts';
@@ -18,11 +19,8 @@ import {
 } from './hooks';
 import { Dialog } from './modaldialog';
 import { FormContext } from './resourceview';
-import { resourceOn } from '../resource';
 
 /*
- * TODO: handle case when there are save blockers for field that is not
- *   rendered on the form
  * TODO: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
  */
@@ -37,8 +35,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   form,
   onSaving: handleSaving,
   onSaved: handleSaved,
-  disabled,
-  saveRequired: externalSaveRequired,
+  disabled = false,
+  saveRequired: externalSaveRequired = false,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
@@ -49,7 +47,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
-  readonly onClick?: () => void;
   readonly disabled?: boolean;
   /*
    * Can enable Save button even if no save is required (i.e., when there were
