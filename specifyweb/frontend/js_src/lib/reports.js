@@ -24,7 +24,6 @@ import {showDialog} from './components/modaldialog';
 import {getRelatedObjectCount} from './resource';
 import {hasPermission} from './permissions';
 import {serializeResource} from './datamodelutils';
-import {goTo} from './components/navigation';
 
 // TODO: rewrite to React
 
@@ -34,7 +33,6 @@ var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
     events: {
         'click button.select': 'getReportUI',
-        'click button.edit': 'editReport',
     },
     initialize: function() {
         this.options.readOnly ||= !hasPermission('/report','execute');
@@ -73,8 +71,8 @@ var ReportListDialog = Backbone.View.extend({
     },
     _render: function() {
         if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length <= 1)) {
-            var reports = $('<table class="reports">');
-            var labels = $('<table class="labels">');
+            var reports = $('<table class="reports grid-table grid-cols-[auto,1fr,auto] gap-1">');
+            var labels = $('<table class="labels grid-table grid-cols-[auto,1fr,auto] gap-1">');
 
             reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
             labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
@@ -85,6 +83,7 @@ var ReportListDialog = Backbone.View.extend({
             if(this.labels.length === 0)
                 labels.append(`<p>${commonText('noResults')}</p>`);
 
+            this.el.classList.add('flex', 'flex-col', 'gap-4');
             this.$el
                 .append(
                     $('<section>')
@@ -111,7 +110,7 @@ var ReportListDialog = Backbone.View.extend({
             this.options.done?.();
     },
     makeEntry: function(icon, appResource) {
-        const img = $('<img>', {src: icon});
+        const img = $('<img>', {src: icon, class: 'w-6 h-6'});
         const a = $(`<button
             type="button"
             class="select link"
@@ -122,23 +121,18 @@ var ReportListDialog = Backbone.View.extend({
                 .append($('<td>').append(img), $('<td>').append(a));
 
         if(!this.options.readOnly)
-            entry.append(`<button
-              type="button"
-              class="edit icon"
+            entry.append(`<td><a
+              class="icon"
               title="${commonText('edit')}"
               aria-label="${commonText('edit')}"
-          >${legacyNonJsxIcons.pencil}</button>`);
+              href="/specify/appresources/${appResource.id}/"
+          >${legacyNonJsxIcons.pencil}</a></td>`);
         return entry;
     },
     getReportUI: function(evt) {
         evt.preventDefault();
         var appResource = $(evt.currentTarget).closest('tr').data('resource');
         this.getReport(appResource, getReportParams);
-    },
-    editReport(evt) {
-        evt.preventDefault();
-        const appResource = $(evt.currentTarget).closest('tr').data('resource');
-        goTo(`/specify/appresources/${appResource.id}/`);
     },
     getReport: function(appResource, action) {
         var reports = new schema.models.SpReport.LazyCollection({
@@ -429,7 +423,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
     dialogEntry: function(recordSet) {
         const model = getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
-        const img = $('<img>', {src: icon, alt: model.label});
+        const img = $('<img>', {src: icon, alt: model.label, class: 'w-6 h-6'});
         var link = $(`<button class="link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(
             $('<td>').append(img),
