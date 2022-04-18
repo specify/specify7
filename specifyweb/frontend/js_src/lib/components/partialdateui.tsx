@@ -13,6 +13,7 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { resourceOn } from '../resource';
 import type { RR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
@@ -20,7 +21,6 @@ import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
 import { useSaveBlockers } from './resource';
-import { resourceOn } from '../resource';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -29,15 +29,6 @@ export function isInputSupported(type: string): boolean {
   input.setAttribute('value', value);
   return input.value !== value;
 }
-
-/*
- * If input[type="date"] or input[type="month"] is not supported,
- * present the date in a more human readable format
- */
-
-const inputTypeYearAttributes = getValidationAttributes(
-  defined(resolveParser({}, { type: 'year' }))
-);
 
 const precisions = { full: 1, 'month-year': 2, year: 3 } as const;
 const reversePrecision: RR<number, PartialDatePrecision> = {
@@ -50,6 +41,10 @@ export type PartialDatePrecision = keyof typeof precisions;
 // These may be reassigned after remotePrefs are loaded:
 let dateType = 'date';
 let monthType = 'month';
+/*
+ * If input[type="date"] or input[type="month"] is not supported,
+ * present the date in a more human readable format
+ */
 let dateSupported = isInputSupported('date');
 let monthSupported = isInputSupported('month');
 let inputFullFormat = databaseDateFormat;
@@ -274,7 +269,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           forwardRef={validationRef}
           {...(precision === 'year'
             ? {
-                ...inputTypeYearAttributes,
+                ...getValidationAttributes(
+                  defined(resolveParser({}, { type: 'year' }))
+                ),
                 placeholder: formsText('yearPlaceholder'),
                 // Format parsed date if valid. Else, use raw input
                 value: validDate?.format('YYYY') ?? inputValue,
