@@ -48,6 +48,10 @@ function Root(): JSX.Element | null {
     [handleContextLoaded]
   );
 
+  /*
+   * Show loading screen only if didn't finish loading within 2 seconds.
+   * This is to prevent briefly flashing the dialog on fast systems.
+   */
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );

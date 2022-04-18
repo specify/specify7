@@ -41,7 +41,7 @@ export function LeafletMap({
         setHandleResize(() =>
           _.throttle(() => map.invalidateSize(), resizeThrottle)
         );
-        addFullScreenButton(map, () => handleToggleFullScreen);
+        addFullScreenButton(map, handleToggleFullScreen);
       })
     );
     return (): void => void globalMap?.remove();
