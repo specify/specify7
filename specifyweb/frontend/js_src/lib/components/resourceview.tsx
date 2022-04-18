@@ -369,6 +369,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                         onDeleted={handleDelete}
                       />
                     ) : undefined}
+                    {extraButtons ?? <span className="flex-1 -ml-2" />}
                     {isModified ? (
                       <Button.Red onClick={handleClose}>
                         {commonText('cancel')}
@@ -378,7 +379,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
                         {commonText('close')}
                       </Button.Blue>
                     )}
-                    {extraButtons ?? <span className="flex-1 -ml-2" />}
                     {saveButtonElement}
                   </>
                 )
