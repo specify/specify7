@@ -36,14 +36,11 @@ export const fetchRoles = async (
     }))
   );
 
-/**
- * Localize a resource name
- */
-export const resourceToLabel = (resource: string): string =>
-  resource.startsWith(tablePermissionsPrefix)
+export const resourceNameToLabel = (resource: string): string =>
+  resource.startsWith(tablePermissionsPrefix) && !resource.includes(anyResource)
     ? /*
-       * "getRegistriesFromPath" does not work for tool tables, so have to
-       * handle that case here
+       * "getRegistriesFromPath" does not work for system tables that are part
+       * of a tool, so have to handle that case here
        */
       resourceNameToModel(resource).label
     : f.var(
@@ -116,7 +113,9 @@ const buildRegistry = f.store(
                   ? {}
                   : {
                       [anyResource]: {
-                        label: commonText('all'),
+                        label: tablePermissionsPrefix.includes(part)
+                          ? adminText('allTables')
+                          : commonText('all'),
                         children: {},
                         actions: getAllActions(
                           partsToResourceName(resourceParts.slice(0, index + 1))
@@ -206,19 +205,17 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
   group(
     expandCatchAllActions(
       compressPermissionQuery(
-        normalizePolicies(
-          Object.entries(policies)
-            .filter(([resource]) => resource !== fieldResource)
-            .flatMap(([resource, actions]) =>
-              actions.map((action) => ({
-                resource,
-                action,
-                allowed: true,
-                matching_role_policies: [],
-                matching_user_policies: [],
-              }))
-            )
-        )
+        Object.entries(policies)
+          .filter(([resource]) => resource !== fieldResource)
+          .flatMap(([resource, actions]) =>
+            actions.map((action) => ({
+              resource: resource.toLowerCase(),
+              action,
+              allowed: true,
+              matching_role_policies: [],
+              matching_user_policies: [],
+            }))
+          )
       )
     ).map(({ resource, action }) => [resource, action])
   ).map(([resource, actions]) => ({ resource, actions }));
@@ -313,48 +310,6 @@ export const compressPermissionQuery = (
         }))
       ),
     ]
-  );
-
-/**
- * Convert all resource names to lower case
- */
-export const normalizePolicies = (
-  rows: RA<PermissionsQueryItem>
-): RA<PermissionsQueryItem> =>
-  rows.map((row) => ({ ...row, resource: row.resource.toLowerCase() }));
-
-/**
- * Split the policies like "/table/%" from the permissions query into a separate
- * policy for each table. Same for "/tools/%" and others.
- * @remarks
- * Does not expand unknown policies, as there is no way to know, which policies
- * those can consist of
- */
-export const expandCatchAllPermissions = (
-  rows: RA<PermissionsQueryItem>
-): RA<PermissionsQueryItem> =>
-  rows.flatMap((row) =>
-    f.var(resourceNameToParts(row.resource), (parts) =>
-      parts.slice(-1)[0] === anyResource
-        ? f.var(
-            getRegistriesFromPath(parts.slice(0, -1)).slice(-1)[0],
-            (registries) =>
-              typeof registries === 'object'
-                ? Object.entries(registries)
-                    .filter(([_key, { actions }]) =>
-                      actions.includes(row.action)
-                    )
-                    .map(([part]) => ({
-                      ...row,
-                      resource: partsToResourceName([
-                        ...parts.slice(0, -1),
-                        part,
-                      ]),
-                    }))
-                : rows
-          )
-        : row
-    )
   );
 
 /**

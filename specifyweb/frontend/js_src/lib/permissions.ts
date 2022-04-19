@@ -16,7 +16,6 @@ import { fetchContext as domainPromise } from './schemabase';
 import {
   anyAction,
   anyResource,
-  normalizePolicies,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolDefinitions,
@@ -167,10 +166,7 @@ export const queryUserPermissions = async (
           collectionid: collectionId,
           userid: userId,
           queries: [
-            ...[
-              ...Object.entries(operationPolicies),
-              [anyResource, [anyAction]],
-            ].map(([policy, actions]) => ({
+            ...Object.entries(operationPolicies).map(([policy, actions]) => ({
               resource: policy,
               actions,
             })),
@@ -195,7 +191,7 @@ export const fetchContext = domainPromise
   .then((query) =>
     split(
       group(
-        normalizePolicies(query).map((result) => [
+        query.map((result) => [
           result.resource,
           [result.action, result.allowed] as const,
         ])

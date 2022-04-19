@@ -432,4 +432,10 @@ export const adminText = createDictionary({
     ca: 'External identity providers:',
     'es-es': 'External identity providers:',
   },
+  allTables: {
+    'en-us': 'All tables',
+    'ru-ru': 'All tables',
+    ca: 'All tables',
+    'es-es': 'All tables',
+  },
 });

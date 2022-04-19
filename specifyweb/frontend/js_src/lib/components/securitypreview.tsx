@@ -14,13 +14,10 @@ import { schema } from '../schema';
 import {
   actionToLabel,
   compressPermissionQuery,
-  expandCatchAllActions,
-  expandCatchAllPermissions,
-  normalizePolicies,
   partsToResourceName,
+  resourceNameToLabel,
   resourceNameToModel,
   resourceNameToParts,
-  resourceToLabel,
 } from '../securityutils';
 import type { IR, R, RA } from '../types';
 import { Button, className, Input, Label, Ul } from './basic';
@@ -65,7 +62,7 @@ function ReasonExplanation({
               {[
                 role.rolename,
                 actionToLabel(role.action),
-                resourceToLabel(role.resource),
+                resourceNameToLabel(role.resource),
               ].map((value, index) => (
                 <div role="cell" className="p-2" key={index}>
                   {value}
@@ -113,7 +110,7 @@ function ReasonExplanation({
                   ? adminText('allCollections')
                   : adminText('thisCollection'),
                 actionToLabel(policy.action),
-                resourceToLabel(policy.resource),
+                resourceNameToLabel(policy.resource),
               ].map((value, index) => (
                 <div role="cell" key={index} className="p-2">
                   {value}
@@ -332,7 +329,7 @@ function PreviewOperations({
         resourceParts.reduce<R<WritableTree>>(
           (place, part, index, { length }) => {
             place[part] ??= {
-              label: resourceToLabel(
+              label: resourceNameToLabel(
                 partsToResourceName(resourceParts.slice(0, index + 1))
               ),
               children: {},
@@ -366,12 +363,11 @@ export function PreviewPermissions({
   const [query] = useAsyncState(
     React.useCallback(
       async () =>
-        queryUserPermissions(userId, collectionId)
-          .then(normalizePolicies)
-          .then(expandCatchAllPermissions)
-          .then(compressPermissionQuery)
-          .then(expandCatchAllActions),
+        queryUserPermissions(userId, collectionId).then(
+          compressPermissionQuery
+        ),
       // Force requery user permissions when user is saved
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       [userId, collectionId, userVersion]
     ),
     false

@@ -9,10 +9,12 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
 import { collectionAccessResource, hasPermission } from '../permissions';
+import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import { anyAction, anyResource } from '../securityutils';
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
+import { userInformation } from '../userinfo';
 import { AdminStatusPlugin } from './adminstatusplugin';
 import {
   Button,
@@ -28,10 +30,9 @@ import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
-import { UserAgents, useUserProviders } from './securityuserhooks';
+import type { UserAgents } from './securityuserhooks';
+import { useUserProviders } from './securityuserhooks';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
-import { resourceOn } from '../resource';
-import { userInformation } from '../userinfo';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -49,12 +50,10 @@ export function SetSuperAdmin({
   return (
     <Label.ForCheckbox>
       <Input.Checkbox
-        isReadOnly={!hasPermission(anyResource, anyAction)}
-        disabled={
-          typeof institutionPolicies === 'undefined' || !userInformation.isadmin
-        }
+        isReadOnly={userInformation.isadmin}
+        disabled={typeof institutionPolicies === 'undefined'}
         onValueChange={(): void =>
-          userInformation.isadmin && typeof institutionPolicies === 'object'
+          typeof institutionPolicies === 'object'
             ? handleChange(
                 isSuperAdmin
                   ? filterArray(
