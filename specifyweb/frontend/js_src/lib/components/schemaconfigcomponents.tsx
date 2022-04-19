@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../localization/common';
+import { queryText } from '../localization/query';
 import type { IR, RA } from '../types';
 import { Button, Form, Input, Label, Select, Submit } from './basic';
 import { useId } from './hooks';
@@ -38,6 +39,20 @@ export function PickList({
       ) : (
         <>
           <option value="0">{commonText('none')}</option>
+          {/*
+           * If current value is not present in the list, add it, and mark as
+           * invalid
+           */}
+          {typeof value !== 'string' ||
+          Object.values(groups)
+            .flatMap((group) =>
+              Array.isArray(group) ? group[0] : Object.values(group)
+            )
+            .includes(value) ? undefined : (
+            <option value={value}>{`${queryText('invalidPicklistValue')(
+              value
+            )}`}</option>
+          )}
           {Object.keys(groups).length === 1 ? (
             <Values values={Object.values(groups)[0]} />
           ) : (
