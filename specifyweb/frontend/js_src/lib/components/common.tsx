@@ -38,9 +38,16 @@ const getHue = spanNumber(
 export function TableIcon({
   name,
   tableLabel,
+  /*
+   * It is highly recommended to use the same icon size everywhere, as that
+   * improves consistency, thus, this should be overwritten only if it is
+   * strictly necessary.
+   */
+  className = 'w-table-icon h-table-icon',
 }: {
   readonly name: string;
   readonly tableLabel?: string | false;
+  readonly className?: string;
 }): JSX.Element {
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
@@ -52,7 +59,7 @@ export function TableIcon({
   if (tableIconSource !== '/images/unknown.png')
     return (
       <span
-        className="w-table-icon h-table-icon bg-center bg-no-repeat bg-contain"
+        className={`${className} bg-center bg-no-repeat bg-contain`}
         role={role}
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}

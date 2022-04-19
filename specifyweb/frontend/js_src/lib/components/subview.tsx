@@ -109,8 +109,14 @@ export function SubView({
           onClick={handleToggle}
           className="w-fit"
         >
+          {/*
+           * Attachment table icons have lots of vertical white space, making
+           * them look overly small on the forms.
+           * See https://github.com/specify/specify7/issues/1259
+           * Thus, have to introduce some inconsistency here
+           */}
           {parentFormType === 'form' && (
-            <TableIcon name={icon} tableLabel={undefined} />
+            <TableIcon name={icon} tableLabel={undefined} className="w-8 h-8" />
           )}
           <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
             {collection?.models.length ?? commonText('loading')}
