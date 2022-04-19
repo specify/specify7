@@ -402,10 +402,12 @@ export function QueryComboBox({
                   responses
                     .flatMap(({ data: { results } }) => results)
                     .map(([id, label]) => ({
-                      data:
+                      data: getResourceApiUrl(
                         field?.isRelationship === true
-                          ? getResourceApiUrl(field.relatedModel.name, id)
-                          : id,
+                          ? field.relatedModel.name
+                          : resource.specifyModel.name,
+                        id
+                      ),
                       label,
                     }))
                 )

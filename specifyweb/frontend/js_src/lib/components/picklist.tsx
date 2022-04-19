@@ -52,6 +52,14 @@ export function PickListComboBox(
     [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
 
+  // Listen for changes to the field
+  React.useEffect(() => {
+    void props.resource.businessRuleMgr?.checkField(props.field.name);
+    return resourceOn(props.resource, `change:${props.field.name}`, (): void =>
+      setValue(getValue)
+    );
+  }, [props.resource, props.field.name, getValue]);
+
   // Set default value
   React.useEffect(() => {
     if (
@@ -70,14 +78,6 @@ export function PickListComboBox(
         );
     }
   }, [props.items, props.resource, props.defaultValue, updateValue]);
-
-  // Listen for external changes to the field
-  React.useEffect(() => {
-    void props.resource.businessRuleMgr?.checkField(props.field.name);
-    return resourceOn(props.resource, `change:${props.field.name}`, (): void =>
-      setValue(getValue)
-    );
-  }, [props.resource, props.field.name, getValue]);
 
   // Warn on duplicates
   React.useEffect(() => {
