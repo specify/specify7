@@ -645,9 +645,9 @@ export function QueryComboBox({
           extraFilters={state.extraConditions}
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={(resource): void =>
+          onSelected={(selectedResource): void =>
             // @ts-expect-error Need to refactor this to use generics
-            void resource.set(defined(field?.name), resource)
+            void resource.set(defined(field?.name), selectedResource)
           }
         />
       ) : undefined}
