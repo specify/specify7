@@ -438,4 +438,22 @@ export const adminText = createDictionary({
     ca: 'All tables',
     'es-es': 'All tables',
   },
+  loadingAdmins: {
+    'en-us': 'Loading admins...',
+    'ru-ru': 'Loading admins...',
+    ca: 'Loading admins...',
+    'es-es': 'Loading admins...',
+  },
+  specifyAdmin: {
+    'en-us': '(Specify 7 Admin)',
+    'ru-ru': '(Specify 7 Admin)',
+    ca: '(Specify 7 Admin)',
+    'es-es': '(Specify 7 Admin)',
+  },
+  legacyAdmin: {
+    'en-us': '(Specify 6 Admin)',
+    'ru-ru': '(Specify 6 Admin)',
+    ca: '(Specify 6 Admin)',
+    'es-es': '(Specify 6 Admin)',
+  },
 });

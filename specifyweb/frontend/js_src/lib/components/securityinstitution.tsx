@@ -11,11 +11,12 @@ import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import type { BackEndRole } from '../securityutils';
 import { decompressPolicies, processPolicies } from '../securityutils';
-import type { IR } from '../types';
+import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
+import { useAsyncState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
@@ -80,6 +81,29 @@ export function InstitutionView({
         },
       }))
     );
+
+  const [admins] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<{
+          readonly sp7_admins: RA<{
+            readonly userid: number;
+            readonly username: string;
+          }>;
+          readonly sp6_admins: RA<{
+            readonly userid: number;
+            readonly username: string;
+          }>;
+        }>('/permissions/list_admins/', {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => ({
+          admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
+          legacyAdmins: new Set(data.sp6_admins.map(({ userid }) => userid)),
+        })),
+      []
+    ),
+    false
+  );
 
   /*
    * TODO: securityCollection.tsx and securityInstitution.tsx are very similar
@@ -163,13 +187,25 @@ export function InstitutionView({
                       <Button.LikeLink
                         onClick={(): void => handleOpenUser(user.id)}
                       >
-                        {user.name}
+                        {`${user.name}`}
+                        <span className="text-gray-500">{`${
+                          admins?.admins.has(user.id)
+                            ? ` ${adminText('specifyAdmin')}`
+                            : ''
+                        }${
+                          admins?.legacyAdmins.has(user.id)
+                            ? ` ${adminText('legacyAdmin')}`
+                            : ''
+                        }`}</span>
                       </Button.LikeLink>
                     </li>
                   ))}
               </Ul>
             ) : (
               commonText('loading')
+            )}
+            {typeof users === 'object' && typeof admins === 'undefined' && (
+              <p>{adminText('loadingAdmins')}</p>
             )}
           </section>
         </>
