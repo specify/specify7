@@ -14,6 +14,9 @@ import { schema } from '../schema';
 import {
   actionToLabel,
   compressPermissionQuery,
+  expandCatchAllActions,
+  expandCatchAllPermissions,
+  normalizePolicies,
   partsToResourceName,
   resourceNameToModel,
   resourceNameToParts,
@@ -363,9 +366,11 @@ export function PreviewPermissions({
   const [query] = useAsyncState(
     React.useCallback(
       async () =>
-        queryUserPermissions(userId, collectionId).then(
-          compressPermissionQuery
-        ),
+        queryUserPermissions(userId, collectionId)
+          .then(normalizePolicies)
+          .then(expandCatchAllPermissions)
+          .then(compressPermissionQuery)
+          .then(expandCatchAllActions),
       // Force requery user permissions when user is saved
       [userId, collectionId, userVersion]
     ),

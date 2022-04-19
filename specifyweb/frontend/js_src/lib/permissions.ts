@@ -16,6 +16,7 @@ import { fetchContext as domainPromise } from './schemabase';
 import {
   anyAction,
   anyResource,
+  normalizePolicies,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolDefinitions,
@@ -194,7 +195,7 @@ export const fetchContext = domainPromise
   .then((query) =>
     split(
       group(
-        query.map((result) => [
+        normalizePolicies(query).map((result) => [
           result.resource,
           [result.action, result.allowed] as const,
         ])

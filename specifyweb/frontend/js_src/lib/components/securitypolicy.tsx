@@ -1,9 +1,16 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { group, removeItem, replaceItem, toggleItem } from '../helpers';
+import {
+  group,
+  lowerToHuman,
+  removeItem,
+  replaceItem,
+  toggleItem,
+} from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import { smoothScroll } from '../querybuilderutils';
 import {
   actionToLabel,
   anyResource,
@@ -15,7 +22,6 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Ul } from './basic';
 import { icons } from './icons';
-import { smoothScroll } from '../querybuilderutils';
 
 export type Policy = {
   readonly resource: string;
@@ -32,18 +38,35 @@ function PolicyView({
   readonly onChange: (policy: Policy | undefined) => void;
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
-  const registryParts = getRegistriesFromPath(resourceParts).filter(
-    (items) => typeof items === 'object' && Object.keys(items).length > 0
-  );
-  const possibleActions =
-    registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
+  const registries = getRegistriesFromPath(resourceParts);
+  const registryParts = registries
+    .map((items, index) => ({
+      // Create an entry just in case the policy is unknown to the front-end
+      ...(typeof resourceParts[index] === 'string'
+        ? {
+            [resourceParts[index]]: {
+              actions,
+              children: {},
+              groupName: '',
+              label: lowerToHuman(resourceParts[index]),
+            },
+          }
+        : {}),
+      ...items,
+    }))
+    .filter((items) => Object.keys(items ?? {}).length > 0);
+  const isUnknownResource = registries.includes(undefined);
+  const possibleActions = isUnknownResource
+    ? actions
+    : registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
   return (
     <li className="flex flex-wrap gap-2">
       <Ul className="contents">
         {filterArray(registryParts).map((registry, index) =>
           Object.keys(registry).length === 0 ? undefined : (
-            <li key={index} className="contents">
+            <li key={index}>
               <Select
+                className="h-full"
                 value={resourceParts[index] ?? ''}
                 disabled={isReadOnly}
                 onValueChange={(part): void =>
@@ -79,8 +102,13 @@ function PolicyView({
                   f.var(
                     permissions.map(
                       ([partName, { label }], _index, { length }) =>
-                        // Don't show Any if there is only one other option
-                        partName === anyResource && length === 2 ? undefined : (
+                        /*
+                         * Don't show Any if there is only one other option,
+                         * and it is the default value
+                         */
+                        partName === anyResource &&
+                        length <= 2 &&
+                        resourceParts[index] !== anyResource ? undefined : (
                           <option key={partName} value={partName}>
                             {label}
                           </option>
@@ -103,7 +131,7 @@ function PolicyView({
         {Array.isArray(possibleActions) && possibleActions.length > 0 && (
           <li className="contents">
             {/* Math.min(possibleActions.length, selectMultipleSize) */}
-            <Ul>
+            <Ul className="flex flex-col justify-center">
               {possibleActions.map((action) => (
                 <li key={action}>
                   <Label.ForCheckbox>

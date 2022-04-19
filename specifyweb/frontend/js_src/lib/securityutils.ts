@@ -53,6 +53,7 @@ export const resourceToLabel = (resource: string): string =>
             .label
       ) ?? adminText('resource');
 
+// TODO: test usages of this
 /**
  * Convert a part like ['table','locality'] to an array of information for
  * each item
@@ -190,28 +191,46 @@ const toolTables = f.store(
 );
 
 /**
+ * Special resource that is needed by the back-end for user to be able to
+ * edit anything.
+ * Field level permissions are not yet fully implemented, thus this resource
+ * must be hidden in the UI, but present in all policy lists
+ */
+const fieldResource = '/field/%';
+
+/**
  * Separate out tool tables from the raw list of policies received from the
  * back-end
  */
 export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
   group(
-    compressPermissionQuery(
-      Object.entries(policies).flatMap(([resource, actions]) =>
-        actions.map((action) => ({
-          resource,
-          action,
-          allowed: true,
-          matching_role_policies: [],
-          matching_user_policies: [],
-        }))
+    expandCatchAllActions(
+      compressPermissionQuery(
+        normalizePolicies(
+          Object.entries(policies)
+            .filter(([resource]) => resource !== fieldResource)
+            .flatMap(([resource, actions]) =>
+              actions.map((action) => ({
+                resource,
+                action,
+                allowed: true,
+                matching_role_policies: [],
+                matching_user_policies: [],
+              }))
+            )
+        )
       )
     ).map(({ resource, action }) => [resource, action])
   ).map(([resource, actions]) => ({ resource, actions }));
 
-/** Convert virtual tool policies back to real system table policies */
+/**
+ * Convert policies back to the format back-end can understand:
+ * Convert virtual tool policies back to real system table policies
+ * Add a field access policy
+ */
 export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
-  Object.fromEntries(
-    policies
+  Object.fromEntries([
+    ...policies
       .flatMap((policy) =>
         resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
           ? toolDefinitions()[
@@ -224,8 +243,9 @@ export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
             }))
           : policy
       )
-      .map(({ resource, actions }) => [resource, actions])
-  );
+      .map(({ resource, actions }) => [resource, actions]),
+    [fieldResource, anyAction],
+  ]);
 
 /**
  * Like processPolicies, but works on the output of the /permission/query/
@@ -240,7 +260,10 @@ export const compressPermissionQuery = (
       policies: PermissionsQueryItem[];
     }>(
       ({ tools, policies }, item) => {
-        if (item.resource.startsWith(tablePermissionsPrefix)) {
+        if (
+          item.resource.startsWith(tablePermissionsPrefix) &&
+          resourceNameToParts(item.resource).slice(-1)[0] !== anyResource
+        ) {
           const model = resourceNameToModel(item.resource);
           if (f.has(toolTables(), model.name)) {
             const toolName = Object.entries(toolDefinitions()).find(
@@ -293,6 +316,70 @@ export const compressPermissionQuery = (
   );
 
 /**
+ * Convert all resource names to lower case
+ */
+export const normalizePolicies = (
+  rows: RA<PermissionsQueryItem>
+): RA<PermissionsQueryItem> =>
+  rows.map((row) => ({ ...row, resource: row.resource.toLowerCase() }));
+
+/**
+ * Split the policies like "/table/%" from the permissions query into a separate
+ * policy for each table. Same for "/tools/%" and others.
+ * @remarks
+ * Does not expand unknown policies, as there is no way to know, which policies
+ * those can consist of
+ */
+export const expandCatchAllPermissions = (
+  rows: RA<PermissionsQueryItem>
+): RA<PermissionsQueryItem> =>
+  rows.flatMap((row) =>
+    f.var(resourceNameToParts(row.resource), (parts) =>
+      parts.slice(-1)[0] === anyResource
+        ? f.var(
+            getRegistriesFromPath(parts.slice(0, -1)).slice(-1)[0],
+            (registries) =>
+              typeof registries === 'object'
+                ? Object.entries(registries)
+                    .filter(([_key, { actions }]) =>
+                      actions.includes(row.action)
+                    )
+                    .map(([part]) => ({
+                      ...row,
+                      resource: partsToResourceName([
+                        ...parts.slice(0, -1),
+                        part,
+                      ]),
+                    }))
+                : rows
+          )
+        : row
+    )
+  );
+
+/**
+ * Expands the '%' action into separate actions allowed on that resource
+ * @remarks
+ * Does not expand unknown policies, as there is no way to know, which actions
+ * those may have
+ */
+export const expandCatchAllActions = (
+  rows: RA<PermissionsQueryItem>
+): RA<PermissionsQueryItem> =>
+  rows.flatMap((row) =>
+    row.action === '%'
+      ? f.var(getAllActions(row.resource), (actions) =>
+          actions.length === 0
+            ? row
+            : actions.map((action) => ({
+                ...row,
+                action,
+              }))
+        )
+      : row
+  );
+
+/**
  * Localize action name
  */
 export const actionToLabel = (action: string): string =>
@@ -327,14 +414,22 @@ export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
 const getAllActions = (path: string): RA<string> =>
   path.startsWith(`${permissionSeparator}${toolPermissionPrefix}`)
     ? tableActions
-    : f.unique(
-        [
-          ...Object.entries(operationPolicies),
-          ...Object.keys(schema.models).map(
-            (tableName) =>
-              [tableNameToResourceName(tableName), tableActions] as const
-          ),
-        ]
-          .filter(([key]) => key.startsWith(path))
-          .flatMap(([_key, actions]) => actions)
+    : f.var(
+        f.var(resourceNameToParts(path), (parts) =>
+          partsToResourceName(
+            parts.slice(-1)[0] === anyResource ? parts.slice(0, -1) : parts
+          )
+        ),
+        (path) =>
+          f.unique(
+            [
+              ...Object.entries(operationPolicies),
+              ...Object.keys(schema.models).map(
+                (tableName) =>
+                  [tableNameToResourceName(tableName), tableActions] as const
+              ),
+            ]
+              .filter(([key]) => key.startsWith(path))
+              .flatMap(([_key, actions]) => actions)
+          )
       );
