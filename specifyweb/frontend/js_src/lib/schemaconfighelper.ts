@@ -35,7 +35,8 @@ const fetchString = async (
     headers: { Accept: 'application/json' },
   }).then(({ data: { objects } }) => {
     const targetString = objects.find(
-      (object) => object.language === language && object.country === country
+      (object) =>
+        (object.language === language && object.country) ?? '' === country ?? ''
     );
     if (typeof targetString === 'object') return targetString;
 
