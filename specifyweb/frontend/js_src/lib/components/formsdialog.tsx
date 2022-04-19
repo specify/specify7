@@ -5,7 +5,7 @@ import type { Tables } from '../datamodel';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
-import { getAttribute } from '../parseformcells';
+import { getAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
 import { getResourceViewUrl } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';

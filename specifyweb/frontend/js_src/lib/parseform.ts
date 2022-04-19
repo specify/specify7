@@ -7,17 +7,14 @@ import { ajax, Http } from './ajax';
 import { f } from './functools';
 import { cachableUrl } from './initialcontext';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
-import {
-  getAttribute,
-  parseFormCell,
-  processColumnDefinition,
-} from './parseformcells';
+import { parseFormCell, processColumnDefinition } from './parseformcells';
 import { getModel } from './schema';
 import { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
 import { formatUrl } from './querystring';
 import { localizeFrom } from './stringlocalization';
+import { getAttribute } from './helpers';
 
 const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>

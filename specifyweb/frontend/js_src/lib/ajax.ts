@@ -1,8 +1,8 @@
 import { handleAjaxError } from './components/errorboundary';
-import { csrfToken } from './csrftoken';
-import type { IR, PartialBy, RA } from './types';
 import { formatList } from './components/internationalization';
+import { csrfToken } from './csrftoken';
 import { f } from './functools';
+import type { IR, PartialBy, RA } from './types';
 
 export const isExternalUrl = (url: string): boolean =>
   /*

@@ -5,7 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR } from './types';
-import { getAttribute } from './parseformcells';
+import { getAttribute } from './helpers';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;

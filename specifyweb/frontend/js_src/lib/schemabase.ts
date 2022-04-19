@@ -87,7 +87,7 @@ const domainLevels = [
 ] as const;
 
 // Scoping information is loaded and populated here.
-export const fetchContext = load<
+export const fetchContext: Promise<Schema> = load<
   Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
 >('/context/domain.json', 'application/json').then((data) => {
   schema.domainLevelIds = Object.fromEntries(
@@ -97,6 +97,7 @@ export const fetchContext = load<
   schema.embeddedPaleoContext = data.embeddedPaleoContext;
   schema.paleoContextChildTable = data.paleoContextChildTable;
   schema.catalogNumFormatName = data.catalogNumFormatName;
+  return schema;
 });
 
 export const schemaBase: Schema = schema;

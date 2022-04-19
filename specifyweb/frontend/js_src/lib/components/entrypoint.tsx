@@ -44,7 +44,7 @@ function Root(): JSX.Element | null {
   const [showLoadingScreen, setShowLoadingScreen] = useBooleanState();
 
   React.useEffect(
-    () => void initialContext.catch(crash).finally(handleContextLoaded),
+    () => void initialContext.then(handleContextLoaded).catch(crash),
     [handleContextLoaded]
   );
 

@@ -9,15 +9,23 @@ import React from 'react';
 
 import { Http } from '../ajax';
 import { breakpoint } from '../assert';
+import { removeKey } from '../helpers';
 import { commonText } from '../localization/common';
-import { clearUnloadProtect } from './navigation';
-import { NotFoundView } from './notfoundview';
+import { getOperationPermissions, getTablePermissions } from '../permissions';
+import { remotePrefs } from '../remoteprefs';
+import { schema } from '../schema';
 import { setCurrentView } from '../specifyapp';
+import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Link } from './basic';
 import { displayError } from './contexts';
+import { copyTextToClipboard, downloadFile } from './filepicker';
+import { useBooleanState } from './hooks';
+import { icons } from './icons';
 import { Dialog } from './modaldialog';
+import { clearUnloadProtect } from './navigation';
+import { NotFoundView } from './notfoundview';
 
 type ErrorBoundaryState =
   | {
@@ -42,10 +50,12 @@ function ErrorDialog({
   title = commonText('errorBoundaryDialogTitle'),
   header = commonText('errorBoundaryDialogHeader'),
   children,
+  copiableMessage,
   // Error dialog is only closable in Development
   onClose: handleClose,
 }: {
   readonly children: React.ReactNode;
+  readonly copiableMessage: string;
   readonly title?: string;
   readonly header?: string;
   readonly onClose?: () => void;
@@ -56,6 +66,19 @@ function ErrorDialog({
       header={header}
       buttons={
         <>
+          <Button.Blue
+            onClick={(): void =>
+              void downloadFile(
+                `Specify 7 Crash Report - ${new Date().toJSON()}.json`,
+                copiableMessage
+              )
+            }
+          >
+            {icons.clipboard}
+            {commonText('downloadErrorMessage')}
+          </Button.Blue>
+          <CopyErrorMessage message={copiableMessage} />
+          <span className="flex-1 -ml-2" />
           <Button.Red onClick={(): void => window.location.assign('/')}>
             {commonText('close')}
           </Button.Red>
@@ -86,6 +109,25 @@ function ErrorDialog({
   );
 }
 
+const copyMessageTimeout = 3000;
+
+function CopyErrorMessage({ message }: { message: string }): JSX.Element {
+  const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
+  return (
+    <Button.Green
+      onClick={(): void =>
+        void copyTextToClipboard(message).then((): void => {
+          handleCopied();
+          setTimeout(handleNotCopied, copyMessageTimeout);
+        })
+      }
+    >
+      {icons.clipboard}
+      {wasCopied ? commonText('copied') : commonText('copyErrorMessage')}
+    </Button.Green>
+  );
+}
+
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   if (
@@ -94,11 +136,13 @@ export function crash(error: Error): void {
   )
     // It is a network error, and it has already been handled
     return;
-  const [errorObject, errorMessage] = formatError(error);
+  const [errorObject, errorMessage, copiableMessage] = formatError(error);
   console.error(errorMessage);
   breakpoint();
   displayError(({ onClose: handleClose }) => (
-    <ErrorDialog onClose={handleClose}>{errorObject}</ErrorDialog>
+    <ErrorDialog onClose={handleClose} copiableMessage={copiableMessage}>
+      {errorObject}
+    </ErrorDialog>
   ));
 }
 
@@ -137,7 +181,12 @@ export class ErrorBoundary extends React.Component<
     return this.state.hasError ? (
       this.props.silentErrors === true &&
       process.env.NODE_ENV === 'production' ? null : (
-        <ErrorDialog>
+        <ErrorDialog
+          copiableMessage={produceStackTrace({
+            message: this.state.error?.toString(),
+            stack: this.state.errorInfo.componentStack,
+          })}
+        >
           {this.state.error?.toString()}
           <br />
           {this.state.errorInfo.componentStack}
@@ -149,10 +198,28 @@ export class ErrorBoundary extends React.Component<
   }
 }
 
+const produceStackTrace = (message: unknown): string =>
+  JSON.stringify(
+    {
+      message,
+      userInformation,
+      systemInformation: getSystemInfo(),
+      schema: removeKey(schema, 'models'),
+      href: window.location.href,
+      tablePermissions: getTablePermissions(),
+      operationPermissions: getOperationPermissions(),
+      remotePrefs,
+    },
+    null,
+    '\t'
+  );
+
 function formatError(
   error: unknown,
   url?: string
-): Readonly<[errorObject: JSX.Element, errorMessage: string]> {
+): Readonly<
+  [errorObject: JSX.Element, errorMessage: string, copiableMessage: string]
+> {
   const errorObject: React.ReactNode[] = [
     typeof url === 'string' && (
       <p key="errorOccurred">
@@ -161,6 +228,8 @@ function formatError(
     ),
   ];
   const errorMessage: string[] =
+    typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
+  const copiableMessage: string[] =
     typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
 
   if (typeof error === 'object' && error !== null) {
@@ -172,6 +241,10 @@ function formatError(
         </React.Fragment>
       );
       errorMessage.push(`Error: ${error.message}`);
+      copiableMessage.push(
+        `Message: ${error.message}`,
+        `Stack: ${error.stack}`
+      );
       console.error(error);
     } else if ('statusText' in error && 'responseText' in error) {
       const { statusText, responseText } = error as {
@@ -185,6 +258,7 @@ function formatError(
         </React.Fragment>
       );
       errorMessage.push(statusText);
+      copiableMessage.push(statusText);
     } else
       errorObject.push(
         <p className="raw" key="raw">
@@ -198,6 +272,7 @@ function formatError(
       {errorObject}
     </div>,
     errorMessage.join('\n'),
+    produceStackTrace(copiableMessage.join('\n')),
   ] as const;
 }
 
@@ -242,13 +317,17 @@ export function handleAjaxError(
     });
     throw error;
   }
-  const [errorObject, errorMessage] = formatError(error, response.url);
+  const [errorObject, errorMessage, copiableMessage] = formatError(
+    error,
+    response.url
+  );
   if (strict && !isPermissionError)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         title={commonText('backEndErrorDialogTitle')}
         header={commonText('backEndErrorDialogHeader')}
         onClose={handleClose}
+        copiableMessage={copiableMessage}
       >
         {errorObject}
       </ErrorDialog>

@@ -12,7 +12,6 @@ import type { SpecifyResource } from './legacytypes';
 import { fetchPickLists, pickLists } from './picklists';
 import { getModel } from './schema';
 import { fetchRows } from './specifyapi';
-import { hasHierarchyField } from './specifymodel';
 import type { RA } from './types';
 import { defined } from './types';
 import { sortObjectsByKey } from './helpers';
@@ -111,7 +110,7 @@ async function fetchFromTable(
   const model = defined(getModel(pickList.get('tableName')));
   if (!hasTablePermission(model.name, 'read')) return [];
   const collection = new model.LazyCollection({
-    domainfilter: hasHierarchyField(model),
+    domainfilter: true,
   });
   return collection.fetch({ limit }).then(async ({ models }) =>
     Promise.all(

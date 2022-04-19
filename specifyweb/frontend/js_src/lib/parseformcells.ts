@@ -14,6 +14,7 @@ import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
+import { getAttribute } from './helpers';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -87,10 +88,6 @@ export type CellTypes = {
 };
 
 export const cellAlign = ['left', 'center', 'right'] as const;
-
-/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
-export const getAttribute = (cell: Element, name: string): string | undefined =>
-  cell.getAttribute(name.toLowerCase()) ?? undefined;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {

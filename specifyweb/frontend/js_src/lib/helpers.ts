@@ -266,3 +266,7 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 
 export const escapeRegExp = (string: string): string =>
   string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+
+/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
+export const getAttribute = (cell: Element, name: string): string | undefined =>
+  cell.getAttribute(name.toLowerCase()) ?? undefined;

@@ -15,10 +15,10 @@ import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
-import { getAttribute } from './parseformcells';
 import { f } from './functools';
 import { hasTablePermission } from './permissions';
 import { commonText } from './localization/common';
+import { getAttribute } from './helpers';
 
 export type Formatter = {
   readonly name: string | undefined;

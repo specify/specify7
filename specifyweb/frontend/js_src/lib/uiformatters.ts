@@ -2,12 +2,11 @@
  * Parse and use Specify 6 UI Formatters
  */
 
-import { escapeRegExp } from './helpers';
+import { escapeRegExp, getAttribute } from './helpers';
 import { load } from './initialcontext';
 import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { getAttribute } from './parseformcells';
 import { f } from './functools';
 
 export let uiFormatters: IR<UiFormatter>;

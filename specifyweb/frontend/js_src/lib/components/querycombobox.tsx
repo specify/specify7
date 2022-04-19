@@ -12,7 +12,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
-import { getAttribute } from '../parseformcells';
+import { getAttribute } from '../helpers';
 import { columnToFieldMapper } from '../parseselect';
 import { hasTablePermission, hasTreeAccess } from '../permissions';
 import type {

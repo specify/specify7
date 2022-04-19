@@ -10,7 +10,7 @@ import { cachableUrl } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { getView } from '../parseform';
-import { getAttribute } from '../parseformcells';
+import { getAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
 import { reports } from '../reports';
 import { getResourceViewUrl } from '../resource';

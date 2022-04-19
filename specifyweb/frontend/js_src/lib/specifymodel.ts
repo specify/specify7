@@ -372,15 +372,3 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
   f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
-
-// If this is true, then you can use {domainfilter:true} when fetching that model
-export const hasHierarchyField = (model: SpecifyModel): boolean =>
-  [
-    'collectionObject',
-    'collection',
-    'discipline',
-    'division',
-    'institution',
-  ].some((fieldName) =>
-    model.relationships.some(({ name }) => name === fieldName)
-  );

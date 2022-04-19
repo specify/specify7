@@ -162,3 +162,34 @@ export const fileToText = async (file: File): Promise<string> =>
     );
     fileReader.readAsText(file);
   });
+
+/** Based on https://stackoverflow.com/a/30810322/8584605 */
+async function fallbackCopyTextToClipboard(text: string) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.classList.add('sr-only');
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  const promise = document.execCommand('copy')
+    ? Promise.resolve()
+    : Promise.reject(new Error('Failed to copy text to clipboard'));
+
+  document.body.removeChild(textArea);
+  return promise;
+}
+
+export const copyTextToClipboard = async (text: string): Promise<void> =>
+  /**
+   * "navigator.clipboard" is only available on HTTPs origins
+   * Not available over Http, unless on localhost
+   */
+  (typeof navigator.clipboard === 'object'
+    ? navigator.clipboard.writeText(text).catch((error) => {
+        console.error(error);
+        return fallbackCopyTextToClipboard(text);
+      })
+    : fallbackCopyTextToClipboard(text)
+  ).catch(console.error);

@@ -91,6 +91,7 @@ export const fetchContext = f
 
         callback?.();
       });
+    return schemaBase;
   });
 
 export const schema = schemaBase;
@@ -131,3 +132,15 @@ export const getModelById = <SCHEMA extends AnySchema>(
   (Object.values(schema.models).find((model) => model.tableId === tableId) as
     | SpecifyModel<SCHEMA>
     | undefined) ?? error(`Model with id ${tableId} does not exist`);
+
+// If this is true, then you can use {domainfilter:true} when fetching that model
+export const hasHierarchyField = (model: SpecifyModel): boolean =>
+  [
+    'collectionObject',
+    'collection',
+    'discipline',
+    'division',
+    'institution',
+  ].some((fieldName) =>
+    model.relationships.some(({ name }) => name === fieldName)
+  );

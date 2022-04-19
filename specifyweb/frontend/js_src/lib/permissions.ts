@@ -4,26 +4,24 @@
 
 import { ajax } from './ajax';
 import { error } from './assert';
-import { PermissionDenied } from './components/permissiondenied';
-import { createBackboneView } from './components/reactbackboneextend';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { group, split } from './helpers';
 import { load } from './initialcontext';
-import { fetchContext as schemaPromise, schema } from './schema';
+import { fetchContext as schemaPromise } from './schema';
 import { fetchContext as domainPromise } from './schemabase';
+import type { anyAction, anyResource } from './securityutils';
 import {
-  anyAction,
-  anyResource,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolDefinitions,
 } from './securityutils';
-import { setCurrentView } from './specifyapp';
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
+import { crash } from './components/errorboundary';
+import { formatList } from './components/internationalization';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -132,6 +130,7 @@ let tablePermissions: {
 };
 
 export const getTablePermissions = () => tablePermissions;
+export const getOperationPermissions = () => operationPermissions;
 
 export type PermissionsQueryItem = {
   readonly action: string;
@@ -156,7 +155,7 @@ export const queryUserPermissions = async (
   collectionId: number
 ): Promise<RA<PermissionsQueryItem>> =>
   schemaPromise
-    .then(async () =>
+    .then(async (schema) =>
       ajax<{
         readonly details: RA<PermissionsQueryItem>;
       }>('/permissions/query/', {
@@ -182,40 +181,44 @@ export const queryUserPermissions = async (
     )
     .then(({ data }) => data.details);
 
-const PermissionDeniedView = createBackboneView(PermissionDenied);
-
-export const fetchContext = domainPromise
-  .then(async () =>
-    queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
-  )
-  .then((query) =>
-    split(
-      group(
-        query.map((result) => [
-          result.resource,
-          [result.action, result.allowed] as const,
-        ])
-      ).map(
-        ([resource, actions]) =>
-          [resource, Object.fromEntries(actions)] as const
-      ),
-      ([key]) => key.startsWith(tablePermissionsPrefix)
-    ).map(Object.fromEntries)
-  )
-  .then(([operations, tables]) => {
-    operationPermissions = operations as unknown as typeof operationPermissions;
-    tablePermissions = tables as unknown as typeof tablePermissions;
-    void checkRegistry();
-    // Check that user has at least read access to the hierarchy tables
-    if (
-      schema.orgHierarchy.some(
-        (tableName) =>
-          tableName !== 'CollectionObject' &&
-          !hasTablePermission(tableName, 'read')
-      )
+export const fetchContext = domainPromise.then(async (schema) =>
+  queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
+    .then((query) =>
+      split(
+        group(
+          query.map((result) => [
+            result.resource,
+            [result.action, result.allowed] as const,
+          ])
+        ).map(
+          ([resource, actions]) =>
+            [resource, Object.fromEntries(actions)] as const
+        ),
+        ([key]) => key.startsWith(tablePermissionsPrefix)
+      ).map(Object.fromEntries)
     )
-      setCurrentView(new PermissionDeniedView());
-  });
+    .then(([operations, tables]) => {
+      operationPermissions =
+        operations as unknown as typeof operationPermissions;
+      tablePermissions = tables as unknown as typeof tablePermissions;
+      void checkRegistry();
+      // Check that user has at least read access to the hierarchy tables
+      if (
+        schema.orgHierarchy.some(
+          (tableName) =>
+            tableName !== 'CollectionObject' &&
+            !hasTablePermission(tableName, 'read')
+        )
+      )
+        crash(
+          new Error(
+            `User must have at least read access to these tables to use Specify: ${formatList(
+              schema.orgHierarchy
+            )}`
+          )
+        );
+    })
+);
 
 export const hasTablePermission = (
   tableName: keyof Tables,
