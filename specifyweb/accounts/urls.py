@@ -9,11 +9,11 @@ urlpatterns = [
     path('login/',
          views.oic_login
          if settings.OAUTH_LOGIN_PROVIDERS
-         else auth_views.LoginView.as_view(template_name='login.html')
+         else views.legacy_login
          ),
 
     # Login with Specify username and password:
-    path('legacy_login/', auth_views.LoginView.as_view(template_name='login.html')),
+    path('legacy_login/', views.legacy_login),
 
     # OpenId Connect callback endpoint:
     path('oic_callback/', views.oic_callback),
