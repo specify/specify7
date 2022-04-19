@@ -79,13 +79,15 @@ export function useSaveBlockers({
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
 }): string {
-  const [errors, setErrors] = React.useState<string>(() =>
-    resource.saveBlockers.getFieldErrors(fieldName).join('\n')
+  const [errors, setErrors] = React.useState<string>(
+    () => resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
   );
   React.useEffect(
     () =>
       resourceOn(resource, 'blockersChanged', (): void =>
-        setErrors(resource.saveBlockers.getFieldErrors(fieldName).join('\n'))
+        setErrors(
+          resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+        )
       ),
     [resource, fieldName]
   );

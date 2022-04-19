@@ -73,7 +73,7 @@ export function PickListComboBox(
 
   // Listen for external changes to the field
   React.useEffect(() => {
-    void props.resource.businessRuleMgr.checkField(props.field.name);
+    void props.resource.businessRuleMgr?.checkField(props.field.name);
     return resourceOn(props.resource, `change:${props.field.name}`, (): void =>
       setValue(getValue)
     );

@@ -144,7 +144,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | (string & keyof SCHEMA['toManyIndependent'])
   ): Promise<number | undefined>;
   readonly specifyModel: SpecifyModel<SCHEMA>;
-  readonly saveBlockers: Readonly<SaveBlockers<SCHEMA>>;
+  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   format(): Promise<string>;
   url(): string;
@@ -158,7 +158,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;
   trigger(eventName: string, ...args: RA<unknown>): void;
-  readonly businessRuleMgr: {
+  readonly businessRuleMgr?: {
     readonly pending: Promise<void>;
     checkField(fieldName: string): Promise<void>;
   };

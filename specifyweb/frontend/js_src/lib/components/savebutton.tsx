@@ -69,8 +69,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       'blockersChanged',
       (): void => {
         const onlyDeferredBlockers = Array.from(
-          resource.saveBlockers.blockingResources
-        ).every((resource) => resource.saveBlockers.hasOnlyDeferredBlockers());
+          resource.saveBlockers?.blockingResources ?? []
+        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
         setSaveBlocked(!onlyDeferredBlockers);
       },
       true
@@ -101,13 +101,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     if (saveBlocked || (!saveRequired && !externalSaveRequired && !addAnother))
       return;
 
-    await resource.businessRuleMgr.pending;
+    await resource.businessRuleMgr?.pending;
 
     const blockingResources = Array.from(
-      resource.saveBlockers.blockingResources
+      resource.saveBlockers?.blockingResources ?? []
     );
     blockingResources.forEach((resource) =>
-      resource.saveBlockers.fireDeferredBlockers()
+      resource.saveBlockers?.fireDeferredBlockers()
     );
     if (blockingResources.length > 0) {
       setShowBlockedDialog(true);
@@ -204,29 +204,32 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         >
           <p>{formsText('saveBlockedDialogMessage')}</p>
           <Ul>
-            {Array.from(resource.saveBlockers.blockingResources, (resource) => (
-              <li key={resource.cid}>
-                <H3>{resource.specifyModel.label}</H3>
-                <dl>
-                  {Object.entries(resource.saveBlockers.blockers).map(
-                    ([key, blocker]) => (
-                      <React.Fragment key={key}>
-                        <dt>
-                          {typeof blocker.fieldName === 'string'
-                            ? defined(
-                                resource.specifyModel.getField(
-                                  blocker.fieldName
-                                )
-                              ).label
-                            : camelToHuman(key)}
-                        </dt>
-                        <dd>{blocker.reason}</dd>
-                      </React.Fragment>
-                    )
-                  )}
-                </dl>
-              </li>
-            ))}
+            {Array.from(
+              resource.saveBlockers?.blockingResources ?? [],
+              (resource) => (
+                <li key={resource.cid}>
+                  <H3>{resource.specifyModel.label}</H3>
+                  <dl>
+                    {Object.entries(resource.saveBlockers?.blockers ?? []).map(
+                      ([key, blocker]) => (
+                        <React.Fragment key={key}>
+                          <dt>
+                            {typeof blocker.fieldName === 'string'
+                              ? defined(
+                                  resource.specifyModel.getField(
+                                    blocker.fieldName
+                                  )
+                                ).label
+                              : camelToHuman(key)}
+                          </dt>
+                          <dd>{blocker.reason}</dd>
+                        </React.Fragment>
+                      )
+                    )}
+                  </dl>
+                </li>
+              )
+            )}
           </Ul>
         </Dialog>
       ) : undefined}

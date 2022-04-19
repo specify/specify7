@@ -165,13 +165,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         resource.set(dateField, null as never);
         if (typeof precisionField === 'string')
           resource.set(precisionField, null as never);
-        resource.saveBlockers.remove(`invaliddate:${dateField}`);
+        resource.saveBlockers?.remove(`invaliddate:${dateField}`);
       } else if (moment.isValid()) {
         const value = moment.format(databaseDateFormat);
         resource.set(dateField, value as never);
         if (typeof precisionField === 'string')
           resource.set(precisionField, precisions[precision] as never);
-        resource.saveBlockers.remove(`invaliddate:${dateField}`);
+        resource.saveBlockers?.remove(`invaliddate:${dateField}`);
       } else {
         const validationMessage =
           precision === 'full'
@@ -179,7 +179,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
             : precision === 'month-year'
             ? formsText('requiredFormat')(monthFormat())
             : formsText('invalidDate');
-        resource.saveBlockers.add(
+        resource.saveBlockers?.add(
           `invaliddate:${dateField}`,
           dateField,
           validationMessage
@@ -238,7 +238,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               if (typeof precisionField === 'string')
                 // @ts-expect-error Typing for dynamic references is not great
                 resource.set(precisionField, precisionIndex);
-              resource.saveBlockers.remove(`invaliddate:${dateField}`);
+              resource.saveBlockers?.remove(`invaliddate:${dateField}`);
             }}
             onBlur={(): void => {
               if (typeof momemnt === 'undefined') return;

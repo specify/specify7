@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import { Http } from '../ajax';
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
@@ -11,16 +12,15 @@ import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
+import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
+import { hijackBackboneAjax } from '../startapp';
 import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
+import { NotFoundView } from './notfoundview';
 import { loadingGif } from './queryresultstable';
 import { FormCell } from './specifyformcell';
-import { hijackBackboneAjax } from '../startapp';
-import { Http } from '../ajax';
-import { setCurrentView } from '../specifyapp';
-import { NotFoundView } from './notfoundview';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -190,7 +190,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
       {formIsLoaded ? (
         <DataEntry.Grid
           viewDefinition={viewDefinition}
-          className={showLoading ? 'opacity-50' : undefined}
+          aria-hidden={showLoading}
+          className={showLoading ? 'opacity-50 pointer-events-none' : undefined}
         >
           {/* Cells are wrapped in rows for debugging purposes only */}
           {viewDefinition.rows.map((cells, index) => (

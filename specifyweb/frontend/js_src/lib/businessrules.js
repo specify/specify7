@@ -118,9 +118,9 @@ var enabled = true;
             return Promise.all(results.map(function(result) {
                 if (!result) return null;
                 if (result.valid === false) {
-                    resource.saveBlockers.add(result.key, fieldName, result.reason);
+                    resource.saveBlockers?.add(result.key, fieldName, result.reason);
                 } else if (result.valid === true) {
-                    resource.saveBlockers.remove(result.key);
+                    resource.saveBlockers?.remove(result.key);
                 }
                 return result.action && result.action();
             }));

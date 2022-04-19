@@ -415,10 +415,11 @@ export function useResourceValue<
       typeof fieldName === 'string'
         ? resourceOn(resource, 'blockersChanged', (): void => {
             if (typeof fieldName === 'undefined') return undefined;
-            blockers.current = resource.saveBlockers
-              .blockersForField(fieldName)
-              .filter(({ deferred }) => !deferred || triedToSubmit)
-              .map(({ reason }) => reason);
+            blockers.current =
+              resource.saveBlockers
+                ?.blockersForField(fieldName)
+                .filter(({ deferred }) => !deferred || triedToSubmit)
+                .map(({ reason }) => reason) ?? [];
             // Report validity only if not focused
             if (document.activeElement !== inputRef.current) handleBlur();
           })
