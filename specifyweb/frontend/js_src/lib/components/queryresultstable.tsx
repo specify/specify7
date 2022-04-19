@@ -180,7 +180,7 @@ function CreateRecordSet({
           dialog="modal"
           canAddAnother={false}
           resource={state.recordSet}
-          onSaving={(): void => {
+          onSaving={(): false => {
             setState({ type: 'Saving' });
             void ajax<SerializedModel<RecordSet>>(
               '/api/specify/recordset/',

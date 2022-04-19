@@ -52,7 +52,7 @@ const commandRenderers: {
         </Button.Simple>
         {runReport && (resource.isNew() || !Boolean(resource.get('id'))) ? (
           <Dialog
-            header={label}
+            header={label ?? ''}
             buttons={commonText('close')}
             onClose={(): void => setRunReport(false)}
           >
@@ -89,7 +89,7 @@ const commandRenderers: {
             {showDialog ? (
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
-                  header={label}
+                  header={label ?? ''}
                   buttons={commonText('close')}
                   onClose={handleHide}
                 >

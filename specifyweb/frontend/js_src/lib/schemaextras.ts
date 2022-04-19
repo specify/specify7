@@ -92,6 +92,10 @@ export const schemaExtras: {
         const collection = defined(model.getRelationship('collection'));
         collection.otherSideName = 'collectionObjects';
 
+        /*
+         * Catalog number formatter is taken from the field on the collection,
+         * if present
+         */
         const catalognumber = defined(model.getLiteralField('catalogNumber'));
         catalognumber.getFormat = (): string | undefined =>
           schema.catalogNumFormatName ||

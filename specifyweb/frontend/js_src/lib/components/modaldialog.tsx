@@ -17,7 +17,7 @@ import {
   transitionDuration,
 } from './basic';
 import { LoadingContext } from './contexts';
-import { useId, useLiveState } from './hooks';
+import { useId, useLiveState, useTitle } from './hooks';
 import { dialogIcons } from './icons';
 import { createBackboneView } from './reactbackboneextend';
 
@@ -115,7 +115,7 @@ export function Dialog({
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
 }: {
   readonly isOpen?: boolean;
-  readonly header: React.ReactNode;
+  readonly header: string;
   // TODO: remove this and usages (remove all dialog titles)
   readonly title?: string;
   readonly headerButtons?: React.ReactNode;
@@ -151,6 +151,9 @@ export function Dialog({
   };
 }): JSX.Element {
   const id = useId('modal');
+
+  // TODO: allow disabling this behaviour
+  useTitle(modal && isOpen ? header : undefined);
 
   /*
    * Don't set index on first render, because that may lead multiple dialogs

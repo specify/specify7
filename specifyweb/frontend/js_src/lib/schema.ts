@@ -5,7 +5,7 @@
  */
 
 import { error } from './assert';
-import type { Tables } from './datamodel';
+import type { Agent, Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { load } from './initialcontext';
@@ -70,9 +70,9 @@ export const fetchContext = f
         return [tableDefinition, model] as const;
       })
       .forEach(([tableDefinition, model]) => {
-        const [frontEndFields, frontEndRelationships, callback] = schemaExtras[
-          model.name
-        ]?.(model) ?? [[], []];
+        const [frontEndFields, frontEndRelationships, callback] = (
+          schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
+        )?.(model as SpecifyModel<Agent>) ?? [[], []];
 
         model.literalFields = processFields(
           tableDefinition.fields.map(

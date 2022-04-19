@@ -14,6 +14,7 @@ import { commonText } from '../localization/common';
 import { getModel } from '../schema';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
+import { useTitle } from './hooks';
 
 const MAX_HUE = 360;
 
@@ -176,4 +177,9 @@ export function Portal({
   }, [element]);
 
   return ReactDOM.createPortal(children, element);
+}
+
+export function AppTitle({ title }: { readonly title: string }): null {
+  useTitle(title);
+  return null;
 }

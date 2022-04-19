@@ -56,19 +56,22 @@ export function setTitle(title: string): void {
   window.document.title = commonText('appTitle')(title);
 }
 
-/** Set title of the webpage. Restores previous title on component destruction */
-export function useTitle(title: string): void {
-  // Reset title after component is destroyed
-  React.useEffect(() => {
-    const initialTitle = document.title;
-    return (): void => {
-      document.title = initialTitle;
-    };
-  }, []);
+const titleStack = new Map<unknown, string>();
 
+const refreshTitle = (): void =>
+  setTitle(Array.from(titleStack.values()).slice(-1)[0] ?? '');
+
+/** Set title of the webpage. Restores previous title on component destruction */
+export function useTitle(title: string | undefined): void {
   // Change page's title
   React.useEffect(() => {
-    setTitle(title);
+    const id = {};
+    if (typeof title === 'string') titleStack.set(id, title);
+    refreshTitle();
+    return (): void => {
+      titleStack.delete(id);
+      refreshTitle();
+    };
   }, [title]);
 }
 

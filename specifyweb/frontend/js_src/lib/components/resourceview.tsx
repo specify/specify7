@@ -23,6 +23,7 @@ import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { goTo, pushUrl } from './navigation';
+import { AppTitle } from './common';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -330,6 +331,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
           ) : (
             <Container.Generic className="w-fit overflow-y-auto">
               <DataEntry.Header>
+                {/* TODO: allow disabling this behaviour */}
+                <AppTitle title={titleOverride ?? title} />
                 <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                 {headerButtons?.(specifyNetworkBadge) ?? (
                   <>
