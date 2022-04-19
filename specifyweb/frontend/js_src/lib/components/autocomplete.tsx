@@ -316,10 +316,11 @@ export function Autocomplete<T>({
               handleKeyDown(event);
             } else input?.focus();
           }}
-          onBlur={({ relatedTarget }): void =>
+          onBlur={({ relatedTarget, target, currentTarget }): void =>
             process.env.NODE_ENV !== 'development' &&
             (relatedTarget === null ||
-              input?.contains(relatedTarget as Node) === false)
+              (input?.contains(relatedTarget as Node) === false &&
+                target.closest('ul') !== currentTarget))
               ? handleClose()
               : undefined
           }
