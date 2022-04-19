@@ -80,35 +80,35 @@ def get_schema_localization(collection, schematype, lang):
     left outer join splocaleitemstr n1 on n1.splocalecontainernameid = splocalecontainerid
     and n1.language = %(language)s
     and n1.country = %(country)s
-    and n1.variant is null
+    and (n1.variant is null or n1.variant = '')
     '''  if country is not None else ''}
 
     left outer join splocaleitemstr n2 on n2.splocalecontainernameid = splocalecontainerid
     and n2.language = %(language)s
-    and n2.country is null
-    and n2.variant is null
+    and (n2.country is null or n2.country = '')
+    and (n2.variant is null or n2.variant = '')
 
     left outer join splocaleitemstr n3 on n3.splocalecontainernameid = splocalecontainerid
     and n3.language = 'en'
-    and n3.country is null
-    and n3.variant is null
+    and (n3.country is null or n3.country = '')
+    and (n3.variant is null or n3.variant = '')
 
     {'''
     left outer join splocaleitemstr d1 on d1.splocalecontainerdescid = splocalecontainerid
     and d1.language = %(language)s
     and d1.country = %(country)s
-    and d1.variant is null
+    and (d1.variant is null or d1.variant = '')
     ''' if country is not None else ''}
 
     left outer join splocaleitemstr d2 on d2.splocalecontainerdescid = splocalecontainerid
     and d2.language = %(language)s
-    and d2.country is null
-    and d2.variant is null
+    and (d2.country is null or d2.country = '')
+    and (d2.variant is null or d2.variant = '')
 
     left outer join splocaleitemstr d3 on d3.splocalecontainerdescid = splocalecontainerid
     and d3.language = 'en'
-    and d3.country is null
-    and d3.variant is null
+    and (d3.country is null or d3.country = '')
+    and (d3.variant is null or d3.variant = '')
 
     where schematype = %(schematype)s and disciplineid = %(disciplineid)s
     order by name
@@ -134,35 +134,35 @@ def get_schema_localization(collection, schematype, lang):
     left outer join splocaleitemstr n1 on n1.splocalecontaineritemnameid = splocalecontaineritemid
     and n1.language = %(language)s
     and n1.country = %(country)s
-    and n1.variant is null
+    and (n1.variant is null or n1.variant = '')
     '''  if country is not None else ''}
 
     left outer join splocaleitemstr n2 on n2.splocalecontaineritemnameid = splocalecontaineritemid
     and n2.language = %(language)s
-    and n2.country is null
-    and n2.variant is null
+    and (n2.country is null or n2.country = '')
+    and (n2.variant is null or n2.variant = '')
 
     left outer join splocaleitemstr n3 on n3.splocalecontaineritemnameid = splocalecontaineritemid
     and n3.language = 'en'
-    and n3.country is null
-    and n3.variant is null
+    and (n3.country is null or n3.country = '')
+    and (n3.variant is null or n3.variant = '')
 
     {'''
     left outer join splocaleitemstr d1 on d1.splocalecontaineritemdescid = splocalecontaineritemid
     and d1.language = %(language)s
     and d1.country = %(country)s
-    and d1.variant is null
+    and (d1.variant is null or d1.variant = '')
     ''' if country is not None else ''}
 
     left outer join splocaleitemstr d2 on d2.splocalecontaineritemdescid = splocalecontaineritemid
     and d2.language = %(language)s
-    and d2.country is null
-    and d2.variant is null
+    and (d2.country is null or d2.country = '')
+    and (d2.variant is null or d2.variant = '')
 
     left outer join splocaleitemstr d3 on d3.splocalecontaineritemdescid = splocalecontaineritemid
     and d3.language = 'en'
-    and d3.country is null
-    and d3.variant is null
+    and (d3.country is null or d3.country = '')
+    and (d3.variant is null or d3.variant = '')
 
     where schematype = %(schematype)s and disciplineid = %(disciplineid)s
     order by item.name
