@@ -8,13 +8,20 @@ import type { FormMode } from '../parseform';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';
 import type { Parser } from '../uiparse';
-import { getValidationAttributes, mergeParsers } from '../uiparse';
+import {
+  getValidationAttributes,
+  mergeParsers,
+  parserFromType,
+} from '../uiparse';
 import { Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';
 import { getResourceAndField } from './resource';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Collection } from '../specifymodel';
+import { PartialDateUi } from './partialdateui';
+import { f } from '../functools';
+import { parseRelativeDate } from '../relativedate';
 
 export function UiField({
   id,
@@ -61,8 +68,36 @@ export function UiField({
     false
   );
 
+  const fieldType = React.useMemo(
+    () =>
+      typeof data === 'object' && !data.field.isRelationship
+        ? parserFromType(data.field.type).type
+        : undefined,
+    [data]
+  );
+
+  const defaultDate = React.useMemo(
+    () =>
+      f.maybe(
+        parser?.value?.toString().trim().toLowerCase(),
+        parseRelativeDate
+      ),
+    [parser?.value]
+  );
+
   return typeof data === 'undefined' ? (
     <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+  ) : fieldType === 'date' ? (
+    <PartialDateUi
+      resource={data.resource}
+      dateField={data.field.name}
+      precisionField={undefined}
+      defaultPrecision="full"
+      defaultValue={defaultDate}
+      isReadOnly={mode !== 'edit' || data.resource !== resource}
+      id={id}
+      canChangePrecision={false}
+    />
   ) : aggregated === false ? (
     <Field
       id={id}

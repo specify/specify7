@@ -72,6 +72,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   defaultValue,
   isReadOnly,
   id,
+  canChangePrecision = true,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly dateField: keyof SCHEMA['fields'] & string;
@@ -80,6 +81,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly defaultValue: Date | undefined;
   readonly isReadOnly: boolean;
   readonly id: string | undefined;
+  readonly canChangePrecision?: boolean;
 }): JSX.Element {
   React.useEffect(checkBrowserSupport, []);
 
@@ -104,9 +106,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const [inputValue, setInputValue] = React.useState('');
 
   React.useEffect(() => {
-    // This is needed in case resource changes
+    // This is needed in case `resource` changes
     setInputValue('');
 
+    // Not sure if this should be disabled if isReadOnly
     resource.settingDefaultValues(() =>
       typeof defaultValue === 'object' && resource.isNew()
         ? resource.set(dateField, getDateInputValue(defaultValue) as never)
@@ -118,6 +121,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       `change:${dateField}`,
       (): void => {
         const value = resource.get(dateField);
+        setInputValue(value ?? '');
         setMoment(
           value === null ? undefined : dayjs(value, databaseDateFormat, true)
         );
@@ -189,6 +193,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   }, [resource, moment, precision, dateField, precisionField]);
 
   function handleChange() {
+    if (isReadOnly) return;
+
     const input = inputRef.current;
     if (input === null || precision === 'year') return;
 
@@ -224,7 +230,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   return (
     <div className="gap-x-1 flex">
-      {!isReadOnly && (
+      {!isReadOnly && canChangePrecision ? (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
           <Select
@@ -236,12 +242,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               setPrecision(precision);
               const precisionIndex = precisions[precision];
               if (typeof precisionField === 'string')
-                // @ts-expect-error Typing for dynamic references is not great
-                resource.set(precisionField, precisionIndex);
+                resource.set(precisionField, precisionIndex as never);
               resource.saveBlockers?.remove(`invaliddate:${dateField}`);
             }}
             onBlur={(): void => {
-              if (typeof momemnt === 'undefined') return;
+              if (typeof moment === 'undefined') return;
               let newMoment = dayjs(moment);
               if (precision === 'year' || precision === 'month-year')
                 newMoment = newMoment.month(0);
@@ -255,7 +260,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
             <option value="year">{dateParts.year}</option>
           </Select>
         </label>
-      )}
+      ) : undefined}
       <label>
         <span className="sr-only">
           {precision === 'year'
