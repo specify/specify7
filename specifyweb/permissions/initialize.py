@@ -54,7 +54,7 @@ def create_roles() -> None:
 
     for table in datamodel.tables:
         if not table.system or table.name.endswith('Attachment'):
-            full_access.policies.get_or_create(resource=f"/table/{table.name}", action="%")
+            full_access.policies.get_or_create(resource=f"/table/{table.name.lower()}", action="%")
 
     full_access.policies.get_or_create(resource="/table/picklist", action="%")
     full_access.policies.get_or_create(resource="/table/picklistitem", action="%")
@@ -66,7 +66,7 @@ def create_roles() -> None:
     full_access.policies.get_or_create(resource="/table/spqueryfield", action="%")
 
     full_access.policies.create(resource="/tree/%", action="%")
-    full_access.policies.create(resource="/report/%", action="%")
+    full_access.policies.create(resource="/report", action="%")
     full_access.policies.create(resource="/querybuilder/%", action="%")
 
     ###############################
