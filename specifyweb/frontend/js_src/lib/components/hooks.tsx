@@ -459,10 +459,13 @@ export function useResourceValue<
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
-        if (inputRef.current?.validity.valid === false) return;
-        const parsedValue = parseResults.parsed as string;
-        if (resource.get(fieldName) !== newValue)
-          resource.set(fieldName, parsedValue as never);
+        if (inputRef.current?.validity.valid === false)
+          resource.set(fieldName, newValue as never);
+        else {
+          const parsedValue = parseResults.parsed as string;
+          if (resource.get(fieldName) !== newValue)
+            resource.set(fieldName, parsedValue as never);
+        }
       } else {
         setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);

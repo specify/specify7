@@ -134,11 +134,11 @@ export function Autocomplete<T>({
       if (typeof fetchItems !== 'function' || previousValue.current === value)
         return;
 
-      handleLoading();
       previousValue.current = value;
 
       if (value.length < minLength) return;
 
+      handleLoading();
       void fetchItems(value)
         .then((items) => updateItems(items, value))
         .catch(console.error)
