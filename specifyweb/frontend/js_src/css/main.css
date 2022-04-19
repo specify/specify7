@@ -35,6 +35,18 @@
       bg-gray-200 dark:bg-neutral-700;
   }
 
+  /**
+   * Fix for Safari's inconsistencies:
+   * https://github.com/specify/specify7/issues/1274#issuecomment-1102807239
+   */
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='time'],
+  [type='week'] {
+    @apply leading-5;
+  }
+
   .has-alt-background [type='text']:not(:required),
   .has-alt-background [type='email']:not(:required),
   .has-alt-background [type='url']:not(:required),

@@ -10,7 +10,7 @@
 }
 
 .handsontable .columnSorting {
-  line-height: 20px;
+  @apply leading-5;
 }
 
 /* Sorting direction */

@@ -261,69 +261,60 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           </Select>
         </label>
       ) : undefined}
-      <label>
-        <span className="sr-only">
-          {precision === 'year'
-            ? dateParts.year
-            : precision === 'month-year'
-            ? formsText('monthYear')
-            : commonText('fullDate')}
-        </span>
-        <Input.Generic
-          id={id}
-          isReadOnly={isReadOnly}
-          forwardRef={validationRef}
-          {...(precision === 'year'
-            ? {
-                ...getValidationAttributes(
-                  defined(resolveParser({}, { type: 'year' }))
-                ),
-                placeholder: formsText('yearPlaceholder'),
-                // Format parsed date if valid. Else, use raw input
-                value: validDate?.format('YYYY') ?? inputValue,
-                onValueChange: (value): void => {
-                  setInputValue(value);
-                  const year = f.parseInt(value);
-                  if (typeof year === 'number')
-                    setMoment(dayjs(moment).year(year));
-                },
-              }
-            : {
-                onBlur: handleChange,
-                onValueChange(value): void {
-                  setInputValue(value);
-                  setMoment(undefined);
-                },
-                ...(precision === 'month-year'
-                  ? {
-                      type: monthType,
-                      placeholder: monthFormat(),
-                      // Format parsed date if valid. Else, use raw input
-                      value: validDate?.format(inputMonthFormat) ?? inputValue,
-                      title: moment?.format(monthFormat()),
-                      ...(monthSupported
-                        ? {}
-                        : {
-                            minLength: monthFormat().length,
-                            maxLength: monthFormat().length,
-                          }),
-                    }
-                  : {
-                      type: dateType,
-                      placeholder: fullDateFormat(),
-                      // Format parsed date if valid. Else, use raw input
-                      value: validDate?.format(inputFullFormat) ?? inputValue,
-                      title: moment?.format(fullDateFormat()),
-                      ...(dateSupported
-                        ? {}
-                        : {
-                            minLength: fullDateFormat().length,
-                            maxLength: fullDateFormat().length,
-                          }),
-                    }),
-              })}
-        />
-      </label>
+      <Input.Generic
+        id={id}
+        isReadOnly={isReadOnly}
+        forwardRef={validationRef}
+        {...(precision === 'year'
+          ? {
+              ...getValidationAttributes(
+                defined(resolveParser({}, { type: 'year' }))
+              ),
+              placeholder: formsText('yearPlaceholder'),
+              // Format parsed date if valid. Else, use raw input
+              value: validDate?.format('YYYY') ?? inputValue,
+              onValueChange: (value): void => {
+                setInputValue(value);
+                const year = f.parseInt(value);
+                if (typeof year === 'number')
+                  setMoment(dayjs(moment).year(year));
+              },
+            }
+          : {
+              onBlur: handleChange,
+              onValueChange(value): void {
+                setInputValue(value);
+                setMoment(undefined);
+              },
+              ...(precision === 'month-year'
+                ? {
+                    type: monthType,
+                    placeholder: monthFormat(),
+                    // Format parsed date if valid. Else, use raw input
+                    value: validDate?.format(inputMonthFormat) ?? inputValue,
+                    title: moment?.format(monthFormat()),
+                    ...(monthSupported
+                      ? {}
+                      : {
+                          minLength: monthFormat().length,
+                          maxLength: monthFormat().length,
+                        }),
+                  }
+                : {
+                    type: dateType,
+                    placeholder: fullDateFormat(),
+                    // Format parsed date if valid. Else, use raw input
+                    value: validDate?.format(inputFullFormat) ?? inputValue,
+                    title: moment?.format(fullDateFormat()),
+                    ...(dateSupported
+                      ? {}
+                      : {
+                          minLength: fullDateFormat().length,
+                          maxLength: fullDateFormat().length,
+                        }),
+                  }),
+            })}
+      />
       {!isReadOnly &&
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
