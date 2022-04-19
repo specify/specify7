@@ -10,6 +10,7 @@ import type { SpecifyModel } from './specifymodel';
 import { toTable, toTreeTable } from './specifymodel';
 import type { RA } from './types';
 import { userInformation } from './userinfo';
+import { flippedSortTypes } from './querybuilderutils';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -53,7 +54,7 @@ export function makeComboBoxQuery({
   const displayField = QueryFieldSpec.fromPath([relatedModel.name])
     .toSpQueryField()
     .set('isDisplay', true)
-    .set('sortType', 1);
+    .set('sortType', flippedSortTypes.ascending);
 
   query.set('fields', [searchField, displayField, ...specialConditions]);
 

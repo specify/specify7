@@ -386,29 +386,28 @@ export function QueryComboBox({
                         body: keysToLowerCase({
                           ...query,
                           collectionId: forceCollection ?? relatedCollectionId,
-                          limit: 0,
+                          // TODO: allow customizing these arbitrary limits
+                          limit: 1000,
                         }),
                       })
                     )
                 ).then((responses) =>
                   /*
-                   * If there are multiple search fields, and they returned a record
-                   * With the same id, Object.entries(Object.fromEntries(...)) would
-                   * Remove duplicate records
-                   * TODO: simplify this once query builder support OR filters
-                   *   across different fields
+                   * If there are multiple search fields and both returns the
+                   * same record, it may be presented in results twice. Would
+                   * be fixed by using OR queries
+                   * TODO: refactor to use OR queries accross fields once
+                   *   supported
                    */
-                  Object.entries(
-                    Object.fromEntries(
-                      responses.flatMap(({ data: { results } }) => results)
-                    )
-                  ).map(([id, label]) => ({
-                    data:
-                      field?.isRelationship === true
-                        ? getResourceApiUrl(field.relatedModel.name, id)
-                        : id,
-                    label,
-                  }))
+                  responses
+                    .flatMap(({ data: { results } }) => results)
+                    .map(([id, label]) => ({
+                      data:
+                        field?.isRelationship === true
+                          ? getResourceApiUrl(field.relatedModel.name, id)
+                          : id,
+                      label,
+                    }))
                 )
               : [],
           [
