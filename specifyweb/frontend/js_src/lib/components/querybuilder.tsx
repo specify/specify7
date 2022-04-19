@@ -229,7 +229,9 @@ export function QueryBuilder({
         <div
           className={`gap-y-4 grid flex-1 overflow-y-auto grid-cols-1
             ${
-              state.queryRunCount === 0
+              isEmbedded
+                ? ''
+                : state.queryRunCount === 0
                 ? 'grid-rows-[100%]'
                 : 'grid-rows-[100%_100%]'
             }
