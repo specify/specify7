@@ -9,7 +9,7 @@ import { formsText } from '../localization/forms';
 import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
-import { LoadingContext } from './contexts';
+import { FormContext, LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import {
   useBooleanState,
@@ -18,7 +18,6 @@ import {
   useUnloadProtect,
 } from './hooks';
 import { Dialog } from './modaldialog';
-import { FormContext } from './resourceview';
 
 /*
  * TODO: move this logic into ResourceView, so that <form> and button is

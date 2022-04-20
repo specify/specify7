@@ -6,16 +6,17 @@ import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import { f } from '../functools';
+import { getAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { getView } from '../parseform';
-import { getAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
 import { reports } from '../reports';
-import { getResourceViewUrl } from '../resource';
+import { getResourceViewUrl, parseClassName } from '../resource';
 import { getModel, schema } from '../schema';
-import { SpecifyModel } from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
+import { localizeFrom } from '../stringlocalization';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -26,7 +27,6 @@ import { useAsyncState, useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { deserializeResource } from './resource';
-import { localizeFrom } from '../stringlocalization';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -67,9 +67,7 @@ const fetchEntries = f.store(
                             .maybe(getAttribute(entry, 'view'), getView)
                             ?.then((view) =>
                               typeof view === 'object'
-                                ? (SpecifyModel.parseClassName(
-                                    view.class
-                                  ) as keyof Tables)
+                                ? (parseClassName(view.class) as keyof Tables)
                                 : undefined
                             )) ??
                             getModel(getAttribute(entry, 'table') ?? '')?.name

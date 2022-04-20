@@ -95,12 +95,8 @@ const tasksPromise = Promise.all([
 ]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
 
 router
-  .route('*whatever', 'notFound', function () {
-    setCurrentView(new NotFoundView());
-  })
-  .route('test_error/', 'testError', function () {
-    void ping('/api/test_error/');
-  });
+  .route('*whatever', 'notFound', () => setCurrentView(new NotFoundView()))
+  .route('test_error/', 'testError', () => void ping('/api/test_error/'));
 
 export function startApp(): void {
   console.info('specify app starting');

@@ -149,3 +149,7 @@ export function resourceOn(
   resource.on(event.toLowerCase(), callback as () => void);
   return (): void => resource.off(event.toLowerCase(), callback as () => void);
 }
+
+/** Extract model name from a Java class name */
+export const parseClassName = (className: string): string =>
+  className.split('.').slice(-1)[0];

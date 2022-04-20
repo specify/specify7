@@ -9,12 +9,13 @@ import { cachableUrl } from './initialcontext';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import { parseFormCell, processColumnDefinition } from './parseformcells';
 import { getModel } from './schema';
-import { SpecifyModel } from './specifymodel';
+import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
 import { formatUrl } from './querystring';
 import { localizeFrom } from './stringlocalization';
 import { getAttribute } from './helpers';
+import { parseClassName } from './resource';
 
 const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>
@@ -389,9 +390,7 @@ export function processViewDefinition(
     model: defined(
       getModel(
         f.var(
-          SpecifyModel.parseClassName(
-            defined(getAttribute(actualViewDefinition, 'class'))
-          ),
+          parseClassName(defined(getAttribute(actualViewDefinition, 'class'))),
           (modelName) =>
             modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
         )

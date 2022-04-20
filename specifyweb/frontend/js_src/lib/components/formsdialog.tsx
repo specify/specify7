@@ -7,9 +7,9 @@ import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
 import { getAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
-import { getResourceViewUrl } from '../resource';
+import { getResourceViewUrl, parseClassName } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
-import { SpecifyModel } from '../specifymodel';
+import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { className, Link, Ul } from './basic';
@@ -43,9 +43,7 @@ const fetchForms = f.store(
               FormEntry | undefined
             >((form) => {
               if (typeof form === 'undefined') return undefined;
-              const modelName = SpecifyModel.parseClassName(
-                form.class
-              ) as keyof Tables;
+              const modelName = parseClassName(form.class) as keyof Tables;
               const model = defined(getModel(modelName));
 
               return {

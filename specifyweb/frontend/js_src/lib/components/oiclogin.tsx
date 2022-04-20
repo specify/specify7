@@ -79,7 +79,7 @@ export function OicLogin({
           <Link.LikeFancyButton
             className={className.fancyButton}
             href={formatUrl('/accounts/legacy_login/', {
-              next: parseUrl().next,
+              next: parseUrl().next ?? '',
             })}
           >
             {commonText('legacyLogin')}

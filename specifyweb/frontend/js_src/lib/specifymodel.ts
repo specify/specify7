@@ -34,6 +34,7 @@ import {
   LazyCollection,
   ToOneCollection,
 } from './collectionapi';
+import { parseClassName } from './resource';
 
 type FieldAlias = {
   readonly vname: string;
@@ -185,15 +186,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   /** Localized name from the schema localization */
   public readonly label: string;
 
-  public static parseClassName(className: string): string {
-    return className.split('.').slice(-1)[0] as keyof Tables;
-  }
-
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = SpecifyModel.parseClassName(
-      this.longName
-    ) as SCHEMA['tableName'];
+    this.name = parseClassName(this.longName) as SCHEMA['tableName'];
     this.view = tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;

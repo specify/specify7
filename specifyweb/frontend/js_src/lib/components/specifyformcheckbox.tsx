@@ -5,7 +5,7 @@ import type { SpecifyResource } from '../legacytypes';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Label } from './basic';
 import { useResourceValue } from './hooks';
-import { FormContext } from './resourceview';
+import { FormContext } from './contexts';
 import { useCachedState } from './statecache';
 
 export function PrintOnSave({

@@ -4,10 +4,10 @@
 
 import { escapeRegExp, getAttribute } from './helpers';
 import { load } from './initialcontext';
-import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
 import { f } from './functools';
+import { parseClassName } from './resource';
 
 export let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
@@ -22,10 +22,7 @@ export const fetchContext = load<Document>(
           ?.textContent?.trim();
         let resolvedFormatter;
         if (typeof external === 'string') {
-          if (
-            SpecifyModel.parseClassName(external) ===
-            'CatalogNumberUIFieldFormatter'
-          )
+          if (parseClassName(external) === 'CatalogNumberUIFieldFormatter')
             resolvedFormatter = new CatalogNumberNumeric();
           else return undefined;
         } else {

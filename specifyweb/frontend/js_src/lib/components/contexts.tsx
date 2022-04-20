@@ -118,3 +118,29 @@ export const ErrorContext = React.createContext<
   (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
+
+export type FormMeta = {
+  // Undefined if form does not have a printOnSave button
+  readonly printOnSave: undefined | boolean;
+  // Whether user tried to submit a form. This causes deferred save blockers
+  // to appear
+  readonly triedToSubmit: boolean;
+};
+
+export const FormContext = React.createContext<
+  Readonly<
+    [
+      meta: FormMeta,
+      setMeta:
+        | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)
+        | undefined
+    ]
+  >
+>([
+  {
+    printOnSave: false,
+    triedToSubmit: false,
+  },
+  undefined,
+]);
+FormContext.displayName = 'FormContext';

@@ -14,10 +14,10 @@ import type { Tables } from './datamodel';
 import type { Aggregator, Formatter } from './dataobjformatters';
 import { commonText } from './localization/common';
 import type { JavaType } from './specifyfield';
-import { SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 import { f } from './functools';
 import { parseUrl } from './querystring';
+import { parseClassName } from './resource';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -123,7 +123,7 @@ export const filterFormatters = (
     Object.entries(formatters)
       .filter(
         ([_name, { className }]) =>
-          SpecifyModel.parseClassName(className).toLowerCase() === tableName
+          parseClassName(className).toLowerCase() === tableName
       )
       .map(([name, { title }]) => [name, title] as const)
   );

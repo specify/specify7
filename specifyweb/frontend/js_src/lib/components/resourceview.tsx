@@ -13,7 +13,7 @@ import { hasTablePermission } from '../permissions';
 import { reports } from '../reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, Container, DataEntry, Form } from './basic';
-import { LoadingContext } from './contexts';
+import { FormContext, FormMeta, LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
@@ -49,32 +49,6 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
-
-export type FormMeta = {
-  // Undefined if form does not have a printOnSave button
-  readonly printOnSave: undefined | boolean;
-  // Whether user tried to submit a form. This causes deferred save blockers
-  // to appear
-  readonly triedToSubmit: boolean;
-};
-
-export const FormContext = React.createContext<
-  Readonly<
-    [
-      meta: FormMeta,
-      setMeta:
-        | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)
-        | undefined
-    ]
-  >
->([
-  {
-    printOnSave: false,
-    triedToSubmit: false,
-  },
-  undefined,
-]);
-FormContext.displayName = 'FormContext';
 
 export function BaseResourceView<SCHEMA extends AnySchema>({
   isLoading,
