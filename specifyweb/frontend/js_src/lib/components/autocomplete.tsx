@@ -351,7 +351,6 @@ export function Autocomplete<T>({
                    * Note, if item.searchValue and item.value is different,
                    * label might not be highlighted even if it matched
                    */
-                  // TODO: allow disabling this
                   const label = item.label
                     // Convert to lower case as search may be case-insensitive
                     .toLowerCase()

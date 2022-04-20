@@ -38,7 +38,6 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  // TODO allow customizing this part
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),

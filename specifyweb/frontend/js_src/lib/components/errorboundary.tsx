@@ -22,7 +22,6 @@ import { Button, Link } from './basic';
 import { displayError } from './contexts';
 import { copyTextToClipboard, downloadFile } from './filepicker';
 import { useBooleanState } from './hooks';
-import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
@@ -74,7 +73,6 @@ function ErrorDialog({
               )
             }
           >
-            {icons.clipboard}
             {commonText('downloadErrorMessage')}
           </Button.Blue>
           <CopyErrorMessage message={copiableMessage} />
@@ -122,7 +120,6 @@ function CopyErrorMessage({ message }: { message: string }): JSX.Element {
         })
       }
     >
-      {icons.clipboard}
       {wasCopied ? commonText('copied') : commonText('copyErrorMessage')}
     </Button.Green>
   );
@@ -198,6 +195,11 @@ export class ErrorBoundary extends React.Component<
   }
 }
 
+/**
+ * @remarks
+ * The stack trace is about 36KB in size!
+ * Can reduce it to 23KB by not prettifying the JSON output
+ */
 const produceStackTrace = (message: unknown): string =>
   JSON.stringify(
     {

@@ -156,7 +156,7 @@ function CoordinatePoint({
             resource={resource}
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
-            fieldType={`Lat`}
+            fieldType={`Long`}
             isReadOnly={isReadOnly}
             onChange={setLongitude}
             step={step}

@@ -183,7 +183,6 @@ export const augmentMode = (
       : 'view'
     : initialMode;
 
-// TODO: update title to match current resource
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
@@ -331,7 +330,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           ) : (
             <Container.Generic className="w-fit overflow-y-auto">
               <DataEntry.Header>
-                {/* TODO: allow disabling this behaviour */}
                 <AppTitle title={titleOverride ?? title} />
                 <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                 {headerButtons?.(specifyNetworkBadge) ?? (
