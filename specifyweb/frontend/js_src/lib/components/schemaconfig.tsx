@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ajax, ping } from '../ajax';
+import { ajax, Http, ping } from '../ajax';
 import { serializeResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
@@ -233,10 +233,14 @@ export function SchemaConfig({
     ): Promise<unknown> =>
       'resource_uri' in resource && resource.id >= 0
         ? saveResource(resource as CommonTableFields)
-        : ping('/api/specify/splocaleitemstr/', {
-            method: 'POST',
-            body: prepareNewString(resource as NewSpLocaleItemString),
-          });
+        : ping(
+            '/api/specify/splocaleitemstr/',
+            {
+              method: 'POST',
+              body: prepareNewString(resource as NewSpLocaleItemString),
+            },
+            { expectedResponseCodes: [Http.CREATED] }
+          );
 
     const saveResource = async (
       resource: CommonTableFields
