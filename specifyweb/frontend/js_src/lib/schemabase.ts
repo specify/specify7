@@ -35,22 +35,15 @@ export type Schema = {
 
 const schema: Writable<Schema> = {
   /*
-   * Maps levels in the Specify scoping hierarchy to
-   * The database ids of those records for the currently
-   * Logged in session.
+   * Maps levels in the Specify scoping hierarchy to the database IDs of those
+   * records for the currently logged in session.
    */
   domainLevelIds: undefined!,
 
-  /*
-   * Whether collectingEvent is embedded for the
-   * Currently logged in collection.
-   */
+  // Whether collectingEvent is embedded for the currently logged in collection.
   embeddedCollectingEvent: undefined!,
 
-  /*
-   * Whether PaleoContext is embedded for the
-   * Currently logged in collection.
-   */
+  // Whether PaleoContext is embedded for the currently logged in collection.
   embeddedPaleoContext: undefined!,
 
   paleoContextChildTable: undefined!,

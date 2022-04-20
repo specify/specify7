@@ -1,5 +1,7 @@
 # React Components
 
+All React components are located here
+
 ## Naming convention for files
 
 `<name>` is the component name (e.x, `wbplanview`)
