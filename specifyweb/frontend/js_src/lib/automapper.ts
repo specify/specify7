@@ -159,42 +159,39 @@ const findRankSynonyms = (
     .flatMap(({ synonyms }) => synonyms) ?? [];
 
 function handleOrdinalNumbers(header: string): string {
-  const ordinalNumberMatch = AutoMapper.regexParseOrdinalNumbers.exec(header);
+  const ordinalNumberMatch = regexParseOrdinalNumbers.exec(header);
   return ordinalNumberMatch === null
     ? header
     : `${ordinalNumberMatch[2]} ${ordinalNumberMatch[1]}`;
 }
 
+// Used to replace any white space characters with space
+const regexReplaceWhiteSpace = /\s+/g;
+
+const regexRemoveDuplicateHeaderIndexes = /\(\d+\)/g;
+
+// Used to remove non letter characters
+const regexRemoveNonAz = /[^\sa-z]+/g;
+
+const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/g;
+
+const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
+
+// How deep to go into the schema
+const depthLimit = 6;
+
+// The definitions for the comparison functions
+const headerComparisions: {
+  [key in keyof Options]:
+    | ((header: string, match: string) => boolean)
+    | ((header: string, match: RegExp) => boolean);
+} = {
+  regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
+  string: (header: string, string: string) => header === string,
+  contains: (header: string, string: string) => header.includes(string),
+};
+
 export class AutoMapper {
-  // Used to replace any white space characters with space
-  private static readonly regexReplaceWhiteSpace: RegExp = /\s+/g;
-
-  private static readonly regexRemoveDuplicateHeaderIndexes: RegExp =
-    /\(\d+\)/g;
-
-  // Used to remove non letter characters
-  private static readonly regexRemoveNonAz: RegExp = /[^\sa-z]+/g;
-
-  private static readonly regexRemoveParentheses: RegExp =
-    /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/g;
-
-  public static readonly regexParseOrdinalNumbers: RegExp =
-    /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
-
-  // How deep to go into the schema
-  private static readonly depth: number = 6;
-
-  // The definitions for the comparison functions
-  private static readonly comparisons: {
-    [key in keyof Options]:
-      | ((header: string, match: string) => boolean)
-      | ((header: string, match: RegExp) => boolean);
-  } = {
-    regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
-    string: (header: string, string: string) => header === string,
-    contains: (header: string, string: string) => header.includes(string),
-  };
-
   private readonly results: AutoMapperResults = {};
 
   private readonly scope: AutoMapperScope = 'autoMapper';
@@ -295,19 +292,19 @@ export class AutoMapper {
           const lowercaseName = handleOrdinalNumbers(
             originalName
               .toLowerCase()
-              .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
-              .replace(AutoMapper.regexRemoveDuplicateHeaderIndexes, '')
+              .replace(regexReplaceWhiteSpace, ' ')
+              .replace(regexRemoveDuplicateHeaderIndexes, '')
               .trim()
           );
           const strippedName = lowercaseName
-            .replace(AutoMapper.regexRemoveNonAz, ' ')
-            .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
+            .replace(regexRemoveNonAz, ' ')
+            .replace(regexReplaceWhiteSpace, ' ')
             .trim();
 
           const finalName = lowercaseName
-            .replace(AutoMapper.regexRemoveParentheses, ' ')
-            .replace(AutoMapper.regexRemoveNonAz, ' ')
-            .replace(AutoMapper.regexReplaceWhiteSpace, ' ')
+            .replace(regexRemoveParentheses, ' ')
+            .replace(regexRemoveNonAz, ' ')
+            .replace(regexReplaceWhiteSpace, ' ')
             .trim()
             .split(' ')
             .join('');
@@ -327,7 +324,7 @@ export class AutoMapper {
          * autoMapperDefinitions
          */
         .filter(({ headerData: { lowercaseHeaderName } }) =>
-          Object.entries(AutoMapper.comparisons)
+          Object.entries(headerComparisions)
             .filter(
               (
                 // Loop over defined comparisons only
@@ -442,7 +439,7 @@ export class AutoMapper {
     tableName: keyof Tables
   ) =>
     this.getUnmappedHeaders().forEach(([headerKey, { lowercaseHeaderName }]) =>
-      Object.entries(AutoMapper.comparisons)
+      Object.entries(headerComparisions)
         .filter(
           (
             // Loop over defined comparisons
@@ -593,7 +590,7 @@ export class AutoMapper {
         // Don't iterate over the same table again
         this.searchedTables.includes(tableName) ||
         // Don't go beyond the depth limit
-        mappingPath.length > AutoMapper.depth
+        mappingPath.length > depthLimit
       )
         return;
 
@@ -792,7 +789,7 @@ export class AutoMapper {
 
         const newDepthLevel = localPath.length;
 
-        if (newDepthLevel > AutoMapper.depth) return;
+        if (newDepthLevel > depthLimit) return;
 
         this.dispatch.findMappingsQueue({
           type: 'initializeLevel',
