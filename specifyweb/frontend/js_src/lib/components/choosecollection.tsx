@@ -111,12 +111,9 @@ function ChooseCollection({
             <ErrorMessage>
               <span>{commonText('noAccessToCollections')}</span>
             </ErrorMessage>
-            <Link.LikeFancyButton
-              className={className.fancyButton}
-              href={`/accounts/login/?next=${data.nextUrl}`}
-            >
+            <Link.Fancy href={`/accounts/login/?next=${data.nextUrl}`}>
               {commonText('login')}
-            </Link.LikeFancyButton>
+            </Link.Fancy>
           </>
         )}
       </Form>

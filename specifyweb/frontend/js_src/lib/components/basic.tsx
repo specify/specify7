@@ -596,7 +596,27 @@ export const Link = {
     ),
   })),
   LikeButton: wrap('Link.LikeButton', 'a', className.button),
-  LikeFancyButton: wrap('Link.LikeFancyButton', 'a', niceButton),
+  Fancy: wrap(
+    'Link.Transparent',
+    'a',
+    `${niceButton} ${className.fancyButton}`
+  ),
+  Transparent: wrap(
+    'Link.Transparent',
+    'a',
+    `${niceButton} ${className.transparentButton}`
+  ),
+  Gray: wrap('Link.Gray', 'a', `${niceButton} ${className.grayButton}`),
+  BorderedGray: wrap(
+    'Link.BorderedGray',
+    'a',
+    `${niceButton} ${className.borderedGrayButton}`
+  ),
+  Red: wrap('Link.Red', 'a', `${niceButton} ${className.redButton}`),
+  Blue: wrap('Link.Blue', 'a', `${niceButton} ${className.blueButton}`),
+  Orange: wrap('Link.Orange', 'a', `${niceButton} ${className.orangeButton}`),
+  Green: wrap('Link.Green', 'a', `${niceButton} ${className.greenButton}`),
+
   Icon: wrap<'a', IconProps>(
     'Link.Icon',
     'a',

@@ -8,7 +8,7 @@ import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
-import { Button, className, Form, Link, Submit } from './basic';
+import { Button, Form, Link, Submit } from './basic';
 import { useTitle } from './hooks';
 import { SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
@@ -76,14 +76,13 @@ export function OicLogin({
           </Button.Fancy>
         ))}
         {data.inviteToken === '' && (
-          <Link.LikeFancyButton
-            className={className.fancyButton}
+          <Link.Fancy
             href={formatUrl('/accounts/legacy_login/', {
               next: parseUrl().next ?? '',
             })}
           >
             {commonText('legacyLogin')}
-          </Link.LikeFancyButton>
+          </Link.Fancy>
         )}
         <input type="hidden" name="next" value={nextUrl} />
         <Submit.Fancy className="sr-only">{commonText('login')}</Submit.Fancy>

@@ -11,7 +11,7 @@ import type { FormMode, FormType } from '../parseform';
 import { getTreePath } from '../specifyapi';
 import type { IR } from '../types';
 import { defined } from '../types';
-import { className, Link } from './basic';
+import { Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 import { isExternalUrl } from '../ajax';
@@ -167,8 +167,7 @@ export function WebLinkButton({
               id={id}
             />
           ) : undefined}
-          <Link.LikeFancyButton
-            className={className.grayButton}
+          <Link.Gray
             title={data.title}
             href={url}
             target={isExternal ? '_blank' : undefined}
@@ -179,7 +178,7 @@ export function WebLinkButton({
               className="max-w-[40px] max-h-[20px]"
               alt={data.title ?? url}
             />
-          </Link.LikeFancyButton>
+          </Link.Gray>
         </>
       ) : undefined}
     </div>

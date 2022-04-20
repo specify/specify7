@@ -18,7 +18,7 @@ import { setCurrentView } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Link } from './basic';
+import { Button, Link } from './basic';
 import { displayError } from './contexts';
 import { copyTextToClipboard, downloadFile } from './filepicker';
 import { useBooleanState } from './hooks';
@@ -76,12 +76,9 @@ function ErrorDialog({
             {commonText('downloadErrorMessage')}
           </Button.Blue>
           <CopyErrorMessage message={copiableMessage} />
-          <Link.LikeFancyButton
-            className={className.blueButton}
-            href="/specify/task/cache-buster/"
-          >
+          <Link.Blue href="/specify/task/cache-buster/">
             {commonText('clearCache')}
-          </Link.LikeFancyButton>
+          </Link.Blue>
           <span className="flex-1 -ml-2" />
           <Button.Red onClick={(): void => window.location.assign('/')}>
             {commonText('close')}

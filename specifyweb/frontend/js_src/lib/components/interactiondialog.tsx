@@ -28,7 +28,7 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { Button, className, H3, Link, Textarea } from './basic';
+import { Button, H3, Link, Textarea } from './basic';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
@@ -245,12 +245,9 @@ export function InteractionDialog({
                   {formsText('noCollectionObjectCaption')}
                 </Button.Blue>
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
-                <Link.LikeFancyButton
-                  className={className.blueButton}
-                  href={getResourceViewUrl('Loan')}
-                >
+                <Link.Blue href={getResourceViewUrl('Loan')}>
                   {formsText('noPreparationsCaption')}
-                </Link.LikeFancyButton>
+                </Link.Blue>
               ) : undefined}
             </>
           }

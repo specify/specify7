@@ -26,7 +26,7 @@ import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import { Button, className, Container, H3, Link } from './basic';
+import { Button, Container, H3, Link } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
@@ -233,12 +233,9 @@ function CreateRecordSet({
           buttons={
             <>
               <Button.DialogClose>{commonText('no')}</Button.DialogClose>
-              <Link.LikeFancyButton
-                className={className.blueButton}
-                href={`/specify/recordset/${state.recordSetId}/`}
-              >
+              <Link.Blue href={`/specify/recordset/${state.recordSetId}/`}>
                 {commonText('open')}
-              </Link.LikeFancyButton>
+              </Link.Blue>
             </>
           }
         >

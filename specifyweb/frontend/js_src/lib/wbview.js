@@ -251,12 +251,11 @@ const WBView = Backbone.View.extend({
               buttons: (
                 <>
                   <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Link.LikeFancyButton
-                    className={className.blueButton}
+                  <Link.Blue
                     href={`/workbench-plan/${this.dataset.id}/`}
                   >
                     {commonText('create')}
-                  </Link.LikeFancyButton>
+                  </Link.Blue>
                 </>
               ),
               content: wbText('noUploadPlanDialogMessage'),
@@ -1876,12 +1875,11 @@ const WBView = Backbone.View.extend({
         buttons: (
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Link.LikeFancyButton
-              className={className.blueButton}
+            <Link.Blue
               href={`/workbench-plan/${this.dataset.id}/`}
             >
               {commonText('create')}
-            </Link.LikeFancyButton>
+            </Link.Blue>
           </>
         ),
       });
