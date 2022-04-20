@@ -122,8 +122,10 @@ ErrorContext.displayName = 'ErrorContext';
 export type FormMeta = {
   // Undefined if form does not have a printOnSave button
   readonly printOnSave: undefined | boolean;
-  // Whether user tried to submit a form. This causes deferred save blockers
-  // to appear
+  /*
+   * Whether user tried to submit a form. This causes deferred save blockers
+   * to appear
+   */
   readonly triedToSubmit: boolean;
 };
 

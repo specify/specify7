@@ -2,17 +2,18 @@
  * Wrappers for some back-end API endpoints
  */
 
-import _ from 'underscore';
-
 import { ajax } from './ajax';
-import { Backbone } from './backbone';
 import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
 import type { RA } from './types';
 import { filterArray } from './types';
 import { formatUrl } from './querystring';
+import { eventListener } from './events';
 
-export const globalEvents = _.extend({}, Backbone.Events);
+export const globalEvents = eventListener<{
+  initResource: SpecifyResource<AnySchema>;
+  newResource: SpecifyResource<AnySchema>;
+}>();
 
 // TODO: consider replacing this wtih Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(

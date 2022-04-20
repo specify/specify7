@@ -11,9 +11,9 @@ import {formatList} from './components/internationalization';
 
 var enabled = true;
 
-    globalEvents.on('initresource', function(resource) {
-        if (enabled && !resource.noBusinessRules) attachTo(resource);
-    });
+    globalEvents.on('initResource', (resource) =>
+        enabled && !resource.noBusinessRules ? attachTo(resource) : undefined
+    );
 
     var attachTo = function(resource) {
         var mgr;

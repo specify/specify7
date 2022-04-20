@@ -88,8 +88,9 @@ function eventHandlerForToOne(related, field) {
                 }
             });
 
-            globalEvents.trigger('initresource', this);
-            this.isNew() && globalEvents.trigger('newresource', this);
+            globalEvents.trigger('initResource', this);
+            if(this.isNew())
+                globalEvents.trigger('newResource', this);
         },
         // Supress saveRequired trigger when setting default values for resource
         // Works for new resources only

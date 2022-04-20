@@ -1,8 +1,11 @@
 import { fetchCollection } from './collection';
+import { crash } from './components/errorboundary';
 import type { Collection, CollectionObject } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
+import { hasTablePermission } from './permissions';
 import { getCollectionPref } from './remoteprefs';
 import { fetchResource } from './resource';
 import { schema } from './schema';
@@ -11,14 +14,11 @@ import { toTable } from './specifymodel';
 import { getDomainResource } from './treedefinitions';
 import type { RA } from './types';
 import { defined } from './types';
-import { crash } from './components/errorboundary';
-import { f } from './functools';
-import { hasTablePermission } from './permissions';
 
 /**
  * Some tasks to do after a new resoure is created
  */
-globalEvents.on('newresource', (resource: SpecifyResource<AnySchema>) => {
+globalEvents.on('newResource', (resource) => {
   const domainField = resource.specifyModel.getScopingRelationship();
   const parentResource = domainField
     ? getDomainResource(domainField.name as keyof typeof schema.domainLevelIds)
@@ -73,12 +73,14 @@ const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
 const collectionsInDomain = async (
   domainResource: SpecifyResource<AnySchema>
 ): Promise<RA<SerializedResource<Collection>>> =>
-  f.maybe(toTable(domainResource, 'CollectionObject'), (collectionObject) =>
-    collectionObject
-      .rgetPromise('collection', true)
-      .then((collection) => [serializeResource(collection)])
+  f.maybe(
+    toTable(domainResource, 'CollectionObject'),
+    async (collectionObject) =>
+      collectionObject
+        .rgetPromise('collection', true)
+        .then((collection) => [serializeResource(collection)])
   ) ??
-  f.maybe(toTable(domainResource, 'Collection'), (collection) =>
+  f.maybe(toTable(domainResource, 'Collection'), async (collection) =>
     collection.fetch().then((collection) => [serializeResource(collection)])
   ) ??
   fetchCollection(
@@ -109,7 +111,7 @@ export const collectionsForResource = async (
         defined(resource),
       ])
   ) ??
-  f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
+  f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
       .then(collectionsInDomain)
