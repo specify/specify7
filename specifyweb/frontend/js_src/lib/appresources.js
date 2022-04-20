@@ -18,7 +18,7 @@ import {adminText} from './localization/admin';
 import {commonText} from './localization/common';
 import {setTitle} from './components/hooks';
 import {Button, className, darkMode, Submit} from './components/basic';
-import {showDialog} from './components/modaldialog';
+import {showDialog} from './components/legacydialog';
 import {createBackboneView} from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
 import {hasToolPermission} from './permissions';

@@ -3,7 +3,6 @@
  *
  * @module
  */
-import type jQuery from 'jquery';
 import React from 'react';
 import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
@@ -19,7 +18,6 @@ import {
 import { LoadingContext } from './contexts';
 import { useId, useLiveState, useTitle } from './hooks';
 import { dialogIcons } from './icons';
-import { createBackboneView } from './reactbackboneextend';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -382,65 +380,3 @@ export function Dialog({
     </Modal>
   );
 }
-
-// TODO: get rid of this once everything is using React
-/** Wrapper for using React dialog in Backbone views */
-function LegacyDialogWrapper({
-  content,
-  ...props
-}: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children'> & {
-  readonly content: HTMLElement | typeof jQuery | string;
-}): JSX.Element {
-  const [contentElement, setContentElement] =
-    React.useState<HTMLElement | null>(null);
-  React.useEffect(
-    () =>
-      contentElement?.replaceChildren(
-        typeof content === 'object' && 'jquery' in content
-          ? (content[0] as HTMLElement)
-          : (content as HTMLElement)
-      ),
-    [content, contentElement]
-  );
-
-  return (
-    <Dialog
-      {...props}
-      forwardRef={{ content: setContentElement }}
-      className={{
-        ...props.className,
-        container:
-          props.className?.container ?? dialogClassNames.normalContainer,
-      }}
-    >
-      {''}
-    </Dialog>
-  );
-}
-
-const dialogClass = createBackboneView(LegacyDialogWrapper);
-
-export const openDialogs: Set<() => void> = new Set();
-export const showDialog = (
-  props: ConstructorParameters<typeof dialogClass>[0]
-) => {
-  const view = new dialogClass(props).render();
-
-  /*
-   * Removed Backbone components may leave dangling dialogs
-   * This helps SpecifyApp.js clean them up
-   */
-  if (props?.forceToTop !== true) {
-    const originalDestructor = view.remove.bind(view);
-    view.remove = (): typeof view => {
-      originalDestructor();
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      openDialogs.delete(view.remove);
-      return view;
-    };
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    openDialogs.add(view.remove);
-  }
-
-  return view;
-};

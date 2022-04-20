@@ -1,14 +1,14 @@
+import type Backbone from 'backbone';
 import $ from 'jquery';
 
-import type Backbone from 'backbone';
-import { openDialogs } from './components/modaldialog';
+import { ping } from './ajax';
+import { openDialogs } from './components/legacydialog';
 import {
   confirmNavigation,
   getCurrentUrl,
   pushUrl,
 } from './components/navigation';
 import { f } from './functools';
-import { ping } from './ajax';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;

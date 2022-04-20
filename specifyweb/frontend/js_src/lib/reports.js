@@ -21,7 +21,7 @@ import {commonText} from './localization/common';
 import {csrfToken} from './csrftoken';
 import {legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
-import {showDialog} from './components/modaldialog';
+import {showDialog} from './components/legacydialog';
 import {getRelatedObjectCount} from './resource';
 import {hasPermission} from './permissions';
 import {serializeResource} from './datamodelutils';

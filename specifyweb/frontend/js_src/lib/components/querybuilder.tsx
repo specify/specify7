@@ -20,12 +20,7 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
 import { TableIcon } from './common';
-import {
-  useAsyncState,
-  useIsModified,
-  useTitle,
-  useUnloadProtect,
-} from './hooks';
+import { useAsyncState, useIsModified, useTitle } from './hooks';
 import { icons } from './icons';
 import {
   MakeRecordSetButton,
@@ -38,6 +33,7 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
+import { useUnloadProtect } from './navigation';
 
 /*
  * Query Results:

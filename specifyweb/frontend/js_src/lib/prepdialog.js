@@ -6,7 +6,7 @@ import {Backbone} from './backbone';
 
 import {schema} from './schema';
 import {formsText} from './localization/forms';
-import {showDialog} from './components/modaldialog';
+import {showDialog} from './components/legacydialog';
 import {localizeFrom} from './stringlocalization';
 
 

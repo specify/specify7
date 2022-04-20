@@ -9,7 +9,7 @@ import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, RA } from '../types';
 import { LoadingContext } from './contexts';
-import { useId, useUnloadProtect } from './hooks';
+import { useId } from './hooks';
 import { stateReducer } from './schemaconfigstate';
 import type {
   CommonTableFields,
@@ -17,6 +17,7 @@ import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './toolbar/schemaconfig';
+import { useUnloadProtect } from './navigation';
 
 export type SpLocaleItem = CommonTableFields & {
   readonly id: number;

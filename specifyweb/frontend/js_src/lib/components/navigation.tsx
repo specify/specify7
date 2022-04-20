@@ -3,7 +3,7 @@
  */
 
 import { Backbone } from '../backbone';
-import { showDialog } from './modaldialog';
+import { showDialog } from './legacydialog';
 import { commonText } from '../localization/common';
 import { isExternalUrl } from '../ajax';
 import { Button } from './basic';
@@ -250,3 +250,19 @@ export const pushUrl = (url: string): void =>
 
 export const getCurrentUrl = (): string =>
   `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+export function useUnloadProtect(
+  isEnabled: boolean,
+  message: string
+): () => void {
+  const id = React.useRef({});
+  React.useEffect(
+    () =>
+      isEnabled
+        ? addUnloadProtect(id.current, message)
+        : removeUnloadProtect(id.current),
+    [isEnabled, message]
+  );
+
+  return React.useCallback(() => removeUnloadProtect(id.current), []);
+}

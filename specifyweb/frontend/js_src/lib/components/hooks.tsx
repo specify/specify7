@@ -18,7 +18,6 @@ import { isInputTouched } from '../validationmessages';
 import { FormContext, LoadingContext } from './contexts';
 import { parseRelativeDate } from '../relativedate';
 import { resourceOn } from '../resource';
-import { addUnloadProtect, removeUnloadProtect } from './navigation';
 
 const idStore: R<number> = {};
 
@@ -281,22 +280,6 @@ export function useReadyEffect(callback: () => void): void {
     if (isFirstRender.current) isFirstRender.current = false;
     else callback();
   }, [callback]);
-}
-
-export function useUnloadProtect(
-  isEnabled: boolean,
-  message: string
-): () => void {
-  const id = React.useRef({});
-  React.useEffect(
-    () =>
-      isEnabled
-        ? addUnloadProtect(id.current, message)
-        : removeUnloadProtect(id.current),
-    [isEnabled, message]
-  );
-
-  return React.useCallback(() => removeUnloadProtect(id.current), []);
 }
 
 /**

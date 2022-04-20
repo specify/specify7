@@ -28,7 +28,7 @@ import {
 import { Button, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { useId, useUnloadProtect } from './hooks';
+import { useId } from './hooks';
 import { icons } from './icons';
 import type { Dataset } from './wbplanview';
 import type { MappingElementProps } from './wbplanviewcomponents';
@@ -51,6 +51,7 @@ import {
 } from './wbplanviewmappercomponents';
 import { getCache } from '../cache';
 import { smoothScroll } from '../querybuilderutils';
+import { useUnloadProtect } from './navigation';
 
 /*
  * Scope is used to differentiate between mapper definitions that should

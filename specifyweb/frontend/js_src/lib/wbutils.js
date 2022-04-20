@@ -27,7 +27,7 @@ import {
 } from './components/wbadvancedsearch';
 import {wbText} from './localization/workbench';
 import {commonText} from './localization/common';
-import {showDialog} from './components/modaldialog';
+import {showDialog} from './components/legacydialog';
 import {createBackboneView} from './components/reactbackboneextend';
 import {LeafletMap} from './components/leaflet';
 import {localityText} from './localization/locality';

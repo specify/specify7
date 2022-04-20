@@ -11,13 +11,9 @@ import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { FormContext, LoadingContext } from './contexts';
 import { crash } from './errorboundary';
-import {
-  useBooleanState,
-  useId,
-  useIsModified,
-  useUnloadProtect,
-} from './hooks';
+import { useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
+import { useUnloadProtect } from './navigation';
 
 /*
  * TODO: move this logic into ResourceView, so that <form> and button is

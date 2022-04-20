@@ -13,13 +13,14 @@ import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
-import { useLiveState, useUnloadProtect } from './hooks';
+import { useLiveState } from './hooks';
 import { icons } from './icons';
 import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
 import { SerializedResource } from '../datamodelutils';
+import { useUnloadProtect } from './navigation';
 
 export type NewRole = {
   readonly id: number | undefined;
