@@ -143,7 +143,7 @@ function DataModelView({
           <Link.Default
             key={field.name}
             role="row"
-            href={`/specify/datamodel/${field.name.toLowerCase()}/`}
+            href={`/specify/datamodel/${field.relatedModel.name.toLowerCase()}/`}
           >
             {[
               field.name,
