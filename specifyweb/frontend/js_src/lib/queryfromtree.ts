@@ -10,6 +10,7 @@ import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { f } from './functools';
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 
 function makeField(
   path: string,
@@ -40,11 +41,12 @@ const defaultFields: RR<
     }),
     makeField('determinations.taxon.fullName', {}),
     makeField('determinations.taxon.taxonId', {
+      operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
       isDisplay: false,
     }),
     makeField('determinations.isCurrent', {
-      operStart: 6,
+      operStart: queryFieldFilters.trueOrNull.id,
       isDisplay: false,
     }),
   ],
@@ -55,7 +57,7 @@ const defaultFields: RR<
     }),
     makeField('determinations.isCurrent', {
       isDisplay: false,
-      operStart: 13,
+      operStart: queryFieldFilters.trueOrNull.id,
     }),
     makeField('collectingEvent.locality.localityName', {}),
     makeField('collectingEvent.locality.geography.fullName', {
@@ -63,6 +65,7 @@ const defaultFields: RR<
     }),
     makeField('collectingEvent.locality.geography.geographyId', {
       isDisplay: false,
+      operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
@@ -73,11 +76,12 @@ const defaultFields: RR<
     makeField('determinations.taxon.fullName', {}),
     makeField('determinations.isCurrent', {
       isDisplay: false,
-      operStart: 13,
+      operStart: queryFieldFilters.trueOrNull.id,
     }),
     makeField('preparations.storage.fullName', {}),
     makeField('preparations.storage.storageId', {
       isDisplay: false,
+      operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
@@ -89,12 +93,13 @@ const defaultFields: RR<
       }),
       makeField('determinations.isCurrent', {
         isDisplay: false,
-        operStart: 13,
+        operStart: queryFieldFilters.trueOrNull.id,
       }),
 
       makeField(`${paleoPath}.chronosStrat.fullName`, {}),
       makeField(`${paleoPath}.chronosStrat.geologicTimePeriodId`, {
         isDisplay: false,
+        operStart: queryFieldFilters.equal.id,
         startValue: nodeId.toString(),
       }),
     ]),
@@ -106,10 +111,11 @@ const defaultFields: RR<
       }),
       makeField('determinations.isCurrent', {
         isDisplay: false,
-        operStart: 13,
+        operStart: queryFieldFilters.trueOrNull.id,
       }),
       makeField(`${paleoPath}.lithoStrat.fullName`, {}),
       makeField(`${paleoPath}.lithoStrat.lithoStratId`, {
+        operStart: queryFieldFilters.equal.id,
         startValue: nodeId.toString(),
         isDisplay: false,
       }),
