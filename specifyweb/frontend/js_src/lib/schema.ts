@@ -9,6 +9,7 @@ import type { Agent, Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { load } from './initialcontext';
+import { fetchContext as fetchPrefs, getUserPref } from './preferencesutils';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
@@ -49,17 +50,23 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   }),
 ];
 
-export const fetchContext = f
-  .all({
-    tables: load<RA<TableDefinition>>(
-      '/context/datamodel.json',
-      'application/json'
-    ),
-    data: load<IR<SchemaLocalization>>(
-      '/context/schema_localization.json',
-      'application/json'
-    ),
-  })
+export const fetchContext = fetchPrefs
+  .then(async () =>
+    f.all({
+      tables: load<RA<TableDefinition>>(
+        '/context/datamodel.json',
+        'application/json'
+      ),
+      data: load<IR<SchemaLocalization>>(
+        `/context/schema_localization.json?lang=${getUserPref(
+          'general',
+          'schema',
+          'language'
+        )}`,
+        'application/json'
+      ),
+    })
+  )
   .then(({ tables, data }) => {
     localization = data;
     tables

@@ -151,11 +151,11 @@ export const formatNumber = (number: number): string =>
   numberFormatter.format(number);
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-const MILLISECONDS = 1000;
+export const MILLISECONDS = 1000;
 const SECOND = 1;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
+export const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
 const MONTH = 4 * WEEK;
 const YEAR = 12 * MONTH;

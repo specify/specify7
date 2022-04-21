@@ -5,10 +5,18 @@
 
 import React from 'react';
 
+import { eventListener } from '../events';
 import type { Preferences } from '../preferences';
-import { getPrefValue, setPref } from '../preferencesutils';
+import { getPrefDefinition, getUserPref, setPref } from '../preferencesutils';
+import { crash } from './errorboundary';
+import { useLiveState } from './hooks';
+import { MILLISECONDS } from './internationalization';
+import { f } from '../functools';
 
-export const prefUpdateListeners = new Set<() => void>();
+export const prefUpdates = eventListener<{
+  update: undefined;
+  synchronized: undefined;
+}>();
 
 export function usePref<
   CATEGORY extends keyof Preferences,
@@ -28,27 +36,29 @@ export function usePref<
 > {
   const [pref, setLocalPref] = React.useState<
     Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(() => getPrefValue(category, subcategory, item));
+  >(() => getUserPref(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
-  React.useEffect(() => {
-    function handleUpdate(): void {
-      const newValue = getPrefValue(category, subcategory, item);
-      if (newValue === currentPref.current) return;
-      setLocalPref(newValue);
-      currentPref.current = newValue;
-    }
-
-    prefUpdateListeners.add(handleUpdate);
-    return (): void => void prefUpdateListeners.delete(handleUpdate);
-  }, [category, subcategory, item]);
+  React.useEffect(
+    () =>
+      prefUpdates.on('update', () => {
+        const newValue = getUserPref(category, subcategory, item);
+        if (newValue === currentPref.current) return;
+        setLocalPref(newValue);
+        currentPref.current = newValue;
+      }),
+    [category, subcategory, item]
+  );
 
   const updatePref = React.useCallback(
     function updatePref(
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
     ): void {
-      if (newPref == currentPref.current) return;
-      setPref(category, subcategory, item, newPref);
+      const definition = getPrefDefinition(category, subcategory, item);
+      if (typeof definition.onChange === 'function')
+        Promise.resolve(definition.onChange(newPref)).catch(crash);
+      else if (newPref !== currentPref.current)
+        setPref(category, subcategory, item, newPref);
     },
     [category, subcategory, item]
   );
@@ -78,26 +88,107 @@ export function usePrefRef<
 > {
   const pref = React.useRef<
     Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(getPrefValue(category, subcategory, item));
+  >(getUserPref(category, subcategory, item));
 
-  React.useEffect(() => {
-    function handleUpdate(): void {
-      pref.current = getPrefValue(category, subcategory, item);
-    }
-
-    prefUpdateListeners.add(handleUpdate);
-    return (): void => void prefUpdateListeners.delete(handleUpdate);
-  }, [category, subcategory, item]);
+  React.useEffect(
+    () =>
+      prefUpdates.on('update', () => {
+        pref.current = getUserPref(category, subcategory, item);
+      }),
+    [category, subcategory, item]
+  );
 
   const updatePref = React.useCallback(
     function updatePref(
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
     ): void {
-      if (newPref == pref.current) return;
-      setPref(category, subcategory, item, newPref);
+      const definition = getPrefDefinition(category, subcategory, item);
+      if (typeof definition.onChange === 'function')
+        Promise.resolve(definition.onChange(newPref)).catch(crash);
+      else if (newPref !== pref.current)
+        setPref(category, subcategory, item, newPref);
     },
     [category, subcategory, item]
   );
 
   return [pref, updatePref] as const;
+}
+
+export function useReducedMotion(): boolean {
+  const [pref] = usePref('general', 'ui', 'reduceMotion');
+  const [value] = useLiveState(
+    React.useCallback(
+      () =>
+        pref === 'system'
+          ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          : pref === 'reduce',
+      [pref]
+    )
+  );
+  return value;
+}
+
+const defaultTransitionDuration = 100;
+
+export function useTransitionDuration(): number {
+  const reduceMotion = useReducedMotion();
+  const [value] = useLiveState(
+    React.useCallback(
+      () => (reduceMotion ? 0 : defaultTransitionDuration),
+      [reduceMotion]
+    )
+  );
+  return value;
+}
+
+const shouldReduceMotion = (): boolean =>
+  f.var(getUserPref('general', 'ui', 'reduceMotion'), (pref) =>
+    pref === 'system'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : pref === 'reduce'
+  );
+
+export const getTransitionDuration = (): number =>
+  shouldReduceMotion() ? 0 : defaultTransitionDuration;
+
+export function useDarkMode(): boolean {
+  const [theme] = usePref('general', 'ui', 'theme');
+  const [value] = useLiveState(
+    React.useCallback(
+      () =>
+        theme === 'system'
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : theme === 'dark',
+      [theme]
+    )
+  );
+  return value;
+}
+
+export const shouldUseDarkMode = (): boolean =>
+  f.var(getUserPref('general', 'ui', 'theme'), (theme) =>
+    theme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : theme === 'dark'
+  );
+
+export function SetCssVariables(): null {
+  const transitionDuration = useTransitionDuration();
+  React.useEffect(() => {
+    document.body.style.setProperty(
+      '--transitionDuration',
+      `${transitionDuration / MILLISECONDS}s`
+    );
+  }, [transitionDuration]);
+
+  const darkMode = useDarkMode();
+  React.useEffect(
+    () =>
+      darkMode
+        ? document.body.classList.add('dark')
+        : document.body.classList.remove('dark'),
+    [darkMode]
+  );
+
+  return null;
 }

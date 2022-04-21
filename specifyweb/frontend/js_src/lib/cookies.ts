@@ -2,8 +2,8 @@
  * CookieStore API is better suited for this, but it requires HTTPs and is
  * asynchronous
  */
+import { DAY, MILLISECONDS } from './components/internationalization';
 
-const DAY = 24 * 60 * 60 * 1000;
 const DEFAULT_DURATION = 90;
 
 export function createCookie(
@@ -13,7 +13,7 @@ export function createCookie(
 ): void {
   document.cookie = Object.entries({
     [name]: value,
-    expires: new Date(Date.now() + days * DAY).toUTCString(),
+    expires: new Date(Date.now() + days * DAY * MILLISECONDS).toUTCString(),
     path: '/',
   })
     .map(([key, value]) => `${key}=${value}`)

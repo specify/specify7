@@ -17,12 +17,13 @@ import {userInformation} from './userinfo';
 import {adminText} from './localization/admin';
 import {commonText} from './localization/common';
 import {setTitle} from './components/hooks';
-import {Button, className, darkMode, Submit} from './components/basic';
+import {Button, className, Submit} from './components/basic';
 import {showDialog} from './components/legacydialog';
 import {createBackboneView} from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
 import {hasToolPermission} from './permissions';
 import {goTo} from './components/navigation';
+import {shouldUseDarkMode} from './components/preferenceshooks';
 
 // TODO: rewrite to React
 
@@ -173,7 +174,7 @@ const ResourceDataView = Backbone.View.extend({
                 editor.setValue(this.appresourceData.get('data'));
                 editor.setPrintMarginColumn(null);
                 editor.clearSelection();
-                if(darkMode)
+                if(shouldUseDarkMode())
                     editor.setTheme('ace/theme/monokai');
 
                 editor.on('focus', ()=>{

@@ -8,12 +8,9 @@
 @layer base {
 
   * {
-    /*
-     * If changing "duration-100", don't forget to change "transitionDuration"
-     * in "./components/basic.tsx"
-     */
-    @apply transition duration-100 ease-in-out motion-reduce:!transition-none
-      motion-reduce:!duration-0 dark:!shadow-none placeholder-gray-400;
+    @apply transition duration-[var(--transitionDuration)] ease-in-out
+      motion-reduce:!transition-none motion-reduce:!duration-0 dark:!shadow-none
+      placeholder-gray-400;
   }
 
   [type='text'],

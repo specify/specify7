@@ -17,6 +17,7 @@ import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
 import { SplashScreen } from './splashscreen';
 import { goTo } from './navigation';
+import { SetCssVariables } from './preferenceshooks';
 
 unlockInitialContext('main');
 
@@ -88,6 +89,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <React.StrictMode>
       <Contexts>
+        <SetCssVariables />
         <Root />
       </Contexts>
     </React.StrictMode>,

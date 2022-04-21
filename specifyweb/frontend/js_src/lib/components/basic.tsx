@@ -92,22 +92,6 @@ function wrap<
   return wrapped;
 }
 
-// FIXME: make a react hook that listens for updates
-const reduceMotion =
-  typeof window === 'object'
-    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    : false;
-export const transitionDuration = reduceMotion ? 0 : 100;
-
-/*
- * FIXME: make a react hook that listens for updates
- * FIXME: allow overwriting this in the UI
- */
-export const darkMode =
-  typeof window === 'object'
-    ? window.matchMedia('(prefers-color-scheme: dark)').matches
-    : false;
-
 /**
  * If dialog contains a button with this className, it will use that icon
  * by default
@@ -132,8 +116,8 @@ const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const rootBackground = 'bg-white dark:bg-neutral-900';
-// TODO: reduce this once everything is using React. Cane move things into tailwind.config.js
 const rootText = 'text-neutral-900 dark:text-neutral-200';
+// TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   rootText,
   rootBackground,

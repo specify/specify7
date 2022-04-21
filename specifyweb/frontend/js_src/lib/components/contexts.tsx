@@ -29,7 +29,7 @@ export const legacyLoadingContext = (promise: Promise<unknown>) =>
 export function Contexts({
   children,
 }: {
-  readonly children: JSX.Element;
+  readonly children: JSX.Element | RA<JSX.Element>;
 }): JSX.Element {
   React.useEffect(() => Modal.setAppElement('#root'), []);
 

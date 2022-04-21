@@ -1,4 +1,3 @@
-import { transitionDuration } from './components/basic';
 import type { QueryFieldFilter } from './components/querybuilderfieldfilter';
 import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
@@ -12,6 +11,7 @@ import type { Parser } from './uiparse';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
+import { getTransitionDuration } from './components/preferenceshooks';
 
 export type SortTypes = undefined | 'ascending' | 'descending';
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -236,7 +236,7 @@ export function smoothScroll(element: HTMLElement, top: number): void {
   if (typeof element.scrollTo === 'function')
     element.scrollTo({
       top,
-      behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
     });
   else element.scrollTop = element.scrollHeight;
 }

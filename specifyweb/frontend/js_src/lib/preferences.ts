@@ -31,8 +31,10 @@ export type PreferenceItem<VALUE> = {
   /*
    * Whether to render this item in the Preferences Menu
    * Invisible items are usually set by components outside the preferences menu
+   *
+   * If 'adminsOnly' then visible only to admin users
    */
-  readonly visible: boolean;
+  readonly visible: boolean | 'adminsOnly';
   readonly defaultValue: VALUE;
   // Custom onChange handler
   readonly onChange?: (value: VALUE) => void | Promise<void>;
@@ -61,7 +63,6 @@ export type GenericPreferencesCategories = IR<{
   readonly title: string;
   readonly description?: string;
   readonly subCategories: IR<{
-    // If title matches category title, the subcategory title is hidden
     readonly title: string;
     readonly description?: string;
     readonly items: IR<PreferenceItem<any>>;
@@ -77,7 +78,6 @@ export const preferenceDefinitions = {
           language: defineItem<Language>({
             title: commonText('language'),
             requiresReload: true,
-            // TODO: add ability to make pref visible only to admins
             visible: true,
             defaultValue: DEFAULT_LANGUAGE,
             onChange: handleLanguageChange,
@@ -132,7 +132,7 @@ export const preferenceDefinitions = {
       schema: {
         title: commonText('schemaConfig'),
         items: {
-          // TODO: make schema language independent from UI language
+          // FIXME: make schema language independent from UI language
           language: defineItem<Language>({
             title: commonText('language'),
             requiresReload: true,

@@ -3,12 +3,19 @@
  */
 
 import { ajax, Http, ping } from './ajax';
+import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
-import { prefUpdateListeners } from './components/preferenceshooks';
+import { prefUpdates } from './components/preferenceshooks';
+import type { SpAppResourceData } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
 import type { Preferences } from './preferences';
 import { preferenceDefinitions } from './preferences';
-import { filterArray } from './types';
-import { f } from './functools';
+import { createResource, fetchResource, getResourceApiUrl } from './resource';
+import { fetchContext as fetchSchema, schema } from './schema';
+import { fetchContext as fetchDomain } from './schemabase';
+import { defined, filterArray } from './types';
+import { fetchContext as fetchUser, userInformation } from './userinfo';
+import { MILLISECONDS } from './components/internationalization';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,
@@ -22,7 +29,7 @@ export const getPrefDefinition = <
   // @ts-expect-error
   preferenceDefinitions[category].subCategories[subcategory].items[item];
 
-export const getPrefValue = <
+export const getUserPref = <
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
   ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
@@ -34,7 +41,6 @@ export const getPrefValue = <
   preferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
-// FIXME: save this on the back-end
 let preferences: {
   [CATEGORY in keyof Preferences]?: {
     [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
@@ -68,17 +74,27 @@ export function setPref<
       prefs[category][subcategory] = undefined;
     if (filterArray(Object.values(prefs[category])).length === 0)
       prefs[category] = undefined;
-    prefUpdateListeners.forEach(f.exec);
+    prefUpdates.trigger('update');
   }
   requestPreferencesSync();
 }
 
 let appResourceId: undefined | number = undefined;
 // Sync at most every 5s
-const syncTimeout = 5 * 1000;
+const syncTimeout = 5 * MILLISECONDS;
 let syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
 let isSyncPending = false;
 let isSyncing = true;
+
+export const awaitPrefsSynced = async (): Promise<void> =>
+  isSyncPending || isSyncing
+    ? new Promise((resolve) => {
+        const destructor = prefUpdates.on('synchronized', () => {
+          destructor();
+          resolve();
+        });
+      })
+    : Promise.resolve();
 
 /** Update back-end with front-end changes in a throttled manner */
 function requestPreferencesSync(): void {
@@ -95,7 +111,7 @@ function requestPreferencesSync(): void {
 
 const fetchAppResourceId = async (): Promise<number> =>
   ajax<number>(
-    // FXME: fetch prefs from the server
+    // FIXME: fetch prefs from the server
     '',
     {
       method: 'GET',
@@ -133,34 +149,113 @@ async function syncPreferences(): Promise<void> {
       )
     )
     .then((status) =>
-      status === Http.CONFLICT ? fetchPreferences() : undefined
+      status === Http.CONFLICT
+        ? fetchResource('SpAppResourceData', appResourceData.id).then(
+            (resource) => {
+              appResourceData = defined(resource);
+              preferences = JSON.parse(appResourceData.data ?? '{}');
+              prefUpdates.trigger('update');
+            }
+          )
+        : undefined
     )
     .then(() => {
+      // If there were additional changes while syncing
       if (isSyncPending) syncPreferences().catch(crash);
-      else isSyncing = false;
+      else {
+        isSyncing = false;
+        prefUpdates.trigger('synchronized');
+      }
     });
 }
 
-function handlePreferencesUpdate(data: typeof preferences): void {
-  preferences = data;
-  prefUpdateListeners.forEach(f.exec);
-}
+const resourceName = 'UserPreferences';
 
-const fetchPreferences = async (): Promise<typeof preferences> =>
-  ajax<typeof preferences>(
-    // FIXME: fill in the URL
-    '',
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
+let appResourceData: SerializedResource<SpAppResourceData> = undefined!;
+
+export const fetchContext: Promise<SerializedResource<SpAppResourceData>> =
+  Promise.all([fetchSchema, fetchDomain, fetchUser]).then(async () =>
+    // Most likely outcome is that an app resource data exists
+    fetchCollection(
+      'SpAppResourceData',
+      {
+        limit: 1,
       },
-    },
-    {
-      // FIXME: test what does the parser do on 404
-      expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-    }
-  ).then(({ data, status }) => (status === Http.NOT_FOUND ? {} : data));
-
-export const fetchContext = async (): Promise<void> =>
-  fetchPreferences().then(handlePreferencesUpdate);
+      {
+        spappresource__name: resourceName,
+        spappresource__specifyuser: userInformation.id,
+        spappresource__spappresourcedir__ispersonal: 'true',
+        spappresource__spappresourcedir__collection:
+          schema.domainLevelIds.collection,
+      }
+    )
+      .then(({ records }) =>
+        records.length === 1
+          ? records[0]
+          : /*
+             * If app resourcee data does not exist, check if SpAppResourceDir and
+             * SpAppResource exist and create if needed
+             */
+            fetchCollection('SpAppResourceDir', {
+              limit: 1,
+              isPersonal: true,
+              collection: schema.domainLevelIds.collection,
+              specifyUser: userInformation.id,
+            })
+              .then(({ records }) =>
+                records.length === 0
+                  ? createResource('SpAppResourceDir', {
+                      collection: getResourceApiUrl(
+                        'Collection',
+                        schema.domainLevelIds.collection
+                      ),
+                      discipline: getResourceApiUrl(
+                        'Discipline',
+                        schema.domainLevelIds.discipline
+                      ),
+                      isPersonal: true,
+                      specifyUser: getResourceApiUrl(
+                        'SpecifyUser',
+                        userInformation.id
+                      ),
+                      userType: userInformation.usertype,
+                    }).then(({ id }) => id)
+                  : records[0].id
+              )
+              .then(async (appResourceDirId) =>
+                fetchCollection('SpAppResource', {
+                  limit: 1,
+                  spAppResourceDir: appResourceDirId,
+                  specifyUser: userInformation.id,
+                  name: resourceName,
+                }).then(({ records }) =>
+                  records.length === 0
+                    ? createResource('SpAppResource', {
+                        spAppResourceDir: getResourceApiUrl(
+                          'SpAppResourceDir',
+                          appResourceDirId
+                        ),
+                        specifyUser: userInformation.resource_uri,
+                        name: resourceName,
+                        mimeType: 'application/json',
+                      }).then(({ id }) => id)
+                    : records[0].id
+                )
+              )
+              .then(async (appResourceId) =>
+                createResource('SpAppResourceData', {
+                  spAppResource: getResourceApiUrl(
+                    'SpAppResource',
+                    appResourceId
+                  ),
+                  data: '{}',
+                })
+              )
+      )
+      .then((resource) => {
+        appResourceData = resource;
+        preferences = JSON.parse(appResourceData.data ?? '{}');
+        prefUpdates.trigger('update');
+        return appResourceData;
+      })
+  );

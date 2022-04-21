@@ -2,11 +2,11 @@ import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from './ajax';
-import { transitionDuration } from './components/basic';
 import type { RA, RR } from './types';
 import { filterArray } from './types';
 import { treeText } from './localization/tree';
 import { formatNumber } from './components/internationalization';
+import { getTransitionDuration } from './components/preferenceshooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -145,7 +145,7 @@ export const scrollIntoView = _.throttle(function scrollIntoView(
 ): void {
   try {
     element.scrollIntoView({
-      behavior: transitionDuration === 0 ? 'auto' : 'smooth',
+      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
       block: mode,
       inline: mode,
     });

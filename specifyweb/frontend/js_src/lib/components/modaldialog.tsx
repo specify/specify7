@@ -8,16 +8,11 @@ import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
-import {
-  Button,
-  className,
-  DialogContext,
-  dialogIconTriggers,
-  transitionDuration,
-} from './basic';
+import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useLiveState, useTitle } from './hooks';
 import { dialogIcons } from './icons';
+import { useTransitionDuration } from './preferenceshooks';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -277,6 +272,8 @@ export function Dialog({
     ),
     [modal, handleClose]
   );
+
+  const transitionDuration = useTransitionDuration();
 
   return (
     <Modal

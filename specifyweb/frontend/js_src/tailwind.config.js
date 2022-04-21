@@ -18,7 +18,7 @@ module.exports = {
     caretColor: false,
     sepia: false,
   },
-  darkMode: 'media',
+  darkMode: 'class',
   theme: {
     borderRadius: {
       none: '0px',
