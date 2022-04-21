@@ -5,7 +5,6 @@ import { f } from './functools';
 import { NotFoundView } from './components/notfoundview';
 import { promiseToXhr } from './resourceapi';
 import { router } from './router';
-import { setCurrentView } from './specifyapp';
 import { defined, RA } from './types';
 import { formatUrl } from './querystring';
 import { startNavigation } from './components/navigation';
@@ -95,7 +94,11 @@ const tasksPromise = Promise.all([
 ]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
 
 router
-  .route('*whatever', 'notFound', () => setCurrentView(new NotFoundView()))
+  .route('*whatever', 'notFound', () =>
+    import('./specifyapp').then(({ setCurrentView }) =>
+      setCurrentView(new NotFoundView())
+    )
+  )
   .route('test_error/', 'testError', () => void ping('/api/test_error/'));
 
 export function startApp(): void {

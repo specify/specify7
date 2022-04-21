@@ -216,7 +216,7 @@ const WBView = Backbone.View.extend({
         this.dataset.id,
       )
     );
-    this.$el.attr('aria-label', commonText('workbench'));
+    this.$el.attr('aria-label', commonText('workBench'));
 
     /*
      * HOT Comments for last column overflow outside the viewport for a moment

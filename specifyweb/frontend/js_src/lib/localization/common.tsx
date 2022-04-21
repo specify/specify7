@@ -885,7 +885,7 @@ export const commonText = createDictionary({
     ca: 'Size',
     'es-es': 'Size',
   },
-  workbench: {
+  workBench: {
     'en-us': 'WorkBench',
     'ru-ru': 'WorkBench',
     ca: 'WorkBench',
@@ -1812,5 +1812,11 @@ export const commonText = createDictionary({
     'ru-ru': 'Copied!',
     ca: 'Copied!',
     'es-es': 'Copied!',
+  },
+  forms: {
+    'en-us': 'Forms',
+    'ru-ru': 'Forms',
+    ca: 'Forms',
+    'es-es': 'Forms',
   },
 });

@@ -2,19 +2,22 @@
  * Definitions for User Interface preferences (scoped to a SpecifyUser)
  */
 
+import { ColorPickerPreferenceItem } from './components/colorpicker';
+import { defaultFont, FontFamilyPreferenceItem } from './components/fontpicker';
 import {
   handleLanguageChange,
   LanguagePreferencesItem,
+  SchemaLanguagePreferenceItem,
 } from './components/toolbar/language';
 import { commonText } from './localization/common';
 import { preferencesText } from './localization/preferences';
 import type { Language } from './localization/utils';
-import { DEFAULT_LANGUAGE, languages } from './localization/utils';
+import { DEFAULT_LANGUAGE } from './localization/utils';
 import { wbText } from './localization/workbench';
 import type { IR, RA } from './types';
 import { ensure } from './types';
 import type { Parser } from './uiparse';
-import { formatter, validators } from './uiparse';
+import { crash } from './components/errorboundary';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -38,7 +41,6 @@ export type PreferenceItem<VALUE> = {
   readonly defaultValue: VALUE;
   // Custom onChange handler
   readonly onChange?: (value: VALUE) => void | Promise<void>;
-  readonly renderer?: PreferenceItemComponent<VALUE>;
 } & (
   | {
       readonly values:
@@ -52,6 +54,9 @@ export type PreferenceItem<VALUE> = {
   | {
       // Parses the stored value. Determines the input type to render
       readonly parser: Parser;
+    }
+  | {
+      readonly renderer: PreferenceItemComponent<VALUE>;
     }
 );
 
@@ -68,6 +73,7 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
+// FIXME: reorder this list to make more sense
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -76,12 +82,11 @@ export const preferenceDefinitions = {
         title: preferencesText('ui'),
         items: {
           language: defineItem<Language>({
-            title: commonText('language'),
+            title: preferencesText('language'),
             requiresReload: true,
             visible: true,
             defaultValue: DEFAULT_LANGUAGE,
             onChange: handleLanguageChange,
-            values: languages,
             renderer: LanguagePreferencesItem,
           }),
           theme: defineItem<'system' | 'light' | 'dark'>({
@@ -127,69 +132,516 @@ export const preferenceDefinitions = {
               },
             ],
           }),
+          reduceTransparency: defineItem<'system' | 'reduce' | 'noPreference'>({
+            title: preferencesText('reduceTransparency'),
+            description: preferencesText('reduceTransparencyDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'system',
+            values: [
+              {
+                value: 'system',
+                title: preferencesText('system'),
+                description: preferencesText('inheritOsSettings'),
+              },
+              {
+                value: 'reduce',
+                title: preferencesText('reduce'),
+              },
+              {
+                value: 'noPreference',
+                title: preferencesText('noPreference'),
+              },
+            ],
+          }),
+          fontSize: defineItem<number>({
+            title: preferencesText('fontSize'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 100,
+            parser: {
+              type: 'number',
+              min: 1,
+              max: 1000,
+            },
+          }),
+          fontFamily: defineItem<string>({
+            title: preferencesText('fontFamily'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultFont,
+            renderer: FontFamilyPreferenceItem,
+          }),
         },
       },
+      application: {
+        title: preferencesText('application'),
+        items: {
+          allowDismissingErrors: defineItem<boolean>({
+            title: preferencesText('allowDismissingErrors'),
+            requiresReload: false,
+            visible: 'adminsOnly',
+            defaultValue: false,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+        },
+      },
+      dialog: {
+        title: preferencesText('dialogs'),
+        items: {
+          updatePageTitle: defineItem<boolean>({
+            title: preferencesText('updatePageTitle'),
+            description: preferencesText('updatePageTitleDialogDescription'),
+            requiresReload: false,
+            visible: 'adminsOnly',
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          transparentBackground: defineItem<boolean>({
+            title: preferencesText('translucentDialog'),
+            description: preferencesText('translucentDialogDescription'),
+            requiresReload: false,
+            visible: 'adminsOnly',
+            defaultValue: false,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+        },
+      },
+    },
+  },
+  header: {
+    title: preferencesText('header'),
+    subCategories: {
+      menu: {
+        title: preferencesText('menu'),
+        items: {
+          showDataEntry: defineItem<boolean>({
+            title: preferencesText('showDataEntry'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showInteractions: defineItem<boolean>({
+            title: preferencesText('showInteractions'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showTrees: defineItem<boolean>({
+            title: preferencesText('showTrees'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showRecordSets: defineItem<boolean>({
+            title: preferencesText('showRecordSets'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showQueries: defineItem<boolean>({
+            title: preferencesText('showQueries'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showReports: defineItem<boolean>({
+            title: preferencesText('showReports'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showAttachments: defineItem<boolean>({
+            title: preferencesText('showAttachments'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showWorkBench: defineItem<boolean>({
+            title: preferencesText('showWorkBench'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+        },
+      },
+    },
+  },
+  form: {
+    title: commonText('forms'),
+    subCategories: {
       schema: {
         title: commonText('schemaConfig'),
         items: {
-          // FIXME: make schema language independent from UI language
-          language: defineItem<Language>({
-            title: commonText('language'),
+          language: defineItem<string>({
+            title: preferencesText('language'),
             requiresReload: true,
             visible: true,
             defaultValue: DEFAULT_LANGUAGE,
-            onChange: handleLanguageChange,
-            values: languages,
-            renderer: LanguagePreferencesItem,
+            renderer: SchemaLanguagePreferenceItem,
+          }),
+        },
+      },
+      definition: {
+        title: preferencesText('definition'),
+        items: {
+          columnsSource: defineItem<'lnx' | 'win' | 'mac' | 'common'>({
+            title: preferencesText('columnsPlatform'),
+            description: preferencesText('columnsPlatformDescription'),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 'lnx',
+            values: [
+              { value: 'lnx', title: 'lnx' },
+              { value: 'win', title: 'win' },
+              { value: 'mac', title: 'mac' },
+              { value: 'common', title: 'common' },
+            ],
+          }),
+        },
+      },
+      ui: {
+        title: preferencesText('ui'),
+        items: {
+          updatePageTitle: defineItem<boolean>({
+            title: preferencesText('updatePageTitle'),
+            description: preferencesText('updatePageTitleFormDescription'),
+            requiresReload: false,
+            visible: 'adminsOnly',
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          fontSize: defineItem<number>({
+            title: preferencesText('fontSize'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 100,
+            parser: {
+              type: 'number',
+              min: 1,
+              max: 1000,
+            },
+          }),
+          // FIXME: support passing a URL
+          fontFamily: defineItem<string>({
+            title: preferencesText('fontFamily'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultFont,
+            renderer: FontFamilyPreferenceItem,
+          }),
+          maxWidth: defineItem<number>({
+            title: preferencesText('maxWidth'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 1200,
+            parser: {
+              type: 'number',
+              min: 100,
+              max: 10_000,
+            },
+          }),
+        },
+      },
+      appearance: {
+        title: preferencesText('appearance'),
+        items: {
+          fieldBackground: defineItem({
+            title: preferencesText('fieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          disabledFieldBackground: defineItem({
+            title: preferencesText('disabledFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          invalidFieldBackground: defineItem({
+            title: preferencesText('invalidFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          requiredFieldBackground: defineItem({
+            title: preferencesText('requiredFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkFieldBackground: defineItem({
+            title: preferencesText('darkFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkDisabledFieldBackground: defineItem({
+            title: preferencesText('darkDisabledFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkInvalidFieldBackground: defineItem({
+            title: preferencesText('darkInvalidFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkRequiredFieldBackground: defineItem({
+            title: preferencesText('darkRequiredFieldBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      queryComboBox: {
+        title: preferencesText('queryComboBox'),
+        items: {
+          searchAlgorithm: defineItem<'startsWith' | 'contains'>({
+            title: preferencesText('searchAlgorithm'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'startsWith',
+            values: [
+              {
+                value: 'startsWith',
+                title: preferencesText('startsWith'),
+                description: preferencesText('startsWithDescription'),
+              },
+              {
+                value: 'contains',
+                title: preferencesText('contains'),
+                description: preferencesText('containsDescription'),
+              },
+            ],
+          }),
+          highlightMatch: defineItem<boolean>({
+            title: preferencesText('highlightMatch'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+        },
+      },
+    },
+  },
+  chooseCollection: {
+    title: commonText('chooseCollection'),
+    subCategories: {
+      general: {
+        title: preferencesText('general'),
+        items: {
+          alwaysPrompt: defineItem<boolean>({
+            title: preferencesText('alwaysPrompt'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+        },
+      },
+    },
+  },
+  treeEditor: {
+    title: preferencesText('treeEditor'),
+    subCategories: {
+      geography: {
+        /*
+         * This would be replaced with the label from the schema once
+         * schema is laoded
+         */
+        title: '_Geography',
+        items: {
+          evenColumnColor: defineItem({
+            title: preferencesText('evenColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          oddColumnColor: defineItem({
+            title: preferencesText('oddColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          synonomyColor: defineItem({
+            title: preferencesText('synonomyColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      taxon: {
+        title: '_Taxon',
+        items: {
+          evenColumnColor: defineItem({
+            title: preferencesText('evenColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          oddColumnColor: defineItem({
+            title: preferencesText('oddColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          synonomyColor: defineItem({
+            title: preferencesText('synonomyColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      storage: {
+        title: '_Storage',
+        items: {
+          evenColumnColor: defineItem({
+            title: preferencesText('evenColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          oddColumnColor: defineItem({
+            title: preferencesText('oddColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          synonomyColor: defineItem({
+            title: preferencesText('synonomyColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      geologicTimePeriod: {
+        title: '_GeologicTimePeriod',
+        items: {
+          evenColumnColor: defineItem({
+            title: preferencesText('evenColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          oddColumnColor: defineItem({
+            title: preferencesText('oddColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          synonomyColor: defineItem({
+            title: preferencesText('synonomyColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      lithoStrat: {
+        title: '_LithoStrat',
+        items: {
+          evenColumnColor: defineItem({
+            title: preferencesText('evenColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          oddColumnColor: defineItem({
+            title: preferencesText('oddColumnColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          synonomyColor: defineItem({
+            title: preferencesText('synonomyColor'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
           }),
         },
       },
     },
   },
   workBench: {
-    title: commonText('workbench'),
+    title: commonText('workBench'),
     subCategories: {
       wbPlanView: {
         title: wbText('dataMapper'),
         items: {
-          showHiddenTables: defineItem<boolean>({
-            title: wbText('showAdvancedTables'),
+          showNewDataSetWarning: defineItem<boolean>({
+            title: preferencesText('showNewDataSetWarning'),
+            description: preferencesText('showNewDataSetWarningDescription'),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             parser: {
               type: 'checkbox',
-            },
-          }),
-          showHiddenFields: defineItem<boolean>({
-            title: wbText('revealHiddenFormFields'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            parser: {
-              type: 'checkbox',
-            },
-          }),
-          showMappingView: defineItem<boolean>({
-            title: wbText('showMappingEditor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            parser: {
-              type: 'checkbox',
-            },
-          }),
-          mappingViewHeight: defineItem<number>({
-            title: '',
-            requiresReload: false,
-            visible: false,
-            defaultValue: 300,
-            parser: {
-              type: 'number',
-              min: 0,
-              step: 1,
-              formatters: [formatter().int],
-              validators: [validators.number],
             },
           }),
         },
@@ -197,6 +649,25 @@ export const preferenceDefinitions = {
     },
   },
 } as const;
+
+// Use tree table lables as titles for the tree editor sections
+import('./schema')
+  .then(({ fetchContext, schema }) =>
+    fetchContext.then(() => {
+      const trees = preferenceDefinitions.treeEditor.subCategories;
+      // @ts-expect-error Assigning to read-only
+      trees.geography.title = schema.models.Geography.label;
+      // @ts-expect-error Assigning to read-only
+      trees.taxon.title = schema.models.Taxon.label;
+      // @ts-expect-error Assigning to read-only
+      trees.storage.title = schema.models.Storage.label;
+      // @ts-expect-error Assigning to read-only
+      trees.geologicTimePeriod.title = schema.models.GeologicTimePeriod.label;
+      // @ts-expect-error Assigning to read-only
+      trees.lithoStrat.title = schema.models.LithoStrat.label;
+    })
+  )
+  .catch(crash);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;

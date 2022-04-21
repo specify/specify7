@@ -4,10 +4,12 @@
 
 import React from 'react';
 
-import { ajax } from '../../ajax';
+import { fetchCollection } from '../../collection';
+import type { SpLocaleContainer } from '../../datamodel';
+import type { SerializedResource } from '../../datamodelutils';
 import { fetchFormatters } from '../../dataobjformatters';
 import { commonText } from '../../localization/common';
-import { LANGUAGE } from '../../localization/utils';
+import { parseUrl } from '../../querystring';
 import { schema } from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
@@ -24,12 +26,7 @@ import type {
 } from '../schemaconfig';
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
-import { f } from '../../functools';
-import { cachableUrl } from '../../initialcontext';
-import { parseUrl } from '../../querystring';
-import { fetchCollection } from '../../collection';
-import { SerializedResource } from '../../datamodelutils';
-import { SpLocaleContainer } from '../../datamodel';
+import { useSchemaLanguages } from './language';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -59,8 +56,6 @@ export type WithFieldInfo = {
   };
 };
 
-const languagesUrl = cachableUrl('/context/schema/language/');
-
 function SchemaConfigWrapper({
   onClose: handleClose,
 }: {
@@ -69,48 +64,7 @@ function SchemaConfigWrapper({
   const { language: defaultLanguage, table: defaultTable } = parseUrl();
 
   useTitle(commonText('schemaConfig'));
-
-  const [languages] = useAsyncState<IR<string>>(
-    React.useCallback(
-      async () =>
-        ajax<
-          RA<{
-            readonly country: string | null;
-            readonly language: string;
-          }>
-        >(languagesUrl, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        })
-          .then(({ data }) =>
-            // Sometimes languages are duplicated. Need to make the list unique
-            f.unique(
-              data.map(
-                ({ country, language }) =>
-                  `${language}${
-                    country === null || country === '' ? '' : `_${country}`
-                  }`
-              )
-            )
-          )
-          .then((languages) =>
-            // Get translated language names
-            Object.fromEntries(
-              languages.map(
-                (language) =>
-                  [
-                    language,
-                    new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                      language.replace('_', '-')
-                    ) ?? language,
-                  ] as const
-              )
-            )
-          ),
-      []
-    ),
-    true
-  );
+  const languages = useSchemaLanguages();
   const [tables] = useAsyncState<IR<SerializedResource<SpLocaleContainer>>>(
     React.useCallback(async () => {
       const excludedTables = new Set(

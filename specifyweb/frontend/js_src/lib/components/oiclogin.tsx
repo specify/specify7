@@ -37,7 +37,7 @@ export function OicLogin({
   const formRef = React.useRef<HTMLFormElement | null>(null);
   return (
     <SplashScreen>
-      <LanguageSelection
+      <LanguageSelection<Language>
         languages={Object.fromEntries(
           data.languages.filter(([code]) => enabledLanguages.includes(code))
         )}

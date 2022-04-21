@@ -12,7 +12,7 @@ import { Button, Input, Label, Textarea, Ul } from './basic';
 import { TableIcon } from './common';
 import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { usePrefRef } from './preferenceshooks';
+import { useCachedState } from './statecache';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -117,16 +117,21 @@ export function ValidationResults(props: {
   );
 }
 
+const defaultValue = 300;
+
 export function MappingView(props: {
   readonly mappingElementProps: RA<MappingElementProps>;
   readonly mapButton: JSX.Element;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
-  const [mappingViewHeight, setMappingViewHeight] = usePrefRef(
-    'workBench',
-    'wbPlanView',
-    'mappingViewHeight'
-  );
+  const [mappingViewHeight = defaultValue, setMappingViewHeight] =
+    useCachedState({
+      bucketName: 'wbPlanViewUi',
+      cacheName: 'mappingViewHeight',
+      defaultValue,
+      bucketType: 'localStorage',
+      staleWhileRefresh: false,
+    });
   const mappingViewParentRef = React.useCallback<
     (mappingViewParent: HTMLElement | null) => void
   >(
@@ -151,7 +156,7 @@ export function MappingView(props: {
         max-h-[50vh] min-h-[theme(spacing.40)] h-[var(--mapping-view-height)]`}
       style={
         {
-          '--mapping-view-height': `${mappingViewHeight.current ?? ''}px`,
+          '--mapping-view-height': `${mappingViewHeight ?? ''}px`,
         } as React.CSSProperties
       }
       aria-label={wbText('mappingEditor')}

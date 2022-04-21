@@ -14,7 +14,7 @@ import { compareStrings } from './internationalization';
 const debounceRate = 300;
 
 type Item<T> = {
-  readonly label: string;
+  readonly label: string | JSX.Element;
   readonly searchValue?: string;
   readonly subLabel?: string;
   readonly icon?: JSX.Element;
@@ -97,10 +97,12 @@ export function Autocomplete<T>({
         : shouldFilterItems
         ? newResults.filter(
             ({ label, searchValue }) =>
-              label.toLowerCase().includes(pendingValue.toLowerCase()) ||
+              (typeof label === 'string' ? label : searchValue ?? '')
+                .toLowerCase()
+                .includes(pendingValue.toLowerCase()) ||
               (typeof searchValue === 'string' &&
                 compareStrings(
-                  label.slice(0, pendingValue.length),
+                  searchValue.slice(0, pendingValue.length),
                   pendingValue
                 ) === 0)
           )
@@ -351,35 +353,41 @@ export function Autocomplete<T>({
                    * Note, if item.searchValue and item.value is different,
                    * label might not be highlighted even if it matched
                    */
-                  const label = item.label
-                    // Convert to lower case as search may be case-insensitive
-                    .toLowerCase()
-                    .split(pendingValue.toLowerCase())
-                    .map((part, index, parts) => {
-                      const startIndex = parts
-                        .slice(0, index)
-                        .join(pendingValue).length;
-                      const offsetStartIndex =
-                        startIndex + (index === 0 ? 0 : pendingValue.length);
-                      const endIndex =
-                        startIndex +
-                        part.length +
-                        (index === 0 ? 0 : pendingValue.length);
-                      return (
-                        <React.Fragment key={index}>
-                          {/* Reconstruct the value in original casing */}
-                          {item.label.slice(offsetStartIndex, endIndex)}
-                          {index + 1 !== parts.length && (
-                            <span className="text-brand-300">
-                              {item.label.slice(
-                                endIndex,
-                                endIndex + pendingValue.length
-                              )}
-                            </span>
-                          )}
-                        </React.Fragment>
-                      );
-                    });
+                  const stringLabel =
+                    typeof item.label === 'string' ? item.label : undefined;
+                  const label =
+                    typeof stringLabel === 'string'
+                      ? stringLabel
+                          // Convert to lower case as search may be case-insensitive
+                          .toLowerCase()
+                          .split(pendingValue.toLowerCase())
+                          .map((part, index, parts) => {
+                            const startIndex = parts
+                              .slice(0, index)
+                              .join(pendingValue).length;
+                            const offsetStartIndex =
+                              startIndex +
+                              (index === 0 ? 0 : pendingValue.length);
+                            const endIndex =
+                              startIndex +
+                              part.length +
+                              (index === 0 ? 0 : pendingValue.length);
+                            return (
+                              <React.Fragment key={index}>
+                                {/* Reconstruct the value in original casing */}
+                                {stringLabel.slice(offsetStartIndex, endIndex)}
+                                {index + 1 !== parts.length && (
+                                  <span className="text-brand-300">
+                                    {stringLabel.slice(
+                                      endIndex,
+                                      endIndex + pendingValue.length
+                                    )}
+                                  </span>
+                                )}
+                              </React.Fragment>
+                            );
+                          })
+                      : item.label;
                   const fullLabel =
                     typeof item.subLabel === 'string' ? (
                       <div className="flex flex-col justify-center">
@@ -397,7 +405,11 @@ export function Autocomplete<T>({
                       aria-selected={index === currentIndex}
                       onClick={(): void => {
                         handleChange(item);
-                        setPendingValue(item.label);
+                        setPendingValue(
+                          typeof item.label === 'string'
+                            ? item.label
+                            : item.searchValue ?? ''
+                        );
                         handleClose();
                       }}
                       {...itemProps}

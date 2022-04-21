@@ -49,7 +49,7 @@ function Login({
 
   return (
     <SplashScreen>
-      <LanguageSelection
+      <LanguageSelection<Language>
         languages={Object.fromEntries(
           data.languages.filter(([code]) => enabledLanguages.includes(code))
         )}

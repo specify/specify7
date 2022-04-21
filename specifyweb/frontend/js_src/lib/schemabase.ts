@@ -80,7 +80,7 @@ const domainLevels = [
 ] as const;
 
 // Scoping information is loaded and populated here.
-export const fetchContext: Promise<Schema> = load<
+export const fetchContext = load<
   Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
 >('/context/domain.json', 'application/json').then((data) => {
   schema.domainLevelIds = Object.fromEntries(

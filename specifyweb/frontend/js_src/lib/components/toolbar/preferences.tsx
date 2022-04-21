@@ -12,6 +12,8 @@ import type {
   PreferenceItemComponent,
 } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
+import { awaitPrefsSynced, setPref } from '../../preferencesutils';
+import { getValidationAttributes, parseValue } from '../../uiparse';
 import {
   Button,
   className,
@@ -27,9 +29,10 @@ import { useBooleanState, useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { usePref } from '../preferenceshooks';
 import { createBackboneView } from '../reactbackboneextend';
-import { awaitPrefsSynced } from '../../preferencesutils';
-import { getValidationAttributes, parseValue } from '../../uiparse';
+import { preferencesText } from '../../localization/preferences';
+import { icons } from '../icons';
 
+// TODO: add reset to default button
 function Preferences({
   onClose: handleClose,
 }: {
@@ -97,16 +100,46 @@ function Preferences({
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section key={subcategory} className="flex flex-col gap-4">
-                    <h4 className={`${className.headerGray} text-center`}>
-                      {title}
-                    </h4>
+                    <div className="flex">
+                      <span className="flex-1" />
+                      <h4 className={`${className.headerGray} text-center`}>
+                        {title}
+                      </h4>
+                      <div className="flex justify-end flex-1">
+                        <Button.Blue
+                          aria-label={preferencesText('resetToDefault')}
+                          title={preferencesText('resetToDefault')}
+                          className="!p-1"
+                          onClick={(): void =>
+                            items.forEach(([name, { defaultValue }]) =>
+                              setPref(category, subcategory, name, defaultValue)
+                            )
+                          }
+                        >
+                          {icons.refresh}
+                        </Button.Blue>
+                      </div>
+                    </div>
                     {typeof description === 'string' && <p>{description}</p>}
                     {items.map(([name, item]) => (
-                      <label key={name} className="flex gap-2">
-                        <p className="flex justify-end flex-1 leading-8">
-                          {item.title}
-                        </p>
-                        <div className="flex flex-col justify-center flex-1 gap-1">
+                      <label key={name} className="flex items-start gap-2">
+                        <div className="flex flex-col flex-1 gap-2">
+                          <p
+                            className={`flex items-center justify-end flex-1
+                              text-right min-h-[theme(spacing.8)]`}
+                          >
+                            {item.title}
+                          </p>
+                          {typeof item.description === 'string' && (
+                            <p className="flex justify-end flex-1 text-right text-gray-500">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                        <div
+                          className={`flex flex-col justify-center flex-1 gap-2
+                            min-h-[theme(spacing.8)]`}
+                        >
                           <Item
                             item={item}
                             category={category}
@@ -115,9 +148,6 @@ function Preferences({
                             onChanged={handleChangesMade}
                             onRestartNeeded={handleRestartNeeded}
                           />
-                          {typeof item.description === 'string' && (
-                            <p>{item.description}</p>
-                          )}
                         </div>
                       </label>
                     ))}
@@ -161,7 +191,7 @@ function Item({
   readonly onChanged: () => void;
   readonly onRestartNeeded: () => void;
 }): JSX.Element {
-  const Renderer = item.renderer ?? DefaultRenderer;
+  const Renderer = 'renderer' in item ? item.renderer : DefaultRenderer;
   const [value, setValue] = usePref(category, subcategory, name);
   return (
     <Renderer
@@ -220,9 +250,7 @@ const DefaultRenderer: PreferenceItemComponent<any> = function ({
     />
   );
 };
-
 const PreferencesView = createBackboneView(Preferences);
-
 export const userTool: UserTool = {
   task: 'preferences',
   title: commonText('preferences'),

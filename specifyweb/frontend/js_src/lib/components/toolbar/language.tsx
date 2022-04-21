@@ -6,17 +6,17 @@ import React from 'react';
 
 import { ajax, ping } from '../../ajax';
 import { csrfToken } from '../../csrftoken';
+import { f } from '../../functools';
+import { cachableUrl } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
-import { enabledLanguages } from '../../localization/utils';
+import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { PreferenceItemComponent } from '../../preferences';
 import type { IR, RA } from '../../types';
-import { f } from '../../functools';
-import { Label, Select } from '../basic';
+import { Select } from '../basic';
 import { supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
-import { cachableUrl } from '../../initialcontext';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -27,14 +27,14 @@ export const handleLanguageChange = async (language: Language): Promise<void> =>
     },
   }).then(f.void);
 
-export function LanguageSelection({
+export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
 }: {
-  value: Language;
+  value: LANGUAGES;
   languages: IR<string> | undefined;
-  readonly onChange: (language: Language) => void;
+  readonly onChange: (language: LANGUAGES) => void;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
 
@@ -52,26 +52,24 @@ export function LanguageSelection({
           <p>{commonText('helpLocalizeSpecifyDialogMessage')(supportLink)}</p>
         </Dialog>
       ) : typeof languages === 'object' ? (
-        <Label.Generic>
-          <Select
-            name="language"
-            value={value}
-            onChange={({ target }): void =>
-              target.value === 'supportLocalization'
-                ? setShowSupportDialog(true)
-                : handleChange(target.value as Language)
-            }
-          >
-            {Object.entries(languages).map(([code, nameLocal]) => (
-              <option key={code} value={code}>
-                {nameLocal} ({code})
-              </option>
-            ))}
-            <option value="supportLocalization">
-              {commonText('helpLocalizeSpecify')}
+        <Select
+          aria-label={commonText('language')}
+          value={value}
+          onChange={({ target }): void =>
+            target.value === 'supportLocalization'
+              ? setShowSupportDialog(true)
+              : handleChange(target.value as LANGUAGES)
+          }
+        >
+          {Object.entries(languages).map(([code, nameLocal]) => (
+            <option key={code} value={code}>
+              {nameLocal} ({code})
             </option>
-          </Select>
-        </Label.Generic>
+          ))}
+          <option value="supportLocalization">
+            {commonText('helpLocalizeSpecify')}
+          </option>
+        </Select>
       ) : undefined}
     </>
   );
@@ -79,10 +77,7 @@ export function LanguageSelection({
 
 const url = cachableUrl('/context/language/');
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({
-    value,
-    onChange: handleChange,
-  }): JSX.Element {
+  function LanguagePreferencesItem({ value, onChange: handleChange }) {
     const [languages] = useAsyncState<IR<string>>(
       React.useCallback(
         async () =>
@@ -108,7 +103,65 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       true
     );
     return (
-      <LanguageSelection
+      <LanguageSelection<Language>
+        languages={languages}
+        value={value}
+        onChange={handleChange}
+      />
+    );
+  };
+
+const languagesUrl = cachableUrl('/context/schema/language/');
+export function useSchemaLanguages(): IR<string> | undefined {
+  const [languages] = useAsyncState<IR<string>>(
+    React.useCallback(
+      async () =>
+        ajax<
+          RA<{
+            readonly country: string | null;
+            readonly language: string;
+          }>
+        >(languagesUrl, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        })
+          .then(({ data }) =>
+            // Sometimes languages are duplicated. Need to make the list unique
+            f.unique(
+              data.map(
+                ({ country, language }) =>
+                  `${language}${
+                    country === null || country === '' ? '' : `_${country}`
+                  }`
+              )
+            )
+          )
+          .then((languages) =>
+            // Get translated language names
+            Object.fromEntries(
+              languages.map(
+                (language) =>
+                  [
+                    language,
+                    new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                      language.replace('_', '-')
+                    ) ?? language,
+                  ] as const
+              )
+            )
+          ),
+      []
+    ),
+    true
+  );
+  return languages;
+}
+
+export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
+  function SchemaLanguagePreferenceItem({ value, onChange: handleChange }) {
+    const languages = useSchemaLanguages();
+    return (
+      <LanguageSelection<string>
         languages={languages}
         value={value}
         onChange={handleChange}

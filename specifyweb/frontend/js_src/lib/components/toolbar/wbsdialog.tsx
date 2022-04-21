@@ -296,7 +296,7 @@ export function WbsDialog({
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
 }): JSX.Element | null {
-  useTitle(commonText('workbench'));
+  useTitle(commonText('workBench'));
 
   // Whether to show DS meta dialog. Either false or Data Set ID
   const [showMeta, setShowMeta] = React.useState<false | number>(false);
@@ -320,7 +320,7 @@ const View = createBackboneView(WbsDialog);
 
 export const menuItem: MenuItem = {
   task: 'workbenches',
-  title: commonText('workbench'),
+  title: commonText('workBench'),
   icon: icons.table,
   isOverlay: true,
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),

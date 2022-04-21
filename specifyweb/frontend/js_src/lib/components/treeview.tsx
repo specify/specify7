@@ -162,7 +162,6 @@ function TreeView<SCHEMA extends AnyTree>({
                     rankDefinition?.title ?? rankDefinition?.name;
                   return {
                     label: node.fullName ?? node.name,
-                    searchValue: node.name,
                     subLabel: rankName,
                     data: node as SerializedResource<SCHEMA>,
                   };
@@ -171,7 +170,7 @@ function TreeView<SCHEMA extends AnyTree>({
             }
             onCleared={(): void => setSearchValue('')}
             onChange={({ label, data }): void => {
-              setSearchValue(label);
+              setSearchValue(label as string);
               ajax<
                 IR<{ readonly rankid: number; readonly id: number } | string>
               >(

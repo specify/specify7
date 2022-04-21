@@ -9,7 +9,6 @@ import type { Agent, Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { load } from './initialcontext';
-import { fetchContext as fetchPrefs, getUserPref } from './preferencesutils';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
@@ -50,56 +49,61 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   }),
 ];
 
-export const fetchContext = fetchPrefs
-  .then(async () =>
-    f.all({
-      tables: load<RA<TableDefinition>>(
-        '/context/datamodel.json',
-        'application/json'
-      ),
-      data: load<IR<SchemaLocalization>>(
-        `/context/schema_localization.json?lang=${getUserPref(
-          'general',
-          'schema',
-          'language'
-        )}`,
-        'application/json'
-      ),
-    })
-  )
-  .then(({ tables, data }) => {
-    localization = data;
-    tables
-      .map((tableDefinition) => {
-        const model = new SpecifyModel(tableDefinition);
-        // @ts-expect-error Assigning to readOnly props
-        schemaBase.models[model.name] = model;
-        return [tableDefinition, model] as const;
+export const fetchContext = import('./preferencesutils').then(
+  async ({ fetchPreferences, getUserPref }) =>
+    fetchPreferences
+      .then(async () =>
+        f.all({
+          tables: load<RA<TableDefinition>>(
+            '/context/datamodel.json',
+            'application/json'
+          ),
+          data: load<IR<SchemaLocalization>>(
+            `/context/schema_localization.json?lang=${getUserPref(
+              'form',
+              'schema',
+              'language'
+            )}`,
+            'application/json'
+          ),
+        })
+      )
+      .then(({ tables, data }) => {
+        localization = data;
+        tables
+          .map((tableDefinition) => {
+            const model = new SpecifyModel(tableDefinition);
+            // @ts-expect-error Assigning to readOnly props
+            schemaBase.models[model.name] = model;
+            return [tableDefinition, model] as const;
+          })
+          .forEach(([tableDefinition, model]) => {
+            const [frontEndFields, frontEndRelationships, callback] = (
+              schemaExtras[model.name] as
+                | typeof schemaExtras['Agent']
+                | undefined
+            )?.(model as SpecifyModel<Agent>) ?? [[], []];
+
+            model.literalFields = processFields(
+              tableDefinition.fields.map(
+                (fieldDefinition) => new LiteralField(model, fieldDefinition)
+              ),
+              frontEndFields
+            );
+            model.relationships = processFields(
+              tableDefinition.relationships.map(
+                (relationshipDefinition) =>
+                  new Relationship(model, relationshipDefinition)
+              ),
+              frontEndRelationships
+            );
+            model.fields = [...model.literalFields, ...model.relationships];
+
+            callback?.();
+          });
+        return schemaBase;
       })
-      .forEach(([tableDefinition, model]) => {
-        const [frontEndFields, frontEndRelationships, callback] = (
-          schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
-        )?.(model as SpecifyModel<Agent>) ?? [[], []];
-
-        model.literalFields = processFields(
-          tableDefinition.fields.map(
-            (fieldDefinition) => new LiteralField(model, fieldDefinition)
-          ),
-          frontEndFields
-        );
-        model.relationships = processFields(
-          tableDefinition.relationships.map(
-            (relationshipDefinition) =>
-              new Relationship(model, relationshipDefinition)
-          ),
-          frontEndRelationships
-        );
-        model.fields = [...model.literalFields, ...model.relationships];
-
-        callback?.();
-      });
-    return schemaBase;
-  });
+);
 
 export const schema = schemaBase;
 

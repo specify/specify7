@@ -9,8 +9,6 @@ import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { group, split } from './helpers';
 import { load } from './initialcontext';
-import { fetchContext as schemaPromise } from './schema';
-import { fetchContext as domainPromise } from './schemabase';
 import type { anyAction, anyResource } from './securityutils';
 import {
   tableNameToResourceName,
@@ -154,7 +152,8 @@ export const queryUserPermissions = async (
   userId: number,
   collectionId: number
 ): Promise<RA<PermissionsQueryItem>> =>
-  schemaPromise
+  import('./schema')
+    .then(({ fetchContext }) => fetchContext)
     .then(async (schema) =>
       ajax<{
         readonly details: RA<PermissionsQueryItem>;
@@ -181,44 +180,46 @@ export const queryUserPermissions = async (
     )
     .then(({ data }) => data.details);
 
-export const fetchContext = domainPromise.then(async (schema) =>
-  queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
-    .then((query) =>
-      split(
-        group(
-          query.map((result) => [
-            result.resource,
-            [result.action, result.allowed] as const,
-          ])
-        ).map(
-          ([resource, actions]) =>
-            [resource, Object.fromEntries(actions)] as const
-        ),
-        ([key]) => key.startsWith(tablePermissionsPrefix)
-      ).map(Object.fromEntries)
-    )
-    .then(([operations, tables]) => {
-      operationPermissions =
-        operations as unknown as typeof operationPermissions;
-      tablePermissions = tables as unknown as typeof tablePermissions;
-      void checkRegistry();
-      // Check that user has at least read access to the hierarchy tables
-      if (
-        schema.orgHierarchy.some(
-          (tableName) =>
-            tableName !== 'CollectionObject' &&
-            !hasTablePermission(tableName, 'read')
-        )
+export const fetchContext = import('./schemabase')
+  .then(({ fetchContext }) => fetchContext)
+  .then(async (schema) =>
+    queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
+      .then((query) =>
+        split(
+          group(
+            query.map((result) => [
+              result.resource,
+              [result.action, result.allowed] as const,
+            ])
+          ).map(
+            ([resource, actions]) =>
+              [resource, Object.fromEntries(actions)] as const
+          ),
+          ([key]) => key.startsWith(tablePermissionsPrefix)
+        ).map(Object.fromEntries)
       )
-        crash(
-          new Error(
-            `User must have at least read access to these tables to use Specify: ${formatList(
-              schema.orgHierarchy
-            )}`
+      .then(([operations, tables]) => {
+        operationPermissions =
+          operations as unknown as typeof operationPermissions;
+        tablePermissions = tables as unknown as typeof tablePermissions;
+        void checkRegistry();
+        // Check that user has at least read access to the hierarchy tables
+        if (
+          schema.orgHierarchy.some(
+            (tableName) =>
+              tableName !== 'CollectionObject' &&
+              !hasTablePermission(tableName, 'read')
           )
-        );
-    })
-);
+        )
+          crash(
+            new Error(
+              `User must have at least read access to these tables to use Specify: ${formatList(
+                schema.orgHierarchy
+              )}`
+            )
+          );
+      })
+  );
 
 export const hasTablePermission = (
   tableName: keyof Tables,
