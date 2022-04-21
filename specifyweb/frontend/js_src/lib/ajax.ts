@@ -187,8 +187,8 @@ export function handleResponse<RESPONSE_TYPE = string>({
       console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',
-        statusText: `Invalid response code ${response.status}. Expected${
-          expectedResponseCodes.length === 1 ? '' : 'one of '
+        statusText: `Invalid response code ${response.status}. Expected ${
+          expectedResponseCodes.length === 1 ? '' : ' one of'
         } ${formatList(expectedResponseCodes.map(f.toString))}. Response:`,
         responseText: text,
       };

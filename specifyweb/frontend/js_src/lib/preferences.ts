@@ -2,14 +2,20 @@
  * Definitions for User Interface preferences (scoped to a SpecifyUser)
  */
 
-import { ColorPickerPreferenceItem } from './components/colorpicker';
+import { crash } from './components/errorboundary';
 import { defaultFont, FontFamilyPreferenceItem } from './components/fontpicker';
+import {
+  CollectionSortOrderPreferenceItem,
+  ColorPickerPreferenceItem,
+} from './components/preferencesrenderers';
 import {
   handleLanguageChange,
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './components/toolbar/language';
+import type { Collection } from './datamodel';
 import { commonText } from './localization/common';
+import { formsText } from './localization/forms';
 import { preferencesText } from './localization/preferences';
 import type { Language } from './localization/utils';
 import { DEFAULT_LANGUAGE } from './localization/utils';
@@ -17,7 +23,6 @@ import { wbText } from './localization/workbench';
 import type { IR, RA } from './types';
 import { ensure } from './types';
 import type { Parser } from './uiparse';
-import { crash } from './components/errorboundary';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -73,7 +78,6 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-// FIXME: reorder this list to make more sense
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -195,7 +199,7 @@ export const preferenceDefinitions = {
             title: preferencesText('updatePageTitle'),
             description: preferencesText('updatePageTitleDialogDescription'),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: true,
             defaultValue: true,
             parser: {
               type: 'checkbox',
@@ -205,8 +209,17 @@ export const preferenceDefinitions = {
             title: preferencesText('translucentDialog'),
             description: preferencesText('translucentDialogDescription'),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: true,
             defaultValue: false,
+            parser: {
+              type: 'checkbox',
+            },
+          }),
+          showIcon: defineItem<boolean>({
+            title: preferencesText('showDialogIcon'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
             parser: {
               type: 'checkbox',
             },
@@ -337,7 +350,7 @@ export const preferenceDefinitions = {
             title: preferencesText('updatePageTitle'),
             description: preferencesText('updatePageTitleFormDescription'),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: true,
             defaultValue: true,
             parser: {
               type: 'checkbox',
@@ -484,6 +497,15 @@ export const preferenceDefinitions = {
             parser: {
               type: 'checkbox',
             },
+          }),
+          sortOrder: defineItem<
+            keyof Collection['fields'] | `-${keyof Collection['fields']}`
+          >({
+            title: formsText('order'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'collectionName',
+            renderer: CollectionSortOrderPreferenceItem,
           }),
         },
       },
@@ -650,9 +672,9 @@ export const preferenceDefinitions = {
   },
 } as const;
 
-// Use tree table lables as titles for the tree editor sections
+// Use tree table labels as titles for the tree editor sections
 import('./schema')
-  .then(({ fetchContext, schema }) =>
+  .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
       const trees = preferenceDefinitions.treeEditor.subCategories;
       // @ts-expect-error Assigning to read-only

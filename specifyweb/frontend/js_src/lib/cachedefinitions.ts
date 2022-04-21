@@ -63,8 +63,8 @@ export type CacheDefinitions = {
   };
   readonly attachments: {
     readonly sortOrder:
-      | keyof Attachment['fields']
-      | `-${keyof Attachment['fields']}`;
+      | (string & keyof Attachment['fields'])
+      | `-${string & keyof Attachment['fields']}`;
     readonly filter:
       | State<'all'>
       | State<'unused'>

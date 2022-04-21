@@ -13,7 +13,7 @@ import { useLiveState } from './hooks';
 import { MILLISECONDS } from './internationalization';
 import { f } from '../functools';
 
-export const prefUpdates = eventListener<{
+export const prefEvents = eventListener<{
   update: undefined;
   synchronized: undefined;
 }>();
@@ -41,7 +41,7 @@ export function usePref<
   const currentPref = React.useRef(pref);
   React.useEffect(
     () =>
-      prefUpdates.on('update', () => {
+      prefEvents.on('update', () => {
         const newValue = getUserPref(category, subcategory, item);
         if (newValue === currentPref.current) return;
         setLocalPref(newValue);
@@ -57,8 +57,7 @@ export function usePref<
       const definition = getPrefDefinition(category, subcategory, item);
       if (typeof definition.onChange === 'function')
         Promise.resolve(definition.onChange(newPref)).catch(crash);
-      else if (newPref !== currentPref.current)
-        setPref(category, subcategory, item, newPref);
+      else setPref(category, subcategory, item, newPref);
     },
     [category, subcategory, item]
   );
@@ -66,6 +65,10 @@ export function usePref<
   return [pref, updatePref] as const;
 }
 
+/**
+ * Like usePref, but with useRef instead of useState. Useful for cases when
+ * pref value updates often, or you don't need to trigger a reRender.
+ */
 export function usePrefRef<
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
@@ -92,7 +95,7 @@ export function usePrefRef<
 
   React.useEffect(
     () =>
-      prefUpdates.on('update', () => {
+      prefEvents.on('update', () => {
         pref.current = getUserPref(category, subcategory, item);
       }),
     [category, subcategory, item]
@@ -105,8 +108,7 @@ export function usePrefRef<
       const definition = getPrefDefinition(category, subcategory, item);
       if (typeof definition.onChange === 'function')
         Promise.resolve(definition.onChange(newPref)).catch(crash);
-      else if (newPref !== pref.current)
-        setPref(category, subcategory, item, newPref);
+      else setPref(category, subcategory, item, newPref);
     },
     [category, subcategory, item]
   );

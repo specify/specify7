@@ -38,6 +38,7 @@ import { useCachedState } from './statecache';
 import { caseInsensitiveHash } from '../helpers';
 import { deserializeResource } from './resource';
 import { useCollection } from './collection';
+import { OrderPicker } from './preferencesrenderers';
 
 const previewSize = 123;
 
@@ -344,41 +345,11 @@ export function AttachmentsView(): JSX.Element {
         </Label.ForCheckbox>
         <Label.ForCheckbox>
           <span>{formsText('order')}</span>
-          <Select
-            value={order}
-            onValueChange={(value): void =>
-              setOrder(value as string & typeof order)
-            }
-          >
-            <option value="">{commonText('none')}</option>
-            <optgroup label={commonText('ascending')}>
-              {schema.models.Attachment.literalFields
-                .filter(
-                  /*
-                   * "order === name" is necessary in case Accession.timestampCreated
-                   * is a hidden field in the schema
-                   */
-                  ({ overrides, name }) => !overrides.isHidden || order === name
-                )
-                .map(({ name, label }) => (
-                  <option value={name} key={name}>
-                    {label}
-                  </option>
-                ))}
-            </optgroup>
-            <optgroup label={commonText('descending')}>
-              {schema.models.Attachment.literalFields
-                .filter(
-                  ({ overrides, name }) =>
-                    !overrides.isHidden || order.slice(1) === name
-                )
-                .map(({ name, label }) => (
-                  <option value={`-${name}`} key={name}>
-                    {label}
-                  </option>
-                ))}
-            </optgroup>
-          </Select>
+          <OrderPicker
+            model={schema.models.Attachment}
+            order={order}
+            onChange={setOrder}
+          />
         </Label.ForCheckbox>
         <span className="flex-1 -ml-2" />
         <Label.ForCheckbox>

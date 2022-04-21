@@ -73,8 +73,9 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
-) =>
+  data: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  handleConflict: (() => void) | void
+): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     {
@@ -82,8 +83,18 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
     },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then(({ data }) => serializeResource(data));
+    {
+      expectedResponseCodes: [
+        Http.OK,
+        ...(typeof handleConflict === 'function' ? [Http.CONFLICT] : []),
+      ],
+    }
+  ).then(({ data: response, status }) => {
+    if (status === Http.CONFLICT) {
+      handleConflict?.();
+      return data as SerializedResource<Tables[TABLE_NAME]>;
+    } else return serializeResource(response);
+  });
 
 /**
  * Generate a URL to view the resource in the front-end

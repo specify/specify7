@@ -111,10 +111,10 @@ export const preferencesText = createDictionary({
     'es-es': '(default font)',
   },
   maxWidth: {
-    'en-us': 'Max width',
-    'ru-ru': 'Max width',
-    ca: 'Max width',
-    'es-es': 'Max width',
+    'en-us': 'Max form width',
+    'ru-ru': 'Max form width',
+    ca: 'Max form width',
+    'es-es': 'Max form width',
   },
   fieldBackground: {
     'en-us': 'Field background',
@@ -397,5 +397,11 @@ export const preferencesText = createDictionary({
     'ru-ru': 'The platform to use as a source of columns',
     ca: 'The platform to use as a source of columns',
     'es-es': 'The platform to use as a source of columns',
+  },
+  showDialogIcon: {
+    'en-us': 'Show icon in the header',
+    'ru-ru': 'Show icon in the header',
+    ca: 'Show icon in the header',
+    'es-es': 'Show icon in the header',
   },
 });

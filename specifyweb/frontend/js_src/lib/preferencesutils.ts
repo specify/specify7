@@ -2,20 +2,25 @@
  * Utilities for dealing with user preferences
  */
 
-import { ajax, Http, ping } from './ajax';
 import { fetchCollection, rawFetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
-import { prefUpdates } from './components/preferenceshooks';
+import { prefEvents } from './components/preferenceshooks';
 import type { SpAppResourceData } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { toLowerCase } from './helpers';
 import type { Preferences } from './preferences';
 import { preferenceDefinitions } from './preferences';
-import { createResource, fetchResource, getResourceApiUrl } from './resource';
+import {
+  createResource,
+  fetchResource,
+  getResourceApiUrl,
+  saveResource,
+} from './resource';
 import { fetchContext as fetchSchema, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
+import { parseValue } from './uiparse';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
 
 export const getPrefDefinition = <
@@ -60,42 +65,81 @@ export function setPref<
   item: ITEM,
   value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 ): void {
+  const definition = getPrefDefinition(category, subcategory, item);
+  let parsed;
+  if ('parser' in definition) {
+    const parseResult = parseValue(definition.parser, undefined, value);
+    if (parseResult.isValid) parsed = parseResult.value;
+    else {
+      console.error(`Failed parsing pref value`, {
+        category,
+        subcategory,
+        item,
+        definition,
+        parseResult,
+      });
+      parsed = definition.defaultValue;
+    }
+  } else if ('values' in definition) {
+    if (definition.values.some((item) => item.value === value)) parsed = value;
+    else {
+      console.error(`Failed parsing pref value`, {
+        category,
+        subcategory,
+        item,
+        value,
+        definition,
+      });
+      parsed = definition.defaultValue;
+    }
+  } else parsed = definition.defaultValue;
+
   const prefs = preferences as any;
+  if (
+    parsed === prefs[category]?.[subcategory]?.[item] ??
+    definition.defaultValue
+  )
+    return;
+
   prefs[category] ??= {};
   prefs[category][subcategory] ??= {};
-  prefs[category][subcategory][item] = value;
-  if (
-    prefs[category][subcategory][item] ===
-    getPrefDefinition(category, subcategory, item).defaultValue
-  ) {
-    // Unset default values
+  prefs[category][subcategory][item] = parsed;
+
+  // Unset default values
+  if (parsed === definition.defaultValue) {
     prefs[category][subcategory][item] = undefined;
     // Clean up empty objects
     if (filterArray(Object.values(prefs[category][subcategory])).length === 0)
       prefs[category][subcategory] = undefined;
     if (filterArray(Object.values(prefs[category])).length === 0)
       prefs[category] = undefined;
-    prefUpdates.trigger('update');
   }
+
+  prefEvents.trigger('update');
   requestPreferencesSync();
 }
 
-let appResourceId: undefined | number = undefined;
 // Sync at most every 5s
 const syncTimeout = 5 * MILLISECONDS;
 let syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
 let isSyncPending = false;
-let isSyncing = true;
+let isSyncing = false;
 
-export const awaitPrefsSynced = async (): Promise<void> =>
-  isSyncPending || isSyncing
-    ? new Promise((resolve) => {
-        const destructor = prefUpdates.on('synchronized', () => {
-          destructor();
-          resolve();
-        });
-      })
-    : Promise.resolve();
+export async function awaitPrefsSynced(): Promise<void> {
+  if (typeof syncTimeoutInstance === 'number') {
+    clearTimeout(syncTimeoutInstance);
+    syncPreferences().catch(crash);
+  }
+
+  if (isSyncing)
+    return new Promise((resolve) => {
+      const destructor = prefEvents.on('synchronized', () => {
+        destructor();
+        resolve();
+      });
+    });
+  else return Promise.resolve();
+}
 
 /** Update back-end with front-end changes in a throttled manner */
 function requestPreferencesSync(): void {
@@ -110,60 +154,27 @@ function requestPreferencesSync(): void {
   }
 }
 
-const fetchAppResourceId = async (): Promise<number> =>
-  ajax<number>(
-    // FIXME: fetch prefs from the server
-    '',
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    }
-  ).then(({ data }) => data);
-
 async function syncPreferences(): Promise<void> {
   isSyncPending = false;
-  return (
-    typeof appResourceId === 'number'
-      ? Promise.resolve(appResourceId)
-      : fetchAppResourceId().then((id) => {
-          appResourceId = id;
-          return id;
-        })
-  )
-    .then(async (appResourceId) =>
-      ping(
-        // FIXME: fill in the URL
-        `${appResourceId}`,
-        {
-          method: 'PUT',
-          body: preferences,
-          headers: {
-            Accept: 'application/json',
-          },
-        },
-        {
-          // FIXME: test if Http.CONFLICT is ever returned
-          expectedResponseCodes: [Http.OK, Http.CONFLICT],
-        }
-      )
-    )
-    .then((status) =>
-      status === Http.CONFLICT
-        ? fetchResource('SpAppResourceData', appResourceData.id).then(
-            (resource) => updatePreferences(defined(resource))
-          )
-        : undefined
-    )
-    .then(() => {
-      // If there were additional changes while syncing
-      if (isSyncPending) syncPreferences().catch(crash);
-      else {
-        isSyncing = false;
-        prefUpdates.trigger('synchronized');
-      }
-    });
+  return saveResource(
+    'SpAppResourceData',
+    appResourceData.id,
+    {
+      ...appResourceData,
+      data: JSON.stringify(preferences),
+    },
+    (): void =>
+      void fetchResource('SpAppResourceData', appResourceData.id)
+        .then((resource) => updatePreferences(defined(resource)))
+        .catch(crash)
+  ).then(() => {
+    // If there were additional changes while syncing
+    if (isSyncPending) syncPreferences().catch(crash);
+    else {
+      isSyncing = false;
+      prefEvents.trigger('synchronized');
+    }
+  });
 }
 
 const resourceName = 'UserPreferences';
@@ -221,7 +232,7 @@ function updatePreferences(
 ): SerializedResource<SpAppResourceData> {
   appResourceData = resource;
   preferences = JSON.parse(appResourceData.data ?? '{}');
-  prefUpdates.trigger('update');
+  prefEvents.trigger('update');
   return appResourceData;
 }
 
