@@ -3,21 +3,22 @@ import type {
   DataObjectFormatter,
   ItemType,
   NewSpLocaleItemString,
-  SpLocaleItem,
   SpLocaleItemString,
 } from './components/schemaconfig';
 import type {
   WithFetchedStrings,
   WithFieldInfo,
 } from './components/toolbar/schemaconfig';
-import type { Tables } from './datamodel';
+import type { SpLocaleContainerItem, Tables } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
+import { addMissingFields } from './datamodelutils';
 import type { Aggregator, Formatter } from './dataobjformatters';
+import { f } from './functools';
 import { commonText } from './localization/common';
+import { parseUrl } from './querystring';
+import { getResourceApiUrl, parseClassName } from './resource';
 import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
-import { f } from './functools';
-import { parseUrl } from './querystring';
-import { parseClassName } from './resource';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -36,7 +37,7 @@ const fetchString = async (
   }).then(({ data: { objects } }) => {
     const targetString = objects.find(
       (object) =>
-        (object.language === language && object.country) ?? '' === country ?? ''
+        (object.language === language && object.country) ?? country === '' ?? ''
     );
     if (typeof targetString === 'object') return targetString;
 
@@ -49,10 +50,12 @@ const fetchString = async (
     newStringId += 1;
 
     return {
-      id: -newStringId,
-      text: defaultString,
-      language,
-      country,
+      ...addMissingFields('SpLocaleItemStr', {
+        id: -newStringId,
+        text: defaultString,
+        language,
+        country,
+      }),
       parent: url,
     };
   });
@@ -94,7 +97,7 @@ export function prepareNewString({
   const [parentName, parentId] = Object.entries(parseUrl(parent))[0];
   return {
     ...object,
-    [parentName]: `/api/specify/splocalecontaineritem/${parentId}/`,
+    [parentName]: getResourceApiUrl('SpLocaleContainerItem', parentId),
   };
 }
 
@@ -134,9 +137,11 @@ export const filterFormatters = (
  * Assuming it can't be multiple types at once
  *
  */
-export function getItemType(item: SpLocaleItem): ItemType {
-  if (item.weblinkname !== null) return 'webLink';
-  else if (item.picklistname !== null) return 'pickList';
+export function getItemType(
+  item: SerializedResource<SpLocaleContainerItem>
+): ItemType {
+  if (item.webLinkName !== null) return 'webLink';
+  else if (item.pickListName !== null) return 'pickList';
   else if (item.format !== null) return 'formatted';
   else return 'none';
 }

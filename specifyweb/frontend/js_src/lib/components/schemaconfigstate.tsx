@@ -2,6 +2,12 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import type {
+  SpLocaleContainer,
+  SpLocaleContainerItem,
+  Tables,
+} from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import { commonText } from '../localization/common';
 import {
@@ -30,12 +36,10 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import type {
   DataObjectFormatter,
   ItemType,
-  SpLocaleItem,
   UiFormatter,
 } from './schemaconfig';
 import { AddLanguage, PickList } from './schemaconfigcomponents';
 import type {
-  SpLocaleContainer,
   WithFetchedStrings,
   WithFieldInfo,
   WithTableInfo,
@@ -56,7 +60,7 @@ type FetchingTableFieldState = State<
   'FetchingTableItemsState',
   {
     language: string;
-    table: SpLocaleContainer;
+    table: SerializedResource<SpLocaleContainer>;
   }
 >;
 
@@ -64,8 +68,14 @@ type MainState = State<
   'MainState',
   {
     language: string;
-    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
+    table: SerializedResource<SpLocaleContainer> &
+      WithFetchedStrings &
+      WithTableInfo;
+    items: IR<
+      SerializedResource<SpLocaleContainerItem> &
+        WithFetchedStrings &
+        WithFieldInfo
+    >;
     itemId: number;
     tableWasModified: boolean;
     modifiedItems: RA<number>;
@@ -82,7 +92,7 @@ export type States =
 type StateWithParameters = States & {
   readonly parameters: {
     readonly languages: IR<string>;
-    readonly tables: IR<SpLocaleContainer>;
+    readonly tables: IR<SerializedResource<SpLocaleContainer>>;
     readonly dispatch: (action: Actions) => void;
     readonly id: (suffix: string) => string;
     readonly handleClose: () => void;
@@ -240,7 +250,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         .map((name) => [name, name] as const)
     );
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
-      ([_id, { name }]) => name === items[itemId].picklistname
+      ([_id, { name }]) => name === items[itemId].pickListName
     )?.[0];
     return (
       <Container.Full>
@@ -315,7 +325,12 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('tableFormat')}
               <PickList
                 value={table.format}
-                groups={{ '': filterFormatters(dataObjFormatters, table.name) }}
+                groups={{
+                  '': filterFormatters(
+                    dataObjFormatters,
+                    table.name as keyof Tables
+                  ),
+                }}
                 onChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
@@ -330,7 +345,10 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <PickList
                 value={table.aggregator}
                 groups={{
-                  '': filterFormatters(dataObjAggregators, table.name),
+                  '': filterFormatters(
+                    dataObjAggregators,
+                    table.name as keyof Tables
+                  ),
                 }}
                 onChange={(value): void =>
                   dispatch({
@@ -343,7 +361,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.Generic>
             <Label.ForCheckbox>
               <Input.Checkbox
-                checked={table.ishidden}
+                checked={table.isHidden}
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
@@ -437,7 +455,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.Generic>
             <Label.ForCheckbox>
               <Input.Checkbox
-                checked={items[itemId].ishidden}
+                checked={items[itemId].isHidden}
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
@@ -460,7 +478,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 checked={
                   items[itemId].dataModel.canChangeIsRequired
                     ? items[itemId].dataModel.isRequired
-                    : items[itemId].isrequired ?? false
+                    : items[itemId].isRequired ?? false
                 }
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
                 onValueChange={(value): void =>
@@ -512,13 +530,13 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 },
                 webLink: {
                   label: commonText('webLink'),
-                  value: items[itemId].weblinkname,
+                  value: items[itemId].webLinkName,
                   values: { '': webLinks },
                 },
                 // TODO: replace with a Query Combo Box?
                 pickList: {
                   label: commonText('pickList'),
-                  value: items[itemId].picklistname,
+                  value: items[itemId].pickListName,
                   values: {
                     [commonText('userDefined')]: userPickLists,
                     [commonText('system')]: systemPickLists,

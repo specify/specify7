@@ -233,24 +233,28 @@ function serializeModel<SCHEMA extends AnySchema>(
           ];
         } else return [camelFieldName, value];
       })
-    ) as SerializedResource<SCHEMA>
-  );
+    )
+  ) as SerializedResource<SCHEMA>;
 }
 
 /** Set missing required fields to literals. Set missing optional fields to null */
-export const addMissingFields = <SCHEMA extends AnySchema>(
-  tableName: SCHEMA['tableName'],
-  record: Partial<SerializedResource<SCHEMA>>,
+export const addMissingFields = <TABLE_NAME extends keyof Tables>(
+  tableName: TABLE_NAME,
+  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
   setOptionalToo = false
-): SerializedResource<SCHEMA> => ({
+): SerializedResource<Tables[TABLE_NAME]> => ({
   ...(Object.fromEntries(
     defined(getModel(tableName)).literalFields.map(
       ({ name, isRequired, type }) => [
         name,
-        isRequired || setOptionalToo ? parserFromType(type).value : null,
+        isRequired || setOptionalToo
+          ? parserFromType(type).value
+          : name === 'version'
+          ? 1
+          : null,
       ]
     )
-  ) as SerializedResource<SCHEMA>),
+  ) as SerializedResource<Tables[TABLE_NAME]>),
   resource_uri: getResourceApiUrl(tableName, 0),
   ...record,
 });

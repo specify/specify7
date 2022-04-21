@@ -18,6 +18,7 @@ export type UserInfo = {
   readonly resource_uri: string;
   readonly agent: SerializedModel<Agent>;
   readonly name: string;
+  readonly usertype: string;
 };
 
 const userInfo: Writable<UserInfo> = {} as Writable<UserInfo>;

@@ -5,7 +5,6 @@
 import React from 'react';
 
 import { ajax } from '../../ajax';
-import type { Tables } from '../../datamodel';
 import { fetchFormatters } from '../../dataobjformatters';
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
@@ -28,38 +27,9 @@ import { webLinks } from '../weblinkbutton';
 import { f } from '../../functools';
 import { cachableUrl } from '../../initialcontext';
 import { parseUrl } from '../../querystring';
-
-type Props = {
-  readonly onClose: () => void;
-};
-
-export type CommonTableFields = {
-  readonly timestampcreated: string;
-  readonly timestampmodified: string | null;
-  readonly createdbyagent: string;
-  readonly modifiedbyagent: string | null;
-  readonly version: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly resource_uri: string;
-};
-
-export type SpLocaleContainer = CommonTableFields & {
-  readonly id: number;
-  readonly aggregator: string | null;
-  // Readonly defaultui?: string;
-  readonly format: string | null;
-  readonly ishidden: boolean;
-  readonly issystem: boolean;
-  // Readonly isuiformatter: null;
-  readonly name: keyof Tables;
-  readonly picklistname: string | null;
-  /*
-   * Readonly schematype: 0 | 1;
-   * readonly items: string;
-   */
-  readonly descs: string;
-  readonly names: string;
-};
+import { fetchCollection } from '../../collection';
+import { SerializedResource } from '../../datamodelutils';
+import { SpLocaleContainer } from '../../datamodel';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -93,7 +63,9 @@ const languagesUrl = cachableUrl('/context/schema/language/');
 
 function SchemaConfigWrapper({
   onClose: handleClose,
-}: Props): JSX.Element | null {
+}: {
+  readonly onClose: () => void;
+}): JSX.Element | null {
   const { language: defaultLanguage, table: defaultTable } = parseUrl();
 
   useTitle(commonText('schemaConfig'));
@@ -139,7 +111,7 @@ function SchemaConfigWrapper({
     ),
     true
   );
-  const [tables] = useAsyncState<IR<SpLocaleContainer>>(
+  const [tables] = useAsyncState<IR<SerializedResource<SpLocaleContainer>>>(
     React.useCallback(async () => {
       const excludedTables = new Set(
         Object.entries(schema.models)
@@ -147,14 +119,14 @@ function SchemaConfigWrapper({
           .map(([tableName]) => tableName.toLowerCase())
       );
 
-      return ajax<{ readonly objects: RA<SpLocaleContainer> }>(
-        '/api/specify/splocalecontainer/?limit=0&domainfilter=true&schematype=0',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } }
-      )
-        .then(({ data: { objects } }) =>
+      return fetchCollection('SpLocaleContainer', {
+        limit: 0,
+        domainFilter: true,
+        schemaType: 0,
+      })
+        .then(({ records }) =>
           // Exclude system tables
-          objects.filter(({ name }) => !excludedTables.has(name))
+          records.filter(({ name }) => !excludedTables.has(name))
         )
         .then((tables) =>
           // Index by ID

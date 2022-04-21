@@ -5,12 +5,16 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './datamodelutils';
-import { serializeResource } from './datamodelutils';
+import {
+  addMissingFields,
+  keysToLowerCase,
+  serializeResource,
+} from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import { getModel } from './schema';
-import { RA } from './types';
 import { formatUrl } from './querystring';
+import { getModel } from './schema';
+import type { RA } from './types';
 
 /*
  * TODO: experiment with an object singleton:
@@ -51,6 +55,35 @@ export const deleteResource = async (
     },
     { expectedResponseCodes: [Http.NO_CONTENT] }
   ).then(f.void);
+
+export const createResource = async <TABLE_NAME extends keyof Tables>(
+  tableName: TABLE_NAME,
+  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
+) =>
+  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+    `/api/specify/${tableName.toLowerCase()}/`,
+    {
+      method: 'POST',
+      body: keysToLowerCase(addMissingFields(tableName, data)),
+      headers: { Accept: 'application/json' },
+    },
+    { expectedResponseCodes: [Http.CREATED] }
+  ).then(({ data }) => serializeResource(data));
+
+export const saveResource = async <TABLE_NAME extends keyof Tables>(
+  tableName: TABLE_NAME,
+  id: number,
+  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
+) =>
+  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+    `/api/specify/${tableName.toLowerCase()}/${id}/`,
+    {
+      method: 'PUT',
+      body: keysToLowerCase(addMissingFields(tableName, data)),
+      headers: { Accept: 'application/json' },
+    },
+    { expectedResponseCodes: [Http.NO_CONTENT] }
+  ).then(({ data }) => serializeResource(data));
 
 /**
  * Generate a URL to view the resource in the front-end

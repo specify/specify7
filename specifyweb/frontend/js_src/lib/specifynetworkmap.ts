@@ -13,6 +13,7 @@ import type { RA } from './types';
 import { f } from './functools';
 import { toTable } from './specifymodel';
 import { treeRanksPromise } from './treedefinitions';
+import { userInformation } from './userinfo';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -66,7 +67,7 @@ export const fetchLocalOccurrences = async (
       limit: LIMIT + 1,
       selectdistinct: false,
       countonly: false,
-      specifyuser: '/api/specify/specifyuser/1/',
+      specifyuser: userInformation.resource_uri,
       isfavorite: true,
       ordinal: 32_767,
       formatauditrecids: false,

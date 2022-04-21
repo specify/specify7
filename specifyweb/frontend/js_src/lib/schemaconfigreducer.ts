@@ -5,14 +5,15 @@
 import type { Action } from 'typesafe-reducer';
 import { ensureState, generateReducer } from 'typesafe-reducer';
 
-import type { ItemType, SpLocaleItem } from './components/schemaconfig';
+import type { ItemType } from './components/schemaconfig';
 import type { States } from './components/schemaconfigstate';
 import type {
-  SpLocaleContainer,
   WithFetchedStrings,
   WithFieldInfo,
   WithTableInfo,
 } from './components/toolbar/schemaconfig';
+import type { SpLocaleContainer, SpLocaleContainerItem } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
 import { f } from './functools';
 import { sortObjectsByKey } from './helpers';
 import type { IR } from './types';
@@ -31,15 +32,21 @@ type ChangeLanguageAction = Action<'ChangeLanguageAction'>;
 type ChooseTableAction = Action<
   'ChooseTableAction',
   {
-    table: SpLocaleContainer;
+    table: SerializedResource<SpLocaleContainer>;
   }
 >;
 
 type FetchedTableDataAction = Action<
   'FetchedTableDataAction',
   {
-    table: SpLocaleContainer & WithFetchedStrings & WithTableInfo;
-    items: IR<SpLocaleItem & WithFetchedStrings & WithFieldInfo>;
+    table: SerializedResource<SpLocaleContainer> &
+      WithFetchedStrings &
+      WithTableInfo;
+    items: IR<
+      SerializedResource<SpLocaleContainerItem> &
+        WithFetchedStrings &
+        WithFieldInfo
+    >;
   }
 >;
 

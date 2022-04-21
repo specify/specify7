@@ -1,63 +1,27 @@
 import React from 'react';
 
-import { ajax, Http, ping } from '../ajax';
-import { serializeResource } from '../datamodelutils';
+import { SerializedResource, serializeResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
 import { schema } from '../schema';
 import { fetchStrings, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
-import type { IR, RA } from '../types';
+import type { IR, PartialBy, RA } from '../types';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { stateReducer } from './schemaconfigstate';
-import type {
-  CommonTableFields,
-  SpLocaleContainer,
-  WithFetchedStrings,
-  WithFieldInfo,
-} from './toolbar/schemaconfig';
+import type { WithFetchedStrings, WithFieldInfo } from './toolbar/schemaconfig';
 import { useUnloadProtect } from './navigation';
+import { createResource, saveResource } from '../resource';
+import { fetchCollection } from '../collection';
+import {
+  SpLocaleContainer,
+  SpLocaleContainerItem,
+  SpLocaleItemStr,
+} from '../datamodel';
 
-export type SpLocaleItem = CommonTableFields & {
-  readonly id: number;
-  readonly format: null;
-  readonly ishidden: boolean;
-  readonly isrequired: boolean;
-  /*
-   * Readonly issystem: boolean;
-   * readonly isuiformatter: boolean;
-   */
-  readonly name: string;
-  readonly picklistname: string | null;
-  readonly type: null;
-  readonly weblinkname: string | null;
-  /*
-   * Readonly container: string;
-   * readonly spexportschemaitems: string;
-   */
-  readonly descs: string;
-  readonly names: string;
-};
-
-type SpLocaleItemStringBase = {
-  readonly country: string | null;
-  readonly language: string;
-  readonly text: string;
-  readonly containerdesc?: string;
-  readonly contaninername?: string;
-  readonly itemdesc?: string;
-  readonly itemname?: string;
-  // Readonly variant: null;
-};
-
-export type SpLocaleItemString = CommonTableFields &
-  SpLocaleItemStringBase & {
-    readonly id: number;
-  };
-
-export type NewSpLocaleItemString = SpLocaleItemStringBase & {
-  readonly id?: number;
+export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
+export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'> & {
   readonly parent?: string;
 };
 
@@ -87,9 +51,9 @@ export function SchemaConfig({
   onSave: handleSaved,
 }: {
   readonly languages: IR<string>;
-  readonly tables: IR<SpLocaleContainer>;
+  readonly tables: IR<SerializedResource<SpLocaleContainer>>;
   readonly defaultLanguage: string | undefined;
-  readonly defaultTable: SpLocaleContainer | undefined;
+  readonly defaultTable: SerializedResource<SpLocaleContainer> | undefined;
   readonly webLinks: RA<Readonly<[string, string]>>;
   readonly uiFormatters: RA<UiFormatter>;
   readonly dataObjFormatters: IR<DataObjectFormatter>;
@@ -170,15 +134,20 @@ export function SchemaConfig({
         )
       ),
       // Fetch table items and their strings
-      ajax<{ readonly objects: RA<SpLocaleItem> }>(
-        `/api/specify/splocalecontaineritem/?limit=0&container_id=${tableId}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } }
-      )
-        .then(({ data: { objects } }) =>
-          destructorCalled ? [] : fetchStrings(objects, language, country)
+      fetchCollection('SpLocaleContainerItem', {
+        limit: 0,
+        container: tableId,
+      })
+        .then(({ records }) =>
+          destructorCalled ? [] : fetchStrings(records, language, country)
         )
-        .then<RA<SpLocaleItem & WithFetchedStrings & WithFieldInfo>>((items) =>
+        .then<
+          RA<
+            SerializedResource<SpLocaleContainerItem> &
+              WithFetchedStrings &
+              WithFieldInfo
+          >
+        >((items) =>
           items.map((item) => ({
             ...item,
             dataModel: fields[item.name] ?? {
@@ -232,30 +201,20 @@ export function SchemaConfig({
     const saveString = async (
       resource: NewSpLocaleItemString | SpLocaleItemString
     ): Promise<unknown> =>
-      'resource_uri' in resource && resource.id >= 0
-        ? saveResource(resource as CommonTableFields)
-        : ping(
-            '/api/specify/splocaleitemstr/',
-            {
-              method: 'POST',
-              body: prepareNewString(resource as NewSpLocaleItemString),
-            },
-            { expectedResponseCodes: [Http.CREATED] }
+      'resource_uri' in resource &&
+      typeof resource.id === 'object' &&
+      resource.id >= 0
+        ? saveResource('SpLocaleItemStr', resource.id, resource)
+        : createResource(
+            'SpLocaleItemStr',
+            prepareNewString(resource as NewSpLocaleItemString)
           );
-
-    const saveResource = async (
-      resource: CommonTableFields
-    ): Promise<unknown> =>
-      ping(resource.resource_uri, {
-        method: 'PUT',
-        body: resource,
-      });
 
     const { strings, ...table } = state.table;
     const requests = [
       ...(state.tableWasModified
         ? [
-            saveResource(table),
+            saveResource('SpLocaleContainer', table.id, table),
             saveString(strings.name),
             saveString(strings.desc),
           ]
@@ -263,7 +222,7 @@ export function SchemaConfig({
       ...state.modifiedItems
         .map((id) => state.items[id])
         .flatMap(({ strings, dataModel: _, ...item }) => [
-          saveResource(item),
+          saveResource('SpLocaleContainerItem', item.id, item),
           saveString(strings.name),
           saveString(strings.desc),
         ]),

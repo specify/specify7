@@ -1,9 +1,9 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
 import type { RecordSet, SpQuery, Tables } from '../datamodel';
-import type { AnySchema, SerializedModel } from '../datamodelutils';
+import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { removeItem } from '../helpers';
@@ -20,6 +20,7 @@ import {
   unParseQueryFields,
 } from '../querybuilderutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
+import { createResource } from '../resource';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { treeRanksPromise } from '../treedefinitions';
@@ -182,23 +183,20 @@ function CreateRecordSet({
           resource={state.recordSet}
           onSaving={(): false => {
             setState({ type: 'Saving' });
-            void ajax<SerializedModel<RecordSet>>(
-              '/api/specify/recordset/',
-              {
-                method: 'POST',
-                body: keysToLowerCase({
-                  ...serializeResource(state.recordSet),
-                  version: 1,
-                  dbTableId: defined(getModel(baseTableName)).tableId,
-                  recordSetItems: getIds().map((id) => ({
-                    recordId: id,
-                  })),
-                }),
-                headers: { Accept: 'application/json' },
-              },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
-              .then(({ data: { id } }) =>
+            createResource('RecordSet', {
+              ...serializeResource(state.recordSet),
+              version: 1,
+              dbTableId: defined(getModel(baseTableName)).tableId,
+              /*
+               * Back-end has an exception allowing passing
+               * inline data for record set items
+               */
+              // @ts-expect-error
+              recordSetItems: getIds().map((id) => ({
+                recordId: id,
+              })),
+            })
+              .then(({ id }) =>
                 setState({
                   type: 'Saved',
                   recordSetId: id,

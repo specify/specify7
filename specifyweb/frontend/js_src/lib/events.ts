@@ -19,7 +19,8 @@ export const eventListener = <TYPE extends IR<unknown>>(
   },
   trigger: <EVENT_NAME extends string & keyof TYPE>(
     eventName: EVENT_NAME,
-    payload: TYPE[EVENT_NAME]
+    // If payload type is undefined, don't require second argument
+    ...[payload]: TYPE[EVENT_NAME] extends undefined ? [] : [TYPE[EVENT_NAME]]
   ): boolean =>
     eventTarget.dispatchEvent(new CustomEvent(eventName, { detail: payload })),
 });
