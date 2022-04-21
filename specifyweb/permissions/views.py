@@ -319,6 +319,62 @@ class UserRolesPT(PermissionTarget):
     update = PermissionTargetAction()
     read = PermissionTargetAction()
 
+class AllUserRoles(LoginRequiredMixin, View):
+    def get(self, request, collectionid: int) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.read])
+
+        data = [
+            {
+                'roleid': role.id,
+                'rolename': role.name,
+                'users': [
+                    {'userid': user.id, 'username': user.name}
+                    for user in Specifyuser.objects.filter(roles__role=role)
+                ]
+            }
+            for role in models.Role.objects.filter(collection_id=collectionid)
+        ]
+
+        return http.JsonResponse(data, safe=False)
+
+all_user_roles = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns users belonging to all roles in given collection.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "roleid": { "type": "integer", "description": "The role id." },
+                                    "rolename": { "type": "string", "description": "The role name." },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "description": "The users.",
+                                            "properties": {
+                                                "userid": { "type": "integer", "description": "The user id." },
+                                                "username": { "type": "string", "description": "The user name." },
+                                            },
+                                            "required": ['userid', 'username'],
+                                            "additionalProperties": False,
+                                        }
+                                    }
+                                },
+                                'required': ['roleid', 'rolename', 'users'],
+                                'additionalProperties': False
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+})(AllUserRoles.as_view())
 
 class UserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int, userid: int) -> http.HttpResponse:
