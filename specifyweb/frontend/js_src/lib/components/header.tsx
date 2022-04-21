@@ -235,9 +235,9 @@ function UserToolsColumn({
                         typeof view === 'string' ? view : `${basePath}${task}/`
                       }
                       className={
-                        typeof view === 'string' && basePath === ''
-                          ? undefined
-                          : className.navigationHandled
+                        typeof view === 'string' && basePath === '/'
+                          ? className.navigationHandled
+                          : undefined
                       }
                       onClick={(event): void => {
                         if (typeof view === 'string') {
@@ -245,18 +245,19 @@ function UserToolsColumn({
                           else handleClose();
                           return;
                         }
-                        event.preventDefault();
                         if (!isExternalLink) handleClose();
-                        const backboneView = view({
-                          onClose: (): void => void backboneView.remove(),
-                          urlParameter: undefined,
-                        });
-                        if (isOverlay)
+
+                        if (isOverlay) {
+                          event.preventDefault();
+                          const backboneView = view({
+                            onClose: (): void => void backboneView.remove(),
+                            urlParameter: undefined,
+                          });
                           setCurrentOverlay(
                             backboneView,
                             `${basePath}${task}/`
                           );
-                        else setCurrentView(backboneView);
+                        }
                       }}
                     >
                       {title}
