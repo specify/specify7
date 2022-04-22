@@ -431,7 +431,9 @@ export const preferenceDefinitions = {
       queryComboBox: {
         title: preferencesText('queryComboBox'),
         items: {
-          searchAlgorithm: defineItem<'startsWith' | 'contains'>({
+          searchAlgorithm: defineItem<
+            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+          >({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -441,6 +443,13 @@ export const preferenceDefinitions = {
                 value: 'startsWith',
                 title: preferencesText('startsWith'),
                 description: preferencesText('startsWithDescription'),
+              },
+              {
+                value: 'startsWithCaseSensitive',
+                title: preferencesText('startsWithCaseSensitive'),
+                description: preferencesText(
+                  'startsWithCaseSensitiveDescription'
+                ),
               },
               {
                 value: 'contains',

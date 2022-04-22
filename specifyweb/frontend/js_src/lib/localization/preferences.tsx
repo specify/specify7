@@ -341,29 +341,40 @@ export const preferencesText = createDictionary({
     'es-es': 'Search Algorithm',
   },
   startsWith: {
-    'en-us': 'Starts With',
-    'ru-ru': 'Starts With',
-    ca: 'Starts With',
-    'es-es': 'Starts With',
+    'en-us': 'Starts With (case-insensitive)',
+    'ru-ru': 'Starts With (case-insensitive)',
+    ca: 'Starts With (case-insensitive)',
+    'es-es': 'Starts With (case-insensitive)',
   },
   startsWithDescription: {
+    'en-us': 'Search for values that begin with a given query string',
+    'ru-ru': 'Search for values that begin with a given query string',
+    ca: 'Search for values that begin with a given query string',
+    'es-es': 'Search for values that begin with a given query string',
+  },
+  startsWithCaseSensitive: {
+    'en-us': 'Starts With (case-sensitive)',
+    'ru-ru': 'Starts With (case-sensitive)',
+    ca: 'Starts With (case-sensitive)',
+    'es-es': 'Starts With (case-sensitive)',
+  },
+  startsWithCaseSensitiveDescription: {
     'en-us':
-      'Search for values that begin with a given query string (case-insensitive)',
+      'Search for values that begin with a given query string. Can use wildcards',
     'ru-ru':
-      'Search for values that begin with a given query string (case-insensitive)',
-    ca: 'Search for values that begin with a given query string (case-insensitive)',
+      'Search for values that begin with a given query string. Can use wildcards',
+    ca: 'Search for values that begin with a given query string. Can use wildcards',
     'es-es':
-      'Search for values that begin with a given query string (case-insensitive)',
+      'Search for values that begin with a given query string. Can use wildcards',
   },
   contains: {
-    'en-us': 'Contains',
-    'ru-ru': 'Contains',
-    ca: 'Contains',
-    'es-es': 'Contains',
+    'en-us': 'Contains (case-sensitive)',
+    'ru-ru': 'Contains (case-sensitive)',
+    ca: 'Contains (case-sensitive)',
+    'es-es': 'Contains (case-sensitive)',
   },
   containsDescription: {
-    'en-us':
-      'Search for values that contain a given query string (case-sensitive)',
+    'en-us': 'Search for values that contain a given query string',
     'ru-ru':
       'Search for values that contain a given query string (case-sensitive)',
     ca: 'Search for values that contain a given query string (case-sensitive)',
@@ -381,6 +392,12 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Language',
     ca: 'Language',
     'es-es': 'Language',
+  },
+  languageDescription: {
+    'en-us': 'Determines field captions, usage notes and table captions',
+    'ru-ru': 'Determines field captions, usage notes and table captions',
+    ca: 'Determines field captions, usage notes and table captions',
+    'es-es': 'Determines field captions, usage notes and table captions',
   },
   resetToDefault: {
     'en-us': 'Reset to default',

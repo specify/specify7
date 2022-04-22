@@ -39,19 +39,27 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  const runContainsQuery =
-    isTreeTable ||
-    getUserPref('form', 'queryComboBox', 'searchAlgorithm') === 'contains';
+  const searchAlgorithm = isTreeTable
+    ? 'contains'
+    : getUserPref('form', 'queryComboBox', 'searchAlgorithm');
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),
   ])
     .toSpQueryField()
     .set('isDisplay', false)
-    .set('startValue', runContainsQuery ? `%${value}` : value)
+    .set(
+      'startValue',
+      searchAlgorithm === 'contains'
+        ? `%${value}%`
+        : searchAlgorithm === 'startsWithCaseSensitive'
+        ? `%${value}`
+        : value
+    )
     .set(
       'operStart',
-      runContainsQuery
+      searchAlgorithm === 'contains' ||
+        searchAlgorithm === 'startsWithCaseSensitive'
         ? queryFieldFilters.like.id
         : queryFieldFilters.startsWith.id
     );

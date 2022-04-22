@@ -15,17 +15,19 @@ import { Contexts } from './contexts';
 import { crash } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
-import { SplashScreen } from './splashscreen';
 import { goTo } from './navigation';
 import { SetCssVariables } from './preferenceshooks';
+import { SplashScreen } from './splashscreen';
 
 unlockInitialContext('main');
 
+// TODO: document that you can alt click on new tab links
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');
   if (
     link !== null &&
     link.href.length > 0 &&
+    link.getAttribute('href')?.startsWith('#') === false &&
     (link.target !== '_blank' || event.altKey) &&
     !link.classList.contains(className.navigationHandled)
   ) {

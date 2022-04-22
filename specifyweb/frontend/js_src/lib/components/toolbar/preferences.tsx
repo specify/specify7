@@ -39,6 +39,7 @@ import { LoadingContext } from '../contexts';
 import {
   useAsyncState,
   useBooleanState,
+  useId,
   useTitle,
   useValidation,
 } from '../hooks';
@@ -97,9 +98,10 @@ function Preferences({
         if (definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
-    []
+    [handleChangesMade, handleRestartNeeded]
   );
 
+  const id = useId('preferences');
   return (
     <Container.Full>
       <H2>{commonText('preferences')}</H2>
@@ -113,78 +115,102 @@ function Preferences({
           )
         }
       >
-        <div className="flex flex-col flex-1 gap-6 overflow-y-auto">
-          {definitions.map(
-            ([category, { title, description = undefined, subCategories }]) => (
-              <Container.Base key={category} className="gap-8">
-                <h3 className="text-2xl">{title}</h3>
-                {typeof description === 'string' && <p>{description}</p>}
-                {subCategories.map(
-                  ([
-                    subcategory,
-                    { title, description = undefined, items },
-                  ]) => (
-                    <section key={subcategory} className="flex flex-col gap-4">
-                      <div className="flex">
-                        <span className="flex-1" />
-                        <h4 className={`${className.headerGray} text-center`}>
-                          {title}
-                        </h4>
-                        <div className="flex justify-end flex-1">
-                          <Button.Blue
-                            aria-label={preferencesText('resetToDefault')}
-                            title={preferencesText('resetToDefault')}
-                            className="!p-1"
-                            onClick={(): void =>
-                              items.forEach(([name, { defaultValue }]) =>
-                                setPref(
-                                  category,
-                                  subcategory,
-                                  name,
-                                  defaultValue
+        <div className="relative flex gap-6 overflow-y-auto">
+          {/* TODO: highlight link that corresponds to current section */}
+          <aside className="sticky top-0">
+            <menu>
+              {definitions.map(([category, { title }]) => (
+                <li key={category}>
+                  <Link.Default href={`#${id(category)}`}>{title}</Link.Default>
+                </li>
+              ))}
+            </menu>
+          </aside>
+          <div className="flex flex-col flex-1 gap-6 overflow-y-auto">
+            {definitions.map(
+              ([
+                category,
+                { title, description = undefined, subCategories },
+              ]) => (
+                <Container.Base
+                  key={category}
+                  className="gap-8"
+                  id={id(category)}
+                >
+                  <h3 className="text-2xl">{title}</h3>
+                  {typeof description === 'string' && <p>{description}</p>}
+                  {subCategories.map(
+                    ([
+                      subcategory,
+                      { title, description = undefined, items },
+                    ]) => (
+                      <section
+                        key={subcategory}
+                        className="flex flex-col gap-4"
+                      >
+                        <div className="flex items-center">
+                          <span className="flex-1" />
+                          <h4 className={`${className.headerGray} text-center`}>
+                            {title}
+                          </h4>
+                          <div className="flex justify-end flex-1">
+                            <Button.Blue
+                              aria-label={preferencesText('resetToDefault')}
+                              title={preferencesText('resetToDefault')}
+                              className="!p-1"
+                              onClick={(): void =>
+                                items.forEach(([name, { defaultValue }]) =>
+                                  setPref(
+                                    category,
+                                    subcategory,
+                                    name,
+                                    defaultValue
+                                  )
                                 )
-                              )
-                            }
-                          >
-                            {icons.refresh}
-                          </Button.Blue>
-                        </div>
-                      </div>
-                      {typeof description === 'string' && <p>{description}</p>}
-                      {items.map(([name, item]) => (
-                        <label key={name} className="flex items-start gap-2">
-                          <div className="flex flex-col flex-1 gap-2">
-                            <p
-                              className={`flex items-center justify-end flex-1
-                              text-right min-h-[theme(spacing.8)]`}
+                              }
                             >
-                              {item.title}
-                            </p>
-                            {typeof item.description === 'string' && (
-                              <p className="flex justify-end flex-1 text-right text-gray-500">
-                                {item.description}
+                              {icons.refresh}
+                            </Button.Blue>
+                          </div>
+                        </div>
+                        {typeof description === 'string' && (
+                          <p>{description}</p>
+                        )}
+                        {items.map(([name, item]) => (
+                          <label key={name} className="flex items-start gap-2">
+                            <div className="flex flex-col flex-1 gap-2">
+                              <p
+                                className={`flex items-center justify-end flex-1
+                              text-right min-h-[theme(spacing.8)]`}
+                              >
+                                {item.title}
                               </p>
-                            )}
-                          </div>
-                          <div
-                            className={`flex flex-col justify-center flex-1 gap-2
+                              {typeof item.description === 'string' && (
+                                <p className="flex justify-end flex-1 text-right text-gray-500">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                            <div
+                              className={`flex flex-col justify-center flex-1 gap-2
                             min-h-[theme(spacing.8)]`}
-                          >
-                            <Item
-                              item={item}
-                              category={category}
-                              subcategory={subcategory}
-                              name={name}
-                            />
-                          </div>
-                        </label>
-                      ))}
-                    </section>
-                  )
-                )}
-              </Container.Base>
-            )
-          )}
+                            >
+                              <Item
+                                item={item}
+                                category={category}
+                                subcategory={subcategory}
+                                name={name}
+                              />
+                            </div>
+                          </label>
+                        ))}
+                      </section>
+                    )
+                  )}
+                </Container.Base>
+              )
+            )}
+          </div>
         </div>
         <div className="flex justify-end">
           {changesMade ? (
