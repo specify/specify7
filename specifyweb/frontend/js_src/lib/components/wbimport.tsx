@@ -406,7 +406,7 @@ function Preview({
       <div className="overflow-auto">
         <table>
           <thead>
-            <tr className="dark:bg-neutral-700 text-center bg-gray-500">
+            <tr className="dark:bg-neutral-700 text-center bg-gray-200">
               {header.map((cell, index) => (
                 <th
                   key={index}
