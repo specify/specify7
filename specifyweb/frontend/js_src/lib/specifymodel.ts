@@ -217,20 +217,20 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     this.localization = localization[this.name.toLowerCase()] ?? { items: {} };
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
-      tableDefinition.idFieldName
+      tableDefinition.idFieldName.toLowerCase()
     ] ??= {
       name: commonText('id'),
       desc: null,
       format: null,
       picklistname: null,
       weblinkname: null,
-      isrequired: true,
+      isrequired: false,
       ishidden: true,
     };
 
     this.idField = new LiteralField(this, {
       name: tableDefinition.idFieldName,
-      required: true,
+      required: false,
       type: 'java.lang.Integer',
       column: tableDefinition.idFieldName,
       indexed: true,

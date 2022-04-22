@@ -7,12 +7,7 @@ import React from 'react';
 import { f } from '../../functools';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import type {
-  GenericPreferencesCategories,
-  PreferenceItem,
-  PreferenceItemComponent,
-} from '../preferences';
-import { preferenceDefinitions } from '../preferences';
+import { hasPermission } from '../../permissions';
 import {
   awaitPrefsSynced,
   preferencesPromise,
@@ -45,9 +40,14 @@ import {
 } from '../hooks';
 import { icons } from '../icons';
 import type { UserTool } from '../main';
+import type {
+  GenericPreferencesCategories,
+  PreferenceItem,
+  PreferenceItemComponent,
+} from '../preferences';
+import { preferenceDefinitions } from '../preferences';
 import { prefEvents, usePref } from '../preferenceshooks';
 import { createBackboneView } from '../reactbackboneextend';
-import { hasPermission } from '../../permissions';
 
 function Preferences({
   onClose: handleClose,
