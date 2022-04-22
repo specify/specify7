@@ -289,7 +289,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
           </menu>
         </header>
-        <div className="sm:flex-row sm:h-full flex flex-col gap-4">
+        <div className="sm:flex-row flex flex-col flex-1 gap-4 overflow-hidden">
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
             <H3>
               {commonText('tableInline')} {table.name}
