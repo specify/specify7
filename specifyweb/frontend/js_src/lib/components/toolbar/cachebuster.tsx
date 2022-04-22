@@ -35,7 +35,7 @@ function CacheBuster(): JSX.Element | null {
   return isLoaded ? (
     <Dialog
       header={commonText('clearCache')}
-      onClose={(): void => window.location.reload()}
+      onClose={(): void => window.location.assign('/')}
       buttons={commonText('reload')}
     >
       {commonText('cleanerCacheDialogMessage')}

@@ -183,9 +183,10 @@ export function CollectionOneToManyPlugin({
                       className={className.navigationHandled}
                       onClick={(event): void => {
                         event.preventDefault();
-                        const collectionsIds = Object.keys(
-                          userInformation.availableCollections
-                        ).map(f.parseInt);
+                        const collectionsIds =
+                          userInformation.availableCollections.map(
+                            ({ id }) => id
+                          );
                         if (collectionsIds.includes(data.otherCollection.id))
                           switchCollection(
                             data.otherCollection.id,

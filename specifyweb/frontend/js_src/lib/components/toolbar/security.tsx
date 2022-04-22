@@ -45,8 +45,8 @@ function SecurityPanel(): JSX.Element | null {
               Object.fromEntries(
                 records
                   .filter((collection) =>
-                    Object.keys(userInformation.availableCollections).includes(
-                      collection.id.toString()
+                    userInformation.availableCollections.some(
+                      ({ id }) => id === collection.id
                     )
                   )
                   .map((collection) => [collection.id, collection])
@@ -108,7 +108,7 @@ function SecurityPanel(): JSX.Element | null {
     false
   );
 
-  // TODO: write a routing library that would make navigation easier
+  // TODO: use a routing library to make navigation easier
   return typeof data === 'object' ? (
     <Container.Full>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
@@ -133,8 +133,8 @@ function SecurityPanel(): JSX.Element | null {
               {Object.values(data.collections)
                 .filter((collection) =>
                   // Only show collections you have access to
-                  Object.keys(userInformation.availableCollections).some(
-                    ([id]) => f.parseInt(id) === collection.id
+                  userInformation.availableCollections.filter(
+                    ({ id }) => id === collection.id
                   )
                 )
                 .map((collection, index) => (

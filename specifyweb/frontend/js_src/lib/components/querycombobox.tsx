@@ -322,8 +322,8 @@ export function QueryComboBox({
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
-        !Object.keys(userInformation.availableCollections).includes(
-          relatedCollectionId.toString()
+        !userInformation.availableCollections.some(
+          ({ id }) => id === relatedCollectionId
         )
       ? loading(
           fetchResource('Collection', relatedCollectionId).then((collection) =>
