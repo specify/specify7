@@ -19,6 +19,7 @@ import { OicLogin } from './oiclogin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 import { unlockInitialContext } from '../initialcontext';
+import { SetCssVariables } from './preferenceshooks';
 
 unlockInitialContext('login');
 
@@ -112,6 +113,7 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <React.StrictMode>
       <Contexts>
+        <SetCssVariables />
         {providers.length > 0 ? (
           <OicLogin
             data={{

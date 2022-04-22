@@ -10,7 +10,6 @@ import ReactDOM from 'react-dom';
 import { csrfToken } from '../csrftoken';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';
-import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction, toLowerCase } from '../helpers';
 import { unlockInitialContext } from '../initialcontext';
@@ -28,7 +27,7 @@ import {
 } from './basic';
 import { Contexts } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
-import { usePref } from './preferenceshooks';
+import { SetCssVariables, usePref } from './preferenceshooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 
 unlockInitialContext('chooseCollection');
@@ -87,14 +86,12 @@ function ChooseCollection({
     keyof Collection['fields'];
   const availableCollections = React.useMemo(
     () =>
-      Array.from(data.availableCollections)
-        .sort(
-          sortFunction(
-            (collection) => collection[toLowerCase(sortField)],
-            isReverseSort
-          )
+      Array.from(data.availableCollections).sort(
+        sortFunction(
+          (collection) => collection[toLowerCase(sortField)],
+          isReverseSort
         )
-        .map(serializeResource),
+      ),
     [data.availableCollections, isReverseSort, sortField]
   );
 
@@ -107,7 +104,7 @@ function ChooseCollection({
         {hasAccess ? (
           <>
             <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
-              {availableCollections.map(({ id, collectionName }) => (
+              {availableCollections.map(({ id, collectionname }) => (
                 <Label.ForCheckbox key={id}>
                   <Input.Radio
                     name="collection"
@@ -115,7 +112,7 @@ function ChooseCollection({
                     checked={selectedCollection === id}
                     onChange={(): void => setSelectedCollection(id)}
                   />
-                  {collectionName}
+                  {collectionname}
                 </Label.ForCheckbox>
               ))}
             </div>
@@ -153,6 +150,7 @@ window.addEventListener('load', () => {
   portalRoot.setAttribute('class', className.rootText);
   ReactDOM.render(
     <React.StrictMode>
+      <SetCssVariables />
       <Contexts>
         <ChooseCollection
           data={{
@@ -162,7 +160,9 @@ window.addEventListener('load', () => {
             ]
               .flat()
               .filter(Boolean),
-            availableCollections: parseDjangoDump('available-collections'),
+            availableCollections: JSON.parse(
+              parseDjangoDump('available-collections')
+            ),
             initialValue: parseDjangoDump('initial-value'),
             nextUrl: parseDjangoDump('next-url'),
           }}

@@ -16,6 +16,8 @@ import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
 import { unlockInitialContext } from '../initialcontext';
+import { SetCssVariables } from './preferenceshooks';
+import { Contexts } from './contexts';
 
 unlockInitialContext('passwordChange');
 
@@ -98,14 +100,17 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <React.StrictMode>
       <ErrorBoundary>
-        <ChangePassword
-          data={{
-            formErrors: parseDjangoDump('form-errors'),
-            oldPasswordErrors: parseDjangoDump('old-password-errors'),
-            newPasswordErrors: parseDjangoDump('nex-password-errors'),
-            repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
-          }}
-        />
+        <Contexts>
+          <SetCssVariables />
+          <ChangePassword
+            data={{
+              formErrors: parseDjangoDump('form-errors'),
+              oldPasswordErrors: parseDjangoDump('old-password-errors'),
+              newPasswordErrors: parseDjangoDump('nex-password-errors'),
+              repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
+            }}
+          />
+        </Contexts>
       </ErrorBoundary>
     </React.StrictMode>,
     root

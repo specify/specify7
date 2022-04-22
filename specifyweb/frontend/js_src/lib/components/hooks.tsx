@@ -104,6 +104,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
   const validationMessageRef = React.useRef<string>(
     Array.isArray(message) ? message.join('\n') : message
   );
+  const isFirstError = React.useRef(validationMessageRef.current !== '');
 
   // Clear validation message on typing
   React.useEffect(() => {
@@ -137,10 +138,11 @@ export function useValidation<T extends Input = HTMLInputElement>(
   }, []);
 
   const setValidation = React.useCallback(function setValidation(
-    message: string | RA<string>
+    message: string | RA<string>,
+    forceShow = false
   ): void {
     const joined = Array.isArray(message) ? message.join('\n') : message;
-    if (validationMessageRef.current === joined) return;
+    if (validationMessageRef.current === joined && !forceShow) return;
 
     validationMessageRef.current = joined;
     const input = inputRef.current;
@@ -149,6 +151,10 @@ export function useValidation<T extends Input = HTMLInputElement>(
     input.setCustomValidity(joined);
 
     if (joined !== '' && isInputTouched(input)) input.reportValidity();
+    else if (isFirstError.current) {
+      isFirstError.current = false;
+      input.reportValidity();
+    }
   },
   []);
 
@@ -159,7 +165,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
     validationRef: React.useCallback(
       (input): void => {
         inputRef.current = input;
-        setValidation(validationMessageRef.current);
+        setValidation(validationMessageRef.current, true);
       },
       [setValidation]
     ),
