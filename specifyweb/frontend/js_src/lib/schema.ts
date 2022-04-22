@@ -50,24 +50,22 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
 ];
 
 export const fetchContext = import('./preferencesutils').then(
-  async ({ fetchPreferences, getUserPref }) =>
-    fetchPreferences
-      .then(async () =>
-        f.all({
-          tables: load<RA<TableDefinition>>(
-            '/context/datamodel.json',
-            'application/json'
-          ),
-          data: load<IR<SchemaLocalization>>(
-            `/context/schema_localization.json?lang=${getUserPref(
-              'form',
-              'schema',
-              'language'
-            )}`,
-            'application/json'
-          ),
-        })
-      )
+  async ({ getUserPref }) =>
+    f
+      .all({
+        tables: load<RA<TableDefinition>>(
+          '/context/datamodel.json',
+          'application/json'
+        ),
+        data: load<IR<SchemaLocalization>>(
+          `/context/schema_localization.json?lang=${getUserPref(
+            'form',
+            'schema',
+            'language'
+          )}`,
+          'application/json'
+        ),
+      })
       .then(({ tables, data }) => {
         localization = data;
         tables

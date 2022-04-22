@@ -12,7 +12,11 @@ import type {
   PreferenceItemComponent,
 } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
-import { awaitPrefsSynced, setPref } from '../../preferencesutils';
+import {
+  awaitPrefsSynced,
+  preferencesPromise,
+  setPref,
+} from '../../preferencesutils';
 import {
   getValidationAttributes,
   mergeParsers,
@@ -31,7 +35,12 @@ import {
   Submit,
 } from '../basic';
 import { LoadingContext } from '../contexts';
-import { useBooleanState, useTitle, useValidation } from '../hooks';
+import {
+  useAsyncState,
+  useBooleanState,
+  useTitle,
+  useValidation,
+} from '../hooks';
 import type { UserTool } from '../main';
 import { usePref } from '../preferenceshooks';
 import { createBackboneView } from '../reactbackboneextend';
@@ -261,7 +270,22 @@ const DefaultRenderer: PreferenceItemComponent<any> = function ({
     />
   );
 };
-const PreferencesView = createBackboneView(Preferences);
+
+function PreferencesWrapper({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element | null {
+  const [preferences] = useAsyncState(
+    React.useCallback(() => preferencesPromise, []),
+    true
+  );
+  return typeof preferences === 'object' ? (
+    <Preferences onClose={handleClose} />
+  ) : null;
+}
+
+const PreferencesView = createBackboneView(PreferencesWrapper);
 export const userTool: UserTool = {
   task: 'preferences',
   title: commonText('preferences'),

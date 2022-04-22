@@ -66,11 +66,6 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   );
 
 export const initialContext = Promise.all([
-  /*
-   * FIXME: cache preferences
-   * Fetch user preferences (NOT CACHED)
-   */
-  import('./preferencesutils'),
   // Fetch general context information (NOT CACHED)
   import('./schemabase'),
   // Fetch schema (cached)

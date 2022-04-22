@@ -2,13 +2,12 @@
  * Utilities for dealing with user preferences
  */
 
-import { fetchCollection, rawFetchCollection } from './collection';
+import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
 import { prefEvents } from './components/preferenceshooks';
 import type { SpAppResourceData } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import { toLowerCase } from './helpers';
 import type { Preferences } from './preferences';
 import { preferenceDefinitions } from './preferences';
 import {
@@ -22,6 +21,7 @@ import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
+import { getCache, setCache } from './cache';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,
@@ -53,7 +53,8 @@ let preferences: {
       [ITEM in keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
     };
   };
-} = {};
+} = getCache('userPreferences', 'cached', { defaultValue: {} });
+export type UserPreferences = typeof preferences;
 
 export function setPref<
   CATEGORY extends keyof Preferences,
@@ -121,6 +122,7 @@ export function setPref<
   }
 
   prefEvents.trigger('update');
+  setCache('userPreferences', 'cached', preferences);
   requestPreferencesSync();
 }
 
@@ -160,6 +162,7 @@ function requestPreferencesSync(): void {
 }
 
 async function syncPreferences(): Promise<void> {
+  await preferencesPromise;
   isSyncPending = false;
   return saveResource(
     'SpAppResourceData',
@@ -193,17 +196,30 @@ const resourceName = 'UserPreferences';
 
 let appResourceData: SerializedResource<SpAppResourceData> = undefined!;
 
-// TODO: cache preferences to local storage
+function updatePreferences(
+  resource: SerializedResource<SpAppResourceData>
+): SerializedResource<SpAppResourceData> {
+  appResourceData = resource;
+  preferences = JSON.parse(appResourceData.data ?? '{}');
+  prefEvents.trigger('update');
+  setCache('userPreferences', 'cached', preferences);
+  return appResourceData;
+}
 
-// Fetch app resource that stores current user preferences
-export const fetchPreferences = Promise.all([fetchDomain, fetchUser])
+/**
+ * Fetch app resource that stores current user preferences
+ *
+ * If app resourcee data with user preferences does not exists does not exist,
+ * check if SpAppResourceDir and SpAppResource exist and create them if needed,
+ * then, create the app resource data itself
+ */
+export const preferencesPromise = Promise.all([
+  fetchSchema,
+  fetchDomain,
+  fetchUser,
+])
   .then(async () =>
-    /*
-     * Can't use fetchCollection because schema is not yet loaded
-     * Can't wait for schema to load because schema localization endpoint depends
-     * on user preferences to get current schema language
-     */
-    rawFetchCollection(
+    fetchCollection(
       'SpAppResourceData',
       {
         limit: 1,
@@ -218,100 +234,62 @@ export const fetchPreferences = Promise.all([fetchDomain, fetchUser])
     )
   )
   .then(({ records }) =>
-    // Can't use serializeResource because schema is not yet loaded
     records.length === 1
-      ? updatePreferences(
-          Object.fromEntries(
-            (
-              [
-                'createdByAgent',
-                'data',
-                'id',
-                'modifiedByAgent',
-                'resource_uri',
-                'spAppResource',
-                'spViewSetObj',
-                'timestampCreated',
-                'timestampModified',
-                'version',
-              ] as const
-            ).map((key) => [key, records[0][toLowerCase(key)]])
-          ) as SerializedResource<SpAppResourceData>
-        )
-      : undefined
-  );
-
-function updatePreferences(
-  resource: SerializedResource<SpAppResourceData>
-): SerializedResource<SpAppResourceData> {
-  appResourceData = resource;
-  preferences = JSON.parse(appResourceData.data ?? '{}');
-  prefEvents.trigger('update');
-  return appResourceData;
-}
-
-/*
- * If app resourcee data with user preferences does not exists does not exist,
- * check if SpAppResourceDir and SpAppResource exist and create them if needed,
- * then, create the app resource data itself
- */
-export const fetchContext = fetchPreferences.then((resource) =>
-  typeof resource === 'object'
-    ? undefined
-    : fetchSchema
-        .then(async () =>
-          fetchCollection('SpAppResourceDir', {
-            limit: 1,
-            isPersonal: true,
-            collection: schema.domainLevelIds.collection,
-            specifyUser: userInformation.id,
-          })
-        )
-        .then(({ records }) =>
-          records.length === 0
-            ? createResource('SpAppResourceDir', {
-                collection: getResourceApiUrl(
-                  'Collection',
-                  schema.domainLevelIds.collection
-                ),
-                discipline: getResourceApiUrl(
-                  'Discipline',
-                  schema.domainLevelIds.discipline
-                ),
-                isPersonal: true,
-                specifyUser: getResourceApiUrl(
-                  'SpecifyUser',
-                  userInformation.id
-                ),
-                userType: userInformation.usertype,
-              }).then(({ id }) => id)
-            : records[0].id
-        )
-        .then(async (appResourceDirId) =>
-          fetchCollection('SpAppResource', {
-            limit: 1,
-            spAppResourceDir: appResourceDirId,
-            specifyUser: userInformation.id,
-            name: resourceName,
-          }).then(({ records }) =>
+      ? records[0]
+      : fetchSchema
+          .then(async () =>
+            fetchCollection('SpAppResourceDir', {
+              limit: 1,
+              isPersonal: true,
+              collection: schema.domainLevelIds.collection,
+              specifyUser: userInformation.id,
+            })
+          )
+          .then(({ records }) =>
             records.length === 0
-              ? createResource('SpAppResource', {
-                  spAppResourceDir: getResourceApiUrl(
-                    'SpAppResourceDir',
-                    appResourceDirId
+              ? createResource('SpAppResourceDir', {
+                  collection: getResourceApiUrl(
+                    'Collection',
+                    schema.domainLevelIds.collection
                   ),
-                  specifyUser: userInformation.resource_uri,
-                  name: resourceName,
-                  mimeType: 'application/json',
+                  discipline: getResourceApiUrl(
+                    'Discipline',
+                    schema.domainLevelIds.discipline
+                  ),
+                  isPersonal: true,
+                  specifyUser: getResourceApiUrl(
+                    'SpecifyUser',
+                    userInformation.id
+                  ),
+                  userType: userInformation.usertype,
                 }).then(({ id }) => id)
               : records[0].id
           )
-        )
-        .then(async (appResourceId) =>
-          createResource('SpAppResourceData', {
-            spAppResource: getResourceApiUrl('SpAppResource', appResourceId),
-            data: '{}',
-          })
-        )
-        .then(updatePreferences)
-);
+          .then(async (appResourceDirId) =>
+            fetchCollection('SpAppResource', {
+              limit: 1,
+              spAppResourceDir: appResourceDirId,
+              specifyUser: userInformation.id,
+              name: resourceName,
+            }).then(({ records }) =>
+              records.length === 0
+                ? createResource('SpAppResource', {
+                    spAppResourceDir: getResourceApiUrl(
+                      'SpAppResourceDir',
+                      appResourceDirId
+                    ),
+                    specifyUser: userInformation.resource_uri,
+                    name: resourceName,
+                    mimeType: 'application/json',
+                  }).then(({ id }) => id)
+                : records[0].id
+            )
+          )
+          .then(async (appResourceId) =>
+            createResource('SpAppResourceData', {
+              spAppResource: getResourceApiUrl('SpAppResource', appResourceId),
+              data: '{}',
+            })
+          )
+  )
+  .then(updatePreferences);

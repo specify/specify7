@@ -8,11 +8,11 @@ import type {
 } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import { f } from './functools';
+import { formatUrl } from './querystring';
 import { parseResourceUrl } from './resource';
 import { schema } from './schema';
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
-import { formatUrl } from './querystring';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = {
   readonly limit: number;
@@ -60,28 +60,6 @@ export const fetchCollection = async <
    */
   advancedFilters: IR<string | number> = {}
 ): Promise<SerializedCollection<SCHEMA>> =>
-  rawFetchCollection(tableName, filters, advancedFilters).then(
-    ({ totalCount, records }) => ({
-      records: records.map(serializeResource),
-      totalCount,
-    })
-  );
-
-/**
- * Like fetchCollection, but does not convert response object's keys to camel
- * case, thus does not depend on the schema being loaded
- */
-export const rawFetchCollection = async <
-  TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
->(
-  tableName: TABLE_NAME,
-  filters: CollectionFetchFilters<SCHEMA>,
-  advancedFilters: IR<string | number> = {}
-): Promise<{
-  readonly records: RA<SerializedModel<SCHEMA>>;
-  readonly totalCount: number;
-}> =>
   ajax<{
     readonly meta: {
       readonly limit: number;
@@ -116,7 +94,7 @@ export const rawFetchCollection = async <
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { headers: { Accept: 'application/json' } }
   ).then(({ data: { meta, objects } }) => ({
-    records: objects,
+    records: objects.map(serializeResource),
     totalCount: meta.total_count,
   }));
 

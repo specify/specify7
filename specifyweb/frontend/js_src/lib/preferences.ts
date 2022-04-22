@@ -81,6 +81,10 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
+/*
+ * TODO: allow admins to edit prefs of other users
+ * TODO: allow admins to set default prefs and overwrite prefs for all
+ */
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -335,7 +339,6 @@ export const preferenceDefinitions = {
               max: 1000,
             },
           }),
-          // FIXME: support passing a URL
           fontFamily: defineItem<string>({
             title: preferencesText('fontFamily'),
             description: preferencesText('fontFamilyDescription'),

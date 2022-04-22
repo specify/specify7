@@ -11,6 +11,7 @@ import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { Attachment, SpQuery, Tables } from './datamodel';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
+import type { UserPreferences } from './preferencesutils';
 import type { RA } from './types';
 
 /** The types of cached values are defined here */
@@ -74,5 +75,18 @@ export type CacheDefinitions = {
   readonly geoLocate: {
     readonly width: number;
     readonly height: number;
+  };
+  readonly userPreferences: {
+    /**
+     * User preferences are cached, because, unlike most other initial context
+     * resources, preferences are not cached by the browser, since they are
+     * fetched using the standard resource API.
+     * Additionally, since preferences contain the schema language to load,
+     * schema can not be fetched untill preferences are fetched.
+     * Finally, a splash screen may be rendered before preferences are fetched,
+     * causing Specify to flash user it's white mode, or font size to change
+     * on the fly.
+     */
+    readonly cached: UserPreferences;
   };
 };
