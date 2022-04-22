@@ -2,29 +2,35 @@
  * Definitions for User Interface preferences (scoped to a SpecifyUser)
  */
 
-import { crash } from './components/errorboundary';
+import React from 'react';
+
+import type { Collection } from '../datamodel';
+import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
+import { preferencesText } from '../localization/preferences';
+import type { Language } from '../localization/utils';
+import { DEFAULT_LANGUAGE } from '../localization/utils';
+import { wbText } from '../localization/workbench';
+import type { JavaType } from '../specifyfield';
+import type { IR, RA } from '../types';
+import { ensure } from '../types';
+import type { Parser } from '../uiparse';
+import { Link } from './basic';
+import { crash } from './errorboundary';
+import type { WelcomePageMode } from './preferencesrenderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
+  defaultWelcomePageImage,
   FontFamilyPreferenceItem,
-} from './components/preferencesrenderers';
+  WelcomePageModePreferenceItem,
+} from './preferencesrenderers';
 import {
   handleLanguageChange,
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
-} from './components/toolbar/language';
-import type { Collection } from './datamodel';
-import { commonText } from './localization/common';
-import { formsText } from './localization/forms';
-import { preferencesText } from './localization/preferences';
-import type { Language } from './localization/utils';
-import { DEFAULT_LANGUAGE } from './localization/utils';
-import { wbText } from './localization/workbench';
-import type { JavaType } from './specifyfield';
-import type { IR, RA } from './types';
-import { ensure } from './types';
-import type { Parser } from './uiparse';
+} from './toolbar/language';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -35,7 +41,7 @@ export type PreferenceItemComponent<VALUE> = (props: {
 
 export type PreferenceItem<VALUE> = {
   readonly title: string;
-  readonly description?: string;
+  readonly description?: string | JSX.Element;
   // Whether app needs to be reloaded if this preference changes
   readonly requiresReload: boolean;
   /*
@@ -68,7 +74,7 @@ export type PreferenceItem<VALUE> = {
     }
 );
 
-const defineItem = <VALUE>(
+const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
 
@@ -602,10 +608,39 @@ export const preferenceDefinitions = {
       },
     },
   },
+  welcomePage: {
+    title: preferencesText('welcomePage'),
+    subCategories: {
+      general: {
+        title: preferencesText('general'),
+        items: {
+          mode: defineItem<WelcomePageMode>({
+            title: preferencesText('content'),
+            description: (
+              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+                {commonText('documentation')}
+              </Link.NewTab>
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'default',
+            renderer: WelcomePageModePreferenceItem,
+          }),
+          source: defineItem<string>({
+            title: '',
+            requiresReload: false,
+            visible: false,
+            defaultValue: defaultWelcomePageImage,
+            type: 'text',
+          }),
+        },
+      },
+    },
+  },
 } as const;
 
 // Use tree table labels as titles for the tree editor sections
-import('./schema')
+import('../schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
       const trees = preferenceDefinitions.treeEditor.subCategories;

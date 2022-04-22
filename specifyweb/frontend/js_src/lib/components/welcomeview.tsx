@@ -2,7 +2,6 @@ import React from 'react';
 
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
-import { getPref } from '../remoteprefs';
 import { getSystemInfo } from '../systeminfo';
 import { makeTreeMap } from '../taxontiles';
 import { Button, H3, Link } from './basic';
@@ -10,29 +9,26 @@ import { supportLink } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { usePref } from './preferenceshooks';
+import { defaultWelcomePageImage } from './preferencesrenderers';
 import { createBackboneView } from './reactbackboneextend';
 
 function WelcomeScreenContent(): JSX.Element {
-  const [isValidUrl, setIsValidUrl] = React.useState(false);
+  const [mode] = usePref('welcomePage', 'general', 'mode');
+  const [source] = usePref('welcomePage', 'general', 'source');
 
-  React.useEffect(() => {
-    fetch(getPref('sp7.welcomeScreenUrl'), { method: 'HEAD' })
-      .then(({ headers }) =>
-        setIsValidUrl(
-          headers.get('Content-Type')?.startsWith('image') === false
-        )
-      )
-      .catch(() => setIsValidUrl(false));
-  }, []);
-
-  return isValidUrl ? (
+  return mode === 'embeededWebpage' ? (
     <iframe
-      className="h-5/6 border-0"
+      className="w-full h-full border-0"
       title={welcomeText('pageTitle')}
-      src={getPref('sp7.welcomeScreenUrl')}
+      src={source}
     />
   ) : (
-    <img src={getPref('sp7.welcomeScreenUrl')} alt="" className="h-full" />
+    <img
+      src={mode === 'default' ? defaultWelcomePageImage : source}
+      alt=""
+      className="h-full"
+    />
   );
 }
 
@@ -125,11 +121,15 @@ function Welcome(): JSX.Element {
   useTitle(welcomeText('pageTitle'));
 
   const refTaxonTilesContainer = React.useRef<HTMLDivElement | null>(null);
+  const [mode] = usePref('welcomePage', 'general', 'mode');
 
-  React.useEffect(() => {
-    if (getPref('sp7.doTaxonTiles') && refTaxonTilesContainer.current !== null)
-      makeTreeMap(refTaxonTilesContainer.current);
-  }, []);
+  React.useEffect(
+    () =>
+      mode === 'taxonTiles' && refTaxonTilesContainer.current !== null
+        ? makeTreeMap(refTaxonTilesContainer.current)
+        : undefined,
+    [mode]
+  );
 
   return (
     <div
@@ -137,9 +137,13 @@ function Welcome(): JSX.Element {
     mx-auto"
     >
       <span className="flex-1" />
-      <div className="flex items-center justify-center min-h-0">
+      <div
+        className={`flex items-center justify-center min-h-0 ${
+          mode === 'embeededWebpage' ? 'h-5/6' : ''
+        }`}
+      >
         <div ref={refTaxonTilesContainer} />
-        {getPref('sp7.doTaxonTiles') ? undefined : <WelcomeScreenContent />}
+        {mode === 'taxonTiles' ? undefined : <WelcomeScreenContent />}
       </div>
       <AboutSpecify />
     </div>

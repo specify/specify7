@@ -92,13 +92,12 @@ function parsePref(
       ? parsed?.isValid === true
         ? parsed.parsed
         : defaultValue
-      : value
+      : value ?? defaultValue
   ) as string | number | boolean;
 }
 
 export const remotePrefs: IR<string> = preferences;
 
-// TODO: Some of these things don't make sense as global prefs. Move them to user prefs
 /**
  * A list of remote prefs that Specify 7 recognizes.
  * There are many more that are Specify 6 specific.
@@ -194,18 +193,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: 99_999,
         parser: 'java.lang.Long',
         isLegacy: true,
-      },
-      'sp7.doTaxonTiles': {
-        description: 'Whether to display Taxon Tiles on the welcome page',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-      },
-      'sp7.welcomeScreenUrl': {
-        description:
-          'Image or webpage URL to display on the home page. See ' +
-          'https://github.com/specify/specify7/wiki/Customizing-the-splash-screen',
-        defaultValue: '/static/img/icons_as_background_splash.png',
-        formatter: [formatter().trim],
       },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',

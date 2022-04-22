@@ -11,7 +11,7 @@ import { cachableUrl } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
-import type { PreferenceItemComponent } from '../../preferences';
+import type { PreferenceItemComponent } from '../preferences';
 import type { IR, RA } from '../../types';
 import { Select } from '../basic';
 import { supportLink } from '../errorboundary';

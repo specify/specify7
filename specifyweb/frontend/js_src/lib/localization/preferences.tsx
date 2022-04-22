@@ -412,4 +412,46 @@ export const preferencesText = createDictionary({
     ca: 'Scale interface to match font size',
     'es-es': 'Scale interface to match font size',
   },
+  welcomePage: {
+    'en-us': 'Welcome page',
+    'ru-ru': 'Welcome page',
+    ca: 'Welcome page',
+    'es-es': 'Welcome page',
+  },
+  content: {
+    'en-us': 'Content',
+    'ru-ru': 'Content',
+    ca: 'Content',
+    'es-es': 'Content',
+  },
+  defaultImage: {
+    'en-us': 'Specify Logo',
+    'ru-ru': 'Specify Logo',
+    ca: 'Specify Logo',
+    'es-es': 'Specify Logo',
+  },
+  customImage: {
+    'en-us': 'Custom image',
+    'ru-ru': 'Custom image',
+    ca: 'Custom image',
+    'es-es': 'Custom image',
+  },
+  customImageDescription: {
+    'en-us': 'A URL to an image that would be displayed on the home page:',
+    'ru-ru': 'A URL to an image that would be displayed on the home page:',
+    ca: 'A URL to an image that would be displayed on the home page:',
+    'es-es': 'A URL to an image that would be displayed on the home page:',
+  },
+  embeededWebpage: {
+    'en-us': 'Embedded web page',
+    'ru-ru': 'Embedded web page',
+    ca: 'Embedded web page',
+    'es-es': 'Embedded web page',
+  },
+  embeededWebpageDescription: {
+    'en-us': 'A URL to a page that would be embedded on the home page:',
+    'ru-ru': 'A URL to a page that would be embedded on the home page:',
+    ca: 'A URL to a page that would be embedded on the home page:',
+    'es-es': 'A URL to a page that would be embedded on the home page:',
+  },
 });

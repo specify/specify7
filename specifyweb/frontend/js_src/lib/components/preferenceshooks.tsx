@@ -7,14 +7,13 @@ import React from 'react';
 
 import { eventListener } from '../events';
 import { f } from '../functools';
-import type { Preferences } from '../preferences';
-import { getPrefDefinition, getUserPref, setPref } from '../preferencesutils';
-import { crash } from './errorboundary';
+import { getUserPref, setPref } from '../preferencesutils';
 import { MILLISECONDS } from './internationalization';
+import type { PreferenceItem, Preferences } from './preferences';
 import { defaultFont } from './preferencesrenderers';
 
 export const prefEvents = eventListener<{
-  update: undefined;
+  update: PreferenceItem<unknown> | undefined;
   synchronized: undefined;
 }>();
 
@@ -51,14 +50,9 @@ export function usePref<
   );
 
   const updatePref = React.useCallback(
-    function updatePref(
+    (
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ): void {
-      const definition = getPrefDefinition(category, subcategory, item);
-      if (typeof definition.onChange === 'function')
-        Promise.resolve(definition.onChange(newPref)).catch(crash);
-      else setPref(category, subcategory, item, newPref);
-    },
+    ): void => setPref(category, subcategory, item, newPref),
     [category, subcategory, item]
   );
 
@@ -102,14 +96,9 @@ export function usePrefRef<
   );
 
   const updatePref = React.useCallback(
-    function updatePref(
+    (
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ): void {
-      const definition = getPrefDefinition(category, subcategory, item);
-      if (typeof definition.onChange === 'function')
-        Promise.resolve(definition.onChange(newPref)).catch(crash);
-      else setPref(category, subcategory, item, newPref);
-    },
+    ): void => setPref(category, subcategory, item, newPref),
     [category, subcategory, item]
   );
 
@@ -140,11 +129,10 @@ const defaultTransitionDuration = 100;
 
 export function useTransitionDuration(): number {
   const reduceMotion = useReducedMotion();
-  const value = React.useMemo(
+  return React.useMemo(
     () => (reduceMotion ? 0 : defaultTransitionDuration),
     [reduceMotion]
   );
-  return value;
 }
 
 const shouldReduceMotion = (): boolean =>

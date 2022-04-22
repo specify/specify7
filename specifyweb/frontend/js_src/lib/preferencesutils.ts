@@ -2,14 +2,15 @@
  * Utilities for dealing with user preferences
  */
 
+import { getCache, setCache } from './cache';
 import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
+import type { Preferences } from './components/preferences';
+import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
 import type { SpAppResourceData } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import type { Preferences } from './preferences';
-import { preferenceDefinitions } from './preferences';
 import {
   createResource,
   fetchResource,
@@ -20,7 +21,6 @@ import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
-import { getCache, setCache } from './cache';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,
@@ -66,6 +66,11 @@ export function setPref<
   value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 ): void {
   const definition = getPrefDefinition(category, subcategory, item);
+  if (typeof definition.onChange === 'function') {
+    Promise.resolve(definition.onChange(value)).catch(crash);
+    return;
+  }
+
   let parsed;
   if ('type' in definition) {
     const baseParser = parserFromType(definition.type);
@@ -120,7 +125,7 @@ export function setPref<
       prefs[category] = undefined;
   }
 
-  prefEvents.trigger('update');
+  prefEvents.trigger('update', definition);
   setCache('userPreferences', 'cached', preferences);
   requestPreferencesSync();
 }
@@ -200,7 +205,7 @@ function updatePreferences(
 ): SerializedResource<SpAppResourceData> {
   appResourceData = resource;
   preferences = JSON.parse(appResourceData.data ?? '{}');
-  prefEvents.trigger('update');
+  prefEvents.trigger('update', undefined);
   setCache('userPreferences', 'cached', preferences);
   return appResourceData;
 }
@@ -213,7 +218,7 @@ function updatePreferences(
  * then, create the app resource data itself
  */
 export const preferencesPromise = Promise.all([
-  import('./schema').then(({ fetchContext }) => fetchContext),
+  import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
   fetchUser,
 ])
