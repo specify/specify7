@@ -1,19 +1,14 @@
-import { ajax } from './ajax';
 import type {
   DataObjectFormatter,
   ItemType,
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './components/schemaconfig';
-import type {
-  WithFetchedStrings,
-  WithFieldInfo,
-} from './components/toolbar/schemaconfig';
+import type { WithFieldInfo } from './components/toolbar/schemaconfig';
 import type { SpLocaleContainerItem, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { addMissingFields } from './datamodelutils';
 import type { Aggregator, Formatter } from './dataobjformatters';
-import { f } from './functools';
 import { commonText } from './localization/common';
 import { parseUrl } from './querystring';
 import { getResourceApiUrl, parseClassName } from './resource';
@@ -24,65 +19,35 @@ let newStringId = 1;
 const defaultLanguage = 'en';
 const defaultCountry = null;
 
-/**
- * Fetch localized strings for a given field and language
- */
-const fetchString = async (
-  url: string,
+export function findString(
+  strings: RA<SpLocaleItemString>,
   language: string,
-  country: string | null
-): Promise<SpLocaleItemString | NewSpLocaleItemString> =>
-  ajax<{ readonly objects: RA<SpLocaleItemString> }>(url, {
-    headers: { Accept: 'application/json' },
-  }).then(({ data: { objects } }) => {
-    const targetString = objects.find(
-      (object) =>
-        (object.language === language && object.country) ?? country === '' ?? ''
-    );
-    if (typeof targetString === 'object') return targetString;
-
-    const defaultString =
-      objects.find(
-        (object) =>
-          object.language === defaultLanguage &&
-          object.country === defaultCountry
-      )?.text ?? '';
-    newStringId += 1;
-
-    return {
-      ...addMissingFields('SpLocaleItemStr', {
-        id: -newStringId,
-        text: defaultString,
-        language,
-        country,
-      }),
-      parent: url,
-    };
-  });
-
-/**
- * Fetch all strings for a field
- */
-export const fetchStrings = async <
-  T extends { readonly names: string; readonly descs: string }
->(
-  objects: RA<T>,
-  language: string,
-  country: string | null
-): Promise<RA<T & WithFetchedStrings>> =>
-  Promise.all(
-    objects.map(async (item) =>
-      f
-        .all({
-          name: fetchString(item.names, language, country),
-          desc: fetchString(item.descs, language, country),
-        })
-        .then((strings) => ({
-          ...item,
-          strings,
-        }))
-    )
+  country: string | null,
+  parentUrl: string
+): SpLocaleItemString | NewSpLocaleItemString {
+  const targetString = strings.find(
+    (object) =>
+      (object.language === language && object.country) ?? country === '' ?? ''
   );
+  if (typeof targetString === 'object') return targetString;
+
+  const defaultString =
+    strings.find(
+      (object) =>
+        object.language === defaultLanguage && object.country === defaultCountry
+    )?.text ?? '';
+  newStringId += 1;
+
+  return {
+    ...addMissingFields('SpLocaleItemStr', {
+      id: -newStringId,
+      text: defaultString,
+      language,
+      country,
+    }),
+    parent: parentUrl,
+  };
+}
 
 /**
  * Need to set resource URL before a SpLocaleItemString can be sent to the back

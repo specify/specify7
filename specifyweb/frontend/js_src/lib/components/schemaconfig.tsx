@@ -1,26 +1,29 @@
 import React from 'react';
 
-import { SerializedResource, serializeResource } from '../datamodelutils';
+import { fetchCollection } from '../collection';
+import type {
+  SpLocaleContainer,
+  SpLocaleContainerItem,
+  SpLocaleItemStr as SpLocaleItemString_,
+} from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
+import { f } from '../functools';
+import { group } from '../helpers';
 import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
+import { createResource, saveResource } from '../resource';
 import { schema } from '../schema';
-import { fetchStrings, prepareNewString } from '../schemaconfighelper';
+import { findString, prepareNewString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, PartialBy, RA } from '../types';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
-import { stateReducer } from './schemaconfigstate';
-import type { WithFetchedStrings, WithFieldInfo } from './toolbar/schemaconfig';
 import { useUnloadProtect } from './navigation';
-import { createResource, saveResource } from '../resource';
-import { fetchCollection } from '../collection';
-import {
-  SpLocaleContainer,
-  SpLocaleContainerItem,
-  SpLocaleItemStr,
-} from '../datamodel';
+import { stateReducer } from './schemaconfigstate';
+import type { WithFieldInfo } from './toolbar/schemaconfig';
 
-export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
+export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'> & {
   readonly parent?: string;
 };
@@ -119,64 +122,130 @@ export function SchemaConfig({
     if (Object.keys(fields).length === 0)
       throw new Error('Unable to find table fields');
 
-    void Promise.all([
-      fetchPickLists().then((pickLists) =>
-        Object.fromEntries(
-          Object.values(pickLists)
-            .map(serializeResource)
-            .map(({ id, name, isSystem }) => [
-              id,
-              {
-                name,
-                isSystem,
-              },
-            ])
-        )
-      ),
-      // Fetch table items and their strings
-      fetchCollection('SpLocaleContainerItem', {
-        limit: 0,
-        container: tableId,
-      })
-        .then(({ records }) =>
-          destructorCalled ? [] : fetchStrings(records, language, country)
-        )
-        .then<
-          RA<
-            SerializedResource<SpLocaleContainerItem> &
-              WithFetchedStrings &
-              WithFieldInfo
-          >
-        >((items) =>
-          items.map((item) => ({
-            ...item,
-            dataModel: fields[item.name] ?? {
-              length: undefined,
-              isReadOnly: false,
-              relatedModelName: undefined,
-              isRequired: false,
-              isRelationship: false,
-              type: '',
-              canChangeIsRequired: false,
-            },
-          }))
+    void f
+      .all({
+        pickLists: fetchPickLists().then((pickLists) =>
+          Object.fromEntries(
+            Object.values(pickLists)
+              .map(serializeResource)
+              .map(({ id, name, isSystem }) => [
+                id,
+                {
+                  name,
+                  isSystem,
+                },
+              ])
+          )
         ),
-      // Fetch table strings
-      fetchStrings([stateTable], language, country),
-    ]).then(([pickLists, items, [table]]) => {
-      if (destructorCalled) return undefined;
-      dispatch({
-        type: 'FetchedTableDataAction',
-        table: {
-          ...table,
-          dataModel: {
-            pickLists,
+        // Fetch table items and their strings
+        items: f
+          .all({
+            items: fetchCollection('SpLocaleContainerItem', {
+              limit: 0,
+              container: tableId,
+            }).then<
+              RA<SerializedResource<SpLocaleContainerItem> & WithFieldInfo>
+            >(({ records }) =>
+              records.map((item) => ({
+                ...item,
+                dataModel: fields[item.name] ?? {
+                  length: undefined,
+                  isReadOnly: false,
+                  relatedModelName: undefined,
+                  isRequired: false,
+                  isRelationship: false,
+                  type: '',
+                  canChangeIsRequired: false,
+                },
+              }))
+            ),
+            names: fetchCollection(
+              'SpLocaleItemStr',
+              {
+                limit: 0,
+              },
+              {
+                itemName__container: tableId,
+              }
+            ).then(({ records }) =>
+              Object.fromEntries(
+                group(records.map((name) => [name.itemName, name]))
+              )
+            ),
+            descriptions: fetchCollection(
+              'SpLocaleItemStr',
+              {
+                limit: 0,
+              },
+              {
+                itemDesc__container: tableId,
+              }
+            ).then(({ records }) =>
+              Object.fromEntries(
+                group(
+                  records.map((description) => [
+                    description.itemDesc,
+                    description,
+                  ])
+                )
+              )
+            ),
+          })
+          .then(({ items, names, descriptions }) =>
+            Object.fromEntries(
+              items.map((item) => [
+                item.id,
+                {
+                  ...item,
+                  strings: {
+                    name: findString(
+                      names[item.resource_uri],
+                      language,
+                      country,
+                      item.resource_uri
+                    ),
+                    desc: findString(
+                      descriptions[item.resource_uri],
+                      language,
+                      country,
+                      item.resource_uri
+                    ),
+                  },
+                },
+              ])
+            )
+          ),
+        containerName: fetchCollection('SpLocaleItemStr', {
+          limit: 0,
+          containerName: tableId,
+        }).then(({ records }) =>
+          findString(records, language, country, stateTable.resource_uri)
+        ),
+        containerDescription: fetchCollection('SpLocaleItemStr', {
+          limit: 0,
+          containerDesc: tableId,
+        }).then(({ records }) =>
+          findString(records, language, country, stateTable.resource_uri)
+        ),
+      })
+      .then(({ pickLists, items, containerName, containerDescription }) => {
+        if (destructorCalled) return undefined;
+        dispatch({
+          type: 'FetchedTableDataAction',
+          table: {
+            ...stateTable,
+            strings: {
+              name: containerName,
+              desc: containerDescription,
+            },
+            dataModel: {
+              pickLists,
+            },
           },
-        },
-        items: Object.fromEntries(items.map((item) => [item.id, item])),
+          items,
+        });
+        return undefined;
       });
-      return undefined;
-    });
 
     let destructorCalled = false;
     return (): void => {
