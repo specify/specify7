@@ -12,14 +12,11 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { createBackboneView } from './reactbackboneextend';
 
-const DO_TAXON_TILES = getPref('sp7.doTaxonTiles');
-const welcomeScreenUrl = getPref('sp7.welcomeScreenUrl');
-
 function WelcomeScreenContent(): JSX.Element {
   const [isValidUrl, setIsValidUrl] = React.useState(false);
 
   React.useEffect(() => {
-    fetch(welcomeScreenUrl, { method: 'HEAD' })
+    fetch(getPref('sp7.welcomeScreenUrl'), { method: 'HEAD' })
       .then(({ headers }) =>
         setIsValidUrl(
           headers.get('Content-Type')?.startsWith('image') === false
@@ -32,10 +29,10 @@ function WelcomeScreenContent(): JSX.Element {
     <iframe
       className="h-5/6 border-0"
       title={welcomeText('pageTitle')}
-      src={welcomeScreenUrl}
+      src={getPref('sp7.welcomeScreenUrl')}
     />
   ) : (
-    <img src={welcomeScreenUrl} alt="" />
+    <img src={getPref('sp7.welcomeScreenUrl')} alt="" className="h-full" />
   );
 }
 
@@ -112,7 +109,7 @@ function AboutDialog({
 function AboutSpecify(): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
-    <div className="text-right">
+    <div className="flex-1 text-right">
       <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
         <img
           src="/static/img/specify_7_small.png"
@@ -130,7 +127,7 @@ function Welcome(): JSX.Element {
   const refTaxonTilesContainer = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
-    if (DO_TAXON_TILES && refTaxonTilesContainer.current !== null)
+    if (getPref('sp7.doTaxonTiles') && refTaxonTilesContainer.current !== null)
       makeTreeMap(refTaxonTilesContainer.current);
   }, []);
 
@@ -139,8 +136,11 @@ function Welcome(): JSX.Element {
       className="flex flex-col gap-y-4 h-full justify-center my-0 max-w-[1000px]
     mx-auto"
     >
-      <div ref={refTaxonTilesContainer} />
-      {DO_TAXON_TILES ? undefined : <WelcomeScreenContent />}
+      <span className="flex-1" />
+      <div className="flex items-center justify-center min-h-0">
+        <div ref={refTaxonTilesContainer} />
+        {getPref('sp7.doTaxonTiles') ? undefined : <WelcomeScreenContent />}
+      </div>
       <AboutSpecify />
     </div>
   );

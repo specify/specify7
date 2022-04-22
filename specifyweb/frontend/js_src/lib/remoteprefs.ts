@@ -87,10 +87,13 @@ function parsePref(
     typeof parser === 'string' && typeof value !== 'undefined'
       ? parseValue(parsers()[parser] as Parser, undefined, value as string)
       : undefined;
-  return (parsed?.isValid === true ? parsed.parsed : defaultValue) as
-    | string
-    | number
-    | boolean;
+  return (
+    typeof parser === 'object'
+      ? parsed?.isValid === true
+        ? parsed.parsed
+        : defaultValue
+      : value
+  ) as string | number | boolean;
 }
 
 export const remotePrefs: IR<string> = preferences;
