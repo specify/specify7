@@ -7,10 +7,13 @@
 /* TODO: get rid of most global styles once everything is using React components */
 @layer base {
 
+  body.reduce-motion * {
+    @apply !transition-none !duration-0;
+  }
+
   * {
     @apply transition duration-[var(--transitionDuration)] ease-in-out
-      motion-reduce:!transition-none motion-reduce:!duration-0 dark:!shadow-none
-      placeholder-gray-400;
+      dark:!shadow-none placeholder-gray-400;
   }
 
   [type='text'],

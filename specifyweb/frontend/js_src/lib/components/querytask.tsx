@@ -14,7 +14,7 @@ import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { useAsyncState, useLiveState } from './hooks';
+import { useAsyncState } from './hooks';
 import { QueryBuilder } from './querybuilder';
 import { createBackboneView } from './reactbackboneextend';
 import { PermissionDenied } from './permissiondenied';
@@ -120,16 +120,14 @@ function NewQuery({
 }: {
   readonly tableName: string;
 }): JSX.Element | null {
-  const [query] = useLiveState<SpecifyResource<SpQuery> | undefined>(
-    React.useCallback(() => {
-      const model = getModel(tableName);
-      if (typeof model === 'undefined') {
-        setCurrentView(new NotFoundView());
-        return undefined;
-      }
-      return createQuery(queryText('newQueryName'), model);
-    }, [tableName])
-  );
+  const query = React.useMemo<SpecifyResource<SpQuery> | undefined>(() => {
+    const model = getModel(tableName);
+    if (typeof model === 'undefined') {
+      setCurrentView(new NotFoundView());
+      return undefined;
+    }
+    return createQuery(queryText('newQueryName'), model);
+  }, [tableName]);
   const recordSet = useQueryRecordSet();
 
   return typeof query === 'undefined' ||

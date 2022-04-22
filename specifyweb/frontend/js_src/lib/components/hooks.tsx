@@ -230,6 +230,7 @@ export function useAsyncState<T>(
 
 /**
  * A synchronous version of useAsyncState
+ * Like React.useMemo, but with setState
  *
  * @remarks
  * Like React.useState, but default value must always be a function, and when

@@ -10,7 +10,7 @@ import Modal from 'react-modal';
 
 import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
-import { useId, useLiveState, useTitle } from './hooks';
+import { useId, useTitle } from './hooks';
 import { dialogIcons } from './icons';
 import { usePref, useTransitionDuration } from './preferenceshooks';
 
@@ -241,25 +241,23 @@ export function Dialog({
 
   const [buttonContainer, setButtonContainer] =
     React.useState<HTMLDivElement | null>(null);
-  const [iconType] = useLiveState(
-    React.useCallback(() => {
-      if (!showIcon) return 'none';
-      if (typeof defaultIconType === 'string') return defaultIconType;
-      else if (buttonContainer === null) return 'none';
-      /*
-       * If icon was not specified explicitly, it is determined based on what
-       * matching className dialog buttons have
-       */
-      return (
-        Object.entries(dialogIconTriggers).find(
-          ([_type, className]) =>
-            className !== '' &&
-            typeof buttonContainer.getElementsByClassName(className)[0] ===
-              'object'
-        )?.[0] ?? 'none'
-      );
-    }, [showIcon, defaultIconType, buttons, buttonContainer])
-  );
+  const iconType = React.useMemo(() => {
+    if (!showIcon) return 'none';
+    if (typeof defaultIconType === 'string') return defaultIconType;
+    else if (buttonContainer === null) return 'none';
+    /*
+     * If icon was not specified explicitly, it is determined based on what
+     * matching className dialog buttons have
+     */
+    return (
+      Object.entries(dialogIconTriggers).find(
+        ([_type, className]) =>
+          className !== '' &&
+          typeof buttonContainer.getElementsByClassName(className)[0] ===
+            'object'
+      )?.[0] ?? 'none'
+    );
+  }, [showIcon, defaultIconType, buttons, buttonContainer]);
 
   const overlayElement: Props['overlayElement'] = React.useCallback(
     (props, contentElement) => (

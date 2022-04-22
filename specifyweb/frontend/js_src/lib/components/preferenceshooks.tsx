@@ -10,7 +10,6 @@ import { f } from '../functools';
 import type { Preferences } from '../preferences';
 import { getPrefDefinition, getUserPref, setPref } from '../preferencesutils';
 import { crash } from './errorboundary';
-import { useLiveState } from './hooks';
 import { MILLISECONDS } from './internationalization';
 import { defaultFont } from './preferencesrenderers';
 
@@ -119,14 +118,12 @@ export function usePrefRef<
 
 export function useReducedMotion(): boolean {
   const [pref] = usePref('general', 'ui', 'reduceMotion');
-  const [value] = useLiveState(
-    React.useCallback(
-      () =>
-        pref === 'system'
-          ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-          : pref === 'reduce',
-      [pref]
-    )
+  const value = React.useMemo(
+    () =>
+      pref === 'system'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        : pref === 'reduce',
+    [pref]
   );
   return value;
 }
@@ -135,11 +132,9 @@ const defaultTransitionDuration = 100;
 
 export function useTransitionDuration(): number {
   const reduceMotion = useReducedMotion();
-  const [value] = useLiveState(
-    React.useCallback(
-      () => (reduceMotion ? 0 : defaultTransitionDuration),
-      [reduceMotion]
-    )
+  const value = React.useMemo(
+    () => (reduceMotion ? 0 : defaultTransitionDuration),
+    [reduceMotion]
   );
   return value;
 }
@@ -156,16 +151,13 @@ export const getTransitionDuration = (): number =>
 
 export function useDarkMode(): boolean {
   const [theme] = usePref('general', 'ui', 'theme');
-  const [value] = useLiveState(
-    React.useCallback(
-      () =>
-        theme === 'system'
-          ? window.matchMedia('(prefers-color-scheme: dark)').matches
-          : theme === 'dark',
-      [theme]
-    )
+  return React.useMemo(
+    () =>
+      theme === 'system'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+        : theme === 'dark',
+    [theme]
   );
-  return value;
 }
 
 export const shouldUseDarkMode = (): boolean =>
@@ -184,6 +176,15 @@ export function SetCssVariables(): null {
         `${transitionDuration / MILLISECONDS}s`
       ),
     [transitionDuration]
+  );
+
+  const reduceMotion = useReducedMotion();
+  React.useEffect(
+    () =>
+      reduceMotion
+        ? document.body.classList.add('reduce-motion')
+        : document.body.classList.remove('reduce-motion'),
+    [reduceMotion]
   );
 
   const darkMode = useDarkMode();

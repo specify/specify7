@@ -361,7 +361,6 @@ export const preferenceDefinitions = {
         },
       },
       // FIXME: integrate forms with these prefs:
-      // FIXME: remove media queries from main.css
       appearance: {
         title: preferencesText('appearance'),
         items: {

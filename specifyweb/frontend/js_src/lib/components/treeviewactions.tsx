@@ -10,7 +10,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, Link } from './basic';
-import { useBooleanState, useLiveState } from './hooks';
+import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { LoadingContext } from './contexts';
@@ -249,18 +249,16 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly onSaved: (addAnother: boolean) => void;
   readonly onDeleted: () => void;
 }): JSX.Element | null {
-  const [resource] = useLiveState<SpecifyResource<AnySchema>>(
-    React.useCallback(() => {
-      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-      const parentNode = new model.Resource({ id });
-      let node = parentNode;
-      if (addNew) {
-        node = new model.Resource();
-        node.set('parent', parentNode.url());
-      }
-      return node;
-    }, [id, tableName, addNew])
-  );
+  const resource = React.useMemo<SpecifyResource<AnySchema>>(() => {
+    const model = schema.models[tableName] as SpecifyModel<AnyTree>;
+    const parentNode = new model.Resource({ id });
+    let node = parentNode;
+    if (addNew) {
+      node = new model.Resource();
+      node.set('parent', parentNode.url());
+    }
+    return node;
+  }, [id, tableName, addNew]);
 
   return (
     <ResourceView
