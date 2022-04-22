@@ -111,7 +111,6 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     );
   };
 
-const languagesUrl = cachableUrl('/context/schema/language/');
 export function useSchemaLanguages(): IR<string> | undefined {
   const [languages] = useAsyncState<IR<string>>(
     React.useCallback(
@@ -121,9 +120,10 @@ export function useSchemaLanguages(): IR<string> | undefined {
             readonly country: string | null;
             readonly language: string;
           }>
-        >(languagesUrl, {
+        >('/context/schema/language/', {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
+          cache: 'no-cache',
         })
           .then(({ data }) =>
             // Sometimes languages are duplicated. Need to make the list unique

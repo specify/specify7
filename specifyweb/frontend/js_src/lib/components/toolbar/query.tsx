@@ -45,7 +45,7 @@ import {
 } from '../../permissions';
 import { cachableUrl } from '../../initialcontext';
 import { downloadFile, FilePicker, fileToText } from '../filepicker';
-import { omit } from '../../helpers';
+import {removeKey} from '../../helpers';
 import { getUniqueName } from '../../wbuniquifyname';
 import { goTo } from '../navigation';
 import { getUserPref } from '../../preferencesutils';
@@ -449,7 +449,7 @@ function QueryImport({
                 .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
                 .then(
                   async (query) =>
-                    new schema.models.SpQuery.Resource(omit(query, ['id']))
+                    new schema.models.SpQuery.Resource(removeKey(query, 'id'))
                 )
                 .then((queryResource) =>
                   queryResource.set(

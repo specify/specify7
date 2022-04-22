@@ -365,7 +365,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'TableModifiedAction',
-                    field: 'ishidden',
+                    field: 'isHidden',
                     value,
                   })
                 }
@@ -459,7 +459,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
-                    field: 'ishidden',
+                    field: 'isHidden',
                     value,
                   })
                 }
@@ -484,7 +484,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
-                    field: 'isrequired',
+                    field: 'isRequired',
                     value,
                   })
                 }

@@ -18,7 +18,7 @@
 
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
-import { omit } from './helpers';
+import {removeKey} from './helpers';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -226,9 +226,9 @@ function genericGet<T>(
     buckets[bucketName].records[cacheName].version !== version
   ) {
     console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
-    buckets[bucketName].records = omit(buckets[bucketName].records, [
+    buckets[bucketName].records = removeKey(buckets[bucketName].records,
       cacheName,
-    ]);
+    );
     if (typeof defaultValue === 'undefined') return undefined;
     genericSet(bucketName, cacheName, defaultValue, {
       ...defaultSetOptions,

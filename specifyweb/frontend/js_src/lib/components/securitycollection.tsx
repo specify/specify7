@@ -5,7 +5,7 @@ import { ajax, Http, ping } from '../ajax';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { index, omit, removeKey, replaceKey } from '../helpers';
+import { index, removeKey, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -127,7 +127,7 @@ export function CollectionView({
       {
         method: 'POST',
         body: {
-          ...omit(role, ['id']),
+          ...removeKey(role, 'id'),
           policies: decompressPolicies(role.policies),
         },
         headers: { Accept: 'application/json' },

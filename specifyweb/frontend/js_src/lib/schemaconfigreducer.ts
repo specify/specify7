@@ -60,7 +60,7 @@ type ChangeItemAction = Action<
 type TableModifiedAction = Action<
   'TableModifiedAction',
   {
-    field: 'name' | 'desc' | 'ishidden' | 'format' | 'aggregator';
+    field: 'name' | 'desc' | 'isHidden' | 'format' | 'aggregator';
     value: string | boolean | null;
   }
 >;
@@ -68,7 +68,7 @@ type TableModifiedAction = Action<
 type FieldModifiedAction = Action<
   'FieldModifiedAction',
   {
-    field: 'name' | 'desc' | 'ishidden' | 'isrequired';
+    field: 'name' | 'desc' | 'isHidden' | 'isRequired';
     value: string | boolean;
   }
 >;

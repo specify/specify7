@@ -14,7 +14,7 @@ import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
 import { createResource, saveResource } from '../resource';
 import { schema } from '../schema';
-import { findString, prepareNewString } from '../schemaconfighelper';
+import { findString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, PartialBy, RA } from '../types';
 import { LoadingContext } from './contexts';
@@ -24,9 +24,7 @@ import { stateReducer } from './schemaconfigstate';
 import type { WithFieldInfo } from './toolbar/schemaconfig';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
-export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'> & {
-  readonly parent?: string;
-};
+export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 
 export type UiFormatter = {
   readonly name: string;
@@ -202,12 +200,14 @@ export function SchemaConfig({
                       names[item.resource_uri],
                       language,
                       country,
+                      'itemName',
                       item.resource_uri
                     ),
                     desc: findString(
                       descriptions[item.resource_uri],
                       language,
                       country,
+                      'itemDesc',
                       item.resource_uri
                     ),
                   },
@@ -219,13 +219,25 @@ export function SchemaConfig({
           limit: 0,
           containerName: tableId,
         }).then(({ records }) =>
-          findString(records, language, country, stateTable.resource_uri)
+          findString(
+            records,
+            language,
+            country,
+            'containerName',
+            stateTable.resource_uri
+          )
         ),
         containerDescription: fetchCollection('SpLocaleItemStr', {
           limit: 0,
           containerDesc: tableId,
         }).then(({ records }) =>
-          findString(records, language, country, stateTable.resource_uri)
+          findString(
+            records,
+            language,
+            country,
+            'containerDesc',
+            stateTable.resource_uri
+          )
         ),
       })
       .then(({ pickLists, items, containerName, containerDescription }) => {
@@ -274,10 +286,7 @@ export function SchemaConfig({
       typeof resource.id === 'object' &&
       resource.id >= 0
         ? saveResource('SpLocaleItemStr', resource.id, resource)
-        : createResource(
-            'SpLocaleItemStr',
-            prepareNewString(resource as NewSpLocaleItemString)
-          );
+        : createResource('SpLocaleItemStr', resource);
 
     const { strings, ...table } = state.table;
     const requests = [

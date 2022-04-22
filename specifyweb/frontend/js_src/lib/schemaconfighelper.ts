@@ -10,8 +10,7 @@ import type { SerializedResource } from './datamodelutils';
 import { addMissingFields } from './datamodelutils';
 import type { Aggregator, Formatter } from './dataobjformatters';
 import { commonText } from './localization/common';
-import { parseUrl } from './querystring';
-import { getResourceApiUrl, parseClassName } from './resource';
+import { parseClassName } from './resource';
 import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
 
@@ -23,47 +22,28 @@ export function findString(
   strings: RA<SpLocaleItemString>,
   language: string,
   country: string | null,
+  itemType: 'containerName' | 'containerDesc' | 'itemName' | 'itemDesc',
   parentUrl: string
 ): SpLocaleItemString | NewSpLocaleItemString {
   const targetString = strings.find(
     (object) =>
-      (object.language === language && object.country) ?? country === '' ?? ''
+      object.language === language && (object.country ?? '') === (country ?? '')
   );
   if (typeof targetString === 'object') return targetString;
 
-  const defaultString =
-    strings.find(
-      (object) =>
-        object.language === defaultLanguage && object.country === defaultCountry
-    )?.text ?? '';
+  const defaultItem = strings.find(
+    (object) =>
+      object.language === defaultLanguage && object.country === defaultCountry
+  );
   newStringId += 1;
 
-  return {
-    ...addMissingFields('SpLocaleItemStr', {
-      id: -newStringId,
-      text: defaultString,
-      language,
-      country,
-    }),
-    parent: parentUrl,
-  };
-}
-
-/**
- * Need to set resource URL before a SpLocaleItemString can be sent to the back
- * end
- */
-export function prepareNewString({
-  parent,
-  id: _id,
-  ...object
-}: NewSpLocaleItemString): NewSpLocaleItemString {
-  if (typeof parent === 'undefined') throw new Error('String has no parent');
-  const [parentName, parentId] = Object.entries(parseUrl(parent))[0];
-  return {
-    ...object,
-    [parentName]: getResourceApiUrl('SpLocaleContainerItem', parentId),
-  };
+  return addMissingFields('SpLocaleItemStr', {
+    id: -newStringId,
+    text: defaultItem?.text ?? '',
+    language,
+    country,
+    [itemType]: parentUrl,
+  });
 }
 
 /** Throws away unneeded fields */

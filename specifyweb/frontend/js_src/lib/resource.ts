@@ -15,6 +15,7 @@ import type { SpecifyResource } from './legacytypes';
 import { formatUrl } from './querystring';
 import { getModel } from './schema';
 import type { RA } from './types';
+import { removeKey } from './helpers';
 
 /*
  * TODO: experiment with an object singleton:
@@ -64,7 +65,7 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
     `/api/specify/${tableName.toLowerCase()}/`,
     {
       method: 'POST',
-      body: keysToLowerCase(addMissingFields(tableName, data)),
+      body: removeKey(keysToLowerCase(addMissingFields(tableName, data)), 'id'),
       headers: { Accept: 'application/json' },
     },
     { expectedResponseCodes: [Http.CREATED] }

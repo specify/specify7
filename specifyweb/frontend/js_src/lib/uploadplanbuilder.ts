@@ -1,5 +1,5 @@
 import type { Tables } from './datamodel';
-import { group, omit, split, toLowerCase } from './helpers';
+import {group, removeKey, split, toLowerCase} from './helpers';
 import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
@@ -95,13 +95,13 @@ function toUploadTable(
         return [
           fieldName.toLowerCase(),
           indexMappings(lines).map(([_index, lines]) =>
-            omit(
+            removeKey(
               toUploadTable(
                 defined(model.getRelationship(fieldName)).relatedModel,
                 lines,
                 mustMatchPreferences
               ),
-              ['toMany']
+              'toMany'
             )
           ),
         ] as const;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { group, omit, replaceItem, replaceKey } from '../helpers';
+import { group, removeKey, replaceItem, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissions';
@@ -177,11 +177,14 @@ export function SecurityImportExport({
                                     f.var(
                                       typeof newRole.id === 'number'
                                         ? JSON.stringify(
-                                            omit(defined(roles)[newRole.id], [
-                                              'id',
-                                            ])
+                                            removeKey(
+                                              defined(roles)[newRole.id],
+                                              'id'
+                                            )
                                           ) ===
-                                          JSON.stringify(omit(newRole, ['id']))
+                                          JSON.stringify(
+                                            removeKey(newRole, 'id')
+                                          )
                                           ? 'unchanged'
                                           : 'changed'
                                         : 'created',

@@ -12,7 +12,7 @@ import {
   pluralizeParser,
 } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
-import { omit } from '../helpers';
+import {removeKey} from '../helpers';
 import { f } from '../functools';
 import { Input, Select, selectMultipleSize } from './basic';
 import type { PickListItemSimple } from './combobox';
@@ -451,14 +451,15 @@ export function QueryLineFilter({
   const parser = queryFieldFilters[filter.type].hasParser
     ? originalParser
     : ({
-        ...omit(originalParser, [
+        ...removeKey(
+          originalParser,
           'pattern',
           'min',
           'step',
           'formatters',
           'parser',
-          'validators',
-        ]),
+          'validators'
+        ),
         type: 'text',
       } as const);
 

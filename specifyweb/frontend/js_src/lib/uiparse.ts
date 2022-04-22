@@ -7,7 +7,7 @@ import { error } from './assert';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import { f } from './functools';
-import { mappedFind, omit } from './helpers';
+import {mappedFind, removeKey} from './helpers';
 import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
 import { queryText } from './localization/query';
@@ -481,7 +481,7 @@ export function fieldFormat(
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
-    omit(resolvedParser, ['required']),
+    removeKey(resolvedParser, 'required'),
     undefined,
     value.toString()
   );

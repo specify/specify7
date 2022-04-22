@@ -5,7 +5,7 @@ import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Institution, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { omit, removeKey, replaceKey } from '../helpers';
+import { removeKey, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -66,7 +66,7 @@ export function InstitutionView({
       {
         method: 'POST',
         body: {
-          ...omit(role, ['id']),
+          ...removeKey(role, 'id'),
           policies: decompressPolicies(role.policies),
         },
         headers: { Accept: 'application/json' },

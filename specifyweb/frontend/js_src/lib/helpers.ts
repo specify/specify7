@@ -180,12 +180,15 @@ export function mappedFind<ITEM, RETURN_TYPE>(
   return value;
 }
 
-export const omit = <
+/**
+ * Create a new object with given keys removed
+ */
+export const removeKey = <
   DICTIONARY extends IR<unknown>,
   OMIT extends keyof DICTIONARY
 >(
   object: DICTIONARY,
-  toOmit: RA<OMIT>
+  ...toOmit: RA<OMIT>
 ): {
   readonly [KEY in keyof DICTIONARY as KEY extends OMIT
     ? never
@@ -248,17 +251,6 @@ export const replaceKey = <T extends IR<unknown>>(
           key === targetKey.toString() ? newValue : value,
         ])
       ) as T);
-
-/** Remove a key from an object */
-export const removeKey = <T extends IR<unknown>>(
-  object: T,
-  targetKey: keyof T
-): T =>
-  targetKey in object
-    ? (Object.fromEntries(
-        Object.entries(object).filter(([key]) => key !== targetKey)
-      ) as T)
-    : object;
 
 /** Convert an array of objects with IDs into a dictionary */
 export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
