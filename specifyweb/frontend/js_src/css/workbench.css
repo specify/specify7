@@ -52,10 +52,10 @@
 
 .wbs-form .wb-no-match-cell,
 .wbs-form .wb-modified-cell,
-.wbs-form .wb-invalid-cell,
+.wbs-form .htCommentCell,
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
-  @apply bg-[color:var(--accent-color)];
+  @apply !bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states
@@ -65,7 +65,7 @@
   --accent-color: var(--new-cell);
 }
 
-.wbs-form:not(.wb-hide-invalid-cells) .wb-invalid-cell,
+.wbs-form:not(.wb-hide-invalid-cells) .htCommentCell,
 .wb-navigation-section[data-navigation-type='invalidCells'] {
   --accent-color: var(--invalid-cell);
 }
@@ -137,8 +137,4 @@
  */
 .htPlaceholder {
   @apply text-blue-500;
-}
-
-.htCommentCell {
-  @apply wb-invalid-cell;
 }

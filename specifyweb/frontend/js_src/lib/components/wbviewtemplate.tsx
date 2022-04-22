@@ -26,13 +26,16 @@ function Navigation({
       aria-atomic
     >
       <Button.Simple
-        className="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 hover:brightness-70 p-2 border-none"
+        className={`wb-cell-navigation !bg-inherit hover:!bg-inherit brightness-80
+          hover:brightness-70 p-2 border-none`}
         data-navigation-direction="previous"
       >
         &lt;
       </Button.Simple>
       <Button.Simple
-        className="wb-navigation-text aria-handled bg-inherit hover:bg-inherit border-none grid items-center hover:brightness-70 grid-cols-[auto_1fr_auto_1fr_auto]"
+        className={`wb-navigation-text aria-handled !bg-inherit hover:!bg-inherit
+          border-none grid items-center hover:brightness-70
+          grid-cols-[auto_1fr_auto_1fr_auto]`}
         title={wbText('clickToToggle')}
       >
         {label} (<span className="wb-navigation-position text-center">0</span>/
@@ -40,7 +43,8 @@ function Navigation({
       </Button.Simple>
       <Button.Simple
         type="button"
-        className="wb-cell-navigation bg-inherit hover:bg-inherit brightness-80 hover:brightness-70 p-2 border-none"
+        className={`wb-cell-navigation !bg-inherit hover:!bg-inherit brightness-80
+          hover:brightness-70 p-2 border-none`}
         data-navigation-direction="next"
       >
         &gt;
@@ -188,23 +192,27 @@ function WbView({
         aria-label={wbText('navigation')}
       >
         <span className="contents" role="search">
-          <Input.Generic
-            type="search"
-            className="wb-search-query"
-            placeholder={commonText('search')}
-            title={commonText('searchQuery')}
-            aria-label={commonText('searchQuery')}
-            autoComplete="on"
-            spellCheck
-          />
-          {!isUploaded && (
-            <Input.Text
-              className="wb-replace-value"
-              placeholder={wbText('replace')}
-              title={wbText('replacementValue')}
-              aria-label={wbText('replacementValue')}
+          <div className="flex">
+            <Input.Generic
+              type="search"
+              className="wb-search-query"
+              placeholder={commonText('search')}
+              title={commonText('searchQuery')}
+              aria-label={commonText('searchQuery')}
               autoComplete="on"
+              spellCheck
             />
+          </div>
+          {!isUploaded && (
+            <div className="flex">
+              <Input.Text
+                className="wb-replace-value"
+                placeholder={wbText('replace')}
+                title={wbText('replacementValue')}
+                aria-label={wbText('replacementValue')}
+                autoComplete="on"
+              />
+            </div>
           )}
           <span className="wb-advanced-search-wrapper" />
         </span>

@@ -398,7 +398,7 @@ const WBView = Backbone.View.extend({
            * Need htCommentCell to apply default HOT comment box styles
            *
            * Since comments are only used for invalid cells, comment boxes
-           * contain 'wb-invalid-cell' class
+           * contain the styles of invalid cells
            *
            */
           commentedCellClassName: 'htCommentCell',
@@ -1325,7 +1325,7 @@ const WBView = Backbone.View.extend({
         cell.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
       issues: () => {
         cell.classList[value.length === 0 ? 'remove' : 'add'](
-          'wb-invalid-cell'
+          'htCommentCell'
         );
         if (value.length === 0)
           this.getHotPlugin('comments').removeCommentAtCell(
@@ -2216,7 +2216,7 @@ const WBView = Backbone.View.extend({
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
       statusData.failures.forEach(([issue, column]) =>
-        setMetaCallback('issues', issue, [column], mappingPath)
+        setMetaCallback('issues', issue, [column], resolveColumns)
       );
     else if (uploadStatus === 'NoMatch')
       setMetaCallback(

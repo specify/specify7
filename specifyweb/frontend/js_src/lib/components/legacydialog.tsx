@@ -14,14 +14,17 @@ function LegacyDialogWrapper({
 }): JSX.Element {
   const [contentElement, setContentElement] =
     React.useState<HTMLElement | null>(null);
+  const isJsx = typeof content === 'object' && 'ref' in content;
   React.useEffect(
     () =>
-      contentElement?.replaceChildren(
-        typeof content === 'object' && 'jquery' in content
-          ? (content[0] as HTMLElement)
-          : (content as HTMLElement)
-      ),
-    [content, contentElement]
+      isJsx
+        ? undefined
+        : contentElement?.replaceChildren(
+            typeof content === 'object' && 'jquery' in content
+              ? (content[0] as HTMLElement)
+              : (content as HTMLElement)
+          ),
+    [isJsx, content, contentElement]
   );
 
   return (
@@ -34,7 +37,7 @@ function LegacyDialogWrapper({
           props.className?.container ?? dialogClassNames.normalContainer,
       }}
     >
-      {''}
+      {isJsx ? content : undefined}
     </Dialog>
   );
 }

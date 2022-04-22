@@ -344,12 +344,14 @@ export function AttachmentsView(): JSX.Element {
           </Select>
         </Label.ForCheckbox>
         <Label.ForCheckbox>
-          <span>{formsText('order')}</span>
-          <OrderPicker
-            model={schema.models.Attachment}
-            order={order}
-            onChange={setOrder}
-          />
+          {formsText('order')}
+          <div>
+            <OrderPicker
+              model={schema.models.Attachment}
+              order={order}
+              onChange={setOrder}
+            />
+          </div>
         </Label.ForCheckbox>
         <span className="flex-1 -ml-2" />
         <Label.ForCheckbox>
