@@ -2,6 +2,8 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { SpQuery, SpQueryField } from './datamodel';
 import type { AnySchema } from './datamodelutils';
 import type { SpecifyResource } from './legacytypes';
+import { getUserPref } from './preferencesutils';
+import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
 import { idFromUrl } from './resource';
 import { schema } from './schema';
@@ -10,7 +12,6 @@ import type { SpecifyModel } from './specifymodel';
 import { toTable, toTreeTable } from './specifymodel';
 import type { RA } from './types';
 import { userInformation } from './userinfo';
-import { flippedSortTypes } from './querybuilderutils';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -38,16 +39,21 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
+  const runContainsQuery =
+    isTreeTable ||
+    getUserPref('form', 'queryComboBox', 'searchAlgorithm') === 'contains';
   const searchField = QueryFieldSpec.fromPath([
     relatedModel.name,
     ...fieldName.split('.'),
   ])
     .toSpQueryField()
     .set('isDisplay', false)
-    .set('startValue', isTreeTable ? `%${value}` : value)
+    .set('startValue', runContainsQuery ? `%${value}` : value)
     .set(
       'operStart',
-      isTreeTable ? queryFieldFilters.like.id : queryFieldFilters.startsWith.id
+      runContainsQuery
+        ? queryFieldFilters.like.id
+        : queryFieldFilters.startsWith.id
     );
 
   const displayField = QueryFieldSpec.fromPath([relatedModel.name])

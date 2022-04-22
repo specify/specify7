@@ -12,12 +12,12 @@ import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useLiveState, useTitle } from './hooks';
 import { dialogIcons } from './icons';
-import { useTransitionDuration } from './preferenceshooks';
+import { usePref, useTransitionDuration } from './preferenceshooks';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
   <div
-    aria-hidden="true"
+    aria-hidden
     className={`animate-bounce h-7 bg-gradient-to-r from-orange-400
       to-amber-200 mt-5 rounded`}
   />
@@ -145,8 +145,16 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
-  // TODO: allow disabling this behaviour
-  useTitle(modal && isOpen ? header : undefined);
+  const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
+  useTitle(modal && isOpen && modifyTitle ? header : undefined);
+
+  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
+  const [transparentDialog] = usePref(
+    'general',
+    'dialog',
+    'transparentBackground'
+  );
+  const [showIcon] = usePref('general', 'dialog', 'showIcon');
 
   /*
    * Don't set index on first render, because that may lead multiple dialogs
@@ -235,6 +243,7 @@ export function Dialog({
     React.useState<HTMLDivElement | null>(null);
   const [iconType] = useLiveState(
     React.useCallback(() => {
+      if (!showIcon) return 'none';
       if (typeof defaultIconType === 'string') return defaultIconType;
       else if (buttonContainer === null) return 'none';
       /*
@@ -249,7 +258,7 @@ export function Dialog({
               'object'
         )?.[0] ?? 'none'
       );
-    }, [defaultIconType, buttons, buttonContainer])
+    }, [showIcon, defaultIconType, buttons, buttonContainer])
   );
 
   const overlayElement: Props['overlayElement'] = React.useCallback(
@@ -292,12 +301,19 @@ export function Dialog({
       style={{ overlay: { zIndex } }}
       portalClassName=""
       // "overflow-x-hidden" is necessary for the "resize" handle to appear
-      className={`bg-gradient-to-bl from-gray-200 dark:from-neutral-800
-        via-white dark:via-neutral-900 to-white dark:to-neutral-900
+      className={`
         outline-none flex flex-col p-4 gap-y-2 ${containerClassName}
         dark:text-neutral-200 dark:border dark:border-neutral-700
         text-neutral-900 overflow-x-hidden
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
+        ${
+          reduceTransparency
+            ? 'white dark:neutral-900'
+            : transparentDialog && !modal
+            ? 'backdrop-blur-lg'
+            : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
+                via-white dark:via-neutral-900 to-white dark:to-neutral-900`
+        }
       `}
       shouldCloseOnEsc={modal && typeof handleClose === 'function'}
       /*

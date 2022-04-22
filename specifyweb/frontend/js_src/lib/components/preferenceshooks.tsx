@@ -6,12 +6,13 @@
 import React from 'react';
 
 import { eventListener } from '../events';
+import { f } from '../functools';
 import type { Preferences } from '../preferences';
 import { getPrefDefinition, getUserPref, setPref } from '../preferencesutils';
 import { crash } from './errorboundary';
 import { useLiveState } from './hooks';
 import { MILLISECONDS } from './internationalization';
-import { f } from '../functools';
+import { defaultFont } from './preferencesrenderers';
 
 export const prefEvents = eventListener<{
   update: undefined;
@@ -176,12 +177,14 @@ export const shouldUseDarkMode = (): boolean =>
 
 export function SetCssVariables(): null {
   const transitionDuration = useTransitionDuration();
-  React.useEffect(() => {
-    document.body.style.setProperty(
-      '--transitionDuration',
-      `${transitionDuration / MILLISECONDS}s`
-    );
-  }, [transitionDuration]);
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--transitionDuration',
+        `${transitionDuration / MILLISECONDS}s`
+      ),
+    [transitionDuration]
+  );
 
   const darkMode = useDarkMode();
   React.useEffect(
@@ -190,6 +193,109 @@ export function SetCssVariables(): null {
         ? document.body.classList.add('dark')
         : document.body.classList.remove('dark'),
     [darkMode]
+  );
+
+  const [fontSize] = usePref('general', 'ui', 'fontSize');
+  const [scaleUi] = usePref('general', 'ui', 'scaleInterface');
+  const scaleTarget = scaleUi ? document.documentElement : document.body;
+  React.useEffect(
+    () => () => {
+      scaleTarget.style.removeProperty('--font-scale');
+      scaleTarget.style.removeProperty('font-size');
+    },
+    [scaleTarget]
+  );
+  React.useEffect(() => {
+    scaleTarget.style.setProperty('--font-scale', `${fontSize / 100}`);
+    scaleTarget.style.setProperty('font-size', `${fontSize}%`);
+  }, [scaleTarget, fontSize]);
+
+  const [fontFamily] = usePref('general', 'ui', 'fontFamily');
+  React.useEffect(
+    () =>
+      fontFamily === defaultFont
+        ? void document.body.style.removeProperty('font-family')
+        : document.body.style.setProperty('font-family', fontFamily),
+    [fontFamily]
+  );
+
+  const [formMaxWidth] = usePref('form', 'ui', 'maxWidth');
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--form-max-width', `${formMaxWidth}px`),
+    [formMaxWidth]
+  );
+
+  const [fieldBackground] = usePref('form', 'appearance', 'fieldBackground');
+  const [darkFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'darkFieldBackground'
+  );
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--field-background',
+        darkMode ? darkFieldBackground : fieldBackground
+      ),
+    [darkMode, darkFieldBackground, fieldBackground]
+  );
+
+  const [disabledFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'fieldBackground'
+  );
+  const [darkDisabledFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'darkDisabledFieldBackground'
+  );
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--disabled-field-background',
+        darkMode ? darkDisabledFieldBackground : disabledFieldBackground
+      ),
+    [darkMode, darkDisabledFieldBackground, disabledFieldBackground]
+  );
+
+  const [invalidFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'fieldBackground'
+  );
+  const [darkInvalidFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'darkInvalidFieldBackground'
+  );
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--invalid-field-background',
+        darkMode ? darkInvalidFieldBackground : invalidFieldBackground
+      ),
+    [darkMode, darkInvalidFieldBackground, invalidFieldBackground]
+  );
+
+  const [requiredFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'fieldBackground'
+  );
+  const [darkRequiredFieldBackground] = usePref(
+    'form',
+    'appearance',
+    'darkRequiredFieldBackground'
+  );
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--required-field-background',
+        darkMode ? darkRequiredFieldBackground : requiredFieldBackground
+      ),
+    [darkMode, darkRequiredFieldBackground, requiredFieldBackground]
   );
 
   return null;

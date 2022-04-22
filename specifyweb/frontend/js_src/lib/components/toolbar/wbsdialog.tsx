@@ -26,6 +26,7 @@ import { goTo } from '../navigation';
 import { createBackboneView } from '../reactbackboneextend';
 import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
+import { getUserPref } from '../../preferencesutils';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -323,5 +324,6 @@ export const menuItem: MenuItem = {
   title: commonText('workBench'),
   icon: icons.table,
   isOverlay: true,
+  enabled: () => getUserPref('header', 'menu', 'showWorkBench'),
   view: ({ onClose }) => new View({ onClose, showTemplates: false }),
 };

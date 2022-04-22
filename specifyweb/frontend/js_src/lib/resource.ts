@@ -36,7 +36,7 @@ export const fetchResource = async <
   id: number
 ): Promise<SerializedResource<SCHEMA> | undefined> =>
   ajax<SerializedModel<SCHEMA>>(
-    `/api/specify/${tableName}/${id}/`,
+    `/api/specify/${tableName.toLowerCase()}/${id}/`,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { headers: { Accept: 'application/json' } },
     { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }

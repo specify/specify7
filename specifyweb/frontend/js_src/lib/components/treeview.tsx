@@ -39,6 +39,7 @@ import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
 import { formatUrl, parseUrl } from '../querystring';
 import { pushUrl } from './navigation';
+import { usePref } from './preferenceshooks';
 
 const defaultCacheValue = [] as const;
 
@@ -128,6 +129,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [searchValue, setSearchValue] = React.useState<string>('');
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
+  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
 
   return typeof rows === 'undefined' ? null : (
     <Container.Full>
@@ -259,8 +261,10 @@ function TreeView<SCHEMA extends AnyTree>({
                 key={index}
                 className={`border whitespace-nowrap border-transparent top-0
                   sticky bg-gray-100/60 dark:bg-neutral-900/60 p-2
-                  backdrop-blur-sm ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
-                  ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}`}
+                  ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
+                  ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}
+                  ${reduceTransparency ? '' : 'backdrop-blur-sm'}
+                `}
               >
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}

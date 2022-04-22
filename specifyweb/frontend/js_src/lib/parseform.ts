@@ -16,12 +16,12 @@ import { formatUrl } from './querystring';
 import { localizeFrom } from './stringlocalization';
 import { getAttribute } from './helpers';
 import { parseClassName } from './resource';
+import { getPref } from './remoteprefs';
 
-const columnDefinitionsPlatform = 'lnx';
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
     viewDefinition.querySelector(
-      `columnDef[os="${columnDefinitionsPlatform}"], columnDef`
+      `columnDef[os="${getPref('form.definition.columnSource')}"], columnDef`
     )?.textContent ?? getAttribute(viewDefinition, 'colDef')
   );
 

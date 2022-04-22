@@ -7,23 +7,26 @@ import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
-import type { FormMode } from '../parseform';
 import { formsText } from '../localization/forms';
+import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { reports } from '../reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, Container, DataEntry, Form } from './basic';
-import { FormContext, FormMeta, LoadingContext } from './contexts';
+import { AppTitle } from './common';
+import type { FormMeta } from './contexts';
+import { FormContext, LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
 import { Dialog } from './modaldialog';
+import { goTo, pushUrl } from './navigation';
+import { usePref } from './preferenceshooks';
+import { defaultFont } from './preferencesrenderers';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
-import { goTo, pushUrl } from './navigation';
-import { AppTitle } from './common';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -219,6 +222,24 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
   const loading = React.useContext(LoadingContext);
 
+  const [updateTitle] = usePref('form', 'ui', 'updatePageTitle');
+
+  const [fontFamily] = usePref('general', 'ui', 'fontFamily');
+  const [container, setContainer] = React.useState<HTMLElement | null>(null);
+  React.useEffect(
+    () =>
+      fontFamily === defaultFont
+        ? void container?.style.removeProperty('font-family')
+        : container?.style.setProperty('font-family', fontFamily),
+    [container, fontFamily]
+  );
+
+  const [fontSize] = usePref('general', 'ui', 'fontSize');
+  React.useEffect(
+    () => container?.style.setProperty('font-size', `${fontSize}%`),
+    [container, fontSize]
+  );
+
   return isDeleted ? (
     resourceDeletedDialog
   ) : (
@@ -302,9 +323,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
               {formattedChildren}
             </DataEntry.SubForm>
           ) : (
-            <Container.Generic className="w-fit overflow-y-auto">
+            <Container.Generic
+              className="w-fit overflow-y-auto"
+              style={{
+                fontFamily: fontFamily === defaultFont ? undefined : fontFamily,
+              }}
+            >
               <DataEntry.Header>
-                <AppTitle title={titleOverride ?? title} />
+                {updateTitle && <AppTitle title={titleOverride ?? title} />}
                 <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                 {headerButtons?.(specifyNetworkBadge) ?? (
                   <>
@@ -361,6 +387,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               onClose={(): void => {
                 if (isModified) setShowUnloadProtect(true);
                 else handleClose();
+              }}
+              forwardRef={{
+                container: setContainer,
               }}
             >
               {form}

@@ -210,13 +210,6 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
-      'ALWAYS.ASK.COLL': {
-        description:
-          'Whether to always ask which collection to use on the sign in screen',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
       // These are used on back end only
       'auditing.do_audits': {
         description: 'Whether Audit Log is enabled',
@@ -229,6 +222,12 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: true,
         parser: 'java.lang.Boolean',
         isLegacy: true,
+      },
+      'form.definition.columnSource': {
+        description: 'The platform to use as a source of columns',
+        defaultValue: 'lnx',
+        formatter: [formatter().trim],
+        isLegacy: false,
       },
       // This is actually stored in Global Prefs:
       /*

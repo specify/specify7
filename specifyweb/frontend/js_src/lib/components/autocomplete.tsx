@@ -10,6 +10,7 @@ import { Portal } from './common';
 import { useBooleanState, useId, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
+import { usePref } from './preferenceshooks';
 
 const debounceRate = 300;
 
@@ -261,6 +262,8 @@ export function Autocomplete<T>({
     return (): void => window.removeEventListener('scroll', handleScroll, true);
   }, [showList, input, isInDialog]);
 
+  const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');
+
   return (
     <>
       {children({
@@ -356,7 +359,7 @@ export function Autocomplete<T>({
                   const stringLabel =
                     typeof item.label === 'string' ? item.label : undefined;
                   const label =
-                    typeof stringLabel === 'string'
+                    typeof stringLabel === 'string' && highlightMatch
                       ? stringLabel
                           // Convert to lower case as search may be case-insensitive
                           .toLowerCase()

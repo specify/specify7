@@ -717,7 +717,7 @@ export const Container = {
   Generic: wrap(
     'Container.Generic',
     'section',
-    `${baseContainer} max-w-[min(100%,1200px)] mx-auto`
+    `${baseContainer} max-w-[min(100%,var(--form-max-width))] mx-auto`
   ),
   Full: wrap('Container.Full', 'section', className.containerFull),
   Base: wrap('Container.Base', 'section', className.containerBase),

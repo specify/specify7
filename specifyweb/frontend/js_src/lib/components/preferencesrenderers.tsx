@@ -8,8 +8,10 @@ import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Select } from './basic';
 import { iconClassName } from './icons';
+import { preferencesText } from '../localization/preferences';
+import { getAvailableFonts } from '../fonts';
+import { Autocomplete } from './autocomplete';
 
-export const defaultFont = 'default';
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({ value, onChange: handleChange }) {
     return (
@@ -96,3 +98,39 @@ export function OrderPicker<SCHEMA extends AnySchema>({
     </Select>
   );
 }
+
+export const defaultFont = 'default';
+export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
+  function FontFamilyPreferenceItem({ value, onChange: handleChange }) {
+    const items = React.useMemo(
+      () => [
+        {
+          label: (
+            <span className="font-sans">{preferencesText('defaultFont')}</span>
+          ),
+          searchValue: preferencesText('defaultFont'),
+          data: defaultFont,
+        },
+        ...getAvailableFonts().map((item) => ({
+          label: <span style={{ fontFamily: item }}>{item}</span>,
+          searchValue: item,
+          data: item,
+        })),
+      ],
+      []
+    );
+    return (
+      <Autocomplete<string>
+        source={items}
+        minLength={0}
+        delay={0}
+        onNewValue={handleChange}
+        onChange={({ data }): void => handleChange(data)}
+        // OnCleared={}
+        filterItems={true}
+        children={(props): JSX.Element => <Input.Generic {...props} />}
+        aria-label={undefined}
+        value={value === defaultFont ? preferencesText('defaultFont') : value}
+      />
+    );
+  };

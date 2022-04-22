@@ -5,7 +5,13 @@
 import React from 'react';
 
 import { ajax, isExternalUrl } from '../ajax';
+import type { Collection } from '../datamodel';
+import type { SerializedModel } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
+import { group, sortFunction, split, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
+import { formatUrl, parseUrl } from '../querystring';
+import { resourceOn } from '../resource';
 import { router } from '../router';
 import {
   setCurrentOverlay,
@@ -14,7 +20,6 @@ import {
 } from '../specifyapp';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
-import { group, sortFunction, split } from '../helpers';
 import {
   Button,
   className,
@@ -29,9 +34,8 @@ import {
 import { useAsyncState, useBooleanState } from './hooks';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
-import { resourceOn } from '../resource';
-import { formatUrl, parseUrl } from '../querystring';
 import { goTo } from './navigation';
+import { usePref } from './preferenceshooks';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -123,7 +127,7 @@ export function HeaderItems({
 }
 
 type Collections = {
-  readonly available: RA<Readonly<[number, string]>>;
+  readonly available: RA<SerializedModel<Collection>>;
   readonly current: number | null;
 };
 
@@ -138,6 +142,25 @@ export function CollectionSelector(): JSX.Element {
       []
     ),
     false
+  );
+
+  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const isReverseSort = sortOrder.startsWith('-');
+  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
+    keyof Collection['fields'];
+  const sortedCollections = React.useMemo(
+    () =>
+      typeof collections === 'object'
+        ? Array.from(collections.available)
+            .sort(
+              sortFunction(
+                (collection) => collection[toLowerCase(sortField)],
+                isReverseSort
+              )
+            )
+            .map(serializeResource)
+        : undefined,
+    [collections, isReverseSort, sortField]
   );
 
   return (
@@ -155,13 +178,11 @@ export function CollectionSelector(): JSX.Element {
       {typeof collections === 'undefined' && (
         <option disabled>{commonText('loading')}</option>
       )}
-      {Array.from(collections?.available ?? [])
-        .sort(sortFunction(([_id, name]) => name))
-        .map(([id, name]) => (
-          <option key={id} value={id}>
-            {name}
-          </option>
-        ))}
+      {Array.from(sortedCollections ?? []).map(({ id, collectionName }) => (
+        <option key={id} value={id}>
+          {collectionName}
+        </option>
+      ))}
     </Select>
   );
 }

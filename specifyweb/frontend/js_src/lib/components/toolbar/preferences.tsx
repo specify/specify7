@@ -13,7 +13,11 @@ import type {
 } from '../../preferences';
 import { preferenceDefinitions } from '../../preferences';
 import { awaitPrefsSynced, setPref } from '../../preferencesutils';
-import { getValidationAttributes, parseValue } from '../../uiparse';
+import {
+  getValidationAttributes,
+  parserFromType,
+  parseValue,
+} from '../../uiparse';
 import {
   Button,
   className,
@@ -201,7 +205,7 @@ function Item({
       onChange={(value): void => {
         if (item.requiresReload) handleRestartNeeded();
         handleChanged();
-        (item.onChange ?? setValue)(value);
+        setValue(value);
       }}
     />
   );
@@ -212,7 +216,12 @@ const DefaultRenderer: PreferenceItemComponent<any> = function ({
   value,
   onChange: handleChange,
 }) {
-  const parser = 'parser' in definition ? definition.parser : undefined;
+  const parser =
+    'parser' in definition
+      ? typeof definition.parser === 'string'
+        ? parserFromType(definition.parser)
+        : definition.parser
+      : undefined;
   const validationAttributes = React.useMemo(
     () => f.maybe(parser, getValidationAttributes),
     [parser]

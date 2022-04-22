@@ -357,10 +357,9 @@ def choose_collection(request) -> http.HttpResponse:
     )
 
     available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections.sort(key=lambda x: x[1])
 
     if len(available_collections) == 1:
-        set_collection_cookie(redirect_resp, available_collections[0][0])
+        set_collection_cookie(redirect_resp, available_collections[0].id)
         return redirect_resp
 
     class Form(forms.Form):

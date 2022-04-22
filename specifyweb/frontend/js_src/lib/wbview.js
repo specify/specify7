@@ -44,7 +44,7 @@ import {commonText} from './localization/common';
 import {showDialog} from './components/legacydialog';
 import {loadingBar} from './components/modaldialog';
 import {format} from './dataobjformatters';
-import {legacyNonJsxIcons} from './components/icons';
+import {iconClassName, legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
 import {defined, filterArray} from './types';
 import {crash} from './components/errorboundary';
@@ -463,7 +463,7 @@ const WBView = Backbone.View.extend({
                             href="/specify/view/${tableName}/${recordId}/"
                             target="_blank"
                           >
-                            <img class="w-6 h-6" src="${tableIcon}" alt="">
+                            <img class="${iconClassName}" src="${tableIcon}" alt="">
                             ${tableLabel}
                             <span
                               title="${commonText('opensInNewTab')}"

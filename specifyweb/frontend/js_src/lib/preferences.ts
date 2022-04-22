@@ -3,10 +3,11 @@
  */
 
 import { crash } from './components/errorboundary';
-import { defaultFont, FontFamilyPreferenceItem } from './components/fontpicker';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
+  defaultFont,
+  FontFamilyPreferenceItem,
 } from './components/preferencesrenderers';
 import {
   handleLanguageChange,
@@ -20,6 +21,7 @@ import { preferencesText } from './localization/preferences';
 import type { Language } from './localization/utils';
 import { DEFAULT_LANGUAGE } from './localization/utils';
 import { wbText } from './localization/workbench';
+import type { JavaType } from './specifyfield';
 import type { IR, RA } from './types';
 import { ensure } from './types';
 import type { Parser } from './uiparse';
@@ -58,7 +60,7 @@ export type PreferenceItem<VALUE> = {
     }
   | {
       // Parses the stored value. Determines the input type to render
-      readonly parser: Parser;
+      readonly parser: Parser | JavaType;
     }
   | {
       readonly renderer: PreferenceItemComponent<VALUE>;
@@ -169,8 +171,17 @@ export const preferenceDefinitions = {
               max: 1000,
             },
           }),
+          scaleInterface: defineItem<boolean>({
+            title: preferencesText('scaleInterface'),
+            description: preferencesText('scaleInterfaceDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            parser: 'java.lang.Boolean',
+          }),
           fontFamily: defineItem<string>({
             title: preferencesText('fontFamily'),
+            description: preferencesText('fontFamilyDescription'),
             requiresReload: false,
             visible: true,
             defaultValue: defaultFont,
@@ -186,9 +197,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: 'adminsOnly',
             defaultValue: false,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
         },
       },
@@ -201,9 +210,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           transparentBackground: defineItem<boolean>({
             title: preferencesText('translucentDialog'),
@@ -211,18 +218,14 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: false,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showIcon: defineItem<boolean>({
             title: preferencesText('showDialogIcon'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
         },
       },
@@ -239,72 +242,56 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showInteractions: defineItem<boolean>({
             title: preferencesText('showInteractions'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showTrees: defineItem<boolean>({
             title: preferencesText('showTrees'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showRecordSets: defineItem<boolean>({
             title: preferencesText('showRecordSets'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showQueries: defineItem<boolean>({
             title: preferencesText('showQueries'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showReports: defineItem<boolean>({
             title: preferencesText('showReports'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showAttachments: defineItem<boolean>({
             title: preferencesText('showAttachments'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           showWorkBench: defineItem<boolean>({
             title: preferencesText('showWorkBench'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
         },
       },
@@ -325,24 +312,6 @@ export const preferenceDefinitions = {
           }),
         },
       },
-      definition: {
-        title: preferencesText('definition'),
-        items: {
-          columnsSource: defineItem<'lnx' | 'win' | 'mac' | 'common'>({
-            title: preferencesText('columnsPlatform'),
-            description: preferencesText('columnsPlatformDescription'),
-            requiresReload: true,
-            visible: true,
-            defaultValue: 'lnx',
-            values: [
-              { value: 'lnx', title: 'lnx' },
-              { value: 'win', title: 'win' },
-              { value: 'mac', title: 'mac' },
-              { value: 'common', title: 'common' },
-            ],
-          }),
-        },
-      },
       ui: {
         title: preferencesText('ui'),
         items: {
@@ -352,9 +321,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
@@ -370,6 +337,7 @@ export const preferenceDefinitions = {
           // FIXME: support passing a URL
           fontFamily: defineItem<string>({
             title: preferencesText('fontFamily'),
+            description: preferencesText('fontFamilyDescription'),
             requiresReload: false,
             visible: true,
             defaultValue: defaultFont,
@@ -388,6 +356,7 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      // FIXME: integrate forms with these prefs:
       appearance: {
         title: preferencesText('appearance'),
         items: {
@@ -475,9 +444,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
         },
       },
@@ -494,9 +461,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
           sortOrder: defineItem<
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
@@ -511,6 +476,7 @@ export const preferenceDefinitions = {
       },
     },
   },
+  // FIXME: integrate with these:
   treeEditor: {
     title: preferencesText('treeEditor'),
     subCategories: {
@@ -662,9 +628,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: {
-              type: 'checkbox',
-            },
+            parser: 'java.lang.Boolean',
           }),
         },
       },

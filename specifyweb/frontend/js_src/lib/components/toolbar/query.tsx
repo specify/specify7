@@ -48,6 +48,7 @@ import { downloadFile, FilePicker, fileToText } from '../filepicker';
 import { omit } from '../../helpers';
 import { getUniqueName } from '../../wbuniquifyname';
 import { goTo } from '../navigation';
+import { getUserPref } from '../../preferencesutils';
 
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
@@ -342,7 +343,9 @@ export const menuItem: MenuItem = {
   title: commonText('queries'),
   icon: icons.documentSearch,
   isOverlay: true,
-  enabled: () => hasToolPermission('queryBuilder', 'read'),
+  enabled: () =>
+    hasToolPermission('queryBuilder', 'read') &&
+    getUserPref('header', 'menu', 'showQueries'),
   view: ({ onClose }) =>
     new QueryToolbarView({
       onClose,

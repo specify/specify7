@@ -29,7 +29,7 @@
   textarea,
   select {
     @apply p-1 rounded accent-brand-200 dark:accent-brand-400 dark:border-none
-      bg-gray-200 dark:bg-neutral-700;
+      bg-gray-200 dark:bg-neutral-700 text-[length:inherit] leading-[unset];
   }
 
   /**

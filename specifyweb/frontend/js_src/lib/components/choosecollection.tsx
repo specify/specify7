@@ -8,9 +8,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
+import type { Collection } from '../datamodel';
+import type { SerializedModel } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
+import { sortFunction, toLowerCase } from '../helpers';
+import { unlockInitialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
-import { fetchContext as fetchRemotePrefs, getPref } from '../remoteprefs';
+import { fetchContext as fetchRemotePrefs } from '../remoteprefs';
 import type { RA } from '../types';
 import {
   className,
@@ -23,8 +28,8 @@ import {
 } from './basic';
 import { Contexts } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
+import { usePref } from './preferenceshooks';
 import { parseDjangoDump, SplashScreen } from './splashscreen';
-import { unlockInitialContext } from '../initialcontext';
 
 unlockInitialContext('chooseCollection');
 
@@ -34,7 +39,7 @@ function ChooseCollection({
 }: {
   readonly data: {
     readonly errors: RA<string>;
-    readonly availableCollections: RA<Readonly<[number, string]>>;
+    readonly availableCollections: RA<SerializedModel<Collection>>;
     readonly initialValue: string | null;
     readonly nextUrl: string;
   };
@@ -65,17 +70,35 @@ function ChooseCollection({
    * submit the form as soon as loaded
    */
   const formRef = React.useRef<HTMLFormElement | null>(null);
+  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
   React.useEffect(
     () =>
       remotePrefsFetched &&
-      !getPref('ALWAYS.ASK.COLL') &&
+      !alwaysPrompt &&
       typeof f.parseInt(data.initialValue ?? '') === 'number'
         ? formRef.current?.submit()
         : undefined,
-    [remotePrefsFetched, data.initialValue]
+    [alwaysPrompt, remotePrefsFetched, data.initialValue]
   );
 
-  const hasAccess = data.availableCollections.length > 0;
+  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const isReverseSort = sortOrder.startsWith('-');
+  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
+    keyof Collection['fields'];
+  const availableCollections = React.useMemo(
+    () =>
+      Array.from(data.availableCollections)
+        .sort(
+          sortFunction(
+            (collection) => collection[toLowerCase(sortField)],
+            isReverseSort
+          )
+        )
+        .map(serializeResource),
+    [data.availableCollections, isReverseSort, sortField]
+  );
+
+  const hasAccess = availableCollections.length > 0;
   return (
     <SplashScreen>
       <Form method="post" forwardRef={formRef}>
@@ -84,7 +107,7 @@ function ChooseCollection({
         {hasAccess ? (
           <>
             <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
-              {data.availableCollections.map(([id, label]) => (
+              {availableCollections.map(({ id, collectionName }) => (
                 <Label.ForCheckbox key={id}>
                   <Input.Radio
                     name="collection"
@@ -92,7 +115,7 @@ function ChooseCollection({
                     checked={selectedCollection === id}
                     onChange={(): void => setSelectedCollection(id)}
                   />
-                  {label}
+                  {collectionName}
                 </Label.ForCheckbox>
               ))}
             </div>

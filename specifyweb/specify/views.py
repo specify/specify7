@@ -322,8 +322,8 @@ def set_user_agents(request, userid: int):
             if collectionid not in collections
         ]
         missing_for_7 = [
-            collectionid
-            for collectionid, _ in sp7_collections
+            collection.id
+            for collection in sp7_collections
             if collectionid not in collections
         ]
         if missing_for_6 or missing_for_7:

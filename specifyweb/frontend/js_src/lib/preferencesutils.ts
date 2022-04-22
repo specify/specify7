@@ -20,7 +20,7 @@ import {
 import { fetchContext as fetchSchema, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
-import { parseValue } from './uiparse';
+import { parserFromType, parseValue } from './uiparse';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
 
 export const getPrefDefinition = <
@@ -68,8 +68,12 @@ export function setPref<
   const definition = getPrefDefinition(category, subcategory, item);
   let parsed;
   if ('parser' in definition) {
-    const parseResult = parseValue(definition.parser, undefined, value);
-    if (parseResult.isValid) parsed = parseResult.value;
+    const parser =
+      typeof definition.parser === 'string'
+        ? parserFromType(definition.parser)
+        : definition.parser;
+    const parseResult = parseValue(parser, undefined, value?.toString());
+    if (parseResult.isValid) parsed = parseResult.parsed;
     else {
       console.error(`Failed parsing pref value`, {
         category,
@@ -92,7 +96,7 @@ export function setPref<
       });
       parsed = definition.defaultValue;
     }
-  } else parsed = definition.defaultValue;
+  } else parsed = value;
 
   const prefs = preferences as any;
   if (
@@ -131,14 +135,14 @@ export async function awaitPrefsSynced(): Promise<void> {
     syncPreferences().catch(crash);
   }
 
-  if (isSyncing)
-    return new Promise((resolve) => {
-      const destructor = prefEvents.on('synchronized', () => {
-        destructor();
-        resolve();
-      });
-    });
-  else return Promise.resolve();
+  return isSyncing
+    ? new Promise((resolve) => {
+        const destructor = prefEvents.on('synchronized', () => {
+          destructor();
+          resolve();
+        });
+      })
+    : Promise.resolve();
 }
 
 /** Update back-end with front-end changes in a throttled manner */
@@ -167,7 +171,14 @@ async function syncPreferences(): Promise<void> {
       void fetchResource('SpAppResourceData', appResourceData.id)
         .then((resource) => updatePreferences(defined(resource)))
         .catch(crash)
-  ).then(() => {
+  ).then(({ version }) => {
+    /*
+     * Can't reassign to appResourceData directly, as it may have already
+     * changed while fetching was in progress
+     */
+    // @ts-expect-error Mutating the resource
+    appResourceData.version = version;
+
     // If there were additional changes while syncing
     if (isSyncPending) syncPreferences().catch(crash);
     else {
@@ -180,6 +191,8 @@ async function syncPreferences(): Promise<void> {
 const resourceName = 'UserPreferences';
 
 let appResourceData: SerializedResource<SpAppResourceData> = undefined!;
+
+// TODO: cache preferences to local storage
 
 // Fetch app resource that stores current user preferences
 export const fetchPreferences = Promise.all([fetchDomain, fetchUser])

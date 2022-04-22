@@ -10,6 +10,7 @@ import { icons } from '../icons';
 import type { MenuItem } from '../main';
 import { createBackboneView } from '../reactbackboneextend';
 import { TreeSelectDialog } from './treerepair';
+import { getUserPref } from '../../preferencesutils';
 
 function RepairTree({
   onClose: handleClose,
@@ -35,5 +36,6 @@ export const menuItem: MenuItem = {
   title: commonText('trees'),
   icon: icons.tree,
   isOverlay: true,
+  enabled: () => getUserPref('header', 'menu', 'showTrees'),
   view: ({ onClose }) => new View({ onClose }),
 };

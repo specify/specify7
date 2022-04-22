@@ -19,7 +19,7 @@ import {formsText} from './localization/forms';
 import {commonText} from './localization/common';
 
 import {csrfToken} from './csrftoken';
-import {legacyNonJsxIcons} from './components/icons';
+import {iconClassName, legacyNonJsxIcons} from './components/icons';
 import {parseSpecifyProperties} from './parseformcells';
 import {showDialog} from './components/legacydialog';
 import {getRelatedObjectCount} from './resource';
@@ -113,7 +113,7 @@ var ReportListDialog = Backbone.View.extend({
             this.options.done?.();
     },
     makeEntry: function(icon, appResource) {
-        const img = $('<img>', {src: icon, class: 'w-6 h-6'});
+        const img = $('<img>', {src: icon, class: iconClassName});
         const a = $(`<button
             type="button"
             class="select link"
@@ -426,7 +426,7 @@ var ChooseRecordSetDialog = Backbone.View.extend({
     dialogEntry: function(recordSet) {
         const model = getModelById(recordSet.get('dbtableid'));
         const icon = model.getIcon();
-        const img = $('<img>', {src: icon, alt: model.label, class: 'w-6 h-6'});
+        const img = $('<img>', {src: icon, alt: model.label, class: iconClassName});
         var link = $(`<button class="link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(
             $('<td>').append(img),

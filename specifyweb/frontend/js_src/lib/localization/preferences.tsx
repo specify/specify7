@@ -104,6 +104,20 @@ export const preferencesText = createDictionary({
     ca: 'Font family',
     'es-es': 'Font family',
   },
+  fontFamilyDescription: {
+    'en-us': `You can specify any font that is on your computer, even if it is
+      not in the list. A comma separated list of fonts is supported, where
+      second font would be used if first one is not installed and so on`,
+    'ru-ru': `You can specify any font that is on your computer, even if it is
+      not in the list. A comma separated list of fonts is supported, where
+      second font would be used if first one is not installed and so on`,
+    ca: `You can specify any font that is on your computer, even if it is
+      not in the list. A comma separated list of fonts is supported, where
+      second font would be used if first one is not installed and so on`,
+    'es-es': `You can specify any font that is on your computer, even if it is
+      not in the list. A comma separated list of fonts is supported, where
+      second font would be used if first one is not installed and so on`,
+  },
   defaultFont: {
     'en-us': '(default font)',
     'ru-ru': '(default font)',
@@ -297,10 +311,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Application',
   },
   allowDismissingErrors: {
-    'en-us': 'Allow dismissing errors',
-    'ru-ru': 'Allow dismissing errors',
-    ca: 'Allow dismissing errors',
-    'es-es': 'Allow dismissing errors',
+    'en-us': 'Allow dismissing error messages',
+    'ru-ru': 'Allow dismissing error messages',
+    ca: 'Allow dismissing error messages',
+    'es-es': 'Allow dismissing error messages',
   },
   updatePageTitle: {
     'en-us': 'Update page title',
@@ -386,22 +400,22 @@ export const preferencesText = createDictionary({
     ca: 'Definition',
     'es-es': 'Definition',
   },
-  columnsPlatform: {
-    'en-us': 'Source of columns',
-    'ru-ru': 'Source of columns',
-    ca: 'Source of columns',
-    'es-es': 'Source of columns',
-  },
-  columnsPlatformDescription: {
-    'en-us': 'The platform to use as a source of columns',
-    'ru-ru': 'The platform to use as a source of columns',
-    ca: 'The platform to use as a source of columns',
-    'es-es': 'The platform to use as a source of columns',
-  },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
     'ru-ru': 'Show icon in the header',
     ca: 'Show icon in the header',
     'es-es': 'Show icon in the header',
+  },
+  scaleInterface: {
+    'en-us': 'Scale Interface',
+    'ru-ru': 'Scale Interface',
+    ca: 'Scale Interface',
+    'es-es': 'Scale Interface',
+  },
+  scaleInterfaceDescription: {
+    'en-us': 'Scale interface to match font size',
+    'ru-ru': 'Scale interface to match font size',
+    ca: 'Scale interface to match font size',
+    'es-es': 'Scale interface to match font size',
   },
 });

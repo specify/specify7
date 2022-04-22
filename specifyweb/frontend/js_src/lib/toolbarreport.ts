@@ -5,6 +5,7 @@ import { cachableUrl } from './initialcontext';
 import { commonText } from './localization/common';
 import { hasPermission } from './permissions';
 import { ReportsView } from './reports';
+import { getUserPref } from './preferencesutils';
 
 export const menuItem = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -18,7 +19,10 @@ export const menuItem = ajax<{ readonly available: boolean }>(
     task: 'report',
     title: commonText('reports'),
     icon: icons.documentReport,
-    enabled: available && hasPermission('/report', 'execute'),
+    enabled:
+      available &&
+      hasPermission('/report', 'execute') &&
+      getUserPref('header', 'menu', 'showQueries'),
     isOverlay: true,
     view: ({ onClose }) => new ReportsView({ onClose }),
   }));

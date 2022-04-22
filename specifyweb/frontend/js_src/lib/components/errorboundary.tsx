@@ -25,6 +25,7 @@ import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
+import { usePref } from './preferenceshooks';
 
 type ErrorBoundaryState =
   | {
@@ -59,6 +60,11 @@ function ErrorDialog({
   readonly header?: string;
   readonly onClose?: () => void;
 }): JSX.Element {
+  const [canDismiss] = usePref(
+    'general',
+    'application',
+    'allowDismissingErrors'
+  );
   return (
     <Dialog
       title={title}
@@ -83,7 +89,7 @@ function ErrorDialog({
           <Button.Red onClick={(): void => window.location.assign('/')}>
             {commonText('close')}
           </Button.Red>
-          {process.env.NODE_ENV !== 'production' &&
+          {(canDismiss || process.env.NODE_ENV !== 'production') &&
             typeof handleClose === 'function' && (
               <Button.Blue onClick={handleClose}>
                 [development] dismiss

@@ -58,7 +58,7 @@ def users_collections_for_sp6(cursor, user_id):
 
 def users_collections_for_sp7(userid: int) -> List[Tuple[int, str]]:
     return [
-        (c.id, c.collectionname)
+        c
         for c in Collection.objects.all()
         if query_pt(c.id, userid, CollectionAccessPT.access).allowed
     ]
@@ -241,7 +241,6 @@ def collection(request):
     """Allows the frontend to query or set the logged in collection."""
     current = request.COOKIES.get('collection', None)
     available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections.sort(key=lambda x: x[1])
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.body))
@@ -249,7 +248,7 @@ def collection(request):
             return HttpResponseBadRequest('bad collection id', content_type="text/plain")
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
-        if collection.id not in [c[0] for c in available_collections]:
+        if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)

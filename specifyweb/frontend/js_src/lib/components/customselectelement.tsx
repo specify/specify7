@@ -21,7 +21,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from './common';
-import { icons } from './icons';
+import { iconClassName, icons } from './icons';
 import { scrollIntoView } from '../treeviewutils';
 
 type Properties =
@@ -328,7 +328,7 @@ function Option({
             {icons.chevronRight}
           </span>
         ) : (
-          <span className="print:hidden w-6" />
+          <span className={`print:hidden ${iconClassName}`} />
         ))}
     </span>
   );

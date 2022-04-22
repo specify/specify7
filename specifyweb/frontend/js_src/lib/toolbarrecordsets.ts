@@ -6,6 +6,7 @@ import { commonText } from './localization/common';
 import { schema } from './schema';
 import { userInformation } from './userinfo';
 import { hasToolPermission } from './permissions';
+import { getUserPref } from './preferencesutils';
 
 const RecordSetsView = createBackboneView(RecordSetsDialog);
 
@@ -14,7 +15,9 @@ export const menuItem: MenuItem = {
   title: commonText('recordSets'),
   icon: icons.collection,
   isOverlay: true,
-  enabled: () => hasToolPermission('recordSets', 'read'),
+  enabled: () =>
+    getUserPref('header', 'menu', 'showRecordSets') &&
+    hasToolPermission('recordSets', 'read'),
   view({ onClose }) {
     const recordSets = new schema.models.RecordSet.LazyCollection({
       filters: {

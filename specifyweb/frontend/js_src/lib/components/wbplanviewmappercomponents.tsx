@@ -12,6 +12,7 @@ import { Button, Input, Label, Textarea, Ul } from './basic';
 import { TableIcon } from './common';
 import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import type {
   HtmlGeneratorFieldData,
@@ -177,7 +178,14 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [showDialog, _, handleClose] = useBooleanState(lineCount === 0);
+  const [dialogEnabled] = usePref(
+    'workBench',
+    'wbPlanView',
+    'showNewDataSetWarning'
+  );
+  const [showDialog, _, handleClose] = useBooleanState(
+    dialogEnabled && lineCount === 0
+  );
 
   return (
     <Dialog
