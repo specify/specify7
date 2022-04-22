@@ -10,7 +10,6 @@ import type { SerializedResource } from '../../datamodelutils';
 import { fetchFormatters } from '../../dataobjformatters';
 import { commonText } from '../../localization/common';
 import { parseUrl } from '../../querystring';
-import { schema } from '../../schema';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
@@ -27,6 +26,7 @@ import type {
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
 import { useSchemaLanguages } from './language';
+import { index } from '../../helpers';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -67,25 +67,11 @@ function SchemaConfigWrapper({
   const languages = useSchemaLanguages();
   const [tables] = useAsyncState<IR<SerializedResource<SpLocaleContainer>>>(
     React.useCallback(async () => {
-      const excludedTables = new Set(
-        Object.entries(schema.models)
-          .filter(([_tableName, { overrides }]) => overrides.isSystem)
-          .map(([tableName]) => tableName.toLowerCase())
-      );
-
       return fetchCollection('SpLocaleContainer', {
         limit: 0,
         domainFilter: true,
         schemaType: 0,
-      })
-        .then(({ records }) =>
-          // Exclude system tables
-          records.filter(({ name }) => !excludedTables.has(name))
-        )
-        .then((tables) =>
-          // Index by ID
-          Object.fromEntries(tables.map((table) => [table.id, table]))
-        );
+      }).then(({ records }) => index(records));
     }, []),
     true
   );

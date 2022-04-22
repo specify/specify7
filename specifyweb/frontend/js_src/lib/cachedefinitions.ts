@@ -29,6 +29,9 @@ export type CacheDefinitions = {
     readonly showHiddenFields: boolean;
     readonly mappingViewHeight: number;
   };
+  readonly schemaConfig: {
+    readonly showHiddenTables: boolean;
+  };
   readonly leaflet: {
     // eslint-disable-next-line multiline-comment-style, capitalized-comments
     // prettier-ignore

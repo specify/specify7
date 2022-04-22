@@ -10,6 +10,7 @@ import type {
 import type { SerializedResource } from '../datamodelutils';
 import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import { commonText } from '../localization/common';
+import { wbText } from '../localization/workbench';
 import {
   filterFormatters,
   getItemType,
@@ -39,11 +40,13 @@ import type {
   UiFormatter,
 } from './schemaconfig';
 import { AddLanguage, PickList } from './schemaconfigcomponents';
+import { useCachedState } from './statecache';
 import type {
   WithFetchedStrings,
   WithFieldInfo,
   WithTableInfo,
 } from './toolbar/schemaconfig';
+import { getModel } from '../schema';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 
@@ -103,6 +106,63 @@ type StateWithParameters = States & {
     readonly dataObjAggregators: IR<DataObjectFormatter>;
   };
 };
+
+function ChooseBaseTable({
+  language,
+  tables,
+  onClose: handleClose,
+  onBack: handleBack,
+}: {
+  readonly language: string;
+  readonly tables: IR<SerializedResource<SpLocaleContainer>>;
+  readonly onClose: () => void;
+  readonly onBack: () => void;
+}): JSX.Element {
+  const [showHiddenTables = false, setShowHiddenTables] = useCachedState({
+    bucketName: 'schemaConfig',
+    cacheName: 'showHiddenTables',
+    bucketType: 'localStorage',
+    defaultValue: false,
+    staleWhileRefresh: false,
+  });
+  const sortedTables = React.useMemo(() => {
+    const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
+    return showHiddenTables
+      ? sortedTables
+      : sortedTables.filter(({ name }) => getModel(name)?.isSystem === false);
+  }, [showHiddenTables, tables]);
+  return (
+    <Dialog
+      header={commonText('tables')}
+      onClose={handleClose}
+      buttons={
+        <Button.Transparent onClick={handleBack}>
+          {commonText('back')}
+        </Button.Transparent>
+      }
+    >
+      <Ul className="max-h-80 overflow-y-scroll">
+        {sortedTables.map((table) => (
+          <li key={table.id}>
+            <Link.Default
+              href={`/task/schema-config/?language=${language}&table=${table.name}`}
+            >
+              <TableIcon name={table.name} tableLabel={false} />
+              {table.name}
+            </Link.Default>
+          </li>
+        ))}
+      </Ul>
+      <Label.ForCheckbox>
+        <Input.Checkbox
+          checked={showHiddenTables}
+          onValueChange={setShowHiddenTables}
+        />
+        {wbText('showAdvancedTables')}
+      </Label.ForCheckbox>
+    </Dialog>
+  );
+}
 
 export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
   ChooseLanguageState({
@@ -179,36 +239,17 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       parameters: { dispatch, tables, handleClose },
     },
   }) {
-    const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
     return (
-      <Dialog
-        header={commonText('tables')}
+      <ChooseBaseTable
+        language={language}
+        tables={tables}
         onClose={handleClose}
-        buttons={
-          <Button.Transparent
-            onClick={(): void =>
-              dispatch({
-                type: 'ChangeLanguageAction',
-              })
-            }
-          >
-            {commonText('back')}
-          </Button.Transparent>
+        onBack={(): void =>
+          dispatch({
+            type: 'ChangeLanguageAction',
+          })
         }
-      >
-        <Ul className="max-h-80">
-          {sortedTables.map((table) => (
-            <li key={table.id}>
-              <Link.Default
-                href={`/task/schema-config/?language=${language}&table=${table.name}`}
-              >
-                <TableIcon name={table.name} tableLabel={false} />
-                {table.name}
-              </Link.Default>
-            </li>
-          ))}
-        </Ul>
-      </Dialog>
+      />
     );
   },
   FetchingTableItemsState() {
