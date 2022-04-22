@@ -16,7 +16,6 @@ import {
   getResourceApiUrl,
   saveResource,
 } from './resource';
-import { fetchContext as fetchSchema, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
@@ -214,11 +213,11 @@ function updatePreferences(
  * then, create the app resource data itself
  */
 export const preferencesPromise = Promise.all([
-  fetchSchema,
+  import('./schema').then(({ fetchContext }) => fetchContext),
   fetchDomain,
   fetchUser,
 ])
-  .then(async () =>
+  .then(async ([schema]) =>
     fetchCollection(
       'SpAppResourceData',
       {
@@ -231,65 +230,64 @@ export const preferencesPromise = Promise.all([
         spappresource__spappresourcedir__collection:
           schema.domainLevelIds.collection,
       }
-    )
-  )
-  .then(({ records }) =>
-    records.length === 1
-      ? records[0]
-      : fetchSchema
-          .then(async () =>
-            fetchCollection('SpAppResourceDir', {
-              limit: 1,
-              isPersonal: true,
-              collection: schema.domainLevelIds.collection,
-              specifyUser: userInformation.id,
-            })
-          )
-          .then(({ records }) =>
-            records.length === 0
-              ? createResource('SpAppResourceDir', {
-                  collection: getResourceApiUrl(
-                    'Collection',
-                    schema.domainLevelIds.collection
-                  ),
-                  discipline: getResourceApiUrl(
-                    'Discipline',
-                    schema.domainLevelIds.discipline
-                  ),
-                  isPersonal: true,
-                  specifyUser: getResourceApiUrl(
-                    'SpecifyUser',
-                    userInformation.id
-                  ),
-                  userType: userInformation.usertype,
-                }).then(({ id }) => id)
-              : records[0].id
-          )
-          .then(async (appResourceDirId) =>
-            fetchCollection('SpAppResource', {
-              limit: 1,
-              spAppResourceDir: appResourceDirId,
-              specifyUser: userInformation.id,
-              name: resourceName,
-            }).then(({ records }) =>
+    ).then(({ records }) =>
+      records.length === 1
+        ? records[0]
+        : fetchCollection('SpAppResourceDir', {
+            limit: 1,
+            isPersonal: true,
+            collection: schema.domainLevelIds.collection,
+            specifyUser: userInformation.id,
+          })
+            .then(({ records }) =>
               records.length === 0
-                ? createResource('SpAppResource', {
-                    spAppResourceDir: getResourceApiUrl(
-                      'SpAppResourceDir',
-                      appResourceDirId
+                ? createResource('SpAppResourceDir', {
+                    collection: getResourceApiUrl(
+                      'Collection',
+                      schema.domainLevelIds.collection
                     ),
-                    specifyUser: userInformation.resource_uri,
-                    name: resourceName,
-                    mimeType: 'application/json',
+                    discipline: getResourceApiUrl(
+                      'Discipline',
+                      schema.domainLevelIds.discipline
+                    ),
+                    isPersonal: true,
+                    specifyUser: getResourceApiUrl(
+                      'SpecifyUser',
+                      userInformation.id
+                    ),
+                    userType: userInformation.usertype,
                   }).then(({ id }) => id)
                 : records[0].id
             )
-          )
-          .then(async (appResourceId) =>
-            createResource('SpAppResourceData', {
-              spAppResource: getResourceApiUrl('SpAppResource', appResourceId),
-              data: '{}',
-            })
-          )
+            .then(async (appResourceDirId) =>
+              fetchCollection('SpAppResource', {
+                limit: 1,
+                spAppResourceDir: appResourceDirId,
+                specifyUser: userInformation.id,
+                name: resourceName,
+              }).then(({ records }) =>
+                records.length === 0
+                  ? createResource('SpAppResource', {
+                      spAppResourceDir: getResourceApiUrl(
+                        'SpAppResourceDir',
+                        appResourceDirId
+                      ),
+                      specifyUser: userInformation.resource_uri,
+                      name: resourceName,
+                      mimeType: 'application/json',
+                    }).then(({ id }) => id)
+                  : records[0].id
+              )
+            )
+            .then(async (appResourceId) =>
+              createResource('SpAppResourceData', {
+                spAppResource: getResourceApiUrl(
+                  'SpAppResource',
+                  appResourceId
+                ),
+                data: '{}',
+              })
+            )
+    )
   )
   .then(updatePreferences);

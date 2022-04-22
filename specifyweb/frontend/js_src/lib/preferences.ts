@@ -361,6 +361,7 @@ export const preferenceDefinitions = {
         },
       },
       // FIXME: integrate forms with these prefs:
+      // FIXME: remove media queries from main.css
       appearance: {
         title: preferencesText('appearance'),
         items: {
@@ -480,7 +481,6 @@ export const preferenceDefinitions = {
       },
     },
   },
-  // FIXME: integrate with these:
   treeEditor: {
     title: preferencesText('treeEditor'),
     subCategories: {
@@ -491,25 +491,18 @@ export const preferenceDefinitions = {
          */
         title: '_Geography',
         items: {
-          evenColumnColor: defineItem({
-            title: preferencesText('evenColumnColor'),
+          treeColor: defineItem({
+            title: preferencesText('treeColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-          }),
-          oddColumnColor: defineItem({
-            title: preferencesText('oddColumnColor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
           synonomyColor: defineItem({
             title: preferencesText('synonomyColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
           }),
         },
@@ -517,25 +510,18 @@ export const preferenceDefinitions = {
       taxon: {
         title: '_Taxon',
         items: {
-          evenColumnColor: defineItem({
-            title: preferencesText('evenColumnColor'),
+          treeColor: defineItem({
+            title: preferencesText('treeColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-          }),
-          oddColumnColor: defineItem({
-            title: preferencesText('oddColumnColor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
           synonomyColor: defineItem({
             title: preferencesText('synonomyColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
           }),
         },
@@ -543,25 +529,18 @@ export const preferenceDefinitions = {
       storage: {
         title: '_Storage',
         items: {
-          evenColumnColor: defineItem({
-            title: preferencesText('evenColumnColor'),
+          treeColor: defineItem({
+            title: preferencesText('treeColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-          }),
-          oddColumnColor: defineItem({
-            title: preferencesText('oddColumnColor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
           synonomyColor: defineItem({
             title: preferencesText('synonomyColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
           }),
         },
@@ -569,25 +548,18 @@ export const preferenceDefinitions = {
       geologicTimePeriod: {
         title: '_GeologicTimePeriod',
         items: {
-          evenColumnColor: defineItem({
-            title: preferencesText('evenColumnColor'),
+          treeColor: defineItem({
+            title: preferencesText('treeColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-          }),
-          oddColumnColor: defineItem({
-            title: preferencesText('oddColumnColor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
           synonomyColor: defineItem({
             title: preferencesText('synonomyColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
           }),
         },
@@ -595,25 +567,18 @@ export const preferenceDefinitions = {
       lithoStrat: {
         title: '_LithoStrat',
         items: {
-          evenColumnColor: defineItem({
-            title: preferencesText('evenColumnColor'),
+          treeColor: defineItem({
+            title: preferencesText('treeColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
-            renderer: ColorPickerPreferenceItem,
-          }),
-          oddColumnColor: defineItem({
-            title: preferencesText('oddColumnColor'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
           synonomyColor: defineItem({
             title: preferencesText('synonomyColor'),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffffff',
+            defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
           }),
         },

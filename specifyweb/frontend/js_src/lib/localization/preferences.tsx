@@ -214,17 +214,11 @@ export const preferencesText = createDictionary({
     ca: 'Tree Editor',
     'es-es': 'Tree Editor',
   },
-  evenColumnColor: {
-    'en-us': 'Even column color',
-    'ru-ru': 'Even column color',
-    ca: 'Even column color',
-    'es-es': 'Even column color',
-  },
-  oddColumnColor: {
-    'en-us': 'Odd column color',
-    'ru-ru': 'Odd column color',
-    ca: 'Odd column color',
-    'es-es': 'Odd column color',
+  treeColor: {
+    'en-us': 'Tree color',
+    'ru-ru': 'Tree color',
+    ca: 'Tree color',
+    'es-es': 'Tree color',
   },
   synonomyColor: {
     'en-us': 'Synonomy color',

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { treeText } from '../localization/tree';
 import type { Conformations, KeyAction, Row, Stats } from '../treeviewutils';
@@ -8,7 +9,6 @@ import type { RA } from '../types';
 import { Button } from './basic';
 import { useId } from './hooks';
 import { icons } from './icons';
-import { f } from '../functools';
 
 export function TreeRow({
   row,
@@ -25,6 +25,7 @@ export function TreeRow({
   onFocusNode: handleFocusNode,
   onAction: handleAction,
   setFocusedRow,
+  synonomyColor,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -45,6 +46,7 @@ export function TreeRow({
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'toggle' | 'child'>) => void;
   readonly setFocusedRow: (row: Row) => void;
+  readonly synonomyColor: string;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -137,8 +139,13 @@ export function TreeRow({
                */
               className={`border whitespace-nowrap border-transparent aria-handled
               -mb-[12px] -ml-[5px] mt-2 rounded
-              ${isFocused ? 'outline outline-blue-500' : ''}
-              ${typeof row.acceptedId === 'number' ? 'text-red-600' : ''}`}
+              ${isFocused ? 'outline outline-blue-500' : ''}`}
+              style={{
+                color:
+                  typeof row.acceptedId === 'number'
+                    ? synonomyColor
+                    : undefined,
+              }}
               forwardRef={
                 isFocused
                   ? (element: HTMLButtonElement | null): void => {
@@ -237,19 +244,20 @@ export function TreeRow({
               aria-hidden="true"
               className={`border border-dotted border-transparent
               pointer-events-none whitespace-nowrap
-              ${
-                // Add left border for empty cell before tree node
-                indexOfAncestor !== -1 &&
-                !(typeof currentNode === 'object' && currentNode.isLastChild)
-                  ? 'border-l-gray-500'
-                  : ''
-              }
-              ${
-                // Add a line from parent till child
-                parentRankId <= rankId && rankId < row.rankId
-                  ? 'border-b-gray-500'
-                  : ''
-              }`}
+                ${
+                  // Add left border for empty cell before tree node
+                  indexOfAncestor !== -1 &&
+                  !(typeof currentNode === 'object' && currentNode.isLastChild)
+                    ? 'border-l-gray-500'
+                    : ''
+                }
+                ${
+                  // Add a line from parent till child
+                  parentRankId <= rankId && rankId < row.rankId
+                    ? 'border-b-gray-500'
+                    : ''
+                }
+              `}
             />
           );
         }
@@ -302,6 +310,7 @@ export function TreeRow({
                 return undefined;
               }}
               setFocusedRow={setFocusedRow}
+              synonomyColor={synonomyColor}
             />
           ))}
         </ul>

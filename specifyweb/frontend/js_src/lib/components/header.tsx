@@ -88,7 +88,7 @@ export function HeaderItems({
             active:dark:bg-neutral-600
             ${
               task === activeTask
-                ? 'bg-white dark:bg-neutral-600 lg:bg-transparent'
+                ? 'bg-white dark:bg-neutral-600 lg:!bg-transparent'
                 : ''
             }
             lg:after:absolute

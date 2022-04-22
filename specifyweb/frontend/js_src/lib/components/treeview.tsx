@@ -11,6 +11,7 @@ import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
 import { hasTreeAccess } from '../permissions';
+import { formatUrl, parseUrl } from '../querystring';
 import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -28,8 +29,10 @@ import { Autocomplete } from './autocomplete';
 import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
+import { pushUrl } from './navigation';
 import { NotFound } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
+import { usePref } from './preferenceshooks';
 import { createBackboneView } from './reactbackboneextend';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
@@ -37,11 +40,16 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { formatUrl, parseUrl } from '../querystring';
-import { pushUrl } from './navigation';
-import { usePref } from './preferenceshooks';
 
 const defaultCacheValue = [] as const;
+
+const treeToPref = {
+  Geography: 'geography',
+  Taxon: 'taxon',
+  Storage: 'storage',
+  GeologicTimePeriod: 'geologicTimePeriod',
+  LithoStrat: 'lithoStrat',
+} as const;
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -130,6 +138,13 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
   const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
+
+  const [treeColor] = usePref('treeEditor', treeToPref[tableName], 'treeColor');
+  const [synonomyColor] = usePref(
+    'treeEditor',
+    treeToPref[tableName],
+    'synonomyColor'
+  );
 
   return typeof rows === 'undefined' ? null : (
     <Container.Full>
@@ -232,9 +247,15 @@ function TreeView<SCHEMA extends AnyTree>({
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
           overflow-auto shadow-md shadow-gray-500 content-start
-          bg-gradient-to-bl from-[hsl(26deg_92%_62%_/_0)] rounded p-2 pt-0
-          via-[hsl(26deg_92%_62%_/_20%)] to-[hsl(26deg_92%_62%_/_0)] outline-none`}
-        style={{ '--cols': treeDefinitionItems.length } as React.CSSProperties}
+          bg-gradient-to-bl from-[var(--edgeColor)] rounded p-2 pt-0
+          via-[var(--middleColor)] to-[var(--edgeColor)] outline-none`}
+        style={
+          {
+            '--cols': treeDefinitionItems.length,
+            '--middleColor': `${treeColor}33`,
+            '--edgeColor': `${treeColor}00`,
+          } as React.CSSProperties
+        }
         // First role is for screen readers. Second is for styling
         role="none table"
         tabIndex={0}
@@ -339,6 +360,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 return undefined;
               }}
               setFocusedRow={setFocusedRow}
+              synonomyColor={synonomyColor}
             />
           ))}
         </ul>
