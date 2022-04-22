@@ -10,11 +10,14 @@ export const eventListener = <TYPE extends IR<unknown>>(
   // Returns event destructor to encourage cleaning up event listeners afterward
   on<EVENT_NAME extends string & keyof TYPE>(
     eventName: EVENT_NAME,
-    callback: (payload: TYPE[EVENT_NAME]) => void
+    callback: (payload: TYPE[EVENT_NAME]) => void,
+    // Call the callback for the first time as soon as even listener is setup
+    immediate = false
   ): () => void {
     const handler = (event: Event) =>
       callback((event as CustomEvent).detail as TYPE[EVENT_NAME]);
     eventTarget.addEventListener(eventName, handler);
+    if (immediate) callback(undefined as TYPE[EVENT_NAME]);
     return (): void => eventTarget.removeEventListener(eventName, handler);
   },
   trigger: <EVENT_NAME extends string & keyof TYPE>(

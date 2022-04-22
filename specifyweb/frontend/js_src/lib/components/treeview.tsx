@@ -32,7 +32,7 @@ import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { pushUrl } from './navigation';
 import { NotFound } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
-import { usePref } from './preferenceshooks';
+import { usePref, useReducedTransparency } from './preferenceshooks';
 import { createBackboneView } from './reactbackboneextend';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
@@ -137,8 +137,8 @@ function TreeView<SCHEMA extends AnyTree>({
   const [searchValue, setSearchValue] = React.useState<string>('');
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
-  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
 
+  const reduceTransparency = useReducedTransparency();
   const [treeColor] = usePref('treeEditor', treeToPref[tableName], 'treeColor');
   const [synonomyColor] = usePref(
     'treeEditor',

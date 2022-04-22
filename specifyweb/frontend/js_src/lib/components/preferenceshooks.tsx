@@ -116,16 +116,24 @@ export function usePrefRef<
   return [pref, updatePref] as const;
 }
 
+function useMedia(query: string): boolean {
+  const media = React.useMemo(() => window.matchMedia(query), [query]);
+  const eventsTarget = React.useMemo(
+    () => eventListener<{ change: undefined }>(media),
+    [media]
+  );
+  const [matches, setMatches] = React.useState(media.matches);
+  React.useEffect(
+    () => eventsTarget.on('change', () => setMatches(media.matches), true),
+    [eventsTarget, media]
+  );
+  return matches;
+}
+
 export function useReducedMotion(): boolean {
   const [pref] = usePref('general', 'ui', 'reduceMotion');
-  const value = React.useMemo(
-    () =>
-      pref === 'system'
-        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        : pref === 'reduce',
-    [pref]
-  );
-  return value;
+  const media = useMedia('(prefers-reduced-motion: reduce)');
+  return pref === 'system' ? media : pref === 'reduce';
 }
 
 const defaultTransitionDuration = 100;
@@ -151,13 +159,16 @@ export const getTransitionDuration = (): number =>
 
 export function useDarkMode(): boolean {
   const [theme] = usePref('general', 'ui', 'theme');
-  return React.useMemo(
-    () =>
-      theme === 'system'
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        : theme === 'dark',
-    [theme]
-  );
+  const media = useMedia('(prefers-color-scheme: dark)');
+  return theme === 'system' ? media : theme === 'dark';
+}
+
+export function useReducedTransparency(): boolean {
+  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
+  const media = useMedia('(prefers-reduced-transparency: reduce)');
+  return reduceTransparency === 'system'
+    ? media
+    : reduceTransparency === 'reduce';
 }
 
 export const shouldUseDarkMode = (): boolean =>

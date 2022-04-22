@@ -12,7 +12,11 @@ import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useTitle } from './hooks';
 import { dialogIcons } from './icons';
-import { usePref, useTransitionDuration } from './preferenceshooks';
+import {
+  usePref,
+  useReducedTransparency,
+  useTransitionDuration,
+} from './preferenceshooks';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -148,7 +152,7 @@ export function Dialog({
   const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 
-  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
+  const reduceTransparency = useReducedTransparency();
   const [transparentDialog] = usePref(
     'general',
     'dialog',
