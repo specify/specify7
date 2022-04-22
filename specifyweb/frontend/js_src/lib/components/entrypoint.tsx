@@ -28,6 +28,7 @@ function handleClick(event: Readonly<MouseEvent>): void {
     link !== null &&
     link.href.length > 0 &&
     link.getAttribute('href')?.startsWith('#') === false &&
+    link.getAttribute('download') === null &&
     (link.target !== '_blank' || event.altKey) &&
     !link.classList.contains(className.navigationHandled)
   ) {
