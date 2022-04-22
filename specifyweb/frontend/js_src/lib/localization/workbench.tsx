@@ -453,33 +453,46 @@ export const wbText = createDictionary({
     'es-es': 'Validate Completed with No Errors',
   },
   validationNoErrorsDialogMessage: {
-    'en-us': `
-      Validation found no errors, it is
-      ready to be uploaded into the database.<br><br>
-
-      Note: If this Data Set is edited and re-saved, Validate should
-      be re-run prior to Uploading to verify that no errors have been
-      introduced.`,
-    'ru-ru': `
-      Проверка завершена без ошибок. Этот набора данных
-      готов к загрузке в базу данных.<br><br>
-
-      Примечание: Если этот набор данных отредактирован и повторно сохранен,
-      начать проверку снова, чтобы убедиться, что ошибок не было введено.`,
-    ca: `
-      Validation found no errors, it is
-      ready to be uploaded into the database.<br><br>
-
-      Note: If this Data Set is edited and re-saved, Validate should
-      be re-run prior to Uploading to verify that no errors have been
-      introduced.`,
-    'es-es': `
-      Validation found no errors, it is
-      ready to be uploaded into the database.<br><br>
-
-      Note: If this Data Set is edited and re-saved, Validate should
-      be re-run prior to Uploading to verify that no errors have been
-      introduced.`,
+    'en-us': (
+      <>
+        Validation found no errors, it is ready to be uploaded into the
+        database.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Проверка завершена без ошибок. Этот набора данных готов к загрузке в
+        базу данных.
+        <br />
+        <br />
+        Примечание: Если этот набор данных отредактирован и повторно сохранен,
+        начать проверку снова, чтобы убедиться, что ошибок не было введено.
+      </>
+    ),
+    ca: (
+      <>
+        Validation found no errors, it is ready to be uploaded into the
+        database.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
+    'es-es': (
+      <>
+        Validation found no errors, it is ready to be uploaded into the
+        database.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
   },
   validationErrorsDialogTitle: {
     'en-us': 'Data Set Validation',
@@ -494,29 +507,42 @@ export const wbText = createDictionary({
     'es-es': 'Validate Completed with Errors',
   },
   validationErrorsDialogMessage: {
-    'en-us': `
-       Validation found errors in the Data Set.<br><br>
-
-       Note: If this Data Set is edited and re-saved, Validate should
-       be re-run prior to Uploading to verify that no errors have been
-       introduced.`,
-    'ru-ru': `
-       Проверка обнаружила ошибки в наборе данных.<br><br>
-
-       Примечание: Если этот набор данных отредактирован и повторно сохранен,
-      начать проверку снова, чтобы убедиться, что ошибок не было введено.`,
-    ca: `
-       Validation found errors in the Data Set.<br><br>
-
-       Note: If this Data Set is edited and re-saved, Validate should
-       be re-run prior to Uploading to verify that no errors have been
-       introduced.`,
-    'es-es': `
-       Validation found errors in the Data Set.<br><br>
-
-       Note: If this Data Set is edited and re-saved, Validate should
-       be re-run prior to Uploading to verify that no errors have been
-       introduced.`,
+    'en-us': (
+      <>
+        Validation found errors in the Data Set.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Проверка обнаружила ошибки в наборе данных.
+        <br />
+        <br />
+        Примечание: Если этот набор данных отредактирован и повторно сохранен,
+        начать проверку снова, чтобы убедиться, что ошибок не было введено.
+      </>
+    ),
+    ca: (
+      <>
+        Validation found errors in the Data Set.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
+    'es-es': (
+      <>
+        Validation found errors in the Data Set.
+        <br />
+        <br />
+        Note: If this Data Set is edited and re-saved, Validate should be re-run
+        prior to Uploading to verify that no errors have been introduced.
+      </>
+    ),
   },
   uploadNoErrorsDialogTitle: {
     'en-us': 'Data Set Upload',
@@ -557,34 +583,43 @@ export const wbText = createDictionary({
     'es-es': 'Upload Failed due to Error Cells',
   },
   uploadErrorsDialogMessage: {
-    'en-us': `
-      The upload failed due to one or more cell value errors.<br><br>
-
-      Validate the Data Set and review the
-      mouseover hints for each error cell, then make the
-      appropriate corrections. Save and retry the
-      Upload.`,
-    'ru-ru': `
-      Загрузка не удалась из-за одной или нескольких ошибок значений ячеек.
-      <br><br>
-
-      Проверте набор данных и наведите указатель мыши на каждую ячейку с
-      ошибкой, затем сделайте соответствующие исправления, сохраните и повторите
-      попытку.`,
-    ca: `
-      The upload failed due to one or more cell value errors.<br><br>
-
-      Validate the Data Set and review the
-      mouseover hints for each error cell, then make the
-      appropriate corrections. Save and retry the
-      Upload.`,
-    'es-es': `
-      The upload failed due to one or more cell value errors.<br><br>
-
-      Validate the Data Set and review the
-      mouseover hints for each error cell, then make the
-      appropriate corrections. Save and retry the
-      Upload.`,
+    'en-us': (
+      <>
+        The upload failed due to one or more cell value errors.
+        <br />
+        <br />
+        Validate the Data Set and review the mouseover hints for each error
+        cell, then make the appropriate corrections. Save and retry the Upload.
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Загрузка не удалась из-за одной или нескольких ошибок значений ячеек.
+        <br />
+        <br />
+        Проверте набор данных и наведите указатель мыши на каждую ячейку с
+        ошибкой, затем сделайте соответствующие исправления, сохраните и
+        повторите попытку.
+      </>
+    ),
+    ca: (
+      <>
+        The upload failed due to one or more cell value errors.
+        <br />
+        <br />
+        Validate the Data Set and review the mouseover hints for each error
+        cell, then make the appropriate corrections. Save and retry the Upload.
+      </>
+    ),
+    'es-es': (
+      <>
+        The upload failed due to one or more cell value errors.
+        <br />
+        <br />
+        Validate the Data Set and review the mouseover hints for each error
+        cell, then make the appropriate corrections. Save and retry the Upload.
+      </>
+    ),
   },
   dataSetRollbackDialogTitle: {
     'en-us': 'Data Set Rollback',
