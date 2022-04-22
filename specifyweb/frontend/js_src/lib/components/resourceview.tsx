@@ -36,6 +36,16 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'ExchangeOut',
   'Permit',
   'RepositoryAgreement',
+  'TaxonTreeDef',
+  'TaxonTreeDefItem',
+  'GeographyTreeDef',
+  'GeographyTreeDefItem',
+  'StorageTreeDef',
+  'StorageTreeDefItem',
+  'GeologicTimePeriodTreeDef',
+  'GeologicTimePeriodTreeDefItem',
+  'LithoStratTreeDef',
+  'LithoStratTreeDefItem',
 ]);
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
