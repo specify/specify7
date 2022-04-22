@@ -20,7 +20,7 @@ import {
 import { fetchContext as fetchSchema, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
-import { parserFromType, parseValue } from './uiparse';
+import { mergeParsers, parserFromType, parseValue } from './uiparse';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
 
 export const getPrefDefinition = <
@@ -67,11 +67,12 @@ export function setPref<
 ): void {
   const definition = getPrefDefinition(category, subcategory, item);
   let parsed;
-  if ('parser' in definition) {
+  if ('type' in definition) {
+    const baseParser = parserFromType(definition.type);
     const parser =
-      typeof definition.parser === 'string'
-        ? parserFromType(definition.parser)
-        : definition.parser;
+      typeof definition.parser === 'object'
+        ? mergeParsers(baseParser, definition.parser)
+        : baseParser;
     const parseResult = parseValue(parser, undefined, value?.toString());
     if (parseResult.isValid) parsed = parseResult.parsed;
     else {

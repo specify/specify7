@@ -494,7 +494,7 @@ export function useResourceValue<
     const parser =
       resource.noValidation === true || typeof field === 'undefined'
         ? {}
-        : resolveParser(field) ?? {};
+        : resolveParser(field);
     setParser(parser);
 
     resource.settingDefaultValues(() =>

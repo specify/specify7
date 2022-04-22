@@ -239,6 +239,8 @@ def api_login(request):
 @never_cache
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
+    from specifyweb.specify.api import obj_to_data, toJson
+
     current = request.COOKIES.get('collection', None)
     available_collections = users_collections_for_sp7(request.specify_user.id)
     if request.method == 'POST':
@@ -254,8 +256,11 @@ def collection(request):
         set_collection_cookie(response, collection.id)
         return response
     else:
-        response = dict(available=available_collections, current=(current and int(current)))
-        return HttpResponse(json.dumps(response), content_type="application/json")
+        response = dict(
+            available=[obj_to_data(c) for c in available_collections],
+            current=(current and int(current))
+        )
+        return HttpResponse(toJson(response), content_type="application/json")
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -266,7 +271,10 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    data['available_collections'] = users_collections_for_sp7(request.specify_user.id)
+    data['available_collections'] = [
+        obj_to_data(c)
+        for c in users_collections_for_sp7(request.specify_user.id)
+    ]
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
     if settings.RO_MODE or not request.user.is_authenticated:

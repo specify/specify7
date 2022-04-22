@@ -15,7 +15,6 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { resourceOn } from '../resource';
 import type { RR } from '../types';
-import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
 import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
@@ -267,9 +266,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         forwardRef={validationRef}
         {...(precision === 'year'
           ? {
-              ...getValidationAttributes(
-                defined(resolveParser({}, { type: 'year' }))
-              ),
+              ...getValidationAttributes(resolveParser({}, { type: 'year' })),
               placeholder: formsText('yearPlaceholder'),
               // Format parsed date if valid. Else, use raw input
               value: validDate?.format('YYYY') ?? inputValue,

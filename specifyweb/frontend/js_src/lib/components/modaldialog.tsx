@@ -308,7 +308,7 @@ export function Dialog({
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
           reduceTransparency
-            ? 'white dark:neutral-900'
+            ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && !modal
             ? 'backdrop-blur-lg'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800

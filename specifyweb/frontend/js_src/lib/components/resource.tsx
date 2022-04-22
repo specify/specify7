@@ -103,7 +103,7 @@ export function useValidationAttributes(
 ): IR<string> {
   const [attributes, setAttributes] = React.useState<IR<string>>({});
   React.useEffect(() => {
-    const parser = defined(resolveParser(field));
+    const parser = resolveParser(field);
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;

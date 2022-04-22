@@ -189,7 +189,7 @@ export async function format<SCHEMA extends AnySchema>(
                               );
                               return fieldFormat(
                                 field,
-                                defined(resolveParser(field)),
+                                resolveParser(field),
                                 value as string | undefined
                               );
                             }

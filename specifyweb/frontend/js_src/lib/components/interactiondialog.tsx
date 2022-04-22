@@ -75,7 +75,7 @@ export function InteractionDialog({
   >({ type: 'MainState' });
 
   const { parser, split, attributes } = React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField ?? {}) ?? {});
+    const parser = pluralizeParser(resolveParser(searchField ?? {}));
     // Determine which delimiters are allowed
     const formatter = searchField?.getUiFormatter();
     const formatted =

@@ -15,6 +15,7 @@ import { preferenceDefinitions } from '../../preferences';
 import { awaitPrefsSynced, setPref } from '../../preferencesutils';
 import {
   getValidationAttributes,
+  mergeParsers,
   parserFromType,
   parseValue,
 } from '../../uiparse';
@@ -217,10 +218,10 @@ const DefaultRenderer: PreferenceItemComponent<any> = function ({
   onChange: handleChange,
 }) {
   const parser =
-    'parser' in definition
-      ? typeof definition.parser === 'string'
-        ? parserFromType(definition.parser)
-        : definition.parser
+    'type' in definition
+      ? typeof definition.parser === 'object'
+        ? mergeParsers(parserFromType(definition.type), definition.parser)
+        : parserFromType(definition.type)
       : undefined;
   const validationAttributes = React.useMemo(
     () => f.maybe(parser, getValidationAttributes),

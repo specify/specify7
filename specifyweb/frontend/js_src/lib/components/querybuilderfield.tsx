@@ -9,7 +9,7 @@ import { mutateLineData, sortTypes } from '../querybuilderutils';
 import type { DatePart } from '../queryfieldspec';
 import { getModel, schema } from '../schema';
 import type { RA } from '../types';
-import { defined, filterArray } from '../types';
+import { filterArray } from '../types';
 import type { Parser } from '../uiparse';
 import { resolveParser } from '../uiparse';
 import {
@@ -119,12 +119,10 @@ export function QueryLine({
       mappingPathIsComplete(field.mappingPath);
     // TODO: define parser and fieldType for (formatted) and (aggregated)
     if (hasParser) {
-      parser = defined(
-        resolveParser(dataModelField, {
-          datePart,
-          isRequired: true,
-        })
-      );
+      parser = resolveParser(dataModelField, {
+        datePart,
+        isRequired: true,
+      });
 
       fieldType =
         tableName === 'CollectionObject' &&

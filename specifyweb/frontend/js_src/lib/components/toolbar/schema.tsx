@@ -5,23 +5,23 @@
 import React from 'react';
 
 import type { Tables } from '../../datamodel';
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { router } from '../../router';
 import { getModel, schema } from '../../schema';
-import { setCurrentView } from '../../specifyapp';
-import type { SpecifyModel } from '../../specifymodel';
-import { className, Container, H2, H3, Link } from '../basic';
-import { createBackboneView } from '../reactbackboneextend';
-import { commonText } from '../../localization/common';
-import { fieldFormat, resolveParser } from '../../uiparse';
-import { RA } from '../../types';
-import { TableIcon } from '../common';
-import { UserTool } from '../main';
-import { useTitle } from '../hooks';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../../schemaconfighelper';
+import { setCurrentView } from '../../specifyapp';
+import type { SpecifyModel } from '../../specifymodel';
+import type { RA } from '../../types';
+import { fieldFormat, resolveParser } from '../../uiparse';
+import { className, Container, H2, H3, Link } from '../basic';
+import { TableIcon } from '../common';
+import { useTitle } from '../hooks';
+import type { UserTool } from '../main';
+import { createBackboneView } from '../reactbackboneextend';
 
 function Table({
   children,

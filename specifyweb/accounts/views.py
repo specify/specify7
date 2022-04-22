@@ -336,6 +336,7 @@ def choose_collection(request) -> http.HttpResponse:
     id to the user if one is provided.
     """
     from specifyweb.context.views import set_collection_cookie, users_collections_for_sp7
+    from specifyweb.specify.api import obj_to_data, toJson
 
     if 'external_user' in request.session and request.user.is_authenticated:
         # This will be set if the user logged in with an external IdP
@@ -364,7 +365,7 @@ def choose_collection(request) -> http.HttpResponse:
 
     class Form(forms.Form):
         collection = CollectionChoiceField(
-            choices=available_collections,
+            choices=[(c.id, c.collectionname) for c in available_collections],
             initial=request.COOKIES.get('collection', None))
 
     if request.method == 'POST':
@@ -374,7 +375,7 @@ def choose_collection(request) -> http.HttpResponse:
             return redirect_resp
 
     context = {
-        'available_collections': available_collections,
+        'available_collections': toJson([obj_to_data(c) for c in available_collections]),
         'initial_value': request.COOKIES.get('collection', None),
         'next': redirect_to
     }

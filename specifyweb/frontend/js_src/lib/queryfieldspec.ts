@@ -213,7 +213,7 @@ export class QueryFieldSpec {
     const field = fieldSpec.getField();
     fieldSpec.parser =
       field?.isRelationship === false
-        ? resolveParser(field, { datePart: fieldSpec.datePart }) ?? {}
+        ? resolveParser(field, { datePart: fieldSpec.datePart })
         : {};
 
     return fieldSpec;
@@ -285,7 +285,7 @@ export class QueryFieldSpec {
     const newField = fieldSpec.getField();
     fieldSpec.parser =
       newField?.isRelationship === false
-        ? resolveParser(newField, { datePart: fieldSpec.datePart }) ?? {}
+        ? resolveParser(newField, { datePart: fieldSpec.datePart })
         : {};
     fieldSpec.datePart =
       newField?.isTemporal() === true ? datePart ?? 'fullDate' : undefined;

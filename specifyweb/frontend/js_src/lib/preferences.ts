@@ -60,7 +60,8 @@ export type PreferenceItem<VALUE> = {
     }
   | {
       // Parses the stored value. Determines the input type to render
-      readonly parser: Parser | JavaType;
+      readonly type: JavaType;
+      readonly parser?: Parser;
     }
   | {
       readonly renderer: PreferenceItemComponent<VALUE>;
@@ -165,8 +166,8 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 100,
+            type: 'java.lang.Double',
             parser: {
-              type: 'number',
               min: 1,
               max: 1000,
             },
@@ -177,7 +178,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           fontFamily: defineItem<string>({
             title: preferencesText('fontFamily'),
@@ -197,7 +198,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: 'adminsOnly',
             defaultValue: false,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
         },
       },
@@ -210,7 +211,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           transparentBackground: defineItem<boolean>({
             title: preferencesText('translucentDialog'),
@@ -218,14 +219,14 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: false,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showIcon: defineItem<boolean>({
             title: preferencesText('showDialogIcon'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
         },
       },
@@ -242,56 +243,56 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showInteractions: defineItem<boolean>({
             title: preferencesText('showInteractions'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showTrees: defineItem<boolean>({
             title: preferencesText('showTrees'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showRecordSets: defineItem<boolean>({
             title: preferencesText('showRecordSets'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showQueries: defineItem<boolean>({
             title: preferencesText('showQueries'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showReports: defineItem<boolean>({
             title: preferencesText('showReports'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showAttachments: defineItem<boolean>({
             title: preferencesText('showAttachments'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           showWorkBench: defineItem<boolean>({
             title: preferencesText('showWorkBench'),
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
         },
       },
@@ -321,15 +322,15 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,
             visible: true,
             defaultValue: 100,
+            type: 'java.lang.Float',
             parser: {
-              type: 'number',
               min: 1,
               max: 1000,
             },
@@ -348,8 +349,8 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 1200,
+            type: 'java.lang.Float',
             parser: {
-              type: 'number',
               min: 100,
               max: 10_000,
             },
@@ -444,7 +445,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
         },
       },
@@ -461,7 +462,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
           sortOrder: defineItem<
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
@@ -628,7 +629,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            parser: 'java.lang.Boolean',
+            type: 'java.lang.Boolean',
           }),
         },
       },

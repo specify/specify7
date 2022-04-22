@@ -166,7 +166,7 @@ function generateForm(
 function getFieldDefinition(
   field: LiteralField
 ): FormCellDefinition & CellTypes['Field'] {
-  const parser = resolveParser(field) ?? {};
+  const parser = resolveParser(field);
   return {
     ...cellAttributes,
     type: 'Field',

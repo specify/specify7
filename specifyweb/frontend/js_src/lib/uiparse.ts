@@ -249,7 +249,7 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
   extras?: Partial<ExtendedField>
-): Parser | undefined {
+): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
 
@@ -275,12 +275,12 @@ export function resolveParser(
   });
 }
 
-export function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
+export function mergeParsers(base: Parser, extra: Parser): Parser {
   const concat = ['formatters', 'validators'] as const;
   const takeMin = ['max', 'step', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
-  const merged = Object.fromEntries(
+  return Object.fromEntries(
     [
       ...Object.entries(base),
       ...Object.entries(extra),
@@ -301,8 +301,6 @@ export function mergeParsers(base: Parser, extra: Parser): Parser | undefined {
       ].filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => typeof value !== 'undefined')
   );
-
-  return Object.keys(merged).length === 0 ? undefined : merged;
 }
 
 function formatterToParser(formatter: UiFormatter): Parser {
@@ -482,24 +480,22 @@ export function fieldFormat(
 
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
-  if (typeof resolvedParser === 'object') {
-    const parseResults = parseValue(
-      omit(resolvedParser, ['required']),
-      undefined,
-      value.toString()
+  const parseResults = parseValue(
+    omit(resolvedParser, ['required']),
+    undefined,
+    value.toString()
+  );
+  if (parseResults.isValid)
+    return (
+      resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
+      (parseResults.parsed as string)
     );
-    if (parseResults.isValid)
-      return (
-        resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
-        (parseResults.parsed as string)
-      );
-    else
-      console.error('Failed to parse value for field', {
-        field,
-        resolvedParser,
-        parseResults,
-      });
-  } else console.error('Failed to resolve parsed for field', { field });
+  else
+    console.error('Failed to parse value for field', {
+      field,
+      resolvedParser,
+      parseResults,
+    });
 
   return value.toString();
 }
