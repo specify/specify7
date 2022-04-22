@@ -8,7 +8,11 @@ import { adminText } from './localization/admin';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
 import type { PermissionsQueryItem } from './permissions';
-import { operationPolicies, tableActions } from './permissions';
+import {
+  frontEndPermissions,
+  operationPolicies,
+  tableActions,
+} from './permissions';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
@@ -96,6 +100,12 @@ const buildRegistry = f.store(
         groupName: '',
       })),
       ...Object.entries(operationPolicies).map(([resource, actions]) => ({
+        resource,
+        localized: resourceNameToParts(resource).map(lowerToHuman),
+        actions,
+        groupName: '',
+      })),
+      ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
         resource,
         localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,

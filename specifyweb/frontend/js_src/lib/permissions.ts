@@ -114,12 +114,21 @@ export const operationPolicies = {
   ],
 } as const;
 
+export const frontEndPermissions = {
+  '/preferences/user': ['edit', 'edit_hidden', 'edit_default'],
+} as const;
+
 let operationPermissions: {
   readonly [RESOURCE in keyof typeof operationPolicies]: RR<
     typeof operationPolicies[RESOURCE][number],
     boolean
   >;
-} & RR<typeof anyResource, RR<typeof anyAction, boolean>>;
+} & RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
+    readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
+      typeof frontEndPermissions[RESOURCE][number],
+      boolean
+    >;
+  };
 let tablePermissions: {
   readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
     typeof tableActions[number],
@@ -174,6 +183,10 @@ export const queryUserPermissions = async (
                 resource,
                 actions: tableActions,
               })),
+            ...Object.entries(frontEndPermissions).map(([policy, actions]) => ({
+              resource: policy,
+              actions,
+            })),
           ],
         },
       })

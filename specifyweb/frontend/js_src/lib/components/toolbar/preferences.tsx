@@ -47,6 +47,7 @@ import { icons } from '../icons';
 import type { UserTool } from '../main';
 import { prefEvents, usePref } from '../preferenceshooks';
 import { createBackboneView } from '../reactbackboneextend';
+import { hasPermission } from '../../permissions';
 
 function Preferences({
   onClose: handleClose,
@@ -77,12 +78,12 @@ function Preferences({
                     subCategory,
                     {
                       ...subCategoryData,
-                      items: Object.entries(items)
-                        // FIXME: check for permissions for adminsOnly
-                        .filter(
-                          ([_name, { visible }]) =>
-                            visible === true || visible === 'adminsOnly'
-                        ),
+                      items: Object.entries(items).filter(
+                        ([_name, { visible }]) =>
+                          visible === true ||
+                          (visible === 'adminsOnly' &&
+                            hasPermission('/preferences/user', 'edit_hidden'))
+                      ),
                     },
                   ] as const
               )
