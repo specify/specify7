@@ -5,8 +5,11 @@
 import React from 'react';
 
 import type { Tables } from '../../datamodel';
+import { f } from '../../functools';
+import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { wbText } from '../../localization/workbench';
 import { router } from '../../router';
 import { getModel, schema } from '../../schema';
 import {
@@ -15,10 +18,12 @@ import {
 } from '../../schemaconfighelper';
 import { setCurrentView } from '../../specifyapp';
 import type { SpecifyModel } from '../../specifymodel';
+import { getSystemInfo } from '../../systeminfo';
 import type { RA } from '../../types';
 import { fieldFormat, resolveParser } from '../../uiparse';
-import { className, Container, H2, H3, Link } from '../basic';
+import { Button, className, Container, H2, H3, Link } from '../basic';
 import { TableIcon } from '../common';
+import { downloadFile } from '../filepicker';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { createBackboneView } from '../reactbackboneextend';
@@ -64,6 +69,18 @@ function Cell({
   );
 }
 
+const parser = f.store(() =>
+  resolveParser(
+    {},
+    {
+      type: 'java.lang.Boolean',
+    }
+  )
+);
+
+const booleanFormatter = (value: boolean): string =>
+  fieldFormat(undefined, parser(), value);
+
 // TODO: add sorting by column headers
 function DataModelView({
   model: initialModel,
@@ -73,18 +90,6 @@ function DataModelView({
   useTitle(commonText('datamodel'));
 
   const [model] = React.useState<SpecifyModel | undefined>(initialModel);
-  const parser = React.useMemo(
-    () =>
-      resolveParser(
-        {},
-        {
-          type: 'java.lang.Boolean',
-        }
-      ),
-    []
-  );
-  const booleanFormatter = (value: boolean): string =>
-    fieldFormat(undefined, parser, value);
 
   return typeof model === 'object' ? (
     <Container.Full>
@@ -171,9 +176,25 @@ function DataModelView({
   ) : (
     <Container.Full>
       <H2 className="text-2xl">{formsText('specifySchema')}</H2>
-      <Link.NewTab href="/context/datamodel.json">
-        {commonText('viewAsJson')}
-      </Link.NewTab>
+      <div className="flex gap-2">
+        <Link.Green
+          href="/context/datamodel.json"
+          className={className.navigationHandled}
+          download
+        >
+          {commonText('downloadAsJson')}
+        </Link.Green>
+        <Button.Green
+          onClick={(): void =>
+            void downloadFile(
+              `Specify 7 datamodel - v${getSystemInfo().schema_version}.tsv`,
+              dataModelToTsv()
+            ).catch(console.error)
+          }
+        >
+          {commonText('downloadAsTsv')}
+        </Button.Green>
+      </div>
       <Table
         headers={[
           commonText('name'),
@@ -235,3 +256,74 @@ export const userTool: UserTool = {
   view: '/specify/datamodel/',
   groupLabel: commonText('developers'),
 };
+
+const dataModelToTsv = (): string =>
+  [
+    [
+      adminText('table'),
+      commonText('label'),
+      commonText('system'),
+      commonText('hidden'),
+      commonText('tableId'),
+      commonText('name'),
+      commonText('label'),
+      commonText('description'),
+      commonText('hidden'),
+      commonText('readOnly'),
+      commonText('required'),
+      wbText('relationshipInline'),
+      commonText('type'),
+      commonText('length'),
+      commonText('databaseColumn'),
+      commonText('relatedModel'),
+      commonText('otherSideName'),
+      commonText('dependent'),
+    ],
+    ...Object.values(schema.models).flatMap((model) =>
+      f.var(
+        [
+          model.name,
+          model.label,
+          booleanFormatter(model.isSystem),
+          booleanFormatter(model.isHidden),
+          model.tableId,
+        ],
+        (commonColumns) => [
+          ...model.literalFields.map((field) => [
+            ...commonColumns,
+            field.name,
+            field.label,
+            field.getLocalizedDesc(),
+            booleanFormatter(field.isHidden),
+            booleanFormatter(field.isReadOnly),
+            booleanFormatter(field.isRequired),
+            booleanFormatter(false),
+            javaTypeToHuman(field.type, undefined),
+            field.length,
+            field.dbColumn,
+            '',
+            '',
+            '',
+          ]),
+          ...model.relationships.map((relationship) => [
+            ...commonColumns,
+            relationship.name,
+            relationship.label,
+            relationship.getLocalizedDesc(),
+            booleanFormatter(relationship.isHidden),
+            booleanFormatter(relationship.isReadOnly),
+            booleanFormatter(relationship.isRequired),
+            booleanFormatter(true),
+            localizedRelationshipTypes[relationship.type] ?? relationship.type,
+            '',
+            relationship.dbColumn,
+            relationship.relatedModel.name,
+            relationship.otherSideName,
+            booleanFormatter(relationship.dependent),
+          ]),
+        ]
+      )
+    ),
+  ]
+    .map((line) => line.join('\t'))
+    .join('\n');

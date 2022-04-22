@@ -1610,11 +1610,17 @@ export const commonText = createDictionary({
     ca: 'Dependent',
     'es-es': 'Dependent',
   },
-  viewAsJson: {
-    'en-us': 'View as JSON',
-    'ru-ru': 'Посмотреть как JSON',
-    ca: 'View as JSON',
-    'es-es': 'View as JSON',
+  downloadAsJson: {
+    'en-us': 'Download as JSON',
+    'ru-ru': 'Скачать как JSON',
+    ca: 'Download as JSON',
+    'es-es': 'Download as JSON',
+  },
+  downloadAsTsv: {
+    'en-us': 'Download as TSV',
+    'ru-ru': 'Скачать как TSV',
+    ca: 'Download as TSV',
+    'es-es': 'Download as TSV',
   },
   tableId: {
     'en-us': 'Table ID',
