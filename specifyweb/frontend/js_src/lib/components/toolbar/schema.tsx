@@ -64,6 +64,7 @@ function Cell({
   );
 }
 
+// TODO: add sorting by column headers
 function DataModelView({
   model: initialModel,
 }: {
@@ -154,7 +155,10 @@ function DataModelView({
               booleanFormatter(field.isRequired),
               localizedRelationshipTypes[field.type] ?? field.type,
               field.dbColumn,
-              field.relatedModel.name,
+              <>
+                <TableIcon name={field.relatedModel.name} tableLabel={false} />
+                {field.relatedModel.name}
+              </>,
               field.otherSideName,
               booleanFormatter(field.dependent),
             ].map((label, index) => (
@@ -188,7 +192,10 @@ function DataModelView({
             role="row"
           >
             {[
-              model.name,
+              <>
+                <TableIcon name={model.name} tableLabel={false} />
+                {model.name}
+              </>,
               model.label,
               booleanFormatter(model.isSystem),
               booleanFormatter(model.isHidden),
