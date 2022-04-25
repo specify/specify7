@@ -98,15 +98,12 @@ export function SpecifyForm({
   viewName = resource.specifyModel.view,
   formType,
   mode,
-  // Don't let view definition overwrite the form type
-  forceFormType = false,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<AnySchema>;
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly forceFormType?: boolean;
 }): JSX.Element {
   const viewDefinition = useViewDefinition({
     model: resource.specifyModel,
@@ -114,22 +111,12 @@ export function SpecifyForm({
     formType,
     mode,
   });
-  const processedDefinition = React.useMemo(
-    () =>
-      forceFormType && typeof viewDefinition === 'object'
-        ? {
-            ...viewDefinition,
-            formType,
-          }
-        : viewDefinition,
-    [formType, forceFormType, viewDefinition]
-  );
 
   return (
     <RenderForm
       isLoading={isLoading}
       resource={resource}
-      viewDefinition={processedDefinition}
+      viewDefinition={viewDefinition}
     />
   );
 }

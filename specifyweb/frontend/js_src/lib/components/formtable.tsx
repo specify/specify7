@@ -190,10 +190,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                   >
                     <SpecifyForm
                       resource={resource}
-                      viewName={viewName}
                       formType="form"
                       mode={mode}
-                      forceFormType={true}
                     />
                   </DataEntry.Cell>
                 </>

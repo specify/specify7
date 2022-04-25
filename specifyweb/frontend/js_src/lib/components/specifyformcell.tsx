@@ -99,14 +99,14 @@ const cellRenderers: {
     const [actualFormType] = useAsyncState<FormType>(
       React.useCallback(
         async () =>
-          getView(field.relatedModel.view)
+          getView(viewName ?? field.relatedModel.view)
             .then((viewDefinition) =>
               typeof viewDefinition === 'object'
                 ? processViewDefinition(viewDefinition, formType, mode)
                 : undefined
             )
             .then((definition) => definition?.formType ?? 'form'),
-        [field.relatedModel, formType, mode]
+        [viewName, field.relatedModel, formType, mode]
       ),
       false
     );
@@ -135,7 +135,7 @@ const cellRenderers: {
           mode={mode}
           isButton={isButton}
           parentFormType={parentFormType}
-          formType={formType}
+          formType={actualFormType}
           parentResource={resource}
           field={field}
           viewName={viewName}

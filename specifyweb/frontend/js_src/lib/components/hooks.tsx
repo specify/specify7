@@ -397,11 +397,6 @@ export function useResourceValue<
    */
   const [input, setInput] = React.useState<INPUT | null>(null);
   const blockers = React.useRef<RA<string>>([]);
-  const handleBlur = React.useCallback(
-    (): void =>
-      blockers.current.length > 0 ? setValidation(blockers.current) : undefined,
-    [setValidation]
-  );
   React.useEffect(
     () =>
       typeof fieldName === 'string'
@@ -413,16 +408,18 @@ export function useResourceValue<
                 .filter(({ deferred }) => !deferred || triedToSubmit)
                 .map(({ reason }) => reason) ?? [];
             // Report validity only if not focused
-            if (document.activeElement !== inputRef.current) handleBlur();
+            if (document.activeElement !== inputRef.current)
+              setValidation(blockers.current);
           })
         : undefined,
-    [triedToSubmit, resource, fieldName, handleBlur]
+    [triedToSubmit, resource, fieldName, setValidation, inputRef]
   );
   React.useEffect(() => {
     if (input === null || typeof fieldName === 'undefined') return undefined;
+    const handleBlur = (): void => setValidation(blockers.current);
     input.addEventListener('blur', handleBlur);
     return (): void => input.removeEventListener('blur', handleBlur);
-  }, [input, setValidation, fieldName, handleBlur]);
+  }, [input, setValidation, fieldName]);
 
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
