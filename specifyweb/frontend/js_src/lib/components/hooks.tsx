@@ -15,7 +15,7 @@ import { resourceOn } from '../resource';
 import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
-import { parseValue, resolveParser } from '../uiparse';
+import { mergeParsers, parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { FormContext, LoadingContext } from './contexts';
 
@@ -498,21 +498,23 @@ export function useResourceValue<
     const parser =
       resource.noValidation === true || typeof field === 'undefined'
         ? {}
+        : typeof defaultParser === 'object'
+        ? mergeParsers(resolveParser(field), defaultParser)
         : resolveParser(field);
     setParser(parser);
 
     resource.settingDefaultValues(() =>
-      typeof defaultParser?.value === 'undefined' || !resource.isNew()
+      typeof parser?.value === 'undefined' || !resource.isNew()
         ? undefined
         : resource.set(
             fieldName,
             (parser.type === 'date'
               ? getDateInputValue(
                   parseRelativeDate(
-                    defaultParser.value?.toString().trim().toLowerCase() ?? ''
+                    parser.value?.toString().trim().toLowerCase() ?? ''
                   ) ?? new Date()
                 )
-              : defaultParser.value) as never
+              : parser.value) as never
           )
     );
   }, [resource, fieldName, defaultParser]);

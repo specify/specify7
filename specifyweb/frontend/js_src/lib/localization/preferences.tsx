@@ -471,4 +471,25 @@ export const preferencesText = createDictionary({
     ca: 'A URL to a page that would be embedded on the home page:',
     'es-es': 'A URL to a page that would be embedded on the home page:',
   },
+  behavior: {
+    'en-us': 'Behavior',
+    'ru-ru': 'Behaviour',
+    ca: 'Behavior',
+    'es-es': 'Behavior',
+  },
+  enableAutoNumbering: {
+    'en-us': 'Enable auto numbering',
+    'ru-ru': 'Enable auto numbering',
+    ca: 'Enable auto numbering',
+    'es-es': 'Enable auto numbering',
+  },
+  enableAutoNumberingDescription: {
+    'en-us':
+      'If field has a formatter, whose placeholder value was used, the placeholder would be replaced with the autonumbered value',
+    'ru-ru':
+      'If field has a formatter, whose placeholder value was used, the placeholder would be replaced with the autonumbered value',
+    ca: 'If field has a formatter, whose placeholder value was used, the placeholder would be replaced with the autonumbered value',
+    'es-es':
+      'If field has a formatter, whose placeholder value was used, the placeholder would be replaced with the autonumbered value',
+  },
 });

@@ -7,12 +7,14 @@ import { error } from './assert';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import { f } from './functools';
-import {mappedFind, removeKey} from './helpers';
+import { mappedFind, removeKey } from './helpers';
 import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
 import { queryText } from './localization/query';
 import { getPickListItems } from './picklistmixins';
 import { monthPickListName, pickLists } from './picklists';
+import { getUserPref } from './preferencesutils';
+import { parseRelativeDate } from './relativedate';
 import type { Input } from './saveblockers';
 import type {
   JavaType,
@@ -24,7 +26,6 @@ import type { IR, RA, RR } from './types';
 import { filterArray } from './types';
 import type { UiFormatter } from './uiformatters';
 import { hasNativeErrors } from './validationmessages';
-import { parseRelativeDate } from './relativedate';
 
 /** Makes sure a wrapped function would receive a string value */
 const stringGuard =
@@ -262,13 +263,13 @@ export function resolveParser(
 
   const formatter = field.getUiFormatter?.();
   return mergeParsers(parser, {
-    // Don't make checkboxes required
     pickListName:
       typeof fullField.datePart === 'string'
         ? fullField.datePart === 'month'
           ? monthPickListName
           : undefined
         : field.getPickList?.(),
+    // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
     ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
@@ -320,7 +321,11 @@ function formatterToParser(formatter: UiFormatter): Parser {
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
-    value: formatter.canAutonumber() ? formatter.value() : undefined,
+    value:
+      formatter.canAutonumber() &&
+      getUserPref('form', 'behavior', 'autoNumbering')
+        ? formatter.valueOrWild()
+        : undefined,
   };
 }
 
