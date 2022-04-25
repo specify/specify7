@@ -4,7 +4,10 @@
  */
 @tailwind base;
 
-/* TODO: get rid of most global styles once everything is using React components */
+/*
+ * TODO: get rid of most global styles once everything is using React components
+ * TODO: remove most usages of !important after global styles are removed
+ */
 @layer base {
 
   body.reduce-motion * {
