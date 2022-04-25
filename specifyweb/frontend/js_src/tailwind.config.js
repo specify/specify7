@@ -5,6 +5,7 @@
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
+// TODO: evaluate usages of arbitrary values in class names
 // eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   content: [

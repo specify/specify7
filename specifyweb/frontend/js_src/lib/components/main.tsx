@@ -206,7 +206,7 @@ export function Main({
       </Button.Simple>
 
       <header
-        className={`bg-gray-200 dark:bg-neutral-800 border-b-4 border-b-[5px]
+        className={`bg-gray-200 dark:bg-neutral-800 border-b-[5px]
         border-b-brand-200 dark:border-b-brand-400 flex flex-col 2xl:flex-row 
         shadow-md shadow-gray-400 print:hidden [z-index:1]`}
       >

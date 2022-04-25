@@ -331,8 +331,8 @@ class WbImport extends Component<{}, WbImportState> {
         <div className="gap-y-2 flex flex-col">
           <H2>{wbText('wbImportHeader')}</H2>
           <div
-            className={`gap-2 grid grid-cols-2 items-center min-w-[275px]
-            w-2/5 wb-import-table`}
+            className={`gap-2 grid grid-cols-2 items-center min-w-96
+            w-2/5`}
           >
             {rows}
           </div>

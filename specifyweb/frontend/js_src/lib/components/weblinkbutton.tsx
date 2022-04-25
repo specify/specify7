@@ -175,7 +175,7 @@ export function WebLinkButton({
           >
             <img
               src={getIcon(icon)}
-              className="max-w-[40px] max-h-[20px]"
+              className="max-w-[theme(spacing.10)] max-h-[theme(spacing.5)]"
               alt={data.title ?? url}
             />
           </Link.Gray>

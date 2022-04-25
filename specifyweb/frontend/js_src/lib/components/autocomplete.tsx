@@ -222,7 +222,7 @@ export function Autocomplete<T>({
     const { left: inputLeft, width: inputWidth } =
       input.getBoundingClientRect();
     dataListRef.current.style.left = `${inputLeft}px`;
-    dataListRef.current.style.width = `${inputWidth}px`;
+    dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
 
     function handleScroll({
       target,

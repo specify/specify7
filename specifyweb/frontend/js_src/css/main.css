@@ -220,7 +220,7 @@
    * Does not sacrifice accessibility thanks to [role] attributes
    * Allows for things like sticky headers and having entire row be a link
    * You can set column sizes by adding a className like this:
-   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(30px,_1fr)]
+   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(10rem,_1fr)]
    */
   table.grid-table,
   .grid-table[role~="table"] {

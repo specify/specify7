@@ -311,6 +311,7 @@ export function UserTools({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
+      {/* TODO: get rid of usages of "px" units in the header */}
       <Button.Simple
         className="max-w-[110px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}

@@ -122,7 +122,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           formType="form"
           mode="search"
         />
-        <Ul className="bg-white dark:bg-neutral-700 h-40 min-w-[275px] overflow-auto p-2 rounded">
+        <Ul className="dark:bg-neutral-700 min-w-96 h-40 p-2 overflow-auto bg-white rounded">
           {isLoading ? (
             <li>{commonText('loading')}</li>
           ) : typeof results === 'undefined' ? undefined : results.length ===
