@@ -26,7 +26,7 @@ urlpatterns = [
         url(r'^(?P<id>\d+)/merge/$', tree_views.merge),
         url(r'^(?P<id>\d+)/move/$', tree_views.move),
         url(r'^(?P<id>\d+)/synonymize/$', tree_views.synonymize),
-        url(r'^(?P<id>\d+)/unsynonymize/$', tree_views.unsynonymize),
+        url(r'^(?P<id>\d+)/desynonymize/$', tree_views.desynonymize),
         url(r'^(?P<parentid>\d+)/predict_fullname/$', tree_views.predict_fullname),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),

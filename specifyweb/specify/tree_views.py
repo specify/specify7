@@ -285,11 +285,11 @@ def synonymize(request, tree, id):
     tree_extras.synonymize(node, target, request.specify_user_agent)
 
 @tree_mutation
-def unsynonymize(request, tree, id):
+def desynonymize(request, tree, id):
     "Causes the <tree> node <id> to no longer be a synonym of another node."
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).unsynonymize])
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).desynonymize])
     node = get_object_or_404(tree, id=id)
-    tree_extras.unsynonymize(node, request.specify_user_agent)
+    tree_extras.desynonymize(node, request.specify_user_agent)
 
 @tree_mutation
 def repair_tree(request, tree):
@@ -306,7 +306,7 @@ class TaxonMutationPT(PermissionTarget):
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
-    unsynonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
 class GeographyMutationPT(PermissionTarget):
@@ -314,7 +314,7 @@ class GeographyMutationPT(PermissionTarget):
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
-    unsynonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
 class StorageMutationPT(PermissionTarget):
@@ -322,7 +322,7 @@ class StorageMutationPT(PermissionTarget):
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
-    unsynonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
 class GeologictimeperiodMutationPT(PermissionTarget):
@@ -330,7 +330,7 @@ class GeologictimeperiodMutationPT(PermissionTarget):
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
-    unsynonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
 class LithostratMutationPT(PermissionTarget):
@@ -338,7 +338,7 @@ class LithostratMutationPT(PermissionTarget):
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
-    unsynonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
 
 def perm_target(tree):

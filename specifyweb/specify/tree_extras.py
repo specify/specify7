@@ -10,7 +10,7 @@ from django.conf import settings
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_UNSYNONYMIZE
+from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table):
@@ -227,14 +227,14 @@ def synonymize(node, into, agent):
         from .models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
 
-def unsynonymize(node, agent):
-    logger.info('unsynonmizing %s', node)
+def desynonymize(node, agent):
+    logger.info('desynonmizing %s', node)
     model = type(node)
     old_acceptedid = node.accepted_id
     node.accepted_id = None
     node.isaccepted = True
     node.save()
-    mutation_log(TREE_UNSYNONYMIZE, node, agent, node.parent,
+    mutation_log(TREE_DESYNONYMIZE, node, agent, node.parent,
                  [{'field_name': 'acceptedid','old_value': old_acceptedid, 'new_value': None},
                   {'field_name': 'isaccepted','old_value': False, 'new_value': True}])
 
