@@ -56,7 +56,7 @@ def users_collections_for_sp6(cursor, user_id):
 
     return list(cursor.fetchall())
 
-def users_collections_for_sp7(userid: int) -> List[Tuple[int, str]]:
+def users_collections_for_sp7(userid: int) -> List:
     return [
         c
         for c in Collection.objects.all()

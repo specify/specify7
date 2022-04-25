@@ -324,11 +324,11 @@ def set_user_agents(request, userid: int):
         missing_for_7 = [
             collection.id
             for collection in sp7_collections
-            if collectionid not in collections
+            if collection.id not in collections
         ]
         if missing_for_6 or missing_for_7:
             all_divisions = models.Division.objects.filter(
-                disciplines__collections__id__in=[cid for cid, _ in (sp6_collections + sp7_collections)]
+                disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
             ).values_list('id', flat=True)
             raise MissingAgentForAccessibleCollection({
                 'missing_for_6': missing_for_6,

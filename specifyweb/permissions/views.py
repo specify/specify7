@@ -24,7 +24,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     missing = [
         collection.id
         for collection in collections
-        if collectionid not in collections_with_agents
+        if collection.id not in collections_with_agents
     ]
     if missing:
         raise MissingAgentForAccessibleCollection({'missing_for_7': missing})
