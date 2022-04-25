@@ -291,12 +291,14 @@ export function WbPlanViewMapper(props: {
           <span title={wbText('baseTable')}>
             {` (${defined(getModel(props.baseTableName)).label})`}
           </span>
-          <span
-            className="flex items-center text-red-600"
-            title={wbText('dataSetUploadedDescription')}
-          >
-            {` ${wbText('dataSetUploaded')}`}
-          </span>
+          {props.isReadOnly && (
+            <span
+              className="flex items-center text-red-600"
+              title={wbText('dataSetUploadedDescription')}
+            >
+              {` ${wbText('dataSetUploaded')}`}
+            </span>
+          )}
         </>
       }
       buttonsLeft={
