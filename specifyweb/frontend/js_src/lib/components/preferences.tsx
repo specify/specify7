@@ -37,6 +37,7 @@ export type PreferenceItemComponent<VALUE> = (props: {
   readonly definition: PreferenceItem<VALUE>;
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;
+  readonly isReadOnly: boolean;
 }) => JSX.Element;
 
 export type PreferenceItem<VALUE> = {
@@ -623,6 +624,14 @@ export const preferenceDefinitions = {
             description: preferencesText('showNewDataSetWarningDescription'),
             requiresReload: false,
             visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          noRestrictionsMode: defineItem<boolean>({
+            title: preferencesText('noRestrictionsMode'),
+            description: preferencesText('noRestrictionsModeWbDescription'),
+            requiresReload: false,
+            visible: 'adminsOnly',
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),

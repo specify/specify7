@@ -31,10 +31,12 @@ export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
+  isReadOnly = false,
 }: {
-  value: LANGUAGES;
-  languages: IR<string> | undefined;
+  readonly value: LANGUAGES;
+  readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
+  readonly isReadOnly?: boolean;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
 
@@ -60,6 +62,7 @@ export function LanguageSelection<LANGUAGES extends string>({
               ? setShowSupportDialog(true)
               : handleChange(target.value as LANGUAGES)
           }
+          disabled={isReadOnly}
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
@@ -77,7 +80,11 @@ export function LanguageSelection<LANGUAGES extends string>({
 
 const url = cachableUrl('/context/language/');
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({ value, onChange: handleChange }) {
+  function LanguagePreferencesItem({
+    value,
+    onChange: handleChange,
+    isReadOnly,
+  }) {
     const [languages] = useAsyncState<IR<string>>(
       React.useCallback(
         async () =>
@@ -107,6 +114,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
         languages={languages}
         value={value}
         onChange={handleChange}
+        isReadOnly={isReadOnly}
       />
     );
   };
@@ -158,13 +166,18 @@ export function useSchemaLanguages(): IR<string> | undefined {
 }
 
 export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
-  function SchemaLanguagePreferenceItem({ value, onChange: handleChange }) {
+  function SchemaLanguagePreferenceItem({
+    value,
+    onChange: handleChange,
+    isReadOnly,
+  }) {
     const languages = useSchemaLanguages();
     return (
       <LanguageSelection<string>
         languages={languages}
         value={value}
         onChange={handleChange}
+        isReadOnly={isReadOnly}
       />
     );
   };

@@ -492,4 +492,22 @@ export const preferencesText = createDictionary({
     'es-es':
       'If field has a formatter, whose placeholder value was used, the placeholder would be replaced with the autonumbered value',
   },
+  noRestrictionsMode: {
+    'en-us': 'No restrictions mode',
+    'ru-ru': 'No restrictions mode',
+    ca: 'No restrictions mode',
+    'es-es': 'No restrictions mode',
+  },
+  noRestrictionsModeWbDescription: {
+    'en-us': 'Allows uploading data to any field in any table',
+    'ru-ru': 'Allows uploading data to any field in any table',
+    ca: 'Allows uploading data to any field in any table',
+    'es-es': 'Allows uploading data to any field in any table',
+  },
+  adminsOnlyPreference: {
+    'en-us': "You don't have permission to change this option",
+    'ru-ru': "You don't have permission to change this option",
+    ca: "You don't have permission to change this option",
+    'es-es': "You don't have permission to change this option",
+  },
 });

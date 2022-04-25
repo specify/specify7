@@ -100,7 +100,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   ) : (
     <Input.Text
       disabled
-      defaultValue={commonText('loading')}
+      value={commonText('loading')}
       required={props.isRequired}
     />
   );

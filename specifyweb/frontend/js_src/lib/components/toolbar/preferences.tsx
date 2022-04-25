@@ -56,10 +56,7 @@ function Preferences({
                     {
                       ...subCategoryData,
                       items: Object.entries(items).filter(
-                        ([_name, { visible }]) =>
-                          visible === true ||
-                          (visible === 'adminsOnly' &&
-                            hasPermission('/preferences/user', 'edit_hidden'))
+                        ([_name, { visible }]) => visible !== false
                       ),
                     },
                   ] as const
@@ -154,34 +151,51 @@ function Preferences({
                         {typeof description === 'string' && (
                           <p>{description}</p>
                         )}
-                        {items.map(([name, item]) => (
-                          <label key={name} className="flex items-start gap-2">
-                            <div className="flex flex-col flex-1 gap-2">
-                              <p
-                                className={`flex items-center justify-end flex-1
-                              text-right min-h-[theme(spacing.8)]`}
-                              >
-                                {item.title}
-                              </p>
-                              {typeof item.description === 'string' && (
-                                <p className="flex justify-end flex-1 text-right text-gray-500">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                            <div
-                              className={`flex flex-col justify-center flex-1 gap-2
-                            min-h-[theme(spacing.8)]`}
+                        {items.map(([name, item]) => {
+                          // FIXME: revert this back
+                          const canEdit =
+                            item.visible !== 'adminsOnly' ||
+                            !hasPermission('/preferences/user', 'edit_hidden');
+                          return (
+                            <label
+                              key={name}
+                              className={`flex items-start gap-2 ${
+                                canEdit ? '' : 'cursor-not-allowed'
+                              }`}
+                              title={
+                                canEdit
+                                  ? undefined
+                                  : preferencesText('adminsOnlyPreference')
+                              }
                             >
-                              <Item
-                                item={item}
-                                category={category}
-                                subcategory={subcategory}
-                                name={name}
-                              />
-                            </div>
-                          </label>
-                        ))}
+                              <div className="flex flex-col flex-1 gap-2">
+                                <p
+                                  className={`flex items-center justify-end flex-1
+                              text-right min-h-[theme(spacing.8)]`}
+                                >
+                                  {item.title}
+                                </p>
+                                {typeof item.description === 'string' && (
+                                  <p className="flex justify-end flex-1 text-right text-gray-500">
+                                    {item.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div
+                                className={`flex flex-col justify-center flex-1 gap-2
+                            min-h-[theme(spacing.8)]`}
+                              >
+                                <Item
+                                  item={item}
+                                  category={category}
+                                  subcategory={subcategory}
+                                  name={name}
+                                  isReadOnly={!canEdit}
+                                />
+                              </div>
+                            </label>
+                          );
+                        })}
                       </section>
                     )
                   )}
@@ -207,16 +221,25 @@ function Item({
   category,
   subcategory,
   name,
+  isReadOnly,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
   const [value, setValue] = usePref(category, subcategory, name);
-  return <Renderer definition={item} value={value} onChange={setValue} />;
+  return (
+    <Renderer
+      definition={item}
+      value={value}
+      onChange={setValue}
+      isReadOnly={isReadOnly}
+    />
+  );
 }
 
 function PreferencesWrapper({
