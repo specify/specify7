@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { BucketType } from '../cache';
 import { getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
 import { isFunction } from '../types';
@@ -26,7 +25,6 @@ export function useCachedState<
 >({
   bucketName,
   cacheName,
-  bucketType,
   defaultValue,
   /**
    * A concept borrowed from Vercel's SWR,
@@ -37,7 +35,6 @@ export function useCachedState<
 }: {
   readonly bucketName: BUCKET_NAME;
   readonly cacheName: CACHE_NAME;
-  readonly bucketType: BucketType;
   readonly defaultValue?: DefaultValue<
     CacheDefinitions[BUCKET_NAME][CACHE_NAME]
   >;
@@ -48,23 +45,12 @@ export function useCachedState<
 ] {
   const [state, setState] = React.useState<
     CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined
-  >(() =>
-    getCache(bucketName, cacheName, {
-      defaultSetOptions: {
-        bucketType,
-      },
-    })
-  );
+  >(() => getCache(bucketName, cacheName));
 
   const setCachedState = React.useCallback(
     (newValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]) =>
-      setState(
-        setCache(bucketName, cacheName, newValue, {
-          bucketType,
-          overwrite: true,
-        })
-      ),
-    [bucketName, cacheName, bucketType]
+      setState(setCache(bucketName, cacheName, newValue)),
+    [bucketName, cacheName]
   );
 
   const isUndefined = typeof state === 'undefined';

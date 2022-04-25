@@ -45,7 +45,7 @@ import {
 } from '../../permissions';
 import { cachableUrl } from '../../initialcontext';
 import { downloadFile, FilePicker, fileToText } from '../filepicker';
-import {removeKey} from '../../helpers';
+import { removeKey } from '../../helpers';
 import { getUniqueName } from '../../wbuniquifyname';
 import { goTo } from '../navigation';
 import { getUserPref } from '../../preferencesutils';
@@ -92,7 +92,6 @@ function QueryList({
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',
     cacheName: 'listOfQueries',
-    bucketType: 'localStorage',
     defaultValue: defaultSortConfig,
     staleWhileRefresh: true,
   });

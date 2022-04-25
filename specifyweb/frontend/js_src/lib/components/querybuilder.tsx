@@ -99,7 +99,6 @@ export function QueryBuilder({
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
     bucketName: 'queryBuilder',
     cacheName: 'showHiddenFields',
-    bucketType: 'localStorage',
     defaultValue: false,
     staleWhileRefresh: false,
   });

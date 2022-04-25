@@ -318,7 +318,7 @@ export const preferenceDefinitions = {
             title: preferencesText('language'),
             requiresReload: true,
             visible: true,
-            defaultValue: DEFAULT_LANGUAGE,
+            defaultValue: 'en',
             renderer: SchemaLanguagePreferenceItem,
           }),
         },

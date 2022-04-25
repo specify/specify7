@@ -97,14 +97,12 @@ function GeoLocate({
   const [width = defaultWidth, setWidth] = useCachedState({
     bucketName: 'geoLocate',
     cacheName: 'width',
-    bucketType: 'localStorage',
     defaultValue: defaultWidth,
     staleWhileRefresh: false,
   });
   const [height = defaultHeight, setHeight] = useCachedState({
     bucketName: 'geoLocate',
     cacheName: 'height',
-    bucketType: 'localStorage',
     defaultValue: defaultHeight,
     staleWhileRefresh: false,
   });

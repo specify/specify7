@@ -24,7 +24,6 @@ export function PrintOnSave({
   const [value, setValue] = useCachedState({
     bucketName: 'forms',
     cacheName: 'printOnSave',
-    bucketType: 'localStorage',
     defaultValue: defaultValue ?? false,
     staleWhileRefresh: false,
   });

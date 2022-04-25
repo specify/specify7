@@ -174,10 +174,7 @@ function rememberSelectedOverlays(
       setCache(
         'leaflet',
         `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
-        type === 'overlayadd',
-        {
-          overwrite: true,
-        }
+        type === 'overlayadd'
       );
   };
 

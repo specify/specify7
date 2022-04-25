@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ping } from '../ajax';
 import { fetchCollection } from '../collection';
 import type {
   SpLocaleContainer,
@@ -283,7 +284,7 @@ export function SchemaConfig({
       resource: NewSpLocaleItemString | SpLocaleItemString
     ): Promise<unknown> =>
       'resource_uri' in resource &&
-      typeof resource.id === 'object' &&
+      typeof resource.id === 'number' &&
       resource.id >= 0
         ? saveResource('SpLocaleItemStr', resource.id, resource)
         : createResource('SpLocaleItemStr', resource);
@@ -306,7 +307,16 @@ export function SchemaConfig({
         ]),
     ];
 
-    loading(Promise.all(requests).then(() => handleSaved(state.language)));
+    loading(
+      Promise.all(requests)
+        .then(async () =>
+          ping(`/context/schema_localization.json?lang=${stateLanguage}`, {
+            method: 'HEAD',
+            cache: 'no-cache',
+          })
+        )
+        .then(() => handleSaved(state.language))
+    );
   }
 
   return stateReducer(<i />, {

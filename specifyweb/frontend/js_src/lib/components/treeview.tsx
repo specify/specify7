@@ -67,7 +67,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
     bucketName: 'tree',
     cacheName: `collapsedRanks${tableName}`,
-    bucketType: 'localStorage',
     defaultValue: defaultCacheValue,
     staleWhileRefresh: false,
   });
@@ -75,7 +74,6 @@ function TreeView<SCHEMA extends AnyTree>({
   const [rawConformation, setConformation] = useCachedState({
     bucketName: 'tree',
     cacheName: `conformation${tableName}`,
-    bucketType: 'localStorage',
     defaultValue: undefined,
     staleWhileRefresh: false,
   });

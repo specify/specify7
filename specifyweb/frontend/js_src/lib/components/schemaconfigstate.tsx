@@ -121,7 +121,6 @@ function ChooseBaseTable({
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState({
     bucketName: 'schemaConfig',
     cacheName: 'showHiddenTables',
-    bucketType: 'localStorage',
     defaultValue: false,
     staleWhileRefresh: false,
   });

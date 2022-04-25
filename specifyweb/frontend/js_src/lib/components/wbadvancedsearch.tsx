@@ -205,7 +205,6 @@ export function WbAdvancedSearch({
   React.useEffect(() => {
     handleChange(searchPreferences);
     setCache('workbench', 'searchProperties', searchPreferences, {
-      overwrite: true,
       version: CACHE_VERSION,
     });
   }, [searchPreferences]);

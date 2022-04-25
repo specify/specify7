@@ -172,7 +172,6 @@ function DataSets({
   const [sortConfig, setSortConfig] = useCachedState({
     bucketName: 'sortConfig',
     cacheName: 'listOfDataSets',
-    bucketType: 'localStorage',
     defaultValue: defaultSearchConfig,
     staleWhileRefresh: false,
   });

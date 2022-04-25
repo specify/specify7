@@ -18,7 +18,7 @@
 
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
-import {removeKey} from './helpers';
+import { removeKey } from './helpers';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -226,14 +226,12 @@ function genericGet<T>(
     buckets[bucketName].records[cacheName].version !== version
   ) {
     console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
-    buckets[bucketName].records = removeKey(buckets[bucketName].records,
-      cacheName,
+    buckets[bucketName].records = removeKey(
+      buckets[bucketName].records,
+      cacheName
     );
     if (typeof defaultValue === 'undefined') return undefined;
-    genericSet(bucketName, cacheName, defaultValue, {
-      ...defaultSetOptions,
-      overwrite: true,
-    });
+    genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
   buckets[bucketName].records[cacheName].useCount += 1;
@@ -281,16 +279,10 @@ function genericSet<T>(
   cacheValue: T,
   {
     bucketType = 'localStorage',
-    overwrite = false,
+    overwrite = true,
     version = undefined,
   }: SetOptions = {}
 ): T {
-  if (typeof bucketName === 'undefined')
-    throw new Error('Bucket name cannot be undefined');
-
-  if (typeof cacheName === 'undefined')
-    throw new Error('Cache record name cannot be undefined');
-
   if (!eventListenerIsInitialized) initialize();
 
   if (typeof buckets[bucketName] === 'undefined') fetchBucket(bucketName);

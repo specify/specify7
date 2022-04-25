@@ -221,7 +221,6 @@ export function AttachmentsView(): JSX.Element {
   const [order = defaultSortOrder, setOrder] = useCachedState({
     bucketName: 'attachments',
     cacheName: 'sortOrder',
-    bucketType: 'localStorage',
     defaultValue: defaultSortOrder,
     staleWhileRefresh: false,
   });
@@ -229,7 +228,6 @@ export function AttachmentsView(): JSX.Element {
   const [filter = defaultFilter, setFilter] = useCachedState({
     bucketName: 'attachments',
     cacheName: 'filter',
-    bucketType: 'localStorage',
     defaultValue: defaultFilter,
     staleWhileRefresh: false,
   });
@@ -268,7 +266,6 @@ export function AttachmentsView(): JSX.Element {
   const [scale = defaultScale, setScale] = useCachedState({
     bucketName: 'attachments',
     cacheName: 'scale',
-    bucketType: 'localStorage',
     defaultValue: defaultScale,
     staleWhileRefresh: false,
   });

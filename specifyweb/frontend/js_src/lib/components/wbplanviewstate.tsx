@@ -81,7 +81,6 @@ export function BaseTableSelection({
   const [showHiddenTables = true, setShowHiddenTables] = useCachedState({
     bucketName: 'wbPlanViewUi',
     cacheName: 'showHiddenTables',
-    bucketType: 'localStorage',
     defaultValue: true,
     staleWhileRefresh: false,
   });

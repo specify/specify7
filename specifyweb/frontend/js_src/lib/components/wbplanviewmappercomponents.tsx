@@ -130,7 +130,6 @@ export function MappingView(props: {
       bucketName: 'wbPlanViewUi',
       cacheName: 'mappingViewHeight',
       defaultValue,
-      bucketType: 'localStorage',
       staleWhileRefresh: false,
     });
   const mappingViewParentRef = React.useCallback<

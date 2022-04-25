@@ -1127,10 +1127,7 @@ const WBView = Backbone.View.extend({
     setCache(
       'workBenchSortConfig',
       `${schema.domainLevelIds.collection}_${this.dataset.id}`,
-      physicalSortConfig,
-      {
-        overwrite: true,
-      }
+      physicalSortConfig
     );
   },
   beforeColumnMove(_columnIndexes, _finalIndex, dropIndex) {

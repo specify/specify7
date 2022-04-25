@@ -196,10 +196,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     showMappingView: setCache(
       'wbPlanViewUi',
       'showMappingView',
-      action.isVisible,
-      {
-        overwrite: true,
-      }
+      action.isVisible
     ),
   }),
   ValidationAction: ({ state, action: { validationResults } }) => ({
@@ -285,10 +282,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     showHiddenFields: setCache(
       'wbPlanViewUi',
       'showHiddenFields',
-      !state.showHiddenFields,
-      {
-        overwrite: true,
-      }
+      !state.showHiddenFields
     ),
     revealHiddenFieldsClicked: true,
   }),
