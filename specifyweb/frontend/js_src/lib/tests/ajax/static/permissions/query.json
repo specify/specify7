@@ -371,7 +371,7 @@
     },
     {
       "resource": "/tree/mutation/taxon",
-      "action": "unsynonymize",
+      "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
         {
@@ -453,7 +453,7 @@
     },
     {
       "resource": "/tree/mutation/geography",
-      "action": "unsynonymize",
+      "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
         {
@@ -535,7 +535,7 @@
     },
     {
       "resource": "/tree/mutation/storage",
-      "action": "unsynonymize",
+      "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
         {
@@ -617,7 +617,7 @@
     },
     {
       "resource": "/tree/mutation/geologictimeperiod",
-      "action": "unsynonymize",
+      "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
         {
@@ -699,7 +699,7 @@
     },
     {
       "resource": "/tree/mutation/lithostrat",
-      "action": "unsynonymize",
+      "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
         {

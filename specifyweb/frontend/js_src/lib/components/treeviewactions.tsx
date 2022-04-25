@@ -117,7 +117,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(
         resourceName,
-        isSynonym ? 'unsynonymize' : 'synonymize'
+        isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
           <Button.Simple

@@ -21,35 +21,35 @@
     "merge",
     "move",
     "synonymize",
-    "unsynonymize",
+    "desynonymize",
     "repair"
   ],
   "/tree/mutation/geography": [
     "merge",
     "move",
     "synonymize",
-    "unsynonymize",
+    "desynonymize",
     "repair"
   ],
   "/tree/mutation/storage": [
     "merge",
     "move",
     "synonymize",
-    "unsynonymize",
+    "desynonymize",
     "repair"
   ],
   "/tree/mutation/geologictimeperiod": [
     "merge",
     "move",
     "synonymize",
-    "unsynonymize",
+    "desynonymize",
     "repair"
   ],
   "/tree/mutation/lithostrat": [
     "merge",
     "move",
     "synonymize",
-    "unsynonymize",
+    "desynonymize",
     "repair"
   ],
   "/querybuilder/query": [
