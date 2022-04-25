@@ -59,7 +59,7 @@ export function findRequiredMissingFields(
   const indexedMappings = Object.fromEntries(mappingEntries);
 
   // Handle -to-many references
-  if (valueIsToManyIndex(mappings[0][0]))
+  if (mappings.length > 0 && valueIsToManyIndex(mappings[0][0]))
     return mappingEntries.flatMap(([index, mappings]) =>
       findRequiredMissingFields(
         tableName,

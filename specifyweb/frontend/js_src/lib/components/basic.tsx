@@ -154,13 +154,13 @@ export const className = {
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
   formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
-  dataEntryAdd: 'text-green-700 print:hidden',
-  dataEntryView: 'text-orange-400 print:hidden',
-  dataEntryEdit: 'text-orange-400 print:hidden',
-  dataEntryClone: 'text-amber-700 print:hidden',
-  dataEntrySearch: 'text-blue-500 print:hidden',
-  dataEntryDelete: 'text-red-700 print:hidden',
-  dataEntryVisit: 'text-blue-700 print:hidden',
+  dataEntryAdd: 'text-green-700 dark:text-green-700 print:hidden',
+  dataEntryView: 'text-orange-400 dark:text-orange-400 print:hidden',
+  dataEntryEdit: 'text-orange-400 dark:text-orange-400 print:hidden',
+  dataEntryClone: 'text-amber-700 dark:text-amber-700 print:hidden',
+  dataEntrySearch: 'text-blue-500 dark:text-blue-500 print:hidden',
+  dataEntryDelete: 'text-red-700 dark:text-red-700 print:hidden',
+  dataEntryVisit: 'text-blue-700 dark:text-blue-700 print:hidden',
 } as const;
 
 const dataEntryButton =
@@ -291,7 +291,7 @@ export const Label = {
 export const ErrorMessage = wrap(
   'ErrorMessage',
   'div',
-  'flex flex-col gap-2 p-2 text-white bg-red-500 rounded',
+  'flex flex-col gap-2 p-2 text-white bg-red-500 dark:bg-red-500 rounded',
   {
     role: 'alert',
   }

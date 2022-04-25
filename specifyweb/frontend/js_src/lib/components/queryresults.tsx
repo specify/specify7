@@ -103,7 +103,7 @@ function QueryResultCell({
     <span
       role="cell"
       className={`${cellClassName} ${
-        value === null ? 'text-gray-700 dark:text-neutral-500;' : ''
+        value === null ? 'text-gray-700 dark:text-neutral-500' : ''
       }`}
       title={
         typeof value === 'string' && value !== formatted ? value : undefined

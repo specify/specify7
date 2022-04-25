@@ -366,8 +366,8 @@ const WBView = Backbone.View.extend({
               >`
                   : `<span
                 class="text-red-600"
-                aria-label="wbText('unmappedColumn')"
-                title="wbText('unmappedColumn')"
+                aria-label="${wbText('unmappedColumn')}"
+                title="${wbText('unmappedColumn')}"
               >${legacyNonJsxIcons.ban}</span>`
               }
               <span class="wb-header-name columnSorting">
