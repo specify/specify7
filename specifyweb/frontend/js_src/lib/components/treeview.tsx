@@ -279,10 +279,14 @@ function TreeView<SCHEMA extends AnyTree>({
                 role="columnheader"
                 key={index}
                 className={`border whitespace-nowrap border-transparent top-0
-                  sticky bg-gray-100/60 dark:bg-neutral-900/60 p-2
+                  sticky p-2
                   ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
                   ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}
-                  ${reduceTransparency ? '' : 'backdrop-blur-sm'}
+                  ${
+                    reduceTransparency
+                      ? 'bg-gray-100 dark:bg-neutral-900'
+                      : 'backdrop-blur-sm bg-gray-100/60 dark:bg-neutral-900/60'
+                  }
                 `}
               >
                 <Button.LikeLink

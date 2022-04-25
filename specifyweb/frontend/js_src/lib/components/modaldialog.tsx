@@ -311,7 +311,7 @@ export function Dialog({
         ${
           reduceTransparency
             ? 'bg-white dark:bg-neutral-900'
-            : transparentDialog && !modal
+            : transparentDialog && modal
             ? 'backdrop-blur-lg'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
