@@ -49,6 +49,7 @@ import { removeKey } from '../../helpers';
 import { getUniqueName } from '../../wbuniquifyname';
 import { goTo } from '../navigation';
 import { getUserPref } from '../../preferencesutils';
+import { usePref } from '../preferenceshooks';
 
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
@@ -184,9 +185,19 @@ function ListOfTables({
 }: {
   readonly tables: RA<keyof Tables>;
 }): JSX.Element {
+  const [isNoRestrictionMode] = usePref(
+    'queryBuilder',
+    'general',
+    'noRestrictionsMode'
+  );
   return (
     <Ul>
-      {tables.map((tableName, index) => (
+      {(isNoRestrictionMode
+        ? Object.keys(schema.models).filter((tableName) =>
+            hasTablePermission(tableName, 'read')
+          )
+        : tables
+      ).map((tableName, index) => (
         <li key={index}>
           <Link.Default href={`/specify/query/new/${tableName.toLowerCase()}/`}>
             <TableIcon name={tableName} tableLabel={false} />

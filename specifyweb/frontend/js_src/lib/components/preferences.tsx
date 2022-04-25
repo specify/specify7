@@ -31,6 +31,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
+import { queryText } from '../localization/query';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -514,8 +515,8 @@ export const preferenceDefinitions = {
     subCategories: {
       geography: {
         /*
-         * This would be replaced with the label from the schema once
-         * schema is laoded
+         * This would be replaced with labels from schema once
+         * schema is loaded
          */
         title: '_Geography',
         items: {
@@ -613,6 +614,24 @@ export const preferenceDefinitions = {
       },
     },
   },
+  queryBuilder: {
+    title: queryText('queryBuilder'),
+    subCategories: {
+      general: {
+        title: preferencesText('general'),
+        items: {
+          noRestrictionsMode: defineItem<boolean>({
+            title: preferencesText('noRestrictionsMode'),
+            description: preferencesText('noRestrictionsModeQueryDescription'),
+            requiresReload: false,
+            visible: 'adminsOnly',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   workBench: {
     title: commonText('workBench'),
     subCategories: {
@@ -632,7 +651,7 @@ export const preferenceDefinitions = {
             description: preferencesText('noRestrictionsModeWbDescription'),
             requiresReload: false,
             visible: 'adminsOnly',
-            defaultValue: true,
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
         },

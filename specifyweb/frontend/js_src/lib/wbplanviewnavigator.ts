@@ -40,6 +40,7 @@ import {
   getMaxToManyIndex,
   isCircularRelationship,
 } from './wbplanviewmodelhelper';
+import { getUserPref } from './preferencesutils';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -196,6 +197,10 @@ export function getMappingLineData({
   // WbPlanView has readOnly fields removed
   readonly scope?: 'queryBuilder' | 'wbPlanView';
 }): RA<MappingLineData> {
+  const isNoRestrictionsMode =
+    scope === 'queryBuilder'
+      ? getUserPref('queryBuilder', 'general', 'noRestrictionsMode')
+      : getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode');
   const internalState: {
     position: number;
     mappingLineData: MappingLineData[];
@@ -417,14 +422,16 @@ export function getMappingLineData({
                       field.overrides.isHidden,
                       field.name
                     ) &&
-                    // Display read only fields in query builder only
-                    (scope === 'queryBuilder' || !field.overrides.isReadOnly) &&
-                    // Hide most fields for non "any" tree ranks in query builder
-                    (scope !== 'queryBuilder' ||
-                      !isTreeModel(model.name) ||
-                      mappingPath[internalState.position - 1] ==
-                        formatTreeRank(anyTreeRank) ||
-                      queryBuilderTreeFields.has(field.name))
+                    (isNoRestrictionsMode ||
+                      // Display read only fields in query builder only
+                      ((scope === 'queryBuilder' ||
+                        !field.overrides.isReadOnly) &&
+                        // Hide most fields for non "any" tree ranks in query builder
+                        (scope !== 'queryBuilder' ||
+                          !isTreeModel(model.name) ||
+                          mappingPath[internalState.position - 1] ==
+                            formatTreeRank(anyTreeRank) ||
+                          queryBuilderTreeFields.has(field.name))))
                 )
                 .flatMap((field) => {
                   const fieldData = {

@@ -504,6 +504,12 @@ export const preferencesText = createDictionary({
     ca: 'Allows uploading data to any field in any table',
     'es-es': 'Allows uploading data to any field in any table',
   },
+  noRestrictionsModeQueryDescription: {
+    'en-us': 'Allows querying data from any field in any table',
+    'ru-ru': 'Allows querying data from any field in any table',
+    ca: 'Allows querying data from any field in any table',
+    'es-es': 'Allows querying data from any field in any table',
+  },
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
     'ru-ru': "You don't have permission to change this option",

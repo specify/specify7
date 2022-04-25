@@ -339,7 +339,7 @@ export function CollectionAccess({
             typeSearch="Agent"
           />
         ) : (
-          <Input.Text disabled defaultValue={commonText('loading')} />
+          <Input.Text disabled value={commonText('loading')} />
         )}
       </Label.Generic>
     </div>

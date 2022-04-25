@@ -152,15 +152,14 @@ function Preferences({
                           <p>{description}</p>
                         )}
                         {items.map(([name, item]) => {
-                          // FIXME: revert this back
                           const canEdit =
                             item.visible !== 'adminsOnly' ||
-                            !hasPermission('/preferences/user', 'edit_hidden');
+                            hasPermission('/preferences/user', 'edit_hidden');
                           return (
                             <label
                               key={name}
                               className={`flex items-start gap-2 ${
-                                canEdit ? '' : 'cursor-not-allowed'
+                                canEdit ? '' : '!cursor-not-allowed'
                               }`}
                               title={
                                 canEdit

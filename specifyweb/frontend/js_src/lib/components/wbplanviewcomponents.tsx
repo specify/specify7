@@ -28,6 +28,7 @@ import { useBooleanState, useId } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
+import { usePref } from './preferenceshooks';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -67,12 +68,17 @@ export function ListOfBaseTables({
   readonly onChange: (newTable: keyof Tables) => void;
   readonly showHiddenTables: boolean;
 }): JSX.Element {
+  const [isNoRestrictionMode] = usePref(
+    'queryBuilder',
+    'general',
+    'noRestrictionsMode'
+  );
   const fieldsData = Object.fromEntries(
     Object.entries(schema.models)
       .filter(
         ([_tableName, { overrides }]) =>
-          !overrides.isSystem &&
-          !overrides.isHidden &&
+          (isNoRestrictionMode ||
+            (!overrides.isSystem && !overrides.isHidden)) &&
           (overrides.isCommon || showHiddenTables)
       )
       .map(

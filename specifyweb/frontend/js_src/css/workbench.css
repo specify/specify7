@@ -55,7 +55,7 @@
 .wbs-form .htCommentCell,
 .wbs-form .wb-search-match-cell,
 .wb-navigation-section {
-  @apply bg-[color:var(--accent-color)] dark:bg-[color:var(--accent-color)];
+  @apply !bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states

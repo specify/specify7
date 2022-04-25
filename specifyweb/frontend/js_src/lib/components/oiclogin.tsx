@@ -61,7 +61,7 @@ export function OicLogin({
           type="hidden"
           name="provider"
           ref={providerRef}
-          defaultValue={data.providers[0].provider}
+          value={data.providers[0].provider}
         />
         {data.providers.map(({ provider, title }) => (
           <Button.Fancy

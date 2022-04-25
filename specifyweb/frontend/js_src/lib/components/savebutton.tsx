@@ -152,7 +152,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {canAddAnother && (
         <ButtonComponent
-          className={saveBlocked ? 'cursor-not-allowed' : undefined}
+          className={saveBlocked ? '!cursor-not-allowed' : undefined}
           disabled={isSaving}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
@@ -163,7 +163,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       )}
       <SubmitComponent
         form={formId}
-        className={saveBlocked ? 'cursor-not-allowed' : undefined}
+        className={saveBlocked ? '!cursor-not-allowed' : undefined}
         /*
          * Don't disable the button if saveBlocked, so that clicking the button
          * would make browser focus the invalid field

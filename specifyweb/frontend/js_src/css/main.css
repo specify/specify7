@@ -71,7 +71,7 @@
   }
 
   :disabled:not(.icon), [readonly] {
-    @apply cursor-not-allowed text-gray-700 dark:text-neutral-500 border
+    @apply !cursor-not-allowed text-gray-700 dark:text-neutral-500 border
       border-gray-500 dark:border-solid;
   }
 
@@ -176,7 +176,7 @@
 
   .icon {
     @apply active:bg-brand-100 dark:active:bg-brand-500
-      disabled:cursor-not-allowed disabled:text-gray-400
+      disabled:!cursor-not-allowed disabled:text-gray-400
       disabled:hover:text-gray-400 disabled:dark:text-neutral-600
       disabled:hover:dark:text-neutral-600;
   }

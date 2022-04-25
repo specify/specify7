@@ -259,7 +259,7 @@ function Option({
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      'cursor-not-allowed text-gray-500',
+      '!cursor-not-allowed text-gray-500',
       'bg-[color:var(--custom-select-b1)]'
     );
   else
