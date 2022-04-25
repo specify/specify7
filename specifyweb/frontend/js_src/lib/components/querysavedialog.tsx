@@ -44,7 +44,7 @@ export function QuerySaveDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  return query.isNew() || isSaveAs ? (
     <Dialog
       header={
         isSaveAs
@@ -87,5 +87,5 @@ export function QuerySaveDialog({
         </Label.Generic>
       </Form>
     </Dialog>
-  );
+  ) : null;
 }

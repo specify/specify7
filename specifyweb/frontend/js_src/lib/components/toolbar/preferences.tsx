@@ -4,7 +4,6 @@
 
 import React from 'react';
 
-import { f } from '../../functools';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { hasPermission } from '../../permissions';
@@ -13,40 +12,18 @@ import {
   preferencesPromise,
   setPref,
 } from '../../preferencesutils';
-import {
-  getValidationAttributes,
-  mergeParsers,
-  parserFromType,
-  parseValue,
-} from '../../uiparse';
-import {
-  Button,
-  className,
-  Container,
-  Form,
-  H2,
-  Input,
-  Link,
-  Select,
-  Submit,
-} from '../basic';
+import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
-import {
-  useAsyncState,
-  useBooleanState,
-  useId,
-  useTitle,
-  useValidation,
-} from '../hooks';
+import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import type { UserTool } from '../main';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
-  PreferenceItemComponent,
 } from '../preferences';
 import { preferenceDefinitions } from '../preferences';
 import { prefEvents, usePref } from '../preferenceshooks';
+import { DefaultPreferenceItemRender } from '../preferencesrenderers';
 import { createBackboneView } from '../reactbackboneextend';
 
 function Preferences({
@@ -241,53 +218,6 @@ function Item({
   const [value, setValue] = usePref(category, subcategory, name);
   return <Renderer definition={item} value={value} onChange={setValue} />;
 }
-
-export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
-  function ({ definition, value, onChange: handleChange }) {
-    const parser =
-      'type' in definition
-        ? typeof definition.parser === 'object'
-          ? mergeParsers(parserFromType(definition.type), definition.parser)
-          : parserFromType(definition.type)
-        : undefined;
-    const validationAttributes = React.useMemo(
-      () => f.maybe(parser, getValidationAttributes),
-      [parser]
-    );
-    const { validationRef, inputRef, setValidation } = useValidation();
-    return 'values' in definition ? (
-      <>
-        <Select value={value} onValueChange={handleChange}>
-          {definition.values.map(({ value, title }) => (
-            <option key={value} value={value}>
-              {title}
-            </option>
-          ))}
-        </Select>
-        {f.maybe(
-          definition.values.find((item) => item.value === value).description,
-          (item) => (
-            <p>{item}</p>
-          )
-        )}
-      </>
-    ) : parser?.type === 'checkbox' ? (
-      <Input.Checkbox checked={value} onValueChange={handleChange} />
-    ) : (
-      <Input.Generic
-        forwardRef={validationRef}
-        {...(validationAttributes ?? { type: 'text' })}
-        value={value}
-        onValueChange={(newValue): void => {
-          if (typeof parser === 'object' && inputRef.current !== null) {
-            const parsed = parseValue(parser, inputRef.current, newValue);
-            if (parsed.isValid) handleChange(newValue);
-            else setValidation(parsed.reason);
-          } else handleChange(newValue);
-        }}
-      />
-    );
-  };
 
 function PreferencesWrapper({
   onClose: handleClose,
