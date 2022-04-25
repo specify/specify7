@@ -133,7 +133,7 @@ export const findDuplicateMappings = (
   return duplicateIndexes;
 };
 
-// Replaces all -to-many indexes with #1
+/** Replaces all -to-many indexes with #1 */
 export const getCanonicalMappingPath = (
   mappingPath: MappingPath
 ): MappingPath =>
@@ -141,6 +141,7 @@ export const getCanonicalMappingPath = (
     valueIsToManyIndex(mappingPathPart) ? formatToManyIndex(1) : mappingPathPart
   );
 
+/** Filters out -to-many and tree ranks from the mapping path */
 export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>

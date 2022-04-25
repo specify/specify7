@@ -58,11 +58,8 @@ export type TableSynonym = {
 
 type AutoMapperDefinitions = {
   /*
-   * NOTE: all keys and values in the definitions should use lower case
-   * (since headers, table names and field names used by the mapper are
-   * all in lower case), unless it is explicitly specified that they are
-   * case-insensitive
-   *
+   * NOTE: all keys and values in the definitions are case-insensitive unless
+   * otherwise stated
    */
 
   /*
@@ -142,6 +139,7 @@ type AutoMapperDefinitions = {
             /*
              * Mapping path that is to be appended to the current path
              * when shortcut is followed
+             * NOTE: mapping path is case-sensitive
              */
             readonly mappingPath: MappingPath;
             readonly headers: Options;
@@ -200,53 +198,53 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
         synonyms: ['determiner', 'who id'],
       },
       {
-        mappingPathFilter: ['collectingevent', 'collectors', 'agent'],
+        mappingPathFilter: ['collectingEvent', 'collectors', 'agent'],
         synonyms: ['collector'],
       },
       {
-        mappingPathFilter: ['collectingevents', 'collectors', 'agent'],
+        mappingPathFilter: ['collectingEvents', 'collectors', 'agent'],
         synonyms: ['collector'],
       },
       {
-        mappingPathFilter: ['collectionobject', 'cataloger'],
+        mappingPathFilter: ['collectionObject', 'cataloger'],
         synonyms: ['cataloger'],
       },
       {
-        mappingPathFilter: ['collectionobjects', 'cataloger'],
+        mappingPathFilter: ['collectionObjects', 'cataloger'],
         synonyms: ['cataloger'],
       },
       {
-        mappingPathFilter: ['referencework', 'authors'],
+        mappingPathFilter: ['referenceWork', 'authors'],
         synonyms: ['author'],
       },
       {
-        mappingPathFilter: ['geocoorddetails', 'georefdetby'],
+        mappingPathFilter: ['geoCoordDetails', 'geoRefDetBy'],
         synonyms: ['geo ref by'],
       },
       {
-        mappingPathFilter: ['preparation', 'preparedbyagent'],
+        mappingPathFilter: ['preparation', 'preparedByAgent'],
         synonyms: ['prepared'],
       },
       {
-        mappingPathFilter: ['preparations', 'preparedbyagent'],
+        mappingPathFilter: ['preparations', 'preparedByAgent'],
         synonyms: ['prepared'],
       },
       {
-        mappingPathFilter: ['accessionagent', 'agent'],
+        mappingPathFilter: ['accessionAgent', 'agent'],
         synonyms: ['accession agent', 'accessioned by'],
       },
       {
-        mappingPathFilter: ['accessionagents', 'agent'],
+        mappingPathFilter: ['accessionAgents', 'agent'],
         synonyms: ['accession agent', 'accessioned by'],
       },
       {
-        mappingPathFilter: ['dnasequence', 'sequencer'],
+        mappingPathFilter: ['dnaSequence', 'sequencer'],
         synonyms: ['sequencer'],
       },
     ],
     Determination: [
       {
-        mappingPathFilter: ['collectionobject', 'determinations'],
+        mappingPathFilter: ['collectionObject', 'determinations'],
         synonyms: ['id'],
       },
     ],
@@ -258,7 +256,7 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
     ],
     CollectionObject: [
       {
-        mappingPathFilter: ['collectionobject'],
+        mappingPathFilter: ['collectionObject'],
         synonyms: ['co'],
       },
     ],
@@ -272,44 +270,44 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
   rankSynonyms: {
     Taxon: [
       {
-        rankName: 'Superdivision',
-        synonyms: ['Superphylum'],
+        rankName: 'SuperDivision',
+        synonyms: ['SuperPhylum'],
       },
       {
         rankName: 'Division',
         synonyms: ['Phylum'],
       },
       {
-        rankName: 'Subdivision',
-        synonyms: ['Subphylum'],
+        rankName: 'SubDivision',
+        synonyms: ['SubPhylum'],
       },
       {
-        rankName: 'Infradivision',
-        synonyms: ['Infraphylum'],
+        rankName: 'InfraDivision',
+        synonyms: ['InfraPhylum'],
       },
       {
-        rankName: 'Microdivision',
-        synonyms: ['Microphylum'],
+        rankName: 'MicroDivision',
+        synonyms: ['MicroPhylum'],
       },
       {
-        rankName: 'Superphylum',
-        synonyms: ['Superdivision'],
+        rankName: 'SuperPhylum',
+        synonyms: ['SuperDivision'],
       },
       {
         rankName: 'Phylum',
         synonyms: ['Division'],
       },
       {
-        rankName: 'Subphylum',
-        synonyms: ['Subdivision'],
+        rankName: 'SubPhylum',
+        synonyms: ['SubDivision'],
       },
       {
-        rankName: 'Infraphylum',
-        synonyms: ['Infradivision'],
+        rankName: 'InfraPhylum',
+        synonyms: ['InfraDivision'],
       },
       {
-        rankName: 'Microphylum',
-        synonyms: ['Microdivision'],
+        rankName: 'MicroPhylum',
+        synonyms: ['MicroDivision'],
       },
     ],
   },
@@ -331,7 +329,7 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
     CollectionObject: {
       autoMapper: [
         {
-          mappingPath: ['cataloger', 'lastname'],
+          mappingPath: ['cataloger', 'lastName'],
           headers: {
             contains: ['cataloged by', 'catalogued by'],
           },
@@ -339,7 +337,7 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
       ],
       suggestion: [
         {
-          mappingPath: ['cataloger', 'lastname'],
+          mappingPath: ['cataloger', 'lastName'],
           headers: {
             contains: ['cataloged by', 'catalogued by'],
           },
@@ -349,7 +347,7 @@ export const autoMapperDefinitions: AutoMapperDefinitions = {
     Determination: {
       suggestion: [
         {
-          mappingPath: ['determiner', 'lastname'],
+          mappingPath: ['determiner', 'lastName'],
           headers: {
             contains: ['determiner'],
           },

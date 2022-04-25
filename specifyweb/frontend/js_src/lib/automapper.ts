@@ -155,7 +155,7 @@ const findRankSynonyms = (
   targetRankName: string
 ): RA<string> =>
   autoMapperDefinitions.rankSynonyms[tableName]
-    ?.filter(({ rankName }) => targetRankName === rankName)
+    ?.filter(({ rankName }) => targetRankName === rankName.toLowerCase())
     .flatMap(({ synonyms }) => synonyms) ?? [];
 
 function handleOrdinalNumbers(header: string): string {
@@ -547,7 +547,9 @@ export class AutoMapper {
         const mappingPathString = mappingPathToString(
           tableSynonym.mappingPathFilter
         );
-        return filteredPathString.endsWith(mappingPathString) ||
+        return filteredPathString
+          .toLowerCase()
+          .endsWith(mappingPathString.toLowerCase()) ||
           filteredPathWithBaseTableString === mappingPathString
           ? tableSynonym.synonyms
           : undefined;
@@ -631,8 +633,8 @@ export class AutoMapper {
         const finalRankName = formatTreeRank(rankName);
         const rankSynonyms = [
           stripedRankName,
-          ...findRankSynonyms(treeTableName, rankName).map((rankSynonym) =>
-            rankSynonym.toLowerCase()
+          ...findRankSynonyms(treeTableName, stripedRankName).map(
+            (rankSynonym) => rankSynonym.toLowerCase()
           ),
         ];
 
