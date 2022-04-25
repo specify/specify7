@@ -107,7 +107,7 @@ export const dialogIconTriggers = {
 
 // ClassNames are primarily for usage by non-react components
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
-  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:bg-neutral-700 gap-2
+  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
 const hasAltBackground = 'has-alt-background';
 const containerBackground = `bg-gray-200 dark:bg-neutral-800 ${hasAltBackground}`;

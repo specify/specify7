@@ -92,7 +92,7 @@ function Preferences({
       >
         <div className="relative flex gap-6 overflow-y-auto">
           {/* TODO: highlight link that corresponds to current section */}
-          <aside className="sticky top-0">
+          <aside className="min-w-fit sticky top-0 flex-1">
             <menu>
               {definitions.map(([category, { title }]) => (
                 <li key={category}>
@@ -101,7 +101,10 @@ function Preferences({
               ))}
             </menu>
           </aside>
-          <div className="flex flex-col flex-1 gap-6 overflow-y-auto">
+          <div
+            className={`flex flex-col gap-6 overflow-y-auto
+              max-w-[min(100%,var(--form-max-width))]`}
+          >
             {definitions.map(
               ([
                 category,
@@ -202,6 +205,7 @@ function Preferences({
               )
             )}
           </div>
+          <span className="flex-1" />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
