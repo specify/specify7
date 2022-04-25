@@ -4,6 +4,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
+import { hasTablePermission } from '../permissions';
 import type { IR } from '../types';
 import { defined } from '../types';
 import type { Parser } from '../uiparse';
@@ -138,7 +139,9 @@ const fieldRenderers: {
     isRequired,
     fieldDefinition: { hasCloneButton, typeSearch },
   }) {
-    return (
+    const field = resource.specifyModel.getField(fieldName ?? '');
+    return field?.isRelationship !== true ||
+      hasTablePermission(field.relatedModel.name, 'read') ? (
       <QueryComboBox
         id={id}
         resource={resource}
@@ -151,7 +154,7 @@ const fieldRenderers: {
         forceCollection={undefined}
         relatedModel={undefined}
       />
-    );
+    ) : null;
   },
   Text({
     id,

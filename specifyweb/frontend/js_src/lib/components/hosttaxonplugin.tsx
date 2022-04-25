@@ -11,6 +11,7 @@ import { QueryComboBox } from './querycombobox';
 import { f } from '../functools';
 import { fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
+import { hasTreeAccess } from '../permissions';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -33,7 +34,7 @@ export function HostTaxonPlugin({
   readonly isRequired: boolean;
   readonly mode: FormMode;
   readonly formType: FormType;
-}): JSX.Element {
+}): JSX.Element | null {
   const [rightSideCollection] = useAsyncState(
     React.useCallback(
       async () =>
@@ -53,7 +54,7 @@ export function HostTaxonPlugin({
   );
   return typeof rightSideCollection === 'undefined' ? (
     <Input.Text isReadOnly />
-  ) : (
+  ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       id={id}
       fieldName={undefined}
@@ -65,5 +66,5 @@ export function HostTaxonPlugin({
       formType={formType}
       typeSearch={hostTaxonTypeSearch}
     />
-  );
+  ) : null;
 }
