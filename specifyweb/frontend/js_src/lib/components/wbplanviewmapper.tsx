@@ -280,7 +280,8 @@ export function WbPlanViewMapper(props: {
     !props.isReadOnly &&
     state.lines.length > 0 &&
     typeof state.focusedLine === 'number' &&
-    mappingPathIsComplete(state.mappingView);
+    mappingPathIsComplete(state.mappingView) &&
+    getMappedFieldsBind(state.mappingView).length === 0;
 
   return (
     <Layout
