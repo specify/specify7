@@ -48,6 +48,7 @@ export function QueryLine({
   baseTableName,
   field,
   fieldHash,
+  enforceLengthLimit = false,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
   onRemove: handleRemove,
@@ -64,6 +65,7 @@ export function QueryLine({
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
   readonly fieldHash: string;
+  readonly enforceLengthLimit?: boolean;
   readonly onChange: (newField: QueryField) => void;
   readonly onMappingChange: (payload: {
     readonly index: number;
@@ -163,6 +165,7 @@ export function QueryLine({
     field,
     // Since handleChange changes at each render, fieldHash is used instead
     fieldHash,
+    enforceLengthLimit,
   ]);
 
   const lineData = getMappingLineData({
@@ -373,6 +376,7 @@ export function QueryLine({
                   filter={field.filters[index]}
                   fieldName={mappingPathToString(field.mappingPath)}
                   parser={fieldMeta.parser}
+                  enforceLengthLimit={enforceLengthLimit}
                   onChange={(startValue): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],

@@ -12,6 +12,7 @@ import { useReadyEffect } from './hooks';
 export function QueryFields({
   baseTableName,
   fields,
+  enforceLengthLimit,
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
@@ -25,6 +26,7 @@ export function QueryFields({
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
+  readonly enforceLengthLimit: boolean;
   readonly onChangeField: (line: number, field: QueryField) => void;
   readonly onMappingChange: (
     line: number,
@@ -77,6 +79,7 @@ export function QueryFields({
           fieldHash={`${line}_${length}`}
           baseTableName={baseTableName}
           field={field}
+          enforceLengthLimit={enforceLengthLimit}
           onChange={(newField): void => handleChangeField(line, newField)}
           onMappingChange={(payload): void =>
             handleMappingChange(line, payload)

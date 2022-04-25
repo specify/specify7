@@ -1,10 +1,14 @@
 import React from 'react';
 
+import { f } from '../functools';
+import { removeKey } from '../helpers';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
+import { schema } from '../schema';
 import type { RA, RR } from '../types';
+import { defined } from '../types';
 import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
 import {
   getValidationAttributes,
@@ -12,12 +16,11 @@ import {
   pluralizeParser,
 } from '../uiparse';
 import { hasNativeErrors } from '../validationmessages';
-import {removeKey} from '../helpers';
-import { f } from '../functools';
 import { Input, Select, selectMultipleSize } from './basic';
 import type { PickListItemSimple } from './combobox';
 import { useAsyncState, useTriggerState, useValidation } from './hooks';
 import { mappingElementDivider } from './wbplanviewcomponents';
+import { formsText } from '../localization/forms';
 
 export type QueryFieldType = 'text' | 'number' | 'date' | 'id' | 'checkbox';
 export type QueryFieldFilter =
@@ -62,7 +65,7 @@ function QueryInputField({
 }): JSX.Element {
   const [value, setValue] = useTriggerState(currentValue);
 
-  const { validationRef, setValidation } = useValidation<
+  const { inputRef, validationRef, setValidation } = useValidation<
     HTMLInputElement | HTMLSelectElement
   >();
   const validationAttributes = getValidationAttributes(parser);
@@ -76,6 +79,26 @@ function QueryInputField({
             .map(({ value }) => value)
         : target.value.split(',')
       : [target.value];
+
+  /*
+   * The length of the value may change as a result of formatter being applied.
+   * If new value is longer than the limit, the browser doesn't trigger the
+   * maxLength validation error since at that point the value would be last
+   * modified by React, not the user.
+   * Thus, have to trigger the error manually
+   */
+  React.useEffect(() => {
+    if (
+      typeof validationAttributes.maxLength !== 'undefined' &&
+      value.length > Number.parseInt(validationAttributes.maxLength) &&
+      inputRef.current?.checkValidity() === true
+    )
+      setValidation(
+        formsText('tooLongErrorMessage')(
+          Number.parseInt(validationAttributes.maxLength)
+        )
+      );
+  }, [value, validationAttributes.maxLength, inputRef, setValidation]);
 
   const commonProps = {
     forwardRef: validationRef,
@@ -174,6 +197,7 @@ function SingleField({
   readonly label?: string;
   readonly fieldName: string;
   readonly onChange: (newValue: string) => void;
+  readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   return (
     <QueryInputField
@@ -238,16 +262,24 @@ function In({
   parser,
   pickListItems,
   onChange: handleChange,
+  enforceLengthLimit,
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly onChange: (newValue: string) => void;
+  readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   const pluralizedParser = React.useMemo(
-    () => pluralizeParser(parser),
-    [parser]
+    () => ({
+      ...pluralizeParser(parser),
+      maxLength: enforceLengthLimit
+        ? defined(schema.models.SpQueryField.getLiteralField('startValue'))
+            .length
+        : undefined,
+    }),
+    [parser, enforceLengthLimit]
   );
   return (
     <QueryInputField
@@ -441,11 +473,13 @@ export function QueryLineFilter({
   filter,
   fieldName,
   parser: originalParser,
+  enforceLengthLimit,
   onChange: handleChange,
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
   readonly parser: Parser;
+  readonly enforceLengthLimit: boolean;
   readonly onChange: (newValue: string) => void;
 }): JSX.Element | null {
   const parser = queryFieldFilters[filter.type].hasParser
@@ -501,6 +535,7 @@ export function QueryLineFilter({
         onChange={handleChange}
         parser={parser}
         fieldName={fieldName}
+        enforceLengthLimit={enforceLengthLimit}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
             ? pickListItems

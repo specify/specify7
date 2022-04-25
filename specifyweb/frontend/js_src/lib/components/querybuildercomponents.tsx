@@ -3,25 +3,25 @@ import React from 'react';
 import { ping } from '../ajax';
 import type { RecordSet, SpQuery, SpQueryField, Tables } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
+import { hasPermission } from '../permissions';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
 import { getModel, schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../functools';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, className, Link } from './basic';
 import { Dialog, loadingBar } from './modaldialog';
+import { goTo } from './navigation';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
-import { hasPermission } from '../permissions';
-import { goTo } from './navigation';
 
 function QueryButton({
   disabled,
@@ -60,16 +60,20 @@ export function SaveQueryButtons({
   isReadOnly,
   fields,
   saveRequired,
+  isValid,
   queryResource,
   unsetUnloadProtect,
   getQueryFieldRecords,
+  onTriedToSave: handleTriedToSave,
 }: {
   readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
+  readonly isValid: () => void;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly onTriedToSave: () => boolean;
 }): JSX.Element {
   const [showDialog, setShowDialog] = React.useState<false | 'save' | 'saveAs'>(
     false
@@ -101,7 +105,9 @@ export function SaveQueryButtons({
         userInformation.resource_uri ? undefined : (
         <QueryButton
           disabled={!saveRequired || fields.length === 0}
-          onClick={(): void => handleSave('save')}
+          onClick={(): void =>
+            handleTriedToSave() && isValid() ? handleSave('save') : undefined
+          }
           showConfirmation={showConfirmation}
         >
           {commonText('save')}
@@ -110,7 +116,9 @@ export function SaveQueryButtons({
       {isReadOnly || queryResource.isNew() ? undefined : (
         <QueryButton
           disabled={fields.length === 0}
-          onClick={(): void => handleSave('saveAs')}
+          onClick={(): void =>
+            handleTriedToSave() && isValid() ? handleSave('saveAs') : undefined
+          }
           showConfirmation={showConfirmation}
         >
           {queryText('saveAs')}

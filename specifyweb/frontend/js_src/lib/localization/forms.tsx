@@ -948,4 +948,14 @@ export const formsText = createDictionary({
     ca: 'Reverse',
     'es-es': 'Reverse',
   },
+  tooLongErrorMessage: {
+    'en-us': (maxLength: number) =>
+      `Field value is too long. Max allowd length is ${maxLength}`,
+    'ru-ru': (maxLength: number) =>
+      `Field value is too long. Max allowd length is ${maxLength}`,
+    ca: (maxLength: number) =>
+      `Field value is too long. Max allowd length is ${maxLength}`,
+    'es-es': (maxLength: number) =>
+      `Field value is too long. Max allowd length is ${maxLength}`,
+  },
 });

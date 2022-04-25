@@ -3,7 +3,7 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import { group, sortObjectsByKey } from './helpers';
+import { group, removeKey, sortObjectsByKey } from './helpers';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
@@ -80,7 +80,7 @@ export function parseQueryFields(
       }
     )
   ).map(([_mappingPath, groupedFields]) => ({
-    ...groupedFields[0],
+    ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),
   }));
 }

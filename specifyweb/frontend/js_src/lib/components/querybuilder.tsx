@@ -20,8 +20,14 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState, useIsModified, useTitle } from './hooks';
+import {
+  useAsyncState,
+  useBooleanState,
+  useIsModified,
+  useTitle,
+} from './hooks';
 import { icons } from './icons';
+import { useUnloadProtect } from './navigation';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
@@ -33,7 +39,8 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-import { useUnloadProtect } from './navigation';
+import { defined } from '../types';
+import { schema } from '../schema';
 
 /*
  * Query Results:
@@ -79,6 +86,15 @@ export function QueryBuilder({
     },
     getInitialState
   );
+
+  /**
+   * If tried to save a query, enforce the field length limit for the
+   * startValue field.
+   * Until query is saved, that limit does not matter as ephermal query
+   * does not care about field length limits.
+   * This allows for executing a query with a long value for the "IN" filter.
+   */
+  const [triedToSave, handleTriedToSave] = useBooleanState();
 
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
     bucketName: 'queryBuilder',
@@ -162,6 +178,8 @@ export function QueryBuilder({
 
   useTitle(query.name);
 
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+
   return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
@@ -182,7 +200,11 @@ export function QueryBuilder({
                 : undefined
       }
     >
-      <Form className="contents" onSubmit={(): void => runQuery('regular')}>
+      <Form
+        className="contents"
+        forwardRef={formRef}
+        onSubmit={(): void => runQuery('regular')}
+      >
         {!isEmbedded && (
           <header className="gap-x-2 whitespace-nowrap flex items-center">
             <TableIcon name={model.name} />
@@ -216,9 +238,24 @@ export function QueryBuilder({
               isReadOnly={isReadOnly}
               queryResource={queryResource}
               fields={state.fields}
+              isValid={(): boolean =>
+                formRef.current?.reportValidity() ?? false
+              }
               saveRequired={saveRequired}
               unsetUnloadProtect={unsetUnloadProtect}
               getQueryFieldRecords={getQueryFieldRecords}
+              onTriedToSave={(): boolean => {
+                handleTriedToSave();
+                const fieldLengthLimit =
+                  defined(
+                    schema.models.SpQueryField.getLiteralField('startValue')
+                  ).length ?? Number.POSITIVE_INFINITY;
+                return state.fields.every((field) =>
+                  field.filters.every(
+                    ({ startValue }) => startValue.length < fieldLengthLimit
+                  )
+                );
+              }}
             />
           </header>
         )}
@@ -274,6 +311,7 @@ export function QueryBuilder({
             <QueryFields
               baseTableName={state.baseTableName}
               fields={state.fields}
+              enforceLengthLimit={triedToSave}
               onRemoveField={(line): void =>
                 dispatch({
                   type: 'ChangeFieldsAction',
