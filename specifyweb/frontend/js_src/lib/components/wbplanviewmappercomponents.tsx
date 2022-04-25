@@ -141,7 +141,9 @@ export function MappingView(props: {
         return undefined;
 
       const resizeObserver = new ResizeObserver(() =>
-        setMappingViewHeight(mappingViewParent.offsetHeight)
+        mappingViewParent.offsetHeight > 0
+          ? setMappingViewHeight(mappingViewParent.offsetHeight)
+          : undefined
       );
 
       resizeObserver.observe(mappingViewParent);
