@@ -175,13 +175,13 @@ export const treeText = createDictionary({
       `The ${treeName} node "${nodeName}" will be made a synonym
       of "${synonymName}".`,
   },
-  unsynonymizeNode: {
-    'en-us': 'Unsynonymize node',
+  desynonymizeNode: {
+    'en-us': 'Desynonymize node',
     'ru-ru': 'Отменить синонимизацию',
-    ca: 'Unsynonymize node',
-    'es-es': 'Unsynonymize node',
+    ca: 'Desynonymize node',
+    'es-es': 'Desynonymize node',
   },
-  unsynonymizeNodeMessage: {
+  desynonymizeNodeMessage: {
     'en-us': (treeName: string, nodeName: string, synonymName: string) =>
       `The ${treeName} node "${nodeName}" will no longer be a
       synonym of "${synonymName}".`,

@@ -17,7 +17,7 @@ import { LoadingContext } from './contexts';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { toLowerCase } from '../helpers';
 
-type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'unsynonymize';
+type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'desynonymize';
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -126,7 +126,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               disableButtons || (!isSynonym && focusedRow.children > 0)
                 ? undefined
                 : (): void =>
-                    setAction(isSynonym ? 'unsynonymize' : 'synonymize')
+                    setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
           >
             {isSynonym ? treeText('undoSynonymy') : treeText('synonymize')}
@@ -294,7 +294,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   readonly onCancelAction: () => void;
   readonly onCompleteAction: () => void;
 }): JSX.Element {
-  if (!['move', 'merge', 'synonymize', 'unsynonymize'].includes(type))
+  if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
     throw new Error('Invalid action type');
 
   const model = schema.models[tableName] as SpecifyModel<AnyTree>;
@@ -312,7 +312,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
       {
         method: 'POST',
         body:
-          type === 'unsynonymize'
+          type === 'desynonymize'
             ? undefined
             : formData({ target: focusedRow.nodeId.toString() }),
       }
@@ -342,7 +342,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
             ? treeText('mergeNodeHintMessage')(actionRow.fullName)
             : type === 'synonymize'
             ? treeText('synonymizeNodeHintMessage')(actionRow.fullName)
-            : treeText('unsynonymizeNodeMessage')(
+            : treeText('desynonymizeNodeMessage')(
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
@@ -355,7 +355,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           ? treeText('mergeNodeHere')(actionRow.fullName)
           : type === 'synonymize'
           ? treeText('makeSynonym')(actionRow.fullName, focusedRow.fullName)
-          : treeText('unsynonymizeNode')}
+          : treeText('desynonymizeNode')}
       </Button.Simple>
       <Button.Simple onClick={handleCancelAction}>
         {commonText('cancel')}
@@ -380,7 +380,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
               ? treeText('mergeNode')
               : type === 'synonymize'
               ? treeText('synonymizeNode')
-              : treeText('unsynonymizeNode')
+              : treeText('desynonymizeNode')
           }
           onClose={handleCancelAction}
           buttons={
@@ -401,7 +401,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   ? treeText('mergeNode')
                   : type === 'synonymize'
                   ? treeText('synonymizeNode')
-                  : treeText('unsynonymizeNode')}
+                  : treeText('desynonymizeNode')}
               </Button.Blue>
             </>
           }
@@ -424,7 +424,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 actionRow.fullName,
                 focusedRow.fullName
               )
-            : treeText('unsynonymizeNodeMessage')(
+            : treeText('desynonymizeNodeMessage')(
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
