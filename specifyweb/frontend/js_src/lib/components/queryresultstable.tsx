@@ -210,6 +210,7 @@ function CreateRecordSet({
           onDeleted={f.never}
           mode="edit"
           isSubForm={false}
+          isDependent={false}
         />
       )}
       {state.type === 'Saving' && (

@@ -601,12 +601,9 @@ export function QueryComboBox({
           canAddAnother={false}
           dialog="nonModal"
           onSaving={
-            field?.isDependent()
-              ? (): false => {
-                  setState({ type: 'MainState' });
-                  return false;
-                }
-              : undefined
+            field?.isDependent() === true
+              ? f.never
+              : (): void => setState({ type: 'MainState' })
           }
           onClose={(): void => setState({ type: 'MainState' })}
           onSaved={undefined}
@@ -615,6 +612,7 @@ export function QueryComboBox({
             setState({ type: 'MainState' });
           }}
           mode={mode}
+          isDependent={field?.isDependent() ?? false}
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
@@ -636,6 +634,7 @@ export function QueryComboBox({
             resource.set(defined(field?.name), state.resource as never);
             setState({ type: 'MainState' });
           }}
+          isDependent={false}
           onDeleted={undefined}
           mode={mode}
         />

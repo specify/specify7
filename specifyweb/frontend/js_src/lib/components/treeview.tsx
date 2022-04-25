@@ -387,6 +387,7 @@ function EditTreeRank({
           onSaved={(): void => window.location.reload()}
           onDeleted={undefined}
           isSubForm={false}
+          isDependent={false}
         />
       )}
     </>

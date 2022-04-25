@@ -183,6 +183,7 @@ export function MakeRecordSetButton({
                 onDeleted={f.never}
                 mode="edit"
                 isSubForm={false}
+                isDependent={false}
               />
             )}
             {state === 'saving' && (

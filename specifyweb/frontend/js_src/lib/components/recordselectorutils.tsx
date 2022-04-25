@@ -250,19 +250,13 @@ export function IntegratedRecordSelector({
             mode={mode}
             viewName={viewName}
             isSubForm={dialog === false}
+            isDependent={isDependent}
             canAddAnother={false}
             /*
              * Don't save the resource on save button click if it is a dependent
              * resource
              */
-            onSaving={
-              isDependent
-                ? (): false => {
-                    handleClose();
-                    return false;
-                  }
-                : undefined
-            }
+            onSaving={undefined}
             onSaved={handleClose}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
             onClose={handleClose}
@@ -461,6 +455,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 resource: defined(resource),
               })
             }
+            isDependent={isDependent}
             onDeleted={ids.length > 1 ? undefined : handleClose}
             onClose={handleClose}
           />

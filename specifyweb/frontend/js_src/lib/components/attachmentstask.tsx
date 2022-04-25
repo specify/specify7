@@ -168,6 +168,7 @@ export function AttachmentCell({
               onDeleted={undefined}
               onSaved={undefined}
               viewName={originalAttachmentsView}
+              isDependent={false}
             />
           )}
         </>
@@ -448,6 +449,7 @@ function Gallery({
           canAddAnother={false}
           isSubForm={false}
           mode="edit"
+          isDependent={false}
         />
       )}
     </>

@@ -229,6 +229,7 @@ export function RecordSetsDialog({
             </>
           ) : undefined
         }
+        isDependent={false}
       />
     ) : state.type === 'QueryState' ? (
       <QueryToolbarItem

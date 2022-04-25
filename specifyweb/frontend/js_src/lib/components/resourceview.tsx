@@ -185,8 +185,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
   children,
   mode: initialMode,
   viewName,
-  isSubForm,
   title: titleOverride,
+  /*
+   * The presence of these attributes kind of breaks the abstraction, but they
+   * are required to change the behaviour in certain ways:
+   */
+  isSubForm,
+  isDependent,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -210,6 +215,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
+  readonly isDependent: boolean;
   readonly title?: string;
 }): JSX.Element {
   const mode = augmentMode(
@@ -268,7 +274,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
         specifyNetworkBadge,
       }): JSX.Element => {
         const saveButtonElement =
-          !isSubForm && typeof resource === 'object' && formElement !== null ? (
+          !isDependent &&
+          !isSubForm &&
+          typeof resource === 'object' &&
+          formElement !== null ? (
             <SaveButton
               resource={resource}
               form={formElement}
@@ -290,18 +299,19 @@ export function ResourceView<SCHEMA extends AnySchema>({
               }}
             />
           ) : undefined;
+        const deleteButton =
+          !isDependent &&
+          !isSubForm &&
+          typeof resource === 'object' &&
+          !resource.isNew() &&
+          hasTablePermission(resource.specifyModel.name, 'delete') ? (
+            <DeleteButton
+              resource={resource}
+              deletionMessage={deletionMessage}
+              onDeleted={handleDelete}
+            />
+          ) : undefined;
         if (dialog === false) {
-          const deleteButton =
-            !isSubForm &&
-            typeof resource === 'object' &&
-            !resource.isNew() &&
-            hasTablePermission(resource.specifyModel.name, 'delete') ? (
-              <DeleteButton
-                resource={resource}
-                deletionMessage={deletionMessage}
-                onDeleted={handleDelete}
-              />
-            ) : undefined;
           const formattedChildren = (
             <>
               {form}
@@ -372,16 +382,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               buttons={
                 isSubForm ? undefined : (
                   <>
-                    {typeof resource === 'object' &&
-                    !resource.isNew() &&
-                    hasTablePermission(resource.specifyModel.name, 'delete') ? (
-                      <DeleteButton
-                        resource={resource}
-                        onDeleted={handleDelete}
-                      />
-                    ) : undefined}
+                    {deleteButton}
                     {extraButtons ?? <span className="flex-1 -ml-2" />}
-                    {isModified ? (
+                    {isModified && !isDependent ? (
                       <Button.Red onClick={handleClose}>
                         {commonText('cancel')}
                       </Button.Red>
@@ -513,6 +516,7 @@ export function ShowResource({
             );
         }
       }}
+      isDependent={false}
     />
   );
 }

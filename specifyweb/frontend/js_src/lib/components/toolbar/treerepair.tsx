@@ -148,6 +148,7 @@ export function EditTreeDefinition({
           onSaved={(): void => window.location.reload()}
           onDeleted={undefined}
           isSubForm={false}
+          isDependent={false}
         />
       )}
     </>

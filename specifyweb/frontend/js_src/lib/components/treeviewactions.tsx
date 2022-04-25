@@ -273,6 +273,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       mode="edit"
       onDeleted={handleDeleted}
       isSubForm={false}
+      isDependent={false}
     />
   );
 }

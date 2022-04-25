@@ -392,6 +392,7 @@ function EditQueryDialog({
       onDeleted={handleClose}
       mode="edit"
       isSubForm={false}
+      isDependent={false}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
