@@ -374,9 +374,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
                     <>
                       <DataEntry.Visit resource={resource} />
                       <span className="flex-1 -ml-4" />
+                      {specifyNetworkBadge}
                     </>
                   )}
-                  {specifyNetworkBadge}
                 </>
               }
               buttons={
