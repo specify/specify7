@@ -160,7 +160,11 @@ export function Field({
               .then(format)
               .then((value) => value ?? '')
           : undefined,
-      [resource, field]
+      /*
+       * While "value" is not used in the hook, it is needed to update a
+       * formatter if related resource changes
+       */
+      [resource, field, value]
     ),
     false
   );
