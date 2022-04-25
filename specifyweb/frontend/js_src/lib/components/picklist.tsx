@@ -178,7 +178,7 @@ export function PickListComboBox(
           onCleared={(): void => updateValue('')}
           forwardRef={validationRef}
           aria-label={undefined}
-          value={currentValue?.title ?? value ?? ''}
+          value={(currentValue?.title || value) ?? ''}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic

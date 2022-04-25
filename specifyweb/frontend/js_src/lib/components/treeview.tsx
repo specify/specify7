@@ -174,7 +174,7 @@ function TreeView<SCHEMA extends AnyTree>({
                     ({ rankId }) => rankId === node.rankId
                   );
                   const rankName =
-                    rankDefinition?.title ?? rankDefinition?.name;
+                    rankDefinition?.title || rankDefinition?.name;
                   return {
                     label: node.fullName ?? node.name,
                     subLabel: rankName,
@@ -297,7 +297,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   }
                 >
                   {pipe(
-                    rank.title ?? rank.name,
+                    rank.title || rank.name,
                     collapsedRanks?.includes(rank.rankId) ?? false,
                     (name) => name[0]
                   )}

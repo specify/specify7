@@ -101,7 +101,7 @@ export function AttachmentCell({
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
 
   const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = attachment?.title ?? thumbnail?.alt;
+  const title = attachment?.title || thumbnail?.alt;
   const loading = React.useContext(LoadingContext);
 
   const resource = React.useMemo(
@@ -191,7 +191,7 @@ export function AttachmentCell({
           <img
             className="object-contain max-w-full max-h-full"
             src={thumbnail.src}
-            alt={attachment?.title ?? thumbnail.alt}
+            alt={attachment?.title || thumbnail.alt}
             style={{
               width: `${thumbnail.width}px`,
               height: `${thumbnail.height}px`,

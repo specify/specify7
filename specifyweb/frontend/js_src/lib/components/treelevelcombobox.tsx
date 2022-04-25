@@ -37,7 +37,7 @@ const fetchPossibleRanks = async (
         (enforcedIndex === 0 ? records : records.slice(0, enforcedIndex)).map(
           (resource) => ({
             value: resource.resource_uri,
-            title: resource.title ?? resource.name,
+            title: resource.title || resource.name,
           })
         )
     )
