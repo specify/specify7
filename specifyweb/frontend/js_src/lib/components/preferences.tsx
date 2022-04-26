@@ -89,10 +89,6 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-/*
- * TODO: allow admins to edit prefs of other users
- * TODO: allow admins to set default prefs and overwrite prefs for all
- */
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),

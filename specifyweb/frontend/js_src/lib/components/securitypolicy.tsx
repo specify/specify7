@@ -204,7 +204,7 @@ export function PoliciesView({
       {Array.isArray(policies) ? (
         <>
           <Ul
-            className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.80)]"
+            className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.96)]"
             forwardRef={listRef}
           >
             {policies.map((policy, index) => (

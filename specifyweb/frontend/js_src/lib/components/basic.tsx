@@ -372,7 +372,7 @@ export const Input = {
   >(
     'Input.Checkbox',
     'input',
-    'h-3 w-3',
+    `${className.notTouchedInput} h-3 w-3`,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'checkbox',

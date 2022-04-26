@@ -129,7 +129,7 @@ export function RoleView({
           <legend>{adminText('users')}:</legend>
           {typeof usersWithRole === 'object' ? (
             <>
-              <Ul className="flex flex-col gap-2 max-h-[theme(spacing.80)] overflow-auto">
+              <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">
                 {usersWithRole.map(({ userId, userName }) => (
                   <li key={userId}>
                     <Button.LikeLink

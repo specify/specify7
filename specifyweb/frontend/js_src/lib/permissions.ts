@@ -25,7 +25,7 @@ export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
 /**
  * List of policies is stored on the front-end to improve TypeScript typing
- * In development mode, the code would still fetch the policies from the back-end
+ * In development mode, this code would still fetch the policies from the back-end
  * to make sure they haven't changed
  */
 const checkRegistry = async (): Promise<void> =>
@@ -37,7 +37,7 @@ const checkRegistry = async (): Promise<void> =>
       ).then((policies) =>
         JSON.stringify(policies) === JSON.stringify(operationPolicies)
           ? undefined
-          : error('Front-end has an outdated list of operation policies')
+          : error('Front-end has outdated list of operation policies')
       );
 
 export const collectionAccessResource = '/system/sp7/collection';
