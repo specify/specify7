@@ -148,9 +148,9 @@
   .button {
     @apply border dark:border-none rounded cursor-pointer active:brightness-80
       bg-gray-300 text-black dark:text-gray-100 gap-2 inline-flex items-center
-      border-zinc-400 disabled:!bg-gray-200 dark:!bg-neutral-600 px-2 py-1
-      disabled:border-gray-300 disabled:dark:!bg-neutral-800
-      disabled:!text-gray-500 disabled:dark:!text-neutral-400 hover:bg-brand-200
+      border-zinc-400 disabled:bg-gray-200 dark:bg-neutral-600 px-2 py-1
+      disabled:border-gray-300 disabled:dark:bg-neutral-800
+      disabled:text-gray-500 disabled:dark:text-neutral-400 hover:bg-brand-200
       dark:hover:bg-brand-400;
   }
 

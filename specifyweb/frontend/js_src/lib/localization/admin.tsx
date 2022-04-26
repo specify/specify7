@@ -456,4 +456,16 @@ export const adminText = createDictionary({
     ca: '(Specify 6 Admin)',
     'es-es': '(Specify 6 Admin)',
   },
+  deleteRoleDialogHeader: {
+    'en-us': 'Delete role that has users?',
+    'ru-ru': 'Delete role that has users?',
+    ca: 'Delete role that has users?',
+    'es-es': 'Delete role that has users?',
+  },
+  deleteRoleDialogMessage: {
+    'en-us': 'Users will not be deleted, but they would loose this role.',
+    'ru-ru': 'Users will not be deleted, but they would loose this role.',
+    ca: 'Users will not be deleted, but they would loose this role.',
+    'es-es': 'Users will not be deleted, but they would loose this role.',
+  },
 });

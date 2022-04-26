@@ -2,6 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -15,12 +16,12 @@ import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
 import { useLiveState } from './hooks';
 import { icons } from './icons';
+import { Dialog } from './modaldialog';
+import { useUnloadProtect } from './navigation';
 import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
-import { SerializedResource } from '../datamodelutils';
-import { useUnloadProtect } from './navigation';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -84,6 +85,7 @@ export function RoleView({
         'AddUserState',
         { readonly templateResource: SpecifyResource<SpecifyUser> }
       >
+    | State<'DeletionPromptState'>
     // Close AddUser dialog when new user is added
   >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
   const usersWithRole =
@@ -132,27 +134,25 @@ export function RoleView({
           {typeof usersWithRole === 'object' ? (
             <>
               <Ul className="flex flex-col gap-2 max-h-[theme(spacing.80)] overflow-auto">
-                {Object.values(usersWithRole)
-                  .filter(({ roles }) => roles.includes(defined(role.id)))
-                  .map(({ user }) => (
-                    <li key={user.id}>
-                      <Button.LikeLink
-                        disabled={
-                          user.id !== userInformation.id &&
-                          !hasTablePermission('SpecifyUser', 'update') &&
-                          !hasPermission(
-                            '/permissions/policies/user',
-                            'update'
-                          ) &&
-                          !hasPermission('/permissions/user/roles', 'update')
-                        }
-                        // TODO: trigger unload protect
-                        onClick={(): void => handleOpenUser(user.id)}
-                      >
-                        {user.name}
-                      </Button.LikeLink>
-                    </li>
-                  ))}
+                {usersWithRole.map(({ user }) => (
+                  <li key={user.id}>
+                    <Button.LikeLink
+                      disabled={
+                        user.id !== userInformation.id &&
+                        !hasTablePermission('SpecifyUser', 'update') &&
+                        !hasPermission(
+                          '/permissions/policies/user',
+                          'update'
+                        ) &&
+                        !hasPermission('/permissions/user/roles', 'update')
+                      }
+                      // TODO: trigger unload protect
+                      onClick={(): void => handleOpenUser(user.id)}
+                    >
+                      {user.name}
+                    </Button.LikeLink>
+                  </li>
+                ))}
               </Ul>
               {hasPermission('/permissions/user/roles', 'update') && (
                 <div>
@@ -204,7 +204,19 @@ export function RoleView({
       <div className="flex gap-2">
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete') ? (
-          <Button.Red onClick={handleDelete}>{commonText('remove')}</Button.Red>
+          <Button.Red
+            disabled={typeof usersWithRole === 'undefined'}
+            onClick={
+              usersWithRole?.length === 0
+                ? handleDelete
+                : (): void =>
+                    setState({
+                      type: 'DeletionPromptState',
+                    })
+            }
+          >
+            {commonText('remove')}
+          </Button.Red>
         ) : undefined}
         {changesMade ? (
           <Button.Red
@@ -234,6 +246,22 @@ export function RoleView({
           </Submit.Green>
         )}
       </div>
+      {state.type === 'DeletionPromptState' && (
+        <Dialog
+          header={adminText('deleteRoleDialogHeader')}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.Red onClick={handleDelete}>
+                {commonText('delete')}
+              </Button.Red>
+            </>
+          }
+          onClose={(): void => setState({ type: 'MainState' })}
+        >
+          {adminText('deleteRoleDialogMessage')}
+        </Dialog>
+      )}
     </Form>
   );
 }
