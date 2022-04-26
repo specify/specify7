@@ -50,7 +50,7 @@ export function SetSuperAdmin({
   return (
     <Label.ForCheckbox>
       <Input.Checkbox
-        isReadOnly={userInformation.isadmin}
+        isReadOnly={!userInformation.isadmin}
         disabled={typeof institutionPolicies === 'undefined'}
         onValueChange={(): void =>
           typeof institutionPolicies === 'object'
