@@ -234,10 +234,13 @@ export const adminText = createDictionary({
     'es-es': 'Preview',
   },
   outOfDateWarning: {
-    'en-us': 'Note: preview may be out of date.',
-    'ru-ru': 'Примечание. Предварительный просмотр может быть устаревшим.',
-    ca: 'Note: preview may be out of date.',
-    'es-es': 'Note: preview may be out of date.',
+    'en-us':
+      'Note: preview may be out of date. Save changes to update the preview',
+    'ru-ru': `Примечание. Предварительный просмотр может быть устаревшим.
+      Сохраните изменения, чтобы обновить предварительный просмотр`,
+    ca: 'Note: preview may be out of date.. Save changes to update the preview',
+    'es-es':
+      'Note: preview may be out of date.. Save changes to update the preview',
   },
   userPolicies: {
     'en-us': 'User policies',
@@ -347,11 +350,11 @@ export const adminText = createDictionary({
     ca: 'Unchanged roles:',
     'es-es': 'Unchanged roles:',
   },
-  superAdmin: {
-    'en-us': 'Super Admin',
+  institutionAdmin: {
+    'en-us': 'Institution Admin',
     'ru-ru': 'Супер администратор',
-    ca: 'Super Admin',
-    'es-es': 'Super Admin',
+    ca: 'Institution Admin',
+    'es-es': 'Institution Admin',
   },
 
   // UserInviteLinkPlugin

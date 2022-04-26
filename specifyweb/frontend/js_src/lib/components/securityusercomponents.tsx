@@ -103,7 +103,7 @@ export function SetSuperAdmin({
         }
         checked={isSuperAdmin}
       />
-      {adminText('superAdmin')}
+      {adminText('institutionAdmin')}
     </Label.ForCheckbox>
   );
 }
