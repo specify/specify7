@@ -14,7 +14,7 @@ import { smoothScroll } from '../querybuilderutils';
 import {
   actionToLabel,
   anyResource,
-  getRegistriesFromPath,
+  getCollectionRegistriesFromPath,
   partsToResourceName,
   resourceNameToParts,
 } from '../securityutils';
@@ -28,17 +28,25 @@ export type Policy = {
   readonly actions: RA<string>;
 };
 
+/**
+ * Institutional policies are ignored if set on a collection level, thus,
+ * UI should hide them.
+ */
+export type PolicyScope = 'institution' | 'any';
+
 function PolicyView({
   policy: { resource, actions },
   isReadOnly,
   onChange: handleChange,
+  scope,
 }: {
   readonly policy: Policy;
   readonly isReadOnly: boolean;
   readonly onChange: (policy: Policy | undefined) => void;
+  readonly scope: PolicyScope;
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
-  const registries = getRegistriesFromPath(resourceParts);
+  const registries = getCollectionRegistriesFromPath(resourceParts);
   const registryParts = registries
     .map((items, index) => ({
       // Create an entry just in case the policy is unknown to the front-end
@@ -74,18 +82,6 @@ function PolicyView({
                     resource: partsToResourceName([
                       ...resourceParts.slice(0, index),
                       part,
-                      ...f.var(
-                        replaceItem(resourceParts, index, part),
-                        (newPath) =>
-                          filterArray(
-                            getRegistriesFromPath(newPath)
-                              .slice(index + 1)
-                              .map<string | undefined>(
-                                (registry, index) =>
-                                  registry?.[newPath[index]]?.label
-                              )
-                          )
-                      ),
                     ]),
                     actions,
                   })

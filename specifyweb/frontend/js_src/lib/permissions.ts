@@ -4,6 +4,8 @@
 
 import { ajax } from './ajax';
 import { error } from './assert';
+import { crash } from './components/errorboundary';
+import { formatList } from './components/internationalization';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
@@ -18,8 +20,6 @@ import {
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
-import { crash } from './components/errorboundary';
-import { formatList } from './components/internationalization';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -114,6 +114,21 @@ export const operationPolicies = {
   ],
 } as const;
 
+/**
+ * These permissions have no effect on the collection level and should instead
+ * be set on the institution level.
+ */
+export const institutionPermissions = new Set([
+  '/admin/user/password',
+  '/admin/user/agents',
+  '/admin/user/sp6/is_admin',
+  '/admin/user/invite_link',
+  '/admin/user/oic_providers',
+  '/admin/user/sp6/collection_access',
+  '/export/feed',
+  '/permissions/library/roles',
+]);
+
 export const frontEndPermissions = {
   '/preferences/user': ['edit', 'edit_hidden', 'edit_default'],
 } as const;
@@ -162,7 +177,7 @@ export const queryUserPermissions = async (
   collectionId: number
 ): Promise<RA<PermissionsQueryItem>> =>
   import('./schema')
-    .then(({ fetchContext }) => fetchContext)
+    .then(async ({ fetchContext }) => fetchContext)
     .then(async (schema) =>
       ajax<{
         readonly details: RA<PermissionsQueryItem>;
@@ -194,7 +209,7 @@ export const queryUserPermissions = async (
     .then(({ data }) => data.details);
 
 export const fetchContext = import('./schemabase')
-  .then(({ fetchContext }) => fetchContext)
+  .then(async ({ fetchContext }) => fetchContext)
   .then(async (schema) =>
     queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
       .then((query) =>

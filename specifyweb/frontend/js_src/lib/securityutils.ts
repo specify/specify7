@@ -10,6 +10,7 @@ import { queryText } from './localization/query';
 import type { PermissionsQueryItem } from './permissions';
 import {
   frontEndPermissions,
+  institutionPermissions,
   operationPolicies,
   tableActions,
 } from './permissions';
@@ -54,7 +55,6 @@ export const resourceNameToLabel = (resource: string): string =>
             .label
       ) ?? adminText('resource');
 
-// TODO: test usages of this
 /**
  * Convert a part like ['table','locality'] to an array of information for
  * each item
@@ -67,11 +67,29 @@ export const getRegistriesFromPath = (
     [buildRegistry()]
   );
 
+/**
+ * Like getRegistriesFromPath, but excludes institutional policies
+ */
+export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
+  const registries = getRegistriesFromPath(resourceParts);
+  return registries.map((part, index) =>
+    typeof part === 'undefined'
+      ? undefined
+      : Object.fromEntries(
+          Object.entries(part).filter(
+            ([resource, { isInstitutional }]) =>
+              !isInstitutional || resource === resourceParts[index]
+          )
+        )
+  );
+}
+
 export type Registry = {
   readonly label: string;
   readonly children: IR<Registry>;
   readonly actions: RA<string>;
   readonly groupName: string;
+  readonly isInstitutional: boolean;
 };
 
 type WritableRegistry = {
@@ -79,6 +97,7 @@ type WritableRegistry = {
   readonly children: R<WritableRegistry>;
   readonly actions: RA<string>;
   readonly groupName: string;
+  isInstitutional: boolean;
 };
 
 /** Build a registry of all permissions, their labels and possible actions */
@@ -131,6 +150,7 @@ const buildRegistry = f.store(
                           partsToResourceName(resourceParts.slice(0, index + 1))
                         ),
                         groupName: '',
+                        isInstitutional: false,
                       },
                     },
               groupName: index + 1 === length ? groupName : '',
@@ -140,7 +160,10 @@ const buildRegistry = f.store(
                       partsToResourceName(resourceParts.slice(0, index + 1))
                     )
                   : [],
+              isInstitutional: true,
             };
+            if (!institutionPermissions.has(resource))
+              place[part].isInstitutional = false;
             return place[part].children;
           },
           registry
@@ -153,6 +176,7 @@ const buildRegistry = f.store(
           children: {},
           actions: getAllActions(partsToResourceName([])),
           groupName: '',
+          isInstitutional: false,
         },
       }
     )
