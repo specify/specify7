@@ -14,6 +14,7 @@ import { idFromUrl } from '../resource';
 import { decompressPolicies } from '../securityutils';
 import type { IR } from '../types';
 import { defined, filterArray } from '../types';
+import { userInformation } from '../userinfo';
 import { Button, className, Container, DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
@@ -43,7 +44,8 @@ import {
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
-import { userInformation } from '../userinfo';
+import { error } from '../assert';
+import { Dialog } from './modaldialog';
 
 // TODO: allow editing linkages with external accounts
 export function UserView({
@@ -102,6 +104,7 @@ export function UserView({
         }
       >
     | State<'SettingPassword'>
+    | State<'NoAdminsError'>
   >({ type: 'Main' });
 
   return (
@@ -267,109 +270,140 @@ export function UserView({
                                 Http.BAD_REQUEST,
                               ],
                             }
-                          ).then(({ data, status }) =>
-                            status === Http.BAD_REQUEST
-                              ? setState({
-                                  type: 'SettingAgents',
-                                  response: JSON.parse(data),
-                                })
-                              : Promise.all([
-                                  typeof password === 'string' &&
-                                  password !== ''
-                                    ? ping(
-                                        `/api/set_password/${userResource.id}/`,
-                                        {
-                                          method: 'POST',
-                                          body: formData({ password }),
-                                        },
-                                        {
-                                          expectedResponseCodes: [
-                                            Http.NO_CONTENT,
-                                          ],
-                                        }
-                                      )
-                                    : undefined,
-                                  ...Object.entries(userRoles ?? {})
-                                    .filter(
-                                      ([collectionId, roles]) =>
-                                        JSON.stringify(roles) !==
-                                        JSON.stringify(
-                                          initialUserRoles.current?.[
-                                            collectionId
-                                          ]
-                                        )
-                                    )
-                                    .map(async ([collectionId, roles]) =>
-                                      ping(
-                                        `/permissions/user_roles/${collectionId}/${userResource.id}/`,
-                                        {
-                                          method: 'PUT',
-                                          body: roles.map((id) => ({ id })),
-                                        },
-                                        {
-                                          expectedResponseCodes: [
-                                            Http.NO_CONTENT,
-                                          ],
-                                        }
-                                      )
-                                    ),
-                                  ...Object.entries(userPolicies ?? {})
-                                    .filter(
-                                      ([collectionId, policies]) =>
-                                        JSON.stringify(policies) !==
-                                        JSON.stringify(
-                                          initialUserPolicies.current?.[
-                                            collectionId
-                                          ]
-                                        )
-                                    )
-                                    .map(async ([collectionId, policies]) =>
-                                      ping(
-                                        `/permissions/user_policies/${collectionId}/${userResource.id}/`,
-                                        {
-                                          method: 'PUT',
-                                          body: decompressPolicies(policies),
-                                        },
-                                        {
-                                          expectedResponseCodes: [
-                                            Http.NO_CONTENT,
-                                          ],
-                                        }
-                                      )
-                                    ),
-                                  Array.isArray(institutionPolicies) &&
-                                  changedInstitutionPolicies
-                                    ? ping(
-                                        `/permissions/user_policies/institution/${userResource.id}/`,
-                                        {
-                                          method: 'PUT',
-                                          body: decompressPolicies(
-                                            institutionPolicies
-                                          ),
-                                        },
-                                        {
-                                          expectedResponseCodes: [
-                                            Http.NO_CONTENT,
-                                          ],
-                                        }
-                                      )
-                                    : undefined,
-                                ])
-                                  .then(() =>
-                                    handleSave(
-                                      serializeResource(userResource),
-                                      f.maybe(newResource, serializeResource)
-                                    )
-                                  )
-                                  .then(() => {
-                                    if (typeof newResource === 'object') return;
-                                    initialUserRoles.current = userRoles ?? {};
-                                    initialUserPolicies.current =
-                                      userPolicies ?? {};
-                                    initialInstitutionPolicies.current =
-                                      institutionPolicies ?? [];
-                                  })
                           )
+                            .then(({ data, status }) =>
+                              status === Http.BAD_REQUEST
+                                ? setState({
+                                    type: 'SettingAgents',
+                                    response: JSON.parse(data),
+                                  })
+                                : Array.isArray(institutionPolicies) &&
+                                  changedInstitutionPolicies
+                                ? ajax<{
+                                    readonly NoAdminUsersException: IR<never>;
+                                  }>(
+                                    `/permissions/user_policies/institution/${userResource.id}/`,
+                                    {
+                                      method: 'PUT',
+                                      body: decompressPolicies(
+                                        institutionPolicies
+                                      ),
+                                      headers: { Accept: 'application/json' },
+                                    },
+                                    {
+                                      expectedResponseCodes: [
+                                        Http.NO_CONTENT,
+                                        Http.BAD_REQUEST,
+                                      ],
+                                    }
+                                  ).then(({ data, status }) =>
+                                    /*
+                                     * Removing admin status fails if current user
+                                     * is the last admin
+                                     */
+                                    status === Http.BAD_REQUEST
+                                      ? typeof data === 'object' &&
+                                        'NoAdminUsersException' in data
+                                        ? setState({
+                                            type: 'NoAdminsError',
+                                          })
+                                        : error(
+                                            'Failed updating institution policies',
+                                            {
+                                              data,
+                                              status,
+                                              userResource,
+                                            }
+                                          )
+                                      : true
+                                  )
+                                : true
+                            )
+                            .then((canContinue) =>
+                              canContinue === true
+                                ? Promise.all([
+                                    typeof password === 'string' &&
+                                    password !== ''
+                                      ? ping(
+                                          `/api/set_password/${userResource.id}/`,
+                                          {
+                                            method: 'POST',
+                                            body: formData({ password }),
+                                          },
+                                          {
+                                            expectedResponseCodes: [
+                                              Http.NO_CONTENT,
+                                            ],
+                                          }
+                                        )
+                                      : undefined,
+                                    ...Object.entries(userRoles ?? {})
+                                      .filter(
+                                        ([collectionId, roles]) =>
+                                          JSON.stringify(roles) !==
+                                          JSON.stringify(
+                                            initialUserRoles.current?.[
+                                              collectionId
+                                            ]
+                                          )
+                                      )
+                                      .map(async ([collectionId, roles]) =>
+                                        ping(
+                                          `/permissions/user_roles/${collectionId}/${userResource.id}/`,
+                                          {
+                                            method: 'PUT',
+                                            body: roles.map((id) => ({ id })),
+                                          },
+                                          {
+                                            expectedResponseCodes: [
+                                              Http.NO_CONTENT,
+                                            ],
+                                          }
+                                        )
+                                      ),
+                                    ...Object.entries(userPolicies ?? {})
+                                      .filter(
+                                        ([collectionId, policies]) =>
+                                          JSON.stringify(policies) !==
+                                          JSON.stringify(
+                                            initialUserPolicies.current?.[
+                                              collectionId
+                                            ]
+                                          )
+                                      )
+                                      .map(async ([collectionId, policies]) =>
+                                        ping(
+                                          `/permissions/user_policies/${collectionId}/${userResource.id}/`,
+                                          {
+                                            method: 'PUT',
+                                            body: decompressPolicies(policies),
+                                          },
+                                          {
+                                            expectedResponseCodes: [
+                                              Http.NO_CONTENT,
+                                            ],
+                                          }
+                                        )
+                                      ),
+                                  ])
+                                    .then(() =>
+                                      handleSave(
+                                        serializeResource(userResource),
+                                        f.maybe(newResource, serializeResource)
+                                      )
+                                    )
+                                    .then(() => {
+                                      if (typeof newResource === 'object')
+                                        return;
+                                      initialUserRoles.current =
+                                        userRoles ?? {};
+                                      initialUserPolicies.current =
+                                        userPolicies ?? {};
+                                      initialInstitutionPolicies.current =
+                                        institutionPolicies ?? [];
+                                    })
+                                : undefined
+                            )
                         )
                       }
                     />
@@ -404,6 +438,15 @@ export function UserView({
           mode={mode}
           response={state.response}
         />
+      )}
+      {state.type === 'NoAdminsError' && (
+        <Dialog
+          header={adminText('noAdminsErrorDialogHeader')}
+          onClose={(): void => setState({ type: 'Main' })}
+          buttons={commonText('close')}
+        >
+          {adminText('noAdminsErrorDialogMessage')}
+        </Dialog>
       )}
     </Container.Base>
   );

@@ -477,4 +477,16 @@ export const adminText = createDictionary({
     ca: 'Institution policies',
     'es-es': 'Institution policies',
   },
+  noAdminsErrorDialogHeader: {
+    'en-us': "Can't remove Institution Admin status",
+    'ru-ru': "Can't remove Institution Admin status",
+    ca: "Can't remove Institution Admin status",
+    'es-es': "Can't remove Institution Admin status",
+  },
+  noAdminsErrorDialogMessage: {
+    'en-us': 'There must be at least one Institution Admin in institution',
+    'ru-ru': 'There must be at least one Institution Admin in institution',
+    ca: 'There must be at least one Institution Admin in institution',
+    'es-es': 'There must be at least one Institution Admin in institution',
+  },
 });

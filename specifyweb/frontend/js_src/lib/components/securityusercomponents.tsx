@@ -40,7 +40,7 @@ export function SetSuperAdmin({
 }: {
   readonly institutionPolicies: RA<Policy> | undefined;
   readonly onChange: (value: RA<Policy>) => void;
-}): JSX.Element | string {
+}): JSX.Element {
   const allActions = getAllActions(anyResource);
   const isSuperAdmin =
     institutionPolicies?.some(
@@ -91,7 +91,7 @@ export function SetSuperAdmin({
       {adminText('institutionAdmin')}
     </Label.ForCheckbox>
   ) : (
-    commonText('loading')
+    <>{commonText('loading')}</>
   );
 }
 
