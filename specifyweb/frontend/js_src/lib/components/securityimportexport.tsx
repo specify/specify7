@@ -127,24 +127,28 @@ export function SecurityImportExport({
                     <Ul>
                       {roles.map(({ role, isChecked }, index) => (
                         <li key={index}>
-                          <Label.ForCheckbox>
-                            <Input.Checkbox
-                              checked={isChecked}
-                              onValueChange={(): void =>
-                                setNewRoles(
-                                  replaceKey(
-                                    newRoles,
-                                    category,
-                                    replaceItem(roles, index, {
-                                      role,
-                                      isChecked: !isChecked,
-                                    })
+                          {category === 'unchanged' ? (
+                            role.name
+                          ) : (
+                            <Label.ForCheckbox>
+                              <Input.Checkbox
+                                checked={isChecked}
+                                onValueChange={(): void =>
+                                  setNewRoles(
+                                    replaceKey(
+                                      newRoles,
+                                      category,
+                                      replaceItem(roles, index, {
+                                        role,
+                                        isChecked: !isChecked,
+                                      })
+                                    )
                                   )
-                                )
-                              }
-                            />
-                            {role.name}
-                          </Label.ForCheckbox>
+                                }
+                              />
+                              {role.name}
+                            </Label.ForCheckbox>
+                          )}
                         </li>
                       ))}
                     </Ul>
