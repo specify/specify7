@@ -257,6 +257,7 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
 /**
  * Convert policies back to the format back-end can understand:
  * Convert virtual tool policies back to real system table policies
+ * Combine separate actions on "any" resource into one policy
  * Add a field access policy
  */
 export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
@@ -272,6 +273,15 @@ export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
               resource: tableNameToResourceName(tableName),
               actions: policy.actions,
             }))
+          : policy.resource === anyResource &&
+            getAllActions(anyResource).every((action) =>
+              policy.actions.includes(action)
+            )
+          ? {
+              // Combine separate actions on "any" resource into one
+              resource: anyResource,
+              actions: [anyAction],
+            }
           : policy
       )
       .map(({ resource, actions }) => [resource, actions]),
@@ -400,7 +410,7 @@ export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
  * Get a union of all actions that can be done on descendants of a given
  * permission resource type
  */
-const getAllActions = (path: string): RA<string> =>
+export const getAllActions = (path: string): RA<string> =>
   path.startsWith(`${permissionSeparator}${toolPermissionPrefix}`)
     ? tableActions
     : f.var(

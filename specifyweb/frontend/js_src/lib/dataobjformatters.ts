@@ -178,6 +178,10 @@ export async function format<SCHEMA extends AnySchema>(
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
+  /*
+   * Don't format resource if all relevant fields are empty, or formatter has
+   * no fields
+   */
   return fields
     .map(({ fieldName }) => resource.get(fieldName))
     .every(

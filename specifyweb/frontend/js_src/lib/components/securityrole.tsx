@@ -13,7 +13,7 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
-import { useLiveState } from './hooks';
+import { useLiveState, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
@@ -69,12 +69,7 @@ export function RoleView({
     | undefined;
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
 }): JSX.Element {
-  const [role, setRole] = useLiveState(
-    React.useCallback(
-      () => replaceKey(initialRole, 'policies', initialRole.policies),
-      [initialRole]
-    )
-  );
+  const [role, setRole] = useTriggerState(initialRole);
   const changesMade =
     typeof role.id === 'undefined' ||
     JSON.stringify(initialRole) !== JSON.stringify(role);

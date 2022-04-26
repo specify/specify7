@@ -11,7 +11,7 @@ import type { FormMode } from '../parseform';
 import { collectionAccessResource, hasPermission } from '../permissions';
 import { resourceOn } from '../resource';
 import { schema } from '../schema';
-import { anyAction, anyResource } from '../securityutils';
+import { anyResource, getAllActions } from '../securityutils';
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -40,71 +40,58 @@ export function SetSuperAdmin({
 }: {
   readonly institutionPolicies: RA<Policy> | undefined;
   readonly onChange: (value: RA<Policy>) => void;
-}): JSX.Element {
+}): JSX.Element | string {
+  const allActions = getAllActions(anyResource);
   const isSuperAdmin =
     institutionPolicies?.some(
       ({ resource, actions }) =>
-        resource === anyResource && actions.includes(anyAction)
+        resource === anyResource &&
+        allActions.every((action) => actions.includes(action))
     ) ?? false;
 
-  return (
+  return typeof institutionPolicies === 'object' ? (
     <Label.ForCheckbox>
       <Input.Checkbox
         isReadOnly={!userInformation.isadmin}
-        disabled={typeof institutionPolicies === 'undefined'}
         onValueChange={(): void =>
-          typeof institutionPolicies === 'object'
-            ? handleChange(
-                isSuperAdmin
-                  ? filterArray(
-                      institutionPolicies.map((policy) =>
-                        policy.resource === anyResource
-                          ? policy.actions.length === 1 &&
-                            policy.actions.includes(anyAction)
-                            ? undefined
-                            : replaceKey(
-                                policy,
-                                'actions',
-                                policy.actions.filter(
-                                  (action) => action !== anyAction
-                                )
-                              )
-                          : policy
-                      )
-                    )
-                  : f.var(
-                      institutionPolicies.findIndex(
-                        ({ resource }) => resource === anyResource
-                      ),
-                      (index) =>
-                        index === -1
-                          ? [
-                              ...institutionPolicies,
-                              {
-                                resource: anyResource,
-                                actions: [anyAction],
-                              },
-                            ]
-                          : replaceItem(
-                              institutionPolicies,
-                              index,
-                              replaceKey(
-                                institutionPolicies[index],
-                                'actions',
-                                [
-                                  ...institutionPolicies[index].actions,
-                                  anyAction,
-                                ]
-                              )
-                            )
-                    )
-              )
-            : undefined
+          handleChange(
+            isSuperAdmin
+              ? filterArray(
+                  institutionPolicies.filter(
+                    (policy) => policy.resource !== anyResource
+                  )
+                )
+              : f.var(
+                  institutionPolicies.findIndex(
+                    ({ resource }) => resource === anyResource
+                  ),
+                  (index) =>
+                    index === -1
+                      ? [
+                          ...institutionPolicies,
+                          {
+                            resource: anyResource,
+                            actions: allActions,
+                          },
+                        ]
+                      : replaceItem(
+                          institutionPolicies,
+                          index,
+                          replaceKey(
+                            institutionPolicies[index],
+                            'actions',
+                            allActions
+                          )
+                        )
+                )
+          )
         }
         checked={isSuperAdmin}
       />
       {adminText('institutionAdmin')}
     </Label.ForCheckbox>
+  ) : (
+    commonText('loading')
   );
 }
 
