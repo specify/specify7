@@ -3,7 +3,7 @@ import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
 import { f } from './functools';
-import { group, lowerToHuman, toLowerCase } from './helpers';
+import { group, lowerToHuman, replaceItem, toLowerCase } from './helpers';
 import { adminText } from './localization/admin';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
@@ -224,14 +224,6 @@ const toolTables = f.store(
 );
 
 /**
- * Special resource that is needed by the back-end for user to be able to
- * edit anything.
- * Field level permissions are not yet fully implemented, thus this resource
- * must be hidden in the UI, but present in all policy lists
- */
-const fieldResource = '/field/%';
-
-/**
  * Separate out tool tables from the raw list of policies received from the
  * back-end
  */
@@ -258,35 +250,69 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
  * Convert policies back to the format back-end can understand:
  * Convert virtual tool policies back to real system table policies
  * Combine separate actions on "any" resource into one policy
- * Add a field access policy
+ * Add required policies if user has collection access
  */
 export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
-  Object.fromEntries([
-    ...policies
-      .flatMap((policy) =>
-        resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
-          ? toolDefinitions()[
-              resourceNameToParts(policy.resource)[1] as keyof ReturnType<
-                typeof toolDefinitions
-              >
-            ].tables.map((tableName) => ({
-              resource: tableNameToResourceName(tableName),
-              actions: policy.actions,
-            }))
-          : policy.resource === anyResource &&
-            getAllActions(anyResource).every((action) =>
-              policy.actions.includes(action)
+  Object.fromEntries(
+    f.var(
+      // Merge actions for duplicate resources
+      group(policies.map(({ resource, actions }) => [resource, actions]))
+        .map(([resource, actions]) => ({ resource, actions: actions.flat() }))
+        .flatMap((policy) =>
+          // Separate out tool permissions into tables
+          resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
+            ? toolDefinitions()[
+                resourceNameToParts(policy.resource)[1] as keyof ReturnType<
+                  typeof toolDefinitions
+                >
+              ].tables.map((tableName) => ({
+                resource: tableNameToResourceName(tableName),
+                actions: policy.actions,
+              }))
+            : policy.resource === anyResource &&
+              getAllActions(anyResource).every((action) =>
+                policy.actions.includes(action)
+              )
+            ? {
+                // Combine separate actions on "any" resource into one
+                resource: anyResource,
+                actions: [anyAction],
+              }
+            : policy
+        ),
+      (policies) =>
+        // If has collection access, add other basic policies
+        (policies.some(
+          ({ resource, actions }) =>
+            resource === '/system/sp7/collection' && actions.includes('access')
+        )
+          ? Object.entries(basicPermissions).reduce<RA<Policy>>(
+              (policies, [resource, actions]) => {
+                const policyIndex = policies.findIndex(
+                  (policy) => policy.resource === resource
+                );
+                return policyIndex === -1
+                  ? [
+                      ...policies,
+                      {
+                        resource,
+                        actions,
+                      },
+                    ]
+                  : replaceItem(policies, policyIndex, {
+                      ...policies[policyIndex],
+                      actions: f.unique([
+                        ...policies[policyIndex].actions,
+                        ...actions,
+                      ]),
+                    });
+              },
+              policies
             )
-          ? {
-              // Combine separate actions on "any" resource into one
-              resource: anyResource,
-              actions: [anyAction],
-            }
-          : policy
-      )
-      .map(({ resource, actions }) => [resource, actions]),
-    [fieldResource, anyAction],
-  ]);
+          : policies
+        ).map(({ resource, actions }) => [resource, actions])
+    )
+  );
 
 /**
  * Like processPolicies, but works on the output of the /permission/query/
@@ -405,6 +431,29 @@ export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME
 ): `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}` =>
   `${tablePermissionsPrefix}${toLowerCase(tableName)}`;
+
+/**
+ * Special resource that is needed by the back-end for user to be able to
+ * edit anything.
+ * Field level permissions are not yet fully implemented, thus this resource
+ * must be hidden in the UI, but present in all policy lists
+ */
+const fieldResource = '/field/%';
+
+/**
+ * Front-end enforces that each user that has collection access, also has the
+ * following permissions:
+ */
+export const basicPermissions: IR<RA<string>> = {
+  [fieldResource]: [anyAction],
+  // Give read access to hierarchy tables
+  ...Object.fromEntries(
+    schema.orgHierarchy
+      .filter((tableName) => tableName !== 'CollectionObject')
+      .map((tableName) => [tableNameToResourceName(tableName), 'read'])
+  ),
+  [tableNameToResourceName('Agent')]: 'read',
+};
 
 /**
  * Get a union of all actions that can be done on descendants of a given
