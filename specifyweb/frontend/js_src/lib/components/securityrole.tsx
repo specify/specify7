@@ -2,7 +2,6 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -10,7 +9,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
-import type { IR, RA } from '../types';
+import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
@@ -34,9 +33,13 @@ export type Role = NewRole & {
   readonly id: number;
 };
 
-export type UserRoles = IR<{
-  readonly user: SerializedResource<SpecifyUser>;
-  readonly roles: RA<number>;
+export type UserRoles = RA<{
+  readonly roleId: number;
+  readonly roleName: string;
+  readonly users: RA<{
+    readonly userId: number;
+    readonly userName: string;
+  }>;
 }>;
 
 export function RoleView({
@@ -90,9 +93,7 @@ export function RoleView({
   >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
   const usersWithRole =
     typeof userRoles === 'object' && typeof role.id === 'number'
-      ? Object.values(userRoles).filter(({ roles }) =>
-          roles.includes(defined(role.id))
-        )
+      ? defined(userRoles.find(({ roleId }) => roleId === role.id)).users
       : undefined;
 
   const isReadOnly =
@@ -134,11 +135,11 @@ export function RoleView({
           {typeof usersWithRole === 'object' ? (
             <>
               <Ul className="flex flex-col gap-2 max-h-[theme(spacing.80)] overflow-auto">
-                {usersWithRole.map(({ user }) => (
-                  <li key={user.id}>
+                {usersWithRole.map(({ userId, userName }) => (
+                  <li key={userId}>
                     <Button.LikeLink
                       disabled={
-                        user.id !== userInformation.id &&
+                        userId !== userInformation.id &&
                         !hasTablePermission('SpecifyUser', 'update') &&
                         !hasPermission(
                           '/permissions/policies/user',
@@ -147,9 +148,9 @@ export function RoleView({
                         !hasPermission('/permissions/user/roles', 'update')
                       }
                       // TODO: trigger unload protect
-                      onClick={(): void => handleOpenUser(user.id)}
+                      onClick={(): void => handleOpenUser(userId)}
                     >
-                      {user.name}
+                      {userName}
                     </Button.LikeLink>
                   </li>
                 ))}
@@ -177,8 +178,8 @@ export function RoleView({
                     {
                       field: 'id',
                       operation: 'notIn',
-                      values: usersWithRole.map(({ user }) =>
-                        user.id.toString()
+                      values: usersWithRole.map(({ userId }) =>
+                        userId.toString()
                       ),
                     },
                   ]}

@@ -186,7 +186,6 @@ function SecurityPanel(): JSX.Element | null {
             collections={data.collections}
             initialRoleId={state.initialRole}
             libraryRoles={libraryRoles}
-            users={users}
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',

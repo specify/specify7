@@ -2,10 +2,10 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
-import type { Collection, SpecifyUser } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
+import type { Collection } from '../datamodel';
+import type { KeysToLowerCase, SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { index, removeKey, replaceKey } from '../helpers';
+import { group, index, removeKey, replaceItem, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -15,12 +15,13 @@ import {
   fetchRoles,
   processPolicies,
 } from '../securityutils';
-import type { IR } from '../types';
+import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState } from './hooks';
+import { formatList } from './internationalization';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role, UserRoles } from './securityrole';
@@ -30,14 +31,12 @@ import { CreateRole } from './securityroletemplate';
 export function CollectionView({
   collection,
   initialRoleId,
-  users,
   onOpenUser: handleOpenUser,
   collections,
   libraryRoles,
 }: {
   readonly collection: SerializedResource<Collection>;
   readonly initialRoleId: number | undefined;
-  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number) => void;
   readonly collections: IR<SerializedResource<Collection>>;
   readonly libraryRoles: IR<Role> | undefined;
@@ -52,30 +51,32 @@ export function CollectionView({
     ),
     false
   );
+
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
-        typeof users === 'object'
-          ? Promise.all(
-              Object.values(users).map(async (user) =>
-                fetchRoles(collection.id, user.id).then(
-                  (roles) =>
-                    [
-                      user.id,
-                      {
-                        user,
-                        roles: roles.map((role) => role.id),
-                      },
-                    ] as const
-                )
-              )
-            ).then((entries) => Object.fromEntries(entries))
-          : undefined,
-      [collection.id, users]
+        ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
+          `/permissions/user_roles/${collection.id}`,
+          {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+          }
+        ).then(({ data }) =>
+          data.map(({ roleid, rolename, users }) => ({
+            roleId: roleid,
+            roleName: rolename,
+            users: users.map(({ userid, username }) => ({
+              userId: userid,
+              userName: username,
+            })),
+          }))
+        ),
+      [collection.id]
     ),
     // Display loading screen while loading a role
     typeof initialRoleId === 'number'
   );
+
   const [state, setState] = useLiveState<
     | State<'MainState'>
     | State<'CreatingRoleState'>
@@ -206,25 +207,50 @@ export function CollectionView({
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof userRoles === 'object'
               ? f.var(
-                  Object.values(userRoles).filter(
-                    ({ roles, user }) =>
-                      roles.length > 0 &&
-                      (user.id === userInformation.id ||
-                        hasTablePermission('SpecifyUser', 'update') ||
-                        hasPermission('/permissions/policies/user', 'update') ||
-                        hasPermission('/permissions/user/roles', 'update'))
-                  ),
+                  group(
+                    userRoles.flatMap(({ roleId, roleName, users }) =>
+                      users.map(({ userId, userName }) => [
+                        userId,
+                        {
+                          userName,
+                          roleId,
+                          roleName,
+                        },
+                      ])
+                    )
+                  )
+                    .map(([userId, roles]) => ({
+                      userId,
+                      userName: defined(roles[0]).userName,
+                      roles,
+                    }))
+                    .filter(
+                      ({ userId, roles }) =>
+                        roles.length > 0 &&
+                        (userId === userInformation.id ||
+                          hasTablePermission('SpecifyUser', 'update') ||
+                          hasPermission(
+                            '/permissions/policies/user',
+                            'update'
+                          ) ||
+                          hasPermission('/permissions/user/roles', 'update'))
+                    ),
                   (users) =>
                     users.length === 0 ? (
                       commonText('none')
                     ) : (
                       <Ul>
-                        {users.map(({ user }) => (
-                          <li key={user.id}>
+                        {users.map(({ userId, userName, roles }) => (
+                          <li key={userId}>
                             <Button.LikeLink
-                              onClick={(): void => handleOpenUser(user.id)}
+                              onClick={(): void => handleOpenUser(userId)}
                             >
-                              {user.name}
+                              {userName}
+                              <span className="text-gray-500">
+                                {`(${formatList(
+                                  roles.map(({ roleName }) => roleName)
+                                )})`}
+                              </span>
                             </Button.LikeLink>
                           </li>
                         ))}
@@ -294,20 +320,31 @@ export function CollectionView({
                       `/permissions/user_roles/${collection.id}/${user.id}/`,
                       {
                         method: 'PUT',
-                        body: [...userRoles[user.id].roles, state.role.id].map(
-                          (id) => ({ id })
-                        ),
+                        body: [
+                          userRoles
+                            .filter(({ users }) =>
+                              users.some(({ userId }) => userId === user.id)
+                            )
+                            .map(({ roleId }) => roleId),
+                          state.role.id,
+                        ].map((id) => ({ id })),
                       },
                       { expectedResponseCodes: [Http.NO_CONTENT] }
                     ).then(() =>
                       setUserRoles(
-                        replaceKey(userRoles, user.id.toString(), {
-                          ...userRoles[user.id],
-                          roles: [
-                            ...userRoles[user.id].roles,
-                            defined(state.role.id),
-                          ],
-                        })
+                        f.var(
+                          userRoles.findIndex(
+                            ({ roleId }) => roleId === user.id
+                          ),
+                          (roleIndex) =>
+                            replaceItem(userRoles, roleIndex, {
+                              ...userRoles[roleIndex],
+                              users: [
+                                ...userRoles[roleIndex].users,
+                                { userId: user.id, userName: user.get('name') },
+                              ],
+                            })
+                        )
                       )
                     )
                   )

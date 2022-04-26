@@ -168,6 +168,12 @@ export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
     KEY & string
   >]: DICTIONARY[KEY] extends IR<unknown>
     ? KeysToLowerCase<DICTIONARY[KEY]>
+    : DICTIONARY[KEY] extends RA<unknown>
+    ? RA<
+        DICTIONARY[KEY][number] extends IR<unknown>
+          ? KeysToLowerCase<DICTIONARY[KEY][number]>
+          : DICTIONARY[KEY][number]
+      >
     : DICTIONARY[KEY];
 };
 
