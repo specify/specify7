@@ -262,7 +262,9 @@ export function useUserInstitutionalPolicies(
   ];
 }
 
-export function useUserProviders(userId: number): IR<boolean> | undefined {
+export function useUserProviders(
+  userId: number | undefined
+): IR<boolean> | undefined {
   const [providers] = useAsyncState<IR<boolean>>(
     React.useCallback(
       async () =>
@@ -274,12 +276,15 @@ export function useUserProviders(userId: number): IR<boolean> | undefined {
               method: 'GET',
               headers: { Accept: 'application/json' },
             }).then(({ data }) => data),
-            userProviders: ajax<
-              RA<{ readonly provider: string; readonly title: string }>
-            >(`/accounts/oic_providers/${userId}/`, {
-              method: 'GET',
-              headers: { Accept: 'application/json' },
-            }).then(({ data }) => data),
+            userProviders:
+              typeof userId === 'number'
+                ? ajax<
+                    RA<{ readonly provider: string; readonly title: string }>
+                  >(`/accounts/oic_providers/${userId}/`, {
+                    method: 'GET',
+                    headers: { Accept: 'application/json' },
+                  }).then(({ data }) => data)
+                : [],
           })
           .then(({ allProviders, userProviders }) =>
             Object.fromEntries(

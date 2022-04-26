@@ -349,7 +349,7 @@ export function CollectionAccess({
 export function UserIdentityProviders({
   userId,
 }: {
-  readonly userId: number;
+  readonly userId: number | undefined;
 }): JSX.Element | null {
   const providers = useUserProviders(userId);
   return typeof providers === 'undefined' ||

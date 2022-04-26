@@ -37,7 +37,7 @@ export function CollectionView({
 }: {
   readonly collection: SerializedResource<Collection>;
   readonly initialRoleId: number | undefined;
-  readonly onOpenUser: (userId: number) => void;
+  readonly onOpenUser: (userId: number | undefined) => void;
   readonly collections: IR<SerializedResource<Collection>>;
   readonly libraryRoles: IR<Role> | undefined;
 }): JSX.Element {
@@ -239,22 +239,31 @@ export function CollectionView({
                     users.length === 0 ? (
                       commonText('none')
                     ) : (
-                      <Ul>
-                        {users.map(({ userId, userName, roles }) => (
-                          <li key={userId}>
-                            <Button.LikeLink
-                              onClick={(): void => handleOpenUser(userId)}
-                            >
-                              {userName}
-                              <span className="text-gray-500">
-                                {`(${formatList(
-                                  roles.map(({ roleName }) => roleName)
-                                )})`}
-                              </span>
-                            </Button.LikeLink>
-                          </li>
-                        ))}
-                      </Ul>
+                      <>
+                        <Ul>
+                          {users.map(({ userId, userName, roles }) => (
+                            <li key={userId}>
+                              <Button.LikeLink
+                                onClick={(): void => handleOpenUser(userId)}
+                              >
+                                {userName}
+                                <span className="text-gray-500">
+                                  {`(${formatList(
+                                    roles.map(({ roleName }) => roleName)
+                                  )})`}
+                                </span>
+                              </Button.LikeLink>
+                            </li>
+                          ))}
+                        </Ul>
+                        <div>
+                          <Button.Green
+                            onClick={(): void => handleOpenUser(undefined)}
+                          >
+                            {commonText('create')}
+                          </Button.Green>
+                        </div>
+                      </>
                     )
                 )
               : commonText('loading')}

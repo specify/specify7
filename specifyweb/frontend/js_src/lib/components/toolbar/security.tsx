@@ -9,6 +9,7 @@ import { ajax } from '../../ajax';
 import { fetchCollection } from '../../collection';
 import type { SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
+import { addMissingFields } from '../../datamodelutils';
 import { f } from '../../functools';
 import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
@@ -174,7 +175,10 @@ function SecurityPanel(): JSX.Element | null {
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',
-                user: defined(users)[userId],
+                user:
+                  typeof userId === 'number'
+                    ? defined(users)[userId]
+                    : addMissingFields('SpecifyUser', {}),
                 initialCollection: Object.values(data.collections)[0].id,
               })
             }
@@ -189,7 +193,10 @@ function SecurityPanel(): JSX.Element | null {
             onOpenUser={(userId): void =>
               setState({
                 type: 'UserState',
-                user: defined(users)[userId],
+                user:
+                  typeof userId === 'number'
+                    ? defined(users)[userId]
+                    : addMissingFields('SpecifyUser', {}),
                 initialCollection: state.collectionId,
               })
             }

@@ -31,7 +31,7 @@ export function InstitutionView({
 }: {
   readonly institution: SerializedResource<Institution>;
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
-  readonly onOpenUser: (userId: number) => void;
+  readonly onOpenUser: (userId: number | undefined) => void;
   readonly libraryRoles: IR<Role> | undefined;
   readonly onChangeLibraryRoles: (
     roles: IR<Role> | ((oldState: IR<Role>) => IR<Role>)
@@ -173,34 +173,41 @@ export function InstitutionView({
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof users === 'object' ? (
-              <Ul>
-                {Object.values(users)
-                  .filter(
-                    ({ id }) =>
-                      id === userInformation.id ||
-                      hasTablePermission('SpecifyUser', 'update') ||
-                      hasPermission('/permissions/policies/user', 'update') ||
-                      hasPermission('/permissions/user/roles', 'update')
-                  )
-                  .map((user) => (
-                    <li key={user.id}>
-                      <Button.LikeLink
-                        onClick={(): void => handleOpenUser(user.id)}
-                      >
-                        {`${user.name}`}
-                        <span className="text-gray-500">{`${
-                          admins?.admins.has(user.id)
-                            ? ` ${adminText('specifyAdmin')}`
-                            : ''
-                        }${
-                          admins?.legacyAdmins.has(user.id)
-                            ? ` ${adminText('legacyAdmin')}`
-                            : ''
-                        }`}</span>
-                      </Button.LikeLink>
-                    </li>
-                  ))}
-              </Ul>
+              <>
+                <Ul>
+                  {Object.values(users)
+                    .filter(
+                      ({ id }) =>
+                        id === userInformation.id ||
+                        hasTablePermission('SpecifyUser', 'update') ||
+                        hasPermission('/permissions/policies/user', 'update') ||
+                        hasPermission('/permissions/user/roles', 'update')
+                    )
+                    .map((user) => (
+                      <li key={user.id}>
+                        <Button.LikeLink
+                          onClick={(): void => handleOpenUser(user.id)}
+                        >
+                          {`${user.name}`}
+                          <span className="text-gray-500">{`${
+                            admins?.admins.has(user.id)
+                              ? ` ${adminText('specifyAdmin')}`
+                              : ''
+                          }${
+                            admins?.legacyAdmins.has(user.id)
+                              ? ` ${adminText('legacyAdmin')}`
+                              : ''
+                          }`}</span>
+                        </Button.LikeLink>
+                      </li>
+                    ))}
+                </Ul>
+                <div>
+                  <Button.Green onClick={(): void => handleOpenUser(undefined)}>
+                    {commonText('create')}
+                  </Button.Green>
+                </div>
+              </>
             ) : (
               commonText('loading')
             )}
