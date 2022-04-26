@@ -41,13 +41,13 @@ export function PaleoLocationMapPlugin({
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
     <>
-      <Button.Simple
+      <Button.Small
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
         className="w-fit"
       >
         {formsText('paleoMap')}
-      </Button.Simple>
+      </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
           title={formsText('unsupportedFormDialogTitle')}

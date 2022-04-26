@@ -47,9 +47,9 @@ const commandRenderers: {
 
     return hasPermission('/report', 'execute') ? (
       <>
-        <Button.Simple id={id} onClick={(): void => setRunReport(true)}>
+        <Button.Small id={id} onClick={(): void => setRunReport(true)}>
           {label}
-        </Button.Simple>
+        </Button.Small>
         {runReport && (resource.isNew() || !Boolean(resource.get('id'))) ? (
           <Dialog
             header={label ?? ''}
@@ -67,9 +67,9 @@ const commandRenderers: {
     return (
       <>
         {resource.isNew() || !Boolean(resource.get('id')) ? undefined : (
-          <Button.Simple id={id} onClick={handleShow}>
+          <Button.Small id={id} onClick={handleShow}>
             {label}
-          </Button.Simple>
+          </Button.Small>
         )}
         {showLoans && (
           <ShowLoansCommand resource={resource} onClose={handleHide} />
@@ -83,9 +83,9 @@ const commandRenderers: {
       hasTablePermission('LoanReturnPreparation', 'update')
       ? f.maybe(toTable(resource, 'Loan'), (loan) => (
           <>
-            <Button.Simple id={id} onClick={handleShow}>
+            <Button.Small id={id} onClick={handleShow}>
               {label}
-            </Button.Simple>
+            </Button.Small>
             {showDialog ? (
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
@@ -107,9 +107,9 @@ const commandRenderers: {
     const [isClicked, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        <Button.Simple id={id} onClick={handleShow}>
+        <Button.Small id={id} onClick={handleShow}>
           {formsText('unavailableCommandButton')}
-        </Button.Simple>
+        </Button.Small>
         <Dialog
           isOpen={isClicked}
           onClose={handleHide}

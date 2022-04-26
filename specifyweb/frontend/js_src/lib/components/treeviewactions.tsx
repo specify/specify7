@@ -68,7 +68,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               {commonText('query')}
             </Link.LikeButton>
           ) : (
-            <Button.Simple disabled>{commonText('query')}</Button.Simple>
+            <Button.Small disabled>{commonText('query')}</Button.Small>
           )}
         </li>
       )}
@@ -95,24 +95,24 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       </li>
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          <Button.Simple
+          <Button.Small
             disabled={disableButtons}
             onClick={disableButtons ? undefined : (): void => setAction('move')}
           >
             {commonText('move')}
-          </Button.Simple>
+          </Button.Small>
         </li>
       )}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          <Button.Simple
+          <Button.Small
             disabled={disableButtons}
             onClick={
               disableButtons ? undefined : (): void => setAction('merge')
             }
           >
             {treeText('merge')}
-          </Button.Simple>
+          </Button.Small>
         </li>
       )}
       {hasPermission(
@@ -120,7 +120,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          <Button.Simple
+          <Button.Small
             disabled={disableButtons || (!isSynonym && focusedRow.children > 0)}
             onClick={
               disableButtons || (!isSynonym && focusedRow.children > 0)
@@ -130,7 +130,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             }
           >
             {isSynonym ? treeText('undoSynonymy') : treeText('synonymize')}
-          </Button.Simple>
+          </Button.Small>
         </li>
       )}
     </menu>
@@ -165,7 +165,7 @@ function EditRecord<SCHEMA extends AnyTree>({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         disabled={disabled || typeof nodeId === 'undefined'}
         onClick={handleToggle}
         aria-pressed={isOpen}
@@ -173,7 +173,7 @@ function EditRecord<SCHEMA extends AnyTree>({
         {hasTablePermission(tableName, 'update')
           ? commonText('edit')
           : commonText('view')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && typeof nodeId === 'number' && (
         <EditRecordDialog<SCHEMA>
           id={nodeId}
@@ -204,13 +204,13 @@ function AddChild<SCHEMA extends AnyTree>({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         disabled={typeof nodeId === 'undefined' || disabled}
         onClick={handleToggle}
         aria-pressed={isOpen}
       >
         {commonText('addChild')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && typeof nodeId === 'number' && (
         <EditRecordDialog<SCHEMA>
           id={nodeId}
@@ -330,7 +330,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
       : false;
   return (
     <menu className="contents">
-      <Button.Simple
+      <Button.Small
         forwardRef={(element): void => {
           focusRef.current = element;
         }}
@@ -357,10 +357,10 @@ function ActiveAction<SCHEMA extends AnyTree>({
           : type === 'synonymize'
           ? treeText('makeSynonym')(actionRow.fullName, focusedRow.fullName)
           : treeText('desynonymizeNode')}
-      </Button.Simple>
-      <Button.Simple onClick={handleCancelAction}>
+      </Button.Small>
+      <Button.Small onClick={handleCancelAction}>
         {commonText('cancel')}
-      </Button.Simple>
+      </Button.Small>
       {typeof error === 'object' ? (
         <Dialog
           title={treeText('actionFailedDialogTitle')}

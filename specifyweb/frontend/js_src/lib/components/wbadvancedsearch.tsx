@@ -211,7 +211,7 @@ export function WbAdvancedSearch({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         aria-haspopup="dialog"
         aria-pressed={isOpen}
         title={wbText('configureSearchReplace')}
@@ -219,7 +219,7 @@ export function WbAdvancedSearch({
         onClick={handleToggle}
       >
         {icons.cog}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && (
         <PreferencesDialog
           searchPreferences={searchPreferences}

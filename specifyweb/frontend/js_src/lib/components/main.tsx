@@ -193,7 +193,7 @@ export function Main({
   return typeof menuItems === 'undefined' ||
     typeof userTools === 'undefined' ? null : (
     <>
-      <Button.Simple
+      <Button.Small
         className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only z-10"
         onClick={(): void => {
           if (!mainRef.current) return;
@@ -203,7 +203,7 @@ export function Main({
         }}
       >
         {commonText('skipToContent')}
-      </Button.Simple>
+      </Button.Small>
 
       <header
         className={`bg-gray-200 dark:bg-neutral-800 border-b-[5px]

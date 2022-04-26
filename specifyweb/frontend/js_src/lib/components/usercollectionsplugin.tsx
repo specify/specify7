@@ -99,7 +99,7 @@ export function UserCollectionsPlugin({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Simple
+      <Button.Small
         onClick={handleOpen}
         className="w-fit"
         disabled={
@@ -116,7 +116,7 @@ export function UserCollectionsPlugin({
         }
       >
         {adminText('setCollections')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && <UserCollectionsUi userId={user.id} onClose={handleClose} />}
     </>
   );

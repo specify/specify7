@@ -121,9 +121,9 @@ function ViewRecords({
 
   return (
     <>
-      <Button.Simple onClick={handleOpen} disabled={results.length === 0}>
+      <Button.Small onClick={handleOpen} disabled={results.length === 0}>
         {commonText('viewRecords')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && (
         <RecordSelectorFromIds
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
@@ -165,7 +165,7 @@ function CreateRecordSet({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         aria-haspopup="dialog"
         onClick={(): void =>
           setState({
@@ -175,7 +175,7 @@ function CreateRecordSet({
         }
       >
         {queryText('makeRecordSet')}
-      </Button.Simple>
+      </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
           dialog="modal"

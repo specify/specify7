@@ -206,9 +206,7 @@ function DataSetName({
           <span className="text-red-600">{wbText('dataSetUploadedLabel')}</span>
         )}
       </h2>
-      <Button.Simple onClick={handleOpen}>
-        {commonText('metadata')}
-      </Button.Simple>
+      <Button.Small onClick={handleOpen}>{commonText('metadata')}</Button.Small>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}

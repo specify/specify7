@@ -223,7 +223,7 @@ export function QueryBuilder({
               getQueryFieldRecords={getQueryFieldRecords}
             />
             {!queryResource.isNew() && (
-              <Button.Simple
+              <Button.Small
                 disabled={!saveRequired}
                 onClick={(): void => {
                   unsetUnloadProtect();
@@ -231,7 +231,7 @@ export function QueryBuilder({
                 }}
               >
                 {queryText('abandonChanges')}
-              </Button.Simple>
+              </Button.Small>
             )}
             <SaveQueryButtons
               isReadOnly={isReadOnly}
@@ -296,7 +296,7 @@ export function QueryBuilder({
                 },
               })}
               mapButton={
-                <Button.Simple
+                <Button.Small
                   className="justify-center p-2"
                   disabled={!mapButtonEnabled}
                   onClick={handleAddField}
@@ -304,7 +304,7 @@ export function QueryBuilder({
                   title={queryText('newButtonDescription')}
                 >
                   {icons.plus}
-                </Button.Simple>
+                </Button.Small>
               }
             />
             <QueryFields
@@ -390,12 +390,12 @@ export function QueryBuilder({
               )}
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
-                  <Button.Simple
+                  <Button.Small
                     disabled={!isEmpty}
                     onClick={(): void => runQuery('count')}
                   >
                     {queryText('countOnly')}
-                  </Button.Simple>
+                  </Button.Small>
                   <Submit.Simple disabled={!isEmpty}>
                     {commonText('query')}
                   </Submit.Simple>

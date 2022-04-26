@@ -35,9 +35,9 @@ function WrongTable({
   const [isVisible, handleShow, handleHide] = useBooleanState();
   return (
     <>
-      <Button.Simple onClick={handleShow}>
+      <Button.Small onClick={handleShow}>
         {formsText('unavailablePluginButton')}
-      </Button.Simple>
+      </Button.Small>
       <Dialog
         isOpen={isVisible}
         onClose={handleHide}
@@ -224,9 +224,9 @@ const pluginRenderers: {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        <Button.Simple id={id} onClick={handleShow} className="w-fit">
+        <Button.Small id={id} onClick={handleShow} className="w-fit">
           {formsText('unavailablePluginButton')}
-        </Button.Simple>
+        </Button.Small>
         <Dialog
           isOpen={isVisible}
           onClose={handleHide}

@@ -100,7 +100,7 @@ export function Notifications(): JSX.Element {
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   return (
     <>
-      <Button.Simple
+      <Button.Small
         className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
         disabled={notificationCount === 0}
         aria-live="polite"
@@ -112,7 +112,7 @@ export function Notifications(): JSX.Element {
             ? formatNumber(notifications.length)
             : '...'
         )}
-      </Button.Simple>
+      </Button.Small>
       {Array.isArray(notifications) && (
         <Dialog
           isOpen={isOpen}

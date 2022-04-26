@@ -220,13 +220,13 @@ export function GeoLocatePlugin({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   return (
     <>
-      <Button.Simple
+      <Button.Small
         onClick={handleToggle}
         aria-pressed={isOpen}
         className="w-fit"
       >
         {localityText('geoLocate')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && <GeoLocate resource={resource} onClose={handleClose} />}
     </>
   );

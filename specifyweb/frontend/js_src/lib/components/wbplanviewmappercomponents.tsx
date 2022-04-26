@@ -38,14 +38,14 @@ export function MappingsControlPanel({
   return (
     <div role="toolbar" className="gap-x-2 print:hidden flex items-center">
       {typeof handleAddNewHeader === 'function' && (
-        <Button.Simple
+        <Button.Small
           onClick={(): void => {
             handleAddNewHeader(wbText('newHeaderName')(newHeaderIdRef.current));
             newHeaderIdRef.current += 1;
           }}
         >
           {wbText('addNewColumn')}
-        </Button.Simple>
+        </Button.Small>
       )}
       <Label.ForCheckbox>
         <Input.Checkbox
@@ -92,7 +92,7 @@ export function ValidationResults(props: {
       <p>{wbText('validationFailedDialogMessage')}</p>
       <section className="gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
-          <Button.Simple
+          <Button.Small
             className={`hover:bg-gray-300 hover:dark:bg-neutral-700 border-x-0
               bg-transparent border-b-0 rounded-none flex-wrap`}
             key={index}
@@ -111,7 +111,7 @@ export function ValidationResults(props: {
                 customSelectType: 'PREVIEW_LIST',
               }))}
             />
-          </Button.Simple>
+          </Button.Small>
         ))}
       </section>
     </Dialog>
@@ -368,15 +368,11 @@ export function ToggleMappingPath({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    <Button.Simple
-      className={showMappingView ? '' : 'active'}
-      onClick={handleClick}
-      aria-pressed={!showMappingView}
-    >
+    <Button.Small onClick={handleClick} aria-pressed={!showMappingView}>
       {showMappingView
         ? wbText('hideMappingEditor')
         : wbText('showMappingEditor')}
-    </Button.Simple>
+    </Button.Small>
   );
 }
 
@@ -407,12 +403,12 @@ export function MustMatch({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
         {wbText('mustMatch')}
-      </Button.Simple>
+      </Button.Small>
       {typeof localPreferences === 'object' && (
         <Dialog
           header={wbText('matchingLogicDialogTitle')}

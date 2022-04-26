@@ -302,7 +302,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           <span className="flex-1 -ml-2" />
           <menu className="contents">
             <li>
-              <Button.Simple
+              <Button.Small
                 /* eslint-disable-next-line sonarjs/no-identical-functions */
                 onClick={(): void =>
                   dispatch({
@@ -312,20 +312,20 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 }
               >
                 {commonText('changeBaseTable')}
-              </Button.Simple>
+              </Button.Small>
             </li>
             <li>
-              <Button.Simple onClick={handleClose}>
+              <Button.Small onClick={handleClose}>
                 {commonText('cancel')}
-              </Button.Simple>
+              </Button.Small>
             </li>
             <li>
-              <Button.Simple
+              <Button.Small
                 disabled={!tableWasModified && modifiedItems.length === 0}
                 onClick={handleSave}
               >
                 {commonText('save')}
-              </Button.Simple>
+              </Button.Small>
             </li>
           </menu>
         </header>

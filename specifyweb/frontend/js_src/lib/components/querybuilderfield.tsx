@@ -203,14 +203,15 @@ export function QueryLine({
       aria-current={isFocused}
     >
       {typeof handleRemove === 'function' && (
-        <Button.Simple
-          className={`${className.redButton} print:hidden`}
+        <Button.Small
+          className="print:hidden"
+          variant={className.redButton}
           title={commonText('remove')}
           aria-label={commonText('remove')}
           onClick={handleRemove}
         >
           {icons.trash}
-        </Button.Simple>
+        </Button.Small>
       )}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
@@ -270,12 +271,16 @@ export function QueryLine({
               {index === 0 ? (
                 <React.Fragment>
                   {mappingElementDivider}
-                  <Button.Simple
+                  <Button.Small
                     title={queryText('or')}
                     aria-label={queryText('or')}
+                    variant={
+                      field.filters.length > 1
+                        ? className.blueButton
+                        : className.grayButton
+                    }
                     className={`aria-handled print:hidden
                       ${isFieldComplete ? '' : 'invisible'}
-                      ${field.filters.length > 1 ? className.blueButton : ''}
                     `}
                     onClick={(): void =>
                       handleFilterChange(field.filters.length, {
@@ -287,7 +292,7 @@ export function QueryLine({
                     aria-pressed={field.filters.length > 1}
                   >
                     {icons.plus}
-                  </Button.Simple>
+                  </Button.Small>
                 </React.Fragment>
               ) : (
                 <React.Fragment>
@@ -299,23 +304,27 @@ export function QueryLine({
                       {queryText('or')}
                     </span>
                   </span>
-                  <Button.Simple
-                    className={`${className.redButton} print:hidden`}
+                  <Button.Small
+                    className="print:hidden"
+                    variant={className.redButton}
                     title={commonText('remove')}
                     aria-label={commonText('remove')}
                     onClick={(): void => handleFilterChange(index, undefined)}
                   >
                     {icons.trash}
-                  </Button.Simple>
+                  </Button.Small>
                 </React.Fragment>
               )}
               {field.filters[index].type === 'any' ? undefined : (
-                <Button.Simple
+                <Button.Small
                   title={queryText('negate')}
                   aria-label={queryText('negate')}
-                  className={`aria-handled ${
-                    field.filters[index].isNot ? className.redButton : ''
-                  }`}
+                  variant={
+                    field.filters[index].isNot
+                      ? className.redButton
+                      : className.grayButton
+                  }
+                  className="aria-handled"
                   onClick={(): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],
@@ -325,7 +334,7 @@ export function QueryLine({
                   aria-pressed={field.filters[index].isNot}
                 >
                   {icons.ban}
-                </Button.Simple>
+                </Button.Small>
               )}
               <div>
                 <Select
@@ -390,14 +399,13 @@ export function QueryLine({
         </div>
       </div>
       <div className="contents print:hidden">
-        <Button.Simple
+        <Button.Small
           title={queryText('showButtonDescription')}
           aria-label={queryText('showButtonDescription')}
-          className={`
-            aria-handled
-            ${isFieldComplete ? '' : 'invisible'}
-            ${field.isDisplay ? className.greenButton : ''}
-          `}
+          className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          variant={
+            field.isDisplay ? className.greenButton : className.grayButton
+          }
           onClick={(): void =>
             handleChange({
               ...field,
@@ -407,9 +415,9 @@ export function QueryLine({
           aria-pressed={field.isDisplay}
         >
           {icons.check}
-        </Button.Simple>
-        <Button.Simple
-          className={isFieldComplete ? '' : 'invisible'}
+        </Button.Small>
+        <Button.Small
+          className={isFieldComplete ? undefined : 'invisible'}
           title={
             field.sortType === 'ascending'
               ? queryText('ascendingSort')
@@ -439,23 +447,23 @@ export function QueryLine({
             : field.sortType === 'descending'
             ? icons.arrowCircleUp
             : icons.circle}
-        </Button.Simple>
-        <Button.Simple
+        </Button.Small>
+        <Button.Small
           title={queryText('moveUp')}
           aria-label={queryText('moveUp')}
           disabled={typeof handleMoveUp === 'undefined'}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
-        </Button.Simple>
-        <Button.Simple
+        </Button.Small>
+        <Button.Small
           title={queryText('moveDown')}
           aria-label={queryText('moveDown')}
           disabled={typeof handleMoveDown === 'undefined'}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}
-        </Button.Simple>
+        </Button.Small>
       </div>
     </li>
   );

@@ -28,7 +28,7 @@ export function AdminStatusPlugin({
   const isCurrentUser = userInformation.id === user.id;
 
   return (
-    <Button.Simple
+    <Button.Small
       className="w-fit"
       disabled={
         mode === 'view' ||
@@ -66,6 +66,6 @@ export function AdminStatusPlugin({
       }
     >
       {user.isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
-    </Button.Simple>
+    </Button.Small>
   );
 }

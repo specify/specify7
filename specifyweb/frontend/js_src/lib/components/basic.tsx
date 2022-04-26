@@ -138,7 +138,7 @@ export const className = {
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton,
-  borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none`,
+  borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none disabled:border-gray-300`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
@@ -647,6 +647,30 @@ export const Button = {
    * element should be announced as a link
    */
   LikeLink: button('Button.LikeLink', className.link),
+  Small: wrap<
+    'button',
+    {
+      /*
+       * A class name that is responsible for text and background color
+       * Split into a separate prop in order to add a default value
+       */
+      readonly variant?: string;
+    }
+  >(
+    'Button.Small',
+    'button',
+    `${niceButton} !py-1 !px-2`,
+    ({
+      variant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
+      type,
+      className: classString,
+      ...props
+    }) => ({
+      type: 'button',
+      className: `${classString} ${variant}`,
+      ...props,
+    })
+  ),
   Fancy: button('Button.LikeLink', `${niceButton} ${className.fancyButton}`),
   Transparent: button(
     'Button.Transparent',

@@ -312,13 +312,13 @@ export function UserTools({
   return (
     <>
       {/* TODO: get rid of usages of "px" units in the header */}
-      <Button.Simple
+      <Button.Small
         className="max-w-[110px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
         title={commonText('currentUser')}
         onClick={handleOpen}
       >
         {userInformation.name}
-      </Button.Simple>
+      </Button.Small>
       <Dialog
         isOpen={isOpen}
         header={commonText('userToolsDialogTitle')}

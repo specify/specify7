@@ -121,7 +121,7 @@ export function ButtonWithConfirmation(props: {
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         aria-haspopup="dialog"
         onClick={(): void =>
           typeof props.showConfirmation === 'undefined' ||
@@ -132,7 +132,7 @@ export function ButtonWithConfirmation(props: {
         disabled={props.disabled}
       >
         {props.children}
-      </Button.Simple>
+      </Button.Small>
       <Dialog
         isOpen={displayPrompt}
         title={props.dialogTitle}
@@ -161,7 +161,7 @@ export function ValidationButton(props: {
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         className={
           props.isValidated ? 'bg-green-400 dark:bg-green-700' : undefined
         }
@@ -169,7 +169,7 @@ export function ValidationButton(props: {
         onClick={props.canValidate ? props.onClick : handleShow}
       >
         {wbText('validate')}
-      </Button.Simple>
+      </Button.Small>
       <Dialog
         isOpen={displayPrompt}
         title={wbText('nothingToValidateDialogTitle')}
@@ -268,7 +268,7 @@ export function MappingLineComponent({
   return (
     <li className="contents" aria-label={headerName} aria-current={isFocused}>
       <div className="print:hidden border-t-gray-500 py-2 border-t">
-        <Button.Simple
+        <Button.Small
           className="w-full h-full p-2"
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
@@ -276,7 +276,7 @@ export function MappingLineComponent({
           disabled={isReadOnly}
         >
           {icons.backspace}
-        </Button.Simple>
+        </Button.Small>
       </div>
       <div
         className={`flex items-center justify-end max-w-[25vw] p-2 border-t

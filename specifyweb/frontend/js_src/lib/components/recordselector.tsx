@@ -29,15 +29,15 @@ export function Slider({
         count === 0 ? 'invisible' : ''
       }`}
     >
-      <Button.Simple
+      <Button.Small
         aria-label={formsText('firstRecord')}
         title={formsText('firstRecord')}
         disabled={value == 0}
         onClick={(): void => handleChange(0)}
       >
         ≪
-      </Button.Simple>
-      <Button.Simple
+      </Button.Small>
+      <Button.Small
         className="dark:bg-neutral-500 px-4 bg-white"
         aria-label={formsText('previousRecord')}
         title={formsText('previousRecord')}
@@ -45,7 +45,7 @@ export function Slider({
         onClick={(): void => handleChange(value - 1)}
       >
         &lt;
-      </Button.Simple>
+      </Button.Small>
       <div className="grid font-bold items-center grid-cols-[1fr_auto_1fr] gap-1">
         <label
           className={`h-full relative after:invisible after:p-2
@@ -76,7 +76,7 @@ export function Slider({
         <span>/</span>
         <span>{count}</span>
       </div>
-      <Button.Simple
+      <Button.Small
         className="dark:bg-neutral-500 px-4 bg-white"
         aria-label={formsText('nextRecord')}
         title={formsText('nextRecord')}
@@ -84,15 +84,15 @@ export function Slider({
         onClick={(): void => handleChange(value + 1)}
       >
         &gt;
-      </Button.Simple>
-      <Button.Simple
+      </Button.Small>
+      <Button.Small
         aria-label={formsText('lastRecord')}
         title={formsText('lastRecord')}
         disabled={value + 1 == count}
         onClick={(): void => handleChange(count - 1)}
       >
         ≫
-      </Button.Simple>
+      </Button.Small>
     </div>
   );
 }

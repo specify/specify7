@@ -158,14 +158,15 @@ function PolicyView({
           </li>
         )}
       </Ul>
-      <Button.Simple
-        className={`${className.redButton} print:hidden`}
+      <Button.Small
+        className="print:hidden"
+        variant={className.redButton}
         title={commonText('remove')}
         aria-label={commonText('remove')}
         onClick={(): void => handleChange(undefined)}
       >
         {icons.trash}
-      </Button.Simple>
+      </Button.Small>
     </li>
   );
 }

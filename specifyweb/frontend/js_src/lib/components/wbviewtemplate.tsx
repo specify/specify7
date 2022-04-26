@@ -25,30 +25,30 @@ function Navigation({
       data-navigation-type={name}
       aria-atomic
     >
-      <Button.Simple
-        className={`wb-cell-navigation !bg-inherit
-          hover:!bg-inherit brightness-80 hover:brightness-70 p-2 border-none`}
+      <Button.Small
+        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 border-none`}
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="previous"
       >
         &lt;
-      </Button.Simple>
-      <Button.Simple
-        className={`wb-navigation-text aria-handled !bg-inherit
-          hover:!bg-inherit border-none grid items-center hover:brightness-70
+      </Button.Small>
+      <Button.Small
+        className={`wb-navigation-text aria-handled border-none grid items-center hover:brightness-70
           grid-cols-[auto_1fr_auto_1fr_auto]`}
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
         title={wbText('clickToToggle')}
       >
         {label} (<span className="wb-navigation-position text-center">0</span>/
         <span className="wb-navigation-total">0</span>)
-      </Button.Simple>
-      <Button.Simple
+      </Button.Small>
+      <Button.Small
         type="button"
-        className={`wb-cell-navigation !bg-inherit
-          hover:!bg-inherit brightness-80 hover:brightness-70 p-2 border-none`}
+        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 border-none`}
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="next"
       >
         &gt;
-      </Button.Simple>
+      </Button.Small>
     </span>
   );
 }
@@ -67,64 +67,60 @@ function WbView({
         className="whitespace-nowrap gap-x-1 gap-y-2 flex items-center justify-between"
       >
         <div className="wb-name-container contents" />
-        <Button.Simple
+        <Button.Small
           aria-pressed="false"
           aria-haspopup="grid"
           className="wb-show-toolkit"
         >
           {commonText('tools')}
-        </Button.Simple>
+        </Button.Small>
         <span className="flex-1 -ml-1" />
-        <Button.Simple className="wb-show-plan hidden">Show Plan</Button.Simple>
+        <Button.Small className="wb-show-plan hidden">Show Plan</Button.Small>
         <Link.LikeButton href={`/workbench-plan/${dataSetId}/`}>
           {wbText('dataMapper')}
         </Link.LikeButton>
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
-          <Button.Simple
-            aria-haspopup="dialog"
-            className="wb-validate"
-            disabled
-          >
+          <Button.Small aria-haspopup="dialog" className="wb-validate" disabled>
             {wbText('validate')}
-          </Button.Simple>
+          </Button.Small>
         )}
-        <Button.Simple
+        <Button.Small
           aria-haspopup="tree"
           className="wb-show-upload-view"
           disabled
           title={wbText('wbUploadedUnavailable')}
         >
           {commonText('results')}
-        </Button.Simple>
+        </Button.Small>
         {isUploaded ? (
           hasPermission('/workbench/dataset', 'unupload') && (
-            <Button.Simple aria-haspopup="dialog" className="wb-unupload">
+            <Button.Small aria-haspopup="dialog" className="wb-unupload">
               {wbText('rollback')}
-            </Button.Simple>
+            </Button.Small>
           )
         ) : (
           <>
             {hasPermission('/workbench/dataset', 'upload') && (
-              <Button.Simple aria-haspopup="dialog" className="wb-upload">
+              <Button.Small aria-haspopup="dialog" className="wb-upload">
                 {wbText('upload')}
-              </Button.Simple>
+              </Button.Small>
             )}
             {hasPermission('/workbench/dataset', 'update') && (
               <>
-                <Button.Simple
+                <Button.Small
                   aria-haspopup="dialog"
                   className="wb-revert"
                   disabled
                 >
                   {wbText('revert')}
-                </Button.Simple>
-                <Button.Simple
+                </Button.Small>
+                <Button.Small
                   aria-haspopup="dialog"
                   className="wb-save"
                   disabled
                 >
                   {commonText('save')}
-                </Button.Simple>
+                </Button.Small>
               </>
             )}
           </>
@@ -137,50 +133,50 @@ function WbView({
         aria-label={commonText('tools')}
       >
         {hasPermission('/workbench/dataset', 'transfer') && (
-          <Button.Simple
+          <Button.Small
             aria-haspopup="dialog"
             className="wb-change-data-set-owner"
           >
             {wbText('changeOwner')}
-          </Button.Simple>
+          </Button.Small>
         )}
-        <Button.Simple className="wb-export-data-set">
+        <Button.Small className="wb-export-data-set">
           {commonText('export')}
-        </Button.Simple>
+        </Button.Small>
         {hasPermission('/workbench/dataset', 'delete') && (
-          <Button.Simple aria-haspopup="dialog" className="wb-delete-data-set">
+          <Button.Small aria-haspopup="dialog" className="wb-delete-data-set">
             {commonText('delete')}
-          </Button.Simple>
+          </Button.Small>
         )}
         <span className="flex-1 -ml-1" />
         {hasPermission('/workbench/dataset', 'update') && (
           <>
-            <Button.Simple
+            <Button.Small
               aria-haspopup="dialog"
               className="wb-convert-coordinates"
               title={wbText('unavailableWithoutLocality')}
               disabled
             >
               {wbText('convertCoordinates')}
-            </Button.Simple>
-            <Button.Simple
+            </Button.Small>
+            <Button.Small
               aria-haspopup="dialog"
               className="wb-geolocate"
               title={wbText('unavailableWithoutLocality')}
               disabled
             >
               {localityText('geoLocate')}
-            </Button.Simple>
+            </Button.Small>
           </>
         )}
-        <Button.Simple
+        <Button.Small
           aria-haspopup="dialog"
           className="wb-leafletmap"
           title={wbText('unavailableWithoutLocality')}
           disabled
         >
           {commonText('geoMap')}
-        </Button.Simple>
+        </Button.Small>
       </div>
       <div className="gap-x-4 flex flex-1 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden" />

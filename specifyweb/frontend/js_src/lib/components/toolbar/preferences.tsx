@@ -132,10 +132,10 @@ function Preferences({
                             {title}
                           </h4>
                           <div className="flex justify-end flex-1">
-                            <Button.Blue
+                            <Button.Small
                               aria-label={preferencesText('resetToDefault')}
                               title={preferencesText('resetToDefault')}
-                              className="!p-1"
+                              variant={className.blueButton}
                               onClick={(): void =>
                                 items.forEach(([name, { defaultValue }]) =>
                                   setPref(
@@ -148,7 +148,7 @@ function Preferences({
                               }
                             >
                               {icons.refresh}
-                            </Button.Blue>
+                            </Button.Small>
                           </div>
                         </div>
                         {typeof description === 'string' && (

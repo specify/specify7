@@ -23,7 +23,7 @@ export function UserInviteLinkPlugin({
 
   return (
     <>
-      <Button.Simple
+      <Button.Small
         onClick={(): void =>
           loading(
             ajax(`/accounts/invite_link/${user.id}/`, {
@@ -33,7 +33,7 @@ export function UserInviteLinkPlugin({
         }
       >
         {adminText('createInviteLink')}
-      </Button.Simple>
+      </Button.Small>
       {typeof link === 'string' && (
         <Dialog
           header={adminText('userInviteLinkDialogHeader')}

@@ -90,9 +90,9 @@ export function PasswordPlugin({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Simple onClick={handleOpen}>
+      <Button.Small onClick={handleOpen}>
         {adminText('setPassword')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && (
         <PasswordResetDialog onSet={handleSet} onClose={handleClose} />
       )}

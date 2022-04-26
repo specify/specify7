@@ -306,7 +306,7 @@ export function WbPlanViewMapper(props: {
         props.isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <Button.Simple
+            <Button.Small
               aria-haspopup="dialog"
               onClick={(): void =>
                 dispatch({
@@ -315,7 +315,7 @@ export function WbPlanViewMapper(props: {
               }
             >
               {wbText('clearMappings')}
-            </Button.Simple>
+            </Button.Small>
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
@@ -397,12 +397,12 @@ export function WbPlanViewMapper(props: {
             {props.isReadOnly ? wbText('dataEditor') : commonText('cancel')}
           </Link.LikeButton>
           {!props.isReadOnly && (
-            <Button.Simple
+            <Button.Small
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
             >
               {commonText('save')}
-            </Button.Simple>
+            </Button.Small>
           )}
         </>
       }
@@ -452,7 +452,7 @@ export function WbPlanViewMapper(props: {
             },
           })}
           mapButton={
-            <Button.Simple
+            <Button.Small
               className="flex-col justify-center p-2"
               disabled={!mapButtonEnabled}
               onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
@@ -468,7 +468,7 @@ export function WbPlanViewMapper(props: {
               >
                 &#8594;
               </span>
-            </Button.Simple>
+            </Button.Small>
           }
         />
       )}
