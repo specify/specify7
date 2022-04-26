@@ -54,8 +54,6 @@ function parseFormTableDefinition(
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map((cell) => ({
       ...cell,
-      // Reduce colSpan to 1 for all cells
-      colSpan: 1,
       // Make sure SubViews are rendered as buttons
       ...(cell.type === 'SubView' ? { isButton: true } : {}),
       // Set ariaLabel for all cells (would be used in formTable headers)
@@ -75,7 +73,9 @@ function parseFormTableDefinition(
         : {}),
     }));
   return {
-    columns: row.map(f.undefined),
+    columns: Array.from({
+      length: f.sum(row.map(({ colSpan }) => colSpan)),
+    }).fill(undefined),
     rows: [row],
   };
 }
