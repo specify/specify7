@@ -472,6 +472,7 @@ export const getAllActions = (path: string): RA<string> =>
           f.unique(
             [
               ...Object.entries(operationPolicies),
+              ...Object.entries(frontEndPermissions),
               ...Object.keys(schema.models).map(
                 (tableName) =>
                   [tableNameToResourceName(tableName), tableActions] as const

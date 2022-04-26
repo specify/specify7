@@ -129,8 +129,11 @@ export const institutionPermissions = new Set([
   '/permissions/library/roles',
 ]);
 
+/**
+ * Policies that are respected on the front-end, but ignored by the back-end.
+ */
 export const frontEndPermissions = {
-  '/preferences/user': ['edit', 'edit_hidden', 'edit_default'],
+  '/preferences/user': ['edit_hidden'],
 } as const;
 
 let operationPermissions: {
