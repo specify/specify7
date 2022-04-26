@@ -58,7 +58,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     readonly formElement: HTMLFormElement | null;
     readonly formMeta: FormMeta;
     readonly title: string;
-    readonly form: JSX.Element;
+    readonly form: (children: JSX.Element | undefined) => JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
@@ -128,18 +128,23 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     title,
     formElement: form,
     formMeta: formMeta[0],
-    form: isSubForm ? (
-      specifyForm
-    ) : (
-      <FormContext.Provider value={formMeta}>
-        <Form
-          id={id('form')}
-          forwardRef={(newForm): void => setForm(newForm ?? form)}
-        >
+    form: (children) =>
+      isSubForm ? (
+        <>
           {specifyForm}
-        </Form>
-      </FormContext.Provider>
-    ),
+          {children}
+        </>
+      ) : (
+        <FormContext.Provider value={formMeta}>
+          <Form
+            id={id('form')}
+            forwardRef={(newForm): void => setForm(newForm ?? form)}
+          >
+            {specifyForm}
+            {children}
+          </Form>
+        </FormContext.Provider>
+      ),
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
       <SpecifyNetworkBadge resource={resource} />
     ) : undefined,
@@ -314,8 +319,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         if (dialog === false) {
           const formattedChildren = (
             <>
-              {form}
-              {children}
+              {form(children)}
               {typeof deleteButton === 'object' ||
               typeof saveButtonElement === 'object' ||
               typeof extraButtons === 'object' ? (
