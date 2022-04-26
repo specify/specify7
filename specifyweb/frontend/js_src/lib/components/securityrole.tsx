@@ -200,6 +200,7 @@ export function RoleView({
           setRole(replaceKey(role, 'policies', policies))
         }
         isReadOnly={isReadOnly}
+        scope="collection"
       />
       <span className="flex-1 -mt-2" />
       <div className="flex gap-2">

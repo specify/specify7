@@ -471,4 +471,10 @@ export const adminText = createDictionary({
     ca: 'Users will not be deleted, but they would loose this role.',
     'es-es': 'Users will not be deleted, but they would loose this role.',
   },
+  institutionPolicies: {
+    'en-us': 'Institution policies',
+    'ru-ru': 'Institution policies',
+    ca: 'Institution policies',
+    'es-es': 'Institution policies',
+  },
 });

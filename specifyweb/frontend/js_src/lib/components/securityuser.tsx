@@ -43,6 +43,7 @@ import {
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
+import { userInformation } from '../userinfo';
 
 // TODO: allow editing linkages with external accounts
 export function UserView({
@@ -137,6 +138,17 @@ export function UserView({
                     </div>
                   </section>
                 </div>
+                {hasPermission('/permissions/policies/user', 'read') && (
+                  <details>
+                    <summary>{adminText('institutionPolicies')}</summary>
+                    <PoliciesView
+                      policies={institutionPolicies}
+                      isReadOnly={!userInformation.isadmin}
+                      scope="institution"
+                      onChange={setInstitutionPolicies}
+                    />
+                  </details>
+                )}
                 {hasPermission('/admin/user/oic_providers', 'read') && (
                   <UserIdentityProviders userId={user.id} />
                 )}
@@ -168,6 +180,7 @@ export function UserView({
                     isReadOnly={
                       !hasPermission('/permissions/policies/user', 'update')
                     }
+                    scope="collection"
                     onChange={(policies): void =>
                       typeof userPolicies === 'object'
                         ? setUserPolicies(

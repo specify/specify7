@@ -15,6 +15,7 @@ import {
   actionToLabel,
   anyResource,
   getCollectionRegistriesFromPath,
+  getRegistriesFromPath,
   partsToResourceName,
   resourceNameToParts,
 } from '../securityutils';
@@ -32,7 +33,7 @@ export type Policy = {
  * Institutional policies are ignored if set on a collection level, thus,
  * UI should hide them.
  */
-export type PolicyScope = 'institution' | 'any';
+export type PolicyScope = 'institution' | 'collection';
 
 function PolicyView({
   policy: { resource, actions },
@@ -46,7 +47,11 @@ function PolicyView({
   readonly scope: PolicyScope;
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
-  const registries = getCollectionRegistriesFromPath(resourceParts);
+  const registries = (
+    scope === 'institution'
+      ? getRegistriesFromPath
+      : getCollectionRegistriesFromPath
+  )(resourceParts);
   const registryParts = registries
     .map((items, index) => ({
       // Create an entry just in case the policy is unknown to the front-end
@@ -172,11 +177,13 @@ export function PoliciesView({
   isReadOnly,
   onChange: handleChange,
   header = adminText('policies'),
+  scope,
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
   readonly header?: string;
+  readonly scope: PolicyScope;
 }): JSX.Element {
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const policyCountRef = React.useRef<number>(policies?.length ?? 0);
@@ -191,7 +198,9 @@ export function PoliciesView({
   }, [policies]);
   return (
     <fieldset className="flex flex-col gap-2">
-      <h4 className={className.headerGray}>{header}</h4>
+      {scope === 'collection' && (
+        <h4 className={className.headerGray}>{header}</h4>
+      )}
       {Array.isArray(policies) ? (
         <>
           <Ul
@@ -201,6 +210,7 @@ export function PoliciesView({
             {policies.map((policy, index) => (
               <PolicyView
                 key={index}
+                scope={scope}
                 policy={policy}
                 isReadOnly={isReadOnly}
                 onChange={(policy): void =>
