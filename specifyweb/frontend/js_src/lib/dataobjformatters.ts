@@ -4,21 +4,21 @@
 
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
+import { f } from './functools';
+import { getAttribute, sortFunction } from './helpers';
 import {
   cachableUrl,
   contextUnlockedPromise,
   foreverPromise,
 } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
+import { commonText } from './localization/common';
+import { hasTablePermission } from './permissions';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
-import { f } from './functools';
-import { hasTablePermission } from './permissions';
-import { commonText } from './localization/common';
-import { getAttribute } from './helpers';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -135,13 +135,38 @@ export async function format<SCHEMA extends AnySchema>(
     formatterName ?? resource.specifyModel.getFormat();
 
   const { formatters } = await fetchFormatters;
-  const formatter =
-    formatters.find(({ name }) => name === resolvedFormatterName) ??
+  const formatter = formatters.find(
+    ({ name }) => name === resolvedFormatterName
+  ) ??
     formatters.find(
       ({ className, isDefault }) =>
         className === resource.specifyModel.longName && isDefault
-    );
-  if (typeof formatter === 'undefined') return undefined;
+    ) ?? {
+      // If formatter does not exist, generate one on the fly
+      isDefault: true,
+      switchFieldName: undefined,
+      fields: [
+        {
+          value: undefined,
+          fields: [
+            resource.specifyModel.literalFields
+              .filter(
+                ({ type, overrides }) =>
+                  type === 'java.lang.String' &&
+                  !overrides.isHidden &&
+                  !overrides.isReadOnly
+              )
+              .sort(sortFunction(({ isRequired }) => isRequired, true))
+              .map((field) => ({
+                fieldName: field.name,
+                separator: '',
+                formatter: '',
+                fieldFormatter: 'true',
+              }))[0],
+          ],
+        },
+      ],
+    };
 
   // Doesn't support switch fields that are in child objects
   const fields =

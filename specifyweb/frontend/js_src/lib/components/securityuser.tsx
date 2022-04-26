@@ -115,7 +115,7 @@ export function UserView({
         {({ title, formElement, form }): JSX.Element => (
           <>
             <DataEntry.Header>
-              <h3 className="text-xl">{`${adminText('user')} ${title}`}</h3>
+              <h3 className="text-xl">{title}</h3>
             </DataEntry.Header>
             {form(
               <>
