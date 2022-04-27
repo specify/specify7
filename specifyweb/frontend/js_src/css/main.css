@@ -35,7 +35,7 @@
   textarea,
   select {
     @apply p-1 rounded accent-brand-200 dark:accent-brand-400 dark:border-none
-      bg-gray-200 dark:bg-neutral-700 text-[length:inherit] leading-[unset];
+      bg-[color:var(--field-background)] text-[length:inherit] leading-[unset];
   }
 
   /**
@@ -63,15 +63,13 @@
   .has-alt-background [type='time']:not(:required),
   .has-alt-background [multiple]:not(:required),
   .has-alt-background textarea:not(:required),
-  .has-alt-background select:not(:required),
-  :disabled:not(.icon),
-  [readonly] {
+  .has-alt-background select:not(:required) {
     @apply bg-white dark:bg-neutral-900;
   }
 
   :disabled:not(.icon), [readonly] {
-    @apply !cursor-not-allowed text-gray-700 dark:text-neutral-500 border
-      border-gray-500 dark:border-solid;
+    @apply bg-[color:var(--disabled-field-background)] !cursor-not-allowed
+      text-gray-700 dark:text-neutral-500 border border-gray-500 dark:border-solid;
   }
 
   .has-alt-background :disabled:not(.icon), .has-alt-background [readonly] {
@@ -97,7 +95,7 @@
   select:not(.not-touched):invalid,
   form:not(.not-submitted) textarea:invalid,
   textarea:not(.not-touched):invalid {
-    @apply !bg-red-400 dark:!bg-red-800 placeholder-red-900
+    @apply !bg-[color:var(--invalid-field-background)] placeholder-red-900
       dark:placeholder-red-400;
   }
 
@@ -106,7 +104,7 @@
   }
 
   :required {
-    @apply bg-blue-200 dark:bg-blue-900;
+    @apply bg-[color:var(--required-field-background)];
   }
 
   [type='radio']:focus,

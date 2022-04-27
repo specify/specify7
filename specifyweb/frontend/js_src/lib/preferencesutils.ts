@@ -115,7 +115,11 @@ export function setPref<
   prefs[category][subcategory] ??= {};
   prefs[category][subcategory][item] = parsed;
 
-  // Unset default values
+  /*
+   * Unset default values
+   * This reduces the size of the downloaded file, but mainly, it allows for
+   * future Specify 7 versions to change the default value.
+   */
   if (parsed === definition.defaultValue) {
     prefs[category][subcategory][item] = undefined;
     // Clean up empty objects

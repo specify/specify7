@@ -241,7 +241,7 @@ export function SetCssVariables(): null {
   const [disabledFieldBackground] = usePref(
     'form',
     'appearance',
-    'fieldBackground'
+    'disabledFieldBackground'
   );
   const [darkDisabledFieldBackground] = usePref(
     'form',
@@ -260,7 +260,7 @@ export function SetCssVariables(): null {
   const [invalidFieldBackground] = usePref(
     'form',
     'appearance',
-    'fieldBackground'
+    'invalidFieldBackground'
   );
   const [darkInvalidFieldBackground] = usePref(
     'form',
@@ -279,7 +279,7 @@ export function SetCssVariables(): null {
   const [requiredFieldBackground] = usePref(
     'form',
     'appearance',
-    'fieldBackground'
+    'requiredFieldBackground'
   );
   const [darkRequiredFieldBackground] = usePref(
     'form',
