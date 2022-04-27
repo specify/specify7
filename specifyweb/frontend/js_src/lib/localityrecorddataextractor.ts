@@ -17,8 +17,9 @@ import {
   getLocalityData,
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
-import { deflateLocalityData } from './specifynetworkhelper';
 import { hasTablePermission, hasTreeAccess } from './permissions';
+import type { Collection } from './specifymodel';
+import { deflateLocalityData } from './specifynetworkhelper';
 import { getTreeDefinitionItems, treeRanksPromise } from './treedefinitions';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
@@ -59,26 +60,30 @@ type FilterFunction = (
     currentPart: MappingPath,
     nextParts: MappingPath
   ],
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema> | Collection<AnySchema>
 ) => boolean;
 
 export const defaultRecordFilterFunction: FilterFunction = (
   _mappingPathParts,
   resource
 ) =>
-  typeof resource?.specifyModel?.name !== 'string' ||
+  !('specifyModel' in resource) ||
   resource.specifyModel.name !== 'Determination' ||
   resource.get('isCurrent');
 
-// TODO: make this type safe
-// FIXME: update this to check for read permissions
 async function recursiveResourceResolve(
-  resource: any,
+  resource:
+    | SpecifyResource<AnySchema>
+    | Collection<AnySchema>
+    | string
+    | undefined
+    | null,
   mappingPath: MappingPath,
   filterFunction: FilterFunction,
   pastParts: RA<string> = []
-): Promise<RA<string>> {
-  if (mappingPath.length === 0) return [pastParts, resource];
+): Promise<RA<Readonly<[MappingPath, string]>>> {
+  if (mappingPath.length === 0)
+    return [[pastParts, resource?.toString() ?? '']];
 
   const [currentPart, nextPart] = getNextMappingPathPart(mappingPath);
 
@@ -86,26 +91,38 @@ async function recursiveResourceResolve(
 
   if (
     typeof filterFunction === 'function' &&
+    typeof resource === 'object' &&
     !filterFunction([pastParts, currentPart, nextPart], resource)
   )
     return [];
 
   if (
+    typeof resource === 'object' &&
     'fetch' in resource &&
-    (typeof resource.related === 'undefined' || !resource.related.isNew())
+    (!('related' in resource) || resource.related?.isNew() !== true)
   )
     if (
       hasTablePermission(
-        resource?.specifyModel?.name ??
-          resource?.related?.specifyModel?.name ??
-          resource?.field?.model,
+        defined(
+          ('specifyModel' in resource
+            ? resource?.specifyModel?.name
+            : undefined) ??
+            ('related' in resource
+              ? resource?.related?.specifyModel?.name
+              : undefined) ??
+            ('field' in resource ? resource?.field?.model.name : undefined)
+        ),
         'read'
       )
     )
       await resource.fetch();
     else return [];
 
-  if (valueIsTreeRank(currentPart[0])) {
+  if (
+    valueIsTreeRank(currentPart[0]) &&
+    typeof resource === 'object' &&
+    'get' in resource
+  ) {
     const treeTableName = getTableFromMappingPath('Locality', pastParts);
     if (!hasTreeAccess(treeTableName as AnyTree['tableName'], 'read'))
       return [];
@@ -119,11 +136,17 @@ async function recursiveResourceResolve(
       throw new Error('Failed to fetch tree name');
     const currentRankName = formatTreeRank(currentRank.name);
     return [
-      [...pastParts, currentRankName, ...nextPart],
-      await resource.rgetPromise(nextPart[0]),
+      [
+        [...pastParts, currentRankName, ...nextPart],
+        await resource.rgetPromise(nextPart[0]),
+      ],
     ];
-  } else if (valueIsToManyIndex(currentPart[0])) {
-    return Promise.all<RA<string>>(
+  } else if (
+    valueIsToManyIndex(currentPart[0]) &&
+    typeof resource === 'object' &&
+    'models' in resource
+  ) {
+    return Promise.all(
       Object.values(resource.models)
         .slice(0, MAX_TO_MANY_INDEX)
         .map(async (model, index) =>
@@ -133,7 +156,7 @@ async function recursiveResourceResolve(
           ])
         )
     ).then((result) => result.flat());
-  } else {
+  } else if (typeof resource === 'object' && 'rgetPromise' in resource) {
     const overwriteAgent =
       currentPart[0] === 'agent' && currentPart[1] === 'lastname';
     const nextResource = overwriteAgent
@@ -144,22 +167,8 @@ async function recursiveResourceResolve(
       ...pastParts,
       ...(overwriteAgent ? ['agent', 'fullname'] : currentPart),
     ]);
-  }
+  } else return [];
 }
-
-const resultsIntoPairs = (
-  results: RA<string | null | MappingPath>
-): RA<Readonly<[MappingPath, string | null]>> =>
-  filterArray(
-    results.map((element, index) =>
-      index % 2 === 0
-        ? ([
-            element as MappingPath,
-            results[index + 1] as string | null,
-          ] as const)
-        : undefined
-    )
-  );
 
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
@@ -221,9 +230,7 @@ export async function fetchLocalityDataFromLocalityResource(
     )
   );
 
-  const localityData = formatLocalityDataObject(
-    resultsIntoPairs(results.flat())
-  );
+  const localityData = formatLocalityDataObject(results.flat());
 
   return typeof filterFunction === 'undefined' || localityData === false
     ? localityData
