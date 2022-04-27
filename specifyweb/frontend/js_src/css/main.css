@@ -61,7 +61,6 @@
   .has-alt-background [type='search']:not(:required),
   .has-alt-background [type='tel']:not(:required),
   .has-alt-background [type='time']:not(:required),
-  .has-alt-background [type='week']:not(:required),
   .has-alt-background [multiple]:not(:required),
   .has-alt-background textarea:not(:required),
   .has-alt-background select:not(:required),

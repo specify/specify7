@@ -111,10 +111,10 @@ function SecurityPanel(): JSX.Element | null {
 
   // TODO: use a routing library to make navigation easier
   return typeof data === 'object' ? (
-    <Container.Full>
+    <Container.FullGray>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
       <div className="flex flex-1 h-0 gap-4">
-        <aside className={`${className.containerBase} overflow-auto`}>
+        <aside className={className.containerBase}>
           <section>
             <H3>{commonText('institution')}</H3>
             <Button.LikeLink
@@ -234,7 +234,7 @@ function SecurityPanel(): JSX.Element | null {
           />
         ) : undefined}
       </div>
-    </Container.Full>
+    </Container.FullGray>
   ) : null;
 }
 

@@ -78,7 +78,7 @@ function Preferences({
 
   const id = useId('preferences');
   return (
-    <Container.Full>
+    <Container.FullGray>
       <H2>{commonText('preferences')}</H2>
       <Form
         className="contents"
@@ -101,10 +101,7 @@ function Preferences({
               ))}
             </menu>
           </aside>
-          <div
-            className={`flex flex-col gap-6 overflow-y-auto
-              max-w-[min(100%,var(--form-max-width))]`}
-          >
+          <div className="flex flex-col gap-6">
             {definitions.map(
               ([
                 category,
@@ -112,7 +109,7 @@ function Preferences({
               ]) => (
                 <Container.Base
                   key={category}
-                  className="gap-8"
+                  className="gap-8 overflow-y-visible"
                   id={id(category)}
                 >
                   <h3 className="text-2xl">{title}</h3>
@@ -215,7 +212,7 @@ function Preferences({
           )}
         </div>
       </Form>
-    </Container.Full>
+    </Container.FullGray>
   );
 }
 

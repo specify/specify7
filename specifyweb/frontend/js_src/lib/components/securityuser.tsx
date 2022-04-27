@@ -108,7 +108,7 @@ export function UserView({
   >({ type: 'Main' });
 
   return (
-    <Container.Base className="flex-1 gap-4 overflow-y-auto">
+    <Container.Base className="flex-1">
       <BaseResourceView
         isLoading={false}
         resource={userResource}

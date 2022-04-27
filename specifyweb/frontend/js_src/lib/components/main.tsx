@@ -12,7 +12,7 @@ import { setCurrentView } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
-import { Button, Link } from './basic';
+import { Button, className, Link } from './basic';
 import { crash } from './errorboundary';
 import {
   CollectionSelector,
@@ -21,8 +21,8 @@ import {
   UserTools,
 } from './header';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { Notifications } from './notifications';
 import { goTo } from './navigation';
+import { Notifications } from './notifications';
 
 export type UserTool = {
   readonly task: string;
@@ -208,7 +208,8 @@ export function Main({
       <header
         className={`bg-gray-200 dark:bg-neutral-800 border-b-[5px]
         border-b-brand-200 dark:border-b-brand-400 flex flex-col 2xl:flex-row 
-        shadow-md shadow-gray-400 print:hidden [z-index:1]`}
+        shadow-md shadow-gray-400 print:hidden [z-index:1]
+        ${className.hasAltBackground}`}
       >
         <div className="2xl:contents flex justify-between w-full">
           <h1 className="contents">
@@ -262,7 +263,7 @@ export function Main({
         </Dialog>
       )}
       {hasAgent ? (
-        <main className="flex-1 p-4 overflow-auto" ref={mainRef} />
+        <main className="flex-1 overflow-auto" ref={mainRef} />
       ) : (
         <Dialog
           title={commonText('noAgentDialogTitle')}

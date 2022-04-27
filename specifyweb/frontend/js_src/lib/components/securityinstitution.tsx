@@ -110,7 +110,7 @@ export function InstitutionView({
    *   probably could merge them
    */
   return (
-    <Container.Base className="flex-1 overflow-y-auto">
+    <Container.Base className="flex-1">
       {state.type === 'MainState' ? (
         <>
           <h3 className="text-xl">{institution.name}</h3>

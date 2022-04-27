@@ -110,9 +110,7 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
 const hasAltBackground = 'has-alt-background';
-const containerBackground = `bg-gray-200 dark:bg-neutral-800 ${hasAltBackground}`;
-const baseContainer = `${containerBackground} flex flex-col gap-2 p-4 shadow-md
-  shadow-gray-500 rounded`;
+const grayBackground = 'bg-gray-200 dark:bg-neutral-800';
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const rootBackground = 'bg-white dark:bg-neutral-900';
@@ -122,7 +120,7 @@ export const className = {
   rootText,
   rootBackground,
   hasAltBackground,
-  containerBackground,
+  containerBackground: `${grayBackground} ${hasAltBackground}`,
   root: `flex flex-col h-screen overflow-hidden ${rootBackground} ${rootText}`,
   // Do not show validation errors until tried to submit the form
   notSubmittedForm: 'not-submitted',
@@ -145,8 +143,10 @@ export const className = {
   greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
-  containerFull: 'flex flex-col gap-4 h-full',
-  containerBase: `${baseContainer}`,
+  containerFull: 'flex flex-col gap-4 h-full p-4',
+  containerBase: `${rootBackground} rounded p-4 mx-auto overflow-y-auto
+    max-w-[min(100%,var(--form-max-width))] w-full shadow-gray-400 shadow-lg
+    flex flex-col gap-4`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg font-bold',
   headerPrimary: 'font-semibold text-black dark:text-white',
@@ -738,13 +738,22 @@ export const Submit = {
 } as const;
 
 export const Container = {
-  Generic: wrap(
-    'Container.Generic',
-    'section',
-    `${baseContainer} max-w-[min(100%,var(--form-max-width))] mx-auto`
+  /**
+   * Full-screen gray container. Ment to be a wrapper for Container.Base
+   */
+  FullGray: wrap(
+    'Container.FullGray',
+    'div',
+    `${className.containerFull} ${grayBackground}`
   ),
-  Full: wrap('Container.Full', 'section', className.containerFull),
+  /**
+   * Limited width white container. Ment to be wrapped inside Container.FullGray
+   */
   Base: wrap('Container.Base', 'section', className.containerBase),
+  /**
+   * Full-screen white container. Ment to be a wrapper for full width content
+   */
+  Full: wrap('Container.Full', 'section', className.containerFull),
 };
 export const Progress = wrap<'progress', { readonly value: number }>(
   'Progress',

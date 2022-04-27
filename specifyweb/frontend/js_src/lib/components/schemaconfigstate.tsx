@@ -11,6 +11,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { sortFunction, sortObjectsByKey, split } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
+import { getModel } from '../schema';
 import {
   filterFormatters,
   getItemType,
@@ -46,7 +47,6 @@ import type {
   WithFieldInfo,
   WithTableInfo,
 } from './toolbar/schemaconfig';
-import { getModel } from '../schema';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 

@@ -295,7 +295,7 @@ export function AttachmentsView(): JSX.Element {
   );
 
   return (
-    <Container.Full>
+    <Container.FullGray>
       <header className="gap-x-2 flex items-center">
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>
@@ -372,7 +372,7 @@ export function AttachmentsView(): JSX.Element {
         onFetchMore={fetchMore}
         scale={scale}
       />
-    </Container.Full>
+    </Container.FullGray>
   );
 }
 
@@ -416,7 +416,7 @@ function Gallery({
   return (
     <>
       <Container.Base
-        className="flex-1 !w-max-none overflow-y-auto gap-4 grid items-center
+        className="flex-1 !max-w-none gap-4 grid items-center
           grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]"
         style={
           {

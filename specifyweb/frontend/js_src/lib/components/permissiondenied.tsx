@@ -5,9 +5,11 @@ import { Container } from './basic';
 
 export function PermissionDenied(): JSX.Element {
   return (
-    <Container.Generic>
-      <h2>{commonText('accessDenied')}</h2>
-      <p>{commonText('noPermissionForAction')}</p>
-    </Container.Generic>
+    <Container.FullGray>
+      <Container.Base>
+        <h2>{commonText('accessDenied')}</h2>
+        <p>{commonText('noPermissionForAction')}</p>
+      </Container.Base>
+    </Container.FullGray>
   );
 }

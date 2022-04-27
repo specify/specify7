@@ -146,7 +146,7 @@ export function CollectionView({
 
   const loading = React.useContext(LoadingContext);
   return (
-    <Container.Base className="flex-1 overflow-y-auto">
+    <Container.Base className="flex-1">
       {state.type === 'MainState' && (
         <>
           <h3 className="text-xl">{collection.collectionName}</h3>

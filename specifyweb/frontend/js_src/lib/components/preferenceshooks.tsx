@@ -199,16 +199,13 @@ export function SetCssVariables(): null {
   const [scaleUi] = usePref('general', 'ui', 'scaleInterface');
   const scaleTarget = scaleUi ? document.documentElement : document.body;
   React.useEffect(
-    () => () => {
-      scaleTarget.style.removeProperty('--font-scale');
-      scaleTarget.style.removeProperty('font-size');
-    },
+    () => () => void scaleTarget.style.removeProperty('font-size'),
     [scaleTarget]
   );
-  React.useEffect(() => {
-    scaleTarget.style.setProperty('--font-scale', `${fontSize / 100}`);
-    scaleTarget.style.setProperty('font-size', `${fontSize}%`);
-  }, [scaleTarget, fontSize]);
+  React.useEffect(
+    () => scaleTarget.style.setProperty('font-size', `${fontSize}%`),
+    [scaleTarget, fontSize]
+  );
 
   const [fontFamily] = usePref('general', 'ui', 'fontFamily');
   React.useEffect(

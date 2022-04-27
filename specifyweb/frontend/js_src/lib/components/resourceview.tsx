@@ -347,24 +347,27 @@ export function ResourceView<SCHEMA extends AnySchema>({
               {formattedChildren}
             </DataEntry.SubForm>
           ) : (
-            <Container.Generic
-              className="w-fit overflow-y-auto"
-              style={{
-                fontFamily: fontFamily === defaultFont ? undefined : fontFamily,
-              }}
-            >
-              <DataEntry.Header>
-                {updateTitle && <AppTitle title={titleOverride ?? title} />}
-                <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
-                {headerButtons?.(specifyNetworkBadge) ?? (
-                  <>
-                    <span className="flex-1 -ml-4" />
-                    {specifyNetworkBadge}
-                  </>
-                )}
-              </DataEntry.Header>
-              {formattedChildren}
-            </Container.Generic>
+            <Container.FullGray>
+              <Container.Base
+                style={{
+                  fontFamily:
+                    fontFamily === defaultFont ? undefined : fontFamily,
+                  fontSize: `${fontSize}%`,
+                }}
+              >
+                <DataEntry.Header>
+                  {updateTitle && <AppTitle title={titleOverride ?? title} />}
+                  <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
+                  {headerButtons?.(specifyNetworkBadge) ?? (
+                    <>
+                      <span className="flex-1 -ml-4" />
+                      {specifyNetworkBadge}
+                    </>
+                  )}
+                </DataEntry.Header>
+                {formattedChildren}
+              </Container.Base>
+            </Container.FullGray>
           );
         } else
           return (
@@ -409,8 +412,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 container: setContainer,
               }}
             >
-              {form}
-              {children}
+              {form(children)}
               {showUnloadProtect && (
                 <Dialog
                   title={commonText('leavePageDialogTitle')}

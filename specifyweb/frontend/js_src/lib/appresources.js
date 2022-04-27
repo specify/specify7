@@ -360,7 +360,7 @@ const ResourceList = Backbone.View.extend({
 const AppResourcesView = Backbone.View.extend({
     __name__: "AppResourcesView",
     tagName: 'aside',
-    className: `${className.containerBase} overflow-y-auto`,
+    className: className.containerBase,
     events: {
         'click .toggle-content': 'toggle'
     },

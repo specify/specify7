@@ -243,9 +243,7 @@ export function mappingOptionsMenu({
                     value={id}
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
-                    onChange={({ target }): void =>
-                      handleChangeMatchBehaviour(target.value as MatchBehaviors)
-                    }
+                    onChange={(): void => handleChangeMatchBehaviour(id)}
                   />
                   {` ${title}`}
                 </Label.ForCheckbox>

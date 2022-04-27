@@ -138,3 +138,8 @@
 .htPlaceholder {
   @apply text-blue-500;
 }
+
+/* Prevent horizontal scroll from triggering "go to previous browser page" */
+.wtHolder {
+  @apply overscroll-contain;
+}
