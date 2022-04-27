@@ -1800,28 +1800,27 @@ export const commonText = createDictionary({
     ca: 'Results',
     'es-es': 'Results',
   },
-  // FIXME: localize
   downloadErrorMessage: {
     'en-us': 'Download Error Message',
-    'ru-ru': 'Download Error Message',
+    'ru-ru': 'Скачать ошибку',
     ca: 'Download Error Message',
     'es-es': 'Download Error Message',
   },
   copyErrorMessage: {
     'en-us': 'Copy Error Message',
-    'ru-ru': 'Copy Error Message',
+    'ru-ru': 'Скопировать Ошибку',
     ca: 'Copy Error Message',
     'es-es': 'Copy Error Message',
   },
   copied: {
     'en-us': 'Copied!',
-    'ru-ru': 'Copied!',
+    'ru-ru': 'Скопировано!',
     ca: 'Copied!',
     'es-es': 'Copied!',
   },
   forms: {
     'en-us': 'Forms',
-    'ru-ru': 'Forms',
+    'ru-ru': 'Формы',
     ca: 'Forms',
     'es-es': 'Forms',
   },

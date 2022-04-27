@@ -935,27 +935,26 @@ export const formsText = createDictionary({
     ca: 'Creating new record',
     'es-es': 'Creating new record',
   },
-  // FIXME: localize
   forward: {
     'en-us': 'Forward',
-    'ru-ru': 'Forward',
+    'ru-ru': 'Вперед',
     ca: 'Forward',
     'es-es': 'Forward',
   },
   reverse: {
     'en-us': 'Reverse',
-    'ru-ru': 'Reverse',
+    'ru-ru': 'Обратный',
     ca: 'Reverse',
     'es-es': 'Reverse',
   },
   tooLongErrorMessage: {
     'en-us': (maxLength: number) =>
-      `Field value is too long. Max allowd length is ${maxLength}`,
+      `Field value is too long. Max allowed length is ${maxLength}`,
     'ru-ru': (maxLength: number) =>
-      `Field value is too long. Max allowd length is ${maxLength}`,
+      `Значение поля слишком длинное. Максимально допустимая длина ${maxLength}`,
     ca: (maxLength: number) =>
-      `Field value is too long. Max allowd length is ${maxLength}`,
+      `Field value is too long. Max allowed length is ${maxLength}`,
     'es-es': (maxLength: number) =>
-      `Field value is too long. Max allowd length is ${maxLength}`,
+      `Field value is too long. Max allowed length is ${maxLength}`,
   },
 });

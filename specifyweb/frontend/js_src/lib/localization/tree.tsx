@@ -244,10 +244,9 @@ export const treeText = createDictionary({
     ca: "Recompte d'objectes de col·lecció indirecta",
     'es-es': 'Indirect Collection Object Count',
   },
-  // FIXME: localize
   editRanks: {
     'en-us': 'Edit Ranks',
-    'ru-ru': 'Edit Ranks',
+    'ru-ru': 'Изменить ранги',
     ca: 'Edit Ranks',
     'es-es': 'Edit Ranks',
   },
