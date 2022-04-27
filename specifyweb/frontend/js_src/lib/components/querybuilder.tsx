@@ -265,13 +265,13 @@ export function QueryBuilder({
                 ? ''
                 : state.queryRunCount === 0
                 ? 'grid-rows-[100%]'
-                : 'grid-rows-[100%_100%]'
+                : 'grid-rows-[100%_100%] snap-y snap-proximity'
             }
             ${isEmbedded ? '' : 'px-4 -mx-4'}
           `}
           ref={containerRef}
         >
-          <div className="gap-y-4 flex flex-col">
+          <div className="gap-y-4 snap-start flex flex-col">
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(

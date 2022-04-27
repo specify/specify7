@@ -322,7 +322,7 @@ export function QueryResultsTable({
   const loading = React.useContext(LoadingContext);
 
   return (
-    <Container.Base className="overflow-hidden">
+    <Container.Base className="!max-w-none snap-start">
       <div className="gap-x-2 flex items-center">
         <H3>{`${label}: (${
           selectedRows.size === 0

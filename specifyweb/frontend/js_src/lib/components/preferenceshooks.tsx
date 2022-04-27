@@ -178,20 +178,16 @@ export function SetCssVariables(): null {
   );
 
   const reduceMotion = useReducedMotion();
-  React.useEffect(
-    () =>
-      reduceMotion
-        ? document.body.classList.add('reduce-motion')
-        : document.body.classList.remove('reduce-motion'),
-    [reduceMotion]
-  );
+  React.useEffect(() => {
+    document.body.classList[reduceMotion ? 'add' : 'remove']('reduce-motion');
+    document.documentElement.classList[reduceMotion ? 'remove' : 'add'](
+      'scroll-smooth'
+    );
+  }, [reduceMotion]);
 
   const darkMode = useDarkMode();
   React.useEffect(
-    () =>
-      darkMode
-        ? document.body.classList.add('dark')
-        : document.body.classList.remove('dark'),
+    () => document.body.classList[darkMode ? 'add' : 'remove']('dark'),
     [darkMode]
   );
 
