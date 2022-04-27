@@ -59,6 +59,20 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         return query, column
 
+    def tables_in_path(self, table, join_path):
+        path = deque(join_path)
+        field = None
+        tables = [table]
+        while len(path) > 0:
+            field = path.popleft()
+            if isinstance(field, str):
+                field = tables[-1].get_field(field, strict=True)
+            if not field.is_relationship:
+                break
+
+            tables.append(datamodel.get_table(field.relatedModelName, strict=True))
+        return tables
+
     def build_join(self, table, model, join_path):
         query = self
         path = deque(join_path)

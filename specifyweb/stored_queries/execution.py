@@ -19,6 +19,7 @@ from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from ..notifications.models import Message
 from ..specify.models import Collection
+from ..permissions.permissions import check_table_permissions
 
 logger = logging.getLogger(__name__)
 
@@ -489,6 +490,14 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
         query=session.query().distinct() if distinct else session.query(id_field),
     )
 
+    tables_to_read = set([
+        table
+        for fs in field_specs
+        for table in query.tables_in_path(fs.fieldspec.root_table, fs.fieldspec.join_path)
+    ])
+
+    for table in tables_to_read:
+        check_table_permissions(collection, user, table, "read")
 
     query = filter_by_collection(model, query, collection)
 

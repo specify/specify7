@@ -8,6 +8,7 @@ from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify import models as spmodels
+from specifyweb.specify.datamodel import Table
 
 from . import models
 
@@ -168,11 +169,17 @@ def query(collectionid: Optional[int], userid: int, resource: str, action: str) 
 
 
 def check_table_permissions(collection, actor, obj, action: str) -> None:
-    name = obj.specify_model.name.lower()
+    if isinstance(obj, Table):
+        name = obj.name.lower()
+    else:
+        name = obj.specify_model.name.lower()
     enforce(collection, actor, [f'/table/{name}'], action)
 
 def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
-    table = obj.specify_model.name.lower()
+    if isinstance(obj, Table):
+        table = obj.name.lower()
+    else:
+        table = obj.specify_model.name.lower()
     enforce(collection, actor, [f'/field/{table}/{field}' for field in fields], action)
 
 def table_permissions_checker(collection, actor, action: str) -> Callable[[Any], None]:
