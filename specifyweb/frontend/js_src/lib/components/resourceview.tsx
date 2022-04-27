@@ -76,32 +76,33 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     resource?.specifyModel.label ?? commonText('loading')
   );
   React.useEffect(() => {
-    if (typeof resource === 'undefined') {
-      setTitle(commonText('loading'));
-      return;
-    }
-
-    return resourceOn(
-      resource,
-      'change',
-      (): void => {
-        if (typeof resource === 'undefined') return undefined;
-        const title = resource.isNew()
-          ? commonText('newResourceTitle')(resource.specifyModel.label)
-          : resource.specifyModel.label;
-        format(resource)
-          .then(
-            (formatted) =>
-              `${title}${typeof formatted === 'string' ? `: ${formatted}` : ''}`
-          )
-          .then((title) => {
+    setTitle(resource?.specifyModel.label ?? commonText('loading'));
+    return typeof resource === 'object'
+      ? resourceOn(
+          resource,
+          'change',
+          (): void => {
+            if (typeof resource === 'undefined') return undefined;
+            const title = resource.isNew()
+              ? commonText('newResourceTitle')(resource.specifyModel.label)
+              : resource.specifyModel.label;
             setTitle(title);
-            return undefined;
-          })
-          .catch(crash);
-      },
-      true
-    );
+            format(resource)
+              .then(
+                (formatted) =>
+                  `${title}${
+                    typeof formatted === 'string' ? `: ${formatted}` : ''
+                  }`
+              )
+              .then((title) => {
+                setTitle(title);
+                return undefined;
+              })
+              .catch(crash);
+          },
+          true
+        )
+      : undefined;
   }, [resource]);
 
   const id = useId('resource-view');

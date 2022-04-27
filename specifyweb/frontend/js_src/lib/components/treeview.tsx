@@ -223,13 +223,13 @@ function TreeView<SCHEMA extends AnyTree>({
             )}
           </Autocomplete>
         </div>
-        <span className="flex-1 -ml-2" />
         <Button.Small
           onClick={handleToggleEditingRanks}
           aria-pressed={isEditingRanks}
         >
           {treeText('editRanks')}
         </Button.Small>
+        <span className="flex-1 -ml-2" />
         <TreeViewActions<SCHEMA>
           tableName={tableName}
           focusRef={toolbarButtonRef}

@@ -2,20 +2,20 @@ import React from 'react';
 
 import { formData, ping } from '../ajax';
 import type { AnySchema, AnyTree } from '../datamodelutils';
+import { toLowerCase } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { treeText } from '../localization/tree';
+import { hasPermission } from '../permissions';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, Link } from './basic';
-import { useBooleanState } from './hooks';
+import { LoadingContext } from './contexts';
+import { useBooleanState, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
-import { LoadingContext } from './contexts';
-import { hasPermission, hasTablePermission } from '../permissions';
-import { toLowerCase } from '../helpers';
 
 type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'desynonymize';
 
@@ -73,15 +73,19 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         </li>
       )}
       <li className="contents">
-        <EditRecord<SCHEMA>
+        <EditRecordDialog<SCHEMA>
           nodeId={focusedRow?.nodeId}
+          addNew={false}
+          label={commonText('edit')}
           tableName={tableName}
           onRefresh={handleRefresh}
           disabled={typeof focusedRow === 'undefined'}
         />
       </li>
       <li className="contents">
-        <AddChild<SCHEMA>
+        <EditRecordDialog<SCHEMA>
+          addNew={true}
+          label={commonText('addChild')}
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
@@ -150,57 +154,39 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   );
 }
 
-function EditRecord<SCHEMA extends AnyTree>({
+function EditRecordDialog<SCHEMA extends AnyTree>({
   nodeId,
-  tableName,
-  onRefresh: handleRefresh,
   disabled,
+  addNew,
+  tableName,
+  label,
+  onRefresh: handleRefresh,
 }: {
   readonly nodeId: number | undefined;
-  readonly tableName: SCHEMA['tableName'];
-  readonly onRefresh: () => void;
   readonly disabled: boolean;
-}): JSX.Element {
+  readonly addNew: boolean;
+  readonly tableName: SCHEMA['tableName'];
+  readonly label: string;
+  readonly onRefresh: () => void;
+}): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-
-  return (
-    <>
-      <Button.Small
-        disabled={disabled || typeof nodeId === 'undefined'}
-        onClick={handleToggle}
-        aria-pressed={isOpen}
-      >
-        {hasTablePermission(tableName, 'update')
-          ? commonText('edit')
-          : commonText('view')}
-      </Button.Small>
-      {isOpen && typeof nodeId === 'number' && (
-        <EditRecordDialog<SCHEMA>
-          id={nodeId}
-          addNew={false}
-          tableName={tableName}
-          onClose={handleClose}
-          onDeleted={handleRefresh}
-          onSaved={handleRefresh}
-        />
-      )}
-    </>
-  );
-}
-
-function AddChild<SCHEMA extends AnyTree>({
-  nodeId,
-  tableName,
-  onRefresh: handleRefresh,
-  disabled,
-}: {
-  readonly nodeId: number | undefined;
-  readonly tableName: SCHEMA['tableName'];
-  readonly onRefresh: () => void;
-  readonly disabled: boolean;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
   const hasChanged = React.useRef(false);
+
+  const [resource, setResource] = useLiveState<
+    SpecifyResource<AnySchema> | undefined
+  >(
+    React.useCallback(() => {
+      if (!isOpen) return undefined;
+      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
+      const parentNode = new model.Resource({ id: nodeId });
+      let node = parentNode;
+      if (addNew) {
+        node = new model.Resource();
+        node.set('parent', parentNode.url());
+      }
+      return node;
+    }, [isOpen, nodeId, tableName, addNew])
+  );
 
   return (
     <>
@@ -209,72 +195,29 @@ function AddChild<SCHEMA extends AnyTree>({
         onClick={handleToggle}
         aria-pressed={isOpen}
       >
-        {commonText('addChild')}
+        {label}
       </Button.Small>
-      {isOpen && typeof nodeId === 'number' && (
-        <EditRecordDialog<SCHEMA>
-          id={nodeId}
-          addNew={true}
-          tableName={tableName}
-          onClose={(): void =>
-            hasChanged.current ? handleRefresh() : handleClose()
-          }
-          onDeleted={handleRefresh}
-          onSaved={(addAnother): void => {
-            if (addAnother) {
-              handleClose();
-              // FIXME: simplify this
-              setTimeout(handleOpen, 0);
+      {isOpen && typeof resource === 'object' && (
+        <ResourceView
+          resource={resource}
+          dialog="modal"
+          onSaved={({ newResource }): void => {
+            if (typeof newResource === 'object') {
+              setResource(newResource);
               hasChanged.current = true;
             } else handleRefresh();
           }}
+          canAddAnother={true}
+          onClose={(): void =>
+            hasChanged.current ? handleRefresh() : handleClose()
+          }
+          mode="edit"
+          onDeleted={handleRefresh}
+          isSubForm={false}
+          isDependent={false}
         />
       )}
     </>
-  );
-}
-
-function EditRecordDialog<SCHEMA extends AnyTree>({
-  id,
-  addNew,
-  tableName,
-  onClose: handleClose,
-  onDeleted: handleDeleted,
-  onSaved: handleSaved,
-}: {
-  readonly id: number;
-  readonly addNew: boolean;
-  readonly tableName: SCHEMA['tableName'];
-  readonly onClose: () => void;
-  readonly onSaved: (addAnother: boolean) => void;
-  readonly onDeleted: () => void;
-}): JSX.Element | null {
-  const resource = React.useMemo<SpecifyResource<AnySchema>>(() => {
-    const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-    const parentNode = new model.Resource({ id });
-    let node = parentNode;
-    if (addNew) {
-      node = new model.Resource();
-      node.set('parent', parentNode.url());
-    }
-    return node;
-  }, [id, tableName, addNew]);
-
-  return (
-    <ResourceView
-      resource={resource}
-      dialog="modal"
-      onSaved={({ newResource }): void => {
-        handleClose();
-        handleSaved(typeof newResource === 'object');
-      }}
-      canAddAnother={true}
-      onClose={handleClose}
-      mode="edit"
-      onDeleted={handleDeleted}
-      isSubForm={false}
-      isDependent={false}
-    />
   );
 }
 

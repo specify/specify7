@@ -1,47 +1,51 @@
 import React from 'react';
 
-import { fetchCollection } from '../collection';
 import type { Geography } from '../datamodel';
-import type { AnyTree, FilterTablesByEndsWith } from '../datamodelutils';
+import type { AnyTree } from '../datamodelutils';
+import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { hasTreeAccess } from '../permissions';
+import { resourceOn } from '../resource';
 import { toTreeTable } from '../specifymodel';
-import { isTreeResource } from '../treedefinitions';
+import {
+  getTreeDefinitionItems,
+  isTreeResource,
+  treeRanksPromise,
+} from '../treedefinitions';
 import type { RA } from '../types';
+import { defined } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
-import { resourceOn } from '../resource';
-import { f } from '../functools';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,
-  parentTreeDefItem: SpecifyResource<FilterTablesByEndsWith<'TreeDefItem'>>,
-  treeDefinitionId: number
+  parentRankId: number,
+  treeName: AnyTree['tableName']
 ): Promise<RA<PickListItemSimple>> =>
-  fetchCollection(
-    parentTreeDefItem.specifyModel.name,
-    {
-      limit: 0,
-      treeDef: treeDefinitionId,
-      orderBy: 'rankId',
-    },
-    {
-      rankid__gt: parentTreeDefItem.get('rankId'),
-      ...(lowestChildRank > 0 ? { rankid__lt: lowestChildRank } : {}),
-    }
-  ).then(({ records }) =>
-    // Remove ranks after enforced rank
-    f.var(
-      records.findIndex((resource) => resource.isEnforced) + 1,
-      (enforcedIndex) =>
-        (enforcedIndex === 0 ? records : records.slice(0, enforcedIndex)).map(
-          (resource) => ({
-            value: resource.resource_uri,
-            title: resource.title || resource.name,
-          })
+  treeRanksPromise
+    .then(() =>
+      defined(getTreeDefinitionItems(treeName, false))
+        .filter(
+          ({ rankId }) =>
+            rankId > parentRankId &&
+            (lowestChildRank <= 0 || rankId > lowestChildRank)
         )
+        .sort(sortFunction(({ rankId }) => rankId))
     )
-  );
+    .then((ranks) =>
+      // Remove ranks after enforced rank
+      f.var(
+        ranks.findIndex(({ isEnforced }) => isEnforced) + 1,
+        (enforcedIndex) =>
+          (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
+            (rank) => ({
+              value: rank.resource_uri,
+              title: rank.title || rank.name,
+            })
+          )
+      )
+    );
 
 export const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>
@@ -85,19 +89,13 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
           )
           .then((treeDefinitionItem) =>
             typeof treeDefinitionItem === 'object'
-              ? treeDefinitionItem
-                  .rgetPromise('treeDef')
-                  .then(async ({ id }) =>
-                    lowestChildRank.then(async (rankId) =>
-                      fetchPossibleRanks(
-                        rankId,
-                        treeDefinitionItem as SpecifyResource<
-                          FilterTablesByEndsWith<'TreeDefItem'>
-                        >,
-                        id
-                      )
-                    )
+              ? lowestChildRank.then(async (rankId) =>
+                  fetchPossibleRanks(
+                    rankId,
+                    treeDefinitionItem.get('rankId'),
+                    resource.specifyModel.name
                   )
+                )
               : undefined
           )
           .then((items) => (destructorCalled ? undefined : setItems(items))),
