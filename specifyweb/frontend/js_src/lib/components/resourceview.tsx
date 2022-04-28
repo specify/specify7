@@ -349,12 +349,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
             </DataEntry.SubForm>
           ) : (
             <Container.FullGray>
-              <Container.Base
+              <Container.Center
                 style={{
                   fontFamily:
                     fontFamily === defaultFont ? undefined : fontFamily,
                   fontSize: `${fontSize}%`,
                 }}
+                className="w-full"
               >
                 <DataEntry.Header>
                   {updateTitle && <AppTitle title={titleOverride ?? title} />}
@@ -367,7 +368,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   )}
                 </DataEntry.Header>
                 {formattedChildren}
-              </Container.Base>
+              </Container.Center>
             </Container.FullGray>
           );
         } else

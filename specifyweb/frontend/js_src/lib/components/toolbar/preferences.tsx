@@ -107,7 +107,7 @@ function Preferences({
                 category,
                 { title, description = undefined, subCategories },
               ]) => (
-                <Container.Base
+                <Container.Center
                   key={category}
                   className="gap-8 overflow-y-visible"
                   id={id(category)}
@@ -198,7 +198,7 @@ function Preferences({
                       </section>
                     )
                   )}
-                </Container.Base>
+                </Container.Center>
               )
             )}
           </div>

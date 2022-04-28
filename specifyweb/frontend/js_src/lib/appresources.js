@@ -69,7 +69,7 @@ function setCommandEnabled(editor, name, enabled) {
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     tagName: 'section',
-    className: `${className.containerFull} !flex-row`,
+    className: `${className.containerFullGray} !flex-row`,
     initialize({resources, selectedId}) {
         this.selectedId = selectedId;
         this.resources = resources;

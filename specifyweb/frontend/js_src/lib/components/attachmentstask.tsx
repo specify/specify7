@@ -416,7 +416,7 @@ function Gallery({
   return (
     <>
       <Container.Base
-        className="flex-1 !max-w-none gap-4 grid items-center
+        className="flex-1 gap-4 grid items-center
           grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]"
         style={
           {

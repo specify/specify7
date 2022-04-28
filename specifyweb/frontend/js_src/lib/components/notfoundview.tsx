@@ -7,9 +7,9 @@ import { createBackboneView } from './reactbackboneextend';
 export function NotFound(): JSX.Element {
   return (
     <Container.FullGray>
-      <Container.Base>
+      <Container.Center>
         <H2>{commonText('pageNotFound')}</H2>
-      </Container.Base>
+      </Container.Center>
     </Container.FullGray>
   );
 }

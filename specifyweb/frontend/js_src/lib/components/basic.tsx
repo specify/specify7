@@ -115,6 +115,9 @@ const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const rootBackground = 'bg-white dark:bg-neutral-900';
 const rootText = 'text-neutral-900 dark:text-neutral-200';
+const containerBase = `${rootBackground} rounded p-4 overflow-y-auto
+  shadow-gray-400 shadow-lg flex flex-col gap-4`;
+const containerFull = 'flex flex-col gap-4 h-full p-4';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   rootText,
@@ -143,10 +146,10 @@ export const className = {
   greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
-  containerFull: 'flex flex-col gap-4 h-full p-4',
-  containerBase: `${rootBackground} rounded p-4 mx-auto overflow-y-auto
-    max-w-[min(100%,var(--form-max-width))] w-full shadow-gray-400 shadow-lg
-    flex flex-col gap-4`,
+  containerFull,
+  containerFullGray: `${containerFull} ${grayBackground}`,
+  containerBase,
+  containerCenter: `${containerBase} mx-auto max-w-[min(100%,var(--form-max-width))] w-full`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg font-bold',
   headerPrimary: 'font-semibold text-black dark:text-white',
@@ -741,15 +744,17 @@ export const Container = {
   /**
    * Full-screen gray container. Ment to be a wrapper for Container.Base
    */
-  FullGray: wrap(
-    'Container.FullGray',
-    'div',
-    `${className.containerFull} ${grayBackground}`
-  ),
+  FullGray: wrap('Container.FullGray', 'div', className.containerFullGray),
+  /**
+   * Limited width white container. Ment to be wrapped inside Container.FullGray
+   * Commonly used as an <aside> to main content
+   */
+  Base: wrap('Container.Base', 'section', className.containerBase),
   /**
    * Limited width white container. Ment to be wrapped inside Container.FullGray
    */
-  Base: wrap('Container.Base', 'section', className.containerBase),
+  Center: wrap('Container.Center', 'section', className.containerCenter),
+
   /**
    * Full-screen white container. Ment to be a wrapper for full width content
    */
