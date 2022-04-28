@@ -1,3 +1,4 @@
+import { getTransitionDuration } from './components/preferenceshooks';
 import type { QueryFieldFilter } from './components/querybuilderfieldfilter';
 import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
@@ -8,10 +9,10 @@ import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
 import type { Parser } from './uiparse';
+import { parserFromType, parseValue } from './uiparse';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
-import { getTransitionDuration } from './components/preferenceshooks';
 
 export type SortTypes = undefined | 'ascending' | 'descending';
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -57,6 +58,24 @@ export function parseQueryFields(
             ({ id }) => id == field.operStart
           )?.resetToAny === true;
 
+        /*
+         * SpQueryField.startValue containing fullDate may be in different formats
+         * See https://github.com/specify/specify7/issues/1348
+         */
+        const parsed =
+          typeof field.startValue === 'string' &&
+          fieldSpec.datePart === 'fullDate'
+            ? parseValue(
+                parserFromType('java.sql.Timestamp'),
+                undefined,
+                field.startValue
+              )
+            : undefined;
+        const startValue =
+          parsed?.isValid === true
+            ? (parsed.parsed as string)
+            : field.startValue ?? '';
+
         return [
           mappingPathToString(fieldSpec.toMappingPath()),
           {
@@ -72,7 +91,7 @@ export function parseQueryFields(
                     )
                   )[0],
               isNot,
-              startValue: field.startValue ?? '',
+              startValue,
             },
             isDisplay,
           },
