@@ -625,6 +625,18 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          stickyScrolling: defineItem<boolean>({
+            title: preferencesText('stickyScrolling'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
     },
   },
   workBench: {

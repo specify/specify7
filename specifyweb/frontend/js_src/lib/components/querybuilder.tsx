@@ -14,8 +14,10 @@ import {
   smoothScroll,
   unParseQueryFields,
 } from '../querybuilderutils';
+import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
+import { defined } from '../types';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
@@ -28,6 +30,7 @@ import {
 } from './hooks';
 import { icons } from './icons';
 import { useUnloadProtect } from './navigation';
+import { usePref } from './preferenceshooks';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
@@ -39,19 +42,12 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-import { defined } from '../types';
-import { schema } from '../schema';
 
 /*
  * Query Results:
- * FIXME: query results editing & deleting
- * FIXME: creating record set out of a subset of results
+ * FIXME: query results deleting not working
  * To Test:
- * FIXME: test #318
- * FIXME: test #561
- * FIXME: test "any" filters in sp6 and sp7
  * FIXME: test query reports
- * FIXME: test using sp7 queries in sp6 and vice versa
  */
 export function QueryBuilder({
   query: queryResource,
@@ -160,6 +156,7 @@ export function QueryBuilder({
       state.mappingView.slice(-1)[0]
     );
 
+  // FIXME: this code is misbehaving
   // Scroll down to query results when pressed the "Query" button
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(
@@ -171,13 +168,19 @@ export function QueryBuilder({
       void setTimeout(() => {
         if (state.queryRunCount !== 0 && containerRef.current !== null)
           smoothScroll(containerRef.current, containerRef.current.scrollHeight);
-      }),
+      }, 0),
     [state.queryRunCount]
   );
 
   useTitle(query.name);
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
+
+  const [stickyScrolling] = usePref(
+    'queryBuilder',
+    'behavior',
+    'stickyScrolling'
+  );
 
   return typeof treeRanks === 'object' ? (
     <Container.Full
@@ -260,12 +263,13 @@ export function QueryBuilder({
         )}
         <div
           className={`gap-y-4 grid flex-1 overflow-y-auto grid-cols-1
+            ${stickyScrolling ? 'snap-y snap-proximity' : ''}
             ${
               isEmbedded
                 ? ''
                 : state.queryRunCount === 0
                 ? 'grid-rows-[100%]'
-                : 'grid-rows-[100%_100%] snap-y snap-proximity'
+                : 'grid-rows-[100%_100%]'
             }
             ${isEmbedded ? '' : 'px-4 -mx-4'}
           `}

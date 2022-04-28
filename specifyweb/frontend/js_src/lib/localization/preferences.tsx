@@ -517,4 +517,11 @@ export const preferencesText = createDictionary({
     ca: "You don't have permission to change this option",
     'es-es': "You don't have permission to change this option",
   },
+  // FIXME: localize
+  stickyScrolling: {
+    'en-us': 'Sticky scroll bar',
+    'ru-ru': 'Sticky scroll bar',
+    ca: 'Sticky scroll bar',
+    'es-es': 'Sticky scroll bar',
+  },
 });

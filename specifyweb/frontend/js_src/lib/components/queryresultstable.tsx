@@ -608,6 +608,7 @@ export function QueryResultsWrapper({
     queryResource,
     queryRunCount,
     recordSetId,
+    model,
   ]);
 
   return typeof props === 'undefined' ? (

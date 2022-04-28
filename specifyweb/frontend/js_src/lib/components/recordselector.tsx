@@ -1,4 +1,5 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
 import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
@@ -159,7 +160,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     // Set this as an "Add" button event listener
     readonly onAdd: () => void;
     // Set this as an "Remove" button event listener
-    readonly onRemove: () => void;
+    readonly onRemove: () => Promise<boolean>;
     // True while fetching new record
     readonly isLoading: boolean;
   }) => JSX.Element;
@@ -192,8 +193,13 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const [state, setState] = React.useState<
-    'main' | 'deleteDialog' | 'addBySearch'
-  >();
+    | State<'main'>
+    | State<
+        'deleteDialog',
+        { readonly handleDeleted: (result: boolean) => void }
+      >
+    | State<'addBySearch'>
+  >({ type: 'main' });
 
   function handleAdd(): void {
     if (typeof handleAdded === 'undefined') return;
@@ -204,15 +210,33 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
         resource.set(field.otherSideName, relatedResource.url() as any);
       handleAdded(resource);
       handleSlide(totalCount);
-    } else setState('addBySearch');
+    } else setState({ type: 'addBySearch' });
   }
 
-  function handleRemove(): void {
-    if (records.length === 0 || typeof handleDelete === 'undefined') return;
-    handleSlide(Math.min(index, totalCount - 2));
+  async function handleRemove(): Promise<boolean> {
+    if (records.length === 0 || typeof handleDelete === 'undefined')
+      return false;
+    const handleDeleted = (): void =>
+      handleSlide(Math.min(index, totalCount - 2));
 
-    if (typeof relatedResource === 'object') handleDelete(index);
-    else setState('deleteDialog');
+    if (typeof relatedResource === 'object') {
+      handleDeleted();
+      handleDelete(index);
+      return true;
+    } else {
+      let resolveCallback: (result: boolean) => void;
+      const promise = new Promise<boolean>((resolve) => {
+        resolveCallback = resolve;
+      });
+      setState({
+        type: 'deleteDialog',
+        handleDeleted(result: boolean) {
+          resolveCallback(result);
+          handleDeleted();
+        },
+      });
+      return promise;
+    }
   }
 
   return children({
@@ -232,17 +256,20 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs: (
       <>
-        {state === 'deleteDialog' ? (
+        {state.type === 'deleteDialog' ? (
           <Dialog
             title={field?.label ?? model?.label}
             header={formsText('removeRecordDialogHeader')}
-            onClose={(): void => setState('main')}
+            onClose={(): void => {
+              state.handleDeleted(false);
+              setState({ type: 'main' });
+            }}
             buttons={
               <>
                 <Button.Red
                   onClick={(): void => {
-                    handleDelete?.(index);
-                    setState('main');
+                    state.handleDeleted(true);
+                    setState({ type: 'main' });
                   }}
                 >
                   {commonText('delete')}
@@ -253,7 +280,8 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
           >
             {formsText('removeRecordDialogMessage')}
           </Dialog>
-        ) : state === 'addBySearch' && typeof handleAdded === 'function' ? (
+        ) : state.type === 'addBySearch' &&
+          typeof handleAdded === 'function' ? (
           <Search
             model={model}
             onAdd={(record): void => {
@@ -265,7 +293,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
               handleAdded(record);
               handleSlide(totalCount);
             }}
-            onClose={(): void => setState('main')}
+            onClose={(): void => setState({ type: 'main' })}
           />
         ) : undefined}
       </>

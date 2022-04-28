@@ -3,6 +3,7 @@ import React from 'react';
 import { f } from '../functools';
 import { removeKey } from '../helpers';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
 import { fetchPickList, getPickListItems } from '../picklistmixins';
 import type { QueryField } from '../querybuilderutils';
@@ -20,9 +21,18 @@ import { Input, Select, selectMultipleSize } from './basic';
 import type { PickListItemSimple } from './combobox';
 import { useAsyncState, useTriggerState, useValidation } from './hooks';
 import { mappingElementDivider } from './wbplanviewcomponents';
-import { formsText } from '../localization/forms';
 
-export type QueryFieldType = 'text' | 'number' | 'date' | 'id' | 'checkbox';
+/**
+ * Formatters and aggregators don't yet support any filtering options.
+ * See https://github.com/specify/specify7/issues/318
+ */
+export type QueryFieldType =
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'id'
+  | 'checkbox'
+  | 'formatter';
 export type QueryFieldFilter =
   | 'any'
   | 'like'
@@ -149,19 +159,21 @@ function QueryInputField({
   };
 
   return Array.isArray(pickListItems) ? (
-    <Select
-      {...commonProps}
-      required={Boolean(validationAttributes.required)}
-      multiple={listInput}
-      value={listInput ? value.split(',').map(f.trim) : value}
-      size={listInput ? selectMultipleSize : 1}
-    >
-      {pickListItems.map(({ title, value }) => (
-        <option key={value} value={value}>
-          {title}
-        </option>
-      ))}
-    </Select>
+    <div>
+      <Select
+        {...commonProps}
+        required={Boolean(validationAttributes.required)}
+        multiple={listInput}
+        value={listInput ? value.split(',').map(f.trim) : value}
+        size={listInput ? selectMultipleSize : 1}
+      >
+        {pickListItems.map(({ title, value }) => (
+          <option key={value} value={value}>
+            {title}
+          </option>
+        ))}
+      </Select>
+    </div>
   ) : (
     // This allows <input> to grow in size as needed
     <span
@@ -197,6 +209,11 @@ function SingleField({
   readonly label?: string;
   readonly fieldName: string;
   readonly onChange: (newValue: string) => void;
+  /*
+   * This prop is not used here, but defined here because of "typeof SingleField"
+   * in queryFieldFilters
+   */
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   return (
@@ -294,11 +311,6 @@ function In({
   );
 }
 
-/*
- * FIXME: test all combination of data types and filters
- *       (including pick lists)
- * FIXME: test "any"
- */
 export const queryFieldFilters: RR<
   QueryFieldFilter,
   {

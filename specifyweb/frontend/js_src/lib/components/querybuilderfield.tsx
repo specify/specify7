@@ -119,7 +119,6 @@ export function QueryLine({
       typeof dataModelField === 'object' &&
       !dataModelField.isRelationship &&
       mappingPathIsComplete(field.mappingPath);
-    // TODO: define parser and fieldType for (formatted) and (aggregated)
     if (hasParser) {
       parser = resolveParser(dataModelField, {
         datePart,
@@ -370,9 +369,12 @@ export function QueryLine({
                 >
                   {Object.entries(queryFieldFilters).map(
                     ([filterName, { label, types }]) =>
-                      !Array.isArray(types) ||
-                      (typeof fieldMeta.fieldType === 'string' &&
-                        types.includes(fieldMeta.fieldType)) ? (
+                      (
+                        typeof fieldMeta.fieldType === 'string'
+                          ? !Array.isArray(types) ||
+                            types.includes(fieldMeta.fieldType)
+                          : filterName === 'any'
+                      ) ? (
                         <option key={filterName} value={filterName}>
                           {label}
                         </option>

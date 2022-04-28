@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
+import { DependentCollection, LazyCollection } from '../collectionapi';
 import type { RecordSet as RecordSetSchema } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
@@ -10,6 +11,7 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
+import { formatUrl, parseUrl } from '../querystring';
 import { deleteResource, getResourceApiUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
@@ -22,12 +24,10 @@ import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
+import { goTo, pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
-import { formatUrl, parseUrl } from '../querystring';
-import { goTo, pushUrl } from './navigation';
-import { DependentCollection, LazyCollection } from '../collectionapi';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(parseUrl()[queryParameter], (index) =>
@@ -368,6 +368,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         typeof handleAdd === 'function'
           ? (resource): void => {
               if (currentResource?.isNew() === true)
+                /*
+                 * Since React's setState has a special behavior when a function
+                 * argument is passed, need to wrap a function in a function
+                 */
                 setUnloadProtect(() => () => handleAdd(resource));
               else handleAdd(resource);
             }
@@ -433,7 +437,15 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
                     }
-                    onClick={handleRemove}
+                    onClick={(): void =>
+                      void handleRemove()
+                        .then((deleted) =>
+                          deleted && ids.length === 1
+                            ? handleClose()
+                            : undefined
+                        )
+                        .catch(crash)
+                    }
                   />
                 ) : undefined}
                 {isAddingNew ? (
@@ -456,7 +468,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={ids.length > 1 ? undefined : handleClose}
+            onDeleted={(): void =>
+              void handleRemove()
+                .then((deleted) =>
+                  deleted && ids.length === 1 ? handleClose() : undefined
+                )
+                .catch(crash)
+            }
             onClose={handleClose}
           />
           {dialogs}
