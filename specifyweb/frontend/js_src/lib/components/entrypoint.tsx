@@ -2,24 +2,17 @@
  * Entrypoint for the main front-end endpoint
  */
 
-import '../../css/main.css';
-
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import { initialContext, unlockInitialContext } from '../initialcontext';
+import { initialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { startApp } from '../startapp';
 import { className } from './basic';
-import { Contexts } from './contexts';
 import { crash } from './errorboundary';
 import { useBooleanState, useTitle } from './hooks';
 import { Main } from './main';
 import { goTo } from './navigation';
-import { SetCssVariables } from './preferenceshooks';
-import { SplashScreen } from './splashscreen';
-
-unlockInitialContext('main');
+import { entrypoint, SplashScreen } from './splashscreen';
 
 // TODO: document that you can alt click on new tab links
 function handleClick(event: Readonly<MouseEvent>): void {
@@ -82,20 +75,4 @@ function Root(): JSX.Element | null {
   ) : null;
 }
 
-window.addEventListener('load', () => {
-  const root = document.getElementById('root');
-  const portalRoot = document.getElementById('portal-root');
-  if (root === null || portalRoot === null)
-    throw new Error('Unable to find root element');
-  root.setAttribute('class', className.root);
-  portalRoot.setAttribute('class', className.rootText);
-  ReactDOM.render(
-    <React.StrictMode>
-      <Contexts>
-        <SetCssVariables />
-        <Root />
-      </Contexts>
-    </React.StrictMode>,
-    root
-  );
-});
+entrypoint('main', () => <Root />);

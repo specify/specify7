@@ -142,10 +142,10 @@ function TreeView<SCHEMA extends AnyTree>({
     treeToPref[tableName],
     'treeAccentColor'
   );
-  const [synonomColor] = usePref(
+  const [synonymColor] = usePref(
     'treeEditor',
     treeToPref[tableName],
-    'synonomColor'
+    'synonymColor'
   );
 
   return typeof rows === 'undefined' ? null : (
@@ -366,7 +366,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 return undefined;
               }}
               setFocusedRow={setFocusedRow}
-              synonomColor={synonomColor}
+              synonymColor={synonymColor}
             />
           ))}
         </ul>

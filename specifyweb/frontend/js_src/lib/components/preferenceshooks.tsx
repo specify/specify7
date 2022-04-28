@@ -191,104 +191,191 @@ export function SetCssVariables(): null {
     [darkMode]
   );
 
-  const [fontSize] = usePref('general', 'ui', 'fontSize');
-  const [scaleUi] = usePref('general', 'ui', 'scaleInterface');
-  const scaleTarget = scaleUi ? document.documentElement : document.body;
+  const [version, setVersion] = React.useState(0);
+  React.useEffect(
+    () => prefEvents.on('update', () => setVersion((version) => version + 1)),
+    []
+  );
+  /*
+   * Could do this using usePref, but I am afraid about the performance impact
+   * of ~30 user hooks, each of which has ~5 React hooks.
+   */
+  const prefs = React.useMemo(
+    () => ({
+      fontSize: getUserPref('general', 'ui', 'fontSize'),
+      scaleUi: getUserPref('general', 'ui', 'scaleInterface'),
+      fontFamily: getUserPref('general', 'ui', 'fontFamily'),
+      formMaxWidth: getUserPref('form', 'ui', 'maxWidth'),
+      fieldBackground: getUserPref('form', 'fieldBackground', 'default'),
+      darkFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'darkDefault'
+      ),
+      disabledFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'disabled'
+      ),
+      darkDisabledFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'darkDisabled'
+      ),
+      invalidFieldBackground: getUserPref('form', 'fieldBackground', 'invalid'),
+      darkInvalidFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'darkInvalid'
+      ),
+      requiredFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'required'
+      ),
+      darkRequiredFieldBackground: getUserPref(
+        'form',
+        'fieldBackground',
+        'darkRequired'
+      ),
+      background: getUserPref('general', 'appearance', 'background'),
+      darkBackground: getUserPref('general', 'appearance', 'darkBackground'),
+      accentColor1: getUserPref('general', 'appearance', 'accentColor1'),
+      accentColor2: getUserPref('general', 'appearance', 'accentColor2'),
+      accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
+      accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
+      accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
+      formForeground: getUserPref('form', 'appearance', 'foreground'),
+      darkFormForeground: getUserPref('form', 'appearance', 'darkForeground'),
+      formBackground: getUserPref('form', 'appearance', 'background'),
+      darkFormBackground: getUserPref('form', 'appearance', 'darkBackground'),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [version]
+  );
+
+  const scaleTarget = prefs.scaleUi ? document.documentElement : document.body;
   React.useEffect(
     () => () => void scaleTarget.style.removeProperty('font-size'),
     [scaleTarget]
   );
   React.useEffect(
-    () => scaleTarget.style.setProperty('font-size', `${fontSize}%`),
-    [scaleTarget, fontSize]
+    () => scaleTarget.style.setProperty('font-size', `${prefs.fontSize}%`),
+    [scaleTarget, prefs.fontSize]
   );
 
-  const [fontFamily] = usePref('general', 'ui', 'fontFamily');
   React.useEffect(
     () =>
-      fontFamily === defaultFont
+      prefs.fontFamily === defaultFont
         ? void document.body.style.removeProperty('font-family')
-        : document.body.style.setProperty('font-family', fontFamily),
-    [fontFamily]
+        : document.body.style.setProperty('font-family', prefs.fontFamily),
+    [prefs.fontFamily]
   );
 
-  const [formMaxWidth] = usePref('form', 'ui', 'maxWidth');
-  React.useEffect(
-    () =>
-      document.body.style.setProperty('--form-max-width', `${formMaxWidth}px`),
-    [formMaxWidth]
-  );
-
-  const [fieldBackground] = usePref('form', 'appearance', 'fieldBackground');
-  const [darkFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'darkFieldBackground'
-  );
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--field-background',
-        darkMode ? darkFieldBackground : fieldBackground
+        '--form-max-width',
+        `${prefs.formMaxWidth}px`
       ),
-    [darkMode, darkFieldBackground, fieldBackground]
+    [prefs.formMaxWidth]
   );
 
-  const [disabledFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'disabledFieldBackground'
+  const fieldBackground = darkMode
+    ? prefs.darkFieldBackground
+    : prefs.fieldBackground;
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--field-background', fieldBackground),
+    [fieldBackground]
   );
-  const [darkDisabledFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'darkDisabledFieldBackground'
-  );
+
+  const disabledFieldBackground = darkMode
+    ? prefs.darkDisabledFieldBackground
+    : prefs.disabledFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--disabled-field-background',
-        darkMode ? darkDisabledFieldBackground : disabledFieldBackground
+        disabledFieldBackground
       ),
-    [darkMode, darkDisabledFieldBackground, disabledFieldBackground]
+    [disabledFieldBackground]
   );
 
-  const [invalidFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'invalidFieldBackground'
-  );
-  const [darkInvalidFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'darkInvalidFieldBackground'
-  );
+  const invalidFieldBackground = darkMode
+    ? prefs.darkInvalidFieldBackground
+    : prefs.invalidFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--invalid-field-background',
-        darkMode ? darkInvalidFieldBackground : invalidFieldBackground
+        invalidFieldBackground
       ),
-    [darkMode, darkInvalidFieldBackground, invalidFieldBackground]
+    [invalidFieldBackground]
   );
 
-  const [requiredFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'requiredFieldBackground'
-  );
-  const [darkRequiredFieldBackground] = usePref(
-    'form',
-    'appearance',
-    'darkRequiredFieldBackground'
-  );
+  const requiredFieldBackground = darkMode
+    ? prefs.darkRequiredFieldBackground
+    : prefs.requiredFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--required-field-background',
-        darkMode ? darkRequiredFieldBackground : requiredFieldBackground
+        requiredFieldBackground
       ),
-    [darkMode, darkRequiredFieldBackground, requiredFieldBackground]
+    [requiredFieldBackground]
+  );
+
+  const background = darkMode ? prefs.darkBackground : prefs.background;
+  React.useEffect(
+    () => document.body.style.setProperty('--background', background),
+    [background]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--accent-color-100', prefs.accentColor1),
+    [prefs.accentColor1]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--accent-color-200', prefs.accentColor2),
+    [prefs.accentColor2]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--accent-color-300', prefs.accentColor3),
+    [prefs.accentColor3]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--accent-color-400', prefs.accentColor4),
+    [prefs.accentColor4]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty('--accent-color-500', prefs.accentColor5),
+    [prefs.accentColor5]
+  );
+
+  const formForeground = darkMode
+    ? prefs.darkFormForeground
+    : prefs.formForeground;
+  React.useEffect(
+    () => document.body.style.setProperty('--form-foreground', formForeground),
+    [formForeground]
+  );
+
+  const formBackground = darkMode
+    ? prefs.darkFormBackground
+    : prefs.formBackground;
+  React.useEffect(
+    () => document.body.style.setProperty('--form-background', formBackground),
+    [formBackground]
   );
 
   return null;

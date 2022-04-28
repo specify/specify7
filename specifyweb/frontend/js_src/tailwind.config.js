@@ -12,6 +12,7 @@ module.exports = {
     './lib/components/**/*.tsx',
     './lib/*.{ts,js}',
   ],
+  // Disable unneeded components to reduce performance impact
   corePlugins: {
     float: false,
     clear: false,
@@ -19,8 +20,10 @@ module.exports = {
     caretColor: false,
     sepia: false,
   },
+  // Enable dark mode if body has "dark" class names
   darkMode: 'class',
   theme: {
+    // Make default border radius more rounded
     borderRadius: {
       none: '0px',
       xs: '0.125rem',
@@ -34,13 +37,13 @@ module.exports = {
     },
     extend: {
       colors: {
-        // Specify 7 orange colors:
+        // Specify brand colors
         brand: {
-          100: 'hsl(27deg 100% 82%)',
-          200: 'hsl(27deg 100% 63%)',
-          300: 'hsl(27deg 100% 55%)',
-          400: 'hsl(27deg 100% 41%)',
-          500: 'hsl(27deg 100% 22%)',
+          100: 'var(--accent-color-100)',
+          200: 'var(--accent-color-200)',
+          300: 'var(--accent-color-300)',
+          400: 'var(--accent-color-400)',
+          500: 'var(--accent-color-500)',
         },
         // Some in-between shades:
         gray: {
@@ -66,6 +69,15 @@ module.exports = {
       transitionDuration: {
         0: '0ms',
       },
+      keyframes: {
+        'hue-rotate': {
+          '0%': { filter: 'hue-rotate(0deg)' },
+          '100%': { filter: 'hue-rotate(360deg)' },
+        }
+      },
+      animation: {
+        'hue-rotate': '4s hue-rotate 2s linear infinite',
+      }
     },
   },
   plugins: [require('@tailwindcss/forms')],

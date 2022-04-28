@@ -1,11 +1,11 @@
 /**
- * Load critical resources on app start up
+ * Load critical resources before app is started
  */
 
 import type { MimeType } from './ajax';
 import { defined } from './types';
 
-/*
+/**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
  * due to circular dependency issues
  */

@@ -160,7 +160,7 @@ export function CollectionOneToManyPlugin({
   >({ type: 'MainState' });
 
   return (
-    <div className={`${className.rootBackground} rounded`}>
+    <div className="bg-[color:var(--background)] rounded">
       <table>
         <thead>
           <tr>

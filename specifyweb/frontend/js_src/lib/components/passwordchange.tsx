@@ -5,21 +5,14 @@
 import '../../css/main.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
-import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
-import { ErrorBoundary } from './errorboundary';
+import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
-import { parseDjangoDump, SplashScreen } from './splashscreen';
-import { unlockInitialContext } from '../initialcontext';
-import { SetCssVariables } from './preferenceshooks';
-import { Contexts } from './contexts';
-
-unlockInitialContext('passwordChange');
+import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
 
 function ChangePassword({
   data,
@@ -90,29 +83,13 @@ function ChangePassword({
   );
 }
 
-window.addEventListener('load', () => {
-  const root = document.getElementById('root');
-  const portalRoot = document.getElementById('portal-root');
-  if (root === null || portalRoot === null)
-    throw new Error('Unable to find root element');
-  root.setAttribute('class', className.root);
-  portalRoot.setAttribute('class', className.rootText);
-  ReactDOM.render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <Contexts>
-          <SetCssVariables />
-          <ChangePassword
-            data={{
-              formErrors: parseDjangoDump('form-errors'),
-              oldPasswordErrors: parseDjangoDump('old-password-errors'),
-              newPasswordErrors: parseDjangoDump('nex-password-errors'),
-              repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
-            }}
-          />
-        </Contexts>
-      </ErrorBoundary>
-    </React.StrictMode>,
-    root
-  );
-});
+entrypoint('passwordChange', () => (
+  <ChangePassword
+    data={{
+      formErrors: parseDjangoDump('form-errors'),
+      oldPasswordErrors: parseDjangoDump('old-password-errors'),
+      newPasswordErrors: parseDjangoDump('new-password-errors'),
+      repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
+    }}
+  />
+));

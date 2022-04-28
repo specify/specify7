@@ -1,6 +1,12 @@
+import '../../css/main.css';
+
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import { commonText } from '../localization/common';
+import { Contexts } from './contexts';
+import { SetCssVariables } from './preferenceshooks';
+import { entrypointName, unlockInitialContext } from '../initialcontext';
 
 export function SplashScreen({
   children,
@@ -28,3 +34,31 @@ export function SplashScreen({
 
 export const parseDjangoDump = <T,>(id: string): T =>
   JSON.parse(document.getElementById(id)?.textContent ?? '[]') as T;
+
+export function entrypoint(
+  name: typeof entrypointName,
+  getContent: () => JSX.Element
+): void {
+  unlockInitialContext(name);
+  window.addEventListener('load', () => {
+    const root = document.getElementById('root');
+    const portalRoot = document.getElementById('portal-root');
+    if (root === null || portalRoot === null)
+      throw new Error('Unable to find root element');
+    root.setAttribute(
+      'class',
+      `flex flex-col h-screen overflow-hidden bg-[color:var(--background)]
+      text-neutral-900 dark:text-neutral-200`
+    );
+    portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
+    ReactDOM.render(
+      <React.StrictMode>
+        <Contexts>
+          <SetCssVariables />
+          {getContent()}
+        </Contexts>
+      </React.StrictMode>,
+      root
+    );
+  });
+}

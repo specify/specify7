@@ -93,7 +93,7 @@ function Preferences({
           {/* TODO: highlight link that corresponds to current section */}
           <aside
             className={`min-w-fit sticky top-0 flex flex-col flex-1 divide-y-4
-              ${className.grayDivide}`}
+             divide-[var(--form-background)]`}
           >
             {definitions.map(([category, { title }]) => (
               <Link.Gray href={`#${id(category)}`} key={category}>
@@ -113,7 +113,7 @@ function Preferences({
                   id={id(category)}
                 >
                   <h3 className="text-2xl">{title}</h3>
-                  {typeof description === 'string' && <p>{description}</p>}
+                  {typeof description !== 'undefined' && <p>{description}</p>}
                   {subCategories.map(
                     ([
                       subcategory,
@@ -129,7 +129,7 @@ function Preferences({
                             {title}
                           </h4>
                           <div className="flex justify-end flex-1">
-                            <Button.Gray
+                            <Button.Small
                               onClick={(): void =>
                                 items.forEach(([name, { defaultValue }]) =>
                                   setPref(
@@ -142,10 +142,10 @@ function Preferences({
                               }
                             >
                               {preferencesText('reset')}
-                            </Button.Gray>
+                            </Button.Small>
                           </div>
                         </div>
-                        {typeof description === 'string' && (
+                        {typeof description !== 'undefined' && (
                           <p>{description}</p>
                         )}
                         {items.map(([name, item]) => {
@@ -171,7 +171,7 @@ function Preferences({
                                 >
                                   {item.title}
                                 </p>
-                                {typeof item.description === 'string' && (
+                                {typeof item.description !== 'undefined' && (
                                   <p className="flex justify-end flex-1 text-right text-gray-500">
                                     {item.description}
                                   </p>

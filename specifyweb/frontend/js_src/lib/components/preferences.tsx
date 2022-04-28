@@ -89,6 +89,7 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
+// TODO: reduce amount of items that have requiresReload=true
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -198,6 +199,60 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      appearance: {
+        title: preferencesText('appearance'),
+        items: {
+          background: defineItem({
+            title: preferencesText('background'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkBackground: defineItem({
+            title: preferencesText('darkBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#171717',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          accentColor1: defineItem({
+            title: preferencesText('accentColor1'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffcda3',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          accentColor2: defineItem({
+            title: preferencesText('accentColor2'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ff9742',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          accentColor3: defineItem({
+            title: preferencesText('accentColor3'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          accentColor4: defineItem({
+            title: preferencesText('accentColor4'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#d15e00',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          accentColor5: defineItem({
+            title: preferencesText('accentColor5'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#703200',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
       application: {
         title: preferencesText('application'),
         items: {
@@ -248,56 +303,56 @@ export const preferenceDefinitions = {
         items: {
           showDataEntry: defineItem<boolean>({
             title: preferencesText('showDataEntry'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showInteractions: defineItem<boolean>({
             title: preferencesText('showInteractions'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showTrees: defineItem<boolean>({
             title: preferencesText('showTrees'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showRecordSets: defineItem<boolean>({
             title: preferencesText('showRecordSets'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showQueries: defineItem<boolean>({
             title: preferencesText('showQueries'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showReports: defineItem<boolean>({
             title: preferencesText('showReports'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showAttachments: defineItem<boolean>({
             title: preferencesText('showAttachments'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showWorkBench: defineItem<boolean>({
             title: preferencesText('showWorkBench'),
-            requiresReload: false,
+            requiresReload: true,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
@@ -377,63 +432,96 @@ export const preferenceDefinitions = {
           }),
         },
       },
-      appearance: {
-        title: preferencesText('appearance'),
+      fieldBackground: {
+        title: preferencesText('fieldBackgrounds'),
         items: {
-          fieldBackground: defineItem({
+          default: defineItem({
             title: preferencesText('fieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#e5e7eb',
             renderer: ColorPickerPreferenceItem,
           }),
-          disabledFieldBackground: defineItem({
+          disabled: defineItem({
             title: preferencesText('disabledFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
           }),
-          invalidFieldBackground: defineItem({
+          invalid: defineItem({
             title: preferencesText('invalidFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f87171',
             renderer: ColorPickerPreferenceItem,
           }),
-          requiredFieldBackground: defineItem({
+          required: defineItem({
             title: preferencesText('requiredFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#bfdbfe',
             renderer: ColorPickerPreferenceItem,
           }),
-          darkFieldBackground: defineItem({
+          darkDefault: defineItem({
             title: preferencesText('darkFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#404040',
             renderer: ColorPickerPreferenceItem,
           }),
-          darkDisabledFieldBackground: defineItem({
+          darkDisabled: defineItem({
             title: preferencesText('darkDisabledFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
           }),
-          darkInvalidFieldBackground: defineItem({
+          darkInvalid: defineItem({
             title: preferencesText('darkInvalidFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#991b1b',
             renderer: ColorPickerPreferenceItem,
           }),
-          darkRequiredFieldBackground: defineItem({
+          darkRequired: defineItem({
             title: preferencesText('darkRequiredFieldBackground'),
             requiresReload: false,
             visible: true,
             defaultValue: '#1e3a8a',
+            renderer: ColorPickerPreferenceItem,
+          }),
+        },
+      },
+      appearance: {
+        title: preferencesText('appearance'),
+        items: {
+          foreground: defineItem({
+            title: preferencesText('foreground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ffffff',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          background: defineItem({
+            title: preferencesText('background'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#e5e7eb',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkForeground: defineItem({
+            title: preferencesText('darkForeground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#171717',
+            renderer: ColorPickerPreferenceItem,
+          }),
+          darkBackground: defineItem({
+            title: preferencesText('darkBackground'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#262626',
             renderer: ColorPickerPreferenceItem,
           }),
         },
@@ -522,8 +610,8 @@ export const preferenceDefinitions = {
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomColor: defineItem({
-            title: preferencesText('synonomColor'),
+          synonymColor: defineItem({
+            title: preferencesText('synonymColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -541,8 +629,8 @@ export const preferenceDefinitions = {
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomColor: defineItem({
-            title: preferencesText('synonomColor'),
+          synonymColor: defineItem({
+            title: preferencesText('synonymColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -560,8 +648,8 @@ export const preferenceDefinitions = {
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomColor: defineItem({
-            title: preferencesText('synonomColor'),
+          synonymColor: defineItem({
+            title: preferencesText('synonymColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -579,8 +667,8 @@ export const preferenceDefinitions = {
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomColor: defineItem({
-            title: preferencesText('synonomColor'),
+          synonymColor: defineItem({
+            title: preferencesText('synonymColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -598,8 +686,8 @@ export const preferenceDefinitions = {
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomColor: defineItem({
-            title: preferencesText('synonomColor'),
+          synonymColor: defineItem({
+            title: preferencesText('synonymColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',

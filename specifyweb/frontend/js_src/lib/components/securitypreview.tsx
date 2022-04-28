@@ -230,7 +230,7 @@ function PreviewTables({
           <div
             key={header}
             role="columnheader"
-            className={`p-2 sticky top-0 ${className.containerBackground}`}
+            className="p-2 sticky top-0 bg-[color:var(--form-background)]"
           >
             {header}
           </div>

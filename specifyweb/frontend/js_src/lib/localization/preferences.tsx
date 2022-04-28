@@ -130,6 +130,12 @@ export const preferencesText = createDictionary({
     ca: 'Max form width',
     'es-es': 'Max form width',
   },
+  fieldBackgrounds: {
+    'en-us': 'Field backgrounds',
+    'ru-ru': 'Фон полей',
+    ca: 'Field backgrounds',
+    'es-es': 'Field backgrounds',
+  },
   fieldBackground: {
     'en-us': 'Field background',
     'ru-ru': 'Фон полей',
@@ -220,11 +226,11 @@ export const preferencesText = createDictionary({
     ca: 'Tree accent color',
     'es-es': 'Tree accent color',
   },
-  synonomColor: {
-    'en-us': 'Synonoy color',
+  synonymColor: {
+    'en-us': 'Synonym color',
     'ru-ru': 'Цвет синонима',
-    ca: 'Synonom color',
-    'es-es': 'Synonom color',
+    ca: 'Synonym color',
+    'es-es': 'Synonym color',
   },
   showNewDataSetWarning: {
     'en-us': 'Show new Data Set warning',
@@ -523,5 +529,59 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Sticky scroll bar',
     ca: 'Sticky scroll bar',
     'es-es': 'Sticky scroll bar',
+  },
+  foreground: {
+    'en-us': 'Foreground',
+    'ru-ru': 'Foreground',
+    ca: 'Foreground',
+    'es-es': 'Foreground',
+  },
+  background: {
+    'en-us': 'Background',
+    'ru-ru': 'Background',
+    ca: 'Background',
+    'es-es': 'Background',
+  },
+  darkForeground: {
+    'en-us': 'Foreground (dark theme)',
+    'ru-ru': 'Foreground (dark theme)',
+    ca: 'Foreground (dark theme)',
+    'es-es': 'Foreground (dark theme)',
+  },
+  darkBackground: {
+    'en-us': 'Background (dark theme)',
+    'ru-ru': 'Background (dark theme)',
+    ca: 'Background (dark theme)',
+    'es-es': 'Background (dark theme)',
+  },
+  accentColor1: {
+    'en-us': 'Accent color 1',
+    'ru-ru': 'Accent color 1',
+    ca: 'Accent color 1',
+    'es-es': 'Accent color 1',
+  },
+  accentColor2: {
+    'en-us': 'Accent color 2',
+    'ru-ru': 'Accent color 2',
+    ca: 'Accent color 2',
+    'es-es': 'Accent color 2',
+  },
+  accentColor3: {
+    'en-us': 'Accent color 3',
+    'ru-ru': 'Accent color 3',
+    ca: 'Accent color 3',
+    'es-es': 'Accent color 3',
+  },
+  accentColor4: {
+    'en-us': 'Accent color 4',
+    'ru-ru': 'Accent color 4',
+    ca: 'Accent color 4',
+    'es-es': 'Accent color 5',
+  },
+  accentColor5: {
+    'en-us': 'Accent color 5',
+    'ru-ru': 'Accent color 5',
+    ca: 'Accent color 5',
+    'es-es': 'Accent color 5',
   },
 });

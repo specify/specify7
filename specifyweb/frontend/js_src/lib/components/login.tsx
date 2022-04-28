@@ -5,23 +5,17 @@
 import '../../css/main.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
-import { className, ErrorMessage, Form, Input, Label, Submit } from './basic';
-import { Contexts } from './contexts';
+import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { useTitle, useValidation } from './hooks';
 import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
-import { parseDjangoDump, SplashScreen } from './splashscreen';
+import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
-import { unlockInitialContext } from '../initialcontext';
-import { SetCssVariables } from './preferenceshooks';
-
-unlockInitialContext('login');
 
 function Login({
   data,
@@ -100,53 +94,38 @@ function Login({
 
 const nextDestination = '/accounts/choose_collection/?next=';
 
-window.addEventListener('load', () => {
-  const root = document.getElementById('root');
-  const portalRoot = document.getElementById('portal-root');
-  if (root === null || portalRoot === null)
-    throw new Error('Unable to find root element');
-  root.setAttribute('class', className.root);
-  portalRoot.setAttribute('class', className.rootText);
-
+entrypoint('login', () => {
   const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
   const providers = parseDjangoDump<RA<OicProvider>>('providers');
-  ReactDOM.render(
-    <React.StrictMode>
-      <Contexts>
-        <SetCssVariables />
-        {providers.length > 0 ? (
-          <OicLogin
-            data={{
-              inviteToken: parseDjangoDump('invite-token'),
-              providers,
-              languages: parseDjangoDump('languages'),
-              csrfToken: parseDjangoDump('csrf-token'),
-            }}
-            nextUrl={
-              nextUrl.startsWith(nextDestination)
-                ? nextUrl
-                : `${nextDestination}${nextUrl}`
-            }
-          />
-        ) : (
-          <Login
-            data={{
-              formErrors: parseDjangoDump('form-errors'),
-              inputErrors: parseDjangoDump('input-errors'),
-              externalUser: parseDjangoDump('external-user'),
-              passwordErrors: parseDjangoDump('password-errors'),
-              languages: parseDjangoDump('languages'),
-              csrfToken: parseDjangoDump('csrf-token'),
-            }}
-            nextUrl={
-              nextUrl.startsWith(nextDestination)
-                ? nextUrl
-                : `${nextDestination}${nextUrl}`
-            }
-          />
-        )}
-      </Contexts>
-    </React.StrictMode>,
-    root
+  return providers.length > 0 ? (
+    <OicLogin
+      data={{
+        inviteToken: parseDjangoDump('invite-token'),
+        providers,
+        languages: parseDjangoDump('languages'),
+        csrfToken: parseDjangoDump('csrf-token'),
+      }}
+      nextUrl={
+        nextUrl.startsWith(nextDestination)
+          ? nextUrl
+          : `${nextDestination}${nextUrl}`
+      }
+    />
+  ) : (
+    <Login
+      data={{
+        formErrors: parseDjangoDump('form-errors'),
+        inputErrors: parseDjangoDump('input-errors'),
+        externalUser: parseDjangoDump('external-user'),
+        passwordErrors: parseDjangoDump('password-errors'),
+        languages: parseDjangoDump('languages'),
+        csrfToken: parseDjangoDump('csrf-token'),
+      }}
+      nextUrl={
+        nextUrl.startsWith(nextDestination)
+          ? nextUrl
+          : `${nextDestination}${nextUrl}`
+      }
+    />
   );
 });

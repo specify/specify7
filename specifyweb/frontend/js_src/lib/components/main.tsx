@@ -162,6 +162,16 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   .then((items) => items.flat())
   .then((items) => processMenuItems(items.map(({ userTool }) => userTool)));
 
+function SpecifyLogo(): JSX.Element {
+  return (
+    <img
+      src="/static/img/seven_logo.png"
+      alt=""
+      className="hover:animate-hue-rotate h-full"
+    />
+  );
+}
+
 export function Main({
   onLoaded: handleLoaded,
 }: {
@@ -214,7 +224,7 @@ export function Main({
         <div className="2xl:contents flex justify-between w-full">
           <h1 className="contents">
             <a href="/specify/" className="order-1 h-16 m-4">
-              <img src="/static/img/seven_logo.png" alt="" className="h-full" />
+              <SpecifyLogo />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
           </h1>

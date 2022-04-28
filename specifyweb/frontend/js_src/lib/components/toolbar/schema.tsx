@@ -46,7 +46,7 @@ function Table({
           <div
             key={index}
             role="columnheader"
-            className={`sticky top-0 p-2 font-bold border ${className.rootBackground}`}
+            className="sticky top-0 p-2 font-bold border bg-[color:var(--background)]"
           >
             {label}
           </div>

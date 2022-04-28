@@ -109,23 +109,14 @@ export const dialogIconTriggers = {
 const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
-const hasAltBackground = 'has-alt-background';
-const grayDivide = 'divide-gray-200 dark:divide-neutral-800';
-const grayBackground = 'bg-gray-200 dark:bg-neutral-800';
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const rootBackground = 'bg-white dark:bg-neutral-900';
-const rootText = 'text-neutral-900 dark:text-neutral-200';
-const containerBase = `${rootBackground} rounded p-4 overflow-y-auto
+const containerBase = `bg-[color:var(--form-foreground)] rounded p-4 overflow-y-auto
   shadow-gray-400 shadow-lg flex flex-col gap-4`;
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
-  rootText,
-  rootBackground,
-  hasAltBackground,
-  containerBackground: `${grayBackground} ${hasAltBackground}`,
-  root: `flex flex-col h-screen overflow-hidden ${rootBackground} ${rootText}`,
+  hasAltBackground: 'has-alt-background',
   // Do not show validation errors until tried to submit the form
   notSubmittedForm: 'not-submitted',
   // Or field lost focus
@@ -139,7 +130,6 @@ export const className = {
   icon: 'icon',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
-  grayDivide,
   grayButton,
   borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none disabled:border-gray-300`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
@@ -149,7 +139,7 @@ export const className = {
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,
-  containerFullGray: `${containerFull} ${grayBackground}`,
+  containerFullGray: `${containerFull} bg-[color:var(--form-background)]`,
   containerBase,
   containerCenter: `${containerBase} mx-auto max-w-[min(100%,var(--form-max-width))] w-full`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
@@ -377,7 +367,7 @@ export const Input = {
   >(
     'Input.Checkbox',
     'input',
-    className.notTouchedInput,
+    `${className.notTouchedInput} rounded-xs`,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'checkbox',
