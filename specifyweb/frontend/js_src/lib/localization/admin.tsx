@@ -80,7 +80,7 @@ export const adminText = createDictionary({
     ca: 'Load resource file',
     'es-es': 'Load resource file',
   },
-  resourceLoadDialogMessage: {
+  resourceLoadDialogText: {
     'en-us': 'Select the file to be loaded into the editor.',
     'ru-ru': 'Выберите файл для загрузки в редактор.',
     ca: 'Select the file to be loaded into the editor.',
@@ -370,7 +370,7 @@ export const adminText = createDictionary({
     ca: 'User Invite Link',
     'es-es': 'User Invite Link',
   },
-  userInviteLinkDialogMessage: {
+  userInviteLinkDialogText: {
     'en-us': (username: string) => `
       Send the following link to ${username} to allow
       them to log in for the first time.
@@ -400,7 +400,7 @@ export const adminText = createDictionary({
     ca: 'Specify 6 Permissions',
     'es-es': 'Specify 6 Permissions',
   },
-  setPasswordDialogMessage: {
+  setPasswordDialogText: {
     'en-us': `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
     'ru-ru': `Не забудьте установить пароль для этого пользователя. Пользователи
@@ -422,7 +422,7 @@ export const adminText = createDictionary({
     ca: 'This agent is already associated with a different user.',
     'es-es': 'This agent is already associated with a different user.',
   },
-  setAgentsDialogMessage: {
+  setAgentsDialogText: {
     'en-us': 'Please set the following agents before proceeding:',
     'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
     ca: 'Please set the following agents before proceeding:',
@@ -464,7 +464,7 @@ export const adminText = createDictionary({
     ca: 'Delete role that has users?',
     'es-es': 'Delete role that has users?',
   },
-  deleteRoleDialogMessage: {
+  deleteRoleDialogText: {
     'en-us': 'Users will not be deleted, but they would lose this role.',
     'ru-ru': 'Пользователи не будут удалены, но потеряют эту роль.',
     ca: 'Users will not be deleted, but they would lose this role.',
@@ -482,7 +482,7 @@ export const adminText = createDictionary({
     ca: "Can't remove Institution Admin status",
     'es-es': "Can't remove Institution Admin status",
   },
-  noAdminsErrorDialogMessage: {
+  noAdminsErrorDialogText: {
     'en-us': 'There must be at least one Institution Admin in institution',
     'ru-ru': 'Должен быть хотя бы один суперадмин',
     ca: 'There must be at least one Institution Admin in institution',

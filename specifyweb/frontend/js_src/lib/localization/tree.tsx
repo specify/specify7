@@ -46,7 +46,7 @@ export const treeText = createDictionary({
     ca: 'Operation failed',
     'es-es': 'Operation failed',
   },
-  actionFailedDialogMessage: {
+  actionFailedDialogText: {
     'en-us':
       'The operation could not be completed due to the following errors:',
     'ru-ru': 'Операция не может быть завершена из-за следующих ошибок:',

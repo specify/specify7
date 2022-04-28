@@ -229,7 +229,7 @@ function SpecifyNetwork({
           onClose={handleNoFailure}
           buttons={commonText('close')}
         >
-          {specifyNetworkText('failedToOpenPopUpDialogMessage')}
+          {specifyNetworkText('failedToOpenPopUpDialogText')}
         </Dialog>
       )}
       <Link.Default

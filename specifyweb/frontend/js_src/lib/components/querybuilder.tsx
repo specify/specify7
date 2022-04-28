@@ -103,7 +103,7 @@ export function QueryBuilder({
 
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
-    queryText('queryUnloadProtectDialogMessage')
+    queryText('queryUnloadProtectDialogText')
   );
 
   const handleAddField = (): void =>

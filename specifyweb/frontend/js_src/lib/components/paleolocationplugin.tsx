@@ -59,7 +59,7 @@ export function PaleoLocationMapPlugin({
           }
           buttons={commonText('close')}
         >
-          {formsText('unsupportedFormDialogMessage')}
+          {formsText('unsupportedFormDialogText')}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
@@ -69,7 +69,7 @@ export function PaleoLocationMapPlugin({
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}
         >
-          {formsText('paleoRequiresGeographyDialogMessage')}
+          {formsText('paleoRequiresGeographyDialogText')}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
@@ -79,7 +79,7 @@ export function PaleoLocationMapPlugin({
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}
         >
-          {formsText('paleoRequiresGeographyDialogMessage')}
+          {formsText('paleoRequiresGeographyDialogText')}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (

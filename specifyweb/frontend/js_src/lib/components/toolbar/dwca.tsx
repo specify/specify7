@@ -146,7 +146,7 @@ function ExportStarted({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      {commonText('dwcaExportStartedDialogMessage')}
+      {commonText('dwcaExportStartedDialogText')}
     </Dialog>
   );
 }

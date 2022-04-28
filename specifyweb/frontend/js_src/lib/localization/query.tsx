@@ -52,7 +52,7 @@ export const queryText = createDictionary({
     ca: 'Save Query',
     'es-es': 'Save Query',
   },
-  saveQueryDialogMessage: {
+  saveQueryDialogText: {
     'en-us': 'Enter a name for the new query.',
     'ru-ru': 'Введите имя для нового запроса.',
     ca: 'Enter a name for the new query.',
@@ -64,7 +64,7 @@ export const queryText = createDictionary({
     ca: 'Save query as...',
     'es-es': 'Save query as...',
   },
-  saveClonedQueryDialogMessage: {
+  saveClonedQueryDialogText: {
     'en-us': `
       The query will be saved with a new name leaving the current query
       unchanged.`,
@@ -96,7 +96,7 @@ export const queryText = createDictionary({
     ca: 'Query definition contains incomplete fields',
     'es-es': 'Query definition contains incomplete fields',
   },
-  queryDeleteIncompleteDialogMessage: {
+  queryDeleteIncompleteDialogText: {
     'en-us': `
       There are uncompleted fields in the query definition. Do you want to
       remove them?`,
@@ -109,7 +109,7 @@ export const queryText = createDictionary({
       There are uncompleted fields in the query definition. Do you want to
       remove them?`,
   },
-  queryUnloadProtectDialogMessage: {
+  queryUnloadProtectDialogText: {
     'en-us': 'This query definition has not been saved.',
     'ru-ru': 'Этот запрос не был сохранен.',
     ca: 'This query definition has not been saved.',
@@ -127,7 +127,7 @@ export const queryText = createDictionary({
     ca: 'Creating a Record Set from Query',
     'es-es': 'Creating a Record Set from Query',
   },
-  recordSetToQueryDialogMessage: {
+  recordSetToQueryDialogText: {
     'en-us': 'Generating Record Set...',
     'ru-ru': 'Создание набора объектов...',
     ca: 'Generating Record Set...',
@@ -145,7 +145,7 @@ export const queryText = createDictionary({
     ca: 'Open newly created record set now?',
     'es-es': 'Open newly created record set now?',
   },
-  recordSetCreatedDialogMessage: {
+  recordSetCreatedDialogText: {
     'en-us': 'Open newly created record set now?',
     'ru-ru': 'Открыть только что созданный набор объектов?',
     ca: 'Open newly created record set now?',
@@ -163,7 +163,7 @@ export const queryText = createDictionary({
     ca: 'Unable to export to KML',
     'es-es': 'Unable to export to KML',
   },
-  unableToExportAsKmlDialogMessage: {
+  unableToExportAsKmlDialogText: {
     'en-us': 'Please add latitude and longitude fields to the query.',
     'ru-ru': 'Пожалуйста, добавьте в запрос поля широты и долготы.',
     ca: 'Please add latitude and longitude fields to the query.',
@@ -181,7 +181,7 @@ export const queryText = createDictionary({
     ca: 'Query Export started',
     'es-es': 'Query Export started',
   },
-  queryExportStartedDialogMessage: {
+  queryExportStartedDialogText: {
     'en-us': `
       The query has begun executing. You will receive a notification when the
       results file is ready for download.`,

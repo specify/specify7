@@ -64,8 +64,8 @@ export function QuerySaveDialog({
     >
       <p>
         {isSaveAs
-          ? queryText('saveClonedQueryDialogMessage')
-          : queryText('saveQueryDialogMessage')}
+          ? queryText('saveClonedQueryDialogText')
+          : queryText('saveQueryDialogText')}
       </p>
       <Form
         className="contents"

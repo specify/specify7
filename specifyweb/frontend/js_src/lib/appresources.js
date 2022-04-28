@@ -240,7 +240,7 @@ const ResourceDataView = Backbone.View.extend({
             title: adminText('resourceLoadDialogTitle'),
             header: adminText('resourceLoadDialogHeader'),
             content: $('<div>')
-              .append(`<p>${adminText('resourceLoadDialogMessage')}</p>`)
+              .append(`<p>${adminText('resourceLoadDialogText')}</p>`)
               .append(fileInput),
             onClose: ()=>dialog.remove(),
             buttons: commonText('cancel'),

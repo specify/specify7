@@ -36,7 +36,7 @@ export const commonText = createDictionary({
     ca: 'You do not have access to this collection',
     'es-es': 'You do not have access to this collection',
   },
-  collectionAccessDeniedDialogMessage: {
+  collectionAccessDeniedDialogText: {
     'en-us': (collectionName: string) =>
       `The currently logged in account does not have access to the
        ${collectionName} collection.`,
@@ -62,7 +62,7 @@ export const commonText = createDictionary({
     ca: "L'usuari actual no té cap agent assignat",
     'es-es': 'Current user does not have an agent assigned',
   },
-  noAgentDialogMessage: {
+  noAgentDialogText: {
     'en-us': 'Please log in as admin and assign an agent to this user',
     'ru-ru':
       'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
@@ -601,7 +601,7 @@ export const commonText = createDictionary({
     ca: 'Update all export feed items now?',
     'es-es': 'Update all export feed items now?',
   },
-  updateExportFeedDialogMessage: {
+  updateExportFeedDialogText: {
     'en-us': 'Update all export feed items now?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
     ca: 'Update all export feed items now?',
@@ -619,7 +619,7 @@ export const commonText = createDictionary({
     ca: 'Export feed update started',
     'es-es': 'Export feed update started',
   },
-  feedExportStartedDialogMessage: {
+  feedExportStartedDialogText: {
     'en-us': `
       Update started. You will receive a notification for each feed item
       updated.`,
@@ -644,7 +644,7 @@ export const commonText = createDictionary({
     ca: 'DwCA export started',
     'es-es': 'DwCA export started',
   },
-  dwcaExportStartedDialogMessage: {
+  dwcaExportStartedDialogText: {
     'en-us': `
       Export started. You will receive a notification
       when the export is complete.`,
@@ -922,7 +922,7 @@ export const commonText = createDictionary({
     ca: 'An unexpected error has occurred',
     'es-es': 'An unexpected error has occurred',
   },
-  errorBoundaryDialogMessage: {
+  errorBoundaryDialogText: {
     'en-us': 'Please reload the page and try again.',
     'ru-ru': 'Пожалуйста, обновите страницу и попробуйте еще раз.',
     ca: 'Please reload the page and try again.',
@@ -1028,7 +1028,7 @@ export const commonText = createDictionary({
     ca: 'Are you sure you want to leave this page?',
     'es-es': 'Are you sure you want to leave this page?',
   },
-  leavePageDialogMessage: {
+  leavePageDialogText: {
     'en-us': 'Unsaved changes would be lost if your leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
@@ -1185,7 +1185,7 @@ export const commonText = createDictionary({
     ca: 'Specify version does not match database version',
     'es-es': 'Specify version does not match database version',
   },
-  versionMismatchDialogMessage: {
+  versionMismatchDialogText: {
     'en-us': (specifySixVersion: string, databaseVersion: string) => `
       The Specify version ${specifySixVersion} does not match the database
       version ${databaseVersion}.`,
@@ -1199,7 +1199,7 @@ export const commonText = createDictionary({
       The Specify version ${specifySixVersion} does not match the database
       version ${databaseVersion}.`,
   },
-  versionMismatchSecondDialogMessage: {
+  versionMismatchSecondDialogText: {
     'en-us':
       'Some features of Specify 7 may therefore fail to operate correctly.',
     'ru-ru': 'Поэтому некоторые функции Specify 7 могут неработать.',
@@ -1219,7 +1219,7 @@ export const commonText = createDictionary({
     ca: 'Item deleted',
     'es-es': 'Item deleted',
   },
-  resourceDeletedDialogMessage: {
+  resourceDeletedDialogText: {
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Успешно удален.',
     ca: 'Item was deleted successfully.',
@@ -1248,7 +1248,7 @@ export const commonText = createDictionary({
     ca: 'Insufficient Privileges',
     'es-es': 'Insufficient Privileges',
   },
-  sessionTimeOutDialogMessage: {
+  sessionTimeOutDialogText: {
     'en-us': `
       You lack sufficient privileges for that action, or your current
       session has been logged out.`,
@@ -1287,7 +1287,7 @@ export const commonText = createDictionary({
     ca: 'Help Localize Specify 7',
     'es-es': 'Help Localize Specify 7',
   },
-  helpLocalizeSpecifyDialogMessage: {
+  helpLocalizeSpecifyDialogText: {
     'en-us': (emailLink: JSX.Element) => (
       <>
         We would be very grateful for your support localizing Specify 7 User
@@ -1736,7 +1736,7 @@ export const commonText = createDictionary({
     ca: 'Clear Cache',
     'es-es': 'Clear Cache',
   },
-  cleanerCacheDialogMessage: {
+  cleanerCacheDialogText: {
     'en-us': 'Cache has been cleaned. Please reload the page.',
     'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
     ca: 'Cache has been cleaned. Please reload the page.',

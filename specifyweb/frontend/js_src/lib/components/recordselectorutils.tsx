@@ -498,7 +498,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 </>
               }
             >
-              {formsText('recordSelectorUnloadProtectDialogMessage')}
+              {formsText('recordSelectorUnloadProtectDialogText')}
             </Dialog>
           )}
         </>

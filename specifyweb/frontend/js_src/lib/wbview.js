@@ -258,7 +258,7 @@ const WBView = Backbone.View.extend({
                   </Link.Blue>
                 </>
               ),
-              content: wbText('noUploadPlanDialogMessage'),
+              content: wbText('noUploadPlanDialogText'),
             });
             this.$('.wb-validate, .wb-data-check')
               .prop('disabled', true)
@@ -1510,7 +1510,7 @@ const WBView = Backbone.View.extend({
         const dialog = showDialog({
           title: wbText('noDisambiguationResultsDialogTitle'),
           header: wbText('noDisambiguationResultsDialogHeader'),
-          content: wbText('noDisambiguationResultsDialogMessage'),
+          content: wbText('noDisambiguationResultsDialogText'),
           buttons: commonText('close'),
           onClose: () => dialog.remove(),
         });
@@ -1818,7 +1818,7 @@ const WBView = Backbone.View.extend({
     const dialog = showDialog({
       title: wbText('rollbackDialogTitle'),
       header: wbText('rollbackDialogHeader'),
-      content: wbText('rollbackDialogMessage'),
+      content: wbText('rollbackDialogText'),
       onClose: () => dialog.remove(),
       buttons: (
         <>
@@ -1846,7 +1846,7 @@ const WBView = Backbone.View.extend({
         const dialog = showDialog({
           title: wbText('startUploadDialogTitle'),
           header: wbText('startUploadDialogHeader'),
-          content: wbText('startUploadDialogMessage'),
+          content: wbText('startUploadDialogText'),
           onClose: () => dialog.remove(),
           buttons: (
             <>
@@ -1867,7 +1867,7 @@ const WBView = Backbone.View.extend({
       const dialog = showDialog({
         title: wbText('noUploadPlanDialogTitle'),
         header: wbText('noUploadPlanDialogHeader'),
-        content: wbText('noUploadPlanDialogMessage'),
+        content: wbText('noUploadPlanDialogText'),
         onClose: () => dialog.remove(),
         buttons: (
           <>
@@ -1933,7 +1933,7 @@ const WBView = Backbone.View.extend({
     const dialog = showDialog({
       title: wbText('deleteDataSetDialogTitle'),
       header: wbText('deleteDataSetDialogHeader'),
-      content: wbText('deleteDataSetDialogMessage'),
+      content: wbText('deleteDataSetDialogText'),
       onClose: () => dialog.remove(),
       buttons: (
         <>
@@ -1954,7 +1954,7 @@ const WBView = Backbone.View.extend({
                   showDialog({
                     title: wbText('dataSetDeletedDialogTitle'),
                     header: wbText('dataSetDeletedDialogHeader'),
-                    content: wbText('dataSetDeletedDialogMessage'),
+                    content: wbText('dataSetDeletedDialogText'),
                     onClose: () => goTo('/'),
                     buttons: commonText('close'),
                   });
@@ -1984,7 +1984,7 @@ const WBView = Backbone.View.extend({
     const dialog = showDialog({
       title: wbText('revertChangesDialogTitle'),
       header: wbText('revertChangesDialogHeader'),
-      content: wbText('revertChangesDialogMessage'),
+      content: wbText('revertChangesDialogText'),
       onClose: () => dialog.remove(),
       buttons: (
         <>
@@ -2343,7 +2343,7 @@ const WBView = Backbone.View.extend({
     this.$('.wb-show-upload-view')
       .prop('disabled', true)
       .prop('title', wbText('wbUploadedUnavailable'));
-    addUnloadProtect(this, wbText('onExitDialogMessage'));
+    addUnloadProtect(this, wbText('onExitDialogText'));
   },
   // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(statusCode) {
@@ -2448,29 +2448,29 @@ const WBView = Backbone.View.extend({
           ? {
               title: wbText('validationNoErrorsDialogTitle'),
               header: wbText('validationNoErrorsDialogHeader'),
-              message: wbText('validationNoErrorsDialogMessage'),
+              message: wbText('validationNoErrorsDialogText'),
             }
           : {
               title: wbText('validationErrorsDialogTitle'),
               header: wbText('validationErrorsDialogHeader'),
-              message: wbText('validationErrorsDialogMessage'),
+              message: wbText('validationErrorsDialogText'),
             },
       upload:
         cellCounts.invalidCells === 0
           ? {
               title: wbText('uploadNoErrorsDialogTitle'),
               header: wbText('uploadNoErrorsDialogHeader'),
-              message: wbText('uploadNoErrorsDialogMessage'),
+              message: wbText('uploadNoErrorsDialogText'),
             }
           : {
               title: wbText('uploadErrorsDialogTitle'),
               header: wbText('uploadErrorsDialogHeader'),
-              message: wbText('uploadErrorsDialogMessage'),
+              message: wbText('uploadErrorsDialogText'),
             },
       unupload: {
         title: wbText('dataSetRollbackDialogTitle'),
         header: wbText('dataSetRollbackDialogHeader'),
-        message: wbText('dataSetRollbackDialogMessage'),
+        message: wbText('dataSetRollbackDialogText'),
       },
     };
 
@@ -2503,10 +2503,10 @@ const WBView = Backbone.View.extend({
           : wbText('uploadCanceledDialogHeader'),
       content:
         this.refreshInitiatedBy === 'validate'
-          ? wbText('validationCanceledDialogMessage')
+          ? wbText('validationCanceledDialogText')
           : this.refreshInitiatedBy === 'unupload'
-          ? wbText('rollbackCanceledDialogMessage')
-          : wbText('uploadCanceledDialogMessage'),
+          ? wbText('rollbackCanceledDialogText')
+          : wbText('uploadCanceledDialogText'),
       onClose: () => dialog.remove(),
       buttons: commonText('close'),
     });

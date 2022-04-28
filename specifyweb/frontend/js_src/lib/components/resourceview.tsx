@@ -159,7 +159,7 @@ const resourceDeletedDialog = (
     buttons={commonText('close')}
     onClose={(): void => goTo('/')}
   >
-    {commonText('resourceDeletedDialogMessage')}
+    {commonText('resourceDeletedDialogText')}
   </Dialog>
 );
 

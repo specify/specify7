@@ -223,8 +223,8 @@ function DataSets({
       {datasets.length === 0 ? (
         <p>
           {showTemplates
-            ? wbText('wbsDialogEmptyTemplateDialogMessage')
-            : `${wbText('wbsDialogEmptyDefaultDialogMessage')} ${
+            ? wbText('wbsDialogEmptyTemplateDialogText')
+            : `${wbText('wbsDialogEmptyDefaultDialogText')} ${
                 canImport ? wbText('createDataSetInstructions') : ''
               }`}
         </p>

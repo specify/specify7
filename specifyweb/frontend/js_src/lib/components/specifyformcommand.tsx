@@ -56,7 +56,7 @@ const commandRenderers: {
             buttons={commonText('close')}
             onClose={(): void => setRunReport(false)}
           >
-            {formsText('reportsCanNotBePrintedDialogMessage')}
+            {formsText('reportsCanNotBePrintedDialogText')}
           </Dialog>
         ) : undefined}
       </>
@@ -117,7 +117,7 @@ const commandRenderers: {
           header={formsText('unavailableCommandDialogHeader')}
           buttons={commonText('close')}
         >
-          {formsText('unavailableCommandDialogMessage')}
+          {formsText('unavailableCommandDialogText')}
           <br />
           {`${formsText('commandName')} ${name ?? commonText('nullInline')}`}
         </Dialog>

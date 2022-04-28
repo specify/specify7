@@ -254,12 +254,12 @@ export function Main({
           forceToTop={true}
         >
           <p>
-            {commonText('versionMismatchDialogMessage')(
+            {commonText('versionMismatchDialogText')(
               getSystemInfo().specify6_version,
               getSystemInfo().database_version
             )}
           </p>
-          <p>{commonText('versionMismatchSecondDialogMessage')}</p>
+          <p>{commonText('versionMismatchSecondDialogText')}</p>
         </Dialog>
       )}
       {hasAgent ? (
@@ -279,7 +279,7 @@ export function Main({
           }
           forceToTop={true}
         >
-          {commonText('noAgentDialogMessage')}
+          {commonText('noAgentDialogText')}
         </Dialog>
       )}
     </>

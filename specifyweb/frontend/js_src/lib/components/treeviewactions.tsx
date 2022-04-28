@@ -311,7 +311,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           onClose={handleCancelAction}
           buttons={commonText('close')}
         >
-          {treeText('actionFailedDialogMessage')}
+          {treeText('actionFailedDialogText')}
           <br />
           {error}
         </Dialog>

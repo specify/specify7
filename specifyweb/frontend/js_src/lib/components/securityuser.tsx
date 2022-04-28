@@ -445,7 +445,7 @@ export function UserView({
           onClose={(): void => setState({ type: 'Main' })}
           buttons={commonText('close')}
         >
-          {adminText('noAdminsErrorDialogMessage')}
+          {adminText('noAdminsErrorDialogText')}
         </Dialog>
       )}
     </Container.Base>

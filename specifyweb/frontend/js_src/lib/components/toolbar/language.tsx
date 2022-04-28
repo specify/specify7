@@ -51,7 +51,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             container: dialogClassNames.narrowContainer,
           }}
         >
-          <p>{commonText('helpLocalizeSpecifyDialogMessage')(supportLink)}</p>
+          <p>{commonText('helpLocalizeSpecifyDialogText')(supportLink)}</p>
         </Dialog>
       ) : typeof languages === 'object' ? (
         <Select

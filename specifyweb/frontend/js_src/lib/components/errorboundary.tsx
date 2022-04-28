@@ -101,7 +101,7 @@ function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {commonText('errorBoundaryDialogMessage')}
+        {commonText('errorBoundaryDialogText')}
         <br />
         {commonText('errorBoundaryDialogSecondMessage')(supportLink)}
       </p>
@@ -434,7 +434,7 @@ function PermissionError({
       }
       buttons={commonText('logIn')}
     >
-      {commonText('sessionTimeOutDialogMessage')}
+      {commonText('sessionTimeOutDialogText')}
     </Dialog>
   );
 }

@@ -38,7 +38,7 @@ function QueryButton({
     <ButtonWithConfirmation
       dialogTitle={queryText('queryDeleteIncompleteDialogTitle')}
       dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
-      dialogMessage={queryText('queryDeleteIncompleteDialogMessage')}
+      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
       dialogButtons={(confirm): JSX.Element => (
         <>
           <Button.Orange onClick={confirm}>
@@ -193,7 +193,7 @@ export function MakeRecordSetButton({
                 onClose={(): void => setState(undefined)}
                 buttons={undefined}
               >
-                {queryText('recordSetToQueryDialogMessage')}
+                {queryText('recordSetToQueryDialogText')}
                 {loadingBar}
               </Dialog>
             )}
@@ -215,7 +215,7 @@ export function MakeRecordSetButton({
               </>
             }
           >
-            {queryText('recordSetCreatedDialogMessage')}
+            {queryText('recordSetCreatedDialogText')}
           </Dialog>
         ) : undefined
       ) : undefined}
@@ -263,7 +263,7 @@ export function QueryExportButtons({
           onClose={(): void => setState(undefined)}
           buttons={commonText('close')}
         >
-          {queryText('queryExportStartedDialogMessage')}
+          {queryText('queryExportStartedDialogText')}
         </Dialog>
       ) : state === 'warning' ? (
         <Dialog
@@ -272,7 +272,7 @@ export function QueryExportButtons({
           onClose={(): void => setState(undefined)}
           buttons={commonText('close')}
         >
-          {queryText('unableToExportAsKmlDialogMessage')}
+          {queryText('unableToExportAsKmlDialogText')}
         </Dialog>
       ) : undefined}
       {hasPermission('/querybuilder/query', 'export_csv') && (

@@ -211,7 +211,7 @@ export function SetPasswordPrompt({
         </>
       }
     >
-      {adminText('setPasswordDialogMessage')}
+      {adminText('setPasswordDialogText')}
     </Dialog>
   );
 }

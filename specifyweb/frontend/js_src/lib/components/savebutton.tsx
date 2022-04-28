@@ -188,7 +188,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           }
           onClose={undefined}
         >
-          {formsText('saveConflictDialogMessage')}
+          {formsText('saveConflictDialogText')}
         </Dialog>
       ) : showSaveBlockedDialog ? (
         <Dialog
@@ -197,7 +197,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           buttons={commonText('close')}
           onClose={(): void => setShowBlockedDialog(false)}
         >
-          <p>{formsText('saveBlockedDialogMessage')}</p>
+          <p>{formsText('saveBlockedDialogText')}</p>
           <Ul>
             {Array.from(
               resource.saveBlockers?.blockingResources ?? [],

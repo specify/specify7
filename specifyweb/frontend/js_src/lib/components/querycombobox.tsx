@@ -588,9 +588,7 @@ export function QueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}
         >
-          {commonText('collectionAccessDeniedDialogMessage')(
-            state.collectionName
-          )}
+          {commonText('collectionAccessDeniedDialogText')(state.collectionName)}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

@@ -136,7 +136,7 @@ function WbStatus({
 
   if (state.aborted === 'pending') message = wbText('aborting');
   else if (state.status.taskstatus === 'PENDING')
-    message = wbText('wbStatusPendingDialogMessage')(mappedOperation);
+    message = wbText('wbStatusPendingDialogText')(mappedOperation);
   else if (state.status.taskstatus === 'PROGRESS') {
     if (current === total)
       message =
@@ -152,7 +152,7 @@ function WbStatus({
   } else
     message = (
       <>
-        {wbText('wbStatusErrorDialogMessage')(
+        {wbText('wbStatusErrorDialogText')(
           // FAILED
           mappedOperation
         )}

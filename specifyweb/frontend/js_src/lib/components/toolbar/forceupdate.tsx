@@ -30,7 +30,7 @@ function ForceUpdateFeed({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      {commonText('feedExportStartedDialogMessage')}
+      {commonText('feedExportStartedDialogText')}
     </Dialog>
   ) : (
     <Dialog
@@ -56,7 +56,7 @@ function ForceUpdateFeed({
         </>
       }
     >
-      {commonText('updateExportFeedDialogMessage')}
+      {commonText('updateExportFeedDialogText')}
     </Dialog>
   );
 }

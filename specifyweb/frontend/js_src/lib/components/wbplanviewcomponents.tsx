@@ -177,7 +177,7 @@ export function ValidationButton(props: {
         onClose={handleHide}
         buttons={commonText('close')}
       >
-        {wbText('nothingToValidateDialogMessage')}
+        {wbText('nothingToValidateDialogText')}
       </Dialog>
     </>
   );

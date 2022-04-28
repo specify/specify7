@@ -181,7 +181,7 @@ export const wbText = createDictionary({
     ca: 'No Upload Plan is Defined',
     'es-es': 'No Upload Plan is Defined',
   },
-  noUploadPlanDialogMessage: {
+  noUploadPlanDialogText: {
     'en-us':
       'No Upload Plan has been defined for this Data Set. Create one now?',
     'ru-ru':
@@ -202,7 +202,7 @@ export const wbText = createDictionary({
     ca: 'Unable to disambiguate',
     'es-es': 'Unable to disambiguate',
   },
-  noDisambiguationResultsDialogMessage: {
+  noDisambiguationResultsDialogText: {
     'en-us': `
       None of the matched records currently exist in the database.
       This can happen if all of the matching records were deleted since the
@@ -256,7 +256,7 @@ export const wbText = createDictionary({
     ca: 'Begin Data Set Roll Back?',
     'es-es': 'Begin Data Set Roll Back?',
   },
-  rollbackDialogMessage: {
+  rollbackDialogText: {
     'en-us': `
       Rolling back will remove the new data records this Data Set added to the
       Specify database. The entire rollback will be cancelled if any of the
@@ -289,7 +289,7 @@ export const wbText = createDictionary({
     ca: 'Begin Data Set Upload?',
     'es-es': 'Begin Data Set Upload?',
   },
-  startUploadDialogMessage: {
+  startUploadDialogText: {
     'en-us': `
       Uploading the Data Set will add the data to the Specify database.`,
     'ru-ru': `
@@ -311,7 +311,7 @@ export const wbText = createDictionary({
     ca: 'Delete this Data Set?',
     'es-es': 'Delete this Data Set?',
   },
-  deleteDataSetDialogMessage: {
+  deleteDataSetDialogText: {
     'en-us': `
       Deleting a Data Set permanently removes it and its Upload Plan.
       Data mappings will no longer be available for re-use with other
@@ -343,7 +343,7 @@ export const wbText = createDictionary({
     ca: 'Data Set successfully deleted',
     'es-es': 'Data Set successfully deleted',
   },
-  dataSetDeletedDialogMessage: {
+  dataSetDeletedDialogText: {
     'en-us': 'Data Set successfully deleted.',
     'ru-ru': 'Набор данных успешно удален.',
     ca: 'Data Set successfully deleted.',
@@ -361,7 +361,7 @@ export const wbText = createDictionary({
     ca: 'Revert Unsaved Changes?',
     'es-es': 'Revert Unsaved Changes?',
   },
-  revertChangesDialogMessage: {
+  revertChangesDialogText: {
     'en-us': `
       This action will discard all changes made to the Data Set since
       the last Save.`,
@@ -381,7 +381,7 @@ export const wbText = createDictionary({
     ca: 'Saving',
     'es-es': 'Saving',
   },
-  onExitDialogMessage: {
+  onExitDialogText: {
     'en-us': 'Changes to this Data Set have not been Saved.',
     'ru-ru': 'Изменения в этом наборе данных не были сохранены.',
     ca: 'Changes to this Data Set have not been Saved.',
@@ -452,7 +452,7 @@ export const wbText = createDictionary({
     ca: 'Validate Completed with No Errors',
     'es-es': 'Validate Completed with No Errors',
   },
-  validationNoErrorsDialogMessage: {
+  validationNoErrorsDialogText: {
     'en-us': (
       <>
         Validation found no errors, it is ready to be uploaded into the
@@ -506,7 +506,7 @@ export const wbText = createDictionary({
     ca: 'Validate Completed with Errors',
     'es-es': 'Validate Completed with Errors',
   },
-  validationErrorsDialogMessage: {
+  validationErrorsDialogText: {
     'en-us': (
       <>
         Validation found errors in the Data Set.
@@ -556,7 +556,7 @@ export const wbText = createDictionary({
     ca: 'Upload Completed with No Errors',
     'es-es': 'Upload Completed with No Errors',
   },
-  uploadNoErrorsDialogMessage: {
+  uploadNoErrorsDialogText: {
     'en-us': `
       Click on the "Results" button to see the number of new records
       added to each database table.`,
@@ -582,7 +582,7 @@ export const wbText = createDictionary({
     ca: 'Upload Failed due to Error Cells',
     'es-es': 'Upload Failed due to Error Cells',
   },
-  uploadErrorsDialogMessage: {
+  uploadErrorsDialogText: {
     'en-us': (
       <>
         The upload failed due to one or more cell value errors.
@@ -633,7 +633,7 @@ export const wbText = createDictionary({
     ca: 'Data Set was rolled back successfully',
     'es-es': 'Data Set was rolled back successfully',
   },
-  dataSetRollbackDialogMessage: {
+  dataSetRollbackDialogText: {
     'en-us':
       'This Rolledback Data Set is saved, and can be edited or re-uploaded.',
     'ru-ru': `Этот набор данных отката сохранянен, и его можно редактировать или
@@ -654,7 +654,7 @@ export const wbText = createDictionary({
     ca: 'Validation Canceled',
     'es-es': 'Validation Canceled',
   },
-  validationCanceledDialogMessage: {
+  validationCanceledDialogText: {
     'en-us': 'Data Set Validation cancelled.',
     'ru-ru': 'Проверка набора данных отменена.',
     ca: 'Data Set Validation cancelled.',
@@ -672,7 +672,7 @@ export const wbText = createDictionary({
     ca: 'Rollback Canceled',
     'es-es': 'Rollback Canceled',
   },
-  rollbackCanceledDialogMessage: {
+  rollbackCanceledDialogText: {
     'en-us': 'Data Set Rollback cancelled.',
     'ru-ru': 'Откат набора данных отменен.',
     ca: 'Data Set Rollback cancelled.',
@@ -690,7 +690,7 @@ export const wbText = createDictionary({
     ca: 'Upload Canceled',
     'es-es': 'Upload Canceled',
   },
-  uploadCanceledDialogMessage: {
+  uploadCanceledDialogText: {
     'en-us': 'Data Set Upload cancelled.',
     'ru-ru': 'Загрузка набора данных отменена.',
     ca: 'Data Set Upload cancelled.',
@@ -1147,7 +1147,7 @@ export const wbText = createDictionary({
     ca: 'Validation found missing mappings:',
     'es-es': 'Validation found missing mappings:',
   },
-  validationFailedDialogMessage: {
+  validationFailedDialogText: {
     'en-us': `
       This data mapping is missing one or more data fields required for
       uploading by your Specify configuration. Add the missing mappings
@@ -1286,7 +1286,7 @@ export const wbText = createDictionary({
     ca: 'Change the Base Table for Mapping Data Set Columns?',
     'es-es': 'Change the Base Table for Mapping Data Set Columns?',
   },
-  goToBaseTableDialogMessage: {
+  goToBaseTableDialogText: {
     'en-us': `
       Choosing a different Base Table for a Data Set Upload will make that
       table the new starting point for column-to-data field mappings and
@@ -1368,7 +1368,7 @@ export const wbText = createDictionary({
     ca: 'Empty Data Set',
     'es-es': 'Empty Data Set',
   },
-  emptyDataSetDialogMessage: {
+  emptyDataSetDialogText: {
     'en-us': (
       <>
         This Data Set doesn&apos;t have any columns.
@@ -1414,7 +1414,7 @@ export const wbText = createDictionary({
     ca: 'Automap to start a new Upload Plan?',
     'es-es': 'Automap to start a new Upload Plan?',
   },
-  reRunAutoMapperDialogMessage: {
+  reRunAutoMapperDialogText: {
     'en-us': 'This will erase existing data field mappings.',
     'ru-ru': 'Это сотрет существующие сопоставления.',
     ca: 'This will erase existing data field mappings.',
@@ -1432,7 +1432,7 @@ export const wbText = createDictionary({
     ca: 'There are no mappings to validate',
     'es-es': 'There are no mappings to validate',
   },
-  nothingToValidateDialogMessage: {
+  nothingToValidateDialogText: {
     'en-us': 'Please map some headers before running the validation.',
     'ru-ru':
       'Пожалуйста, сопоставьте некоторые заголовки перед запуском проверки.',
@@ -1445,13 +1445,13 @@ export const wbText = createDictionary({
     ca: 'Change Matching Logic',
     'es-es': 'Change Matching Logic',
   },
-  matchingLogicDialogMessage: {
+  matchingLogicDialogText: {
     'en-us': 'Require Data to Match Existing Records',
     'ru-ru': 'Требовать сопоставления данных с существующими записями',
     ca: 'Require Data to Match Existing Records',
     'es-es': 'Require Data to Match Existing Records',
   },
-  matchingLogicUnavailableDialogMessage: {
+  matchingLogicUnavailableDialogText: {
     'en-us': 'Matching logic is unavailable for current mappings',
     'ru-ru': 'Логика соответствия недоступна для текущих сопоставлений',
     ca: 'Matching logic is unavailable for current mappings',
@@ -1494,7 +1494,7 @@ export const wbText = createDictionary({
     ca: (dataSetCount: number) => `Data Sets (${dataSetCount})`,
     'es-es': (dataSetCount: number) => `Data Sets (${dataSetCount})`,
   },
-  wbsDialogEmptyDefaultDialogMessage: {
+  wbsDialogEmptyDefaultDialogText: {
     'en-us': 'Currently no Data Sets exist.',
     'ru-ru': 'В настоящее время наборов данных не существует.',
     ca: 'Currently no Data Sets exist.',
@@ -1506,7 +1506,7 @@ export const wbText = createDictionary({
     ca: 'Copy plan from existing Data Set',
     'es-es': 'Copy plan from existing Data Set',
   },
-  wbsDialogEmptyTemplateDialogMessage: {
+  wbsDialogEmptyTemplateDialogText: {
     'en-us':
       'There are no plans available, please continue to create an upload plan.',
     'ru-ru': 'Нет доступных планов, продолжайте создавать план загрузки.',
@@ -1603,7 +1603,7 @@ export const wbText = createDictionary({
     ca: 'Change Data Set Owner',
     'es-es': 'Change Data Set Owner',
   },
-  changeDataSetOwnerDialogMessage: {
+  changeDataSetOwnerDialogText: {
     'en-us': 'Select New Owner:',
     'ru-ru': 'Выберите нового владельца:',
     ca: 'Select New Owner:',
@@ -1621,7 +1621,7 @@ export const wbText = createDictionary({
     ca: 'Data Set owner changed',
     'es-es': 'Data Set owner changed',
   },
-  dataSetOwnerChangedDialogMessage: {
+  dataSetOwnerChangedDialogText: {
     'en-us': 'Data Set owner changed.',
     'ru-ru': 'Владелец набора данных изменен',
     ca: 'Data Set owner changed.',
@@ -1691,7 +1691,7 @@ export const wbText = createDictionary({
     'es-es': (operationName: string, current: number, total: number) =>
       `${operationName} row ${current}/${total}`,
   },
-  wbStatusPendingDialogMessage: {
+  wbStatusPendingDialogText: {
     'en-us': (operationName: string) => (
       <>
         {operationName} of this Data Set should begin shortly.
@@ -1737,7 +1737,7 @@ export const wbText = createDictionary({
       </>
     ),
   },
-  wbStatusErrorDialogMessage: {
+  wbStatusErrorDialogText: {
     'en-us': (operationName: string) =>
       `Error occurred during ${operationName}`,
     'ru-ru': (operationName: string) =>
@@ -1752,7 +1752,7 @@ export const wbText = createDictionary({
     ca: 'Updating trees...',
     'es-es': 'Updating trees...',
   },
-  invalidTemplateDialogMessage: {
+  invalidTemplateDialogText: {
     'en-us':
       'Selected Data Set has no upload plan. Please select a different one.',
     'ru-ru': `Выбранный набор данных не имеет плана загрузки. Выберите другой

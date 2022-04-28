@@ -278,7 +278,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
               </>
             }
           >
-            {formsText('removeRecordDialogMessage')}
+            {formsText('removeRecordDialogText')}
           </Dialog>
         ) : state.type === 'addBySearch' &&
           typeof handleAdded === 'function' ? (

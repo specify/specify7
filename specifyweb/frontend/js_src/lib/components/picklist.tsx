@@ -250,7 +250,7 @@ function AddingToPicklist({
         </>
       }
     >
-      {formsText('addToPickListConfirmationDialogMessage')(
+      {formsText('addToPickListConfirmationDialogText')(
         value,
         pickList.get('name')
       )}

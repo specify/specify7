@@ -193,7 +193,7 @@ var FixImagesDialog = Backbone.View.extend({
     },
     render: function() {
         this.$el.attr('title', formsText('reportProblemsDialogTitle'))
-            .append(`<p>${formsText('reportsProblemsDialogMessage')}</p>`);
+            .append(`<p>${formsText('reportsProblemsDialogText')}</p>`);
         var badImageExprs = this.imageFixResult.badImageExpressions;
         var missingAttachments = this.imageFixResult.missingAttachments;
         if (badImageExprs.length) {

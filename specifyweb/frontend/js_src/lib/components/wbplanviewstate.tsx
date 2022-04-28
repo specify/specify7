@@ -36,7 +36,7 @@ function TemplateSelection({
           onClose={handleValid}
           buttons={commonText('close')}
         >
-          {wbText('invalidTemplateDialogMessage')}
+          {wbText('invalidTemplateDialogText')}
         </Dialog>
       )}
       <WbsDialog

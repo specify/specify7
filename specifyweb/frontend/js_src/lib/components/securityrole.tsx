@@ -75,7 +75,7 @@ export function RoleView({
     JSON.stringify(initialRole) !== JSON.stringify(role);
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
-    commonText('leavePageDialogMessage')
+    commonText('leavePageDialogText')
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>
@@ -256,7 +256,7 @@ export function RoleView({
           }
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {adminText('deleteRoleDialogMessage')}
+          {adminText('deleteRoleDialogText')}
         </Dialog>
       )}
     </Form>

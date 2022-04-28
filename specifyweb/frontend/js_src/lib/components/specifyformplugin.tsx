@@ -45,7 +45,7 @@ function WrongTable({
         header={formsText('unavailablePluginDialogHeader')}
         buttons={commonText('close')}
       >
-        {formsText('wrongTablePluginDialogMessage')(
+        {formsText('wrongTablePluginDialogText')(
           resource.specifyModel.name,
           allowedTable
         )}
@@ -234,7 +234,7 @@ const pluginRenderers: {
           header={formsText('unavailablePluginDialogHeader')}
           buttons={commonText('close')}
         >
-          {formsText('unavailablePluginDialogMessage')}
+          {formsText('unavailablePluginDialogText')}
           <br />
           {`${formsText('pluginName')} ${name ?? commonText('nullInline')}`}
         </Dialog>

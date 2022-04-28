@@ -25,7 +25,7 @@ export const specifyNetworkText = createDictionary({
     ca: "No s'ha pogut obrir la pàgina de Specify Network",
     'es-es': 'Failed to open Specify Network Page',
   },
-  failedToOpenPopUpDialogMessage: {
+  failedToOpenPopUpDialogText: {
     'en-us': `
       Please make sure your browser is not blocking pop-up windows and
       try again

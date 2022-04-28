@@ -220,7 +220,7 @@ function CreateRecordSet({
           onClose={(): void => setState({ type: 'Main' })}
           buttons={undefined}
         >
-          {queryText('recordSetToQueryDialogMessage')}
+          {queryText('recordSetToQueryDialogText')}
           {loadingBar}
         </Dialog>
       )}
@@ -238,7 +238,7 @@ function CreateRecordSet({
             </>
           }
         >
-          {queryText('recordSetCreatedDialogMessage')}
+          {queryText('recordSetCreatedDialogText')}
         </Dialog>
       )}
     </>

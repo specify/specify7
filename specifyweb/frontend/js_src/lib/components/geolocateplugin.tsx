@@ -114,7 +114,7 @@ function GeoLocate({
       header={localityText('geographyRequiredDialogHeader')}
       buttons={commonText('close')}
     >
-      {localityText('geographyRequiredDialogMessage')}
+      {localityText('geographyRequiredDialogText')}
     </Dialog>
   ) : (
     <Dialog

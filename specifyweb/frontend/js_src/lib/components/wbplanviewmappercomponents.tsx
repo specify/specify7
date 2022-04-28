@@ -89,7 +89,7 @@ export function ValidationResults(props: {
         </>
       }
     >
-      <p>{wbText('validationFailedDialogMessage')}</p>
+      <p>{wbText('validationFailedDialogText')}</p>
       <section className="gap-x-2 flex flex-col">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
@@ -196,7 +196,7 @@ export function EmptyDataSetDialog({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      {wbText('emptyDataSetDialogMessage')}
+      {wbText('emptyDataSetDialogText')}
     </Dialog>
   );
 }
@@ -314,7 +314,7 @@ export function ChangeBaseTable({
     <ButtonWithConfirmation
       dialogTitle={wbText('goToBaseTableDialogTitle')}
       dialogHeader={wbText('goToBaseTableDialogHeader')}
-      dialogMessage={wbText('goToBaseTableDialogMessage')}
+      dialogMessage={wbText('goToBaseTableDialogText')}
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -341,7 +341,7 @@ export function ReRunAutoMapper({
     <ButtonWithConfirmation
       dialogTitle={wbText('reRunAutoMapperDialogTitle')}
       dialogHeader={wbText('reRunAutoMapperDialogHeader')}
-      dialogMessage={wbText('reRunAutoMapperDialogMessage')}
+      dialogMessage={wbText('reRunAutoMapperDialogText')}
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -423,12 +423,10 @@ export function MustMatch({
           }
         >
           {Object.keys(localPreferences).length === 0 ? (
-            wbText('matchingLogicUnavailableDialogMessage')
+            wbText('matchingLogicUnavailableDialogText')
           ) : (
             <>
-              <p id={id('description')}>
-                {wbText('matchingLogicDialogMessage')}
-              </p>
+              <p id={id('description')}>{wbText('matchingLogicDialogText')}</p>
               <table
                 className="grid-table grid-cols-[auto_auto] gap-2"
                 aria-describedby={id('description')}

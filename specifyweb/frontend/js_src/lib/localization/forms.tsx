@@ -123,7 +123,7 @@ export const formsText = createDictionary({
     ca: 'Delete blocked',
     'es-es': 'Delete blocked',
   },
-  deleteBlockedDialogMessage: {
+  deleteBlockedDialogText: {
     'en-us': `
       The resource cannot be deleted because it is referenced through the
       following fields:`,
@@ -322,7 +322,7 @@ export const formsText = createDictionary({
     ca: 'Geography Required',
     'es-es': 'Geography Required',
   },
-  paleoRequiresGeographyDialogMessage: {
+  paleoRequiresGeographyDialogText: {
     'en-us': `
       The Paleo Map plugin requires that the locality have geographic
       coordinates and that the paleo context have a geographic age with at
@@ -352,7 +352,7 @@ export const formsText = createDictionary({
     ca: 'Incorrect Form',
     'es-es': 'Incorrect Form',
   },
-  unsupportedFormDialogMessage: {
+  unsupportedFormDialogText: {
     'en-us': `
       This plugin cannot be used on this form. Try moving it to the locality,
       collecting event or collection object forms.`,
@@ -386,7 +386,7 @@ export const formsText = createDictionary({
     ca: 'Are you sure you want to permanently delete this item(s)?',
     'es-es': 'Are you sure you want to permanently delete this item(s)?',
   },
-  deleteConfirmationDialogMessage: {
+  deleteConfirmationDialogText: {
     'en-us': 'This action cannot be undone.',
     'ru-ru': 'Это действие не может быть отменено.',
     ca: 'This action cannot be undone.',
@@ -436,7 +436,7 @@ export const formsText = createDictionary({
     ca: 'Add to pick list?',
     'es-es': 'Add to pick list?',
   },
-  addToPickListConfirmationDialogMessage: {
+  addToPickListConfirmationDialogText: {
     'en-us': (value: string, pickListName: string) =>
       `Add value "${value}" to the pick list named ${pickListName}?`,
     'ru-ru': (value: string, pickListName: string) =>
@@ -460,7 +460,7 @@ export const formsText = createDictionary({
     ca: 'Remove record?',
     'es-es': 'Remove record?',
   },
-  removeRecordDialogMessage: {
+  removeRecordDialogText: {
     'en-us': 'Are you sure you want to remove this record?',
     'ru-ru': 'Вы уверены, что хотите удалить эту запись?',
     ca: 'Are you sure you want to remove this record?',
@@ -488,7 +488,7 @@ export const formsText = createDictionary({
       records will NOT be deleted.`,
   },
   // Reports
-  reportsCanNotBePrintedDialogMessage: {
+  reportsCanNotBePrintedDialogText: {
     'en-us': 'Reports/Labels cannot be printed in this context.',
     'ru-ru': 'Отчеты / этикетки не могут быть напечатаны в этом контексте.',
     ca: 'Reports/Labels cannot be printed in this context.',
@@ -506,7 +506,7 @@ export const formsText = createDictionary({
     ca: 'Problems with report',
     'es-es': 'Problems with report',
   },
-  reportsProblemsDialogMessage: {
+  reportsProblemsDialogText: {
     'en-us': 'The selected report has the following problems:',
     'ru-ru': 'В выбранном отчете есть следующие проблемы:',
     ca: 'The selected report has the following problems:',
@@ -617,7 +617,7 @@ export const formsText = createDictionary({
     ca: 'Save conflict',
     'es-es': 'Save conflict',
   },
-  saveConflictDialogMessage: {
+  saveConflictDialogText: {
     'en-us': `
       The data shown on this page has been changed by another user or in
       another browser tab and is out of date. The page must be reloaded to
@@ -647,7 +647,7 @@ export const formsText = createDictionary({
     ca: 'Save blocked',
     'es-es': 'Save blocked',
   },
-  saveBlockedDialogMessage: {
+  saveBlockedDialogText: {
     'en-us': 'Form cannot be saved while the following errors exist:',
     'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
     ca: 'Form cannot be saved while the following errors exist:',
@@ -698,7 +698,7 @@ export const formsText = createDictionary({
     ca: 'Command Not Available',
     'es-es': 'Command Not Available',
   },
-  unavailableCommandDialogMessage: {
+  unavailableCommandDialogText: {
     'en-us': `
       This command is currently unavailable for <i>Specify&nbsp7</i>
       It was probably included on this form from <i>Specify&nbsp6</i> and
@@ -741,7 +741,7 @@ export const formsText = createDictionary({
     ca: 'Plugin Not Available',
     'es-es': 'Plugin Not Available',
   },
-  unavailablePluginDialogMessage: {
+  unavailablePluginDialogText: {
     'en-us': `
       This plugin is currently unavailable for <i>Specify&nbsp7</i>
       It was probably included on this form from <i>Specify&nbsp6</i> and
@@ -759,7 +759,7 @@ export const formsText = createDictionary({
       It was probably included on this form from <i>Specify&nbsp6</i> and
       may be supported in the future.`,
   },
-  wrongTablePluginDialogMessage: {
+  wrongTablePluginDialogText: {
     'en-us': (currentTable: string, correctTable: string) => `
       The plugin cannot be used on the ${currentTable} form.
       It can only be used on the ${correctTable} form.`,
@@ -923,7 +923,7 @@ export const formsText = createDictionary({
     ca: 'Proceed without saving?',
     'es-es': 'Proceed without saving?',
   },
-  recordSelectorUnloadProtectDialogMessage: {
+  recordSelectorUnloadProtectDialogText: {
     'en-us': 'You might want to save this record before navigating away.',
     'ru-ru': 'Не забудьте сохранить эту запись, прежде чем закрыть ее.',
     ca: 'You might want to save this record before navigating away.',

@@ -20,7 +20,7 @@ import { LoadingContext } from './contexts';
  */
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
-  deletionMessage = formsText('deleteConfirmationDialogMessage'),
+  deletionMessage = formsText('deleteConfirmationDialogText'),
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -99,7 +99,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               container: dialogClassNames.narrowContainer,
             }}
           >
-            {formsText('deleteBlockedDialogMessage')}
+            {formsText('deleteBlockedDialogText')}
             <Ul>
               {blockers.map((blocker, index) => (
                 <li key={index}>{blocker}</li>

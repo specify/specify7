@@ -253,7 +253,7 @@ function ChangeOwner({
       onClose={(): void => goTo('/specify/')}
       buttons={commonText('close')}
     >
-      <p>{wbText('dataSetOwnerChangedDialogMessage')}</p>
+      <p>{wbText('dataSetOwnerChangedDialogText')}</p>
     </Dialog>
   ) : (
     <Dialog
@@ -290,7 +290,7 @@ function ChangeOwner({
         }
       >
         <Label.Generic>
-          <p>{wbText('changeDataSetOwnerDialogMessage')}</p>
+          <p>{wbText('changeDataSetOwnerDialogText')}</p>
           <Select
             size={10}
             value={newOwner}
