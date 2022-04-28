@@ -137,11 +137,15 @@ function TreeView<SCHEMA extends AnyTree>({
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
   const reduceTransparency = useReducedTransparency();
-  const [treeColor] = usePref('treeEditor', treeToPref[tableName], 'treeColor');
-  const [synonomyColor] = usePref(
+  const [treeAccentColor] = usePref(
     'treeEditor',
     treeToPref[tableName],
-    'synonomyColor'
+    'treeAccentColor'
+  );
+  const [synonomColor] = usePref(
+    'treeEditor',
+    treeToPref[tableName],
+    'synonomColor'
   );
 
   return typeof rows === 'undefined' ? null : (
@@ -250,8 +254,8 @@ function TreeView<SCHEMA extends AnyTree>({
         style={
           {
             '--cols': treeDefinitionItems.length,
-            '--middleColor': `${treeColor}33`,
-            '--edgeColor': `${treeColor}00`,
+            '--middleColor': `${treeAccentColor}33`,
+            '--edgeColor': `${treeAccentColor}00`,
           } as React.CSSProperties
         }
         // First role is for screen readers. Second is for styling
@@ -362,7 +366,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 return undefined;
               }}
               setFocusedRow={setFocusedRow}
-              synonomyColor={synonomyColor}
+              synonomColor={synonomColor}
             />
           ))}
         </ul>

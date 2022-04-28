@@ -1,3 +1,8 @@
+/**
+ * Renderers for a preference item.
+ * Most use the default renderes, but there are some exceptions
+ */
+
 import React from 'react';
 
 import type { Collection } from '../datamodel';

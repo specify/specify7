@@ -515,15 +515,15 @@ export const preferenceDefinitions = {
          */
         title: '_Geography',
         items: {
-          treeColor: defineItem({
-            title: preferencesText('treeColor'),
+          treeAccentColor: defineItem({
+            title: preferencesText('treeAccentColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomyColor: defineItem({
-            title: preferencesText('synonomyColor'),
+          synonomColor: defineItem({
+            title: preferencesText('synonomColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -534,15 +534,15 @@ export const preferenceDefinitions = {
       taxon: {
         title: '_Taxon',
         items: {
-          treeColor: defineItem({
-            title: preferencesText('treeColor'),
+          treeAccentColor: defineItem({
+            title: preferencesText('treeAccentColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomyColor: defineItem({
-            title: preferencesText('synonomyColor'),
+          synonomColor: defineItem({
+            title: preferencesText('synonomColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -553,15 +553,15 @@ export const preferenceDefinitions = {
       storage: {
         title: '_Storage',
         items: {
-          treeColor: defineItem({
-            title: preferencesText('treeColor'),
+          treeAccentColor: defineItem({
+            title: preferencesText('treeAccentColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomyColor: defineItem({
-            title: preferencesText('synonomyColor'),
+          synonomColor: defineItem({
+            title: preferencesText('synonomColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -572,15 +572,15 @@ export const preferenceDefinitions = {
       geologicTimePeriod: {
         title: '_GeologicTimePeriod',
         items: {
-          treeColor: defineItem({
-            title: preferencesText('treeColor'),
+          treeAccentColor: defineItem({
+            title: preferencesText('treeAccentColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomyColor: defineItem({
-            title: preferencesText('synonomyColor'),
+          synonomColor: defineItem({
+            title: preferencesText('synonomColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',
@@ -591,15 +591,15 @@ export const preferenceDefinitions = {
       lithoStrat: {
         title: '_LithoStrat',
         items: {
-          treeColor: defineItem({
-            title: preferencesText('treeColor'),
+          treeAccentColor: defineItem({
+            title: preferencesText('treeAccentColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
           }),
-          synonomyColor: defineItem({
-            title: preferencesText('synonomyColor'),
+          synonomColor: defineItem({
+            title: preferencesText('synonomColor'),
             requiresReload: false,
             visible: true,
             defaultValue: '#dc2626',

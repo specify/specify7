@@ -25,7 +25,7 @@ export function TreeRow({
   onFocusNode: handleFocusNode,
   onAction: handleAction,
   setFocusedRow,
-  synonomyColor,
+  synonomColor,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -46,7 +46,7 @@ export function TreeRow({
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'toggle' | 'child'>) => void;
   readonly setFocusedRow: (row: Row) => void;
-  readonly synonomyColor: string;
+  readonly synonomColor: string;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -142,9 +142,7 @@ export function TreeRow({
               ${isFocused ? 'outline outline-1 outline-blue-500' : ''}`}
               style={{
                 color:
-                  typeof row.acceptedId === 'number'
-                    ? synonomyColor
-                    : undefined,
+                  typeof row.acceptedId === 'number' ? synonomColor : undefined,
               }}
               forwardRef={
                 isFocused
@@ -310,7 +308,7 @@ export function TreeRow({
                 return undefined;
               }}
               setFocusedRow={setFocusedRow}
-              synonomyColor={synonomyColor}
+              synonomColor={synonomColor}
             />
           ))}
         </ul>

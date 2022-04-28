@@ -214,17 +214,17 @@ export const preferencesText = createDictionary({
     ca: 'Tree Editor',
     'es-es': 'Tree Editor',
   },
-  treeColor: {
-    'en-us': 'Tree color',
-    'ru-ru': 'Цвет дерева',
-    ca: 'Tree color',
-    'es-es': 'Tree color',
+  treeAccentColor: {
+    'en-us': 'Tree accent color',
+    'ru-ru': 'Акцентный цвет дерева',
+    ca: 'Tree accent color',
+    'es-es': 'Tree accent color',
   },
-  synonomyColor: {
-    'en-us': 'Synonomy color',
-    'ru-ru': 'Цвет синонимии',
-    ca: 'Synonomy color',
-    'es-es': 'Synonomy color',
+  synonomColor: {
+    'en-us': 'Synonoy color',
+    'ru-ru': 'Цвет синонима',
+    ca: 'Synonom color',
+    'es-es': 'Synonom color',
   },
   showNewDataSetWarning: {
     'en-us': 'Show new Data Set warning',
@@ -403,11 +403,11 @@ export const preferencesText = createDictionary({
     ca: 'Determines field captions, usage notes and table captions',
     'es-es': 'Determines field captions, usage notes and table captions',
   },
-  resetToDefault: {
-    'en-us': 'Reset to default',
-    'ru-ru': 'Сброс по умолчанию',
-    ca: 'Reset to default',
-    'es-es': 'Reset to default',
+  reset: {
+    'en-us': 'Reset',
+    'ru-ru': 'Сброс',
+    ca: 'Reset',
+    'es-es': 'Reset',
   },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
@@ -428,10 +428,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Scale interface to match font size',
   },
   welcomePage: {
-    'en-us': 'Welcome page',
-    'ru-ru': 'Страница приветствия',
-    ca: 'Welcome page',
-    'es-es': 'Welcome page',
+    'en-us': 'Welcome Page',
+    'ru-ru': 'Страница Приветствия',
+    ca: 'Welcome Page',
+    'es-es': 'Welcome Page',
   },
   content: {
     'en-us': 'Content',

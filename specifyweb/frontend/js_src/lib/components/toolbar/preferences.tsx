@@ -15,7 +15,6 @@ import {
 import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
-import { icons } from '../icons';
 import type { UserTool } from '../main';
 import type {
   GenericPreferencesCategories,
@@ -92,14 +91,15 @@ function Preferences({
       >
         <div className="relative flex gap-6 overflow-y-auto">
           {/* TODO: highlight link that corresponds to current section */}
-          <aside className="min-w-fit sticky top-0 flex-1">
-            <menu>
-              {definitions.map(([category, { title }]) => (
-                <li key={category}>
-                  <Link.Default href={`#${id(category)}`}>{title}</Link.Default>
-                </li>
-              ))}
-            </menu>
+          <aside
+            className={`min-w-fit sticky top-0 flex flex-col flex-1 divide-y-4
+              ${className.grayDivide}`}
+          >
+            {definitions.map(([category, { title }]) => (
+              <Link.Gray href={`#${id(category)}`} key={category}>
+                {title}
+              </Link.Gray>
+            ))}
           </aside>
           <div className="flex flex-col gap-6">
             {definitions.map(
@@ -129,10 +129,7 @@ function Preferences({
                             {title}
                           </h4>
                           <div className="flex justify-end flex-1">
-                            <Button.Small
-                              aria-label={preferencesText('resetToDefault')}
-                              title={preferencesText('resetToDefault')}
-                              variant={className.blueButton}
+                            <Button.Gray
                               onClick={(): void =>
                                 items.forEach(([name, { defaultValue }]) =>
                                   setPref(
@@ -144,8 +141,8 @@ function Preferences({
                                 )
                               }
                             >
-                              {icons.refresh}
-                            </Button.Small>
+                              {preferencesText('reset')}
+                            </Button.Gray>
                           </div>
                         </div>
                         {typeof description === 'string' && (

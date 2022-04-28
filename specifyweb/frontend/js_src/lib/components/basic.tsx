@@ -110,6 +110,7 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
   inline-flex items-center capitalize`;
 const hasAltBackground = 'has-alt-background';
+const grayDivide = 'divide-gray-200 dark:divide-neutral-800';
 const grayBackground = 'bg-gray-200 dark:bg-neutral-800';
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
@@ -138,6 +139,7 @@ export const className = {
   icon: 'icon',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
+  grayDivide,
   grayButton,
   borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none disabled:border-gray-300`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
@@ -353,7 +355,7 @@ export const Input = {
       // This is used to forbid accidentally passing children
       children?: undefined;
     }
-  >('Input.Radio', 'input', 'h-3 w-3', ({ isReadOnly, ...props }) => ({
+  >('Input.Radio', 'input', '', ({ isReadOnly, ...props }) => ({
     ...props,
     type: 'radio',
     readOnly: isReadOnly,
@@ -375,7 +377,7 @@ export const Input = {
   >(
     'Input.Checkbox',
     'input',
-    `${className.notTouchedInput} h-3 w-3`,
+    className.notTouchedInput,
     ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       type: 'checkbox',

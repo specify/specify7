@@ -293,8 +293,8 @@ export function handleAjaxError(
   strict: boolean
 ): never {
   /*
-   * If exception occurs because user has no agent, don't display the error
-   * message, so as not spawn a new dialog on top of the "No Agent" dialog
+   * If exceptions occur because user has no agent, don't display the error
+   * message, so as not to spawn a new dialog on top of the "No Agent" dialog
    */
   if (userInformation.agent === null) throw error;
 
