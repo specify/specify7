@@ -140,7 +140,7 @@ function ChooseBaseTable({
         </Button.Transparent>
       }
     >
-      <Ul className="max-h-80 overflow-y-scroll">
+      <Ul className="flex-1 overflow-y-auto">
         {sortedTables.map((table) => (
           <li key={table.id}>
             <Link.Default
@@ -330,7 +330,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           </menu>
         </header>
         <div className="sm:flex-row flex flex-col flex-1 gap-4 overflow-hidden">
-          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1 p-1 -m-1">
             <H3>
               {commonText('tableInline')} {table.name}
             </H3>
@@ -413,7 +413,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('hideTable')}
             </Label.ForCheckbox>
           </section>
-          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1 p-1 -m-1">
             <H3 id={id('fields-label')}>{commonText('fields')}</H3>
             <Select
               className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto"
@@ -444,7 +444,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               )}
             </Select>
           </section>
-          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1">
+          <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1 p-1 -m-1">
             <H3>
               {commonText('field')}: {items[itemId].name}
             </H3>
