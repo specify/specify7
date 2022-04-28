@@ -1,5 +1,6 @@
 import { ajax } from './ajax';
 import type { CollectionObject, Taxon } from './datamodel';
+import { f } from './functools';
 import type { LocalityData } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
 import {
@@ -9,10 +10,9 @@ import {
   parseLocalityPinFields,
 } from './localityrecorddataextractor';
 import { schema } from './schema';
-import type { RA } from './types';
-import { f } from './functools';
 import { toTable } from './specifymodel';
 import { treeRanksPromise } from './treedefinitions';
+import type { RA } from './types';
 import { userInformation } from './userinfo';
 
 export type OccurrenceData = {
@@ -156,7 +156,8 @@ export const fetchLocalOccurrences = async (
               await locality.fetch(),
               false,
               (mappingPathParts, resource) =>
-                (typeof resource?.specifyModel?.name !== 'string' ||
+                (typeof resource !== 'object' ||
+                  !('specifyModel' in resource) ||
                   ((resource.specifyModel.name !== 'CollectionObject' ||
                     resource.id === collectionObjectId) &&
                     (resource.specifyModel.name !== 'CollectingEvent' ||

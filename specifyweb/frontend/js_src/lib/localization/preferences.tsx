@@ -458,13 +458,13 @@ export const preferencesText = createDictionary({
     ca: 'A URL to an image that would be displayed on the home page:',
     'es-es': 'A URL to an image that would be displayed on the home page:',
   },
-  embeededWebpage: {
+  embeddedWebpage: {
     'en-us': 'Embedded web page',
     'ru-ru': 'Обернутая веб-страница',
     ca: 'Embedded web page',
     'es-es': 'Embedded web page',
   },
-  embeededWebpageDescription: {
+  embeddedWebpageDescription: {
     'en-us': 'A URL to a page that would be embedded on the home page:',
     'ru-ru': 'URL-адрес страницы, которая будет встроена в домашнюю страницу:',
     ca: 'A URL to a page that would be embedded on the home page:',

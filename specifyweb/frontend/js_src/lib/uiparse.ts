@@ -186,9 +186,9 @@ export const parsers = f.store(
         (value) =>
           (value as any).isValid()
             ? undefined
-            : formsText('requiredFormat')(fullDateFormat()),
+            : formsText('requiredFormat', fullDateFormat()),
       ],
-      title: formsText('requiredFormat')(fullDateFormat()),
+      title: formsText('requiredFormat', fullDateFormat()),
       parser: (value) => (value as any).format(databaseDateFormat),
       value: dayjs().format(databaseDateFormat),
     },
@@ -306,7 +306,8 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
 
 function formatterToParser(formatter: UiFormatter): Parser {
   const regExpString = formatter.parseRegexp();
-  const title = formsText('requiredFormat')(
+  const title = formsText(
+    'requiredFormat',
     formatter.pattern() ?? formatter.valueOrWild()
   );
 

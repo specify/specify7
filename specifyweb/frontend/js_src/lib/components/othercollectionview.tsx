@@ -53,7 +53,8 @@ export function OtherCollection({
           ) : (
             <>
               <p>
-                {commonText('loginToProceed')(
+                {commonText(
+                  'loginToProceed',
                   defined(collections[0].collectionName ?? undefined)
                 )}
               </p>

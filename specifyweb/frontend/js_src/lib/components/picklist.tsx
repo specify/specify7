@@ -160,7 +160,7 @@ export function PickListComboBox(
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
-              {queryText('invalidPicklistValue')(value)}
+              {queryText('invalidPicklistValue', value)}
             </option>
           )}
           {props.items?.map(({ title, value }) => (
@@ -250,7 +250,8 @@ function AddingToPicklist({
         </>
       }
     >
-      {formsText('addToPickListConfirmationDialogText')(
+      {formsText(
+        'addToPickListConfirmationDialogText',
         value,
         pickList.get('name')
       )}

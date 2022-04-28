@@ -262,7 +262,7 @@ export function QueryToolbarItem({
   return state.type === 'ShowQueryListState' ? (
     Array.isArray(queries) ? (
       <Dialog
-        header={commonText('queriesDialogTitle')(queries.length)}
+        header={commonText('queriesDialogTitle', queries.length)}
         onClose={handleClose}
         buttons={
           <>

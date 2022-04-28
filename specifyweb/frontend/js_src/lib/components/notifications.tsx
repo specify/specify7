@@ -107,7 +107,8 @@ export function Notifications(): JSX.Element {
         onClick={handleToggle}
         forwardRef={buttonRef}
       >
-        {commonText('notifications')(
+        {commonText(
+          'notifications',
           typeof notifications?.length === 'number'
             ? formatNumber(notifications.length)
             : '...'
@@ -296,7 +297,8 @@ const notificationRenderers: IR<
     );
   },
   'dataset-ownership-transferred'(notification) {
-    return commonText('dataSetOwnershipTransferred')(
+    return commonText(
+      'dataSetOwnershipTransferred',
       <i>{notification.payload['previous-owner-name']}</i>,
       <Link.Default
         href={`/specify/workbench/${notification.payload['dataset-id']}/`}

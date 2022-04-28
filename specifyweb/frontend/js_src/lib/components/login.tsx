@@ -59,9 +59,9 @@ function Login({
       />
       {typeof data.externalUser === 'object' && (
         <p>
-          {commonText('helloMessage')(data.externalUser.name)}
+          {commonText('helloMessage', data.externalUser.name)}
           <br />
-          {commonText('unknownOicUser')(data.externalUser.provider_title)}
+          {commonText('unknownOicUser', data.externalUser.provider_title)}
         </p>
       )}
       <Form method="post">

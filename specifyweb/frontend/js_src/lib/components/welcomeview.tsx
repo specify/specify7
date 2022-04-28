@@ -17,7 +17,7 @@ function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
   const [source] = usePref('welcomePage', 'general', 'source');
 
-  return mode === 'embeededWebpage' ? (
+  return mode === 'embeddedWebpage' ? (
     <iframe
       className="w-full h-full border-0"
       title={welcomeText('pageTitle')}
@@ -139,7 +139,7 @@ function Welcome(): JSX.Element {
       <span className="flex-1" />
       <div
         className={`flex items-center justify-center min-h-0 ${
-          mode === 'embeededWebpage' ? 'h-5/6' : ''
+          mode === 'embeddedWebpage' ? 'h-5/6' : ''
         }`}
       >
         <div ref={refTaxonTilesContainer} />

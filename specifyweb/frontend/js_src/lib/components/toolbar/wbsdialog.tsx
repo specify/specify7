@@ -35,7 +35,7 @@ const createEmptyDataSet = async (): Promise<void> =>
       method: 'POST',
       body: {
         name: await uniquifyDataSetName(
-          wbText('newDataSetName')(new Date().toDateString())
+          wbText('newDataSetName', new Date().toDateString())
         ),
         importedfilename: '',
         columns: [],
@@ -198,7 +198,7 @@ function DataSets({
       header={
         showTemplates
           ? wbText('wbsDialogTemplatesDialogTitle')
-          : wbText('wbsDialogDefaultDialogTitle')(datasets.length)
+          : wbText('wbsDialogDefaultDialogTitle', datasets.length)
       }
       className={{
         container: dialogClassNames.wideContainer,

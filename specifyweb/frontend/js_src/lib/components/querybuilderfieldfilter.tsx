@@ -104,7 +104,8 @@ function QueryInputField({
       inputRef.current?.checkValidity() === true
     )
       setValidation(
-        formsText('tooLongErrorMessage')(
+        formsText(
+          'tooLongErrorMessage',
           Number.parseInt(validationAttributes.maxLength)
         )
       );

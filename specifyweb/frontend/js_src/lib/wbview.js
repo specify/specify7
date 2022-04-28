@@ -781,9 +781,9 @@ const WBView = Backbone.View.extend({
      * This is the only type of validation that is done on the front-end
      */
     const newIssues = f.unique([
-      ...(isValid ? [] : [wbText('picklistValidationFailed')(value)]),
+      ...(isValid ? [] : [wbText('picklistValidationFailed',value)]),
       ...issues.filter(
-        (issue) => !issue.endsWith(wbText('picklistValidationFailed')(''))
+        (issue) => !issue.endsWith(wbText('picklistValidationFailed',''))
       ),
     ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
@@ -1270,7 +1270,7 @@ const WBView = Backbone.View.extend({
       physicalRow,
       physicalCol,
       'issues'
-    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed')('')));
+    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed','')));
     if (hasFrontEndValidationErrors)
       /*
        * Since isModified state has higher priority then issues, we need to

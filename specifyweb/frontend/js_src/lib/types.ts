@@ -34,7 +34,11 @@ export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
 
-/** "typeof value === 'function'" does not narrow the type in some cases */
+/**
+ * "typeof value === 'function'" does not narrow the type in some cases where
+ * a generic is involed
+ * See more: https://github.com/microsoft/TypeScript/issues/37663
+ */
 export const isFunction = <T>(
   value: T
 ): value is T & ((...args: RA<unknown>) => unknown) =>

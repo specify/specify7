@@ -104,7 +104,7 @@ export const PrepSelectDialog = PrepDialog.extend({
                 <Button.Green title={commonText('clearAll')}
                               onClick={_.bind(this.deSelectAll, this)}
                 >{this.getProp('DESELECTALL')}</Button.Green>
-                <Button.Green title={this.options.interactionresource ? formsText('addItems') : formsText('createRecord')(this.options.action.name)}
+                <Button.Green title={this.options.interactionresource ? formsText('addItems') : formsText('createRecord',this.options.action.name)}
                               onClick={_.bind(this.makeInteraction, this)}
                 >{commonText('apply')}</Button.Green>
             </>;

@@ -314,7 +314,7 @@ class WbImport extends Component<{}, WbImportState> {
             {this.state.fileType === 'csv' && (
               <ChooseEncoding encoding={this.state.encoding} update={update} />
             )}
-            <p role="alert">{wbText('corruptFile')(this.state.file.name)}</p>
+            <p role="alert">{wbText('corruptFile', this.state.file.name)}</p>
           </>
         );
         break;
@@ -491,7 +491,7 @@ function extractHeader(
 ): { rows: string[][]; header: string[] } {
   const header = headerInData
     ? uniquifyHeaders(data[0].map(f.trim))
-    : Array.from(data[0], (_, index) => wbText('columnName')(index + 1));
+    : Array.from(data[0], (_, index) => wbText('columnName', index + 1));
   const rows = headerInData ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }

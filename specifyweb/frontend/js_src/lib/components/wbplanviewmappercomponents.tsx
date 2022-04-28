@@ -40,7 +40,7 @@ export function MappingsControlPanel({
       {typeof handleAddNewHeader === 'function' && (
         <Button.Small
           onClick={(): void => {
-            handleAddNewHeader(wbText('newHeaderName')(newHeaderIdRef.current));
+            handleAddNewHeader(wbText('newHeaderName', newHeaderIdRef.current));
             newHeaderIdRef.current += 1;
           }}
         >

@@ -53,7 +53,7 @@ export function Slider({
             after:content-[attr(data-value)]`}
           data-value={value}
         >
-          <span className="sr-only">{formsText('currentRecord')(count)}</span>
+          <span className="sr-only">{formsText('currentRecord', count)}</span>
           <Input.Number
             className={`no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full
               font-bold bg-white border-0 text-center`}

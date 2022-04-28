@@ -45,7 +45,8 @@ function WrongTable({
         header={formsText('unavailablePluginDialogHeader')}
         buttons={commonText('close')}
       >
-        {formsText('wrongTablePluginDialogText')(
+        {formsText(
+          'wrongTablePluginDialogText',
           resource.specifyModel.name,
           allowedTable
         )}

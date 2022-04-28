@@ -235,7 +235,8 @@ export function QueryComboBox({
               );
 
               return {
-                title: queryText('queryBoxDescription')(
+                title: queryText(
+                  'queryBoxDescription',
                   formatList(fieldTitles)
                 ),
                 searchFields,
@@ -588,7 +589,7 @@ export function QueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}
         >
-          {commonText('collectionAccessDeniedDialogText')(state.collectionName)}
+          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

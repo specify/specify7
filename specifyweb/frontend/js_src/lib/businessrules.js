@@ -179,11 +179,11 @@ var enabled = true;
           parentFldInfo.label :
           formsText('database');
         return fldInfo.length > 1 ?
-            formsText('valuesOfMustBeUniqueToField')(
+            formsText('valuesOfMustBeUniqueToField',
               fieldName,
               formatList(fldInfo.map(fld=>fld.label)),
             ) :
-            formsText('valueMustBeUniqueToField')(fieldName);
+            formsText('valueMustBeUniqueToField',fieldName);
     };
 
     var uniqueIn = function(toOneField, resource, valueFieldArg) {

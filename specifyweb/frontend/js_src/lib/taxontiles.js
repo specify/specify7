@@ -99,7 +99,7 @@ export function makeTreeMap(container) {
     )
 
     $('<p>', {
-      title: welcomeText('taxonTilesDescription')(thres),
+      title: welcomeText('taxonTilesDescription',thres),
       class: 'absolute top-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .text(welcomeText('taxonTiles'))

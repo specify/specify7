@@ -319,10 +319,10 @@ function Option({
             className="print:hidden"
             title={
               typeof tableLabel === 'string'
-                ? wbText('relationship')(tableLabel)
+                ? wbText('relationship', tableLabel)
                 : undefined
             }
-            aria-label={wbText('relationship')(tableLabel ?? '')}
+            aria-label={wbText('relationship', tableLabel ?? '')}
             role="img"
           >
             {icons.chevronRight}

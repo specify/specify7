@@ -120,7 +120,7 @@ function WbStatus({
         onClose={(): void => dispatch({ type: 'AbortAction', aborted: false })}
         buttons={commonText('close')}
       >
-        {wbText('wbStatusAbortFailed')(mappedOperation)}
+        {wbText('wbStatusAbortFailed', mappedOperation)}
       </Dialog>
     );
 
@@ -136,26 +136,26 @@ function WbStatus({
 
   if (state.aborted === 'pending') message = wbText('aborting');
   else if (state.status.taskstatus === 'PENDING')
-    message = wbText('wbStatusPendingDialogText')(mappedOperation);
+    message = wbText('wbStatusPendingDialogText', mappedOperation);
   else if (state.status.taskstatus === 'PROGRESS') {
     if (current === total)
       message =
         state.status.uploaderstatus.operation === 'uploading'
           ? wbText('updatingTrees')
-          : wbText('wbStatusOperationNoProgress')(mappedOperation);
+          : wbText('wbStatusOperationNoProgress', mappedOperation);
     else
-      message = wbText('wbStatusOperationProgress')(
+      message = wbText(
+        'wbStatusOperationProgress',
         standartalizedOperation,
         current,
         total
       );
-  } else
+  }
+  // FAILED
+  else
     message = (
       <>
-        {wbText('wbStatusErrorDialogText')(
-          // FAILED
-          mappedOperation
-        )}
+        {wbText('wbStatusErrorDialogText', mappedOperation)}
         <pre>{JSON.stringify(state.status, null, 2)}</pre>
       </>
     );

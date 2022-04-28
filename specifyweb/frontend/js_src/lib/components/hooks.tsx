@@ -51,7 +51,7 @@ export function useId(prefix: string): (suffix: string) => string {
 }
 
 export function setTitle(title: string): void {
-  window.document.title = commonText('appTitle')(title);
+  window.document.title = commonText('appTitle', title);
 }
 
 const titleStack = new Map<unknown, string>();

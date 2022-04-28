@@ -254,7 +254,8 @@ export function Main({
           forceToTop={true}
         >
           <p>
-            {commonText('versionMismatchDialogText')(
+            {commonText(
+              'versionMismatchDialogText',
               getSystemInfo().specify6_version,
               getSystemInfo().database_version
             )}

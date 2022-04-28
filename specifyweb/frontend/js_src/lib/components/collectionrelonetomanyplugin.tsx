@@ -268,7 +268,7 @@ export function CollectionOneToManyPlugin({
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}
         >
-          {commonText('collectionAccessDeniedDialogText')(state.collectionName)}
+          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

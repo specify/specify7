@@ -94,7 +94,7 @@ function TreeView<SCHEMA extends AnyTree>({
       updateConformation(deserializeConformation(conformation));
   }, []);
 
-  useTitle(treeText('treeViewTitle')(table.label));
+  useTitle(treeText('treeViewTitle', table.label));
 
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);

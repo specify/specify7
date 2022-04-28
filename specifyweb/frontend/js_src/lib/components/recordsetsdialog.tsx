@@ -154,7 +154,7 @@ export function RecordSetsDialog({
         ),
         dialog: (children) => (
           <Dialog
-            header={formsText('recordSetsDialogTitle')(data.totalCount)}
+            header={formsText('recordSetsDialogTitle', data.totalCount)}
             onClose={handleClose}
             buttons={
               <>
@@ -206,7 +206,8 @@ export function RecordSetsDialog({
           )
         }
         onClose={handleClose}
-        deletionMessage={formsText('recordSetDeletionWarning')(
+        deletionMessage={formsText(
+          'recordSetDeletionWarning',
           state.recordSet.get('name')
         )}
         canAddAnother={false}

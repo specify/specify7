@@ -281,12 +281,13 @@ function ActiveAction<SCHEMA extends AnyTree>({
         onClick={disabled ? undefined : (): void => setShowPrompt(true)}
         title={
           type === 'move'
-            ? treeText('nodeMoveHintMessage')(actionRow.fullName)
+            ? treeText('nodeMoveHintMessage', actionRow.fullName)
             : type === 'merge'
-            ? treeText('mergeNodeHintMessage')(actionRow.fullName)
+            ? treeText('mergeNodeHintMessage', actionRow.fullName)
             : type === 'synonymize'
-            ? treeText('synonymizeNodeHintMessage')(actionRow.fullName)
-            : treeText('desynonymizeNodeMessage')(
+            ? treeText('synonymizeNodeHintMessage', actionRow.fullName)
+            : treeText(
+                'desynonymizeNodeMessage',
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
@@ -294,11 +295,11 @@ function ActiveAction<SCHEMA extends AnyTree>({
         }
       >
         {type === 'move'
-          ? treeText('moveNodeHere')(actionRow.fullName)
+          ? treeText('moveNodeHere', actionRow.fullName)
           : type === 'merge'
-          ? treeText('mergeNodeHere')(actionRow.fullName)
+          ? treeText('mergeNodeHere', actionRow.fullName)
           : type === 'synonymize'
-          ? treeText('makeSynonym')(actionRow.fullName, focusedRow.fullName)
+          ? treeText('makeSynonym', actionRow.fullName, focusedRow.fullName)
           : treeText('desynonymizeNode')}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
@@ -351,24 +352,28 @@ function ActiveAction<SCHEMA extends AnyTree>({
           }
         >
           {type === 'move'
-            ? treeText('nodeMoveMessage')(
+            ? treeText(
+                'nodeMoveMessage',
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
               )
             : type === 'merge'
-            ? treeText('mergeNodeMessage')(
+            ? treeText(
+                'mergeNodeMessage',
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
               )
             : type === 'synonymize'
-            ? treeText('synonymizeMessage')(
+            ? treeText(
+                'synonymizeMessage',
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName
               )
-            : treeText('desynonymizeNodeMessage')(
+            : treeText(
+                'desynonymizeNodeMessage',
                 treeName,
                 actionRow.fullName,
                 focusedRow.fullName

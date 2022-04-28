@@ -302,7 +302,7 @@ const ResourceList = Backbone.View.extend({
                     type="button"
                     class="link ${className.headerGray}"
                 >
-                    ${commonText('newResourceTitle')(this.ResourceModel.label)}
+                    ${commonText('newResourceTitle',this.ResourceModel.label)}
                 </button>
             </li>`);
             button.on('click',this.openNameDialog.bind(this));
@@ -418,7 +418,7 @@ const GlobalResourcesView = Backbone.View.extend({
     render() {
         this.$el.append(
             `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="global">
-                ${adminText('globalResourcesTitle')(this.resourceList.resources.length)}
+                ${adminText('globalResourcesTitle',this.resourceList.resources.length)}
             </button>`,
             this.resourceList.render().$el
                 .toggle(this.resourceList.containsSelected || getStoredToggleState(this.options.ResourceModel, 'global'))
@@ -461,7 +461,7 @@ const DisciplinesView = Backbone.View.extend({
     render() {
         this.$el.append(
            `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="disciplines">
-                ${adminText('disciplineResourcesTitle')(this.count)}
+                ${adminText('disciplineResourcesTitle',this.count)}
             </button>`,
             $('<ul role="group" class="ml-4">').append(this.views.map(v => v.render().el))
                 .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'disciplines'))

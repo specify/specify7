@@ -4,9 +4,10 @@
  * @module
  */
 
-import type { IR, RA, RR } from '../types';
-import { camelToHuman } from '../helpers';
 import { f } from '../functools';
+import { camelToHuman } from '../helpers';
+import type { IR, RA, RR } from '../types';
+import { isFunction } from '../types';
 
 export const languages = ['en-us', 'ru-ru', 'ca', 'es-es'] as const;
 
@@ -29,7 +30,9 @@ type GetValueType<VALUE extends Value> = VALUE extends RR<
   Language,
   infer ValueType
 >
-  ? ValueType
+  ? ValueType extends (...args: RA<never>) => Line
+    ? ReturnType<ValueType>
+    : ValueType
   : never;
 export type Dictionary = IR<Value>;
 
@@ -82,13 +85,19 @@ function assertExhaustive(key: string): never {
  */
 export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
   const resolver = <KEY extends string & keyof typeof dictionary>(
-    key: KEY
+    key: KEY,
+    ...args: typeof dictionary[typeof key][Language] extends (
+      ...args: RA<never>
+    ) => Line
+      ? Parameters<typeof dictionary[typeof key][Language]>
+      : RA<never>
   ): GetValueType<typeof dictionary[typeof key]> =>
-    key in dictionary
-      ? (dictionary[key][LANGUAGE] as GetValueType<
-          typeof dictionary[typeof key]
-        >) ?? assertExhaustive(key)
-      : assertExhaustive(key);
+    (key in dictionary
+      ? typeof dictionary[key][LANGUAGE] === 'function' &&
+        isFunction(dictionary[key][LANGUAGE])
+        ? (dictionary[key][LANGUAGE] as (...args: RA<unknown>) => Line)(...args)
+        : dictionary[key][LANGUAGE] ?? assertExhaustive(key)
+      : assertExhaustive(key)) as GetValueType<typeof dictionary[typeof key]>;
   resolver.dictionary = dictionary;
   return resolver;
 }

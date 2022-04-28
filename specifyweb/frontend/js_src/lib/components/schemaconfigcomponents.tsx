@@ -49,7 +49,8 @@ export function PickList({
               Array.isArray(group) ? group[0] : Object.values(group)
             )
             .includes(value) ? undefined : (
-            <option value={value}>{`${queryText('invalidPicklistValue')(
+            <option value={value}>{`${queryText(
+              'invalidPicklistValue',
               value
             )}`}</option>
           )}

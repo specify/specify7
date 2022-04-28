@@ -86,14 +86,14 @@ function MakeDwca({
             Promise.all([
               liftGetResource(
                 definition,
-                commonText('definitionResourceNotFound')(definition),
+                commonText('definitionResourceNotFound', definition),
                 definitionRef.current
               ),
               metadata === ''
                 ? metadataRef.current?.setCustomValidity('')
                 : liftGetResource(
                     metadata,
-                    commonText('metadataResourceNotFound')(metadata),
+                    commonText('metadataResourceNotFound', metadata),
                     metadataRef.current
                   ),
             ])

@@ -103,7 +103,7 @@ function ErrorDialog({
       <p>
         {commonText('errorBoundaryDialogText')}
         <br />
-        {commonText('errorBoundaryDialogSecondMessage')(supportLink)}
+        {commonText('errorBoundaryDialogSecondMessage', supportLink)}
       </p>
       <details
         className="contents whitespace-pre-wrap"

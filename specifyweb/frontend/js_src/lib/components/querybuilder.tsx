@@ -212,11 +212,12 @@ export function QueryBuilder({
             <TableIcon name={model.name} />
             <H2 className="overflow-x-auto">
               {typeof recordSet === 'object'
-                ? queryText('queryRecordSetTitle')(
+                ? queryText(
+                    'queryRecordSetTitle',
                     query.name,
                     recordSet.get('name')
                   )
-                : queryText('queryTaskTitle')(query.name)}
+                : queryText('queryTaskTitle', query.name)}
             </H2>
             <span className="flex-1 ml-2" />
             <QueryExportButtons

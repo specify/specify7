@@ -229,8 +229,8 @@ export function InteractionDialog({
             typeof interactionResource === 'object'
               ? formsText('addItems')
               : model.name === 'Loan'
-              ? formsText('recordReturn')(model.label)
-              : formsText('createRecord')(action.model.name)
+              ? formsText('recordReturn', model.label)
+              : formsText('createRecord', action.model.name)
           }
           onClose={handleClose}
           buttons={
@@ -253,12 +253,12 @@ export function InteractionDialog({
           }
         >
           <details>
-            <summary>{formsText('recordSetCaption')(totalCount)}</summary>
+            <summary>{formsText('recordSetCaption', totalCount)}</summary>
             {children}
           </details>
           <details>
             <summary>
-              {formsText('entryCaption')(searchField?.label ?? '')}
+              {formsText('entryCaption', searchField?.label ?? '')}
             </summary>
             <Textarea
               spellCheck={false}

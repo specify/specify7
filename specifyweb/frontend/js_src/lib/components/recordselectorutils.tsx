@@ -642,7 +642,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
     ) : (
       <p>
         <Dialog
-          header={formsText('emptyRecordSetHeader')(recordSet.get('name'))}
+          header={formsText('emptyRecordSetHeader', recordSet.get('name'))}
           onClose={(): void => history.back()}
           buttons={
             <>

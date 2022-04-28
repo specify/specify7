@@ -84,7 +84,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           (): void => {
             if (typeof resource === 'undefined') return undefined;
             const title = resource.isNew()
-              ? commonText('newResourceTitle')(resource.specifyModel.label)
+              ? commonText('newResourceTitle', resource.specifyModel.label)
               : resource.specifyModel.label;
             setTitle(title);
             format(resource)

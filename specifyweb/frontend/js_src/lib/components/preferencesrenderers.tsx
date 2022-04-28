@@ -69,7 +69,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
   model,
   order,
   onChange: handleChange,
-  isReadOnly,
+  isReadOnly = false,
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly order:
@@ -80,6 +80,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
       | (string & keyof SCHEMA['fields'])
       | `-${string & keyof SCHEMA['fields']}`
   ) => void;
+  readonly isReadOnly?: boolean;
 }): JSX.Element {
   return (
     <Select
@@ -165,7 +166,7 @@ export type WelcomePageMode =
   | 'default'
   | 'taxonTiles'
   | 'customImage'
-  | 'embeededWebpage';
+  | 'embeddedWebpage';
 export const defaultWelcomePageImage =
   '/static/img/icons_as_background_splash.png';
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
@@ -187,11 +188,10 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
       title: preferencesText('customImage'),
       description: preferencesText('customImageDescription'),
     },
-
     {
-      value: 'embeededWebpage',
-      title: preferencesText('embeededWebpage'),
-      description: preferencesText('embeededWebpageDescription'),
+      value: 'embeddedWebpage',
+      title: preferencesText('embeddedWebpage'),
+      description: preferencesText('embeddedWebpageDescription'),
     },
   ],
 };
@@ -217,7 +217,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
           definition={welcomePageModes}
           isReadOnly={isReadOnly}
         />
-        {value === 'customImage' || value === 'embeededWebpage' ? (
+        {value === 'customImage' || value === 'embeddedWebpage' ? (
           <DefaultPreferenceItemRender
             definition={sourceDefinition}
             value={source}
