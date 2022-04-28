@@ -192,8 +192,8 @@ export const reducer = generateReducer<States, Actions>({
         [state.itemId]: {
           ...state.items[state.itemId],
           format: format === 'formatted' ? value : null,
-          weblinkname: format === 'webLink' ? value : null,
-          picklistname: format === 'pickList' ? value : null,
+          webLinkName: format === 'webLink' ? value : null,
+          pickListName: format === 'pickList' ? value : null,
         },
       },
     })
