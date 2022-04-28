@@ -304,6 +304,9 @@ export function handleAjaxError(
   if (isNotFoundError) {
     clearUnloadProtect();
     setCurrentView(new NotFoundView());
+    Object.defineProperty(error, 'handledBy', {
+      value: handleAjaxError,
+    });
     throw error;
   }
   const permissionError = error as {
