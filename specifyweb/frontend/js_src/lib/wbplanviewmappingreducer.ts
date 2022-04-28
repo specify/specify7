@@ -7,6 +7,7 @@
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
+import { setCache } from './cache';
 import type {
   AutoMapperSuggestion,
   MappingLine,
@@ -29,7 +30,6 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './wbplanviewutils';
-import { setCache } from './cache';
 
 const modifyLine = (
   state: MappingState,
@@ -244,9 +244,12 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   MappingViewMapAction: ({ state }) => {
     const mappingViewMappingPath = state.mappingView;
     const focusedLine = state.focusedLine;
+    /*
+     * This is needed here to prevent double-click on an incomplete path
+     * from mapping
+     */
     if (
       !mappingPathIsComplete(mappingViewMappingPath) ||
-      typeof focusedLine === 'undefined' ||
       focusedLine >= state.lines.length
     )
       return state;

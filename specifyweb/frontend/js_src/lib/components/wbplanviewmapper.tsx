@@ -8,9 +8,11 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { getCache } from '../cache';
 import type { Tables } from '../datamodel';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
+import { smoothScroll } from '../querybuilderutils';
 import { getModel } from '../schema';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
@@ -30,6 +32,7 @@ import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { icons } from './icons';
+import { useUnloadProtect } from './navigation';
 import type { Dataset } from './wbplanview';
 import type { MappingElementProps } from './wbplanviewcomponents';
 import {
@@ -49,9 +52,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { getCache } from '../cache';
-import { smoothScroll } from '../querybuilderutils';
-import { useUnloadProtect } from './navigation';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -279,7 +279,6 @@ export function WbPlanViewMapper(props: {
   const mapButtonEnabled =
     !props.isReadOnly &&
     state.lines.length > 0 &&
-    typeof state.focusedLine === 'number' &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
 

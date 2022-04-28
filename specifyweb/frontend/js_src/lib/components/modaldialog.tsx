@@ -23,7 +23,7 @@ export const loadingBar = (
   <div
     aria-hidden
     className={`animate-bounce h-7 bg-gradient-to-r from-orange-400
-      to-amber-200 mt-5 rounded`}
+      to-amber-200 mt-5 rounded hover:animate-hue-rotate`}
   />
 );
 

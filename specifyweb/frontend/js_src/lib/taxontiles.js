@@ -10,7 +10,7 @@ import {f} from './functools';
 import {welcomeText} from './localization/welcome';
 
 export function makeTreeMap(container) {
-  container.classList.add('h-[473px]');
+  container.classList.add('h-[473px]', 'w-full');
 
   const color = d3.scale.category20c();
 
