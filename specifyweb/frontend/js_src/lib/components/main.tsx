@@ -81,7 +81,7 @@ function processMenuItems<T extends UserTool | MenuItem>(items: RA<T>): RA<T> {
           ? goTo(view)
           : setCurrentView(
               view({
-                onClose: (): void => goTo('/specify'),
+                onClose: (): void => goTo('/'),
                 urlParameter,
               })
             )

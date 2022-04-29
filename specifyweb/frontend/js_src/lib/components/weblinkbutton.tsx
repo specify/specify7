@@ -4,7 +4,7 @@ import _ from 'underscore';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
-import { getIcon } from '../icons';
+import { getIcon, unknownIcon } from '../icons';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
@@ -174,7 +174,7 @@ export function WebLinkButton({
             rel={isExternal ? 'noopener' : undefined}
           >
             <img
-              src={getIcon(icon)}
+              src={getIcon(icon) ?? unknownIcon}
               className="max-w-[theme(spacing.10)] max-h-[theme(spacing.5)]"
               alt={data.title ?? url}
             />

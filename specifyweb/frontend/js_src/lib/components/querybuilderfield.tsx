@@ -445,9 +445,9 @@ export function QueryLine({
           }
         >
           {field.sortType === 'ascending'
-            ? icons.arrowCircleDown
-            : field.sortType === 'descending'
             ? icons.arrowCircleUp
+            : field.sortType === 'descending'
+            ? icons.arrowCircleDown
             : icons.circle}
         </Button.Small>
         <Button.Small

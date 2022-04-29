@@ -27,6 +27,7 @@ import {hasPermission} from './permissions';
 import {serializeResource} from './datamodelutils';
 import {f} from './functools';
 import {parseQueryFields} from './querybuilderutils';
+import {getIcon, unknownIcon} from './icons';
 
 // TODO: rewrite to React
 
@@ -425,7 +426,9 @@ var ChooseRecordSetDialog = Backbone.View.extend({
     },
     dialogEntry: function(recordSet) {
         const model = getModelById(recordSet.get('dbtableid'));
-        const icon = model.getIcon();
+        const icon =  model.overrides.isSystem
+            ? '/images/system.png'
+            : getIcon(model.name.toLowerCase()) ?? unknownIcon
         const img = $('<img>', {src: icon, alt: model.label, class: iconClassName});
         var link = $(`<button class="link">${recordSet.get('name')}</button>`);
         var entry = $('<tr>').append(

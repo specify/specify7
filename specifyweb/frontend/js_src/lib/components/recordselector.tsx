@@ -5,13 +5,11 @@ import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
 import { clamp } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { Button, Input } from './basic';
-import { Dialog } from './modaldialog';
 import { SearchDialog } from './searchdialog';
 
 export function Slider({
@@ -148,7 +146,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   // Render function. Allows to customize placement of elements and features
   readonly children: (props: {
     // Delete confirmation or search dialogs
-    readonly dialogs: JSX.Element;
+    readonly dialogs: JSX.Element | null;
     // Record Selector slider component
     readonly slider: JSX.Element;
     // Index of current resource in the RecordSet
@@ -160,7 +158,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     // Set this as an "Add" button event listener
     readonly onAdd: () => void;
     // Set this as an "Remove" button event listener
-    readonly onRemove: () => Promise<boolean>;
+    readonly onRemove: () => void;
     // True while fetching new record
     readonly isLoading: boolean;
   }) => JSX.Element;
@@ -193,12 +191,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const [state, setState] = React.useState<
-    | State<'main'>
-    | State<
-        'deleteDialog',
-        { readonly handleDeleted: (result: boolean) => void }
-      >
-    | State<'addBySearch'>
+    State<'main'> | State<'addBySearch'>
   >({ type: 'main' });
 
   function handleAdd(): void {
@@ -213,30 +206,10 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     } else setState({ type: 'addBySearch' });
   }
 
-  async function handleRemove(): Promise<boolean> {
-    if (records.length === 0 || typeof handleDelete === 'undefined')
-      return false;
-    const handleDeleted = (): void =>
-      handleSlide(Math.min(index, totalCount - 2));
-
-    if (typeof relatedResource === 'object') {
-      handleDeleted();
-      handleDelete(index);
-      return true;
-    } else {
-      let resolveCallback: (result: boolean) => void;
-      const promise = new Promise<boolean>((resolve) => {
-        resolveCallback = resolve;
-      });
-      setState({
-        type: 'deleteDialog',
-        handleDeleted(result: boolean) {
-          resolveCallback(result);
-          handleDeleted();
-        },
-      });
-      return promise;
-    }
+  function handleRemove(): void {
+    if (records.length === 0 || typeof handleDelete === 'undefined') return;
+    handleSlide(Math.min(index, totalCount - 2));
+    handleDelete?.(index);
   }
 
   return children({
@@ -254,50 +227,22 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     isLoading: typeof records[index] === 'undefined',
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
-    dialogs: (
-      <>
-        {state.type === 'deleteDialog' ? (
-          <Dialog
-            title={field?.label ?? model?.label}
-            header={formsText('removeRecordDialogHeader')}
-            onClose={(): void => {
-              state.handleDeleted(false);
-              setState({ type: 'main' });
-            }}
-            buttons={
-              <>
-                <Button.Red
-                  onClick={(): void => {
-                    state.handleDeleted(true);
-                    setState({ type: 'main' });
-                  }}
-                >
-                  {commonText('delete')}
-                </Button.Red>
-                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-              </>
-            }
-          >
-            {formsText('removeRecordDialogText')}
-          </Dialog>
-        ) : state.type === 'addBySearch' &&
-          typeof handleAdded === 'function' ? (
-          <Search
-            model={model}
-            onAdd={(record): void => {
-              f.maybe(field?.otherSideName, (fieldName) =>
-                f.maybe(relatedResource?.url(), (url) =>
-                  record.set(fieldName, url as never)
-                )
-              );
-              handleAdded(record);
-              handleSlide(totalCount);
-            }}
-            onClose={(): void => setState({ type: 'main' })}
-          />
-        ) : undefined}
-      </>
-    ),
+    dialogs:
+      state.type === 'addBySearch' && typeof handleAdded === 'function' ? (
+        <Search
+          model={model}
+          onAdd={(record): void => {
+            f.maybe(field?.otherSideName, (fieldName) =>
+              f.maybe(relatedResource?.url(), (url) =>
+                record.set(fieldName, url as never)
+              )
+            );
+            handleAdded(record);
+            handleSlide(totalCount);
+          }}
+          onClose={(): void => setState({ type: 'main' })}
+        />
+      ) : null,
     onAdd: handleAdd,
     onRemove: handleRemove,
   });

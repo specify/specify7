@@ -1,6 +1,6 @@
 import { ajax, handleResponse, Http } from './ajax';
 import type { Attachment } from './datamodel';
-import { getIcon } from './icons';
+import { getIcon, unknownIcon } from './icons';
 import { load } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
@@ -43,15 +43,17 @@ function iconForMimeType(mimetype: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  if (mimetype === 'text/plain') return { alt: 'text', src: getIcon('text') };
-  if (mimetype === 'text/html') return { alt: 'html', src: getIcon('html') };
+  if (mimetype === 'text/plain')
+    return { alt: 'text', src: getIcon('text') ?? unknownIcon };
+  if (mimetype === 'text/html')
+    return { alt: 'html', src: getIcon('html') ?? unknownIcon };
 
   const parts = mimetype.split('/');
   const type = parts[0];
   const subtype = parts[1];
 
   if (['audio', 'video', 'image', 'text'].includes(type))
-    return { alt: type, src: getIcon(type) };
+    return { alt: type, src: getIcon(type) ?? unknownIcon };
 
   if (type === 'application') {
     const iconName = {
@@ -62,10 +64,10 @@ function iconForMimeType(mimetype: string): {
     }[subtype];
 
     if (typeof iconName === 'string')
-      return { alt: iconName, src: getIcon(iconName) };
+      return { alt: iconName, src: getIcon(iconName) ?? unknownIcon };
   }
 
-  return { alt: commonText('unknown'), src: getIcon('unknown') };
+  return { alt: commonText('unknown'), src: getIcon('unknown') ?? unknownIcon };
 }
 
 const fetchToken = async (filename: string): Promise<string | undefined> =>

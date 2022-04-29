@@ -16,6 +16,7 @@ import type { Tables } from './datamodel';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
 import { hasTreeAccess } from './permissions';
+import { getUserPref } from './preferencesutils';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
@@ -40,7 +41,6 @@ import {
   getMaxToManyIndex,
   isCircularRelationship,
 } from './wbplanviewmodelhelper';
-import { getUserPref } from './preferencesutils';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -382,7 +382,7 @@ export function getMappingLineData({
                 : undefined,
               /*
                * Add ID field to the list if it is selected or hidden fields
-               * are visisble
+               * are visible
                */
               internalState.defaultValue === model.idField.name ||
               (generateFieldData === 'all' &&
@@ -422,16 +422,23 @@ export function getMappingLineData({
                       field.overrides.isHidden,
                       field.name
                     ) &&
+                    /*
+                     * Hide relationship from tree tables in WbPlanView as they
+                     * are not supported by the mapper
+                     */
+                    (scope === 'queryBuilder' ||
+                      !field.isRelationship ||
+                      !isTreeModel(model.name)) &&
                     (isNoRestrictionsMode ||
                       // Display read only fields in query builder only
-                      ((scope === 'queryBuilder' ||
-                        !field.overrides.isReadOnly) &&
-                        // Hide most fields for non "any" tree ranks in query builder
-                        (scope !== 'queryBuilder' ||
-                          !isTreeModel(model.name) ||
-                          mappingPath[internalState.position - 1] ==
-                            formatTreeRank(anyTreeRank) ||
-                          queryBuilderTreeFields.has(field.name))))
+                      scope === 'queryBuilder' ||
+                      !field.overrides.isReadOnly) &&
+                    // Hide most fields for non "any" tree ranks in query builder
+                    (scope !== 'queryBuilder' ||
+                      !isTreeModel(model.name) ||
+                      mappingPath[internalState.position - 1] ==
+                        formatTreeRank(anyTreeRank) ||
+                      queryBuilderTreeFields.has(field.name))
                 )
                 .flatMap((field) => {
                   const fieldData = {

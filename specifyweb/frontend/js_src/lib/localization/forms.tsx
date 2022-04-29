@@ -453,19 +453,6 @@ export const formsText = createDictionary({
     ca: 'No Data.',
     'es-es': 'No Data.',
   },
-  // RecordSelector
-  removeRecordDialogHeader: {
-    'en-us': 'Remove record?',
-    'ru-ru': 'Удалить запись?',
-    ca: 'Remove record?',
-    'es-es': 'Remove record?',
-  },
-  removeRecordDialogText: {
-    'en-us': 'Are you sure you want to remove this record?',
-    'ru-ru': 'Вы уверены, что хотите удалить эту запись?',
-    ca: 'Are you sure you want to remove this record?',
-    'es-es': 'Are you sure you want to remove this record?',
-  },
   // RecordSetsDialog
   recordSetsDialogTitle: {
     'en-us': (count: number) => `Record Sets (${count})`,

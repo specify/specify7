@@ -54,6 +54,7 @@ let preferences: {
   };
 } = getCache('userPreferences', 'cached', { defaultValue: {} });
 export type UserPreferences = typeof preferences;
+export const getRawUserPreferences = () => preferences;
 
 export function setPref<
   CATEGORY extends keyof Preferences,

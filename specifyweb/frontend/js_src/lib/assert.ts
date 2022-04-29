@@ -15,7 +15,10 @@ export function assert(value: unknown, message?: string): void {
 export function error(message: string | Error, ...rest: RA<unknown>): never {
   if (rest.length > 0) console.error('Error details: ', ...rest);
   breakpoint();
-  throw message instanceof Error ? message : new Error(message);
+  const error = message instanceof Error ? message : new Error(message);
+  // This is for the "Copy Error Message" feature:
+  Object.defineProperty(error, 'details', { value: rest, enumerable: false });
+  throw error;
 }
 
 /**

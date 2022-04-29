@@ -57,7 +57,7 @@ export function TableIcon({
       : tableLabel ?? getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = typeof resolvedTableLabel === 'undefined';
-  if (tableIconSource !== '/images/unknown.png')
+  if (typeof tableIconSource === 'string')
     return (
       <span
         className={`${className} bg-center bg-no-repeat bg-contain`}

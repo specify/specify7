@@ -379,10 +379,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       }
       onDelete={
         typeof handleDelete === 'function'
-          ? (resource): void => {
-              if (currentResource?.isNew() === true)
-                setUnloadProtect(() => () => handleDelete(resource));
-              else handleDelete(resource);
+          ? (index): void => {
+              handleDelete?.(index);
+              setRecords(removeItem(records, index));
+              if (ids.length === 1) handleClose();
             }
           : undefined
       }
@@ -437,15 +437,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
                     }
-                    onClick={(): void =>
-                      void handleRemove()
-                        .then((deleted) =>
-                          deleted && ids.length === 1
-                            ? handleClose()
-                            : undefined
-                        )
-                        .catch(crash)
-                    }
+                    onClick={handleRemove}
                   />
                 ) : undefined}
                 {isAddingNew ? (
@@ -468,13 +460,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={(): void =>
-              void handleRemove()
-                .then((deleted) =>
-                  deleted && ids.length === 1 ? handleClose() : undefined
-                )
-                .catch(crash)
-            }
+            onDeleted={handleRemove}
             onClose={handleClose}
           />
           {dialogs}
@@ -591,6 +577,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
     if (typeof currentRecordId === 'undefined')
+      // FIXME: test this code when deleting items from record sets
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 ids
@@ -653,7 +640,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                     loading(
                       recordSet
                         .destroy()
-                        .then(handleClose ?? ((): void => goTo('/specify/')))
+                        .then(handleClose ?? ((): void => goTo('/')))
                     )
                   }
                 >

@@ -250,7 +250,7 @@ function ChangeOwner({
     <Dialog
       title={wbText('dataSetOwnerChangedDialogTitle')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
-      onClose={(): void => goTo('/specify/')}
+      onClose={(): void => goTo('/')}
       buttons={commonText('close')}
     >
       <p>{wbText('dataSetOwnerChangedDialogText')}</p>

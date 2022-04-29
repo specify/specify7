@@ -38,7 +38,7 @@ import {
 import {parseUploadPlan} from './uploadplanparser';
 import {capitalize, clamp, mappedFind} from './helpers';
 import {getTableFromMappingPath} from './wbplanviewnavigator';
-import {getIcon} from './icons';
+import {getIcon, unknownIcon} from './icons';
 import {wbText} from './localization/workbench';
 import {commonText} from './localization/common';
 import {showDialog} from './components/legacydialog';
@@ -455,7 +455,7 @@ const WBView = Backbone.View.extend({
                             label === ''
                               ? defined(getModel(tableName)).label
                               : label;
-                          const tableIcon = getIcon(tableName);
+                          const tableIcon = getIcon(tableName) ?? unknownIcon;
 
                           return `<a
                             class="link"
@@ -583,7 +583,7 @@ const WBView = Backbone.View.extend({
     this.mappings.mappedHeaders = Object.fromEntries(
       this.mappings.tableNames.map((tableName, mappingCol) => [
         this.mappingColToPhysicalCol(mappingCol),
-        getIcon(tableName),
+        getIcon(tableName) ?? unknownIcon,
       ])
     );
   },

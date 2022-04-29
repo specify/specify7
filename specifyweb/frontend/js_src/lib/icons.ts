@@ -53,12 +53,12 @@ function findIconInXml(
     : iconNode ?? undefined;
 }
 
-export function getIcon(icon: string): string {
+export const unknownIcon = '/images/unknown.png';
+export function getIcon(icon: string): string | undefined {
   for (const [group, xml] of Object.entries(iconGroups)) {
     const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
     if (typeof iconFile === 'string')
       return `${iconDirectories[group as IconGroup]}${iconFile}`;
   }
-  console.warn('unknown icon:', icon);
-  return '/images/unknown.png';
+  return undefined;
 }

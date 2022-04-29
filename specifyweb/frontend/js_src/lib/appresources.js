@@ -220,7 +220,7 @@ const ResourceDataView = Backbone.View.extend({
                 buttonsDiv.prepend(
                     new DeleteButtonView({
                         resource: this.model,
-                        onDeleted: () => goTo('/specify/appresources/')
+                        onDeleted: () => goTo('/appresources/')
                     }).render().el
                 );
 

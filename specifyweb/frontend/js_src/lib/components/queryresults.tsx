@@ -89,14 +89,15 @@ function QueryResultCell({
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
-  const [formatted] = React.useState<string | number | undefined | JSX.Element>(
+  const formatted = React.useMemo<string | number | undefined | JSX.Element>(
     () =>
       typeof value !== 'object' &&
       typeof field === 'object' &&
       !field.isRelationship &&
       typeof fieldSpec === 'object'
         ? fieldFormat(field, fieldSpec.parser, (value ?? '').toString())
-        : value ?? ''
+        : value ?? '',
+    [field, fieldSpec, value]
   );
 
   return (

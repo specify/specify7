@@ -313,6 +313,7 @@ export function QueryResultsTable({
   function fetchMore(): void {
     if (!Array.isArray(results)) return;
     handleFetching();
+    // FIXME: test if need to offset the records
     fetchResults(results.length)
       .then((newResults) => setResults([...results, ...newResults]))
       .then(handleFetched)

@@ -12,7 +12,6 @@ import type {
 } from './datamodelutils';
 import { f } from './functools';
 import { camelToHuman } from './helpers';
-import { getIcon } from './icons';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
 import { ResourceBase } from './resourceapi';
@@ -35,6 +34,7 @@ import {
   ToOneCollection,
 } from './collectionapi';
 import { parseClassName } from './resource';
+import { error } from './assert';
 
 type FieldAlias = {
   readonly vname: string;
@@ -292,7 +292,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getLiteralField(literalName: string): LiteralField | undefined {
     const field = this.getField(literalName);
     if (typeof field === 'undefined') return undefined;
-    else if (field.isRelationship) throw new Error('Field is a relationship');
+    else if (field.isRelationship)
+      error('Field is a relationship', {
+        model: this,
+        literalName,
+      });
     else return field;
   }
 
@@ -309,12 +313,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public getAggregator(): string | undefined {
     return this.localization.aggregator ?? undefined;
-  }
-
-  public getIcon(): string {
-    return this.overrides.isSystem
-      ? '/images/system.png'
-      : getIcon(this.name.toLowerCase());
   }
 
   /**

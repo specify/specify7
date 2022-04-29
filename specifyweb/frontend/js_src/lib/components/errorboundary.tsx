@@ -26,6 +26,7 @@ import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
+import { getRawUserPreferences } from '../preferencesutils';
 
 type ErrorBoundaryState =
   | {
@@ -33,7 +34,7 @@ type ErrorBoundaryState =
     }
   | {
       readonly hasError: true;
-      readonly error: { toString: () => string };
+      readonly error: Error;
       readonly errorInfo: { componentStack: string };
     };
 
@@ -171,7 +172,7 @@ export class ErrorBoundary extends React.Component<
   };
 
   public componentDidCatch(
-    error: { readonly toString: () => string },
+    error: Error,
     errorInfo: { readonly componentStack: string }
   ): void {
     clearUnloadProtect();
@@ -191,6 +192,11 @@ export class ErrorBoundary extends React.Component<
           copiableMessage={produceStackTrace({
             message: this.state.error?.toString(),
             stack: this.state.errorInfo.componentStack,
+            // Any arguments that are given to the error() function:
+            details: Object.getOwnPropertyDescriptor(
+              this.state.error,
+              'details'
+            )?.value,
           })}
         >
           {this.state.error?.toString()}
@@ -220,6 +226,7 @@ const produceStackTrace = (message: unknown): string =>
       tablePermissions: getTablePermissions(),
       operationPermissions: getOperationPermissions(),
       remotePrefs,
+      userPreferences: getRawUserPreferences(),
     },
     null,
     '\t'
@@ -247,6 +254,7 @@ function formatError(
     if (error instanceof Error) {
       errorObject.push(
         <React.Fragment key="stack">
+          <p>{error.message}</p>
           <p>Stack:</p>
           <pre>{error.stack}</pre>
         </React.Fragment>
