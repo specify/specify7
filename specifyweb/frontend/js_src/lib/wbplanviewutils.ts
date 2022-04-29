@@ -6,6 +6,7 @@
 
 import { ajax, Http, ping } from './ajax';
 import { AutoMapper } from './automapper';
+import { goTo } from './components/navigation';
 import type { Dataset } from './components/wbplanview';
 import type {
   AutoMapperSuggestion,
@@ -29,7 +30,6 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { getMappingLineData } from './wbplanviewnavigator';
-import { goTo } from './components/navigation';
 
 export async function savePlan({
   dataset,
@@ -186,17 +186,25 @@ export function getMustMatchTables({
   };
 }
 
+export const pathStartsWith = (
+  mappingPath: MappingPath,
+  subPath: MappingPath
+): boolean =>
+  /*
+   * Can't use String.prototype.startsWith here.
+   * See https://github.com/specify/specify7/issues/1355
+   */
+  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+  mappingPathToString(mappingPath).slice(0, subPath.length) ===
+  mappingPathToString(subPath);
+
 export const getMappedFields = (
   lines: RA<{ readonly mappingPath: MappingPath }>,
   // A mapping path that would be used as a filter
   mappingPathFilter: MappingPath
 ): RA<string> =>
   lines
-    .filter((line) =>
-      mappingPathToString(line.mappingPath).startsWith(
-        mappingPathToString(mappingPathFilter)
-      )
-    )
+    .filter((line) => pathStartsWith(line.mappingPath, mappingPathFilter))
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>

@@ -63,6 +63,7 @@ import {
 } from './components/navigation';
 import {getCache, setCache} from './cache';
 import {f} from './functools';
+import {pathStartsWith} from './wbplanviewutils';
 
 const metaKeys = [
   'isNew',
@@ -213,7 +214,7 @@ const WBView = Backbone.View.extend({
     this.$el.append(
       wbViewTemplate(
         this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
-        this.dataset.id,
+        this.dataset.id
       )
     );
     this.$el.attr('aria-label', commonText('workBench'));
@@ -251,9 +252,7 @@ const WBView = Backbone.View.extend({
               buttons: (
                 <>
                   <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Link.Blue
-                    href={`/workbench-plan/${this.dataset.id}/`}
-                  >
+                  <Link.Blue href={`/workbench-plan/${this.dataset.id}/`}>
                     {commonText('create')}
                   </Link.Blue>
                 </>
@@ -781,9 +780,9 @@ const WBView = Backbone.View.extend({
      * This is the only type of validation that is done on the front-end
      */
     const newIssues = f.unique([
-      ...(isValid ? [] : [wbText('picklistValidationFailed',value)]),
+      ...(isValid ? [] : [wbText('picklistValidationFailed', value)]),
       ...issues.filter(
-        (issue) => !issue.endsWith(wbText('picklistValidationFailed',''))
+        (issue) => !issue.endsWith(wbText('picklistValidationFailed', ''))
       ),
     ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
@@ -1270,7 +1269,7 @@ const WBView = Backbone.View.extend({
       physicalRow,
       physicalCol,
       'issues'
-    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed','')));
+    ).some((issue) => issue.endsWith(wbText('picklistValidationFailed', '')));
     if (hasFrontEndValidationErrors)
       /*
        * Since isModified state has higher priority then issues, we need to
@@ -1321,9 +1320,7 @@ const WBView = Backbone.View.extend({
       isSearchResult: () =>
         cell.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
       issues: () => {
-        cell.classList[value.length === 0 ? 'remove' : 'add'](
-          'htCommentCell'
-        );
+        cell.classList[value.length === 0 ? 'remove' : 'add']('htCommentCell');
         if (value.length === 0)
           this.getHotPlugin('comments').removeCommentAtCell(
             visualRow,
@@ -1872,9 +1869,7 @@ const WBView = Backbone.View.extend({
         buttons: (
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Link.Blue
-              href={`/workbench-plan/${this.dataset.id}/`}
-            >
+            <Link.Blue href={`/workbench-plan/${this.dataset.id}/`}>
               {commonText('create')}
             </Link.Blue>
           </>
@@ -2137,19 +2132,16 @@ const WBView = Backbone.View.extend({
       // Find all columns with the shared parent mapping path
       return this.mappings.lines
         .filter(({ mappingPath }) =>
-          mappingPathToString(mappingPath).startsWith(
-            mappingPathToString(mappingPathFilter)
-          )
+          pathStartsWith(mappingPath, mappingPathFilter)
         )
         .map(({ headerName }) => headerName);
     return (
       mappedFind(mappingPathFilter, (_, index) => {
         const columns = this.mappings.lines
           .filter(({ mappingPath }) =>
-            mappingPathToString(mappingPath).startsWith(
-              mappingPathToString(
-                mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
-              )
+            pathStartsWith(
+              mappingPath,
+              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
             )
           )
           .map(({ headerName }) => headerName);

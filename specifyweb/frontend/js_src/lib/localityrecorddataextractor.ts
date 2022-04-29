@@ -33,6 +33,7 @@ import {
 } from './wbplanviewmappinghelper';
 import { generateMappingPathPreview } from './wbplanviewmappingpreview';
 import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { pathStartsWith } from './wbplanviewutils';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -199,7 +200,10 @@ export const parseLocalityPinFields = (
       } else if (
         mappingPaths.every(
           (existingGroupName) =>
-            !mappingPathToString(existingGroupName).startsWith(groupName)
+            !pathStartsWith(
+              existingGroupName,
+              splitJoinedMappingPath(groupName)
+            )
         )
       )
         return [
