@@ -133,6 +133,8 @@ function ViewRecords({
           model={model}
           onAdd={undefined}
           onDelete={handleDelete}
+          // TODO: make fetching more efficient when fetching last query item
+          //   (don't fetch all intermediate results)
           onSlide={(index): void =>
             index >= ids.length - 1 ? handleFetchMore?.() : undefined
           }
@@ -313,7 +315,6 @@ export function QueryResultsTable({
   function fetchMore(): void {
     if (!Array.isArray(results)) return;
     handleFetching();
-    // FIXME: test if need to offset the records
     fetchResults(results.length)
       .then((newResults) => setResults([...results, ...newResults]))
       .then(handleFetched)

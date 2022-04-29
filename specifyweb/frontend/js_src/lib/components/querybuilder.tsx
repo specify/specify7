@@ -44,8 +44,6 @@ import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
 /*
- * Query Results:
- * FIXME: saving a query
  * To Test:
  * FIXME: test query reports
  */

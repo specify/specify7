@@ -8,6 +8,7 @@ import type { Collection } from '../datamodel';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { preferencesText } from '../localization/preferences';
+import { queryText } from '../localization/query';
 import type { Language } from '../localization/utils';
 import { DEFAULT_LANGUAGE } from '../localization/utils';
 import { wbText } from '../localization/workbench';
@@ -31,7 +32,6 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
-import { queryText } from '../localization/query';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -730,6 +730,99 @@ export const preferenceDefinitions = {
   workBench: {
     title: commonText('workBench'),
     subCategories: {
+      editor: {
+        title: preferencesText('spreadsheet'),
+        items: {
+          minSpareRows: defineItem<number>({
+            title: preferencesText('minSpareRows'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 1,
+            type: 'java.lang.Integer',
+            parser: {
+              min: 0,
+              max: 100,
+            },
+          }),
+          autoWrapCol: defineItem<boolean>({
+            title: preferencesText('autoWrapCols'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          autoWrapRow: defineItem<boolean>({
+            title: preferencesText('autoWrapRows'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          tabMoveDirection: defineItem<'col' | 'row'>({
+            title: preferencesText('tabMoveDirection'),
+            description: preferencesText('tabMoveDirectionDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'col',
+            values: [
+              {
+                value: 'col',
+                title: preferencesText('column'),
+              },
+              {
+                value: 'row',
+                title: preferencesText('row'),
+              },
+            ],
+          }),
+          enterMoveDirection: defineItem<'col' | 'row'>({
+            title: preferencesText('enterMoveDirection'),
+            description: preferencesText('enterMoveDirectionDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'row',
+            values: [
+              {
+                value: 'col',
+                title: preferencesText('column'),
+              },
+              {
+                value: 'row',
+                title: preferencesText('row'),
+              },
+            ],
+          }),
+          enterBeginsEditing: defineItem<boolean>({
+            title: preferencesText('enterBeginsEditing'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          filterPickLists: defineItem<
+            'case-sensitive' | 'case-insensitive' | 'none'
+          >({
+            title: preferencesText('filterPickLists'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'none',
+            values: [
+              {
+                value: 'none',
+                title: commonText('no'),
+              },
+              {
+                value: 'case-sensitive',
+                title: preferencesText('caseSensitive'),
+              },
+              {
+                value: 'case-insensitive',
+                title: preferencesText('caseInsensitive'),
+              },
+            ],
+          }),
+        },
+      },
       wbPlanView: {
         title: wbText('dataMapper'),
         items: {

@@ -83,6 +83,8 @@ export const PickListSortType = {
   ORDINAL_SORT: 2,
 };
 
+// TODO: make sure pick lists items are sorted properly everywhere (i.e, in the
+//   workbench)
 export const getPickListItems = (
   pickList: SpecifyResource<PickList>
 ): RA<{

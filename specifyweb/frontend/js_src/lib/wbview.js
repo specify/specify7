@@ -64,6 +64,7 @@ import {
 import {getCache, setCache} from './cache';
 import {f} from './functools';
 import {pathStartsWith} from './wbplanviewutils';
+import {getUserPref} from './preferencesutils';
 
 const metaKeys = [
   'isNew',
@@ -386,10 +387,10 @@ const WBView = Backbone.View.extend({
             copyPasteEnabled: false,
           },
           /*
-           * Force one empty row at the end of the spreadsheet
+           * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: 1,
+          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
           comments: {
             displayDelay: 100,
           },
@@ -402,11 +403,28 @@ const WBView = Backbone.View.extend({
            */
           commentedCellClassName: 'htCommentCell',
           placeholderCellClassName: 'htPlaceholder',
-          // Disable default styles
+          /*
+           * Disable default styles. The only type of front-end invalid cell
+           * right now is non-existed value for a read-only picklist. The error
+           * message for that case is handled separately
+           */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: false,
-          autoWrapRow: false,
+          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
+          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
+          enterBeginsEditing: getUserPref(
+            'workBench',
+            'editor',
+            'enterBeginsEditing'
+          ),
+          enterMoves:
+            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+              ? { col: 1, row: 0 }
+              : { col: 0, row: 1 },
+          tabMoves:
+            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+              ? { col: 1, row: 0 }
+              : { col: 0, row: 1 },
           manualColumnResize: true,
           manualColumnMove: true,
           outsideClickDeselects: false,
@@ -672,7 +690,13 @@ const WBView = Backbone.View.extend({
               source: pickLists[physicalCol].items,
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
-              filter: false,
+              filter:
+                getUserPref('workBench', 'editor', 'filterPickLists') ===
+                'none',
+              filteringCaseSensitive:
+                getUserPref('workBench', 'editor', 'filterPickLists') ===
+                'case-sensitive',
+              sortByRelevance: false,
               trimDropdown: false,
             }
           : { type: 'text' },
@@ -1195,7 +1219,7 @@ const WBView = Backbone.View.extend({
       `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
     );
     this.hotCommentsContainer.classList.add(
-      'right-[var(--offset-right)] !left-[unset]'
+      'right-[var(--offset-right)]', '!left-[unset]'
     );
     if (this.hotCommentsContainerRepositionCallback) {
       clearTimeout(this.hotCommentsContainerRepositionCallback);
@@ -1216,7 +1240,7 @@ const WBView = Backbone.View.extend({
       this.hotCommentsContainerRepositionCallback = setTimeout(
         () =>
           this.hotCommentsContainer.classList.remove(
-            'right-[var(--offset-right)] !left-[unset]'
+            'right-[var(--offset-right)]', '!left-[unset]'
           ),
         10
       );
