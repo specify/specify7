@@ -417,7 +417,13 @@ export const WBUtils = Backbone.View.extend({
 
     const getNewCellValue = this.searchPreferences.search.fullMatch
       ? () => replacementValue
-      : (cellValue) => cellValue.split(this.searchQuery).join(replacementValue);
+      : (cellValue) =>
+          this.searchPreferences.search.useRegex
+            ? cellValue.replaceAll(
+                new RegExp(this.searchQuery, 'g'),
+                replacementValue
+              )
+            : cellValue.split(this.searchQuery).join(replacementValue);
 
     if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
       const modifications = [];
@@ -616,14 +622,15 @@ export const WBUtils = Backbone.View.extend({
   ) {
     const selectedRegions = this.getSelectedRegions();
 
-    const selectedHeaders = f.unique(
+    const selectedHeaders = f
+      .unique(
         selectedRegions.flatMap(({ startCol, endCol }) =>
           Array.from(
             { length: endCol - startCol + 1 },
             (_, index) => startCol + index
           )
         )
-    )
+      )
       .sort(sortFunction(f.id))
       .map(
         (visualCol) =>
@@ -632,14 +639,16 @@ export const WBUtils = Backbone.View.extend({
           ]
       );
 
-    const selectedRows = f.unique(
+    const selectedRows = f
+      .unique(
         selectedRegions.flatMap(({ startRow, endRow }) =>
           Array.from(
             { length: endRow - startRow + 1 },
             (_, index) => startRow + index
           )
         )
-      ).sort(sortFunction(f.id));
+      )
+      .sort(sortFunction(f.id));
 
     const selectAll =
       !allowSingleCell &&
@@ -1046,7 +1055,9 @@ export const WBUtils = Backbone.View.extend({
           if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
-            const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(originalValue);
+            const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(
+              originalValue
+            );
             if (coordinate)
               value = includeSymbolsFunction(
                 stripCardinalDirections(

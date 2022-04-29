@@ -45,7 +45,6 @@ import { MappingView } from './wbplanviewmappercomponents';
 
 /*
  * Query Results:
- * FIXME: query results deleting not working
  * FIXME: saving a query
  * To Test:
  * FIXME: test query reports
