@@ -5,32 +5,19 @@
 import '../../css/main.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { csrfToken } from '../csrftoken';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction, toLowerCase } from '../helpers';
-import { unlockInitialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { fetchContext as fetchRemotePrefs } from '../remoteprefs';
 import type { RA } from '../types';
-import {
-  className,
-  ErrorMessage,
-  Form,
-  Input,
-  Label,
-  Link,
-  Submit,
-} from './basic';
-import { Contexts } from './contexts';
+import { ErrorMessage, Form, Input, Label, Link, Submit } from './basic';
 import { useAsyncState, useTitle } from './hooks';
-import { SetCssVariables, usePref } from './preferenceshooks';
-import { parseDjangoDump, SplashScreen } from './splashscreen';
-
-unlockInitialContext('chooseCollection');
+import { usePref } from './preferenceshooks';
+import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
 
 function ChooseCollection({
   data,
@@ -141,35 +128,21 @@ function ChooseCollection({
   );
 }
 
-window.addEventListener('load', () => {
-  const root = document.getElementById('root');
-  const portalRoot = document.getElementById('portal-root');
-  if (root === null || portalRoot === null)
-    throw new Error('Unable to find root element');
-  root.setAttribute('class', className.root);
-  portalRoot.setAttribute('class', className.rootText);
-  ReactDOM.render(
-    <React.StrictMode>
-      <SetCssVariables />
-      <Contexts>
-        <ChooseCollection
-          data={{
-            errors: [
-              parseDjangoDump<string>('form-errors'),
-              parseDjangoDump<string>('collection-errors'),
-            ]
-              .flat()
-              .filter(Boolean),
-            availableCollections: JSON.parse(
-              parseDjangoDump('available-collections')
-            ),
-            initialValue: parseDjangoDump('initial-value'),
-            nextUrl: parseDjangoDump('next-url'),
-          }}
-          nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
-        />
-      </Contexts>
-    </React.StrictMode>,
-    root
-  );
-});
+entrypoint('chooseCollection', () => (
+  <ChooseCollection
+    data={{
+      errors: [
+        parseDjangoDump<string>('form-errors'),
+        parseDjangoDump<string>('collection-errors'),
+      ]
+        .flat()
+        .filter(Boolean),
+      availableCollections: JSON.parse(
+        parseDjangoDump('available-collections')
+      ),
+      initialValue: parseDjangoDump('initial-value'),
+      nextUrl: parseDjangoDump('next-url'),
+    }}
+    nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
+  />
+));
