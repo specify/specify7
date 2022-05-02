@@ -30,15 +30,19 @@ export const f = {
   id: <T>(value: T): T => value,
   trim: (value: string) => value.trim(),
   /**
-   * Like console.log but return type is undefined instead of void, thus it
+   * Like console.error but return type is undefined instead of void, thus it
    * can be used in ternary expressions without type errors
    * Also, calls a breakpoint()
    */
   error(...args: RA<unknown>): undefined {
     breakpoint();
-    console.log(...args);
+    console.error(...args);
     return undefined;
   },
+  /**
+   * Like console.log, but return type is undefined instead of void to allow
+   * using this in expressions without a type error
+   */
   log: (...args: RA<unknown>): undefined => void console.log(...args),
   /** An alternative way to declare a variable */
   var: <VALUE, RETURN>(

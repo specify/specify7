@@ -306,7 +306,7 @@ export function Dialog({
       className={`
         outline-none flex flex-col p-4 gap-y-2 ${containerClassName}
         dark:text-neutral-200 dark:border dark:border-neutral-700
-        text-neutral-900 overflow-x-hidden
+        text-neutral-900 overflow-x-hidden duration-0
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
           reduceTransparency
