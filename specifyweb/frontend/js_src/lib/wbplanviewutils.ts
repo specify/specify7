@@ -194,8 +194,7 @@ export const pathStartsWith = (
    * Can't use String.prototype.startsWith here.
    * See https://github.com/specify/specify7/issues/1355
    */
-  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-  mappingPathToString(mappingPath).slice(0, subPath.length) ===
+  mappingPathToString(mappingPath.slice(0, subPath.length)) ===
   mappingPathToString(subPath);
 
 export const getMappedFields = (
