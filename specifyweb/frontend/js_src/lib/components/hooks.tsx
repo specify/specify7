@@ -543,10 +543,12 @@ export function useResourceValue<
 }
 
 export function useIsModified(
-  resource: SpecifyResource<AnySchema> | undefined
+  resource: SpecifyResource<AnySchema> | undefined,
+  // Whether a new resource that hasn't been modified is treated as not modified
+  ignoreBrandNew = true
 ): boolean {
   const [saveRequired, handleNeedsSaving, handleSaved] = useBooleanState(
-    resource?.needsSaved
+    resource?.needsSaved && (resource?.isNew() === false || !ignoreBrandNew)
   );
 
   React.useEffect(
