@@ -494,7 +494,7 @@ export function fieldFormat(
   if (parseResults.isValid)
     return (
       resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
-      parseResults.parsed?.toString() ??
+      (parseResults.parsed as string | undefined)?.toString() ??
       ''
     );
   else

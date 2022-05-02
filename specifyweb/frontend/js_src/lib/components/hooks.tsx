@@ -464,21 +464,6 @@ export function useResourceValue<
     [resource, fieldName, parser, inputRef, setValidation]
   );
 
-  /*
-   * Show errors if default parser changes (to catch possible performance issues)
-   */
-  const previousParser = React.useRef<Parser | undefined | false>(false);
-  React.useEffect(() => {
-    if (
-      previousParser.current !== false &&
-      previousParser.current !== defaultParser
-    )
-      console.error('Default parser changed. Use React.useMemo()');
-    return (): void => {
-      previousParser.current = defaultParser;
-    };
-  }, [defaultParser]);
-
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
     if (typeof fieldName === 'undefined') return;

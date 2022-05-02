@@ -2,10 +2,14 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import { aggregate, format } from '../dataobjformatters';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
+import { QueryFieldSpec } from '../queryfieldspec';
+import { parseRelativeDate } from '../relativedate';
 import type { LiteralField, Relationship } from '../specifyfield';
+import type { Collection } from '../specifymodel';
 import type { IR } from '../types';
 import type { Parser } from '../uiparse';
 import {
@@ -13,15 +17,11 @@ import {
   mergeParsers,
   parserFromType,
 } from '../uiparse';
-import { Input } from './basic';
-import { useAsyncState, useResourceValue } from './hooks';
-import { getResourceAndField } from './resource';
-import { QueryFieldSpec } from '../queryfieldspec';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Collection } from '../specifymodel';
+import { Input } from './basic';
+import { useAsyncState, useResourceValue, useTriggerState } from './hooks';
 import { PartialDateUi } from './partialdateui';
-import { f } from '../functools';
-import { parseRelativeDate } from '../relativedate';
+import { getResourceAndField } from './resource';
 
 export function UiField({
   id,
@@ -63,7 +63,7 @@ export function UiField({
             ? data.resource.rgetCollection(data.field.name).then(aggregate)
             : false
           : undefined,
-      [data, fieldName]
+      [resource.specifyModel.name, data, fieldName]
     ),
     false
   );
@@ -164,11 +164,15 @@ export function Field({
        * While "value" is not used in the hook, it is needed to update a
        * formatter if related resource changes
        */
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       [resource, field, value]
     ),
     false
   );
 
+  const [internalValue, setInternalValue] = useTriggerState<
+    string | number | boolean | undefined
+  >(value);
   return (
     <Input.Generic
       forwardRef={validationRef}
@@ -176,7 +180,7 @@ export function Field({
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')
-          : value?.toString() ?? ''
+          : internalValue?.toString() ?? ''
       }
       tabIndex={isReadOnly ? -1 : undefined}
       onChange={(event): void => {
@@ -185,22 +189,18 @@ export function Field({
          * Don't handle value change for input fields until field is blurred,
          * unless user tried to paste a date (see definition of Input.Generic)
          */
-        if (parser.type !== 'date' || event.type === 'paste')
-          updateValue(input.value);
-        else if (typeof parser.printFormatter === 'function')
-          updateValue(parser.printFormatter(input.value, parser));
+        if (event.type === 'paste') updateValue(input.value);
+        else setInternalValue(input.value);
       }}
-      onBlur={({ target }): void => {
-        if (parser.type === 'date') updateValue(target.value);
-      }}
+      onBlur={({ target }): void => updateValue(target.value)}
       id={id}
       /*
-       * Disable text-align: right in non webkit browsers
+       * Disable "text-align: right" in non webkit browsers
        * as they don't support spinner's arrow customization
        */
       className={navigator.userAgent.includes('webkit') ? 'webkit' : ''}
       {...validationAttributes}
-      // This is undefined if resource.noValidation=true
+      // This is undefined when resource.noValidation = true
       type={validationAttributes.type ?? 'text'}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}
