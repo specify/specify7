@@ -25,10 +25,18 @@ export function findString(
   itemType: 'containerName' | 'containerDesc' | 'itemName' | 'itemDesc',
   parentUrl: string
 ): SpLocaleItemString | NewSpLocaleItemString {
-  const targetString = strings.find(
-    (object) =>
-      object.language === language && (object.country ?? '') === (country ?? '')
-  );
+  /*
+   * Start searching for matching string from the end. This would align
+   * schema config behavior with the way back-end handles cases when there
+   * are duplicate SpLocalteItemStr records for the same field and same language
+   */
+  const targetString = Array.from(strings)
+    .reverse()
+    .find(
+      (object) =>
+        object.language === language &&
+        (object.country ?? '') === (country ?? '')
+    );
   if (typeof targetString === 'object') return targetString;
 
   const defaultItem = strings.find(
