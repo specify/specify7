@@ -69,7 +69,7 @@ class ScopedTreeRecord(NamedTuple):
             parsedFields[rank] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
-            if filters['name'] is None:
+            if filters.get('name', None) is None:
                 parseFails += [
                     ParseFailure(f'this field must be empty if "{nameColumn.column}" is empty', result.column)
                     for result in presults
