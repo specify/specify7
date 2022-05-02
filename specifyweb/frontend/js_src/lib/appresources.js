@@ -173,9 +173,11 @@ const ResourceDataView = Backbone.View.extend({
                 }).appendTo(toolbar);
 
                 const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
-                var editor = ace.edit(editArea[0], {
+                const editor = ace.edit(editArea[0], {
                     readOnly: !hasToolPermission('resources',this.model.isNew() ? 'create' : 'update')
                 });
+                this.editor = editor;
+
                 editor.getSession().setMode(modeForResource(this.model));
                 editor.setValue(this.appresourceData.get('data'));
                 editor.setPrintMarginColumn(null);
@@ -268,9 +270,11 @@ const ResourceDataView = Backbone.View.extend({
         validationResultsElement.getElementsByClassName(
             'validation-results-content'
         )[0].innerHTML = validationResults;
+        this.editor.resize();
     },
     clearValidationResults(){
         this.el.querySelector('.validation-results').classList.add('hidden');
+        this.editor.resize();
     },
     metadataChanged() {
         this.model.set('mimetype', $('.mimetype-input input', this.el).val());
