@@ -178,7 +178,7 @@ export function CollectionSelector(): JSX.Element {
       {typeof collections === 'undefined' && (
         <option disabled>{commonText('loading')}</option>
       )}
-      {Array.from(sortedCollections ?? []).map(({ id, collectionName }) => (
+      {sortedCollections?.map(({ id, collectionName }) => (
         <option key={id} value={id}>
           {collectionName}
         </option>

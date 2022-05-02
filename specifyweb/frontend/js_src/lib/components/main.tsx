@@ -37,9 +37,10 @@ export type UserTool = {
   // Whether the view opens in a dialog window
   readonly isOverlay: boolean;
   readonly groupLabel: string;
+  readonly basePath?: string;
 };
 
-export type MenuItem = Omit<UserTool, 'groupLabel'> & {
+export type MenuItem = Omit<UserTool, 'groupLabel' | 'basePath'> & {
   readonly icon: JSX.Element;
 };
 
