@@ -100,72 +100,75 @@ export function QueryLine({
     readonly parser: Parser | undefined;
   }>({ fieldType: undefined, parser: undefined });
 
-  React.useEffect(() => {
-    const [fieldName, datePart] = valueIsPartialField(
-      field.mappingPath.slice(-1)[0] ?? ''
-    )
-      ? parsePartialField<DatePart>(field.mappingPath.slice(-1)[0])
-      : [field.mappingPath.slice(-1)[0], undefined];
-    const tableName =
-      mappingPathIsComplete(field.mappingPath) &&
-      !fieldName.startsWith(schema.fieldPartSeparator)
-        ? getTableFromMappingPath(baseTableName, field.mappingPath)
-        : undefined;
-    const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
+  React.useEffect(
+    () => {
+      const [fieldName, datePart] = valueIsPartialField(
+        field.mappingPath.slice(-1)[0] ?? ''
+      )
+        ? parsePartialField<DatePart>(field.mappingPath.slice(-1)[0])
+        : [field.mappingPath.slice(-1)[0], undefined];
+      const tableName =
+        mappingPathIsComplete(field.mappingPath) &&
+        !fieldName.startsWith(schema.fieldPartSeparator)
+          ? getTableFromMappingPath(baseTableName, field.mappingPath)
+          : undefined;
+      const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
 
-    let fieldType: QueryFieldType | undefined = undefined;
-    let parser = undefined;
-    const hasParser =
-      typeof dataModelField === 'object' &&
-      !dataModelField.isRelationship &&
-      mappingPathIsComplete(field.mappingPath);
-    if (hasParser) {
-      parser = resolveParser(dataModelField, {
-        datePart,
-        isRequired: true,
-      });
+      let fieldType: QueryFieldType | undefined = undefined;
+      let parser = undefined;
+      const hasParser =
+        typeof dataModelField === 'object' &&
+        !dataModelField.isRelationship &&
+        mappingPathIsComplete(field.mappingPath);
+      if (hasParser) {
+        parser = resolveParser(dataModelField, {
+          datePart,
+          isRequired: true,
+        });
+        // Remove autoNumbering wildCard from default values
+        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+          parser = { ...parser, value: undefined };
 
-      fieldType =
-        tableName === 'CollectionObject' &&
-        dataModelField.name === 'catalogNumber'
-          ? 'id'
-          : parser.type ?? 'text';
-    }
+        fieldType =
+          tableName === 'CollectionObject' &&
+          dataModelField.name === 'catalogNumber'
+            ? 'id'
+            : parser.type ?? 'text';
+      }
 
-    const newFilters = hasParser
-      ? field.filters.map((filter) => {
-          const filterType =
-            typeof fieldType === 'undefined' ||
-            queryFieldFilters[filter.type].types?.includes(fieldType) === false
-              ? 'any'
-              : filter.type;
-          return filterType === 'any' && filter.type !== 'any'
-            ? ({
-                type: 'any',
-                isNot: false,
-                startValue: '',
-              } as const)
-            : filter;
-        })
-      : [];
+      const newFilters = hasParser
+        ? field.filters.map((filter) => {
+            const filterType =
+              typeof fieldType === 'undefined' ||
+              queryFieldFilters[filter.type].types?.includes(fieldType) ===
+                false
+                ? 'any'
+                : filter.type;
+            return filterType === 'any' && filter.type !== 'any'
+              ? ({
+                  type: 'any',
+                  isNot: false,
+                  startValue: '',
+                } as const)
+              : filter;
+          })
+        : [];
 
-    setFieldMeta({ parser, fieldType });
+      setFieldMeta({ parser, fieldType });
 
-    if (
-      field.filters.length === newFilters.length &&
-      field.filters.some((filter, index) => filter !== newFilters[index])
-    )
-      handleChange({
-        ...field,
-        filters: newFilters,
-      });
-  }, [
-    baseTableName,
-    field,
+      if (
+        field.filters.length === newFilters.length &&
+        field.filters.some((filter, index) => filter !== newFilters[index])
+      )
+        handleChange({
+          ...field,
+          filters: newFilters,
+        });
+    },
     // Since handleChange changes at each render, fieldHash is used instead
-    fieldHash,
-    enforceLengthLimit,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [baseTableName, field, fieldHash, enforceLengthLimit]
+  );
 
   const lineData = getMappingLineData({
     baseTableName,
