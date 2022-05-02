@@ -19,6 +19,7 @@ import {
   getNumberFromToManyIndex,
   relationshipIsToMany,
   valueIsToManyIndex,
+  valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 
 /** Returns the max index in the list of -to-many items */
@@ -37,12 +38,12 @@ export const getMaxToManyIndex = (
     return max;
   }, 0);
 
-/** Iterates over the mappingsTree to find required fields that are missing */
+/** Iterates over the mappings to find required fields that are not mapped */
 export function findRequiredMissingFields(
   // Name of the current base table
   tableName: keyof Tables,
   mappings: RA<MappingPath>,
-  // If a table is set as must match, all of it's fields are optional
+  // If a table is set as must match, all of its fields are optional
   mustMatchPreferences: IR<boolean>,
   // Used internally in a recursion. Previous table name
   parentRelationship: Relationship | undefined = undefined,
@@ -70,11 +71,11 @@ export function findRequiredMissingFields(
       )
     );
   // Handle trees
-  else if (isTreeModel(tableName))
+  else if (isTreeModel(tableName) && !valueIsTreeRank(path.slice(-1)[0]))
     return hasTreeAccess(tableName as 'Geography', 'read')
       ? defined(
           getTreeDefinitionItems(tableName as 'Geography', false)
-        ).flatMap(({ name: rankName, isEnforced }) => {
+        ).flatMap(({ name: rankName }) => {
           const formattedRankName = formatTreeRank(rankName);
           const localPath = [...path, formattedRankName];
 
@@ -86,41 +87,42 @@ export function findRequiredMissingFields(
               parentRelationship,
               localPath
             );
-          else if (isEnforced === true && !mustMatchPreferences[tableName])
-            return [localPath];
           else return [];
         })
       : [];
 
   return [
-    ...model.relationships.flatMap((relationship) => {
-      const localPath = [...path, relationship.name];
+    // WB does not allow mapping to relationships in tree tables
+    ...(isTreeModel(tableName) ? [] : model.relationships).flatMap(
+      (relationship) => {
+        const localPath = [...path, relationship.name];
 
-      if (
-        typeof parentRelationship === 'object' &&
-        // Disable circular relationships
-        (isCircularRelationship(parentRelationship, relationship) ||
-          // Skip -to-many inside -to-many
-          (relationshipIsToMany(parentRelationship) &&
-            relationshipIsToMany(relationship)))
-      )
-        return [];
+        if (
+          typeof parentRelationship === 'object' &&
+          // Disable circular relationships
+          (isCircularRelationship(parentRelationship, relationship) ||
+            // Skip -to-many inside -to-many
+            (relationshipIsToMany(parentRelationship) &&
+              relationshipIsToMany(relationship)))
+        )
+          return [];
 
-      if (relationship.name in indexedMappings)
-        return findRequiredMissingFields(
-          relationship.relatedModel.name,
-          indexedMappings[relationship.name],
-          mustMatchPreferences,
-          relationship,
-          localPath
-        );
-      else if (
-        relationship.overrides.isRequired &&
-        !mustMatchPreferences[tableName]
-      )
-        return [localPath];
-      else return [];
-    }),
+        if (relationship.name in indexedMappings)
+          return findRequiredMissingFields(
+            relationship.relatedModel.name,
+            indexedMappings[relationship.name],
+            mustMatchPreferences,
+            relationship,
+            localPath
+          );
+        else if (
+          relationship.overrides.isRequired &&
+          !mustMatchPreferences[tableName]
+        )
+          return [localPath];
+        else return [];
+      }
+    ),
     ...filterArray(
       model.literalFields.map((field) =>
         !(field.name in indexedMappings) &&

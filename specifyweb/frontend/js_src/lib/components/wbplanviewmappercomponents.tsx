@@ -74,9 +74,6 @@ export function ValidationResults(props: {
       title={wbText('validationFailedDialogTitle')}
       header={wbText('validationFailedDialogHeader')}
       modal={false}
-      className={{
-        container: dialogClassNames.narrowContainer,
-      }}
       onClose={props.onDismissValidation}
       buttons={
         <>
