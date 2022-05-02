@@ -10,7 +10,6 @@ import { getView, processViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
 import type { Collection } from '../specifymodel';
-import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { DataEntry } from './basic';
 import { FormTableInteraction } from './formtableinteractionitem';
@@ -88,9 +87,7 @@ const cellRenderers: {
     formType: parentFormType,
     cellData: { fieldName, formType, isButton, icon, viewName, sortField },
   }) {
-    const field = defined(
-      resource.specifyModel.getRelationship(fieldName ?? '')
-    );
+    const field = resource.specifyModel.getRelationship(fieldName ?? '');
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -99,14 +96,20 @@ const cellRenderers: {
     const [actualFormType] = useAsyncState<FormType>(
       React.useCallback(
         async () =>
-          getView(viewName ?? field.relatedModel.view)
-            .then((viewDefinition) =>
-              typeof viewDefinition === 'object'
-                ? processViewDefinition(viewDefinition, formType, mode)
-                : undefined
-            )
-            .then((definition) => definition?.formType ?? 'form'),
-        [viewName, field.relatedModel, formType, mode]
+          typeof field === 'object'
+            ? getView(viewName ?? field.relatedModel.view)
+                .then((viewDefinition) =>
+                  typeof viewDefinition === 'object'
+                    ? processViewDefinition(viewDefinition, formType, mode)
+                    : undefined
+                )
+                .then((definition) => definition?.formType ?? 'form')
+            : f.error(
+                `Can't render subView for an unknown field: ${
+                  fieldName ?? 'undefined'
+                }`
+              ),
+        [viewName, field?.relatedModel, formType, mode, field, fieldName]
       ),
       false
     );
@@ -116,6 +119,7 @@ const cellRenderers: {
     >(
       React.useCallback(
         () =>
+          typeof field === 'object' &&
           relationshipIsToMany(field) &&
           ['LoanPreparation', 'GiftPreparation'].includes(
             field.relatedModel.name
@@ -127,7 +131,10 @@ const cellRenderers: {
       false
     );
 
-    return hasTablePermission(field.relatedModel.name, 'read') ? (
+    return typeof field === 'undefined' ? null : hasTablePermission(
+        field.relatedModel.name,
+        'read'
+      ) ? (
       typeof interactionCollection === 'undefined' ||
       typeof actualFormType === 'undefined' ? null : interactionCollection ===
           false || actualFormType === 'form' ? (
