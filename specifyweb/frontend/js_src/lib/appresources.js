@@ -146,7 +146,13 @@ const ResourceDataView = Backbone.View.extend({
                 if (this.model.specifyModel.name === 'SpAppResource') {
                     $(`<label class="mimetype-input flex items-center gap-x-1">
                         ${adminText('mimetype')}
-                        <input class="flex-1" type="text" spellcheck="false" autocomplete="on" />
+                        <input class="flex-1" type="text" spellcheck="false" autocomplete="on" list="mimetypes" />
+                        <datalist id="mimetypes">
+                            <option>application/json</option>
+                            <option>text/xml</option>
+                            <option>jrxml/label</option>
+                            <option>jrxml/report</option>
+                        </datalist>
                     <label>`).appendTo(toolbar);
                     $('.mimetype-input input', toolbar).val(this.model.get('mimetype'));
                 }
@@ -228,10 +234,10 @@ const ResourceDataView = Backbone.View.extend({
                 );
 
             this.$el.append(buttonsDiv);
-            this.$el.append(`<div class="validation-results hidden p-4 bg-red-500">
-                ${adminText('resourceValidationFailed')}
+            this.$el.append(`<section class="validation-results hidden p-4 bg-red-500">
+                <h3>${adminText('resourceValidationFailed')}</h3>
                 <div class="validation-results-content"></div>
-            </div>`);
+            </section>`);
         });
 
         return this;
@@ -258,7 +264,7 @@ const ResourceDataView = Backbone.View.extend({
     },
     showValidationResults(validationResults){
         const validationResultsElement = this.el.getElementsByClassName('validation-results')[0];
-        validationResultsElement.classList.add('hidden');
+        validationResultsElement.classList.remove('hidden');
         validationResultsElement.getElementsByClassName(
             'validation-results-content'
         )[0].innerHTML = validationResults;
