@@ -751,6 +751,13 @@ const WBView = Backbone.View.extend({
   },
 
   // Hooks
+  /*
+  * After cell is rendered, we need to reApply metaData classes
+  * NOTE:
+  * .issues are handled automatically by the comments plugin.
+  * This is why, afterRenderer only has to handle the isModified and isNew
+  * cases
+  * */
   afterRenderer(td, visualRow, visualCol, property, _value) {
     if (typeof this.hot === 'undefined') {
       td.classList.add('text-gray-500');
@@ -1212,7 +1219,7 @@ const WBView = Backbone.View.extend({
     );
 
     // Make sure box is overflowing horizontally
-    if (window.innerWidth > cellContainerBoundingBox.right + oneRem) return;
+    if (window.innerWidth > cellContainerBoundingBox.right + oneRem * 2) return;
 
     this.hotCommentsContainer.style.setProperty(
       '--offset-right',
@@ -1336,15 +1343,19 @@ const WBView = Backbone.View.extend({
       visualCol,
     });
   },
+  /**
+   * Note: "cell" is undefined when setting meta for off-screen cell.
+   * This is the case when rendering off-screen issues (which don't require a cell
+   * reference)
+   */
   runMetaUpdateEffects(cell, key, value, visualRow, visualCol) {
     const effects = {
-      isNew: () => cell.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
+      isNew: () => cell?.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
       isModified: () =>
-        cell.classList[value ? 'add' : 'remove']('wb-modified-cell'),
+        cell?.classList[value ? 'add' : 'remove']('wb-modified-cell'),
       isSearchResult: () =>
-        cell.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
+        cell?.classList[value ? 'add' : 'remove']('wb-search-match-cell'),
       issues: () => {
-        cell.classList[value.length === 0 ? 'remove' : 'add']('htCommentCell');
         if (value.length === 0)
           this.getHotPlugin('comments').removeCommentAtCell(
             visualRow,
@@ -1399,7 +1410,7 @@ const WBView = Backbone.View.extend({
     const visualRow = initialVisualRow ?? this.hot.toVisualRow(physicalRow);
     const visualCol = initialVisualCol ?? this.hot.toVisualColumn(physicalCol);
     const cell = initialCell ?? this.hot.getCell(visualRow, visualCol);
-    if (cell) this.runMetaUpdateEffects(cell, key, value, visualRow, visualCol);
+    this.runMetaUpdateEffects(cell, key, value, visualRow, visualCol);
 
     return true;
   },
