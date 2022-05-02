@@ -7,6 +7,7 @@ import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
 import { formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { f } from '../functools';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -24,9 +25,11 @@ export function Notifications(): JSX.Element {
     RA<Notification> | undefined
   >(undefined);
 
-  // Close the dialog when all notifications get dismissed
   const notificationCount = notifications?.length ?? 0;
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  const deletingPromise = React.useRef<Promise<void> | undefined>(undefined);
+
+  // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
     if (notificationCount === 0) handleClose();
   }, [notificationCount, handleClose]);
@@ -44,24 +47,36 @@ export function Notifications(): JSX.Element {
 
     function doFetch(): void {
       /*
-       * Poll interval is scaled exponentially to
-       * reduce requests if the tab is left open.
+       * Poll interval is scaled exponentially to reduce requests if the tab is
+       * left open.
        */
       pullInterval *= INTERVAL_MULTIPLIER;
 
-      ajax<
-        RA<
-          Omit<Notification, 'payload' | 'messageId'> & {
+      // Don't fetch while a message is being deleted
+      (deletingPromise.current ?? Promise.resolve())
+        .then(async () =>
+          ajax<
+            RA<
+              Omit<Notification, 'payload' | 'messageId'> & {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                readonly message_id: string;
+              }
+            >
+          >(
+            `/notifications/messages/`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            readonly message_id: string;
-          }
-        >
-      >(
-        `/notifications/messages/`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } },
-        { strict: false }
-      )
+            { headers: { Accept: 'application/json' } },
+            /*
+             * Don't show modal error dialog on errors. Several reasons why:
+             *  - Request may fail if Django migrations weren't run
+             *  - Request is initialized automatically, not by user, thus having
+             *    an error dialog appear out of blue could be confusing/unexpected
+             *  - Notifications is not a critical component, so if it fails, it
+             *    shouldn't bring down entire application
+             */
+            { strict: false }
+          )
+        )
         .then(({ data: notifications }) => {
           if (destructorCalled) return undefined;
           setNotifications(
@@ -149,11 +164,12 @@ export function Notifications(): JSX.Element {
             <NotificationComponent
               key={index}
               notification={notification}
-              onDelete={(): void =>
+              onDelete={(promise): void => {
+                deletingPromise.current = promise;
                 setNotifications(
                   notifications.filter((item) => item !== notification)
-                )
-              }
+                );
+              }}
             />
           ))}
         </Dialog>
@@ -167,7 +183,7 @@ function NotificationComponent({
   onDelete: handleDelete,
 }: {
   readonly notification: Notification;
-  readonly onDelete: () => void;
+  readonly onDelete: (promise: Promise<void>) => void;
 }): JSX.Element {
   const date = new Date(notification.timestamp);
   const formatted = new Intl.DateTimeFormat([], {
@@ -190,18 +206,19 @@ function NotificationComponent({
           icon="trash"
           title={commonText('delete')}
           aria-label={commonText('delete')}
-          onClick={(): void => {
-            void ping(
-              '/notifications/delete/',
-              {
-                method: 'POST',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                body: formData({ message_id: notification.messageId }),
-              },
-              { strict: false }
-            );
-            handleDelete();
-          }}
+          onClick={(): void =>
+            handleDelete(
+              ping(
+                '/notifications/delete/',
+                {
+                  method: 'POST',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  body: formData({ message_id: notification.messageId }),
+                },
+                { strict: false }
+              ).then(f.void)
+            )
+          }
         />
       </header>
       <p>
