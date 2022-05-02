@@ -79,6 +79,10 @@
     @apply pr-5 bg-right cursor-pointer;
   }
 
+  select.no-arrow {
+    @apply bg-none pl-2 pr-1;
+  }
+
   [type='checkbox'],
   [type='radio'] {
     @apply cursor-pointer text-brand-200 dark:text-brand-400;

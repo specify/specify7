@@ -416,7 +416,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
           <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1 p-1 -m-1">
             <H3 id={id('fields-label')}>{commonText('fields')}</H3>
             <Select
-              className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto"
+              className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto no-arrow"
               size={2}
               aria-labelledby={id('fields-label')}
               onValueChange={(value): void =>
