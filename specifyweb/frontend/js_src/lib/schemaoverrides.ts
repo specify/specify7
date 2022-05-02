@@ -77,7 +77,6 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
 const endsWithTableOverwrites: IR<TableConfigOverwrite> = {
   Authorization: 'hidden',
   Variant: 'hidden',
-  Attribute: 'hidden',
   Def: 'system',
   Item: 'system',
   Property: 'hidden',
