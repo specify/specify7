@@ -419,6 +419,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto no-arrow"
               size={2}
               aria-labelledby={id('fields-label')}
+              value={itemId}
               onValueChange={(value): void =>
                 dispatch({
                   type: 'ChangeItemAction',

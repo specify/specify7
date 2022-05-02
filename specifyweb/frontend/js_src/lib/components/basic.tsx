@@ -535,6 +535,10 @@ export const Select = wrap<
         : ''
     }`,
     ...withHandleBlur(props.onBlur),
+    /*
+     * TODO: don't set event listener if both onValueChange and onValuesChange
+     *   are undefined
+     */
     onChange(event): void {
       const options = Array.from(
         (event.target as HTMLSelectElement).querySelectorAll('option')
@@ -550,7 +554,14 @@ export const Select = wrap<
           option.classList.remove('dark:bg-neutral-100')
         );
       }
-      onValueChange?.((event.target as HTMLSelectElement).value);
+      const value = (event.target as HTMLSelectElement).value;
+
+      /*
+       * Workaround for Safari weirdness. See more:
+       * https://github.com/specify/specify7/issues/1371#issuecomment-1115156978
+       */
+      if (typeof props.size !== 'number' || props.size < 2 || value !== '')
+        onValueChange?.(value);
       onValuesChange?.(selected.map(({ value }) => value));
       props.onChange?.(event);
     },
