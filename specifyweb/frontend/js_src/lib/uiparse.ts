@@ -494,7 +494,8 @@ export function fieldFormat(
   if (parseResults.isValid)
     return (
       resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
-      (parseResults.parsed as string)
+      parseResults.parsed?.toString() ??
+      ''
     );
   else
     console.error('Failed to parse value for field', {
