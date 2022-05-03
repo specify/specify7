@@ -1359,10 +1359,10 @@ export const commonText = createDictionary({
     'es-es': 'Caption',
   },
   description: {
-    'en-us': 'Descripion',
+    'en-us': 'Description',
     'ru-ru': 'Описание',
     ca: 'Descripció',
-    'es-es': 'Descripion',
+    'es-es': 'Description',
   },
   hideTable: {
     'en-us': 'Hide Table',

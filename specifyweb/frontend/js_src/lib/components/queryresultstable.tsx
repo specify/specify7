@@ -298,18 +298,24 @@ export function QueryResultsTable({
         ).then(f.true),
       [fieldSpecs]
     ),
-    true
+    /*
+     * Loading screen is disabled because it was interrupting auto-scroll to
+     * query results in query builder.
+     * See https://github.com/specify/specify7/issues/1354
+     */
+    false
   );
 
   const [treeRanksLoaded] = useAsyncState(
     React.useCallback(async () => treeRanksPromise.then(f.true), []),
-    true
+    false
   );
 
   const [selectedRows, setSelectedRows] = React.useState<Set<number>>(
     new Set()
   );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
+  // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [totalCount]);
 
   function fetchMore(): void {
@@ -324,7 +330,7 @@ export function QueryResultsTable({
   const loading = React.useContext(LoadingContext);
 
   return (
-    <Container.Base className="snap-start w-full">
+    <Container.Base className="w-full">
       <div className="gap-x-2 flex items-center">
         <H3>{`${label}: (${
           selectedRows.size === 0
@@ -559,6 +565,7 @@ export function QueryResultsWrapper({
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;
+    // Display the loading GIF
     setProps(undefined);
 
     const allFields = addAuditLogFields(baseTableName, fields);
@@ -579,6 +586,7 @@ export function QueryResultsWrapper({
     ).then(({ data }) => data.count);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
+    // Run as count only if there are no visible fields
     const initialData =
       queryResource.get('countOnly') === true || displayedFields.length === 0
         ? undefined
@@ -615,9 +623,11 @@ export function QueryResultsWrapper({
 
   return typeof props === 'undefined' ? (
     queryRunCount === 0 ? null : (
-      loadingGif
+      <div className="snap-start flex-1">{loadingGif}</div>
     )
   ) : (
-    <QueryResultsTable {...props} onSelected={handleSelected} />
+    <div className="snap-start flex-1">
+      <QueryResultsTable {...props} onSelected={handleSelected} />
+    </div>
   );
 }

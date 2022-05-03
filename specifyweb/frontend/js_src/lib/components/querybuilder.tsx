@@ -154,21 +154,12 @@ export function QueryBuilder({
       state.mappingView.slice(-1)[0]
     );
 
-  // FIXME: this code is misbehaving
   // Scroll down to query results when pressed the "Query" button
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(
-    () =>
-      /*
-       * "setTimeout" is needed to circumvent React's default scroll position
-       * restoration functionality
-       */
-      void setTimeout(() => {
-        if (state.queryRunCount !== 0 && containerRef.current !== null)
-          smoothScroll(containerRef.current, containerRef.current.scrollHeight);
-      }, 0),
-    [state.queryRunCount]
-  );
+  React.useEffect(() => {
+    if (state.queryRunCount !== 0 && containerRef.current !== null)
+      smoothScroll(containerRef.current, containerRef.current.scrollHeight);
+  }, [state.queryRunCount]);
 
   useTitle(query.name);
 
