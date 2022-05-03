@@ -12,6 +12,8 @@ When app is built in development, certain additional tools become available:
 
 - `_schema` global object is created. It exposes the export from
   [`./schema`](../schema.ts) for easier debugging.
+- `_permissions` global object is created. It contains user permissions from
+  [`./permissions`](../permissions.ts) for easier debugging.
 - `_goTo` function is created. It allows to simulate a navigation by making
   router navigate to a given address.
 - Error Dialogs can be dismissed when in Development.

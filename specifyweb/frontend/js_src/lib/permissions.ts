@@ -233,6 +233,13 @@ export const fetchContext = import('./schemabase')
         operationPermissions =
           operations as unknown as typeof operationPermissions;
         tablePermissions = tables as unknown as typeof tablePermissions;
+        if (process.env.NODE_ENV !== 'production') {
+          // @ts-expect-error Declaring a global object
+          window._permissions = {
+            table: tablePermissions,
+            operations: operationPermissions,
+          };
+        }
         void checkRegistry();
         // Check that user has at least read access to the hierarchy tables
         if (
