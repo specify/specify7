@@ -498,4 +498,16 @@ export const adminText = createDictionary({
     'es-es':
       'The following errors occurred during validation of this resource:',
   },
+  switchToHorizontalLayout: {
+    'en-us': 'Switch to horizontal layout',
+    'ru-ru': 'Switch to horizontal layout',
+    ca: 'Switch to horizontal layout',
+    'es-es': 'Switch to horizontal layout',
+  },
+  switchToVerticalLayout: {
+    'en-us': 'Switch to vertical layout',
+    'ru-ru': 'Switch to vertical layout',
+    ca: 'Switch to vertical layout',
+    'es-es': 'Switch to vertical layout',
+  },
 });

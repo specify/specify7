@@ -142,15 +142,14 @@ export function UserView({
                   </section>
                 </div>
                 {hasPermission('/permissions/policies/user', 'read') && (
-                  <details>
-                    <summary>{adminText('institutionPolicies')}</summary>
-                    <PoliciesView
-                      policies={institutionPolicies}
-                      isReadOnly={!userInformation.isadmin}
-                      scope="institution"
-                      onChange={setInstitutionPolicies}
-                    />
-                  </details>
+                  <PoliciesView
+                    policies={institutionPolicies}
+                    isReadOnly={!userInformation.isadmin}
+                    scope="institution"
+                    onChange={setInstitutionPolicies}
+                    header={adminText('institutionPolicies')}
+                    collapsable={true}
+                  />
                 )}
                 {hasPermission('/admin/user/oic_providers', 'read') && (
                   <UserIdentityProviders userId={user.id} />
@@ -195,6 +194,7 @@ export function UserView({
                           )
                         : undefined
                     }
+                    collapsable={false}
                   />
                 )}
                 {typeof userResource.id === 'number' && (

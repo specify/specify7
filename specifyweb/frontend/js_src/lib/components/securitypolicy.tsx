@@ -23,6 +23,8 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Ul } from './basic';
 import { icons } from './icons';
+import { useCachedState } from './statecache';
+import { useBooleanState } from './hooks';
 
 export type Policy = {
   readonly resource: string;
@@ -40,11 +42,13 @@ function PolicyView({
   isReadOnly,
   onChange: handleChange,
   scope,
+  orientation,
 }: {
   readonly policy: Policy;
   readonly isReadOnly: boolean;
   readonly onChange: (policy: Policy | undefined) => void;
   readonly scope: PolicyScope;
+  readonly orientation: 'vertical' | 'horizontal';
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
   const registries = (
@@ -129,11 +133,17 @@ function PolicyView({
             </li>
           )
         )}
-        {Array.isArray(possibleActions) && possibleActions.length > 0 && (
+        {Array.isArray(extendedActions) && possibleActions.length > 0 && (
           <li className="contents">
             {/* Math.min(possibleActions.length, selectMultipleSize) */}
-            <Ul className="flex flex-col justify-center">
-              {possibleActions.map((action) => (
+            <Ul
+              className={
+                orientation === 'vertical'
+                  ? 'flex flex-col justify-center'
+                  : 'flex gap-4 items-center'
+              }
+            >
+              {extendedActions.map((action) => (
                 <li key={action}>
                   <Label.ForCheckbox>
                     <Input.Checkbox
@@ -177,18 +187,23 @@ export function PoliciesView({
   isReadOnly,
   onChange: handleChange,
   header = adminText('policies'),
+  collapsable,
   scope,
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
   readonly header?: string;
+  readonly collapsable: boolean;
   readonly scope: PolicyScope;
 }): JSX.Element {
   const listRef = React.useRef<HTMLUListElement | null>(null);
-  const policyCountRef = React.useRef<number>(policies?.length ?? 0);
+  const policyCountRef = React.useRef<number>(policies?.length ?? -1);
   // Scroll the list to bottom when new policy is added
   React.useEffect(() => {
+    // Don't auto-scroll on initial load
+    if (policyCountRef.current === -1 && Array.isArray(policies))
+      policyCountRef.current = policies.length;
     if (
       (policies?.length ?? 0) > policyCountRef.current &&
       listRef.current !== null
@@ -196,54 +211,98 @@ export function PoliciesView({
       smoothScroll(listRef.current, listRef.current.scrollHeight);
     policyCountRef.current = policies?.length ?? 0;
   }, [policies]);
-  return (
-    <fieldset className="flex flex-col gap-2">
-      {scope === 'collection' && (
-        <h4 className={className.headerGray}>{header}</h4>
-      )}
-      {Array.isArray(policies) ? (
-        <>
-          <Ul
-            className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.96)]"
-            forwardRef={listRef}
+
+  const [orientation = 'vertical', setOrientation] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'policiesLayout',
+    defaultValue: 'vertical',
+    staleWhileRefresh: false,
+  });
+
+  const children = Array.isArray(policies) ? (
+    <>
+      <Ul
+        className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.96)]"
+        forwardRef={listRef}
+      >
+        {policies.map((policy, index) => (
+          <PolicyView
+            key={index}
+            scope={scope}
+            policy={policy}
+            isReadOnly={isReadOnly}
+            onChange={(policy): void =>
+              handleChange(
+                typeof policy === 'object'
+                  ? replaceItem(policies, index, policy)
+                  : removeItem(policies, index)
+              )
+            }
+            orientation={orientation}
+          />
+        ))}
+      </Ul>
+      {!isReadOnly && (
+        <div>
+          <Button.Green
+            onClick={(): void =>
+              handleChange([
+                ...policies,
+                {
+                  resource: '',
+                  actions: [],
+                },
+              ])
+            }
           >
-            {policies.map((policy, index) => (
-              <PolicyView
-                key={index}
-                scope={scope}
-                policy={policy}
-                isReadOnly={isReadOnly}
-                onChange={(policy): void =>
-                  handleChange(
-                    typeof policy === 'object'
-                      ? replaceItem(policies, index, policy)
-                      : removeItem(policies, index)
-                  )
-                }
-              />
-            ))}
-          </Ul>
-          {!isReadOnly && (
-            <div>
-              <Button.Green
-                onClick={(): void =>
-                  handleChange([
-                    ...policies,
-                    {
-                      resource: '',
-                      actions: [],
-                    },
-                  ])
-                }
-              >
-                {commonText('add')}
-              </Button.Green>
-            </div>
-          )}
-        </>
-      ) : (
-        commonText('loading')
+            {commonText('add')}
+          </Button.Green>
+        </div>
       )}
+    </>
+  ) : (
+    commonText('loading')
+  );
+
+  const [isCollapsed, handleCollapsed, handleExpanded] =
+    useBooleanState(collapsable);
+
+  const buttonTitle =
+    orientation === 'vertical'
+      ? adminText('switchToHorizontalLayout')
+      : adminText('switchToVerticalLayout');
+  const switchButton = isCollapsed ? undefined : (
+    <Button.Small
+      variant={className.blueButton}
+      title={buttonTitle}
+      aria-label={buttonTitle}
+      onClick={(): void =>
+        setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
+      }
+    >
+      {orientation === 'vertical'
+        ? icons.switchVertical
+        : icons.switchHorizontal}
+    </Button.Small>
+  );
+
+  return collapsable ? (
+    <details onToggle={isCollapsed ? handleExpanded : handleCollapsed}>
+      <summary>
+        <span className="inline-flex items-center gap-4">
+          {header}
+          {switchButton}
+        </span>
+      </summary>
+      <div className="flex flex-col gap-2 pt-2">{children}</div>
+    </details>
+  ) : (
+    <fieldset className="flex flex-col gap-2">
+      <div className="flex items-center gap-4">
+        <h4 className={className.headerGray}>{header}</h4>
+        {switchButton}
+      </div>
+      {children}
     </fieldset>
   );
 }

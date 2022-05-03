@@ -81,15 +81,18 @@ export type CacheDefinitions = {
   };
   readonly userPreferences: {
     /**
-     * User preferences are cached, because, unlike most other initial context
-     * resources, preferences are not cached by the browser, since they are
-     * fetched using the standard resource API.
+     * User preferences are cached here, because, unlike most other initial
+     * context resources, preferences are not cached by the browser, since they
+     * are fetched using the standard resource API.
      * Additionally, since preferences contain the schema language to load,
-     * schema can not be fetched untill preferences are fetched.
+     * schema can not be fetched until preferences are fetched.
      * Finally, a splash screen may be rendered before preferences are fetched,
-     * causing Specify to flash user it's white mode, or font size to change
+     * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
     readonly cached: UserPreferences;
+  };
+  readonly securityTool: {
+    readonly policiesLayout: 'vertical' | 'horizontal';
   };
 };

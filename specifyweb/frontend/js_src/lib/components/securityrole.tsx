@@ -199,6 +199,7 @@ export function RoleView({
         }
         isReadOnly={isReadOnly}
         scope="collection"
+        collapsable={false}
       />
       <span className="flex-1 -mt-2" />
       <div className="flex gap-2">
