@@ -85,7 +85,7 @@ export function InteractionDialog({
     const delimiters = filterArray([
       '\n',
       formatterHasSpaces ? undefined : ' ',
-      formatterHasCommas ? undefined : '',
+      formatterHasCommas ? undefined : ',',
     ]);
     return {
       parser,
@@ -286,6 +286,7 @@ export function InteractionDialog({
                   .join('\n');
                 setCatalogNumbers(parsed);
               }}
+              className="h-36"
               {...attributes}
             />
             <Button.Blue
