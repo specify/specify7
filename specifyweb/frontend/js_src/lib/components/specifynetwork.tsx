@@ -204,7 +204,7 @@ function SpecifyNetwork({
     }
     /*
      * Note: this does not remove the previous event handler so that
-     * the Specify Network page can retrive information even after the form
+     * the Specify Network page can retrieve information even after the form
      * is closed, for as long as the browser tab is open
      */
     window.addEventListener('message', messageHandler);

@@ -7,6 +7,7 @@ import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
+import { listen, registerBlurListener } from '../events';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -111,15 +112,12 @@ export function useValidation<T extends Input = HTMLInputElement>(
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    function handleChange(): void {
+    return listen(input, 'input', (): void => {
       if (input.validity.customError) {
         validationMessageRef.current = '';
         input.setCustomValidity('');
       }
-    }
-
-    input.addEventListener('input', handleChange);
-    return (): void => input.removeEventListener('input', handleChange);
+    });
   }, []);
 
   // Display validation message on focus
@@ -128,13 +126,10 @@ export function useValidation<T extends Input = HTMLInputElement>(
     if (!inputRef.current) return undefined;
     const input = inputRef.current;
 
-    function handleFocus(): void {
+    return listen(input, 'focus', (): void => {
       if (isFirstFocus.current) isFirstFocus.current = false;
       else input.reportValidity();
-    }
-
-    input.addEventListener('focus', handleFocus);
-    return (): void => input.removeEventListener('focus', handleFocus);
+    });
   }, []);
 
   const setValidation = React.useCallback(function setValidation(
@@ -414,12 +409,15 @@ export function useResourceValue<
         : undefined,
     [triedToSubmit, resource, fieldName, setValidation, inputRef]
   );
-  React.useEffect(() => {
-    if (input === null || typeof fieldName === 'undefined') return undefined;
-    const handleBlur = (): void => setValidation(blockers.current);
-    input.addEventListener('blur', handleBlur);
-    return (): void => input.removeEventListener('blur', handleBlur);
-  }, [input, setValidation, fieldName]);
+  React.useEffect(
+    () =>
+      input === null || typeof fieldName === 'undefined'
+        ? undefined
+        : registerBlurListener(input, (): void =>
+            setValidation(blockers.current)
+          ),
+    [input, setValidation, fieldName]
+  );
 
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
@@ -533,7 +531,7 @@ export function useIsModified(
   ignoreBrandNew = true
 ): boolean {
   const [saveRequired, handleNeedsSaving, handleSaved] = useBooleanState(
-    resource?.needsSaved && (resource?.isNew() === false || !ignoreBrandNew)
+    resource?.needsSaved && (!resource?.isNew() || !ignoreBrandNew)
   );
 
   React.useEffect(

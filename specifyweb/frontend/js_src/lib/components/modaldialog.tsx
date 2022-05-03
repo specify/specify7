@@ -17,6 +17,7 @@ import {
   useReducedTransparency,
   useTransitionDuration,
 } from './preferenceshooks';
+import { listen } from '../events';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -190,24 +191,22 @@ export function Dialog({
   // Facilitate moving non-modal dialog to top on click
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(() => {
-    if (
+  React.useEffect(
+    () =>
       forceToTop ||
       modal ||
       !isOpen ||
       typeof zIndex === 'undefined' ||
       container === null
-    )
-      return undefined;
-    const handleClick = (): void =>
-      // Check if dialog is already at the very top
-      Math.max(...dialogIndexes) === zIndex
         ? undefined
-        : setZindex(getNextIndex);
-
-    container.addEventListener('click', handleClick);
-    return (): void => container?.removeEventListener('click', handleClick);
-  }, [forceToTop, modal, isOpen, zIndex, container]);
+        : listen(container, 'click', () =>
+            // Check if dialog is already at the very top
+            Math.max(...dialogIndexes) === zIndex
+              ? undefined
+              : setZindex(getNextIndex)
+          ),
+    [forceToTop, modal, isOpen, zIndex, container]
+  );
 
   // Resize listener
   React.useEffect(() => {

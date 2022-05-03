@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import { listen } from '../events';
 import { initialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { startApp } from '../startapp';
@@ -61,9 +62,8 @@ function Root(): JSX.Element | null {
 
   React.useEffect(() => {
     if (!isHeaderLoaded) return undefined;
-    document.body.addEventListener('click', handleClick);
     startApp();
-    return (): void => document.body.removeEventListener('click', handleClick);
+    return listen(document.body, 'click', handleClick);
   }, [isHeaderLoaded]);
 
   return isContextLoaded ? (

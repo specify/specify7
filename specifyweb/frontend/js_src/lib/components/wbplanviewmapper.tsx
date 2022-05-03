@@ -52,6 +52,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { listen } from '../events';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -208,11 +209,7 @@ export function WbPlanViewMapper(props: {
     listOfMappings,
   ]);
 
-  React.useEffect(() => {
-    window.addEventListener('resize', repositionSuggestionBox);
-    return (): void =>
-      window.removeEventListener('resize', repositionSuggestionBox);
-  }, []);
+  React.useEffect(() => listen(window, 'resize', repositionSuggestionBox), []);
 
   // Fetch automapper suggestions when opening a custom select element
   React.useEffect(() => {

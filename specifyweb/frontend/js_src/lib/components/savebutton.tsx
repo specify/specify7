@@ -14,6 +14,7 @@ import { crash } from './errorboundary';
 import { useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
+import { listen } from '../events';
 
 /*
  * TODO: move this logic into ResourceView, so that <form> and button is
@@ -140,11 +141,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     );
   }
 
-  React.useEffect(() => {
-    const callback = (event: SubmitEvent): void => loading(handleSubmit(event));
-    form.addEventListener('submit', callback);
-    return (): void => form.removeEventListener('submit', callback);
-  }, [form, handleSubmit]);
+  React.useEffect(
+    () => listen(form, 'submit', (event) => loading(handleSubmit(event))),
+    [loading, form, handleSubmit]
+  );
 
   const ButtonComponent = saveBlocked ? Button.Red : Button.Orange;
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;

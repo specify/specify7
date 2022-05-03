@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
 
+import { listen, registerBlurEmitter } from '../events';
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { ensure } from '../types';
@@ -40,9 +42,9 @@ const getScrollParent = (node: Element | undefined): Element =>
  * Previous implementation (see Git history) used <datalist> to provide
  * autocomplete suggestions.
  * While that had accessibility backed in, Firefox has a number of bugs
- * with it's datalist implementation.
+ * with its datalist implementation.
  * Plus, that solution did not allow for displaying an "Add" option
- * if no search results come up
+ * if no search results came up
  *
  * Consider revisiting <datalist> once browser support is improved
  *
@@ -258,11 +260,28 @@ export function Autocomplete<T>({
 
     handleScroll({ target: null });
 
-    window.addEventListener('scroll', handleScroll, true);
-    return (): void => window.removeEventListener('scroll', handleScroll, true);
+    return listen(window, 'scroll', handleScroll, true);
   }, [showList, input, isInDialog]);
 
   const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');
+
+  const emitBlur = React.useRef<() => void>(console.error);
+
+  function handleBlur(): void {
+    emitBlur.current();
+    if (process.env.NODE_ENV !== 'development') handleClose();
+  }
+
+  React.useEffect(
+    () =>
+      input === null
+        ? undefined
+        : registerBlurEmitter(input, (emit) => {
+            emitBlur.current = emit;
+            return f.void;
+          }),
+    [input]
+  );
 
   return (
     <>
@@ -292,12 +311,12 @@ export function Autocomplete<T>({
         onClick: handleToggle,
         onBlur({ relatedTarget }): void {
           if (
-            process.env.NODE_ENV !== 'development' &&
-            (relatedTarget === null ||
-              dataListRef.current?.contains(relatedTarget as Node) === false)
+            relatedTarget === null ||
+            dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
-            handleClose();
-            setPendingValue(currentValue);
+            handleBlur();
+            if (process.env.NODE_ENV !== 'development')
+              setPendingValue(currentValue);
           }
         },
       })}
@@ -322,11 +341,10 @@ export function Autocomplete<T>({
             } else input?.focus();
           }}
           onBlur={({ relatedTarget, target, currentTarget }): void =>
-            process.env.NODE_ENV !== 'development' &&
-            (relatedTarget === null ||
-              (input?.contains(relatedTarget as Node) === false &&
-                target.closest('ul') !== currentTarget))
-              ? handleClose()
+            relatedTarget === null ||
+            (input?.contains(relatedTarget as Node) === false &&
+              target.closest('ul') !== currentTarget)
+              ? handleBlur()
               : undefined
           }
         >
