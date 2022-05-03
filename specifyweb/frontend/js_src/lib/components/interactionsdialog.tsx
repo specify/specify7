@@ -194,7 +194,10 @@ function Interactions({
                 }
                 onClick={
                   typeof action === 'string'
-                    ? (): void => handleAction(action, table)
+                    ? (event): void => {
+                        event.preventDefault();
+                        handleAction(action, table);
+                      }
                     : undefined
                 }
               >
