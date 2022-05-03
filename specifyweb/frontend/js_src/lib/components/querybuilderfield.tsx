@@ -363,10 +363,24 @@ export function QueryLine({
                           typeof fieldMeta.parser?.value === 'string'
                         ? fieldMeta.parser.value
                         : filter.startValue;
+
+                    /*
+                     * When going from "in" to another filter type, throw away
+                     * all but first one or two values
+                     */
+                    const valueLength = newFilter === 'between' ? 2 : 1;
+                    const trimmedValue =
+                      filter.type === 'in'
+                        ? startValue
+                        : startValue
+                            .split(',')
+                            .slice(0, valueLength)
+                            .join(', ');
+
                     handleFilterChange(index, {
                       ...field.filters[index],
                       type: newFilter,
-                      startValue,
+                      startValue: trimmedValue,
                     });
                   }}
                 >

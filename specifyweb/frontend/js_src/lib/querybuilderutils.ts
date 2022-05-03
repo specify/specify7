@@ -62,19 +62,25 @@ export function parseQueryFields(
          * SpQueryField.startValue containing fullDate may be in different formats
          * See https://github.com/specify/specify7/issues/1348
          */
-        const parsed =
+        const startValue =
           typeof field.startValue === 'string' &&
           fieldSpec.datePart === 'fullDate'
-            ? parseValue(
-                parserFromType('java.sql.Timestamp'),
-                undefined,
-                field.startValue
-              )
-            : undefined;
-        const startValue =
-          parsed?.isValid === true
-            ? (parsed.parsed as string)
-            : field.startValue ?? '';
+            ? field.startValue
+                .split(',')
+                .map((value) =>
+                  parseValue(
+                    parserFromType('java.sql.Timestamp'),
+                    undefined,
+                    value
+                  )
+                )
+                .map((parsed) =>
+                  parsed?.isValid === true
+                    ? (parsed.parsed as string)
+                    : field.startValue ?? ''
+                )
+                .join(',')
+            : field.startValue;
 
         return [
           mappingPathToString(fieldSpec.toMappingPath()),

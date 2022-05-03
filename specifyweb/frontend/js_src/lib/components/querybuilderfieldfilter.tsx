@@ -429,7 +429,11 @@ export const queryFieldFilters: RR<
     label: queryText('in'),
     description: queryText('inDescription'),
     renderPickList: true,
-    types: ['text', 'number', 'date', 'id'],
+    /*
+     * Can't use "date" for IN because date picker does not allow separating
+     * multiple values with a comma. Instead, OR filters should be used
+     */
+    types: ['text', 'number', 'id'],
     component: In,
     resetToAny: true,
     hasParser: true,
@@ -524,20 +528,6 @@ export function QueryLineFilter({
     ),
     false
   );
-
-  const previousFilter = React.useRef<QueryFieldFilter>(filter.type);
-  /*
-   * When going from "in" to another filter type, throw away all but first one
-   * or two values
-   */
-  React.useEffect(() => {
-    const valueLength = filter.type === 'between' ? 2 : 1;
-    if (filter.type !== 'in' && previousFilter.current === 'in')
-      handleChange(
-        filter.startValue.split(',').slice(0, valueLength).join(', ')
-      );
-    previousFilter.current = filter.type;
-  }, [handleChange, filter]);
 
   const Component = queryFieldFilters[filter.type].component;
   return typeof Component === 'undefined' ? null : (
