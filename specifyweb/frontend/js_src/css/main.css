@@ -33,6 +33,7 @@
   [type='week'],
   [multiple],
   textarea,
+  .textarea-shadow
   select {
     @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-500
       ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
@@ -113,7 +114,7 @@
       dark:placeholder-red-400;
   }
 
-  textarea {
+  textarea, .textarea-shadow {
     @apply w-full resize;
   }
 

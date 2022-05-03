@@ -28,7 +28,7 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { Button, H3, Link, Textarea } from './basic';
+import { Button, className, H3, Link, Textarea } from './basic';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
@@ -260,45 +260,64 @@ export function InteractionDialog({
             <summary>
               {formsText('entryCaption', searchField?.label ?? '')}
             </summary>
-            <Textarea
-              spellCheck={false}
-              value={catalogNumbers}
-              onValueChange={setCatalogNumbers}
-              forwardRef={validationRef}
-              onBlur={(): void => {
-                const parseResults = split(catalogNumbers).map((value) =>
-                  parseValue(parser, inputRef.current ?? undefined, value)
-                );
-                const errorMessages = parseResults
-                  .filter(
-                    (result): result is InvalidParseResult => !result.isValid
-                  )
-                  .map(({ reason, value }) => `${reason} (${value})`);
-                if (errorMessages.length > 0) {
-                  setValidation(errorMessages);
-                  return;
-                }
+            <div className="flex flex-col gap-2">
+              <div className="grid">
+                {/*
+                 * Shadow a textarea with a div, allowing it to autoGrow. Source:
+                 * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+                 */}
+                <div
+                  className={`textarea-shadow print:hidden invisible
+                  whitespace-pre-wrap [grid-area:1/1/2/2] ${className.textArea}`}
+                >
+                  {`${catalogNumbers} `}
+                </div>
+                <Textarea
+                  className="[grid-area:1/1/2/2]"
+                  spellCheck={false}
+                  value={catalogNumbers}
+                  onValueChange={setCatalogNumbers}
+                  forwardRef={validationRef}
+                  onBlur={(): void => {
+                    const parseResults = split(catalogNumbers).map((value) =>
+                      parseValue(parser, inputRef.current ?? undefined, value)
+                    );
+                    const errorMessages = parseResults
+                      .filter(
+                        (result): result is InvalidParseResult =>
+                          !result.isValid
+                      )
+                      .map(({ reason, value }) => `${reason} (${value})`);
+                    if (errorMessages.length > 0) {
+                      setValidation(errorMessages);
+                      return;
+                    }
 
-                const parsed = (parseResults as RA<ValidParseResult>)
-                  .filter(({ parsed }) => parsed !== null)
-                  .map(({ parsed }) => (parsed as number | string).toString())
-                  .sort(sortFunction(f.id))
-                  .join('\n');
-                setCatalogNumbers(parsed);
-              }}
-              className="h-36"
-              {...attributes}
-            />
-            <Button.Blue
-              // Action-entry
-              disabled={
-                catalogNumbers.length === 0 ||
-                inputRef.current?.validity.valid !== true
-              }
-              onClick={(): void => handleProceed(undefined)}
-            >
-              {commonText('next')}
-            </Button.Blue>
+                    const parsed = (parseResults as RA<ValidParseResult>)
+                      .filter(({ parsed }) => parsed !== null)
+                      .map(({ parsed }) =>
+                        (parsed as number | string).toString()
+                      )
+                      .sort(sortFunction(f.id))
+                      .join('\n');
+                    setCatalogNumbers(parsed);
+                  }}
+                  {...attributes}
+                />
+              </div>
+              <div>
+                <Button.Blue
+                  // Action-entry
+                  disabled={
+                    catalogNumbers.length === 0 ||
+                    inputRef.current?.validity.valid !== true
+                  }
+                  onClick={(): void => handleProceed(undefined)}
+                >
+                  {commonText('next')}
+                </Button.Blue>
+              </div>
+            </div>
           </details>
           {state.type === 'PreparationSelectState' ? (
             Object.keys(state.problems).length === 0 ? (

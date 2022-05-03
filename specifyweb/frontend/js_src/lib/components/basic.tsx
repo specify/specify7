@@ -125,6 +125,7 @@ export const className = {
   navigationHandled: 'navigation-handled',
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
+  textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',
   button: 'button',
   link: 'link',
   icon: 'icon',
@@ -494,12 +495,13 @@ export const Textarea = wrap<
     onValueChange?: (value: string) => void;
     readOnly?: never;
     isReadOnly?: boolean;
+    autoGrow?: boolean;
   }
 >(
   'Textarea',
   'textarea',
   // Ensures Textarea can't grow past max dialog width
-  `${className.notTouchedInput} resize max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]`,
+  `${className.notTouchedInput} ${className.textArea}`,
   ({ onValueChange, isReadOnly, ...props }) => ({
     ...props,
     ...withHandleBlur(props.onBlur),
