@@ -15,6 +15,7 @@ import { getModel } from '../schema';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { useTitle } from './hooks';
+import { className } from './basic';
 
 const MAX_HUE = 360;
 
@@ -182,4 +183,28 @@ export function Portal({
 export function AppTitle({ title }: { readonly title: string }): null {
   useTitle(title);
   return null;
+}
+
+export function AutoGrowTextArea({
+  value,
+  children,
+}: {
+  readonly value: string;
+  readonly children: JSX.Element;
+}): JSX.Element {
+  return (
+    <div className="grid">
+      {/*
+       * Shadow a textarea with a div, allowing it to autoGrow. Source:
+       * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+       */}
+      <div
+        className={`textarea-shadow print:hidden invisible
+                  whitespace-pre-wrap [grid-area:1/1/2/2] ${className.textArea}`}
+      >
+        {`${value} `}
+      </div>
+      {children}
+    </div>
+  );
 }

@@ -28,13 +28,14 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { Button, className, H3, Link, Textarea } from './basic';
+import { Button, H3, Link, Textarea } from './basic';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
 import { localize } from '../stringlocalization';
+import { AutoGrowTextArea } from './common';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -261,17 +262,7 @@ export function InteractionDialog({
               {formsText('entryCaption', searchField?.label ?? '')}
             </summary>
             <div className="flex flex-col gap-2">
-              <div className="grid">
-                {/*
-                 * Shadow a textarea with a div, allowing it to autoGrow. Source:
-                 * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
-                 */}
-                <div
-                  className={`textarea-shadow print:hidden invisible
-                  whitespace-pre-wrap [grid-area:1/1/2/2] ${className.textArea}`}
-                >
-                  {`${catalogNumbers} `}
-                </div>
+              <AutoGrowTextArea value={catalogNumbers}>
                 <Textarea
                   className="[grid-area:1/1/2/2]"
                   spellCheck={false}
@@ -304,7 +295,7 @@ export function InteractionDialog({
                   }}
                   {...attributes}
                 />
-              </div>
+              </AutoGrowTextArea>
               <div>
                 <Button.Blue
                   // Action-entry

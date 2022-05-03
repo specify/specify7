@@ -21,6 +21,7 @@ import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
+import { AutoGrowTextArea } from './common';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -116,13 +117,15 @@ export function RoleView({
       )}
       <Label.Generic>
         {commonText('description')}
-        <Textarea
-          isReadOnly={isReadOnly}
-          value={role.description}
-          onValueChange={(description): void =>
-            setRole(replaceKey(role, 'description', description))
-          }
-        />
+        <AutoGrowTextArea value={role.description}>
+          <Textarea
+            isReadOnly={isReadOnly}
+            value={role.description}
+            onValueChange={(description): void =>
+              setRole(replaceKey(role, 'description', description))
+            }
+          />
+        </AutoGrowTextArea>
       </Label.Generic>
       {typeof role.id === 'number' && typeof handleOpenUser === 'function' ? (
         <fieldset className="flex flex-col gap-2">

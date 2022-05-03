@@ -32,7 +32,7 @@ import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
-import { TableIcon } from './common';
+import { AutoGrowTextArea, TableIcon } from './common';
 import { goTo } from './navigation';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
@@ -133,7 +133,9 @@ export function DataSetMeta({
         </Label.Generic>
         <Label.Generic>
           <b>{wbText('remarks')}</b>
-          <Textarea value={remarks} onValueChange={setRemarks} />
+          <AutoGrowTextArea value={remarks}>
+            <Textarea value={remarks} onValueChange={setRemarks} />
+          </AutoGrowTextArea>
         </Label.Generic>
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>

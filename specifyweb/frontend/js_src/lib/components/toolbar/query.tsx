@@ -11,13 +11,22 @@ import type { CollectionFetchFilters } from '../../collection';
 import { fetchCollection } from '../../collection';
 import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
+import { f } from '../../functools';
+import { removeKey } from '../../helpers';
+import { cachableUrl } from '../../initialcontext';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../../permissions';
+import { getUserPref } from '../../preferencesutils';
 import { getModel, getModelById, schema } from '../../schema';
 import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
-import { f } from '../../functools';
+import { getUniqueName } from '../../wbuniquifyname';
 import {
   Button,
   DataEntry,
@@ -28,28 +37,24 @@ import {
   Textarea,
   Ul,
 } from '../basic';
-import { compareValues, SortIndicator, TableIcon } from '../common';
+import {
+  AutoGrowTextArea,
+  compareValues,
+  SortIndicator,
+  TableIcon,
+} from '../common';
 import { LoadingContext } from '../contexts';
+import { downloadFile, FilePicker, fileToText } from '../filepicker';
 import { useAsyncState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
+import { goTo } from '../navigation';
+import { usePref } from '../preferenceshooks';
 import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../statecache';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasToolPermission,
-} from '../../permissions';
-import { cachableUrl } from '../../initialcontext';
-import { downloadFile, FilePicker, fileToText } from '../filepicker';
-import { removeKey } from '../../helpers';
-import { getUniqueName } from '../../wbuniquifyname';
-import { goTo } from '../navigation';
-import { getUserPref } from '../../preferencesutils';
-import { usePref } from '../preferenceshooks';
 
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
@@ -519,7 +524,9 @@ function DwcaQueryExport({
       buttons={commonText('close')}
       onClose={handleClose}
     >
-      <Textarea isReadOnly className="min-h-[60vh]" value={exported} />
+      <AutoGrowTextArea value={exported}>
+        <Textarea isReadOnly value={exported} />
+      </AutoGrowTextArea>
     </Dialog>
   ) : null;
 }
