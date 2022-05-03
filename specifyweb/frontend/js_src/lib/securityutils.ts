@@ -215,6 +215,10 @@ export const toolDefinitions = f.store(() =>
       label: commonText('pickList'),
       tables: ['PickList', 'PickListItem'],
     },
+    auditLog: {
+      label: schema.models.SpAuditLog.label,
+      tables: ['SpAuditLog', 'SpAuditLogField'],
+    },
   } as const)
 );
 

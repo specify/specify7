@@ -38,7 +38,7 @@ function CacheBuster(): JSX.Element | null {
       onClose={(): void => window.location.assign('/')}
       buttons={commonText('reload')}
     >
-      {commonText('cleanerCacheDialogText')}
+      {commonText('clearedCacheDialogText')}
     </Dialog>
   ) : null;
 }

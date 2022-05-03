@@ -1736,7 +1736,7 @@ export const commonText = createDictionary({
     ca: 'Clear Cache',
     'es-es': 'Clear Cache',
   },
-  cleanerCacheDialogText: {
+  clearedCacheDialogText: {
     'en-us': 'Cache has been cleaned. Please reload the page.',
     'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
     ca: 'Cache has been cleaned. Please reload the page.',

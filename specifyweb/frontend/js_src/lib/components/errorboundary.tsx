@@ -18,7 +18,7 @@ import { setCurrentView } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Link } from './basic';
+import { Button, className, Link } from './basic';
 import { displayError } from './contexts';
 import { copyTextToClipboard, downloadFile } from './filepicker';
 import { useBooleanState } from './hooks';
@@ -87,9 +87,9 @@ function ErrorDialog({
             {commonText('clearCache')}
           </Link.Blue>
           <span className="flex-1 -ml-2" />
-          <Button.Red onClick={(): void => window.location.assign('/')}>
-            {commonText('close')}
-          </Button.Red>
+          <Link.Red href="/" className={className.navigationHandled}>
+            {commonText('goToHomepage')}
+          </Link.Red>
           {(canDismiss || process.env.NODE_ENV !== 'production') &&
             typeof handleClose === 'function' && (
               <Button.Blue onClick={handleClose}>

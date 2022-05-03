@@ -144,12 +144,19 @@ function PolicyView({
               className={
                 orientation === 'vertical'
                   ? 'flex flex-col justify-center'
-                  : 'flex gap-4 items-center'
+                  : 'contents'
               }
             >
               {extendedActions.map((action) => (
-                <li key={action}>
-                  <Label.ForCheckbox>
+                <li
+                  key={action}
+                  className={
+                    orientation === 'vertical' ? undefined : 'contents'
+                  }
+                >
+                  <Label.ForCheckbox
+                    className={orientation === 'vertical' ? undefined : 'mr-2'}
+                  >
                     <Input.Checkbox
                       onValueChange={(): void =>
                         handleChange({
@@ -275,20 +282,21 @@ export function PoliciesView({
     orientation === 'vertical'
       ? adminText('switchToHorizontalLayout')
       : adminText('switchToVerticalLayout');
-  const switchButton = isCollapsed ? undefined : (
-    <Button.Small
-      variant={className.blueButton}
-      title={buttonTitle}
-      aria-label={buttonTitle}
-      onClick={(): void =>
-        setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
-      }
-    >
-      {orientation === 'vertical'
-        ? icons.switchVertical
-        : icons.switchHorizontal}
-    </Button.Small>
-  );
+  const switchButton =
+    isCollapsed || !Array.isArray(policies) ? undefined : (
+      <Button.Small
+        variant={className.blueButton}
+        title={buttonTitle}
+        aria-label={buttonTitle}
+        onClick={(): void =>
+          setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
+        }
+      >
+        {orientation === 'vertical'
+          ? icons.switchVertical
+          : icons.switchHorizontal}
+      </Button.Small>
+    );
 
   return collapsable ? (
     <details onToggle={isCollapsed ? handleExpanded : handleCollapsed}>

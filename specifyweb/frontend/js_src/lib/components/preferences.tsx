@@ -711,6 +711,13 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          showNoReadTables: defineItem<boolean>({
+            title: preferencesText('showNoReadTables'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       behavior: {
@@ -839,6 +846,13 @@ export const preferenceDefinitions = {
             description: preferencesText('noRestrictionsModeWbDescription'),
             requiresReload: false,
             visible: 'adminsOnly',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          showNoAccessTables: defineItem<boolean>({
+            title: preferencesText('showNoAccessTables'),
+            requiresReload: false,
+            visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),

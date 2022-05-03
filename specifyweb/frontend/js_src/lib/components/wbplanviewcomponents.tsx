@@ -9,6 +9,7 @@ import React from 'react';
 import type { Tables } from '../datamodel';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
+import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { IR, R, RA } from '../types';
 import type { MappingLineData } from '../wbplanviewnavigator';
@@ -27,8 +28,8 @@ import {
 import { useBooleanState, useId } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
-import type { AutoMapperSuggestion } from './wbplanviewmapper';
 import { usePref } from './preferenceshooks';
+import type { AutoMapperSuggestion } from './wbplanviewmapper';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: string | JSX.Element;
@@ -69,17 +70,23 @@ export function ListOfBaseTables({
   readonly showHiddenTables: boolean;
 }): JSX.Element {
   const [isNoRestrictionMode] = usePref(
-    'queryBuilder',
-    'general',
+    'workBench',
+    'wbPlanView',
     'noRestrictionsMode'
+  );
+  const [showNoAccessTables] = usePref(
+    'workBench',
+    'wbPlanView',
+    'showNoAccessTables'
   );
   const fieldsData = Object.fromEntries(
     Object.entries(schema.models)
       .filter(
-        ([_tableName, { overrides }]) =>
+        ([tableName, { overrides }]) =>
           (isNoRestrictionMode ||
             (!overrides.isSystem && !overrides.isHidden)) &&
-          (overrides.isCommon || showHiddenTables)
+          (overrides.isCommon || showHiddenTables) &&
+          (showNoAccessTables || hasTablePermission(tableName, 'create'))
       )
       .map(
         ([tableName, { label, overrides }]) =>

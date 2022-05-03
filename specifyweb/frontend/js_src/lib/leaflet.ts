@@ -7,7 +7,9 @@
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
 import { ajax, Http } from './ajax';
+import { getCache, setCache } from './cache';
 import { legacyNonJsxIcons } from './components/icons';
+import { capitalize } from './helpers';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -25,9 +27,7 @@ import type { Field, LocalityData } from './leafletutils';
 import { commonText } from './localization/common';
 import { localityText } from './localization/locality';
 import type { IR, RA, RR } from './types';
-import { capitalize } from './helpers';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
-import { getCache, setCache } from './cache';
 
 const DEFAULT_ZOOM = 5;
 
@@ -157,7 +157,7 @@ function rememberSelectedBaseLayers(
   baseLayer.addTo(map);
 
   map.on('baselayerchange', ({ name }: { readonly name: string }) => {
-    setCache('leaflet', cacheName, name, { overwrite: true });
+    setCache('leaflet', cacheName, name);
   });
 }
 

@@ -105,17 +105,17 @@ export const preferencesText = createDictionary({
   },
   fontFamilyDescription: {
     'en-us': `You can specify any font that is on your computer, even if it is
-      not in the list. A comma separated list of fonts is supported, where
+      not in the list. A comma separated list of fonts is also supported, where
       second font would be used if first one is not installed and so on`,
     'ru-ru': `Вы можете указать любой шрифт, который есть на вашем компьютере,
       даже если он нет в списке. Поддерживается список шрифтов, разделенных
       запятыми, где второй шрифт будет использоваться, если первый не установлен
       и т.д.`,
     ca: `You can specify any font that is on your computer, even if it is
-      not in the list. A comma separated list of fonts is supported, where
+      not in the list. A comma separated list of fonts is also supported, where
       second font would be used if first one is not installed and so on`,
     'es-es': `You can specify any font that is on your computer, even if it is
-      not in the list. A comma separated list of fonts is supported, where
+      not in the list. A comma separated list of fonts is also supported, where
       second font would be used if first one is not installed and so on`,
   },
   defaultFont: {
@@ -667,5 +667,17 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Case-insensitive',
     ca: 'Case-insensitive',
     'es-es': 'Case-insensitive',
+  },
+  showNoReadTables: {
+    'en-us': 'Show tables without "Read" access',
+    'ru-ru': 'Show tables without "Read" access',
+    ca: 'Show tables without "Read" access',
+    'es-es': 'Show tables without "Read" access',
+  },
+  showNoAccessTables: {
+    'en-us': 'Show tables without "Create" access',
+    'ru-ru': 'Show tables without "Create" access',
+    ca: 'Show tables without "Create" access',
+    'es-es': 'Show tables without "Create" access',
   },
 });

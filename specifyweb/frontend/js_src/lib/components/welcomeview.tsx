@@ -133,8 +133,8 @@ function Welcome(): JSX.Element {
 
   return (
     <div
-      className="flex flex-col gap-y-4 h-full justify-center my-0 max-w-[1000px]
-    mx-auto"
+      className="flex flex-col gap-y-4 h-full justify-center p-4 max-w-[1000px]
+        mx-auto"
     >
       <span className="flex-1" />
       <div

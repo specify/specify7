@@ -146,11 +146,11 @@ function PreviewRow({
   const id = useId('preview-row');
   return (
     <>
-      <div className="cursor-pointer" role="row" aria-controls={id('reason')}>
+      <div role="row" aria-controls={id('reason')}>
         {tableActions.map((action) => (
           <div
             role="cell"
-            className={`justify-center p-2 ${
+            className={`justify-center p-2 cursor-pointer ${
               view === action ? 'bg-brand-100 dark:bg-brand-500' : ''
             }`}
             key={action}

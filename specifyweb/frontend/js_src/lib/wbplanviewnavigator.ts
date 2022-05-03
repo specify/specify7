@@ -15,7 +15,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
-import { hasTreeAccess } from './permissions';
+import { hasTablePermission, hasTreeAccess } from './permissions';
 import { getUserPref } from './preferencesutils';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
@@ -422,6 +422,23 @@ export function getMappingLineData({
                       field.overrides.isHidden,
                       field.name
                     ) &&
+                    (!field.isRelationship ||
+                      (scope === 'queryBuilder'
+                        ? hasTablePermission(field.relatedModel.name, 'read') ||
+                          getUserPref(
+                            'queryBuilder',
+                            'general',
+                            'showNoReadTables'
+                          )
+                        : hasTablePermission(
+                            field.relatedModel.name,
+                            'create'
+                          ) ||
+                          getUserPref(
+                            'workBench',
+                            'wbPlanView',
+                            'showNoAccessTables'
+                          ))) &&
                     /*
                      * Hide relationship from tree tables in WbPlanView as they
                      * are not supported by the mapper
