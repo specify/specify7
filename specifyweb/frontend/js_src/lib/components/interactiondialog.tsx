@@ -336,16 +336,18 @@ export function InteractionDialog({
                     </React.Fragment>
                   )
                 )}
-                <Button.Blue
-                  onClick={(): void =>
-                    setState({
-                      ...state,
-                      problems: {},
-                    })
-                  }
-                >
-                  {commonText('ignore')}
-                </Button.Blue>
+                <div>
+                  <Button.Blue
+                    onClick={(): void =>
+                      setState({
+                        ...state,
+                        problems: {},
+                      })
+                    }
+                  >
+                    {commonText('ignore')}
+                  </Button.Blue>
+                </div>
               </>
             )
           ) : undefined}

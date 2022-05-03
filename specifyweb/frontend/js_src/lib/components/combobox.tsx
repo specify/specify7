@@ -150,9 +150,8 @@ export function ComboBox({
   const resolvedField =
     isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
       ? defined(schema.models.PickList.getField('type'))
-      : resource.specifyModel.name === 'Accession' &&
-        fieldName === 'divisionCBX'
-      ? defined(schema.models.Accession.getField('division'))
+      : fieldName === 'divisionCBX'
+      ? defined(resource.specifyModel.getField('division'))
       : field;
 
   if (typeof resolvedField !== 'object')
