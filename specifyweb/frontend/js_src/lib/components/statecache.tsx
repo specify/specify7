@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { getCache, setCache } from '../cache';
+import { cacheEvents, getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
 import { isFunction } from '../types';
 import { crash } from './errorboundary';
+import { f } from '../functools';
 
 type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
 
@@ -65,6 +66,18 @@ export function useCachedState<
         )
         .catch(crash);
   }, [isUndefined, defaultValue, setCachedState, staleWhileRefresh]);
+
+  React.useEffect(
+    () =>
+      cacheEvents.on('change', () =>
+        f.var(getCache(bucketName, cacheName), (newValue) =>
+          state !== newValue && typeof newValue !== 'undefined'
+            ? setCachedState(newValue)
+            : undefined
+        )
+      ),
+    [state, bucketName, cacheName, setCachedState]
+  );
 
   return [state, setCachedState];
 }

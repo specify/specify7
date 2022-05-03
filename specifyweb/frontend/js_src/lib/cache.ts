@@ -19,6 +19,7 @@
 import type { CacheDefinitions } from './cachedefinitions';
 import type { R } from './types';
 import { removeKey } from './helpers';
+import { eventListener } from './events';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -244,8 +245,6 @@ type SetOptions = {
    * If sessionStorage - data does not persist beyond the page reload
    */
   readonly bucketType?: BucketType;
-  // Whether to overwrite the cache value if it is already present
-  readonly overwrite?: boolean;
   // Version of this record (used for invalidating older cache)
   readonly version?: string;
 };
@@ -266,40 +265,35 @@ export const setCache = <
     setOptions
   );
 
-/** Set's cacheValue as cache value under cacheName in `bucketName` */
+export const cacheEvents = eventListener<{ change: undefined }>();
+
 function genericSet<T>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
   cacheName: string,
-  /*
-   * The value of the cache record. Can be any object that can be
-   * converted to json
-   */
+  // The value of the cache record. Can be any serializable value
   cacheValue: T,
-  {
-    bucketType = 'localStorage',
-    overwrite = true,
-    version = undefined,
-  }: SetOptions = {}
+  { bucketType = 'localStorage', version = undefined }: SetOptions = {}
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
   if (typeof buckets[bucketName] === 'undefined') fetchBucket(bucketName);
+  if (buckets[bucketName]?.records[cacheName]?.value === cacheValue)
+    return cacheValue;
 
   buckets[bucketName] ??= {
     type: bucketType,
     records: {},
   };
 
-  if (!overwrite && typeof buckets[bucketName].records[cacheName] === 'object')
-    return buckets[bucketName].records[cacheName].value as T;
-
   buckets[bucketName].records[cacheName] = {
     value: cacheValue,
     useCount: 0,
     ...(typeof version === 'string' ? { version } : {}),
   };
+
+  cacheEvents.trigger('change');
 
   return cacheValue;
 }
