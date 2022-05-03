@@ -81,7 +81,10 @@ const parser = f.store(() =>
 const booleanFormatter = (value: boolean): string =>
   fieldFormat(undefined, parser(), value);
 
-// TODO: add sorting by column headers
+/*
+ * TODO: add sorting by column headers
+ * TODO: adapt this page for printing
+ */
 function DataModelView({
   model: initialModel,
 }: {
@@ -175,16 +178,18 @@ function DataModelView({
     </Container.Full>
   ) : (
     <Container.Full>
-      <H2 className="text-2xl">{formsText('specifySchema')}</H2>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
+        <H2 className="text-2xl">{formsText('specifySchema')}</H2>
+        <span className="flex-1 -ml-2" />
         <Link.Green
           href="/context/datamodel.json"
-          className={className.navigationHandled}
+          className={`${className.navigationHandled} print:hidden`}
           download
         >
           {commonText('downloadAsJson')}
         </Link.Green>
         <Button.Green
+          className="print:hidden"
           onClick={(): void =>
             void downloadFile(
               `Specify 7 datamodel - v${getSystemInfo().schema_version}.tsv`,

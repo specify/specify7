@@ -2,6 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax, formData, Http, ping } from '../ajax';
+import { error } from '../assert';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
@@ -19,6 +20,7 @@ import { Button, className, Container, DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { useBooleanState, useIsModified } from './hooks';
+import { Dialog } from './modaldialog';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { deserializeResource } from './resource';
 import { augmentMode, BaseResourceView } from './resourceview';
@@ -44,8 +46,6 @@ import {
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
-import { error } from '../assert';
-import { Dialog } from './modaldialog';
 
 // TODO: allow editing linkages with external accounts
 export function UserView({
@@ -74,7 +74,11 @@ export function UserView({
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections);
-  const userAgents = useUserAgents(userResource.id, collections);
+  const userAgents = useUserAgents(
+    userResource.id,
+    collections,
+    userResource.get('version')
+  );
   const [
     institutionPolicies,
     setInstitutionPolicies,
@@ -279,16 +283,14 @@ export function UserView({
                                   })
                                 : Array.isArray(institutionPolicies) &&
                                   changedInstitutionPolicies
-                                ? ajax<{
-                                    readonly NoAdminUsersException: IR<never>;
-                                  }>(
+                                ? ajax(
                                     `/permissions/user_policies/institution/${userResource.id}/`,
                                     {
                                       method: 'PUT',
                                       body: decompressPolicies(
                                         institutionPolicies
                                       ),
-                                      headers: { Accept: 'application/json' },
+                                      headers: { Accept: 'text/plain' },
                                     },
                                     {
                                       expectedResponseCodes: [
@@ -296,27 +298,34 @@ export function UserView({
                                         Http.BAD_REQUEST,
                                       ],
                                     }
-                                  ).then(({ data, status }) =>
+                                  ).then(({ data, status }) => {
                                     /*
                                      * Removing admin status fails if current user
                                      * is the last admin
                                      */
-                                    status === Http.BAD_REQUEST
-                                      ? typeof data === 'object' &&
-                                        'NoAdminUsersException' in data
-                                        ? setState({
-                                            type: 'NoAdminsError',
-                                          })
-                                        : error(
-                                            'Failed updating institution policies',
-                                            {
-                                              data,
-                                              status,
-                                              userResource,
-                                            }
-                                          )
-                                      : true
-                                  )
+                                    if (status === Http.BAD_REQUEST) {
+                                      const parsed: {
+                                        readonly NoAdminUsersException: IR<never>;
+                                      } = JSON.parse(data);
+                                      if (
+                                        typeof parsed === 'object' &&
+                                        'NoAdminUsersException' in parsed
+                                      )
+                                        setState({
+                                          type: 'NoAdminsError',
+                                        });
+                                      else
+                                        error(
+                                          'Failed updating institution policies',
+                                          {
+                                            data,
+                                            status,
+                                            userResource,
+                                          }
+                                        );
+                                    } else return true;
+                                    return undefined;
+                                  })
                                 : true
                             )
                             .then((canContinue) =>
@@ -401,6 +410,9 @@ export function UserView({
                                         userPolicies ?? {};
                                       initialInstitutionPolicies.current =
                                         institutionPolicies ?? [];
+                                      formElement?.classList.add(
+                                        className.notSubmittedForm
+                                      );
                                     })
                                 : undefined
                             )

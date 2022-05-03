@@ -76,6 +76,10 @@ function PolicyView({
   const possibleActions = isUnknownResource
     ? actions
     : registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
+  // If user has actions that aren't known, display them anyway
+  const extendedActions = Array.isArray(possibleActions)
+    ? f.unique([...possibleActions, ...(actions ?? [])])
+    : undefined;
   return (
     <li className="flex flex-wrap gap-2">
       <Ul className="contents">

@@ -102,7 +102,8 @@ export type UserAgents = RA<{
 // Fetch User Agents in all Collections
 export function useUserAgents(
   userId: number | undefined,
-  collections: IR<SerializedResource<Collection>>
+  collections: IR<SerializedResource<Collection>>,
+  version: number | null
 ): UserAgents | undefined {
   const [userAgents] = useAsyncState(
     React.useCallback(
@@ -162,7 +163,9 @@ export function useUserAgents(
               )
             )
         ),
-      [userId, collections]
+      // ReFetch user agents when user is saved
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [userId, collections, version]
     ),
     false
   );

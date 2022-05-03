@@ -21,7 +21,11 @@ export function PasswordResetDialog({
 
   const [password, setPassword] = React.useState('');
   const [repeatPassword, setRepeatPassword] = React.useState('');
-  const { validationRef, setValidation } = useValidation();
+  const { validationRef, setValidation } = useValidation(
+    password === repeatPassword
+      ? undefined
+      : adminText('passwordsDoNotMatchError')
+  );
 
   return (
     <Dialog
@@ -52,10 +56,7 @@ export function PasswordResetDialog({
             autoComplete="new-password"
             value={password}
             minLength={MIN_PASSWORD_LENGTH}
-            onChange={({ target }): void => {
-              setPassword(target.value);
-              target.setCustomValidity('');
-            }}
+            onValueChange={setPassword}
           />
         </Label.Generic>
         <Label.Generic>
@@ -67,14 +68,7 @@ export function PasswordResetDialog({
             value={repeatPassword}
             minLength={MIN_PASSWORD_LENGTH}
             forwardRef={validationRef}
-            onChange={({ target }): void => {
-              setRepeatPassword(target.value);
-              target.setCustomValidity('');
-            }}
-            onBlur={({ target }): void => {
-              if (password !== repeatPassword)
-                target.setCustomValidity(adminText('passwordsDoNotMatchError'));
-            }}
+            onValueChange={setRepeatPassword}
           />
         </Label.Generic>
       </Form>

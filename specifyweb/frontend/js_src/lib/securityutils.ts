@@ -450,9 +450,9 @@ export const basicPermissions: IR<RA<string>> = {
   ...Object.fromEntries(
     schema.orgHierarchy
       .filter((tableName) => tableName !== 'CollectionObject')
-      .map((tableName) => [tableNameToResourceName(tableName), 'read'])
+      .map((tableName) => [tableNameToResourceName(tableName), ['read']])
   ),
-  [tableNameToResourceName('Agent')]: 'read',
+  [tableNameToResourceName('Agent')]: ['read'],
 };
 
 /**
