@@ -325,9 +325,9 @@ export function Autocomplete<T>({
       <Portal>
         <ul
           className={`fixed w-[inherit] rounded cursor-pointer z-[10000]
-          rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
-          shadow-lg shadow-gray-400 dark:border dark:border-gray-500
-          ${showList ? '' : 'sr-only'}`}
+            rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
+            shadow-lg shadow-gray-400 dark:border dark:border-gray-500
+            ${showList ? '' : 'sr-only'}`}
           role="listbox"
           aria-label={ariaLabel}
           id={id}

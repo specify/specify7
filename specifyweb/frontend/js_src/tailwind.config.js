@@ -6,6 +6,7 @@
  */
 
 // TODO: evaluate usages of arbitrary values in class names
+// TODO: consider changing defaults for values (i.e ring-1)
 // eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   content: [

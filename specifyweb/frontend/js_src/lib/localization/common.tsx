@@ -1824,4 +1824,11 @@ export const commonText = createDictionary({
     ca: 'Forms',
     'es-es': 'Forms',
   },
+  // FIXME: localize
+  permissionDeniedError: {
+    'en-us': 'Permission denied error',
+    'ru-ru': 'Permission denied error',
+    ca: 'Permission denied error',
+    'es-es': 'Permission denied error',
+  },
 });

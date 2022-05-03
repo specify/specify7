@@ -131,7 +131,8 @@ export const className = {
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton,
-  borderedGrayButton: `${grayButton} border border-gray-400 dark:border-none disabled:border-gray-300`,
+  borderedGrayButton: `${grayButton} ring-1 ring-gray-400 dark:ring-0
+    disabled:ring-gray-500 disabled:dark:ring-neutral-500`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,

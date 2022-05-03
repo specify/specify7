@@ -135,6 +135,7 @@ function CopyErrorMessage({ message }: { message: string }): JSX.Element {
   );
 }
 
+/** Spawn a modal error dialog based on an error object */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function crash(error: Error): void {
   if (
@@ -277,7 +278,7 @@ function formatError(
         </React.Fragment>
       );
       errorMessage.push(statusText);
-      copiableMessage.push(statusText);
+      copiableMessage.push(statusText, responseText);
     } else
       errorObject.push(
         <p className="raw" key="raw">
@@ -293,6 +294,26 @@ function formatError(
     errorMessage.join('\n'),
     produceStackTrace(copiableMessage.join('\n')),
   ] as const;
+}
+
+/** Format error message as JSON, HTML or plain text */
+function formatErrorResponse(error: string): JSX.Element {
+  try {
+    const json = JSON.parse(error);
+    return <pre>{JSON.stringify(json, null, 2)}</pre>;
+  } catch {
+    // Failed parsing error message as JSON
+  }
+  try {
+    const htmlElement = document.createElement('html');
+    htmlElement.innerHTML = error;
+    htmlElement.remove();
+    return <ErrorIframe>{error}</ErrorIframe>;
+  } catch {
+    // Failed parsing error message as HTML
+  }
+  // Output raw error message
+  return <pre>{error}</pre>;
 }
 
 export function handleAjaxError(
@@ -361,25 +382,7 @@ export function handleAjaxError(
   throw newError;
 }
 
-function formatErrorResponse(error: string): JSX.Element {
-  try {
-    const json = JSON.parse(error);
-    return <pre>{JSON.stringify(json, null, 2)}</pre>;
-  } catch {
-    // Failed parsing error message as JSON
-  }
-  try {
-    const htmlElement = document.createElement('html');
-    htmlElement.innerHTML = error;
-    htmlElement.remove();
-    return <ErrorIframe>{error}</ErrorIframe>;
-  } catch {
-    // Failed parsing error message as HTML
-  }
-  // Output raw error message
-  return <pre>{error}</pre>;
-}
-
+/** Create an iframe from HTML string */
 function ErrorIframe({ children: error }: { children: string }): JSX.Element {
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
@@ -417,12 +420,8 @@ function PermissionError({
   readonly onClose: () => void;
 }): JSX.Element {
   return typeof error === 'object' ? (
-    /*
-     * If this type of error occurs, it is a UI's fault
-     * No need to localize it, only need to make sure it never happens
-     */
     <Dialog
-      header="Permission denied error"
+      header={commonText('permissionDeniedError')}
       onClose={(): void => window.location.assign('/specify/')}
       buttons={
         <>

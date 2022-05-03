@@ -1,14 +1,15 @@
 import { ajax, Http, ping } from './ajax';
 import { Backbone } from './backbone';
+import { enableBusinessRules } from './businessrules';
 import { crash } from './components/errorboundary';
-import { f } from './functools';
+import { startNavigation } from './components/navigation';
 import { NotFoundView } from './components/notfoundview';
+import { f } from './functools';
+import { formatUrl } from './querystring';
 import { promiseToXhr } from './resourceapi';
 import { router } from './router';
-import { defined, RA } from './types';
-import { formatUrl } from './querystring';
-import { startNavigation } from './components/navigation';
-import { enableBusinessRules } from './businessrules';
+import type { RA } from './types';
+import { defined } from './types';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
@@ -94,7 +95,7 @@ const tasksPromise = Promise.all([
 ]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
 
 router
-  .route('*whatever', 'notFound', () =>
+  .route('*whatever', 'notFound', async () =>
     import('./specifyapp').then(({ setCurrentView }) =>
       setCurrentView(new NotFoundView())
     )

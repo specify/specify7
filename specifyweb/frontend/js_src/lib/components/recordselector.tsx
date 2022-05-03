@@ -54,7 +54,7 @@ export function Slider({
           <span className="sr-only">{formsText('currentRecord', count)}</span>
           <Input.Number
             className={`no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full
-              font-bold bg-white border-0 text-center`}
+              font-bold bg-white ring-0 text-center`}
             min="1"
             /*
              * Count is 0 when input is invisible, which causes the field to be

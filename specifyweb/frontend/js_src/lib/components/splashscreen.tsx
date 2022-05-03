@@ -2,11 +2,13 @@ import '../../css/main.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 
+import type { entrypointName } from '../initialcontext';
+import { unlockInitialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { Contexts } from './contexts';
 import { SetCssVariables } from './preferenceshooks';
-import { entrypointName, unlockInitialContext } from '../initialcontext';
 
 export function SplashScreen({
   children,
@@ -16,11 +18,11 @@ export function SplashScreen({
   return (
     <div
       className={`flex items-center justify-center h-full overflow-y-auto
-      bg-gray-400 dark:bg-neutral-900`}
+        bg-gray-400 dark:bg-neutral-900`}
     >
       <div
         className={`sm:max-w-md flex flex-col w-full gap-4 p-16 bg-gray-100
-        dark:bg-neutral-800 rounded shadow-2xl`}
+          dark:bg-neutral-800 rounded shadow-2xl`}
       >
         <header>
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
@@ -32,6 +34,10 @@ export function SplashScreen({
   );
 }
 
+/**
+ * Back-end passes initial data to front-end though templates as JSON in
+ * <script> tags
+ */
 export const parseDjangoDump = <T,>(id: string): T =>
   JSON.parse(document.getElementById(id)?.textContent ?? '[]') as T;
 
@@ -45,6 +51,7 @@ export function entrypoint(
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)
       throw new Error('Unable to find root element');
+    Modal.setAppElement(root);
     root.setAttribute(
       'class',
       `flex flex-col h-screen overflow-hidden bg-[color:var(--background)]

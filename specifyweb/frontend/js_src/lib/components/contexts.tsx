@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import Modal from 'react-modal';
 
 import { error } from '../assert';
 import { replaceItem } from '../helpers';
@@ -31,8 +30,6 @@ export function Contexts({
 }: {
   readonly children: JSX.Element | RA<JSX.Element>;
 }): JSX.Element {
-  React.useEffect(() => Modal.setAppElement('#root'), []);
-
   // Loading Context
   const holders = React.useRef<RA<number>>([]);
 

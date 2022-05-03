@@ -175,7 +175,8 @@ export function AttachmentCell({
       )}
       {typeof thumbnail === 'object' ? (
         <Link.Default
-          className="dark:bg-black shadow-gray-500 flex items-center justify-center bg-white rounded shadow-lg"
+          className={`dark:bg-black shadow-gray-500 flex items-center
+            justify-center bg-white rounded shadow-lg`}
           href={originalUrl}
           target="_blank"
           onClick={(): void =>

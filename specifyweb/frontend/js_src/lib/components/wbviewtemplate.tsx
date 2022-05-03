@@ -26,14 +26,14 @@ function Navigation({
       aria-atomic
     >
       <Button.Small
-        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 border-none`}
+        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0`}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="previous"
       >
         &lt;
       </Button.Small>
       <Button.Small
-        className={`wb-navigation-text aria-handled border-none grid items-center hover:brightness-70
+        className={`wb-navigation-text aria-handled ring-0 grid items-center hover:brightness-70
           grid-cols-[auto_1fr_auto_1fr_auto]`}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         title={wbText('clickToToggle')}
@@ -43,7 +43,7 @@ function Navigation({
       </Button.Small>
       <Button.Small
         type="button"
-        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 border-none`}
+        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0`}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="next"
       >
