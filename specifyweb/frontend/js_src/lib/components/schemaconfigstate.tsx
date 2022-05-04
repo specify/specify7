@@ -517,8 +517,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <Input.Checkbox
                 checked={
                   items[itemId].dataModel.canChangeIsRequired
-                    ? items[itemId].dataModel.isRequired
-                    : items[itemId].isRequired ?? false
+                    ? items[itemId].isRequired ?? false
+                    : items[itemId].dataModel.isRequired
                 }
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
                 onValueChange={(value): void =>

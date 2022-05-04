@@ -52,6 +52,10 @@ export type WithFieldInfo = {
     readonly isRequired: boolean;
     readonly isRelationship: boolean;
     readonly type: JavaType | RelationshipType;
+    /*
+     * If field is required or readOnly in the data model, then you can't
+     * change "isRequired" status for it in the schema config
+     */
     readonly canChangeIsRequired: boolean;
   };
 };
