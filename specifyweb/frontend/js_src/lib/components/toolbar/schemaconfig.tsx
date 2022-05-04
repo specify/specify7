@@ -8,6 +8,7 @@ import { fetchCollection } from '../../collection';
 import type { SpLocaleContainer } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { fetchFormatters } from '../../dataobjformatters';
+import { index } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { parseUrl } from '../../querystring';
 import { formatAggregators } from '../../schemaconfighelper';
@@ -26,7 +27,6 @@ import type {
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
 import { useSchemaLanguages } from './language';
-import { index } from '../../helpers';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -113,10 +113,16 @@ function SchemaConfigWrapper({
     true
   );
 
+  const [loadedWebLinks] = useAsyncState(
+    React.useCallback(async () => webLinks, []),
+    true
+  );
+
   return typeof languages === 'undefined' ||
     typeof tables === 'undefined' ||
     typeof formatters === 'undefined' ||
     typeof aggregators === 'undefined' ||
+    typeof loadedWebLinks === 'undefined' ||
     typeof uiFormatters === 'undefined' ? null : (
     <SchemaConfig
       languages={languages}
@@ -125,7 +131,9 @@ function SchemaConfigWrapper({
       defaultTable={Object.values(tables).find(
         ({ name }) => name === defaultTable
       )}
-      webLinks={Object.keys(webLinks).map((value) => [value, value] as const)}
+      webLinks={Object.keys(loadedWebLinks).map(
+        (value) => [value, value] as const
+      )}
       uiFormatters={uiFormatters}
       dataObjFormatters={formatters}
       dataObjAggregators={aggregators}
