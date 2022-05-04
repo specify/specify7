@@ -30,7 +30,6 @@ import {
   Label,
   Link,
   Select,
-  Textarea,
   Ul,
 } from './basic';
 import { AutoGrowTextArea, TableIcon } from './common';
@@ -349,19 +348,17 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.Generic>
             <Label.Generic>
               {commonText('description')}
-              <AutoGrowTextArea value={table.strings.desc.text}>
-                <Textarea
-                  className="resize-y h-[15vh]"
-                  value={table.strings.desc.text}
-                  onValueChange={(value): void =>
-                    dispatch({
-                      type: 'TableModifiedAction',
-                      field: 'desc',
-                      value,
-                    })
-                  }
-                />
-              </AutoGrowTextArea>
+              <AutoGrowTextArea
+                className="resize-y"
+                value={table.strings.desc.text}
+                onValueChange={(value): void =>
+                  dispatch({
+                    type: 'TableModifiedAction',
+                    field: 'desc',
+                    value,
+                  })
+                }
+              />
             </Label.Generic>
             <Label.Generic>
               {commonText('tableFormat')}
@@ -466,19 +463,17 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.Generic>
             <Label.Generic>
               {commonText('description')}
-              <AutoGrowTextArea value={items[itemId].strings.desc.text}>
-                <Textarea
-                  className="resize-y h-[15vh]"
-                  value={items[itemId].strings.desc.text}
-                  onValueChange={(value): void =>
-                    dispatch({
-                      type: 'FieldModifiedAction',
-                      field: 'desc',
-                      value,
-                    })
-                  }
-                />
-              </AutoGrowTextArea>
+              <AutoGrowTextArea
+                className="resize-y"
+                value={items[itemId].strings.desc.text}
+                onValueChange={(value): void =>
+                  dispatch({
+                    type: 'FieldModifiedAction',
+                    field: 'desc',
+                    value,
+                  })
+                }
+              />
             </Label.Generic>
             <Label.Generic>
               {commonText('length')}

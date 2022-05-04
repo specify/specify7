@@ -14,6 +14,8 @@ When app is built in development, certain additional tools become available:
   [`./schema`](../schema.ts) for easier debugging.
 - `_permissions` global object is created. It contains user permissions from
   [`./permissions`](../permissions.ts) for easier debugging.
+- `_csrf` global string is added, containing the CSRF authentication token,
+  which is needed for many API calls. See [`../csrftoken.ts`](../csrftoken.ts)
 - `_goTo` function is created. It allows to simulate a navigation by making
   router navigate to a given address.
 - Error Dialogs can be dismissed when in Development.

@@ -12,7 +12,7 @@ import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Form, Input, Label, Submit, Textarea, Ul } from './basic';
+import { Button, Form, Input, Label, Submit, Ul } from './basic';
 import { useLiveState, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
@@ -117,15 +117,13 @@ export function RoleView({
       )}
       <Label.Generic>
         {commonText('description')}
-        <AutoGrowTextArea value={role.description}>
-          <Textarea
-            isReadOnly={isReadOnly}
-            value={role.description}
-            onValueChange={(description): void =>
-              setRole(replaceKey(role, 'description', description))
-            }
-          />
-        </AutoGrowTextArea>
+        <AutoGrowTextArea
+          isReadOnly={isReadOnly}
+          value={role.description}
+          onValueChange={(description): void =>
+            setRole(replaceKey(role, 'description', description))
+          }
+        />
       </Label.Generic>
       {typeof role.id === 'number' && typeof handleOpenUser === 'function' ? (
         <fieldset className="flex flex-col gap-2">

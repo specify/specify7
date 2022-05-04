@@ -27,16 +27,7 @@ import type { RA } from '../../types';
 import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
 import { getUniqueName } from '../../wbuniquifyname';
-import {
-  Button,
-  DataEntry,
-  Form,
-  Input,
-  Link,
-  Submit,
-  Textarea,
-  Ul,
-} from '../basic';
+import { Button, DataEntry, Form, Input, Link, Submit, Ul } from '../basic';
 import {
   AutoGrowTextArea,
   compareValues,
@@ -524,9 +515,7 @@ function DwcaQueryExport({
       buttons={commonText('close')}
       onClose={handleClose}
     >
-      <AutoGrowTextArea value={exported}>
-        <Textarea isReadOnly value={exported} />
-      </AutoGrowTextArea>
+      <AutoGrowTextArea isReadOnly value={exported} />
     </Dialog>
   ) : null;
 }

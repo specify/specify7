@@ -12,10 +12,10 @@ import { spanNumber } from '../helpers';
 import { getIcon } from '../icons';
 import { commonText } from '../localization/common';
 import { getModel } from '../schema';
+import { className, Textarea } from './basic';
+import { useTitle } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
-import { useTitle } from './hooks';
-import { className } from './basic';
 
 const MAX_HUE = 360;
 
@@ -185,13 +185,9 @@ export function AppTitle({ title }: { readonly title: string }): null {
   return null;
 }
 
-export function AutoGrowTextArea({
-  value,
-  children,
-}: {
-  readonly value: string;
-  readonly children: JSX.Element;
-}): JSX.Element {
+export function AutoGrowTextArea(
+  props: Parameters<typeof Textarea>[0]
+): JSX.Element {
   return (
     <div className="grid">
       {/*
@@ -202,9 +198,12 @@ export function AutoGrowTextArea({
         className={`textarea-shadow print:hidden invisible
                   whitespace-pre-wrap [grid-area:1/1/2/2] ${className.textArea}`}
       >
-        {`${value} `}
+        {`${props.value?.toString() ?? ''} `}
       </div>
-      {children}
+      <Textarea
+        {...props}
+        className={`[grid-area:1/1/2/2] ${props.className ?? ''}`}
+      />
     </div>
   );
 }

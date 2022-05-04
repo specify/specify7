@@ -15,16 +15,7 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { f } from '../functools';
 import { uniquifyDataSetName } from '../wbuniquifyname';
-import {
-  Button,
-  Form,
-  Input,
-  Label,
-  Link,
-  Select,
-  Submit,
-  Textarea,
-} from './basic';
+import { Button, Form, Input, Label, Link, Select, Submit } from './basic';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
@@ -133,9 +124,7 @@ export function DataSetMeta({
         </Label.Generic>
         <Label.Generic>
           <b>{wbText('remarks')}</b>
-          <AutoGrowTextArea value={remarks}>
-            <Textarea value={remarks} onValueChange={setRemarks} />
-          </AutoGrowTextArea>
+          <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Generic>
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>

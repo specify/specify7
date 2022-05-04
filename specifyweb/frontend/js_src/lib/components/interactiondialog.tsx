@@ -28,7 +28,7 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../uiparse';
-import { Button, H3, Link, Textarea } from './basic';
+import { Button, H3, Link } from './basic';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
@@ -262,40 +262,34 @@ export function InteractionDialog({
               {formsText('entryCaption', searchField?.label ?? '')}
             </summary>
             <div className="flex flex-col gap-2">
-              <AutoGrowTextArea value={catalogNumbers}>
-                <Textarea
-                  className="[grid-area:1/1/2/2]"
-                  spellCheck={false}
-                  value={catalogNumbers}
-                  onValueChange={setCatalogNumbers}
-                  forwardRef={validationRef}
-                  onBlur={(): void => {
-                    const parseResults = split(catalogNumbers).map((value) =>
-                      parseValue(parser, inputRef.current ?? undefined, value)
-                    );
-                    const errorMessages = parseResults
-                      .filter(
-                        (result): result is InvalidParseResult =>
-                          !result.isValid
-                      )
-                      .map(({ reason, value }) => `${reason} (${value})`);
-                    if (errorMessages.length > 0) {
-                      setValidation(errorMessages);
-                      return;
-                    }
+              <AutoGrowTextArea
+                spellCheck={false}
+                value={catalogNumbers}
+                onValueChange={setCatalogNumbers}
+                forwardRef={validationRef}
+                onBlur={(): void => {
+                  const parseResults = split(catalogNumbers).map((value) =>
+                    parseValue(parser, inputRef.current ?? undefined, value)
+                  );
+                  const errorMessages = parseResults
+                    .filter(
+                      (result): result is InvalidParseResult => !result.isValid
+                    )
+                    .map(({ reason, value }) => `${reason} (${value})`);
+                  if (errorMessages.length > 0) {
+                    setValidation(errorMessages);
+                    return;
+                  }
 
-                    const parsed = (parseResults as RA<ValidParseResult>)
-                      .filter(({ parsed }) => parsed !== null)
-                      .map(({ parsed }) =>
-                        (parsed as number | string).toString()
-                      )
-                      .sort(sortFunction(f.id))
-                      .join('\n');
-                    setCatalogNumbers(parsed);
-                  }}
-                  {...attributes}
-                />
-              </AutoGrowTextArea>
+                  const parsed = (parseResults as RA<ValidParseResult>)
+                    .filter(({ parsed }) => parsed !== null)
+                    .map(({ parsed }) => (parsed as number | string).toString())
+                    .sort(sortFunction(f.id))
+                    .join('\n');
+                  setCatalogNumbers(parsed);
+                }}
+                {...attributes}
+              />
               <div>
                 <Button.Blue
                   // Action-entry

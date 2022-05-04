@@ -8,7 +8,7 @@ import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
 import type { ColumnOptions, MatchBehaviors } from '../uploadplanparser';
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { Button, Input, Label, Textarea, Ul } from './basic';
+import { Button, Input, Label, Ul } from './basic';
 import { AutoGrowTextArea, TableIcon } from './common';
 import { useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -284,17 +284,15 @@ export function mappingOptionsMenu({
           {typeof columnOptions.default === 'string' && (
             <>
               <br />
-              <AutoGrowTextArea value={columnOptions.default || ''}>
-                <Textarea
-                  value={columnOptions.default || ''}
-                  title={wbText('defaultValue')}
-                  aria-labelledby={id('default-value')}
-                  onValueChange={
-                    isReadOnly ? undefined : handleChangeDefaultValue
-                  }
-                  disabled={isReadOnly}
-                />
-              </AutoGrowTextArea>
+              <AutoGrowTextArea
+                value={columnOptions.default || ''}
+                title={wbText('defaultValue')}
+                aria-labelledby={id('default-value')}
+                onValueChange={
+                  isReadOnly ? undefined : handleChangeDefaultValue
+                }
+                disabled={isReadOnly}
+              />
             </>
           )}
         </>
