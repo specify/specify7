@@ -12,7 +12,11 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { idFromUrl } from '../resource';
-import { decompressPolicies } from '../securityutils';
+import {
+  anyResource,
+  decompressPolicies,
+  getAllActions,
+} from '../securityutils';
 import type { IR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -111,6 +115,14 @@ export function UserView({
     | State<'NoAdminsError'>
   >({ type: 'Main' });
 
+  const allActions = getAllActions(anyResource);
+  const isSuperAdmin =
+    institutionPolicies?.some(
+      ({ resource, actions }) =>
+        resource === anyResource &&
+        allActions.every((action) => actions.includes(action))
+    ) ?? false;
+
   return (
     <Container.Base className="flex-1">
       <BaseResourceView
@@ -140,21 +152,24 @@ export function UserView({
                       )}
                       <SetSuperAdmin
                         institutionPolicies={institutionPolicies}
+                        isSuperAdmin={isSuperAdmin}
+                        allActions={allActions}
                         onChange={setInstitutionPolicies}
                       />
                     </div>
                   </section>
                 </div>
-                {hasPermission('/permissions/policies/user', 'read') && (
-                  <PoliciesView
-                    policies={institutionPolicies}
-                    isReadOnly={!userInformation.isadmin}
-                    scope="institution"
-                    onChange={setInstitutionPolicies}
-                    header={adminText('institutionPolicies')}
-                    collapsable={true}
-                  />
-                )}
+                {!isSuperAdmin &&
+                  hasPermission('/permissions/policies/user', 'read') && (
+                    <PoliciesView
+                      policies={institutionPolicies}
+                      isReadOnly={!userInformation.isadmin}
+                      scope="institution"
+                      onChange={setInstitutionPolicies}
+                      header={adminText('institutionPolicies')}
+                      collapsable={true}
+                    />
+                  )}
                 {hasPermission('/admin/user/oic_providers', 'read') && (
                   <UserIdentityProviders userId={user.id} />
                 )}
@@ -180,27 +195,28 @@ export function UserView({
                     onOpenRole={handleOpenRole}
                   />
                 )}
-                {hasPermission('/permissions/policies/user', 'read') && (
-                  <PoliciesView
-                    policies={userPolicies?.[collectionId]}
-                    isReadOnly={
-                      !hasPermission('/permissions/policies/user', 'update')
-                    }
-                    scope="collection"
-                    onChange={(policies): void =>
-                      typeof userPolicies === 'object'
-                        ? setUserPolicies(
-                            replaceKey(
-                              userPolicies,
-                              collectionId.toString(),
-                              policies
+                {!isSuperAdmin &&
+                  hasPermission('/permissions/policies/user', 'read') && (
+                    <PoliciesView
+                      policies={userPolicies?.[collectionId]}
+                      isReadOnly={
+                        !hasPermission('/permissions/policies/user', 'update')
+                      }
+                      scope="collection"
+                      onChange={(policies): void =>
+                        typeof userPolicies === 'object'
+                          ? setUserPolicies(
+                              replaceKey(
+                                userPolicies,
+                                collectionId.toString(),
+                                policies
+                              )
                             )
-                          )
-                        : undefined
-                    }
-                    collapsable={false}
-                  />
-                )}
+                          : undefined
+                      }
+                      collapsable={false}
+                    />
+                  )}
                 {typeof userResource.id === 'number' && (
                   <PreviewPermissions
                     userId={userResource.id}

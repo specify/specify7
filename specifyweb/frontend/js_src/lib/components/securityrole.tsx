@@ -229,6 +229,7 @@ export function RoleView({
         ) : (
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         )}
+        <span className="flex-1 -ml-2" />
         {typeof role.id === 'number' && (
           <SecurityImportExport
             roles={{ [role.id]: role as Role }}

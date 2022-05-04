@@ -17,7 +17,7 @@ import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
 import { mergeParsers, parseValue, resolveParser } from '../uiparse';
-import { isInputTouched } from '../validationmessages';
+import { hasNativeErrors, isInputTouched } from '../validationmessages';
 import { FormContext, LoadingContext } from './contexts';
 
 const idStore: R<number> = {};
@@ -462,7 +462,7 @@ export function useResourceValue<
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
-        if (inputRef.current?.validity.valid === false)
+        if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
           resource.set(fieldName, newValue as never);
         else {
           const parsedValue = parseResults.parsed as string;

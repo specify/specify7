@@ -11,7 +11,7 @@ import type { FormMode } from '../parseform';
 import { collectionAccessResource, hasPermission } from '../permissions';
 import { resourceOn } from '../resource';
 import { schema } from '../schema';
-import { anyResource, getAllActions } from '../securityutils';
+import { anyResource } from '../securityutils';
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -36,19 +36,15 @@ import { UserCollectionsPlugin } from './usercollectionsplugin';
 
 export function SetSuperAdmin({
   institutionPolicies,
+  isSuperAdmin,
+  allActions,
   onChange: handleChange,
 }: {
   readonly institutionPolicies: RA<Policy> | undefined;
+  readonly isSuperAdmin: boolean;
+  readonly allActions: RA<string>;
   readonly onChange: (value: RA<Policy>) => void;
 }): JSX.Element {
-  const allActions = getAllActions(anyResource);
-  const isSuperAdmin =
-    institutionPolicies?.some(
-      ({ resource, actions }) =>
-        resource === anyResource &&
-        allActions.every((action) => actions.includes(action))
-    ) ?? false;
-
   return typeof institutionPolicies === 'object' ? (
     <Label.ForCheckbox>
       <Input.Checkbox

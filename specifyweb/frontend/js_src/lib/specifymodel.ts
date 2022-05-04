@@ -257,7 +257,14 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * Return a field object representing the named field of this model.
    * name can be either a dotted name string or an array and will traverse
    * relationships.
+   *
+   * @remarks
+   * Since field name can be invalid, this function can return undefined.
+   * If you are absolutely sure that field exists, wrap the call to this.getField
+   * in defined()
    */
+  // TODO: replace this with a direct access on indexed fields dict for static
+  //   references
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
