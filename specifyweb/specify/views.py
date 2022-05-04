@@ -30,14 +30,6 @@ if settings.ANONYMOUS_USER:
     login_maybe_required = lambda func: func
 
 
-def apply_access_control(view):
-    @wraps(view)
-    def wrapped(request, *args, **kwargs):
-        if request.method != "GET" and request.specify_readonly:
-            return http.HttpResponseForbidden()
-        return view(request, *args, **kwargs)
-    return wrapped
-
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
@@ -58,7 +50,6 @@ def api_view(dispatch_func):
     in the api logic."""
     @login_maybe_required
     @cache_control(private=True, max_age=2)
-    @apply_access_control
     def view(request, *args, **kwargs):
         """RESTful API endpoint for most Specify datamodel resources.
         <model> is the table from the Specify datamodel. <id> is the

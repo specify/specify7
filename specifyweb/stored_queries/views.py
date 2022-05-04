@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 
 from ..specify.models import Collection, Recordset
 from ..specify.api import toJson, uri_for_model
-from ..specify.views import login_maybe_required, apply_access_control
+from ..specify.views import login_maybe_required
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, check_table_permissions
 
 from . import models
@@ -130,7 +130,6 @@ def export_kml(request):
 
 @require_POST
 @login_maybe_required
-@apply_access_control
 @never_cache
 def make_recordset(request):
     """Executes the query provided as JSON in the POST body and creates a

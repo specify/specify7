@@ -5,7 +5,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, Http404
 from django.db import connection, transaction
 
-from .views import login_maybe_required, apply_access_control
+from .views import login_maybe_required
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
 from .auditcodes import TREE_MOVE
@@ -22,7 +22,6 @@ from specifyweb.permissions.permissions import PermissionTarget, PermissionTarge
 def tree_mutation(mutation):
     @login_maybe_required
     @require_POST
-    @apply_access_control
     @transaction.atomic
     @wraps(mutation)
     def wrapper(*args, **kwargs):

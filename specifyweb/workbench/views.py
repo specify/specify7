@@ -15,8 +15,7 @@ from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
     toJson, uri_for_model
-from specifyweb.specify.views import apply_access_control, login_maybe_required, \
-    openapi
+from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models as specify_models
 from specifyweb.notifications.models import Message
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
@@ -294,7 +293,6 @@ open_api_components = {
     }
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_http_methods(["GET", "POST"])
 @transaction.atomic
 def datasets(request) -> http.HttpResponse:
@@ -441,7 +439,6 @@ def datasets(request) -> http.HttpResponse:
     }
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_http_methods(["GET", "PUT", "DELETE"])
 @transaction.atomic
 def dataset(request, ds_id: str) -> http.HttpResponse:
@@ -582,7 +579,6 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_http_methods(["GET", "PUT"])
 @transaction.atomic
 def rows(request, ds_id: str) -> http.HttpResponse:
@@ -635,7 +631,6 @@ def rows(request, ds_id: str) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_POST
 def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpResponse:
     "Initiates an upload or validation of dataset <ds_id>."
@@ -693,7 +688,6 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_POST
 def unupload(request, ds_id: int) -> http.HttpResponse:
     "Initiates an unupload of dataset <ds_id>."
@@ -797,7 +791,6 @@ def status(request, ds_id: int) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_POST
 def abort(request, ds_id: int) -> http.HttpResponse:
     "Aborts any ongoing uploader operation for dataset <ds_id>."
@@ -849,7 +842,6 @@ def abort(request, ds_id: int) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_GET
 def upload_results(request, ds_id: int) -> http.HttpResponse:
     "Returns the detailed upload/validation results if any for the dataset <ds_id>."
@@ -906,7 +898,6 @@ def upload_results(request, ds_id: int) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_POST
 def validate_row(request, ds_id: str) -> http.HttpResponse:
     "Validates a single row for dataset <ds_id>. The row data is passed as POST parameters."
@@ -974,7 +965,6 @@ def up_schema(request) -> http.HttpResponse:
     },
 }, components=open_api_components)
 @login_maybe_required
-@apply_access_control
 @require_POST
 def transfer(request, ds_id: int) -> http.HttpResponse:
     """Transfer dataset's ownership to a different user."""
