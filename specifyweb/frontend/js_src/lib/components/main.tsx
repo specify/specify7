@@ -222,7 +222,7 @@ export function Main({
           shadow-md shadow-gray-400 print:hidden [z-index:1]
           ${className.hasAltBackground}`}
       >
-        <div className="2xl:contents flex justify-between w-full">
+        <div className="2xl:contents flex items-center justify-between w-full">
           <h1 className="contents">
             <a href="/specify/" className="order-1 h-16 m-4">
               <SpecifyLogo />
