@@ -231,216 +231,208 @@ export function UserView({
                   />
                 )}
                 <LegacyPermissions userResource={userResource} mode={mode} />
-                <DataEntry.Footer>
-                  {changesMade ? (
-                    <Button.Gray onClick={handleClose}>
-                      {commonText('cancel')}
-                    </Button.Gray>
-                  ) : (
-                    <Button.Blue onClick={handleClose}>
-                      {commonText('close')}
-                    </Button.Blue>
-                  )}
-                  {!userResource.isNew() &&
-                  hasTablePermission('SpecifyUser', 'delete') ? (
-                    <DeleteButton
-                      resource={userResource}
-                      onDeleted={handleDelete}
-                    />
-                  ) : undefined}
-                  <span className="flex-1 -ml-2" />
-                  {(hasPermission('/permissions/policies/user', 'update') ||
-                    hasPermission('/permissions/user/roles', 'update') ||
-                    mode === 'edit') &&
-                  formElement !== null ? (
-                    <SaveButton
-                      resource={userResource}
-                      form={formElement}
-                      canAddAnother={true}
-                      onSaving={(): undefined | false => {
-                        if (
-                          userResource.isNew() &&
-                          typeof password === 'undefined'
-                        ) {
-                          setState({
-                            type: 'SetPasswordDialog',
-                          });
-                          return false;
-                        }
-                        return undefined;
-                      }}
-                      disabled={
-                        !changesMade || typeof userAgents === 'undefined'
-                      }
-                      saveRequired={isChanged}
-                      onSaved={({ newResource }): void =>
-                        loading(
-                          ajax(
-                            `/api/set_agents/${userResource.id}/`,
-                            {
-                              method: 'POST',
-                              headers: {},
-                              body: filterArray(
-                                defined(userAgents).map(({ address }) =>
-                                  idFromUrl(address.get('agent') ?? '')
-                                )
-                              ),
-                            },
-                            {
-                              expectedResponseCodes: [
-                                Http.NO_CONTENT,
-                                Http.BAD_REQUEST,
-                              ],
-                            }
-                          )
-                            .then(({ data, status }) =>
-                              status === Http.BAD_REQUEST
-                                ? setState({
-                                    type: 'SettingAgents',
-                                    response: JSON.parse(data),
-                                  })
-                                : Array.isArray(institutionPolicies) &&
-                                  changedInstitutionPolicies
-                                ? ajax(
-                                    `/permissions/user_policies/institution/${userResource.id}/`,
-                                    {
-                                      method: 'PUT',
-                                      body: decompressPolicies(
-                                        institutionPolicies
-                                      ),
-                                      headers: { Accept: 'text/plain' },
-                                    },
-                                    {
-                                      expectedResponseCodes: [
-                                        Http.NO_CONTENT,
-                                        Http.BAD_REQUEST,
-                                      ],
-                                    }
-                                  ).then(({ data, status }) => {
-                                    /*
-                                     * Removing admin status fails if current user
-                                     * is the last admin
-                                     */
-                                    if (status === Http.BAD_REQUEST) {
-                                      const parsed: {
-                                        readonly NoAdminUsersException: IR<never>;
-                                      } = JSON.parse(data);
-                                      if (
-                                        typeof parsed === 'object' &&
-                                        'NoAdminUsersException' in parsed
-                                      )
-                                        setState({
-                                          type: 'NoAdminsError',
-                                        });
-                                      else
-                                        error(
-                                          'Failed updating institution policies',
-                                          {
-                                            data,
-                                            status,
-                                            userResource,
-                                          }
-                                        );
-                                    } else return true;
-                                    return undefined;
-                                  })
-                                : true
-                            )
-                            .then((canContinue) =>
-                              canContinue === true
-                                ? Promise.all([
-                                    typeof password === 'string' &&
-                                    password !== ''
-                                      ? ping(
-                                          `/api/set_password/${userResource.id}/`,
-                                          {
-                                            method: 'POST',
-                                            body: formData({ password }),
-                                          },
-                                          {
-                                            expectedResponseCodes: [
-                                              Http.NO_CONTENT,
-                                            ],
-                                          }
-                                        )
-                                      : undefined,
-                                    ...Object.entries(userRoles ?? {})
-                                      .filter(
-                                        ([collectionId, roles]) =>
-                                          JSON.stringify(roles) !==
-                                          JSON.stringify(
-                                            initialUserRoles.current?.[
-                                              collectionId
-                                            ]
-                                          )
-                                      )
-                                      .map(async ([collectionId, roles]) =>
-                                        ping(
-                                          `/permissions/user_roles/${collectionId}/${userResource.id}/`,
-                                          {
-                                            method: 'PUT',
-                                            body: roles.map((id) => ({ id })),
-                                          },
-                                          {
-                                            expectedResponseCodes: [
-                                              Http.NO_CONTENT,
-                                            ],
-                                          }
-                                        )
-                                      ),
-                                    ...Object.entries(userPolicies ?? {})
-                                      .filter(
-                                        ([collectionId, policies]) =>
-                                          JSON.stringify(policies) !==
-                                          JSON.stringify(
-                                            initialUserPolicies.current?.[
-                                              collectionId
-                                            ]
-                                          )
-                                      )
-                                      .map(async ([collectionId, policies]) =>
-                                        ping(
-                                          `/permissions/user_policies/${collectionId}/${userResource.id}/`,
-                                          {
-                                            method: 'PUT',
-                                            body: decompressPolicies(policies),
-                                          },
-                                          {
-                                            expectedResponseCodes: [
-                                              Http.NO_CONTENT,
-                                            ],
-                                          }
-                                        )
-                                      ),
-                                  ])
-                                    .then(() =>
-                                      handleSave(
-                                        serializeResource(userResource),
-                                        f.maybe(newResource, serializeResource)
-                                      )
-                                    )
-                                    .then(() => {
-                                      if (typeof newResource === 'object')
-                                        return;
-                                      initialUserRoles.current =
-                                        userRoles ?? {};
-                                      initialUserPolicies.current =
-                                        userPolicies ?? {};
-                                      initialInstitutionPolicies.current =
-                                        institutionPolicies ?? [];
-                                      formElement?.classList.add(
-                                        className.notSubmittedForm
-                                      );
-                                    })
-                                : undefined
-                            )
-                        )
-                      }
-                    />
-                  ) : undefined}
-                </DataEntry.Footer>
-              </>
+              </>,
+              'overflow-y-auto'
             )}
+            <DataEntry.Footer>
+              {changesMade ? (
+                <Button.Gray onClick={handleClose}>
+                  {commonText('cancel')}
+                </Button.Gray>
+              ) : (
+                <Button.Blue onClick={handleClose}>
+                  {commonText('close')}
+                </Button.Blue>
+              )}
+              {!userResource.isNew() &&
+              hasTablePermission('SpecifyUser', 'delete') ? (
+                <DeleteButton
+                  resource={userResource}
+                  onDeleted={handleDelete}
+                />
+              ) : undefined}
+              <span className="flex-1 -ml-2" />
+              {(hasPermission('/permissions/policies/user', 'update') ||
+                hasPermission('/permissions/user/roles', 'update') ||
+                mode === 'edit') &&
+              formElement !== null ? (
+                <SaveButton
+                  resource={userResource}
+                  form={formElement}
+                  canAddAnother={true}
+                  onSaving={(): undefined | false => {
+                    if (
+                      userResource.isNew() &&
+                      typeof password === 'undefined'
+                    ) {
+                      setState({
+                        type: 'SetPasswordDialog',
+                      });
+                      return false;
+                    }
+                    return undefined;
+                  }}
+                  disabled={!changesMade || typeof userAgents === 'undefined'}
+                  saveRequired={isChanged}
+                  onSaved={({ newResource }): void =>
+                    loading(
+                      ajax(
+                        `/api/set_agents/${userResource.id}/`,
+                        {
+                          method: 'POST',
+                          headers: {},
+                          body: filterArray(
+                            defined(userAgents).map(({ address }) =>
+                              idFromUrl(address.get('agent') ?? '')
+                            )
+                          ),
+                        },
+                        {
+                          expectedResponseCodes: [
+                            Http.NO_CONTENT,
+                            Http.BAD_REQUEST,
+                          ],
+                        }
+                      )
+                        .then(({ data, status }) =>
+                          status === Http.BAD_REQUEST
+                            ? setState({
+                                type: 'SettingAgents',
+                                response: JSON.parse(data),
+                              })
+                            : Array.isArray(institutionPolicies) &&
+                              changedInstitutionPolicies
+                            ? ajax(
+                                `/permissions/user_policies/institution/${userResource.id}/`,
+                                {
+                                  method: 'PUT',
+                                  body: decompressPolicies(institutionPolicies),
+                                  headers: { Accept: 'text/plain' },
+                                },
+                                {
+                                  expectedResponseCodes: [
+                                    Http.NO_CONTENT,
+                                    Http.BAD_REQUEST,
+                                  ],
+                                }
+                              ).then(({ data, status }) => {
+                                /*
+                                 * Removing admin status fails if current user
+                                 * is the last admin
+                                 */
+                                if (status === Http.BAD_REQUEST) {
+                                  const parsed: {
+                                    readonly NoAdminUsersException: IR<never>;
+                                  } = JSON.parse(data);
+                                  if (
+                                    typeof parsed === 'object' &&
+                                    'NoAdminUsersException' in parsed
+                                  )
+                                    setState({
+                                      type: 'NoAdminsError',
+                                    });
+                                  else
+                                    error(
+                                      'Failed updating institution policies',
+                                      {
+                                        data,
+                                        status,
+                                        userResource,
+                                      }
+                                    );
+                                } else return true;
+                                return undefined;
+                              })
+                            : true
+                        )
+                        .then((canContinue) =>
+                          canContinue === true
+                            ? Promise.all([
+                                typeof password === 'string' && password !== ''
+                                  ? ping(
+                                      `/api/set_password/${userResource.id}/`,
+                                      {
+                                        method: 'POST',
+                                        body: formData({ password }),
+                                      },
+                                      {
+                                        expectedResponseCodes: [
+                                          Http.NO_CONTENT,
+                                        ],
+                                      }
+                                    )
+                                  : undefined,
+                                ...Object.entries(userRoles ?? {})
+                                  .filter(
+                                    ([collectionId, roles]) =>
+                                      JSON.stringify(roles) !==
+                                      JSON.stringify(
+                                        initialUserRoles.current?.[collectionId]
+                                      )
+                                  )
+                                  .map(async ([collectionId, roles]) =>
+                                    ping(
+                                      `/permissions/user_roles/${collectionId}/${userResource.id}/`,
+                                      {
+                                        method: 'PUT',
+                                        body: roles.map((id) => ({ id })),
+                                      },
+                                      {
+                                        expectedResponseCodes: [
+                                          Http.NO_CONTENT,
+                                        ],
+                                      }
+                                    )
+                                  ),
+                                ...Object.entries(userPolicies ?? {})
+                                  .filter(
+                                    ([collectionId, policies]) =>
+                                      JSON.stringify(policies) !==
+                                      JSON.stringify(
+                                        initialUserPolicies.current?.[
+                                          collectionId
+                                        ]
+                                      )
+                                  )
+                                  .map(async ([collectionId, policies]) =>
+                                    ping(
+                                      `/permissions/user_policies/${collectionId}/${userResource.id}/`,
+                                      {
+                                        method: 'PUT',
+                                        body: decompressPolicies(policies),
+                                      },
+                                      {
+                                        expectedResponseCodes: [
+                                          Http.NO_CONTENT,
+                                        ],
+                                      }
+                                    )
+                                  ),
+                              ])
+                                .then(() =>
+                                  handleSave(
+                                    serializeResource(userResource),
+                                    f.maybe(newResource, serializeResource)
+                                  )
+                                )
+                                .then(() => {
+                                  if (typeof newResource === 'object') return;
+                                  initialUserRoles.current = userRoles ?? {};
+                                  initialUserPolicies.current =
+                                    userPolicies ?? {};
+                                  initialInstitutionPolicies.current =
+                                    institutionPolicies ?? [];
+                                  formElement?.classList.add(
+                                    className.notSubmittedForm
+                                  );
+                                })
+                            : undefined
+                        )
+                    )
+                  }
+                />
+              ) : undefined}
+            </DataEntry.Footer>
           </>
         )}
       </BaseResourceView>

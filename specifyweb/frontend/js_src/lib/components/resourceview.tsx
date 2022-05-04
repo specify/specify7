@@ -59,7 +59,10 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     readonly formMeta: FormMeta;
     readonly title: string;
     readonly formatted: string;
-    readonly form: (children: JSX.Element | undefined) => JSX.Element;
+    readonly form: (
+      children: JSX.Element | undefined,
+      className?: string
+    ) => JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
@@ -126,7 +129,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     }${formatted.length > 0 ? `: ${formatted}` : ''}`,
     formElement: form,
     formMeta: formMeta[0],
-    form: (children) =>
+    form: (children, className) =>
       isSubForm ? (
         <>
           {specifyForm}
@@ -137,6 +140,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           <Form
             id={id('form')}
             forwardRef={(newForm): void => setForm(newForm ?? form)}
+            className={className}
           >
             {specifyForm}
             {children}
