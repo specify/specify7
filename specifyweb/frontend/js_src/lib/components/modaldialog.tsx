@@ -21,11 +21,13 @@ import { listen } from '../events';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
-  <div
-    aria-hidden
-    className={`animate-bounce h-7 bg-gradient-to-r from-orange-400
-      to-amber-200 mt-5 rounded hover:animate-hue-rotate`}
-  />
+  <div className="hover:animate-hue-rotate pt-5">
+    <div
+      aria-hidden
+      className={`animate-bounce h-7 bg-gradient-to-r from-orange-400
+      to-amber-200 rounded`}
+    />
+  </div>
 );
 
 /**
@@ -88,7 +90,7 @@ export function Dialog({
   header,
   headerButtons,
   // Default icon type is determined based on dialog button types
-  icon: defaultIconType,
+  icon: defaultIcon,
   buttons,
   children,
   /*
@@ -122,7 +124,7 @@ export function Dialog({
    *   icon is incorrect (record view dialog has red icon because of delete
    *   button)
    */
-  readonly icon?: keyof typeof dialogIconTriggers;
+  readonly icon?: JSX.Element | keyof typeof dialogIconTriggers;
   // Have to explicitly pass undefined if you don't want buttons
   readonly buttons: undefined | string | JSX.Element;
   readonly children: React.ReactNode;
@@ -246,7 +248,7 @@ export function Dialog({
     React.useState<HTMLDivElement | null>(null);
   const iconType = React.useMemo(() => {
     if (!showIcon) return 'none';
-    if (typeof defaultIconType === 'string') return defaultIconType;
+    if (typeof defaultIcon === 'string') return defaultIcon;
     else if (buttonContainer === null) return 'none';
     /*
      * If icon was not specified explicitly, it is determined based on what
@@ -260,7 +262,7 @@ export function Dialog({
             'object'
       )?.[0] ?? 'none'
     );
-  }, [showIcon, defaultIconType, buttons, buttonContainer]);
+  }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
   const overlayElement: Props['overlayElement'] = React.useCallback(
     (props, contentElement) => (
@@ -311,7 +313,7 @@ export function Dialog({
           reduceTransparency
             ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && modal
-            ? 'backdrop-blur-lg'
+            ? 'backdrop-blur-lg bg-gray-200/50 dark:bg-black/50'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
         }
@@ -352,7 +354,9 @@ export function Dialog({
         id={id('handle')}
       >
         <div className="flex items-center gap-2">
-          {dialogIcons[iconType]}
+          {typeof defaultIcon === 'object'
+            ? defaultIcon
+            : dialogIcons[iconType]}
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>

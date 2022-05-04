@@ -19,6 +19,7 @@ import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
 import { hasToolPermission } from '../permissions';
 import { goTo } from './navigation';
+import { icons } from './icons';
 
 function Row({
   recordSet,
@@ -154,6 +155,7 @@ export function RecordSetsDialog({
         ),
         dialog: (children) => (
           <Dialog
+            icon={<span className="text-blue-500">{icons.collection}</span>}
             header={formsText('recordSetsDialogTitle', data.totalCount)}
             onClose={handleClose}
             buttons={

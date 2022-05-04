@@ -27,6 +27,7 @@ import { useAsyncState, useTitle } from './hooks';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { deserializeResource } from './resource';
+import { icons } from './icons';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -162,6 +163,7 @@ function Interactions({
 
   return state.type === 'MainState' ? (
     <Dialog
+      icon={<span className="text-blue-500">{icons.chat}</span>}
       header={commonText('interactions')}
       className={{
         container: dialogClassNames.narrowContainer,

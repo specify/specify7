@@ -18,6 +18,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { cachableUrl } from '../initialcontext';
 import { useAsyncState } from './hooks';
 import { f } from '../functools';
+import { icons } from './icons';
 
 export type FormEntry = {
   iconName: keyof Tables | undefined;
@@ -77,6 +78,7 @@ export function FormsDialog({
 
   return Array.isArray(forms) ? (
     <Dialog
+      icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       header={formsText('formsDialogTitle')}
       className={{ container: dialogClassNames.narrowContainer }}
       buttons={commonText('cancel')}

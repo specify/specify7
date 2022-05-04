@@ -195,6 +195,7 @@ function DataSets({
     hasPermission('/workbench/dataset', 'create') && !showTemplates;
   return Array.isArray(datasets) ? (
     <Dialog
+      icon={<span className="text-blue-500">{icons.table}</span>}
       header={
         showTemplates
           ? wbText('wbsDialogTemplatesDialogTitle')

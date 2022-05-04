@@ -25,6 +25,7 @@ import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
 import { AutoGrowTextArea, TableIcon } from './common';
 import { goTo } from './navigation';
+import { icons } from './icons';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
@@ -79,6 +80,7 @@ export function DataSetMeta({
 
   return (
     <Dialog
+      icon={<span className="text-blue-500">{icons.table}</span>}
       header={wbText('dataSetMetaDialogTitle')}
       onClose={handleClose}
       buttons={

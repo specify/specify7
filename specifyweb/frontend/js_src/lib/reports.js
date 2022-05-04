@@ -30,6 +30,7 @@ import {parseQueryFields} from './querybuilderutils';
 import {getIcon, unknownIcon} from './icons';
 
 // TODO: rewrite to React
+// TODO: add reports icon to dialogs
 
 var title = commonText('reports');
 

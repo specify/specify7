@@ -26,6 +26,7 @@ import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { parseUrl } from '../../querystring';
 import { userInformation } from '../../userinfo';
+import { icons } from '../icons';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -46,6 +47,7 @@ export function TreeSelectDialog({
 
   return typeof treeRanks === 'object' ? (
     <Dialog
+      icon={<span className="text-blue-500">{icons.tree}</span>}
       header={title}
       onClose={handleClose}
       buttons={

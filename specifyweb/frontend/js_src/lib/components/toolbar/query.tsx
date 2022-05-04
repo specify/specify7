@@ -258,6 +258,7 @@ export function QueryToolbarItem({
   return state.type === 'ShowQueryListState' ? (
     Array.isArray(queries) ? (
       <Dialog
+        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
         header={commonText('queriesDialogTitle', queries.length)}
         onClose={handleClose}
         buttons={
@@ -299,6 +300,7 @@ export function QueryToolbarItem({
   ) : state.type === 'CreateQueryState' ? (
     Array.isArray(tablesToShow) ? (
       <Dialog
+        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
         onClose={handleClose}
         className={{
           container: dialogClassNames.narrowContainer,
@@ -443,6 +445,7 @@ function QueryImport({
   const loading = React.useContext(LoadingContext);
   return typeof queries === 'object' ? (
     <Dialog
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       header={commonText('import')}
       onClose={handleClose}
       buttons={commonText('cancel')}
