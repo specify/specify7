@@ -1,7 +1,11 @@
 import logging
 from django import template
 
-from ..static.js.manifest import manifest
+try:
+    from ..static.js.manifest import manifest
+except ImportError:
+    # The frontend probably hasn't been built yet.
+    manifest = {}
 
 logger = logging.getLogger(__name__)
 
