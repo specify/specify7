@@ -70,6 +70,10 @@ const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
+const supportsBackdropBlur = CSS.supports(
+  '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+);
+
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
  * @remarks
@@ -313,7 +317,9 @@ export function Dialog({
           reduceTransparency
             ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && modal
-            ? 'backdrop-blur-lg bg-gray-200/50 dark:bg-black/50'
+            ? supportsBackdropBlur
+              ? 'backdrop-blur-lg'
+              : 'bg-gray-200/70 dark:bg-black/70'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
         }

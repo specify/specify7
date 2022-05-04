@@ -261,7 +261,7 @@ function Between({
         fieldName={fieldName}
         onChange={updateValues.bind(undefined, 0)}
       />
-      {queryText('and')}
+      <span className="flex items-center">{queryText('and')}</span>
       <QueryInputField
         currentValue={values[1] ?? ''}
         parser={parser}
