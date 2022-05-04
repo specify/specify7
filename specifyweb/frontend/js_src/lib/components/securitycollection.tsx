@@ -20,7 +20,7 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState, useLiveState } from './hooks';
+import { useAsyncState, useLiveState, useTitle } from './hooks';
 import { formatList } from './internationalization';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
@@ -143,6 +143,12 @@ export function CollectionView({
         },
       }))
     );
+
+  useTitle(
+    state.type === 'MainState'
+      ? collection.collectionName ?? undefined
+      : undefined
+  );
 
   const loading = React.useContext(LoadingContext);
   return (

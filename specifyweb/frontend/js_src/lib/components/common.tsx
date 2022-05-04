@@ -16,6 +16,7 @@ import { className, Textarea } from './basic';
 import { useTitle } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
+import { usePref } from './preferenceshooks';
 
 const MAX_HUE = 360;
 
@@ -180,8 +181,15 @@ export function Portal({
   return ReactDOM.createPortal(children, element);
 }
 
-export function AppTitle({ title }: { readonly title: string }): null {
-  useTitle(title);
+export function AppTitle({
+  title,
+  type,
+}: {
+  readonly title: string;
+  readonly type?: 'form';
+}): null {
+  const [updateTitle] = usePref('form', 'ui', 'updatePageTitle');
+  useTitle(type !== 'form' || updateTitle ? title : undefined);
   return null;
 }
 

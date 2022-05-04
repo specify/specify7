@@ -16,7 +16,7 @@ import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
@@ -103,6 +103,10 @@ export function InstitutionView({
       []
     ),
     false
+  );
+
+  useTitle(
+    state.type === 'MainState' ? institution.name ?? undefined : undefined
   );
 
   /*

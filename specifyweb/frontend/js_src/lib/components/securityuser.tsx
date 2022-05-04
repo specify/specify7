@@ -21,6 +21,7 @@ import type { IR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, DataEntry } from './basic';
+import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { useBooleanState, useIsModified } from './hooks';
@@ -131,10 +132,11 @@ export function UserView({
         mode={mode}
         isSubForm={false}
       >
-        {({ title, formElement, form }): JSX.Element => (
+        {({ title, formatted, formElement, form }): JSX.Element => (
           <>
             <DataEntry.Header>
               <h3 className="text-xl">{title}</h3>
+              <AppTitle title={formatted} type="form" />
             </DataEntry.Header>
             {form(
               <>

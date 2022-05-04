@@ -58,6 +58,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     readonly formElement: HTMLFormElement | null;
     readonly formMeta: FormMeta;
     readonly title: string;
+    readonly formatted: string;
     readonly form: (children: JSX.Element | undefined) => JSX.Element;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
@@ -72,30 +73,19 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   isSubForm,
 }: ResourceViewProps<SCHEMA>): JSX.Element | null {
   // Update title when resource changes
-  const [title, setTitle] = React.useState(
-    resource?.specifyModel.label ?? commonText('loading')
-  );
+  const [formatted, setFormatted] = React.useState('');
   React.useEffect(() => {
-    setTitle(resource?.specifyModel.label ?? commonText('loading'));
+    setFormatted(resource?.specifyModel.label ?? commonText('loading'));
     return typeof resource === 'object'
       ? resourceOn(
           resource,
           'change',
           (): void => {
             if (typeof resource === 'undefined') return undefined;
-            const title = resource.isNew()
-              ? commonText('newResourceTitle', resource.specifyModel.label)
-              : resource.specifyModel.label;
-            setTitle(title);
+            setFormatted('');
             format(resource)
-              .then(
-                (formatted) =>
-                  `${title}${
-                    typeof formatted === 'string' ? `: ${formatted}` : ''
-                  }`
-              )
               .then((title) => {
-                setTitle(title);
+                setFormatted(title ?? '');
                 return undefined;
               })
               .catch(crash);
@@ -126,7 +116,14 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     );
 
   return children({
-    title,
+    formatted,
+    title: `${
+      typeof resource === 'undefined'
+        ? ''
+        : resource.isNew()
+        ? commonText('newResourceTitle', resource.specifyModel.label)
+        : resource.specifyModel.label
+    }${formatted.length > 0 ? `: ${formatted}` : ''}`,
     formElement: form,
     formMeta: formMeta[0],
     form: (children) =>
@@ -247,8 +244,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
   const loading = React.useContext(LoadingContext);
 
-  const [updateTitle] = usePref('form', 'ui', 'updatePageTitle');
-
   const [fontFamily] = usePref('general', 'ui', 'fontFamily');
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
   React.useEffect(
@@ -280,6 +275,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         formElement,
         formMeta,
         title,
+        formatted,
         specifyNetworkBadge,
       }): JSX.Element => {
         const saveButtonElement =
@@ -361,7 +357,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 className="w-full"
               >
                 <DataEntry.Header>
-                  {updateTitle && <AppTitle title={titleOverride ?? title} />}
+                  <AppTitle title={titleOverride ?? formatted} type="form" />
                   <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
                   {headerButtons?.(specifyNetworkBadge) ?? (
                     <>

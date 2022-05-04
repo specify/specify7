@@ -21,10 +21,9 @@ import {
 } from '../securityutils';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { Button, className, Input, Label, Select, Ul } from './basic';
+import { Button, className, Input, Label, Select, Summary, Ul } from './basic';
 import { icons } from './icons';
 import { useCachedState } from './statecache';
-import { useBooleanState } from './hooks';
 
 export type Policy = {
   readonly resource: string;
@@ -275,15 +274,19 @@ export function PoliciesView({
     commonText('loading')
   );
 
-  const [isCollapsed, handleCollapsed, handleExpanded] =
-    useBooleanState(collapsable);
+  const [isCollapsed = true, setCollapsed] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'institutionPoliciesCollapsed',
+    defaultValue: true,
+    staleWhileRefresh: false,
+  });
 
   const buttonTitle =
     orientation === 'vertical'
       ? adminText('switchToHorizontalLayout')
       : adminText('switchToVerticalLayout');
   const switchButton =
-    isCollapsed || !Array.isArray(policies) ? undefined : (
+    (collapsable && isCollapsed) || !Array.isArray(policies) ? undefined : (
       <Button.Small
         variant={className.blueButton}
         title={buttonTitle}
@@ -299,13 +302,13 @@ export function PoliciesView({
     );
 
   return collapsable ? (
-    <details onToggle={isCollapsed ? handleExpanded : handleCollapsed}>
-      <summary>
+    <details open={isCollapsed}>
+      <Summary onToggle={setCollapsed}>
         <span className="inline-flex items-center gap-4">
           {header}
           {switchButton}
         </span>
-      </summary>
+      </Summary>
       <div className="flex flex-col gap-2 pt-2">{children}</div>
     </details>
   ) : (

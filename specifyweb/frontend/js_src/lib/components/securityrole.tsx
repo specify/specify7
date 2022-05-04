@@ -21,7 +21,7 @@ import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
-import { AutoGrowTextArea } from './common';
+import { AppTitle, AutoGrowTextArea } from './common';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -98,6 +98,7 @@ export function RoleView({
   return (
     <Form onSubmit={(): void => handleSave(role)} className="contents">
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
+      <AppTitle title={role.name} type="form" />
       <Button.LikeLink onClick={handleClose}>
         {icons.arrowLeft}
         {parentName}

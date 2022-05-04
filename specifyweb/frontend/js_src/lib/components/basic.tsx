@@ -781,3 +781,25 @@ export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 export const H2 = wrap('H2', 'h2', className.headerPrimary);
 export const H3 = wrap('H3', 'h3', className.headerGray);
 /* eslint-enable @typescript-eslint/naming-convention */
+
+export const Summary = wrap<
+  'summary',
+  { readonly onToggle: (isCollapsed: boolean) => void }
+>('Summary', 'summary', '', ({ onToggle: handleToggle, ...props }) => ({
+  ...props,
+  onClick:
+    typeof props.onClick === 'function' || typeof handleToggle === 'function'
+      ? (event): void => {
+          /*
+           * This is needed to prevent browser from handling state change
+           * See: https://github.com/facebook/react/issues/15486
+           */
+          event.preventDefault();
+          props.onClick?.(event);
+          const details = (event.target as Element)?.closest('details');
+          if (details === null)
+            throw new Error("Can't use <summary> outside of <details>");
+          handleToggle?.(!details.hasAttribute('open'));
+        }
+      : undefined,
+}));

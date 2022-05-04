@@ -20,9 +20,10 @@ import {
   resourceNameToParts,
 } from '../securityutils';
 import type { IR, R, RA } from '../types';
-import { Button, className, Input, Label, Ul } from './basic';
+import { Button, className, Input, Label, Summary, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
+import { useCachedState } from './statecache';
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
@@ -372,9 +373,17 @@ export function PreviewPermissions({
     ),
     false
   );
+  const [isCollapsed = false, setCollapsed] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'previewCollapsed',
+    defaultValue: false,
+    staleWhileRefresh: false,
+  });
   return (
-    <section className="contents">
-      <h4 className={className.headerGray}>{adminText('preview')}</h4>
+    <details open={isCollapsed}>
+      <Summary className={className.headerGray} onToggle={setCollapsed}>
+        {adminText('preview')}
+      </Summary>
       {typeof query === 'object' ? (
         <>
           {changesMade && <p>{adminText('outOfDateWarning')}</p>}
@@ -386,6 +395,6 @@ export function PreviewPermissions({
       ) : (
         commonText('loading')
       )}
-    </section>
+    </details>
   );
 }
