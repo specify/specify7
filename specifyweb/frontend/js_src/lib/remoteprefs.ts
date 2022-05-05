@@ -19,7 +19,7 @@ const preferences: R<string> = {};
  * endpoint)
  */
 export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
-  entrypoint === 'main' || entrypoint === 'chooseCollection'
+  entrypoint === 'main'
     ? ajax(cachableUrl('/context/remoteprefs.properties'), {
         headers: { Accept: 'text/plain' },
       }).then(({ data: text }) =>

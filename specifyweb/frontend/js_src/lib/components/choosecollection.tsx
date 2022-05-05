@@ -12,10 +12,9 @@ import type { SerializedModel } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
-import { fetchContext as fetchRemotePrefs } from '../remoteprefs';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Link, Submit } from './basic';
-import { useAsyncState, useTitle } from './hooks';
+import { useTitle } from './hooks';
 import { usePref } from './preferenceshooks';
 import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
 
@@ -46,11 +45,6 @@ function ChooseCollection({
     [data.initialValue]
   );
 
-  const [remotePrefsFetched] = useAsyncState(
-    React.useCallback(async () => fetchRemotePrefs.then(f.true), []),
-    false
-  );
-
   /*
    * If there is a remotepref to not ask for collection every time,
    * submit the form as soon as loaded
@@ -59,12 +53,10 @@ function ChooseCollection({
   const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
   React.useEffect(
     () =>
-      remotePrefsFetched &&
-      !alwaysPrompt &&
-      typeof f.parseInt(data.initialValue ?? '') === 'number'
+      !alwaysPrompt && typeof f.parseInt(data.initialValue ?? '') === 'number'
         ? formRef.current?.submit()
         : undefined,
-    [alwaysPrompt, remotePrefsFetched, data.initialValue]
+    [alwaysPrompt, data.initialValue]
   );
 
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
