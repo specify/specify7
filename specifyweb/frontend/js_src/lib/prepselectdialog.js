@@ -81,13 +81,12 @@ export const PrepSelectDialog = PrepDialog.extend({
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
                 $('<td>').append($('<input type="number">')
-                    .attr('class', 'specify-field')
+                    .attr('class', 'specify-field prepselect-amt w-full')
                     .attr('value', '0')
                     .attr('title',formsText('selectedAmount'))
                     .attr('aria-label',formsText('selectedAmount'))
                     .attr('max', iprep.available)
-                    .attr('min', 0)
-                    .addClass('prepselect-amt')),
+                    .attr('min', 0)),
                 $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
                 unavailable);
             return [entry];
