@@ -45,6 +45,8 @@ class JsonEncoder(json.JSONEncoder):
         from decimal import Decimal
         # if isinstance(obj, CallableBool):
         #     return obj()
+        # JSON numbers are double precision floating point values, while Python
+        # decimals are fixed precision. Thus, need to convert them to strings
         if isinstance(obj, Decimal):
             return str(obj)
         if hasattr(obj, 'isoformat'):

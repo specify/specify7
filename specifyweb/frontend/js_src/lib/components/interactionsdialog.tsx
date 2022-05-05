@@ -4,7 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { ajax } from '../ajax';
 import { error } from '../assert';
 import { fetchCollection } from '../collection';
-import type { RecordSet, Tables } from '../datamodel';
+import type { Disposal, Gift, Loan, RecordSet, Tables } from '../datamodel';
 import { f } from '../functools';
 import { getAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
@@ -112,8 +112,8 @@ function Interactions({
     | State<
         'InteractionState',
         {
-          readonly table: 'Loan' | 'CollectionObject';
-          readonly actionModel: SpecifyModel;
+          readonly table: 'Loan' | 'Disposal' | 'Gift' | 'CollectionObject';
+          readonly actionModel: SpecifyModel<Loan | Disposal | Gift>;
           readonly action: string;
           readonly recordSetsPromise: Promise<{
             readonly recordSets: RA<SpecifyResource<RecordSet>>;
@@ -155,7 +155,14 @@ function Interactions({
             totalCount,
           })),
           table: model.name,
-          actionModel: defined(getModel(table)),
+          actionModel:
+            table.toLowerCase() === 'loan'
+              ? schema.models.Loan
+              : table.toLowerCase() === 'gift'
+              ? schema.models.Gift
+              : table.toLowerCase() === 'gift'
+              ? schema.models.Disposal
+              : error(`Unknown interaction table: ${table}`),
           action,
         });
       }
@@ -236,14 +243,14 @@ function Interactions({
   ) : state.type === 'InteractionState' ? (
     <InteractionDialog
       recordSetsPromise={state.recordSetsPromise}
-      model={
-        state.table === 'Loan'
-          ? schema.models.Loan
-          : schema.models.CollectionObject
-      }
+      model={schema.models[state.table]}
       searchField={defined(
         defined(getModel(state.table)).getLiteralField(
-          state.table === 'Loan' ? 'LoanNumber' : 'catalogNumber'
+          state.table === 'Loan'
+            ? 'loanNumber'
+            : state.table === 'Disposal'
+            ? 'disposalNumber'
+            : 'catalogNumber'
         )
       )}
       onClose={handleClose}

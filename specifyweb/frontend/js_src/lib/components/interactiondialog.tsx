@@ -2,16 +2,23 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
-import type { CollectionObject, Loan, RecordSet } from '../datamodel';
-import type { AnySchema, FilterTablesByEndsWith } from '../datamodelutils';
+import type {
+  CollectionObject,
+  Disposal,
+  DisposalPreparation,
+  Gift,
+  GiftPreparation,
+  Loan,
+  LoanPreparation,
+  RecordSet,
+} from '../datamodel';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { PrepSelectDialog } from '../prepselectdialog';
 import { getResourceViewUrl } from '../resource';
-import { getModel } from '../schema';
+import type { PreparationRow, Preparations } from '../specifyapi';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
@@ -20,7 +27,7 @@ import type { LiteralField } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
 import type { IR, RA } from '../types';
-import { defined, filterArray } from '../types';
+import { filterArray } from '../types';
 import type { InvalidParseResult, ValidParseResult } from '../uiparse';
 import {
   getValidationAttributes,
@@ -29,12 +36,13 @@ import {
   resolveParser,
 } from '../uiparse';
 import { Button, H3, Link } from './basic';
+import { AutoGrowTextArea } from './common';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
-import { RenderView } from './reactbackboneextend';
+import { PrepDialog } from './prepdialog';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { AutoGrowTextArea } from './common';
+import { ShowResource } from './resourceview';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -42,34 +50,32 @@ export function InteractionDialog({
   searchField,
   onClose: handleClose,
   action,
-  interactionResource,
   itemCollection,
 }: {
   readonly recordSetsPromise: Promise<{
     readonly totalCount: number;
     readonly recordSets: RA<SpecifyResource<RecordSet>>;
   }>;
-  readonly model: SpecifyModel<CollectionObject | Loan>;
+  readonly model: SpecifyModel<Gift | Disposal | CollectionObject | Loan>;
   readonly searchField: LiteralField | undefined;
   readonly onClose: () => void;
   readonly action: {
-    readonly model: SpecifyModel;
+    readonly model: SpecifyModel<Loan | Gift | Disposal>;
     readonly name?: string;
   };
-  readonly interactionResource?: SpecifyResource<
-    FilterTablesByEndsWith<'Preparation'>
+  readonly itemCollection?: Collection<
+    LoanPreparation | GiftPreparation | DisposalPreparation
   >;
-  readonly itemCollection?: Collection<AnySchema>;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<'LoadingState'>
-    | State<'LoanReturnDoneState', { readonly result: string }>
+    | State<'LoanReturnDoneState', { result: string }>
     | State<
         'PreparationSelectState',
         {
-          readonly entries: RA<IR<string>>;
-          readonly problems: IR<RA<string>>;
+          entries: Preparations;
+          problems: IR<RA<string>>;
         }
       >
   >({ type: 'MainState' });
@@ -142,7 +148,7 @@ export function InteractionDialog({
   function availablePrepsReady(
     entries: RA<string> | undefined,
     recordSet: SpecifyResource<RecordSet> | undefined,
-    prepsData: RA<RA<string>>
+    prepsData: RA<PreparationRow>
   ) {
     // This is a really ugly piece of code:
     let missing: string[] = [];
@@ -164,42 +170,40 @@ export function InteractionDialog({
     if (prepsData.length === 0) {
       if (
         typeof recordSet === 'undefined' &&
-        typeof interactionResource === 'object'
+        typeof itemCollection === 'object'
       ) {
-        const itemModelName = `${interactionResource.specifyModel.name}Preparation`;
-        const itemModel = defined(getModel(itemModelName));
-        const item = new itemModel.Resource();
+        const item = new itemCollection.model.specifyModel.Resource();
         f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
           loanPreparation.set('quantityReturned', 0);
           loanPreparation.set('quantityResolved', 0);
         });
-        itemCollection?.add(item);
+        itemCollection.add(item);
       } else showPrepSelectDlg(prepsData, formatProblems(prepsData, missing));
     } else showPrepSelectDlg(prepsData, {});
   }
 
   const showPrepSelectDlg = (
-    prepsData: RA<RA<string>>,
+    prepsData: RA<PreparationRow>,
     problems: IR<RA<string>>
   ) =>
     setState({
       type: 'PreparationSelectState',
       entries: prepsData.map((prepData) => ({
-        catalognumber: prepData[0],
+        catalogNumber: prepData[0],
         taxon: prepData[1],
-        preparationid: prepData[2],
-        preptype: prepData[3],
-        countamt: prepData[4],
-        loaned: prepData[5],
-        gifted: prepData[6],
-        exchanged: prepData[7],
-        available: prepData[8],
+        preparationId: prepData[2],
+        prepType: prepData[3],
+        countAmount: prepData[4],
+        loaned: f.maybe(prepData[5] ?? undefined, f.parseInt) ?? 0,
+        gifted: f.maybe(prepData[6] ?? undefined, f.parseInt) ?? 0,
+        exchanged: f.maybe(prepData[7] ?? undefined, f.parseInt) ?? 0,
+        available: Number.parseInt(prepData[8]),
       })),
       problems,
     });
 
   const formatProblems = (
-    prepsData: RA<RA<string>>,
+    prepsData: RA<PreparationRow>,
     missing: RA<string>
   ): IR<RA<string>> => ({
     ...(missing.length > 0 ? { [formsText('missing')]: missing } : {}),
@@ -216,6 +220,43 @@ export function InteractionDialog({
     >
       {formsText('returnedAndSaved', state.result)}
     </Dialog>
+  ) : state.type === 'PreparationSelectState' ? (
+    Object.keys(state.problems).length === 0 ? (
+      <PrepDialog
+        preparations={state.entries}
+        action={action}
+        itemCollection={itemCollection}
+        onClose={handleClose}
+        // TODO: make this readOnly if don't have necessary permissions
+        isReadOnly={false}
+      />
+    ) : (
+      <>
+        {formsText('problemsFound')}
+        {Object.entries(state.problems).map(([header, problems], index) => (
+          <React.Fragment key={index}>
+            <H3>{header}</H3>
+            {problems.map((problem, index) => (
+              <p key={index}>{problem}</p>
+            ))}
+          </React.Fragment>
+        ))}
+        <div>
+          <Button.Blue
+            onClick={(): void =>
+              setState({
+                ...state,
+                problems: {},
+              })
+            }
+          >
+            {commonText('ignore')}
+          </Button.Blue>
+        </div>
+      </>
+    )
+  ) : state.type === 'ShowResource' ? (
+    <ShowResource resource={state.resource} recordSet={undefined} />
   ) : (
     <RecordSetsDialog
       recordSetsPromise={recordSetsPromise}
@@ -226,7 +267,7 @@ export function InteractionDialog({
       {({ children, totalCount }): JSX.Element => (
         <Dialog
           header={
-            typeof interactionResource === 'object'
+            typeof itemCollection === 'object'
               ? formsText('addItems')
               : model.name === 'Loan'
               ? formsText('recordReturn', model.label)
@@ -236,7 +277,7 @@ export function InteractionDialog({
           buttons={
             <>
               <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-              {typeof interactionResource === 'object' ? (
+              {typeof itemCollection === 'object' ? (
                 <Button.Blue
                   onClick={(): void =>
                     availablePrepsReady(undefined, undefined, [])
@@ -303,47 +344,6 @@ export function InteractionDialog({
               </div>
             </div>
           </details>
-          {state.type === 'PreparationSelectState' ? (
-            Object.keys(state.problems).length === 0 ? (
-              <RenderView
-                getView={(element) =>
-                  new PrepSelectDialog({
-                    el: element,
-                    preps: state.entries,
-                    action,
-                    interactionresource: interactionResource,
-                    itemcollection: itemCollection,
-                  })
-                }
-              />
-            ) : (
-              <>
-                {formsText('problemsFound')}
-                {Object.entries(state.problems).map(
-                  ([header, problems], index) => (
-                    <React.Fragment key={index}>
-                      <H3>{header}</H3>
-                      {problems.map((problem, index) => (
-                        <p key={index}>{problem}</p>
-                      ))}
-                    </React.Fragment>
-                  )
-                )}
-                <div>
-                  <Button.Blue
-                    onClick={(): void =>
-                      setState({
-                        ...state,
-                        problems: {},
-                      })
-                    }
-                  >
-                    {commonText('ignore')}
-                  </Button.Blue>
-                </div>
-              </>
-            )
-          ) : undefined}
         </Dialog>
       )}
     </RecordSetsDialog>

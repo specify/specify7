@@ -1,15 +1,15 @@
 import json
 from datetime import date
-
-from django.views.decorators.http import require_GET, require_POST
-from django.db.models.fields import FieldDoesNotExist
-from django.db import connection, transaction
 from django import http
+from django.db import connection, transaction
+from django.db.models.fields import FieldDoesNotExist
+from django.views.decorators.http import require_GET, require_POST
 
+from specifyweb.permissions.permissions import check_table_permissions
+from specifyweb.specify.api import toJson
 from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.specify.api import toJson
-from specifyweb.permissions.permissions import check_table_permissions
+
 
 @login_maybe_required
 @require_GET
@@ -17,20 +17,44 @@ def preps_available_rs(request, recordset_id):
     "Returns a list of preparations that are loanable? based on the CO recordset <recordset_id>."
     cursor = connection.cursor()
     cursor.execute("""
-    select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
-           sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
-           p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
-    from preparation p
-    left join loanpreparation lp on lp.preparationid = p.preparationid
-    left join giftpreparation gp on gp.preparationid = p.preparationid
-    left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
-    inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
-    inner join preptype pt on pt.preptypeid = p.preptypeid
-    left join determination d on d.CollectionObjectID = co.CollectionObjectID
-    left join taxon t on t.TaxonID = d.TaxonID
-    where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in (
-        select recordid from recordsetitem where recordsetid=%s
-    ) group by 1,2,3,4,5 order by 1;
+    SELECT co.catalognumber,
+           t.fullname,
+           p.preparationid,
+           pt.name,
+           p.countamt,
+           Sum(lp.quantity - lp.quantityreturned)                        Loaned,
+           Sum(gp.quantity)                                              Gifted,
+           Sum(ep.quantity)                                              Exchanged,
+           p.countamt - Coalesce(Sum(lp.quantity - lp.quantityresolved), 0) -
+           Coalesce(Sum(gp.quantity), 0) - Coalesce(Sum(ep.quantity), 0) Available
+    FROM   preparation p
+           LEFT JOIN loanpreparation lp
+                  ON lp.preparationid = p.preparationid
+           LEFT JOIN giftpreparation gp
+                  ON gp.preparationid = p.preparationid
+           LEFT JOIN exchangeoutprep ep
+                  ON ep.preparationid = p.preparationid
+           INNER JOIN collectionobject co
+                   ON co.collectionobjectid = p.collectionobjectid
+           INNER JOIN preptype pt
+                   ON pt.preptypeid = p.preptypeid
+           LEFT JOIN determination d
+                  ON d.collectionobjectid = co.collectionobjectid
+           LEFT JOIN taxon t
+                  ON t.taxonid = d.taxonid
+    WHERE  pt.isloanable
+           AND p.collectionmemberid = %s
+           AND ( d.iscurrent
+                  OR d.determinationid IS NULL )
+           AND p.collectionobjectid IN (SELECT recordid
+                                        FROM   recordsetitem
+                                        WHERE  recordsetid = %s)
+    GROUP  BY 1,
+              2,
+              3,
+              4,
+              5
+    ORDER  BY 1; 
     """, [request.specify_collection.id, recordset_id])
     rows = cursor.fetchall()
 
@@ -218,7 +242,7 @@ def loan_return_all_items(request):
 @login_maybe_required
 def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     "Returns available counts for preps."
-    args = [prep_id];
+    args = [prep_id]
     sql = """select p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) 
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
