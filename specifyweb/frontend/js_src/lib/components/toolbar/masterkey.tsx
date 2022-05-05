@@ -10,7 +10,6 @@ import { Button, Form, Input, Label, Submit } from '../basic';
 import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
 import { LoadingContext } from '../contexts';
 
 function MasterKey({
@@ -112,12 +111,10 @@ function ShowKey({
   );
 }
 
-const MasterKeyView = createBackboneView(MasterKey);
-
 export const userTool: UserTool = {
   task: 'master-key',
   title: commonText('generateMasterKey'),
   isOverlay: true,
-  view: ({ onClose }) => new MasterKeyView({ onClose }),
+  view: ({ onClose: handleClose }) => <MasterKey onClose={handleClose} />,
   groupLabel: commonText('administration'),
 };

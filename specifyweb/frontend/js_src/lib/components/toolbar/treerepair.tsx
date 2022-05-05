@@ -11,22 +11,21 @@ import { f } from '../../functools';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
 import { hasTreeAccess } from '../../permissions';
+import { parseUrl } from '../../querystring';
 import {
   getDisciplineTrees,
   treeDefinitions,
   treeRanksPromise,
 } from '../../treedefinitions';
+import { userInformation } from '../../userinfo';
 import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
+import { icons } from '../icons';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
-import { parseUrl } from '../../querystring';
-import { userInformation } from '../../userinfo';
-import { icons } from '../icons';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -157,13 +156,11 @@ export function EditTreeDefinition({
   );
 }
 
-const View = createBackboneView(RepairTree);
-
 export const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
   isOverlay: true,
   enabled: () => userInformation.isadmin,
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose: handleClose }) => <RepairTree onClose={handleClose} />,
   groupLabel: commonText('administration'),
 };

@@ -14,7 +14,7 @@ import { commonText } from '../localization/common';
 import { getOperationPermissions, getTablePermissions } from '../permissions';
 import { remotePrefs } from '../remoteprefs';
 import { schema } from '../schema';
-import { setCurrentView } from '../specifyapp';
+import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
@@ -332,7 +332,7 @@ export function handleAjaxError(
   // In production, uncaught 404 errors redirect to the NOT FOUND page
   if (isNotFoundError) {
     clearUnloadProtect();
-    setCurrentView(new NotFoundView());
+    setCurrentComponent(<NotFoundView />);
     Object.defineProperty(error, 'handledBy', {
       value: handleAjaxError,
     });

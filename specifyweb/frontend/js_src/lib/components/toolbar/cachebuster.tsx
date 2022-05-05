@@ -10,7 +10,6 @@ import { commonText } from '../../localization/common';
 import { useAsyncState } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
 
 function CacheBuster(): JSX.Element | null {
   const [isLoaded] = useAsyncState(
@@ -43,12 +42,10 @@ function CacheBuster(): JSX.Element | null {
   ) : null;
 }
 
-const View = createBackboneView(CacheBuster);
-
 export const userTool: UserTool = {
   task: 'cache-buster',
   title: commonText('clearCache'),
   isOverlay: false,
-  view: () => new View(),
+  view: () => <CacheBuster />,
   groupLabel: commonText('developers'),
 };

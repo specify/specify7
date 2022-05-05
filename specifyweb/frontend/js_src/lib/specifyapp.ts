@@ -9,6 +9,7 @@ import {
   pushUrl,
 } from './components/navigation';
 import { f } from './functools';
+import { createBackboneView } from './components/reactbackboneextend';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;
@@ -45,6 +46,11 @@ export function setCurrentView(view: Backbone.View): void {
   main.empty();
   main[0].append(currentView.el);
   main[0].focus();
+}
+
+export function setCurrentComponent(component: JSX.Element): void {
+  const view = createBackboneView(() => component);
+  setCurrentView(new view());
 }
 
 let currentOverlay: Backbone.View | undefined;

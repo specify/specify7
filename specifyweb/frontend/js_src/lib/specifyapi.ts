@@ -2,13 +2,13 @@
  * Wrappers for some back-end API endpoints
  */
 
-import { ajax } from './ajax';
+import { ajax, formData } from './ajax';
 import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
+import { eventListener } from './events';
 import type { SpecifyResource } from './legacytypes';
+import { formatUrl } from './querystring';
 import type { RA } from './types';
 import { filterArray } from './types';
-import { formatUrl } from './querystring';
-import { eventListener } from './events';
 
 export const globalEvents = eventListener<{
   initResource: SpecifyResource<AnySchema>;
@@ -67,8 +67,34 @@ export const getTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
       ).then(({ data }) => data)
     : undefined;
 
+export type Preparations = RA<{
+  readonly catalogNumber: string;
+  readonly taxon: string;
+  readonly preparationId: number;
+  readonly prepType: string;
+  readonly countAmount: number;
+  readonly loaned: number;
+  readonly gifted: number;
+  readonly exchanged: number;
+  readonly available: number;
+}>;
+
+export type PreparationRow = Readonly<
+  [
+    string,
+    string,
+    number,
+    string,
+    number,
+    string | null,
+    string | null,
+    string | null,
+    string
+  ]
+>;
+
 export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
-  ajax<RA<RA<string>>>(
+  ajax<RA<PreparationRow>>(
     `/interactions/preparations_available_rs/${recordSetId}/`,
     {
       headers: { Accept: 'application/json' },
@@ -79,7 +105,7 @@ export const getPrepsAvailableForLoanCoIds = async (
   idField: string,
   collectionObjectIds: RA<string>
 ) =>
-  ajax<RA<RA<string>>>('/interactions/preparations_available_ids/', {
+  ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
     body: {
@@ -105,12 +131,15 @@ export const returnAllLoanItems = async (
     },
   }).then(({ data }) => data);
 
-export const getInteractionsForPrepIds = async (prepIds: RA<number>) =>
-  ajax('/interactions/prep_interactions/', {
-    method: 'POST',
-    headers: { Accept: 'application/json' },
-    body: { prepIds },
-  }).then(({ data }) => data);
+export const getInteractionsForPrepId = async (prepId: number) =>
+  ajax<RA<Readonly<[number, string | null, string | null, string | null]>>>(
+    '/interactions/prep_interactions/',
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: formData({ prepIds: prepId.toString() }),
+    }
+  ).then(({ data }) => data[0]);
 
 export const getPrepAvailability = async (
   prepId: number,

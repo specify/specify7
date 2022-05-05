@@ -10,13 +10,12 @@ import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
-import { setCurrentView } from '../specifyapp';
+import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
 import { QueryBuilder } from './querybuilder';
-import { createBackboneView } from './reactbackboneextend';
 import { PermissionDenied } from './permissiondenied';
 import {
   hasPermission,
@@ -72,7 +71,8 @@ function QueryBuilderById({
     React.useCallback(async () => {
       const query = new schema.models.SpQuery.Resource({ id: queryId });
       return query.fetch().catch((error) => {
-        if (error.status === Http.NOT_FOUND) setCurrentView(new NotFoundView());
+        if (error.status === Http.NOT_FOUND)
+          setCurrentComponent(<NotFoundView />);
         else throw error;
         return undefined;
       });
@@ -91,8 +91,6 @@ function QueryBuilderById({
     <PermissionDenied />
   );
 }
-
-const QueryById = createBackboneView(QueryBuilderById);
 
 export function createQuery(
   name: string,
@@ -123,7 +121,7 @@ function NewQuery({
   const query = React.useMemo<SpecifyResource<SpQuery> | undefined>(() => {
     const model = getModel(tableName);
     if (typeof model === 'undefined') {
-      setCurrentView(new NotFoundView());
+      setCurrentComponent(<PermissionDenied />);
       return undefined;
     }
     return createQuery(queryText('newQueryName'), model);
@@ -140,8 +138,6 @@ function NewQuery({
     <PermissionDenied />
   );
 }
-
-const NewQueryView = createBackboneView(NewQuery);
 
 function QueryBuilderFromTree({
   tableName,
@@ -168,38 +164,41 @@ function QueryBuilderFromTree({
   );
 }
 
-const QueryFromTree = createBackboneView(QueryBuilderFromTree);
-const PermissionDeniedView = createBackboneView(PermissionDenied);
-
 export function task(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
-    setCurrentView(
+    setCurrentComponent(
       hasPermission('/querybuilder/query', 'execute') &&
-        hasToolPermission('queryBuilder', 'read')
-        ? new QueryById({ queryId: Number.parseInt(id) })
-        : new PermissionDeniedView()
+        hasToolPermission('queryBuilder', 'read') ? (
+        <QueryBuilderById queryId={Number.parseInt(id)} />
+      ) : (
+        <PermissionDenied />
+      )
     )
   );
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
-    setCurrentView(
+    setCurrentComponent(
       hasPermission('/querybuilder/query', 'execute') &&
-        hasToolPermission('queryBuilder', 'create')
-        ? new NewQueryView({ tableName })
-        : new PermissionDeniedView()
+        hasToolPermission('queryBuilder', 'create') ? (
+        <NewQuery tableName={tableName} />
+      ) : (
+        <PermissionDenied />
+      )
     )
   );
   router.route(
     'query/fromtree/:table/:id/',
     'queryFromTree',
     (tableName, nodeId) =>
-      setCurrentView(
+      setCurrentComponent(
         hasPermission('/querybuilder/query', 'execute') &&
-          hasToolPermission('queryBuilder', 'read')
-          ? new QueryFromTree({
-              tableName: tableName as AnyTree['tableName'],
-              nodeId: Number.parseInt(nodeId),
-            })
-          : new PermissionDeniedView()
+          hasToolPermission('queryBuilder', 'read') ? (
+          <QueryBuilderFromTree
+            tableName={tableName as AnyTree['tableName']}
+            nodeId={Number.parseInt(nodeId)}
+          />
+        ) : (
+          <PermissionDenied />
+        )
       )
   );
 }

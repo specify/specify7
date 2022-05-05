@@ -2,9 +2,8 @@ import React from 'react';
 
 import { commonText } from '../localization/common';
 import { Container, H2 } from './basic';
-import { createBackboneView } from './reactbackboneextend';
 
-export function NotFound(): JSX.Element {
+export function NotFoundView(): JSX.Element {
   return (
     <Container.FullGray>
       <Container.Center>
@@ -13,5 +12,3 @@ export function NotFound(): JSX.Element {
     </Container.FullGray>
   );
 }
-
-export const NotFoundView = createBackboneView(NotFound);

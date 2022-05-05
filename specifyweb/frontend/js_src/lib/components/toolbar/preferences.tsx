@@ -23,7 +23,6 @@ import type {
 import { preferenceDefinitions } from '../preferences';
 import { prefEvents, usePref } from '../preferenceshooks';
 import { DefaultPreferenceItemRender } from '../preferencesrenderers';
-import { createBackboneView } from '../reactbackboneextend';
 
 function Preferences({
   onClose: handleClose,
@@ -228,7 +227,11 @@ function Item({
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = usePref(category, subcategory, name);
+  const [value, setValue] = usePref(
+    category as 'general',
+    subcategory as 'ui',
+    name as 'theme'
+  );
   return (
     <Renderer
       definition={item}
@@ -253,11 +256,12 @@ function PreferencesWrapper({
   ) : null;
 }
 
-const PreferencesView = createBackboneView(PreferencesWrapper);
 export const userTool: UserTool = {
   task: 'preferences',
   title: commonText('preferences'),
   isOverlay: false,
-  view: ({ onClose }) => new PreferencesView({ onClose }),
+  view: ({ onClose: handleClose }) => (
+    <PreferencesWrapper onClose={handleClose} />
+  ),
   groupLabel: commonText('customization'),
 };

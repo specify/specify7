@@ -14,7 +14,6 @@ import type { RR } from '../types';
 import { defined } from '../types';
 import { Button, H2, Ul } from './basic';
 import { TableIcon } from './common';
-import { createBackboneView } from './reactbackboneextend';
 
 function TableResults({
   tableName,
@@ -31,7 +30,7 @@ function TableResults({
   );
 }
 
-function WbUploaded({
+export function WbUploaded({
   recordCounts,
   onClose: handleClose,
   isUploaded,
@@ -67,5 +66,3 @@ function WbUploaded({
     </div>
   );
 }
-
-export const WbUploadedView = createBackboneView(WbUploaded);

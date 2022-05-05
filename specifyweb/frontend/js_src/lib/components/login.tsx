@@ -39,8 +39,10 @@ function Login({
   useTitle(commonText('login'));
   const [formErrors] = React.useState(data.formErrors);
 
-  const { validationRef } = useValidation(data.inputErrors);
+  const { validationRef, inputRef } = useValidation(data.inputErrors);
   const { validationRef: passwordRef } = useValidation(data.passwordErrors);
+
+  React.useEffect(() => inputRef.current?.focus());
 
   return (
     <SplashScreen>

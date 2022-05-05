@@ -18,7 +18,6 @@ import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Container, H2, H3, Input, Select } from './basic';
 import { FilePicker } from './filepicker';
 import { useTitle } from './hooks';
-import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { goTo } from './navigation';
 
@@ -500,7 +499,7 @@ function assertExhaustive(x: never): never {
   throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
 }
 
-export const WbImportView = createBackboneView(function WbImportView() {
+export function WbImportView() {
   useTitle(wbText('importDataSet'));
   return <WbImport />;
-});
+}

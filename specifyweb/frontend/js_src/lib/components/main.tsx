@@ -2,13 +2,12 @@
  * The root React wrapper for the app
  */
 
-import type Backbone from 'backbone';
 import React from 'react';
 
 import { commonText } from '../localization/common';
 import { fetchContext as userPermission } from '../permissions';
 import { router } from '../router';
-import { setCurrentView } from '../specifyapp';
+import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
@@ -32,7 +31,7 @@ export type UserTool = {
     | ((props: {
         readonly onClose: () => void;
         readonly urlParameter: string | undefined;
-      }) => Backbone.View);
+      }) => JSX.Element);
   readonly enabled?: boolean | (() => boolean);
   // Whether the view opens in a dialog window
   readonly isOverlay: boolean;
@@ -52,12 +51,12 @@ export type MenuItem = Omit<UserTool, 'groupLabel' | 'basePath'> & {
 const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
   .then(async () =>
     Promise.all([
-      import('../toolbardataentry'),
-      import('../toolbarinteractions'),
+      import('./toolbar/dataentry'),
+      import('./toolbar/interactions'),
       import('./toolbar/trees'),
-      import('../toolbarrecordsets'),
+      import('./toolbar/recordsets'),
       import('./toolbar/query'),
-      import('../toolbarreport').then(async ({ menuItem }) => ({
+      import('./toolbar/report').then(async ({ menuItem }) => ({
         menuItem: await menuItem,
       })),
       import('../toolbarattachments').then(async ({ menuItem }) => ({
@@ -80,7 +79,7 @@ function processMenuItems<T extends UserTool | MenuItem>(items: RA<T>): RA<T> {
       (urlParameter: string) =>
         typeof view === 'string'
           ? goTo(view)
-          : setCurrentView(
+          : setCurrentComponent(
               view({
                 onClose: (): void => goTo('/'),
                 urlParameter,

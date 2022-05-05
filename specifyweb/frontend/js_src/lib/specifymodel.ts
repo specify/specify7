@@ -97,7 +97,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   getTotalCount(): Promise<number>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
-  add(resource: SpecifyResource<SCHEMA>): void;
+  add(resource: SpecifyResource<SCHEMA> | RA<SpecifyResource<SCHEMA>>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
   fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
   trigger(eventName: string): void;

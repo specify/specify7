@@ -25,7 +25,6 @@ import { crash } from './errorboundary';
 import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
-import { createBackboneView } from './reactbackboneextend';
 
 export function AttachmentPlugin({
   resource,
@@ -143,5 +142,3 @@ export function AttachmentPlugin({
     </div>
   );
 }
-
-export const AttachmentView = createBackboneView(AttachmentPlugin);

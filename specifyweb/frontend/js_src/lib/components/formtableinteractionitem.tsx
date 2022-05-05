@@ -1,16 +1,24 @@
 import React from 'react';
 
-import type { RecordSet } from '../datamodel';
-import { resourceTypeEndsWith } from '../datamodelutils';
+import { fetchCollection } from '../collection';
+import type {
+  Disposal,
+  DisposalPreparation,
+  Gift,
+  GiftPreparation,
+  Loan,
+  LoanPreparation,
+  RecordSet,
+} from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { FormTableCollection } from './formtable';
 import { InteractionDialog } from './interactiondialog';
-import { fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
+import { Collection, SpecifyModel } from '../specifymodel';
+import { f } from '../functools';
 
 export function FormTableInteraction(
   props: Omit<Parameters<typeof FormTableCollection>[0], 'onAdd'>
@@ -22,16 +30,27 @@ export function FormTableInteraction(
       }>
     | undefined
   >(undefined);
+  // FIXME: test this
   return (
     <>
       {typeof recordSetsPromise === 'object' &&
       typeof props.collection.related === 'object' &&
-      resourceTypeEndsWith(props.collection.related, 'Preparation') ? (
+      f.includes(
+        ['Loan', 'Gift', 'Disposal'],
+        props.collection.model.specifyModel.name
+      ) ? (
         <InteractionDialog
-          action={{ model: defined(props.collection.related).specifyModel }}
+          action={{
+            model: props.collection.model.specifyModel as SpecifyModel<
+              Loan | Gift | Disposal
+            >,
+          }}
           model={schema.models.CollectionObject}
-          interactionResource={props.collection.related}
-          itemCollection={props.collection}
+          itemCollection={
+            props.collection as Collection<
+              LoanPreparation | GiftPreparation | DisposalPreparation
+            >
+          }
           recordSetsPromise={recordSetsPromise}
           onClose={(): void => setRecordSetsPromise(undefined)}
           searchField={undefined}
@@ -44,7 +63,7 @@ export function FormTableInteraction(
             fetchCollection('RecordSet', {
               specifyUser: userInformation.id,
               type: 0,
-              dbTableId: 1,
+              dbTableId: schema.models.CollectionObject.tableId,
               domainFilter: true,
               orderBy:
                 (props.sortField as '-timestampCreated') ?? '-timestampCreated',

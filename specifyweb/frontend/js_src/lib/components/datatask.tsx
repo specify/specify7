@@ -2,41 +2,39 @@
  * Handle URLs that correspond to displaying a resource or a record set
  */
 
-import { error } from './assert';
-import { fetchCollection } from './collection';
-import { crash } from './components/errorboundary';
-import { OtherCollectionView } from './components/othercollectionview';
-import { PermissionDenied } from './components/permissiondenied';
-import { createBackboneView } from './components/reactbackboneextend';
-import { ShowResource } from './components/resourceview';
-import type { Tables } from './datamodel';
-import type { AnySchema } from './datamodelutils';
-import { collectionsForResource } from './domain';
-import { f } from './functools';
-import type { SpecifyResource } from './legacytypes';
-import { NotFoundView } from './components/notfoundview';
-import { hasTablePermission, hasToolPermission } from './permissions';
-import { getResourceViewUrl } from './resource';
-import { router } from './router';
-import { getModel, getModelById, schema } from './schema';
-import { setCurrentView, switchCollection } from './specifyapp';
-import type { SpecifyModel } from './specifymodel';
-import { defined } from './types';
-import { formatUrl, parseUrl } from './querystring';
-import { navigate } from './components/navigation';
-
-const PermissionDeniedView = createBackboneView(PermissionDenied);
+import { error } from '../assert';
+import { fetchCollection } from '../collection';
+import { crash } from './errorboundary';
+import { OtherCollection } from './othercollectionview';
+import { PermissionDenied } from './permissiondenied';
+import { ShowResource } from './resourceview';
+import type { Tables } from '../datamodel';
+import type { AnySchema } from '../datamodelutils';
+import { collectionsForResource } from '../domain';
+import { f } from '../functools';
+import type { SpecifyResource } from '../legacytypes';
+import { NotFoundView } from './notfoundview';
+import { hasTablePermission, hasToolPermission } from '../permissions';
+import { getResourceViewUrl } from '../resource';
+import { router } from '../router';
+import { getModel, getModelById, schema } from '../schema';
+import { setCurrentComponent, switchCollection } from '../specifyapp';
+import type { SpecifyModel } from '../specifymodel';
+import { defined } from '../types';
+import { formatUrl, parseUrl } from '../querystring';
+import { navigate } from './navigation';
+import React from 'react';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
 async function recordSetView(idString: string, index = '0'): Promise<void> {
   if (!hasToolPermission('recordSets', 'read')) {
-    setCurrentView(new PermissionDeniedView());
+    setCurrentComponent(<PermissionDenied />);
     return;
   }
   const id = Number.parseInt(idString);
   if (typeof id === 'undefined') {
-    setCurrentView(new NotFoundView());
+    setCurrentComponent(<NotFoundView />);
     return;
   }
   const recordSet = new schema.models.RecordSet.Resource({
@@ -44,7 +42,7 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
   });
   return recordSet.fetch().then((recordSet) =>
     typeof recordSet === 'undefined'
-      ? setCurrentView(new NotFoundView())
+      ? setCurrentComponent(<NotFoundView />)
       : checkLoggedInCollection(
           recordSet,
           (): void =>
@@ -76,7 +74,7 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
 // Begins the process of creating a new resource
 const newResourceView = async (tableName: string): Promise<void> =>
   !hasTablePermission(tableName as keyof Tables, 'create')
-    ? Promise.resolve(void setCurrentView(new NotFoundView()))
+    ? Promise.resolve(void setCurrentComponent(<NotFoundView />))
     : resourceView(tableName, undefined);
 
 /**
@@ -92,13 +90,13 @@ async function resourceView(
   const model = getModel(modelName);
 
   if (typeof model === 'undefined') {
-    setCurrentView(new NotFoundView());
+    setCurrentComponent(<NotFoundView />);
     return undefined;
   } else if (
     typeof id === 'string' &&
     !hasTablePermission(model.name, 'read')
   ) {
-    setCurrentView(new PermissionDeniedView());
+    setCurrentComponent(<PermissionDenied />);
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
 
@@ -123,11 +121,11 @@ async function resourceView(
   return checkLoggedInCollection(
     resource,
     async (): Promise<void> =>
-      setCurrentView(
-        new ResourceView({
-          resource,
-          recordSet: await recordSet?.fetch(),
-        })
+      setCurrentComponent(
+        <ShowResource
+          resource={resource}
+          recordSet={await recordSet?.fetch()}
+        />
       )
   ).catch(crash);
 }
@@ -139,15 +137,12 @@ async function viewResourceByGuid(
   const collection = new model.LazyCollection({ filters: { guid } });
   return collection.fetch({ limit: 1 }).then(({ models }) => {
     if (models.length === 0) {
-      setCurrentView(new NotFoundView());
+      setCurrentComponent(<NotFoundView />);
       return undefined;
     } else
       return checkLoggedInCollection(models[0], (): void =>
-        setCurrentView(
-          new ResourceView({
-            resource: models[0],
-            recordSet: undefined,
-          })
+        setCurrentComponent(
+          <ShowResource resource={models[0]} recordSet={undefined} />
         )
       ).catch(crash);
   });
@@ -158,7 +153,7 @@ async function byCatNumber(
   rawCatNumber: string
 ): Promise<void> {
   if (!hasTablePermission('CollectionObject', 'read')) {
-    setCurrentView(new PermissionDeniedView());
+    setCurrentComponent(<PermissionDenied />);
     return;
   }
 
@@ -197,16 +192,13 @@ async function byCatNumber(
         });
       return collectionObjects.fetch({ limit: 1 }).then(({ models }) => {
         if (models.length === 0) error('Unable to find collection object');
-        setCurrentView(
-          new ResourceView({
-            resource: models[0],
-            recordSet: undefined,
-          })
+        setCurrentComponent(
+          <ShowResource resource={models[0]} recordSet={undefined} />
         );
         return undefined;
       });
     })
-    .catch(() => setCurrentView(new NotFoundView()));
+    .catch(() => setCurrentComponent(<NotFoundView />));
 }
 
 // Check if it makes sense to view this resource when logged into current collection
@@ -224,14 +216,8 @@ const checkLoggedInCollection = async (
         !Array.isArray(collections) ||
         collections.some(({ id }) => id === schema.domainLevelIds.collection)
           ? callback()
-          : setCurrentView(
-              new OtherCollectionView({
-                collections,
-              })
-            )
+          : setCurrentComponent(<OtherCollection collections={collections} />)
       );
-
-const ResourceView = createBackboneView(ShowResource);
 
 export function task(): void {
   router.route('recordset/:id/', 'recordSetView', recordSetView);

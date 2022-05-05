@@ -13,7 +13,6 @@ import { wbText } from '../localization/workbench';
 import { Button, Label, Progress } from './basic';
 import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { createBackboneView } from './reactbackboneextend';
 import type { Dataset, Status } from './wbplanview';
 import { error } from '../assert';
 
@@ -50,7 +49,7 @@ const reducer = generateReducer<States, Actions>({
   }),
 });
 
-function WbStatus({
+export function WbStatus({
   dataset,
   onFinished: handleFinished,
 }: {
@@ -213,5 +212,3 @@ function WbStatus({
     </Dialog>
   );
 }
-
-export const WbStatusView = createBackboneView(WbStatus);

@@ -6,13 +6,12 @@ import React from 'react';
 
 import { formData, Http, ping } from '../../ajax';
 import { commonText } from '../../localization/common';
+import { hasPermission } from '../../permissions';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
-import { hasPermission } from '../../permissions';
 
 const liftGetResource = async (
   name: string,
@@ -151,13 +150,11 @@ function ExportStarted({
   );
 }
 
-const View = createBackboneView(MakeDwca);
-
 export const userTool: UserTool = {
   task: 'make-dwca',
   title: commonText('makeDwca'),
   enabled: () => hasPermission('/export/dwca', 'execute'),
   isOverlay: true,
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose: handleClose }) => <MakeDwca onClose={handleClose} />,
   groupLabel: commonText('export'),
 };

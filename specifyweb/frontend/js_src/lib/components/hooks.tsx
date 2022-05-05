@@ -456,6 +456,8 @@ export function useResourceValue<
        */
       setInput(inputRef.current);
 
+      if (typeof parser.type === 'undefined') return;
+
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
@@ -520,7 +522,15 @@ export function useResourceValue<
     setParser(parser);
 
     resource.settingDefaultValues(() =>
-      typeof parser?.value === 'undefined' || !resource.isNew()
+      typeof parser.value === 'undefined' ||
+      !resource.isNew() ||
+      (parser.type === 'number' &&
+        typeof resource.get(fieldName) === 'number' &&
+        resource.get(fieldName) !== 0) ||
+      ((parser.type === 'text' || parser.type === 'date') &&
+        typeof resource.get(fieldName) === 'string' &&
+        resource.get(fieldName) !== '') ||
+      (parser.type === 'checkbox' && resource.get(fieldName) === true)
         ? undefined
         : resource.set(
             fieldName,
@@ -545,7 +555,7 @@ export function useResourceValue<
             true
           )
         : undefined,
-    [fieldName, updateValue, resource]
+    [fieldName, updateValue, resource, parser]
   );
 
   return {

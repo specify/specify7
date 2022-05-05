@@ -18,9 +18,7 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { hasTablePermission } from '../permissions';
 import { idFromUrl } from '../resource';
-import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
-import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
@@ -31,7 +29,6 @@ import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { loadingGif } from './queryresultstable';
-import { createBackboneView } from './reactbackboneextend';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
@@ -455,12 +452,4 @@ function Gallery({
       )}
     </>
   );
-}
-
-const Attachments = createBackboneView(AttachmentsView);
-
-export function task(): void {
-  router.route('attachments/', 'attachments', function () {
-    setCurrentView(new Attachments());
-  });
 }

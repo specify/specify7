@@ -961,12 +961,6 @@ export const formsText = createDictionary({
     'es-es': (number: string) =>
       `${number} preparations have been returned and saved.`,
   },
-  selectAll: {
-    'en-us': 'Select All',
-    'ru-ru': 'Select All',
-    ca: 'Select All',
-    'es-es': 'Select All',
-  },
   deselectAll: {
     'en-us': 'Deselect all',
     'ru-ru': 'Deselect all',
@@ -1044,11 +1038,5 @@ export const formsText = createDictionary({
     'ru-ru': 'Создать Экспресс Запрос',
     ca: 'Create Information Request',
     'es-es': 'Create Information Request',
-  },
-  printInvoice: {
-    'en-us': 'Print Invoice',
-    'ru-ru': 'Печать Еакладной',
-    ca: 'Print Invoice',
-    'es-es': 'Print Invoice',
   },
 });

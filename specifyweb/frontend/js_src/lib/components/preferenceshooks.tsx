@@ -10,6 +10,7 @@ import { f } from '../functools';
 import { getUserPref, setPref } from '../preferencesutils';
 import { MILLISECONDS } from './internationalization';
 import type { PreferenceItem, Preferences } from './preferences';
+import { preferenceDefinitions } from './preferences';
 import { defaultFont } from './preferencesrenderers';
 
 export const prefEvents = eventListener<{
@@ -19,7 +20,9 @@ export const prefEvents = eventListener<{
 
 export function usePref<
   CATEGORY extends keyof Preferences,
-  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
+    ? keyof Preferences[CATEGORY]['subCategories']
+    : never,
   ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
@@ -45,52 +48,6 @@ export function usePref<
         if (newValue === currentPref.current) return;
         setLocalPref(newValue);
         currentPref.current = newValue;
-      }),
-    [category, subcategory, item]
-  );
-
-  const updatePref = React.useCallback(
-    (
-      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ): void => setPref(category, subcategory, item, newPref),
-    [category, subcategory, item]
-  );
-
-  return [pref, updatePref] as const;
-}
-
-/**
- * Like usePref, but with useRef instead of useState. Useful for cases when
- * pref value updates often, or you don't need to trigger a reRender.
- */
-export function usePrefRef<
-  CATEGORY extends keyof Preferences,
-  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
-  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
->(
-  category: CATEGORY,
-  subcategory: SUBCATEGORY,
-  item: ITEM
-): Readonly<
-  [
-    pref: Readonly<
-      React.MutableRefObject<
-        Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-      >
-    >,
-    setPref: (
-      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ) => void
-  ]
-> {
-  const pref = React.useRef<
-    Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(getUserPref(category, subcategory, item));
-
-  React.useEffect(
-    () =>
-      prefEvents.on('update', () => {
-        pref.current = getUserPref(category, subcategory, item);
       }),
     [category, subcategory, item]
   );

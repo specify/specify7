@@ -233,10 +233,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
-  React.useEffect(() => {
-    console.log('setting not deleted status');
-    setNotDeleted();
-  }, [resource, setNotDeleted]);
+  React.useEffect(setNotDeleted, [resource, setNotDeleted]);
 
   function handleDelete(): void {
     setDeleted();

@@ -9,16 +9,13 @@ import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { formatUrl, parseUrl } from '../querystring';
-import { router } from '../router';
 import { getModel } from '../schema';
-import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Container, H3 } from './basic';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
-import { createBackboneView } from './reactbackboneextend';
 import { LANGUAGE } from '../localization/utils';
 import { getProperty } from '../props';
 import { f } from '../functools';
@@ -123,7 +120,7 @@ function TableResults({
   );
 }
 
-function Results(): JSX.Element {
+export function ExpressSearchView(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
   const query = parseUrl().q;
@@ -227,12 +224,4 @@ function Results(): JSX.Element {
       />
     </Container.Full>
   );
-}
-
-const ResultsView = createBackboneView(Results);
-
-export function task(): void {
-  router.route('express_search/', 'esearch', function () {
-    setCurrentView(new ResultsView({}));
-  });
 }

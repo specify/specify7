@@ -12,7 +12,7 @@ import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
-import { setCurrentView } from '../specifyapp';
+import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { hijackBackboneAjax } from '../startapp';
 import { webOnlyViews } from '../webonlyviews';
@@ -152,7 +152,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
           async () => resource.fetch(),
           (status) =>
             status === Http.NOT_FOUND
-              ? setCurrentView(new NotFoundView())
+              ? setCurrentComponent(<NotFoundView />)
               : undefined
         ),
       [resource]

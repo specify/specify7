@@ -17,7 +17,6 @@ import type { IR, RA } from '../../types';
 import { fetchContext as fetchUiFormatters } from '../../uiformatters';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { createBackboneView } from '../reactbackboneextend';
 import type {
   DataObjectFormatter,
   NewSpLocaleItemString,
@@ -152,12 +151,12 @@ function SchemaConfigWrapper({
   );
 }
 
-const View = createBackboneView(SchemaConfigWrapper);
-
 export const userTool: UserTool = {
   task: 'schema-config',
   title: commonText('schemaConfig'),
   isOverlay: true,
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose: handleClose }) => (
+    <SchemaConfigWrapper onClose={handleClose} />
+  ),
   groupLabel: commonText('customization'),
 };

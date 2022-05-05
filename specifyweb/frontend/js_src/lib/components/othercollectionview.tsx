@@ -7,7 +7,6 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
-import { createBackboneView } from './reactbackboneextend';
 import { switchCollection } from '../specifyapp';
 
 /**
@@ -70,5 +69,3 @@ export function OtherCollection({
     </div>
   );
 }
-
-export const OtherCollectionView = createBackboneView(OtherCollection);

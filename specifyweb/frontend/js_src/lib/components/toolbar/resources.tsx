@@ -9,7 +9,6 @@ import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
 import { hasToolPermission } from '../../permissions';
 
 function AppResourceDialog({
@@ -38,13 +37,13 @@ function AppResourceDialog({
   );
 }
 
-const View = createBackboneView(AppResourceDialog);
-
 export const userTool: UserTool = {
   task: 'resources',
   title: commonText('resources'),
   isOverlay: true,
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose: handleClose }) => (
+    <AppResourceDialog onClose={handleClose} />
+  ),
   enabled: () => hasToolPermission('resources', 'read'),
   groupLabel: commonText('administration'),
 };

@@ -4,19 +4,16 @@
 
 import React from 'react';
 
-import type { Tables } from '../../datamodel';
 import { f } from '../../functools';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbText } from '../../localization/workbench';
-import { router } from '../../router';
-import { getModel, schema } from '../../schema';
+import { schema } from '../../schema';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../../schemaconfighelper';
-import { setCurrentView } from '../../specifyapp';
 import type { SpecifyModel } from '../../specifymodel';
 import { getSystemInfo } from '../../systeminfo';
 import type { RA } from '../../types';
@@ -26,7 +23,6 @@ import { TableIcon } from '../common';
 import { downloadFile } from '../filepicker';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { createBackboneView } from '../reactbackboneextend';
 
 function Table({
   children,
@@ -85,7 +81,7 @@ const booleanFormatter = (value: boolean): string =>
  * TODO: add sorting by column headers
  * TODO: adapt this page for printing
  */
-function DataModelView({
+export function DataModelView({
   model: initialModel,
 }: {
   readonly model: SpecifyModel | undefined;
@@ -236,22 +232,6 @@ function DataModelView({
       </Table>
     </Container.Full>
   );
-}
-
-const View = createBackboneView(DataModelView);
-
-function view(model: string | undefined): void {
-  setCurrentView(
-    new View({
-      model:
-        typeof model === 'string' ? getModel(model as keyof Tables) : undefined,
-    })
-  );
-}
-
-export function task(): void {
-  router.route('datamodel/:model/', 'datamodel', view);
-  router.route('datamodel/', 'datamodel', view);
 }
 
 export const userTool: UserTool = {

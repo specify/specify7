@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom';
 import { error } from '../assert';
 import type { IR } from '../types';
 import { Contexts } from './contexts';
+import { f } from '../functools';
 
 /**
  * If ReactDOM.render props changed, react documentation recommends
@@ -107,15 +108,12 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
 export function RenderView({
   getView,
 }: {
-  readonly getView: (element: HTMLElement) => {
-    readonly render: () => { readonly remove: () => void };
-  };
+  readonly getView: (element: HTMLElement) => () => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(() => {
-    if (containerRef.current === null) return undefined;
-    const view = getView(containerRef.current).render();
-    return (): void => view.remove();
-  }, []);
+  React.useEffect(
+    () => f.maybe(containerRef.current ?? undefined, getView),
+    []
+  );
   return <div ref={containerRef} />;
 }

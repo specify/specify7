@@ -11,7 +11,6 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
-import { createBackboneView } from './reactbackboneextend';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -117,7 +116,7 @@ function AboutSpecify(): JSX.Element {
   );
 }
 
-function Welcome(): JSX.Element {
+export function WelcomeView(): JSX.Element {
   useTitle(welcomeText('pageTitle'));
 
   const refTaxonTilesContainer = React.useRef<HTMLDivElement | null>(null);
@@ -150,13 +149,12 @@ function Welcome(): JSX.Element {
   );
 }
 
-export const WelcomeView = createBackboneView(Welcome);
-const View = createBackboneView(AboutDialog);
-
 export const userTool: UserTool = {
   task: 'about',
   title: welcomeText('aboutSpecify'),
-  view: ({ onClose }) => new View({ onClose, isOpen: true }),
+  view: ({ onClose: handleClose }) => (
+    <AboutDialog onClose={handleClose} isOpen={true} />
+  ),
   isOverlay: true,
   groupLabel: commonText('documentation'),
 };

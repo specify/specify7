@@ -34,7 +34,6 @@ import {
   queryFieldFilters,
   QueryLineFilter,
 } from './querybuilderfieldfilter';
-import { createBackboneView } from './reactbackboneextend';
 import {
   getMappingLineProps,
   MappingElement,
@@ -487,5 +486,3 @@ export function QueryLine({
     </li>
   );
 }
-
-export const QueryLineView = createBackboneView(QueryLine);

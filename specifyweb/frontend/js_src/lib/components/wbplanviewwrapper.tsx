@@ -8,18 +8,17 @@ import React from 'react';
 
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
-import { NotFound } from './notfoundview';
+import { NotFoundView } from './notfoundview';
 import { hasPermission } from '../permissions';
 import { treeRanksPromise } from '../treedefinitions';
 import { useAsyncState } from './hooks';
-import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 
 /**
  * Entrypoint React component for the workbench mapper
  */
-function WbPlanViewWrapper({
+export function WbPlanViewWrapper({
   dataSetId,
 }: {
   readonly dataSetId: string;
@@ -49,7 +48,7 @@ function WbPlanViewWrapper({
   );
 
   return dataSet === false ? (
-    <NotFound />
+    <NotFoundView />
   ) : typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
     <WbPlanView
       dataset={dataSet}
@@ -70,5 +69,3 @@ function WbPlanViewWrapper({
     />
   ) : null;
 }
-
-export const WrappedWbPlanView = createBackboneView(WbPlanViewWrapper);

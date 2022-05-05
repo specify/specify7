@@ -36,6 +36,7 @@ import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { usePref } from './preferenceshooks';
+import { createBackboneView } from './reactbackboneextend';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -109,7 +110,8 @@ export function HeaderItems({
           onClick={(event): void => {
             if (typeof view === 'string') return;
             event.preventDefault();
-            const backboneView = view({
+            const View = createBackboneView(view);
+            const backboneView = new View({
               onClose: (): void => void backboneView.remove(),
               urlParameter: undefined,
             });
@@ -270,7 +272,8 @@ function UserToolsColumn({
 
                         if (isOverlay) {
                           event.preventDefault();
-                          const backboneView = view({
+                          const BackboneView = createBackboneView(view);
+                          const backboneView = new BackboneView({
                             onClose: (): void => void backboneView.remove(),
                             urlParameter: undefined,
                           });

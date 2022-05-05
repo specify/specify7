@@ -25,8 +25,7 @@ import {Button, className, Link} from './components/basic';
 import {getModel, schema} from './schema';
 import {DataSetNameView} from './components/datasetmeta';
 import {NotFoundView} from './components/notfoundview';
-import {WbUploadedView} from './components/wbuploadedview';
-import {WbStatusView} from './components/wbstatus';
+import {WbUploaded} from './components/wbuploadedview';
 import {WBUtils} from './wbutils';
 import {
   formatToManyIndex,
@@ -51,7 +50,7 @@ import {crash} from './components/errorboundary';
 import {getTreeDefinitionItems} from './treedefinitions';
 import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
-import {setCurrentView} from './specifyapp';
+import {setCurrentComponent, setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
 import {hasPermission} from './permissions';
 import {wbViewTemplate} from './components/wbviewtemplate';
@@ -65,6 +64,8 @@ import {getCache, setCache} from './cache';
 import {f} from './functools';
 import {pathStartsWith} from './wbplanviewutils';
 import {getUserPref} from './preferencesutils';
+import {createBackboneView} from './components/reactbackboneextend';
+import {WbStatus} from './components/wbstatus';
 
 const metaKeys = [
   'isNew',
@@ -80,6 +81,9 @@ const defaultMetaValues = Object.freeze([
   Object.freeze([]),
   undefined,
 ]);
+
+const WbUploadedView = createBackboneView(WbUploaded);
+const WbStatusView = createBackboneView(WbStatus);
 
 const WBView = Backbone.View.extend({
   __name__: 'WbForm',
@@ -2591,7 +2595,7 @@ export function loadDataset(
       { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
     ).then(({ data: dataset, status }) => {
       if (status === Http.NOT_FOUND) {
-        setCurrentView(new NotFoundView());
+        setCurrentComponent(<NotFoundView />);
         return;
       }
       const view = new WBView({

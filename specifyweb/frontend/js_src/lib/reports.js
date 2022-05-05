@@ -7,8 +7,8 @@ import React from 'react';
 
 import {Button} from './components/basic';
 import {getModel, getModelById, schema} from './schema';
-import {QueryLineView} from './components/querybuilderfield';
-import {AttachmentView} from './components/attachmentplugin';
+import {QueryLine} from './components/querybuilderfield';
+import {AttachmentPlugin} from './components/attachmentplugin';
 import {
     attachmentsAvailable,
     attachmentSettingsPromise,
@@ -28,9 +28,12 @@ import {serializeResource} from './datamodelutils';
 import {f} from './functools';
 import {parseQueryFields} from './querybuilderutils';
 import {getIcon, unknownIcon} from './icons';
+import {createBackboneView} from './components/reactbackboneextend';
 
 // TODO: rewrite to React
 // TODO: add reports icon to dialogs
+const AttachmentView = createBackboneView(AttachmentPlugin);
+const QueryLineView = createBackboneView(QueryLine);
 
 var title = commonText('reports');
 

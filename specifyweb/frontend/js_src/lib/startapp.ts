@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { ajax, Http, ping } from './ajax';
 import { Backbone } from './backbone';
 import { enableBusinessRules } from './businessrules';
@@ -80,24 +82,15 @@ Backbone.ajax = function (request): JQueryXHR {
 };
 
 const tasksPromise = Promise.all([
-  import('./welcometask'),
-  import('./datatask'),
+  import('./components/tasks'),
+  import('./components/datatask'),
   import('./components/querytask'),
-  import('./treetask'),
-  import('./components/expresssearchtask'),
-  import('./components/toolbar/schema'),
-  import('./components/attachmentstask'),
-  import('./wbtask'),
-  import('./wbimporttask'),
-  import('./wbplantask'),
-  import('./appresourcetask'),
-  import('./components/toolbar/security'),
 ]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
 
 router
   .route('*whatever', 'notFound', async () =>
-    import('./specifyapp').then(({ setCurrentView }) =>
-      setCurrentView(new NotFoundView())
+    import('./specifyapp').then(({ setCurrentComponent }) =>
+      setCurrentComponent(React.createElement(NotFoundView))
     )
   )
   .route('test_error/', 'testError', () => void ping('/api/test_error/'));

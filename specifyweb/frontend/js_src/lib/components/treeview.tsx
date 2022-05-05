@@ -30,10 +30,9 @@ import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { pushUrl } from './navigation';
-import { NotFound } from './notfoundview';
+import { NotFoundView } from './notfoundview';
 import { PermissionDenied } from './permissiondenied';
 import { usePref, useReducedTransparency } from './preferenceshooks';
-import { createBackboneView } from './reactbackboneextend';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { useCachedState } from './statecache';
@@ -402,7 +401,7 @@ function EditTreeRank({
   );
 }
 
-function TreeViewWrapper({
+export function TreeViewWrapper({
   table,
 }: {
   readonly table: string;
@@ -421,7 +420,7 @@ function TreeViewWrapper({
       : undefined;
 
   if (typeof tableName === 'undefined' || !isTreeModel(tableName))
-    return <NotFound />;
+    return <NotFoundView />;
   else if (!hasTreeAccess(tableName, 'read')) return <PermissionDenied />;
   else
     return typeof treeDefinition === 'object' ? (
@@ -432,5 +431,3 @@ function TreeViewWrapper({
       />
     ) : null;
 }
-
-export const treeView = createBackboneView(TreeViewWrapper);

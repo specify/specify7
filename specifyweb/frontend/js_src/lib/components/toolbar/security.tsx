@@ -15,23 +15,20 @@ import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../../permissions';
-import { router } from '../../router';
 import type { BackEndRole } from '../../securityutils';
 import { processPolicies } from '../../securityutils';
-import { setCurrentView } from '../../specifyapp';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
-import { createBackboneView } from '../reactbackboneextend';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { UserView } from '../securityuser';
 
-function SecurityPanel(): JSX.Element | null {
+export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
 
   const [data] = useAsyncState(
@@ -238,8 +235,6 @@ function SecurityPanel(): JSX.Element | null {
   ) : null;
 }
 
-const View = createBackboneView(SecurityPanel);
-
 export const userTool: UserTool = {
   task: 'security',
   title: adminText('securityPanel'),
@@ -247,7 +242,3 @@ export const userTool: UserTool = {
   view: '/specify/security/',
   groupLabel: commonText('administration'),
 };
-
-export function task(): void {
-  router.route('security/', 'security', () => setCurrentView(new View()));
-}

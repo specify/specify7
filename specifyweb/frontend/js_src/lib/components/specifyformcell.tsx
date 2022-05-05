@@ -121,9 +121,7 @@ const cellRenderers: {
         () =>
           typeof field === 'object' &&
           relationshipIsToMany(field) &&
-          ['LoanPreparation', 'GiftPreparation'].includes(
-            field.relatedModel.name
-          )
+          ['Loan', 'Gift', 'Disposal'].includes(field.relatedModel.name)
             ? resource.rgetCollection(field.name)
             : false,
         [field, resource]

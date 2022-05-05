@@ -6,13 +6,12 @@ import React from 'react';
 
 import { ping } from '../../ajax';
 import { commonText } from '../../localization/common';
+import { hasPermission } from '../../permissions';
 import { Button } from '../basic';
+import { LoadingContext } from '../contexts';
 import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { createBackboneView } from '../reactbackboneextend';
-import { LoadingContext } from '../contexts';
-import { hasPermission } from '../../permissions';
 
 function ForceUpdateFeed({
   onClose: handleClose,
@@ -61,13 +60,11 @@ function ForceUpdateFeed({
   );
 }
 
-const View = createBackboneView(ForceUpdateFeed);
-
 export const userTool: UserTool = {
   task: 'force-update-feed',
   title: commonText('updateExportFeed'),
   enabled: () => hasPermission('/export/feed', 'force_update'),
   isOverlay: true,
-  view: ({ onClose }) => new View({ onClose }),
+  view: ({ onClose: handleClose }) => <ForceUpdateFeed onClose={handleClose} />,
   groupLabel: commonText('export'),
 };

@@ -43,7 +43,6 @@ import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import { goTo } from '../navigation';
 import { usePref } from '../preferenceshooks';
-import { createBackboneView } from '../reactbackboneextend';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../statecache';
 
@@ -344,8 +343,6 @@ export function QueryToolbarItem({
   );
 }
 
-const QueryToolbarView = createBackboneView(QueryToolbarItem);
-
 export const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
@@ -354,12 +351,13 @@ export const menuItem: MenuItem = {
   enabled: () =>
     hasToolPermission('queryBuilder', 'read') &&
     getUserPref('header', 'menu', 'showQueries'),
-  view: ({ onClose }) =>
-    new QueryToolbarView({
-      onClose,
-      getQuerySelectUrl: undefined,
-      isReadOnly: false,
-    }),
+  view: ({ onClose: handleClose }) => (
+    <QueryToolbarItem
+      onClose={handleClose}
+      getQuerySelectUrl={undefined}
+      isReadOnly={false}
+    />
+  ),
 };
 
 function EditQueryDialog({

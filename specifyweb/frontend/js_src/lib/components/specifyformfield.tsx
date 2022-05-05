@@ -85,7 +85,7 @@ const fieldRenderers: {
       [parser]
     );
 
-    const [autoGrow] = usePref('forms', 'behavior', 'textAreaAutoGrow');
+    const [autoGrow] = usePref('form', 'behavior', 'textAreaAutoGrow');
     const Component = autoGrow ? AutoGrowTextArea : Textarea;
 
     return (
