@@ -407,6 +407,8 @@ export function useResourceValue<
    */
   const [input, setInput] = React.useState<INPUT | null>(null);
   const blockers = React.useRef<RA<string>>([]);
+  const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
+    useBooleanState();
   React.useEffect(
     () =>
       typeof fieldName === 'string'
@@ -417,26 +419,37 @@ export function useResourceValue<
                 ?.blockersForField(fieldName)
                 .filter(({ deferred }) => !deferred || triedToSubmit)
                 .map(({ reason }) => reason) ?? [];
+            handleDontIgnoreError();
             // Report validity only if not focused
             if (document.activeElement !== inputRef.current)
               setValidation(blockers.current);
           })
         : undefined,
-    [triedToSubmit, resource, fieldName, setValidation, inputRef]
+    [
+      triedToSubmit,
+      resource,
+      fieldName,
+      setValidation,
+      inputRef,
+      handleDontIgnoreError,
+    ]
   );
   React.useEffect(
     () =>
       input === null || typeof fieldName === 'undefined'
         ? undefined
-        : registerBlurListener(input, (): void =>
-            setValidation(blockers.current)
-          ),
-    [input, setValidation, fieldName]
+        : registerBlurListener(input, (): void => {
+            // Don't report the same error twice
+            if (ignoreError) return;
+            setValidation(blockers.current);
+            handleIgnoreError();
+          }),
+    [input, setValidation, fieldName, ignoreError, handleIgnoreError]
   );
 
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
-    function updateValue(newValue: T, validate?: boolean) {
+    function updateValue(newValue: T, validate = true) {
       /*
        * Converting ref to state so that React.useEffect can be triggered
        * when needed
@@ -449,29 +462,33 @@ export function useResourceValue<
         newValue?.toString() ?? ''
       );
 
-      setValue(
-        (parser.type === 'number'
+      const storedValue = (
+        parser.type === 'number'
           ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
-          : ['checkbox', 'date'].includes(parser.type ?? '') &&
+          : (['checkbox', 'date'].includes(parser.type ?? '') || validate) &&
             parseResults.isValid
           ? parseResults.parsed
-          : newValue) as T
-      );
-      if (typeof fieldName === 'undefined') return;
+          : newValue
+      ) as T;
+      setValue(storedValue);
+      if (typeof fieldName === 'undefined' || !validate) return;
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
-        setValidation('');
         resource.saveBlockers?.remove(key);
+        setValidation(blockers.current);
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
-          resource.set(fieldName, newValue as never);
+          resource.set(fieldName, storedValue as never);
         else {
           const parsedValue = parseResults.parsed as string;
-          if (resource.get(fieldName) !== newValue)
+          if (
+            resource.get(fieldName) !== newValue &&
+            resource.get(fieldName) !== storedValue
+          )
             resource.set(fieldName, parsedValue as never);
         }
       } else {
-        if (validate) setValidation(parseResults.reason);
+        setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
       }
     },
