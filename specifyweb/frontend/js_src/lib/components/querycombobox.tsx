@@ -283,7 +283,8 @@ export function QueryComboBox({
                     : undefined
                 ).then((formatted) => ({
                   label:
-                    formatted ?? value?.toString() ?? resource.id.toString(),
+                    formatted ??
+                    `${resource.specifyModel.label} #${resource.id}`,
                   resource,
                 }))
           ),
