@@ -180,9 +180,21 @@ export function RenderForm<SCHEMA extends AnySchema>({
           aria-hidden={showLoading}
           className={showLoading ? 'opacity-50 pointer-events-none' : undefined}
         >
-          {/* Cells are wrapped in rows for debugging purposes only */}
           {viewDefinition.rows.map((cells, index) => (
-            <div className="contents" key={index}>
+            <React.Fragment key={index}>
+              {/*
+               * This is used to help with debugging only. Previous implementation
+               * was wrapping row in div.contents, but that caused elements
+               * within to be not focusable when rendered inside a dialog because
+               * of this bug: https://github.com/reactjs/react-modal/issues/905
+               */}
+              {process.env.NODE_ENV !== 'production' && (
+                <span
+                  className="contents"
+                  aria-hidden
+                  data--row-index={index}
+                />
+              )}
               {cells.map(
                 (
                   {
@@ -218,7 +230,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
                   </DataEntry.Cell>
                 )
               )}
-            </div>
+            </React.Fragment>
           ))}
         </DataEntry.Grid>
       ) : (

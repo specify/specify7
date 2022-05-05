@@ -175,6 +175,9 @@ export async function getRelatedObjectCount<SCHEMA extends AnySchema>(
  * prevent fetching multiple at the same time
  */
 
+/**
+ * A type-safe wrapper for Backbone.Events to keep things sane
+ */
 export function resourceOn(
   resource: {
     readonly on: (

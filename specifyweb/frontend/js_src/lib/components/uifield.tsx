@@ -19,7 +19,7 @@ import {
 } from '../uiparse';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Input } from './basic';
-import { useAsyncState, useResourceValue, useTriggerState } from './hooks';
+import { useAsyncState, useResourceValue } from './hooks';
 import { PartialDateUi } from './partialdateui';
 import { getResourceAndField } from './resource';
 
@@ -170,9 +170,6 @@ export function Field({
     false
   );
 
-  const [internalValue, setInternalValue] = useTriggerState<
-    string | number | boolean | undefined
-  >(value);
   return (
     <Input.Generic
       forwardRef={validationRef}
@@ -180,17 +177,21 @@ export function Field({
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')
-          : internalValue?.toString() ?? ''
+          : value?.toString() ?? ''
       }
       tabIndex={isReadOnly ? -1 : undefined}
+      /*
+       * Update data model value before onBlur, as onBlur fires after onSubmit
+       * if form is submitted using the ENTER key
+       */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*
-         * Don't handle value change for input fields until field is blurred,
-         * unless user tried to paste a date (see definition of Input.Generic)
+         * Don't show validation errors on value change for input fields until
+         * field is blurred, unless user tried to paste a date (see definition
+         * of Input.Generic)
          */
-        if (event.type === 'paste') updateValue(input.value);
-        else setInternalValue(input.value);
+        updateValue(input.value, event.type === 'paste');
       }}
       onBlur={({ target }): void => updateValue(target.value)}
       id={id}

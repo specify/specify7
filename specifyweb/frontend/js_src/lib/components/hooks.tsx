@@ -385,7 +385,7 @@ export function useResourceValue<
   validationMessage?: string | RA<string>
 ): {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T) => void;
+  readonly updateValue: (newValue: T, validate?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
@@ -436,7 +436,7 @@ export function useResourceValue<
 
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
-    function updateValue(newValue: T) {
+    function updateValue(newValue: T, validate?: boolean) {
       /*
        * Converting ref to state so that React.useEffect can be triggered
        * when needed
@@ -461,6 +461,7 @@ export function useResourceValue<
       if (typeof fieldName === 'undefined') return;
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
+        setValidation('');
         resource.saveBlockers?.remove(key);
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
           resource.set(fieldName, newValue as never);
@@ -470,7 +471,7 @@ export function useResourceValue<
             resource.set(fieldName, parsedValue as never);
         }
       } else {
-        setValidation(parseResults.reason);
+        if (validate) setValidation(parseResults.reason);
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
       }
     },
@@ -523,7 +524,7 @@ export function useResourceValue<
         ? resourceOn(
             resource,
             `change:${fieldName}`,
-            (): void => updateValue(resource.get(fieldName) ?? ('' as T)),
+            (): void => updateValue(resource.get(fieldName) as T),
             true
           )
         : undefined,

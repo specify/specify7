@@ -77,6 +77,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     | undefined
   >(undefined);
   const id = useId('search-dialog');
+  console.log(templateResource.toJSON());
   return typeof viewName === 'string' ? (
     <Dialog
       header={commonText('search')}

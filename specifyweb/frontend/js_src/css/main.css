@@ -40,6 +40,13 @@
       text-[length:inherit] leading-[unset];
   }
 
+  input,
+  textarea,
+  .textarea-shadow,
+  select {
+    @apply dark:focus:ring-1;
+  }
+
   /**
    * Fix for Safari's inconsistencies:
    * https://github.com/specify/specify7/issues/1274#issuecomment-1102807239
