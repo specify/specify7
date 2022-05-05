@@ -387,6 +387,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          textAreaAutoGrow: defineItem<boolean>({
+            title: preferencesText('textAreaAutoGrow'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       ui: {

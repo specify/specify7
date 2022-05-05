@@ -17,6 +17,8 @@ import { getResourceAndField } from './resource';
 import { PrintOnSave, SpecifyFormCheckbox } from './specifyformcheckbox';
 import { UiPlugin } from './specifyformplugin';
 import { UiField } from './uifield';
+import { usePref } from './preferenceshooks';
+import { AutoGrowTextArea } from './common';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -83,8 +85,11 @@ const fieldRenderers: {
       [parser]
     );
 
+    const [autoGrow] = usePref('forms', 'behavior', 'textAreaAutoGrow');
+    const Component = autoGrow ? AutoGrowTextArea : Textarea;
+
     return (
-      <Textarea
+      <Component
         {...validationAttributes}
         forwardRef={validationRef}
         id={id}

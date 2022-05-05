@@ -680,4 +680,10 @@ export const preferencesText = createDictionary({
     ca: 'Show tables without "Create" access',
     'es-es': 'Show tables without "Create" access',
   },
+  textAreaAutoGrow: {
+    'en-us': 'TextAreas grow automatically',
+    'ru-ru': 'TextAreas grow automatically',
+    ca: 'TextAreas grow automatically',
+    'es-es': 'TextAreas grow automatically',
+  },
 });
