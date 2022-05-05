@@ -2,6 +2,7 @@
  * Utilities for dealing with user preferences
  */
 
+import { ajax, Http, ping } from './ajax';
 import { getCache, setCache } from './cache';
 import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
@@ -11,12 +12,8 @@ import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
 import type { SpAppResourceData } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import {
-  createResource,
-  fetchResource,
-  getResourceApiUrl,
-  saveResource,
-} from './resource';
+import { keysToLowerCase } from './datamodelutils';
+import { idFromUrl } from './resource';
 import { fetchContext as fetchDomain } from './schemabase';
 import { defined, filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
@@ -170,28 +167,27 @@ function requestPreferencesSync(): void {
   }
 }
 
+// TODO: this does not handle the case when prefs were updated by a different tab
 async function syncPreferences(): Promise<void> {
   await preferencesPromise;
   isSyncPending = false;
-  return saveResource(
-    'SpAppResourceData',
-    appResourceData.id,
+  return ping(
+    `/context/user_resource/${defined(
+      idFromUrl(appResourceData.spAppResource)
+    )}/`,
     {
-      ...appResourceData,
-      data: JSON.stringify(preferences),
+      method: 'PUT',
+      body: keysToLowerCase({
+        name: resourceName,
+        mimeType: 'application/json',
+        metaData: '',
+        data: JSON.stringify(preferences),
+      }),
     },
-    (): void =>
-      void fetchResource('SpAppResourceData', appResourceData.id)
-        .then((resource) => updatePreferences(defined(resource)))
-        .catch(crash)
-  ).then(({ version }) => {
-    /*
-     * Can't reassign to appResourceData directly, as it may have already
-     * changed while fetching was in progress
-     */
-    // @ts-expect-error Mutating the resource
-    appResourceData.version = version;
-
+    {
+      expectedResponseCodes: [Http.NO_CONTENT],
+    }
+  ).then(() => {
     // If there were additional changes while syncing
     if (isSyncPending) syncPreferences().catch(crash);
     else {
@@ -243,61 +239,25 @@ export const preferencesPromise = Promise.all([
     ).then(({ records }) =>
       records.length === 1
         ? records[0]
-        : fetchCollection('SpAppResourceDir', {
-            limit: 1,
-            isPersonal: true,
-            collection: schema.domainLevelIds.collection,
-            specifyUser: userInformation.id,
-          })
-            .then(({ records }) =>
-              records.length === 0
-                ? createResource('SpAppResourceDir', {
-                    collection: getResourceApiUrl(
-                      'Collection',
-                      schema.domainLevelIds.collection
-                    ),
-                    discipline: getResourceApiUrl(
-                      'Discipline',
-                      schema.domainLevelIds.discipline
-                    ),
-                    isPersonal: true,
-                    specifyUser: getResourceApiUrl(
-                      'SpecifyUser',
-                      userInformation.id
-                    ),
-                    userType: userInformation.usertype,
-                  }).then(({ id }) => id)
-                : records[0].id
-            )
-            .then(async (appResourceDirId) =>
-              fetchCollection('SpAppResource', {
-                limit: 1,
-                spAppResourceDir: appResourceDirId,
-                specifyUser: userInformation.id,
+        : ajax<{ readonly id: number }>(
+            '/context/user_resource/',
+            {
+              method: 'POST',
+              headers: { Accept: 'application/json' },
+              body: keysToLowerCase({
                 name: resourceName,
-              }).then(({ records }) =>
-                records.length === 0
-                  ? createResource('SpAppResource', {
-                      spAppResourceDir: getResourceApiUrl(
-                        'SpAppResourceDir',
-                        appResourceDirId
-                      ),
-                      specifyUser: userInformation.resource_uri,
-                      name: resourceName,
-                      mimeType: 'application/json',
-                    }).then(({ id }) => id)
-                  : records[0].id
-              )
-            )
-            .then(async (appResourceId) =>
-              createResource('SpAppResourceData', {
-                spAppResource: getResourceApiUrl(
-                  'SpAppResource',
-                  appResourceId
-                ),
+                mimeType: 'application/json',
+                metaData: '',
                 data: '{}',
-              })
-            )
+              }),
+            },
+            { expectedResponseCodes: [Http.CREATED] }
+          ).then(async ({ data: { id } }) =>
+            fetchCollection('SpAppResourceData', {
+              limit: 1,
+              spAppResource: id,
+            }).then(({ records }) => defined(records[0]))
+          )
     )
   )
   .then(updatePreferences);

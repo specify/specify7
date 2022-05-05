@@ -4,6 +4,7 @@
  * This is needed as some .xml files depend on it
  */
 
+import { mappedFind } from './helpers';
 import { load } from './initialcontext';
 import { LANGUAGE } from './localization/utils';
 import { getProperty } from './props';
@@ -32,13 +33,9 @@ export const fetchContext = Promise.all(
   )
 );
 
-export function localize(key: string): string {
-  for (const content of Object.values(bundles)) {
-    const localized = getProperty(content, key);
-    if (typeof localized === 'string') return localized;
-  }
-  return key;
-}
+export const localize = (key: string): string =>
+  mappedFind(Object.values(bundles), (content) => getProperty(content, key)) ??
+  key;
 
 export function localizeFrom(
   from: typeof bundleNames[number] | RA<typeof bundleNames[number]>,

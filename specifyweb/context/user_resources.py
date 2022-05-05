@@ -1,10 +1,9 @@
 import json
-
 from django import http
-from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
+from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.views import View
 
 from specifyweb.specify import models, api
 from specifyweb.specify.views import openapi
@@ -108,7 +107,7 @@ resources = openapi(schema={
         },
         "responses": {
             "201": {
-                "description": "The role was created.",
+                "description": "The user resource was created.",
                 "content": {
                     "application/json": {
                         "schema": {
