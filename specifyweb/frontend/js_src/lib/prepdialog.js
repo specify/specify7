@@ -7,7 +7,6 @@ import {Backbone} from './backbone';
 import {schema} from './schema';
 import {formsText} from './localization/forms';
 import {showDialog} from './components/legacydialog';
-import {localizeFrom} from './stringlocalization';
 
 
 export const PrepDialog = Backbone.View.extend({
@@ -55,9 +54,5 @@ export const PrepDialog = Backbone.View.extend({
         },
 
         //<<<<<<<<<<<<<<<<<<<<<<< events
-
-        getProp: function(key, fallback) {
-            return localizeFrom('resources', key, fallback);
-        }
     });
 

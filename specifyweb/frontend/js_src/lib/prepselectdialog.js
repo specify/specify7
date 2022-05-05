@@ -58,9 +58,9 @@ export const PrepSelectDialog = PrepDialog.extend({
                     <th scope="col">${this.colobjModel.getField('catalognumber').label}</th>
                     <th scope="col">${this.detModel.getField('taxon').label}</th>
                     <th scope="col">${this.prepModel.getField('preptype').label}</th>
-                    <th scope="col">${this.getProp('InteractionsTask.Selected', 'Selected')}</th>
-                    <th scope="col">${this.getProp('InteractionsTask.Available', 'Available')}</th>
-                    <th scope="col">${this.getProp('InteractionsTask.Unavailable', 'Unavailable')}</th>
+                    <th scope="col">${formsText('selected')}</th>
+                    <th scope="col">${formsText('available')}</th>
+                    <th scope="col">${formsText('unavailable')}</th>
                 </tr>
             </thead>`;
         },
@@ -100,10 +100,10 @@ export const PrepSelectDialog = PrepDialog.extend({
                 <Button.Transparent onClick={()=>this.dialog.remove()}>{commonText('cancel')}</Button.Transparent>
                 <Button.Green title={formsText('selectAllAvailablePreparations')}
                               onClick={_.bind(this.selectAll, this)}
-                >{this.getProp('SELECTALL')}</Button.Green>
+                >{formsText('selectAll')}</Button.Green>
                 <Button.Green title={commonText('clearAll')}
                               onClick={_.bind(this.deSelectAll, this)}
-                >{this.getProp('DESELECTALL')}</Button.Green>
+                >{formsText('deselectAll')}</Button.Green>
                 <Button.Green title={this.options.interactionresource ? formsText('addItems') : formsText('createRecord',this.options.action.name)}
                               onClick={_.bind(this.makeInteraction, this)}
                 >{commonText('apply')}</Button.Green>

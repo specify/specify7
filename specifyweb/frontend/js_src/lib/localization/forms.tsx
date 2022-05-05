@@ -944,4 +944,111 @@ export const formsText = createDictionary({
     'es-es': (maxLength: number) =>
       `Field value is too long. Max allowed length is ${maxLength}`,
   },
+  // FIXME: localize
+  returnedPreparations: {
+    'en-us': 'Returned Preparations',
+    'ru-ru': 'Returned Preparations',
+    ca: 'Returned Preparations',
+    'es-es': 'Returned Preparations',
+  },
+  returnedAndSaved: {
+    'en-us': (number: string) =>
+      `${number} preparations have been returned and saved.`,
+    'ru-ru': (number: string) =>
+      `${number} preparations have been returned and saved.`,
+    ca: (number: string) =>
+      `${number} preparations have been returned and saved.`,
+    'es-es': (number: string) =>
+      `${number} preparations have been returned and saved.`,
+  },
+  selectAll: {
+    'en-us': 'Select All',
+    'ru-ru': 'Select All',
+    ca: 'Select All',
+    'es-es': 'Select All',
+  },
+  deselectAll: {
+    'en-us': 'Deselect all',
+    'ru-ru': 'Deselect all',
+    ca: 'Deselect all',
+    'es-es': 'Deselect all',
+  },
+  selected: {
+    'en-us': 'Selected',
+    'ru-ru': 'Selected',
+    ca: 'Selected',
+    'es-es': 'Selected',
+  },
+  available: {
+    'en-us': 'Available',
+    'ru-ru': 'Available',
+    ca: 'Available',
+    'es-es': 'Available',
+  },
+  unavailable: {
+    'en-us': 'Unavailable',
+    'ru-ru': 'Unavailable',
+    ca: 'Unavailable',
+    'es-es': 'Unavailable',
+  },
+  returnLoan: {
+    'en-us': 'Return Loan',
+    'ru-ru': 'Возврат Заема',
+    ca: 'Return Loan',
+    'es-es': 'Return Loan',
+  },
+  printInvoice: {
+    'en-us': 'Print Invoice',
+    'ru-ru': 'Распечатать Накладную',
+    ca: 'Print Invoice',
+    'es-es': 'Print Invoice',
+  },
+  loanWithoutPreparation: {
+    'en-us': 'Loan w/o Preps',
+    'ru-ru': 'Заем без Препаратов',
+    ca: 'Loan w/o Preps',
+    'es-es': 'Loan w/o Preps',
+  },
+  loanWithoutPreparationDescription: {
+    'en-us': 'Create a loan with no preparations',
+    'ru-ru': 'Создать Заем без препаратов',
+    ca: 'Create a loan with no preparations',
+    'es-es': 'Create a loan with no preparations',
+  },
+  createLoan: {
+    'en-us': 'Create a Loan',
+    'ru-ru': 'Создать Заем',
+    ca: 'Create a Loan',
+    'es-es': 'Create a Loan',
+  },
+  editLoan: {
+    'en-us': 'Edit Loan',
+    'ru-ru': 'Редактировать Заем',
+    ca: 'Edit Loan',
+    'es-es': 'Edit Loan',
+  },
+  createdGift: {
+    'en-us': 'Create a Gift',
+    'ru-ru': 'Создать Дар',
+    ca: 'Create a Gift',
+    'es-es': 'Create a Gift',
+  },
+  editGift: {
+    'en-us': 'Edit Gift',
+    'ru-ru': 'Редактировать Дар',
+    ca: 'Edit Gift',
+    'es-es': 'Edit Gift',
+  },
+  createInformationRequest: {
+    'en-us': 'Create Information Request',
+    'ru-ru': 'Создать Экспресс Запрос',
+    ca: 'Create Information Request',
+    'es-es': 'Create Information Request',
+  },
+  printInvoice: {
+    'en-us': 'Print Invoice',
+    'ru-ru': 'Печать Еакладной',
+    ca: 'Print Invoice',
+    'es-es': 'Print Invoice',
+  },
 });

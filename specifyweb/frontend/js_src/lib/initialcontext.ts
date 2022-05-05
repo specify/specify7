@@ -76,8 +76,6 @@ export const initialContext = Promise.all([
   import('./icons'),
   // Fetch general system information (cached)
   import('./systeminfo'),
-  // Fetch schema localization (cached)
-  import('./stringlocalization'),
   // Fetch UI formatters (cached)
   import('./uiformatters'),
   // Fetch user information (NOT CACHED)

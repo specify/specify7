@@ -34,7 +34,6 @@ import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderView } from './reactbackboneextend';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { localize } from '../stringlocalization';
 import { AutoGrowTextArea } from './common';
 
 export function InteractionDialog({
@@ -211,11 +210,11 @@ export function InteractionDialog({
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
-      header={localize('InteractionsTask.LN_RET_TITLE')}
+      header={formsText('returnedPreparations')}
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      {localize('InteractionsTask.RET_LN_SV').replace('%d', state.result)}
+      {formsText('returnedAndSaved', state.result)}
     </Dialog>
   ) : (
     <RecordSetsDialog

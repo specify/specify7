@@ -5,18 +5,17 @@
 
 import { ajax, Http } from './ajax';
 import { f } from './functools';
+import { getAttribute } from './helpers';
 import { cachableUrl } from './initialcontext';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import { parseFormCell, processColumnDefinition } from './parseformcells';
-import { getModel } from './schema';
+import { formatUrl } from './querystring';
+import { getPref } from './remoteprefs';
+import { parseClassName } from './resource';
+import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
-import { formatUrl } from './querystring';
-import { localizeFrom } from './stringlocalization';
-import { getAttribute } from './helpers';
-import { parseClassName } from './resource';
-import { getPref } from './remoteprefs';
 
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
@@ -141,7 +140,7 @@ function postProcessRows(
                     altLabel:
                       model?.name === 'Accession' &&
                       cell.fieldName === 'divisionCBX'
-                        ? localizeFrom(['views', 'global_views'], 'Division')
+                        ? schema.models.Accession.getField('division')?.label
                         : undefined,
                   },
                 ]
@@ -243,7 +242,7 @@ function postProcessRows(
                    * Division ComboBox for some reason
                    */
                   (model?.name === 'Accession' && cell.id === 'divLabel'
-                    ? localizeFrom(['views', 'global_views'], 'Division')
+                    ? schema.models.Accession.getField('division')?.label
                     : undefined) ??
                   (cell.fieldName?.toLowerCase() === 'this'
                     ? undefined

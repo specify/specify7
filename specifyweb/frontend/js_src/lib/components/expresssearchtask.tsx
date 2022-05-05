@@ -5,23 +5,29 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
+import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
+import { formatUrl, parseUrl } from '../querystring';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentView } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
+import { Container, H3 } from './basic';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
 import { createBackboneView } from './reactbackboneextend';
-import { H3 } from './basic';
-import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
-import { formatUrl, parseUrl } from '../querystring';
-import { localizeFrom } from '../stringlocalization';
+import { LANGUAGE } from '../localization/utils';
+import { getProperty } from '../props';
+import { f } from '../functools';
 
-const relatedSearchesPromise = contextUnlockedPromise.then((entrypoint) =>
+const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
+const locale =
+  bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
+
+const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax<RA<string>>(
         '/context/available_related_searches.json',
@@ -79,8 +85,8 @@ function TableResults({
         queryResults.map(({ model, caption, tableResults, ajaxUrl }, index) => (
           <details key={index}>
             <summary
-              className={`link list-item bg-brand-200 dark:bg-brand-500 p-1.5
-        rounded hover:text-white hover:dark:bg-brand-400`}
+              className="link list-item bg-brand-200 dark:bg-brand-500 p-1.5
+                rounded hover:!text-white hover:dark:!bg-brand-400"
             >
               {caption}
             </summary>
@@ -146,22 +152,27 @@ function Results(): JSX.Element {
   const [secondaryResults] = useAsyncState<RA<RawQueryTableResult>>(
     React.useCallback(
       async () =>
-        relatedSearchesPromise
-          .then(async (relatedSearches) =>
-            Promise.all(
-              relatedSearches.map(async (tableName) => {
-                const ajaxUrl = formatUrl('/express_search/related/', {
-                  q: query,
-                  name: tableName,
-                });
-                return ajax<RelatedTableResult>(ajaxUrl, {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  headers: { Accept: 'application/json' },
-                }).then(({ data }) => [ajaxUrl, data] as const);
-              })
-            )
-          )
-          .then((results) =>
+        f
+          .all({
+            results: relatedSearchesPromise.then(async (relatedSearches) =>
+              Promise.all(
+                relatedSearches.map(async (tableName) => {
+                  const ajaxUrl = formatUrl('/express_search/related/', {
+                    q: query,
+                    name: tableName,
+                  });
+                  return ajax<RelatedTableResult>(ajaxUrl, {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    headers: { Accept: 'application/json' },
+                  }).then(({ data }) => [ajaxUrl, data] as const);
+                })
+              )
+            ),
+            captions: ajax(`/properties/expresssearch_${locale}.properties`, {
+              headers: { Accept: 'text/plain' },
+            }).then(({ data }) => data),
+          })
+          .then(({ results, captions }) =>
             results
               .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
@@ -187,10 +198,9 @@ function Results(): JSX.Element {
                 return {
                   model,
                   idFieldIndex,
-                  caption: localizeFrom(
-                    'expresssearch',
-                    tableResult.definition.name
-                  ),
+                  caption:
+                    getProperty(captions, tableResult.definition.name) ??
+                    tableResult.definition.name,
                   tableResults: {
                     results: tableResult.results,
                     fieldSpecs: tableResult.definition.fieldSpecs,
@@ -206,7 +216,7 @@ function Results(): JSX.Element {
   );
 
   return (
-    <div className="gap-y-4 flex flex-col">
+    <Container.Full>
       <TableResults
         header={commonText('primarySearch')}
         queryResults={primaryResults}
@@ -215,7 +225,7 @@ function Results(): JSX.Element {
         header={commonText('secondarySearch')}
         queryResults={secondaryResults}
       />
-    </div>
+    </Container.Full>
   );
 }
 

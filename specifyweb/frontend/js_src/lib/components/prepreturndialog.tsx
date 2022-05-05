@@ -17,15 +17,11 @@ import { Button, Input } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
-import { localizeFrom } from '../stringlocalization';
 
 function formatCatNo(catNo: string): string {
   const field = schema.models.CollectionObject.getLiteralField('catalognumber');
   return typeof field === 'string' ? fieldFormat(field, undefined, catNo) : '';
 }
-
-const localize = <T extends string | undefined>(key: string, fallback?: T): T =>
-  localizeFrom('resources', key, fallback) as T;
 
 const metaDataFormDefinition = f.store(
   (): ViewDescription => ({
@@ -321,7 +317,7 @@ function PreparationReturn({
             }
             title={formsText('returnAllPreparations')}
           >
-            {localize('SELECTALL')}
+            {formsText('selectAll')}
           </Button.Blue>
           <Button.Blue
             onClick={(): void =>
@@ -336,7 +332,7 @@ function PreparationReturn({
             }
             title={commonText('clearAll')}
           >
-            {localize('DESELECTALL')}
+            {formsText('deselectAll')}
           </Button.Blue>
           <Button.Green
             onClick={(): void => {

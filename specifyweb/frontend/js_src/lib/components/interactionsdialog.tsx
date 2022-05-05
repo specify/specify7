@@ -10,13 +10,13 @@ import { getAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { reports } from '../reports';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
-import { localizeFrom } from '../stringlocalization';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
@@ -24,10 +24,10 @@ import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
+import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { deserializeResource } from './resource';
-import { icons } from './icons';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -35,6 +35,19 @@ const supportedActions = [
   'RET_LOAN',
   'PRINT_INVOICE',
 ] as const;
+
+const stringLocalization = {
+  RET_LOAN: formsText('returnLoan'),
+  PRINT_INVOICE: formsText('printInvoice'),
+  LOAN_NO_PRP: formsText('loanWithoutPreparation'),
+  'InteractionsTask.LN_NO_PREP': formsText('loanWithoutPreparationDescription'),
+  'InteractionsTask.NEW_LN': formsText('createLoan'),
+  'InteractionsTask.EDT_LN': formsText('editLoan'),
+  'InteractionsTask.NEW_GFT': formsText('createdGift'),
+  'InteractionsTask.EDT_GFT': formsText('editGift'),
+  'InteractionsTask.CRE_IR': formsText('createInformationRequest'),
+  'InteractionsTask.PRT_INV': formsText('printInvoice'),
+};
 
 export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
@@ -73,8 +86,8 @@ const fetchEntries = f.store(
                             )) ??
                             getModel(getAttribute(entry, 'table') ?? '')?.name
                         ),
-                  label: getAttribute(entry, 'label'),
-                  tooltip: getAttribute(entry, 'tooltip'),
+                  label: getAttribute(entry, 'label') || undefined,
+                  tooltip: getAttribute(entry, 'tooltip') || undefined,
                   icon: getAttribute(entry, 'icon'),
                 } as const)
               : undefined
@@ -179,7 +192,9 @@ function Interactions({
               key={index}
               title={
                 typeof tooltip === 'string'
-                  ? localizeFrom('resources', tooltip)
+                  ? stringLocalization[
+                      tooltip as keyof typeof stringLocalization
+                    ] ?? tooltip
                   : undefined
               }
             >
@@ -207,7 +222,9 @@ function Interactions({
                   <TableIcon name={icon} tableLabel={false} />
                 ))}
                 {typeof label === 'string'
-                  ? localizeFrom('resources', label)
+                  ? stringLocalization[
+                      label as keyof typeof stringLocalization
+                    ] ?? label
                   : typeof table === 'string'
                   ? getModel(table)?.label
                   : action}
