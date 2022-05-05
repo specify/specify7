@@ -332,9 +332,7 @@ export async function fetchAutoMapperSuggestions({
 
   const mappingLineData = getMappingLineData({
     baseTableName,
-    mappingPath: mappingPathIsComplete(localMappingPath)
-      ? localMappingPath
-      : localMappingPath.slice(0, -1),
+    mappingPath: localMappingPath,
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
     generateFieldData: 'all',
