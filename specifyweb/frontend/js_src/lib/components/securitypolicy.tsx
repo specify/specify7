@@ -57,8 +57,10 @@ function PolicyView({
   )(resourceParts);
   const registryParts = registries
     .map((items, index) => ({
-      // Create an entry just in case the policy is unknown to the front-end
-      ...(typeof resourceParts[index] === 'string'
+      ...items,
+      // Create an entry if policy is unknown to the front-end
+      ...(typeof resourceParts[index] === 'string' &&
+      typeof items?.[resourceParts[index]] === 'undefined'
         ? {
             [resourceParts[index]]: {
               actions,
@@ -68,7 +70,6 @@ function PolicyView({
             },
           }
         : {}),
-      ...items,
     }))
     .filter((items) => Object.keys(items ?? {}).length > 0);
   const isUnknownResource = registries.includes(undefined);
@@ -138,7 +139,6 @@ function PolicyView({
         )}
         {Array.isArray(extendedActions) && possibleActions.length > 0 && (
           <li className="contents">
-            {/* Math.min(possibleActions.length, selectMultipleSize) */}
             <Ul
               className={
                 orientation === 'vertical'
@@ -219,7 +219,7 @@ export function PoliciesView({
       listRef.current !== null
     )
       smoothScroll(listRef.current, listRef.current.scrollHeight);
-    policyCountRef.current = policies?.length ?? 0;
+    policyCountRef.current = policies?.length ?? -1;
   }, [policies]);
 
   const [orientation = 'vertical', setOrientation] = useCachedState({

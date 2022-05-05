@@ -227,13 +227,7 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
     ? array.filter((value) => value !== item)
     : [...array, item];
 
-/**
- * Creates a new object with a given key replaced.
- * Unlike object decomposition, this would preserve the order of keys
- *
- * @remarks
- * If targetKey is not present in the object, new key won't be created
- */
+/** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
   object: T,
   targetKey: keyof T,
@@ -241,16 +235,11 @@ export const replaceKey = <T extends IR<unknown>>(
 ): T =>
   object[targetKey] === newValue
     ? object
-    : (Object.fromEntries(
-        Object.entries(object).map(([key, value]) => [
-          key,
-          /*
-           * Convert targetKey to string because Object.entries convers all keys
-           * to a string
-           */
-          key === targetKey.toString() ? newValue : value,
-        ])
-      ) as T);
+    : {
+        // Despite what it looks like, this would preserve the order of keys
+        ...object,
+        [targetKey]: newValue,
+      };
 
 /** Convert an array of objects with IDs into a dictionary */
 export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
