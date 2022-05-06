@@ -148,7 +148,7 @@ export async function format<SCHEMA extends AnySchema>(
       fields: [
         {
           value: undefined,
-          fields: [
+          fields: filterArray([
             resource.specifyModel.literalFields
               .filter(
                 ({ type, overrides }) =>
@@ -163,7 +163,7 @@ export async function format<SCHEMA extends AnySchema>(
                 formatter: '',
                 fieldFormatter: 'true',
               }))[0],
-          ],
+          ]),
         },
       ],
     };
