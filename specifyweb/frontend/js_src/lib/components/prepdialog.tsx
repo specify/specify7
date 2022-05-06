@@ -231,7 +231,7 @@ function Row({
   const unavailableCount = preparation.countAmount - preparation.available;
 
   const available = Math.max(0, preparation.available);
-  const checked = selected === available && selected > 0;
+  const checked = selected !== 0;
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
     | State<'Main'>
