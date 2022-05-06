@@ -698,4 +698,10 @@ export const preferencesText = createDictionary({
     ca: 'Allow autocomple to grow as wide as need',
     'es-es': 'Allow autocomple to grow as wide as need',
   },
+  tableNameInTitle: {
+    'en-us': 'Include table name in the page title',
+    'ru-ru': 'Include table name in the page title',
+    ca: 'Include table name in the page title',
+    'es-es': 'Include table name in the page title',
+  },
 });

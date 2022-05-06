@@ -407,6 +407,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          tableNameInTitle: defineItem<boolean>({
+            title: preferencesText('tableNameInTitle'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,

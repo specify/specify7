@@ -119,15 +119,18 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
+  const [tableNameInTitle] = usePref('form', 'ui', 'tableNameInTitle');
+  const title = `${
+    typeof resource === 'undefined'
+      ? ''
+      : resource.isNew()
+      ? commonText('newResourceTitle', resource.specifyModel.label)
+      : resource.specifyModel.label
+  }${formatted.length > 0 ? `: ${formatted}` : ''}`;
+
   return children({
-    formatted,
-    title: `${
-      typeof resource === 'undefined'
-        ? ''
-        : resource.isNew()
-        ? commonText('newResourceTitle', resource.specifyModel.label)
-        : resource.specifyModel.label
-    }${formatted.length > 0 ? `: ${formatted}` : ''}`,
+    formatted: tableNameInTitle ? title : formatted,
+    title,
     formElement: form,
     formMeta: formMeta[0],
     form: (children, className) =>
