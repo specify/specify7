@@ -12,7 +12,7 @@ import { parseFormCell, processColumnDefinition } from './parseformcells';
 import { formatUrl } from './querystring';
 import { getPref } from './remoteprefs';
 import { parseClassName } from './resource';
-import { getModel, schema } from './schema';
+import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
@@ -138,9 +138,8 @@ function postProcessRows(
                      * Division ComboBox for some reason
                      */
                     altLabel:
-                      model?.name === 'Accession' &&
                       cell.fieldName === 'divisionCBX'
-                        ? schema.models.Accession.getField('division')?.label
+                        ? model?.getField('division')?.label
                         : undefined,
                   },
                 ]
@@ -241,16 +240,12 @@ function postProcessRows(
                    * Default Accession view doesn't have a label for
                    * Division ComboBox for some reason
                    */
-                  (model?.name === 'Accession' && cell.id === 'divLabel'
-                    ? schema.models.Accession.getField('division')?.label
+                  (cell.id === 'divLabel'
+                    ? model.getField('division')?.label
                     : undefined) ??
                   (cell.fieldName?.toLowerCase() === 'this'
                     ? undefined
                     : cell.fieldName) ??
-                  // Use ID as label, if it is not a number
-                  (Number.isNaN(Number.parseInt(cell.id ?? ''))
-                    ? cell.id
-                    : undefined) ??
                   '',
                 title: field?.getLocalizedDesc(),
               }))
