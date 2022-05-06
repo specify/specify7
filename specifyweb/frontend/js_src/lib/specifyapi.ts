@@ -35,7 +35,7 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
           )
         ),
         ...(typeof forceCollection === 'number'
-          ? { forcecollection: forceCollection.toString() }
+          ? { forceCollection: forceCollection.toString() }
           : {}),
       }
     ),

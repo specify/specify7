@@ -741,6 +741,23 @@ export const preferenceDefinitions = {
       },
     },
   },
+  reports: {
+    title: commonText('reports'),
+    subCategories: {
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          clearQueryFilters: defineItem<boolean>({
+            title: preferencesText('clearQueryFilters'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   workBench: {
     title: commonText('workBench'),
     subCategories: {

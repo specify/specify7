@@ -10,12 +10,12 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
-import { reports } from '../reports';
+import { ReportsView } from './reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, Container, DataEntry, Form } from './basic';
 import { AppTitle } from './common';
 import type { FormMeta } from './contexts';
-import { FormContext, LoadingContext } from './contexts';
+import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
@@ -27,6 +27,7 @@ import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
+import { State } from 'typesafe-reducer';
 
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Gift',
@@ -243,7 +244,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const isModified = useIsModified(resource);
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
-  const loading = React.useContext(LoadingContext);
 
   const [fontFamily] = usePref('general', 'ui', 'fontFamily');
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
@@ -260,6 +260,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
     () => container?.style.setProperty('font-size', `${fontSize}%`),
     [container, fontSize]
   );
+  const [state, setState] = React.useState<
+    State<'Main'> | State<'Report', { readonly onDone: () => void }>
+  >({ type: 'Main' });
 
   return isDeleted ? (
     resourceDeletedDialog
@@ -291,17 +294,25 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
               }
               onSaving={handleSaving}
-              onSaved={(payload): void => {
-                if (formMeta.printOnSave === true)
-                  loading(
-                    reports({
-                      tblId: resource.specifyModel.tableId,
-                      recordToPrintId: resource.id,
-                      autoSelectSingle: true,
-                      done: (): void => handleSaved(payload),
-                    }).then((view) => view.render())
-                  );
-                else handleSaved(payload);
+              onSaved={(payload): void =>
+                formMeta.printOnSave === true
+                  ? setState({
+                      type: 'Report',
+                      onDone: () => handleSaved(payload),
+                    })
+                  : handleSaved(payload)
+              }
+            />
+          ) : undefined;
+        const report =
+          state.type === 'Report' && typeof resource === 'object' ? (
+            <ReportsView
+              model={resource.specifyModel}
+              resourceId={resource.id}
+              autoSelectSingle={true}
+              onClose={(): void => {
+                state.onDone();
+                setState({ type: 'Main' });
               }}
             />
           ) : undefined;
@@ -320,6 +331,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         if (dialog === false) {
           const formattedChildren = (
             <>
+              {report}
               {form(children)}
               {typeof deleteButton === 'object' ||
               typeof saveButtonElement === 'object' ||
@@ -349,6 +361,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             </DataEntry.SubForm>
           ) : (
             <Container.FullGray>
+              {report}
               <Container.Center
                 style={{
                   fontFamily:

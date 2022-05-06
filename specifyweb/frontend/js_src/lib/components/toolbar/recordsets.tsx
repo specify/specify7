@@ -1,8 +1,9 @@
 import React from 'react';
+
+import { fetchCollection } from '../../collection';
 import { commonText } from '../../localization/common';
 import { hasToolPermission } from '../../permissions';
 import { getUserPref } from '../../preferencesutils';
-import { schema } from '../../schema';
 import { userInformation } from '../../userinfo';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
@@ -17,22 +18,20 @@ export const menuItem: MenuItem = {
     getUserPref('header', 'menu', 'showRecordSets') &&
     hasToolPermission('recordSets', 'read'),
   view: ({ onClose: handleClose }) => {
-    const recordSets = new schema.models.RecordSet.LazyCollection({
-      filters: {
-        specifyuser: userInformation.id,
-        type: 0,
-        domainfilter: true,
-        orderby: '-timestampcreated',
-      },
-    });
+    const recordSetsPromise = React.useMemo(
+      async () =>
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          limit: 5000,
+          domainFilter: true,
+          orderBy: '-timestampCreated',
+        }),
+      []
+    );
     return (
       <RecordSetsDialog
-        recordSetsPromise={recordSets
-          .fetch({ limit: 5000 })
-          .then(({ models, _totalCount }) => ({
-            recordSets: models,
-            totalCount: _totalCount ?? models.length,
-          }))}
+        recordSetsPromise={recordSetsPromise}
         isReadOnly={false}
         onClose={handleClose}
       />

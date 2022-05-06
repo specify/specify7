@@ -137,7 +137,7 @@ function eventHandlerForToOne(related, field) {
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
             return this.recordsetid == null ? url :
-                formatUrl(url, {recordsetid: this.recordsetid});
+                formatUrl(url, {recordSetId: this.recordsetid});
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
@@ -539,7 +539,7 @@ function eventHandlerForToOne(related, field) {
                 if (!_.isUndefined(resource.recordSetId)) {
                     options.url = formatUrl(
                         options.url || resource.url(),
-                        {recordsetid: resource.recordsetid});
+                        {recordSetId: resource.recordsetid});
                 }
                 break;
             }

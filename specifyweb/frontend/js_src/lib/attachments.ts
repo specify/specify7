@@ -104,7 +104,7 @@ export const fetchThumbnail = async (
               src: formatUrl(settings.read, {
                 coll: settings.collection,
                 type: 'T',
-                filename: attachment.attachmentLocation ?? '',
+                fileName: attachment.attachmentLocation ?? '',
                 scale: scale.toString(),
                 ...(typeof token === 'string' ? { token } : {}),
               }),
@@ -124,8 +124,8 @@ export const formatAttachmentUrl = (
     ? formatUrl(settings.read, {
         coll: settings.collection,
         type: 'O',
-        filename: attachment.attachmentLocation ?? '',
-        downloadname: attachment.origFilename?.replace(/^.*[/\\]/, ''),
+        fileName: attachment.attachmentLocation ?? '',
+        downloadName: attachment.origFilename?.replace(/^.*[/\\]/, ''),
         ...(typeof token === 'string' ? { token } : {}),
       })
     : undefined;
@@ -148,7 +148,7 @@ export const uploadFile = async (
         Partial<{ readonly token: string; readonly attachmentlocation: string }>
       >(
         formatUrl('/attachment_gw/get_upload_params/', {
-          filename: file.name,
+          fileName: file.name,
         }),
         {
           method: 'GET',

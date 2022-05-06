@@ -5,11 +5,15 @@
 import { keysToLowerCase } from './datamodelutils';
 import type { IR } from './types';
 
-export function formatUrl(url: string, parameters: IR<string>): string {
+export function formatUrl(
+  url: string,
+  parameters: IR<string>,
+  toLowerCase = true
+): string {
   const urlObject = new URL(url, window.location.href);
   urlObject.search = new URLSearchParams({
     ...Object.fromEntries(urlObject.searchParams),
-    ...keysToLowerCase(parameters),
+    ...(toLowerCase ? keysToLowerCase(parameters) : parameters),
   }).toString();
   return urlObject.toString();
 }

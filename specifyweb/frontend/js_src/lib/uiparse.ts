@@ -86,7 +86,7 @@ export type Parser = Partial<{
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number'
     ? f.round(value, step).toString()
-    : (value as number).toString();
+    : (value as number)?.toString() ?? '';
 
 type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
 

@@ -8,13 +8,12 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { reports } from '../reports';
 import { toTable } from '../specifymodel';
 import { Button } from './basic';
-import { LoadingContext } from './contexts';
 import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
+import { ReportsView } from './reports';
 import { ShowLoansCommand } from './showtranscommand';
 
 const commandRenderers: {
@@ -26,38 +25,30 @@ const commandRenderers: {
   }) => JSX.Element | null;
 } = {
   GenerateLabel({ id, label, resource }) {
-    const [runReport, setRunReport] = React.useState(false);
-    const loading = React.useContext(LoadingContext);
-
-    React.useEffect(() => {
-      if (!runReport || resource.isNew() || !Boolean(resource.get('id')))
-        return;
-      loading(
-        // TODO: convert to React
-        reports({
-          tblId: resource.specifyModel.tableId,
-          recordToPrintId: resource.get('id'),
-          autoSelectSingle: true,
-        }).then((view: { readonly render: () => void }) => {
-          setRunReport(false);
-          view.render();
-        })
-      );
-    }, [loading, runReport, resource]);
+    const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
     return hasPermission('/report', 'execute') ? (
       <>
-        <Button.Small id={id} onClick={(): void => setRunReport(true)}>
+        <Button.Small id={id} onClick={handleRunReport}>
           {label}
         </Button.Small>
-        {runReport && (resource.isNew() || !Boolean(resource.get('id'))) ? (
-          <Dialog
-            header={label ?? ''}
-            buttons={commonText('close')}
-            onClose={(): void => setRunReport(false)}
-          >
-            {formsText('reportsCanNotBePrintedDialogText')}
-          </Dialog>
+        {runReport ? (
+          resource.isNew() || !Boolean(resource.get('id')) ? (
+            <Dialog
+              header={label ?? ''}
+              buttons={commonText('close')}
+              onClose={handleHideReport}
+            >
+              {formsText('reportsCanNotBePrintedDialogText')}
+            </Dialog>
+          ) : (
+            <ReportsView
+              model={resource.specifyModel}
+              resourceId={resource.get('id')}
+              autoSelectSingle={true}
+              onClose={handleHideReport}
+            />
+          )
         ) : undefined}
       </>
     ) : null;

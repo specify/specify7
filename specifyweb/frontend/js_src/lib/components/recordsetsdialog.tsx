@@ -1,11 +1,14 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { fetchCollection } from '../collection';
 import type { RecordSet } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { getRelatedObjectCount, getResourceViewUrl } from '../resource';
+import { hasToolPermission } from '../permissions';
+import { getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
@@ -13,33 +16,37 @@ import { Button, className, DataEntry, Link } from './basic';
 import { TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState } from './hooks';
+import { icons } from './icons';
 import { formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
+import { goTo } from './navigation';
+import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
-import { hasToolPermission } from '../permissions';
-import { goTo } from './navigation';
-import { icons } from './icons';
 
 function Row({
   recordSet,
   onSelect: handleSelect,
   onEdit: handleEdit,
 }: {
-  readonly recordSet: SpecifyResource<RecordSet>;
+  readonly recordSet: SerializedResource<RecordSet>;
   readonly onSelect?: () => void;
   readonly onEdit?: () => void;
 }): JSX.Element | null {
   const [count] = useAsyncState(
     React.useCallback(
-      async () => getRelatedObjectCount(recordSet, 'recordSetItems'),
+      async () =>
+        fetchCollection('RecordSetItem', {
+          limit: 1,
+          recordSet: recordSet.id,
+        }).then(({ totalCount }) => totalCount),
       [recordSet]
     ),
     false
   );
 
   return (
-    <tr key={recordSet.cid}>
+    <tr key={recordSet.id}>
       <td>
         <Link.Default
           href={`/specify/recordset/${recordSet.id}/`}
@@ -48,7 +55,7 @@ function Row({
               ? className.navigationHandled
               : undefined
           }
-          title={recordSet.get('remarks') ?? undefined}
+          title={recordSet.remarks ?? undefined}
           onClick={
             typeof handleSelect === 'function'
               ? (event): void => {
@@ -58,8 +65,8 @@ function Row({
               : undefined
           }
         >
-          <TableIcon name={getModelById(recordSet.get('dbTableId')).name} />
-          {recordSet.get('name')}
+          <TableIcon name={getModelById(recordSet.dbTableId).name} />
+          {recordSet.name}
         </Link.Default>
       </td>
       <td title={commonText('recordCount')} aria-label={count?.toString()}>
@@ -83,16 +90,19 @@ export function RecordSetsDialog({
 }: {
   readonly recordSetsPromise: Promise<{
     readonly totalCount: number;
-    readonly recordSets: RA<SpecifyResource<RecordSet>>;
+    readonly records: RA<SerializedResource<RecordSet>>;
   }>;
   readonly onClose: () => void;
   readonly isReadOnly: boolean;
-  readonly onSelect?: (recordSet: SpecifyResource<RecordSet>) => void;
+  readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: (props: {
     readonly totalCount: number;
-    readonly recordSets: RA<SpecifyResource<RecordSet>>;
+    readonly records: RA<SerializedResource<RecordSet>>;
     readonly children: JSX.Element;
-    readonly dialog: (children: JSX.Element) => JSX.Element;
+    readonly dialog: (
+      children: JSX.Element,
+      buttons?: JSX.Element
+    ) => JSX.Element;
   }) => JSX.Element;
 }): JSX.Element | null {
   const [data] = useAsyncState(
@@ -125,7 +135,7 @@ export function RecordSetsDialog({
               </tr>
             </thead>
             <tbody>
-              {data.recordSets.map((recordSet) => (
+              {data.records.map((recordSet) => (
                 <Row
                   recordSet={recordSet}
                   onSelect={
@@ -139,13 +149,13 @@ export function RecordSetsDialog({
                       : (): void =>
                           setState({
                             type: 'EditState',
-                            recordSet,
+                            recordSet: deserializeResource(recordSet),
                           })
                   }
-                  key={recordSet.cid}
+                  key={recordSet.id}
                 />
               ))}
-              {data.totalCount !== data.recordSets.length && (
+              {data.totalCount !== data.records.length && (
                 <tr>
                   <td colSpan={3}>{commonText('listTruncated')}</td>
                 </tr>
@@ -153,7 +163,7 @@ export function RecordSetsDialog({
             </tbody>
           </table>
         ),
-        dialog: (children) => (
+        dialog: (children, buttons) => (
           <Dialog
             icon={<span className="text-blue-500">{icons.collection}</span>}
             header={formsText('recordSetsDialogTitle', data.totalCount)}
@@ -168,6 +178,7 @@ export function RecordSetsDialog({
                     {commonText('new')}
                   </Button.Blue>
                 )}
+                {buttons}
               </>
             }
           >

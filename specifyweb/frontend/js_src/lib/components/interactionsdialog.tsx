@@ -8,12 +8,11 @@ import type { Disposal, Gift, Loan, RecordSet, Tables } from '../datamodel';
 import { f } from '../functools';
 import { getAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
-import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
-import { hasTablePermission } from '../permissions';
-import { reports } from '../reports';
+import { hasPermission, hasTablePermission } from '../permissions';
+import { ReportsView } from './reports';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -22,12 +21,11 @@ import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
-import { LoadingContext } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
 import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { deserializeResource } from './resource';
+import { SerializedResource } from '../datamodelutils';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -106,7 +104,6 @@ function Interactions({
   readonly urlParameter: string | undefined;
   readonly entries: RA<InteractionEntry>;
 }): JSX.Element {
-  const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<
@@ -116,59 +113,47 @@ function Interactions({
           readonly actionModel: SpecifyModel<Loan | Disposal | Gift>;
           readonly action: string;
           readonly recordSetsPromise: Promise<{
-            readonly recordSets: RA<SpecifyResource<RecordSet>>;
+            readonly records: RA<SerializedResource<RecordSet>>;
             readonly totalCount: number;
           }>;
         }
       >
+    | State<'ReportsState'>
   >({ type: 'MainState' });
-  const handleAction = React.useCallback(
-    function (
-      action: typeof supportedActions[number],
-      table: keyof Tables
-    ): void {
-      if (action === 'PRINT_INVOICE') {
-        loading(
-          reports({
-            // Assuming loan invoice for now
-            tblId: schema.models.Loan.tableId,
-            // MetaDataFilter:  {prop: 'reporttype', val: 'invoice'},
-            autoSelectSingle: true,
-          }).then((view) => view.render())
-        );
-      } else {
-        const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
-        const model = isRecordSetAction
-          ? schema.models.CollectionObject
-          : schema.models.Loan;
-        setState({
-          type: 'InteractionState',
-          recordSetsPromise: fetchCollection('RecordSet', {
-            specifyUser: userInformation.id,
-            type: 0,
-            dbTableId: model.tableId,
-            domainFilter: true,
-            orderBy: '-timestampCreated',
-            limit: 5000,
-          }).then(({ records, totalCount }) => ({
-            recordSets: records.map(deserializeResource),
-            totalCount,
-          })),
-          table: model.name,
-          actionModel:
-            table.toLowerCase() === 'loan'
-              ? schema.models.Loan
-              : table.toLowerCase() === 'gift'
-              ? schema.models.Gift
-              : table.toLowerCase() === 'gift'
-              ? schema.models.Disposal
-              : error(`Unknown interaction table: ${table}`),
-          action,
-        });
-      }
-    },
-    [loading]
-  );
+  const handleAction = React.useCallback(function (
+    action: typeof supportedActions[number],
+    table: keyof Tables
+  ): void {
+    if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
+    else {
+      const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
+      const model = isRecordSetAction
+        ? schema.models.CollectionObject
+        : schema.models.Loan;
+      setState({
+        type: 'InteractionState',
+        recordSetsPromise: fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          dbTableId: model.tableId,
+          domainFilter: true,
+          orderBy: '-timestampCreated',
+          limit: 5000,
+        }),
+        table: model.name,
+        actionModel:
+          table.toLowerCase() === 'loan'
+            ? schema.models.Loan
+            : table.toLowerCase() === 'gift'
+            ? schema.models.Gift
+            : table.toLowerCase() === 'gift'
+            ? schema.models.Disposal
+            : error(`Unknown interaction table: ${table}`),
+        action,
+      });
+    }
+  },
+  []);
 
   React.useEffect(
     () =>
@@ -194,50 +179,53 @@ function Interactions({
       <Ul>
         {entries
           .filter(({ table }) => hasTablePermission(table, 'create'))
-          .map(({ label, table, action, tooltip, icon }, index) => (
-            <li
-              key={index}
-              title={
-                typeof tooltip === 'string'
-                  ? stringLocalization[
-                      tooltip as keyof typeof stringLocalization
-                    ] ?? tooltip
-                  : undefined
-              }
-            >
-              <Link.Default
-                href={
-                  typeof action === 'string'
-                    ? `/specify/task/interactions/${action}`
-                    : getResourceViewUrl(table)
-                }
-                className={
-                  typeof action === 'string'
-                    ? className.navigationHandled
-                    : undefined
-                }
-                onClick={
-                  typeof action === 'string'
-                    ? (event): void => {
-                        event.preventDefault();
-                        handleAction(action, table);
-                      }
+          .map(({ label, table, action, tooltip, icon }, index) =>
+            action !== 'PRINT_INVOICE' ||
+            hasPermission('/report', 'execute') ? (
+              <li
+                key={index}
+                title={
+                  typeof tooltip === 'string'
+                    ? stringLocalization[
+                        tooltip as keyof typeof stringLocalization
+                      ] ?? tooltip
                     : undefined
                 }
               >
-                {f.maybe(icon ?? table, (icon) => (
-                  <TableIcon name={icon} tableLabel={false} />
-                ))}
-                {typeof label === 'string'
-                  ? stringLocalization[
-                      label as keyof typeof stringLocalization
-                    ] ?? label
-                  : typeof table === 'string'
-                  ? getModel(table)?.label
-                  : action}
-              </Link.Default>
-            </li>
-          ))}
+                <Link.Default
+                  href={
+                    typeof action === 'string'
+                      ? `/specify/task/interactions/${action}`
+                      : getResourceViewUrl(table)
+                  }
+                  className={
+                    typeof action === 'string'
+                      ? className.navigationHandled
+                      : undefined
+                  }
+                  onClick={
+                    typeof action === 'string'
+                      ? (event): void => {
+                          event.preventDefault();
+                          handleAction(action, table);
+                        }
+                      : undefined
+                  }
+                >
+                  {f.maybe(icon ?? table, (icon) => (
+                    <TableIcon name={icon} tableLabel={false} />
+                  ))}
+                  {typeof label === 'string'
+                    ? stringLocalization[
+                        label as keyof typeof stringLocalization
+                      ] ?? label
+                    : typeof table === 'string'
+                    ? getModel(table)?.label
+                    : action}
+                </Link.Default>
+              </li>
+            ) : undefined
+          )}
       </Ul>
     </Dialog>
   ) : state.type === 'InteractionState' ? (
@@ -255,6 +243,13 @@ function Interactions({
       )}
       onClose={handleClose}
       action={{ model: state.actionModel, name: state.action }}
+    />
+  ) : state.type === 'ReportsState' ? (
+    <ReportsView
+      model={schema.models.Loan}
+      autoSelectSingle={true}
+      onClose={handleClose}
+      resourceId={undefined}
     />
   ) : (
     error('Invalid state')

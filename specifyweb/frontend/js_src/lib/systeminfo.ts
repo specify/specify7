@@ -30,16 +30,20 @@ export const fetchContext = load<SystemInfo>(
   systemInfo = data;
   if (systemInfo.stats_url !== null)
     ping(
-      formatUrl(systemInfo.stats_url, {
-        version: systemInfo.version,
-        dbVersion: systemInfo.database_version,
-        institution: systemInfo.institution,
-        institutionGUID: systemInfo.institution_guid,
-        discipline: systemInfo.discipline,
-        collection: systemInfo.collection,
-        collectionGUID: systemInfo.collection_guid,
-        isaNumber: systemInfo.isa_number,
-      }),
+      formatUrl(
+        systemInfo.stats_url,
+        {
+          version: systemInfo.version,
+          dbVersion: systemInfo.database_version,
+          institution: systemInfo.institution,
+          institutionGUID: systemInfo.institution_guid,
+          discipline: systemInfo.discipline,
+          collection: systemInfo.collection,
+          collectionGUID: systemInfo.collection_guid,
+          isaNumber: systemInfo.isa_number,
+        },
+        false
+      ),
       {},
       { strict: false, expectedResponseCodes: [Http.NO_CONTENT] }
     ).catch(console.error);

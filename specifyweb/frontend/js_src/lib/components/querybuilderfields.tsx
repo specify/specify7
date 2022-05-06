@@ -5,9 +5,9 @@ import type { QueryField } from '../querybuilderutils';
 import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Ul } from './basic';
+import { useReadyEffect } from './hooks';
 import { QueryLine } from './querybuilderfield';
 import type { MappingPath } from './wbplanviewmapper';
-import { useReadyEffect } from './hooks';
 
 export function QueryFields({
   baseTableName,
@@ -28,24 +28,28 @@ export function QueryFields({
   readonly fields: RA<QueryField>;
   readonly enforceLengthLimit: boolean;
   readonly onChangeField: (line: number, field: QueryField) => void;
-  readonly onMappingChange: (
-    line: number,
-    payload: {
-      readonly index: number;
-      readonly close: boolean;
-      readonly newValue: string;
-      readonly isRelationship: boolean;
-      readonly parentTableName: keyof Tables | undefined;
-      readonly currentTableName: keyof Tables | undefined;
-      readonly newTableName: keyof Tables | undefined;
-      readonly isDoubleClick: boolean;
-    }
-  ) => void;
-  readonly onRemoveField: (line: number) => void;
-  readonly onOpen: (line: number, index: number) => void;
-  readonly onClose: () => void;
-  readonly onLineFocus: (line: number) => void;
-  readonly onLineMove: (line: number, direction: 'up' | 'down') => void;
+  readonly onMappingChange:
+    | ((
+        line: number,
+        payload: {
+          readonly index: number;
+          readonly close: boolean;
+          readonly newValue: string;
+          readonly isRelationship: boolean;
+          readonly parentTableName: keyof Tables | undefined;
+          readonly currentTableName: keyof Tables | undefined;
+          readonly newTableName: keyof Tables | undefined;
+          readonly isDoubleClick: boolean;
+        }
+      ) => void)
+    | undefined;
+  readonly onRemoveField: ((line: number) => void) | undefined;
+  readonly onOpen: ((line: number, index: number) => void) | undefined;
+  readonly onClose: (() => void) | undefined;
+  readonly onLineFocus: ((line: number) => void) | undefined;
+  readonly onLineMove:
+    | ((line: number, direction: 'up' | 'down') => void)
+    | undefined;
   readonly openedElement?: {
     readonly line: number;
     readonly index?: number;
@@ -81,17 +85,15 @@ export function QueryFields({
           field={field}
           enforceLengthLimit={enforceLengthLimit}
           onChange={(newField): void => handleChangeField(line, newField)}
-          onMappingChange={(payload): void =>
-            handleMappingChange(line, payload)
-          }
-          onRemove={(): void => handleRemoveField(line)}
-          onOpen={handleOpen.bind(undefined, line)}
+          onMappingChange={handleMappingChange?.bind(undefined, line)}
+          onRemove={handleRemoveField?.bind(undefined, line)}
+          onOpen={handleOpen?.bind(undefined, line)}
           onClose={handleClose}
           onLineFocus={(target): void =>
             (target === 'previous' && line === 0) ||
             (target === 'next' && line + 1 >= length)
               ? undefined
-              : handleLineFocus(
+              : handleLineFocus?.(
                   target === 'previous'
                     ? line - 1
                     : target === 'current'
@@ -100,12 +102,14 @@ export function QueryFields({
                 )
           }
           onMoveUp={
-            line === 0 ? undefined : (): void => handleLineMove(line, 'up')
+            line === 0 || typeof handleLineMove === 'undefined'
+              ? undefined
+              : (): void => handleLineMove?.(line, 'up')
           }
           onMoveDown={
-            line + 1 === length
+            line + 1 === length || typeof handleLineMove === 'undefined'
               ? undefined
-              : (): void => handleLineMove(line, 'down')
+              : (): void => handleLineMove?.(line, 'down')
           }
           showHiddenFields={showHiddenFields}
           isFocused={openedElement?.line === line}

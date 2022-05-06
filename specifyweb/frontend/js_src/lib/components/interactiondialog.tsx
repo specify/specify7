@@ -14,7 +14,6 @@ import type {
 } from '../datamodel';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
-import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getResourceViewUrl } from '../resource';
@@ -42,7 +41,7 @@ import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { PrepDialog } from './prepdialog';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { ShowResource } from './resourceview';
+import { SerializedResource } from '../datamodelutils';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -54,7 +53,7 @@ export function InteractionDialog({
 }: {
   readonly recordSetsPromise: Promise<{
     readonly totalCount: number;
-    readonly recordSets: RA<SpecifyResource<RecordSet>>;
+    readonly records: RA<SerializedResource<RecordSet>>;
   }>;
   readonly model: SpecifyModel<Gift | Disposal | CollectionObject | Loan>;
   readonly searchField: LiteralField | undefined;
@@ -111,7 +110,7 @@ export function InteractionDialog({
   const loading = React.useContext(LoadingContext);
 
   function handleProceed(
-    recordSet: SpecifyResource<RecordSet> | undefined
+    recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const items = catalogNumbers.split('\t');
     if (model.name === 'Loan')
@@ -120,7 +119,7 @@ export function InteractionDialog({
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: {
-            recordSetId: recordSet?.get('id') ?? undefined,
+            recordSetId: recordSet?.id ?? undefined,
             loanNumbers: typeof recordSet === 'undefined' ? items : undefined,
           },
         }).then(({ data }) =>
@@ -132,7 +131,7 @@ export function InteractionDialog({
       );
     else if (typeof recordSet === 'object')
       loading(
-        getPrepsAvailableForLoanRs(recordSet.get('id')).then((data) =>
+        getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
           availablePrepsReady(undefined, recordSet, data)
         )
       );
@@ -147,7 +146,7 @@ export function InteractionDialog({
 
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    recordSet: SpecifyResource<RecordSet> | undefined,
+    recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
   ) {
     // This is a really ugly piece of code:
@@ -255,8 +254,6 @@ export function InteractionDialog({
         </div>
       </>
     )
-  ) : state.type === 'ShowResource' ? (
-    <ShowResource resource={state.resource} recordSet={undefined} />
   ) : (
     <RecordSetsDialog
       recordSetsPromise={recordSetsPromise}

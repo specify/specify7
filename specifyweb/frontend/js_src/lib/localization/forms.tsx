@@ -499,12 +499,6 @@ export const formsText = createDictionary({
     ca: 'The selected report has the following problems:',
     'es-es': 'The selected report has the following problems:',
   },
-  badImageExpressions: {
-    'en-us': 'Bad Image Expressions',
-    'ru-ru': 'Плохое выражение изображений',
-    ca: 'Bad Image Expressions',
-    'es-es': 'Bad Image Expressions',
-  },
   missingAttachments: {
     'en-us': 'Missing attachments',
     'ru-ru': 'Отсутствующие вложения',
@@ -1038,5 +1032,17 @@ export const formsText = createDictionary({
     'ru-ru': 'Создать Экспресс Запрос',
     ca: 'Create Information Request',
     'es-es': 'Create Information Request',
+  },
+  missingReportQueryDialogHeader: {
+    'en-us': 'Missing Report Query',
+    'ru-ru': 'Missing Report Query',
+    ca: 'Missing Report Query',
+    'es-es': 'Missing Report Query',
+  },
+  missingReportQueryDialogText: {
+    'en-us': 'This report does not have an associated query',
+    'ru-ru': 'This report does not have an associated query',
+    ca: 'This report does not have an associated query',
+    'es-es': 'This report does not have an associated query',
   },
 });

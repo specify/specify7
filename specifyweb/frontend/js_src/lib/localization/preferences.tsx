@@ -686,4 +686,10 @@ export const preferencesText = createDictionary({
     ca: 'TextAreas grow automatically',
     'es-es': 'TextAreas grow automatically',
   },
+  clearQueryFilters: {
+    'en-us': 'Clear query filters',
+    'ru-ru': 'Clear query filters',
+    ca: 'Clear query filters',
+    'es-es': 'Clear query filters',
+  },
 });

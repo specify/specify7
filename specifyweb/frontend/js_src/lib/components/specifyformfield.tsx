@@ -4,21 +4,21 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
-import { hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import type { IR } from '../types';
 import { defined } from '../types';
 import type { Parser } from '../uiparse';
 import { getValidationAttributes } from '../uiparse';
 import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
+import { AutoGrowTextArea } from './common';
 import { useAsyncState, useResourceValue } from './hooks';
+import { usePref } from './preferenceshooks';
 import { QueryComboBox } from './querycombobox';
 import { getResourceAndField } from './resource';
 import { PrintOnSave, SpecifyFormCheckbox } from './specifyformcheckbox';
 import { UiPlugin } from './specifyformplugin';
 import { UiField } from './uifield';
-import { usePref } from './preferenceshooks';
-import { AutoGrowTextArea } from './common';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -39,13 +39,15 @@ const fieldRenderers: {
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
     return printOnSave ? (
-      <PrintOnSave
-        id={id}
-        fieldName={fieldName}
-        model={resource.specifyModel}
-        text={label}
-        defaultValue={defaultValue}
-      />
+      hasPermission('/report', 'execute') ? (
+        <PrintOnSave
+          id={id}
+          fieldName={fieldName}
+          model={resource.specifyModel}
+          text={label}
+          defaultValue={defaultValue}
+        />
+      ) : null
     ) : (
       <SpecifyFormCheckbox
         id={id}

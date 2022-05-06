@@ -20,7 +20,7 @@ function predictFullName(resource, options) {
                 formatUrl(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
                 {
                   name: resource.get('name'),
-                    treedefitemid: defitem.id
+                    treeDefItemId: defitem.id
                 }),
               {
                headers: {'Accept': 'text/plain'}

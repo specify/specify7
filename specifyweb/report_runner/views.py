@@ -69,7 +69,7 @@ def run(request):
 def get_reports(request):
     "Returns a list of available reports and labels."
     reports = Spappresource.objects.filter(
-        mimetype__startswith="jrxml",
+        mimetype__icontains="jrxml/",
         spappresourcedir__discipline=request.specify_collection.discipline) \
         .filter(
             Q(spappresourcedir__collection=None) |
@@ -86,7 +86,7 @@ def get_reports(request):
 def get_reports_by_tbl(request, tbl_id):
     "Returns a list of availabel reports and labels for the given table <tbl_id>."
     reports = Spappresource.objects.filter(
-        mimetype__startswith="jrxml",
+        mimetype__icontains="jrxml/",
         spappresourcedir__discipline=request.specify_collection.discipline) \
         .filter(
             Q(spappresourcedir__collection=None) |

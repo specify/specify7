@@ -10,22 +10,21 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../datamodel';
-import type { SpecifyResource } from '../legacytypes';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { FormTableCollection } from './formtable';
 import { InteractionDialog } from './interactiondialog';
-import { deserializeResource } from './resource';
 import { Collection, SpecifyModel } from '../specifymodel';
 import { f } from '../functools';
+import { SerializedResource } from '../datamodelutils';
 
 export function FormTableInteraction(
   props: Omit<Parameters<typeof FormTableCollection>[0], 'onAdd'>
 ): JSX.Element {
   const [recordSetsPromise, setRecordSetsPromise] = React.useState<
     | Promise<{
-        readonly recordSets: RA<SpecifyResource<RecordSet>>;
+        readonly records: RA<SerializedResource<RecordSet>>;
         readonly totalCount: number;
       }>
     | undefined
@@ -68,10 +67,7 @@ export function FormTableInteraction(
               orderBy:
                 (props.sortField as '-timestampCreated') ?? '-timestampCreated',
               limit: 5000,
-            }).then(({ records, totalCount }) => ({
-              recordSets: records.map(deserializeResource),
-              totalCount,
-            }))
+            })
           )
         }
       />

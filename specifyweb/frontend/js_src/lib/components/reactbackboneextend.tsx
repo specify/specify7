@@ -12,7 +12,6 @@ import ReactDOM from 'react-dom';
 import { error } from '../assert';
 import type { IR } from '../types';
 import { Contexts } from './contexts';
-import { f } from '../functools';
 
 /**
  * If ReactDOM.render props changed, react documentation recommends
@@ -100,20 +99,3 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
       }
     },
   }[Component.name]);
-
-/**
- * Render a non-react component inside of React
- * Usage is discouraged. Better to just rewrite the component to React
- */
-export function RenderView({
-  getView,
-}: {
-  readonly getView: (element: HTMLElement) => () => void;
-}): JSX.Element {
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(
-    () => f.maybe(containerRef.current ?? undefined, getView),
-    []
-  );
-  return <div ref={containerRef} />;
-}

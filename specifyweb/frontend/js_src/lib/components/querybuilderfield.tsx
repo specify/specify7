@@ -66,19 +66,21 @@ export function QueryLine({
   readonly fieldHash: string;
   readonly enforceLengthLimit?: boolean;
   readonly onChange: (newField: QueryField) => void;
-  readonly onMappingChange: (payload: {
-    readonly index: number;
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly parentTableName: keyof Tables | undefined;
-    readonly currentTableName: keyof Tables | undefined;
-    readonly newTableName: keyof Tables | undefined;
-    readonly isDoubleClick: boolean;
-  }) => void;
+  readonly onMappingChange:
+    | ((payload: {
+        readonly index: number;
+        readonly close: boolean;
+        readonly newValue: string;
+        readonly isRelationship: boolean;
+        readonly parentTableName: keyof Tables | undefined;
+        readonly currentTableName: keyof Tables | undefined;
+        readonly newTableName: keyof Tables | undefined;
+        readonly isDoubleClick: boolean;
+      }) => void)
+    | undefined;
   readonly onRemove?: () => void;
-  readonly onOpen: (index: number) => void;
-  readonly onClose: () => void;
+  readonly onOpen: ((index: number) => void) | undefined;
+  readonly onClose: (() => void) | undefined;
   readonly onLineFocus: (target: 'previous' | 'current' | 'next') => void;
   readonly onMoveUp: (() => void) | undefined;
   readonly onMoveDown: (() => void) | undefined;
@@ -228,18 +230,18 @@ export function QueryLine({
           if ((target as HTMLElement).closest('input, select') !== null) return;
           if (typeof openedElement === 'number') {
             if (key === 'ArrowLeft')
-              if (openedElement > 0) handleOpen(openedElement - 1);
-              else handleClose();
+              if (openedElement > 0) handleOpen?.(openedElement - 1);
+              else handleClose?.();
             else if (key === 'ArrowRight')
               if (openedElement + 1 < mappingLineProps.length)
-                handleOpen(openedElement + 1);
-              else handleClose();
+                handleOpen?.(openedElement + 1);
+              else handleClose?.();
 
             return;
           }
 
-          if (key === 'ArrowLeft') handleOpen(mappingLineProps.length - 1);
-          else if (key === 'ArrowRight' || key === 'Enter') handleOpen(0);
+          if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
+          else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
           else if (key === 'ArrowUp') handleLineFocus('previous');
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
