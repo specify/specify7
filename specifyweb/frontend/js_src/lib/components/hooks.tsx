@@ -462,6 +462,15 @@ export function useResourceValue<
 
       if (typeof parser.type === 'undefined') return;
 
+      /**
+       * If updateValue is called from the onChange event handled and field is
+       * required and field did not have a value when onChange occurred, then
+       * parseValue() is going to report "Value missing" error. This fixes that
+       * issue. See https://github.com/specify/specify7/issues/1427
+       */
+      if (inputRef.current !== null && inputRef.current.value !== newValue)
+        inputRef.current.value = newValue?.toString() ?? inputRef.current.value;
+
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
