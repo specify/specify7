@@ -412,6 +412,7 @@ export function getMappingLineData({
                     (generateFieldData === 'all' ||
                       field.name === internalState.parsedDefaultValue[0]) &&
                     (!field.isRelationship ||
+                      scope === 'queryBuilder' ||
                       typeof parentRelationship === 'undefined' ||
                       (!isCircularRelationship(parentRelationship, field) &&
                         !(
