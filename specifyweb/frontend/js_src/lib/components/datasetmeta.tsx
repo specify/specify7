@@ -274,7 +274,7 @@ function ChangeOwner({
               {
                 method: 'POST',
                 body: formData({
-                  specifyuserid: defined(newOwner).toString(),
+                  specifyuserid: defined(newOwner),
                 }),
               },
               { expectedResponseCodes: [Http.NO_CONTENT] }

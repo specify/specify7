@@ -51,7 +51,7 @@ export function AdminStatusPlugin({
           ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
             method: 'POST',
             body: formData({
-              admin_status: user.isAdmin ? 'false' : 'true',
+              admin_status: user.isAdmin,
             }),
             headers: {
               Accept: 'text/plain',

@@ -211,7 +211,7 @@ function Report({
         fetchCollection('SpReport', {
           limit: 1,
           appResource: appResource.id,
-        }).then(({ records }) => records[0]),
+        }).then(({ records }) => records[0] ?? false),
       [appResource]
     ),
     false
@@ -245,6 +245,15 @@ function Report({
       onClose={handleClose}
     >
       {formsText('missingReportQueryDialogText')}
+    </Dialog>
+  ) : report === false ? (
+    <Dialog
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      header={formsText('missingReportDialogHeader')}
+      buttons={commonText('close')}
+      onClose={handleClose}
+    >
+      {formsText('missingReportDialogText')}
     </Dialog>
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (

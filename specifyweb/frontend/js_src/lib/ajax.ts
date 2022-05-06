@@ -18,9 +18,22 @@ export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 // TODO: add a central place for all API endpoint definitions
 
 // TODO: make all back-end endpoints accept JSON
-export function formData(data: IR<string | Blob>): FormData {
+export function formData(
+  data: IR<string | RA<string | number> | boolean | number | Blob>
+): FormData {
   const formData = new FormData();
-  Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+  Object.entries(data).forEach(([key, value]) =>
+    formData.append(
+      key,
+      Array.isArray(value)
+        ? JSON.stringify(value)
+        : typeof value === 'number'
+        ? value.toString()
+        : typeof value === 'boolean'
+        ? value.toString()
+        : value
+    )
+  );
   return formData;
 }
 

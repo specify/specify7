@@ -112,7 +112,7 @@ export function InteractionDialog({
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
-    const items = catalogNumbers.split('\t');
+    const items = catalogNumbers.split('\n');
     if (model.name === 'Loan')
       loading(
         ajax('/interactions/loan_return_all/', {
@@ -137,7 +137,7 @@ export function InteractionDialog({
       );
     else
       loading(
-        (items.length > 0
+        (items.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds('CatalogNumber', items)
         ).then((data) => availablePrepsReady(items, undefined, data))
@@ -219,41 +219,16 @@ export function InteractionDialog({
     >
       {formsText('returnedAndSaved', state.result)}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' ? (
+  ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
-      <PrepDialog
-        preparations={state.entries}
-        action={action}
-        itemCollection={itemCollection}
-        onClose={handleClose}
-        // TODO: make this readOnly if don't have necessary permissions
-        isReadOnly={false}
-      />
-    ) : (
-      <>
-        {formsText('problemsFound')}
-        {Object.entries(state.problems).map(([header, problems], index) => (
-          <React.Fragment key={index}>
-            <H3>{header}</H3>
-            {problems.map((problem, index) => (
-              <p key={index}>{problem}</p>
-            ))}
-          </React.Fragment>
-        ))}
-        <div>
-          <Button.Blue
-            onClick={(): void =>
-              setState({
-                ...state,
-                problems: {},
-              })
-            }
-          >
-            {commonText('ignore')}
-          </Button.Blue>
-        </div>
-      </>
-    )
+    <PrepDialog
+      preparations={state.entries}
+      action={action}
+      itemCollection={itemCollection}
+      onClose={handleClose}
+      // TODO: make this readOnly if don't have necessary permissions
+      isReadOnly={false}
+    />
   ) : (
     <RecordSetsDialog
       recordSetsPromise={recordSetsPromise}
@@ -318,10 +293,15 @@ export function InteractionDialog({
                     return;
                   }
 
-                  const parsed = (parseResults as RA<ValidParseResult>)
-                    .filter(({ parsed }) => parsed !== null)
-                    .map(({ parsed }) => (parsed as number | string).toString())
-                    .sort(sortFunction(f.id))
+                  const parsed = f
+                    .unique(
+                      (parseResults as RA<ValidParseResult>)
+                        .filter(({ parsed }) => parsed !== null)
+                        .map(({ parsed }) =>
+                          (parsed as number | string).toString()
+                        )
+                        .sort(sortFunction(f.id))
+                    )
                     .join('\n');
                   setCatalogNumbers(parsed);
                 }}
@@ -339,6 +319,34 @@ export function InteractionDialog({
                   {commonText('next')}
                 </Button.Blue>
               </div>
+              {state.type === 'PreparationSelectState' &&
+              Object.keys(state.problems).length !== 0 ? (
+                <>
+                  {formsText('problemsFound')}
+                  {Object.entries(state.problems).map(
+                    ([header, problems], index) => (
+                      <React.Fragment key={index}>
+                        <H3>{header}</H3>
+                        {problems.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </React.Fragment>
+                    )
+                  )}
+                  <div>
+                    <Button.Blue
+                      onClick={(): void =>
+                        setState({
+                          ...state,
+                          problems: {},
+                        })
+                      }
+                    >
+                      {commonText('ignore')}
+                    </Button.Blue>
+                  </div>
+                </>
+              ) : undefined}
             </div>
           </details>
         </Dialog>

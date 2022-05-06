@@ -108,10 +108,10 @@ export const getPrepsAvailableForLoanCoIds = async (
   ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
-    body: {
+    body: formData({
       id_fld: idField,
       co_ids: collectionObjectIds,
-    },
+    }),
   }).then(({ data }) => data);
 
 export const returnAllLoanItems = async (
@@ -123,12 +123,12 @@ export const returnAllLoanItems = async (
   ajax('/interactions/loan_return_all/', {
     method: 'POST',
     headers: { Accept: 'application/json' },
-    body: {
+    body: formData({
       loanIds,
       returnedById,
       returnedDate,
       selection,
-    },
+    }),
   }).then(({ data }) => data);
 
 export const getInteractionsForPrepId = async (prepId: number) =>
@@ -137,7 +137,7 @@ export const getInteractionsForPrepId = async (prepId: number) =>
     {
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: formData({ prepIds: prepId.toString() }),
+      body: formData({ prepIds: prepId }),
     }
   ).then(({ data }) => data[0]);
 

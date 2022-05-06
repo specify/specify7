@@ -1045,4 +1045,16 @@ export const formsText = createDictionary({
     ca: 'This report does not have an associated query',
     'es-es': 'This report does not have an associated query',
   },
+  missingReportDialogHeader: {
+    'en-us': 'Missing report',
+    'ru-ru': 'Missing report',
+    ca: 'Missing report',
+    'es-es': 'Missing report',
+  },
+  missingReportDialogText: {
+    'en-us': 'Unable to find an SpReport record for this App Resource',
+    'ru-ru': 'Unable to find an SpReport record for this App Resource',
+    ca: 'Unable to find an SpReport record for this App Resource',
+    'es-es': 'Unable to find an SpReport record for this App Resource',
+  },
 });

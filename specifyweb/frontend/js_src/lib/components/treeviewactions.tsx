@@ -258,7 +258,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
         body:
           type === 'desynonymize'
             ? undefined
-            : formData({ target: focusedRow.nodeId.toString() }),
+            : formData({ target: focusedRow.nodeId }),
       }
     );
   const isSynonym = typeof focusedRow.acceptedId === 'number';

@@ -563,7 +563,7 @@ function QueryExport({
               {
                 method: 'POST',
                 body: formData({
-                  queryid: queryResource.id.toString(),
+                  queryid: queryResource.id,
                   mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
                   name: name.trim(),
                 }),
