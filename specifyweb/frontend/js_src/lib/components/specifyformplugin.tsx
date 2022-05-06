@@ -114,8 +114,7 @@ const pluginRenderers: {
       );
       return null;
     } else
-      return resource.isNew() ||
-        !hasTablePermission('CollectionRelationship', 'read') ||
+      return !hasTablePermission('CollectionRelationship', 'read') ||
         !hasTablePermission('CollectionRelType', 'read')
         ? null
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (

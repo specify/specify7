@@ -100,21 +100,24 @@ export async function fetchOtherCollectionData(
   const formattedCollection = format(otherCollection);
 
   return {
-    collectionObjects: await fetchCollection(
-      'CollectionRelationship',
-      { limit: DEFAULT_FETCH_LIMIT },
-      side == 'left'
-        ? {
-            leftside_id: resource.id,
-            collectionreltype_id: relationshipType.id,
-          }
-        : {
-            rightside_id: resource.id,
-            collectionreltype_id: relationshipType.id,
-          }
-    ).then(async ({ records }) =>
-      processRelationships(records.map(deserializeResource), otherSide)
-    ),
+    collectionObjects:
+      typeof resource.id === 'number'
+        ? await fetchCollection(
+            'CollectionRelationship',
+            { limit: DEFAULT_FETCH_LIMIT },
+            side == 'left'
+              ? {
+                  leftside_id: resource.id,
+                  collectionreltype_id: relationshipType.id,
+                }
+              : {
+                  rightside_id: resource.id,
+                  collectionreltype_id: relationshipType.id,
+                }
+          ).then(async ({ records }) =>
+            processRelationships(records.map(deserializeResource), otherSide)
+          )
+        : [],
     otherCollection: {
       id: otherCollection.id,
       href: otherCollection.viewUrl(),
