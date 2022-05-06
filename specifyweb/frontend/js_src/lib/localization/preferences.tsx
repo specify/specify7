@@ -692,4 +692,10 @@ export const preferencesText = createDictionary({
     ca: 'Clear query filters',
     'es-es': 'Clear query filters',
   },
+  autoGrowAutoComplete: {
+    'en-us': 'Allow autocomple to grow as wide as need',
+    'ru-ru': 'Allow autocomple to grow as wide as need',
+    ca: 'Allow autocomple to grow as wide as need',
+    'es-es': 'Allow autocomple to grow as wide as need',
+  },
 });

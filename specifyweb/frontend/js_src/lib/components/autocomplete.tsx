@@ -204,6 +204,11 @@ export function Autocomplete<T>({
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
+  const [autoGrowAutoComplete] = usePref(
+    'form',
+    'queryComboBox',
+    'autoGrowAutoComplete'
+  );
   /*
    * Reposition the autocomplete box as needed
    * Not handling resize events as onBlur would close the list box on resize
@@ -221,10 +226,19 @@ export function Autocomplete<T>({
     const { top: parentTop, bottom: parentBottom } =
       scrollableParent.getBoundingClientRect();
 
-    const { left: inputLeft, width: inputWidth } =
-      input.getBoundingClientRect();
+    const {
+      left: inputLeft,
+      width: inputWidth,
+      x: inputStart,
+    } = input.getBoundingClientRect();
     dataListRef.current.style.left = `${inputLeft}px`;
-    dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
+    if (autoGrowAutoComplete) {
+      dataListRef.current.style.maxWidth = `${
+        (document.body.clientWidth - inputStart) * 0.9
+      }px`;
+      dataListRef.current.style.minWidth = `${inputWidth}px`;
+    }
+    else dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
 
     function handleScroll({
       target,
@@ -261,7 +275,7 @@ export function Autocomplete<T>({
     handleScroll({ target: null });
 
     return listen(window, 'scroll', handleScroll, true);
-  }, [showList, input, isInDialog]);
+  }, [showList, input, isInDialog, autoGrowAutoComplete]);
 
   const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');
 

@@ -570,6 +570,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          autoGrowAutoComplete: defineItem<boolean>({
+            title: preferencesText('autoGrowAutoComplete'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
