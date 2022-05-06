@@ -17,7 +17,14 @@ import {userInformation} from './userinfo';
 import {adminText} from './localization/admin';
 import {commonText} from './localization/common';
 import {setTitle} from './components/hooks';
-import {Button, className, Submit} from './components/basic';
+import {
+    Button,
+    className,
+    Form,
+    Input,
+    Label,
+    Submit
+} from './components/basic';
 import {showDialog} from './components/legacydialog';
 import {createBackboneView} from './components/reactbackboneextend';
 import {setCurrentView} from './specifyapp';
@@ -376,31 +383,25 @@ const ResourceList = Backbone.View.extend({
         });
     },
     openNameDialog() {
-        const thisCreateResource = name => this.createResource(name);
-
-        const content = $(`<form id="app-resources-new-resource-form" class="${className.notSubmittedForm}">
-                <label class="${className.label}">
-                    ${adminText('newResourceName')}
-                    <input type="text" spellcheck="on" required>
-                </label>
-            </form>`);
-
+        let name = '';
         const dialog = showDialog({
             title: adminText('createResourceDialogTitle'),
             header: adminText('createResourceDialogHeader'),
-            content,
+            content: <Form id="app-resources-new-resource-form" onSubmit={()=>{
+              this.createResource(name)
+              dialog.remove();
+            }}>
+              <Label.Generic>
+                {adminText('newResourceName')}
+                <Input.Text spellCheck="on" required defaultValue="" onChange={({target})=>name = target.value.trim()} />
+              </Label.Generic>
+            </Form>,
             onClose: ()=>dialog.remove(),
             buttons: <>
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
                 <Submit.Green form="app-resources-new-resource-form">{commonText('create')}</Submit.Green>
             </>,
         });
-
-        content[0]?.addEventListener('submit', (event)=>{
-            event.preventDefault();
-            dialog.remove();
-            thisCreateResource( $('input', this).val() );
-        })
     }
 });
 
