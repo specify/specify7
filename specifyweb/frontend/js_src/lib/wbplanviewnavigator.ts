@@ -108,7 +108,8 @@ function navigator({
 
   const childrenAreToManyElements =
     relationshipIsToMany(parentRelationship) &&
-    !valueIsToManyIndex(parentPartName);
+    !valueIsToManyIndex(parentPartName) &&
+    !valueIsTreeRank(parentPartName);
 
   const childrenAreRanks =
     isTreeModel(model.name) && !valueIsTreeRank(parentPartName);
