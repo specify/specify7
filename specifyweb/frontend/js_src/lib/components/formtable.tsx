@@ -227,7 +227,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                           align={align}
                           resource={resource}
                           mode={viewDefinition.mode}
-                          formType={viewDefinition.formType}
+                          formType="formTable"
                           cellData={cellData}
                           id={cellId}
                           formatId={(suffix: string): string =>

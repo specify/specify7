@@ -78,6 +78,7 @@ const pluginRenderers: {
     resource,
     mode,
     fieldName,
+    formType,
     pluginDefinition: {
       defaultValue,
       dateField,
@@ -101,6 +102,7 @@ const pluginRenderers: {
           defaultPrecision={defaultPrecision}
           precisionField={precisionField}
           dateField={field}
+          canChangePrecision={formType === 'form'}
         />
       );
   },

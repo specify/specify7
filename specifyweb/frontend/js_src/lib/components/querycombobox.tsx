@@ -471,17 +471,15 @@ export function QueryComboBox({
         )}
       </Autocomplete>
       <span className="print:hidden contents">
-        {mode === 'view' ? (
-          formType === 'formTable' ? undefined : (
-            <DataEntry.View
-              aria-pressed={state.type === 'ViewResourceState'}
-              disabled={
-                typeof formatted?.resource === 'undefined' ||
-                typeof collectionRelationships === 'undefined'
-              }
-              onClick={handleOpenRelated}
-            />
-          )
+        {formType === 'formTable' ? undefined : mode === 'view' ? (
+          <DataEntry.View
+            aria-pressed={state.type === 'ViewResourceState'}
+            disabled={
+              typeof formatted?.resource === 'undefined' ||
+              typeof collectionRelationships === 'undefined'
+            }
+            onClick={handleOpenRelated}
+          />
         ) : (
           <>
             <DataEntry.Edit
