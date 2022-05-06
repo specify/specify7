@@ -80,7 +80,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   // Fetch records if needed
   React.useEffect(() => {
-    if (isLazy)
+    if (isLazy && collection.related?.isNew() !== true)
       collection
         .fetch()
         .then(handleLoaded)
@@ -131,7 +131,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         if (
           isLazy &&
           index === collection.models.length - 1 &&
-          !collection.isComplete()
+          !collection.isComplete() &&
+          collection.related?.isNew() !== true
         )
           collection.fetch().catch(crash);
         handleSlide?.(index);

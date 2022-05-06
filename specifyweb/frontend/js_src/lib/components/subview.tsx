@@ -67,18 +67,11 @@ export function SubView({
           const fieldName = sortField.startsWith('-')
             ? sortField.slice(1)
             : sortField;
-          const models = Array.from(collection.models).sort(
+          // @ts-expect-error Overwriting the models on the collection
+          collection.models = Array.from(collection.models).sort(
             sortFunction((resource) => resource.get(fieldName), isReverse)
           );
-          // Collection.prototype.clone does not pass the options, so we can't use it here
-          const newCollection = new collection.constructor(
-            { field: collection.field, related: collection.related },
-            models
-          ) as Collection<AnySchema>;
-          parentResource.settingDefaultValues(() =>
-            parentResource.set(field.name, newCollection as never)
-          );
-          return newCollection;
+          return collection;
         });
       else {
         const resource = await parentResource.rgetPromise(field.name);
