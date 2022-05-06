@@ -371,7 +371,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                     fontFamily === defaultFont ? undefined : fontFamily,
                   fontSize: `${fontSize}%`,
                 }}
-                className="w-full"
+                className="!w-auto"
               >
                 <DataEntry.Header>
                   <AppTitle title={titleOverride ?? formatted} type="form" />
