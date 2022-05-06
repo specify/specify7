@@ -55,7 +55,7 @@ export function SubView({
   const [collection] = useAsyncState(
     React.useCallback(async () => {
       if (resourceUrl === '') return undefined;
-      else if (relationshipIsToMany(field))
+      else if (relationshipIsToMany(field) && field.type !== 'zero-to-one')
         return parentResource.rgetCollection(field.name).then((collection) => {
           if (collection === null)
             return new field.relatedModel.DependentCollection({
