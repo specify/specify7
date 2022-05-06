@@ -330,38 +330,46 @@ export function CollectionView({
             onOpenUser={handleOpenUser}
             onAddUser={(user): void =>
               typeof userRoles === 'object' && typeof state.role.id === 'number'
-                ? loading(
-                    ping(
-                      `/permissions/user_roles/${collection.id}/${user.id}/`,
-                      {
-                        method: 'PUT',
-                        body: [
-                          userRoles
-                            .filter(({ users }) =>
-                              users.some(({ userId }) => userId === user.id)
-                            )
-                            .map(({ roleId }) => roleId),
-                          state.role.id,
-                        ].map((id) => ({ id })),
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    ).then(() =>
-                      setUserRoles(
-                        f.var(
-                          userRoles.findIndex(
-                            ({ roleId }) => roleId === user.id
-                          ),
-                          (roleIndex) =>
-                            replaceItem(userRoles, roleIndex, {
-                              ...userRoles[roleIndex],
-                              users: [
-                                ...userRoles[roleIndex].users,
-                                { userId: user.id, userName: user.get('name') },
-                              ],
-                            })
-                        )
+                ? f.var(
+                    userRoles
+                      .filter(({ users }) =>
+                        users.some(({ userId }) => userId === user.id)
                       )
-                    )
+                      .map(({ roleId }) => roleId),
+                    (currentUserRoles) =>
+                      currentUserRoles.includes(defined(state.role.id))
+                        ? undefined
+                        : loading(
+                            ping(
+                              `/permissions/user_roles/${collection.id}/${user.id}/`,
+                              {
+                                method: 'PUT',
+                                body: [...currentUserRoles, state.role.id].map(
+                                  (id) => ({ id })
+                                ),
+                              },
+                              { expectedResponseCodes: [Http.NO_CONTENT] }
+                            ).then(() =>
+                              setUserRoles(
+                                f.var(
+                                  userRoles.findIndex(
+                                    ({ roleId }) => roleId === state.role.id
+                                  ),
+                                  (roleIndex) =>
+                                    replaceItem(userRoles, roleIndex, {
+                                      ...userRoles[roleIndex],
+                                      users: [
+                                        ...userRoles[roleIndex].users,
+                                        {
+                                          userId: user.id,
+                                          userName: user.get('name'),
+                                        },
+                                      ],
+                                    })
+                                )
+                              )
+                            )
+                          )
                   )
                 : undefined
             }
