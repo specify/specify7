@@ -22,6 +22,7 @@ import { Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';
 import { PartialDateUi } from './partialdateui';
 import { getResourceAndField } from './resource';
+import { SpecifyFormCheckbox } from './specifyformcheckbox';
 
 export function UiField({
   id,
@@ -97,6 +98,19 @@ export function UiField({
       isReadOnly={mode !== 'edit' || data.resource !== resource}
       id={id}
       canChangePrecision={false}
+    />
+  ) : fieldType === 'checkbox' ? (
+    <SpecifyFormCheckbox
+      id={id}
+      resource={data.resource}
+      fieldName={data.field.name}
+      defaultValue={
+        parser.value === true ||
+        // Not sure if this branch can ever happen:
+        parser.value?.toString().toLowerCase() === 'true'
+      }
+      isReadOnly={resource !== data.resource}
+      text={undefined}
     />
   ) : aggregated === false ? (
     <Field
