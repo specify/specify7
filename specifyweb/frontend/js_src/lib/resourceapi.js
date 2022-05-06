@@ -99,7 +99,7 @@ function eventHandlerForToOne(related, field) {
             callback();
             this._ignoreChanges = false;
         },
-        clone() {
+        async clone() {
             var self = this;
             var newResource = Backbone.Model.prototype.clone.call(self);
             delete newResource.id;
@@ -107,27 +107,27 @@ function eventHandlerForToOne(related, field) {
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
-            _.each(self.dependentResources, function(related, fieldName) {
+            await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 var field = self.specifyModel.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one':
                     // many-to-one wouldn't ordinarily be dependent, but
                     // this is the case for paleocontext. really more like
                     // a one-to-one.
-                    newResource.set(fieldName, related && related.clone());
+                    newResource.set(fieldName, await related?.clone());
                     break;
                 case 'one-to-many':
-                    newResource.rget(fieldName).then(function(newCollection) {
-                        related.each(function(resource) { newCollection.add(resource.clone()); });
-                    });
+                    await newResource.rget(fieldName).then((newCollection)=>
+                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone())))
+                    );
                     break;
                 case 'zero-to-one':
-                    newResource.set(fieldName, related && related.clone());
+                    newResource.set(fieldName, await related?.clone());
                     break;
                 default:
                     throw new Error('unhandled relationship type');
                 }
-            });
+            }));
             return newResource;
         },
         url() {

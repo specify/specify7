@@ -114,7 +114,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * This has to be done before saving so that the data we get back isn't copied.
      * Eg. autonumber fields, the id, etc.
      */
-    const newResource = addAnother ? resource.clone() : undefined;
+    const newResource = addAnother ? await resource.clone() : undefined;
     const wasNew = resource.isNew();
 
     // Save process is canceled if false was returned

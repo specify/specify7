@@ -512,10 +512,16 @@ export function QueryComboBox({
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: defined(formatted?.resource).clone(),
-                      })
+                    : loading(
+                        defined(formatted?.resource)
+                          .clone()
+                          .then((resource) =>
+                            setState({
+                              type: 'AddResourceState',
+                              resource,
+                            })
+                          )
+                      )
                 }
               />
             )}

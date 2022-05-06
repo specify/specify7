@@ -135,7 +135,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly populated: boolean;
   viewUrl(): string;
   isNew(): boolean;
-  clone(): SpecifyResource<SCHEMA>;
+  clone(): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): SerializedModel<AnySchema>;
   getRelatedObjectCount(

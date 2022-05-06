@@ -15,7 +15,7 @@ async function doSave(
   name: string,
   isSaveAs: boolean
 ): Promise<number> {
-  const clonedQuery = isSaveAs ? query.clone() : query;
+  const clonedQuery = isSaveAs ? await query.clone() : query;
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
