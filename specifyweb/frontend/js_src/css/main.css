@@ -195,9 +195,9 @@
 
   .icon {
     @apply active:bg-brand-100 dark:active:bg-brand-500
-      disabled:!cursor-not-allowed disabled:text-gray-400
-      disabled:hover:text-gray-400 disabled:dark:text-neutral-600
-      disabled:hover:dark:text-neutral-600;
+      disabled:!cursor-not-allowed disabled:!text-gray-400
+      disabled:hover:!text-gray-400 disabled:dark:!text-neutral-600
+      disabled:hover:dark:!text-neutral-600;
   }
 
   @media print {
