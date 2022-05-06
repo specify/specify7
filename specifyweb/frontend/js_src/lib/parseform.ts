@@ -251,9 +251,6 @@ function postProcessRows(
                   (Number.isNaN(Number.parseInt(cell.id ?? ''))
                     ? cell.id
                     : undefined) ??
-                  (Number.isNaN(Number.parseInt(cell.labelForCellId ?? ''))
-                    ? cell.labelForCellId
-                    : undefined) ??
                   '',
                 title: field?.getLocalizedDesc(),
               }))

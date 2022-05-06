@@ -2278,7 +2278,7 @@ const WBView = Backbone.View.extend({
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, statusData.info.columns);
+      setMetaCallback('isNew', true, statusData.info.columns, resolveColumns);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
