@@ -108,7 +108,10 @@ export function useValidation<T extends Input = HTMLInputElement>(
   // If need access to the underlying inputRef, can use this prop
   readonly inputRef: React.MutableRefObject<T | null>;
   // Can set validation message via this callback
-  readonly setValidation: (message: string | RA<string>) => void;
+  readonly setValidation: (
+    message: string | RA<string>,
+    type?: 'focus' | 'auto' | 'silent'
+  ) => void;
 } {
   const inputRef = React.useRef<T | null>(null);
 
@@ -149,10 +152,10 @@ export function useValidation<T extends Input = HTMLInputElement>(
 
   const setValidation = React.useCallback(function setValidation(
     message: string | RA<string>,
-    forceShow = false
+    type: 'focus' | 'auto' | 'silent' = 'auto'
   ): void {
     const joined = Array.isArray(message) ? message.join('\n') : message;
-    if (validationMessageRef.current === joined && !forceShow) return;
+    if (validationMessageRef.current === joined && type === 'focus') return;
 
     validationMessageRef.current = joined;
     const input = inputRef.current;
@@ -160,7 +163,8 @@ export function useValidation<T extends Input = HTMLInputElement>(
     // Empty string clears validation error
     input.setCustomValidity(joined);
 
-    if (joined !== '' && isInputTouched(input)) input.reportValidity();
+    if (joined !== '' && isInputTouched(input) && type !== 'silent')
+      input.reportValidity();
     else if (isFirstError.current) {
       isFirstError.current = false;
       input.reportValidity();
@@ -175,7 +179,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
     validationRef: React.useCallback(
       (input): void => {
         inputRef.current = input;
-        setValidation(validationMessageRef.current, true);
+        setValidation(validationMessageRef.current, 'focus');
       },
       [setValidation]
     ),
@@ -474,11 +478,22 @@ export function useResourceValue<
           : newValue
       ) as T;
       setValue(storedValue);
-      if (typeof fieldName === 'undefined' || !validate) return;
+      if (typeof fieldName === 'undefined') return;
+      if (!validate) {
+        /*
+         * Don't trigger input change events until blur event, but do save
+         * the pending value in case form submit is triggered using the Enter
+         * key (as onSubmit in that case fires before onBlur)
+         */
+        resource.settingDefaultValues(() =>
+          resource.set(fieldName, storedValue as never)
+        );
+        return;
+      }
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
-        setValidation(blockers.current);
+        setValidation(blockers.current, validate ? 'auto' : 'silent');
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
           resource.set(fieldName, storedValue as never);
         else {
@@ -490,7 +505,7 @@ export function useResourceValue<
             resource.set(fieldName, parsedValue as never);
         }
       } else {
-        setValidation(parseResults.reason);
+        setValidation(parseResults.reason, validate ? 'auto' : 'silent');
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
       }
     },
@@ -515,7 +530,7 @@ export function useResourceValue<
      */
     const parser =
       resource.noValidation === true || typeof field === 'undefined'
-        ? {}
+        ? { type: 'text' as const }
         : typeof defaultParser === 'object'
         ? mergeParsers(resolveParser(field), defaultParser)
         : resolveParser(field);
