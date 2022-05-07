@@ -122,7 +122,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         const value = resource.get(dateField);
         setInputValue(value ?? '');
         setMoment(
-          value === null ? undefined : dayjs(value, databaseDateFormat, true)
+          typeof value === 'undefined' || value === null
+            ? undefined
+            : dayjs(value, databaseDateFormat, true)
         );
       },
       true
