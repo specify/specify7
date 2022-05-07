@@ -12,6 +12,7 @@ import type { SerializedModel } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
+import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Link, Submit } from './basic';
 import { useTitle } from './hooks';
@@ -45,20 +46,6 @@ function ChooseCollection({
     [data.initialValue]
   );
 
-  /*
-   * If there is a remotepref to not ask for collection every time,
-   * submit the form as soon as loaded
-   */
-  const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
-  React.useEffect(
-    () =>
-      !alwaysPrompt && typeof f.parseInt(data.initialValue ?? '') === 'number'
-        ? formRef.current?.submit()
-        : undefined,
-    [alwaysPrompt, data.initialValue]
-  );
-
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
@@ -73,6 +60,29 @@ function ChooseCollection({
       ),
     [data.availableCollections, isReverseSort, sortField]
   );
+
+  /*
+   * If there is a remotepref to not ask for collection every time,
+   * submit the form as soon as loaded
+   */
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
+  React.useEffect(() => {
+    if (typeof f.parseInt(data.initialValue ?? '') === 'undefined') return;
+    else if (alwaysPrompt || availableCollections.length === 1)
+      formRef.current?.submit();
+    else
+      f.maybe(
+        /*
+         * Scroll to selected option automatically (useful if not all collection
+         * fit on the screen at once and there is a scroll bar
+         */
+        formRef.current?.querySelector('input:checked') as
+          | HTMLElement
+          | undefined,
+        scrollIntoView
+      );
+  }, [alwaysPrompt, data.initialValue, availableCollections]);
 
   const hasAccess = availableCollections.length > 0;
   return (

@@ -704,4 +704,40 @@ export const preferencesText = createDictionary({
     ca: 'Include table name in the page title',
     'es-es': 'Include table name in the page title',
   },
+  doubleClickZoom: {
+    'en-us': 'Double click to zoom',
+    'ru-ru': 'Double click to zoom',
+    ca: 'Double click to zoom',
+    'es-es': 'Double click to zoom',
+  },
+  closePopupOnClick: {
+    'en-us': 'Close pop-up on outside click',
+    'ru-ru': 'Close pop-up on outside click',
+    ca: 'Close pop-up on outside click',
+    'es-es': 'Close pop-up on outside click',
+  },
+  animateTransitions: {
+    'en-us': 'Animate transitions',
+    'ru-ru': 'Animate transitions',
+    ca: 'Animate transitions',
+    'es-es': 'Animate transitions',
+  },
+  panInertia: {
+    'en-us': 'Pan intertia',
+    'ru-ru': 'Pan intertia',
+    ca: 'Pan intertia',
+    'es-es': 'Pan intertia',
+  },
+  mouseDrags: {
+    'en-us': 'Mouse drags',
+    'ru-ru': 'Mouse drags',
+    ca: 'Mouse drags',
+    'es-es': 'Mouse drags',
+  },
+  scrollWheelZoom: {
+    'en-us': 'Scroll wheel zoom',
+    'ru-ru': 'Scroll wheel zoom',
+    ca: 'Scroll wheel zoom',
+    'es-es': 'Scroll wheel zoom',
+  },
 });

@@ -28,6 +28,7 @@ import { commonText } from './localization/common';
 import { localityText } from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
+import { getUserPref } from './preferencesutils';
 
 const DEFAULT_ZOOM = 5;
 
@@ -109,10 +110,18 @@ export async function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const map = L.map(container, { maxZoom: 23 }).setView(
-    defaultCenter,
-    defaultZoom
-  );
+  const animate = getUserPref('leaflet', 'behavior', 'animateTransitions');
+  const map = L.map(container, {
+    maxZoom: 23,
+    doubleClickZoom: getUserPref('leaflet', 'behavior', 'doubleClickZoom'),
+    closePopupOnClick: getUserPref('leaflet', 'behavior', 'closePopupOnClick'),
+    zoomAnimation: animate,
+    fadeAnimation: animate,
+    markerZoomAnimation: animate,
+    inertia: getUserPref('leaflet', 'behavior', 'panInertia'),
+    dragging: getUserPref('leaflet', 'behavior', 'mouseDrggs'),
+    scrollWheelZoom: getUserPref('leaflet', 'behavior', 'scrollWheelZoom'),
+  }).setView(defaultCenter, defaultZoom);
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
     tileLayers.overlays

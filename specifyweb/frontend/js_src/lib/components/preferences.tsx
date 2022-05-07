@@ -898,6 +898,58 @@ export const preferenceDefinitions = {
       },
     },
   },
+  leaflet: {
+    title: commonText('geoMap'),
+    subCategories: {
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          doubleClickZoom: defineItem<boolean>({
+            title: preferencesText('doubleClickZoom'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          closePopupOnClick: defineItem<boolean>({
+            title: preferencesText('closePopupOnClick'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          animateTransitions: defineItem<boolean>({
+            title: preferencesText('animateTransitions'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          panInertia: defineItem<boolean>({
+            title: preferencesText('panInertia'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          mouseDrags: defineItem<boolean>({
+            title: preferencesText('mouseDrags'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          scrollWheelZoom: defineItem<boolean>({
+            title: preferencesText('scrollWheelZoom'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   welcomePage: {
     title: preferencesText('welcomePage'),
     subCategories: {
