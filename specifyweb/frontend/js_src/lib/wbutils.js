@@ -821,10 +821,11 @@ export const WBUtils = Backbone.View.extend({
         this.wbview.hot.selectRows(rowNumber);
       },
       onClose: () => {
+        this.geoMapDialog.remove();
         this.geoMapDialog = undefined;
         event.target.ariaPressed = false;
       },
-    });
+    }).render();
   },
   showCoordinateConversion() {
     if (typeof this.wbview.coordinateConverterView !== 'undefined') return;

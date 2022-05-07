@@ -25,6 +25,7 @@ import {
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
+import { toLowerCase } from './helpers';
 
 const addBaseTableName = (
   baseTableName: keyof Tables,
@@ -42,15 +43,15 @@ const matchLocalityPinFields = (
 > =>
   localityPinFields
     .map(({ pathToRelationship, pathsToFields }) => ({
-      pathsToFields,
-      pathToRelationship,
+      pathsToFields: pathsToFields.map((path) => path.map(toLowerCase)),
+      pathToRelationship: pathToRelationship.map(toLowerCase),
       matchedPathsToRelationship: Array.from(
         new Set(
           filterArray(
             splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
               const subArrayPosition = findSubArray(
-                canonicalMappingPath,
-                pathToRelationship
+                canonicalMappingPath.map(toLowerCase),
+                pathToRelationship.map(toLowerCase)
               );
               return subArrayPosition === -1
                 ? undefined
@@ -172,12 +173,22 @@ const addCanonicalMappingPaths = (
     canonicalMappingPath: getCanonicalMappingPath(mappingPath),
   }));
 
+const convertToLowerCase = (
+  splitMappingPaths: RA<SplitMappingPath>
+): RA<SplitMappingPath> =>
+  splitMappingPaths.map(({ mappingPath, ...rest }) => ({
+    ...rest,
+    mappingPath: mappingPath.map(toLowerCase),
+  }));
+
 export const findLocalityColumnsInDataSet = (
   baseTableName: keyof Tables,
   splitMappingPaths: RA<SplitMappingPath>
 ): RA<IR<string>> =>
   findLocalityColumns(
-    addCanonicalMappingPaths(addBaseTableName(baseTableName, splitMappingPaths))
+    addCanonicalMappingPaths(
+      convertToLowerCase(addBaseTableName(baseTableName, splitMappingPaths))
+    )
   );
 
 export const getLocalitiesDataFromSpreadsheet = (

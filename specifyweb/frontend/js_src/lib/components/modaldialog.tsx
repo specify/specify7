@@ -82,8 +82,8 @@ const supportsBackdropBlur = CSS.supports(
  * reuse the same <Dialog> instance. This means, if content was scrolled down,
  * new dialog, with a different content would already be scrolled down.
  * Possible solution would be to set container.scrollTop=0 on header change,
- * though, that may introduce issues in other places, where same dialog may
- * change its header
+ * though, that may introduce issues in other places, as same dialogs change
+ * header durring lifecycle (ResourceView)
  */
 export function Dialog({
   /*

@@ -59,7 +59,10 @@ export function LeafletMap({
       onResize={handleResize}
       onClose={handleClose}
     >
-      <div ref={setContainer} />
+      <div
+        ref={setContainer}
+        style={{ '--transition-duration': 0 } as React.CSSProperties}
+      />
     </Dialog>
   );
 }

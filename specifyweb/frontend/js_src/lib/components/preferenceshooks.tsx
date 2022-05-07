@@ -128,7 +128,7 @@ export function SetCssVariables(): null {
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--transitionDuration',
+        '--transition-duration',
         `${transitionDuration / MILLISECONDS}s`
       ),
     [transitionDuration]

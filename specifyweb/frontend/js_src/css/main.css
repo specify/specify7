@@ -15,7 +15,7 @@
   }
 
   * {
-    @apply transition duration-[var(--transitionDuration)] ease-in-out
+    @apply transition duration-[var(--transition-duration)] ease-in-out
       dark:!shadow-none placeholder-gray-400 !ring-inset;
   }
 
