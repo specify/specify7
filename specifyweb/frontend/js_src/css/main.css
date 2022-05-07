@@ -44,7 +44,7 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply dark:focus:ring-1;
+    @apply focus:ring-2 dark:focus:ring-1;
   }
 
   /**

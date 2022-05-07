@@ -488,25 +488,23 @@ export const adminText = createDictionary({
     ca: 'There must be at least one Institution Admin in institution',
     'es-es': 'There must be at least one Institution Admin in institution',
   },
-  // FIXME: localize
   resourceValidationFailed: {
     'en-us':
       'The following errors occurred during validation of this resource:',
-    'ru-ru':
-      'The following errors occurred during validation of this resource:',
+    'ru-ru': 'Во время проверки этого ресурса произошли следующие ошибки:',
     ca: 'The following errors occurred during validation of this resource:',
     'es-es':
       'The following errors occurred during validation of this resource:',
   },
   switchToHorizontalLayout: {
     'en-us': 'Switch to horizontal layout',
-    'ru-ru': 'Switch to horizontal layout',
+    'ru-ru': 'Переключиться на горизонтальную раскладку',
     ca: 'Switch to horizontal layout',
     'es-es': 'Switch to horizontal layout',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
-    'ru-ru': 'Switch to vertical layout',
+    'ru-ru': 'Переключиться на вертикальную компоновку',
     ca: 'Switch to vertical layout',
     'es-es': 'Switch to vertical layout',
   },

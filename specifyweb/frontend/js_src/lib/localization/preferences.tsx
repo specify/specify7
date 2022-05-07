@@ -5,6 +5,8 @@
  */
 
 import { createDictionary } from './utils';
+import { Key } from '../components/basic';
+import React from 'react';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -523,220 +525,292 @@ export const preferencesText = createDictionary({
     ca: "You don't have permission to change this option",
     'es-es': "You don't have permission to change this option",
   },
-  // FIXME: localize
   stickyScrolling: {
     'en-us': 'Sticky scroll bar',
-    'ru-ru': 'Sticky scroll bar',
+    'ru-ru': 'Липкая полоса прокрутки',
     ca: 'Sticky scroll bar',
     'es-es': 'Sticky scroll bar',
   },
   foreground: {
     'en-us': 'Foreground',
-    'ru-ru': 'Foreground',
+    'ru-ru': 'Передний план',
     ca: 'Foreground',
     'es-es': 'Foreground',
   },
   background: {
     'en-us': 'Background',
-    'ru-ru': 'Background',
+    'ru-ru': 'Задний план',
     ca: 'Background',
     'es-es': 'Background',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
-    'ru-ru': 'Foreground (dark theme)',
+    'ru-ru': 'Передний план (темная тема)',
     ca: 'Foreground (dark theme)',
     'es-es': 'Foreground (dark theme)',
   },
   darkBackground: {
     'en-us': 'Background (dark theme)',
-    'ru-ru': 'Background (dark theme)',
+    'ru-ru': 'Задний план (темная тема)',
     ca: 'Background (dark theme)',
     'es-es': 'Background (dark theme)',
   },
   accentColor1: {
     'en-us': 'Accent color 1',
-    'ru-ru': 'Accent color 1',
+    'ru-ru': 'Акцентный цвет 1',
     ca: 'Accent color 1',
     'es-es': 'Accent color 1',
   },
   accentColor2: {
     'en-us': 'Accent color 2',
-    'ru-ru': 'Accent color 2',
+    'ru-ru': 'Акцентный цвет 2',
     ca: 'Accent color 2',
     'es-es': 'Accent color 2',
   },
   accentColor3: {
     'en-us': 'Accent color 3',
-    'ru-ru': 'Accent color 3',
+    'ru-ru': 'Акцентный цвет 3',
     ca: 'Accent color 3',
     'es-es': 'Accent color 3',
   },
   accentColor4: {
     'en-us': 'Accent color 4',
-    'ru-ru': 'Accent color 4',
+    'ru-ru': 'Акцентный цвет 4',
     ca: 'Accent color 4',
     'es-es': 'Accent color 5',
   },
   accentColor5: {
     'en-us': 'Accent color 5',
-    'ru-ru': 'Accent color 5',
+    'ru-ru': 'Акцентный цвет 5',
     ca: 'Accent color 5',
     'es-es': 'Accent color 5',
   },
   spreadsheet: {
     'en-us': 'Spreadsheet',
-    'ru-ru': 'Spreadsheet',
+    'ru-ru': 'Таблица',
     ca: 'Spreadsheet',
     'es-es': 'Spreadsheet',
   },
   minSpareRows: {
     'en-us': 'Number of blank rows at the bottom',
-    'ru-ru': 'Number of blank rows at the bottom',
+    'ru-ru': 'Количество пустых строк внизу',
     ca: 'Number of blank rows at the bottom',
     'es-es': 'Number of blank rows at the bottom',
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reached the edge column',
-    'ru-ru': 'Navigate to the other side when reached the edge column',
+    'ru-ru': 'Перейты на другую сторону, когда достигнете краевого столбца.',
     ca: 'Navigate to the other side when reached the edge column',
     'es-es': 'Navigate to the other side when reached the edge column',
   },
   autoWrapRows: {
     'en-us': 'Navigate to the other side when reached the edge row',
-    'ru-ru': 'Navigate to the other side when reached the edge row',
+    'ru-ru': 'Перейты на другую сторону, когда достигнете краевого ряда',
     ca: 'Navigate to the other side when reached the edge row',
     'es-es': 'Navigate to the other side when reached the edge row',
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',
-    'ru-ru': 'Enter key begins editing cell',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
     ca: 'Enter key begins editing cell',
     'es-es': 'Enter key begins editing cell',
   },
   tabMoveDirection: {
-    'en-us': 'Direction of movement when Tab key is pressed',
-    'ru-ru': 'Direction of movement when Tab key is pressed',
-    ca: 'Direction of movement when Tab key is pressed',
-    'es-es': 'Direction of movement when Tab key is pressed',
+    'en-us': (
+      <span>
+        Direction of movement when <Key>Tab</Key> key is pressed
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Направление движения при нажатии клавиши <Key>Tab</Key>
+      </span>
+    ),
+    ca: (
+      <span>
+        Direction of movement when <Key>Tab</Key> key is pressed
+      </span>
+    ),
+    'es-es': (
+      <span>
+        Direction of movement when <Key>Tab</Key> key is pressed
+      </span>
+    ),
   },
   tabMoveDirectionDescription: {
-    'en-us': 'You can move in the opposite direction by pressing Shift+Tab',
-    'ru-ru': 'You can move in the opposite direction by pressing Shift+Tab',
-    ca: 'You can move in the opposite direction by pressing Shift+Tab',
-    'es-es': 'You can move in the opposite direction by pressing Shift+Tab',
+    'en-us': (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Tab</Key>
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Вы можете двигаться в противоположном направлении, нажав{' '}
+        <Key>Shift</Key>+<Key>Tab</Key>
+      </span>
+    ),
+    ca: (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Tab</Key>
+      </span>
+    ),
+    'es-es': (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Tab</Key>
+      </span>
+    ),
   },
   column: {
     'en-us': 'Column',
-    'ru-ru': 'Column',
+    'ru-ru': 'Столбец',
     ca: 'Column',
     'es-es': 'Column',
   },
   row: {
     'en-us': 'Row',
-    'ru-ru': 'Row',
+    'ru-ru': 'Ряд',
     ca: 'Row',
     'es-es': 'Row',
   },
   enterMoveDirection: {
-    'en-us': 'Direction of movement when Enter key is pressed',
-    'ru-ru': 'Direction of movement when Enter key is pressed',
-    ca: 'Direction of movement when Enter key is pressed',
-    'es-es': 'Direction of movement when Enter key is pressed',
+    'en-us': (
+      <span>
+        Direction of movement when <Key>Enter</Key> key is pressed
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Направление движения при нажатии клавиши <Key>Enter</Key>
+      </span>
+    ),
+    ca: (
+      <span>
+        Direction of movement when <Key>Enter</Key> key is pressed
+      </span>
+    ),
+    'es-es': (
+      <span>
+        Direction of movement when <Key>Enter</Key> key is pressed
+      </span>
+    ),
   },
   enterMoveDirectionDescription: {
-    'en-us': 'You can move in the opposite direction by pressing Shift+Enter',
-    'ru-ru': 'You can move in the opposite direction by pressing Shift+Enter',
-    ca: 'You can move in the opposite direction by pressing Shift+Enter',
-    'es-es': 'You can move in the opposite direction by pressing Shift+Enter',
+    'en-us': (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Enter</Key>
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Вы можете двигаться в противоположном направлении, нажав{' '}
+        <Key>Shift</Key>+<Key>Enter</Key>
+      </span>
+    ),
+    ca: (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Enter</Key>
+      </span>
+    ),
+    'es-es': (
+      <span>
+        You can move in the opposite direction by pressing <Key>Shift</Key>+
+        <Key>Enter</Key>
+      </span>
+    ),
   },
   filterPickLists: {
     'en-us': 'Filter pick list items',
-    'ru-ru': 'Filter pick list items',
+    'ru-ru': 'Отфильтровать элементы списка выбора',
     ca: 'Filter pick list items',
     'es-es': 'Filter pick list items',
   },
   caseSensitive: {
     'en-us': 'Case-sensitive',
-    'ru-ru': 'Case-sensitive',
+    'ru-ru': 'С учетом регистра',
     ca: 'Case-sensitive',
     'es-es': 'Case-sensitive',
   },
   caseInsensitive: {
     'en-us': 'Case-insensitive',
-    'ru-ru': 'Case-insensitive',
+    'ru-ru': 'Без учета регистра',
     ca: 'Case-insensitive',
     'es-es': 'Case-insensitive',
   },
   showNoReadTables: {
     'en-us': 'Show tables without "Read" access',
-    'ru-ru': 'Show tables without "Read" access',
+    'ru-ru': 'Показать таблицы без доступа «Чтение»',
     ca: 'Show tables without "Read" access',
     'es-es': 'Show tables without "Read" access',
   },
   showNoAccessTables: {
     'en-us': 'Show tables without "Create" access',
-    'ru-ru': 'Show tables without "Create" access',
+    'ru-ru': 'Показать таблицы без доступа «Создать»',
     ca: 'Show tables without "Create" access',
     'es-es': 'Show tables without "Create" access',
   },
   textAreaAutoGrow: {
-    'en-us': 'TextAreas grow automatically',
-    'ru-ru': 'TextAreas grow automatically',
-    ca: 'TextAreas grow automatically',
-    'es-es': 'TextAreas grow automatically',
+    'en-us': 'Text boxes grow automatically',
+    'ru-ru': 'Текстовое поле увеличивается автоматически',
+    ca: 'Text boxes grow automatically',
+    'es-es': 'Text boxes grow automatically',
   },
   clearQueryFilters: {
-    'en-us': 'Clear query filters',
-    'ru-ru': 'Clear query filters',
-    ca: 'Clear query filters',
-    'es-es': 'Clear query filters',
+    'en-us': 'Reset query filters',
+    'ru-ru': 'Очистить фильтры запросов',
+    ca: 'Reset query filters',
+    'es-es': 'Reset query filters',
   },
   autoGrowAutoComplete: {
-    'en-us': 'Allow autocomple to grow as wide as need',
-    'ru-ru': 'Allow autocomple to grow as wide as need',
-    ca: 'Allow autocomple to grow as wide as need',
-    'es-es': 'Allow autocomple to grow as wide as need',
+    'en-us': 'Allow autocomplete to grow as wide as need',
+    'ru-ru':
+      'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
+    ca: 'Allow autocomplete to grow as wide as need',
+    'es-es': 'Allow autocomplete to grow as wide as need',
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the page title',
-    'ru-ru': 'Include table name in the page title',
+    'ru-ru': 'Включить название таблицы в заголовок страницы',
     ca: 'Include table name in the page title',
     'es-es': 'Include table name in the page title',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Double click to zoom',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить',
     ca: 'Double click to zoom',
     'es-es': 'Double click to zoom',
   },
   closePopupOnClick: {
     'en-us': 'Close pop-up on outside click',
-    'ru-ru': 'Close pop-up on outside click',
+    'ru-ru': 'Закрыть всплывающее окно по внешнему клику',
     ca: 'Close pop-up on outside click',
     'es-es': 'Close pop-up on outside click',
   },
   animateTransitions: {
     'en-us': 'Animate transitions',
-    'ru-ru': 'Animate transitions',
+    'ru-ru': 'Анимация переходов',
     ca: 'Animate transitions',
     'es-es': 'Animate transitions',
   },
   panInertia: {
-    'en-us': 'Pan intertia',
-    'ru-ru': 'Pan intertia',
-    ca: 'Pan intertia',
-    'es-es': 'Pan intertia',
+    'en-us': 'Pan inertia',
+    'ru-ru': 'Инерция панорамирования',
+    ca: 'Pan inertia',
+    'es-es': 'Pan inertia',
   },
   mouseDrags: {
     'en-us': 'Mouse drags',
-    'ru-ru': 'Mouse drags',
+    'ru-ru': 'Мышь может двигать карту',
     ca: 'Mouse drags',
     'es-es': 'Mouse drags',
   },
   scrollWheelZoom: {
     'en-us': 'Scroll wheel zoom',
-    'ru-ru': 'Scroll wheel zoom',
+    'ru-ru': 'Колесо прокрутки может масштабировать',
     ca: 'Scroll wheel zoom',
     'es-es': 'Scroll wheel zoom',
   },

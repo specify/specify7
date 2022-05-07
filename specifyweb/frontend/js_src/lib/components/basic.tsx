@@ -803,3 +803,9 @@ export const Summary = wrap<
         }
       : undefined,
 }));
+
+export const Key = wrap(
+  'Key',
+  'kbd',
+  'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm p-0.5'
+);

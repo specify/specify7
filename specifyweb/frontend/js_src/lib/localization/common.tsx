@@ -1806,31 +1806,33 @@ export const commonText = createDictionary({
     ca: 'Forms',
     'es-es': 'Forms',
   },
-  // FIXME: localize
   permissionDeniedError: {
     'en-us': 'Permission denied error',
-    'ru-ru': 'Permission denied error',
+    'ru-ru': 'В доступе отказано',
     ca: 'Permission denied error',
     'es-es': 'Permission denied error',
   },
   modified: {
     'en-us': 'Modified',
-    'ru-ru': 'Modified',
+    'ru-ru': 'Изменено',
     ca: 'Created',
     'es-es': 'Modified',
   },
   permissionDeniedDialogText: {
-    'en-us':
-      "You don't have any policy or role that gives you permission to do the following action:",
-    'ru-ru':
-      "You don't have any policy or role that gives you permission to do the following action:",
-    ca: "You don't have any policy or role that gives you permission to do the following action:",
-    'es-es':
-      "You don't have any policy or role that gives you permission to do the following action:",
+    'en-us': `You don't have any policy or role that gives you permission to do
+      the following action:`,
+    'ru-ru': `У вас нет политики или роли, которая дает вам разрешение на
+      выполнение следующих действий:`,
+    ca: `You don't have any policy or role that gives you permission to do the
+      following action:`,
+    'es-es': `You don't have any policy or role that gives you permission to do
+      the following action:`,
   },
   permissionDeniedDialogSecondText: {
     'en-us': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
-    'ru-ru': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
+    'ru-ru': (url: JSX.Element) => (
+      <>Разрешение не было дано при доступе {url}</>
+    ),
     ca: (url: JSX.Element) => <>Permission denied when accessing {url}</>,
     'es-es': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
   },

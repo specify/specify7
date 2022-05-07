@@ -938,18 +938,16 @@ export const formsText = createDictionary({
     'es-es': (maxLength: number) =>
       `Field value is too long. Max allowed length is ${maxLength}`,
   },
-  // FIXME: localize
   returnedPreparations: {
     'en-us': 'Returned Preparations',
-    'ru-ru': 'Returned Preparations',
+    'ru-ru': 'Возвращенные препараты',
     ca: 'Returned Preparations',
     'es-es': 'Returned Preparations',
   },
   returnedAndSaved: {
     'en-us': (number: string) =>
       `${number} preparations have been returned and saved.`,
-    'ru-ru': (number: string) =>
-      `${number} preparations have been returned and saved.`,
+    'ru-ru': (number: string) => `${number} препарата возвращены и сохранены.`,
     ca: (number: string) =>
       `${number} preparations have been returned and saved.`,
     'es-es': (number: string) =>
@@ -957,25 +955,25 @@ export const formsText = createDictionary({
   },
   deselectAll: {
     'en-us': 'Deselect all',
-    'ru-ru': 'Deselect all',
+    'ru-ru': 'Отменить выбор',
     ca: 'Deselect all',
     'es-es': 'Deselect all',
   },
   selected: {
     'en-us': 'Selected',
-    'ru-ru': 'Selected',
+    'ru-ru': 'Выбрано',
     ca: 'Selected',
     'es-es': 'Selected',
   },
   available: {
     'en-us': 'Available',
-    'ru-ru': 'Available',
+    'ru-ru': 'В наличии',
     ca: 'Available',
     'es-es': 'Available',
   },
   unavailable: {
     'en-us': 'Unavailable',
-    'ru-ru': 'Unavailable',
+    'ru-ru': 'Недоступен',
     ca: 'Unavailable',
     'es-es': 'Unavailable',
   },
@@ -1035,25 +1033,25 @@ export const formsText = createDictionary({
   },
   missingReportQueryDialogHeader: {
     'en-us': 'Missing Report Query',
-    'ru-ru': 'Missing Report Query',
+    'ru-ru': 'Отсутствует запрос отчета',
     ca: 'Missing Report Query',
     'es-es': 'Missing Report Query',
   },
   missingReportQueryDialogText: {
     'en-us': 'This report does not have an associated query',
-    'ru-ru': 'This report does not have an associated query',
+    'ru-ru': 'Этот отчет не имеет связанного запроса',
     ca: 'This report does not have an associated query',
     'es-es': 'This report does not have an associated query',
   },
   missingReportDialogHeader: {
     'en-us': 'Missing report',
-    'ru-ru': 'Missing report',
+    'ru-ru': 'Отсутствует отчет',
     ca: 'Missing report',
     'es-es': 'Missing report',
   },
   missingReportDialogText: {
     'en-us': 'Unable to find an SpReport record for this App Resource',
-    'ru-ru': 'Unable to find an SpReport record for this App Resource',
+    'ru-ru': 'Не удалось найти запись SpReport для этого ресурса приложения',
     ca: 'Unable to find an SpReport record for this App Resource',
     'es-es': 'Unable to find an SpReport record for this App Resource',
   },

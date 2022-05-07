@@ -92,7 +92,7 @@ function Preferences({
           {/* TODO: highlight link that corresponds to current section */}
           <aside
             className={`min-w-fit sticky top-0 flex flex-col flex-1 divide-y-4
-             divide-[var(--form-background)]`}
+             divide-[color:var(--form-background)]`}
           >
             {definitions.map(([category, { title }]) => (
               <Link.Gray href={`#${id(category)}`} key={category}>
