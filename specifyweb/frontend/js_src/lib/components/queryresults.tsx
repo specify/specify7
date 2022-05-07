@@ -105,7 +105,7 @@ function QueryResultCell({
       role="cell"
       className={`${cellClassName} ${
         value === null ? 'text-gray-700 dark:text-neutral-500' : ''
-      }`}
+      } ${typeof value === 'number' ? 'tabular-nums justify-end' : ''}`}
       title={
         typeof value === 'string' && value !== formatted ? value : undefined
       }

@@ -35,7 +35,7 @@ function ReasonExplanation({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="grid-table grid-cols-[repeat(3,auto)] border border-gray-500"
+        className="grid-table grid-cols-3 border border-gray-500"
         role="table"
       >
         <div role="row">
@@ -81,7 +81,7 @@ function ReasonExplanation({
         </div>
       </div>
       <div
-        className="grid-table grid-cols-[repeat(4,auto)] border border-gray-500 w-full"
+        className="grid-table w-full grid-cols-4 border border-gray-500"
         role="table"
       >
         <div role="row">

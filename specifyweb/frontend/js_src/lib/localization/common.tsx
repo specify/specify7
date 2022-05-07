@@ -1831,4 +1831,10 @@ export const commonText = createDictionary({
     ca: 'Permission denied error',
     'es-es': 'Permission denied error',
   },
+  modified: {
+    'en-us': 'Modified',
+    'ru-ru': 'Modified',
+    ca: 'Created',
+    'es-es': 'Modified',
+  },
 });

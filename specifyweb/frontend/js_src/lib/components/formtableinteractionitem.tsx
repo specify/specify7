@@ -29,7 +29,6 @@ export function FormTableInteraction(
       }>
     | undefined
   >(undefined);
-  // FIXME: test this
   return (
     <>
       {typeof recordSetsPromise === 'object' &&

@@ -169,7 +169,7 @@ export function PrepDialog({
           }
         }}
       >
-        <table className="grid-table gap-2 grid-cols-[repeat(7,auto)]">
+        <table className="grid-table grid-cols-7 gap-2">
           <thead>
             <tr>
               <th scope="col">
@@ -255,7 +255,6 @@ function Row({
       >
   >({ type: 'Main' });
 
-  // FIXME: align center columsn where appropiate
   return (
     <>
       <tr>
@@ -267,7 +266,7 @@ function Row({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td>
+        <td className="tabular-nums justify-end">
           {fieldFormat(
             schema.models.CollectionObject.getLiteralField('catalogNumber'),
             undefined,
@@ -286,8 +285,8 @@ function Row({
             onValueChange={handleChange}
           />
         </td>
-        <td>{preparation.available}</td>
-        <td>
+        <td className="tabular-nums justify-end">{preparation.available}</td>
+        <td className="tabular-nums justify-end">
           {
             /* If unavailable items, link to related interactions */
             unavailableCount === 0 ? (

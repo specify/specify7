@@ -105,7 +105,7 @@ function QueryList({
   );
 
   return (
-    <table className="grid-table grid-cols-[auto_auto_min-content] gap-2">
+    <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
       <thead>
         <tr>
           <th
@@ -140,12 +140,28 @@ function QueryList({
               />
             </Button.LikeLink>
           </th>
+          <th scope="col">
+            <Button.LikeLink
+              onClick={(): void =>
+                setSortConfig({
+                  sortField: 'timestampModified',
+                  ascending: !sortConfig.ascending,
+                })
+              }
+            >
+              {commonText('modified')}
+              <SortIndicator
+                fieldName="timestampModified"
+                sortConfig={sortConfig}
+              />
+            </Button.LikeLink>
+          </th>
           <td />
         </tr>
       </thead>
       <tbody>
         {queries.map((query) => (
-          <tr key={query.id}>
+          <tr key={query.id} title={query.remarks ?? undefined}>
             <td>
               <Link.Default
                 href={
@@ -162,6 +178,11 @@ function QueryList({
             </td>
             <td>
               <DateElement date={query.timestampCreated} />
+            </td>
+            <td>
+              {typeof query.timestampModified === 'string' && (
+                <DateElement date={query.timestampModified} />
+              )}
             </td>
             <td className="justify-end">
               {typeof handleEdit === 'function' && (

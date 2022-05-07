@@ -23,6 +23,7 @@ import { TableIcon } from '../common';
 import { downloadFile } from '../filepicker';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
+import { formatNumber } from '../internationalization';
 
 function Table({
   children,
@@ -120,7 +121,9 @@ export function DataModelView({
               booleanFormatter(field.isReadOnly),
               booleanFormatter(field.isRequired),
               javaTypeToHuman(field.type, undefined),
-              field.length,
+              <span className="tabular-nums flex justify-end w-full">
+                {f.maybe(field.length, formatNumber)}
+              </span>,
               field.dbColumn,
             ].map((label, index) => (
               <Cell key={index}>{label}</Cell>
@@ -221,9 +224,15 @@ export function DataModelView({
               model.label,
               booleanFormatter(model.isSystem),
               booleanFormatter(model.isHidden),
-              model.tableId,
-              model.fields.length,
-              model.relationships.length,
+              <span className="tabular-nums flex justify-end w-full">
+                {model.tableId}
+              </span>,
+              <span className="tabular-nums flex justify-end w-full">
+                {formatNumber(model.fields.length)}
+              </span>,
+              <span className="tabular-nums flex justify-end w-full">
+                {formatNumber(model.relationships.length)}
+              </span>,
             ].map((label, index) => (
               <Cell key={index}>{label}</Cell>
             ))}

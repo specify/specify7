@@ -69,7 +69,11 @@ function Row({
           {recordSet.name}
         </Link.Default>
       </td>
-      <td title={commonText('recordCount')} aria-label={count?.toString()}>
+      <td
+        title={commonText('recordCount')}
+        aria-label={count?.toString()}
+        className="tabular-nums justify-end"
+      >
         {typeof count === 'number' ? `(${formatNumber(count)})` : undefined}
       </td>
       <td>

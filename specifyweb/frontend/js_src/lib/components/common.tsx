@@ -80,7 +80,7 @@ export function TableIcon({
       style={{ backgroundColor: color }}
       role={role}
       className={`w-table-icon h-table-icon flex items-center justify-center
-        text-white rounded text-sm`}
+        text-white rounded-sm text-sm`}
       title={resolvedTableLabel}
       aria-label={resolvedTableLabel}
       aria-hidden={ariaHidden}
