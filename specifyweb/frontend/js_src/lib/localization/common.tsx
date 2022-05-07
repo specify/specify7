@@ -1670,18 +1670,6 @@ export const commonText = createDictionary({
     ca: 'Ordinal',
     'es-es': 'Ordinal',
   },
-  accessDenied: {
-    'en-us': 'Access Denied',
-    'ru-ru': 'Доступ запрещен',
-    ca: 'Access Denied',
-    'es-es': 'Access Denied',
-  },
-  noPermissionForAction: {
-    'en-us': "You don't have permission to perform this action.",
-    'ru-ru': 'У вас нет разрешения на выполнение этого действия.',
-    ca: "You don't have permission to perform this action.",
-    'es-es': "You don't have permission to perform this action.",
-  },
   userAccount: {
     'en-us': 'User Account',
     'ru-ru': 'Учетная запись',

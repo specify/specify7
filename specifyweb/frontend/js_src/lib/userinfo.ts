@@ -10,7 +10,6 @@ import { fetchContext as fetchSchema } from './schema';
 import type { RA, Writable } from './types';
 
 export type UserInfo = SerializedModel<SpecifyUser> & {
-  readonly isadmin: boolean;
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention

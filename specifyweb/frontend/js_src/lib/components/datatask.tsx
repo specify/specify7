@@ -6,7 +6,10 @@ import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import { crash } from './errorboundary';
 import { OtherCollection } from './othercollectionview';
-import { PermissionDenied } from './permissiondenied';
+import {
+  TablePermissionDenied,
+  ToolPermissionDenied,
+} from './permissiondenied';
 import { ShowResource } from './resourceview';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -29,7 +32,9 @@ const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
 async function recordSetView(idString: string, index = '0'): Promise<void> {
   if (!hasToolPermission('recordSets', 'read')) {
-    setCurrentComponent(<PermissionDenied />);
+    setCurrentComponent(
+      <ToolPermissionDenied tool="recordSets" action="read" />
+    );
     return;
   }
   const id = Number.parseInt(idString);
@@ -96,7 +101,9 @@ async function resourceView(
     typeof id === 'string' &&
     !hasTablePermission(model.name, 'read')
   ) {
-    setCurrentComponent(<PermissionDenied />);
+    setCurrentComponent(
+      <TablePermissionDenied tableName={model.name} action="read" />
+    );
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
 
@@ -153,7 +160,9 @@ async function byCatNumber(
   rawCatNumber: string
 ): Promise<void> {
   if (!hasTablePermission('CollectionObject', 'read')) {
-    setCurrentComponent(<PermissionDenied />);
+    setCurrentComponent(
+      <TablePermissionDenied tableName="CollectionObject" action="read" />
+    );
     return;
   }
 

@@ -10,7 +10,6 @@ import type {
 import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
-import { hasTreeAccess } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
 import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
@@ -31,7 +30,7 @@ import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { pushUrl } from './navigation';
 import { NotFoundView } from './notfoundview';
-import { PermissionDenied } from './permissiondenied';
+import { ProtectedTree } from './permissiondenied';
 import { usePref, useReducedTransparency } from './preferenceshooks';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
@@ -411,23 +410,25 @@ export function TreeViewWrapper({
     true
   );
 
-  const tableName = getModel(table)?.name;
+  const treeName = getModel(table)?.name;
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
-    typeof tableName === 'string' &&
-    isTreeModel(tableName)
-      ? caseInsensitiveHash(treeDefinitions, tableName)
+    typeof treeName === 'string' &&
+    isTreeModel(treeName)
+      ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  if (typeof tableName === 'undefined' || !isTreeModel(tableName))
+  if (typeof treeName === 'undefined' || !isTreeModel(treeName))
     return <NotFoundView />;
-  else if (!hasTreeAccess(tableName, 'read')) return <PermissionDenied />;
-  else
-    return typeof treeDefinition === 'object' ? (
-      <TreeView
-        tableName={tableName}
-        treeDefinition={treeDefinition.definition}
-        treeDefinitionItems={treeDefinition.ranks}
-      />
-    ) : null;
+  return (
+    <ProtectedTree treeName={treeName} action="read">
+      {typeof treeDefinition === 'object' ? (
+        <TreeView
+          tableName={treeName}
+          treeDefinition={treeDefinition.definition}
+          treeDefinitionItems={treeDefinition.ranks}
+        />
+      ) : null}
+    </ProtectedTree>
+  );
 }

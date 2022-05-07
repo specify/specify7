@@ -5243,7 +5243,7 @@ export type SpecifyUser = {
     readonly timestampModified: string | null;
     readonly userType: string | null;
     readonly version: number | null;
-    // NOTE: Front-end only field?
+    // NOTE: Front-end only field
     readonly isAdmin: boolean;
   };
   readonly toOneDependent: RR<never, never>;

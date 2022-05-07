@@ -3,11 +3,13 @@ import React from 'react';
 import { Http } from '../ajax';
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { queryText } from '../localization/query';
-import { NotFoundView } from './notfoundview';
+import { hasToolPermission } from '../permissions';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
+import { parseUrl } from '../querystring';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
@@ -15,16 +17,14 @@ import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
-import { QueryBuilder } from './querybuilder';
-import { PermissionDenied } from './permissiondenied';
+import { NotFoundView } from './notfoundview';
 import {
-  hasPermission,
-  hasTablePermission,
-  hasToolPermission,
-  hasTreeAccess,
-} from '../permissions';
-import { f } from '../functools';
-import { parseUrl } from '../querystring';
+  ProtectedAction,
+  ProtectedTable,
+  ProtectedTool,
+  ProtectedTree,
+} from './permissiondenied';
+import { QueryBuilder } from './querybuilder';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -82,13 +82,13 @@ function QueryBuilderById({
   const recordSet = useQueryRecordSet();
 
   return typeof query === 'undefined' ||
-    typeof recordSet === 'undefined' ? null : hasTablePermission(
-      getModelById(query.get('contextTableId')).name,
-      'read'
-    ) ? (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
-  ) : (
-    <PermissionDenied />
+    typeof recordSet === 'undefined' ? null : (
+    <ProtectedTable
+      tableName={getModelById(query.get('contextTableId')).name}
+      action="read"
+    >
+      <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    </ProtectedTable>
   );
 }
 
@@ -121,7 +121,7 @@ function NewQuery({
   const query = React.useMemo<SpecifyResource<SpQuery> | undefined>(() => {
     const model = getModel(tableName);
     if (typeof model === 'undefined') {
-      setCurrentComponent(<PermissionDenied />);
+      setCurrentComponent(<NotFoundView />);
       return undefined;
     }
     return createQuery(queryText('newQueryName'), model);
@@ -129,13 +129,13 @@ function NewQuery({
   const recordSet = useQueryRecordSet();
 
   return typeof query === 'undefined' ||
-    typeof recordSet === 'undefined' ? null : hasTablePermission(
-      getModelById(query.get('contextTableId')).name,
-      'read'
-    ) ? (
-    <QueryBuilderWrapper query={query} recordSet={recordSet} />
-  ) : (
-    <PermissionDenied />
+    typeof recordSet === 'undefined' ? null : (
+    <ProtectedTable
+      tableName={getModelById(query.get('contextTableId')).name}
+      action="read"
+    >
+      <QueryBuilderWrapper query={query} recordSet={recordSet} />
+    </ProtectedTable>
   );
 }
 
@@ -154,35 +154,34 @@ function QueryBuilderFromTree({
     true
   );
 
-  return typeof query === 'undefined' ? null : hasTreeAccess(
-      defined(getModel(tableName)).name as 'Geography',
-      'read'
-    ) ? (
-    <QueryBuilderWrapper query={query} />
-  ) : (
-    <PermissionDenied />
+  return typeof query === 'undefined' ? null : (
+    <ProtectedTree
+      treeName={defined(getModel(tableName)).name as 'Geography'}
+      action="read"
+    >
+      {' '}
+      <QueryBuilderWrapper query={query} />
+    </ProtectedTree>
   );
 }
 
 export function task(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
     setCurrentComponent(
-      hasPermission('/querybuilder/query', 'execute') &&
-        hasToolPermission('queryBuilder', 'read') ? (
-        <QueryBuilderById queryId={Number.parseInt(id)} />
-      ) : (
-        <PermissionDenied />
-      )
+      <ProtectedAction resource="/querybuilder/query" action="execute">
+        <ProtectedTool tool="queryBuilder" action="read">
+          <QueryBuilderById queryId={Number.parseInt(id)} />
+        </ProtectedTool>
+      </ProtectedAction>
     )
   );
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
     setCurrentComponent(
-      hasPermission('/querybuilder/query', 'execute') &&
-        hasToolPermission('queryBuilder', 'create') ? (
-        <NewQuery tableName={tableName} />
-      ) : (
-        <PermissionDenied />
-      )
+      <ProtectedAction resource="/querybuilder/query" action="execute">
+        <ProtectedTool tool="queryBuilder" action="create">
+          <NewQuery tableName={tableName} />
+        </ProtectedTool>
+      </ProtectedAction>
     )
   );
   router.route(
@@ -190,15 +189,14 @@ export function task(): void {
     'queryFromTree',
     (tableName, nodeId) =>
       setCurrentComponent(
-        hasPermission('/querybuilder/query', 'execute') &&
-          hasToolPermission('queryBuilder', 'read') ? (
-          <QueryBuilderFromTree
-            tableName={tableName as AnyTree['tableName']}
-            nodeId={Number.parseInt(nodeId)}
-          />
-        ) : (
-          <PermissionDenied />
-        )
+        <ProtectedAction resource="/querybuilder/query" action="execute">
+          <ProtectedTool tool="queryBuilder" action="read">
+            <QueryBuilderFromTree
+              tableName={tableName as AnyTree['tableName']}
+              nodeId={Number.parseInt(nodeId)}
+            />
+          </ProtectedTool>
+        </ProtectedAction>
       )
   );
 }
