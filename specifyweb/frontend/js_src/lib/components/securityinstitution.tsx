@@ -21,6 +21,7 @@ import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
+import { schema } from '../schema';
 
 export function InstitutionView({
   institution,
@@ -233,7 +234,7 @@ export function InstitutionView({
                     policies: [],
                   } as const)
             }
-            parentName={institution.name ?? commonText('institution')}
+            parentName={institution.name ?? schema.models.Institution.label}
             userRoles={undefined}
             onClose={(): void => setState({ type: 'MainState' })}
             onSave={(role): void =>

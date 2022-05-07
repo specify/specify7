@@ -168,7 +168,7 @@ export function CollectionOneToManyPlugin({
         <thead>
           <tr>
             <th>{formsText('collectionObject')}</th>
-            <th>{commonText('collection')}</th>
+            <th>{schema.models.Collection.label}</th>
             {hasTablePermission('CollectionRelationship', 'delete') && <td />}
           </tr>
         </thead>

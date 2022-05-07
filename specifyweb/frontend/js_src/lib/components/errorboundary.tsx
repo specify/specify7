@@ -10,10 +10,13 @@ import React from 'react';
 import { Http } from '../ajax';
 import { breakpoint } from '../assert';
 import { removeKey } from '../helpers';
+import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { getOperationPermissions, getTablePermissions } from '../permissions';
+import { getRawUserPreferences } from '../preferencesutils';
 import { remotePrefs } from '../remoteprefs';
 import { schema } from '../schema';
+import { actionToLabel, resourceNameToLabel } from '../securityutils';
 import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
@@ -21,12 +24,15 @@ import { userInformation } from '../userinfo';
 import { Button, className, Link } from './basic';
 import { displayError } from './contexts';
 import { copyTextToClipboard, downloadFile } from './filepicker';
-import { useBooleanState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
-import { getRawUserPreferences } from '../preferencesutils';
+import { format } from '../dataobjformatters';
+import { deserializeResource } from './resource';
+import { f } from '../functools';
+import { serializeResource } from '../datamodelutils';
 
 type ErrorBoundaryState =
   | {
@@ -408,7 +414,7 @@ type PermissionErrorSchema = {
     readonly action: string;
     readonly collectionid: number;
     readonly resource: string;
-    readonly userid: string;
+    readonly userid: number;
   }>;
 };
 
@@ -460,9 +466,45 @@ function formatPermissionsError(
 
   return [
     <div className="gap-y-2 flex flex-col h-full">
+      <p>{commonText('permissionDeniedDialogText')}</p>
+      <table className="grid-table grid-cols-4 border border-gray-500 rounded">
+        <thead>
+          <tr>
+            {[
+              adminText('action'),
+              adminText('resource'),
+              schema.models.Collection.name,
+              schema.models.SpecifyUser.name,
+            ].map((label, index) => (
+              <th
+                scope="column"
+                className="bg-gray-350 dark:bg-neutral-600 p-2"
+                key={index}
+              >
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {error.map(({ collectionid, userid, resource, action }, index) => (
+            <tr key={index}>
+              {[
+                actionToLabel(action),
+                resourceNameToLabel(resource),
+                <CollectionName collectionId={collectionid} />,
+                <UserName userId={userid} />,
+              ].map((value, index) => (
+                <td className="p-2" key={index}>
+                  {value}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <p>
-        Permission denied when accessing <code>{url}</code>
-        {formatErrorResponse(response)}
+        {commonText('permissionDeniedDialogSecondText', <code>{url}</code>)}
       </p>
     </div>,
     [
@@ -470,4 +512,50 @@ function formatPermissionsError(
       `Response: ${JSON.stringify(error, null, '\t')}`,
     ].join('\n'),
   ] as const;
+}
+
+function CollectionName({
+  collectionId,
+}: {
+  readonly collectionId: number;
+}): JSX.Element {
+  const [formatted] = useAsyncState(
+    React.useCallback(
+      () =>
+        format(
+          f.maybe(
+            userInformation.availableCollections.find(
+              ({ id }) => id === collectionId
+            ),
+            deserializeResource
+          ) ?? new schema.models.Collection.Resource({ id: collectionId })
+        ),
+      [collectionId]
+    ),
+    false
+  );
+  return (
+    <>{formatted ?? `${schema.models.Collection.label} #${collectionId}`}</>
+  );
+}
+
+function UserName({ userId }: { readonly userId: number }): JSX.Element {
+  const [formatted] = useAsyncState(
+    React.useCallback(
+      () =>
+        format(
+          userInformation.id === userId
+            ? deserializeResource(
+                serializeResource({
+                  ...userInformation,
+                  recordset_info: undefined,
+                })
+              )
+            : new schema.models.Collection.Resource({ id: userId })
+        ),
+      [userId]
+    ),
+    false
+  );
+  return <>{formatted ?? `${schema.models.SpecifyUser.label} #${userId}`}</>;
 }

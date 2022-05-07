@@ -1782,12 +1782,6 @@ export const commonText = createDictionary({
     ca: 'ID',
     'es-es': 'ID',
   },
-  institution: {
-    'en-us': 'Institution:',
-    'ru-ru': 'Учреждение:',
-    ca: 'Institution:',
-    'es-es': 'Institution:',
-  },
   filter: {
     'en-us': 'Filter',
     'ru-ru': 'Фильтрировать',
@@ -1836,5 +1830,20 @@ export const commonText = createDictionary({
     'ru-ru': 'Modified',
     ca: 'Created',
     'es-es': 'Modified',
+  },
+  permissionDeniedDialogText: {
+    'en-us':
+      "You don't have any policy or role that gives you permission to do the following action:",
+    'ru-ru':
+      "You don't have any policy or role that gives you permission to do the following action:",
+    ca: "You don't have any policy or role that gives you permission to do the following action:",
+    'es-es':
+      "You don't have any policy or role that gives you permission to do the following action:",
+  },
+  permissionDeniedDialogSecondText: {
+    'en-us': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
+    'ru-ru': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
+    ca: (url: JSX.Element) => <>Permission denied when accessing {url}</>,
+    'es-es': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
   },
 });

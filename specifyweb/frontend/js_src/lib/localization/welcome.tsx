@@ -199,12 +199,6 @@ export const welcomeText = createDictionary({
     ca: 'Discipline:',
     'es-es': 'Discipline:',
   },
-  collection: {
-    'en-us': 'Collection:',
-    'ru-ru': 'Коллекция:',
-    ca: 'Collection:',
-    'es-es': 'Collection:',
-  },
   isaNumber: {
     'en-us': 'ISA Number:',
     'ru-ru': 'Номер ISA:',

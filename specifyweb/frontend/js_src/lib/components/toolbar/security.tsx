@@ -27,6 +27,7 @@ import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { UserView } from '../securityuser';
+import { schema } from '../../schema';
 
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -113,7 +114,7 @@ export function SecurityPanel(): JSX.Element | null {
       <div className="flex flex-1 h-0 gap-4">
         <aside className={className.containerBase}>
           <section>
-            <H3>{commonText('institution')}</H3>
+            <H3>{`${schema.models.Institution.label}:`}</H3>
             <Button.LikeLink
               aria-pressed={state.type === 'InstitutionState'}
               onClick={(): void =>

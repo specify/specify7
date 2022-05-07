@@ -11,6 +11,7 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
+import { schema } from '../schema';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -78,9 +79,18 @@ function AboutDialog({
               ],
               [welcomeText('schemaVersion'), getSystemInfo().schema_version],
               [welcomeText('databaseName'), getSystemInfo().database],
-              [commonText('institution'), getSystemInfo().institution],
-              [welcomeText('discipline'), getSystemInfo().discipline],
-              [welcomeText('collection'), getSystemInfo().collection],
+              [
+                `${schema.models.Institution.label}:`,
+                getSystemInfo().institution,
+              ],
+              [
+                `${schema.models.Discipline.label}:`,
+                getSystemInfo().discipline,
+              ],
+              [
+                `${schema.models.Collection.label}: `,
+                getSystemInfo().collection,
+              ],
               [
                 welcomeText('isaNumber'),
                 getSystemInfo().isa_number ?? commonText('notApplicable'),

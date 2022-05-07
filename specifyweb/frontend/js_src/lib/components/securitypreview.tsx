@@ -35,7 +35,7 @@ function ReasonExplanation({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="grid-table grid-cols-3 border border-gray-500"
+        className="grid-table grid-cols-3 border border-gray-500 rounded"
         role="table"
       >
         <div role="row">
@@ -81,13 +81,13 @@ function ReasonExplanation({
         </div>
       </div>
       <div
-        className="grid-table w-full grid-cols-4 border border-gray-500"
+        className="grid-table w-full grid-cols-4 border border-gray-500 rounded"
         role="table"
       >
         <div role="row">
           {[
             adminText('userPolicies'),
-            commonText('collection'),
+            schema.models.Collection.label,
             adminText('action'),
             adminText('resource'),
           ].map((label, index) => (

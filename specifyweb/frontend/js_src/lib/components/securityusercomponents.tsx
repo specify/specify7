@@ -223,7 +223,9 @@ export function SetCollection({
 }): JSX.Element {
   return (
     <Label.Generic>
-      <span className={className.headerGray}>{commonText('collection')}</span>
+      <span className={className.headerGray}>
+        {schema.models.Collection.label}
+      </span>
       <Select
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}

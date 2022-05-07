@@ -2,25 +2,19 @@
  * Fetch basic SpecifyUser information
  */
 
-import type { Agent, Collection } from './datamodel';
+import type { Agent, Collection, SpecifyUser } from './datamodel';
 import type { SerializedModel, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import { load } from './initialcontext';
 import { fetchContext as fetchSchema } from './schema';
 import type { RA, Writable } from './types';
 
-export type UserInfo = {
-  // NOTE: some userInfo properties are not listed here
-  readonly id: number;
-  // Whether user is super admin in Sp7. Different from Sp6
+export type UserInfo = SerializedModel<SpecifyUser> & {
   readonly isadmin: boolean;
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly resource_uri: string;
   readonly agent: SerializedModel<Agent>;
-  readonly name: string;
-  readonly usertype: string;
 };
 
 const userInfo: Writable<UserInfo> = {} as Writable<UserInfo>;
