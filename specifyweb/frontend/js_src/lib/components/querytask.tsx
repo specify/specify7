@@ -159,7 +159,6 @@ function QueryBuilderFromTree({
       treeName={defined(getModel(tableName)).name as 'Geography'}
       action="read"
     >
-      {' '}
       <QueryBuilderWrapper query={query} />
     </ProtectedTree>
   );

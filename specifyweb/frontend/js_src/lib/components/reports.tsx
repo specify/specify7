@@ -10,7 +10,7 @@ import {
 } from '../attachments';
 import { fetchCollection } from '../collection';
 import { csrfToken } from '../csrftoken';
-import type { RecordSet, SpAppResource, SpQuery } from '../datamodel';
+import type { RecordSet, SpAppResource, SpQuery, SpReport } from '../datamodel';
 import type { SerializedModel, SerializedResource } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { f } from '../functools';
@@ -205,7 +205,9 @@ function Report({
     true
   );
 
-  const [report] = useAsyncState(
+  const [report] = useAsyncState<
+    SerializedResource<SpReport> | undefined | false
+  >(
     React.useCallback(
       async () =>
         fetchCollection('SpReport', {

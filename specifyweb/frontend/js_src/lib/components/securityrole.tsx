@@ -205,9 +205,12 @@ export function RoleView({
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete') ? (
           <Button.Red
-            disabled={typeof usersWithRole === 'undefined'}
+            disabled={
+              typeof usersWithRole === 'undefined' &&
+              typeof userRoles !== 'undefined'
+            }
             onClick={
-              usersWithRole?.length === 0
+              usersWithRole?.length === 0 || typeof userRoles !== 'undefined'
                 ? handleDelete
                 : (): void =>
                     setState({

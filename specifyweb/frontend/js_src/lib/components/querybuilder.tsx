@@ -43,10 +43,6 @@ import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 
-/*
- * To Test:
- * FIXME: test query reports
- */
 export function QueryBuilder({
   query: queryResource,
   isReadOnly,

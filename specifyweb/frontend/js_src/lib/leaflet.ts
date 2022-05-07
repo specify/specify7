@@ -119,7 +119,7 @@ export async function showLeafletMap({
     fadeAnimation: animate,
     markerZoomAnimation: animate,
     inertia: getUserPref('leaflet', 'behavior', 'panInertia'),
-    dragging: getUserPref('leaflet', 'behavior', 'mouseDrggs'),
+    dragging: getUserPref('leaflet', 'behavior', 'mouseDrags'),
     scrollWheelZoom: getUserPref('leaflet', 'behavior', 'scrollWheelZoom'),
   }).setView(defaultCenter, defaultZoom);
   const controlLayers = L.control.layers(

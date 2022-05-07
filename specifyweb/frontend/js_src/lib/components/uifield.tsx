@@ -105,9 +105,9 @@ export function UiField({
       resource={data.resource}
       fieldName={data.field.name}
       defaultValue={
-        parser.value === true ||
+        parser?.value === true ||
         // Not sure if this branch can ever happen:
-        parser.value?.toString().toLowerCase() === 'true'
+        parser?.value?.toString().toLowerCase() === 'true'
       }
       isReadOnly={resource !== data.resource}
       text={undefined}

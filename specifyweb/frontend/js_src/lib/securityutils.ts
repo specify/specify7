@@ -265,11 +265,14 @@ export const decompressPolicies = (policies: RA<Policy>): IR<RA<string>> =>
         .flatMap((policy) =>
           // Separate out tool permissions into tables
           resourceNameToParts(policy.resource)[0] === toolPermissionPrefix
-            ? toolDefinitions()[
-                resourceNameToParts(policy.resource)[1] as keyof ReturnType<
-                  typeof toolDefinitions
-                >
-              ].tables.map((tableName) => ({
+            ? (resourceNameToParts(policy.resource)[1] === anyResource
+                ? Array.from(toolTables())
+                : toolDefinitions()[
+                    resourceNameToParts(policy.resource)[1] as keyof ReturnType<
+                      typeof toolDefinitions
+                    >
+                  ].tables
+              ).map((tableName) => ({
                 resource: tableNameToResourceName(tableName),
                 actions: policy.actions,
               }))
