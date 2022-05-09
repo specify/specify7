@@ -114,6 +114,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
         mode={mode}
         viewName={viewName}
         formType="form"
+        display={isSubForm ? 'inline' : 'block'}
       />
     ) : (
       <p>{formsText('noData')}</p>
