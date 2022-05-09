@@ -3,13 +3,15 @@ import React from 'react';
 import { Http } from '../ajax';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
+import { formsText } from '../localization/forms';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
+import { hijackBackboneAjax } from '../startapp';
 import type { RA } from '../types';
 import { fieldFormat } from '../uiparse';
-import { f } from '../functools';
 import { Input, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { queryIdField } from './queryresultstable';
@@ -24,27 +26,38 @@ async function resourceToLink(
   id: number
 ): Promise<JSX.Element | string> {
   const resource = new model.Resource({ id });
-  return resource
-    .fetch()
-    .then(format)
-    .then((string) => (
-      <Link.NewTab href={resource.viewUrl()}>{string ?? id}</Link.NewTab>
-    ))
-    .catch((error) => {
-      if (error.status === Http.NOT_FOUND) return id.toString();
-      else throw error;
-    });
+  let errorHandled = false;
+  const genericFormatted = `${model.name} #${id}`;
+  return hijackBackboneAjax(
+    [Http.OK, Http.NOT_FOUND],
+    async () =>
+      resource
+        .fetch()
+        .then(format)
+        .then((string) => (
+          <Link.NewTab href={resource.viewUrl()}>
+            {string ?? genericFormatted}
+          </Link.NewTab>
+        )),
+    (status) => {
+      if (status === Http.NOT_FOUND) errorHandled = true;
+    }
+  ).catch((error) => {
+    if (errorHandled)
+      return `${genericFormatted} ${formsText('deletedInline')}`;
+    else throw error;
+  });
 }
 
 function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>
+  fieldSpecs: RA<QueryFieldSpec>,
+  hasIdField: boolean
 ):
   | undefined
   | ((
       resultRow: RA<string | number | null>
     ) => Promise<RA<string | JSX.Element>>) {
   if (!needAuditLogFormatting(fieldSpecs)) return undefined;
-  // Assumes queryIdField is 0
   const fields = Array.from(
     fieldSpecs
       .map((fieldSpec) => fieldSpec.getField())
@@ -63,17 +76,24 @@ function getAuditRecordFormatter(
 
   return async (resultRow): Promise<RA<string | JSX.Element>> =>
     Promise.all(
-      resultRow.map(async (value, index) => {
-        if (value === null || value === '') return '';
-        const stringValue = value.toString();
-        if (fields[index]?.name === 'fieldName')
-          return model.getField(stringValue)?.label ?? stringValue;
-        else if (fields[index]?.name === 'recordId')
-          return resourceToLink(model, Number(value));
-        else if (fields[index]?.name === 'parentRecordId')
-          return resourceToLink(parentModel, Number(value));
-        else return stringValue;
-      })
+      resultRow
+        .filter((_, index) => !hasIdField || index !== queryIdField)
+        .map(async (value, index) => {
+          if (value === null || value === '') return '';
+          const stringValue = value.toString();
+          if (fields[index]?.name === 'fieldName')
+            return model.getField(stringValue)?.label ?? stringValue;
+          else if (fields[index]?.name === 'recordId')
+            return resourceToLink(model, Number(value));
+          else if (fields[index]?.name === 'parentRecordId')
+            return resourceToLink(parentModel, Number(value));
+          else
+            return fieldFormat(
+              fields[index],
+              fieldSpecs[index].parser,
+              (value ?? '').toString()
+            );
+        })
     );
 }
 
@@ -105,7 +125,9 @@ function QueryResultCell({
       role="cell"
       className={`${cellClassName} ${
         value === null ? 'text-gray-700 dark:text-neutral-500' : ''
-      } ${typeof value === 'number' ? 'tabular-nums justify-end' : ''}`}
+      } ${
+        fieldSpec?.parser.type === 'number' ? 'tabular-nums justify-end' : ''
+      }`}
       title={
         typeof value === 'string' && value !== formatted ? value : undefined
       }
@@ -231,7 +253,11 @@ export function QueryResults({
     isShiftClick: boolean
   ) => void;
 }): JSX.Element {
-  const recordFormatter = getAuditRecordFormatter(fieldSpecs);
+  // FIXME: test distinct query on audit log
+  const recordFormatter = React.useMemo(
+    () => getAuditRecordFormatter(fieldSpecs, hasIdField),
+    [fieldSpecs, hasIdField]
+  );
   return (
     <div role="rowgroup">
       {results.map((result, index) => (

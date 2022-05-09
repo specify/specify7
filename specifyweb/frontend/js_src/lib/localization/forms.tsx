@@ -1068,4 +1068,11 @@ export const formsText = createDictionary({
     ca: 'Unable to find an SpReport record for this App Resource',
     'es-es': 'Unable to find an SpReport record for this App Resource',
   },
+  // FIXME: localize
+  deletedInline: {
+    'en-us': '(deleted)',
+    'ru-ru': '(deleted)',
+    ca: '(deleted)',
+    'es-es': '(deleted)',
+  },
 });

@@ -400,8 +400,9 @@ export function getMappingLineData({
                       isRelationship: false,
                       isDefault:
                         internalState.defaultValue === model.idField.name,
-                      isEnabled:
-                        !internalState.mappedFields.includes(formattedEntry),
+                      isEnabled: !internalState.mappedFields.includes(
+                        model.idField.name
+                      ),
                       isHidden: true,
                     },
                   ]
