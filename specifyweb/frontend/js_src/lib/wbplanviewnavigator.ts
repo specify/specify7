@@ -69,7 +69,7 @@ type NavigationCallbacks = {
   readonly handleToManyChildren: NavigatorCallbackFunction<void>;
   // Handles tree ranks children
   readonly handleTreeRanks: NavigatorCallbackFunction<void>;
-  // Handles fields and relationships
+  // Handles field and relationships
   readonly handleSimpleFields: NavigatorCallbackFunction<void>;
 };
 
@@ -415,6 +415,10 @@ export function getMappingLineData({
                       scope === 'queryBuilder' ||
                       typeof parentRelationship === 'undefined' ||
                       (!isCircularRelationship(parentRelationship, field) &&
+                        /*
+                         * Hide nested -to-many relationships as they are not
+                         * supported by the WorkBench
+                         */
                         !(
                           relationshipIsToMany(field) &&
                           relationshipIsToMany(parentRelationship)
@@ -443,11 +447,19 @@ export function getMappingLineData({
                           ))) &&
                     /*
                      * Hide relationship from tree tables in WbPlanView as they
-                     * are not supported by the mapper
+                     * are not supported by the WorkBench
                      */
                     (scope === 'queryBuilder' ||
                       !field.isRelationship ||
                       !isTreeModel(model.name)) &&
+                    /*
+                     * Hide -to-many relationships to a tree table as they are
+                     * not supported by the WorkBench
+                     */
+                    (scope === 'queryBuilder' ||
+                      !field.isRelationship ||
+                      !relationshipIsToMany(field) ||
+                      !isTreeModel(field.relatedModel.name)) &&
                     (isNoRestrictionsMode ||
                       // Display read only fields in query builder only
                       scope === 'queryBuilder' ||

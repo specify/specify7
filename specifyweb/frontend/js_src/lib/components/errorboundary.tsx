@@ -248,7 +248,7 @@ function formatError(
   ];
   const errorMessage: string[] =
     typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
-  const copiableMessage: string[] =
+  const copiableMessage: unknown[] =
     typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
 
   if (typeof error === 'object' && error !== null) {
@@ -278,13 +278,16 @@ function formatError(
         </React.Fragment>
       );
       errorMessage.push(statusText);
-      copiableMessage.push(statusText, responseText);
-    } else
+      copiableMessage.push(error);
+    } else {
       errorObject.push(
         <p className="raw" key="raw">
           {error.toString()}
         </p>
       );
+      errorMessage.push(JSON.stringify(error, null, 4));
+      copiableMessage.push(JSON.stringify(error, null, 4));
+    }
   }
 
   return [
@@ -292,7 +295,7 @@ function formatError(
       {errorObject}
     </div>,
     errorMessage.join('\n'),
-    produceStackTrace(copiableMessage.join('\n')),
+    produceStackTrace(copiableMessage),
   ] as const;
 }
 
