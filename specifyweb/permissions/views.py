@@ -4,7 +4,7 @@ from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction, connection
 from django.views import View
-from typing import Dict, Union, Optional
+from typing import Dict, Union, Optional, List
 
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import openapi
@@ -137,6 +137,89 @@ class PoliciesUserPT(PermissionTarget):
     resource = "/permissions/policies/user"
     update = PermissionTargetAction()
     read = PermissionTargetAction()
+
+
+class AllUserPolicies(LoginRequiredMixin, View):
+    def get(self, request, collectionid: Optional[int]) -> http.HttpResponse:
+        check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
+
+        data: Dict[int, Dict[str, List[str]]] = defaultdict(lambda: defaultdict(list))
+        ps = models.UserPolicy.objects.filter(collection__isnull=True, specifyuser_id__isnull=False) \
+            if collectionid is None else \
+               models.UserPolicy.objects.filter(collection_id=collectionid, specifyuser_id__isnull=False)
+        for p in ps:
+            assert p.specifyuser_id is not None # convince the typechecker regarding the specifyuser_id__isnull filter above
+            data[p.specifyuser_id][p.resource].append(p.action)
+
+        return http.JsonResponse(data, safe=False)
+
+all_user_policies = openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns permission policies for all users in collection.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "User policies keyed by userid.",
+                            "additionalProperties": {
+                                "type": "object",
+                                "description": "The policies for the user.",
+                                "example": {
+                                    "/table/agent": ["read"],
+                                    "/table/collectionobject": ["create", "read", "update", "delete"],
+                                },
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "The supported actions for the resource."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+})(AllUserPolicies.as_view())
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "Returns institution permission policies for all users.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "User policies keyed by userid.",
+                            "additionalProperties": {
+                                "type": "object",
+                                "description": "The policies for the user.",
+                                "example": {
+                                    "/table/agent": ["read"],
+                                    "/table/collectionobject": ["create", "read", "update", "delete"],
+                                },
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "The supported actions for the resource."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+def all_user_policies_institution(request) -> http.HttpResponse:
+    return all_user_policies(request, None)
 
 class UserPolicies(LoginRequiredMixin, View):
     def get(self, request, collectionid: Optional[int], userid: int) -> http.HttpResponse:
