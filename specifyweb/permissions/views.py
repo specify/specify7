@@ -322,14 +322,14 @@ class AllUserRoles(LoginRequiredMixin, View):
 
         data = [
             {
-                'roleid': role.id,
-                'rolename': role.name,
-                'users': [
-                    {'userid': user.id, 'username': user.name}
-                    for user in Specifyuser.objects.filter(roles__role=role)
+                'userid': user.id,
+                'username': user.name,
+                'roles': [
+                    {'roleid': role.id, 'rolename': role.name}
+                    for role in models.Role.objects.filter(collection_id=collectionid, userrole__specifyuser=user)
                 ]
             }
-            for role in models.Role.objects.filter(collection_id=collectionid)
+            for user in Specifyuser.objects.all()
         ]
 
         return http.JsonResponse(data, safe=False)
@@ -338,7 +338,7 @@ all_user_roles = openapi(schema={
     "get": {
         "responses": {
             "200": {
-                "description": "Returns users belonging to all roles in given collection.",
+                "description": "Returns all users and their assigned roles in given collection.",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -346,23 +346,23 @@ all_user_roles = openapi(schema={
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "roleid": { "type": "integer", "description": "The role id." },
-                                    "rolename": { "type": "string", "description": "The role name." },
-                                    "users": {
+                                    "userid": { "type": "integer", "description": "The user id." },
+                                    "username": { "type": "string", "description": "The user name." },
+                                    "roles": {
                                         "type": "array",
                                         "items": {
                                             "type": "object",
-                                            "description": "The users.",
+                                            "description": "The roles the user is assigned in the collection.",
                                             "properties": {
-                                                "userid": { "type": "integer", "description": "The user id." },
-                                                "username": { "type": "string", "description": "The user name." },
+                                                "roleid": { "type": "integer", "description": "The role id." },
+                                                "rolename": { "type": "string", "description": "The role name." },
                                             },
-                                            "required": ['userid', 'username'],
+                                            'required': ['roleid', 'rolename'],
                                             "additionalProperties": False,
                                         }
                                     }
                                 },
-                                'required': ['roleid', 'rolename', 'users'],
+                                "required": ['userid', 'username', 'roles'],
                                 'additionalProperties': False
                             }
                         }
