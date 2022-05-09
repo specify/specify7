@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { fetchCollection } from '../collection';
 import type { Geography } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
 import { f } from '../functools';
@@ -29,7 +30,7 @@ const fetchPossibleRanks = async (
         .filter(
           ({ rankId }) =>
             rankId > parentRankId &&
-            (lowestChildRank <= 0 || rankId > lowestChildRank)
+            (lowestChildRank <= 0 || rankId < lowestChildRank)
         )
         .sort(sortFunction(({ rankId }) => rankId))
     )
@@ -52,16 +53,14 @@ export const fetchLowestChildRank = async (
 ): Promise<number> =>
   resource.isNew()
     ? Promise.resolve(-1)
-    : resource
-        .rgetCollection('children')
-        .then(({ models }) =>
-          models.length === 0
-            ? -1
-            : Math.min(...models.map((resource) => resource.get('rankId')))
-        );
+    : fetchCollection(resource.specifyModel.name, {
+        limit: 1,
+        parent: resource.id,
+        orderBy: 'rankId',
+      }).then(({ records }) => records[0]?.rankId ?? -1);
 
 /**
- * Pick list to chose a tree rank for a tree node
+ * Pick list to choose a tree rank for a tree node
  */
 export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple> | undefined>(

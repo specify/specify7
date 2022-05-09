@@ -100,13 +100,14 @@ export function PickListComboBox(
     string | undefined
   >(undefined);
 
-  React.useEffect(() => {
-    if (
+  React.useEffect(
+    () =>
       typeof pendingNewValue === 'string' &&
       props.items?.some(({ value }) => value === pendingNewValue) === true
-    )
-      updateValue(pendingNewValue);
-  }, [props.items, pendingNewValue, updateValue]);
+        ? updateValue(pendingNewValue)
+        : undefined,
+    [props.items, pendingNewValue, updateValue]
+  );
 
   function addNewValue(value: string): void {
     if (props.pickList?.get('type') === PickListTypes.FIELDS)
