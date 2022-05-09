@@ -21,7 +21,15 @@ export function Slider({
   readonly count: number;
   readonly onChange: (newValue: number) => void;
 }): JSX.Element {
-  const [isBlank, setIsBlank] = React.useState<boolean>(false);
+  const [pendingValue, setPendingValue] = React.useState<number>(value);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  React.useEffect(
+    () =>
+      document.activeElement === inputRef.current
+        ? undefined
+        : setPendingValue(value),
+    [value]
+  );
   return (
     <div
       className={`gap-x-2 print:hidden flex justify-center ${
@@ -43,7 +51,7 @@ export function Slider({
         disabled={value == 0}
         onClick={(): void => handleChange(value - 1)}
       >
-        &lt;
+        {'<'}
       </Button.Small>
       <div className="grid font-bold items-center grid-cols-[1fr_auto_1fr] gap-1">
         <label
@@ -55,21 +63,22 @@ export function Slider({
           <Input.Number
             className={`no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full
               font-bold bg-white ring-0 text-center`}
-            min="1"
+            min={1}
             /*
              * Count is 0 when input is invisible, which causes the field to be
              * invalid (as min is 1) which inhibits form submission
              */
             max={Math.max(1, count)}
-            step="1"
+            step={1}
             // Convert 0-based indexing to 1-based
-            value={isBlank ? '' : value + 1}
+            value={Number.isNaN(pendingValue) ? '' : pendingValue + 1}
             onValueChange={(value): void => {
-              setIsBlank(Number.isNaN(value));
-              if (!Number.isNaN(value))
-                handleChange(clamp(0, count - 1, value - 1));
+              const newValue = clamp(0, count - 1, value - 1);
+              setPendingValue(newValue);
+              if (!Number.isNaN(value)) handleChange(newValue);
             }}
-            onBlur={(): void => setIsBlank(false)}
+            onBlur={(): void => setPendingValue(value)}
+            forwardRef={inputRef}
           />
         </label>
         <span>/</span>
@@ -82,7 +91,7 @@ export function Slider({
         disabled={value + 1 == count}
         onClick={(): void => handleChange(value + 1)}
       >
-        &gt;
+        {'>'}
       </Button.Small>
       <Button.Small
         aria-label={formsText('lastRecord')}

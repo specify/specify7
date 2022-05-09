@@ -30,7 +30,7 @@ function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="previous"
       >
-        &lt;
+        {'<'}
       </Button.Small>
       <Button.Small
         className={`wb-navigation-text aria-handled ring-0 grid items-center hover:brightness-70
@@ -47,7 +47,7 @@ function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="next"
       >
-        &gt;
+        {'>'}
       </Button.Small>
     </span>
   );
