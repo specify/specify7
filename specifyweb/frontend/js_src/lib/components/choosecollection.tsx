@@ -88,7 +88,7 @@ function ChooseCollection({
          * Scroll to selected option automatically (useful if not all collection
          * fit on the screen at once and there is a scroll bar
          */
-        formRef.current?.querySelector('input:checked') as
+        (formRef.current?.querySelector('input:checked') ?? undefined) as
           | HTMLElement
           | undefined,
         scrollIntoView

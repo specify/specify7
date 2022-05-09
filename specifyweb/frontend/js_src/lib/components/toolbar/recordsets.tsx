@@ -17,24 +17,31 @@ export const menuItem: MenuItem = {
   enabled: () =>
     getUserPref('header', 'menu', 'showRecordSets') &&
     hasToolPermission('recordSets', 'read'),
-  view: ({ onClose: handleClose }) => {
-    const recordSetsPromise = React.useMemo(
-      async () =>
-        fetchCollection('RecordSet', {
-          specifyUser: userInformation.id,
-          type: 0,
-          limit: 5000,
-          domainFilter: true,
-          orderBy: '-timestampCreated',
-        }),
-      []
-    );
-    return (
-      <RecordSetsDialog
-        recordSetsPromise={recordSetsPromise}
-        isReadOnly={false}
-        onClose={handleClose}
-      />
-    );
-  },
+  view: ({ onClose: handleClose }) => <RecordSetDialog onClose={handleClose} />,
 };
+
+// Create a separate component to fix https://github.com/specify/specify7/issues/1453
+function RecordSetDialog({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  const recordSetsPromise = React.useMemo(
+    async () =>
+      fetchCollection('RecordSet', {
+        specifyUser: userInformation.id,
+        type: 0,
+        limit: 5000,
+        domainFilter: true,
+        orderBy: '-timestampCreated',
+      }),
+    []
+  );
+  return (
+    <RecordSetsDialog
+      recordSetsPromise={recordSetsPromise}
+      isReadOnly={false}
+      onClose={handleClose}
+    />
+  );
+}
