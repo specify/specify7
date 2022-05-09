@@ -1195,7 +1195,7 @@ const WBView = Backbone.View.extend({
           method: 'PUT',
           body: { visualorder: columnOrder },
         },
-        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+        { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
       ).then(this.checkDeletedFail.bind(this));
     }
   },
