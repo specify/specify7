@@ -286,7 +286,7 @@ export const DataEntry = {
     resource,
   }: {
     readonly resource: SpecifyResource<AnySchema> | undefined;
-  }) {
+  }): JSX.Element {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
         href={resource.viewUrl()}

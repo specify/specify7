@@ -827,4 +827,32 @@ export const preferencesText = createDictionary({
     ca: 'Flexible column width',
     'es-es': 'Flexible column width',
   },
+  closeOnEsc: {
+    'en-us': (
+      <>
+        Close on <Key>ESC</Key> key press
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Close on <Key>ESC</Key> key press
+      </>
+    ),
+    ca: (
+      <>
+        Close on <Key>ESC</Key> key press
+      </>
+    ),
+    'es-es': (
+      <>
+        Close on <Key>ESC</Key> key press
+      </>
+    ),
+  },
+  closeOnOutsideClick: {
+    'en-us': 'Close on outside click',
+    'ru-ru': 'Close on outside click',
+    ca: 'Close on outside click',
+    'es-es': 'Close on outside click',
+  },
 });

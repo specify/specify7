@@ -273,12 +273,18 @@ export function Autocomplete<T>({
   }, [showList, input, isInDialog, autoGrowAutoComplete]);
 
   const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');
+  const [closeOnOutsideClick] = usePref(
+    'form',
+    'queryComboBox',
+    'closeOnOutsideClick'
+  );
 
   const emitBlur = React.useRef<() => void>(console.error);
 
   function handleBlur(): void {
     emitBlur.current();
-    if (process.env.NODE_ENV !== 'development') handleClose();
+    if (process.env.NODE_ENV !== 'development' && !closeOnOutsideClick)
+      handleClose();
   }
 
   React.useEffect(
@@ -324,7 +330,7 @@ export function Autocomplete<T>({
             dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
             handleBlur();
-            if (process.env.NODE_ENV !== 'development')
+            if (process.env.NODE_ENV !== 'development' && !closeOnOutsideClick)
               setPendingValue(currentValue);
           }
         },

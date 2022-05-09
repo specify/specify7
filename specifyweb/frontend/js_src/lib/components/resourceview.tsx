@@ -356,7 +356,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 </DataEntry.SubFormTitle>
                 {headerButtons?.(specifyNetworkBadge) ?? (
                   <>
-                    <span className="flex-1 -ml-4" />
+                    <span className="flex-1 -ml-2" />
                     {specifyNetworkBadge}
                   </>
                 )}

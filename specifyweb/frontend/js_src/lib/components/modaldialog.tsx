@@ -8,6 +8,7 @@ import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
+import { listen } from '../events';
 import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useTitle } from './hooks';
@@ -17,7 +18,6 @@ import {
   useReducedTransparency,
   useTransitionDuration,
 } from './preferenceshooks';
-import { listen } from '../events';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -167,6 +167,13 @@ export function Dialog({
   );
   const [showIcon] = usePref('general', 'dialog', 'showIcon');
 
+  const [closeOnEsc] = usePref('general', 'dialog', 'closeOnEsc');
+  const [closeOnOutsideClick] = usePref(
+    'general',
+    'dialog',
+    'closeOnOutsideClick'
+  );
+
   /*
    * Don't set index on first render, because that may lead multiple dialogs
    * to have the same index, since render of all children is done before any
@@ -272,21 +279,26 @@ export function Dialog({
     (props, contentElement) => (
       <div
         {...props}
-        onMouseDown={(event): void => {
-          if (
-            modal &&
-            typeof handleClose === 'function' &&
-            event.target === event.currentTarget
-          ) {
-            event.preventDefault();
-            handleClose();
-          } else props?.onMouseDown?.(event);
-        }}
+        onMouseDown={
+          closeOnOutsideClick
+            ? (event): void => {
+                // Outside click detection
+                if (
+                  modal &&
+                  typeof handleClose === 'function' &&
+                  event.target === event.currentTarget
+                ) {
+                  event.preventDefault();
+                  handleClose();
+                } else props?.onMouseDown?.(event);
+              }
+            : undefined
+        }
       >
         {contentElement}
       </div>
     ),
-    [modal, handleClose]
+    [modal, handleClose, closeOnOutsideClick]
   );
 
   const transitionDuration = useTransitionDuration();
@@ -324,7 +336,9 @@ export function Dialog({
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
         }
       `}
-      shouldCloseOnEsc={modal && typeof handleClose === 'function'}
+      shouldCloseOnEsc={
+        modal && typeof handleClose === 'function' && closeOnEsc
+      }
       /*
        * Can't use outside click detection that comes with this plugin
        * because of https://github.com/specify/specify7/issues/1248.
