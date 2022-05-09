@@ -9,7 +9,7 @@ import type { FormMode } from '../parseform';
 import { Input, Select } from './basic';
 import { resourceOn } from '../resource';
 
-type CoordinateType = 'point' | 'line' | 'rectangle';
+type CoordinateType = 'Point' | 'Line' | 'Rectangle';
 
 type Parsed = {
   readonly format: (step: number | undefined) => string;
@@ -219,9 +219,9 @@ export function LatLongUi({
                     resource.set('latLongType', value);
                   }}
                 >
-                  <option value="point">{localityText('point')}</option>
-                  <option value="line">{localityText('line')}</option>
-                  <option value="rectangle">{localityText('rectangle')}</option>
+                  <option value="Point">{localityText('point')}</option>
+                  <option value="Line">{localityText('line')}</option>
+                  <option value="Rectangle">{localityText('rectangle')}</option>
                 </Select>
               </label>
             </th>
@@ -234,9 +234,9 @@ export function LatLongUi({
           <CoordinatePoint
             resource={resource}
             label={
-              coordinateType === 'point'
+              coordinateType === 'Point'
                 ? localityText('coordinates')
-                : coordinateType === 'line'
+                : coordinateType === 'Line'
                 ? commonText('start')
                 : localityText('northWestCorner')
             }
@@ -244,11 +244,11 @@ export function LatLongUi({
             isReadOnly={mode === 'view'}
             step={step}
           />
-          {coordinateType === 'point' ? undefined : (
+          {coordinateType === 'Point' ? undefined : (
             <CoordinatePoint
               resource={resource}
               label={
-                coordinateType === 'line'
+                coordinateType === 'Line'
                   ? commonText('end')
                   : localityText('southEastCorner')
               }
