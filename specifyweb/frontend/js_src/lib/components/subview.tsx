@@ -46,7 +46,7 @@ export function SubView({
       resourceOn(
         parentResource,
         `change:${field.name}`,
-        (): void => setResourceUrl(parentResource.get('field')),
+        (): void => setResourceUrl(parentResource.get(field.name)),
         true
       ),
     [parentResource, field]

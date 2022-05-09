@@ -16,8 +16,8 @@ import { hasTablePermission } from '../permissions';
 import { formatUrl } from '../querystring';
 import { useCachedState } from './statecache';
 
-const defaultWidth = 943;
-const defaultHeight = 776;
+const defaultWidth = 947;
+const defaultHeight = 779;
 
 // TODO: merge this with GeoLocate code in the WB once WB is using react
 function GeoLocate({

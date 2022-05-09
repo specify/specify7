@@ -5,6 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
+import { getAttribute } from './helpers';
 import type { FormType, ParsedFormDefinition } from './parseform';
 import { parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
@@ -12,9 +13,9 @@ import { parseFormField } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
 import type { SpecifyModel } from './specifymodel';
+import { legacyLocalize } from './stringlocalization';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { getAttribute } from './helpers';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -142,7 +143,7 @@ const processCellType: {
     type: 'Label',
     // This may be overwritten in postProcessRows
     text: f.maybe(getAttribute(cell, 'label')?.trim(), (text) =>
-      text.length === 0 ? undefined : text
+      text.length === 0 ? undefined : legacyLocalize(text)
     ),
     // This would be set in postProcessRows
     title: undefined,

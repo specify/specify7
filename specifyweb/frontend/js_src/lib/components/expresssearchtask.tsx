@@ -11,18 +11,12 @@ import { QueryFieldSpec } from '../queryfieldspec';
 import { formatUrl, parseUrl } from '../querystring';
 import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
+import { legacyLocalize } from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { Container, H3 } from './basic';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
-import { LANGUAGE } from '../localization/utils';
-import { getProperty } from '../props';
-import { f } from '../functools';
-
-const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
-const locale =
-  bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
@@ -149,27 +143,22 @@ export function ExpressSearchView(): JSX.Element {
   const [secondaryResults] = useAsyncState<RA<RawQueryTableResult>>(
     React.useCallback(
       async () =>
-        f
-          .all({
-            results: relatedSearchesPromise.then(async (relatedSearches) =>
-              Promise.all(
-                relatedSearches.map(async (tableName) => {
-                  const ajaxUrl = formatUrl('/express_search/related/', {
-                    q: query,
-                    name: tableName,
-                  });
-                  return ajax<RelatedTableResult>(ajaxUrl, {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    headers: { Accept: 'application/json' },
-                  }).then(({ data }) => [ajaxUrl, data] as const);
-                })
-              )
-            ),
-            captions: ajax(`/properties/expresssearch_${locale}.properties`, {
-              headers: { Accept: 'text/plain' },
-            }).then(({ data }) => data),
-          })
-          .then(({ results, captions }) =>
+        relatedSearchesPromise
+          .then(async (relatedSearches) =>
+            Promise.all(
+              relatedSearches.map(async (tableName) => {
+                const ajaxUrl = formatUrl('/express_search/related/', {
+                  q: query,
+                  name: tableName,
+                });
+                return ajax<RelatedTableResult>(ajaxUrl, {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  headers: { Accept: 'application/json' },
+                }).then(({ data }) => [ajaxUrl, data] as const);
+              })
+            )
+          )
+          .then((results) =>
             results
               .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
@@ -196,7 +185,7 @@ export function ExpressSearchView(): JSX.Element {
                   model,
                   idFieldIndex,
                   caption:
-                    getProperty(captions, tableResult.definition.name) ??
+                    legacyLocalize(tableResult.definition.name) ??
                     tableResult.definition.name,
                   tableResults: {
                     results: tableResult.results,

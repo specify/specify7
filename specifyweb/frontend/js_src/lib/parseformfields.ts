@@ -5,10 +5,11 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
-import { formsText } from './localization/forms';
 import { getAttribute } from './helpers';
+import { formsText } from './localization/forms';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
+import { legacyLocalize } from './stringlocalization';
 import type { IR } from './types';
 
 export type FieldTypes = {
@@ -85,7 +86,7 @@ const processFieldType: {
         defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
         label:
           f.maybe(getAttribute(cell, 'label')?.trim(), (label) =>
-            label.length === 0 ? undefined : label
+            label.length === 0 ? undefined : legacyLocalize(label)
           ) ?? (printOnSave ? formsText('reportOnSave') : undefined),
         printOnSave,
       })
