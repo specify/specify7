@@ -79,11 +79,8 @@ export function UserView({
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections);
-  const userAgents = useUserAgents(
-    userResource.id,
-    collections,
-    userResource.get('version')
-  );
+  const [version, setVersion] = React.useState<number>(0);
+  const userAgents = useUserAgents(userResource.id, collections, version);
   const [
     institutionPolicies,
     setInstitutionPolicies,
@@ -222,7 +219,7 @@ export function UserView({
                 {typeof userResource.id === 'number' && (
                   <PreviewPermissions
                     userId={userResource.id}
-                    userVersion={user.version ?? 0}
+                    userVersion={version}
                     collectionId={collectionId}
                     changesMade={previewAffected}
                     onOpenRole={(roleId): void =>
@@ -232,7 +229,7 @@ export function UserView({
                 )}
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
-              'overflow-y-auto'
+              'overflow-y-auto -mx-4 p-4'
             )}
             <DataEntry.Footer>
               {changesMade ? (
@@ -417,11 +414,18 @@ export function UserView({
                                 )
                                 .then(() => {
                                   if (typeof newResource === 'object') return;
+                                  // Sync initial values
                                   initialUserRoles.current = userRoles ?? {};
                                   initialUserPolicies.current =
                                     userPolicies ?? {};
                                   initialInstitutionPolicies.current =
                                     institutionPolicies ?? [];
+                                  // Update version & trigger reRender
+                                  setVersion(version + 1);
+                                  /*
+                                   * Make form not submitted again for styling
+                                   * purposes
+                                   */
                                   formElement?.classList.add(
                                     className.notSubmittedForm
                                   );

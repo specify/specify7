@@ -103,7 +103,7 @@ export type UserAgents = RA<{
 export function useUserAgents(
   userId: number | undefined,
   collections: IR<SerializedResource<Collection>>,
-  version: number | null
+  version: number
 ): UserAgents | undefined {
   const [userAgents] = useAsyncState(
     React.useCallback(

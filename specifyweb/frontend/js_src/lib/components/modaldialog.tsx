@@ -319,7 +319,7 @@ export function Dialog({
             : transparentDialog && modal
             ? supportsBackdropBlur
               ? 'backdrop-blur-lg'
-              : 'bg-gray-200/70 dark:bg-black/70'
+              : 'bg-white-200/70 dark:bg-black/70'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
         }

@@ -286,7 +286,7 @@ export function PoliciesView({
       ? adminText('switchToHorizontalLayout')
       : adminText('switchToVerticalLayout');
   const switchButton =
-    (collapsable && isCollapsed) || !Array.isArray(policies) ? undefined : (
+    (!collapsable || !isCollapsed) && Array.isArray(policies) ? (
       <Button.Small
         variant={className.blueButton}
         title={buttonTitle}
@@ -299,7 +299,7 @@ export function PoliciesView({
           ? icons.switchVertical
           : icons.switchHorizontal}
       </Button.Small>
-    );
+    ) : undefined;
 
   return collapsable ? (
     <details open={isCollapsed}>
