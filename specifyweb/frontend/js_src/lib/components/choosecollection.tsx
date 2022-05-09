@@ -32,9 +32,6 @@ function ChooseCollection({
   readonly nextUrl: string;
 }): JSX.Element {
   useTitle(commonText('chooseCollection'));
-  const [selectedCollection, setSelectedCollection] = React.useState<
-    number | undefined
-  >(f.parseInt(data.initialValue ?? ''));
 
   // Focus submit button if some collection is selected by default
   const submitRef = React.useRef<HTMLInputElement | null>(null);
@@ -59,6 +56,20 @@ function ChooseCollection({
         )
       ),
     [data.availableCollections, isReverseSort, sortField]
+  );
+
+  const [selectedCollection, setSelectedCollection] = React.useState<
+    number | undefined
+  >(() =>
+    /*
+     * When switching databases on the test server, initial value may point
+     * to a collection that doesn't exist in this database
+     */
+    f.var(f.parseInt(data.initialValue ?? ''), (id) =>
+      data.availableCollections.some((collection) => collection.id === id)
+        ? id
+        : undefined
+    )
   );
 
   /*
@@ -100,6 +111,7 @@ function ChooseCollection({
                     value={id}
                     checked={selectedCollection === id}
                     onChange={(): void => setSelectedCollection(id)}
+                    required
                   />
                   {collectionname}
                 </Label.ForCheckbox>
@@ -142,6 +154,7 @@ entrypoint('chooseCollection', () => (
       availableCollections: JSON.parse(
         parseDjangoDump('available-collections')
       ),
+      // TODO: store this on the front-end
       initialValue: parseDjangoDump('initial-value'),
       nextUrl: parseDjangoDump('next-url'),
     }}
