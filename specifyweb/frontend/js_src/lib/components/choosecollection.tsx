@@ -69,7 +69,7 @@ function ChooseCollection({
   const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
   React.useEffect(() => {
     if (typeof f.parseInt(data.initialValue ?? '') === 'undefined') return;
-    else if (alwaysPrompt || availableCollections.length === 1)
+    else if (!alwaysPrompt || availableCollections.length === 1)
       formRef.current?.submit();
     else
       f.maybe(

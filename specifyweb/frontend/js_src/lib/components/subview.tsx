@@ -5,14 +5,15 @@ import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode, FormType } from '../parseform';
+import { resourceOn } from '../resource';
 import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState, useBooleanState } from './hooks';
+import { crash } from './errorboundary';
+import { useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
-import { resourceOn } from '../resource';
 
 export const SubViewContext = React.createContext<Relationship | undefined>(
   undefined
@@ -40,20 +41,11 @@ export function SubView({
   readonly viewName: string | undefined;
   readonly sortField: string | undefined;
 }): JSX.Element {
-  const [resourceUrl, setResourceUrl] = React.useState<string | null>('');
-  React.useEffect(
-    () =>
-      resourceOn(
-        parentResource,
-        `change:${field.name}`,
-        (): void => setResourceUrl(parentResource.get(field.name)),
-        true
-      ),
-    [parentResource, field]
-  );
-
-  const [collection] = useAsyncState(
-    React.useCallback(async () => {
+  const fetchCollection = React.useCallback(
+    async function fetchCollection(): Promise<
+      Collection<AnySchema> | undefined
+    > {
+      const resourceUrl = parentResource.get(field.name);
       if (resourceUrl === '') return undefined;
       else if (relationshipIsToMany(field) && field.type !== 'zero-to-one')
         return parentResource.rgetCollection(field.name).then((collection) => {
@@ -87,8 +79,22 @@ export function SubView({
           collection.add(resource);
         return collection;
       }
-    }, [sortField, resourceUrl, parentResource, field]),
-    false
+    },
+    [parentResource, field, sortField]
+  );
+
+  const [collection, setCollection] = React.useState<
+    Collection<AnySchema> | undefined
+  >(undefined);
+  React.useEffect(
+    () =>
+      resourceOn(
+        parentResource,
+        `change:${field.name}`,
+        (): void => void fetchCollection().then(setCollection).catch(crash),
+        true
+      ),
+    [parentResource, field, fetchCollection]
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
