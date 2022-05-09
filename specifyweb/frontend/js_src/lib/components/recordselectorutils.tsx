@@ -245,7 +245,7 @@ export function IntegratedRecordSelector({
                 )}
                 <span className="flex-1 -ml-4" />
                 {specifyNetworkBadge}
-                {/*{!isToOne && slider}*/}
+                {!isToOne && slider}
               </>
             )}
             mode={mode}
