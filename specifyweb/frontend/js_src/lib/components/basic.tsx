@@ -188,19 +188,35 @@ export const DataEntry = {
     'div',
     {
       viewDefinition: ViewDescription;
+      flexibleColumnWidth: boolean;
+      display: 'inline' | 'block';
     }
   >(
     'DataEntry.Grid',
     'div',
-    `grid overflow-x-auto items-center py-5 gap-2 px-1 -ml-1`,
-    ({ viewDefinition, ...props }) => ({
-      ...props,
+    `overflow-x-auto items-center py-5 gap-2 px-1 -ml-1`,
+    ({
+      viewDefinition,
+      display,
+      className,
+      flexibleColumnWidth,
+      style,
+      ...props
+    }) => ({
+      className: `${display === 'inline' ? 'inline-grid' : 'grid'} ${
+        className ?? ''
+      }`,
       style: {
         gridTemplateColumns: viewDefinition.columns
-          .map((width) => (typeof width === 'number' ? `${width}fr` : 'auto'))
+          .map((width) =>
+            typeof width === 'number'
+              ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
+              : 'auto'
+          )
           .join(' '),
-        ...props.style,
+        ...style,
       },
+      ...props,
     })
   ),
   Header: wrap('DataEntry.Header', 'header', className.formHeader),

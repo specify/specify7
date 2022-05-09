@@ -23,6 +23,7 @@ import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
 import { DependentCollection } from '../collectionapi';
+import { usePref } from './preferenceshooks';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -91,6 +92,11 @@ export function FormTable<SCHEMA extends AnySchema>({
     | State<'MainState'>
     | State<'SearchState', { resource: SpecifyResource<SCHEMA> }>
   >({ type: 'MainState' });
+  const [flexibleColumnWidth] = usePref(
+    'form',
+    'definition',
+    'flexibleColumnWidth'
+  );
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
@@ -105,6 +111,8 @@ export function FormTable<SCHEMA extends AnySchema>({
           undefined,
           ...(isDependent ? [] : [undefined]),
         ])}
+        flexibleColumnWidth={flexibleColumnWidth}
+        display="block"
       >
         <div
           className={
@@ -192,6 +200,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       resource={resource}
                       formType="form"
                       mode={mode}
+                      display="inline"
                     />
                   </DataEntry.Cell>
                 </>

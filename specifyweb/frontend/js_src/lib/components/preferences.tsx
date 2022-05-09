@@ -42,7 +42,7 @@ export type PreferenceItemComponent<VALUE> = (props: {
 }) => JSX.Element;
 
 export type PreferenceItem<VALUE> = {
-  readonly title: string;
+  readonly title: string | JSX.Element;
   readonly description?: string | JSX.Element;
   // Whether app needs to be reloaded if this preference changes
   readonly requiresReload: boolean;
@@ -76,6 +76,9 @@ export type PreferenceItem<VALUE> = {
     }
 );
 
+/**
+ * This is used to enforce the same generic value be used inside a PreferenceItem
+ */
 const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
@@ -389,6 +392,18 @@ export const preferenceDefinitions = {
           }),
           textAreaAutoGrow: defineItem<boolean>({
             title: preferencesText('textAreaAutoGrow'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      definition: {
+        title: preferencesText('definition'),
+        items: {
+          flexibleColumnWidth: defineItem<boolean>({
+            title: preferencesText('flexibleColumnWidth'),
             requiresReload: false,
             visible: true,
             defaultValue: true,

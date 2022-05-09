@@ -21,6 +21,7 @@ import { useAsyncState, useId } from './hooks';
 import { NotFoundView } from './notfoundview';
 import { loadingGif } from './queryresultstable';
 import { FormCell } from './specifyformcell';
+import { usePref } from './preferenceshooks';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -98,12 +99,14 @@ export function SpecifyForm({
   viewName = resource.specifyModel.view,
   formType,
   mode,
+  display,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<AnySchema>;
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
+  readonly display: 'inline' | 'block';
 }): JSX.Element {
   const viewDefinition = useViewDefinition({
     model: resource.specifyModel,
@@ -117,6 +120,7 @@ export function SpecifyForm({
       isLoading={isLoading}
       resource={resource}
       viewDefinition={viewDefinition}
+      display={display}
     />
   );
 }
@@ -129,10 +133,12 @@ export function RenderForm<SCHEMA extends AnySchema>({
   isLoading,
   resource,
   viewDefinition,
+  display,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
+  readonly display: 'inline' | 'block';
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -167,6 +173,11 @@ export function RenderForm<SCHEMA extends AnySchema>({
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
   const showLoading =
     formIsLoaded && (isLoading === true || isShowingOldResource);
+  const [flexibleColumnWidth] = usePref(
+    'form',
+    'definition',
+    'flexibleColumnWidth'
+  );
   return (
     <div className={showLoading ? 'relative' : undefined}>
       {showLoading && (
@@ -179,6 +190,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
           viewDefinition={viewDefinition}
           aria-hidden={showLoading}
           className={showLoading ? 'opacity-50 pointer-events-none' : undefined}
+          flexibleColumnWidth={flexibleColumnWidth}
+          display={display}
         >
           {viewDefinition.rows.map((cells, index) => (
             <React.Fragment key={index}>

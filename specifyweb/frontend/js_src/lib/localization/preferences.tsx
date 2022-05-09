@@ -814,4 +814,17 @@ export const preferencesText = createDictionary({
     ca: 'Scroll wheel zoom',
     'es-es': 'Scroll wheel zoom',
   },
+  // FIXME: localize
+  definition: {
+    'en-us': 'Definition',
+    'ru-ru': 'Definition',
+    ca: 'Definition',
+    'es-es': 'Definition',
+  },
+  flexibleColumnWidth: {
+    'en-us': 'Flexible column width',
+    'ru-ru': 'Flexible column width',
+    ca: 'Flexible column width',
+    'es-es': 'Flexible column width',
+  },
 });
