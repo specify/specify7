@@ -155,7 +155,7 @@ export function useValidation<T extends Input = HTMLInputElement>(
     type: 'focus' | 'auto' | 'silent' = 'auto'
   ): void {
     const joined = Array.isArray(message) ? message.join('\n') : message;
-    if (validationMessageRef.current === joined && type === 'focus') return;
+    if (validationMessageRef.current === joined && type !== 'focus') return;
 
     validationMessageRef.current = joined;
     const input = inputRef.current;
