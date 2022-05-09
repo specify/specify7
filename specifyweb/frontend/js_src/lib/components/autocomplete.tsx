@@ -113,14 +113,10 @@ export function Autocomplete<T>({
     [shouldFilterItems]
   );
   const updateItems = React.useCallback(
-    (items: RA<Item<T>>, pendingValue: string): void =>
-      setResults((oldItems) => {
-        // Don't delete previous autocomplete results if no new results returned
-        const newResults =
-          oldItems.length > 0 && items.length === 0 ? oldItems : items;
-        setFilteredItems(filterItems(newResults, pendingValue));
-        return newResults;
-      }),
+    (items: RA<Item<T>>, pendingValue: string): void => {
+      setResults(items);
+      setFilteredItems(filterItems(items, pendingValue));
+    },
     [filterItems]
   );
 
@@ -237,8 +233,7 @@ export function Autocomplete<T>({
         (document.body.clientWidth - inputStart) * 0.9
       }px`;
       dataListRef.current.style.minWidth = `${inputWidth}px`;
-    }
-    else dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
+    } else dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
 
     function handleScroll({
       target,
