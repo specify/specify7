@@ -110,7 +110,8 @@ export const fetchRelated = async <
   RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']
 >(
   resource: SerializedResource<SCHEMA>,
-  relationshipName: RELATIONSHIP
+  relationshipName: RELATIONSHIP,
+  limit = DEFAULT_FETCH_LIMIT
 ): Promise<{
   readonly records: RA<
     SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
@@ -125,7 +126,7 @@ export const fetchRelated = async <
     ),
     async (relationship) =>
       fetchCollection(relationship.relatedModel.name, {
-        limit: DEFAULT_FETCH_LIMIT,
+        limit,
         [defined(relationship.getReverse()).name]: resource.id,
       })
   ) as Promise<{

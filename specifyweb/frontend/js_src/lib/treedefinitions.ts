@@ -3,6 +3,7 @@
  * given discipline.
  */
 
+import { fetchRelated } from './collection';
 import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
@@ -83,13 +84,14 @@ export const treeRanksPromise = Promise.all([
             .map(async ([treeName, definitionLevel]) =>
               getDomainResource(definitionLevel as 'discipline')
                 ?.rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
-                .then(async (model) =>
-                  Promise.all([model, model.rgetCollection('treeDefItems')])
-                )
-                .then(([treeDefinition, { models }]) => ({
+                .then(async (treeDefinition) => ({
                   definition: treeDefinition,
                   ranks: sortObjectsByKey(
-                    Array.from(models, serializeResource),
+                    await fetchRelated(
+                      serializeResource(treeDefinition),
+                      'treeDefItems',
+                      0
+                    ).then(({ records }) => records),
                     'rankId'
                   ),
                 }))

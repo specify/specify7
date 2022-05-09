@@ -100,7 +100,7 @@ export function TreeSelectDialog({
 }
 
 const handleClick = async (tree: string): Promise<void> =>
-  ping(`/api/specify_tree/${tree}/repair/`, {
+  ping(`/api/specify_tree/${tree.toLowerCase()}/repair/`, {
     method: 'POST',
   }).then(f.void);
 

@@ -17,7 +17,7 @@ function predictFullName(resource, options) {
             }
             if (resource.get('name') == null) return null;
             return ajax(
-                formatUrl(`/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
+                formatUrl(`/api/specify_tree/${treeName.toLowerCase()}/${parent.id}/predict_fullname/`,
                 {
                   name: resource.get('name'),
                     treeDefItemId: defitem.id
