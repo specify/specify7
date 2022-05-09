@@ -107,14 +107,14 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           ),
         []
       ),
-      true
+      false
     );
     return (
       <LanguageSelection<Language>
-        languages={languages}
+        languages={languages ?? { loading: commonText('loading') }}
         value={value}
         onChange={handleChange}
-        isReadOnly={isReadOnly}
+        isReadOnly={isReadOnly || typeof languages === 'undefined'}
       />
     );
   };
@@ -174,10 +174,10 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     const languages = useSchemaLanguages();
     return (
       <LanguageSelection<string>
-        languages={languages}
+        languages={languages ?? { loading: commonText('loading') }}
         value={value}
         onChange={handleChange}
-        isReadOnly={isReadOnly}
+        isReadOnly={isReadOnly || typeof languages === 'undefined'}
       />
     );
   };
