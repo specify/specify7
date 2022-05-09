@@ -183,7 +183,7 @@ export async function format<SCHEMA extends AnySchema>(
    * no fields
    */
   return fields
-    .map(({ fieldName }) => resource.get(fieldName))
+    .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
     .every(
       (value) => typeof value === 'undefined' || value === null || value === ''
     )
