@@ -363,16 +363,37 @@ export const Input = {
       // This is used to forbid accidentally passing children
       children?: undefined;
     }
-  >('Input.Radio', 'input', '', ({ isReadOnly, ...props }) => ({
-    ...props,
-    type: 'radio',
-    readOnly: isReadOnly,
-    // Disable onChange when readOnly
-    onChange(event): void {
-      if (props.disabled !== true || isReadOnly === true)
-        props.onChange?.(event);
-    },
-  })),
+  >(
+    'Input.Radio',
+    'input',
+    className.notTouchedInput,
+    ({ isReadOnly, onBlur: handleBlur, ...props }) => ({
+      ...props,
+      type: 'radio',
+      readOnly: isReadOnly,
+      // Disable onChange when readOnly
+      onChange(event): void {
+        if (props.disabled !== true || isReadOnly === true)
+          props.onChange?.(event);
+      },
+      onBlur(event: React.FocusEvent<HTMLInputElement>): void {
+        const input = event.target as HTMLInputElement;
+        if (input.classList.contains(className.notTouchedInput))
+          Array.from(
+            document.body.querySelectorAll(
+              `input[type="radio"].${className.notTouchedInput}`
+            )
+          )
+            .filter(
+              (target) => (target as HTMLInputElement).name === props.name
+            )
+            .forEach((input) =>
+              input.classList.remove(className.notTouchedInput)
+            );
+        handleBlur?.(event);
+      },
+    })
+  ),
   Checkbox: wrap<
     'input',
     {
