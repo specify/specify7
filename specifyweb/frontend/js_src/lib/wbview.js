@@ -2036,7 +2036,7 @@ const WBView = Backbone.View.extend({
     });
   },
   saveClicked() {
-    legacyLoadingContext(this.save());
+    this.save();
   },
   save() {
     // Clear validation
