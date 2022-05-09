@@ -83,16 +83,26 @@ function parseTreeTypes(
   return parseTree(model, Object.values(uploadPlan)[0], mappingPath);
 }
 
+/** A fix for https://github.com/specify/specify7/issues/1378 */
+function resolveField(model: SpecifyModel, fieldName: string): RA<string> {
+  const field = defined(model.getField(fieldName));
+  if (field.isRelationship) {
+    console.error('Upload plan has a column mapped to a relationship', {
+      model,
+      fieldName,
+    });
+    return [field.name, field.relatedModel.idField.name];
+  }
+  return [field.name];
+}
+
 const parseWbCols = (
   model: SpecifyModel,
   wbCols: IR<ColumnDefinition>,
   mappingPath: MappingPath
 ) =>
   Object.entries(wbCols).map(([fieldName, fieldData]) => ({
-    mappingPath: [
-      ...mappingPath,
-      defined(model.getLiteralField(fieldName)).name,
-    ],
+    mappingPath: [...mappingPath, ...resolveField(model, fieldName)],
     headerName: typeof fieldData === 'string' ? fieldData : fieldData.column,
     columnOptions:
       typeof fieldData === 'string'
