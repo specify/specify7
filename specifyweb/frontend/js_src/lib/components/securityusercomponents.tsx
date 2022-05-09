@@ -177,6 +177,7 @@ export function LegacyPermissions({
               mode={mode}
               isRequired={true}
               isDisabled={false}
+              formType="form"
             />
           </Label.Generic>
         )

@@ -9,7 +9,7 @@ import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
-import type { FormMode } from '../parseform';
+import type { FormMode, FormType } from '../parseform';
 import {
   fetchPickList,
   getPickListItems,
@@ -28,6 +28,7 @@ import { PickListFormatterComboBox } from './picklistformattercombobox';
 import { PickListTableComboBox } from './picklisttablecombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UiField } from './uifield';
+import { QueryComboBox } from './querycombobox';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -39,6 +40,7 @@ export type DefaultComboBoxProps = {
   readonly mode: FormMode;
   readonly isRequired: boolean;
   readonly isDisabled: boolean;
+  readonly formType: FormType;
 };
 
 export type PickListItemSimple = {
@@ -113,7 +115,7 @@ export function ComboBox({
   readonly field: LiteralField | Relationship | undefined;
   readonly fieldName: string | undefined;
 }): JSX.Element {
-  const { resource, field, model } = props;
+  const { resource, field, model, id, mode, formType, isRequired } = props;
 
   if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
     return (
@@ -146,12 +148,26 @@ export function ComboBox({
         field={defined(model.specifyModel.getField('definitionItem'))}
       />
     );
+  else if (fieldName === 'divisionCBX') {
+    const field = defined(resource.specifyModel.getField('division'));
+    return (
+      <QueryComboBox
+        id={id}
+        resource={resource}
+        fieldName={field.name}
+        mode={mode}
+        formType={formType}
+        isRequired={isRequired}
+        typeSearch={undefined}
+        forceCollection={undefined}
+        relatedModel={undefined}
+      />
+    );
+  }
 
   const resolvedField =
     isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
       ? defined(schema.models.PickList.getField('type'))
-      : fieldName === 'divisionCBX'
-      ? defined(resource.specifyModel.getField('division'))
       : field;
 
   if (typeof resolvedField !== 'object')

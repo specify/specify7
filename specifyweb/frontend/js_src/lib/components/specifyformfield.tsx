@@ -110,6 +110,7 @@ const fieldRenderers: {
     mode,
     fieldName,
     isRequired,
+    formType,
     fieldDefinition: { defaultValue, pickList },
   }) {
     const [data] = useAsyncState(
@@ -134,6 +135,7 @@ const fieldRenderers: {
         mode={mode}
         isRequired={isRequired}
         isDisabled={false}
+        formType={formType}
       />
     );
   },
