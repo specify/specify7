@@ -5,6 +5,7 @@
  * @module
  */
 
+import React from 'react';
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -723,22 +724,34 @@ export const formsText = createDictionary({
     'es-es': 'Plugin Not Available',
   },
   unavailablePluginDialogText: {
-    'en-us': `
-      This plugin is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
-    'ru-ru': `
-      Этот плагин в настоящее время недоступна для <i>Specify&nbsp7</i>
-      Вероятно, он был включен на етой форме в <i>Specify&nbsp6</i> м
-      может бить поддерживаним в будущем.`,
-    ca: `
-      This plugin is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
-    'es-es': `
-      This plugin is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
+    'en-us': (
+      <>
+        This plugin is currently unavailable for <i>Specify&nbsp7</i>
+        It was probably included on this form from <i>Specify&nbsp6</i> and may
+        be supported in the future.
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Этот плагин в настоящее время недоступна для <i>Specify&nbsp7</i>
+        Вероятно, он был включен на етой форме в <i>Specify&nbsp6</i> м может
+        бить поддерживаним в будущем.
+      </>
+    ),
+    ca: (
+      <>
+        This plugin is currently unavailable for <i>Specify&nbsp7</i>
+        It was probably included on this form from <i>Specify&nbsp6</i> and may
+        be supported in the future.
+      </>
+    ),
+    'es-es': (
+      <>
+        This plugin is currently unavailable for <i>Specify&nbsp7</i>
+        It was probably included on this form from <i>Specify&nbsp6</i> and may
+        be supported in the future.
+      </>
+    ),
   },
   wrongTablePluginDialogText: {
     'en-us': (currentTable: string, correctTable: string) => `
