@@ -19,8 +19,10 @@ import { defined, filterArray } from './types';
 
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
-    viewDefinition.querySelector(
-      `columnDef[os="${getPref('form.definition.columnSource')}"], columnDef`
+    (
+      viewDefinition.querySelector(
+        `columnDef[os="${getPref('form.definition.columnSource')}"]`
+      ) ?? viewDefinition.querySelector('columnDef')
     )?.textContent ?? getAttribute(viewDefinition, 'colDef')
   );
 
