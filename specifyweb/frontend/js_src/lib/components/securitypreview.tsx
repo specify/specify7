@@ -151,7 +151,7 @@ function PreviewRow({
         {tableActions.map((action) => (
           <div
             role="cell"
-            className={`justify-center p-2 cursor-pointer ${
+            className={`justify-center p-2 cursor-pointer rounded ${
               view === action ? 'bg-brand-100 dark:bg-brand-500' : ''
             }`}
             key={action}

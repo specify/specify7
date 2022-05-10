@@ -302,7 +302,7 @@ export function PoliciesView({
     ) : undefined;
 
   return collapsable ? (
-    <details open={isCollapsed}>
+    <details open={!isCollapsed}>
       <Summary onToggle={setCollapsed}>
         <span className="inline-flex items-center gap-4">
           {header}

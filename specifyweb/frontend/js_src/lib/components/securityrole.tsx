@@ -10,9 +10,9 @@ import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { RA } from '../types';
-import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Submit, Ul } from './basic';
+import { AppTitle, AutoGrowTextArea } from './common';
 import { useLiveState, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
@@ -21,7 +21,7 @@ import { SearchDialog } from './searchdialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
-import { AppTitle, AutoGrowTextArea } from './common';
+import { UserRoles } from './securitycollection';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -33,15 +33,6 @@ export type NewRole = {
 export type Role = NewRole & {
   readonly id: number;
 };
-
-export type UserRoles = RA<{
-  readonly roleId: number;
-  readonly roleName: string;
-  readonly users: RA<{
-    readonly userId: number;
-    readonly userName: string;
-  }>;
-}>;
 
 export function RoleView({
   role: initialRole,
@@ -87,10 +78,6 @@ export function RoleView({
     | State<'DeletionPromptState'>
     // Close AddUser dialog when new user is added
   >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
-  const usersWithRole =
-    typeof userRoles === 'object' && typeof role.id === 'number'
-      ? defined(userRoles.find(({ roleId }) => roleId === role.id)).users
-      : undefined;
 
   const isReadOnly =
     typeof role.id === 'number' && !hasPermission(permissionName, 'update');
@@ -129,10 +116,10 @@ export function RoleView({
       {typeof role.id === 'number' && typeof handleOpenUser === 'function' ? (
         <fieldset className="flex flex-col gap-2">
           <legend>{adminText('users')}:</legend>
-          {typeof usersWithRole === 'object' ? (
+          {typeof userRoles === 'object' ? (
             <>
               <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">
-                {usersWithRole.map(({ userId, userName }) => (
+                {userRoles.map(({ userId, userName }) => (
                   <li key={userId}>
                     <Button.LikeLink
                       disabled={
@@ -175,9 +162,7 @@ export function RoleView({
                     {
                       field: 'id',
                       operation: 'notIn',
-                      values: usersWithRole.map(({ userId }) =>
-                        userId.toString()
-                      ),
+                      values: userRoles.map(({ userId }) => userId.toString()),
                     },
                   ]}
                   templateResource={state.templateResource}
@@ -205,12 +190,9 @@ export function RoleView({
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete') ? (
           <Button.Red
-            disabled={
-              typeof usersWithRole === 'undefined' &&
-              typeof userRoles !== 'undefined'
-            }
+            disabled={typeof userRoles === 'undefined'}
             onClick={
-              usersWithRole?.length === 0 || typeof userRoles !== 'undefined'
+              userRoles?.length === 0
                 ? handleDelete
                 : (): void =>
                     setState({

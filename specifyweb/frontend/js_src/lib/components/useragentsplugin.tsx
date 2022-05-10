@@ -137,7 +137,11 @@ export function UserAgentsDialog({
               {f.includes(
                 response.AgentInUseException ?? [],
                 idFromUrl(address.get('agent') ?? '')
-              ) && <ErrorMessage>{adminText('agentInUse')}</ErrorMessage>}
+              ) && (
+                <ErrorMessage className="mt-2">
+                  {adminText('agentInUse')}
+                </ErrorMessage>
+              )}
             </Label.Generic>
           ))}
         </Ul>

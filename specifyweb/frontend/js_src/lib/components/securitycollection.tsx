@@ -5,7 +5,7 @@ import { ajax, Http, ping } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { KeysToLowerCase, SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { group, index, removeKey, replaceItem, replaceKey } from '../helpers';
+import { index, removeKey, replaceItem, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
@@ -24,9 +24,18 @@ import { useAsyncState, useLiveState, useTitle } from './hooks';
 import { formatList } from './internationalization';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
-import type { NewRole, Role, UserRoles } from './securityrole';
+import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
+
+export type UserRoles = RA<{
+  readonly userId: number;
+  readonly userName: string;
+  readonly roles: RA<{
+    readonly roleId: number;
+    readonly roleName: string;
+  }>;
+}>;
 
 export function CollectionView({
   collection,
@@ -62,12 +71,12 @@ export function CollectionView({
             headers: { Accept: 'application/json' },
           }
         ).then(({ data }) =>
-          data.map(({ roleid, rolename, users }) => ({
-            roleId: roleid,
-            roleName: rolename,
-            users: users.map(({ userid, username }) => ({
-              userId: userid,
-              userName: username,
+          data.map(({ userid, username, roles }) => ({
+            userId: userid,
+            userName: username,
+            roles: roles.map(({ roleid, rolename }) => ({
+              roleId: roleid,
+              roleName: rolename,
             })),
           }))
         ),
@@ -81,7 +90,10 @@ export function CollectionView({
     | State<'MainState'>
     | State<'CreatingRoleState'>
     | State<'LoadingRole'>
-    | State<'RoleState', { readonly role: Role | NewRole }>
+    | State<
+        'RoleState',
+        { readonly role: Role | NewRole; readonly userRoles: UserRoles }
+      >
   >(
     React.useCallback(
       () =>
@@ -99,13 +111,17 @@ export function CollectionView({
     if (
       state.type === 'LoadingRole' &&
       typeof initialRoleId === 'number' &&
-      typeof roles === 'object'
+      typeof roles === 'object' &&
+      Array.isArray(userRoles)
     )
       setState({
         type: 'RoleState',
         role: roles[initialRoleId],
+        userRoles: userRoles.filter(({ roles }) =>
+          roles.some(({ roleId }) => roleId === initialRoleId)
+        ),
       });
-  }, [roles, state, initialRoleId, setState]);
+  }, [roles, state, initialRoleId, setState, userRoles]);
 
   const updateRole = async (role: Role): Promise<void> =>
     ping(
@@ -168,12 +184,19 @@ export function CollectionView({
                       <li key={role.id}>
                         <Button.LikeLink
                           disabled={
-                            !hasPermission('/permissions/roles', 'update')
+                            !hasPermission('/permissions/roles', 'update') ||
+                            !Array.isArray(userRoles)
                           }
                           onClick={(): void =>
                             setState({
                               type: 'RoleState',
                               role,
+                              userRoles:
+                                userRoles?.filter(({ roles }) =>
+                                  roles.some(
+                                    ({ roleId }) => roleId === initialRoleId
+                                  )
+                                ) ?? [],
                             })
                           }
                         >
@@ -195,6 +218,7 @@ export function CollectionView({
                         type: 'CreatingRoleState',
                       })
                     }
+                    disabled={!Array.isArray(userRoles)}
                   >
                     {commonText('create')}
                   </Button.Green>
@@ -213,34 +237,14 @@ export function CollectionView({
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof userRoles === 'object'
               ? f.var(
-                  group(
-                    userRoles.flatMap(({ roleId, roleName, users }) =>
-                      users.map(({ userId, userName }) => [
-                        userId,
-                        {
-                          userName,
-                          roleId,
-                          roleName,
-                        },
-                      ])
-                    )
-                  )
-                    .map(([userId, roles]) => ({
-                      userId,
-                      userName: defined(roles[0]).userName,
-                      roles,
-                    }))
-                    .filter(
-                      ({ userId, roles }) =>
-                        roles.length > 0 &&
-                        (userId === userInformation.id ||
-                          hasTablePermission('SpecifyUser', 'update') ||
-                          hasPermission(
-                            '/permissions/policies/user',
-                            'update'
-                          ) ||
-                          hasPermission('/permissions/user/roles', 'update'))
-                    ),
+                  userRoles.filter(
+                    ({ userId, roles }) =>
+                      roles.length > 0 &&
+                      (userId === userInformation.id ||
+                        hasTablePermission('SpecifyUser', 'update') ||
+                        hasPermission('/permissions/policies/user', 'update') ||
+                        hasPermission('/permissions/user/roles', 'update'))
+                  ),
                   (users) =>
                     users.length === 0 ? (
                       commonText('none')
@@ -284,6 +288,10 @@ export function CollectionView({
             setState({
               type: 'RoleState',
               role,
+              userRoles:
+                userRoles?.filter(({ roles }) =>
+                  roles.some(({ roleId }) => roleId === initialRoleId)
+                ) ?? [],
             })
           }
           onClose={(): void =>
@@ -326,16 +334,12 @@ export function CollectionView({
                   )
                 : undefined
             }
-            userRoles={userRoles}
+            userRoles={state.userRoles}
             onOpenUser={handleOpenUser}
             onAddUser={(user): void =>
               typeof userRoles === 'object' && typeof state.role.id === 'number'
                 ? f.var(
-                    userRoles
-                      .filter(({ users }) =>
-                        users.some(({ userId }) => userId === user.id)
-                      )
-                      .map(({ roleId }) => roleId),
+                    userRoles[user.id].roles.map(({ roleId }) => roleId),
                     (currentUserRoles) =>
                       currentUserRoles.includes(defined(state.role.id))
                         ? undefined
@@ -353,16 +357,16 @@ export function CollectionView({
                               setUserRoles(
                                 f.var(
                                   userRoles.findIndex(
-                                    ({ roleId }) => roleId === state.role.id
+                                    ({ userId }) => userId === user.id
                                   ),
-                                  (roleIndex) =>
-                                    replaceItem(userRoles, roleIndex, {
-                                      ...userRoles[roleIndex],
-                                      users: [
-                                        ...userRoles[roleIndex].users,
+                                  (userIndex) =>
+                                    replaceItem(userRoles, userIndex, {
+                                      ...userRoles[userIndex],
+                                      roles: [
+                                        ...userRoles[userIndex].roles,
                                         {
-                                          userId: user.id,
-                                          userName: user.get('name'),
+                                          roleId: defined(state.role.id),
+                                          roleName: state.role.name,
                                         },
                                       ],
                                     })
