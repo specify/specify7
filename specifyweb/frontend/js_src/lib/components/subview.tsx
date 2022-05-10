@@ -77,6 +77,10 @@ export function SubView({
         ) as Collection<AnySchema>;
         if (typeof resource === 'object' && resource !== null)
           collection.add(resource);
+        // @ts-expect-error Overwriting read-only property
+        collection.related ??= parentResource;
+        // @ts-expect-error Overwriting read-only property
+        collection.field ??= field.getReverse();
         return collection;
       }
     },
