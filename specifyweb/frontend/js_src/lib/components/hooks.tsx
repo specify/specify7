@@ -504,7 +504,12 @@ export function useResourceValue<
         resource.saveBlockers?.remove(key);
         setValidation(blockers.current, validate ? 'auto' : 'silent');
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
-          resource.set(fieldName, storedValue as never);
+          if (storedValue === null && resource.get(fieldName) === '')
+            // Don't trigger save blocker for this trivial change
+            resource.settingDefaultValues(() =>
+              resource.set(fieldName, storedValue as never)
+            );
+          else resource.set(fieldName, storedValue as never);
         else {
           const parsedValue = parseResults.parsed as string;
           if (

@@ -211,11 +211,8 @@ function QueryResult({
         <span role="cell" className={`${cellClassName} sticky`}>
           <Input.Checkbox
             checked={isSelected}
-            /* Ignore click event, as click would be handled by onClick on row*/
+            /* Ignore click event, as click would be handled by onClick on row */
             onChange={f.undefined}
-            onClick={({ shiftKey }): void =>
-              handleSelected?.(!isSelected, shiftKey)
-            }
           />
         </span>
       )}
