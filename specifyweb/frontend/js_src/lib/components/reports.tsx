@@ -717,14 +717,22 @@ function RunReport({
   );
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
   React.useEffect(() => {
-    form?.submit();
-    if (form !== null) setTimeout(handleClose, 0);
-  }, [form]);
+    if (form === null) return;
+    const container = document.createElement('div');
+    container.classList.add('hidden');
+    document.body.append(container);
+    container.innerHTML = form.outerHTML;
+    const newForm = container.children[0] as HTMLFormElement;
+    newForm.submit();
+    setTimeout(() => {
+      container.remove();
+      handleClose();
+    }, 0);
+  }, [form, handleClose]);
   return (
     <form
       action="/report_runner/run/"
       method="post"
-      className="hidden"
       target={reportWindowContext}
       ref={setForm}
     >
