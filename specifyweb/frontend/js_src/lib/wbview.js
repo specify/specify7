@@ -980,7 +980,7 @@ const WBView = Backbone.View.extend({
           typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
           'undefined'
         )
-          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue);
+          this.setCellMeta(physicalRow, physicalCol, 'originalValue', '');
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
