@@ -10,6 +10,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
+import React from 'react';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
@@ -669,7 +670,7 @@ export const WBUtils = Backbone.View.extend({
     const length = visualRows.length * localityColumnGroups.length;
 
     return {
-      localityIndex: visualRows[0],
+      localityIndex: 0,
       length,
       isFirst: (index) => index === 0,
       isLast: (index) => index + 1 >= length,
@@ -703,21 +704,23 @@ export const WBUtils = Backbone.View.extend({
     const getGeoLocateQueryURL = (localityIndex) =>
       this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
+    const handleDelete = () => {
+      window.removeEventListener('message', handleGeolocateResult, false);
+      event.target.ariaPressed = false;
+      this.geoLocateDialog.remove();
+      this.geoLocateDialog = undefined;
+    };
+
     const content = $('<div>');
     this.geoLocateDialog = showDialog({
       header: wbText('geoLocateDialogTitle'),
       content,
       buttons: commonText('close'),
-      onClose() {
-        window.removeEventListener('message', handleGeolocateResult, false);
-        event.target.ariaPressed = false;
-        this.geoLocateDialog.remove();
-        this.geoLocateDialog = undefined;
-      },
+      onClose: handleDelete,
     });
 
     const updateGeolocate = (localityIndex) =>
-      content.html(`<iframe class="w-full h-full"
+      content.html(`<iframe class="w-[914px] h-[627px]"
         title="${localityText('geoLocate')}"
         src="${getGeoLocateQueryURL(localityIndex)}"
       ></iframe>`);
@@ -731,6 +734,7 @@ export const WBUtils = Backbone.View.extend({
       this.geoLocateDialog.updateProps({
         buttons: (
           <>
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
             <Button.Blue
               onClick={() => updateGeoLocate(localityIndex - 1)}
               disabled={selection.isFirst(localityIndex)}
@@ -758,6 +762,9 @@ export const WBUtils = Backbone.View.extend({
 
     const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
+      // This may happen if the message was sent by someone other than GeoLocate,
+      // (i.e, a React DevTools plugin)
+      if(typeof event.data !== 'string') return;
       const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
@@ -779,10 +786,8 @@ export const WBUtils = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selection.length === 1) {
-        this.geoLocateDialog.remove();
-        this.geoLocateDialog = undefined;
-      }
+      if (selection.length === 1)
+        handleDelete();
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
