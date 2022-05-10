@@ -146,8 +146,10 @@ export function PrepDialog({
             })
           );
 
-          if (typeof itemCollection === 'object') itemCollection.add(items);
-          else {
+          if (typeof itemCollection === 'object') {
+            itemCollection.add(items);
+            handleClose();
+          } else {
             const interaction = new action.model.Resource();
             const loan = toTable(interaction, 'Loan');
             loan?.set(

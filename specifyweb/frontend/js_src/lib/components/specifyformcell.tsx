@@ -121,7 +121,11 @@ const cellRenderers: {
         () =>
           typeof field === 'object' &&
           relationshipIsToMany(field) &&
-          ['Loan', 'Gift', 'Disposal'].includes(field.relatedModel.name)
+          [
+            'LoanPreparation',
+            'GiftPreparation',
+            'DisposalPreparation',
+          ].includes(field.relatedModel.name)
             ? resource.rgetCollection(field.name)
             : false,
         [field, resource]
@@ -173,6 +177,7 @@ const cellRenderers: {
           model: resource.specifyModel,
         }}
         resource={resource}
+        display="block"
       />
     );
   },

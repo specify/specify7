@@ -10,14 +10,13 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { schema } from '../schema';
+import type { Collection, SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { FormTableCollection } from './formtable';
 import { InteractionDialog } from './interactiondialog';
-import { Collection, SpecifyModel } from '../specifymodel';
-import { f } from '../functools';
-import { SerializedResource } from '../datamodelutils';
 
 export function FormTableInteraction(
   props: Omit<Parameters<typeof FormTableCollection>[0], 'onAdd'>
@@ -32,14 +31,10 @@ export function FormTableInteraction(
   return (
     <>
       {typeof recordSetsPromise === 'object' &&
-      typeof props.collection.related === 'object' &&
-      f.includes(
-        ['Loan', 'Gift', 'Disposal'],
-        props.collection.model.specifyModel.name
-      ) ? (
+      typeof props.collection.related === 'object' ? (
         <InteractionDialog
           action={{
-            model: props.collection.model.specifyModel as SpecifyModel<
+            model: props.collection.related.specifyModel as SpecifyModel<
               Loan | Gift | Disposal
             >,
           }}
@@ -51,7 +46,9 @@ export function FormTableInteraction(
           }
           recordSetsPromise={recordSetsPromise}
           onClose={(): void => setRecordSetsPromise(undefined)}
-          searchField={undefined}
+          searchField={schema.models.CollectionObject.getLiteralField(
+            'catalogNumber'
+          )}
         />
       ) : undefined}
       <FormTableCollection

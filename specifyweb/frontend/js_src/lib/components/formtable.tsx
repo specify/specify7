@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { DependentCollection } from '../collectionapi';
 import type { AnySchema } from '../datamodelutils';
 import { replaceKey, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -9,6 +10,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
+import { resourceOn } from '../resource';
 import type { Relationship } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, PartialBy, RA } from '../types';
@@ -19,11 +21,10 @@ import type { SortConfig } from './common';
 import { SortIndicator } from './common';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
+import { usePref } from './preferenceshooks';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
-import { DependentCollection } from '../collectionapi';
-import { usePref } from './preferenceshooks';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -354,6 +355,13 @@ export function FormTableCollection({
   readonly collection: Collection<AnySchema>;
 }): JSX.Element {
   const [records, setRecords] = React.useState(Array.from(collection.models));
+  React.useEffect(
+    () =>
+      resourceOn(collection, 'add remove sort', () =>
+        setRecords(Array.from(collection.models))
+      ),
+    [collection]
+  );
   const field = defined(collection.field?.getReverse());
   const isDependent = collection instanceof DependentCollection;
   const isToOne = !relationshipIsToMany(field);
@@ -366,11 +374,11 @@ export function FormTableCollection({
       onAdd={
         disableAdding
           ? undefined
-          : (resource): void => {
+          : handleAdd ??
+            ((resource): void => {
               collection.add(resource);
               setRecords(Array.from(collection.models));
-              handleAdd?.(resource);
-            }
+            })
       }
       onDelete={(resource): void => {
         collection.remove(resource);
