@@ -6,6 +6,7 @@ import type {
   Collection,
   CollectionObject,
   CollectionRelationship,
+  CollectionRelType,
 } from '../datamodel';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
@@ -25,6 +26,7 @@ import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
 
 type Data = {
+  readonly relationshipType: SpecifyResource<CollectionRelType>;
   readonly collectionObjects: RA<{
     readonly formatted: string;
     readonly resource: SpecifyResource<CollectionObject>;
@@ -100,6 +102,7 @@ export async function fetchOtherCollectionData(
   const formattedCollection = format(otherCollection);
 
   return {
+    relationshipType,
     collectionObjects:
       typeof resource.id === 'number'
         ? await fetchCollection(
@@ -284,7 +287,10 @@ export function CollectionOneToManyPlugin({
             const toAdd = new schema.models.CollectionRelationship.Resource();
             toAdd.set(`${data.otherSide}Side`, addedResource);
             toAdd.set(`${data.side}Side`, resource);
-            toAdd.set('collectionRelType', relationship);
+            toAdd.set(
+              'collectionRelType',
+              data.relationshipType.get('resource_uri')
+            );
             resource.getDependentResource(`${data.side}SideRels`)?.add(toAdd);
             setData({
               ...data,

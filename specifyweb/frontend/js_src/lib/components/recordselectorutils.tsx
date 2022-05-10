@@ -12,7 +12,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
-import { deleteResource, getResourceApiUrl, resourceOn } from '../resource';
+import { deleteResource, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
@@ -610,7 +610,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         if (!resource.isNew()) {
           const recordSetItem = new schema.models.RecordSetItem.Resource({
             recordId: resource.id,
-            recordSet: getResourceApiUrl('RecordSet', recordSet.id),
+            recordSet: recordSet.get('resource_uri'),
           });
           loading(recordSetItem.save());
         }
