@@ -185,7 +185,7 @@ export const parseLocalityPinFields = (
     .flatMap(({ pathsToFields }) => pathsToFields)
     .filter(
       (mappingPath) =>
-        mappingPath[0] === 'locality' &&
+        mappingPath[0].toLowerCase() === 'locality' &&
         (!quickFetch || mappingPath.length === 2)
     )
     .map((mappingPath) => mappingPath.slice(1));
@@ -198,13 +198,13 @@ export const parseLocalityPinFields = (
       if (treeRankLocation === -1) {
         return mappingPath;
       } else if (
-        mappingPaths.every(
-          (existingGroupName) =>
-            !pathStartsWith(
-              existingGroupName,
-              splitJoinedMappingPath(groupName)
-            )
-        )
+        /*
+         * Replace first occurrence of a tree with fullName, and disregard
+         * subsequent occurrences
+         */
+        mappingPaths.findIndex((existingGroupName) =>
+          pathStartsWith(existingGroupName, splitJoinedMappingPath(groupName))
+        ) === index
       )
         return [
           ...splitJoinedMappingPath(groupName),
