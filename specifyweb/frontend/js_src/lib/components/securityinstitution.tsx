@@ -51,7 +51,7 @@ export function InstitutionView({
 
   const updateRole = async (role: Role): Promise<void> =>
     ping(
-      `/permissions/library_roles/${role.id}/`,
+      `/permissions/library_role/${role.id}/`,
       {
         method: 'PUT',
         body: {
