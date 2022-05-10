@@ -390,6 +390,7 @@ function PreparationReturn({
       <RenderForm
         resource={loanReturnPreparation.current}
         viewDefinition={metaDataFormDefinition()}
+        display="inline"
       />
       <table>
         <thead>

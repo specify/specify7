@@ -508,13 +508,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </Label.ForCheckbox>
             <Label.ForCheckbox>
               <Input.Checkbox
-                checked={items[itemId].dataModel.isReadOnly ?? false}
-                disabled={true}
-              />
-              {commonText('readOnly')}
-            </Label.ForCheckbox>
-            <Label.ForCheckbox>
-              <Input.Checkbox
                 checked={
                   items[itemId].dataModel.canChangeIsRequired
                     ? items[itemId].isRequired ?? false

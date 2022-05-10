@@ -106,7 +106,6 @@ export function SchemaConfig({
           field.name,
           {
             length: field.length,
-            isReadOnly: field.overrides.isReadOnly,
             relatedModelName:
               'relatedModel' in field ? field.relatedModel.name : undefined,
             isRequired: field.overrides.isRequired,

@@ -161,6 +161,7 @@ export function SecurityPanel(): JSX.Element | null {
         {state.type === 'InstitutionState' && (
           <InstitutionView
             institution={data.institution}
+            collections={collections}
             users={users}
             libraryRoles={libraryRoles}
             onChangeLibraryRoles={(newState): void =>

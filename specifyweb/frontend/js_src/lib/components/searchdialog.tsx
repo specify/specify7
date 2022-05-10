@@ -121,6 +121,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           viewName={viewName}
           formType="form"
           mode="search"
+          display="inline"
         />
         <Ul className="dark:bg-neutral-700 min-w-96 h-40 p-2 overflow-auto bg-white rounded">
           {isLoading ? (
