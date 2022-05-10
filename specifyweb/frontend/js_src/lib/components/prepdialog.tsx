@@ -171,7 +171,7 @@ export function PrepDialog({
           }
         }}
       >
-        <table className="grid-table grid-cols-7 gap-2">
+        <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
           <thead>
             <tr>
               <th scope="col">
