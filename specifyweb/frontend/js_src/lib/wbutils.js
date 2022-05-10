@@ -18,7 +18,7 @@ import {
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
 import {Backbone} from './backbone';
-import {Button} from './components/basic';
+import {Button, Input, Label, Ul} from './components/basic';
 import {Lat, Long} from './latlongutils';
 import {camelToKebab, clamp, sortFunction} from './helpers';
 import {f} from './functools';
@@ -764,7 +764,7 @@ export const WBUtils = Backbone.View.extend({
     const handleGeolocateResult = (event) => {
       // This may happen if the message was sent by someone other than GeoLocate,
       // (i.e, a React DevTools plugin)
-      if(typeof event.data !== 'string') return;
+      if (typeof event.data !== 'string') return;
       const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
 
@@ -786,8 +786,7 @@ export const WBUtils = Backbone.View.extend({
           .filter(([, visualCol]) => visualCol !== -1)
       );
 
-      if (selection.length === 1)
-        handleDelete();
+      if (selection.length === 1) handleDelete();
     };
 
     window.addEventListener('message', handleGeolocateResult, false);
@@ -912,7 +911,7 @@ export const WBUtils = Backbone.View.extend({
 
     let numberOfChanges = 0;
 
-    function cleanUp() {
+    const cleanUp = () => {
       buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
       this.wbview.hot.updateSettings({
         readOnly: originalReadOnlyState,
@@ -921,16 +920,10 @@ export const WBUtils = Backbone.View.extend({
       this.el.classList.remove('wb-focus-coordinates');
     }
 
-    let handleOptionChangeBind = undefined;
-
-    function closeDialog() {
-      this.wbview.coordinateConverterView[0].removeEventListener(
-        'change',
-        handleOptionChangeBind
-      );
+    const handleClose = () => {
       this.wbview.coordinateConverterView.remove();
       this.wbview.coordinateConverterView = undefined;
-      cleanUp.call(this);
+      cleanUp();
     }
 
     const options = [
@@ -966,79 +959,21 @@ export const WBUtils = Backbone.View.extend({
       },
     ];
 
-    function revertChanges() {
+    const revertChanges = () => {
       this.wbview.hot.batch(() =>
         Array.from({ length: numberOfChanges }).forEach(() =>
           this.wbview.hot.undo()
         )
       );
-      closeDialog.call(this);
-    }
+      handleClose();
+    };
+    // TODO: remember these two options
+    let includeSymbols = false;
+    let applyToAll = true;
 
-    this.wbview.coordinateConverterView = showDialog({
-      modal: false,
-      header: wbText('coordinateConverterDialogTitle'),
-      onClose: revertChanges,
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={() => closeDialog}>
-            {commonText('apply')}
-          </Button.Blue>
-        </>
-      ),
-      content: $(`<div>
-        ${wbText('coordinateConverterDialogHeader')}
-        <ul role="list">
-          ${Object.values(options)
-            .map(
-              ({ optionName }, optionIndex) =>
-                `<li>
-                  <label>
-                    <input
-                      type="radio"
-                      name="latlongformat"
-                      value="${optionIndex}"
-                    >
-                    ${optionName}
-                  </label>
-                </li>`
-            )
-            .join('')}
-          <li>
-            <br>
-            <label>
-              <input type="checkbox" name="includesymbols">
-              ${wbText('includeDmsSymbols')}
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="applyToAll" checked>
-              ${commonText('applyAll')}
-            </label>
-          </li>
-        </ul>
-      </div>`),
-    });
-    const handleOptionChange = () => {
-      const includeSymbols = this.wbview.coordinateConverterView
-        .find('input[name="includesymbols"]')
-        .is(':checked');
-      const applyToAll = this.wbview.coordinateConverterView
-        .find('input[name="applyToAll"]')
-        .is(':checked');
-
-      const selectedOption = this.wbview.coordinateConverterView.find(
-        'input[type="radio"]:checked'
-      );
-      if (selectedOption.length === 0) return;
-
-      const optionValue = selectedOption.attr('value');
-      if (typeof options[optionValue] === 'undefined') return;
-
-      const { conversionFunctionName, showCardinalDirection } =
-        options[optionValue];
+    let conversionFunctionName = undefined;
+    let showCardinalDirection = false;
+    const handleChange = () => {
       const includeSymbolsFunction = includeSymbols
         ? (coordinate) => coordinate
         : (coordinate) => coordinate.replace(/[^\s\w\-.]/g, '');
@@ -1083,10 +1018,73 @@ export const WBUtils = Backbone.View.extend({
         this.wbview.hot.setDataAtCell(changes);
       }
     };
-    handleOptionChangeBind = handleOptionChange.bind(this);
-    this.wbview.coordinateConverterView[0].addEventListener(
-      'change',
-      handleOptionChangeBind
-    );
+
+    this.wbview.coordinateConverterView = showDialog({
+      modal: false,
+      header: wbText('coordinateConverterDialogTitle'),
+      onClose: revertChanges,
+      buttons: (
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Blue onClick={handleClose}>
+            {commonText('apply')}
+          </Button.Blue>
+        </>
+      ),
+      content: (
+        <>
+          {wbText('coordinateConverterDialogHeader')}
+          <Ul>
+            {Object.values(options).map(
+              (
+                entry,
+                optionIndex
+              ) => (
+                <li key={optionIndex}>
+                  <Label.ForCheckbox>
+                    <Input.Radio
+                      name="latLongFormat"
+                      onChange={() =>{
+                        conversionFunctionName = entry.conversionFunctionName;
+                        showCardinalDirection = entry.showCardinalDirection;
+                        handleChange();
+                      }}
+                    />
+                    {entry.optionName}
+                  </Label.ForCheckbox>
+                </li>
+              )
+            )}
+            <br />
+            <li>
+              <Label.ForCheckbox>
+                <Input.Checkbox
+                  defaultChecked={includeSymbols}
+                  onValueChange={(newValue) => {
+                    includeSymbols = newValue;
+                    if(typeof conversionFunctionName === 'string')
+                      handleChange();
+                  }}
+                />
+                {wbText('includeDmsSymbols')}
+              </Label.ForCheckbox>
+            </li>
+            <li>
+              <Label.ForCheckbox>
+                <Input.Checkbox
+                  defaultChecked={applyToAll}
+                  onValueChange={(newValue) => {
+                    applyToAll = newValue;
+                    if(typeof conversionFunctionName === 'string')
+                      handleChange();
+                  }}
+                />
+                {commonText('applyAll')}
+              </Label.ForCheckbox>
+            </li>
+          </Ul>
+        </>
+      ),
+    });
   },
 });
