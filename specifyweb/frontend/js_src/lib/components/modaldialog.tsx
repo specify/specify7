@@ -330,8 +330,8 @@ export function Dialog({
             ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && modal
             ? supportsBackdropBlur
-              ? 'backdrop-blur-lg'
-              : 'bg-white-200/70 dark:bg-black/70'
+              ? 'backdrop-blur-lg bg-white/40 dark:bg-transparent'
+              : 'bg-white/70 dark:bg-black/70'
             : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
                 via-white dark:via-neutral-900 to-white dark:to-neutral-900`
         }
