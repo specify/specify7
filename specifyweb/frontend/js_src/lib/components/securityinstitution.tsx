@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Institution, SpecifyUser } from '../datamodel';
+import { Collection } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { removeKey, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
@@ -22,11 +23,13 @@ import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { schema } from '../schema';
+import { CreateRole } from './securityroletemplate';
 
 export function InstitutionView({
   institution,
   users,
   onOpenUser: handleOpenUser,
+  collections,
   libraryRoles,
   onChangeLibraryRoles: handleChangeLibraryRoles,
 }: {
@@ -34,12 +37,14 @@ export function InstitutionView({
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number | undefined) => void;
   readonly libraryRoles: IR<Role> | undefined;
+  readonly collections: IR<SerializedResource<Collection>>;
   readonly onChangeLibraryRoles: (
     roles: IR<Role> | ((oldState: IR<Role>) => IR<Role>)
   ) => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'MainState'>
+    | State<'CreatingRoleState'>
     | State<'RoleState', { readonly roleId: number | undefined }>
   >({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
@@ -116,7 +121,7 @@ export function InstitutionView({
    */
   return (
     <Container.Base className="flex-1">
-      {state.type === 'MainState' ? (
+      {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
         <>
           <h3 className="text-xl">{institution.name}</h3>
           {hasPermission('/permissions/library/roles', 'read') && (
@@ -157,13 +162,29 @@ export function InstitutionView({
                   <Button.Green
                     onClick={(): void =>
                       setState({
-                        type: 'RoleState',
-                        roleId: undefined,
+                        type: 'CreatingRoleState',
                       })
                     }
                   >
                     {commonText('create')}
                   </Button.Green>
+                )}
+                {state.type === 'CreatingRoleState' && (
+                  <CreateRole
+                    libraryRoles={libraryRoles}
+                    collections={collections}
+                    onCreated={(role): void =>
+                      setState({
+                        type: 'RoleState',
+                        roleId: role.id,
+                      })
+                    }
+                    onClose={(): void =>
+                      setState({
+                        type: 'MainState',
+                      })
+                    }
+                  />
                 )}
                 <SecurityImportExport
                   roles={libraryRoles}
