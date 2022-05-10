@@ -194,8 +194,8 @@ export const pathStartsWith = (
    * Can't use String.prototype.startsWith here.
    * See https://github.com/specify/specify7/issues/1355
    */
-  mappingPathToString(mappingPath.slice(0, subPath.length)) ===
-  mappingPathToString(subPath);
+  mappingPathToString(mappingPath.slice(0, subPath.length)).toLowerCase() ===
+  mappingPathToString(subPath).toLowerCase();
 
 export const getMappedFields = (
   lines: RA<{ readonly mappingPath: MappingPath }>,
