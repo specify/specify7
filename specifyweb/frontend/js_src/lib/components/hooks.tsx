@@ -494,7 +494,7 @@ export function useResourceValue<
          * the pending value in case form submit is triggered using the Enter
          * key (as onSubmit in that case fires before onBlur)
          */
-        resource.set(fieldName, storedValue as never, { silent: true });
+        resource.set(fieldName, storedValue as never, { silent: false });
         return;
       }
       const key = `parseError:${fieldName.toLowerCase()}`;
