@@ -81,7 +81,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME
   ): Promise<Collection<VALUE[number]>>;
-  settingDefaultValues: (callback: () => void) => void;
   set<
     FIELD_NAME extends
       | keyof SCHEMA['fields']
@@ -118,7 +117,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
               | keyof SCHEMA['toOneIndependent']
               | keyof SCHEMA['toManyIndependent']
               ? string
-              : never)
+              : never),
+    options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME

@@ -7,12 +7,12 @@ import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
+import { getAttribute } from '../helpers';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
-import { getAttribute } from '../helpers';
 import { columnToFieldMapper } from '../parseselect';
 import { hasTablePermission, hasTreeAccess } from '../permissions';
 import type {
@@ -79,23 +79,21 @@ export function QueryComboBox({
 }): JSX.Element {
   const field = resource.specifyModel.getField(initialFieldName ?? '');
 
-  React.useEffect(
-    () =>
-      resource.settingDefaultValues(() => {
-        if (!resource.isNew()) return;
-        if (field?.name === 'cataloger')
-          toTable(resource, 'CollectionObject')?.set(
-            'cataloger',
-            userInformation.agent.resource_uri
-          );
-        if (field?.name === 'receivedBy')
-          toTable(resource, 'LoanReturnPreparation')?.set(
-            'receivedBy',
-            userInformation.agent.resource_uri
-          );
-      }),
-    [resource, field]
-  );
+  React.useEffect(() => {
+    if (!resource.isNew()) return;
+    if (field?.name === 'cataloger')
+      toTable(resource, 'CollectionObject')?.set(
+        'cataloger',
+        userInformation.agent.resource_uri,
+        { silent: true }
+      );
+    if (field?.name === 'receivedBy')
+      toTable(resource, 'LoanReturnPreparation')?.set(
+        'receivedBy',
+        userInformation.agent.resource_uri,
+        { silent: true }
+      );
+  }, [resource, field]);
 
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {

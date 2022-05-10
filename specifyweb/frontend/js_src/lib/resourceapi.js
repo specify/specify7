@@ -82,7 +82,7 @@ function eventHandlerForToOne(related, field) {
             // unless they change because the resource is being fetched
             // or updated during a save
             this.on('change', function() {
-                if (!this._fetch && !this._save && !this._ignoreChanges) {
+                if (!this._fetch && !this._save) {
                     this.needsSaved = true;
                     this.trigger('saverequired');
                 }
@@ -91,13 +91,6 @@ function eventHandlerForToOne(related, field) {
             globalEvents.trigger('initResource', this);
             if(this.isNew())
                 globalEvents.trigger('newResource', this);
-        },
-        // Supress saveRequired trigger when setting default values for resource
-        // Works for new resources only
-        settingDefaultValues(callback){
-            this._ignoreChanges = true;
-            callback();
-            this._ignoreChanges = false;
         },
         async clone() {
             var self = this;

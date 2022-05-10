@@ -109,11 +109,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setInputValue('');
 
     // Not sure if this should be disabled if isReadOnly
-    resource.settingDefaultValues(() =>
-      typeof defaultValue === 'object' && resource.isNew()
-        ? resource.set(dateField, getDateInputValue(defaultValue) as never)
-        : undefined
-    );
+    if (typeof defaultValue === 'object' && resource.isNew())
+      resource.set(dateField, getDateInputValue(defaultValue) as never, {
+        silent: true,
+      });
 
     const destructor = resourceOn(
       resource,
@@ -162,34 +161,31 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     if (renderCount.current === 1) return;
 
     // Don't trigger unload protect when setting default value
-    if (renderCount.current === 2) resource.settingDefaultValues(process);
-    else process();
+    const options = { silent: renderCount.current === 2 };
 
-    function process(): void {
-      if (typeof moment === 'undefined') {
-        resource.set(dateField, null as never);
-        if (typeof precisionField === 'string')
-          resource.set(precisionField, null as never);
-        resource.saveBlockers?.remove(`invaliddate:${dateField}`);
-      } else if (moment.isValid()) {
-        const value = moment.format(databaseDateFormat);
-        resource.set(dateField, value as never);
-        if (typeof precisionField === 'string')
-          resource.set(precisionField, precisions[precision] as never);
-        resource.saveBlockers?.remove(`invaliddate:${dateField}`);
-      } else {
-        const validationMessage =
-          precision === 'full'
-            ? formsText('requiredFormat', fullDateFormat())
-            : precision === 'month-year'
-            ? formsText('requiredFormat', monthFormat())
-            : formsText('invalidDate');
-        resource.saveBlockers?.add(
-          `invaliddate:${dateField}`,
-          dateField,
-          validationMessage
-        );
-      }
+    if (typeof moment === 'undefined') {
+      resource.set(dateField, null as never, options);
+      if (typeof precisionField === 'string')
+        resource.set(precisionField, null as never, options);
+      resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+    } else if (moment.isValid()) {
+      const value = moment.format(databaseDateFormat);
+      resource.set(dateField, value as never, options);
+      if (typeof precisionField === 'string')
+        resource.set(precisionField, precisions[precision] as never, options);
+      resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+    } else {
+      const validationMessage =
+        precision === 'full'
+          ? formsText('requiredFormat', fullDateFormat())
+          : precision === 'month-year'
+          ? formsText('requiredFormat', monthFormat())
+          : formsText('invalidDate');
+      resource.saveBlockers?.add(
+        `invaliddate:${dateField}`,
+        dateField,
+        validationMessage
+      );
     }
   }, [resource, moment, precision, dateField, precisionField]);
 

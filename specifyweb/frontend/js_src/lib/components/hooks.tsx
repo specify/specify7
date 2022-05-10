@@ -494,9 +494,7 @@ export function useResourceValue<
          * the pending value in case form submit is triggered using the Enter
          * key (as onSubmit in that case fires before onBlur)
          */
-        resource.settingDefaultValues(() =>
-          resource.set(fieldName, storedValue as never)
-        );
+        resource.set(fieldName, storedValue as never, { silent: true });
         return;
       }
       const key = `parseError:${fieldName.toLowerCase()}`;
@@ -504,12 +502,10 @@ export function useResourceValue<
         resource.saveBlockers?.remove(key);
         setValidation(blockers.current, validate ? 'auto' : 'silent');
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
-          if (storedValue === null && resource.get(fieldName) === '')
+          resource.set(fieldName, storedValue as never, {
             // Don't trigger save blocker for this trivial change
-            resource.settingDefaultValues(() =>
-              resource.set(fieldName, storedValue as never)
-            );
-          else resource.set(fieldName, storedValue as never);
+            silent: storedValue === null && resource.get(fieldName) === '',
+          });
         else {
           const parsedValue = parseResults.parsed as string;
           if (
@@ -550,28 +546,34 @@ export function useResourceValue<
         : resolveParser(field);
     setParser(parser);
 
-    resource.settingDefaultValues(() =>
-      typeof parser.value === 'undefined' ||
-      !resource.isNew() ||
-      (parser.type === 'number' &&
-        typeof resource.get(fieldName) === 'number' &&
-        resource.get(fieldName) !== 0) ||
-      ((parser.type === 'text' || parser.type === 'date') &&
-        typeof resource.get(fieldName) === 'string' &&
-        resource.get(fieldName) !== '') ||
-      (parser.type === 'checkbox' && resource.get(fieldName) === true)
-        ? undefined
-        : resource.set(
-            fieldName,
-            (parser.type === 'date'
-              ? getDateInputValue(
-                  parseRelativeDate(
-                    parser.value?.toString().trim().toLowerCase() ?? ''
-                  ) ?? new Date()
-                )
-              : parser.value) as never
-          )
-    );
+    if (
+      typeof parser.value !== 'undefined' &&
+      /*
+       * Even if resource is new, some values may be prepopulated (i.e, by
+       * PrepDialog). This is a crude check to see if form's default value
+       * should overwrite that of the resource
+       */
+      resource.isNew() &&
+      (parser.type !== 'number' ||
+        typeof resource.get(fieldName) !== 'number' ||
+        resource.get(fieldName) === 0) &&
+      ((parser.type !== 'text' && parser.type !== 'date') ||
+        typeof resource.get(fieldName) !== 'string' ||
+        resource.get(fieldName) === '') &&
+      parser.type !== 'checkbox' &&
+      resource.get(fieldName) !== true
+    )
+      resource.set(
+        fieldName,
+        (parser.type === 'date'
+          ? getDateInputValue(
+              parseRelativeDate(
+                parser.value?.toString().trim().toLowerCase() ?? ''
+              ) ?? new Date()
+            )
+          : parser.value) as never,
+        { silent: true }
+      );
   }, [resource, fieldName, defaultParser]);
 
   React.useEffect(
