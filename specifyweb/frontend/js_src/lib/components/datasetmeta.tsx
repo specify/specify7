@@ -98,10 +98,16 @@ export function DataSetMeta({
               ? Promise.resolve(dataset.name)
               : uniquifyDataSetName(name.trim(), dataset.id).then(
                   async (uniqueName) =>
-                    ping(`/api/workbench/dataset/${dataset.id}/`, {
-                      method: 'PUT',
-                      body: { name: uniqueName, remarks: remarks.trim() },
-                    }).then(() => {
+                    ping(
+                      `/api/workbench/dataset/${dataset.id}/`,
+                      {
+                        method: 'PUT',
+                        body: { name: uniqueName, remarks: remarks.trim() },
+                      },
+                      {
+                        expectedResponseCodes: [Http.NO_CONTENT],
+                      }
+                    ).then(() => {
                       // @ts-expect-error Modifying readonly value
                       dataset.name = uniqueName;
                       // @ts-expect-error Modifying readonly value
