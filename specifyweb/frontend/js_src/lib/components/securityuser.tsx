@@ -89,17 +89,19 @@ export function UserView({
   ] = useUserInstitutionalPolicies(userResource);
   const [changedAgent, handleChangedAgent] = useBooleanState();
 
+  const [password, setPassword] = React.useState<string | undefined>(
+    userResource.isNew() ? undefined : ''
+  );
+
   const previewAffected =
     changedPolicies || changedRoles || changedInstitutionPolicies;
-  const isChanged = changedAgent || previewAffected;
+  const isChanged =
+    changedAgent || previewAffected || (password ?? '').length > 0;
   const changesMade = useIsModified(userResource) || isChanged;
   const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
 
   const mode = augmentMode('edit', userResource.isNew(), 'SpecifyUser');
-  const [password, setPassword] = React.useState<string | undefined>(
-    userResource.isNew() ? undefined : ''
-  );
   const [state, setState] = React.useState<
     | State<'Main'>
     | State<'SetPasswordDialog'>
