@@ -16,10 +16,12 @@ export function LeafletMap({
   localityPoints,
   markerClickCallback,
   onClose: handleClose,
+  modal = true,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
   readonly onClose?: () => void;
+  readonly modal?: boolean;
 }): JSX.Element {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
 
@@ -58,6 +60,7 @@ export function LeafletMap({
       }}
       onResize={handleResize}
       onClose={handleClose}
+      modal={modal}
     >
       <div
         ref={setContainer}

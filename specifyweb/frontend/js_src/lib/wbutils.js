@@ -829,6 +829,7 @@ export const WBUtils = Backbone.View.extend({
         this.geoMapDialog = undefined;
         event.target.ariaPressed = false;
       },
+      modal: false,
     }).render();
   },
   showCoordinateConversion() {
