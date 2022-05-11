@@ -451,9 +451,21 @@ export function useResourceValue<
     [input, setValidation, fieldName, ignoreError, handleIgnoreError]
   );
 
+  /*
+   * Updating field value changes data model value, which triggers a field
+   * update, which updated field value, and so on. This ref helps break
+   * this cycle.
+   */
+  const ignoreChangeRef = React.useRef(false);
+
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
     function updateValue(newValue: T, validate = true) {
+      if (ignoreChangeRef.current) {
+        ignoreChangeRef.current = false;
+        return;
+      }
+
       /*
        * Converting ref to state so that React.useEffect can be triggered
        * when needed
@@ -489,18 +501,16 @@ export function useResourceValue<
       setValue(storedValue);
       if (typeof fieldName === 'undefined') return;
       if (!validate) {
-        /*
-         * Don't trigger input change events until blur event, but do save
-         * the pending value in case form submit is triggered using the Enter
-         * key (as onSubmit in that case fires before onBlur)
-         */
-        resource.set(fieldName, storedValue as never, { silent: false });
+        ignoreChangeRef.current = true;
+        resource.set(fieldName, storedValue as never);
+        ignoreChangeRef.current = false;
         return;
       }
       const key = `parseError:${fieldName.toLowerCase()}`;
       if (parseResults.isValid) {
         resource.saveBlockers?.remove(key);
         setValidation(blockers.current, validate ? 'auto' : 'silent');
+        ignoreChangeRef.current = true;
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
           resource.set(fieldName, storedValue as never, {
             // Don't trigger save blocker for this trivial change
@@ -514,6 +524,7 @@ export function useResourceValue<
           )
             resource.set(fieldName, parsedValue as never);
         }
+        ignoreChangeRef.current = false;
       } else {
         setValidation(parseResults.reason, validate ? 'auto' : 'silent');
         resource.saveBlockers?.add(key, fieldName, parseResults.reason);
