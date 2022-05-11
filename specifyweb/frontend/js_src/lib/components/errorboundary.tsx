@@ -20,13 +20,13 @@ import { getSystemInfo } from '../systeminfo';
 import { userInformation } from '../userinfo';
 import { Button, className, Link } from './basic';
 import { displayError } from './contexts';
-import { copyTextToClipboard, downloadFile } from './filepicker';
-import { useBooleanState } from './hooks';
+import { downloadFile } from './filepicker';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
+import { CopyButton } from './common';
 
 type ErrorBoundaryState =
   | {
@@ -82,7 +82,10 @@ function ErrorDialog({
           >
             {commonText('downloadErrorMessage')}
           </Button.Blue>
-          <CopyErrorMessage message={copiableMessage} />
+          <CopyButton
+            message={copiableMessage}
+            label={commonText('copyErrorMessage')}
+          />
           <Link.Blue href="/specify/task/cache-buster/">
             {commonText('clearCache')}
           </Link.Blue>
@@ -114,24 +117,6 @@ function ErrorDialog({
         {children}
       </details>
     </Dialog>
-  );
-}
-
-const copyMessageTimeout = 3000;
-
-function CopyErrorMessage({ message }: { message: string }): JSX.Element {
-  const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
-  return (
-    <Button.Green
-      onClick={(): void =>
-        void copyTextToClipboard(message).then((): void => {
-          handleCopied();
-          setTimeout(handleNotCopied, copyMessageTimeout);
-        })
-      }
-    >
-      {wasCopied ? commonText('copied') : commonText('copyErrorMessage')}
-    </Button.Green>
   );
 }
 

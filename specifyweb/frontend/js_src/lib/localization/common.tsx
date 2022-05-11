@@ -1836,4 +1836,11 @@ export const commonText = createDictionary({
     ca: (url: JSX.Element) => <>Permission denied when accessing {url}</>,
     'es-es': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
   },
+  // FIXME: localize
+  copy: {
+    'en-us': 'Copy',
+    'ru-ru': 'Copy',
+    ca: 'Copy',
+    'es-es': 'Copy',
+  },
 });

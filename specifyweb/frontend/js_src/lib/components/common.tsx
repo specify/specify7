@@ -12,11 +12,12 @@ import { spanNumber } from '../helpers';
 import { getIcon } from '../icons';
 import { commonText } from '../localization/common';
 import { getModel } from '../schema';
-import { className, Textarea } from './basic';
-import { useTitle } from './hooks';
+import { Button, className, Textarea } from './basic';
+import { useBooleanState, useTitle } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
+import { copyTextToClipboard } from './filepicker';
 
 const MAX_HUE = 360;
 
@@ -213,5 +214,29 @@ export function AutoGrowTextArea(
         className={`[grid-area:1/1/2/2] ${props.className ?? ''}`}
       />
     </div>
+  );
+}
+
+const copyMessageTimeout = 3000;
+
+export function CopyButton({
+  message,
+  label,
+}: {
+  readonly message: string;
+  readonly label: string;
+}): JSX.Element {
+  const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
+  return (
+    <Button.Green
+      onClick={(): void =>
+        void copyTextToClipboard(message).then((): void => {
+          handleCopied();
+          setTimeout(handleNotCopied, copyMessageTimeout);
+        })
+      }
+    >
+      {wasCopied ? commonText('copied') : label}
+    </Button.Green>
   );
 }

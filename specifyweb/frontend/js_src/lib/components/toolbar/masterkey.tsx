@@ -1,16 +1,18 @@
 /**
  * Generate master key
- **/
+ *
+ */
 
 import React from 'react';
 
 import { ajax, formData, Http } from '../../ajax';
 import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
+import { LoadingContext } from '../contexts';
+import { CopyButton } from '../common';
 import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { LoadingContext } from '../contexts';
 
 function MasterKey({
   onClose: handleClose,
@@ -103,10 +105,19 @@ function ShowKey({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      <Label.Generic>
-        {commonText('masterKeyFieldLabel')}
-        <Input.Text isReadOnly value={masterKey} />
-      </Label.Generic>
+      <div className="grid gap-x-2 grid-cols-[auto_min-content] grid-rows-[min-content_auto]">
+        <Label.Generic className="contents">
+          <span className="col-span-2">
+            {commonText('masterKeyFieldLabel')}
+          </span>
+          <Input.Text
+            isReadOnly
+            value={masterKey}
+            className="!cursor-pointer"
+          />
+        </Label.Generic>
+        <CopyButton message={masterKey} label={commonText('copy')} />
+      </div>
     </Dialog>
   );
 }
