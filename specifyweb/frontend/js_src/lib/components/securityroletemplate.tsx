@@ -54,7 +54,7 @@ export function CreateRole({
               })
             }
           >
-            {adminText('fromScratch')}
+            {commonText('new')}
           </Button.Blue>
         </>
       }

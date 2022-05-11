@@ -326,12 +326,6 @@ export const adminText = createDictionary({
     ca: 'From an existing role:',
     'es-es': 'From an existing role:',
   },
-  fromScratch: {
-    'en-us': 'From scratch',
-    'ru-ru': 'С нуля',
-    ca: 'From scratch',
-    'es-es': 'From scratch',
-  },
   createNewRoles: {
     'en-us': 'Create new roles:',
     'ru-ru': 'Будут созданы новые роли:',
