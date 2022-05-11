@@ -84,11 +84,11 @@
     @apply bg-white dark:bg-neutral-900;
   }
 
-  :disabled:not(.icon), [readonly] {
+  :disabled:not(.icon):not(.link), [readonly] {
     @apply !cursor-not-allowed ring-1 ring-gray-500 dark:ring-1;
   }
 
-  :disabled:not(.icon):not([type='checkbox']):not([type='radio']),
+  :disabled:not(.icon):not(.link):not([type='checkbox']):not([type='radio']),
   [readonly]:not([type='checkbox']):not([type='radio']) {
     @apply bg-[color:var(--disabled-field-background)] text-gray-700
       dark:text-neutral-500;

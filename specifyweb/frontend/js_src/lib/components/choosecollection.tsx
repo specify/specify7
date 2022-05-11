@@ -65,7 +65,7 @@ function ChooseCollection({
      * When switching databases on the test server, initial value may point
      * to a collection that doesn't exist in this database
      */
-    f.var(f.parseInt(data.initialValue ?? ''), (id) =>
+    f.maybe(f.parseInt(data.initialValue ?? ''), (id) =>
       data.availableCollections.some((collection) => collection.id === id)
         ? id
         : undefined

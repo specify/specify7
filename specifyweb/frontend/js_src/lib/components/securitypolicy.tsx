@@ -6,6 +6,7 @@ import {
   lowerToHuman,
   removeItem,
   replaceItem,
+  replaceKey,
   toggleItem,
 } from '../helpers';
 import { adminText } from '../localization/admin';
@@ -14,6 +15,7 @@ import { smoothScroll } from '../querybuilderutils';
 import {
   actionToLabel,
   anyResource,
+  getAllActions,
   getCollectionRegistriesFromPath,
   getRegistriesFromPath,
   partsToResourceName,
@@ -165,7 +167,7 @@ function PolicyView({
                       }
                       checked={actions.includes(action)}
                       /*
-                       * If not checkboxes are checked, mark all as required.
+                       * If no checkboxes are checked, mark all as required.
                        * This prevents creation of policies without any
                        * actions
                        */
@@ -244,7 +246,16 @@ export function PoliciesView({
             onChange={(policy): void =>
               handleChange(
                 typeof policy === 'object'
-                  ? replaceItem(policies, index, policy)
+                  ? replaceItem(
+                      policies,
+                      index,
+                      f.var(getAllActions(policy.resource), (possibleActions) =>
+                        possibleActions.length === 1 &&
+                        policy.actions.length === 0
+                          ? replaceKey(policy, 'actions', possibleActions)
+                          : policy
+                      )
+                    )
                   : removeItem(policies, index)
               )
             }

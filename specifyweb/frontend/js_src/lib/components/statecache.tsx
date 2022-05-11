@@ -70,10 +70,8 @@ export function useCachedState<
   React.useEffect(
     () =>
       cacheEvents.on('change', () =>
-        f.var(getCache(bucketName, cacheName), (newValue) =>
-          state !== newValue && typeof newValue !== 'undefined'
-            ? setCachedState(newValue)
-            : undefined
+        f.maybe(getCache(bucketName, cacheName), (newValue) =>
+          state === newValue ? undefined : setCachedState(newValue)
         )
       ),
     [state, bucketName, cacheName, setCachedState]

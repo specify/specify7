@@ -257,7 +257,7 @@ export const getParsedAttribute = (
   cell: Element,
   name: string
 ): string | undefined =>
-  f.var(getAttribute(cell, name)?.trim(), (value) =>
+  f.maybe(getAttribute(cell, name)?.trim(), (value) =>
     value.length === 0 ? undefined : value
   );
 
