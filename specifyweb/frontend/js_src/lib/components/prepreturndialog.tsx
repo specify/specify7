@@ -99,6 +99,8 @@ const metaDataFormDefinition = f.store(
           label: undefined,
           visible: true,
           ariaLabel: undefined,
+          icon: undefined,
+          forClass: undefined,
         },
       ],
     ],

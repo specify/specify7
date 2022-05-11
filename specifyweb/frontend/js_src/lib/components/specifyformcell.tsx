@@ -188,8 +188,8 @@ const cellRenderers: {
       ) ?? null
     );
   },
-  Panel({ mode, formType, resource, display, cellData }) {
-    return (
+  Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+    const form = (
       <RenderForm
         viewDefinition={{
           ...cellData,
@@ -201,6 +201,7 @@ const cellRenderers: {
         display={display}
       />
     );
+    return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
   },
   Command({
     cellData: {

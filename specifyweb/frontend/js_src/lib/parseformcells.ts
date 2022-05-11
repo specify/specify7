@@ -189,7 +189,10 @@ const processCellType: {
   Panel: ({ cell, model }) => ({
     type: 'Panel',
     ...parseFormDefinition(cell, model),
-    display: 'paneltype',
+    display:
+      getParsedAttribute(cell, 'paneltype')?.toLowerCase() === 'buttonbar'
+        ? 'inline'
+        : 'block',
   }),
   Command: ({ cell }) => ({
     type: 'Command',
