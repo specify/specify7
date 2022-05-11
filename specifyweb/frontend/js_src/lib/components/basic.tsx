@@ -261,7 +261,11 @@ export const DataEntry = {
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
     'legend',
-    'gap-x-2 flex font-bold border-b border-gray-500 pt-5'
+    'gap-x-2 flex font-bold border-b border-gray-500 pt-5',
+    ({ children, ...props }) => ({
+      // A hack for Safari. See https://github.com/specify/specify7/issues/1535
+      children: <span {...props}>{children}</span>,
+    })
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
   Add: dataEntryButton(className.dataEntryAdd, commonText('add'), 'plus'),

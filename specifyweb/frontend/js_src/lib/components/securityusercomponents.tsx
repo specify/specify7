@@ -106,8 +106,8 @@ export function UserRoles({
 }): JSX.Element {
   return (
     <fieldset className="flex flex-col gap-2">
-      <legend className={className.headerGray}>
-        {adminText('userRoles')}:
+      <legend>
+        <span className={className.headerGray}>{adminText('userRoles')}:</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
@@ -341,8 +341,10 @@ export function UserIdentityProviders({
   return typeof providers === 'undefined' ||
     Object.entries(providers).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
-      <legend className={className.headerGray}>
-        {adminText('externalIdentityProviders')}
+      <legend>
+        <span className={className.headerGray}>
+          {adminText('externalIdentityProviders')}
+        </span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {Object.entries(providers).map(([title, isEnabled], index) => (
