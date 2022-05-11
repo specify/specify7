@@ -538,12 +538,16 @@ export function useResourceValue<
      * dialogs where space and quote characters are interpreted differently,
      * thus validation for them should be disabled.
      */
-    const parser =
-      resource.noValidation === true || typeof field === 'undefined'
-        ? { type: 'text' as const }
-        : typeof defaultParser === 'object'
-        ? mergeParsers(resolveParser(field), defaultParser)
-        : resolveParser(field);
+    const shouldResolveParser =
+      resource.noValidation !== true && typeof field === 'object';
+    const resolvedParser = shouldResolveParser
+      ? resolveParser(field)
+      : { type: 'text' as const };
+    const parser = shouldResolveParser
+      ? typeof defaultParser === 'object'
+        ? mergeParsers(resolvedParser, defaultParser)
+        : resolvedParser
+      : resolvedParser;
     setParser(parser);
 
     if (
@@ -561,7 +565,14 @@ export function useResourceValue<
         typeof resource.get(fieldName) !== 'string' ||
         resource.get(fieldName) === '') &&
       parser.type !== 'checkbox' &&
-      resource.get(fieldName) !== true
+      resource.get(fieldName) !== true &&
+      /*
+       * Don't auto set numeric fields to "0", unless it is the default value
+       * in the form definition
+       */
+      (parser.type !== 'number' ||
+        resolvedParser.value !== 0 ||
+        (defaultParser?.value ?? 0) !== 0)
     )
       resource.set(
         fieldName,

@@ -283,7 +283,7 @@ export function Autocomplete<T>({
 
   function handleBlur(): void {
     emitBlur.current();
-    if (process.env.NODE_ENV !== 'development' && !closeOnOutsideClick)
+    if (process.env.NODE_ENV !== 'development' && closeOnOutsideClick)
       handleClose();
   }
 
@@ -330,7 +330,7 @@ export function Autocomplete<T>({
             dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
             handleBlur();
-            if (process.env.NODE_ENV !== 'development' && !closeOnOutsideClick)
+            if (process.env.NODE_ENV !== 'development' && closeOnOutsideClick)
               setPendingValue(currentValue);
           }
         },
