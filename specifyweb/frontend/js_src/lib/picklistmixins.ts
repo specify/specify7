@@ -47,7 +47,7 @@ export async function fetchPickListItems(
 
   const limit = Math.max(
     0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') : 0
+    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
   );
 
   if (currentItems.length > 0 || type === PickListTypes.ITEMS)
@@ -56,7 +56,7 @@ export async function fetchPickListItems(
     items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
-  else error('Unknown picklist type', pickList);
+  else error('Unknown picklist type', { pickList });
 
   return items.map(({ value, title }) => createPickListItem(value, title));
 }

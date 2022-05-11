@@ -2,17 +2,17 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
-import { createPickListItem, PickListTypes } from './picklistmixins';
 import { months } from './components/internationalization';
 import type { PickList, PickListItem, Tables } from './datamodel';
 import type { SerializedResource, TableFields } from './datamodelutils';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
 import { hasToolPermission } from './permissions';
+import { createPickListItem, PickListTypes } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
-import { f } from './functools';
 
 /**
  * Make sure to only use this value after calling (await fetchPickLists())
@@ -158,6 +158,12 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     LithoStratTreeDef: { fullNameDirection },
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
+    PrepType: {
+      name: definePicklist('_prepType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'preptype')
+        .set('fieldName', 'name'),
+    },
   };
 
   return [
