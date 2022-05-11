@@ -3,7 +3,7 @@ import type { State } from 'typesafe-reducer';
 
 import { DependentCollection } from '../collectionapi';
 import type { AnySchema } from '../datamodelutils';
-import { replaceKey, sortFunction } from '../helpers';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -98,6 +98,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleColumnWidth'
   );
+  const displayDeleteButton = mode !== 'view';
+  const displayViewButton = !isDependent;
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
@@ -106,14 +108,16 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : (
       <DataEntry.Grid
         role="table"
-        viewDefinition={replaceKey(viewDefinition, 'columns', [
-          undefined,
-          ...viewDefinition.columns,
-          undefined,
-          ...(isDependent ? [] : [undefined]),
-        ])}
+        viewDefinition={viewDefinition}
         flexibleColumnWidth={flexibleColumnWidth}
         display="block"
+        style={{
+          gridTemplateColumns: `min-content repeat(${
+            viewDefinition.columns.length
+          },auto) ${displayViewButton ? 'min-content' : ''} ${
+            displayDeleteButton ? 'min-content' : ''
+          }`,
+        }}
       >
         <div
           className={
@@ -163,8 +167,10 @@ export function FormTable<SCHEMA extends AnySchema>({
               </DataEntry.Cell>
             );
           })}
-          {!isDependent && <div role="columnheader">{commonText('view')}</div>}
-          {mode !== 'view' && (
+          {displayViewButton && (
+            <div role="columnheader">{commonText('view')}</div>
+          )}
+          {displayDeleteButton && (
             <div role="columnheader">
               <span className="sr-only">{commonText('remove')}</span>
             </div>
@@ -247,20 +253,20 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </DataEntry.Cell>
                     )
                   )}
-                  {!isDependent && (
+                  {displayViewButton && (
                     <div role="cell">
                       <DataEntry.Visit resource={resource} />
                     </div>
                   )}
                 </>
               )}
-              {mode !== 'view' &&
-                (resource.isNew() ||
-                  hasTablePermission(
-                    relationship.relatedModel.name,
-                    'delete'
-                  )) && (
-                  <div role="cell">
+              {displayDeleteButton && (
+                <div role="cell">
+                  {(!resource.isNew() ||
+                    hasTablePermission(
+                      relationship.relatedModel.name,
+                      'delete'
+                    )) && (
                     <Button.Icon
                       title={commonText('remove')}
                       aria-label={commonText('remove')}
@@ -274,8 +280,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                         )
                       }
                     />
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
