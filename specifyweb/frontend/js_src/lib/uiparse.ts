@@ -39,7 +39,7 @@ export const formatter = f.store(
     ({
       trim: stringGuard(f.trim),
       toLowerCase: stringGuard((value) => value.toLowerCase()),
-      toUpperCase: stringGuard((value) => value.toLowerCase()),
+      toUpperCase: stringGuard((value) => value.toUpperCase()),
       int: stringGuard(Number.parseInt),
       float: stringGuard(Number.parseFloat),
     } as const)

@@ -855,4 +855,22 @@ export const preferencesText = createDictionary({
     ca: 'Close on outside click',
     'es-es': 'Close on outside click',
   },
+  specifyNetworkBadge: {
+    'en-us': 'Specify Network Badge',
+    'ru-ru': 'Specify Network Badge',
+    ca: 'Specify Network Badge',
+    'es-es': 'Specify Network Badge',
+  },
+  useAccessibleFullDatePicker: {
+    'en-us': 'Use accessible full date picker',
+    'ru-ru': 'Use accessible full date picker',
+    ca: 'Use accessible full date picker',
+    'es-es': 'Use accessible full date picker',
+  },
+  useAccessibleMonthPicker: {
+    'en-us': 'Use accessible month picker',
+    'ru-ru': 'Use accessible month picker',
+    ca: 'Use accessible month picker',
+    'es-es': 'Use accessible month picker',
+  },
 });

@@ -10,9 +10,3 @@ export const fullDateFormat = (): string =>
 
 export const monthFormat = (): string =>
   getPref('ui.formatting.scrmonthformat');
-
-export const accessibleDatePickerEnabled = (): boolean =>
-  getPref('ui.formatting.accessible_date_input');
-
-export const accessibleMonthPickerEnabled = (): boolean =>
-  getPref('ui.formatting.accessible_month_input');

@@ -1,13 +1,7 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
-import {
-  accessibleDatePickerEnabled,
-  accessibleMonthPickerEnabled,
-  databaseDateFormat,
-  fullDateFormat,
-  monthFormat,
-} from '../dateformat';
+import { databaseDateFormat, fullDateFormat, monthFormat } from '../dateformat';
 import { dayjs, getDateInputValue } from '../dayjs';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
@@ -19,6 +13,7 @@ import { getValidationAttributes, resolveParser } from '../uiparse';
 import { Button, Input, Select } from './basic';
 import { useValidation } from './hooks';
 import { dateParts } from './internationalization';
+import { usePref } from './preferenceshooks';
 import { useSaveBlockers } from './resource';
 
 export function isInputSupported(type: string): boolean {
@@ -36,32 +31,6 @@ const reversePrecision: RR<number, PartialDatePrecision> = {
   3: 'year',
 };
 export type PartialDatePrecision = keyof typeof precisions;
-
-// These may be reassigned after remotePrefs are loaded:
-let dateType = 'date';
-let monthType = 'month';
-/*
- * If input[type="date"] or input[type="month"] is not supported,
- * present the date in a more human readable format
- */
-let dateSupported = isInputSupported('date');
-let monthSupported = isInputSupported('month');
-let inputFullFormat = databaseDateFormat;
-let inputMonthFormat = 'YYYY-MM';
-
-function checkBrowserSupport(): void {
-  if (!accessibleDatePickerEnabled()) {
-    dateType = 'text';
-    dateSupported = false;
-  }
-  if (!dateSupported) inputFullFormat = fullDateFormat();
-
-  if (!accessibleMonthPickerEnabled()) {
-    monthType = 'text';
-    monthSupported = false;
-  }
-  if (!monthSupported) inputMonthFormat = monthFormat();
-}
 
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
@@ -82,7 +51,34 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  React.useEffect(checkBrowserSupport, []);
+  const [useDatePicker] = usePref('form', 'ui', 'useAccessibleFullDatePicker');
+  const [useMonthPicker] = usePref('form', 'ui', 'useAccessibleMonthPicker');
+  const {
+    dateType,
+    dateSupported,
+    monthType,
+    monthSupported,
+    inputFullFormat,
+    inputMonthFormat,
+  } = React.useMemo(() => {
+    const dateType = useDatePicker ? 'date' : 'text';
+    const monthType = useMonthPicker ? 'month' : 'text';
+    const dateSupported = useDatePicker && isInputSupported('date');
+    const monthSupported = useMonthPicker && isInputSupported('month');
+
+    return {
+      dateType,
+      dateSupported,
+      monthType,
+      monthSupported,
+      /*
+       * If input[type="date"] or input[type="month"] is not supported,
+       * present the date in a more human readable format
+       */
+      inputFullFormat: dateSupported ? databaseDateFormat : fullDateFormat(),
+      inputMonthFormat: monthSupported ? 'YYYY-MM' : monthFormat(),
+    };
+  }, [useDatePicker, useMonthPicker]);
 
   const [precision, setPrecision] = React.useState<PartialDatePrecision>(
     () =>
@@ -165,14 +161,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
     if (typeof moment === 'undefined') {
       resource.set(dateField, null as never, options);
-      if (typeof precisionField === 'string')
-        resource.set(precisionField, null as never, options);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
       resource.set(dateField, value as never, options);
-      if (typeof precisionField === 'string')
-        resource.set(precisionField, precisions[precision] as never, options);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else {
       const validationMessage =

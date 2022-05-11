@@ -31,6 +31,7 @@ export const getPrefDefinition = <
   // @ts-expect-error
   preferenceDefinitions[category].subCategories[subcategory].items[item];
 
+/** Use usePref hook instead whenever possible as it comes with live updates */
 export const getUserPref = <
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],

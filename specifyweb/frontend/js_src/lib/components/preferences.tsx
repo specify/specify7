@@ -473,6 +473,27 @@ export const preferenceDefinitions = {
               max: 10_000,
             },
           }),
+          specifyNetworkBadge: defineItem<boolean>({
+            title: preferencesText('specifyNetworkBadge'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          useAccessibleFullDatePicker: defineItem<boolean>({
+            title: preferencesText('useAccessibleFullDatePicker'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          useAccessibleMonthPicker: defineItem<boolean>({
+            title: preferencesText('useAccessibleMonthPicker'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       fieldBackground: {

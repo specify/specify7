@@ -88,8 +88,8 @@ function parsePref(
       ? parseValue(parsers()[parser] as Parser, undefined, value as string)
       : undefined;
   return (
-    typeof parser === 'object'
-      ? parsed?.isValid === true
+    typeof parsed === 'object'
+      ? parsed.isValid
         ? parsed.parsed
         : defaultValue
       : value ?? defaultValue
@@ -116,18 +116,6 @@ export const remotePrefsDefinitions = f.store(
         description: 'Month Date format',
         defaultValue: 'MM/YYYY',
         formatters: [formatter().trim, formatter().toUpperCase],
-      },
-      'ui.formatting.accessible_date_input': {
-        description:
-          'If false, date picker would be replaced with a simple text input',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-      },
-      'ui.formatting.accessible_month_input': {
-        description:
-          'If false, month picker would be replaced with a simple text input',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
       },
       'GeologicTimePeriod.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
@@ -200,7 +188,7 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
-      // These are used on back end only
+      // These are used on the back end only:
       'auditing.do_audits': {
         description: 'Whether Audit Log is enabled',
         defaultValue: true,
@@ -255,12 +243,6 @@ export const collectionPrefsDefinitions = {
     description:
       'Whether to create Determination when Collection Object is created',
     defaultValue: false,
-    parser: 'java.lang.Boolean',
-  },
-  'S2n.S2nOn': {
-    separator: '.',
-    description: 'Whether to enable Specify Network Badge',
-    defaultValue: true,
     parser: 'java.lang.Boolean',
   },
 } as const;

@@ -10,6 +10,7 @@ import type { State } from 'typesafe-reducer';
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { Attachment, SpQuery, Tables } from './datamodel';
+import type { AnyTree } from './datamodelutils';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
 import type { RA } from './types';
@@ -17,15 +18,20 @@ import type { RA } from './types';
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
   readonly forms: {
+    // Print label on form save
     readonly printOnSave: boolean;
   };
   readonly wbPlanViewUi: {
+    // Whether to show less commonly used tables when selected base table
     readonly showHiddenTables: boolean;
+    // Whether to show fields hidden in schema in the mapper
     readonly showHiddenFields: boolean;
+    // Whether to show Mapping Editor in the mapper
     readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
   };
   readonly queryBuilder: {
+    // Whether to show fields hidden in schema in the query builder
     readonly showHiddenFields: boolean;
     readonly mappingViewHeight: number;
   };
@@ -47,15 +53,18 @@ export type CacheDefinitions = {
     readonly searchProperties: SearchPreferences;
   };
   readonly tree: {
-    readonly [key in `collapsedRanks${string}`]: RA<number>;
+    readonly // Collapsed ranks in a given tree
+    [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
   } & {
-    readonly [key in `conformation${string}`]: string;
+    readonly // Open nodes in a given tree
+    [key in `conformation${AnyTree['tableName']}`]: string;
   };
   readonly workBenchSortConfig: {
-    // eslint-disable-next-line multiline-comment-style, capitalized-comments
-    // prettier-ignore
-    // {Collection ID}_{Dataset ID}
-    readonly [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
+    readonly /*
+     * WorkBench column sort setting in a given dataset
+     * {Collection ID}_{Dataset ID}
+     */
+    [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
   readonly sortConfig: {
     readonly listOfQueries: SortConfig<
@@ -74,6 +83,7 @@ export type CacheDefinitions = {
       | State<'all'>
       | State<'unused'>
       | State<'byTable', { readonly tableName: keyof Tables }>;
+    // Attachments grid scale
     readonly scale: number;
   };
   readonly geoLocate: {

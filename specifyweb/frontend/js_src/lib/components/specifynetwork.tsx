@@ -15,8 +15,8 @@ import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { specifyNetworkText } from '../localization/specifynetwork';
-import { getCollectionPref } from '../remoteprefs';
-import { schema } from '../schema';
+import { hasPermission, hasTablePermission } from '../permissions';
+import { getUserPref } from '../preferencesutils';
 import { toTable } from '../specifymodel';
 import type { OccurrenceData } from '../specifynetworkmap';
 import { fetchLocalOccurrences } from '../specifynetworkmap';
@@ -31,7 +31,6 @@ import { Link } from './basic';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { hasPermission, hasTablePermission } from '../permissions';
 
 type LoadedAction = Action<'LoadedAction', { version: string }>;
 
@@ -138,7 +137,7 @@ type OutgoingMessage =
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  getCollectionPref('S2n.S2nOn', schema.domainLevelIds.collection) &&
+  getUserPref('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
   hasPermission('/querybuilder/query', 'execute') &&
   resource?.isNew() === false &&
