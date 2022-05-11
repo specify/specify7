@@ -104,6 +104,9 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
+    if field.is_relationship:
+        return parse_integer(fieldname, value, colopts.column)
+
     if colopts.uiformatter:
         try:
             parsed = colopts.uiformatter.parse(value)
