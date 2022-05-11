@@ -1979,7 +1979,7 @@ const WBView = Backbone.View.extend({
                 {
                   method: 'DELETE',
                 },
-                { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+                { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
               ).then((status) => {
                 this.$el.empty();
                 dialog.remove();

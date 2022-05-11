@@ -160,7 +160,7 @@ export function DataSetMeta({
             <i>
               <DateElement
                 date={
-                  typeof dataset.uploadresult?.success === true
+                  dataset.uploadresult?.success === true
                     ? dataset.uploadresult?.timestamp
                     : undefined
                 }
