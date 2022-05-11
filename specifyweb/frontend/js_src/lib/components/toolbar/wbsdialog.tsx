@@ -266,7 +266,13 @@ function DataSets({
                       <DateElement date={dataset.timestampcreated} />
                     </td>
                     <td>
-                      <DateElement date={dataset.uploadresult?.timestamp} />
+                      <DateElement
+                        date={
+                          dataset.uploadresult?.success === true
+                            ? dataset.uploadresult?.timestamp
+                            : undefined
+                        }
+                      />
                     </td>
                     <td>
                       {canImport && (

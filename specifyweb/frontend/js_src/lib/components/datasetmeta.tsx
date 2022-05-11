@@ -159,7 +159,11 @@ export function DataSetMeta({
             {wbText('uploaded')}{' '}
             <i>
               <DateElement
-                date={dataset.uploadresult?.timestamp}
+                date={
+                  typeof dataset.uploadresult?.success === true
+                    ? dataset.uploadresult?.timestamp
+                    : undefined
+                }
                 fallback={commonText('no')}
                 flipDates
               />
