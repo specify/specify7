@@ -219,7 +219,7 @@ export function IntegratedRecordSelector({
                    * by ResourceView
                    */
                   resource={
-                    isDependent || dialog === false ? undefined : resource
+                    !isDependent && dialog === false ? resource : undefined
                   }
                 />
                 {hasTablePermission(
