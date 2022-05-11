@@ -80,13 +80,13 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   const [formatted, setFormatted] = React.useState('');
   React.useEffect(() => {
     setFormatted(resource?.specifyModel.label ?? commonText('loading'));
+    setFormatted('');
     return typeof resource === 'object'
       ? resourceOn(
           resource,
           'change',
           (): void => {
             if (typeof resource === 'undefined') return undefined;
-            setFormatted('');
             format(resource)
               .then((title) => {
                 setFormatted(title ?? '');
