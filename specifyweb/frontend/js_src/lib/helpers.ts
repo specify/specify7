@@ -251,3 +251,21 @@ export const escapeRegExp = (string: string): string =>
 /** Fix for "getAttribute" being case-sensetive for non-HTML elements */
 export const getAttribute = (cell: Element, name: string): string | undefined =>
   cell.getAttribute(name.toLowerCase()) ?? undefined;
+
+/** Like getAttribute, but also trim the value and discard empty values */
+export const getParsedAttribute = (
+  cell: Element,
+  name: string
+): string | undefined =>
+  f.var(getAttribute(cell, name)?.trim(), (value) =>
+    value.length === 0 ? undefined : value
+  );
+
+export const getBooleanAttribute = (
+  cell: Element,
+  name: string
+): boolean | undefined =>
+  f.maybe(
+    getParsedAttribute(cell, name),
+    (value) => value.toLowerCase() === 'true'
+  );

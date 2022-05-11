@@ -5,7 +5,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR } from './types';
-import { getAttribute } from './helpers';
+import { getParsedAttribute } from './helpers';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -40,8 +40,8 @@ export type CommandDefinition = {
 };
 
 export function parseUiCommand(cell: Element): CommandDefinition {
-  const name = getAttribute(cell, 'name');
-  const label = getAttribute(cell, 'label');
+  const name = getParsedAttribute(cell, 'name');
+  const label = getParsedAttribute(cell, 'label');
   const uiCommand =
     processUiCommand[commandTranslation[name ?? '']] ??
     processUiCommand[commandTranslation[label ?? '']] ??

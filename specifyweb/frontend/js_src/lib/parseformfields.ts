@@ -5,7 +5,11 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
-import { getAttribute } from './helpers';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from './helpers';
 import { formsText } from './localization/forms';
 import type { PluginDefinition } from './parseuiplugins';
 import { parseUiPlugin } from './parseuiplugins';
@@ -77,28 +81,28 @@ const processFieldType: {
 } = {
   Checkbox: (cell) =>
     f.var(
-      getAttribute(cell, 'ignore')?.toLowerCase() === 'true' &&
+      (getBooleanAttribute(cell, 'ignore') ?? false) &&
         ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-          getAttribute(cell, 'name')?.toLowerCase() ?? ''
+          getParsedAttribute(cell, 'name')?.toLowerCase() ?? ''
         ),
       (printOnSave) => ({
         type: 'Checkbox',
-        defaultValue: getAttribute(cell, 'default')?.toLowerCase() === 'true',
+        defaultValue: getBooleanAttribute(cell, 'default') ?? false,
         label:
-          f.maybe(getAttribute(cell, 'label')?.trim(), (label) =>
-            label.length === 0 ? undefined : legacyLocalize(label)
-          ) ?? (printOnSave ? formsText('reportOnSave') : undefined),
+          f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
+          (printOnSave ? formsText('reportOnSave') : undefined),
         printOnSave,
       })
     ),
   TextArea(cell) {
-    const rows = f.parseInt(getAttribute(cell, 'rows') ?? '');
+    const rows = f.parseInt(getParsedAttribute(cell, 'rows') ?? '');
     return {
       type: 'TextArea',
       ...withStringDefault(cell),
       rows:
         typeof rows === 'undefined'
-          ? getAttribute(cell, 'uiType')?.toLowerCase() === 'textareabrief'
+          ? getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
+            'textareabrief'
             ? 1
             : undefined
           : rows,
@@ -107,7 +111,7 @@ const processFieldType: {
   ComboBox: (cell) => ({
     type: 'ComboBox',
     ...withStringDefault(cell),
-    pickList: getAttribute(cell, 'pickList') ?? undefined,
+    pickList: getParsedAttribute(cell, 'pickList'),
   }),
   Text: (cell, getProperty) => ({
     type: 'Text',
@@ -154,14 +158,14 @@ export function parseFormField(
   cell: Element,
   getProperty: (name: string) => string | undefined
 ): FormFieldDefinition {
-  let uiType = getAttribute(cell, 'uiType') ?? undefined;
+  let uiType = getParsedAttribute(cell, 'uiType');
   if (typeof uiType === 'undefined') {
     console.error('field is missing uiType', cell);
     uiType = 'text';
   }
 
   const isReadOnly =
-    getAttribute(cell, 'readOnly')?.toLowerCase() === 'true' ||
+    getBooleanAttribute(cell, 'readOnly') ??
     uiType.toLowerCase() === 'dsptextfield';
 
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];

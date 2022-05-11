@@ -5,7 +5,7 @@
 
 import { ajax, Http } from './ajax';
 import { f } from './functools';
-import { getAttribute } from './helpers';
+import { getParsedAttribute } from './helpers';
 import { cachableUrl } from './initialcontext';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
 import { parseFormCell, processColumnDefinition } from './parseformcells';
@@ -23,7 +23,7 @@ const getColumnDefinitions = (viewDefinition: Element): string =>
       viewDefinition.querySelector(
         `columnDef[os="${getPref('form.definition.columnSource')}"]`
       ) ?? viewDefinition.querySelector('columnDef')
-    )?.textContent ?? getAttribute(viewDefinition, 'colDef')
+    )?.textContent ?? getParsedAttribute(viewDefinition, 'colDef')
   );
 
 export type ParsedFormDefinition = {
@@ -357,7 +357,10 @@ export function processViewDefinition(
   let viewDefinition;
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
-    return getAttribute(viewDefinition, 'type') === formType.toLowerCase();
+    return (
+      getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
+      formType.toLowerCase()
+    );
   });
   if (typeof altView === 'undefined' || typeof viewDefinition === 'undefined') {
     console.error('No altView for defaultType:', formType);
@@ -372,7 +375,7 @@ export function processViewDefinition(
       ? viewDefinitions[definition]
       : viewDefinition;
 
-  const newFormType = getAttribute(viewDefinition, 'type');
+  const newFormType = getParsedAttribute(viewDefinition, 'type');
   return {
     viewDefinition: actualViewDefinition,
     formType:
@@ -383,7 +386,9 @@ export function processViewDefinition(
     model: defined(
       getModel(
         f.var(
-          parseClassName(defined(getAttribute(actualViewDefinition, 'class'))),
+          parseClassName(
+            defined(getParsedAttribute(actualViewDefinition, 'class'))
+          ),
           (modelName) =>
             modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
         )

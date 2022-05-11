@@ -9,9 +9,11 @@ import type { FormMode, FormType } from '../parseform';
 import { getView, processViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
 import { hasTablePermission } from '../permissions';
+import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { DataEntry } from './basic';
+import { TableIcon } from './common';
 import { FormTableInteraction } from './formtableinteractionitem';
 import { useAsyncState } from './hooks';
 import { RenderForm } from './specifyform';
@@ -72,10 +74,29 @@ const cellRenderers: {
       </label>
     );
   },
-  Separator({ cellData: { label } }) {
-    return typeof label === 'string' ? (
-      <DataEntry.SubFormTitle className="border-b border-gray-500">
-        {label}
+  Separator({ cellData: { label, icon, forClass } }) {
+    return typeof label === 'string' || typeof forClass === 'string' ? (
+      <DataEntry.SubFormTitle
+        className="border-b border-gray-500"
+        title={
+          typeof forClass === 'string'
+            ? schema.models[forClass].localization.desc?.toString() ?? undefined
+            : undefined
+        }
+      >
+        {typeof forClass === 'string' ? (
+          <>
+            <TableIcon name={forClass} tableLabel={false} />
+            {schema.models[forClass].label}
+          </>
+        ) : (
+          <>
+            {typeof icon === 'string' && (
+              <TableIcon name={icon} tableLabel={false} />
+            )}
+            {label}
+          </>
+        )}
       </DataEntry.SubFormTitle>
     ) : (
       <hr className="w-full border-b border-gray-500" />
@@ -167,7 +188,7 @@ const cellRenderers: {
       ) ?? null
     );
   },
-  Panel({ mode, formType, resource, cellData }) {
+  Panel({ mode, formType, resource, display, cellData }) {
     return (
       <RenderForm
         viewDefinition={{
@@ -177,7 +198,7 @@ const cellRenderers: {
           model: resource.specifyModel,
         }}
         resource={resource}
-        display="block"
+        display={display}
       />
     );
   },

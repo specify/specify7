@@ -5,7 +5,11 @@
 import type { State } from 'typesafe-reducer';
 
 import { f } from './functools';
-import { getAttribute } from './helpers';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from './helpers';
 import type { FormType, ParsedFormDefinition } from './parseform';
 import { parseFormDefinition } from './parseform';
 import type { FormFieldDefinition } from './parseformfields';
@@ -16,6 +20,8 @@ import type { SpecifyModel } from './specifymodel';
 import { legacyLocalize } from './stringlocalization';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
+import { Tables } from './datamodel';
+import { getModel } from './schema';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -58,7 +64,9 @@ export type CellTypes = {
   readonly Separator: State<
     'Separator',
     {
-      readonly label: string | undefined;
+      label: string | undefined;
+      icon: string | undefined;
+      forClass: keyof Tables | undefined;
     }
   >;
   readonly SubView: State<
@@ -72,7 +80,10 @@ export type CellTypes = {
       sortField: string | undefined;
     }
   >;
-  readonly Panel: State<'Panel', ParsedFormDefinition>;
+  readonly Panel: State<
+    'Panel',
+    ParsedFormDefinition & { display: 'block' | 'inline' }
+  >;
   readonly Command: State<
     'Command',
     {
@@ -98,7 +109,7 @@ const processCellType: {
   }) => CellTypes[KEY];
 } = {
   Field({ cell, model, getProperty }) {
-    let rawFieldName = getAttribute(cell, 'name');
+    let rawFieldName = getParsedAttribute(cell, 'name');
     const parts = rawFieldName?.split('.');
     /*
      * If model is attachment, and field name is attachment.type, replace it
@@ -134,38 +145,39 @@ const processCellType: {
       fieldName,
       fieldDefinition,
       isRequired:
-        getAttribute(cell, 'isRequired')?.toLowerCase() === 'true' ||
-        field?.isRequiredBySchemaLocalization() ||
+        getBooleanAttribute(cell, 'isRequired') ??
+        field?.isRequiredBySchemaLocalization() ??
         false,
     };
   },
   Label: ({ cell }) => ({
     type: 'Label',
     // This may be overwritten in postProcessRows
-    text: f.maybe(getAttribute(cell, 'label')?.trim(), (text) =>
-      text.length === 0 ? undefined : legacyLocalize(text)
-    ),
+    text: f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize),
     // This would be set in postProcessRows
     title: undefined,
-    labelForCellId: getAttribute(cell, 'labelFor'),
+    labelForCellId: getParsedAttribute(cell, 'labelFor'),
     // This would be set in postProcessRows
     fieldName: undefined,
   }),
   Separator: ({ cell }) => ({
     type: 'Separator',
-    label: f.maybe(getAttribute(cell, 'label'), (label) =>
-      label.trim().length === 0 ? undefined : label
+    label: getParsedAttribute(cell, 'label'),
+    icon: getParsedAttribute(cell, 'icon'),
+    forClass: f.maybe(
+      getParsedAttribute(cell, 'forClass'),
+      (forClass) => getModel(forClass)?.name
     ),
   }),
   SubView({ cell, model, getProperty }) {
-    const rawFieldName = getAttribute(cell, 'name');
-    const formType = getAttribute(cell, 'defaultType') ?? '';
+    const rawFieldName = getParsedAttribute(cell, 'name');
+    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     const field = model?.getField(rawFieldName ?? '');
     return {
       type: 'SubView',
       formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
       fieldName: field?.name,
-      viewName: getAttribute(cell, 'viewName'),
+      viewName: getParsedAttribute(cell, 'viewName'),
       isButton: getProperty('btn')?.toLowerCase() === 'true',
       icon: getProperty('icon'),
       sortField: field?.isRelationship
@@ -177,6 +189,7 @@ const processCellType: {
   Panel: ({ cell, model }) => ({
     type: 'Panel',
     ...parseFormDefinition(cell, model),
+    display: 'paneltype',
   }),
   Command: ({ cell }) => ({
     type: 'Command',
@@ -222,7 +235,7 @@ export function parseFormCell(
   model: SpecifyModel | undefined,
   cellNode: Element
 ): FormCellDefinition {
-  const cellClass = getAttribute(cellNode, 'type') ?? '';
+  const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
@@ -230,10 +243,10 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getAttribute(cellNode, 'colspan') ?? '');
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
   const align = getProperty('align')?.toLowerCase();
   return {
-    id: getAttribute(cellNode, 'id'),
+    id: getParsedAttribute(cellNode, 'id'),
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align

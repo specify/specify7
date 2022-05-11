@@ -7,7 +7,7 @@ import type { AnySchema } from '../datamodelutils';
 import { keysToLowerCase, serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
-import { getAttribute } from '../helpers';
+import { getParsedAttribute } from '../helpers';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -213,7 +213,7 @@ export function QueryComboBox({
               const searchFieldsNames =
                 typeSearch === null
                   ? []
-                  : getAttribute(typeSearch, 'searchField')
+                  : getParsedAttribute(typeSearch, 'searchField')
                       ?.split(',')
                       .map(f.trim)
                       .map(

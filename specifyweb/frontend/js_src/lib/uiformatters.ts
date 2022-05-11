@@ -2,7 +2,12 @@
  * Parse and use Specify 6 UI Formatters
  */
 
-import { escapeRegExp, getAttribute } from './helpers';
+import {
+  escapeRegExp,
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from './helpers';
 import { load } from './initialcontext';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
@@ -30,26 +35,26 @@ export const fetchContext = load<Document>(
             Array.from(formatter.getElementsByTagName('field'), (field) => {
               const FieldClass =
                 fieldMapper[
-                  (getAttribute(field, 'type') ??
+                  (getParsedAttribute(field, 'type') ??
                     '') as keyof typeof fieldMapper
                 ];
               if (typeof FieldClass === 'undefined') return undefined;
               return new FieldClass({
-                size: f.parseInt(getAttribute(field, 'size') ?? '') ?? 1,
+                size: f.parseInt(getParsedAttribute(field, 'size') ?? '') ?? 1,
                 value: getAttribute(field, 'value') ?? ' ',
-                autoIncrement: getAttribute(field, 'inc') === 'true',
-                byYear: getAttribute(field, 'byYear') === 'true',
+                autoIncrement: getBooleanAttribute(field, 'inc') ?? false,
+                byYear: getBooleanAttribute(field, 'byYear') ?? false,
                 pattern: getAttribute(field, 'pattern') ?? '',
               });
             })
           );
           resolvedFormatter = new UiFormatter(
-            getAttribute(formatter, 'system') === 'true',
+            getBooleanAttribute(formatter, 'system') ?? false,
             fields
           );
         }
 
-        return [getAttribute(formatter, 'name') ?? '', resolvedFormatter];
+        return [getParsedAttribute(formatter, 'name') ?? '', resolvedFormatter];
       })
     )
   );

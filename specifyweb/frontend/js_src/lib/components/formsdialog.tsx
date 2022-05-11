@@ -5,7 +5,7 @@ import type { Tables } from '../datamodel';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
-import { getAttribute } from '../helpers';
+import { getAttribute, getParsedAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
@@ -21,7 +21,7 @@ import { f } from '../functools';
 import { icons } from './icons';
 
 export type FormEntry = {
-  iconName: keyof Tables | undefined;
+  iconName: string | undefined;
   viewUrl: string;
   title: string;
   table: keyof Tables;
@@ -38,7 +38,7 @@ const fetchForms = f.store(
       return Promise.all(
         Array.from(data.getElementsByTagName('view'))
           // I don't think the non-sidebar items are ever used in Sp6.
-          .filter((item) => getAttribute(item, 'sideBar') === 'true')
+          .filter((item) => getParsedAttribute(item, 'sideBar') ?? false)
           .map(async (view) =>
             getView(getAttribute(view, 'view') ?? '').then<
               FormEntry | undefined
@@ -48,14 +48,9 @@ const fetchForms = f.store(
               const model = defined(getModel(modelName));
 
               return {
-                iconName:
-                  (getAttribute(view, 'iconName') as
-                    | keyof Tables
-                    | undefined) ??
-                  model.name ??
-                  undefined,
+                iconName: getParsedAttribute(view, 'iconName') ?? model.name,
                 viewUrl: getResourceViewUrl(modelName),
-                title: getAttribute(view, 'title') ?? '',
+                title: getParsedAttribute(view, 'title') ?? '',
                 table: model.name,
               };
             })

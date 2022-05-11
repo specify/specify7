@@ -6,7 +6,7 @@ import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import type { Disposal, Gift, Loan, RecordSet, Tables } from '../datamodel';
 import { f } from '../functools';
-import { getAttribute } from '../helpers';
+import { getBooleanAttribute, getParsedAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -63,8 +63,8 @@ const fetchEntries = f.store(
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
         Array.from(data.querySelectorAll('entry'), async (entry) =>
-          f.var(getAttribute(entry, 'action'), async (action) =>
-            getAttribute(entry, 'isOnLeft')?.toLowerCase() === 'true'
+          f.var(getParsedAttribute(entry, 'action'), async (action) =>
+            getBooleanAttribute(entry, 'isOnLeft') ?? false
               ? ({
                   action: f.includes(supportedActions, action)
                     ? action
@@ -76,17 +76,18 @@ const fetchEntries = f.store(
                       ? 'Loan'
                       : defined(
                           (await f
-                            .maybe(getAttribute(entry, 'view'), getView)
+                            .maybe(getParsedAttribute(entry, 'view'), getView)
                             ?.then((view) =>
                               typeof view === 'object'
                                 ? (parseClassName(view.class) as keyof Tables)
                                 : undefined
                             )) ??
-                            getModel(getAttribute(entry, 'table') ?? '')?.name
+                            getModel(getParsedAttribute(entry, 'table') ?? '')
+                              ?.name
                         ),
-                  label: getAttribute(entry, 'label') || undefined,
-                  tooltip: getAttribute(entry, 'tooltip') || undefined,
-                  icon: getAttribute(entry, 'icon'),
+                  label: getParsedAttribute(entry, 'label'),
+                  tooltip: getParsedAttribute(entry, 'tooltip'),
+                  icon: getParsedAttribute(entry, 'icon'),
                 } as const)
               : undefined
           )
