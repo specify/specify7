@@ -48,6 +48,7 @@ import { ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
+import { Relationship } from '../specifyfield';
 
 const typeSearches = load<Element>(
   '/context/app.resource?name=TypeSearches',
@@ -336,6 +337,22 @@ export function QueryComboBox({
       : setState({ type: 'ViewResourceState' });
 
   const subViewRelationship = React.useContext(SubViewContext);
+  const pendingValueRef = React.useRef('');
+  const pendingValueToResource = (
+    relationship: Relationship
+  ): SpecifyResource<AnySchema> =>
+    new relationship.relatedModel.Resource(
+      f.maybe(
+        typeof typeSearch === 'object'
+          ? typeSearch.searchFields.find(
+              (searchField) =>
+                !searchField.isRelationship &&
+                searchField.model === relationship.relatedModel
+            )?.name
+          : undefined,
+        (fieldName) => ({ [fieldName]: pendingValueRef.current })
+      ) ?? {}
+    );
 
   return (
     <div className="flex items-center">
@@ -396,7 +413,7 @@ export function QueryComboBox({
                    * If there are multiple search fields and both returns the
                    * same record, it may be presented in results twice. Would
                    * be fixed by using OR queries
-                   * TODO: refactor to use OR queries accross fields once
+                   * TODO: refactor to use OR queries across fields once
                    *   supported
                    */
                   responses
@@ -426,28 +443,18 @@ export function QueryComboBox({
         )}
         onChange={({ data }): void => updateValue(data)}
         onCleared={(): void => updateValue('')}
-        onNewValue={(value: string): void =>
+        onNewValue={(): void =>
           field?.isRelationship === true
             ? state.type === 'AddResourceState'
               ? setState({ type: 'MainState' })
               : setState({
                   type: 'AddResourceState',
-                  resource: new field.relatedModel.Resource(
-                    f.maybe(
-                      typeof typeSearch === 'object'
-                        ? typeSearch.searchFields.find(
-                            (searchField) =>
-                              !searchField.isRelationship &&
-                              searchField.model === field.relatedModel
-                          )?.name
-                        : undefined,
-                      (fieldName) => ({ [fieldName]: value })
-                    ) ?? {}
-                  ),
+                  resource: pendingValueToResource(field),
                 })
             : undefined
         }
         value={formatted?.label ?? commonText('loading') ?? ''}
+        pendingValueRef={pendingValueRef}
         forwardRef={validationRef}
         aria-label={undefined}
       >
@@ -497,7 +504,7 @@ export function QueryComboBox({
                     ? setState({ type: 'MainState' })
                     : setState({
                         type: 'AddResourceState',
-                        resource: new field.relatedModel.Resource(),
+                        resource: pendingValueToResource(field),
                       })
                   : undefined
               }

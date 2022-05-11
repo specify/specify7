@@ -64,6 +64,7 @@ export function Autocomplete<T>({
   children,
   'aria-label': ariaLabel,
   value: currentValue,
+  pendingValueRef,
 }: {
   readonly source: RA<Item<T>> | ((value: string) => Promise<RA<Item<T>>>);
   readonly minLength?: number;
@@ -89,6 +90,11 @@ export function Autocomplete<T>({
   }) => JSX.Element;
   readonly 'aria-label': string | undefined;
   readonly value: string;
+  /*
+   * For low-level access to the value in the input box before user finished
+   * typing
+   */
+  readonly pendingValueRef?: React.MutableRefObject<string>;
 }): JSX.Element {
   const id = useId('autocomplete-data-list')('');
   const [results, setResults] = React.useState<RA<Item<T>>>([]);
@@ -157,6 +163,8 @@ export function Autocomplete<T>({
   const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
+  if (typeof pendingValueRef === 'object')
+    pendingValueRef.current = pendingValue;
 
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
