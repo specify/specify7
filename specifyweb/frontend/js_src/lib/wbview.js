@@ -2184,7 +2184,7 @@ const WBView = Backbone.View.extend({
             )
           )
           .map(({ headerName }) => headerName);
-        return columns.length > 0 ? undefined : columns;
+        return columns.length > 0 ? columns : undefined;
       }) ?? []
     );
   },
