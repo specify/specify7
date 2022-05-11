@@ -24,6 +24,7 @@ import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
+import { LoadingContext } from './contexts';
 
 type Data = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -165,6 +166,7 @@ export function CollectionOneToManyPlugin({
       >
   >({ type: 'MainState' });
 
+  const loading = React.useContext(LoadingContext);
   return (
     <div className="bg-[color:var(--background)] rounded">
       <table>
@@ -283,7 +285,7 @@ export function CollectionOneToManyPlugin({
           extraFilters={undefined}
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={async (addedResource): Promise<void> => {
+          onSelected={(addedResource): void => {
             const toAdd = new schema.models.CollectionRelationship.Resource();
             toAdd.set(`${data.otherSide}Side`, addedResource);
             toAdd.set(`${data.side}Side`, resource);
@@ -291,14 +293,21 @@ export function CollectionOneToManyPlugin({
               'collectionRelType',
               data.relationshipType.get('resource_uri')
             );
-            resource.getDependentResource(`${data.side}SideRels`)?.add(toAdd);
-            setData({
-              ...data,
-              collectionObjects: [
-                ...data.collectionObjects,
-                ...(await processRelationships([toAdd], data.otherSide)),
-              ],
-            });
+            loading(
+              resource
+                .rgetCollection(`${data.side}SideRels`)
+                .then((collection) => collection.add(toAdd))
+                .then(() => processRelationships([toAdd], data.otherSide))
+                .then((relationships) =>
+                  setData({
+                    ...data,
+                    collectionObjects: [
+                      ...data.collectionObjects,
+                      ...relationships,
+                    ],
+                  })
+                )
+            );
           }}
         />
       )}

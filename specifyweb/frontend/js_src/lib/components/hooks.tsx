@@ -5,6 +5,7 @@
 
 import React from 'react';
 
+import { tap } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
 import { listen, registerBlurListener } from '../events';
@@ -633,7 +634,7 @@ export function useIsModified(
   React.useEffect(
     () =>
       typeof resource === 'object'
-        ? resourceOn(resource, 'saveRequired', handleNeedsSaving)
+        ? resourceOn(resource, 'saveRequired', tap(handleNeedsSaving))
         : undefined,
     [resource, handleNeedsSaving]
   );
