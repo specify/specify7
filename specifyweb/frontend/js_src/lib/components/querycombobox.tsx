@@ -458,9 +458,9 @@ export function QueryComboBox({
         forwardRef={validationRef}
         aria-label={undefined}
       >
-        {(props): JSX.Element => (
+        {({ className, ...props }): JSX.Element => (
           <Input.Generic
-            className="flex-1"
+            className={`flex-1 ${className}`}
             id={id}
             required={isRequired}
             isReadOnly={

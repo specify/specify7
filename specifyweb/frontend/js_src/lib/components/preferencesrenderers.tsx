@@ -160,10 +160,11 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         onChange={({ data }): void => handleChange(data)}
         // OnCleared={}
         filterItems={true}
-        children={(props): JSX.Element => <Input.Generic {...props} />}
         aria-label={undefined}
         value={value === defaultFont ? preferencesText('defaultFont') : value}
-      />
+      >
+        {(props): JSX.Element => <Input.Generic {...props} />}
+      </Autocomplete>
     );
   };
 

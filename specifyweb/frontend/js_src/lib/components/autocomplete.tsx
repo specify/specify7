@@ -83,6 +83,7 @@ export function Autocomplete<T>({
     readonly 'aria-autocomplete': 'list';
     readonly 'aria-controls': string;
     readonly 'aria-label': string | undefined;
+    readonly className: 'autocomplete';
     readonly onClick: () => void;
     readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     readonly onValueChange: (value: string) => void;
@@ -323,6 +324,7 @@ export function Autocomplete<T>({
         'aria-autocomplete': 'list',
         'aria-controls': id,
         'aria-label': ariaLabel,
+        className: 'autocomplete',
         onKeyDown: (event) => (showList ? handleKeyDown(event) : handleOpen()),
         onValueChange(value) {
           if (value === '' && pendingValue.length > 1) handleCleared?.();
