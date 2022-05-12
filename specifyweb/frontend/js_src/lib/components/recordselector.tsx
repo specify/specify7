@@ -211,7 +211,6 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
       if (typeof field?.otherSideName === 'string' && !relatedResource.isNew())
         resource.set(field.otherSideName, relatedResource.url() as any);
       handleAdded(resource);
-      handleSlide(totalCount);
     } else setState({ type: 'addBySearch' });
   }
 

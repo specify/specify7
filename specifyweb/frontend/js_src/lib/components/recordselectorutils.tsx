@@ -314,11 +314,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
     ids.map((id) =>
-      typeof id === 'undefined'
-        ? undefined
-        : new model.Resource({
-            id: typeof id === 'number' ? id : undefined,
-          })
+      typeof id === 'undefined' ? undefined : new model.Resource({ id })
     )
   );
 
