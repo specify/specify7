@@ -24,7 +24,7 @@ import { Button, className, Container, DataEntry } from './basic';
 import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { useBooleanState, useIsModified } from './hooks';
+import { useBooleanState, useIsModified, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { deserializeResource } from './resource';
@@ -89,8 +89,11 @@ export function UserView({
   ] = useUserInstitutionalPolicies(userResource);
   const [changedAgent, handleChangedAgent] = useBooleanState();
 
-  const [password, setPassword] = React.useState<string | undefined>(
-    userResource.isNew() ? undefined : ''
+  const [password, setPassword] = useLiveState<string | undefined>(
+    React.useCallback(
+      () => (userResource.isNew() ? undefined : ''),
+      [userResource]
+    )
   );
 
   const previewAffected =
