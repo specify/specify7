@@ -22,7 +22,7 @@ import { Button, DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
-import { useBooleanState, useTriggerState } from './hooks';
+import { useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
@@ -63,8 +63,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     | 'index'
     | 'totalCount'
   >): JSX.Element | null {
-  const [isLoaded, handleLoaded] = useBooleanState();
-
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
       Array.from(collection.models),
@@ -77,17 +75,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const isLazy = collection instanceof LazyCollection;
   const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field) || field.type === 'zero-to-one';
-
-  // Fetch records if needed
-  React.useEffect(() => {
-    if (isLazy && collection.related?.isNew() !== true)
-      collection
-        .fetch()
-        .then(handleLoaded)
-        .then(() => setRecords(getRecords))
-        .catch(crash);
-    else handleLoaded();
-  }, [collection, isLazy, getRecords, handleLoaded]);
 
   // Listen for changes to collection
   React.useEffect(
@@ -105,7 +92,23 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     defaultIndex ?? collection._totalCount ?? 0
   );
 
-  return isLoaded ? (
+  // Fetch records if needed
+  React.useEffect(() => {
+    // TODO: make this more efficient (if going to the last record,
+    //   don't need to fetch all records in between)
+    if (
+      isLazy &&
+      collection.related?.isNew() !== true &&
+      !collection.isComplete() &&
+      typeof collection.models[index] === 'undefined'
+    )
+      collection
+        .fetch()
+        .then(() => setRecords(getRecords))
+        .catch(crash);
+  }, [collection, isLazy, getRecords, index, records.length]);
+
+  return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
       totalCount={collection._totalCount ?? records.length}
@@ -128,19 +131,12 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       index={index}
       onSlide={(index: number): void => {
         setIndex(index);
-        if (
-          isLazy &&
-          index === collection.models.length - 1 &&
-          !collection.isComplete() &&
-          collection.related?.isNew() !== true
-        )
-          collection.fetch().catch(crash);
         handleSlide?.(index);
       }}
     >
       {children}
     </BaseRecordSelector>
-  ) : null;
+  );
 }
 
 export function IntegratedRecordSelector({
