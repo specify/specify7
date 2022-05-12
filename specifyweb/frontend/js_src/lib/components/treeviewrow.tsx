@@ -170,21 +170,18 @@ export function TreeRow({
               onClick={(): void => handleToggle(false)}
               aria-describedby={rankNameId(rankId.toString())}
             >
-              <span
-                className="-mr-2"
-
-              >
-                <span className="sr-only">{
-                  isFocused
-                      ? isLoading
-                          ? commonText('loading')
-                          : row.children === 0
-                              ? treeText('leafNode')
-                              : displayChildren
-                                  ? treeText('opened')
-                                  : treeText('closed')
-                      : undefined
-                }</span>
+              <span className="-mr-2">
+                <span className="sr-only">
+                  {isFocused
+                    ? isLoading
+                      ? commonText('loading')
+                      : row.children === 0
+                      ? treeText('leafNode')
+                      : displayChildren
+                      ? treeText('opened')
+                      : treeText('closed')
+                    : undefined}
+                </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
