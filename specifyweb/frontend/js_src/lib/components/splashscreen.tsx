@@ -26,7 +26,11 @@ export function SplashScreen({
       >
         <header>
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
-          <img src="/static/img/seven_logo.png" alt="" className="max-w-xs" />
+          <img
+            src="/static/img/seven_logo.png"
+            alt=""
+            className="hover:animate-hue-rotate max-w-xs"
+          />
         </header>
         <main className="contents">{children}</main>
       </div>
