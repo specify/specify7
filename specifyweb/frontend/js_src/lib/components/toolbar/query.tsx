@@ -62,6 +62,7 @@ const fetchTablesToShow = f.store(
             )
           )
             .map(({ name }) => name)
+            // TODO: use sortFunction
             .sort()
         )
       )
@@ -94,6 +95,7 @@ function QueryList({
 
   if (typeof sortConfig === 'undefined') return null;
 
+  // TODO: use sortFunction
   const queries = Array.from(unsortedQueries).sort(
     (
       { name: nameLeft, timestampCreated: dateCreatedLeft },

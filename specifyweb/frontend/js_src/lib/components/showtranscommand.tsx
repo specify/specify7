@@ -5,7 +5,6 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { RA } from '../types';
-import { sortObjectsByKey } from '../helpers';
 import { f } from '../functools';
 import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
@@ -13,6 +12,7 @@ import { Dialog } from './modaldialog';
 import { hasTablePermission } from '../permissions';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
+import { sortFunction } from '../helpers';
 
 function List({
   resources,
@@ -29,13 +29,12 @@ function List({
         Promise.all(
           resources.map((resource) => resource.rgetPromise(fieldName))
         ).then((resources: RA<SpecifyResource<AnySchema>>) =>
-          sortObjectsByKey(
-            resources.map((resource) => ({
+          resources
+            .map((resource) => ({
               label: resource.get(displayFieldName),
               href: resource.viewUrl(),
-            })),
-            'label'
-          )
+            }))
+            .sort(sortFunction(({ label }) => label))
         ),
       [resources, fieldName, displayFieldName]
     ),

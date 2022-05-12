@@ -7,7 +7,7 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../datamodelutils';
-import { caseInsensitiveHash, sortObjectsByKey, toggleItem } from '../helpers';
+import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
 import { formatUrl, parseUrl } from '../querystring';
@@ -198,17 +198,17 @@ function TreeView<SCHEMA extends AnyTree>({
               )
                 .then(({ data }) =>
                   setFocusPath(
-                    sortObjectsByKey(
-                      Object.values(data).filter(
+                    Object.values(data)
+                      .filter(
                         (
                           node
                         ): node is {
                           readonly rankid: number;
                           readonly id: number;
                         } => typeof node === 'object'
-                      ),
-                      'rankid'
-                    ).map(({ id }) => id)
+                      )
+                      .sort(sortFunction(({ rankid }) => rankid))
+                      .map(({ id }) => id)
                   )
                 )
                 .catch(console.error);

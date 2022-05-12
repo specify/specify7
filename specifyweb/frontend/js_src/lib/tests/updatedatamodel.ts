@@ -1,5 +1,5 @@
-import { schema } from '../schema';
 import { group, sortFunction } from '../helpers';
+import { schema } from '../schema';
 
 const javaTypeToTypeScript = {
   text: 'string',

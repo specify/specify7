@@ -4,7 +4,6 @@ import { error } from '../assert';
 import type { AnySchema, CommonFields } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
-import { sortObjectsByKey } from '../helpers';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -21,6 +20,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { QueryBuilder } from './querybuilder';
 import { createQuery } from './querytask';
 import { SpecifyForm } from './specifyform';
+import { sortFunction } from '../helpers';
 
 const dialogDefinitions = load<Element>(
   '/context/app.resource?name=DialogDefs',
@@ -109,7 +109,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                   })
                 )
               ).then((results) =>
-                setResults(sortObjectsByKey(results, 'formatted'))
+                setResults(
+                  results.sort(sortFunction(({ formatted }) => formatted))
+                )
               )
             )
             .catch(crash)

@@ -8,7 +8,7 @@ import type { Tables } from './datamodel';
 import type { AnySchema, AnyTree, SerializedResource } from './datamodelutils';
 import { serializeResource } from './datamodelutils';
 import { f } from './functools';
-import { caseInsensitiveHash, sortObjectsByKey, unCapitalize } from './helpers';
+import { caseInsensitiveHash, sortFunction, unCapitalize } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, schema } from './schema';
 import { fetchContext as fetchDomain } from './schemabase';
@@ -86,13 +86,14 @@ export const treeRanksPromise = Promise.all([
                 ?.rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
                 .then(async (treeDefinition) => ({
                   definition: treeDefinition,
-                  ranks: sortObjectsByKey(
-                    await fetchRelated(
-                      serializeResource(treeDefinition),
-                      'treeDefItems',
-                      0
-                    ).then(({ records }) => records),
-                    'rankId'
+                  ranks: await fetchRelated(
+                    serializeResource(treeDefinition),
+                    'treeDefItems',
+                    0
+                  ).then(({ records }) =>
+                    Array.from(records).sort(
+                      sortFunction(({ rankId }) => rankId)
+                    )
                   ),
                 }))
                 .then((ranks) => [treeName, ranks] as const)

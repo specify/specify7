@@ -263,6 +263,6 @@ const macOsFonts = [
  */
 export const getAvailableFonts = f.store(() =>
   Array.from(new Set([...windowsFonts, ...macOsFonts]))
-    .sort(sortFunction<string, string>(f.id))
+    .sort(sortFunction(f.id))
     .filter((fontName) => document.fonts.check(`12pt '${fontName}'`))
 );

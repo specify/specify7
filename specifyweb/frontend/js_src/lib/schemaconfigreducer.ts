@@ -15,8 +15,8 @@ import type {
 import type { SpLocaleContainer, SpLocaleContainerItem } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { f } from './functools';
-import { sortObjectsByKey } from './helpers';
 import type { IR } from './types';
+import { sortFunction } from './helpers';
 
 type ChooseLanguageAction = Action<
   'ChooseLanguageAction',
@@ -119,9 +119,10 @@ export const reducer = generateReducer<States, Actions>({
       language: state.language,
       items,
       itemId:
-        sortObjectsByKey(Object.values(items), 'name').find(
-          (item) => !item.dataModel.isRelationship
-        )?.id ?? Object.values(items)[0].id,
+        Object.values(items)
+          .sort(sortFunction(({ name }) => name))
+          .find((item) => !item.dataModel.isRelationship)?.id ??
+        Object.values(items)[0].id,
       tableWasModified: false,
       modifiedItems: [],
     })

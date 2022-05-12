@@ -2,6 +2,8 @@
  * List of text encodings. Used by workbench uploader
  */
 
+import { f } from './functools';
+import { sortFunction } from './helpers';
 import type { RA } from './types';
 
 /**
@@ -382,4 +384,4 @@ const table: RA<{
 export const encodings = table
   .flatMap((group) => group.encodings.map((encoding) => encoding.labels))
   .flat()
-  .sort((left, right) => left.localeCompare(right));
+  .sort(sortFunction(f.id));

@@ -8,15 +8,15 @@ import type { PickList, PickListItem, Tables } from './datamodel';
 import type { AnySchema, SerializedResource } from './datamodelutils';
 import { addMissingFields, serializeResource } from './datamodelutils';
 import { format } from './dataobjformatters';
+import { f } from './functools';
+import { sortFunction } from './helpers';
 import type { SpecifyResource } from './legacytypes';
+import { hasTablePermission } from './permissions';
 import { fetchPickLists, pickLists } from './picklists';
 import { getModel } from './schema';
 import { fetchRows } from './specifyapi';
 import type { RA } from './types';
 import { defined } from './types';
-import { sortObjectsByKey } from './helpers';
-import { f } from './functools';
-import { hasTablePermission } from './permissions';
 
 export const PickListTypes = {
   // Items are defined in the PickListItems table
@@ -83,8 +83,10 @@ export const PickListSortType = {
   ORDINAL_SORT: 2,
 };
 
-// TODO: make sure pick lists items are sorted properly everywhere (i.e, in the
-//   workbench)
+/*
+ * TODO: make sure pick lists items are sorted properly everywhere (i.e, in the
+ *   workbench)
+ */
 export const getPickListItems = (
   pickList: SpecifyResource<PickList>
 ): RA<{
@@ -94,9 +96,9 @@ export const getPickListItems = (
   f
     .var(serializeResource(pickList).pickListItems, (items) =>
       pickList.get('sortType') === PickListSortType.TITLE_SORT
-        ? sortObjectsByKey(items, 'title')
+        ? Array.from(items).sort(sortFunction(({ title }) => title))
         : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-        ? sortObjectsByKey(items, 'ordinal')
+        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
         : items
     )
     .map(({ value, title }) => ({

@@ -4,7 +4,7 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import { group, removeKey, sortObjectsByKey } from './helpers';
+import { group, removeKey, sortFunction } from './helpers';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
@@ -44,8 +44,9 @@ export function parseQueryFields(
   queryFields: RA<SerializedResource<SpQueryField>>
 ): RA<QueryField> {
   return group(
-    sortObjectsByKey(Array.from(queryFields), 'position').map(
-      ({ id, isNot, isDisplay, ...field }, index) => {
+    Array.from(queryFields)
+      .sort(sortFunction(({ position }) => position))
+      .map(({ id, isNot, isDisplay, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
           field.isRelFld ?? false
@@ -102,8 +103,7 @@ export function parseQueryFields(
             isDisplay,
           },
         ] as const;
-      }
-    )
+      })
   ).map(([_mappingPath, groupedFields]) => ({
     ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),

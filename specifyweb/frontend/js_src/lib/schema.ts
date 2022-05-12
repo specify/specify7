@@ -15,6 +15,7 @@ import { LiteralField, Relationship } from './specifyfield';
 import { SpecifyModel, type TableDefinition } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
+import { sortFunction } from './helpers';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -40,9 +41,7 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   fields: FIELD_TYPE[],
   frontEndFields: RA<FIELD_TYPE>
 ): RA<FIELD_TYPE> => [
-  ...fields.sort((left, right) =>
-    left.label?.localeCompare(right.label ?? '') ? 1 : -1
-  ),
+  ...fields.sort(sortFunction(({ label }) => label ?? '')),
   ...frontEndFields.map((field) => {
     field.overrides.isReadOnly = true;
     return field;

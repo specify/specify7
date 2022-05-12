@@ -8,7 +8,7 @@ import type {
   Tables,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { sortFunction, sortObjectsByKey, split } from '../helpers';
+import { sortFunction, split } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
@@ -124,7 +124,9 @@ function ChooseBaseTable({
     staleWhileRefresh: false,
   });
   const sortedTables = React.useMemo(() => {
-    const sortedTables = sortObjectsByKey(Object.values(tables), 'name');
+    const sortedTables = Object.values(tables).sort(
+      sortFunction(({ name }) => name)
+    );
     return showHiddenTables
       ? sortedTables
       : sortedTables.filter(({ name }) => getModel(name)?.isSystem === false);
@@ -274,7 +276,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
       },
     },
   }) {
-    const sortedItems = sortObjectsByKey(Object.values(items), 'name');
+    const sortedItems = Object.values(items).sort(
+      sortFunction(({ name }) => name)
+    );
     const [fields, relationships] = split(
       sortedItems,
       (items) => items.dataModel.isRelationship
@@ -285,6 +289,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     ).map((group) =>
       group
         .map(({ name }) => name)
+        // TODO: use sortFunction
         .sort()
         .map((name) => [name, name] as const)
     );

@@ -18,6 +18,7 @@ export function makeTreeMap(container) {
     .treemap()
     .size([container.clientWidth, container.clientHeight])
     .sort(function (a, b) {
+      // TODO: use sortFunction here
       return b.id - a.id;
     })
     .value(function (d) {

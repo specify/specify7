@@ -952,6 +952,7 @@ const WBView = Backbone.View.extend({
           ({ physicalCol }) => this.physicalColToMappingCol(physicalCol) !== -1
         )
         .sort(
+          // TODO: use sortFunction here
           ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
             visualRowLeft > visualRowRight
         )
@@ -1028,6 +1029,7 @@ const WBView = Backbone.View.extend({
          */
         this.hot?.toPhysicalRow(visualRowStart + index) ??
         visualRowStart + index
+      // TODO: use sortFunction here
     ).sort();
 
     this.flushIndexedCellData = true;
@@ -1044,6 +1046,7 @@ const WBView = Backbone.View.extend({
       this.hot.toPhysicalRow(visualRowStart + index)
     )
       .filter((physicalRow) => physicalRow < this.cellMeta.length)
+      // TODO: use sortFunction here
       .sort()
       .reverse();
 

@@ -124,14 +124,6 @@ export const sortFunction =
       : -1;
   };
 
-export const sortObjectsByKey = <
-  KEY extends string | number | symbol,
-  T extends Record<KEY, boolean | number | string | null>
->(
-  objects: RA<T>,
-  key: KEY
-): RA<T> => Array.from(objects).sort(sortFunction(({ [key]: value }) => value));
-
 /** Split array in half according to a discriminator function */
 export const split = <ITEM>(
   array: RA<ITEM>,
