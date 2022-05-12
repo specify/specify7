@@ -100,7 +100,7 @@ list_admins = openapi(schema={
     }
 })(ListAdmins.as_view())
 
-class PolicyRegistry(LoginRequiredMixin, View):
+class PolicyRegistry(View):
     def get(self, request):
         return http.JsonResponse(registry, safe=False)
 
