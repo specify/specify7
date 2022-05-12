@@ -184,7 +184,7 @@ export function LatLongUi({
   readonly step: number | undefined;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => resource.get('latLongType') ?? 'point'
+    () => resource.get('latLongType') ?? 'Point'
   );
 
   React.useEffect(
@@ -192,7 +192,7 @@ export function LatLongUi({
       resourceOn(resource, 'change:latLongType', (): void =>
         setCoordinateType(
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          (resource.get('latLongType') as CoordinateType) ?? 'point'
+          (resource.get('latLongType') as CoordinateType) ?? 'Point'
         )
       ),
     [resource]
