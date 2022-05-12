@@ -145,7 +145,8 @@ export function WebLinkButton({
             url,
             isExternal: isExternalUrl(url),
           })
-        )
+        ),
+      true
     );
   }, [resource, fieldName, data, formType]);
 
