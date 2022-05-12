@@ -413,17 +413,17 @@ export function getMappingLineData({
                     (generateFieldData === 'all' ||
                       field.name === internalState.parsedDefaultValue[0]) &&
                     (!field.isRelationship ||
-                      scope === 'queryBuilder' ||
                       typeof parentRelationship === 'undefined' ||
                       (!isCircularRelationship(parentRelationship, field) &&
                         /*
                          * Hide nested -to-many relationships as they are not
                          * supported by the WorkBench
                          */
-                        !(
-                          relationshipIsToMany(field) &&
-                          relationshipIsToMany(parentRelationship)
-                        ))) &&
+                        (scope === 'queryBuilder' ||
+                          !(
+                            relationshipIsToMany(field) &&
+                            relationshipIsToMany(parentRelationship)
+                          )))) &&
                     isFieldVisible(
                       showHiddenFields,
                       field.overrides.isHidden,
