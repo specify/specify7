@@ -1163,14 +1163,10 @@ export const commonText = createDictionary({
     'es-es': 'Collection',
   },
   loginToProceed: {
-    'en-us': (collectionName: string) => `
-       You can login to the collection, ${collectionName}, to proceed:`,
-    'ru-ru': (collectionName: string) => `
-       Вы можете войти в коллекцию, ${collectionName}, чтобы продолжить:`,
-    ca: (collectionName: string) => `
-       You can login to the collection, ${collectionName}, to proceed:`,
-    'es-es': (collectionName: string) => `
-       You can login to the collection, ${collectionName}, to proceed:`,
+    'en-us': 'You can login to the collection, to proceed:',
+    'ru-ru': 'Вы можете войти в коллекцию, чтобы продолжить:',
+    ca: 'You can login to the collection, to proceed:',
+    'es-es': 'You can login to the collection, to proceed:',
   },
   // SpecifyApp
   versionMismatchDialogTitle: {
