@@ -94,7 +94,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     event.preventDefault();
     event.stopPropagation();
 
-    if (saveBlocked || (!saveRequired && !externalSaveRequired && !addAnother))
+    if (
+      saveBlocked ||
+      (!saveRequired &&
+        !externalSaveRequired &&
+        !addAnother &&
+        !resource.isNew())
+    )
       return;
 
     await resource.businessRuleMgr?.pending;
@@ -171,7 +177,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         disabled={
           disabled ||
           isSaving ||
-          (!saveRequired && !externalSaveRequired && !saveBlocked)
+          (!saveRequired &&
+            !externalSaveRequired &&
+            !saveBlocked &&
+            !resource.isNew())
         }
         onClick={(): void => form.classList.remove(className.notSubmittedForm)}
       >

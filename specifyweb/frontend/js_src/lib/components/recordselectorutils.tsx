@@ -208,9 +208,7 @@ export function IntegratedRecordSelector({
             isLoading={isLoading}
             resource={resource}
             dialog={dialog}
-            title={`${field?.label ?? collection.model.specifyModel?.label}${
-              isToOne ? '' : ` (${collection.models.length})`
-            }`}
+            title={`${field?.label ?? collection.model.specifyModel?.label}`}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
