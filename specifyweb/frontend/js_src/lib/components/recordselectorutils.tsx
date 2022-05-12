@@ -76,7 +76,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
   const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field);
+  const isToOne = !relationshipIsToMany(field) || field.type === 'zero-to-one';
 
   // Fetch records if needed
   React.useEffect(() => {
@@ -167,7 +167,7 @@ export function IntegratedRecordSelector({
 }): JSX.Element {
   const isDependent = collection instanceof DependentCollection;
   const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field);
+  const isToOne = !relationshipIsToMany(field) || field.type === 'zero-to-one';
   const mode = augmentMode(initialMode, false, field.relatedModel.name);
   return formType === 'formTable' ? (
     <FormTableCollection

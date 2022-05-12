@@ -134,13 +134,13 @@ export function SubView({
           mode={field.isDependent() && initialMode !== 'view' ? 'edit' : 'view'}
           collection={collection}
           onAdd={
-            relationshipIsToMany(field)
+            relationshipIsToMany(field) && field.type !== 'zero-to-one'
               ? undefined
               : (resource): void =>
                   void parentResource.set(field.name, resource as never)
           }
           onDelete={
-            relationshipIsToMany(field)
+            relationshipIsToMany(field) && field.type !== 'zero-to-one'
               ? undefined
               : (): void => void parentResource.set(field.name, null as never)
           }
