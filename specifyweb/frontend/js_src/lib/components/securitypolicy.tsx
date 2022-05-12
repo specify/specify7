@@ -52,11 +52,11 @@ function PolicyView({
   readonly orientation: 'vertical' | 'horizontal';
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
-  const registries = (
+  const registryFunction =
     scope === 'institution'
       ? getRegistriesFromPath
-      : getCollectionRegistriesFromPath
-  )(resourceParts);
+      : getCollectionRegistriesFromPath;
+  const registries = registryFunction(resourceParts);
   const registryParts = registries
     .map((items, index) => ({
       ...items,
@@ -92,15 +92,28 @@ function PolicyView({
                 className="h-full"
                 value={resourceParts[index] ?? ''}
                 disabled={isReadOnly}
-                onValueChange={(part): void =>
+                onValueChange={(part): void => {
+                  const parts = [...resourceParts.slice(0, index), part];
+                  // If new part has only one children, select it (recursively)
+                  while (true) {
+                    const childResources = registryFunction(parts).slice(-1)[0];
+                    if (
+                      typeof childResources === 'undefined' ||
+                      // Checking for 2, as first option is always anyResource
+                      Object.keys(childResources).length !== 2
+                    )
+                      break;
+                    const child = Object.keys(childResources).find(
+                      (part) => part !== anyResource
+                    );
+                    if (typeof child === 'undefined') break;
+                    parts.push(child);
+                  }
                   handleChange({
-                    resource: partsToResourceName([
-                      ...resourceParts.slice(0, index),
-                      part,
-                    ]),
+                    resource: partsToResourceName(parts),
                     actions,
-                  })
-                }
+                  });
+                }}
                 required
               >
                 <option value="" key="0" />
