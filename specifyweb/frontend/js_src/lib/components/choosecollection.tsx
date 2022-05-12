@@ -6,6 +6,7 @@ import '../../css/main.css';
 
 import React from 'react';
 
+import { ping } from '../ajax';
 import { csrfToken } from '../csrftoken';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';
@@ -14,7 +15,8 @@ import { sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
 import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
-import { ErrorMessage, Form, Input, Label, Link, Submit } from './basic';
+import { Button, ErrorMessage, Form, Input, Label, Submit } from './basic';
+import { LoadingContext } from './contexts';
 import { useTitle } from './hooks';
 import { usePref } from './preferenceshooks';
 import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
@@ -88,14 +90,15 @@ function ChooseCollection({
          * Scroll to selected option automatically (useful if not all collection
          * fit on the screen at once and there is a scroll bar
          */
-        (formRef.current?.querySelector('input:checked') ?? undefined) as
+        (formRef.current?.querySelector('input:checked') as
           | HTMLElement
-          | undefined,
+          | undefined) ?? undefined,
         scrollIntoView
       );
   }, [alwaysPrompt, data.initialValue, availableCollections]);
 
   const hasAccess = availableCollections.length > 0;
+  const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
       <Form method="post" forwardRef={formRef}>
@@ -132,9 +135,19 @@ function ChooseCollection({
             <ErrorMessage>
               <span>{commonText('noAccessToCollections')}</span>
             </ErrorMessage>
-            <Link.Fancy href={`/accounts/login/?next=${data.nextUrl}`}>
+            <Button.Fancy
+              onClick={(): void =>
+                loading(
+                  ping('/accounts/logout').then(() =>
+                    window.location.assign(
+                      `/accounts/logout/?next=${data.nextUrl}`
+                    )
+                  )
+                )
+              }
+            >
               {commonText('login')}
-            </Link.Fancy>
+            </Button.Fancy>
           </>
         )}
       </Form>
