@@ -63,7 +63,7 @@ class Scoping(namedtuple('Scoping', 'obj')):
     def repositoryagreement(self): return self._simple_division_scope()
 
     def taxon(self):
-        return DISCIPLINE_SCOPE, self.obj.definition.discipline_id
+        return DISCIPLINE_SCOPE, self.obj.definition.discipline.id
 
 #############################################################################
 
