@@ -588,12 +588,12 @@ export const WBUtils = Backbone.View.extend({
         localityColumns
       ) || {};
 
-    if (localityData['locality.geography.$Country.name'])
-      queryString += `&country=${localityData['locality.geography.$Country.name'].value}`;
-    if (localityData['locality.geography.$State.name'])
-      queryString += `&state=${localityData['locality.geography.$State.name'].value}`;
-    if (localityData['locality.geography.$County.name'])
-      queryString += `&county=${localityData['locality.geography.$County.name'].value}`;
+    if (localityData['locality.geography.$country.name'])
+      queryString += `&country=${localityData['locality.geography.$country.name'].value}`;
+    if (localityData['locality.geography.$state.name'])
+      queryString += `&state=${localityData['locality.geography.$state.name'].value}`;
+    if (localityData['locality.geography.$county.name'])
+      queryString += `&county=${localityData['locality.geography.$county.name'].value}`;
     if (localityData['locality.localityname'])
       queryString += `&locality=${localityData['locality.localityname'].value}`;
     if (
