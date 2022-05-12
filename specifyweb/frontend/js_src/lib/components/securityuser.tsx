@@ -244,7 +244,8 @@ export function UserView({
                 </Button.Blue>
               )}
               {!userResource.isNew() &&
-              hasTablePermission('SpecifyUser', 'delete') ? (
+              hasTablePermission('SpecifyUser', 'delete') &&
+              userResource.id !== userInformation.id ? (
                 <DeleteButton
                   resource={userResource}
                   onDeleted={handleDelete}
