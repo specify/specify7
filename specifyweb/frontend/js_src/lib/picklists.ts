@@ -188,7 +188,13 @@ export const fetchPickLists = async (): Promise<typeof pickLists> =>
       ).then(async ({ models }) => {
         pickLists = Object.fromEntries(
           [...models, ...defineFrontEndPickLists()].map(
-            (pickList) => [pickList.get('name'), pickList] as const
+            (pickList) =>
+              [
+                pickList.get('name'),
+                pickList.get('type') === PickListTypes.ITEMS
+                  ? pickList
+                  : pickList.set('pickListItems', []),
+              ] as const
           )
         );
         return pickLists;
