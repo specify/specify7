@@ -1,5 +1,5 @@
 /**
- * Common TypeScript types
+ * Common TypeScript types. Used extensively thoughout the front-end
  *
  * @module
  */

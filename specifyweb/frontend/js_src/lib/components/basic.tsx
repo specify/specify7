@@ -117,7 +117,11 @@ const containerFull = 'flex flex-col gap-4 h-full p-4';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   hasAltBackground: 'has-alt-background',
-  // Do not show validation errors until tried to submit the form
+  /*
+   * Do not show validation errors until tried to submit the form
+   * The class name is negated so that if you forgot to add it in some place,
+   * the validation errors do not get permanently silenced
+   */
   notSubmittedForm: 'not-submitted',
   // Or field lost focus
   notTouchedInput: 'not-touched',
@@ -128,7 +132,7 @@ export const className = {
   textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',
   button: 'button',
   link: 'link',
-  icon: 'icon',
+  icon: 'icon link',
   transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
     text-gray-800 dark:text-neutral-200`,
   grayButton,

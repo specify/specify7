@@ -24,8 +24,7 @@
 }
 
 /* Highlighted cells' headers */
-.handsontable tbody th.ht__highlight,
-.handsontable thead th.ht__highlight {
+.handsontable :is(tbody, thead) th.ht__highlight {
   @apply bg-blue-400;
 }
 
@@ -50,10 +49,7 @@
 
 /* Cell navigation */
 
-.wbs-form .wb-no-match-cell,
-.wbs-form .wb-modified-cell,
-.wbs-form .htCommentCell,
-.wbs-form .wb-search-match-cell,
+.wbs-form :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }
@@ -91,8 +87,7 @@
 }
 
 .htContextMenu td.highlight,
-.handsontable.listbox tr td.current,
-.handsontable.listbox tr:hover td {
+.handsontable.listbox :is(tr td.current, tr:hover td) {
   @apply dark:!bg-neutral-600;
 }
 

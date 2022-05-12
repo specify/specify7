@@ -243,7 +243,9 @@ export function IntegratedRecordSelector({
                     disabled={mode === 'view' || collection.models.length === 0}
                   />
                 )}
-                <span className="flex-1 -ml-4" />
+                <span
+                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                />
                 {specifyNetworkBadge}
                 {!isToOne && slider}
               </>
@@ -444,7 +446,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 {isAddingNew ? (
                   <p className="flex-1">{formsText('creatingNewRecord')}</p>
                 ) : (
-                  <span className="flex-1 -ml-4" />
+                  <span
+                    className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                  />
                 )}
                 {specifyNetworkBadge}
                 {slider}
