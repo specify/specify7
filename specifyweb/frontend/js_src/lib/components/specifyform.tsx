@@ -191,7 +191,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
           aria-hidden={showLoading}
           className={showLoading ? 'opacity-50 pointer-events-none' : undefined}
           flexibleColumnWidth={flexibleColumnWidth}
-          display={display}
+          display={viewDefinition?.columns.length === 1 ? 'block' : display}
         >
           {viewDefinition.rows.map((cells, index) => (
             <React.Fragment key={index}>

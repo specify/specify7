@@ -84,6 +84,8 @@ function generateForm(
             {
               type: 'Separator',
               label: commonText('fields'),
+              icon: undefined,
+              forClass: undefined,
               ...cellAttributes,
             },
           ],
@@ -121,6 +123,8 @@ function generateForm(
               type: 'Separator',
               label: commonText('relationships'),
               ...cellAttributes,
+              icon: undefined,
+              forClass: undefined,
             },
           ],
       ...relationships.flatMap(
