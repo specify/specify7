@@ -172,18 +172,19 @@ export function TreeRow({
             >
               <span
                 className="-mr-2"
-                aria-label={
-                  isFocused
-                    ? isLoading
-                      ? commonText('loading')
-                      : row.children === 0
-                      ? treeText('leafNode')
-                      : displayChildren
-                      ? treeText('opened')
-                      : treeText('closed')
-                    : undefined
-                }
+
               >
+                <span className="sr-only">{
+                  isFocused
+                      ? isLoading
+                          ? commonText('loading')
+                          : row.children === 0
+                              ? treeText('leafNode')
+                              : displayChildren
+                                  ? treeText('opened')
+                                  : treeText('closed')
+                      : undefined
+                }</span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
