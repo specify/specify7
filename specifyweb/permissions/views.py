@@ -694,7 +694,7 @@ role = openapi(schema={
     }
 })(Role.as_view())
 
-class Query(LoginRequiredMixin, View):
+class Query(View):
     def post(self, request) -> http.HttpResponse:
         req = json.loads(request.body)
 

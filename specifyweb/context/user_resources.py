@@ -11,7 +11,7 @@ from specifyweb.specify.views import openapi
 Spappresource = getattr(models, 'Spappresource')
 Spappresourcedir = getattr(models, 'Spappresourcedir')
 
-class Resources(LoginRequiredMixin, View):
+class Resources(View):
     def get(self, request) -> http.HttpResponse:
         resources = Spappresource.objects.filter(
             spappresourcedir__specifyuser=request.specify_user,
@@ -129,7 +129,7 @@ resources = openapi(schema={
     }
 })(Resources.as_view())
 
-class Resource(LoginRequiredMixin, View):
+class Resource(View):
     def get(self, request, resourceid: int) -> http.HttpResponse:
         resource = get_object_or_404(
             Spappresource,
