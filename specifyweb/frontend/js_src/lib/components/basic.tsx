@@ -624,12 +624,8 @@ export const Link = {
     children: (
       <>
         {props.children}
-        <span
-          title={commonText('opensInNewTab')}
-          aria-label={commonText('opensInNewTab')}
-        >
-          {icons.externalLink}
-        </span>
+        <span className="sr-only">{commonText('opensInNewTab')}</span>
+        <span title={commonText('opensInNewTab')}>{icons.externalLink}</span>
       </>
     ),
   })),
