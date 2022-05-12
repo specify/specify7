@@ -169,12 +169,12 @@ export function CollectionOneToManyPlugin({
   const loading = React.useContext(LoadingContext);
   return (
     <div className="bg-[color:var(--background)] rounded">
-      <table className="grid-table w-fit grid-cols-2 gap-2">
+      <table className="grid-table w-fit grid-cols-3 gap-2">
         <thead>
           <tr>
             <th>{formsText('collectionObject')}</th>
             <th>{schema.models.Collection.label}</th>
-            {hasTablePermission('CollectionRelationship', 'delete') && <td />}
+            <td />
           </tr>
         </thead>
         <tbody>
@@ -215,8 +215,8 @@ export function CollectionOneToManyPlugin({
                       {data.otherCollection.formatted}
                     </Link.Default>
                   </td>
-                  {hasTablePermission('CollectionRelationship', 'delete') && (
-                    <td>
+                  <td>
+                    {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
                         title={commonText('remove')}
                         aria-label={commonText('remove')}
@@ -235,8 +235,8 @@ export function CollectionOneToManyPlugin({
                           });
                         }}
                       />
-                    </td>
-                  )}
+                    )}
+                  </td>
                 </tr>
               )
             )
