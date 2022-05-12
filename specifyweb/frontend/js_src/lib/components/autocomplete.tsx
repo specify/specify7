@@ -164,8 +164,10 @@ export function Autocomplete<T>({
   const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
-  if (typeof pendingValueRef === 'object')
-    pendingValueRef.current = pendingValue;
+  React.useEffect(() => {
+    if (typeof pendingValueRef === 'object')
+      pendingValueRef.current ??= currentValue;
+  }, [currentValue, pendingValueRef]);
 
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
@@ -292,8 +294,7 @@ export function Autocomplete<T>({
 
   function handleBlur(): void {
     emitBlur.current();
-    if (process.env.NODE_ENV !== 'development' && closeOnOutsideClick)
-      handleClose();
+    if (closeOnOutsideClick) handleClose();
   }
 
   React.useEffect(
@@ -332,6 +333,8 @@ export function Autocomplete<T>({
           const filteredItems = filterItems(results, value);
           setFilteredItems(filteredItems);
           setPendingValue(value);
+          if (typeof pendingValueRef === 'object')
+            pendingValueRef.current = value;
         },
         onClick: handleToggle,
         onBlur({ relatedTarget }): void {
@@ -340,8 +343,7 @@ export function Autocomplete<T>({
             dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
             handleBlur();
-            if (process.env.NODE_ENV !== 'development' && closeOnOutsideClick)
-              setPendingValue(currentValue);
+            if (closeOnOutsideClick) setPendingValue(currentValue);
           }
         },
       })}
@@ -451,11 +453,13 @@ export function Autocomplete<T>({
                       aria-selected={index === currentIndex}
                       onClick={(): void => {
                         handleChange(item);
-                        setPendingValue(
+                        const value =
                           typeof item.label === 'string'
                             ? item.label
-                            : item.searchValue ?? ''
-                        );
+                            : item.searchValue ?? '';
+                        setPendingValue(value);
+                        if (typeof pendingValueRef === 'object')
+                          pendingValueRef.current = value;
                         handleClose();
                       }}
                       {...itemProps}
