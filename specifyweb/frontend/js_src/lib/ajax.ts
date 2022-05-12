@@ -19,6 +19,12 @@ export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 // TODO: add a central place for all API endpoint definitions
 
 // TODO: make all back-end endpoints accept JSON
+/**
+ * Convert JSON object to FormData.
+ * Some endpoints accept form data rather than stringified JSON.
+ * Just wrap your JS object in a call to formData() before passing it as a
+ * "body" to ajax()
+ */
 export function formData(
   data: IR<string | RA<string | number> | boolean | number | Blob>
 ): FormData {
@@ -76,37 +82,43 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
  */
 export const ajax = async <RESPONSE_TYPE = string>(
   url: string,
+  /** These options are passed directly to fetch() */
   {
     headers: { Accept: accept, ...headers },
     ...options
   }: Omit<RequestInit, 'body' | 'headers'> & {
-    /*
+    /**
      * If object is passed to body, it is stringified and proper HTTP header is set
      * Can wrap request body object in formData() to encode body as form data
      */
     body?: string | RA<unknown> | IR<unknown> | FormData;
-    /*
+    /**
      * Validates and parses response as JSON if 'Accept' header is 'application/json'
      * Validates and parses response as XML if 'Accept' header is 'application/xml'
      */
     headers: IR<string | undefined> & { Accept?: MimeType };
   },
+  /** Ajax-specific options that are not passed to fetch() */
   {
     expectedResponseCodes = [Http.OK],
     strict = true,
   }: {
-    /*
+    /**
      * Throw if returned response code is not what expected
      * If you want to manually handle some error, add that error code here
      */
     readonly expectedResponseCodes?: RA<number>;
-    /*
+    /**
      * If strict, spawn a modal error message dialog on crash
      * In either case, error messages are logged to the console
      */
     readonly strict?: boolean;
   } = {}
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> =>
+  /*
+   * When running in a test environment, mock the calls rather than make
+   * actual requests
+   */
   process.env.NODE_ENV === 'test'
     ? import('./tests/ajax').then(async ({ interceptRequest }) =>
         interceptRequest<RESPONSE_TYPE>(url)
@@ -174,6 +186,7 @@ export function handleResponse<RESPONSE_TYPE = string>({
             data: new window.DOMParser().parseFromString(
               text,
               'text/xml'
+              // Assuming that RESPONSE_TYPE extends Document
             ) as unknown as RESPONSE_TYPE,
             response,
             status: response.status,
@@ -187,17 +200,18 @@ export function handleResponse<RESPONSE_TYPE = string>({
         }
       } else
         return {
+          // Assuming that RESPONSE_TYPE extends string
           data: text as unknown as RESPONSE_TYPE,
           response,
           status: response.status,
         };
-    } else if (response.status === Http.FORBIDDEN) {
+    } else if (response.status === Http.FORBIDDEN)
       throw {
         type: 'permissionDenied',
         statusText: "You don't have a permission to do this action",
         responseText: text,
       };
-    } else {
+    else {
       console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',

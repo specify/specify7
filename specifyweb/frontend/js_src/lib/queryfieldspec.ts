@@ -150,6 +150,8 @@ export class QueryFieldSpec {
     // Insert rank name (or anyRank) into the path
     if (typeof this.treeRank === 'string')
       path = insertItem(path, -1, formatTreeRank(this.treeRank));
+    else if (isTreeModel(this.baseTable.name))
+      path = [formatTreeRank(anyTreeRank), ...path];
 
     // Format date field
     if (this.getField()?.isTemporal() === true)
