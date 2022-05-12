@@ -1,5 +1,5 @@
 import type { Tables } from './datamodel';
-import {group, removeKey, split, toLowerCase} from './helpers';
+import { group, removeKey, split, toLowerCase } from './helpers';
 import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
@@ -37,7 +37,7 @@ const toTreeRecordRanks = (
 ): IR<ColumnDefinition> =>
   Object.fromEntries(
     rankMappedFields.map(({ mappingPath, headerName, columnOptions }) => [
-      mappingPath[0],
+      mappingPath[0].toLowerCase(),
       toColumnOptions(headerName, columnOptions),
     ])
   );
