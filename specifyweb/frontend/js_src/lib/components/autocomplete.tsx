@@ -202,10 +202,8 @@ export function Autocomplete<T>({
   } as const);
 
   const showAdd =
-    filteredItems.length === 0 &&
     !isLoading &&
     typeof handleNewValue === 'function' &&
-    pendingValue.length > 0 &&
     pendingValue !== currentValue;
   const showList = isOpen && (showAdd || isLoading || filteredItems.length > 0);
 
@@ -378,103 +376,108 @@ export function Autocomplete<T>({
           {showList && (
             <>
               {isLoading && (
-                <li aria-selected={false} aria-disabled={true} {...itemProps}>
+                <li
+                  aria-selected={false}
+                  aria-disabled={true}
+                  {...itemProps}
+                  className={`${itemProps.className} cursor-auto`}
+                >
                   {commonText('loading')}
                 </li>
               )}
-              {showAdd ? (
+              {filteredItems.map((item, index, { length }) => {
+                /**
+                 * Highlight relevant part of the string.
+                 * Note, if item.searchValue and item.value is different,
+                 * label might not be highlighted even if it matched
+                 */
+                const stringLabel =
+                  typeof item.label === 'string' ? item.label : undefined;
+                const label =
+                  typeof stringLabel === 'string' && highlightMatch
+                    ? stringLabel
+                        // Convert to lower case as search may be case-insensitive
+                        .toLowerCase()
+                        .split(pendingValue.toLowerCase())
+                        .map((part, index, parts) => {
+                          const startIndex = parts
+                            .slice(0, index)
+                            .join(pendingValue).length;
+                          const offsetStartIndex =
+                            startIndex +
+                            (index === 0 ? 0 : pendingValue.length);
+                          const endIndex =
+                            startIndex +
+                            part.length +
+                            (index === 0 ? 0 : pendingValue.length);
+                          return (
+                            <React.Fragment key={index}>
+                              {/* Reconstruct the value in original casing */}
+                              {stringLabel.slice(offsetStartIndex, endIndex)}
+                              {index + 1 !== parts.length && (
+                                <span className="text-brand-300">
+                                  {stringLabel.slice(
+                                    endIndex,
+                                    endIndex + pendingValue.length
+                                  )}
+                                </span>
+                              )}
+                            </React.Fragment>
+                          );
+                        })
+                    : item.label;
+                const fullLabel =
+                  typeof item.subLabel === 'string' ? (
+                    <div className="flex flex-col justify-center">
+                      {label}
+                      <span className="text-gray-500">{item.subLabel}</span>
+                    </div>
+                  ) : (
+                    label
+                  );
+                return (
+                  <li
+                    key={index}
+                    aria-posinset={index + 1}
+                    aria-setsize={length + Number(showAdd)}
+                    aria-selected={index === currentIndex}
+                    onClick={(): void => {
+                      handleChange(item);
+                      const value =
+                        typeof item.label === 'string'
+                          ? item.label
+                          : item.searchValue ?? '';
+                      setPendingValue(value);
+                      if (typeof pendingValueRef === 'object')
+                        pendingValueRef.current = value;
+                      handleClose();
+                    }}
+                    {...itemProps}
+                  >
+                    {typeof item.icon === 'string' ? (
+                      <div className="flex items-center">
+                        {item.icon}
+                        {fullLabel}
+                      </div>
+                    ) : (
+                      fullLabel
+                    )}
+                  </li>
+                );
+              })}
+              {showAdd && (
                 <li
                   aria-selected={false}
-                  aria-posinset={1}
-                  aria-setsize={1}
+                  aria-posinset={length}
+                  aria-setsize={length + 1}
                   onClick={(): void => handleNewValue(pendingValue)}
+                  {...itemProps}
                 >
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText('add')}
                   </div>
                 </li>
-              ) : (
-                filteredItems.map((item, index, { length }) => {
-                  /**
-                   * Highlight relevant part of the string.
-                   * Note, if item.searchValue and item.value is different,
-                   * label might not be highlighted even if it matched
-                   */
-                  const stringLabel =
-                    typeof item.label === 'string' ? item.label : undefined;
-                  const label =
-                    typeof stringLabel === 'string' && highlightMatch
-                      ? stringLabel
-                          // Convert to lower case as search may be case-insensitive
-                          .toLowerCase()
-                          .split(pendingValue.toLowerCase())
-                          .map((part, index, parts) => {
-                            const startIndex = parts
-                              .slice(0, index)
-                              .join(pendingValue).length;
-                            const offsetStartIndex =
-                              startIndex +
-                              (index === 0 ? 0 : pendingValue.length);
-                            const endIndex =
-                              startIndex +
-                              part.length +
-                              (index === 0 ? 0 : pendingValue.length);
-                            return (
-                              <React.Fragment key={index}>
-                                {/* Reconstruct the value in original casing */}
-                                {stringLabel.slice(offsetStartIndex, endIndex)}
-                                {index + 1 !== parts.length && (
-                                  <span className="text-brand-300">
-                                    {stringLabel.slice(
-                                      endIndex,
-                                      endIndex + pendingValue.length
-                                    )}
-                                  </span>
-                                )}
-                              </React.Fragment>
-                            );
-                          })
-                      : item.label;
-                  const fullLabel =
-                    typeof item.subLabel === 'string' ? (
-                      <div className="flex flex-col justify-center">
-                        {label}
-                        <span className="text-gray-500">{item.subLabel}</span>
-                      </div>
-                    ) : (
-                      label
-                    );
-                  return (
-                    <li
-                      key={index}
-                      aria-posinset={index + 1}
-                      aria-setsize={length}
-                      aria-selected={index === currentIndex}
-                      onClick={(): void => {
-                        handleChange(item);
-                        const value =
-                          typeof item.label === 'string'
-                            ? item.label
-                            : item.searchValue ?? '';
-                        setPendingValue(value);
-                        if (typeof pendingValueRef === 'object')
-                          pendingValueRef.current = value;
-                        handleClose();
-                      }}
-                      {...itemProps}
-                    >
-                      {typeof item.icon === 'string' ? (
-                        <div className="flex items-center">
-                          {item.icon}
-                          {fullLabel}
-                        </div>
-                      ) : (
-                        fullLabel
-                      )}
-                    </li>
-                  );
-                })
               )}
             </>
           )}
