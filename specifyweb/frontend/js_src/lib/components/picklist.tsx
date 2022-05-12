@@ -174,7 +174,14 @@ export function PickListComboBox(
         <Autocomplete<string>
           filterItems={true}
           source={autocompleteItems}
-          onNewValue={addNewValue}
+          onNewValue={f.var(
+            f.parseInt(props.pickList.get('sizeLimit')),
+            (sizeLimit) =>
+              typeof sizeLimit === 'number' &&
+              sizeLimit <= autocompleteItems.length
+                ? undefined
+                : addNewValue
+          )}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
           forwardRef={validationRef}
