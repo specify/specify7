@@ -314,8 +314,7 @@ const WBView = Backbone.View.extend({
             ({ mappingPath }) =>
               getTableFromMappingPath(
                 this.mappings.baseTable.name,
-                // Remove field name from mapping path
-                mappingPath.slice(0, -1)
+                mappingPath,
               )
           );
         }
