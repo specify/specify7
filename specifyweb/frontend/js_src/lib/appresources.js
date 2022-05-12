@@ -318,7 +318,7 @@ const ResourceView = Backbone.View.extend({
         this.isSelected = this.model === selectedResource;
     },
     render() {
-        this.el.role = 'treeitem';
+        this.el.setAttribute('role', 'tree-item');
         this.el.ariaExpanded = true;
         this.$el.append(
             $('<a>', {
@@ -346,12 +346,12 @@ const ResourceList = Backbone.View.extend({
         this.containsSelected = this.views.some(v => v.isSelected);
     },
     render() {
-        this.el.role = 'group';
+        this.el.setAttribute('role', 'group');
         this.$el.append(
             this.views.map(v => v.render().el)
         );
         if (hasToolPermission('resources','update')){
-            const button = $(`<li role="treeitem">
+            const button = $(`<li role="tree-item">
                 <button
                     type="button"
                     class="link ${className.headerGray}"
@@ -464,6 +464,8 @@ const GlobalResourcesView = Backbone.View.extend({
         });
     },
     render() {
+        this.el.setAttribute('role', 'tree-item');
+
         this.$el.append(
             `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="global">
                 ${adminText('globalResourcesTitle',this.resourceList.resources.length)}
@@ -507,6 +509,7 @@ const DisciplinesView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
+        this.el.setAttribute('role', 'tree-item');
         this.$el.append(
            `<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="disciplines">
                 ${adminText('disciplineResourcesTitle',this.count)}
@@ -556,7 +559,7 @@ const DisciplineResourcesView = Backbone.View.extend({
         this.count = this.resources.length + this.collectionViews.reduce((a, v) => a + v.count, 0);
     },
     render() {
-        this.el.role='treeitem';
+        this.el.setAttribute('role', 'tree-item');
         this.$el.append(
             $(`<button type="button" class="toggle-content link">
                 ${this.discipline.get('name')}
@@ -627,7 +630,7 @@ const CollectionResourcesView = Backbone.View.extend({
         this.count = this.resources.length + this.userTypeView.count + this.userView.count;
     },
     render() {
-        this.el.role = 'treeitem';
+        this.el.setAttribute('role', 'tree-item');
         this.$el.append(
             $(`<button type="button" class="toggle-content link ${className.headerGray}">
                 ${this.collection.get('collectionname')}
@@ -635,7 +638,7 @@ const CollectionResourcesView = Backbone.View.extend({
             </button>`).data('appdir', this.discipline.get('resource_uri')),
             $('<ul role="group" class="ml-4">').append(
                 this.resourceList.render().el.children,
-                $(`<li role="treeitem">
+                $(`<li role="tree-item">
                     <button type="button" class="toggle-content link ${className.headerGray}" data-appdir="usertypes">
                         ${adminText('userTypes')}
                         <small>(${this.userTypeView.count})</small>
@@ -645,7 +648,7 @@ const CollectionResourcesView = Backbone.View.extend({
                     .append(
                         this.userTypeView.render().el
                     ),
-              $(`<li role="treeitem">
+              $(`<li role="tree-item">
                   <button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                       ${adminText('users')}
                       <small>(${this.userView.count})</small>
@@ -691,7 +694,7 @@ const UserTypeView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
-        this.el.role = 'group';
+        this.el.setAttribute('role', 'group');
         this.$el.append(this.views.map(v => v.render().el))
             .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'usertypes'));
         return this;
@@ -726,7 +729,7 @@ const UserTypeResourcesView = Backbone.View.extend({
         this.count = this.resources.length;
     },
     render() {
-        this.el.role = 'treeitem';
+        this.el.setAttribute('role', 'tree-item');
         this.$el.append(
             $(`<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                 ${this.usertype}
@@ -772,7 +775,7 @@ const UserView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
-        this.el.role = 'group';
+        this.el.setAttribute('role', 'group');
         this.$el.append(this.views.map(v => v.render().el))
             .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'users'));
         return this;
@@ -808,7 +811,7 @@ const UserResourcesView = Backbone.View.extend({
         this.count = this.resources.length;
     },
     render() {
-        this.el.role = 'treeitem';
+        this.el.setAttribute('role', 'tree-item');
         this.$el.append(
             $(`<button type="button" class="toggle-content link ${className.headerGray}" data-appdir="users">
                 ${this.user.get('name')}
