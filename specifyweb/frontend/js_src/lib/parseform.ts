@@ -66,8 +66,7 @@ function parseFormTableDefinition(
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
           ? model?.getField(cell.fieldName ?? '')?.label ?? cell.fieldName
-          : undefined) ??
-        cell.id,
+          : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
         ? { fieldDefinition: { ...cell.fieldDefinition, label: undefined } }

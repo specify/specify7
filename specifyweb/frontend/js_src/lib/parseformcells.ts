@@ -173,6 +173,11 @@ const processCellType: {
     const rawFieldName = getParsedAttribute(cell, 'name');
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     const field = model?.getField(rawFieldName ?? '');
+    if (typeof field === 'undefined')
+      f.error(`Unknown field ${rawFieldName} when parsing form SubView`, {
+        cell,
+        model,
+      });
     return {
       type: 'SubView',
       formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
