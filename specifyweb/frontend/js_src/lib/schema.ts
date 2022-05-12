@@ -8,6 +8,7 @@ import { error } from './assert';
 import type { Agent, Tables } from './datamodel';
 import type { AnySchema, AnyTree } from './datamodelutils';
 import { f } from './functools';
+import { sortFunction } from './helpers';
 import { load } from './initialcontext';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
@@ -15,7 +16,6 @@ import { LiteralField, Relationship } from './specifyfield';
 import { SpecifyModel, type TableDefinition } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
-import { sortFunction } from './helpers';
 
 export type SchemaLocalization = {
   readonly name: string | null;

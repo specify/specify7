@@ -244,8 +244,7 @@ export class QueryFieldSpec {
     const field = model.getField(fieldName);
 
     const fieldSpec = new QueryFieldSpec(baseTable);
-    fieldSpec.joinPath =
-      typeof field === 'object' ? [...joinPath, field] : joinPath;
+    fieldSpec.joinPath = filterArray([...joinPath, field]);
     fieldSpec.table =
       typeof field === 'object' && field.isRelationship
         ? field.relatedModel
@@ -261,15 +260,6 @@ export class QueryFieldSpec {
        */
       const parts = fieldName.split(' ');
       const parsedField = fieldSpec.table.getField(parts.slice(-1)[0]);
-      fieldSpec.joinPath = filterArray([
-        ...fieldSpec.joinPath,
-        // If no field provided, use fullName
-        fieldSpec.joinPath.slice(-1)[0]?.isRelationship
-          ? defined(fieldSpec.table.getField('fullName'))
-          : typeof field === 'undefined'
-          ? parsedField
-          : undefined,
-      ]);
       /*
        * If no field passed, entire fieldName string is a rank name
        * If no rank passed, use anyTreeRank
@@ -279,7 +269,17 @@ export class QueryFieldSpec {
           ? parts.slice(0, -1).join(' ') || anyTreeRank
           : typeof field === 'object'
           ? anyTreeRank
-          : fieldName;
+          : fieldName || anyTreeRank;
+      fieldSpec.joinPath = filterArray([
+        ...fieldSpec.joinPath,
+        // If no field provided, use fullName
+        fieldSpec.joinPath.slice(-1)[0]?.isRelationship !== false &&
+        fieldSpec.treeRank !== anyTreeRank
+          ? defined(fieldSpec.table.getField('fullName'))
+          : typeof field === 'undefined'
+          ? parsedField
+          : undefined,
+      ]);
     }
 
     const newField = fieldSpec.getField();
