@@ -19,9 +19,9 @@ import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { NotFoundView } from './notfoundview';
+import { usePref } from './preferenceshooks';
 import { loadingGif } from './queryresultstable';
 import { FormCell } from './specifyformcell';
-import { usePref } from './preferenceshooks';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
