@@ -1541,7 +1541,7 @@ const WBView = Backbone.View.extend({
       }
     };
 
-    const content = $('<div class="flex flex-col">');
+    const content = $('<div class="contents">');
     // TODO: this will fail if don't have read permission to that table
     resources.fetch({ limit: 0 }).then(() => {
       if (resources.length === 0) {
@@ -1556,8 +1556,9 @@ const WBView = Backbone.View.extend({
       }
 
       resources.forEach((resource) => {
+        // TODO: take <a> out of the <label>
         const row = $(
-          `<label class="py-1">
+          `<label class="py-1 flex flex-col gap-2">
             <input
               type="radio"
               class="da-option"
@@ -1570,7 +1571,6 @@ const WBView = Backbone.View.extend({
               title="${commonText('view')}"
               aria-label="${commonText('view')}"
             >
-              ${legacyNonJsxIcons.informationCircle}
               <span
                 title="${commonText('opensInNewTab')}"
                 aria-label="${commonText('opensInNewTab')}"
@@ -1604,7 +1604,7 @@ const WBView = Backbone.View.extend({
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
             <Button.Blue
               onClick={() => {
-                const selected = $('input.da-option:checked', this).val();
+                const selected = $('input.da-option:checked', content).val();
                 if (selected != null) {
                   doDA(selected);
                   dialog.remove();
@@ -1617,7 +1617,7 @@ const WBView = Backbone.View.extend({
             <Button.Blue
               id="applyAllButton"
               onClick={() => {
-                const selected = $('input.da-option:checked', this).val();
+                const selected = $('input.da-option:checked', content).val();
                 if (selected != null) {
                   doAll(selected);
                   dialog.remove();

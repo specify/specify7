@@ -427,18 +427,18 @@ export const wbText = createDictionary({
     'es-es': 'No matching record for must-match table.',
   },
   matchedMultipleErrorMessage: {
-    'en-us': `
+    'en-us': whitespaceSensitive(`
       This value matches two or more existing database records and the match
-      must be disambiguated before uploading.`,
-    'ru-ru': `
+      must be disambiguated before uploading.`),
+    'ru-ru': whitespaceSensitive(`
       Это значение соответствует двум или более существующим записям базы
-      данных и совпадению`,
-    ca: `
+      данных и совпадению`),
+    ca: whitespaceSensitive(`
       This value matches two or more existing database records and the match
-      must be disambiguated before uploading.`,
-    'es-es': `
+      must be disambiguated before uploading.`),
+    'es-es': whitespaceSensitive(`
       This value matches two or more existing database records and the match
-      must be disambiguated before uploading.`,
+      must be disambiguated before uploading.`),
   },
   validationNoErrorsDialogTitle: {
     'en-us': 'Data Set Validation',
