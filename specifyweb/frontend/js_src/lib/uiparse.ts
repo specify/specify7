@@ -84,7 +84,7 @@ export type Parser = Partial<{
 }>;
 
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
-  typeof value === 'number' && typeof step === 'number'
+  typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
     : (value as number)?.toString() ?? '';
 
