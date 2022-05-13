@@ -92,7 +92,7 @@ export function testAutoMapper(): void {
               'Collector 4 Middle Initial',
               'Collector 4 Last Name',
             ],
-            baseTable: 'CollectionObject',
+            baseTableName: 'CollectionObject',
             scope: 'autoMapper',
           },
         ],

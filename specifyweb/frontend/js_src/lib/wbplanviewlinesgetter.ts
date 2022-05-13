@@ -57,7 +57,7 @@ export function getLinesFromHeaders({
 
   const autoMapperResults: AutoMapperResults = new AutoMapper({
     headers,
-    baseTable: baseTableName,
+    baseTableName,
     scope: 'autoMapper',
     getMappedFields: f.array,
   }).map();

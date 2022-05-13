@@ -34,6 +34,7 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { isCircularRelationship } from './wbplanviewmodelhelper';
+import { SpecifyModel } from './specifymodel';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
@@ -41,7 +42,7 @@ export type AutoMapperConstructorParameters = {
   // Array of strings that represent headers
   readonly headers: RA<string>;
   // Base table name
-  readonly baseTable: keyof Tables;
+  readonly baseTableName: keyof Tables;
   /*
    * Starting table name (if starting mappingPath provided, starting table
    * would be different from base table)
@@ -202,7 +203,7 @@ export class AutoMapper {
 
   private readonly pathOffset: number = 0;
 
-  private readonly baseTable: keyof Tables;
+  private readonly baseTable: SpecifyModel;
 
   // For AutoMapper suggestions, starting table can be different from base table
   private readonly startingTable: keyof Tables;
@@ -278,8 +279,8 @@ export class AutoMapper {
 
   public constructor({
     headers: rawHeaders,
-    baseTable,
-    startingTable = baseTable,
+    baseTableName,
+    startingTable = baseTableName,
     path = [],
     pathOffset = 0,
     scope = 'autoMapper',
@@ -357,7 +358,7 @@ export class AutoMapper {
     // Whether to use getMappedFields to check for existing mappings
     this.checkForExistingMappings = scope === 'suggestion';
     this.pathOffset = path.length - pathOffset;
-    this.baseTable = baseTable;
+    this.baseTable = defined(getModel(baseTableName));
     this.startingTable = startingTable;
     this.startingPath = path;
     this.getMappedFields = getMappedFields;
@@ -397,7 +398,7 @@ export class AutoMapper {
               mappingPath: this.startingPath,
             }
           : {
-              tableName: this.baseTable,
+              tableName: this.baseTable.name,
               mappingPath: [],
             },
     });
@@ -538,7 +539,7 @@ export class AutoMapper {
 
     const filteredPathString = mappingPathToString(filteredPath);
     const filteredPathWithBaseTableString = mappingPathToString([
-      this.baseTable,
+      this.baseTable.name,
       ...filteredPath,
     ]);
 
@@ -955,6 +956,10 @@ export class AutoMapper {
       )
         return false;
     }
+
+    const field = getModel(tableName)?.getField(newPathParts[0] ?? '');
+    if (field?.isRelationship === true && field.relatedModel === this.baseTable)
+      return false;
 
     // Remove header from the list of unmapped headers
     this.dispatch.headersToMap({

@@ -358,7 +358,7 @@ export async function fetchAutoMapperSuggestions({
 
   const autoMapperResults = new AutoMapper({
     headers: [lines[line].headerName],
-    baseTable: baseTableName,
+    baseTableName,
     startingTable:
       mappingLineData.length === 0
         ? baseTableName
