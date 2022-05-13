@@ -223,26 +223,29 @@ const ResourceDataView = Backbone.View.extend({
                 });
 
                 if(hasToolPermission('resources', 'update')){
-                    const saveButton = new SaveButtonView({
+                    this.saveButton = new SaveButtonView({
                         resource: this.appresourceData,
                         canAddAnother: false,
                         form: this.el,
                         onSaved: ()=>this.model.save(),
                     }).render();
                     buttonsDiv.append(`<span class="flex-1 -ml-2"></span>`);
-                    buttonsDiv.append(saveButton.el);
+                    buttonsDiv.append(this.saveButton.el);
                 }
             } else {
                 $(`<p aria-live="polite">${adminText('corruptResourceOrConflict')}</p>`).appendTo(this.el);
             }
 
-            if(hasToolPermission('resources', 'delete'))
-                buttonsDiv.prepend(
-                    new DeleteButtonView({
+            if(hasToolPermission('resources', 'delete')){
+                this.deleteButton = new DeleteButtonView({
                         resource: this.model,
-                        onDeleted: () => goTo('/appresources/')
-                    }).render().el
-                );
+                        onDeleted: () => {
+                            this.deleteButton.remove();
+                            goTo('/appresources/');
+                        },
+                    });
+                buttonsDiv.prepend(this.deleteButton.render().el);
+            }
 
             this.$el.append(buttonsDiv);
             this.$el.append(`<section class="validation-results hidden p-4 bg-red-500">
@@ -312,7 +315,12 @@ const ResourceDataView = Backbone.View.extend({
                 dialog.remove();
             }
         });
-    }
+    },
+    remove() {
+        this.addButton?.remove();
+        this.deleteButton?.remove();
+        Backbone.View.prototype.remove.call(this);
+      },
 });
 
 const ResourceView = Backbone.View.extend({
