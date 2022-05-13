@@ -31,7 +31,6 @@ import { QueryComboBox } from './querycombobox';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 import type { UserAgents } from './securityuserhooks';
-import { useUserProviders } from './securityuserhooks';
 import { UserCollectionsPlugin } from './usercollectionsplugin';
 
 export function SetSuperAdmin({
@@ -333,13 +332,12 @@ export function CollectionAccess({
 }
 
 export function UserIdentityProviders({
-  userId,
+  identityProviders,
 }: {
-  readonly userId: number | undefined;
+  readonly identityProviders: IR<boolean> | undefined;
 }): JSX.Element | null {
-  const providers = useUserProviders(userId);
-  return typeof providers === 'undefined' ||
-    Object.entries(providers).length === 0 ? null : (
+  return typeof identityProviders === 'undefined' ||
+    Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
       <legend>
         <span className={className.headerGray}>
@@ -347,7 +345,7 @@ export function UserIdentityProviders({
         </span>
       </legend>
       <Ul className="flex flex-col gap-1">
-        {Object.entries(providers).map(([title, isEnabled], index) => (
+        {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
             <Label.ForCheckbox>
               <Input.Checkbox isReadOnly checked={isEnabled} />

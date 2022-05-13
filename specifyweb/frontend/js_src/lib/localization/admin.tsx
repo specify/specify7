@@ -382,11 +382,16 @@ export const adminText = createDictionary({
       them to log in for the first time.
     `,
   },
-  copyToClipboard: {
-    'en-us': 'Copy to clipboard',
-    'ru-ru': 'Скопировать в буфер обмена',
-    ca: 'Copy to clipboard',
-    'es-es': 'Copy to clipboard',
+  // FIXME: localize
+  userInviteLinkInvalidDialogText: {
+    'en-us': `No external identity provider is configured.
+      You can configure some in Specify 7 server settings`,
+    'ru-ru': `No external identity provider is configured.
+      You can configure some in Specify 7 server settings`,
+    ca: `No external identity provider is configured.
+      You can configure some in Specify 7 server settings`,
+    'es-es': `No external identity provider is configured.
+      You can configure some in Specify 7 server settings`,
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',

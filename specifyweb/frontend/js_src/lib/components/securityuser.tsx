@@ -46,6 +46,7 @@ import {
   useUserAgents,
   useUserInstitutionalPolicies,
   useUserPolicies,
+  useUserProviders,
   useUserRoles,
 } from './securityuserhooks';
 import type { SetAgentsResponse } from './useragentsplugin';
@@ -81,6 +82,7 @@ export function UserView({
     useUserPolicies(userResource, collections);
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
+  const identityProviders = useUserProviders(userResource.id);
   const [
     institutionPolicies,
     setInstitutionPolicies,
@@ -147,12 +149,15 @@ export function UserView({
                     <h4 className={className.headerGray}>
                       {commonText('actions')}
                     </h4>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       {hasPermission('/admin/user/password', 'update') && (
                         <PasswordPlugin onSet={setPassword} />
                       )}
                       {hasPermission('/admin/user/invite_link', 'create') && (
-                        <UserInviteLinkPlugin user={user} />
+                        <UserInviteLinkPlugin
+                          user={user}
+                          identityProviders={identityProviders}
+                        />
                       )}
                       <SetSuperAdmin
                         institutionPolicies={institutionPolicies}
@@ -175,7 +180,9 @@ export function UserView({
                     />
                   )}
                 {hasPermission('/admin/user/oic_providers', 'read') && (
-                  <UserIdentityProviders userId={user.id} />
+                  <UserIdentityProviders
+                    identityProviders={identityProviders}
+                  />
                 )}
                 <SetCollection
                   collectionId={collectionId}

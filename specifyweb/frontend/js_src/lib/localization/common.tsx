@@ -1832,11 +1832,10 @@ export const commonText = createDictionary({
     ca: (url: JSX.Element) => <>Permission denied when accessing {url}</>,
     'es-es': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
   },
-  // FIXME: localize
-  copy: {
-    'en-us': 'Copy',
-    'ru-ru': 'Copy',
-    ca: 'Copy',
-    'es-es': 'Copy',
+  copyToClipboard: {
+    'en-us': 'Copy to clipboard',
+    'ru-ru': 'Скопировать в буфер обмена',
+    ca: 'Copy to clipboard',
+    'es-es': 'Copy to clipboard',
   },
 });

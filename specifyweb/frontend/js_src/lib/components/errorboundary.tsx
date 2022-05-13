@@ -83,7 +83,7 @@ function ErrorDialog({
             {commonText('downloadErrorMessage')}
           </Button.Blue>
           <CopyButton
-            message={copiableMessage}
+            text={copiableMessage}
             label={commonText('copyErrorMessage')}
           />
           <Link.Blue href="/specify/task/cache-buster/">

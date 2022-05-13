@@ -220,17 +220,17 @@ export function AutoGrowTextArea(
 const copyMessageTimeout = 3000;
 
 export function CopyButton({
-  message,
-  label,
+  text,
+  label = commonText('copyToClipboard'),
 }: {
-  readonly message: string;
-  readonly label: string;
+  readonly text: string;
+  readonly label?: string;
 }): JSX.Element {
   const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
   return (
     <Button.Green
       onClick={(): void =>
-        void copyTextToClipboard(message).then((): void => {
+        void copyTextToClipboard(text).then((): void => {
           handleCopied();
           setTimeout(handleNotCopied, copyMessageTimeout);
         })

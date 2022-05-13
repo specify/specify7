@@ -2,12 +2,14 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { Button, Input } from './basic';
+import { CopyButton } from './common';
 import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
-import { SerializedResource } from '../datamodelutils';
+import { defined, IR } from '../types';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to
@@ -15,22 +17,29 @@ import { SerializedResource } from '../datamodelutils';
  */
 export function UserInviteLinkPlugin({
   user,
+  identityProviders,
 }: {
   readonly user: SerializedResource<SpecifyUser>;
+  readonly identityProviders: IR<boolean> | undefined;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);
+  const hasProvidersConfigured =
+    Object.keys(defined(identityProviders)).length > 0;
 
   return (
     <>
       <Button.Small
         onClick={(): void =>
-          loading(
-            ajax(`/accounts/invite_link/${user.id}/`, {
-              headers: { Accept: 'text/plain' },
-            }).then(({ data }) => setLink(data))
-          )
+          hasProvidersConfigured
+            ? loading(
+                ajax(`/accounts/invite_link/${user.id}/`, {
+                  headers: { Accept: 'text/plain' },
+                }).then(({ data }) => setLink(data))
+              )
+            : setLink('')
         }
+        disabled={typeof identityProviders === 'undefined'}
       >
         {adminText('createInviteLink')}
       </Button.Small>
@@ -40,17 +49,21 @@ export function UserInviteLinkPlugin({
           onClose={(): void => setLink(undefined)}
           buttons={commonText('close')}
         >
-          {adminText('userInviteLinkDialogText', user.name)}
-          <div className="flex gap-2">
-            <Input.Text isReadOnly value={link} />
-            <Button.Blue
-              onClick={(): void => {
-                window.navigator.clipboard.writeText(link).catch(console.error);
-              }}
-            >
-              {adminText('copyToClipboard')}
-            </Button.Blue>
-          </div>
+          {hasProvidersConfigured ? (
+            <>
+              {adminText('userInviteLinkDialogText', user.name)}
+              <div className="flex gap-2">
+                <Input.Text
+                  isReadOnly
+                  value={link}
+                  className="flex-1 !cursor-pointer"
+                />
+                <CopyButton text={link} />
+              </div>
+            </>
+          ) : (
+            adminText('userInviteLinkInvalidDialogText')
+          )}
         </Dialog>
       )}
     </>

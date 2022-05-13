@@ -116,7 +116,7 @@ function ShowKey({
             className="!cursor-pointer"
           />
         </Label.Generic>
-        <CopyButton message={masterKey} label={commonText('copy')} />
+        <CopyButton text={masterKey} />
       </div>
     </Dialog>
   );
