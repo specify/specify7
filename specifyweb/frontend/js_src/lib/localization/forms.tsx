@@ -681,22 +681,34 @@ export const formsText = createDictionary({
     'es-es': 'Command Not Available',
   },
   unavailableCommandDialogText: {
-    'en-us': `
-      This command is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
-    'ru-ru': `
-      Эта команда в настоящее время недоступна для <i>Specify&nbsp7</i>
-      Вероятно, она была включена на етой форме в <i>Specify&nbsp6</i> м
-      может бить поддерживаним в будущем.`,
-    ca: `
-      This command is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
-    'es-es': `
-      This command is currently unavailable for <i>Specify&nbsp7</i>
-      It was probably included on this form from <i>Specify&nbsp6</i> and
-      may be supported in the future.`,
+    'en-us': (
+      <>
+        This command is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
+      </>
+    ),
+    'ru-ru': (
+      <>
+        Эта команда в настоящее время недоступна для <i>Specify 7</i>
+        Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
+        поддерживаним в будущем.
+      </>
+    ),
+    ca: (
+      <>
+        This command is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
+      </>
+    ),
+    'es-es': (
+      <>
+        This command is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
+      </>
+    ),
   },
   commandName: {
     'en-us': 'Command name:',
@@ -726,30 +738,30 @@ export const formsText = createDictionary({
   unavailablePluginDialogText: {
     'en-us': (
       <>
-        This plugin is currently unavailable for <i>Specify&nbsp7</i>
-        It was probably included on this form from <i>Specify&nbsp6</i> and may
-        be supported in the future.
+        This plugin is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
       </>
     ),
     'ru-ru': (
       <>
-        Этот плагин в настоящее время недоступна для <i>Specify&nbsp7</i>
-        Вероятно, он был включен на етой форме в <i>Specify&nbsp6</i> м может
-        бить поддерживаним в будущем.
+        Этот плагин в настоящее время недоступна для <i>Specify 7</i>
+        Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
+        поддерживаним в будущем.
       </>
     ),
     ca: (
       <>
-        This plugin is currently unavailable for <i>Specify&nbsp7</i>
-        It was probably included on this form from <i>Specify&nbsp6</i> and may
-        be supported in the future.
+        This plugin is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
       </>
     ),
     'es-es': (
       <>
-        This plugin is currently unavailable for <i>Specify&nbsp7</i>
-        It was probably included on this form from <i>Specify&nbsp6</i> and may
-        be supported in the future.
+        This plugin is currently unavailable for <i>Specify 7</i>
+        It was probably included on this form from <i>Specify 6</i> and may be
+        supported in the future.
       </>
     ),
   },
