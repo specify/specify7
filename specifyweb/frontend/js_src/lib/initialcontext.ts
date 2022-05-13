@@ -4,6 +4,8 @@
 
 import type { MimeType } from './ajax';
 import { defined } from './types';
+import { formatNumber, MILLISECONDS } from './components/internationalization';
+import { f } from './functools';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -48,16 +50,27 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
          * Using async import to avoid circular dependency
          * TODO: find a better solution
          */
-        import('./ajax')
-          .then(async ({ ajax }) =>
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            ajax<T>(cachableUrl(path), { headers: { Accept: mimeType } })
-          )
-          .then(({ data }) => {
+        import('./ajax').then(async ({ ajax }) => {
+          const startTime = Date.now();
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          return ajax<T>(cachableUrl(path), {
+            headers: { Accept: mimeType },
+          }).then(({ data }) => {
+            const endTime = Date.now();
+            const timePassed = endTime - startTime;
+            const isCached = timePassed < 100;
             // eslint-disable-next-line no-console
-            console.log('initial context:', path);
+            console.log(
+              `${path} %c[${
+                isCached
+                  ? 'cached'
+                  : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+              }]`,
+              `color: ${isCached ? '#9fa' : '#f99'}`
+            );
             return data;
-          })
+          });
+        })
       : (foreverPromise as Promise<T>)
   );
 

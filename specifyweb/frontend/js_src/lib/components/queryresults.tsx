@@ -250,7 +250,6 @@ export function QueryResults({
     isShiftClick: boolean
   ) => void;
 }): JSX.Element {
-  // FIXME: test distinct query on audit log
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs, hasIdField),
     [fieldSpecs, hasIdField]

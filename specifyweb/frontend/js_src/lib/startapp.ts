@@ -96,7 +96,7 @@ router
   .route('test_error/', 'testError', () => void ping('/api/test_error/'));
 
 export function startApp(): void {
-  console.info('specify app starting');
+  console.groupEnd();
   enableBusinessRules(true);
   tasksPromise.then(f.call).then(startNavigation).catch(crash);
 }

@@ -4,10 +4,10 @@
 
 import React from 'react';
 
+import { capitalize } from '../helpers';
 import { commonText } from '../localization/common';
 import { LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
-import { capitalize } from '../helpers';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace

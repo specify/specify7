@@ -49,6 +49,7 @@ export function entrypoint(
   name: ReturnType<typeof getEntrypointName>,
   getContent: () => JSX.Element
 ): void {
+  console.group('Specify App Starting');
   unlockInitialContext(name);
   window.addEventListener('load', () => {
     const root = document.getElementById('root');
