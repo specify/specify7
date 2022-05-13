@@ -9,7 +9,7 @@ import { Button, Input } from './basic';
 import { CopyButton } from './common';
 import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
-import { defined, IR } from '../types';
+import { IR } from '../types';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to
@@ -25,7 +25,7 @@ export function UserInviteLinkPlugin({
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);
   const hasProvidersConfigured =
-    Object.keys(defined(identityProviders)).length > 0;
+    Object.keys(identityProviders ?? {}).length > 0;
 
   return (
     <>
