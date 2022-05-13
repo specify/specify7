@@ -192,62 +192,54 @@ export function QueryComboBox({
   );
 
   const [typeSearch] = useAsyncState<TypeSearch | false>(
-    React.useCallback(
-      () =>
-        typeof initialTypeSearch === 'string' ||
+    React.useCallback(async () => {
+      const relatedModel =
+        initialRelatedModel ??
+        (field?.isRelationship === true ? field.relatedModel : undefined);
+      if (typeof relatedModel === 'undefined') return false;
+
+      const typeSearch =
         typeof initialTypeSearch === 'object'
-          ? typeSearches.then((element) => {
-              const typeSearch =
-                typeof initialTypeSearch === 'object'
-                  ? initialTypeSearch
-                  : element.querySelector(`[name="${initialTypeSearch}"]`);
+          ? initialTypeSearch
+          : (await typeSearches).querySelector(
+              typeof initialTypeSearch === 'string'
+                ? `[name="${initialTypeSearch}"]`
+                : `[tableid="${relatedModel.tableId}"]`
+            );
+      if (typeof typeSearch === 'undefined') return false;
 
-              const relatedModel =
-                initialRelatedModel ??
-                (field?.isRelationship === true
-                  ? field.relatedModel
-                  : undefined);
+      const searchFieldsNames =
+        typeSearch === null
+          ? []
+          : getParsedAttribute(typeSearch, 'searchField')
+              ?.split(',')
+              .map(f.trim)
+              .map(
+                typeof typeSearch?.textContent === 'string' &&
+                  typeSearch.textContent.trim().length > 0
+                  ? columnToFieldMapper(typeSearch.textContent)
+                  : f.id
+              ) ?? [];
+      const searchFields = searchFieldsNames.map((searchField) =>
+        defined(relatedModel.getField(searchField))
+      );
 
-              if (typeof relatedModel === 'undefined') return false;
+      const fieldTitles = searchFields.map((field) =>
+        filterArray([
+          field.model === relatedModel ? undefined : field.model.label,
+          field.label,
+        ]).join(' / ')
+      );
 
-              const searchFieldsNames =
-                typeSearch === null
-                  ? []
-                  : getParsedAttribute(typeSearch, 'searchField')
-                      ?.split(',')
-                      .map(f.trim)
-                      .map(
-                        typeof typeSearch?.textContent === 'string' &&
-                          typeSearch.textContent.trim().length > 0
-                          ? columnToFieldMapper(typeSearch.textContent)
-                          : f.id
-                      ) ?? [];
-              const searchFields = searchFieldsNames.map((searchField) =>
-                defined(relatedModel.getField(searchField))
-              );
-
-              const fieldTitles = searchFields.map((field) =>
-                filterArray([
-                  field.model === relatedModel ? undefined : field.model.label,
-                  field.label,
-                ]).join(' / ')
-              );
-
-              return {
-                title: queryText(
-                  'queryBoxDescription',
-                  formatList(fieldTitles)
-                ),
-                searchFields,
-                searchFieldsNames,
-                relatedModel,
-                dataObjectFormatter:
-                  typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
-              };
-            })
-          : false,
-      [initialTypeSearch, field, initialRelatedModel]
-    ),
+      return {
+        title: queryText('queryBoxDescription', formatList(fieldTitles)),
+        searchFields,
+        searchFieldsNames,
+        relatedModel,
+        dataObjectFormatter:
+          typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
+      };
+    }, [initialTypeSearch, field, initialRelatedModel]),
     false
   );
 

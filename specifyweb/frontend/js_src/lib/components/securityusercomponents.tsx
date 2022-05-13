@@ -321,7 +321,7 @@ export function CollectionAccess({
             isRequired={hasCollectionAccess}
             relatedModel={schema.models.Agent}
             forceCollection={collectionId}
-            typeSearch="Agent"
+            typeSearch={undefined}
           />
         ) : (
           <Input.Text disabled value={commonText('loading')} />

@@ -132,7 +132,7 @@ export function UserAgentsDialog({
                  * Division
                  */
                 forceCollection={collections[0]}
-                typeSearch="Agent"
+                typeSearch={undefined}
               />
               {f.includes(
                 response.AgentInUseException ?? [],

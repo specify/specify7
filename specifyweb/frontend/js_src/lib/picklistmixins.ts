@@ -9,11 +9,11 @@ import type { AnySchema, SerializedResource } from './datamodelutils';
 import { addMissingFields, serializeResource } from './datamodelutils';
 import { format } from './dataobjformatters';
 import { f } from './functools';
-import { sortFunction } from './helpers';
+import { sortFunction, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { hasTablePermission } from './permissions';
 import { fetchPickLists } from './picklists';
-import { getModel } from './schema';
+import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';
 import type { RA } from './types';
 import { defined } from './types';
@@ -116,7 +116,10 @@ async function fetchFromTable(
   const model = defined(getModel(pickList.get('tableName')));
   if (!hasTablePermission(model.name, 'read')) return [];
   const collection = new model.LazyCollection({
-    domainfilter: true,
+    domainfilter: !f.includes(
+      Object.keys(schema.domainLevelIds),
+      toLowerCase(model.name)
+    ),
   });
   return collection.fetch({ limit }).then(async ({ models }) =>
     Promise.all(
