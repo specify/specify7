@@ -251,6 +251,19 @@ function postProcessRows(
                 title: field?.getLocalizedDesc(),
               }))
             : cell
+        )
+        .map((cell) =>
+          // Replace labels without text with blank cells
+          cell.type === 'Label' && (cell.text ?? '').length === 0
+            ? ({
+                type: 'Blank',
+                id: cell.id,
+                align: 'left',
+                colSpan: cell.colSpan,
+                visible: false,
+                ariaLabel: undefined,
+              } as const)
+            : cell
         ),
       /*
        * Add a necessary number of blank cells at the end so that the
@@ -288,11 +301,14 @@ function postProcessRows(
           ? cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
             ? {
                 ...cell,
-                /*
-                 * Remove label from the checkbox field, if it already has an
-                 * associated label
-                 */
-                label: undefined,
+                fieldDefinition: {
+                  ...cell.fieldDefinition,
+                  /*
+                   * Remove label from the checkbox field, if it already has an
+                   * associated label
+                   */
+                  label: undefined,
+                },
               }
             : cell
           : {
