@@ -95,7 +95,7 @@ export function UiField({
       precisionField={undefined}
       defaultPrecision="full"
       defaultValue={defaultDate}
-      isReadOnly={mode !== 'edit' || data.resource !== resource}
+      isReadOnly={mode === 'view' || data.resource !== resource}
       id={id}
       canChangePrecision={false}
     />
