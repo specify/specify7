@@ -75,6 +75,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
       reason,
       deferred,
     };
+    this.resource.trigger('blockerschanged');
     this.triggerSaveBlocked(this.blockers[key]);
   }
 
@@ -100,6 +101,8 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
 
     if (Object.keys(this.blockers).length === 0)
       this.resource.trigger('oktosave', this.resource);
+
+    this.resource.trigger('blockerschanged');
   }
 
   public getFieldErrors(
@@ -125,6 +128,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
         return [key, { ...blocker, deferred: false }];
       })
     );
+    this.resource.trigger('blockerschanged');
   }
 
   public hasOnlyDeferredBlockers(): boolean {
