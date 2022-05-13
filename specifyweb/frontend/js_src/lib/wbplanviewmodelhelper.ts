@@ -8,7 +8,6 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { group } from './helpers';
-import { hasTreeAccess } from './permissions';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
@@ -72,10 +71,9 @@ export function findRequiredMissingFields(
     );
   // Handle trees
   else if (isTreeModel(tableName) && !valueIsTreeRank(path.slice(-1)[0]))
-    return hasTreeAccess(tableName as 'Geography', 'read')
-      ? defined(
-          getTreeDefinitionItems(tableName as 'Geography', false)
-        ).flatMap(({ name: rankName }) => {
+    return (
+      getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
+        ({ name: rankName }) => {
           const formattedRankName = formatTreeRank(rankName);
           const localPath = [...path, formattedRankName];
 
@@ -88,8 +86,9 @@ export function findRequiredMissingFields(
               localPath
             );
           else return [];
-        })
-      : [];
+        }
+      ) ?? []
+    );
 
   return [
     // WB does not allow mapping to relationships in tree tables

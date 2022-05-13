@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { Collection } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissions';
@@ -11,16 +12,17 @@ import { Button, H3, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import type { NewRole, Role } from './securityrole';
-import { SerializedResource } from '../datamodelutils';
 
 export function CreateRole({
   libraryRoles,
   collections,
+  scope,
   onCreated: handleCreated,
   onClose: handleClose,
 }: {
   readonly libraryRoles: IR<Role> | undefined;
   readonly collections: IR<SerializedResource<Collection>>;
+  readonly scope: number | 'institution';
   readonly onCreated: (role: NewRole | Role) => void;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -74,7 +76,10 @@ export function CreateRole({
                       onClick={(): void =>
                         handleCreated({
                           id: undefined,
-                          name: getUniqueName(role.name, [role.name]),
+                          name:
+                            scope === 'institution'
+                              ? getUniqueName(role.name, [role.name])
+                              : role.name,
                           description: role.description,
                           policies: role.policies,
                         })
@@ -108,7 +113,10 @@ export function CreateRole({
                             onClick={(): void =>
                               handleCreated({
                                 id: undefined,
-                                name: getUniqueName(role.name, [role.name]),
+                                name:
+                                  scope === collection.id
+                                    ? getUniqueName(role.name, [role.name])
+                                    : role.name,
                                 description: role.description,
                                 policies: role.policies,
                               })

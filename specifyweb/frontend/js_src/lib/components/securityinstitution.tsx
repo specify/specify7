@@ -184,6 +184,7 @@ export function InstitutionView({
                         type: 'MainState',
                       })
                     }
+                    scope="institution"
                   />
                 )}
                 <SecurityImportExport

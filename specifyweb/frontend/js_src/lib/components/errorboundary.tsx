@@ -267,12 +267,21 @@ function formatError(
     } else {
       errorObject.push(
         <p className="raw" key="raw">
-          {error.toString()}
+          {JSON.stringify(error, null, 4)}
         </p>
       );
       errorMessage.push(JSON.stringify(error, null, 4));
       copiableMessage.push(JSON.stringify(error, null, 4));
     }
+  } else {
+    const message = error?.toString() ?? '';
+    errorObject.push(
+      <p className="raw" key="raw">
+        {message}
+      </p>
+    );
+    errorMessage.push(message);
+    copiableMessage.push(message);
   }
 
   return [

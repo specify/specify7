@@ -86,6 +86,10 @@
   @apply dark:text-white;
 }
 
+.htContextMenu table tbody tr td.htDisabled {
+  @apply dark:text-neutral-500;
+}
+
 .htContextMenu td.highlight,
 .handsontable.listbox :is(tr td.current, tr:hover td) {
   @apply dark:!bg-neutral-600;

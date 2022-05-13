@@ -20,6 +20,7 @@ import { f } from './functools';
 import { findArrayDivergencePoint } from './helpers';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
+import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
 import type { IR, R, RA, Writable } from './types';
 import { defined, filterArray } from './types';
@@ -34,7 +35,6 @@ import {
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
 import { isCircularRelationship } from './wbplanviewmodelhelper';
-import { SpecifyModel } from './specifymodel';
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 
@@ -680,6 +680,9 @@ export class AutoMapper {
       });
 
       return;
+    } else if (isTreeModel(tableName)) {
+      // No read access to this tree
+      return;
     }
 
     const tableSynonyms = this.findTableSynonyms(tableName, mappingPath, mode);
@@ -863,23 +866,16 @@ export class AutoMapper {
      *  lowercase, we need to convert them back to their proper case
      */
     let fixedNewPathParts = newPathParts;
-    const formatTreeRankUndefined = (
-      rankName: string | undefined
-    ): string | undefined =>
-      typeof rankName === 'string' ? formatTreeRank(rankName) : undefined;
     if (isTreeModel(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
-          ? formatTreeRankUndefined(
-              defined(
-                defined(
-                  getTreeDefinitionItems(tableName as 'Geography', false)
-                ).find(
-                  ({ name }) =>
-                    name.toLowerCase() ===
-                    getNameFromTreeRankName(mappingPathPart).toLowerCase()
-                )?.name
-              )
+          ? f.maybe(
+              getTreeDefinitionItems(tableName as 'Geography', false)?.find(
+                ({ name }) =>
+                  name.toLowerCase() ===
+                  getNameFromTreeRankName(mappingPathPart).toLowerCase()
+              )?.name,
+              formatTreeRank
             ) ?? mappingPathPart
           : mappingPathPart
       );

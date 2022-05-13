@@ -15,14 +15,15 @@ import { fetchContext as fetchDomain } from './schemabase';
 import type { RA } from './types';
 import { defined } from './types';
 
-export function getDomainResource<
+export const getDomainResource = <
   LEVEL extends keyof typeof schema.domainLevelIds
->(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
-  const id = schema.domainLevelIds[level];
-  if (typeof id === 'undefined') return undefined;
-  const model = defined(getModel(level));
-  return new model.Resource({ id });
-}
+>(
+  level: LEVEL
+): SpecifyResource<Tables[Capitalize<LEVEL>]> =>
+  f.var(
+    defined(getModel(level)),
+    (model) => new model.Resource({ id: schema.domainLevelIds[level] })
+  );
 
 let treeDefinitions: {
   [TREE_NAME in AnyTree['tableName']]: {
@@ -59,47 +60,52 @@ export const isTreeResource = (
 
 export const treeRanksPromise = Promise.all([
   // Dynamic imports are used to prevent circular dependencies
-  import('./permissions').then(async ({ fetchContext, hasTreeAccess }) =>
-    fetchContext.then(() => hasTreeAccess)
+  import('./permissions').then(
+    async ({ fetchContext, hasTreeAccess, hasTablePermission }) =>
+      fetchContext.then(() => ({ hasTreeAccess, hasTablePermission }))
   ),
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
-  .then(([hasTreeAccess]) =>
-    getDomainResource('discipline')
-      ?.fetch()
-      .then((discipline) => {
-        if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
-          disciplineTrees = commonTrees;
-        return undefined;
-      })
-      .then(async () =>
-        Promise.all(
-          Object.entries(treeScopes)
-            .filter(
-              ([treeName]) =>
-                disciplineTrees.includes(treeName) &&
-                hasTreeAccess(treeName, 'read')
-            )
-            .map(async ([treeName, definitionLevel]) =>
-              getDomainResource(definitionLevel as 'discipline')
-                ?.rgetPromise(`${unCapitalize(treeName) as 'geography'}TreeDef`)
-                .then(async (treeDefinition) => ({
-                  definition: treeDefinition,
-                  ranks: await fetchRelated(
-                    serializeResource(treeDefinition),
-                    'treeDefItems',
-                    0
-                  ).then(({ records }) =>
-                    Array.from(records).sort(
-                      sortFunction(({ rankId }) => rankId)
+  .then(([{ hasTreeAccess, hasTablePermission }]) =>
+    hasTablePermission('Discipline', 'read')
+      ? getDomainResource('discipline')
+          ?.fetch()
+          .then((discipline) => {
+            if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
+              disciplineTrees = commonTrees;
+            return undefined;
+          })
+          .then(async () =>
+            Promise.all(
+              Object.entries(treeScopes)
+                .filter(
+                  ([treeName]) =>
+                    disciplineTrees.includes(treeName) &&
+                    hasTreeAccess(treeName, 'read')
+                )
+                .map(async ([treeName, definitionLevel]) =>
+                  getDomainResource(definitionLevel as 'discipline')
+                    ?.rgetPromise(
+                      `${unCapitalize(treeName) as 'geography'}TreeDef`
                     )
-                  ),
-                }))
-                .then((ranks) => [treeName, ranks] as const)
+                    .then(async (treeDefinition) => ({
+                      definition: treeDefinition,
+                      ranks: await fetchRelated(
+                        serializeResource(treeDefinition),
+                        'treeDefItems',
+                        0
+                      ).then(({ records }) =>
+                        Array.from(records).sort(
+                          sortFunction(({ rankId }) => rankId)
+                        )
+                      ),
+                    }))
+                    .then((ranks) => [treeName, ranks] as const)
+                )
             )
-        )
-      )
+          )
+      : []
   )
   .then((ranks) => {
     // @ts-expect-error

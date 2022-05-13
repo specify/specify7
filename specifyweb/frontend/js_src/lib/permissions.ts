@@ -4,8 +4,6 @@
 
 import { ajax } from './ajax';
 import { error } from './assert';
-import { crash } from './components/errorboundary';
-import { formatList } from './components/internationalization';
 import type { Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
@@ -235,21 +233,6 @@ export const fetchContext = import('./schemabase')
           };
         }
         void checkRegistry();
-        // Check that user has at least read access to the hierarchy tables
-        if (
-          schema.orgHierarchy.some(
-            (tableName) =>
-              tableName !== 'CollectionObject' &&
-              !hasTablePermission(tableName, 'read')
-          )
-        )
-          crash(
-            new Error(
-              `User must have at least read access to these tables to use Specify: ${formatList(
-                schema.orgHierarchy
-              )}`
-            )
-          );
       })
   );
 

@@ -299,6 +299,7 @@ export function CollectionView({
               type: 'MainState',
             })
           }
+          scope={collection.id}
         />
       )}
       {state.type === 'RoleState' ? (

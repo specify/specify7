@@ -453,13 +453,6 @@ const fieldResource = '/field/%';
  */
 export const basicPermissions: IR<RA<string>> = {
   [fieldResource]: [anyAction],
-  // Give read access to hierarchy tables
-  ...Object.fromEntries(
-    schema.orgHierarchy
-      .filter((tableName) => tableName !== 'CollectionObject')
-      .map((tableName) => [tableNameToResourceName(tableName), ['read']])
-  ),
-  [tableNameToResourceName('Agent')]: ['read'],
 };
 
 /**

@@ -431,16 +431,23 @@ export function getMappingLineData({
                     ) &&
                     (!field.isRelationship ||
                       (scope === 'queryBuilder'
-                        ? hasTablePermission(field.relatedModel.name, 'read') ||
+                        ? (isTreeModel(model.name)
+                            ? hasTreeAccess(model.name, 'read')
+                            : hasTablePermission(
+                                field.relatedModel.name,
+                                'read'
+                              )) ||
                           getUserPref(
                             'queryBuilder',
                             'general',
                             'showNoReadTables'
                           )
-                        : hasTablePermission(
-                            field.relatedModel.name,
-                            'create'
-                          ) ||
+                        : (isTreeModel(model.name)
+                            ? hasTreeAccess(model.name, 'create')
+                            : hasTablePermission(
+                                field.relatedModel.name,
+                                'create'
+                              )) ||
                           getUserPref(
                             'workBench',
                             'wbPlanView',

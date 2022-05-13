@@ -54,7 +54,7 @@ export function TreeSelectDialog({
       <nav>
         <Ul>
           {getDisciplineTrees()
-            .filter((treeName) => hasTreeAccess(treeName, 'update'))
+            .filter((treeName) => hasTreeAccess(treeName, 'read'))
             .map((treeName) =>
               f.var(
                 treeRanks[treeName].definition as SpecifyResource<TaxonTreeDef>,

@@ -12,7 +12,6 @@ import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
 import { filterArray } from './types';
 import { resolveParser } from './uiparse';
-import { f } from './functools';
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -69,26 +68,28 @@ function generateForm(
   mode: FormMode,
   fieldsToSkip: RA<string>
 ): ParsedFormDefinition {
-  const fields = f.var(
-    model.literalFields.filter((field) => !fieldsToSkip.includes(field.name)),
-    (fields) =>
-      f.var(
-        fields.filter((field) => !field.isHidden && !field.isReadOnly),
-        (filteredFields) =>
-          filteredFields.length === 0 ? fields : filteredFields
-      )
+  // Hide hidden fields, unless all fields are hidden
+  const baseFields = model.literalFields.filter(
+    (field) => !fieldsToSkip.includes(field.name)
   );
-  const relationships = f.var(
-    model.relationships.filter((field) => !fieldsToSkip.includes(field.name)),
-    (fields) =>
-      f.var(
-        fields.filter(
-          (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
-        ),
-        (filteredFields) =>
-          filteredFields.length === 0 ? fields : filteredFields
-      )
+  const filteredFields = baseFields.filter(
+    (field) => !field.isHidden && !field.isReadOnly
   );
+  const baseRelationships = model.relationships.filter(
+    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
+  );
+  const filteredRelationships = baseRelationships.filter(
+    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
+  );
+  const fields =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredFields
+      : baseFields;
+  const relationships =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredRelationships
+      : baseRelationships;
+
   const skipLabels = fields.length === 0 || relationships.length === 0;
   return {
     columns: [undefined],

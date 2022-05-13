@@ -1,16 +1,17 @@
 import { error } from './assert';
+import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import { createQuery } from './components/querytask';
 import type { SpQuery, SpQueryField } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
+import { hasTablePermission } from './permissions';
 import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
 import { getTreeModel, schema } from './schema';
 import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
-import { f } from './functools';
-import { queryFieldFilters } from './components/querybuilderfieldfilter';
 
 function makeField(
   path: string,
@@ -96,12 +97,16 @@ const defaultFields: RR<
         operStart: queryFieldFilters.trueOrNull.id,
       }),
 
-      makeField(`${paleoPath}.chronosStrat.fullName`, {}),
-      makeField(`${paleoPath}.chronosStrat.geologicTimePeriodId`, {
-        isDisplay: false,
-        operStart: queryFieldFilters.equal.id,
-        startValue: nodeId.toString(),
-      }),
+      ...(typeof paleoPath === 'string'
+        ? [
+            makeField(`${paleoPath}.chronosStrat.fullName`, {}),
+            makeField(`${paleoPath}.chronosStrat.geologicTimePeriodId`, {
+              isDisplay: false,
+              operStart: queryFieldFilters.equal.id,
+              startValue: nodeId.toString(),
+            }),
+          ]
+        : []),
     ]),
   LithoStrat: async (nodeId) =>
     f.var(await fetchPaleoPath(), (paleoPath) => [
@@ -113,25 +118,31 @@ const defaultFields: RR<
         isDisplay: false,
         operStart: queryFieldFilters.trueOrNull.id,
       }),
-      makeField(`${paleoPath}.lithoStrat.fullName`, {}),
-      makeField(`${paleoPath}.lithoStrat.lithoStratId`, {
-        operStart: queryFieldFilters.equal.id,
-        startValue: nodeId.toString(),
-        isDisplay: false,
-      }),
+      ...(typeof paleoPath === 'string'
+        ? [
+            makeField(`${paleoPath}.lithoStrat.fullName`, {}),
+            makeField(`${paleoPath}.lithoStrat.lithoStratId`, {
+              operStart: queryFieldFilters.equal.id,
+              startValue: nodeId.toString(),
+              isDisplay: false,
+            }),
+          ]
+        : []),
     ]),
 };
 
-const fetchPaleoPath = async (): Promise<string> =>
-  ({
-    collectionobject: 'paleoContext',
-    collectingevent: 'collectingevent.paleoContext',
-    locality: 'collectingevent.locality.paleoContext',
-  }[
-    (await getDomainResource('discipline')?.fetch())?.get(
-      'paleoContextChildTable'
-    ) ?? ''
-  ] ?? error('unknown paleoContext child table'));
+const fetchPaleoPath = async (): Promise<string | undefined> =>
+  hasTablePermission('Discipline', 'read')
+    ? {
+        collectionobject: 'paleoContext',
+        collectingevent: 'collectingevent.paleoContext',
+        locality: 'collectingevent.locality.paleoContext',
+      }[
+        (await getDomainResource('discipline')?.fetch())?.get(
+          'paleoContextChildTable'
+        ) ?? ''
+      ] ?? error('unknown paleoContext child table')
+    : undefined;
 
 /**
  * Generate a Query for fetchign Collection Objects associated with a given

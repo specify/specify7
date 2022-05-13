@@ -52,7 +52,7 @@ import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentComponent, setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
-import {hasPermission} from './permissions';
+import {hasPermission, hasTreeAccess} from './permissions';
 import {wbViewTemplate} from './components/wbviewtemplate';
 import {legacyLoadingContext} from './components/contexts';
 import {
@@ -715,9 +715,10 @@ const WBView = Backbone.View.extend({
           index,
         }))
         .filter(
-          ({ mappingPath }) =>
+          ({ mappingPath, index }) =>
             valueIsTreeRank(mappingPath.slice(-2)[0]) &&
-            mappingPath.slice(-1)[0] === 'name'
+            mappingPath.slice(-1)[0] === 'name' &&
+            hasTreeAccess(this.mappings.tableNames[index],'read')
         )
         .map(({ mappingPath, headerName, index }) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),

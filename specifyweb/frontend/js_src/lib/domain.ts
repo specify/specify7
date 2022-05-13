@@ -14,14 +14,19 @@ import { toTable } from './specifymodel';
 import { getDomainResource } from './treedefinitions';
 import type { RA } from './types';
 import { defined } from './types';
+import { capitalize } from './helpers';
 
 /**
  * Some tasks to do after a new resoure is created
  */
 globalEvents.on('newResource', (resource) => {
   const domainField = resource.specifyModel.getScopingRelationship();
+  if (typeof domainField === 'undefined') return;
+  const domainFieldName =
+    domainField.name as keyof typeof schema.domainLevelIds;
+  if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
   const parentResource = domainField
-    ? getDomainResource(domainField.name as keyof typeof schema.domainLevelIds)
+    ? getDomainResource(domainFieldName)
     : undefined;
   if (typeof parentResource === 'undefined') return;
   if (
