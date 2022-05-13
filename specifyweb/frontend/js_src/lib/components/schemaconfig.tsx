@@ -132,7 +132,9 @@ export function SchemaConfig({
                   name,
                   isSystem,
                 },
+                // Filter out front-end only pick lists
               ])
+              .filter(([id]) => typeof id === 'number')
           )
         ),
         // Fetch table items and their strings

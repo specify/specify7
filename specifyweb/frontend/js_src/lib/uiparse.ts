@@ -475,11 +475,13 @@ export function fieldFormat(
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();
-  const pickList = getPickLists()?.[pickListName ?? ''];
-  if (typeof pickList === 'string') {
-    const items = getPickListItems(pickList);
-    const item = items.find((item) => item.value === value);
-    if (typeof item === 'object') return item.title;
+  if (typeof pickListName === 'string') {
+    const pickList = getPickLists()?.[pickListName];
+    if (typeof pickList === 'object') {
+      const items = getPickListItems(pickList);
+      const item = items.find((item) => item.value === value);
+      if (typeof item === 'object') return item.title;
+    }
   }
 
   const resolvedParser = parser ?? resolveParser(field ?? {});

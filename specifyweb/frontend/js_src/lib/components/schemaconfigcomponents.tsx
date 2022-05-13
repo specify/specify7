@@ -46,7 +46,9 @@ export function PickList({
           {typeof value !== 'string' ||
           Object.values(groups)
             .flatMap((group) =>
-              Array.isArray(group) ? group[0] : Object.values(group)
+              Array.isArray(group)
+                ? group.map(([name]) => name)
+                : Object.values(group)
             )
             .includes(value) ? undefined : (
             <option value={value}>{`${queryText(

@@ -86,6 +86,13 @@ export function getFrontEndPickLists(): typeof frontEndPickLists {
  * These have to be defined inside of a function rather than globally
  * because they depend on the data model being loaded
  *
+ * Since pick list names must be unique, front-end only pick lists are prefixed
+ * with "_". Since these pick lists are front-end only, it is safe to rename
+ * by simply replacing the usages in code if there are any
+ *
+ * If a given field has a pick list assigned to it using the schema config,
+ * that pick lists would take precedence
+ *
  */
 function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
   const tablesPickList = definePicklist(
@@ -149,7 +156,7 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     },
     SpecifyUser: {
       userType: definePicklist(
-        'UserType',
+        '_UserType',
         userTypes.map((title) => createPickListItem(title, title))
       ),
     },
@@ -159,7 +166,7 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     StorageTreeDef: { fullNameDirection },
     TaxonTreeDef: { fullNameDirection },
     PrepType: {
-      name: definePicklist('_prepType', [])
+      name: definePicklist('_PrepType', [])
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
@@ -187,11 +194,19 @@ export const fetchPickLists = f.store(
     ).then(async ({ models }) => {
       pickLists = Object.fromEntries(
         [
-          ...models.map((pickList) =>
-            pickList.get('type') === PickListTypes.ITEMS
-              ? pickList
-              : pickList.set('pickListItems', [])
-          ),
+          /**
+           * Reverse the list so that if there are duplicate names, the first
+           * occurrence is used (to be consistent with the behavior in older
+           * versions of Specify 7). See:
+           * https://github.com/specify/specify7/issues/1572#issuecomment-1125569909
+           */
+          ...Array.from(models)
+            .reverse()
+            .map((pickList) =>
+              pickList.get('type') === PickListTypes.ITEMS
+                ? pickList
+                : pickList.set('pickListItems', [])
+            ),
           ...defineFrontEndPickLists(),
         ].map((pickList) => [pickList.get('name'), pickList] as const)
       );
