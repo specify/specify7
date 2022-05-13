@@ -298,9 +298,9 @@ export function PoliciesView({
     commonText('loading')
   );
 
-  const [isCollapsed = true, setCollapsed] = useCachedState({
+  const [isExpanded = true, setExpanded] = useCachedState({
     bucketName: 'securityTool',
-    cacheName: 'institutionPoliciesCollapsed',
+    cacheName: 'institutionPoliciesExpanded',
     defaultValue: true,
     staleWhileRefresh: false,
   });
@@ -310,7 +310,7 @@ export function PoliciesView({
       ? adminText('switchToHorizontalLayout')
       : adminText('switchToVerticalLayout');
   const switchButton =
-    (!collapsable || !isCollapsed) && Array.isArray(policies) ? (
+    (!collapsable || isExpanded) && Array.isArray(policies) ? (
       <Button.Small
         variant={className.blueButton}
         title={buttonTitle}
@@ -326,8 +326,8 @@ export function PoliciesView({
     ) : undefined;
 
   return collapsable ? (
-    <details open={!isCollapsed}>
-      <Summary onToggle={setCollapsed}>
+    <details open={isExpanded}>
+      <Summary onToggle={setExpanded}>
         <span className="inline-flex items-center gap-4">
           {header}
           {switchButton}

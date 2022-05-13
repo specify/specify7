@@ -106,6 +106,6 @@ export type CacheDefinitions = {
   readonly securityTool: {
     readonly policiesLayout: 'vertical' | 'horizontal';
     readonly previewCollapsed: boolean;
-    readonly institutionPoliciesCollapsed: boolean;
+    readonly institutionPoliciesExpanded: boolean;
   };
 };
