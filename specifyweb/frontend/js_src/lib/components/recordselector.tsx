@@ -130,10 +130,7 @@ function Search<SCHEMA extends AnySchema>({
       templateResource={resource}
       forceCollection={undefined}
       extraFilters={undefined}
-      onSelected={(resource): void => {
-        handleAdd(resource);
-        handleClose();
-      }}
+      onSelected={(resource): void => handleAdd(resource)}
       onClose={handleClose}
     />
   );

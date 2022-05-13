@@ -163,7 +163,10 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     <QueryBuilderSearch
       model={templateResource.specifyModel}
       onClose={handleClose}
-      onSelected={handleSelected}
+      onSelected={(resource) => {
+        handleSelected(resource);
+        handleClose();
+      }}
     />
   ) : null;
 }
