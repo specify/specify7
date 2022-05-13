@@ -111,8 +111,9 @@ const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
   inline-flex items-center capitalize`;
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const containerBase = `bg-[color:var(--form-foreground)] rounded p-4 overflow-y-auto
-  shadow-gray-400 shadow-lg flex flex-col gap-4`;
+const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
+  shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
+  [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
