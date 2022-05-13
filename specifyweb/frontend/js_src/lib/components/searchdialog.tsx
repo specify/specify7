@@ -190,7 +190,7 @@ const testFilter = <SCHEMA extends AnySchema>(
     : operation === 'notIn'
     ? values.every(f.notEqual(resource.get(field)))
     : operation === 'lessThan'
-    ? values.every((value) => resource.get(field) > value)
+    ? values.every((value) => resource.get(field) < value)
     : error('Invalid Query Combo Box search filter', {
         filter: {
           operation,
