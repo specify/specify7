@@ -248,7 +248,7 @@ export const DataEntry = {
         visibility: visible ? undefined : 'hidden',
         gridColumn:
           colSpan === 1 ? undefined : `span ${colSpan} / span ${colSpan}`,
-        justifyContent:
+        alignItems:
           align === 'right'
             ? 'flex-end'
             : align === 'center'

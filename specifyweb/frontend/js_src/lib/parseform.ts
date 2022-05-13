@@ -55,6 +55,8 @@ function parseFormTableDefinition(
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map((cell) => ({
       ...cell,
+      // Center all fields in each column
+      align: 'center' as const,
       // Make sure SubViews are rendered as buttons
       ...(cell.type === 'SubView' ? { isButton: true } : {}),
       // Set ariaLabel for all cells (would be used in formTable headers)

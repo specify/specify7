@@ -45,7 +45,12 @@ function generateFormTable(
   );
   return {
     columns: Array.from(fields).fill(undefined),
-    rows: [fields.map(getFieldDefinition)],
+    rows: [
+      fields.map(getFieldDefinition).map((cell) => ({
+        ...cell,
+        align: 'center',
+      })),
+    ],
   };
 }
 
