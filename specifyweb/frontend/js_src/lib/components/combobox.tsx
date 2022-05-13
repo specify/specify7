@@ -26,9 +26,9 @@ import { PickListComboBox } from './picklist';
 import { PickListFieldComboBox } from './picklistfieldcombobox';
 import { PickListFormatterComboBox } from './picklistformattercombobox';
 import { PickListTableComboBox } from './picklisttablecombobox';
+import { QueryComboBox } from './querycombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UiField } from './uifield';
-import { QueryComboBox } from './querycombobox';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

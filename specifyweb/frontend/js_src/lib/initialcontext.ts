@@ -20,11 +20,7 @@ export function cachableUrl(url: string): string {
   return url;
 }
 
-export let entrypointName:
-  | 'main'
-  | 'login'
-  | 'chooseCollection'
-  | 'passwordChange';
+let entrypointName: 'main' | 'login' | 'chooseCollection' | 'passwordChange';
 
 export const getEntrypointName = (): typeof entrypointName =>
   defined(entrypointName);

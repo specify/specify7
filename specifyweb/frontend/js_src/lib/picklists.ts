@@ -14,10 +14,10 @@ import { createPickListItem, PickListTypes } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';
 
-/**
- * Make sure to only use this value after calling (await fetchPickLists())
- */
-export let pickLists: IR<SpecifyResource<PickList>> = {};
+let pickLists: IR<SpecifyResource<PickList>> = undefined!;
+/** Make sure to only use this value after calling (await fetchPickLists()) */
+export const getPickLists = (): typeof pickLists =>
+  pickLists ?? f.error('Tried to get pick lists before fetching them') ?? {};
 
 const agentTypes = [
   formsText('organization'),
@@ -172,30 +172,29 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
   ];
 }
 
-export const fetchPickLists = async (): Promise<typeof pickLists> =>
-  Object.keys(pickLists).length > 0
-    ? pickLists
-    : (hasToolPermission('pickLists', 'read')
-        ? f.var(
-            new schema.models.PickList.LazyCollection({
-              filters: {
-                domainfilter: true,
-              },
-            }),
-            async (collection) => collection.fetch({ limit: 0 })
-          )
-        : Promise.resolve({ models: [] })
-      ).then(async ({ models }) => {
-        pickLists = Object.fromEntries(
-          [...models, ...defineFrontEndPickLists()].map(
-            (pickList) =>
-              [
-                pickList.get('name'),
-                pickList.get('type') === PickListTypes.ITEMS
-                  ? pickList
-                  : pickList.set('pickListItems', []),
-              ] as const
-          )
-        );
-        return pickLists;
-      });
+export const fetchPickLists = f.store(
+  async (): Promise<typeof pickLists> =>
+    (hasToolPermission('pickLists', 'read')
+      ? f.var(
+          new schema.models.PickList.LazyCollection({
+            filters: {
+              domainfilter: true,
+            },
+          }),
+          async (collection) => collection.fetch({ limit: 0 })
+        )
+      : Promise.resolve({ models: [] })
+    ).then(async ({ models }) => {
+      pickLists = Object.fromEntries(
+        [
+          ...models.map((pickList) =>
+            pickList.get('type') === PickListTypes.ITEMS
+              ? pickList
+              : pickList.set('pickListItems', [])
+          ),
+          ...defineFrontEndPickLists(),
+        ].map((pickList) => [pickList.get('name'), pickList] as const)
+      );
+      return pickLists;
+    })
+);

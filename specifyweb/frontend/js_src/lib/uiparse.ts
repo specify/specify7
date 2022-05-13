@@ -12,7 +12,7 @@ import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
 import { queryText } from './localization/query';
 import { getPickListItems } from './picklistmixins';
-import { monthPickListName, pickLists } from './picklists';
+import { getPickLists, monthPickListName } from './picklists';
 import { getUserPref } from './preferencesutils';
 import { parseRelativeDate } from './relativedate';
 import type { Input } from './saveblockers';
@@ -475,11 +475,9 @@ export function fieldFormat(
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();
-  if (
-    typeof pickListName === 'string' &&
-    typeof pickLists[pickListName] === 'object'
-  ) {
-    const items = getPickListItems(pickLists[pickListName]);
+  const pickList = getPickLists()?.[pickListName ?? ''];
+  if (typeof pickList === 'string') {
+    const items = getPickListItems(pickList);
     const item = items.find((item) => item.value === value);
     if (typeof item === 'object') return item.title;
   }

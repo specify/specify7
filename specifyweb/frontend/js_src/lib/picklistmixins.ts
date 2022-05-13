@@ -12,7 +12,7 @@ import { f } from './functools';
 import { sortFunction } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { hasTablePermission } from './permissions';
-import { fetchPickLists, pickLists } from './picklists';
+import { fetchPickLists } from './picklists';
 import { getModel } from './schema';
 import { fetchRows } from './specifyapi';
 import type { RA } from './types';
@@ -64,7 +64,9 @@ export async function fetchPickListItems(
 export async function fetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
-  const pickList = await fetchPickLists().then(() => pickLists[pickListName]);
+  const pickList = await fetchPickLists().then(
+    (pickLists) => pickLists[pickListName]
+  );
 
   if (typeof pickList === 'undefined') return undefined;
 

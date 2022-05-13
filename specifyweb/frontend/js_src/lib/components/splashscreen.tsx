@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 
-import type { entrypointName } from '../initialcontext';
+import type { getEntrypointName } from '../initialcontext';
 import { unlockInitialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { Contexts } from './contexts';
@@ -46,7 +46,7 @@ export const parseDjangoDump = <T,>(id: string): T =>
   JSON.parse(document.getElementById(id)?.textContent ?? '[]') as T;
 
 export function entrypoint(
-  name: typeof entrypointName,
+  name: ReturnType<typeof getEntrypointName>,
   getContent: () => JSX.Element
 ): void {
   unlockInitialContext(name);

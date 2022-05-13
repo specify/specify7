@@ -2,6 +2,12 @@
  * Class for a specify model (a database table)
  */
 
+import { error } from './assert';
+import {
+  DependentCollection,
+  LazyCollection,
+  ToOneCollection,
+} from './collectionapi';
 import type { Tables } from './datamodel';
 import type {
   AnySchema,
@@ -14,9 +20,10 @@ import { f } from './functools';
 import { camelToHuman } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
+import { parseClassName } from './resource';
 import { ResourceBase } from './resourceapi';
 import type { SchemaLocalization } from './schema';
-import { localization, schema } from './schema';
+import { getSchemaLocalization, schema } from './schema';
 import { unescape } from './schemabase';
 import { getTableOverwrite, modelViews } from './schemaoverrides';
 import type { Relationship } from './specifyfield';
@@ -28,13 +35,6 @@ import {
 import { isTreeResource } from './treedefinitions';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
-import {
-  DependentCollection,
-  LazyCollection,
-  ToOneCollection,
-} from './collectionapi';
-import { parseClassName } from './resource';
-import { error } from './assert';
 
 type FieldAlias = {
   readonly vname: string;
@@ -215,7 +215,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    this.localization = localization[this.name.toLowerCase()] ?? { items: {} };
+    this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
+      items: {},
+    };
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
       tableDefinition.idFieldName.toLowerCase()
     ] ??= {
@@ -263,8 +265,10 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * If you are absolutely sure that field exists, wrap the call to this.getField
    * in defined()
    */
-  // TODO: replace this with a direct access on indexed fields dict for static
-  //   references
+  /*
+   * TODO: replace this with a direct access on indexed fields dict for static
+   *   references
+   */
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {

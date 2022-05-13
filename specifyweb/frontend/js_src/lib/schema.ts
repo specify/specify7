@@ -34,9 +34,6 @@ export type SchemaLocalization = {
   }>;
 };
 
-// The schema config / localization information is loaded dynamically.
-export let localization: IR<SchemaLocalization> = undefined!;
-
 const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   fields: FIELD_TYPE[],
   frontEndFields: RA<FIELD_TYPE>
@@ -48,59 +45,64 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   }),
 ];
 
-export const fetchContext = import('./preferencesutils').then(
-  async ({ getUserPref }) =>
-    f
-      .all({
-        tables: load<RA<TableDefinition>>(
-          '/context/datamodel.json',
-          'application/json'
-        ),
-        data: load<IR<SchemaLocalization>>(
-          `/context/schema_localization.json?lang=${getUserPref(
-            'form',
-            'schema',
-            'language'
-          )}`,
-          'application/json'
-        ),
-      })
-      .then(({ tables, data }) => {
-        localization = data;
-        tables
-          .map((tableDefinition) => {
-            const model = new SpecifyModel(tableDefinition);
-            // @ts-expect-error Assigning to readOnly props
-            schemaBase.models[model.name] = model;
-            return [tableDefinition, model] as const;
-          })
-          .forEach(([tableDefinition, model]) => {
-            const [frontEndFields, frontEndRelationships, callback] = (
-              schemaExtras[model.name] as
-                | typeof schemaExtras['Agent']
-                | undefined
-            )?.(model as SpecifyModel<Agent>) ?? [[], []];
-
-            model.literalFields = processFields(
-              tableDefinition.fields.map(
-                (fieldDefinition) => new LiteralField(model, fieldDefinition)
-              ),
-              frontEndFields
-            );
-            model.relationships = processFields(
-              tableDefinition.relationships.map(
-                (relationshipDefinition) =>
-                  new Relationship(model, relationshipDefinition)
-              ),
-              frontEndRelationships
-            );
-            model.fields = [...model.literalFields, ...model.relationships];
-
-            callback?.();
-          });
-        return schemaBase;
-      })
+let schemaLocalization: IR<SchemaLocalization> = undefined!;
+const fetchSchemaLocalization = f.store(async () =>
+  import('./preferencesutils').then(async ({ getUserPref }) =>
+    load<IR<SchemaLocalization>>(
+      `/context/schema_localization.json?lang=${getUserPref(
+        'form',
+        'schema',
+        'language'
+      )}`,
+      'application/json'
+    )
+  )
 );
+export const getSchemaLocalization = (): IR<SchemaLocalization> =>
+  schemaLocalization ??
+  error('Accessing schema localization before fetching it');
+
+export const fetchContext = f
+  .all({
+    tables: load<RA<TableDefinition>>(
+      '/context/datamodel.json',
+      'application/json'
+    ),
+    localization: fetchSchemaLocalization(),
+  })
+  .then(({ tables, localization }) => {
+    schemaLocalization = localization;
+    tables
+      .map((tableDefinition) => {
+        const model = new SpecifyModel(tableDefinition);
+        // @ts-expect-error Assigning to readOnly props
+        schemaBase.models[model.name] = model;
+        return [tableDefinition, model] as const;
+      })
+      .forEach(([tableDefinition, model]) => {
+        const [frontEndFields, frontEndRelationships, callback] = (
+          schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
+        )?.(model as SpecifyModel<Agent>) ?? [[], []];
+
+        model.literalFields = processFields(
+          tableDefinition.fields.map(
+            (fieldDefinition) => new LiteralField(model, fieldDefinition)
+          ),
+          frontEndFields
+        );
+        model.relationships = processFields(
+          tableDefinition.relationships.map(
+            (relationshipDefinition) =>
+              new Relationship(model, relationshipDefinition)
+          ),
+          frontEndRelationships
+        );
+        model.fields = [...model.literalFields, ...model.relationships];
+
+        callback?.();
+      });
+    return schemaBase;
+  });
 
 export const schema = schemaBase;
 

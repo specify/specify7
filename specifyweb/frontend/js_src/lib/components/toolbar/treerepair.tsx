@@ -12,11 +12,7 @@ import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
 import { hasTreeAccess } from '../../permissions';
 import { parseUrl } from '../../querystring';
-import {
-  getDisciplineTrees,
-  treeDefinitions,
-  treeRanksPromise,
-} from '../../treedefinitions';
+import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
 import { userInformation } from '../../userinfo';
 import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
@@ -61,8 +57,7 @@ export function TreeSelectDialog({
             .filter((treeName) => hasTreeAccess(treeName, 'update'))
             .map((treeName) =>
               f.var(
-                treeDefinitions[treeName]
-                  .definition as SpecifyResource<TaxonTreeDef>,
+                treeRanks[treeName].definition as SpecifyResource<TaxonTreeDef>,
                 (treeDefinition) => (
                   <li key={treeName}>
                     <div className="flex gap-2">

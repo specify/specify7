@@ -2,6 +2,8 @@
  * Parse and use Specify 6 UI Formatters
  */
 
+import { error } from './assert';
+import { f } from './functools';
 import {
   escapeRegExp,
   getAttribute,
@@ -9,12 +11,11 @@ import {
   getParsedAttribute,
 } from './helpers';
 import { load } from './initialcontext';
+import { parseClassName } from './resource';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { f } from './functools';
-import { parseClassName } from './resource';
 
-export let uiFormatters: IR<UiFormatter>;
+let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
   '/context/app.resource?name=UIFormatters',
   'application/xml'
@@ -60,6 +61,8 @@ export const fetchContext = load<Document>(
   );
   return uiFormatters;
 });
+export const getUiFormatters = () =>
+  uiFormatters ?? error('Accessing UI formatters before fetching');
 
 export class UiFormatter {
   public readonly fields: RA<Field>;

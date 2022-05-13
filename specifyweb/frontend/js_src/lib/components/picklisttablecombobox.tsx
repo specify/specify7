@@ -2,7 +2,7 @@ import React from 'react';
 
 import { f } from '../functools';
 import { getPickListItems, PickListTypes } from '../picklistmixins';
-import { pickLists } from '../picklists';
+import { getPickLists } from '../picklists';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListComboBox } from './picklist';
@@ -16,7 +16,7 @@ export function PickListTableComboBox(
       props.resource.get('type') === PickListTypes.ITEMS
         ? []
         : f.maybe(
-            pickLists[props.field.getPickList() ?? ''],
+            getPickLists()[props.field.getPickList() ?? ''],
             getPickListItems
           ) ?? [],
     [props.resource, props.field]

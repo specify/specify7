@@ -3,6 +3,7 @@
  */
 
 import type { PickList, Tables } from './datamodel';
+import { camelToHuman } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { getFrontEndPickLists } from './picklists';
 import type { SchemaLocalization } from './schema';
@@ -13,8 +14,7 @@ import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR } from './types';
 import { defined } from './types';
-import { type UiFormatter, uiFormatters } from './uiformatters';
-import { camelToHuman } from './helpers';
+import { getUiFormatters, type UiFormatter } from './uiformatters';
 
 export type JavaType =
   // Strings
@@ -180,7 +180,7 @@ abstract class FieldBase {
   public getUiFormatter(): UiFormatter | undefined {
     return this.isRelationship
       ? undefined
-      : uiFormatters[this.getFormat() ?? ''];
+      : getUiFormatters()[this.getFormat() ?? ''];
   }
 
   /*
