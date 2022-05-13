@@ -93,7 +93,8 @@ export function QueryBuilder({
     staleWhileRefresh: false,
   });
 
-  const saveRequired = useIsModified(queryResource) || state.saveRequired;
+  const saveRequired =
+    (useIsModified(queryResource) || state.saveRequired) && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
