@@ -387,8 +387,8 @@ export function QueryResultsTable({
       treeRanksLoaded === true ? (
         <div
           role="table"
-          className={`grid-table overflow-auto max-h-[75vh] border-b
-             border-gray-500 auto-rows-min
+          className={`grid-table overflow-auto border-b border-gray-500
+            auto-rows-min
             ${
               hasIdField
                 ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
@@ -626,7 +626,7 @@ export function QueryResultsWrapper({
       <div className="snap-start flex-1">{loadingGif}</div>
     )
   ) : (
-    <div className="snap-start flex-1">
+    <div className="snap-start flex flex-1">
       <QueryResultsTable {...props} onSelected={handleSelected} />
     </div>
   );
