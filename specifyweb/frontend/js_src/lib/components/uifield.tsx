@@ -207,7 +207,9 @@ export function Field({
          */
         updateValue(input.value, event.type === 'paste');
       }}
-      onBlur={({ target }): void => updateValue(target.value)}
+      onBlur={
+        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+      }
       id={id}
       /*
        * Disable "text-align: right" in non webkit browsers
