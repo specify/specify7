@@ -123,9 +123,9 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         // Updates the state to trigger a reRender
         setRecords(getRecords);
       }}
-      onDelete={(): void => {
+      onDelete={(_index, source): void => {
         collection.remove(defined(records[index]));
-        handleDelete?.(index);
+        handleDelete?.(index, source);
         setRecords(getRecords);
       }}
       index={index}
@@ -233,7 +233,7 @@ export function IntegratedRecordSelector({
                   isDependent ? 'create' : 'read'
                 ) && (
                   <DataEntry.Delete
-                    onClick={handleRemove}
+                    onClick={(): void => handleRemove('minusButton')}
                     disabled={mode === 'view' || collection.models.length === 0}
                   />
                 )}
@@ -372,8 +372,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       }
       onDelete={
         typeof handleDelete === 'function'
-          ? (index): void => {
-              handleDelete?.(index);
+          ? (index, source): void => {
+              handleDelete?.(index, source);
               setRecords(removeItem(records, index));
               if (ids.length === 1) handleClose();
             }
@@ -430,7 +430,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
                     }
-                    onClick={handleRemove}
+                    onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}
                 {isAddingNew ? (
@@ -455,7 +455,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={handleRemove}
+            onDeleted={(): void => handleRemove('deleteButton')}
             onClose={handleClose}
           />
           {dialogs}
@@ -681,32 +681,33 @@ export function RecordSet<SCHEMA extends AnySchema>({
       onAdd={hasToolPermission('recordSets', 'create') ? handleAdd : undefined}
       onDelete={
         recordSet.isNew() || hasToolPermission('recordSets', 'delete')
-          ? (): void => {
+          ? (_index, source): void => {
               if (isAddingNew)
                 setItems({ totalCount, ids, isAddingNew: false, index });
               else
                 loading(
-                  fetchCollection('RecordSetItem', {
-                    limit: 1,
-                    recordId: ids[index],
-                    recordSet: recordSet.id,
+                  (source === 'minusButton'
+                    ? fetchCollection('RecordSetItem', {
+                        limit: 1,
+                        recordId: ids[index],
+                        recordSet: recordSet.id,
+                      }).then(async ({ records }) =>
+                        deleteResource('RecordSetItem', defined(records[0]).id)
+                      )
+                    : Promise.resolve()
+                  ).then(() => {
+                    setItems({
+                      totalCount: totalCount - 1,
+                      ids: removeItem(ids, index),
+                      isAddingNew: false,
+                      index: clamp(
+                        0,
+                        totalCount - 1,
+                        previousIndex.current > index ? index - 1 : index
+                      ),
+                    });
+                    if (totalCount === 1) handleClose();
                   })
-                    .then(async ({ records }) =>
-                      deleteResource('RecordSetItem', defined(records[0]).id)
-                    )
-                    .then(() => {
-                      setItems({
-                        totalCount: totalCount - 1,
-                        ids: removeItem(ids, index),
-                        isAddingNew: false,
-                        index: clamp(
-                          0,
-                          totalCount - 1,
-                          previousIndex.current > index ? index - 1 : index
-                        ),
-                      });
-                      if (totalCount === 1) handleClose();
-                    })
                 );
             }
           : undefined

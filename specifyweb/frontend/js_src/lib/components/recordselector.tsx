@@ -146,8 +146,10 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   // Callback to call when new record needs to be added to the record set
   readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
-  // Callback to call when new record needs to be added to the record set
-  readonly onDelete: undefined | ((index: number) => void);
+  // Callback to call when a record needs to be removed from the record set
+  readonly onDelete:
+    | undefined
+    | ((index: number, source: 'deleteButton' | 'minusButton') => void);
   readonly defaultIndex?: number;
   // Render function. Allows to customize placement of elements and features
   readonly children: (props: {
@@ -164,7 +166,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     // Set this as an "Add" button event listener
     readonly onAdd: () => void;
     // Set this as an "Remove" button event listener
-    readonly onRemove: () => void;
+    readonly onRemove: (source: 'deleteButton' | 'minusButton') => void;
     // True while fetching new record
     readonly isLoading: boolean;
   }) => JSX.Element;
@@ -211,10 +213,10 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     } else setState({ type: 'addBySearch' });
   }
 
-  function handleRemove(): void {
+  function handleRemove(source: 'deleteButton' | 'minusButton'): void {
     if (records.length === 0 || typeof handleDelete === 'undefined') return;
     handleSlide(Math.min(index, totalCount - 2));
-    handleDelete?.(index);
+    handleDelete?.(index, source);
   }
 
   return children({
