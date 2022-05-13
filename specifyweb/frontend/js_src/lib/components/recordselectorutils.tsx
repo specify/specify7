@@ -89,7 +89,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   );
 
   const [index, setIndex] = useTriggerState(
-    defaultIndex ?? collection._totalCount ?? 0
+    Math.max(0, defaultIndex ?? collection._totalCount ?? 0)
   );
 
   // Fetch records if needed

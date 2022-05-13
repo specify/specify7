@@ -215,9 +215,11 @@ const ResourceDataView = Backbone.View.extend({
                         editor.setValue(this.appresourceData.get('data'));
                         editor.clearSelection();
                     }
-                    this.validateResource(value)
-                        .then(this.clearValidationResults.bind(this))
-                        .catch(this.showValidationResults.bind(this));
+                    const validationResults = this.validateResource(value);
+                    if(typeof validationResults === 'undefined')
+                        this.clearValidationResults();
+                    else
+                        this.showValidationResults(validationResults);
                 });
 
                 if(hasToolPermission('resources', 'update')){
@@ -252,7 +254,7 @@ const ResourceDataView = Backbone.View.extend({
         return this;
     },
     validateResource(value){
-        return new Promise((resolve, reject)=>{
+        try {
         const resolvedMimeType = modeForResource(this.model);
         if(resolvedMimeType === 'ace/mode/xml'){
              const parsedXml = new DOMParser().parseFromString(value,'text/xml');
@@ -260,16 +262,18 @@ const ResourceDataView = Backbone.View.extend({
              // Chrome, Safari
              const parseError = parsedXml.documentElement.getElementsByTagName('parsererror')[0];
              if(parseError)
-                 reject(parseError.children[1].textContent);
+                 return parseError.children[1].textContent;
 
              // Firefox
              else if (parsedXml.documentElement.tagName === 'parsererror')
-                 reject(parsedXml.documentElement.textContent);
+                 return parsedXml.documentElement.textContent;
         }
         if(resolvedMimeType === 'ace/mode/json')
             JSON.parse(value);
-        resolve(true);
-        });
+        } catch(error){
+            return error.toString();
+        }
+        return undefined;
     },
     showValidationResults(validationResults){
         const validationResultsElement = this.el.getElementsByClassName('validation-results')[0];

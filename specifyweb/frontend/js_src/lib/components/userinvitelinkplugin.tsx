@@ -5,11 +5,11 @@ import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import type { IR } from '../types';
 import { Button, Input } from './basic';
 import { CopyButton } from './common';
 import { LoadingContext } from './contexts';
 import { Dialog } from './modaldialog';
-import { IR } from '../types';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to
