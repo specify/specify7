@@ -42,7 +42,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     setCurrentAction(action);
   }
 
-  const resourceName = `/tree/mutation/${toLowerCase(tableName)}` as const;
+  const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
   const disableButtons =

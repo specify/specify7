@@ -62,35 +62,29 @@ export const operationPolicies = {
     'copy_from_library',
   ],
   '/permissions/library/roles': ['create', 'read', 'update', 'delete'],
-  '/tree/mutation/taxon': [
+  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
+  '/tree/edit/geography': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
   ],
-  '/tree/mutation/geography': [
+  '/tree/edit/storage': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
   ],
-  '/tree/mutation/storage': [
+  '/tree/edit/geologictimeperiod': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
   ],
-  '/tree/mutation/geologictimeperiod': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/tree/mutation/lithostrat': [
+  '/tree/edit/lithostrat': [
     'merge',
     'move',
     'synonymize',
