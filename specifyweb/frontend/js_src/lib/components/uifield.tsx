@@ -21,6 +21,7 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Input } from './basic';
 import { useAsyncState, useResourceValue } from './hooks';
 import { PartialDateUi } from './partialdateui';
+import { usePref } from './preferenceshooks';
 import { getResourceAndField } from './resource';
 import { SpecifyFormCheckbox } from './specifyformcheckbox';
 
@@ -184,6 +185,11 @@ export function Field({
     false
   );
 
+  const [rightAlignNumberFields] = usePref(
+    'form',
+    'ui',
+    'rightAlignNumberFields'
+  );
   return (
     <Input.Generic
       forwardRef={validationRef}
@@ -215,7 +221,12 @@ export function Field({
        * Disable "text-align: right" in non webkit browsers
        * as they don't support spinner's arrow customization
        */
-      className={navigator.userAgent.includes('webkit') ? 'webkit' : ''}
+      className={
+        rightAlignNumberFields &&
+        navigator.userAgent.toLowerCase().includes('webkit')
+          ? 'text-right pr-6'
+          : ''
+      }
       {...validationAttributes}
       // This is undefined when resource.noValidation = true
       type={validationAttributes.type ?? 'text'}

@@ -189,7 +189,7 @@ export function AppTitle({
   readonly title: string;
   readonly type?: 'form';
 }): null {
-  const [updateTitle] = usePref('form', 'ui', 'updatePageTitle');
+  const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
   useTitle(type !== 'form' || updateTitle ? title : undefined);
   return null;
 }

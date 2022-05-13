@@ -411,6 +411,14 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          updatePageTitle: defineItem<boolean>({
+            title: preferencesText('updatePageTitle'),
+            description: preferencesText('updatePageTitleFormDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       definition: {
@@ -428,14 +436,6 @@ export const preferenceDefinitions = {
       ui: {
         title: preferencesText('ui'),
         items: {
-          updatePageTitle: defineItem<boolean>({
-            title: preferencesText('updatePageTitle'),
-            description: preferencesText('updatePageTitleFormDescription'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           tableNameInTitle: defineItem<boolean>({
             title: preferencesText('tableNameInTitle'),
             requiresReload: false,
@@ -489,6 +489,13 @@ export const preferenceDefinitions = {
           }),
           useAccessibleMonthPicker: defineItem<boolean>({
             title: preferencesText('useAccessibleMonthPicker'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rightAlignNumberFields: defineItem<boolean>({
+            title: preferencesText('rightAlignNumberFields'),
             requiresReload: false,
             visible: true,
             defaultValue: true,

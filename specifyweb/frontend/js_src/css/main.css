@@ -167,8 +167,8 @@
     @apply w-[2] absolute top-0 right-0 h-full;
   }
 
-  [type='number'].webkit:not([readonly], .no-arrows) {
-    @apply text-right relative pr-2.5;
+  [type='number']:not([readonly], .no-arrows) {
+    @apply relative;
   }
 
   .button {

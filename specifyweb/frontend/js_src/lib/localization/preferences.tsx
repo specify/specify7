@@ -873,4 +873,10 @@ export const preferencesText = createDictionary({
     ca: 'Use accessible month picker',
     'es-es': 'Use accessible month picker',
   },
+  rightAlignNumberFields: {
+    'en-us': 'Right-Justify numeric fields',
+    'ru-ru': 'Right-Justify numeric fields',
+    ca: 'Right-Justify numeric fields',
+    'es-es': 'Right-Justify numeric fields',
+  },
 });
