@@ -471,7 +471,11 @@ export function Autocomplete<T>({
                   aria-selected={false}
                   aria-posinset={length}
                   aria-setsize={length + 1}
-                  onClick={(): void => handleNewValue(pendingValue)}
+                  onClick={(): void => {
+                    handleBlur();
+                    handleClose();
+                    handleNewValue(pendingValue);
+                  }}
                   {...itemProps}
                 >
                   <div className="flex items-center">

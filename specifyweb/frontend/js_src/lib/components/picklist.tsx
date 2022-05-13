@@ -176,6 +176,7 @@ export function PickListComboBox(
           source={autocompleteItems}
           onNewValue={f.var(props.pickList?.get('sizeLimit'), (sizeLimit) =>
             typeof sizeLimit === 'number' &&
+            sizeLimit > 0 &&
             sizeLimit <= autocompleteItems.length
               ? undefined
               : addNewValue
@@ -246,6 +247,7 @@ function AddingToPicklist({
                     items.add(item);
                     return pickList.save();
                   })
+                  .then(handleClose)
                   .then(handleAdd)
               )
             }
