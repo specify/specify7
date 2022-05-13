@@ -301,7 +301,7 @@ def repair_tree(request, tree):
 
 
 class TaxonMutationPT(PermissionTarget):
-    resource = "/tree/mutation/taxon"
+    resource = "/tree/edit/taxon"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
@@ -309,7 +309,7 @@ class TaxonMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class GeographyMutationPT(PermissionTarget):
-    resource = "/tree/mutation/geography"
+    resource = "/tree/edit/geography"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
@@ -317,7 +317,7 @@ class GeographyMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class StorageMutationPT(PermissionTarget):
-    resource = "/tree/mutation/storage"
+    resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
@@ -325,7 +325,7 @@ class StorageMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class GeologictimeperiodMutationPT(PermissionTarget):
-    resource = "/tree/mutation/geologictimeperiod"
+    resource = "/tree/edit/geologictimeperiod"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
@@ -333,7 +333,7 @@ class GeologictimeperiodMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class LithostratMutationPT(PermissionTarget):
-    resource = "/tree/mutation/lithostrat"
+    resource = "/tree/edit/lithostrat"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
