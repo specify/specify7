@@ -103,6 +103,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     <Input.Text
       disabled
       value={commonText('loading')}
+      // TODO: required has no effect while disabled. Need a better solution
       required={props.isRequired}
     />
   );

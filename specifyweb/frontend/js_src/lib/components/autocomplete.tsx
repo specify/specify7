@@ -168,6 +168,10 @@ export function Autocomplete<T>({
     if (typeof pendingValueRef === 'object')
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
+  React.useEffect(
+    () => setFilteredItems(filterItems(results, pendingValue)),
+    [pendingValue, filterItems, results]
+  );
 
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
@@ -329,8 +333,6 @@ export function Autocomplete<T>({
         onValueChange(value) {
           if (value === '' && pendingValue.length > 1) handleCleared?.();
           handleRefreshItems(source, value);
-          const filteredItems = filterItems(results, value);
-          setFilteredItems(filteredItems);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')
             pendingValueRef.current = value;
@@ -342,7 +344,9 @@ export function Autocomplete<T>({
             dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
             handleBlur();
-            if (closeOnOutsideClick) setPendingValue(currentValue);
+            if (closeOnOutsideClick) {
+              setPendingValue(currentValue);
+            }
           }
         },
       })}
