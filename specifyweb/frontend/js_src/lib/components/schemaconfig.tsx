@@ -25,6 +25,7 @@ import { useId } from './hooks';
 import { useUnloadProtect } from './navigation';
 import { stateReducer } from './schemaconfigstate';
 import type { WithFieldInfo } from './toolbar/schemaconfig';
+import { hasToolPermission } from '../permissions';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -340,6 +341,9 @@ export function SchemaConfig({
       dataObjFormatters,
       dataObjAggregators,
       handleSave,
+      isReadOnly:
+        !hasToolPermission('schemaConfig', 'update') ||
+        !hasToolPermission('schemaConfig', 'create'),
     },
   });
 }

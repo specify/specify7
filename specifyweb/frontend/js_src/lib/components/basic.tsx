@@ -382,7 +382,7 @@ export const Input = {
       readOnly: isReadOnly,
       // Disable onChange when readOnly
       onChange(event): void {
-        if (props.disabled !== true || isReadOnly === true)
+        if (props.disabled !== true && isReadOnly !== true)
           props.onChange?.(event);
       },
       onBlur(event: React.FocusEvent<HTMLInputElement>): void {

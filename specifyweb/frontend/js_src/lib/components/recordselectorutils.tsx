@@ -502,7 +502,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 }
 
 /**
- * Fetch IDs of records in a record set a given position
+ * Fetch IDs of records in a record set at a given position
  */
 const fetchItems = async (
   recordSetId: number,

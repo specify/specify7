@@ -11,6 +11,8 @@ import type { SerializedResource } from '../datamodelutils';
 import { sortFunction, split } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
+import { hasToolPermission } from '../permissions';
+import { formatUrl } from '../querystring';
 import { getModel } from '../schema';
 import {
   filterFormatters,
@@ -46,7 +48,6 @@ import type {
   WithFieldInfo,
   WithTableInfo,
 } from './toolbar/schemaconfig';
-import { formatUrl } from '../querystring';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 
@@ -104,6 +105,7 @@ type StateWithParameters = States & {
     readonly uiFormatters: RA<UiFormatter>;
     readonly dataObjFormatters: IR<DataObjectFormatter>;
     readonly dataObjAggregators: IR<DataObjectFormatter>;
+    readonly isReadOnly: boolean;
   };
 };
 
@@ -181,15 +183,17 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         buttons={
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Button.Blue
-              onClick={(): void =>
-                dispatch({
-                  type: 'AddLanguageAction',
-                })
-              }
-            >
-              {commonText('addLanguage')}
-            </Button.Blue>
+            {hasToolPermission('schemaConfig', 'create') && (
+              <Button.Blue
+                onClick={(): void =>
+                  dispatch({
+                    type: 'AddLanguageAction',
+                  })
+                }
+              >
+                {commonText('addLanguage')}
+              </Button.Blue>
+            )}
           </>
         }
       >
@@ -277,6 +281,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         dataObjFormatters,
         dataObjAggregators,
         handleSave,
+        isReadOnly,
       },
     },
   }) {
@@ -324,17 +329,19 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             </li>
             <li>
               <Button.Small onClick={handleClose}>
-                {commonText('cancel')}
+                {isReadOnly ? commonText('close') : commonText('cancel')}
               </Button.Small>
             </li>
-            <li>
-              <Button.Small
-                disabled={!tableWasModified && modifiedItems.length === 0}
-                onClick={handleSave}
-              >
-                {commonText('save')}
-              </Button.Small>
-            </li>
+            {!isReadOnly && (
+              <li>
+                <Button.Small
+                  disabled={!tableWasModified && modifiedItems.length === 0}
+                  onClick={handleSave}
+                >
+                  {commonText('save')}
+                </Button.Small>
+              </li>
+            )}
           </menu>
         </header>
         <div className="sm:flex-row flex flex-col flex-1 gap-4 overflow-hidden">
@@ -353,6 +360,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                isReadOnly={isReadOnly}
               />
             </Label.Generic>
             <Label.Generic>
@@ -367,6 +375,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                isReadOnly={isReadOnly}
               />
             </Label.Generic>
             <Label.Generic>
@@ -386,6 +395,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                disabled={isReadOnly}
               />
             </Label.Generic>
             <Label.Generic>
@@ -405,6 +415,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                disabled={isReadOnly}
               />
             </Label.Generic>
             <Label.ForCheckbox>
@@ -417,6 +428,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                isReadOnly={isReadOnly}
               />
               {commonText('hideTable')}
             </Label.ForCheckbox>
@@ -468,6 +480,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                isReadOnly={isReadOnly}
               />
             </Label.Generic>
             <Label.Generic>
@@ -475,6 +488,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               <AutoGrowTextArea
                 className="resize-y"
                 value={items[itemId].strings.desc.text}
+                isReadOnly={isReadOnly}
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
@@ -488,14 +502,14 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
               {commonText('length')}
               <Input.Number
                 value={items[itemId].dataModel.length ?? ''}
-                isReadOnly={true}
+                isReadOnly
                 className="no-arrows"
               />
             </Label.Generic>
             <Label.Generic>
               {commonText('type')}
               <Input.Text
-                isReadOnly={true}
+                isReadOnly
                 value={javaTypeToHuman(
                   items[itemId].dataModel.type,
                   items[itemId].dataModel.relatedModelName
@@ -505,6 +519,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
             <Label.ForCheckbox>
               <Input.Checkbox
                 checked={items[itemId].isHidden}
+                isReadOnly={isReadOnly}
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
@@ -523,6 +538,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     : items[itemId].dataModel.isRequired
                 }
                 disabled={!items[itemId].dataModel.canChangeIsRequired}
+                isReadOnly={isReadOnly}
                 onValueChange={(value): void =>
                   dispatch({
                     type: 'FieldModifiedAction',
@@ -585,7 +601,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   },
                   extraComponents: (
                     <>
-                      {typeof currentPickListId === 'string' && (
+                      {typeof currentPickListId === 'string' &&
+                      hasToolPermission('pickLists', 'read') ? (
                         <Link.Icon
                           icon="pencil"
                           title={commonText('edit')}
@@ -593,14 +610,16 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                           className={className.dataEntryEdit}
                           href={`/specify/view/picklist/${currentPickListId}/`}
                         />
+                      ) : undefined}
+                      {hasToolPermission('pickLists', 'create') && (
+                        <Link.Icon
+                          icon="plus"
+                          href="/specify/view/picklist/new/"
+                          className={className.dataEntryAdd}
+                          title={commonText('add')}
+                          aria-label={commonText('add')}
+                        />
                       )}
-                      <Link.Icon
-                        icon="plus"
-                        href="/specify/view/picklist/new/"
-                        className={className.dataEntryAdd}
-                        title={commonText('add')}
-                        aria-label={commonText('add')}
-                      />
                     </>
                   ),
                 },
@@ -624,6 +643,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                               : null,
                         })
                       }
+                      isReadOnly={isReadOnly}
                     />
                     {label}
                   </Label.ForCheckbox>
@@ -633,7 +653,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                       label={label}
                       value={value}
                       groups={values}
-                      disabled={!isFormatterAvailable(items[itemId], key)}
+                      disabled={
+                        isReadOnly || !isFormatterAvailable(items[itemId], key)
+                      }
                       onChange={(value): void =>
                         dispatch({
                           type: 'ChangeFieldFormatAction',
