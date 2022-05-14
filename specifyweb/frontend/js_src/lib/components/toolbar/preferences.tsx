@@ -100,7 +100,7 @@ function Preferences({
               </Link.Gray>
             ))}
           </aside>
-          <div className="flex flex-col gap-6">
+          <div className="h-fit flex flex-col gap-6">
             {definitions.map(
               ([
                 category,

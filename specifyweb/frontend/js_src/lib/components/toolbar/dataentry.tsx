@@ -14,6 +14,7 @@ export const menuItem: MenuItem = {
   isOverlay: true,
   enabled: () =>
     getUserPref('header', 'menu', 'showDataEntry') &&
+    // Show DataEntry only if has "create" permission to at least one table
     Object.values(getTablePermissions()).some(({ create }) => create),
   view: ({ onClose: handleClose }) => <FormsDialog onClose={handleClose} />,
 };

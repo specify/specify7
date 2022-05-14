@@ -16,7 +16,7 @@
 
   * {
     @apply transition duration-[var(--transition-duration)] ease-in-out
-    dark:!shadow-none placeholder-gray-400 !ring-inset;
+      dark:!shadow-none placeholder-gray-400 !ring-inset;
     /*
      * Disable transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
@@ -324,7 +324,7 @@
    * https://gist.github.com/BrendonKoz/b1df234fe3ee388b402cd8e98f7eedbd
    */
   .invert-leaflet-layer {
-    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7)
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
   }
 }
 

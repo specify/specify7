@@ -250,6 +250,8 @@ export const preferencesPromise = contextUnlockedPromise.then((entrypoint) =>
                   body: keysToLowerCase({
                     name: resourceName,
                     mimeType,
+                    metaData: '',
+                    data: '{}',
                   }),
                 },
                 { expectedResponseCodes: [Http.CREATED] }

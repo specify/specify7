@@ -14,7 +14,8 @@ import { f } from '../../functools';
 import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissions';
+import { hasPermission, hasTablePermission } from '../../permissions';
+import { schema } from '../../schema';
 import type { BackEndRole } from '../../securityutils';
 import { processPolicies } from '../../securityutils';
 import type { IR, RA } from '../../types';
@@ -27,7 +28,6 @@ import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { UserView } from '../securityuser';
-import { schema } from '../../schema';
 
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -242,5 +242,8 @@ export const userTool: UserTool = {
   title: adminText('securityPanel'),
   isOverlay: true,
   view: '/specify/security/',
+  enabled: () =>
+    hasTablePermission('Institution', 'read') &&
+    hasTablePermission('Collection', 'read'),
   groupLabel: commonText('administration'),
 };

@@ -1,10 +1,11 @@
-import { icons } from '../icons';
-import type { MenuItem } from '../main';
-import { InteractionsDialog } from '../interactionsdialog';
-import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../../permissions';
-import { getUserPref } from '../../preferencesutils';
 import React from 'react';
+
+import { commonText } from '../../localization/common';
+import { getTablePermissions, hasToolPermission } from '../../permissions';
+import { getUserPref } from '../../preferencesutils';
+import { icons } from '../icons';
+import { InteractionsDialog } from '../interactionsdialog';
+import type { MenuItem } from '../main';
 
 export const menuItem: MenuItem = {
   task: 'interactions',
@@ -13,6 +14,8 @@ export const menuItem: MenuItem = {
   isOverlay: true,
   enabled: () =>
     getUserPref('header', 'menu', 'showInteractions') &&
+    // Show DataEntry only if has "create" permission to at least one table
+    Object.values(getTablePermissions()).some(({ create }) => create) &&
     hasToolPermission('recordSets', 'read'),
   view: ({ onClose: handleClose, urlParameter }) => (
     <InteractionsDialog onClose={handleClose} urlParameter={urlParameter} />

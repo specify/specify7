@@ -2,31 +2,32 @@
  * Handle URLs that correspond to displaying a resource or a record set
  */
 
+import React from 'react';
+
 import { error } from '../assert';
 import { fetchCollection } from '../collection';
-import { crash } from './errorboundary';
-import { OtherCollection } from './othercollectionview';
-import {
-  TablePermissionDenied,
-  ToolPermissionDenied,
-} from './permissiondenied';
-import { ShowResource } from './resourceview';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { collectionsForResource } from '../domain';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
-import { NotFoundView } from './notfoundview';
 import { hasTablePermission, hasToolPermission } from '../permissions';
+import { formatUrl, parseUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { router } from '../router';
 import { getModel, getModelById, schema } from '../schema';
 import { setCurrentComponent, switchCollection } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
-import { formatUrl, parseUrl } from '../querystring';
+import { crash } from './errorboundary';
 import { navigate } from './navigation';
-import React from 'react';
+import { NotFoundView } from './notfoundview';
+import { OtherCollection } from './othercollectionview';
+import {
+  TablePermissionDenied,
+  ToolPermissionDenied,
+} from './permissiondenied';
+import { ShowResource } from './resourceview';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -78,9 +79,17 @@ async function recordSetView(idString: string, index = '0'): Promise<void> {
 
 // Begins the process of creating a new resource
 const newResourceView = async (tableName: string): Promise<void> =>
-  !hasTablePermission(tableName as keyof Tables, 'create')
-    ? Promise.resolve(void setCurrentComponent(<NotFoundView />))
-    : resourceView(tableName, undefined);
+  f.var(getModel(tableName)?.name, async (tableName) =>
+    typeof tableName === 'string'
+      ? !hasTablePermission(tableName, 'create')
+        ? Promise.resolve(
+            void setCurrentComponent(
+              <TablePermissionDenied tableName={tableName} action="create" />
+            )
+          )
+        : resourceView(tableName, undefined)
+      : Promise.resolve(void setCurrentComponent(<NotFoundView />))
+  );
 
 /**
  * Shows user's individual resources which can optionally be in the context of
@@ -164,6 +173,11 @@ async function byCatNumber(
       <TablePermissionDenied tableName="CollectionObject" action="read" />
     );
     return;
+  } else if (!hasTablePermission('Collection', 'read')) {
+    setCurrentComponent(
+      <TablePermissionDenied tableName="Collection" action="read" />
+    );
+    return;
   }
 
   const collection = decodeURIComponent(rawCollection);
@@ -210,7 +224,10 @@ async function byCatNumber(
     .catch(() => setCurrentComponent(<NotFoundView />));
 }
 
-// Check if it makes sense to view this resource when logged into current collection
+/**
+ * Check if it makes sense to view this resource when logged into current
+ * collection
+ */
 const checkLoggedInCollection = async (
   resource: SpecifyResource<AnySchema>,
   callback: () => void

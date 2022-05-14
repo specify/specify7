@@ -5,7 +5,9 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { hasTreeAccess } from '../../permissions';
 import { getUserPref } from '../../preferencesutils';
+import { getDisciplineTrees } from '../../treedefinitions';
 import { useTitle } from '../hooks';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
@@ -33,6 +35,8 @@ export const menuItem: MenuItem = {
   title: commonText('trees'),
   icon: icons.tree,
   isOverlay: true,
-  enabled: () => getUserPref('header', 'menu', 'showTrees'),
+  enabled: () =>
+    getUserPref('header', 'menu', 'showTrees') &&
+    getDisciplineTrees().some((treeName) => hasTreeAccess(treeName, 'read')),
   view: ({ onClose: handleClose }) => <RepairTree onClose={handleClose} />,
 };

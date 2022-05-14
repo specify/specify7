@@ -10,6 +10,7 @@ import type { SerializedResource } from '../../datamodelutils';
 import { fetchFormatters } from '../../dataobjformatters';
 import { index } from '../../helpers';
 import { commonText } from '../../localization/common';
+import { hasToolPermission } from '../../permissions';
 import { formatUrl, parseUrl } from '../../querystring';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
@@ -157,5 +158,6 @@ export const userTool: UserTool = {
   view: ({ onClose: handleClose }) => (
     <SchemaConfigWrapper onClose={handleClose} />
   ),
+  enabled: () => hasToolPermission('schemaConfig', 'read'),
   groupLabel: commonText('customization'),
 };
