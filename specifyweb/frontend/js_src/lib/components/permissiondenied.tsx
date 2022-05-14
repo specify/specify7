@@ -20,7 +20,6 @@ import { formatUrl } from '../querystring';
 import { schema } from '../schema';
 import type { toolDefinitions } from '../securityutils';
 import {
-  actionToLabel,
   partsToResourceName,
   resourceNameToLabel,
   tableNameToResourceName,
@@ -32,6 +31,7 @@ import { Button } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
+import { PermissionAction } from './securitypreview';
 
 type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
@@ -279,7 +279,7 @@ function FormatPermissionError({
           {error.map(({ collectionid, userid, resource, action }, index) => (
             <tr key={index}>
               {[
-                actionToLabel(action),
+                <PermissionAction>{action}</PermissionAction>,
                 resourceNameToLabel(resource),
                 <CollectionName
                   collectionId={

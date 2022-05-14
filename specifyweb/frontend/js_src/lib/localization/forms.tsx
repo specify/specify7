@@ -81,31 +81,6 @@ export const formsText = createDictionary({
     'es-es': 'Specify Schema',
   },
   // Data View
-  emptyRecordSetHeader: {
-    'en-us': (recordSetName: string) => `
-      The Record Set "${recordSetName}" contains no records.`,
-    'ru-ru': (recordSetName: string) => `
-      Набор объектов "${recordSetName}" является пустым.`,
-    ca: (recordSetName: string) => `
-      The Record Set "${recordSetName}" contains no records.`,
-    'es-es': (recordSetName: string) => `
-      The Record Set "${recordSetName}" contains no records.`,
-  },
-  emptyRecordSetMessage: {
-    'en-us': `You can delete the record set or add records to it.
-      Be aware that another user maybe getting ready to add records,
-      so only delete this record set if you are sure it is not to be used.`,
-    'ru-ru': `Вы можете удалить набор записей или добавить к нему.
-      Имейте в виду, что другой пользователь, возможно, готовится
-      добавить объекты, поэтому удаляйте этот набор записей только в том случае,
-      если вы уверены, что он не будет использованным.`,
-    ca: `You can delete the record set or add records to it.
-      Be aware that another user maybe getting ready to add records,
-      so only delete this record set if you are sure it is not to be used.`,
-    'es-es': `You can delete the record set or add records to it.
-      Be aware that another user maybe getting ready to add records,
-      so only delete this record set if you are sure it is not to be used.`,
-  },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted...',
     'ru-ru': 'Проверка возможности удаления ресурса...',

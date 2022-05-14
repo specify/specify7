@@ -32,6 +32,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
+import { adminText } from '../localization/admin';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1035,9 +1036,27 @@ export const preferenceDefinitions = {
           source: defineItem<string>({
             title: '',
             requiresReload: false,
+            // This item is rendered inside of WelcomePageModePreferenceItem
             visible: false,
             defaultValue: defaultWelcomePageImage,
             type: 'text',
+          }),
+        },
+      },
+    },
+  },
+  securityPanel: {
+    title: adminText('securityPanel'),
+    subCategories: {
+      appearance: {
+        title: preferencesText('appearance'),
+        items: {
+          colorizeActionNames: defineItem<boolean>({
+            title: preferencesText('colorizeActionNames'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
         },
       },

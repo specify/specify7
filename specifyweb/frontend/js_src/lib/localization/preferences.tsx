@@ -879,4 +879,10 @@ export const preferencesText = createDictionary({
     ca: 'Right-Justify numeric fields',
     'es-es': 'Right-Justify numeric fields',
   },
+  colorizeActionNames: {
+    'en-us': 'Colorize action names',
+    'ru-ru': 'Colorize action names',
+    ca: 'Colorize action names',
+    'es-es': 'Colorize action names',
+  },
 });

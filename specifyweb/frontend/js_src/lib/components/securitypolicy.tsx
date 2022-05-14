@@ -14,7 +14,6 @@ import { commonText } from '../localization/common';
 import { tableActions } from '../permissions';
 import { smoothScroll } from '../querybuilderutils';
 import {
-  actionToLabel,
   anyResource,
   getAllActions,
   getCollectionRegistriesFromPath,
@@ -27,6 +26,7 @@ import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Summary, Ul } from './basic';
 import { icons } from './icons';
 import { useCachedState } from './statecache';
+import { PermissionAction } from './securitypreview';
 
 export type Policy = {
   readonly resource: string;
@@ -198,7 +198,7 @@ function PolicyView({
                         (action === 'read' && isTablePolicy)
                       }
                     />
-                    {actionToLabel(action)}
+                    <PermissionAction>{action}</PermissionAction>
                   </Label.ForCheckbox>
                 </li>
               ))}

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
+import { f } from '../functools';
 import { group } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
@@ -20,10 +21,34 @@ import {
   resourceNameToParts,
 } from '../securityutils';
 import type { IR, R, RA } from '../types';
+import { filterArray } from '../types';
 import { Button, className, Input, Label, Summary, Ul } from './basic';
-import { TableIcon } from './common';
+import { stringToColor, TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
+import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
+
+export function PermissionAction({
+  children,
+}: {
+  readonly children: string;
+}): JSX.Element {
+  const [colorizeActionNames] = usePref(
+    'securityPanel',
+    'appearance',
+    'colorizeActionNames'
+  );
+  const action = actionToLabel(children);
+  return (
+    <span
+      style={{
+        color: colorizeActionNames ? stringToColor(action) : undefined,
+      }}
+    >
+      {action}
+    </span>
+  );
+}
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
@@ -35,7 +60,7 @@ function ReasonExplanation({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="grid-table grid-cols-3 border border-gray-500 rounded"
+        className="grid-table grid-cols-[auto_auto_auto] border border-gray-500 rounded"
         role="table"
       >
         <div role="row">
@@ -62,7 +87,7 @@ function ReasonExplanation({
             >
               {[
                 role.rolename,
-                actionToLabel(role.action),
+                <PermissionAction>{role.action}</PermissionAction>,
                 resourceNameToLabel(role.resource),
               ].map((value, index) => (
                 <div role="cell" className="p-2" key={index}>
@@ -81,7 +106,7 @@ function ReasonExplanation({
         </div>
       </div>
       <div
-        className="grid-table w-full grid-cols-4 border border-gray-500 rounded"
+        className="grid-table w-full grid-cols-[auto_auto_auto_auto] border border-gray-500 rounded"
         role="table"
       >
         <div role="row">
@@ -110,7 +135,7 @@ function ReasonExplanation({
                 policy.collectionid === null
                   ? adminText('allCollections')
                   : adminText('thisCollection'),
-                actionToLabel(policy.action),
+                <PermissionAction>{policy.action}</PermissionAction>,
                 resourceNameToLabel(policy.resource),
               ].map((value, index) => (
                 <div role="cell" key={index} className="p-2">
@@ -189,20 +214,28 @@ type Cell = Omit<PermissionsQueryItem, 'action'>;
 
 function PreviewTables({
   query,
+  isSystem,
   onOpenRole: handleOpenRole,
 }: {
   readonly query: RA<PermissionsQueryItem>;
+  readonly isSystem: boolean;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   const table = React.useMemo<RA<Readonly<[keyof Tables, IR<Cell>]>>>(
     () =>
       group(
-        query
-          .filter(({ resource }) => resource in getTablePermissions())
-          .map(
-            (entry) =>
-              [resourceNameToModel(entry.resource).name, entry] as const
-          )
+        filterArray(
+          query
+            .filter(({ resource }) => resource in getTablePermissions())
+            .map((entry) =>
+              f.var(resourceNameToModel(entry.resource), (model) =>
+                (model.overrides.isSystem || model.overrides.isHidden) ===
+                isSystem
+                  ? ([model.name, entry] as const)
+                  : undefined
+              )
+            )
+        )
       ).map(
         ([tableName, items]) =>
           [
@@ -217,7 +250,7 @@ function PreviewTables({
   return (
     <div
       className={`grid-table grid-cols-[repeat(4,min-content)_auto]
-        relative overflow-x-hidden h-80`}
+        relative overflow-x-hidden`}
       role="table"
     >
       <div role="row">
@@ -379,6 +412,12 @@ export function PreviewPermissions({
     defaultValue: false,
     staleWhileRefresh: false,
   });
+  const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'systemPreviewCollapsed',
+    defaultValue: false,
+    staleWhileRefresh: false,
+  });
   return (
     <details open={isCollapsed}>
       <Summary className={className.headerGray} onToggle={setCollapsed}>
@@ -388,7 +427,26 @@ export function PreviewPermissions({
         <>
           {changesMade && <p>{adminText('outOfDateWarning')}</p>}
           <div className="flex flex-wrap flex-1 gap-4">
-            <PreviewTables query={query} onOpenRole={handleOpenRole} />
+            <div>
+              <PreviewTables
+                query={query}
+                onOpenRole={handleOpenRole}
+                isSystem={false}
+              />
+              <details open={isSystemCollapsed}>
+                <Summary
+                  className={className.headerGray}
+                  onToggle={setSystemCollapsed}
+                >
+                  {adminText('advancedTables')}
+                </Summary>
+                <PreviewTables
+                  query={query}
+                  onOpenRole={handleOpenRole}
+                  isSystem={true}
+                />
+              </details>
+            </div>
             <PreviewOperations query={query} onOpenRole={handleOpenRole} />
           </div>
         </>

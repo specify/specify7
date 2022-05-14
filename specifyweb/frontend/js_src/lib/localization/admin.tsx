@@ -507,4 +507,11 @@ export const adminText = createDictionary({
     ca: 'Switch to vertical layout',
     'es-es': 'Switch to vertical layout',
   },
+  // FIXME: localize
+  advancedTables: {
+    'en-us': 'Advanced tables',
+    'ru-ru': 'Advanced tables',
+    ca: 'Advanced tables',
+    'es-es': 'Advanced tables',
+  },
 });
