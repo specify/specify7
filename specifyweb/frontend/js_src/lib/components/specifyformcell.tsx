@@ -8,7 +8,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { getView, processViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
-import { hasTablePermission } from '../permissions';
+import { hasPathPermission } from '../permissions';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
@@ -154,8 +154,9 @@ const cellRenderers: {
       false
     );
 
-    return typeof field === 'undefined' ? null : hasTablePermission(
-        field.relatedModel.name,
+    return typeof field === 'undefined' ? null : hasPathPermission(
+        resource.specifyModel.name,
+        field.relatedModel.name.split('.'),
         'read'
       ) ? (
       typeof interactionCollection === 'undefined' ||

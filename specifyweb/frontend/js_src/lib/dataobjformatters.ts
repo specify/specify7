@@ -4,7 +4,6 @@
 
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
-import { f } from './functools';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -18,13 +17,13 @@ import {
 } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
-import { hasTablePermission } from './permissions';
+import { hasPathPermission } from './permissions';
+import { formatUrl } from './querystring';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
-import { formatUrl } from './querystring';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -200,37 +199,32 @@ export async function format<SCHEMA extends AnySchema>(
             return `${separator}${
               typeof fieldFormatter === 'string' && fieldFormatter === ''
                 ? ''
-                : await f.var(
-                    resource.specifyModel.getField(fieldName),
-                    async (field) =>
-                      typeof field === 'undefined' ||
-                      !field.isRelationship ||
-                      hasTablePermission(field.relatedModel.name, 'read')
-                        ? (
-                            resource.rgetPromise(fieldName) as Promise<
-                              string | SpecifyResource<AnySchema> | undefined
-                            >
-                          ).then(async (value) => {
-                            if (
-                              formatter.length > 0 &&
-                              typeof value === 'object'
-                            )
-                              return (await format(value, formatter)) ?? '';
-                            else {
-                              const field = defined(
-                                resource.specifyModel.getField(
-                                  fieldName
-                                ) as LiteralField
-                              );
-                              return fieldFormat(
-                                field,
-                                resolveParser(field),
-                                value as string | undefined
-                              );
-                            }
-                          })
-                        : commonText('noPermission')
+                : hasPathPermission(
+                    resource.specifyModel.name,
+                    fieldName.split('.'),
+                    'read'
                   )
+                ? (
+                    resource.rgetPromise(fieldName) as Promise<
+                      string | SpecifyResource<AnySchema> | undefined
+                    >
+                  ).then(async (value) => {
+                    if (formatter.length > 0 && typeof value === 'object')
+                      return (await format(value, formatter)) ?? '';
+                    else {
+                      const field = defined(
+                        resource.specifyModel.getField(
+                          fieldName
+                        ) as LiteralField
+                      );
+                      return fieldFormat(
+                        field,
+                        resolveParser(field),
+                        value as string | undefined
+                      );
+                    }
+                  })
+                : commonText('noPermission')
             }`;
           }
         )

@@ -106,11 +106,11 @@ const buildRegistry = f.store(
     [
       ...Object.values(schema.models)
         .filter(({ name }) => !f.has(toolTables(), name))
-        .map(({ name, label, isSystem }) => ({
+        .map(({ name, label, overrides }) => ({
           resource: tableNameToResourceName(name),
           localized: [adminText('table'), label],
           actions: tableActions,
-          groupName: isSystem ? commonText('system') : '',
+          groupName: overrides.isHidden ? adminText('advancedTables') : '',
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),

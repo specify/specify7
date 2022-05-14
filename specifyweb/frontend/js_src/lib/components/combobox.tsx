@@ -29,6 +29,7 @@ import { PickListTableComboBox } from './picklisttablecombobox';
 import { QueryComboBox } from './querycombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UiField } from './uifield';
+import { hasToolPermission } from '../permissions';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -179,11 +180,18 @@ export function ComboBox({
   const pickListName = props.pickListName ?? resolvedField.getPickList();
 
   if (typeof pickListName === 'string')
-    return (
+    return hasToolPermission('pickLists', 'read') ? (
       <DefaultComboBox
         {...props}
         field={resolvedField}
         pickListName={pickListName}
+      />
+    ) : (
+      <UiField
+        id={props.id}
+        resource={props.resource}
+        mode="view"
+        fieldName={resolvedField.name}
       />
     );
   else {

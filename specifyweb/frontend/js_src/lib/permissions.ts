@@ -18,6 +18,7 @@ import {
 import type { IR, RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
+import { schema } from './schema';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -360,3 +361,22 @@ export const hasDerivedPermission = <
   defined(derivedPermissions)[resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
+
+/** Check if user has a given permission for each table in a mapping path */
+export const hasPathPermission = (
+  baseTableName: keyof Tables,
+  mappingPath: RA<string>,
+  action: typeof tableActions[number]
+): boolean =>
+  mappingPath.every((_, index, { length }) =>
+    f.var(
+      schema.models[baseTableName].getField(mappingPath.slice(index).join('.')),
+      (field) =>
+        typeof field === 'object'
+          ? hasTablePermission(field.model.name, action) &&
+            (!field.isRelationship ||
+              index + 1 < length ||
+              hasTablePermission(field.relatedModel.name, action))
+          : true
+    )
+  );

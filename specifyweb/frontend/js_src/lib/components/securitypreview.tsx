@@ -214,11 +214,11 @@ type Cell = Omit<PermissionsQueryItem, 'action'>;
 
 function PreviewTables({
   query,
-  isSystem,
+  isHidden,
   onOpenRole: handleOpenRole,
 }: {
   readonly query: RA<PermissionsQueryItem>;
-  readonly isSystem: boolean;
+  readonly isHidden: boolean;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   const table = React.useMemo<RA<Readonly<[keyof Tables, IR<Cell>]>>>(
@@ -229,8 +229,7 @@ function PreviewTables({
             .filter(({ resource }) => resource in getTablePermissions())
             .map((entry) =>
               f.var(resourceNameToModel(entry.resource), (model) =>
-                (model.overrides.isSystem || model.overrides.isHidden) ===
-                isSystem
+                model.overrides.isHidden === isHidden
                   ? ([model.name, entry] as const)
                   : undefined
               )
@@ -414,7 +413,7 @@ export function PreviewPermissions({
   });
   const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState({
     bucketName: 'securityTool',
-    cacheName: 'systemPreviewCollapsed',
+    cacheName: 'advancedPreviewCollapsed',
     defaultValue: false,
     staleWhileRefresh: false,
   });
@@ -431,7 +430,7 @@ export function PreviewPermissions({
               <PreviewTables
                 query={query}
                 onOpenRole={handleOpenRole}
-                isSystem={false}
+                isHidden={false}
               />
               <details open={isSystemCollapsed}>
                 <Summary
@@ -443,7 +442,7 @@ export function PreviewPermissions({
                 <PreviewTables
                   query={query}
                   onOpenRole={handleOpenRole}
-                  isSystem={true}
+                  isHidden={true}
                 />
               </details>
             </div>

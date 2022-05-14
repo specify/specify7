@@ -6,6 +6,7 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
+import { hasPathPermission, hasTablePermission } from '../permissions';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { parseRelativeDate } from '../relativedate';
 import type { LiteralField, Relationship } from '../specifyfield';
@@ -38,9 +39,21 @@ export function UiField({
   readonly fieldName: string | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
+  const hasAccess = React.useMemo(
+    () =>
+      typeof fieldName !== 'string' ||
+      hasPathPermission(
+        resource.specifyModel.name,
+        fieldName.split('.'),
+        'read'
+      ),
+    [resource.specifyModel.name, fieldName]
+  );
+
   const [data] = useAsyncState(
     React.useCallback(
-      async () => getResourceAndField(resource, fieldName),
+      async () =>
+        hasAccess ? getResourceAndField(resource, fieldName) : undefined,
       [resource, fieldName]
     ),
     false
@@ -53,7 +66,7 @@ export function UiField({
   const [aggregated] = useAsyncState(
     React.useCallback(
       async () =>
-        typeof data === 'object' && typeof fieldName === 'string'
+        hasAccess && typeof data === 'object' && typeof fieldName === 'string'
           ? 'models' in data.resource
             ? aggregate(data.resource as unknown as Collection<AnySchema>)
             : QueryFieldSpec.fromPath([
@@ -65,7 +78,7 @@ export function UiField({
             ? data.resource.rgetCollection(data.field.name).then(aggregate)
             : false
           : undefined,
-      [resource.specifyModel.name, data, fieldName]
+      [hasAccess, resource.specifyModel.name, data, fieldName]
     ),
     false
   );
@@ -87,43 +100,47 @@ export function UiField({
     [parser?.value]
   );
 
-  return typeof data === 'undefined' ? (
-    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
-  ) : fieldType === 'date' ? (
-    <PartialDateUi
-      resource={data.resource}
-      dateField={data.field.name}
-      precisionField={undefined}
-      defaultPrecision="full"
-      defaultValue={defaultDate}
-      isReadOnly={mode === 'view' || data.resource !== resource}
-      id={id}
-      canChangePrecision={false}
-    />
-  ) : fieldType === 'checkbox' ? (
-    <SpecifyFormCheckbox
-      id={id}
-      resource={data.resource}
-      fieldName={data.field.name}
-      defaultValue={
-        parser?.value === true ||
-        // Not sure if this branch can ever happen:
-        parser?.value?.toString().toLowerCase() === 'true'
-      }
-      isReadOnly={resource !== data.resource}
-      text={undefined}
-    />
-  ) : aggregated === false ? (
-    <Field
-      id={id}
-      model={resource}
-      resource={data.resource}
-      field={data.field}
-      parser={parser}
-      mode={mode}
-    />
+  return hasAccess ? (
+    typeof data === 'undefined' ? (
+      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+    ) : fieldType === 'date' ? (
+      <PartialDateUi
+        resource={data.resource}
+        dateField={data.field.name}
+        precisionField={undefined}
+        defaultPrecision="full"
+        defaultValue={defaultDate}
+        isReadOnly={mode === 'view' || data.resource !== resource}
+        id={id}
+        canChangePrecision={false}
+      />
+    ) : fieldType === 'checkbox' ? (
+      <SpecifyFormCheckbox
+        id={id}
+        resource={data.resource}
+        fieldName={data.field.name}
+        defaultValue={
+          parser?.value === true ||
+          // Not sure if this branch can ever happen:
+          parser?.value?.toString().toLowerCase() === 'true'
+        }
+        isReadOnly={resource !== data.resource}
+        text={undefined}
+      />
+    ) : aggregated === false ? (
+      <Field
+        id={id}
+        model={resource}
+        resource={data.resource}
+        field={data.field}
+        parser={parser}
+        mode={mode}
+      />
+    ) : (
+      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+    )
   ) : (
-    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+    <Input.Text disabled id={id} value={commonText('noPermission')} />
   );
 }
 
@@ -167,13 +184,15 @@ export function Field({
     React.useCallback(
       () =>
         field?.isRelationship === true
-          ? (
-              resource.rgetPromise(field.name) as Promise<
-                SpecifyResource<AnySchema> | undefined
-              >
-            )
-              .then(format)
-              .then((value) => value ?? '')
+          ? hasTablePermission(field.relatedModel.name, 'read')
+            ? (
+                resource.rgetPromise(field.name) as Promise<
+                  SpecifyResource<AnySchema> | undefined
+                >
+              )
+                .then(format)
+                .then((value) => value ?? '')
+            : commonText('noPermission')
           : undefined,
       /*
        * While "value" is not used in the hook, it is needed to update a
