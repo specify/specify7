@@ -49,9 +49,10 @@ import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
 import { Relationship } from '../specifyfield';
+import { formatUrl } from '../querystring';
 
 const typeSearches = load<Element>(
-  '/context/app.resource?name=TypeSearches',
+  formatUrl('/context/app.resource', { name: 'TypeSearches' }),
   'application/xml'
 );
 

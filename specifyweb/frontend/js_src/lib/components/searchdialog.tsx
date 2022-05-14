@@ -21,9 +21,10 @@ import { QueryBuilder } from './querybuilder';
 import { createQuery } from './querytask';
 import { SpecifyForm } from './specifyform';
 import { sortFunction } from '../helpers';
+import { formatUrl } from '../querystring';
 
 const dialogDefinitions = load<Element>(
-  '/context/app.resource?name=DialogDefs',
+  formatUrl('/context/app.resource', { name: 'DialogDefs' }),
   'application/xml'
 );
 

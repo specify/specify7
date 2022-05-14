@@ -16,6 +16,7 @@ import {
   hasTreeAccess,
   institutionPermissions,
 } from '../permissions';
+import { formatUrl } from '../querystring';
 import { schema } from '../schema';
 import type { toolDefinitions } from '../securityutils';
 import {
@@ -234,7 +235,9 @@ export function PermissionError({
       header={commonText('sessionTimeOutDialogHeader')}
       forceToTop={true}
       onClose={(): void =>
-        window.location.assign(`/accounts/login/?next=${window.location.href}`)
+        window.location.assign(
+          formatUrl('/accounts/login/', { next: window.location.href })
+        )
       }
       buttons={commonText('logIn')}
     >

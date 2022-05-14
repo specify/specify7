@@ -46,6 +46,7 @@ import type {
   WithFieldInfo,
   WithTableInfo,
 } from './toolbar/schemaconfig';
+import { formatUrl } from '../querystring';
 
 type ChooseLanguageState = State<'ChooseLanguageState'>;
 
@@ -145,7 +146,10 @@ function ChooseBaseTable({
         {sortedTables.map((table) => (
           <li key={table.id}>
             <Link.Default
-              href={`/task/schema-config/?language=${language}&table=${table.name}`}
+              href={formatUrl('/task/schema-config/', {
+                language,
+                table: table.name,
+              })}
             >
               <TableIcon name={table.name} tableLabel={false} />
               {table.name}

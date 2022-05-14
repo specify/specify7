@@ -11,7 +11,7 @@ import { f } from '../../functools';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
 import { hasTreeAccess } from '../../permissions';
-import { parseUrl } from '../../querystring';
+import { formatUrl, parseUrl } from '../../querystring';
 import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
 import { userInformation } from '../../userinfo';
 import { Button, className, DataEntry, Link, Ul } from '../basic';
@@ -119,7 +119,7 @@ function RepairTree({
       title={commonText('repairTree')}
       // TODO: handle this sort of thing though the routing library
       getLink={(tree): string =>
-        `/specify/task/repair-tree/?tree=${tree.toLowerCase()}`
+        formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
     />
   );

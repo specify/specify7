@@ -10,6 +10,7 @@ import type { AnySchema, AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { sortFunction } from './helpers';
 import { load } from './initialcontext';
+import { formatUrl } from './querystring';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
@@ -49,11 +50,9 @@ let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>
   import('./preferencesutils').then(async ({ getUserPref }) =>
     load<IR<SchemaLocalization>>(
-      `/context/schema_localization.json?lang=${getUserPref(
-        'form',
-        'schema',
-        'language'
-      )}`,
+      formatUrl('/context/schema_localization.json', {
+        lang: getUserPref('form', 'schema', 'language'),
+      }),
       'application/json'
     )
   )

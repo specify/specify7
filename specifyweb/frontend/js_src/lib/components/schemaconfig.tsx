@@ -13,11 +13,13 @@ import { f } from '../functools';
 import { group } from '../helpers';
 import { commonText } from '../localization/common';
 import { fetchPickLists } from '../picklists';
+import { formatUrl } from '../querystring';
 import { createResource, saveResource } from '../resource';
 import { schema } from '../schema';
 import { findString } from '../schemaconfighelper';
 import { reducer } from '../schemaconfigreducer';
 import type { IR, PartialBy, RA } from '../types';
+import { defined } from '../types';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { useUnloadProtect } from './navigation';
@@ -311,10 +313,15 @@ export function SchemaConfig({
     loading(
       Promise.all(requests)
         .then(async () =>
-          ping(`/context/schema_localization.json?lang=${stateLanguage}`, {
-            method: 'HEAD',
-            cache: 'no-cache',
-          })
+          ping(
+            formatUrl('/context/schema_localization.json', {
+              lang: defined(stateLanguage),
+            }),
+            {
+              method: 'HEAD',
+              cache: 'no-cache',
+            }
+          )
         )
         .then(() => handleSaved(state.language))
     );

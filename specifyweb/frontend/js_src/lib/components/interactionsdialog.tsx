@@ -5,6 +5,7 @@ import { ajax } from '../ajax';
 import { error } from '../assert';
 import { fetchCollection } from '../collection';
 import type { Disposal, Gift, Loan, RecordSet, Tables } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { getBooleanAttribute, getParsedAttribute } from '../helpers';
 import { cachableUrl } from '../initialcontext';
@@ -12,7 +13,7 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { ReportsView } from './reports';
+import { formatUrl } from '../querystring';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -25,7 +26,7 @@ import { useAsyncState, useTitle } from './hooks';
 import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { SerializedResource } from '../datamodelutils';
+import { ReportsView } from './reports';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -55,7 +56,9 @@ export type InteractionEntry = {
   readonly icon: string | undefined;
 };
 
-const url = cachableUrl('/context/app.resource?name=InteractionsTaskInit');
+const url = cachableUrl(
+  formatUrl('/context/app.resource', { name: 'InteractionsTaskInit' })
+);
 const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
     ajax<Element>(url, {
@@ -196,7 +199,7 @@ function Interactions({
                 <Link.Default
                   href={
                     typeof action === 'string'
-                      ? `/specify/task/interactions/${action}`
+                      ? `/specify/task/interactions/${action}/`
                       : getResourceViewUrl(table)
                   }
                   className={

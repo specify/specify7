@@ -65,7 +65,7 @@ export function CollectionView({
     React.useCallback(
       async () =>
         ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
-          `/permissions/user_roles/${collection.id}`,
+          `/permissions/user_roles/${collection.id}/`,
           {
             method: 'GET',
             headers: { Accept: 'application/json' },

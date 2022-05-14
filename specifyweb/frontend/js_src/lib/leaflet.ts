@@ -29,6 +29,7 @@ import { localityText } from './localization/locality';
 import type { IR, RA, RR } from './types';
 import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 import { getUserPref } from './preferencesutils';
+import { formatUrl } from './querystring';
 
 const DEFAULT_ZOOM = 5;
 
@@ -62,7 +63,9 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
       ? ajax<IR<unknown>>(
-          cachableUrl('/context/app.resource?name=leaflet-layers'),
+          cachableUrl(
+            formatUrl('/context/app.resource', { name: 'leaflet-layers' })
+          ),
           { headers: { Accept: 'application/json' } },
           { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
         )

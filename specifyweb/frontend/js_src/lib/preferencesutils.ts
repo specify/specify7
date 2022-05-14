@@ -4,20 +4,16 @@
 
 import { ajax, Http, ping } from './ajax';
 import { getCache, setCache } from './cache';
-import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
 import type { Preferences } from './components/preferences';
 import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
-import type { SpAppResourceData } from './datamodel';
-import type { SerializedResource } from './datamodelutils';
 import { keysToLowerCase } from './datamodelutils';
-import { idFromUrl } from './resource';
-import { fetchContext as fetchDomain } from './schemabase';
-import { defined, filterArray } from './types';
+import { contextUnlockedPromise, foreverPromise } from './initialcontext';
+import type { RA } from './types';
+import { filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
-import { fetchContext as fetchUser, userInformation } from './userinfo';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,
@@ -168,14 +164,12 @@ function requestPreferencesSync(): void {
   }
 }
 
-// TODO: this does not handle the case when prefs were updated by a different tab
+// TODO: if prefs where updated by a different tab, this would overwrite them
 async function syncPreferences(): Promise<void> {
   await preferencesPromise;
   isSyncPending = false;
   return ping(
-    `/context/user_resource/${defined(
-      idFromUrl(appResourceData.spAppResource)
-    )}/`,
+    `/context/user_resource/${userResource.id}/`,
     {
       method: 'PUT',
       body: keysToLowerCase({
@@ -199,18 +193,27 @@ async function syncPreferences(): Promise<void> {
 }
 
 const resourceName = 'UserPreferences';
+const mimeType = 'application/json';
 
-let appResourceData: SerializedResource<SpAppResourceData> = undefined!;
+let userResource: ResourceWithData = undefined!;
 
-function updatePreferences(
-  resource: SerializedResource<SpAppResourceData>
-): SerializedResource<SpAppResourceData> {
-  appResourceData = resource;
-  preferences = JSON.parse(appResourceData.data ?? '{}');
+function updatePreferences(resource: ResourceWithData): ResourceWithData {
+  userResource = resource;
+  preferences = JSON.parse(userResource.data ?? '{}');
   prefEvents.trigger('update', undefined);
   setCache('userPreferences', 'cached', preferences);
-  return appResourceData;
+  return userResource;
 }
+
+type UserResource = {
+  readonly id: number;
+  readonly metadata: string | null;
+  readonly name: string;
+  readonly mimetype: string | null;
+};
+type ResourceWithData = UserResource & {
+  readonly data: string;
+};
 
 /**
  * Fetch app resource that stores current user preferences
@@ -219,46 +222,40 @@ function updatePreferences(
  * check if SpAppResourceDir and SpAppResource exist and create them if needed,
  * then, create the app resource data itself
  */
-export const preferencesPromise = Promise.all([
-  import('./schema').then(async ({ fetchContext }) => fetchContext),
-  fetchDomain,
-  fetchUser,
-])
-  .then(async ([schema]) =>
-    fetchCollection(
-      'SpAppResourceData',
-      {
-        limit: 1,
-      },
-      {
-        spappresource__name: resourceName,
-        spappresource__specifyuser: userInformation.id,
-        spappresource__spappresourcedir__ispersonal: 'true',
-        spappresource__spappresourcedir__collection:
-          schema.domainLevelIds.collection,
-      }
-    ).then(({ records }) =>
-      records.length === 1
-        ? records[0]
-        : ajax<{ readonly id: number }>(
-            '/context/user_resource/',
-            {
-              method: 'POST',
-              headers: { Accept: 'application/json' },
-              body: keysToLowerCase({
-                name: resourceName,
-                mimeType: 'application/json',
-                metaData: '',
-                data: '{}',
-              }),
-            },
-            { expectedResponseCodes: [Http.CREATED] }
-          ).then(async ({ data: { id } }) =>
-            fetchCollection('SpAppResourceData', {
-              limit: 1,
-              spAppResource: id,
-            }).then(({ records }) => defined(records[0]))
-          )
-    )
-  )
-  .then(updatePreferences);
+export const preferencesPromise = contextUnlockedPromise.then((entrypoint) =>
+  entrypoint === 'main'
+    ? ajax<RA<UserResource>>('/context/user_resource/', {
+        headers: { Accept: 'application/json' },
+      })
+        .then(
+          ({ data }) =>
+            data.find(
+              ({ name, mimetype }) =>
+                name === resourceName && mimetype === 'application/json'
+            )?.id
+        )
+        .then(async (appResourceId) =>
+          (typeof appResourceId === 'number'
+            ? ajax<ResourceWithData>(
+                `/context/user_resource/${appResourceId}/`,
+                {
+                  headers: { Accept: 'application/json' },
+                }
+              )
+            : ajax<ResourceWithData>(
+                '/context/user_resource/',
+                {
+                  headers: { Accept: 'application/json' },
+                  method: 'POST',
+                  body: keysToLowerCase({
+                    name: resourceName,
+                    mimeType,
+                  }),
+                },
+                { expectedResponseCodes: [Http.CREATED] }
+              )
+          ).then(({ data }) => data)
+        )
+        .then(updatePreferences)
+    : foreverPromise
+);

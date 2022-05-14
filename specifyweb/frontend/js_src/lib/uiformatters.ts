@@ -14,10 +14,11 @@ import { load } from './initialcontext';
 import { parseClassName } from './resource';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
+import { formatUrl } from './querystring';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
-  '/context/app.resource?name=UIFormatters',
+  formatUrl('/context/app.resource', { name: 'UIFormatters' }),
   'application/xml'
 ).then((formatters) => {
   uiFormatters = Object.fromEntries(

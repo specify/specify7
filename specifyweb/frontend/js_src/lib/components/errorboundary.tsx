@@ -19,14 +19,14 @@ import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import { userInformation } from '../userinfo';
 import { Button, className, Link } from './basic';
+import { CopyButton } from './common';
 import { displayError } from './contexts';
 import { downloadFile } from './filepicker';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
-import { usePref } from './preferenceshooks';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
-import { CopyButton } from './common';
+import { usePref } from './preferenceshooks';
 
 type ErrorBoundaryState =
   | {
@@ -274,7 +274,7 @@ function formatError(
       copiableMessage.push(JSON.stringify(error, null, 4));
     }
   } else {
-    const message = error?.toString() ?? '';
+    const message = (error as string | undefined)?.toString() ?? '';
     errorObject.push(
       <p className="raw" key="raw">
         {message}

@@ -2,6 +2,7 @@ import type { CollectionObject } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
 import type { IR, RA } from './types';
 import { ajax } from './ajax';
+import { formatUrl } from './querystring';
 
 export const snServer = 'https://broker.spcoco.org';
 
@@ -24,10 +25,14 @@ export const formatLifemapperViewPageRequest = (
   occurrenceGuid: string,
   speciesName: string
 ): string =>
-  `${snServer}/api/v1/frontend/?occid=${occurrenceGuid}&namestr=${speciesName}&origin=${window.location.origin}`;
+  formatUrl(`${snServer}/api/v1/frontend/`, {
+    occId: occurrenceGuid,
+    nameStr: speciesName,
+    origin: window.location.origin,
+  });
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
-  `${snServer}/api/v1/occ/${occurrenceGuid}?count_only=0`;
+  formatUrl(`${snServer}/api/v1/occ/${occurrenceGuid}`, { count_only: '0' });
 
 export const fetchOccurrenceName = (
   resource: SpecifyResource<CollectionObject>

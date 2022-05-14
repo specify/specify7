@@ -2,11 +2,14 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
+import { f } from '../functools';
+import { getAttribute, getParsedAttribute } from '../helpers';
+import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
-import { getAttribute, getParsedAttribute } from '../helpers';
 import { hasTablePermission } from '../permissions';
+import { formatUrl } from '../querystring';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -14,11 +17,9 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
-import { Dialog, dialogClassNames } from './modaldialog';
-import { cachableUrl } from '../initialcontext';
 import { useAsyncState } from './hooks';
-import { f } from '../functools';
 import { icons } from './icons';
+import { Dialog, dialogClassNames } from './modaldialog';
 
 export type FormEntry = {
   iconName: string | undefined;
@@ -27,7 +28,9 @@ export type FormEntry = {
   table: keyof Tables;
 };
 
-const url = cachableUrl('/context/app.resource?name=DataEntryTaskInit');
+const url = cachableUrl(
+  formatUrl('/context/app.resource', { name: 'DataEntryTaskInit' })
+);
 const fetchForms = f.store(
   async (): Promise<RA<FormEntry>> =>
     ajax<Document>(url, {

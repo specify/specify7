@@ -13,6 +13,7 @@ import type { SerializedModel } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
+import { formatUrl } from '../querystring';
 import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, ErrorMessage, Form, Input, Label, Submit } from './basic';
@@ -140,7 +141,7 @@ function ChooseCollection({
                 loading(
                   ping('/accounts/logout').then(() =>
                     window.location.assign(
-                      `/accounts/logout/?next=${data.nextUrl}`
+                      formatUrl('/accounts/logout/', { next: data.nextUrl })
                     )
                   )
                 )

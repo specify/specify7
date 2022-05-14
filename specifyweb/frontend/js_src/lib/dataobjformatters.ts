@@ -24,6 +24,7 @@ import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
+import { formatUrl } from './querystring';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -62,7 +63,9 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax<Document>(
-        cachableUrl('/context/app.resource?name=DataObjFormatters'),
+        cachableUrl(
+          formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
+        ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/xml' },

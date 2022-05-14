@@ -12,6 +12,7 @@ import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
+import { formatUrl } from '../../querystring';
 
 const liftGetResource = async (
   name: string,
@@ -19,7 +20,7 @@ const liftGetResource = async (
   errorField: HTMLInputElement | null
 ): Promise<void> =>
   ping(
-    `/context/app.resource?name=${name}`,
+    formatUrl('/context/app.resource', { name }),
     {},
     { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
   )

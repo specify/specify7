@@ -8,6 +8,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { hasToolPermission } from '../permissions';
+import { formatUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
@@ -254,7 +255,9 @@ export function RecordSetsDialog({
         isReadOnly={isReadOnly}
         onClose={handleClose}
         getQuerySelectUrl={(query): string =>
-          `/specify/query/${query.id}/?recordsetid=${state.recordSet.id}`
+          formatUrl(`/specify/query/${query.id}/`, {
+            recordSetId: state.recordSet.id.toString(),
+          })
         }
         spQueryFilter={{
           specifyUser: userInformation.id,
@@ -262,9 +265,12 @@ export function RecordSetsDialog({
         }}
         onNewQuery={(): void =>
           goTo(
-            `/specify/query/new/${getModelById(
-              state.recordSet.get('dbTableId')
-            ).name.toLowerCase()}/?recordsetid=${state.recordSet.id}`
+            formatUrl(
+              `/specify/query/new/${getModelById(
+                state.recordSet.get('dbTableId')
+              ).name.toLowerCase()}/`,
+              { recordSetId: state.recordSet.id.toString() }
+            )
           )
         }
       />

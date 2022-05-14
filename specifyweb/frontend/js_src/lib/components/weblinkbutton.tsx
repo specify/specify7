@@ -16,9 +16,10 @@ import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 import { isExternalUrl } from '../ajax';
 import { resourceOn } from '../resource';
+import { formatUrl } from '../querystring';
 
 export const webLinks = load<Element>(
-  '/context/app.resource?name=WebLinks',
+  formatUrl('/context/app.resource', { name: 'WebLinks' }),
   'application/xml'
 ).then((xml) =>
   Object.fromEntries(

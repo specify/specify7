@@ -10,7 +10,7 @@ import type { SerializedResource } from '../../datamodelutils';
 import { fetchFormatters } from '../../dataobjformatters';
 import { index } from '../../helpers';
 import { commonText } from '../../localization/common';
-import { parseUrl } from '../../querystring';
+import { formatUrl, parseUrl } from '../../querystring';
 import { formatAggregators } from '../../schemaconfighelper';
 import type { JavaType, RelationshipType } from '../../specifyfield';
 import type { IR, RA } from '../../types';
@@ -143,7 +143,7 @@ function SchemaConfigWrapper({
       onSave={(language): void =>
         // Reload the page after schema changes
         window.location.assign(
-          `/specify/task/schema-config/?language=${language}`
+          formatUrl('/specify/task/schema-config/', { language })
         )
       }
     />

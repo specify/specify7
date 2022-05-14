@@ -15,7 +15,10 @@ export function formatUrl(
     ...Object.fromEntries(urlObject.searchParams),
     ...(toLowerCase ? keysToLowerCase(parameters) : parameters),
   }).toString();
-  return urlObject.toString();
+  // If received a URL without hostname, return a URL without hostname
+  return url.startsWith('/')
+    ? `${urlObject.pathname}${urlObject.search}${urlObject.hash}`
+    : urlObject.toString();
 }
 
 export const parseUrl = (url: string = window.location.href): IR<string> =>
