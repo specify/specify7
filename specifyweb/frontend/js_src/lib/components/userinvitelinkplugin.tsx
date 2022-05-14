@@ -5,6 +5,7 @@ import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import { hasPermission } from '../permissions';
 import type { IR } from '../types';
 import { Button, Input } from './basic';
 import { CopyButton } from './common';
@@ -25,6 +26,11 @@ export function UserInviteLinkPlugin({
   const loading = React.useContext(LoadingContext);
   const [link, setLink] = React.useState<string | undefined>(undefined);
   const hasProvidersConfigured =
+    /*
+     * If user can't read the list of configured identity providers, we can't check
+     * if any are configured and have to just assume so
+     */
+    !hasPermission('/admin/user/oic_providers', 'read') &&
     Object.keys(identityProviders ?? {}).length > 0;
 
   return (

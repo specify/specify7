@@ -15,7 +15,7 @@ import {
   tablePermissionsPrefix,
   toolDefinitions,
 } from './securityutils';
-import type { RA, RR } from './types';
+import type { IR, RA, RR } from './types';
 import { defined } from './types';
 import { userInformation } from './userinfo';
 
@@ -128,6 +128,18 @@ export const frontEndPermissions = {
   '/preferences/user': ['edit_hidden'],
 } as const;
 
+/**
+ * Front-end only policies that are not exposed in the security panel and
+ * are derived based on the value of another policy.
+ */
+export const derivedPolicies = {
+  /*
+   * This is true if "/permissions/policies/user" is given on the
+   * institutional level
+   */
+  '/permissions/institutional_policies/user': ['update', 'read'],
+};
+
 let operationPermissions: {
   readonly [RESOURCE in keyof typeof operationPolicies]: RR<
     typeof operationPolicies[RESOURCE][number],
@@ -142,6 +154,12 @@ let operationPermissions: {
 let tablePermissions: {
   readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
     typeof tableActions[number],
+    boolean
+  >;
+};
+let derivedPermissions: {
+  readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
+    typeof derivedPolicies[RESOURCE][number],
     boolean
   >;
 };
@@ -203,7 +221,7 @@ export const queryUserPermissions = async (
     )
     .then(({ data }) =>
       /*
-       * If user has an institutional policies, make sure it is given at the
+       * If user has an institutional policy, make sure it is given at the
        * institutional level, as institutional policy on the collection level has
        * no effect
        */
@@ -217,47 +235,82 @@ export const queryUserPermissions = async (
               )
             : matching_user_policies,
         }))
-        .map(({ resource, matching_user_policies, ...rest }) => ({
+        .map(({ resource, allowed, matching_user_policies, ...rest }) => ({
           ...rest,
           resource,
           matching_user_policies,
           allowed:
-            !institutionPermissions.has(resource) ||
-            matching_user_policies.length > 0,
+            allowed &&
+            (!institutionPermissions.has(resource) ||
+              matching_user_policies.length > 0),
         }))
     );
+
+const calculateDerivedPermissions = (
+  items: RA<PermissionsQueryItem>
+): typeof derivedPermissions =>
+  Object.fromEntries(
+    indexQueryItems(
+      items
+        .filter(({ resource }) => resource === '/permissions/policies/user')
+        .map(
+          ({
+            action,
+            allowed,
+            matching_user_policies,
+            matching_role_policies,
+          }) => ({
+            resource: '/permissions/institutional_policies/user',
+            action,
+            allowed:
+              allowed &&
+              matching_user_policies.some(
+                ({ collectionid }) => collectionid === null
+              ),
+            matching_user_policies: matching_user_policies.filter(
+              ({ collectionid }) => collectionid === null
+            ),
+            matching_role_policies,
+          })
+        )
+    )
+  ) as typeof derivedPermissions;
+
+const indexQueryItems = (
+  query: RA<PermissionsQueryItem>
+): RA<Readonly<[string, IR<boolean>]>> =>
+  group(
+    query.map((result) => [
+      result.resource,
+      [result.action, result.allowed] as const,
+    ])
+  ).map(
+    ([resource, actions]) => [resource, Object.fromEntries(actions)] as const
+  );
 
 export const fetchContext = import('./schemabase')
   .then(async ({ fetchContext }) => fetchContext)
   .then(async (schema) =>
-    queryUserPermissions(userInformation.id, schema.domainLevelIds.collection)
-      .then((query) =>
-        split(
-          group(
-            query.map((result) => [
-              result.resource,
-              [result.action, result.allowed] as const,
-            ])
-          ).map(
-            ([resource, actions]) =>
-              [resource, Object.fromEntries(actions)] as const
-          ),
-          ([key]) => key.startsWith(tablePermissionsPrefix)
-        ).map(Object.fromEntries)
-      )
-      .then(([operations, tables]) => {
-        operationPermissions =
-          operations as unknown as typeof operationPermissions;
-        tablePermissions = tables as unknown as typeof tablePermissions;
-        if (process.env.NODE_ENV !== 'production') {
-          // @ts-expect-error Declaring a global object
-          window._permissions = {
-            table: tablePermissions,
-            operations: operationPermissions,
-          };
-        }
-        void checkRegistry();
-      })
+    queryUserPermissions(
+      userInformation.id,
+      schema.domainLevelIds.collection
+    ).then((query) => {
+      const [operations, tables] = split(indexQueryItems(query), ([key]) =>
+        key.startsWith(tablePermissionsPrefix)
+      ).map(Object.fromEntries);
+      operationPermissions =
+        operations as unknown as typeof operationPermissions;
+      tablePermissions = tables as unknown as typeof tablePermissions;
+      derivedPermissions = calculateDerivedPermissions(query);
+      if (process.env.NODE_ENV !== 'production') {
+        // @ts-expect-error Declaring a global object
+        window._permissions = {
+          table: tablePermissions,
+          operations: operationPermissions,
+        };
+      }
+      void checkRegistry();
+    })
   );
 
 export const hasTablePermission = (
@@ -293,3 +346,13 @@ export const hasTreeAccess = (
   hasTablePermission(treeName, action) &&
   hasTablePermission(`${treeName}TreeDef`, action) &&
   hasTablePermission(`${treeName}TreeDefItem`, action);
+
+export const hasDerivedPermission = <
+  RESOURCE extends keyof typeof derivedPermissions
+>(
+  resource: RESOURCE,
+  action: keyof typeof derivedPermissions[RESOURCE]
+): boolean =>
+  defined(derivedPermissions)[resource][action]
+    ? true
+    : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;

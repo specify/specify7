@@ -91,9 +91,9 @@ export function CreateRole({
                 ))}
               </Ul>
             )
-          ) : (
+          ) : hasPermission('/permissions/library/roles', 'read') ? (
             commonText('loading')
-          )}
+          ) : undefined}
         </section>
       )}
       {hasPermission('/permissions/roles', 'create') && (

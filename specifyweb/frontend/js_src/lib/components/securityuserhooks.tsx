@@ -7,7 +7,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { group, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import { hasPermission } from '../permissions';
+import { hasDerivedPermission, hasPermission } from '../permissions';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import { fetchRoles, processPolicies } from '../securityutils';
@@ -237,7 +237,10 @@ export function useUserInstitutionalPolicies(
       async () =>
         userResource.isNew()
           ? []
-          : hasPermission('/permissions/policies/user', 'read')
+          : hasDerivedPermission(
+              '/permissions/institutional_policies/user',
+              'read'
+            )
           ? ajax<IR<RA<string>>>(
               `/permissions/user_policies/institution/${userResource.id}/`,
               {
@@ -271,32 +274,37 @@ export function useUserProviders(
   const [providers] = useAsyncState<IR<boolean>>(
     React.useCallback(
       async () =>
-        f
-          .all({
-            allProviders: ajax<
-              RA<{ readonly provider: string; readonly title: string }>
-            >('/accounts/oic_providers/', {
-              method: 'GET',
-              headers: { Accept: 'application/json' },
-            }).then(({ data }) => data),
-            userProviders:
-              typeof userId === 'number'
-                ? ajax<
-                    RA<{ readonly provider: string; readonly title: string }>
-                  >(`/accounts/oic_providers/${userId}/`, {
-                    method: 'GET',
-                    headers: { Accept: 'application/json' },
-                  }).then(({ data }) => data)
-                : [],
-          })
-          .then(({ allProviders, userProviders }) =>
-            Object.fromEntries(
-              allProviders.map(({ title, provider }) => [
-                title,
-                userProviders.some((entry) => entry.provider === provider),
-              ])
-            )
-          ),
+        hasPermission('/admin/user/oic_providers', 'read')
+          ? f
+              .all({
+                allProviders: ajax<
+                  RA<{ readonly provider: string; readonly title: string }>
+                >('/accounts/oic_providers/', {
+                  method: 'GET',
+                  headers: { Accept: 'application/json' },
+                }).then(({ data }) => data),
+                userProviders:
+                  typeof userId === 'number'
+                    ? ajax<
+                        RA<{
+                          readonly provider: string;
+                          readonly title: string;
+                        }>
+                      >(`/accounts/oic_providers/${userId}/`, {
+                        method: 'GET',
+                        headers: { Accept: 'application/json' },
+                      }).then(({ data }) => data)
+                    : [],
+              })
+              .then(({ allProviders, userProviders }) =>
+                Object.fromEntries(
+                  allProviders.map(({ title, provider }) => [
+                    title,
+                    userProviders.some((entry) => entry.provider === provider),
+                  ])
+                )
+              )
+          : undefined,
       [userId]
     ),
     false

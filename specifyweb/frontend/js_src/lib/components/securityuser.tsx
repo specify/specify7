@@ -10,7 +10,11 @@ import { f } from '../functools';
 import { replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission, hasTablePermission } from '../permissions';
+import {
+  hasDerivedPermission,
+  hasPermission,
+  hasTablePermission,
+} from '../permissions';
 import { idFromUrl } from '../resource';
 import {
   anyResource,
@@ -128,6 +132,15 @@ export function UserView({
         allActions.every((action) => actions.includes(action))
     ) ?? false;
 
+  const canSetPassword = hasPermission('/admin/user/password', 'update');
+  const canCreateInviteLink = hasPermission(
+    '/admin/user/invite_link',
+    'create'
+  );
+  const canSeeInstitutionalPolicies = hasDerivedPermission(
+    '/permissions/institutional_policies/user',
+    'read'
+  );
   return (
     <Container.Base className="flex-1">
       <BaseResourceView
@@ -144,41 +157,52 @@ export function UserView({
             </DataEntry.Header>
             {form(
               <>
-                <div>
+                {canSetPassword ||
+                canCreateInviteLink ||
+                canSeeInstitutionalPolicies ? (
                   <section>
                     <h4 className={className.headerGray}>
                       {commonText('actions')}
                     </h4>
                     <div className="flex items-center gap-2">
-                      {hasPermission('/admin/user/password', 'update') && (
-                        <PasswordPlugin onSet={setPassword} />
-                      )}
-                      {hasPermission('/admin/user/invite_link', 'create') && (
+                      {canSetPassword && <PasswordPlugin onSet={setPassword} />}
+                      {canCreateInviteLink && (
                         <UserInviteLinkPlugin
                           user={user}
                           identityProviders={identityProviders}
                         />
                       )}
-                      <SetSuperAdmin
-                        institutionPolicies={institutionPolicies}
-                        isSuperAdmin={isSuperAdmin}
-                        allActions={allActions}
-                        onChange={setInstitutionPolicies}
-                      />
+                      {canSeeInstitutionalPolicies && (
+                        <SetSuperAdmin
+                          institutionPolicies={institutionPolicies}
+                          isSuperAdmin={isSuperAdmin}
+                          allActions={allActions}
+                          onChange={setInstitutionPolicies}
+                        />
+                      )}
                     </div>
                   </section>
-                </div>
-                {!isSuperAdmin &&
-                  hasPermission('/permissions/policies/user', 'read') && (
-                    <PoliciesView
-                      policies={institutionPolicies}
-                      isReadOnly={!userInformation.isadmin}
-                      scope="institution"
-                      onChange={setInstitutionPolicies}
-                      header={adminText('institutionPolicies')}
-                      collapsable={true}
-                    />
-                  )}
+                ) : undefined}
+                {
+                  /*
+                   * If user is a super admin, they have all policies, so no
+                   * sense in showing them
+                   */
+                  !isSuperAdmin &&
+                    hasDerivedPermission(
+                      '/permissions/institutional_policies/user',
+                      'read'
+                    ) && (
+                      <PoliciesView
+                        policies={institutionPolicies}
+                        isReadOnly={!userInformation.isadmin}
+                        scope="institution"
+                        onChange={setInstitutionPolicies}
+                        header={adminText('institutionPolicies')}
+                        collapsable={true}
+                      />
+                    )
+                }
                 {hasPermission('/admin/user/oic_providers', 'read') && (
                   <UserIdentityProviders
                     identityProviders={identityProviders}
