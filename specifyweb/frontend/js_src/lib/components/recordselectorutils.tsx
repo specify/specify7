@@ -24,7 +24,7 @@ import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { goTo, pushUrl } from './navigation';
+import { pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
@@ -231,12 +231,12 @@ export function IntegratedRecordSelector({
                 {hasTablePermission(
                   field.relatedModel.name,
                   isDependent ? 'create' : 'read'
-                ) && (
+                ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Delete
                     onClick={(): void => handleRemove('minusButton')}
                     disabled={mode === 'view' || collection.models.length === 0}
                   />
-                )}
+                ) : undefined}
                 <span
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
@@ -386,7 +386,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       onDelete={
         typeof handleDelete === 'function'
           ? (index, source): void => {
-              handleDelete?.(index, source);
+              handleDelete(index, source);
               setRecords(removeItem(records, index));
               if (ids.length === 1) handleClose();
             }
@@ -437,8 +437,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     onClick={handleAdd}
                   />
                 )}
-                {resource?.isNew() === true ||
-                hasTablePermission(model.name, 'delete') ? (
+                {(resource?.isNew() === true ||
+                  hasTablePermission(model.name, 'delete')) &&
+                typeof handleRemove === 'function' ? (
                   <DataEntry.Delete
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
@@ -468,7 +469,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={(): void => handleRemove('deleteButton')}
+            onDeleted={
+              typeof handleRemove === 'function'
+                ? (): void => handleRemove('deleteButton')
+                : undefined
+            }
             onClose={handleClose}
           />
           {dialogs}
@@ -585,7 +590,8 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
     if (typeof currentRecordId === 'undefined')
-      // FIXME: test this code when deleting items from record sets
+      // FIXME: test this code when deleting items from record set or adding
+      //   new items
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 ids
@@ -598,11 +604,14 @@ export function RecordSet<SCHEMA extends AnySchema>({
         )
       )
         .then((updateIds) =>
-          setItems(({ ids, isAddingNew, index } = defaultRecordSetState) => ({
-            ...updateIds(ids),
-            isAddingNew,
-            index,
-          }))
+          setItems(({ ids, isAddingNew, index } = defaultRecordSetState) =>
+            f.var(updateIds(ids), ({ totalCount, ids }) => ({
+              ids,
+              totalCount,
+              isAddingNew: isAddingNew || totalCount === 0,
+              index,
+            }))
+          )
         )
         .catch(crash);
     return (): void => {
@@ -632,49 +641,11 @@ export function RecordSet<SCHEMA extends AnySchema>({
 
   const loading = React.useContext(LoadingContext);
   return totalCount === 0 && !isAddingNew ? (
-    typeof items === 'undefined' ? (
-      <LoadingScreen />
-    ) : (
-      <p>
-        <Dialog
-          header={formsText('emptyRecordSetHeader', recordSet.get('name'))}
-          onClose={(): void => history.back()}
-          buttons={
-            <>
-              <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-              {hasToolPermission('recordSets', 'delete') && (
-                <Button.Red
-                  onClick={(): void =>
-                    loading(
-                      recordSet
-                        .destroy()
-                        .then(handleClose ?? ((): void => goTo('/')))
-                    )
-                  }
-                >
-                  {commonText('delete')}
-                </Button.Red>
-              )}
-              {hasToolPermission('recordSets', 'create') && (
-                <Button.Green
-                  onClick={(): void => handleAdd(new rest.model.Resource())}
-                >
-                  {commonText('add')}
-                </Button.Green>
-              )}
-            </>
-          }
-        >
-          {formsText('emptyRecordSetMessage')}
-        </Dialog>
-        {formsText('noData')}
-      </p>
-    )
+    <LoadingScreen />
   ) : (
     <RecordSelectorFromIds<SCHEMA>
       {...rest}
       ids={ids}
-      relatedResource={recordSet}
       title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
       isDependent={false}
       isAddingNew={isAddingNew}
@@ -693,7 +664,8 @@ export function RecordSet<SCHEMA extends AnySchema>({
       }}
       onAdd={hasToolPermission('recordSets', 'create') ? handleAdd : undefined}
       onDelete={
-        recordSet.isNew() || hasToolPermission('recordSets', 'delete')
+        (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
+        (!isAddingNew || totalCount !== 0)
           ? (_index, source): void => {
               if (isAddingNew)
                 setItems({ totalCount, ids, isAddingNew: false, index });

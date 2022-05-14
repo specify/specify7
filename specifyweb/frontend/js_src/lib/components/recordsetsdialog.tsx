@@ -219,6 +219,7 @@ export function RecordSetsDialog({
           goTo(
             getResourceViewUrl(
               getModelById(state.recordSet.get('dbTableId')).name,
+              undefined,
               state.recordSet.id
             )
           )

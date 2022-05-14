@@ -164,9 +164,11 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     // Use this to render <ResourceView>
     readonly resource: SpecifyResource<SCHEMA> | undefined;
     // Set this as an "Add" button event listener
-    readonly onAdd: () => void;
+    readonly onAdd: (() => void) | undefined;
     // Set this as an "Remove" button event listener
-    readonly onRemove: (source: 'deleteButton' | 'minusButton') => void;
+    readonly onRemove:
+      | ((source: 'deleteButton' | 'minusButton') => void)
+      | undefined;
     // True while fetching new record
     readonly isLoading: boolean;
   }) => JSX.Element;
@@ -199,25 +201,8 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const [state, setState] = React.useState<
-    State<'main'> | State<'addBySearch'>
-  >({ type: 'main' });
-
-  function handleAdd(): void {
-    if (typeof handleAdded === 'undefined') return;
-
-    if (typeof relatedResource === 'object') {
-      const resource = new model.Resource();
-      if (typeof field?.otherSideName === 'string' && !relatedResource.isNew())
-        resource.set(field.otherSideName, relatedResource.url() as any);
-      handleAdded(resource);
-    } else setState({ type: 'addBySearch' });
-  }
-
-  function handleRemove(source: 'deleteButton' | 'minusButton'): void {
-    if (records.length === 0 || typeof handleDelete === 'undefined') return;
-    handleSlide(Math.min(index, totalCount - 2));
-    handleDelete?.(index, source);
-  }
+    State<'Main'> | State<'AddBySearch'>
+  >({ type: 'Main' });
 
   return children({
     slider: (
@@ -235,7 +220,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:
-      state.type === 'addBySearch' && typeof handleAdded === 'function' ? (
+      state.type === 'AddBySearch' && typeof handleAdded === 'function' ? (
         <Search
           model={model}
           onAdd={(record): void => {
@@ -245,12 +230,31 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
               )
             );
             handleAdded(record);
-            handleSlide(totalCount);
           }}
-          onClose={(): void => setState({ type: 'main' })}
+          onClose={(): void => setState({ type: 'Main' })}
         />
       ) : null,
-    onAdd: handleAdd,
-    onRemove: handleRemove,
+    onAdd:
+      typeof handleAdded === 'function'
+        ? (): void => {
+            if (typeof relatedResource === 'object') {
+              const resource = new model.Resource();
+              if (
+                typeof field?.otherSideName === 'string' &&
+                !relatedResource.isNew()
+              )
+                resource.set(field.otherSideName, relatedResource.url() as any);
+              handleAdded(resource);
+            } else setState({ type: 'AddBySearch' });
+          }
+        : undefined,
+    onRemove:
+      typeof handleDelete === 'function'
+        ? (source): void => {
+            if (records.length === 0) return;
+            handleSlide(Math.min(index, totalCount - 2));
+            handleDelete(index, source);
+          }
+        : undefined,
   });
 }
