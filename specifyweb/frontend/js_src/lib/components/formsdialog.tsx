@@ -3,7 +3,11 @@ import React from 'react';
 import { ajax } from '../ajax';
 import type { Tables } from '../datamodel';
 import { f } from '../functools';
-import { getAttribute, getParsedAttribute } from '../helpers';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from '../helpers';
 import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -39,9 +43,11 @@ const fetchForms = f.store(
     }).then(async ({ data }) => {
       await fetchSchema;
       return Promise.all(
-        Array.from(data.getElementsByTagName('view'))
+        Array.from(
+          (data.querySelector('std') ?? data).getElementsByTagName('view')
+        )
           // I don't think the non-sidebar items are ever used in Sp6.
-          .filter((item) => getParsedAttribute(item, 'sideBar') ?? false)
+          .filter((item) => getBooleanAttribute(item, 'sideBar') ?? false)
           .map(async (view) =>
             getView(getAttribute(view, 'view') ?? '').then<
               FormEntry | undefined
