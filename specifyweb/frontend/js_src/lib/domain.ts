@@ -97,7 +97,7 @@ export const getCollectionForResource = (
     f.var(idFromUrl(resource.get(domainField.name) ?? ''), (domainResourceId) =>
       schema.domainLevelIds[domainField.name as 'collection'] ===
       domainResourceId
-        ? domainResourceId
+        ? schema.domainLevelIds.collection
         : undefined
     )
   );

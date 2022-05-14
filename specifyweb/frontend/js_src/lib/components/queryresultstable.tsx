@@ -145,6 +145,7 @@ function ViewRecords({
           title={undefined}
           mode="edit"
           canAddAnother={false}
+          urlContext={false}
         />
       )}
     </>

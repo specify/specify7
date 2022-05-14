@@ -12,7 +12,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
-import { deleteResource, resourceOn } from '../resource';
+import { deleteResource, getResourceViewUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
@@ -285,6 +285,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onSaved: handleSaved,
   onAdd: handleAdd,
   onDelete: handleDelete,
+  urlContext,
   ...rest
 }: {
   /*
@@ -306,6 +307,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
   }) => void;
+  // Record set ID, or false to not update the URL
+  readonly urlContext: false | undefined | number;
 } & Omit<
   RecordSelectorProps<SCHEMA>,
   'records' | 'index' | 'children'
@@ -348,6 +351,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     [isAddingNew, model]
   );
   const currentResource = newResource ?? records[index];
+  const currentResourceId = currentResource?.id;
+  React.useEffect(
+    () =>
+      urlContext === false
+        ? undefined
+        : pushUrl(
+            getResourceViewUrl(model.name, currentResourceId, urlContext)
+          ),
+    [urlContext, model, currentResourceId]
+  );
 
   // Show a warning dialog if navigating away before saving the record
   const [unloadProtect, setUnloadProtect] = React.useState<
@@ -720,6 +733,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
           index: Math.min(index, totalCount - 1),
         })
       }
+      urlContext={recordSet.id}
     />
   );
 }
