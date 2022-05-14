@@ -42,6 +42,11 @@ export const fetchContext = load<SystemInfo>(
           collectionGUID: systemInfo.collection_guid,
           isaNumber: systemInfo.isa_number,
         },
+        /*
+         * I don't know if the receiving server handles GET parameters in a
+         * case-sensitive way. Thus, don't convert keys to lower case, but leave
+         * them as they were sent in previous versions of Specify 7
+         */
         false
       ),
       {},

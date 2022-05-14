@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
-import { keysToLowerCase, serializeResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { getIcon, unknownIcon } from '../icons';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
@@ -17,6 +17,7 @@ import { UiField } from './uifield';
 import { isExternalUrl } from '../ajax';
 import { resourceOn } from '../resource';
 import { formatUrl } from '../querystring';
+import { keysToLowerCase } from '../helpers';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),

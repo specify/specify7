@@ -1,20 +1,18 @@
 import { fetchCollection } from './collection';
 import { crash } from './components/errorboundary';
-import type { Collection, CollectionObject } from './datamodel';
-import type { AnySchema, SerializedResource } from './datamodelutils';
-import { serializeResource } from './datamodelutils';
+import type { CollectionObject } from './datamodel';
+import type { AnySchema } from './datamodelutils';
 import { f } from './functools';
+import { capitalize } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { hasTablePermission } from './permissions';
 import { getCollectionPref } from './remoteprefs';
-import { fetchResource } from './resource';
+import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
 import { globalEvents } from './specifyapi';
 import { toTable } from './specifymodel';
 import { getDomainResource } from './treedefinitions';
 import type { RA } from './types';
-import { defined } from './types';
-import { capitalize } from './helpers';
 
 /**
  * Some tasks to do after a new resoure is created
@@ -22,23 +20,32 @@ import { capitalize } from './helpers';
 globalEvents.on('newResource', (resource) => {
   const domainField = resource.specifyModel.getScopingRelationship();
   if (typeof domainField === 'undefined') return;
+
   const domainFieldName =
     domainField.name as keyof typeof schema.domainLevelIds;
+
+  if (
+    typeof domainField === 'object' &&
+    !Boolean(resource.get(domainField.name))
+  )
+    resource.set(
+      domainField.name,
+      getResourceApiUrl(
+        capitalize(domainFieldName),
+        schema.domainLevelIds[domainFieldName]
+      ) as never
+    );
+
+  // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
   const parentResource = domainField
     ? getDomainResource(domainFieldName)
     : undefined;
   if (typeof parentResource === 'undefined') return;
-  if (
-    typeof domainField === 'object' &&
-    !Boolean(resource.get(domainField.name))
-  )
-    resource.set(domainField.name, parentResource.url() as never);
 
   const collectionObject = toTable(resource, 'CollectionObject');
   if (typeof collectionObject === 'undefined') return;
 
-  // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   const colId = parentResource.get('id');
   if (
     getCollectionPref('CO_CREATE_COA', colId) &&
@@ -75,53 +82,44 @@ globalEvents.on('newResource', (resource) => {
 const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
 
-const collectionsInDomain = async (
-  domainResource: SpecifyResource<AnySchema>
-): Promise<RA<SerializedResource<Collection>>> =>
-  f.maybe(
-    toTable(domainResource, 'CollectionObject'),
-    async (collectionObject) =>
-      collectionObject
-        .rgetPromise('collection', true)
-        .then((collection) => [serializeResource(collection)])
-  ) ??
-  f.maybe(toTable(domainResource, 'Collection'), async (collection) =>
-    collection.fetch().then((collection) => [serializeResource(collection)])
-  ) ??
-  fetchCollection(
-    'Collection',
-    { limit: 0 },
-    {
-      [takeBetween(
-        schema.orgHierarchy,
-        'Collection',
-        domainResource.specifyModel.name
-      )
-        .map((level) => level.toLowerCase())
-        .join('__')]: domainResource.id.toString(),
-    }
-  ).then(({ records }) => records);
-
 /**
  * @returns a list of collections the resource belongs too.
  * @returns undefined if resource is not scoped to a collection
+ * @remarks
+ * This function tries to resolve collection ID for resource even the best it
+ * can even if user does not have read access to the Collection table.
  */
-export const collectionsForResource = async (
+export const getCollectionForResource = (
   resource: SpecifyResource<AnySchema>
-): Promise<RA<SerializedResource<Collection>> | undefined> =>
-  f.maybe(
-    (resource.get('collectionMemberId') as number | null) ?? undefined,
-    async (collectionMemberId) =>
-      fetchResource('Collection', collectionMemberId).then((resource) => [
-        defined(resource),
-      ])
-  ) ??
+): number | undefined =>
+  (resource.get('collectionMemberId') as number | null) ??
+  f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
+    f.var(idFromUrl(resource.get(domainField.name) ?? ''), (domainResourceId) =>
+      schema.domainLevelIds[domainField.name as 'collection'] ===
+      domainResourceId
+        ? domainResourceId
+        : undefined
+    )
+  );
+export const fetchCollectionsForResource = async (
+  resource: SpecifyResource<AnySchema>
+): Promise<RA<number> | undefined> =>
   f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
-      .then(collectionsInDomain)
-  ) ??
-  f.maybe(toTable(resource, 'Collection'), (collection) => [
-    serializeResource(collection),
-  ]) ??
-  Promise.resolve(undefined);
+      .then(async (resource) =>
+        fetchCollection(
+          'Collection',
+          { limit: 0 },
+          {
+            [takeBetween(
+              schema.orgHierarchy,
+              'Collection',
+              resource.specifyModel.name
+            )
+              .map((level) => level.toLowerCase())
+              .join('__')]: resource.id.toString(),
+          }
+        ).then(({ records }) => records.map(({ id }) => id))
+      )
+  ) ?? Promise.resolve(undefined);

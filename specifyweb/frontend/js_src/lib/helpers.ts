@@ -6,6 +6,7 @@
 
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
+import { KeysToLowerCase } from './datamodelutils';
 
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
@@ -261,3 +262,18 @@ export const getBooleanAttribute = (
     getParsedAttribute(cell, name),
     (value) => value.toLowerCase() === 'true'
   );
+
+/** Recursively convert keys on an object to lowercase */
+export const keysToLowerCase = <OBJECT extends IR<unknown>>(
+  resource: OBJECT
+): KeysToLowerCase<OBJECT> =>
+  Object.fromEntries(
+    Object.entries(resource).map(([key, value]) => [
+      key.toLowerCase(),
+      Array.isArray(value)
+        ? value.map(keysToLowerCase)
+        : typeof value === 'object' && value !== null
+        ? keysToLowerCase(value as IR<unknown>)
+        : value,
+    ])
+  ) as unknown as KeysToLowerCase<OBJECT>;

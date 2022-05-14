@@ -6,12 +6,15 @@ import React from 'react';
 
 import { error } from '../assert';
 import { fetchCollection } from '../collection';
-import type { Tables } from '../datamodel';
+import type { RecordSet } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
-import { collectionsForResource } from '../domain';
+import {
+  fetchCollectionsForResource,
+  getCollectionForResource,
+} from '../domain';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
-import { hasTablePermission, hasToolPermission } from '../permissions';
+import { hasTablePermission } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { router } from '../router';
@@ -19,62 +22,97 @@ import { getModel, getModelById, schema } from '../schema';
 import { setCurrentComponent, switchCollection } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
-import { crash } from './errorboundary';
+import { useAsyncState } from './hooks';
 import { navigate } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { OtherCollection } from './othercollectionview';
-import {
-  TablePermissionDenied,
-  ToolPermissionDenied,
-} from './permissiondenied';
+import { ProtectedTool, TablePermissionDenied } from './permissiondenied';
 import { ShowResource } from './resourceview';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
-async function recordSetView(idString: string, index = '0'): Promise<void> {
-  if (!hasToolPermission('recordSets', 'read')) {
-    setCurrentComponent(
-      <ToolPermissionDenied tool="recordSets" action="read" />
-    );
-    return;
-  }
-  const id = Number.parseInt(idString);
-  if (typeof id === 'undefined') {
-    setCurrentComponent(<NotFoundView />);
-    return;
-  }
-  const recordSet = new schema.models.RecordSet.Resource({
-    id,
-  });
-  return recordSet.fetch().then((recordSet) =>
-    typeof recordSet === 'undefined'
-      ? setCurrentComponent(<NotFoundView />)
-      : checkLoggedInCollection(
-          recordSet,
-          (): void =>
-            void fetchCollection('RecordSetItem', {
-              recordSet: recordSet.id,
-              offset: Number.parseInt(index),
-              limit: 1,
-            })
-              .then(({ records }) =>
-                navigate(
-                  formatUrl(
-                    getResourceViewUrl(
-                      getModelById(recordSet.get('dbTableId')).name,
-                      records[0]?.recordId ?? 'new'
-                    ),
-                    { recordSetId: id.toString() }
-                  ),
-                  {
-                    replace: true,
-                    trigger: true,
-                  }
-                )
-              )
-              .catch(crash)
-        ).catch(crash)
+function recordSetView(
+  recordSetIdString: string,
+  resourceIndexString = '0'
+): void {
+  const recordSetId = f.parseInt(recordSetIdString);
+  const resourceIndex = f.parseInt(resourceIndexString);
+  setCurrentComponent(
+    typeof recordSetId === 'number' && typeof resourceIndex === 'number' ? (
+      <ProtectedTool tool="recordSets" action="read">
+        <RecordSetView
+          resourceIndex={resourceIndex}
+          recordSetId={recordSetId}
+        />
+      </ProtectedTool>
+    ) : (
+      <NotFoundView />
+    )
   );
+}
+
+function RecordSetView({
+  resourceIndex,
+  recordSetId,
+}: {
+  readonly resourceIndex: number;
+  readonly recordSetId: number;
+}): JSX.Element | null {
+  const [recordSet] = useAsyncState(
+    React.useCallback(
+      async () =>
+        new schema.models.RecordSet.Resource({
+          id: recordSetId,
+        })
+          .fetch()
+          .then((recordSet) => recordSet ?? false),
+      [recordSetId]
+    ),
+    true
+  );
+  return typeof recordSet === 'object' ? (
+    <CheckLoggedInCollection resource={recordSet}>
+      <DisplayRecordSet resourceIndex={resourceIndex} recordSet={recordSet} />
+    </CheckLoggedInCollection>
+  ) : recordSet === false ? (
+    <NotFoundView />
+  ) : null;
+}
+
+function DisplayRecordSet({
+  recordSet,
+  resourceIndex,
+}: {
+  readonly recordSet: SpecifyResource<RecordSet>;
+  readonly resourceIndex: number;
+}): null {
+  useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('RecordSetItem', {
+          recordSet: recordSet.id,
+          offset: resourceIndex,
+          limit: 1,
+        }).then(({ records }) =>
+          navigate(
+            formatUrl(
+              getResourceViewUrl(
+                getModelById(recordSet.get('dbTableId')).name,
+                records[0]?.recordId ?? 'new'
+              ),
+              { recordSetId: recordSet.id.toString() }
+            ),
+            {
+              replace: true,
+              trigger: true,
+            }
+          )
+        ),
+      [recordSet, resourceIndex]
+    ),
+    true
+  );
+  return null;
 }
 
 // Begins the process of creating a new resource
@@ -130,20 +168,15 @@ async function resourceView(
       : undefined;
   if (typeof recordSet === 'object') resource.recordsetid = recordSet.id;
 
-  /*
-   * We preload the resource and recordset to make sure they exist. this prevents
-   * an unfilled view from being displayed.
-   */
-  return checkLoggedInCollection(
-    resource,
-    async (): Promise<void> =>
-      setCurrentComponent(
-        <ShowResource
-          resource={resource}
-          recordSet={await recordSet?.fetch()}
-        />
-      )
-  ).catch(crash);
+  setCurrentComponent(
+    <CheckLoggedInCollection resource={resource}>
+      {/*
+       * We preload the resource and recordset to make sure they exist.
+       * This prevents an unfilled view from being displayed.
+       */}
+      <ShowResource resource={resource} recordSet={await recordSet?.fetch()} />
+    </CheckLoggedInCollection>
+  );
 }
 
 async function viewResourceByGuid(
@@ -152,15 +185,15 @@ async function viewResourceByGuid(
 ): Promise<void> {
   const collection = new model.LazyCollection({ filters: { guid } });
   return collection.fetch({ limit: 1 }).then(({ models }) => {
-    if (models.length === 0) {
-      setCurrentComponent(<NotFoundView />);
-      return undefined;
-    } else
-      return checkLoggedInCollection(models[0], (): void =>
-        setCurrentComponent(
+    setCurrentComponent(
+      models.length === 1 ? (
+        <CheckLoggedInCollection resource={models[0]}>
           <ShowResource resource={models[0]} recordSet={undefined} />
-        )
-      ).catch(crash);
+        </CheckLoggedInCollection>
+      ) : (
+        <NotFoundView />
+      )
+    );
   });
 }
 
@@ -228,22 +261,48 @@ async function byCatNumber(
  * Check if it makes sense to view this resource when logged into current
  * collection
  */
-const checkLoggedInCollection = async (
-  resource: SpecifyResource<AnySchema>,
-  callback: () => void
-): Promise<void> =>
-  resource.isNew() ||
-  f.includes<keyof Tables>(
-    ['Institution', 'Discipline', 'Division'],
-    resource.specifyModel.name
-  )
-    ? Promise.resolve(void callback())
-    : collectionsForResource(resource).then((collections) =>
-        !Array.isArray(collections) ||
-        collections.some(({ id }) => id === schema.domainLevelIds.collection)
-          ? callback()
-          : setCurrentComponent(<OtherCollection collections={collections} />)
-      );
+function CheckLoggedInCollection({
+  resource,
+  children,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly children: JSX.Element;
+}): JSX.Element | null {
+  const [otherCollections] = useAsyncState(
+    React.useCallback(
+      () =>
+        resource.isNew()
+          ? false
+          : resource
+              .fetch()
+              .then((resource) =>
+                f.var(getCollectionForResource(resource), (collectionId) =>
+                  schema.domainLevelIds.collection === collectionId
+                    ? false
+                    : typeof collectionId === 'number'
+                    ? [collectionId]
+                    : fetchCollectionsForResource(resource).then(
+                        (collectionIds) =>
+                          !Array.isArray(collectionIds) ||
+                          collectionIds.includes(
+                            schema.domainLevelIds.collection
+                          )
+                            ? false
+                            : collectionIds
+                      )
+                )
+              ),
+      [resource]
+    ),
+    true
+  );
+
+  return otherCollections === false ? (
+    children
+  ) : Array.isArray(otherCollections) ? (
+    <OtherCollection collectionIds={otherCollections} />
+  ) : null;
+}
 
 export function task(): void {
   router.route('recordset/:id/', 'recordSetView', recordSetView);

@@ -1,10 +1,9 @@
 import React from 'react';
 
-import type { Collection } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
 import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
+import { filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Container } from './basic';
 
@@ -12,15 +11,14 @@ import { Button, Container } from './basic';
  * Asks user to switch collection to view a resource
  */
 export function OtherCollection({
-  collections: resourceCollections,
+  collectionIds,
 }: {
-  collections: RA<SerializedResource<Collection>>;
+  collectionIds: RA<number>;
 }): JSX.Element {
-  const accessibleCollections = new Set(
-    userInformation.availableCollections.map(({ id }) => id)
-  );
-  const collections = resourceCollections.filter((collection) =>
-    accessibleCollections.has(collection.id)
+  const collections = filterArray(
+    userInformation.availableCollections.filter(({ id }) =>
+      collectionIds.includes(id)
+    )
   );
   return (
     <Container.FullGray>

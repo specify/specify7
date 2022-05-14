@@ -9,7 +9,7 @@ import { MILLISECONDS } from './components/internationalization';
 import type { Preferences } from './components/preferences';
 import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
-import { keysToLowerCase } from './datamodelutils';
+import { keysToLowerCase } from './helpers';
 import { contextUnlockedPromise, foreverPromise } from './initialcontext';
 import type { RA } from './types';
 import { filterArray } from './types';

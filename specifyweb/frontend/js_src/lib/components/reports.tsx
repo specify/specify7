@@ -12,11 +12,12 @@ import { fetchCollection } from '../collection';
 import { csrfToken } from '../csrftoken';
 import type { RecordSet, SpAppResource, SpQuery, SpReport } from '../datamodel';
 import type { SerializedModel, SerializedResource } from '../datamodelutils';
-import { keysToLowerCase, serializeResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import {
   getAttribute,
   group,
+  keysToLowerCase,
   replaceItem,
   replaceKey,
   split,

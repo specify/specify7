@@ -5,17 +5,13 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './datamodelutils';
-import {
-  addMissingFields,
-  keysToLowerCase,
-  serializeResource,
-} from './datamodelutils';
+import { addMissingFields, serializeResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import { formatUrl } from './querystring';
 import { getModel } from './schema';
 import type { RA } from './types';
-import { removeKey } from './helpers';
+import { keysToLowerCase, removeKey } from './helpers';
 
 /*
  * TODO: experiment with an object singleton:

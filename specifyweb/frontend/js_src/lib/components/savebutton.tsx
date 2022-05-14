@@ -2,6 +2,7 @@ import React from 'react';
 
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
+import { listen } from '../events';
 import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -14,7 +15,6 @@ import { crash } from './errorboundary';
 import { useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
-import { listen } from '../events';
 
 /*
  * TODO: move this logic into ResourceView, so that <form> and button is
@@ -123,12 +123,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     const newResource = addAnother ? await resource.clone() : undefined;
     const wasNew = resource.isNew();
 
-    // Save process is canceled if false was returned
+    /*
+     * Save process is canceled if false was returned. This also allows to
+     * implement custom save behavior
+     */
     if (handleSaving?.() === false) return;
 
     setIsSaving(true);
     loading(
-      (resource.needsSaved ? resource.save(hasSaveConflict) : Promise.resolve())
+      (resource.needsSaved || newResource?.isNew() === true || resource.isNew()
+        ? resource.save(hasSaveConflict)
+        : Promise.resolve()
+      )
         .then(() => {
           unsetUnloadProtect();
           handleSaved?.({

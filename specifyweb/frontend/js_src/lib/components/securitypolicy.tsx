@@ -11,6 +11,7 @@ import {
 } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import { tableActions } from '../permissions';
 import { smoothScroll } from '../querybuilderutils';
 import {
   actionToLabel,
@@ -37,6 +38,9 @@ export type Policy = {
  * UI should hide them.
  */
 export type PolicyScope = 'institution' | 'collection';
+
+const hasTableActions = (actions: RA<string>): boolean =>
+  tableActions.every((action) => actions.includes(action));
 
 function PolicyView({
   policy: { resource, actions },
@@ -82,6 +86,7 @@ function PolicyView({
   const extendedActions = Array.isArray(possibleActions)
     ? f.unique([...possibleActions, ...(actions ?? [])])
     : undefined;
+  const isTablePolicy = f.maybe(extendedActions, hasTableActions);
   return (
     <li className="flex flex-wrap gap-2">
       <Ul className="contents">
@@ -94,7 +99,7 @@ function PolicyView({
                 disabled={isReadOnly}
                 onValueChange={(part): void => {
                   const parts = [...resourceParts.slice(0, index), part];
-                  // If new part has only one children, select it (recursively)
+                  // If new part has only one child, select it (recursively)
                   while (true) {
                     const childResources = registryFunction(parts).slice(-1)[0];
                     if (
@@ -179,12 +184,19 @@ function PolicyView({
                         })
                       }
                       checked={actions.includes(action)}
-                      /*
-                       * If no checkboxes are checked, mark all as required.
-                       * This prevents creation of policies without any
-                       * actions
-                       */
-                      required={actions.length === 0}
+                      required={
+                        /*
+                         * If no checkboxes are checked, mark all as required.
+                         * This prevents creation of policies without any
+                         * actions
+                         */
+                        actions.length === 0 ||
+                        /**
+                         * For table policies, always require giving "read"
+                         * access as without others do not work
+                         */
+                        (action === 'read' && isTablePolicy)
+                      }
                     />
                     {actionToLabel(action)}
                   </Label.ForCheckbox>
@@ -262,12 +274,29 @@ export function PoliciesView({
                   ? replaceItem(
                       policies,
                       index,
-                      f.var(getAllActions(policy.resource), (possibleActions) =>
-                        possibleActions.length === 1 &&
-                        policy.actions.length === 0
-                          ? replaceKey(policy, 'actions', possibleActions)
-                          : policy
-                      )
+                      policies[index].resource === policy.resource
+                        ? policy
+                        : f.var(
+                            getAllActions(policy.resource),
+                            (possibleActions) =>
+                              policy.actions.length === 0
+                                ? replaceKey(
+                                    policy,
+                                    'actions',
+                                    /*
+                                     * If new policy has only one action,
+                                     * check it by default.
+                                     * If new policy is for a table, check
+                                     * "read" by default
+                                     */
+                                    possibleActions.length === 1
+                                      ? possibleActions
+                                      : hasTableActions(possibleActions)
+                                      ? ['read']
+                                      : []
+                                  )
+                                : policy
+                          )
                     )
                   : removeItem(policies, index)
               )

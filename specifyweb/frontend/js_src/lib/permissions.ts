@@ -318,7 +318,11 @@ export const hasTablePermission = (
   action: typeof tableActions[number]
 ): boolean =>
   defined(tablePermissions)[tableNameToResourceName(tableName)][action]
-    ? true
+    ? /*
+       * User must have "read" permission on a resource for "create", "update"
+       * And "delete" to be available
+       */
+      action === 'read' || hasTablePermission(tableName, 'read')
     : f.log(`No permission to ${action} ${tableName}`) ?? false;
 
 export const hasPermission = <

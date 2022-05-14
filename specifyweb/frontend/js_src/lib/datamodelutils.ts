@@ -1,4 +1,5 @@
 import type { Tables } from './datamodel';
+import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import {
   getResourceApiUrl,
@@ -7,8 +8,9 @@ import {
 } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { parserFromType } from './uiparse';
+import { relationshipIsToMany } from './wbplanviewmappinghelper';
 
 /**
  * The dataModel types in ./datamodel.ts were generated using this code
@@ -243,39 +245,102 @@ function serializeModel<SCHEMA extends AnySchema>(
   ) as SerializedResource<SCHEMA>;
 }
 
-/** Set missing required fields to literals. Set missing optional fields to null */
+/**
+ * This function can:
+ * Set missing required fields to literals.
+ * Set missing optional fields to null
+ * Set missing -to-many relationships to null
+ * Set missing dependent -to-one relationships to new objects
+ * Do all of these recursively
+ */
 export const addMissingFields = <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
-  setOptionalToo = false
-): SerializedResource<Tables[TABLE_NAME]> => ({
-  ...(Object.fromEntries(
-    defined(getModel(tableName)).literalFields.map(
-      ({ name, isRequired, type }) => [
-        name,
-        isRequired || setOptionalToo
-          ? parserFromType(type).value
-          : name === 'version'
-          ? 1
-          : null,
-      ]
-    )
-  ) as SerializedResource<Tables[TABLE_NAME]>),
-  resource_uri: getResourceApiUrl(tableName, 0),
-  ...record,
-});
-
-/** Recursively convert keys on an object to lowercase */
-export const keysToLowerCase = <OBJECT extends IR<unknown>>(
-  resource: OBJECT
-): KeysToLowerCase<OBJECT> =>
-  Object.fromEntries(
-    Object.entries(resource).map(([key, value]) => [
-      key.toLowerCase(),
-      Array.isArray(value)
-        ? value.map(keysToLowerCase)
-        : typeof value === 'object' && value !== null
-        ? keysToLowerCase(value as IR<unknown>)
-        : value,
-    ])
-  ) as unknown as KeysToLowerCase<OBJECT>;
+  {
+    requiredFields = 'set',
+    optionalFields = 'define',
+    toManyRelationships = 'set',
+    requiredRelationships = 'set',
+    optionalRelationships = 'define',
+  }: {
+    readonly requiredFields?: 'define' | 'set' | 'omit';
+    readonly optionalFields?: 'define' | 'set' | 'omit';
+    readonly toManyRelationships?: 'define' | 'set' | 'omit';
+    readonly requiredRelationships?: 'define' | 'set' | 'omit';
+    readonly optionalRelationships?: 'define' | 'set' | 'omit';
+  } = {}
+): SerializedResource<Tables[TABLE_NAME]> =>
+  f.var(defined(getModel(tableName)), (model) => ({
+    // This is needed to preserve unknown fields
+    ...record,
+    ...(Object.fromEntries(
+      filterArray(
+        model.fields.map((field) =>
+          (
+            field.isRelationship
+              ? relationshipIsToMany(field)
+                ? toManyRelationships === 'omit' ||
+                  field.type === 'many-to-many'
+                : (field.isRequired
+                    ? requiredRelationships
+                    : optionalRelationships) === 'omit'
+              : field.isRequired
+              ? requiredFields
+              : optionalFields
+          )
+            ? undefined
+            : [
+                field.name,
+                field.isRelationship
+                  ? relationshipIsToMany(field)
+                    ? field.isDependent()
+                      ? (
+                          record[field.name as keyof typeof record] as
+                            | RA<Partial<SerializedResource<AnySchema>>>
+                            | undefined
+                        )?.map((record) =>
+                          addMissingFields(field.relatedModel.name, record, {
+                            requiredFields,
+                            optionalFields,
+                            toManyRelationships,
+                            requiredRelationships,
+                            optionalRelationships,
+                          })
+                        ) ?? (toManyRelationships === 'set' ? [] : null)
+                      : record[field.name as keyof typeof record] ?? null
+                    : record[field.name as keyof typeof record] ??
+                      (field.isDependent() &&
+                      (field.isRequired
+                        ? requiredRelationships === 'set'
+                        : optionalRelationships === 'set')
+                        ? addMissingFields(
+                            field.relatedModel.name,
+                            (record[
+                              field.name as keyof typeof record
+                            ] as Partial<SerializedResource<AnySchema>>) ?? {},
+                            {
+                              requiredFields,
+                              optionalFields,
+                              toManyRelationships,
+                              requiredRelationships,
+                              optionalRelationships,
+                            }
+                          )
+                        : null)
+                  : record[field.name as keyof typeof record] ??
+                    (field.name === 'version'
+                      ? 1
+                      : (
+                          field.isRequired
+                            ? requiredFields === 'set'
+                            : optionalFields === 'set'
+                        )
+                      ? parserFromType(field.type).value
+                      : null),
+              ]
+        )
+      )
+    ) as SerializedResource<Tables[TABLE_NAME]>),
+    resource_uri:
+      record.resource_uri ?? getResourceApiUrl(tableName, record.id ?? 0),
+  }));

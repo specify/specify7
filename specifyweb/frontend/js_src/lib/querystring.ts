@@ -2,7 +2,7 @@
  * Parse URL Query parameters
  */
 
-import { keysToLowerCase } from './datamodelutils';
+import { keysToLowerCase } from './helpers';
 import type { IR } from './types';
 
 export function formatUrl(

@@ -5,7 +5,7 @@
  */
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import { schema } from './schema';
+import { schemaBase as schema } from './schemabase';
 import type { Relationship } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplanparser';

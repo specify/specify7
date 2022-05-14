@@ -3,6 +3,7 @@ import { formatList } from './components/internationalization';
 import { csrfToken } from './csrftoken';
 import { f } from './functools';
 import type { IR, PartialBy, RA } from './types';
+import { sortFunction } from './helpers';
 
 export const isExternalUrl = (url: string): boolean =>
   /*
@@ -216,8 +217,12 @@ export function handleResponse<RESPONSE_TYPE = string>({
       throw {
         type: 'invalidResponseCode',
         statusText: `Invalid response code ${response.status}. Expected ${
-          expectedResponseCodes.length === 1 ? '' : ' one of'
-        } ${formatList(expectedResponseCodes.map(f.toString))}. Response:`,
+          expectedResponseCodes.length === 1 ? '' : 'one of'
+        } ${formatList(
+          Array.from(expectedResponseCodes)
+            .sort(sortFunction(f.id))
+            .map(f.toString)
+        )}. Response:`,
         responseText: text,
       };
     }
