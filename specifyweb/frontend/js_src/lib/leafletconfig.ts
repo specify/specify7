@@ -11,7 +11,7 @@ import L from './leafletextend';
 import type { IR, RA, RR } from './types';
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.6.2/leaflet-layers.json';
+  'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
 
 /**
  *

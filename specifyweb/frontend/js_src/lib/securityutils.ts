@@ -209,7 +209,12 @@ export const toolDefinitions = f.store(() =>
     },
     resources: {
       label: commonText('appResources'),
-      tables: ['SpAppResource', 'SpAppResourceData', 'SpAppResourceDir'],
+      tables: [
+        'SpAppResource',
+        'SpAppResourceData',
+        'SpAppResourceDir',
+        'SpViewSetObj',
+      ],
     },
     pickLists: {
       label: commonText('pickList'),

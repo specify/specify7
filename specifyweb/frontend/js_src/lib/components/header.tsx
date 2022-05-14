@@ -249,7 +249,9 @@ function UserToolsColumn({
               }))
               .map(({ task, title, basePath, view, isOverlay }) => {
                 const isExternalLink =
-                  typeof view === 'string' && isExternalUrl(view);
+                  typeof view === 'string' &&
+                  basePath !== '/' &&
+                  isExternalUrl(view);
                 const Component = isExternalLink ? Link.NewTab : Link.Default;
                 return (
                   <li key={task}>

@@ -58,6 +58,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
           }).then(({ data }) => {
             const endTime = Date.now();
             const timePassed = endTime - startTime;
+            // A very crude detection mechanism
             const isCached = timePassed < 100;
             // eslint-disable-next-line no-console
             console.log(

@@ -201,7 +201,31 @@ export const queryUserPermissions = async (
         },
       })
     )
-    .then(({ data }) => data.details);
+    .then(({ data }) =>
+      /*
+       * If user has an institutional policies, make sure it is given at the
+       * institutional level, as institutional policy on the collection level has
+       * no effect
+       */
+      data.details
+        .map(({ resource, matching_user_policies, ...rest }) => ({
+          ...rest,
+          resource,
+          matching_user_policies: institutionPermissions.has(resource)
+            ? matching_user_policies.filter(
+                ({ collectionid }) => collectionid === null
+              )
+            : matching_user_policies,
+        }))
+        .map(({ resource, matching_user_policies, ...rest }) => ({
+          ...rest,
+          resource,
+          matching_user_policies,
+          allowed:
+            !institutionPermissions.has(resource) ||
+            matching_user_policies.length > 0,
+        }))
+    );
 
 export const fetchContext = import('./schemabase')
   .then(async ({ fetchContext }) => fetchContext)
