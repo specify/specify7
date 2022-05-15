@@ -91,6 +91,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
     addAnother = false
   ): Promise<void> {
+    if (!form.reportValidity()) return;
+
     setFormContext?.(replaceKey(formContext, 'triedToSubmit', true));
     event.preventDefault();
     event.stopPropagation();

@@ -9,8 +9,11 @@ import { eventListener } from '../events';
 import { f } from '../functools';
 import { getUserPref, setPref } from '../preferencesutils';
 import { MILLISECONDS } from './internationalization';
-import type { PreferenceItem, Preferences } from './preferences';
-import { preferenceDefinitions } from './preferences';
+import type {
+  preferenceDefinitions,
+  PreferenceItem,
+  Preferences,
+} from './preferences';
 import { defaultFont } from './preferencesrenderers';
 
 export const prefEvents = eventListener<{
@@ -202,10 +205,13 @@ export function SetCssVariables(): null {
       accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
       accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
       accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
+      roundedCorners: getUserPref('general', 'ui', 'roundedCorners'),
       formForeground: getUserPref('form', 'appearance', 'foreground'),
       darkFormForeground: getUserPref('form', 'appearance', 'darkForeground'),
       formBackground: getUserPref('form', 'appearance', 'background'),
       darkFormBackground: getUserPref('form', 'appearance', 'darkBackground'),
+      formFontFamily: getUserPref('form', 'ui', 'fontFamily'),
+      formFontSize: getUserPref('form', 'ui', 'fontSize'),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [version]
@@ -319,6 +325,14 @@ export function SetCssVariables(): null {
     [prefs.accentColor5]
   );
 
+  React.useEffect(
+    () =>
+      document.body.classList[prefs.roundedCorners ? 'remove' : 'add'](
+        'no-rounded-corners'
+      ),
+    [prefs.roundedCorners]
+  );
+
   const formForeground = darkMode
     ? prefs.darkFormForeground
     : prefs.formForeground;
@@ -333,6 +347,24 @@ export function SetCssVariables(): null {
   React.useEffect(
     () => document.body.style.setProperty('--form-background', formBackground),
     [formBackground]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--form-font-family',
+        prefs.formFontFamily
+      ),
+    [prefs.formFontFamily]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--form-font-size',
+        `${prefs.formFontSize}%`
+      ),
+    [prefs.formFontSize]
   );
 
   return null;

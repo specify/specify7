@@ -98,6 +98,7 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
         ? (dictionary[key][LANGUAGE] as (...args: RA<unknown>) => Line)(...args)
         : dictionary[key][LANGUAGE] ?? assertExhaustive(key)
       : assertExhaustive(key)) as GetValueType<typeof dictionary[typeof key]>;
+  // This is used by ../tests/testlocalization.ts
   resolver.dictionary = dictionary;
   return resolver;
 }

@@ -126,7 +126,7 @@ export const institutionPermissions = new Set([
  * Policies that are respected on the front-end, but ignored by the back-end.
  */
 export const frontEndPermissions = {
-  '/preferences/user': ['edit_hidden'],
+  '/preferences/user': ['edit_protected'],
 } as const;
 
 /**
@@ -319,11 +319,7 @@ export const hasTablePermission = (
   action: typeof tableActions[number]
 ): boolean =>
   defined(tablePermissions)[tableNameToResourceName(tableName)][action]
-    ? /*
-       * User must have "read" permission on a resource for "create", "update"
-       * And "delete" to be available
-       */
-      action === 'read' || hasTablePermission(tableName, 'read')
+    ? true
     : f.log(`No permission to ${action} ${tableName}`) ?? false;
 
 export const hasPermission = <

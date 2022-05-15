@@ -12,17 +12,16 @@ import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { ReportsView } from './reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
-import { Button, Container, DataEntry, Form } from './basic';
+import { Button, className, Container, DataEntry, Form } from './basic';
 import { AppTitle } from './common';
 import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
-import { Dialog } from './modaldialog';
+import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
 import { usePref } from './preferenceshooks';
-import { defaultFont } from './preferencesrenderers';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
@@ -249,21 +248,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  const [fontFamily] = usePref('general', 'ui', 'fontFamily');
-  const [container, setContainer] = React.useState<HTMLElement | null>(null);
-  React.useEffect(
-    () =>
-      fontFamily === defaultFont
-        ? void container?.style.removeProperty('font-family')
-        : container?.style.setProperty('font-family', fontFamily),
-    [container, fontFamily]
-  );
-
-  const [fontSize] = usePref('general', 'ui', 'fontSize');
-  React.useEffect(
-    () => container?.style.setProperty('font-size', `${fontSize}%`),
-    [container, fontSize]
-  );
   const [state, setState] = React.useState<
     State<'Main'> | State<'Report', { readonly onDone: () => void }>
   >({ type: 'Main' });
@@ -366,14 +350,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           ) : (
             <Container.FullGray>
               {report}
-              <Container.Center
-                style={{
-                  fontFamily:
-                    fontFamily === defaultFont ? undefined : fontFamily,
-                  fontSize: `${fontSize}%`,
-                }}
-                className="!w-auto"
-              >
+              <Container.Center className="!w-auto">
                 <DataEntry.Header>
                   <AppTitle title={titleOverride ?? formatted} type="form" />
                   <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
@@ -423,12 +400,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   </>
                 )
               }
+              className={{
+                content: `${className.formStyles} ${dialogClassNames.normalContainer}`,
+              }}
               onClose={(): void => {
                 if (isModified) setShowUnloadProtect(true);
                 else handleClose();
-              }}
-              forwardRef={{
-                container: setContainer,
               }}
             >
               {form(children)}

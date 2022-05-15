@@ -514,4 +514,10 @@ export const adminText = createDictionary({
     ca: 'Advanced tables',
     'es-es': 'Advanced tables',
   },
+  domainTables: {
+    'en-us': 'Domain tables',
+    'ru-ru': 'Domain tables',
+    ca: 'Domain tables',
+    'es-es': 'Domain tables',
+  },
 });

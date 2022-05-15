@@ -114,7 +114,7 @@ const buildRegistry = f.store(
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
-        localized: [commonText('tools'), label],
+        localized: [commonText('tool'), label],
         actions: tableActions,
         groupName: '',
       })),

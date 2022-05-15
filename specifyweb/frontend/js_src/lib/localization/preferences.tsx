@@ -108,17 +108,17 @@ export const preferencesText = createDictionary({
   fontFamilyDescription: {
     'en-us': `You can specify any font that is on your computer, even if it is
       not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not installed and so on`,
+      second font would be used if first one is not available and so on`,
     'ru-ru': `Вы можете указать любой шрифт, который есть на вашем компьютере,
       даже если он нет в списке. Поддерживается список шрифтов, разделенных
-      запятыми, где второй шрифт будет использоваться, если первый не установлен
+      запятыми, где второй шрифт будет использоваться, если первый не доступен
       и т.д.`,
     ca: `You can specify any font that is on your computer, even if it is
       not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not installed and so on`,
+      second font would be used if first one is not available and so on`,
     'es-es': `You can specify any font that is on your computer, even if it is
       not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not installed and so on`,
+      second font would be used if first one is not available and so on`,
   },
   defaultFont: {
     'en-us': '(default font)',
@@ -884,5 +884,11 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Colorize action names',
     ca: 'Colorize action names',
     'es-es': 'Colorize action names',
+  },
+  roundedCorners: {
+    'en-us': 'Rounded corners',
+    'ru-ru': 'Rounded corners',
+    ca: 'Rounded corners',
+    'es-es': 'Rounded corners',
   },
 });

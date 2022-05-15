@@ -162,6 +162,7 @@ export function Autocomplete<T>({
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
 
   const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
+
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
@@ -173,13 +174,23 @@ export function Autocomplete<T>({
     [pendingValue, filterItems, results]
   );
 
+  /*
+   * When a value is selected and you open a list again, show all results, not
+   * just filtered down ones
+   */
+  const ignoreFilter =
+    filteredItems.length === 1 &&
+    currentValue === (filteredItems[0].searchValue ?? filteredItems[0].data) &&
+    currentValue === pendingValue;
+  const itemSource = ignoreFilter ? results : filteredItems;
+
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
   ): void {
     let newIndex = currentIndex;
     if (event.key === 'Escape' || event.key === 'Enter') {
       event.preventDefault();
-      const newItem = filteredItems[currentIndex];
+      const newItem = itemSource[currentIndex];
       if (typeof newItem === 'object') handleChange(newItem);
       handleClose();
       input?.focus();
@@ -190,7 +201,7 @@ export function Autocomplete<T>({
     if (newIndex !== currentIndex) {
       event.preventDefault();
       const finalIndex =
-        (filteredItems.length + newIndex) % Math.max(filteredItems.length, 1);
+        (itemSource.length + newIndex) % Math.max(itemSource.length, 1);
       setCurrentIndex(finalIndex);
       const item = dataListRef.current?.children?.[finalIndex];
       (item as HTMLElement)?.focus();
@@ -209,7 +220,7 @@ export function Autocomplete<T>({
     !isLoading &&
     typeof handleNewValue === 'function' &&
     pendingValue !== currentValue;
-  const listHasItems = showAdd || isLoading || filteredItems.length > 0;
+  const listHasItems = showAdd || isLoading || itemSource.length > 0;
   const showList = isOpen && listHasItems;
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
@@ -275,9 +286,15 @@ export function Autocomplete<T>({
       else {
         dataListRef.current.classList.remove('sr-only');
         const isOverflowing = inputBottom + listHeight > parentBottom;
-        dataListRef.current.style.top = `${
-          isOverflowing ? inputTop - listHeight : inputBottom
-        }px`;
+        if (isOverflowing) {
+          dataListRef.current.style.top = '';
+          dataListRef.current.style.bottom = `${
+            document.body.clientHeight - inputTop
+          }px`;
+        } else {
+          dataListRef.current.style.top = `${inputBottom}px`;
+          dataListRef.current.style.bottom = '';
+        }
       }
     }
 
@@ -390,7 +407,7 @@ export function Autocomplete<T>({
                   {commonText('loading')}
                 </li>
               )}
-              {filteredItems.map((item, index, { length }) => {
+              {itemSource.map((item, index, { length }) => {
                 /**
                  * Highlight relevant part of the string.
                  * Note, if item.searchValue and item.value is different,

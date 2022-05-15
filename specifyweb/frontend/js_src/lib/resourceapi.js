@@ -252,7 +252,7 @@ function eventHandlerForToOne(related, field) {
                     const collection = new relatedModel.DependentCollection(collectionOptions, value);
                     this.storeDependent(field, collection);
                 } else {
-                    console.warn("got unexpected inline data for independent collection field");
+                    console.warn("got unexpected inline data for independent collection field",{collection:this,field,value});
                 }
 
                 // because the foreign key is on the other side

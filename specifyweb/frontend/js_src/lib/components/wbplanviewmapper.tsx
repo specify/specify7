@@ -10,6 +10,7 @@ import type { State } from 'typesafe-reducer';
 
 import { getCache } from '../cache';
 import type { Tables } from '../datamodel';
+import { listen } from '../events';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { smoothScroll } from '../querybuilderutils';
@@ -52,7 +53,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { listen } from '../events';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -288,7 +288,7 @@ export function WbPlanViewMapper(props: {
           <span title={wbText('baseTable')}>
             {` (${defined(getModel(props.baseTableName)).label})`}
           </span>
-          {props.isReadOnly && (
+          {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
               title={wbText('dataSetUploadedDescription')}

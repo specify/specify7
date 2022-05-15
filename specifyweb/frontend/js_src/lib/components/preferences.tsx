@@ -5,6 +5,7 @@
 import React from 'react';
 
 import type { Collection } from '../datamodel';
+import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { preferencesText } from '../localization/preferences';
@@ -32,7 +33,6 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
-import { adminText } from '../localization/admin';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -200,6 +200,13 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
+          }),
+          roundedCorners: defineItem<boolean>({
+            title: preferencesText('roundedCorners'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
         },
       },

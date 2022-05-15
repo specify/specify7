@@ -14,6 +14,10 @@
     @apply !transition-none !duration-0;
   }
 
+  body.no-rounded-corners * {
+    @apply !rounded-none;
+  }
+
   * {
     @apply transition duration-[var(--transition-duration)] ease-in-out
       dark:!shadow-none placeholder-gray-400 !ring-inset;

@@ -115,6 +115,8 @@ const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
   shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
   [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerFull = 'flex flex-col gap-4 h-full p-4';
+const formStyles =
+  'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   hasAltBackground: 'has-alt-background',
@@ -148,9 +150,11 @@ export const className = {
   containerFull,
   containerFullGray: `${containerFull} bg-[color:var(--form-background)]`,
   containerBase,
-  containerCenter: `${containerBase} mx-auto max-w-[min(100%,var(--form-max-width))] w-full`,
+  containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
+    mx-auto w-full ${formStyles}`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg font-bold',
+  formStyles,
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css

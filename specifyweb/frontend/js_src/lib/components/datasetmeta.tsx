@@ -39,6 +39,7 @@ async function fetchAgent(url: string): Promise<JSX.Element> {
   ));
 }
 
+// TODO: allow exporting/importing the mapping
 export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,

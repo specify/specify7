@@ -159,6 +159,12 @@ export const commonText = createDictionary({
     ca: 'Tools',
     'es-es': 'Tools',
   },
+  tool: {
+    'en-us': 'Tool',
+    'ru-ru': 'Инструмент',
+    ca: 'Tool',
+    'es-es': 'Tool',
+  },
   loading: {
     'en-us': 'Loading...',
     'ru-ru': 'Загрузка...',

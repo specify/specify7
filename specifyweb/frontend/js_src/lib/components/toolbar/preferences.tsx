@@ -150,7 +150,10 @@ function Preferences({
                         {items.map(([name, item]) => {
                           const canEdit =
                             item.visible !== 'adminsOnly' ||
-                            hasPermission('/preferences/user', 'edit_hidden');
+                            hasPermission(
+                              '/preferences/user',
+                              'edit_protected'
+                            );
                           return (
                             <label
                               key={name}

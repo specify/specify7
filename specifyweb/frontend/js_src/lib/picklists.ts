@@ -88,7 +88,7 @@ export function getFrontEndPickLists(): typeof frontEndPickLists {
  *
  * Since pick list names must be unique, front-end only pick lists are prefixed
  * with "_". Since these pick lists are front-end only, it is safe to rename
- * by simply replacing the usages in code if there are any
+ * them by simply replacing the usages in code if there are any.
  *
  * If a given field has a pick list assigned to it using the schema config,
  * that pick lists would take precedence
