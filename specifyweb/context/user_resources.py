@@ -1,10 +1,11 @@
 import json
+
 from django import http
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views import View
 
+from specifyweb.context.app_resource import get_usertype
 from specifyweb.specify import models, api
 from specifyweb.specify.views import openapi
 
@@ -37,6 +38,8 @@ class Resources(View):
                 specifyuser=request.specify_user,
                 ispersonal=True,
                 collection=request.specify_collection,
+                discipline=request.specify_collection.discipline,
+                usertype=get_usertype(request.specify_user),
             )
             resource = Spappresource.objects.create(
                 spappresourcedir=directory,

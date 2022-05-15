@@ -7,9 +7,10 @@ database or the filesystem with database resources taking precedence over the fi
 import errno
 import logging
 import os
-from django.conf import settings
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
+
+from django.conf import settings
 
 from specifyweb.specify.models import Spappresourcedir, Spappresourcedata
 
