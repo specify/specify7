@@ -4,6 +4,7 @@
 
 import { ajax } from './ajax';
 import type { AnySchema } from './datamodelutils';
+import { f } from './functools';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -17,8 +18,9 @@ import {
 } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
-import { hasPathPermission } from './permissions';
+import { hasTablePermission, mappingPathToTableNames } from './permissions';
 import { formatUrl } from './querystring';
+import { schema } from './schema';
 import type { LiteralField } from './specifyfield';
 import type { Collection } from './specifymodel';
 import type { RA } from './types';
@@ -140,7 +142,8 @@ export async function format<SCHEMA extends AnySchema>(
   tryBest = false
 ): Promise<string | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
-  await resource.fetch();
+  if (hasTablePermission(resource.specifyModel.name, 'read'))
+    await resource.fetch();
   const resolvedFormatterName =
     formatterName ?? resource.specifyModel.getFormat();
 
@@ -189,7 +192,7 @@ export async function format<SCHEMA extends AnySchema>(
       : formatter.fields[0].fields;
 
   const automaticFormatter = tryBest
-    ? `${resource.specifyModel.name} #${resource.id}`
+    ? `${resource.specifyModel.label} #${resource.id}`
     : undefined;
 
   /*
@@ -204,37 +207,43 @@ export async function format<SCHEMA extends AnySchema>(
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(
-          async ({ fieldName, formatter, separator, fieldFormatter }) =>
-            `${separator}${
+          async ({ fieldName, formatter, separator, fieldFormatter }) => {
+            const field = defined(
+              resource.specifyModel.getField(fieldName) as LiteralField
+            );
+            return `${separator}${
               typeof fieldFormatter === 'string' && fieldFormatter === ''
                 ? ''
-                : hasPathPermission(
-                    resource.specifyModel.name,
-                    fieldName.split('.'),
-                    'read'
+                : await f.var(
+                    mappingPathToTableNames(
+                      resource.specifyModel.name,
+                      fieldName.split('.'),
+                      true
+                    ).find(
+                      (tableName) => !hasTablePermission(tableName, 'read')
+                    ),
+                    (noAccessTable) =>
+                      typeof noAccessTable === 'string'
+                        ? tryBest
+                          ? `${schema.models[noAccessTable].label} #${resource.id}`
+                          : commonText('noPermission')
+                        : (
+                            resource.rgetPromise(fieldName) as Promise<
+                              string | SpecifyResource<AnySchema> | undefined
+                            >
+                          ).then(async (value) => {
+                            return formatter.length > 0 &&
+                              typeof value === 'object'
+                              ? (await format(value, formatter)) ?? ''
+                              : fieldFormat(
+                                  field,
+                                  resolveParser(field),
+                                  value as string | undefined
+                                );
+                          })
                   )
-                ? await (
-                    resource.rgetPromise(fieldName) as Promise<
-                      string | SpecifyResource<AnySchema> | undefined
-                    >
-                  ).then(async (value) => {
-                    if (formatter.length > 0 && typeof value === 'object')
-                      return (await format(value, formatter)) ?? '';
-                    else {
-                      const field = defined(
-                        resource.specifyModel.getField(
-                          fieldName
-                        ) as LiteralField
-                      );
-                      return fieldFormat(
-                        field,
-                        resolveParser(field),
-                        value as string | undefined
-                      );
-                    }
-                  })
-                : automaticFormatter ?? commonText('noPermission')
-            }`
+            }`;
+          }
         )
       ).then((values) => values.join(''));
 }

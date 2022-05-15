@@ -242,7 +242,7 @@ export class Relationship extends FieldBase {
 
   public readonly type: RelationshipType;
 
-  public dependent: boolean;
+  private readonly dependent: boolean;
 
   public isRelationship: true = true;
 

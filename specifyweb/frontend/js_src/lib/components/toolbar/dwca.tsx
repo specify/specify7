@@ -7,12 +7,12 @@ import React from 'react';
 import { formData, Http, ping } from '../../ajax';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../../permissions';
+import { formatUrl } from '../../querystring';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { formatUrl } from '../../querystring';
 
 const liftGetResource = async (
   name: string,
@@ -106,6 +106,7 @@ function MakeDwca({
           )
         }
       >
+        {/* TODO: replace these with resource pickers */}
         <Label.Generic>
           {commonText('dwcaDefinition')}
           <Input.Text

@@ -6,7 +6,7 @@ import { toLowerCase } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { treeText } from '../localization/tree';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
@@ -76,7 +76,11 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <EditRecordDialog<SCHEMA>
           nodeId={focusedRow?.nodeId}
           addNew={false}
-          label={commonText('edit')}
+          label={
+            hasTablePermission(tableName, 'update')
+              ? commonText('edit')
+              : commonText('view')
+          }
           tableName={tableName}
           onRefresh={handleRefresh}
           disabled={typeof focusedRow === 'undefined'}
@@ -244,7 +248,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const model = schema.models[tableName] as SpecifyModel<AnyTree>;
   const treeName = model.label;
 
-  const [showPrompt, setShowPrompt] = React.useState(false);
+  const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<undefined | string>(undefined);
 
@@ -265,7 +269,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const isSameRecord = focusedRow.nodeId === actionRow.nodeId;
   const disabled =
     type === 'move'
-      ? focusedRow.rankId >= actionRow.rankId || isSynonym
+      ? focusedRow.rankId >= actionRow.rankId || isSynonym || isSameRecord
       : type === 'merge'
       ? isSameRecord || focusedRow.rankId > actionRow.rankId || isSynonym
       : type === 'synonymize'

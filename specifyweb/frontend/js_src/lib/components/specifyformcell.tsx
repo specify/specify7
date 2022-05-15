@@ -185,7 +185,7 @@ const cellRenderers: {
       )
     ) : (
       f.log(
-        `SubView hidden due to lack of read permissions to ${field.relatedModel.name} table`
+        `SubView hidden due to lack of read permissions to ${resource.specifyModel.name}.${field.relatedModel.name}`
       ) ?? null
     );
   },

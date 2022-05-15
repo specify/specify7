@@ -8,12 +8,13 @@ import { ping } from '../../ajax';
 import type { TaxonTreeDef } from '../../datamodel';
 import type { FilterTablesByEndsWith } from '../../datamodelutils';
 import { f } from '../../functools';
+import { toLowerCase } from '../../helpers';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
-import { hasTreeAccess } from '../../permissions';
+import { hasPermission, hasTreeAccess } from '../../permissions';
 import { formatUrl, parseUrl } from '../../querystring';
+import { schema } from '../../schema';
 import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
-import { userInformation } from '../../userinfo';
 import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
@@ -28,11 +29,13 @@ export function TreeSelectDialog({
   onClick: handleClick,
   title,
   getLink,
+  permissionName,
 }: {
   readonly onClose: () => void;
   readonly onClick: undefined | ((tree: string) => Promise<void> | void);
   readonly title: string;
   readonly getLink: (tree: string) => string;
+  readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const [treeRanks] = useAsyncState(
@@ -54,10 +57,16 @@ export function TreeSelectDialog({
       <nav>
         <Ul>
           {getDisciplineTrees()
-            .filter((treeName) => hasTreeAccess(treeName, 'read'))
+            .filter((treeName) =>
+              permissionName === 'repair'
+                ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+                : hasTreeAccess(treeName, 'read')
+            )
             .map((treeName) =>
               f.var(
-                treeRanks[treeName].definition as SpecifyResource<TaxonTreeDef>,
+                treeRanks[treeName]?.definition as
+                  | SpecifyResource<TaxonTreeDef>
+                  | undefined,
                 (treeDefinition) => (
                   <li key={treeName}>
                     <div className="flex gap-2">
@@ -77,12 +86,15 @@ export function TreeSelectDialog({
                             )
                           );
                         }}
-                        title={treeDefinition.get('remarks') ?? undefined}
+                        title={treeDefinition?.get('remarks') ?? undefined}
                       >
                         <TableIcon name={treeName} tableLabel={false} />
-                        {treeDefinition.get('name')}
+                        {treeDefinition?.get('name') ??
+                          schema.models[treeName].label}
                       </Link.Default>
-                      <EditTreeDefinition treeDefinition={treeDefinition} />
+                      {typeof treeDefinition === 'object' && (
+                        <EditTreeDefinition treeDefinition={treeDefinition} />
+                      )}
                     </div>
                   </li>
                 )
@@ -121,6 +133,7 @@ function RepairTree({
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
+      permissionName="repair"
     />
   );
 }
@@ -155,7 +168,10 @@ export const userTool: UserTool = {
   task: 'repair-tree',
   title: commonText('repairTree'),
   isOverlay: true,
-  enabled: () => userInformation.isadmin,
+  enabled: () =>
+    getDisciplineTrees().some((treeName) =>
+      hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+    ),
   view: ({ onClose: handleClose }) => <RepairTree onClose={handleClose} />,
   groupLabel: commonText('administration'),
 };

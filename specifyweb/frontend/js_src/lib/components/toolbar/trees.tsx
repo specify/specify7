@@ -26,6 +26,7 @@ function RepairTree({
       onClick={undefined}
       title={commonText('treesDialogTitle')}
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
+      permissionName="read"
     />
   );
 }

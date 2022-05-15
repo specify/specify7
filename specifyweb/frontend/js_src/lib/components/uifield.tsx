@@ -244,7 +244,7 @@ export function Field({
         validationAttributes.type === 'number' &&
         rightAlignNumberFields &&
         navigator.userAgent.toLowerCase().includes('webkit')
-          ? 'text-right pr-6'
+          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
           : ''
       }
       {...validationAttributes}

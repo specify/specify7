@@ -16,7 +16,7 @@ import {
   toolDefinitions,
 } from './securityutils';
 import type { IR, RA, RR } from './types';
-import { defined } from './types';
+import { defined, filterArray } from './types';
 import { userInformation } from './userinfo';
 import { schema } from './schema';
 
@@ -364,15 +364,34 @@ export const hasPathPermission = (
   mappingPath: RA<string>,
   action: typeof tableActions[number]
 ): boolean =>
-  mappingPath.every((_, index, { length }) =>
-    f.var(
-      schema.models[baseTableName].getField(mappingPath.slice(index).join('.')),
-      (field) =>
-        typeof field === 'object'
-          ? hasTablePermission(field.model.name, action) &&
-            (!field.isRelationship ||
-              index + 1 < length ||
-              hasTablePermission(field.relatedModel.name, action))
-          : true
+  mappingPathToTableNames(baseTableName, mappingPath, true).every((tableName) =>
+    hasTablePermission(tableName, action)
+  );
+
+export const mappingPathToTableNames = (
+  baseTableName: keyof Tables,
+  mappingPath: RA<string>,
+  ignoreBaseTable = false
+): RA<keyof Tables> =>
+  f.unique(
+    filterArray(
+      mappingPath.flatMap((_, index) =>
+        index === 0 && ignoreBaseTable
+          ? undefined
+          : f.var(
+              schema.models[baseTableName].getField(
+                mappingPath.slice(index).join('.')
+              ),
+              (field) =>
+                typeof field === 'object'
+                  ? [
+                      field.model.name,
+                      field.isRelationship
+                        ? field.relatedModel.name
+                        : undefined,
+                    ]
+                  : undefined
+            )
+      )
     )
   );

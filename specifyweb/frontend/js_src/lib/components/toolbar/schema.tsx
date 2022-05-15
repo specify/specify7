@@ -167,7 +167,7 @@ export function DataModelView({
                 {field.relatedModel.name}
               </>,
               field.otherSideName,
-              booleanFormatter(field.dependent),
+              booleanFormatter(field.isDependent()),
             ].map((label, index) => (
               <Cell key={index}>{label}</Cell>
             ))}
@@ -313,7 +313,7 @@ const dataModelToTsv = (): string =>
             relationship.dbColumn,
             relationship.relatedModel.name,
             relationship.otherSideName,
-            booleanFormatter(relationship.dependent),
+            booleanFormatter(relationship.isDependent()),
           ]),
         ]
       )
