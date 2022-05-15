@@ -340,18 +340,16 @@ function CollectionName({
                   ({ id }) => id === collectionId
                 ),
                 deserializeResource
-              ) ?? new schema.models.Collection.Resource({ id: collectionId })
+              ) ?? new schema.models.Collection.Resource({ id: collectionId }),
+              undefined,
+              true
             )
           : schema.models.Institution.label,
       [collectionId]
     ),
     false
   );
-  return (
-    <>
-      {formatted ?? `${schema.models.Collection.label} #${collectionId ?? ''}`}
-    </>
-  );
+  return <>{formatted}</>;
 }
 
 function UserName({ userId }: { readonly userId: number }): JSX.Element {
@@ -370,11 +368,13 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
                   ) as SerializedModel<SpecifyUser>
                 )
               )
-            : new schema.models.SpecifyUser.Resource({ id: userId })
+            : new schema.models.SpecifyUser.Resource({ id: userId }),
+          undefined,
+          true
         ),
       [userId]
     ),
     false
   );
-  return <>{formatted ?? `${schema.models.SpecifyUser.label} #${userId}`}</>;
+  return <>{formatted}</>;
 }

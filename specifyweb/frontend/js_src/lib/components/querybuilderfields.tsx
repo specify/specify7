@@ -27,7 +27,9 @@ export function QueryFields({
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly enforceLengthLimit: boolean;
-  readonly onChangeField: (line: number, field: QueryField) => void;
+  readonly onChangeField:
+    | ((line: number, field: QueryField) => void)
+    | undefined;
   readonly onMappingChange:
     | ((
         line: number,
@@ -84,7 +86,7 @@ export function QueryFields({
           baseTableName={baseTableName}
           field={field}
           enforceLengthLimit={enforceLengthLimit}
-          onChange={(newField): void => handleChangeField(line, newField)}
+          onChange={handleChangeField?.bind(undefined, line)}
           onMappingChange={handleMappingChange?.bind(undefined, line)}
           onRemove={handleRemoveField?.bind(undefined, line)}
           onOpen={handleOpen?.bind(undefined, line)}

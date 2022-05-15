@@ -1558,6 +1558,7 @@ const WBView = Backbone.View.extend({
 
       resources.forEach((resource) => {
         // TODO: take <a> out of the <label>
+        // TODO: remove <a> if no read permission
         const row = $(
           `<label class="py-1 flex flex-col gap-2">
             <input

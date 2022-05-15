@@ -7,7 +7,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import { wbText } from '../localization/workbench';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasToolPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import {
   mutateLineData,
@@ -146,6 +146,7 @@ export function QueryBuilder({
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
   const mapButtonEnabled =
+    !isReadOnly &&
     mappingPathIsComplete(state.mappingView) &&
     !getMappedFieldsBind(state.mappingView.slice(0, -1)).includes(
       state.mappingView.slice(-1)[0]
@@ -167,6 +168,10 @@ export function QueryBuilder({
     'behavior',
     'stickyScrolling'
   );
+
+  // FIXME: before executitng the query check if there are any no-permission fields
+  // const canExecuteQuery = hasTablePermission(getModelById(query.get('contextTableId')).name,'read');
+  // FIXME: test tree query without access to treedef items
 
   return typeof treeRanks === 'object' ? (
     <Container.Full
@@ -212,40 +217,47 @@ export function QueryBuilder({
               queryResource={queryResource}
               getQueryFieldRecords={getQueryFieldRecords}
             />
-            {!queryResource.isNew() && (
-              <Button.Small
-                disabled={!saveRequired}
-                onClick={(): void => {
-                  unsetUnloadProtect();
-                  window.location.reload();
-                }}
-              >
-                {queryText('abandonChanges')}
-              </Button.Small>
+            {hasToolPermission(
+              'queryBuilder',
+              queryResource.isNew() ? 'create' : 'update'
+            ) && (
+              <>
+                {!queryResource.isNew() && (
+                  <Button.Small
+                    disabled={!saveRequired}
+                    onClick={(): void => {
+                      unsetUnloadProtect();
+                      window.location.reload();
+                    }}
+                  >
+                    {queryText('abandonChanges')}
+                  </Button.Small>
+                )}
+                <SaveQueryButtons
+                  isReadOnly={isReadOnly}
+                  queryResource={queryResource}
+                  fields={state.fields}
+                  isValid={(): boolean =>
+                    formRef.current?.reportValidity() ?? false
+                  }
+                  saveRequired={saveRequired}
+                  unsetUnloadProtect={unsetUnloadProtect}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                  onTriedToSave={(): boolean => {
+                    handleTriedToSave();
+                    const fieldLengthLimit =
+                      defined(
+                        schema.models.SpQueryField.getLiteralField('startValue')
+                      ).length ?? Number.POSITIVE_INFINITY;
+                    return state.fields.every((field) =>
+                      field.filters.every(
+                        ({ startValue }) => startValue.length < fieldLengthLimit
+                      )
+                    );
+                  }}
+                />
+              </>
             )}
-            <SaveQueryButtons
-              isReadOnly={isReadOnly}
-              queryResource={queryResource}
-              fields={state.fields}
-              isValid={(): boolean =>
-                formRef.current?.reportValidity() ?? false
-              }
-              saveRequired={saveRequired}
-              unsetUnloadProtect={unsetUnloadProtect}
-              getQueryFieldRecords={getQueryFieldRecords}
-              onTriedToSave={(): boolean => {
-                handleTriedToSave();
-                const fieldLengthLimit =
-                  defined(
-                    schema.models.SpQueryField.getLiteralField('startValue')
-                  ).length ?? Number.POSITIVE_INFINITY;
-                return state.fields.every((field) =>
-                  field.filters.every(
-                    ({ startValue }) => startValue.length < fieldLengthLimit
-                  )
-                );
-              }}
-            />
           </header>
         )}
         <div
@@ -286,7 +298,8 @@ export function QueryBuilder({
                     });
                 },
               })}
-              mapButton={
+            >
+              {isReadOnly ? undefined : (
                 <Button.Small
                   className="justify-center p-2"
                   disabled={!mapButtonEnabled}
@@ -296,27 +309,38 @@ export function QueryBuilder({
                 >
                   {icons.plus}
                 </Button.Small>
-              }
-            />
+              )}
+            </MappingView>
             <QueryFields
               baseTableName={state.baseTableName}
               fields={state.fields}
               enforceLengthLimit={triedToSave}
-              onRemoveField={(line): void =>
-                dispatch({
-                  type: 'ChangeFieldsAction',
-                  fields: state.fields.filter((_, index) => index !== line),
-                })
+              onRemoveField={
+                isReadOnly
+                  ? undefined
+                  : (line): void =>
+                      dispatch({
+                        type: 'ChangeFieldsAction',
+                        fields: state.fields.filter(
+                          (_, index) => index !== line
+                        ),
+                      })
               }
-              onChangeField={(line, field): void =>
-                dispatch({ type: 'ChangeFieldAction', line, field })
+              onChangeField={
+                isReadOnly
+                  ? undefined
+                  : (line, field): void =>
+                      dispatch({ type: 'ChangeFieldAction', line, field })
               }
-              onMappingChange={(line, payload): void =>
-                dispatch({
-                  type: 'ChangeSelectElementValueAction',
-                  line,
-                  ...payload,
-                })
+              onMappingChange={
+                isReadOnly
+                  ? undefined
+                  : (line, payload): void =>
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line,
+                        ...payload,
+                      })
               }
               onOpen={(line, index): void =>
                 dispatch({
@@ -332,20 +356,26 @@ export function QueryBuilder({
                   index: undefined,
                 })
               }
-              onLineFocus={(line): void =>
-                state.openedElement.line === line
+              onLineFocus={
+                isReadOnly
                   ? undefined
-                  : dispatch({
-                      type: 'FocusLineAction',
-                      line,
-                    })
+                  : (line): void =>
+                      state.openedElement.line === line
+                        ? undefined
+                        : dispatch({
+                            type: 'FocusLineAction',
+                            line,
+                          })
               }
-              onLineMove={(line, direction): void =>
-                dispatch({
-                  type: 'LineMoveAction',
-                  line,
-                  direction,
-                })
+              onLineMove={
+                isReadOnly
+                  ? undefined
+                  : (line, direction): void =>
+                      dispatch({
+                        type: 'LineMoveAction',
+                        line,
+                        direction,
+                      })
               }
               openedElement={state.openedElement}
               showHiddenFields={showHiddenFields}
@@ -360,27 +390,27 @@ export function QueryBuilder({
                 {wbText('revealHiddenFormFields')}
               </Label.ForCheckbox>
               <span className="flex-1 -ml-2" />
-              {/*
-               * Query Distinct for trees is disabled because of
-               * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
-               */}
-              {!isTreeModel(model.name) && (
-                <Label.ForCheckbox>
-                  <Input.Checkbox
-                    disabled={!isEmpty}
-                    checked={query.selectDistinct ?? false}
-                    onChange={(): void =>
-                      setQuery({
-                        ...query,
-                        selectDistinct: !(query.selectDistinct ?? false),
-                      })
-                    }
-                  />
-                  {queryText('distinct')}
-                </Label.ForCheckbox>
-              )}
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
+                  {/*
+                   * Query Distinct for trees is disabled because of
+                   * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
+                   */}
+                  {!isTreeModel(model.name) && (
+                    <Label.ForCheckbox>
+                      <Input.Checkbox
+                        disabled={!isEmpty}
+                        checked={query.selectDistinct ?? false}
+                        onChange={(): void =>
+                          setQuery({
+                            ...query,
+                            selectDistinct: !(query.selectDistinct ?? false),
+                          })
+                        }
+                      />
+                      {queryText('distinct')}
+                    </Label.ForCheckbox>
+                  )}
                   <Button.Small
                     disabled={!isEmpty}
                     onClick={(): void => runQuery('count')}

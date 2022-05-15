@@ -7,6 +7,7 @@ import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { hasTablePermission } from '../permissions';
 import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
@@ -95,6 +96,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     event.stopPropagation();
 
     if (
+      (addAnother ? !canCreate : !canSave) ||
       saveBlocked ||
       (!saveRequired &&
         !externalSaveRequired &&
@@ -131,7 +133,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
     setIsSaving(true);
     loading(
-      (resource.needsSaved || newResource?.isNew() === true || resource.isNew()
+      (resource.needsSaved || resource.isNew()
         ? resource.save(hasSaveConflict)
         : Promise.resolve()
       )
@@ -153,6 +155,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     );
   }
 
+  const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
+  const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
+  const canSave = resource.isNew() ? canCreate : canUpdate;
+
   React.useEffect(
     () => listen(form, 'submit', (event) => loading(handleSubmit(event))),
     [loading, form, handleSubmit]
@@ -162,7 +168,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
   return (
     <>
-      {canAddAnother && (
+      {canAddAnother && canCreate ? (
         <ButtonComponent
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
           disabled={isSaving}
@@ -172,26 +178,30 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             ? formsText('saveAndAddAnother')
             : formsText('addAnother')}
         </ButtonComponent>
+      ) : undefined}
+      {canSave && (
+        <SubmitComponent
+          form={formId}
+          className={saveBlocked ? '!cursor-not-allowed' : undefined}
+          /*
+           * Don't disable the button if saveBlocked, so that clicking the button
+           * would make browser focus the invalid field
+           */
+          disabled={
+            disabled ||
+            isSaving ||
+            (!saveRequired &&
+              !externalSaveRequired &&
+              !saveBlocked &&
+              !resource.isNew())
+          }
+          onClick={(): void =>
+            form.classList.remove(className.notSubmittedForm)
+          }
+        >
+          {commonText('save')}
+        </SubmitComponent>
       )}
-      <SubmitComponent
-        form={formId}
-        className={saveBlocked ? '!cursor-not-allowed' : undefined}
-        /*
-         * Don't disable the button if saveBlocked, so that clicking the button
-         * would make browser focus the invalid field
-         */
-        disabled={
-          disabled ||
-          isSaving ||
-          (!saveRequired &&
-            !externalSaveRequired &&
-            !saveBlocked &&
-            !resource.isNew())
-        }
-        onClick={(): void => form.classList.remove(className.notSubmittedForm)}
-      >
-        {commonText('save')}
-      </SubmitComponent>
       {isSaveConflict ? (
         <Dialog
           title={formsText('saveConflictDialogTitle')}

@@ -106,6 +106,7 @@ export const months = getMonthNames('long');
 
 export function DateElement({
   date,
+  // TODO: get rid of this prop
   fallback = undefined,
   // If true, display full date by default and relative date as a tooltip
   flipDates = false,

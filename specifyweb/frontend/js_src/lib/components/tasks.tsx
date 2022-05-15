@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { hasToolPermission } from '../permissions';
+import { hasTablePermission, hasToolPermission } from '../permissions';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
@@ -9,6 +9,7 @@ import { crash } from './errorboundary';
 import {
   ProtectedAction,
   ProtectedTable,
+  TablePermissionDenied,
   ToolPermissionDenied,
 } from './permissiondenied';
 
@@ -99,7 +100,22 @@ export function task(): void {
   const appResources = async (type: 'appResources' | 'viewSets', id?: string) =>
     import('../appresources').then((appResourcesModule) =>
       hasToolPermission('resources', 'read')
-        ? appResourcesModule[type](f.parseInt(id ?? '') ?? null)
+        ? hasTablePermission('Discipline', 'read')
+          ? hasTablePermission('Collection', 'read')
+            ? hasTablePermission('SpecifyUser', 'read')
+              ? appResourcesModule[type](f.parseInt(id ?? '') ?? null)
+              : setCurrentComponent(
+                  <TablePermissionDenied
+                    tableName="SpecifyUser"
+                    action="read"
+                  />
+                )
+            : setCurrentComponent(
+                <TablePermissionDenied tableName="Collection" action="read" />
+              )
+          : setCurrentComponent(
+              <TablePermissionDenied tableName="Discipline" action="read" />
+            )
         : setCurrentComponent(
             <ToolPermissionDenied tool="resources" action="read" />
           )

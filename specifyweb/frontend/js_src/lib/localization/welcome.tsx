@@ -211,4 +211,11 @@ export const welcomeText = createDictionary({
     ca: 'Browser',
     'es-es': 'Browser',
   },
+  // TODO:
+  databaseCreationDate: {
+    'en-us': 'Database creation date:',
+    'ru-ru': 'Database creation date:',
+    ca: 'Database creation date:',
+    'es-es': 'Database creation date:',
+  },
 });

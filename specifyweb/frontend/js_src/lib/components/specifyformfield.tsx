@@ -149,7 +149,7 @@ const fieldRenderers: {
     isRequired,
     fieldDefinition: { hasCloneButton, typeSearch },
   }) {
-    return fieldName !== 'string' ||
+    return typeof fieldName !== 'string' ||
       hasPathPermission(
         resource.specifyModel.name,
         fieldName.split('.'),

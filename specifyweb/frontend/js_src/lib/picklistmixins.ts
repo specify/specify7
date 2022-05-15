@@ -124,10 +124,12 @@ async function fetchFromTable(
   return collection.fetch({ limit }).then(async ({ models }) =>
     Promise.all(
       models.map(async (model) =>
-        format(model, pickList.get('formatter') ?? undefined).then((title) => ({
-          value: model.url(),
-          title: title ?? model.url(),
-        }))
+        format(model, pickList.get('formatter') ?? undefined, true).then(
+          (title) => ({
+            value: model.url(),
+            title: title ?? model.url(),
+          })
+        )
       )
     )
   );

@@ -5,11 +5,11 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { hasTablePermission, hasToolPermission } from '../../permissions';
 import { Link } from '../basic';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { hasToolPermission } from '../../permissions';
 
 function AppResourceDialog({
   onClose: handleClose,
@@ -44,6 +44,10 @@ export const userTool: UserTool = {
   view: ({ onClose: handleClose }) => (
     <AppResourceDialog onClose={handleClose} />
   ),
-  enabled: () => hasToolPermission('resources', 'read'),
+  enabled: () =>
+    hasToolPermission('resources', 'read') &&
+    hasTablePermission('Discipline', 'read') &&
+    hasTablePermission('Collection', 'read') &&
+    hasTablePermission('SpecifyUser', 'read'),
   groupLabel: commonText('administration'),
 };

@@ -180,9 +180,8 @@ const ResourceDataView = Backbone.View.extend({
                 }).appendTo(toolbar);
 
                 const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
-                const editor = ace.edit(editArea[0], {
-                    readOnly: !hasToolPermission('resources',this.model.isNew() ? 'create' : 'update')
-                });
+                const editor = ace.edit(editArea[0]);
+                editor.setReadOnly(!hasToolPermission('resources',this.model.isNew() ? 'create' : 'update'));
                 this.editor = editor;
 
                 editor.getSession().setMode(modeForResource(this.model));
@@ -362,7 +361,7 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (hasToolPermission('resources','update')){
+        if (hasToolPermission('resources','create')){
             const button = $(`<li role="treeitem">
                 <button
                     type="button"

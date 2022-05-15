@@ -71,7 +71,7 @@ function QueryInputField({
   readonly label?: string;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly listInput?: boolean;
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const [value, setValue] = useTriggerState(currentValue);
 
@@ -117,6 +117,7 @@ function QueryInputField({
     name: fieldName,
     title: label,
     'aria-label': label,
+    disabled: typeof handleChange === 'undefined',
     onChange: ({
       target,
     }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void =>
@@ -155,7 +156,7 @@ function QueryInputField({
        * Thus, need to also call setValue()
        */
       setValue(parsed);
-      handleChange(parsed);
+      handleChange?.(parsed);
     },
   };
 
@@ -209,7 +210,7 @@ function SingleField({
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly label?: string;
   readonly fieldName: string;
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: ((newValue: string) => void) | undefined;
   /*
    * This prop is not used here, but defined here because of "typeof SingleField"
    * in queryFieldFilters
@@ -240,17 +241,20 @@ function Between({
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const [values, setValues] = React.useState(filter.startValue.split(','));
-  const updateValues = (index: 0 | 1, newValue: string) => {
-    const newValues = [
-      index === 0 ? newValue : values[0],
-      index === 1 ? newValue : values[1],
-    ];
-    handleChange(newValues.join(','));
-    setValues(newValues);
-  };
+  const updateValues =
+    typeof handleChange === 'function'
+      ? (index: 0 | 1, newValue: string) => {
+          const newValues = [
+            index === 0 ? newValue : values[0],
+            index === 1 ? newValue : values[1],
+          ];
+          handleChange(newValues.join(','));
+          setValues(newValues);
+        }
+      : undefined;
   return (
     <>
       <QueryInputField
@@ -259,7 +263,7 @@ function Between({
         pickListItems={pickListItems}
         label={queryText('startValue')}
         fieldName={fieldName}
-        onChange={updateValues.bind(undefined, 0)}
+        onChange={updateValues?.bind(undefined, 0)}
       />
       <span className="flex items-center">{queryText('and')}</span>
       <QueryInputField
@@ -268,7 +272,7 @@ function Between({
         pickListItems={pickListItems}
         label={queryText('endValue')}
         fieldName={fieldName}
-        onChange={updateValues.bind(undefined, 1)}
+        onChange={updateValues?.bind(undefined, 1)}
       />
     </>
   );
@@ -286,7 +290,7 @@ function In({
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: ((newValue: string) => void) | undefined;
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   const pluralizedParser = React.useMemo(
@@ -497,7 +501,7 @@ export function QueryLineFilter({
   readonly fieldName: string;
   readonly parser: Parser;
   readonly enforceLengthLimit: boolean;
-  readonly onChange: (newValue: string) => void;
+  readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const parser = queryFieldFilters[filter.type].hasParser
     ? originalParser

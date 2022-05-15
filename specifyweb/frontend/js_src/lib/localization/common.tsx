@@ -742,10 +742,10 @@ export const commonText = createDictionary({
     'es-es': 'New Query Type',
   },
   exportQueryForDwca: {
-    'en-us': 'Export query for DwCA definition.',
-    'ru-ru': 'Экспорт запрос для DwCA.',
-    ca: 'Export query for DwCA definition.',
-    'es-es': 'Export query for DwCA definition.',
+    'en-us': 'Export query for DwCA definition',
+    'ru-ru': 'Экспорт запрос для DwCA',
+    ca: 'Export query for DwCA definition',
+    'es-es': 'Export query for DwCA definition',
   },
   exportQueryForDwcaDialogTitle: {
     'en-us': 'Query XML for DwCA definition',

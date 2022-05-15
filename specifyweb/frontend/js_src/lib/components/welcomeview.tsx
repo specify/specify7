@@ -1,17 +1,20 @@
 import React from 'react';
 
+import { fetchCollection } from '../collection';
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
+import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
 import { makeTreeMap } from '../taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
-import { useBooleanState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { DateElement } from './internationalization';
 import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
-import { schema } from '../schema';
+import { hasTablePermission } from '../permissions';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -79,6 +82,14 @@ function AboutDialog({
               ],
               [welcomeText('schemaVersion'), getSystemInfo().schema_version],
               [welcomeText('databaseName'), getSystemInfo().database],
+              ...(hasTablePermission('SpVersion', 'read')
+                ? [
+                    [
+                      welcomeText('databaseCreationDate'),
+                      <DatabaseCreationDate />,
+                    ],
+                  ]
+                : []),
               [
                 `${schema.models.Institution.label}:`,
                 getSystemInfo().institution,
@@ -108,6 +119,26 @@ function AboutDialog({
         </table>
       </section>
     </Dialog>
+  );
+}
+
+function DatabaseCreationDate(): JSX.Element {
+  const [date] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpVersion', { limit: 1 }).then(
+          ({ records }) => records[0]?.timestampCreated
+        ),
+      []
+    ),
+    false
+  );
+  return (
+    <DateElement
+      date={date}
+      fallback={commonText('loading')}
+      flipDates={true}
+    />
   );
 }
 

@@ -68,6 +68,15 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   Discipline: 'system',
   Division: 'system',
   Institution: 'system',
+  Workbench: 'hidden',
+  WorkbenchDataItem: 'hidden',
+  WorkbenchRow: 'hidden',
+  WorkbenchRowExportedRelationship: 'hidden',
+  WorkbenchRowImage: 'hidden',
+  WorkbenchTemplate: 'hidden',
+  WorkbenchTemplateMappingItem: 'hidden',
+  SpVisualQuery: 'hidden',
+  SpSymbiotaInstance: 'hidden',
 };
 
 /*

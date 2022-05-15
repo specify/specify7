@@ -237,6 +237,7 @@ export function SecurityPanel(): JSX.Element | null {
   ) : null;
 }
 
+// FIXME: test security panel permissions
 export const userTool: UserTool = {
   task: 'security',
   title: adminText('securityPanel'),

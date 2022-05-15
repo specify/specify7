@@ -132,7 +132,12 @@ export const fetchFormatters: Promise<{
 
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
-  formatterName?: string
+  formatterName?: string,
+  /*
+   * Format a resource even if no formatter is present, or some permissions
+   * are missing
+   */
+  tryBest = false
 ): Promise<string | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   await resource.fetch();
@@ -183,6 +188,10 @@ export async function format<SCHEMA extends AnySchema>(
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
+  const automaticFormatter = tryBest
+    ? `${resource.specifyModel.name} #${resource.id}`
+    : undefined;
+
   /*
    * Don't format resource if all relevant fields are empty, or formatter has
    * no fields
@@ -192,11 +201,11 @@ export async function format<SCHEMA extends AnySchema>(
     .every(
       (value) => typeof value === 'undefined' || value === null || value === ''
     )
-    ? undefined
+    ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(
-          async ({ fieldName, formatter, separator, fieldFormatter }) => {
-            return `${separator}${
+          async ({ fieldName, formatter, separator, fieldFormatter }) =>
+            `${separator}${
               typeof fieldFormatter === 'string' && fieldFormatter === ''
                 ? ''
                 : hasPathPermission(
@@ -204,7 +213,7 @@ export async function format<SCHEMA extends AnySchema>(
                     fieldName.split('.'),
                     'read'
                   )
-                ? (
+                ? await (
                     resource.rgetPromise(fieldName) as Promise<
                       string | SpecifyResource<AnySchema> | undefined
                     >
@@ -224,9 +233,8 @@ export async function format<SCHEMA extends AnySchema>(
                       );
                     }
                   })
-                : commonText('noPermission')
-            }`;
-          }
+                : automaticFormatter ?? commonText('noPermission')
+            }`
         )
       ).then((values) => values.join(''));
 }

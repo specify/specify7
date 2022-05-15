@@ -11,20 +11,17 @@ import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { parseUrl } from '../querystring';
 import { router } from '../router';
-import { getModel, getModelById, schema } from '../schema';
+import { getModel, schema } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
+import { isTreeModel } from '../treedefinitions';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
 import { NotFoundView } from './notfoundview';
-import {
-  ProtectedAction,
-  ProtectedTable,
-  ProtectedTool,
-  ProtectedTree,
-} from './permissiondenied';
+import { ProtectedTool, ProtectedTree } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
+import { canRunQuery } from './toolbar/query';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -55,7 +52,10 @@ function QueryBuilderWrapper({
   return isLoaded ? (
     <QueryBuilder
       query={query}
-      isReadOnly={false}
+      isReadOnly={
+        !canRunQuery() &&
+        !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
+      }
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
@@ -83,12 +83,7 @@ function QueryBuilderById({
 
   return typeof query === 'undefined' ||
     typeof recordSet === 'undefined' ? null : (
-    <ProtectedTable
-      tableName={getModelById(query.get('contextTableId')).name}
-      action="read"
-    >
-      <QueryBuilderWrapper query={query} recordSet={recordSet} />
-    </ProtectedTable>
+    <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
 
@@ -130,72 +125,58 @@ function NewQuery({
 
   return typeof query === 'undefined' ||
     typeof recordSet === 'undefined' ? null : (
-    <ProtectedTable
-      tableName={getModelById(query.get('contextTableId')).name}
-      action="read"
-    >
-      <QueryBuilderWrapper query={query} recordSet={recordSet} />
-    </ProtectedTable>
+    <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
 
 function QueryBuilderFromTree({
-  tableName,
+  model,
   nodeId,
 }: {
-  readonly tableName: AnyTree['tableName'];
+  readonly model: SpecifyModel<AnyTree>;
   readonly nodeId: number;
 }): JSX.Element | null {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
-      async () => queryFromTree(tableName, nodeId),
-      [tableName, nodeId]
+      async () => queryFromTree(model.name, nodeId),
+      [model.name, nodeId]
     ),
     true
   );
 
   return typeof query === 'undefined' ? null : (
-    <ProtectedTree
-      treeName={defined(getModel(tableName)).name as 'Geography'}
-      action="read"
-    >
-      <QueryBuilderWrapper query={query} />
-    </ProtectedTree>
+    <QueryBuilderWrapper query={query} />
   );
 }
 
 export function task(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
     setCurrentComponent(
-      <ProtectedAction resource="/querybuilder/query" action="execute">
-        <ProtectedTool tool="queryBuilder" action="read">
-          <QueryBuilderById queryId={Number.parseInt(id)} />
-        </ProtectedTool>
-      </ProtectedAction>
+      <ProtectedTool tool="queryBuilder" action="read">
+        <QueryBuilderById queryId={Number.parseInt(id)} />
+      </ProtectedTool>
     )
   );
   router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
-    setCurrentComponent(
-      <ProtectedAction resource="/querybuilder/query" action="execute">
-        <ProtectedTool tool="queryBuilder" action="create">
-          <NewQuery tableName={tableName} />
-        </ProtectedTool>
-      </ProtectedAction>
-    )
+    setCurrentComponent(<NewQuery tableName={tableName} />)
   );
   router.route(
     'query/fromtree/:table/:id/',
     'queryFromTree',
     (tableName, nodeId) =>
       setCurrentComponent(
-        <ProtectedAction resource="/querybuilder/query" action="execute">
-          <ProtectedTool tool="queryBuilder" action="read">
-            <QueryBuilderFromTree
-              tableName={tableName as AnyTree['tableName']}
-              nodeId={Number.parseInt(nodeId)}
-            />
-          </ProtectedTool>
-        </ProtectedAction>
+        f.var(getModel(tableName), (model) =>
+          typeof model === 'object' && isTreeModel(model.name) ? (
+            <ProtectedTree treeName={model.name} action="read">
+              <QueryBuilderFromTree
+                model={model as SpecifyModel<AnyTree>}
+                nodeId={Number.parseInt(nodeId)}
+              />
+            </ProtectedTree>
+          ) : (
+            <NotFoundView />
+          )
+        )
       )
   );
 }

@@ -4,11 +4,13 @@ import { error } from '../assert';
 import type { AnySchema, CommonFields } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
+import { formatUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { queryCbxExtendedSearch } from '../specifyapi';
 import type { SpecifyModel } from '../specifymodel';
@@ -17,11 +19,10 @@ import { Button, className, Form, Link, Submit, Ul } from './basic';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { ProtectedAction } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
 import { createQuery } from './querytask';
 import { SpecifyForm } from './specifyform';
-import { sortFunction } from '../helpers';
-import { formatUrl } from '../querystring';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -85,9 +86,11 @@ export function SearchDialog<SCHEMA extends AnySchema>({
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Button.Blue onClick={(): void => setViewName(false)}>
-            {queryText('queryBuilder')}
-          </Button.Blue>
+          <ProtectedAction resource="/querybuilder/query" action="execute">
+            <Button.Blue onClick={(): void => setViewName(false)}>
+              {queryText('queryBuilder')}
+            </Button.Blue>
+          </ProtectedAction>
           <Submit.Green form={id('form')}>{commonText('search')}</Submit.Green>
         </>
       }

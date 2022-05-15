@@ -6,11 +6,13 @@ import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { formsText } from '../localization/forms';
+import { hasTablePermission } from '../permissions';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { hijackBackboneAjax } from '../startapp';
 import type { RA } from '../types';
+import { defined } from '../types';
 import { fieldFormat } from '../uiparse';
 import { Input, Link } from './basic';
 import { useAsyncState } from './hooks';
@@ -27,24 +29,25 @@ async function resourceToLink(
 ): Promise<JSX.Element | string> {
   const resource = new model.Resource({ id });
   let errorHandled = false;
-  const genericFormatted = `${model.name} #${id}`;
   return hijackBackboneAjax(
     [Http.OK, Http.NOT_FOUND],
     async () =>
       resource
         .fetch()
-        .then(format)
-        .then((string) => (
-          <Link.NewTab href={resource.viewUrl()}>
-            {string ?? genericFormatted}
-          </Link.NewTab>
-        )),
+        .then(async (resource) => format(resource, undefined, true))
+        .then((string) =>
+          hasTablePermission(resource.specifyModel.name, 'read') ? (
+            <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
+          ) : (
+            defined(string)
+          )
+        ),
     (status) => {
       if (status === Http.NOT_FOUND) errorHandled = true;
     }
   ).catch((error) => {
     if (errorHandled)
-      return `${genericFormatted} ${formsText('deletedInline')}`;
+      return `${model.name} #${id} ${formsText('deletedInline')}`;
     else throw error;
   });
 }

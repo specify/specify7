@@ -286,7 +286,7 @@ export function QueryToolbarItem({
         buttons={
           <>
             <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-            {hasToolPermission('queryBuilder', 'create') && (
+            {(hasToolPermission('queryBuilder', 'create') || canRunQuery()) && (
               <Button.Blue
                 onClick={
                   handleNewQuery ??
@@ -366,13 +366,21 @@ export function QueryToolbarItem({
   );
 }
 
+export const canRunQuery = f.store(
+  () =>
+    hasPermission('/querybuilder/query', 'execute') ||
+    hasPermission('/querybuilder/query', 'export_csv') ||
+    hasPermission('/querybuilder/query', 'export_kml') ||
+    hasPermission('/querybuilder/query', 'create_recordset')
+);
+
 export const menuItem: MenuItem = {
   task: 'query',
   title: commonText('queries'),
   icon: icons.documentSearch,
   isOverlay: true,
   enabled: () =>
-    hasToolPermission('queryBuilder', 'read') &&
+    (hasToolPermission('queryBuilder', 'read') || canRunQuery()) &&
     getUserPref('header', 'menu', 'showQueries'),
   view: ({ onClose: handleClose }) => (
     <QueryToolbarItem

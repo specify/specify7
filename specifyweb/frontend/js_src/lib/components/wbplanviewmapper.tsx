@@ -447,26 +447,25 @@ export function WbPlanViewMapper(props: {
                 });
             },
           })}
-          mapButton={
-            <Button.Small
-              className="flex-col justify-center p-2"
-              disabled={!mapButtonEnabled}
-              onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
-              aria-label={wbText('map')}
-              title={wbText('mapButtonDescription')}
+        >
+          <Button.Small
+            className="flex-col justify-center p-2"
+            disabled={!mapButtonEnabled}
+            onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
+            aria-label={wbText('map')}
+            title={wbText('mapButtonDescription')}
+          >
+            {wbText('map')}
+            <span
+              className={`text-green-500 ${
+                mapButtonEnabled ? '' : 'invisible'
+              }`}
+              aria-hidden="true"
             >
-              {wbText('map')}
-              <span
-                className={`text-green-500 ${
-                  mapButtonEnabled ? '' : 'invisible'
-                }`}
-                aria-hidden="true"
-              >
-                &#8594;
-              </span>
-            </Button.Small>
-          }
-        />
+              &#8594;
+            </span>
+          </Button.Small>
+        </MappingView>
       )}
 
       <Ul

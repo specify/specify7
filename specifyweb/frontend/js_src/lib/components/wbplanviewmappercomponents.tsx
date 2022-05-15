@@ -117,9 +117,12 @@ export function ValidationResults(props: {
 
 const defaultValue = 300;
 
-export function MappingView(props: {
+export function MappingView({
+  mappingElementProps,
+  children,
+}: {
   readonly mappingElementProps: RA<MappingElementProps>;
-  readonly mapButton: JSX.Element;
+  readonly children: JSX.Element | undefined;
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
@@ -163,9 +166,9 @@ export function MappingView(props: {
     >
       <div className="gap-x-8 w-max flex h-full">
         <div className="gap-x-1 flex" role="list">
-          <MappingPathComponent mappingLineData={props.mappingElementProps} />
+          <MappingPathComponent mappingLineData={mappingElementProps} />
         </div>
-        {props.mapButton}
+        {children}
       </div>
     </section>
   );
