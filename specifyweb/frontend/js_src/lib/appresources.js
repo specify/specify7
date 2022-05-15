@@ -463,7 +463,7 @@ const GlobalResourcesView = Backbone.View.extend({
         // distinguished by the usertype field
         // i'm not going to bother separating them out for now
         this.directories = directories
-                  .filter(d => d.get('discipline') == null);
+                  .filter(d => d.get('discipline') == null && d.get('collection') == null);
 
         const dirURIs = this.directories.map(d => d.get('resource_uri'));
 
@@ -603,7 +603,7 @@ const CollectionResourcesView = Backbone.View.extend({
         this.collection = collection;
 
         this.directories = directories
-            .filter(dir => dir.get('collection') === collection.get('resource_uri') && dir.get('usertype') == null);
+            .filter(dir => dir.get('collection') === collection.get('resource_uri') && dir.get('usertype') == null && dir.get('specifyuser') == null);
 
         const dirs = this.directories.map(dir => dir.get('resource_uri'));
         this.resources = resources.filter(r => dirs.includes(r.get('spappresourcedir')));
