@@ -25,8 +25,8 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Summary, Ul } from './basic';
 import { icons } from './icons';
-import { useCachedState } from './statecache';
 import { PermissionAction } from './securitypreview';
+import { useCachedState } from './statecache';
 
 export type Policy = {
   readonly resource: string;
@@ -45,12 +45,14 @@ const hasTableActions = (actions: RA<string>): boolean =>
 function PolicyView({
   policy: { resource, actions },
   isReadOnly,
+  isResourceMapped,
   onChange: handleChange,
   scope,
   orientation,
 }: {
   readonly policy: Policy;
   readonly isReadOnly: boolean;
+  readonly isResourceMapped: (resource: string) => boolean;
   readonly onChange: (policy: Policy | undefined) => void;
   readonly scope: PolicyScope;
   readonly orientation: 'vertical' | 'horizontal';
@@ -139,7 +141,7 @@ function PolicyView({
                 ).map(([groupName, permissions]) =>
                   f.var(
                     permissions.map(
-                      ([partName, { label }], _index, { length }) =>
+                      ([partName, { label, actions }], _index, { length }) =>
                         /*
                          * Don't show Any if there is only one other option,
                          * and it is the default value
@@ -147,7 +149,19 @@ function PolicyView({
                         partName === anyResource &&
                         length <= 2 &&
                         resourceParts[index] !== anyResource ? undefined : (
-                          <option key={partName} value={partName}>
+                          <option
+                            key={partName}
+                            value={partName}
+                            disabled={
+                              actions.length > 0 &&
+                              isResourceMapped(
+                                partsToResourceName([
+                                  ...resourceNameToParts(resource),
+                                  partName,
+                                ])
+                              )
+                            }
+                          >
                             {label}
                           </option>
                         )
@@ -273,6 +287,9 @@ export function PoliciesView({
             scope={scope}
             policy={policy}
             isReadOnly={isReadOnly}
+            isResourceMapped={(resource): boolean =>
+              policies.some((policy) => policy.resource.startsWith(resource))
+            }
             onChange={(policy): void =>
               handleChange(
                 typeof policy === 'object'
@@ -284,8 +301,12 @@ export function PoliciesView({
                         : f.var(
                             getAllActions(policy.resource),
                             (possibleActions) =>
-                              policy.actions.length === 0
-                                ? replaceKey(
+                              f.var(
+                                policy.actions.filter((action) =>
+                                  possibleActions.includes(action)
+                                ),
+                                (selectedActions) =>
+                                  replaceKey(
                                     policy,
                                     'actions',
                                     /*
@@ -297,10 +318,10 @@ export function PoliciesView({
                                     possibleActions.length === 1
                                       ? possibleActions
                                       : hasTableActions(possibleActions)
-                                      ? ['read']
-                                      : []
+                                      ? f.unique(['read', ...selectedActions])
+                                      : selectedActions
                                   )
-                                : policy
+                              )
                           )
                     )
                   : removeItem(policies, index)

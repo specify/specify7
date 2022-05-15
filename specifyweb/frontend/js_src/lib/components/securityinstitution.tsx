@@ -3,13 +3,13 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
-import type { Institution, SpecifyUser } from '../datamodel';
-import { Collection } from '../datamodel';
+import type { Collection, Institution, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { removeKey, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
+import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import { decompressPolicies, processPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
@@ -22,7 +22,6 @@ import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
-import { schema } from '../schema';
 import { CreateRole } from './securityroletemplate';
 
 export function InstitutionView({
@@ -37,7 +36,7 @@ export function InstitutionView({
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
   readonly onOpenUser: (userId: number | undefined) => void;
   readonly libraryRoles: IR<Role> | undefined;
-  readonly collections: IR<SerializedResource<Collection>>;
+  readonly collections: RA<SerializedResource<Collection>>;
   readonly onChangeLibraryRoles: (
     roles: IR<Role> | ((oldState: IR<Role>) => IR<Role>)
   ) => void;
@@ -229,11 +228,15 @@ export function InstitutionView({
                       </li>
                     ))}
                 </Ul>
-                <div>
-                  <Button.Green onClick={(): void => handleOpenUser(undefined)}>
-                    {commonText('create')}
-                  </Button.Green>
-                </div>
+                {hasTablePermission('SpecifyUser', 'create') && (
+                  <div>
+                    <Button.Green
+                      onClick={(): void => handleOpenUser(undefined)}
+                    >
+                      {commonText('create')}
+                    </Button.Green>
+                  </div>
+                )}
               </>
             ) : (
               commonText('loading')

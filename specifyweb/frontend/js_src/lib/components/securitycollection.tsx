@@ -39,15 +39,15 @@ export type UserRoles = RA<{
 
 export function CollectionView({
   collection,
+  collections,
   initialRoleId,
   onOpenUser: handleOpenUser,
-  collections,
   libraryRoles,
 }: {
   readonly collection: SerializedResource<Collection>;
+  readonly collections: RA<SerializedResource<Collection>>;
   readonly initialRoleId: number | undefined;
   readonly onOpenUser: (userId: number | undefined) => void;
-  readonly collections: IR<SerializedResource<Collection>>;
   readonly libraryRoles: IR<Role> | undefined;
 }): JSX.Element {
   const [roles, setRoles] = useAsyncState<IR<Role>>(
@@ -64,22 +64,25 @@ export function CollectionView({
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
-        ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
-          `/permissions/user_roles/${collection.id}/`,
-          {
-            method: 'GET',
-            headers: { Accept: 'application/json' },
-          }
-        ).then(({ data }) =>
-          data.map(({ userid, username, roles }) => ({
-            userId: userid,
-            userName: username,
-            roles: roles.map(({ roleid, rolename }) => ({
-              roleId: roleid,
-              roleName: rolename,
-            })),
-          }))
-        ),
+        hasPermission('/permissions/user/roles', 'read') &&
+        hasPermission('/permissions/roles', 'read')
+          ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
+              `/permissions/user_roles/${collection.id}/`,
+              {
+                method: 'GET',
+                headers: { Accept: 'application/json' },
+              }
+            ).then(({ data }) =>
+              data.map(({ userid, username, roles }) => ({
+                userId: userid,
+                userName: username,
+                roles: roles.map(({ roleid, rolename }) => ({
+                  roleId: roleid,
+                  roleName: rolename,
+                })),
+              }))
+            )
+          : undefined,
       [collection.id]
     ),
     // Display loading screen while loading a role
@@ -235,48 +238,57 @@ export function CollectionView({
           )}
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
-            {typeof userRoles === 'object'
-              ? f.var(
-                  userRoles.filter(
-                    ({ userId, roles }) =>
-                      roles.length > 0 &&
-                      (userId === userInformation.id ||
-                        hasTablePermission('SpecifyUser', 'update') ||
-                        hasPermission('/permissions/policies/user', 'update') ||
-                        hasPermission('/permissions/user/roles', 'update'))
-                  ),
-                  (users) =>
-                    users.length === 0 ? (
-                      commonText('none')
-                    ) : (
-                      <>
-                        <Ul>
-                          {users.map(({ userId, userName, roles }) => (
-                            <li key={userId}>
-                              <Button.LikeLink
-                                onClick={(): void => handleOpenUser(userId)}
-                              >
-                                {userName}
-                                <span className="text-gray-500">
-                                  {`(${formatList(
-                                    roles.map(({ roleName }) => roleName)
-                                  )})`}
-                                </span>
-                              </Button.LikeLink>
-                            </li>
-                          ))}
-                        </Ul>
-                        <div>
-                          <Button.Green
-                            onClick={(): void => handleOpenUser(undefined)}
-                          >
-                            {commonText('create')}
-                          </Button.Green>
-                        </div>
-                      </>
-                    )
-                )
-              : commonText('loading')}
+            {typeof userRoles === 'object' ? (
+              f.var(
+                userRoles.filter(
+                  ({ userId, roles }) =>
+                    roles.length > 0 &&
+                    (userId === userInformation.id ||
+                      hasTablePermission('SpecifyUser', 'update') ||
+                      hasPermission('/permissions/policies/user', 'update') ||
+                      hasPermission('/permissions/user/roles', 'update'))
+                ),
+                (users) =>
+                  users.length === 0 ? (
+                    commonText('none')
+                  ) : (
+                    <>
+                      <Ul>
+                        {users.map(({ userId, userName, roles }) => (
+                          <li key={userId}>
+                            <Button.LikeLink
+                              onClick={(): void => handleOpenUser(userId)}
+                            >
+                              {userName}
+                              <span className="text-gray-500">
+                                {`(${formatList(
+                                  roles.map(({ roleName }) => roleName)
+                                )})`}
+                              </span>
+                            </Button.LikeLink>
+                          </li>
+                        ))}
+                      </Ul>
+                      <div>
+                        <Button.Green
+                          onClick={(): void => handleOpenUser(undefined)}
+                        >
+                          {commonText('create')}
+                        </Button.Green>
+                      </div>
+                    </>
+                  )
+              )
+            ) : hasPermission('/permissions/user/roles', 'read') &&
+              hasPermission('/permissions/roles', 'read') ? (
+              commonText('loading')
+            ) : (
+              <Button.LikeLink
+                onClick={(): void => handleOpenUser(userInformation.id)}
+              >
+                {userInformation.name}
+              </Button.LikeLink>
+            )}
           </section>
         </>
       )}

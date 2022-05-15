@@ -6,7 +6,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissions';
 import { fetchRoles } from '../securityutils';
-import type { IR } from '../types';
+import type { IR, RA } from '../types';
 import { getUniqueName } from '../wbuniquifyname';
 import { Button, H3, Ul } from './basic';
 import { useAsyncState } from './hooks';
@@ -21,7 +21,7 @@ export function CreateRole({
   onClose: handleClose,
 }: {
   readonly libraryRoles: IR<Role> | undefined;
-  readonly collections: IR<SerializedResource<Collection>>;
+  readonly collections: RA<SerializedResource<Collection>>;
   readonly scope: number | 'institution';
   readonly onCreated: (role: NewRole | Role) => void;
   readonly onClose: () => void;
@@ -30,7 +30,7 @@ export function CreateRole({
     React.useCallback(
       async () =>
         Promise.all(
-          Object.values(collections).map(async (collection) =>
+          collections.map(async (collection) =>
             fetchRoles(collection.id, undefined).then(
               (roles) => [collection ?? '', roles] as const
             )

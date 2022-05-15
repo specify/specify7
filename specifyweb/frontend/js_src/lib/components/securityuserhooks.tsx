@@ -4,33 +4,41 @@ import { ajax } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Address, Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { group, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import { hasDerivedPermission, hasPermission } from '../permissions';
+import {
+  hasDerivedPermission,
+  hasPermission,
+  hasTablePermission,
+} from '../permissions';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import { fetchRoles, processPolicies } from '../securityutils';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
+import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 
 // Fetch roles from all collections
 export function useCollectionRoles(
-  collections: IR<SerializedResource<Collection>>
+  collections: RA<SerializedResource<Collection>>
 ): RR<number, RA<Role>> | undefined {
   const [collectionRoles] = useAsyncState(
     React.useCallback(
       async () =>
-        Promise.all(
-          Object.values(collections).map(async (collection) =>
-            fetchRoles(collection.id, undefined).then(
-              (roles) => [collection.id, roles] as const
-            )
-          )
-        ).then((entries) => Object.fromEntries(entries)),
+        hasPermission('/permissions/roles', 'read')
+          ? Promise.all(
+              collections.map(async (collection) =>
+                fetchRoles(collection.id, undefined).then(
+                  (roles) => [collection.id, roles] as const
+                )
+              )
+            ).then((entries) => Object.fromEntries(entries))
+          : undefined,
       [collections]
     ),
     false
@@ -41,7 +49,7 @@ export function useCollectionRoles(
 // Fetch user roles in all collections
 export function useUserRoles(
   userResource: SpecifyResource<SpecifyUser>,
-  collections: IR<SerializedResource<Collection>>
+  collections: RA<SerializedResource<Collection>>
 ): [
   userRoles: IR<RA<number>> | undefined,
   setUserRoles: (value: IR<RA<number>>) => void,
@@ -53,12 +61,11 @@ export function useUserRoles(
     React.useCallback(
       async () =>
         userResource.isNew()
-          ? Object.fromEntries(
-              Object.values(collections).map(({ id }) => [id, []])
-            )
-          : hasPermission('/permissions/user/roles', 'read')
+          ? Object.fromEntries(collections.map(({ id }) => [id, []]))
+          : hasPermission('/permissions/user/roles', 'read') &&
+            hasPermission('/permissions/roles', 'read')
           ? Promise.all(
-              Object.values(collections).map(async (collection) =>
+              collections.map(async (collection) =>
                 fetchRoles(collection.id, userResource.id).then(
                   (roles) =>
                     [
@@ -102,45 +109,64 @@ export type UserAgents = RA<{
 // Fetch User Agents in all Collections
 export function useUserAgents(
   userId: number | undefined,
-  collections: IR<SerializedResource<Collection>>,
+  collections: RA<SerializedResource<Collection>>,
   version: number
 ): UserAgents | undefined {
   const [userAgents] = useAsyncState(
     React.useCallback(
       async () =>
         f.var(
-          group(
-            await Promise.all(
-              group(
-                Object.values(collections).map((collection) => [
-                  defined(idFromUrl(collection.discipline)),
-                  collection.id,
-                ])
-              ).map(async ([disciplineId, collections]) =>
-                fetchResource('Discipline', disciplineId).then((discipline) =>
-                  f.var(
-                    defined(idFromUrl(defined(discipline).division)),
-                    (divisionId) =>
-                      collections.map(
-                        (collectionId) => [divisionId, collectionId] as const
+          hasTablePermission('Discipline', 'read')
+            ? group(
+                await Promise.all(
+                  group(
+                    collections.map((collection) => [
+                      defined(idFromUrl(collection.discipline)),
+                      collection.id,
+                    ])
+                  ).map(async ([disciplineId, collections]) =>
+                    fetchResource('Discipline', disciplineId)
+                      .then((discipline) =>
+                        defined(idFromUrl(defined(discipline).division))
+                      )
+                      .then((divisionId) =>
+                        collections.map(
+                          (collectionId) => [divisionId, collectionId] as const
+                        )
                       )
                   )
-                )
+                ).then(f.flat)
               )
-            ).then(f.flat)
-          ),
+            : ([
+                [
+                  schema.domainLevelIds.division,
+                  userInformation.availableCollections
+                    .filter(
+                      ({ discipline }) =>
+                        discipline ===
+                        getResourceApiUrl(
+                          'Discipline',
+                          schema.domainLevelIds.discipline
+                        )
+                    )
+                    .map(({ id }) => id),
+                ],
+              ] as const),
           async (divisions) =>
             (typeof userId === 'number'
-              ? fetchCollection(
-                  'Agent',
-                  {
-                    limit: 1,
-                    specifyUser: userId,
-                  },
-                  {
-                    division__in: divisions.map(([id]) => id).join(','),
-                  }
-                ).then(({ records }) => records)
+              ? hasTablePermission('Agent', 'read') &&
+                hasTablePermission('Division', 'read')
+                ? fetchCollection(
+                    'Agent',
+                    {
+                      limit: 1,
+                      specifyUser: userId,
+                    },
+                    {
+                      division__in: divisions.map(([id]) => id).join(','),
+                    }
+                  ).then(({ records }) => records)
+                : Promise.resolve([serializeResource(userInformation.agent)])
               : Promise.resolve([])
             ).then((agents) =>
               f.var(
@@ -176,7 +202,7 @@ export function useUserAgents(
 // Fetching user policies
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
-  collections: IR<SerializedResource<Collection>>
+  collections: RA<SerializedResource<Collection>>
 ): [
   userPolicies: IR<RA<Policy>> | undefined,
   setUserPolicies: (value: IR<RA<Policy>> | undefined) => void,
@@ -188,12 +214,10 @@ export function useUserPolicies(
     React.useCallback(
       async () =>
         userResource.isNew()
-          ? Object.fromEntries(
-              Object.values(collections).map(({ id }) => [id, []])
-            )
+          ? Object.fromEntries(collections.map(({ id }) => [id, []]))
           : hasPermission('/permissions/policies/user', 'read')
           ? Promise.all(
-              Object.values(collections).map(async (collection) =>
+              collections.map(async (collection) =>
                 ajax<IR<RA<string>>>(
                   `/permissions/user_policies/${collection.id}/${userResource.id}/`,
                   {
@@ -257,8 +281,9 @@ export function useUserInstitutionalPolicies(
     false
   );
   const changedInstitutionPolicies =
+    typeof institutionPolicies === 'object' &&
     JSON.stringify(initialInstitutionPolicies.current) !==
-    JSON.stringify(institutionPolicies);
+      JSON.stringify(institutionPolicies);
 
   return [
     institutionPolicies,

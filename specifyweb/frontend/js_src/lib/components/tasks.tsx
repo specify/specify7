@@ -7,7 +7,6 @@ import { getModel } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
 import { crash } from './errorboundary';
 import {
-  ProtectedAction,
   ProtectedTable,
   TablePermissionDenied,
   ToolPermissionDenied,
@@ -38,13 +37,7 @@ export function task(): void {
 
   router.route('security/', 'security', async () =>
     import('./toolbar/security').then(({ SecurityPanel }) =>
-      setCurrentComponent(
-        <ProtectedTable tableName="Institution" action="read">
-          <ProtectedTable tableName="Collection" action="read">
-            <SecurityPanel />
-          </ProtectedTable>
-        </ProtectedTable>
-      )
+      setCurrentComponent(<SecurityPanel />)
     )
   );
 
@@ -88,11 +81,7 @@ export function task(): void {
   router.route('workbench-plan/:id/', 'workbench-plan', (dataSetId: string) => {
     import('./wbplanviewwrapper')
       .then(({ WbPlanViewWrapper }) =>
-        setCurrentComponent(
-          <ProtectedAction resource="/workbench/dataset" action="create">
-            <WbPlanViewWrapper dataSetId={dataSetId} />
-          </ProtectedAction>
-        )
+        setCurrentComponent(<WbPlanViewWrapper dataSetId={dataSetId} />)
       )
       .catch(crash);
   });

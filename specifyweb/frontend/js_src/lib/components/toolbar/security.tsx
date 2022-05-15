@@ -9,8 +9,7 @@ import { ajax } from '../../ajax';
 import { fetchCollection } from '../../collection';
 import type { SpecifyUser } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
-import { addMissingFields } from '../../datamodelutils';
-import { f } from '../../functools';
+import { addMissingFields, serializeResource } from '../../datamodelutils';
 import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -32,29 +31,21 @@ import { UserView } from '../securityuser';
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
 
-  const [data] = useAsyncState(
+  const [institution] = useAsyncState(
     React.useCallback(
       async () =>
-        f.all({
-          institution: fetchCollection('Institution', { limit: 1 }).then(
-            ({ records }) => records[0]
-          ),
-          collections: fetchCollection('Collection', { limit: 0 }).then(
-            ({ records }) =>
-              Object.fromEntries(
-                records
-                  .filter((collection) =>
-                    userInformation.availableCollections.some(
-                      ({ id }) => id === collection.id
-                    )
-                  )
-                  .map((collection) => [collection.id, collection])
-              )
-          ),
-        }),
+        hasTablePermission('Institution', 'read')
+          ? fetchCollection('Institution', { limit: 1 }).then(
+              ({ records }) => records[0]
+            )
+          : undefined,
       []
     ),
     true
+  );
+  const collections = React.useMemo(
+    () => index(userInformation.availableCollections),
+    []
   );
 
   const [state, setState] = React.useState<
@@ -79,9 +70,13 @@ export function SecurityPanel(): JSX.Element | null {
   const [users, setUsers] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
     React.useCallback(
       async () =>
-        fetchCollection('SpecifyUser', { limit: 0 }).then(({ records }) =>
-          index(records)
-        ),
+        hasTablePermission('SpecifyUser', 'read')
+          ? fetchCollection('SpecifyUser', { limit: 0 }).then(({ records }) =>
+              index(records)
+            )
+          : {
+              [userInformation.id]: serializeResource(userInformation),
+            },
       []
     ),
     false
@@ -108,60 +103,56 @@ export function SecurityPanel(): JSX.Element | null {
   );
 
   // TODO: use a routing library to make navigation easier
-  return typeof data === 'object' ? (
+  return (
     <Container.FullGray>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
       <div className="flex flex-1 h-0 gap-4">
         <aside className={className.containerBase}>
-          <section>
-            <H3>{`${schema.models.Institution.label}:`}</H3>
-            <Button.LikeLink
-              aria-pressed={state.type === 'InstitutionState'}
-              onClick={(): void =>
-                setState({
-                  type: 'InstitutionState',
-                })
-              }
-            >
-              {data.institution.name}
-            </Button.LikeLink>
-          </section>
+          {typeof institution === 'object' && (
+            <section>
+              <H3>{`${schema.models.Institution.label}:`}</H3>
+              <Button.LikeLink
+                aria-pressed={state.type === 'InstitutionState'}
+                onClick={(): void =>
+                  setState({
+                    type: 'InstitutionState',
+                  })
+                }
+              >
+                {institution.name}
+              </Button.LikeLink>
+            </section>
+          )}
           <section>
             <H3>{adminText('collections')}</H3>
             <ul>
-              {Object.values(data.collections)
-                .filter((collection) =>
-                  // Only show collections you have access to
-                  userInformation.availableCollections.filter(
-                    ({ id }) => id === collection.id
-                  )
-                )
-                .map((collection, index) => (
-                  <li key={index}>
-                    <Button.LikeLink
-                      aria-pressed={
-                        state.type === 'CollectionState' &&
-                        state.collectionId === collection.id
-                      }
-                      onClick={(): void =>
-                        setState({
-                          type: 'CollectionState',
-                          collectionId: collection.id,
-                          initialRole: undefined,
-                        })
-                      }
-                    >
-                      {collection.collectionName}
-                    </Button.LikeLink>
-                  </li>
-                ))}
+              {userInformation.availableCollections.map((collection, index) => (
+                <li key={index}>
+                  <Button.LikeLink
+                    aria-pressed={
+                      state.type === 'CollectionState' &&
+                      state.collectionId === collection.id
+                    }
+                    onClick={(): void =>
+                      setState({
+                        type: 'CollectionState',
+                        collectionId: collection.id,
+                        initialRole: undefined,
+                      })
+                    }
+                  >
+                    {collection.collectionName}
+                  </Button.LikeLink>
+                </li>
+              ))}
             </ul>
           </section>
         </aside>
-        {state.type === 'InstitutionState' && (
+        {state.type === 'InstitutionState' &&
+        typeof institution === 'object' ? (
           <InstitutionView
-            institution={data.institution}
-            collections={data.collections}
+            institution={institution}
+            collections={userInformation.availableCollections}
             users={users}
             libraryRoles={libraryRoles}
             onChangeLibraryRoles={(newState): void =>
@@ -178,15 +169,15 @@ export function SecurityPanel(): JSX.Element | null {
                   typeof userId === 'number'
                     ? defined(users)[userId]
                     : addMissingFields('SpecifyUser', {}),
-                initialCollection: Object.values(data.collections)[0].id,
+                initialCollection: userInformation.availableCollections[0].id,
               })
             }
           />
-        )}
+        ) : undefined}
         {state.type === 'CollectionState' && (
           <CollectionView
-            collection={data.collections[state.collectionId]}
-            collections={data.collections}
+            collection={collections[state.collectionId]}
+            collections={userInformation.availableCollections}
             initialRoleId={state.initialRole}
             libraryRoles={libraryRoles}
             onOpenUser={(userId): void =>
@@ -204,7 +195,7 @@ export function SecurityPanel(): JSX.Element | null {
         {state.type === 'UserState' && typeof users === 'object' ? (
           <UserView
             user={state.user}
-            collections={data.collections}
+            collections={userInformation.availableCollections}
             initialCollection={state.initialCollection}
             onClose={(): void => setState({ type: 'MainState' })}
             onDelete={(): void => {
@@ -234,17 +225,13 @@ export function SecurityPanel(): JSX.Element | null {
         ) : undefined}
       </div>
     </Container.FullGray>
-  ) : null;
+  );
 }
 
-// FIXME: test security panel permissions
 export const userTool: UserTool = {
   task: 'security',
   title: adminText('securityPanel'),
   isOverlay: true,
   view: '/specify/security/',
-  enabled: () =>
-    hasTablePermission('Institution', 'read') &&
-    hasTablePermission('Collection', 'read'),
   groupLabel: commonText('administration'),
 };

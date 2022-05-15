@@ -21,7 +21,7 @@ import {
   decompressPolicies,
   getAllActions,
 } from '../securityutils';
-import type { IR } from '../types';
+import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, DataEntry } from './basic';
@@ -69,7 +69,7 @@ export function UserView({
 }: {
   readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollection: number;
-  readonly collections: IR<SerializedResource<Collection>>;
+  readonly collections: RA<SerializedResource<Collection>>;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
   readonly onClose: () => void;
   readonly onDelete: () => void;
@@ -221,7 +221,8 @@ export function UserView({
                   userAgents={userAgents}
                   mode={mode}
                 />
-                {hasPermission('/permissions/user/roles', 'read') && (
+                {hasPermission('/permissions/user/roles', 'read') &&
+                hasPermission('/permissions/roles', 'read') ? (
                   <UserRoles
                     collectionRoles={collectionRoles}
                     collectionId={collectionId}
@@ -229,7 +230,7 @@ export function UserView({
                     onChange={setUserRoles}
                     onOpenRole={handleOpenRole}
                   />
-                )}
+                ) : undefined}
                 {!isSuperAdmin &&
                   hasPermission('/permissions/policies/user', 'read') && (
                     <PoliciesView
@@ -265,7 +266,7 @@ export function UserView({
                 )}
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
-              'overflow-y-auto -mx-4 p-4 pt-0'
+              'overflow-y-auto -mx-4 p-4 pt-0 flex-1'
             )}
             <DataEntry.Footer>
               {changesMade ? (
@@ -286,7 +287,8 @@ export function UserView({
                 />
               ) : undefined}
               <span className="flex-1 -ml-2" />
-              {(hasPermission('/permissions/policies/user', 'update') ||
+              {((hasPermission('/permissions/policies/user', 'update') &&
+                hasPermission('/permissions/roles', 'read')) ||
                 hasPermission('/permissions/user/roles', 'update') ||
                 mode === 'edit') &&
               formElement !== null ? (

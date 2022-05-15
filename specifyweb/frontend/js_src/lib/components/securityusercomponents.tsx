@@ -218,7 +218,7 @@ export function SetCollection({
   onChange: handleChange,
 }: {
   readonly collectionId: number;
-  readonly collections: IR<SerializedResource<Collection>>;
+  readonly collections: RA<SerializedResource<Collection>>;
   readonly onChange: (collectionId: number) => void;
 }): JSX.Element {
   return (
@@ -230,7 +230,7 @@ export function SetCollection({
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}
       >
-        {Object.values(collections).map((collection) => (
+        {collections.map((collection) => (
           <option key={collection.id} value={collection.id}>
             {collection.collectionName}
           </option>
