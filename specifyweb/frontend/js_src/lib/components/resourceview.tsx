@@ -1,4 +1,5 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
@@ -10,7 +11,6 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
-import { ReportsView } from './reports';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, className, Container, DataEntry, Form } from './basic';
 import { AppTitle } from './common';
@@ -23,12 +23,20 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
 import { usePref } from './preferenceshooks';
 import { RecordSet as RecordSetView } from './recordselectorutils';
+import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
-import { State } from 'typesafe-reducer';
 
+/**
+ * Threre is special behavior required when creating one of these resources,
+ * or some additional things need to be done after resource is created, or
+ * resource clone operation needs to be handled in a special way.
+ *
+ * That is why "Add another" button is disabled for these tables.
+ */
 const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
+  // Shouldn't clone preparations
   'Gift',
   'Borrow',
   'Loan',
@@ -36,6 +44,7 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'ExchangeOut',
   'Permit',
   'RepositoryAgreement',
+  // Shouldn't allow creating new resources of this type
   'TaxonTreeDef',
   'TaxonTreeDefItem',
   'GeographyTreeDef',
@@ -46,6 +55,10 @@ const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'GeologicTimePeriodTreeDefItem',
   'LithoStratTreeDef',
   'LithoStratTreeDefItem',
+  'Institution',
+  'Division',
+  'Discipline',
+  'Collection',
 ]);
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {

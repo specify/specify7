@@ -25,8 +25,10 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
 } from '../querycomboboxutils';
+import { formatUrl } from '../querystring';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
+import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
 import {
@@ -48,8 +50,6 @@ import { ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
-import { Relationship } from '../specifyfield';
-import { formatUrl } from '../querystring';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
@@ -260,26 +260,39 @@ export function QueryComboBox({
   }>(
     React.useCallback(
       async () =>
-        resource
-          .rgetPromise<string, AnySchema>(field?.name ?? '')
-          .then((resource) =>
-            typeof resource === 'undefined' || resource === null
-              ? {
-                  label: '',
-                  resource: undefined,
-                }
-              : format(
-                  resource,
-                  typeof typeSearch === 'object'
-                    ? typeSearch.dataObjectFormatter
-                    : undefined
-                ).then((formatted) => ({
-                  label:
-                    formatted ??
-                    `${resource.specifyModel.label} #${resource.id}`,
-                  resource,
-                }))
-          ),
+        field?.isRelationship !== true ||
+        hasTablePermission(field.relatedModel.name, 'read') ||
+        /*
+         * If related resource is already provided, can display it
+         * Even if don't have read permission (i.e, Agent for current
+         * User)
+         */
+        typeof resource.getDependentResource(field.name) === 'object'
+          ? resource
+              .rgetPromise<string, AnySchema>(field?.name ?? '')
+              .then((resource) =>
+                typeof resource === 'undefined' || resource === null
+                  ? {
+                      label: '',
+                      resource: undefined,
+                    }
+                  : format(
+                      resource,
+                      typeof typeSearch === 'object'
+                        ? typeSearch.dataObjectFormatter
+                        : undefined
+                    ).then((formatted) => ({
+                      label:
+                        formatted ??
+                        `${
+                          field?.isRelationship === true
+                            ? field.relatedModel.label
+                            : resource.specifyModel.label
+                        } #${resource.id}`,
+                      resource,
+                    }))
+              )
+          : { label: commonText('noPermission'), resource: undefined },
       [value, resource, field, typeSearch]
     ),
     false
@@ -470,14 +483,18 @@ export function QueryComboBox({
       </Autocomplete>
       <span className="print:hidden contents">
         {formType === 'formTable' ? undefined : mode === 'view' ? (
-          <DataEntry.View
-            aria-pressed={state.type === 'ViewResourceState'}
-            disabled={
-              typeof formatted?.resource === 'undefined' ||
-              typeof collectionRelationships === 'undefined'
-            }
-            onClick={handleOpenRelated}
-          />
+          typeof formatted?.resource === 'undefined' ||
+          hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
+            <DataEntry.View
+              aria-pressed={state.type === 'ViewResourceState'}
+              disabled={
+                typeof formatted?.resource === 'undefined' ||
+                typeof collectionRelationships === 'undefined'
+              }
+              onClick={handleOpenRelated}
+              className="ml-1"
+            />
+          ) : undefined
         ) : (
           <>
             <DataEntry.Edit
