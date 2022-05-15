@@ -13,6 +13,7 @@ import {
 import type { Attachment, Tables } from '../datamodel';
 import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
+import { caseInsensitiveHash } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -23,19 +24,18 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
 import { Button, Container, H2, Input, Label, Link, Select } from './basic';
+import { useCollection } from './collection';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { OrderPicker } from './preferencesrenderers';
 import { loadingGif } from './queryresultstable';
+import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
-import { caseInsensitiveHash } from '../helpers';
-import { deserializeResource } from './resource';
-import { useCollection } from './collection';
-import { OrderPicker } from './preferencesrenderers';
 
 const previewSize = 123;
 
@@ -46,6 +46,11 @@ const tablesWithAttachments = f.store(() =>
       .map((tableName) =>
         getModel(tableName.slice(0, -1 * 'Attachment'.length))
       )
+  )
+);
+const filteredTables = f.store(() =>
+  tablesWithAttachments().filter((model) =>
+    hasTablePermission(model.name, 'read')
   )
 );
 
@@ -62,7 +67,7 @@ export function AttachmentCell({
   const model =
     typeof tableId === 'number'
       ? f.var(getModelById(tableId), (model) =>
-          tablesWithAttachments().includes(model) ? model : undefined
+          filteredTables().includes(model) ? model : undefined
         )
       : undefined;
 
@@ -235,9 +240,19 @@ export function AttachmentsView(): JSX.Element {
     React.useCallback(
       async () =>
         f.all({
-          all: fetchCollection('Attachment', { limit: 1 }).then<number>(
-            ({ totalCount }) => totalCount
-          ),
+          all: fetchCollection(
+            'Attachment',
+            {
+              limit: 1,
+            },
+            tablesWithAttachments().length === filteredTables().length
+              ? {}
+              : {
+                  tableId__in: filteredTables()
+                    .map(({ tableId }) => tableId)
+                    .join(','),
+                }
+          ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
             { limit: 1 },
@@ -245,15 +260,13 @@ export function AttachmentsView(): JSX.Element {
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
-              tablesWithAttachments()
-                .filter(({ name }) => hasTablePermission(name, 'read'))
-                .map(({ name, tableId }) => [
-                  name,
-                  fetchCollection('Attachment', {
-                    limit: 1,
-                    tableID: tableId,
-                  }).then<number>(({ totalCount }) => totalCount),
-                ])
+              filteredTables().map(({ name, tableId }) => [
+                name,
+                fetchCollection('Attachment', {
+                  limit: 1,
+                  tableID: tableId,
+                }).then<number>(({ totalCount }) => totalCount),
+              ])
             )
           ),
         }),
@@ -271,7 +284,7 @@ export function AttachmentsView(): JSX.Element {
 
   const [collection, fetchMore] = useCollection(
     React.useCallback(
-      (offset) =>
+      async (offset) =>
         fetchCollection(
           'Attachment',
           {
@@ -286,7 +299,13 @@ export function AttachmentsView(): JSX.Element {
             ? {
                 tableId: schema.models[filter.tableName].tableId,
               }
-            : {}
+            : tablesWithAttachments().length === filteredTables().length
+            ? {}
+            : {
+                tableId__in: filteredTables()
+                  .map(({ tableId }) => tableId)
+                  .join(','),
+              }
         ),
       [order, filter]
     )
@@ -326,7 +345,7 @@ export function AttachmentsView(): JSX.Element {
               </option>
             )}
             <optgroup label={commonText('tables')}>
-              {tablesWithAttachments()
+              {filteredTables()
                 .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
                 .map(({ name, label }) => (
                   <option value={name} key={name}>
