@@ -52,7 +52,7 @@ import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentComponent, setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
-import {hasPermission, hasTreeAccess} from './permissions';
+import {hasPermission, hasTablePermission, hasTreeAccess,} from './permissions';
 import {wbViewTemplate} from './components/wbviewtemplate';
 import {legacyLoadingContext} from './components/contexts';
 import {
@@ -216,12 +216,7 @@ const WBView = Backbone.View.extend({
     this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
-    this.$el.append(
-      wbViewTemplate(
-        this.isUploaded || !hasPermission('/workbench/dataset', 'update'),
-        this.dataset.id
-      )
-    );
+    this.$el.append(wbViewTemplate(this.isUploaded, this.dataset.id));
     this.$el.attr('aria-label', commonText('workBench'));
 
     /*
@@ -312,10 +307,7 @@ const WBView = Backbone.View.extend({
 
           this.mappings.tableNames = this.mappings.lines.map(
             ({ mappingPath }) =>
-              getTableFromMappingPath(
-                this.mappings.baseTable.name,
-                mappingPath,
-              )
+              getTableFromMappingPath(this.mappings.baseTable.name, mappingPath)
           );
         }
         return initDataModelIntegration().catch(crash);
@@ -502,16 +494,24 @@ const WBView = Backbone.View.extend({
               : {
                   row_above: {
                     disabled: () =>
-                      this.uploadedView || this.coordinateConverterView,
+                      this.uploadedView ||
+                      this.coordinateConverterView ||
+                      !hasPermission('/workbench/dataset', 'update'),
                   },
                   row_below: {
                     disabled: () =>
-                      this.uploadedView || this.coordinateConverterView,
+                      this.uploadedView ||
+                      this.coordinateConverterView ||
+                      !hasPermission('/workbench/dataset', 'update'),
                   },
                   remove_row: {
                     disabled: () => {
                       // If readonly
-                      if (this.uploadedView || this.coordinateConverterView)
+                      if (
+                        this.uploadedView ||
+                        this.coordinateConverterView ||
+                        !hasPermission('/workbench/dataset', 'update')
+                      )
                         return true;
                       // Or if called on the last row
                       const selectedRegions = this.wbutils.getSelectedRegions();
@@ -528,7 +528,8 @@ const WBView = Backbone.View.extend({
                     disabled: () =>
                       this.uploadedView ||
                       this.coordinateConverterView ||
-                      !this.isAmbiguousCell(),
+                      !this.isAmbiguousCell() ||
+                      !hasPermission('/workbench/dataset', 'update'),
                     callback: (__, selection) =>
                       this.openDisambiguationDialog(selection),
                   },
@@ -536,21 +537,31 @@ const WBView = Backbone.View.extend({
                   fill_down: this.wbutils.fillCellsContextMenuItem(
                     wbText('fillDown'),
                     this.wbutils.fillDown,
-                    () => this.uploadedView || this.coordinateConverterView
+                    () =>
+                      this.uploadedView ||
+                      this.coordinateConverterView ||
+                      !hasPermission('/workbench/dataset', 'update')
                   ),
                   fill_up: this.wbutils.fillCellsContextMenuItem(
                     wbText('fillUp'),
                     this.wbutils.fillUp,
-                    () => this.uploadedView || this.coordinateConverterView
+                    () =>
+                      this.uploadedView ||
+                      this.coordinateConverterView ||
+                      !hasPermission('/workbench/dataset', 'update')
                   ),
                   separator_2: '---------',
                   undo: {
                     disabled: () =>
-                      this.uploadedView || !this.hot.isUndoAvailable(),
+                      this.uploadedView ||
+                      !this.hot.isUndoAvailable() ||
+                      !hasPermission('/workbench/dataset', 'update'),
                   },
                   redo: {
                     disabled: () =>
-                      this.uploadedView || !this.hot.isRedoAvailable(),
+                      this.uploadedView ||
+                      !this.hot.isRedoAvailable() ||
+                      !hasPermission('/workbench/dataset', 'update'),
                   },
                 },
           },
@@ -718,7 +729,7 @@ const WBView = Backbone.View.extend({
           ({ mappingPath, index }) =>
             valueIsTreeRank(mappingPath.slice(-2)[0]) &&
             mappingPath.slice(-1)[0] === 'name' &&
-            hasTreeAccess(this.mappings.tableNames[index],'read')
+            hasTreeAccess(this.mappings.tableNames[index], 'read')
         )
         .map(({ mappingPath, headerName, index }) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
@@ -756,12 +767,12 @@ const WBView = Backbone.View.extend({
 
   // Hooks
   /*
-  * After cell is rendered, we need to reApply metaData classes
-  * NOTE:
-  * .issues are handled automatically by the comments plugin.
-  * This is why, afterRenderer only has to handle the isModified and isNew
-  * cases
-  * */
+   * After cell is rendered, we need to reApply metaData classes
+   * NOTE:
+   * .issues are handled automatically by the comments plugin.
+   * This is why, afterRenderer only has to handle the isModified and isNew
+   * cases
+   * */
   afterRenderer(td, visualRow, visualCol, property, _value) {
     if (typeof this.hot === 'undefined') {
       td.classList.add('text-gray-500');
@@ -981,7 +992,12 @@ const WBView = Backbone.View.extend({
           typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
           'undefined'
         )
-          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue ?? '');
+          this.setCellMeta(
+            physicalRow,
+            physicalCol,
+            'originalValue',
+            oldValue ?? ''
+          );
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
@@ -1233,7 +1249,8 @@ const WBView = Backbone.View.extend({
       `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
     );
     this.hotCommentsContainer.classList.add(
-      'right-[var(--offset-right)]', '!left-[unset]'
+      'right-[var(--offset-right)]',
+      '!left-[unset]'
     );
     if (this.hotCommentsContainerRepositionCallback) {
       clearTimeout(this.hotCommentsContainerRepositionCallback);
@@ -1254,7 +1271,8 @@ const WBView = Backbone.View.extend({
       this.hotCommentsContainerRepositionCallback = setTimeout(
         () =>
           this.hotCommentsContainer.classList.remove(
-            'right-[var(--offset-right)]', '!left-[unset]'
+            'right-[var(--offset-right)]',
+            '!left-[unset]'
           ),
         10
       );
@@ -1357,7 +1375,8 @@ const WBView = Backbone.View.extend({
    */
   runMetaUpdateEffects(cell, key, value, visualRow, visualCol) {
     const effects = {
-      isNew: () => cell?.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
+      isNew: () =>
+        cell?.classList[value ? 'add' : 'remove']('wb-no-match-cell'),
       isModified: () =>
         cell?.classList[value ? 'add' : 'remove']('wb-modified-cell'),
       isSearchResult: () =>
@@ -1542,9 +1561,10 @@ const WBView = Backbone.View.extend({
       }
     };
 
-    const content = $('<div class="contents">');
-    // TODO: this will fail if don't have read permission to that table
-    resources.fetch({ limit: 0 }).then(() => {
+    (hasTablePermission(model.name, 'read')
+      ? resources.fetch({ limit: 0 })
+      : Promise.resolve()
+    ).then(() => {
       if (resources.length === 0) {
         const dialog = showDialog({
           title: wbText('noDisambiguationResultsDialogTitle'),
@@ -1556,31 +1576,39 @@ const WBView = Backbone.View.extend({
         return;
       }
 
+      const content = $('<div class="contents">');
       resources.forEach((resource) => {
-        // TODO: take <a> out of the <label>
-        // TODO: remove <a> if no read permission
         const row = $(
-          `<label class="py-1 flex flex-col gap-2">
-            <input
-              type="radio"
-              class="da-option"
-              name="disambiguate" value="${resource.id}"
-            >
-            <span class="label">${resource.id}</span>
-            <a
-              href="${resource.viewUrl()}"
-              target="_blank"
-              title="${commonText('view')}"
-              aria-label="${commonText('view')}"
-            >
-              <span
-                title="${commonText('opensInNewTab')}"
-                aria-label="${commonText('opensInNewTab')}"
-              >${legacyNonJsxIcons.link}</span>
-            </a>
-          <label/>`
+          `<div class="py-1 flex items-center gap-2">
+            <label class="contents">
+              <input
+                type="radio"
+                class="da-option"
+                name="disambiguate" value="${resource.id}"
+              >
+              <span class="label">${resource.id}</span>
+            <label/>
+          ${
+            hasTablePermission(model.name, 'read')
+              ? `<a
+            href="${resource.viewUrl()}"
+            target="_blank"
+            title="${commonText('view')}"
+            aria-label="${commonText('view')}"
+          >
+            <span
+              title="${commonText('opensInNewTab')}"
+              aria-label="${commonText('opensInNewTab')}"
+            >${legacyNonJsxIcons.link}</span>
+          </a>`
+              : ''
+          }
+        </div>`
         ).appendTo(content);
-        if (model.getField('rankid')) {
+        if (
+          typeof model.getField('rankid') === 'object' &&
+          hasTablePermission(model.name, 'read')
+        )
           resource
             .rget('parent.fullname')
             .then((parentName) =>
@@ -1588,8 +1616,8 @@ const WBView = Backbone.View.extend({
                 .find('.label')
                 .text(`${resource.get('fullname')} (in ${parentName})`)
             );
-        } else
-          format(resource).then((formatted) =>
+        else
+          format(resource, undefined, true).then((formatted) =>
             row.find('.label').text(formatted)
           );
       });

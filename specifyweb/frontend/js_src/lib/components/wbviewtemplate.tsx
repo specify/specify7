@@ -9,7 +9,7 @@ import ReactDOMServer from 'react-dom/server';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { wbText } from '../localization/workbench';
-import { hasPermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissions';
 import { Button, Input, Link } from './basic';
 
 function Navigation({
@@ -132,14 +132,15 @@ function WbView({
         style={{ display: 'none' }}
         aria-label={commonText('tools')}
       >
-        {hasPermission('/workbench/dataset', 'transfer') && (
+        {hasPermission('/workbench/dataset', 'transfer') &&
+        hasTablePermission('SpecifyUser', 'read') ? (
           <Button.Small
             aria-haspopup="dialog"
             className="wb-change-data-set-owner"
           >
             {wbText('changeOwner')}
           </Button.Small>
-        )}
+        ) : undefined}
         <Button.Small className="wb-export-data-set">
           {commonText('export')}
         </Button.Small>
@@ -199,7 +200,7 @@ function WbView({
               spellCheck
             />
           </div>
-          {!isUploaded && (
+          {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
             <div className="flex">
               <Input.Text
                 className="wb-replace-value"
@@ -209,13 +210,13 @@ function WbView({
                 autoComplete="on"
               />
             </div>
-          )}
+          ) : undefined}
           <span className="wb-advanced-search-wrapper" />
         </span>
         <Navigation name="searchResults" label={wbText('searchResults')} />
-        {!isUploaded && (
+        {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
           <Navigation name="modifiedCells" label={wbText('modifiedCells')} />
-        )}
+        ) : undefined}
         <Navigation name="newCells" label={wbText('newCells')} />
         {!isUploaded && (
           <Navigation name="invalidCells" label={wbText('errorCells')} />
