@@ -301,6 +301,7 @@ function ChangeOwner({
             onChange={({ target }): void =>
               setNewOwner(Number.parseInt(target.value))
             }
+            className="no-arrow"
           >
             {users.map((user) => (
               <option key={user.id} value={user.id}>

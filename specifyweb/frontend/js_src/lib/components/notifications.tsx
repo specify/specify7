@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { ajax, formData, ping } from '../ajax';
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
-import { formatNumber } from './internationalization';
+import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { f } from '../functools';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -157,20 +157,22 @@ export function Notifications(): JSX.Element {
           buttons={commonText('close')}
           className={{
             container: dialogClassNames.narrowContainer,
-            content: `${dialogClassNames.flexContent} gap-y-3 -mt-1 divide-y divide-gray-400`,
+            content: `${dialogClassNames.flexContent} gap-y-3`,
           }}
         >
-          {notifications.map((notification, index) => (
-            <NotificationComponent
-              key={index}
-              notification={notification}
-              onDelete={(promise): void => {
-                deletingPromise.current = promise;
-                setNotifications(
-                  notifications.filter((item) => item !== notification)
-                );
-              }}
-            />
+          {notifications.map((notification, index, { length }) => (
+            <React.Fragment key={index}>
+              <NotificationComponent
+                notification={notification}
+                onDelete={(promise): void => {
+                  deletingPromise.current = promise;
+                  setNotifications(
+                    notifications.filter((item) => item !== notification)
+                  );
+                }}
+              />
+              {index + 1 !== length && <div className="h-0.5 bg-gray-400" />}
+            </React.Fragment>
           ))}
         </Dialog>
       )}
@@ -185,23 +187,14 @@ function NotificationComponent({
   readonly notification: Notification;
   readonly onDelete: (promise: Promise<void>) => void;
 }): JSX.Element {
-  const date = new Date(notification.timestamp);
-  const formatted = new Intl.DateTimeFormat([], {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
   return (
-    <article className="flex flex-col pt-2">
+    <article
+      className={`flex flex-col p-2 ${
+        notification.read ? undefined : 'bg-amber-100 dark:bg-amber-900 rounded'
+      }`}
+    >
       <header className="flex justify-between">
-        <span
-          className={
-            notification.read
-              ? undefined
-              : 'bg-amber-100 dark:bg-amber-900 rounded'
-          }
-        >
-          <time dateTime={date.toISOString()}>{formatted}</time>
-        </span>
+        <DateElement date={notification.timestamp} />
         <Button.Icon
           icon="trash"
           title={commonText('delete')}
@@ -222,10 +215,13 @@ function NotificationComponent({
         />
       </header>
       <p>
-        {(
-          notificationRenderers[notification.type] ??
-          notificationRenderers.default
-        )(notification)}
+        {
+          // TODO: close the dialog when link is clicked
+          (
+            notificationRenderers[notification.type] ??
+            notificationRenderers.default
+          )(notification)
+        }
       </p>
     </article>
   );
@@ -325,8 +321,7 @@ const notificationRenderers: IR<
     );
   },
   default(notification) {
-    console.error(`Unknown notification type ${notification.type}`);
-    console.warn(notification);
+    console.error('Unknown notification type', { notification });
     return <pre>{JSON.stringify(notification, null, 2)}</pre>;
   },
 };
