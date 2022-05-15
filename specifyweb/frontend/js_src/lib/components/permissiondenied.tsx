@@ -213,12 +213,12 @@ export function PermissionError({
   return typeof error === 'object' ? (
     <Dialog
       header={commonText('permissionDeniedError')}
-      onClose={(): void => window.location.assign('/specify/')}
+      onClose={handleClose || ((): void => window.location.assign('/specify/'))}
       buttons={
         <>
-          <Button.DialogClose component={Button.Red}>
+          <Button.Red onClick={(): void => window.location.assign('/specify/')}>
             {commonText('goToHomepage')}
-          </Button.DialogClose>
+          </Button.Red>
           {typeof handleClose === 'function' && (
             <Button.Red onClick={handleClose}>
               {commonText('dismiss')}
