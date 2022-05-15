@@ -5,20 +5,27 @@ import { ajax, Http, ping } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { KeysToLowerCase, SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { index, removeKey, replaceItem, replaceKey } from '../helpers';
+import {
+  index,
+  removeKey,
+  replaceItem,
+  replaceKey,
+  sortFunction,
+} from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
+import { fetchResource, getResourceViewUrl } from '../resource';
 import type { BackEndRole } from '../securityutils';
 import {
   decompressPolicies,
   fetchRoles,
   processPolicies,
 } from '../securityutils';
-import type { IR, RA } from '../types';
+import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, Ul } from './basic';
+import { Button, className, Container, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useLiveState, useTitle } from './hooks';
 import { formatList } from './internationalization';
@@ -61,6 +68,36 @@ export function CollectionView({
     false
   );
 
+  const [usersWithPolicies] = useAsyncState<
+    RA<{ readonly userId: number; readonly userName: string }>
+  >(
+    React.useCallback(
+      () =>
+        hasPermission('/permissions/policies/user', 'read') &&
+        hasTablePermission('SpecifyUser', 'read')
+          ? ajax<RR<number, IR<RA<string>>>>(
+              `/permissions/user_policies/${collection.id}/`,
+              {
+                headers: { Accept: 'application/json' },
+              }
+            ).then(({ data }) =>
+              Promise.all(
+                Object.keys(data)
+                  .map((userId) => Number.parseInt(userId))
+                  .map(async (userId) => ({
+                    userId,
+                    userName: await fetchResource('SpecifyUser', userId).then(
+                      (resource) => defined(resource).name
+                    ),
+                  }))
+              )
+            )
+          : undefined,
+      [collection.id]
+    ),
+    false
+  );
+
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
@@ -88,6 +125,25 @@ export function CollectionView({
     // Display loading screen while loading a role
     typeof initialRoleId === 'number'
   );
+
+  // Combine users that have only policies or only roles together into one list
+  const mergedUsers =
+    typeof userRoles === 'object'
+      ? [
+          ...userRoles.filter(({ roles }) => roles.length > 0),
+          ...(usersWithPolicies ?? [])
+            .filter(({ userId }) =>
+              userRoles.every(
+                (user) => user.userId !== userId || user.roles.length === 0
+              )
+            )
+            .map(({ userId, userName }) => ({
+              userId,
+              userName,
+              roles: [],
+            })),
+        ].sort(sortFunction(({ userName }) => userName))
+      : undefined;
 
   const [state, setState] = useLiveState<
     | State<'MainState'>
@@ -174,7 +230,18 @@ export function CollectionView({
     <Container.Base className="flex-1">
       {state.type === 'MainState' && (
         <>
-          <h3 className="text-xl">{collection.collectionName}</h3>
+          <div className="flex gap-2">
+            <h3 className="text-xl">{collection.collectionName}</h3>
+            {hasTablePermission('Collection', 'read') && (
+              <Link.Icon
+                href={getResourceViewUrl('Collection', collection.id)}
+                className={className.dataEntryEdit}
+                icon="pencil"
+                title={commonText('edit')}
+                aria-label={commonText('edit')}
+              />
+            )}
+          </div>
           {hasPermission('/permissions/roles', 'read') && (
             <section className="flex flex-col gap-2">
               <div>
@@ -182,14 +249,10 @@ export function CollectionView({
                   {adminText('userRoles')}:
                 </h4>
                 {typeof roles === 'object' ? (
-                  <ul>
+                  <Ul>
                     {Object.values(roles).map((role) => (
                       <li key={role.id}>
                         <Button.LikeLink
-                          disabled={
-                            !hasPermission('/permissions/roles', 'update') ||
-                            !Array.isArray(userRoles)
-                          }
                           onClick={(): void =>
                             setState({
                               type: 'RoleState',
@@ -207,7 +270,7 @@ export function CollectionView({
                         </Button.LikeLink>
                       </li>
                     ))}
-                  </ul>
+                  </Ul>
                 ) : (
                   commonText('loading')
                 )}
@@ -221,7 +284,10 @@ export function CollectionView({
                         type: 'CreatingRoleState',
                       })
                     }
-                    disabled={!Array.isArray(userRoles)}
+                    disabled={
+                      !Array.isArray(userRoles) &&
+                      hasPermission('/permissions/user/roles', 'read')
+                    }
                   >
                     {commonText('create')}
                   </Button.Green>
@@ -238,15 +304,14 @@ export function CollectionView({
           )}
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
-            {typeof userRoles === 'object' ? (
+            {typeof mergedUsers === 'object' ? (
               f.var(
-                userRoles.filter(
-                  ({ userId, roles }) =>
-                    roles.length > 0 &&
-                    (userId === userInformation.id ||
-                      hasTablePermission('SpecifyUser', 'update') ||
-                      hasPermission('/permissions/policies/user', 'update') ||
-                      hasPermission('/permissions/user/roles', 'update'))
+                mergedUsers.filter(
+                  ({ userId }) =>
+                    userId === userInformation.id ||
+                    hasTablePermission('SpecifyUser', 'update') ||
+                    hasPermission('/permissions/policies/user', 'update') ||
+                    hasPermission('/permissions/user/roles', 'update')
                 ),
                 (users) =>
                   users.length === 0 ? (
@@ -260,11 +325,13 @@ export function CollectionView({
                               onClick={(): void => handleOpenUser(userId)}
                             >
                               {userName}
-                              <span className="text-gray-500">
-                                {`(${formatList(
-                                  roles.map(({ roleName }) => roleName)
-                                )})`}
-                              </span>
+                              {roles.length > 0 && (
+                                <span className="text-gray-500">
+                                  {`(${formatList(
+                                    roles.map(({ roleName }) => roleName)
+                                  )})`}
+                                </span>
+                              )}
                             </Button.LikeLink>
                           </li>
                         ))}
@@ -390,7 +457,7 @@ export function CollectionView({
                   )
                 : undefined
             }
-            permissionName="/permissions/library/roles"
+            permissionName="/permissions/roles"
           />
         ) : (
           <LoadingScreen />

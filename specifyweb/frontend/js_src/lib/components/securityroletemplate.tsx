@@ -105,7 +105,7 @@ export function CreateRole({
                 .filter(([_collection, roles]) => roles.length > 0)
                 .map(([collection, roles]) => (
                   <article key={collection.id}>
-                    {collection.collectionName}
+                    {`${collection.collectionName}:`}
                     <Ul>
                       {roles.map((role) => (
                         <li key={role.id}>

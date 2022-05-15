@@ -5,17 +5,18 @@ import { ajax, Http, ping } from '../ajax';
 import { error } from '../assert';
 import type { Collection, Institution, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { removeKey, replaceKey } from '../helpers';
+import { removeKey, replaceKey, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
+import { getResourceViewUrl } from '../resource';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import { decompressPolicies, processPolicies } from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, Ul } from './basic';
+import { Button, className, Container, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
@@ -122,7 +123,19 @@ export function InstitutionView({
     <Container.Base className="flex-1">
       {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
         <>
-          <h3 className="text-xl">{institution.name}</h3>
+          <div className="flex gap-2">
+            <h3 className="text-xl">{institution.name}</h3>
+            <Link.Icon
+              href={getResourceViewUrl(
+                'Institution',
+                schema.domainLevelIds.institution
+              )}
+              className={className.dataEntryEdit}
+              icon="pencil"
+              title={commonText('edit')}
+              aria-label={commonText('edit')}
+            />
+          </div>
           {hasPermission('/permissions/library/roles', 'read') && (
             <section className="flex flex-col gap-2">
               <div>
@@ -202,6 +215,7 @@ export function InstitutionView({
               <>
                 <Ul>
                   {Object.values(users)
+                    .sort(sortFunction(({ name }) => name))
                     .filter(
                       ({ id }) =>
                         id === userInformation.id ||

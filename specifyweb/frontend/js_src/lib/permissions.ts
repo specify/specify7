@@ -9,6 +9,7 @@ import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { group, split } from './helpers';
 import { load } from './initialcontext';
+import { schema } from './schema';
 import type { anyAction, anyResource } from './securityutils';
 import {
   tableNameToResourceName,
@@ -18,7 +19,6 @@ import {
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
 import { userInformation } from './userinfo';
-import { schema } from './schema';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 

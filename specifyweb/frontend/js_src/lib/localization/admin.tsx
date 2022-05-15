@@ -179,12 +179,6 @@ export const adminText = createDictionary({
     ca: 'Security Panel',
     'es-es': 'Security Panel',
   },
-  institution: {
-    'en-us': 'Institution:',
-    'ru-ru': 'Institution:',
-    ca: 'Institution:',
-    'es-es': 'Institution:',
-  },
   userRoleLibrary: {
     'en-us': 'User role library:',
     'ru-ru': 'Библиотека ролей пользователей:',

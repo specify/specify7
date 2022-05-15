@@ -469,6 +469,9 @@ export function QueryComboBox({
             className={`flex-1 ${className}`}
             id={id}
             required={isRequired}
+            title={
+              typeof typeSearch === 'object' ? typeSearch.title : undefined
+            }
             isReadOnly={
               !isLoaded ||
               mode === 'view' ||

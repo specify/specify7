@@ -1,11 +1,33 @@
 import React from 'react';
 
+import type { Collection } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
+import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
 import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
 import { filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Container } from './basic';
+import { Button, Container, Ul } from './basic';
+import { usePref } from './preferenceshooks';
+
+/**
+ * Even though available collections do not change during lifecycle of a page,
+ * their sort order may
+ */
+export function useAvailableCollections(): RA<SerializedResource<Collection>> {
+  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const isReverseSort = sortOrder.startsWith('-');
+  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
+    keyof Collection['fields'];
+  return React.useMemo(
+    () =>
+      Array.from(userInformation.availableCollections).sort(
+        sortFunction((collection) => collection[sortField], isReverseSort)
+      ),
+    [userInformation.availableCollections, isReverseSort, sortField]
+  );
+}
 
 /**
  * Asks user to switch collection to view a resource
@@ -15,10 +37,9 @@ export function OtherCollection({
 }: {
   collectionIds: RA<number>;
 }): JSX.Element {
+  const availableCollection = useAvailableCollections();
   const collections = filterArray(
-    userInformation.availableCollections.filter(({ id }) =>
-      collectionIds.includes(id)
-    )
+    availableCollection.filter(({ id }) => collectionIds.includes(id))
   );
   return (
     <Container.FullGray>
@@ -31,7 +52,7 @@ export function OtherCollection({
             {collections.length > 1 ? (
               <>
                 <p>{commonText('selectCollection')}</p>
-                <ul role="list">
+                <Ul>
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
                       <Button.LikeLink
@@ -45,7 +66,7 @@ export function OtherCollection({
                       </Button.LikeLink>
                     </li>
                   ))}
-                </ul>
+                </Ul>
               </>
             ) : (
               <>

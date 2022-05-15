@@ -200,6 +200,7 @@ export function UserView({
                         onChange={setInstitutionPolicies}
                         header={adminText('institutionPolicies')}
                         collapsable={true}
+                        limitHeight
                       />
                     )
                 }
@@ -251,6 +252,7 @@ export function UserView({
                           : undefined
                       }
                       collapsable={false}
+                      limitHeight
                     />
                   )}
                 {typeof userResource.id === 'number' && (

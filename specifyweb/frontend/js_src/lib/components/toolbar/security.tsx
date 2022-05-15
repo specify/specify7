@@ -23,6 +23,7 @@ import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
+import { useAvailableCollections } from '../othercollectionview';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
@@ -43,10 +44,7 @@ export function SecurityPanel(): JSX.Element | null {
     ),
     true
   );
-  const collections = React.useMemo(
-    () => index(userInformation.availableCollections),
-    []
-  );
+  const availableCollections = useAvailableCollections();
 
   const [state, setState] = React.useState<
     | State<'MainState'>
@@ -110,7 +108,7 @@ export function SecurityPanel(): JSX.Element | null {
         <aside className={className.containerBase}>
           {typeof institution === 'object' && (
             <section>
-              <H3>{`${schema.models.Institution.label}:`}</H3>
+              <H3>{schema.models.Institution.label}</H3>
               <Button.LikeLink
                 aria-pressed={state.type === 'InstitutionState'}
                 onClick={(): void =>
@@ -126,7 +124,7 @@ export function SecurityPanel(): JSX.Element | null {
           <section>
             <H3>{adminText('collections')}</H3>
             <ul>
-              {userInformation.availableCollections.map((collection, index) => (
+              {availableCollections.map((collection, index) => (
                 <li key={index}>
                   <Button.LikeLink
                     aria-pressed={
@@ -152,7 +150,7 @@ export function SecurityPanel(): JSX.Element | null {
         typeof institution === 'object' ? (
           <InstitutionView
             institution={institution}
-            collections={userInformation.availableCollections}
+            collections={availableCollections}
             users={users}
             libraryRoles={libraryRoles}
             onChangeLibraryRoles={(newState): void =>
@@ -169,15 +167,17 @@ export function SecurityPanel(): JSX.Element | null {
                   typeof userId === 'number'
                     ? defined(users)[userId]
                     : addMissingFields('SpecifyUser', {}),
-                initialCollection: userInformation.availableCollections[0].id,
+                initialCollection: availableCollections[0].id,
               })
             }
           />
         ) : undefined}
         {state.type === 'CollectionState' && (
           <CollectionView
-            collection={collections[state.collectionId]}
-            collections={userInformation.availableCollections}
+            collection={defined(
+              availableCollections.find(({ id }) => id === state.collectionId)
+            )}
+            collections={availableCollections}
             initialRoleId={state.initialRole}
             libraryRoles={libraryRoles}
             onOpenUser={(userId): void =>
@@ -195,7 +195,7 @@ export function SecurityPanel(): JSX.Element | null {
         {state.type === 'UserState' && typeof users === 'object' ? (
           <UserView
             user={state.user}
-            collections={userInformation.availableCollections}
+            collections={availableCollections}
             initialCollection={state.initialCollection}
             onClose={(): void => setState({ type: 'MainState' })}
             onDelete={(): void => {

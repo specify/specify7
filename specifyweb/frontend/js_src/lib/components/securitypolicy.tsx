@@ -91,15 +91,17 @@ function PolicyView({
   const isTablePolicy = f.maybe(extendedActions, hasTableActions);
   return (
     <li className="flex flex-wrap gap-2">
-      <Button.Small
-        className="print:hidden"
-        variant={className.redButton}
-        title={commonText('remove')}
-        aria-label={commonText('remove')}
-        onClick={(): void => handleChange(undefined)}
-      >
-        {icons.trash}
-      </Button.Small>
+      {!isReadOnly && (
+        <Button.Small
+          className="print:hidden"
+          variant={className.redButton}
+          title={commonText('remove')}
+          aria-label={commonText('remove')}
+          onClick={(): void => handleChange(undefined)}
+        >
+          {icons.trash}
+        </Button.Small>
+      )}
       <Ul className="contents">
         {filterArray(registryParts).map((registry, index) =>
           Object.keys(registry).length === 0 ? undefined : (
@@ -206,6 +208,7 @@ function PolicyView({
                           actions: toggleItem(actions, action),
                         })
                       }
+                      disabled={isReadOnly}
                       checked={actions.includes(action)}
                       required={
                         /*
@@ -245,6 +248,7 @@ export function PoliciesView({
   header = adminText('policies'),
   collapsable,
   scope,
+  limitHeight,
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
@@ -252,6 +256,7 @@ export function PoliciesView({
   readonly header?: string;
   readonly collapsable: boolean;
   readonly scope: PolicyScope;
+  readonly limitHeight: boolean;
 }): JSX.Element {
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const policyCountRef = React.useRef<number>(policies?.length ?? -1);
@@ -278,7 +283,9 @@ export function PoliciesView({
   const children = Array.isArray(policies) ? (
     <>
       <Ul
-        className="flex flex-col gap-2 overflow-auto max-h-[theme(spacing.96)]"
+        className={`flex flex-col gap-2 overflow-auto ${
+          limitHeight ? 'max-h-[theme(spacing.96)]' : ''
+        }`}
         forwardRef={listRef}
       >
         {policies.map((policy, index) => (

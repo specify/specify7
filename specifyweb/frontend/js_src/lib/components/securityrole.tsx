@@ -18,10 +18,10 @@ import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
 import { SearchDialog } from './searchdialog';
+import type { UserRoles } from './securitycollection';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { PoliciesView } from './securitypolicy';
-import { UserRoles } from './securitycollection';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -90,102 +90,108 @@ export function RoleView({
         {icons.arrowLeft}
         {parentName}
       </Button.LikeLink>
-      {!isReadOnly && (
+      <div className="flex flex-col gap-2 overflow-scroll">
+        {!isReadOnly && (
+          <Label.Generic>
+            {commonText('name')}
+            <Input.Text
+              value={role.name}
+              onValueChange={(name): void =>
+                setRole(replaceKey(role, 'name', name))
+              }
+              required
+              maxLength={1024}
+            />
+          </Label.Generic>
+        )}
         <Label.Generic>
-          {commonText('name')}
-          <Input.Text
-            value={role.name}
-            onValueChange={(name): void =>
-              setRole(replaceKey(role, 'name', name))
+          {commonText('description')}
+          <AutoGrowTextArea
+            isReadOnly={isReadOnly}
+            value={role.description}
+            onValueChange={(description): void =>
+              setRole(replaceKey(role, 'description', description))
             }
-            required
-            maxLength={1024}
           />
         </Label.Generic>
-      )}
-      <Label.Generic>
-        {commonText('description')}
-        <AutoGrowTextArea
-          isReadOnly={isReadOnly}
-          value={role.description}
-          onValueChange={(description): void =>
-            setRole(replaceKey(role, 'description', description))
-          }
-        />
-      </Label.Generic>
-      {typeof role.id === 'number' && typeof handleOpenUser === 'function' ? (
-        <fieldset className="flex flex-col gap-2">
-          <legend>{adminText('users')}:</legend>
-          {typeof userRoles === 'object' ? (
-            <>
-              <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">
-                {userRoles.map(({ userId, userName }) => (
-                  <li key={userId}>
-                    <Button.LikeLink
-                      disabled={
-                        userId !== userInformation.id &&
-                        !hasTablePermission('SpecifyUser', 'update') &&
-                        !hasPermission(
-                          '/permissions/policies/user',
-                          'update'
-                        ) &&
-                        !hasPermission('/permissions/user/roles', 'update')
+        {typeof role.id === 'number' &&
+        typeof handleOpenUser === 'function' &&
+        hasPermission('/permissions/user/roles', 'read') ? (
+          <fieldset className="flex flex-col gap-2">
+            <legend>{adminText('users')}:</legend>
+            {typeof userRoles === 'object' ? (
+              <>
+                <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">
+                  {userRoles.map(({ userId, userName }) => (
+                    <li key={userId}>
+                      <Button.LikeLink
+                        disabled={
+                          userId !== userInformation.id &&
+                          !hasTablePermission('SpecifyUser', 'update') &&
+                          !hasPermission(
+                            '/permissions/policies/user',
+                            'update'
+                          ) &&
+                          !hasPermission('/permissions/user/roles', 'update')
+                        }
+                        // TODO: trigger unload protect
+                        onClick={(): void => handleOpenUser(userId)}
+                      >
+                        {userName}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
+                </Ul>
+                {hasPermission('/permissions/user/roles', 'update') && (
+                  <div>
+                    <Button.Green
+                      onClick={(): void =>
+                        setState({
+                          type: 'AddUserState',
+                          templateResource:
+                            new schema.models.SpecifyUser.Resource(),
+                        })
                       }
-                      // TODO: trigger unload protect
-                      onClick={(): void => handleOpenUser(userId)}
                     >
-                      {userName}
-                    </Button.LikeLink>
-                  </li>
-                ))}
-              </Ul>
-              {hasPermission('/permissions/user/roles', 'update') && (
-                <div>
-                  <Button.Green
-                    onClick={(): void =>
-                      setState({
-                        type: 'AddUserState',
-                        templateResource:
-                          new schema.models.SpecifyUser.Resource(),
-                      })
-                    }
-                  >
-                    {commonText('add')}
-                  </Button.Green>
-                </div>
-              )}
-              {state.type === 'AddUserState' &&
-              typeof handleAddUser === 'function' ? (
-                <SearchDialog
-                  forceCollection={undefined}
-                  extraFilters={[
-                    {
-                      field: 'id',
-                      operation: 'notIn',
-                      values: userRoles.map(({ userId }) => userId.toString()),
-                    },
-                  ]}
-                  templateResource={state.templateResource}
-                  onClose={(): void => setState({ type: 'MainState' })}
-                  onSelected={handleAddUser}
-                />
-              ) : undefined}
-            </>
-          ) : (
-            commonText('loading')
-          )}
-        </fieldset>
-      ) : undefined}
-      <PoliciesView
-        policies={role.policies}
-        onChange={(policies): void =>
-          setRole(replaceKey(role, 'policies', policies))
-        }
-        isReadOnly={isReadOnly}
-        scope="collection"
-        collapsable={false}
-      />
-      <span className="flex-1 -mt-2" />
+                      {commonText('add')}
+                    </Button.Green>
+                  </div>
+                )}
+                {state.type === 'AddUserState' &&
+                typeof handleAddUser === 'function' ? (
+                  <SearchDialog
+                    forceCollection={undefined}
+                    extraFilters={[
+                      {
+                        field: 'id',
+                        operation: 'notIn',
+                        values: userRoles.map(({ userId }) =>
+                          userId.toString()
+                        ),
+                      },
+                    ]}
+                    templateResource={state.templateResource}
+                    onClose={(): void => setState({ type: 'MainState' })}
+                    onSelected={handleAddUser}
+                  />
+                ) : undefined}
+              </>
+            ) : (
+              commonText('loading')
+            )}
+          </fieldset>
+        ) : undefined}
+        <PoliciesView
+          policies={role.policies}
+          onChange={(policies): void =>
+            setRole(replaceKey(role, 'policies', policies))
+          }
+          isReadOnly={isReadOnly}
+          scope="collection"
+          collapsable={false}
+          limitHeight={false}
+        />
+      </div>
       <div className="flex gap-2">
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete') ? (
