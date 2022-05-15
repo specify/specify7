@@ -11,12 +11,12 @@ import { cachableUrl } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
-import type { PreferenceItemComponent } from '../preferences';
 import type { IR, RA } from '../../types';
 import { Select } from '../basic';
 import { supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
+import type { PreferenceItemComponent } from '../preferences';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -139,7 +139,7 @@ export function useSchemaLanguages(): IR<string> | undefined {
               data.map(
                 ({ country, language }) =>
                   `${language}${
-                    country === null || country === '' ? '' : `_${country}`
+                    country === null || country === '' ? '' : `-${country}`
                   }`
               )
             )
@@ -152,7 +152,7 @@ export function useSchemaLanguages(): IR<string> | undefined {
                   [
                     language,
                     new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                      language.replace('_', '-')
+                      language
                     ) ?? language,
                   ] as const
               )

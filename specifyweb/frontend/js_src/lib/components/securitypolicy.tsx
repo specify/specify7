@@ -89,6 +89,15 @@ function PolicyView({
   const isTablePolicy = f.maybe(extendedActions, hasTableActions);
   return (
     <li className="flex flex-wrap gap-2">
+      <Button.Small
+        className="print:hidden"
+        variant={className.redButton}
+        title={commonText('remove')}
+        aria-label={commonText('remove')}
+        onClick={(): void => handleChange(undefined)}
+      >
+        {icons.trash}
+      </Button.Small>
       <Ul className="contents">
         {filterArray(registryParts).map((registry, index) =>
           Object.keys(registry).length === 0 ? undefined : (
@@ -191,11 +200,16 @@ function PolicyView({
                          * actions
                          */
                         actions.length === 0 ||
-                        /**
+                        /*
                          * For table policies, always require giving "read"
-                         * access as without others do not work
+                         * access as without it other actions do not work
                          */
-                        (action === 'read' && isTablePolicy)
+                        (action === 'read' && isTablePolicy) ||
+                        /*
+                         * Can't export a query, unless have execute permissions
+                         */
+                        (resource === '/querybuilder/query' &&
+                          action === 'execute')
                       }
                     />
                     <PermissionAction>{action}</PermissionAction>
@@ -206,15 +220,6 @@ function PolicyView({
           </li>
         )}
       </Ul>
-      <Button.Small
-        className="print:hidden"
-        variant={className.redButton}
-        title={commonText('remove')}
-        aria-label={commonText('remove')}
-        onClick={(): void => handleChange(undefined)}
-      >
-        {icons.trash}
-      </Button.Small>
     </li>
   );
 }

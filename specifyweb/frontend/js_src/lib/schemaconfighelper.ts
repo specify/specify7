@@ -95,6 +95,7 @@ export function getItemType(
 ): ItemType {
   if (item.webLinkName !== null) return 'webLink';
   else if (item.pickListName !== null) return 'pickList';
+  // eslint-disable-next-line no-negated-condition
   else if (item.format !== null) return 'formatted';
   else return 'none';
 }

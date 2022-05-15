@@ -5,32 +5,27 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
-from django import forms
+from typing import List
+
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
-    logout as auth_logout, views as auth_views
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+    logout as auth_logout
 from django.db import connection, transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
-    HttpResponseForbidden, HttpResponseRedirect, JsonResponse
-from django.template.response import TemplateResponse
-from django.urls import URLPattern, URLResolver
-from django.utils.http import is_safe_url
-from django.utils.translation import activate, LANGUAGE_SESSION_KEY, \
-    get_language_info
+    HttpResponseForbidden, JsonResponse
+from django.urls import URLPattern
+from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.views.i18n import set_language
-from typing import List, Tuple
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Agent, Collection, Institution, \
+from specifyweb.specify.models import Collection, Institution, \
     Specifyuser, Spprincipal, Spversion
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
@@ -354,8 +349,8 @@ def datamodel(request):
 @cache_control(max_age=86400, private=True)
 def schema_localization(request):
     """Return the schema localization information for the logged in
-    collection.  If the `lang` parameter is present return the schema
-    localization for that language. The parameter should be of the
+    collection.  If the case-insensitive `lang` parameter is present return the
+    schema localization for that language. The parameter should be of the
     form ll[-cc] where ll is a language code and cc is an optional
     country code.
     """

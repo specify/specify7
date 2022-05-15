@@ -139,9 +139,20 @@ function ChooseBaseTable({
       header={commonText('tables')}
       onClose={handleClose}
       buttons={
-        <Button.Transparent onClick={handleBack}>
-          {commonText('back')}
-        </Button.Transparent>
+        <>
+          <Link.Green
+            href={formatUrl('/context/schema_localization.json', {
+              lang: language,
+            })}
+            download={`schema_localization_${language}.json`}
+          >
+            {commonText('export')}
+          </Link.Green>
+          <span className="flex-1 -ml-2" />
+          <Button.Transparent onClick={handleBack}>
+            {commonText('back')}
+          </Button.Transparent>
+        </>
       }
     >
       <Ul className="flex-1 overflow-y-auto">
@@ -182,7 +193,6 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
         onClose={handleClose}
         buttons={
           <>
-            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
             {hasToolPermission('schemaConfig', 'create') && (
               <Button.Blue
                 onClick={(): void =>
@@ -194,6 +204,8 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                 {commonText('addLanguage')}
               </Button.Blue>
             )}
+            <span className="flex-1 -ml-2" />
+            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           </>
         }
       >

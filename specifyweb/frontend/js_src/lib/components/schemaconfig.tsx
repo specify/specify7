@@ -100,7 +100,7 @@ export function SchemaConfig({
     )
       return undefined;
 
-    const [language, country = null] = stateLanguage.split('_');
+    const [language, country = null] = stateLanguage.split('-');
 
     const fields = Object.fromEntries(
       Object.values(schema.models)

@@ -128,7 +128,7 @@ export function AddLanguage({
         onSubmit={(): void =>
           handleAddLanguage(
             `${language.toLowerCase()}${
-              country === '' ? '' : `_${country.toUpperCase()}`
+              country === '' ? '' : `-${country.toLowerCase()}`
             }`
           )
         }
