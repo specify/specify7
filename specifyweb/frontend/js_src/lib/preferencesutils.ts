@@ -9,8 +9,10 @@ import { MILLISECONDS } from './components/internationalization';
 import type { Preferences } from './components/preferences';
 import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
-import { keysToLowerCase } from './helpers';
+import { f } from './functools';
+import { keysToLowerCase, replaceKey } from './helpers';
 import { contextUnlockedPromise, foreverPromise } from './initialcontext';
+import { formatUrl } from './querystring';
 import type { RA } from './types';
 import { filterArray } from './types';
 import { mergeParsers, parserFromType, parseValue } from './uiparse';
@@ -24,8 +26,18 @@ export const getPrefDefinition = <
   subcategory: SUBCATEGORY,
   item: ITEM
 ): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM] =>
-  // @ts-expect-error
-  preferenceDefinitions[category].subCategories[subcategory].items[item];
+  f.var(
+    // @ts-expect-error
+    preferenceDefinitions[category].subCategories[subcategory].items[item],
+    (definition) =>
+      f.var(
+        defaultPreferences[category]?.[subcategory]?.[item],
+        (defaultValue) =>
+          typeof defaultValue === 'undefined'
+            ? definition
+            : replaceKey(definition, 'defaultValue', defaultValue)
+      )
+  );
 
 /** Use usePref hook instead whenever possible as it comes with live updates */
 export const getUserPref = <
@@ -38,6 +50,7 @@ export const getUserPref = <
   item: ITEM
 ): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] =>
   preferences[category]?.[subcategory]?.[item] ??
+  defaultPreferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
 let preferences: {
@@ -193,15 +206,22 @@ async function syncPreferences(): Promise<void> {
 }
 
 const resourceName = 'UserPreferences';
+const defaultResourceName = 'DefaultUserPreferences';
 const mimeType = 'application/json';
 
 let userResource: ResourceWithData = undefined!;
+let defaultPreferences: UserPreferences = getCache(
+  'userPreferences',
+  'defaultCached',
+  { defaultValue: {} }
+);
 
 function updatePreferences(resource: ResourceWithData): ResourceWithData {
   userResource = resource;
   preferences = JSON.parse(userResource.data ?? '{}');
   prefEvents.trigger('update', undefined);
   setCache('userPreferences', 'cached', preferences);
+  setCache('userPreferences', 'defaultCached', defaultPreferences);
   return userResource;
 }
 
@@ -222,42 +242,67 @@ type ResourceWithData = UserResource & {
  * check if SpAppResourceDir and SpAppResource exist and create them if needed,
  * then, create the app resource data itself
  */
-export const preferencesPromise = contextUnlockedPromise.then((entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<RA<UserResource>>('/context/user_resource/', {
-        headers: { Accept: 'application/json' },
-      })
-        .then(
-          ({ data }) =>
-            data.find(
-              ({ name, mimetype }) =>
-                name === resourceName && mimetype === 'application/json'
-            )?.id
-        )
-        .then(async (appResourceId) =>
-          (typeof appResourceId === 'number'
-            ? ajax<ResourceWithData>(
-                `/context/user_resource/${appResourceId}/`,
-                {
-                  headers: { Accept: 'application/json' },
-                }
+export const preferencesPromise = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? f
+          .all({
+            items: ajax<RA<UserResource>>('/context/user_resource/', {
+              headers: { Accept: 'application/json' },
+            })
+              .then(
+                ({ data }) =>
+                  data.find(
+                    ({ name, mimetype }) =>
+                      name === resourceName && mimetype === 'application/json'
+                  )?.id
               )
-            : ajax<ResourceWithData>(
-                '/context/user_resource/',
-                {
-                  headers: { Accept: 'application/json' },
-                  method: 'POST',
-                  body: keysToLowerCase({
-                    name: resourceName,
-                    mimeType,
-                    metaData: '',
-                    data: '{}',
-                  }),
-                },
-                { expectedResponseCodes: [Http.CREATED] }
+              .then(async (appResourceId) =>
+                (typeof appResourceId === 'number'
+                  ? ajax<ResourceWithData>(
+                      `/context/user_resource/${appResourceId}/`,
+                      {
+                        headers: { Accept: 'application/json' },
+                      }
+                    )
+                  : ajax<ResourceWithData>(
+                      '/context/user_resource/',
+                      {
+                        headers: { Accept: 'application/json' },
+                        method: 'POST',
+                        body: keysToLowerCase({
+                          name: resourceName,
+                          mimeType,
+                          metaData: '',
+                          data: '{}',
+                        }),
+                      },
+                      { expectedResponseCodes: [Http.CREATED] }
+                    )
+                ).then(({ data }) => data)
+              ),
+            defaultItems: ajax(
+              formatUrl('/context/app.resource', { name: defaultResourceName }),
+              {
+                headers: { Accept: 'text/plain' },
+              },
+              {
+                expectedResponseCodes: [Http.NOT_FOUND, Http.OK],
+                strict: false,
+              }
+            )
+              .then(({ data, status }) =>
+                status === Http.OK ? JSON.parse(data) : {}
               )
-          ).then(({ data }) => data)
-        )
-        .then(updatePreferences)
-    : foreverPromise
+              .catch((error) => {
+                console.error(error);
+                return {};
+              }),
+          })
+          .then(({ items, defaultItems }) => {
+            defaultPreferences = defaultItems;
+            updatePreferences(items);
+            return items;
+          })
+      : foreverPromise
 );

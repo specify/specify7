@@ -102,6 +102,11 @@ export type CacheDefinitions = {
      * on the fly.
      */
     readonly cached: UserPreferences;
+    /**
+     * Admins may change default preferences. These defaults override original
+     * defaults for items for which these are provided
+     */
+    readonly defaultCached: UserPreferences;
   };
   readonly securityTool: {
     readonly policiesLayout: 'vertical' | 'horizontal';

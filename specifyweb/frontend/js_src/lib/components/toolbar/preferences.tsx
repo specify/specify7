@@ -9,9 +9,11 @@ import { preferencesText } from '../../localization/preferences';
 import { hasPermission } from '../../permissions';
 import {
   awaitPrefsSynced,
+  getPrefDefinition,
   preferencesPromise,
   setPref,
 } from '../../preferencesutils';
+import { defined } from '../../types';
 import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
@@ -130,12 +132,22 @@ function Preferences({
                           <div className="flex justify-end flex-1">
                             <Button.Small
                               onClick={(): void =>
-                                items.forEach(([name, { defaultValue }]) =>
+                                items.forEach(([name]) =>
                                   setPref(
                                     category,
                                     subcategory,
                                     name,
-                                    defaultValue
+                                    /*
+                                     * Need to get default value via this
+                                     * function as defaults may be changed
+                                     */
+                                    defined(
+                                      getPrefDefinition(
+                                        category,
+                                        subcategory,
+                                        name
+                                      )
+                                    ).defaultValue
                                   )
                                 )
                               }
