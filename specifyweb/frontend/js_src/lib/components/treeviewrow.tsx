@@ -168,6 +168,7 @@ export function TreeRow({
                 return undefined;
               }}
               onClick={(): void => handleToggle(false)}
+              onContextMenu={(): void => handleFocusNode([])}
               aria-describedby={rankNameId(rankId.toString())}
             >
               <span className="-mr-2">
