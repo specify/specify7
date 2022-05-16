@@ -14,6 +14,7 @@ import { commonText } from '../localization/common';
 import { tableActions } from '../permissions';
 import { smoothScroll } from '../querybuilderutils';
 import {
+  actionToLabel,
   anyResource,
   getAllActions,
   getCollectionRegistriesFromPath,
@@ -25,7 +26,6 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, className, Input, Label, Select, Summary, Ul } from './basic';
 import { icons } from './icons';
-import { PermissionAction } from './securitypreview';
 import { useCachedState } from './statecache';
 
 export type Policy = {
@@ -251,7 +251,7 @@ function SecurityPolicy({
                           action === 'execute')
                       }
                     />
-                    <PermissionAction>{action}</PermissionAction>
+                    {actionToLabel(action)}
                   </Label.ForCheckbox>
                 </li>
               ))}

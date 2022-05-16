@@ -5,7 +5,6 @@
 import React from 'react';
 
 import type { Collection } from '../datamodel';
-import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { preferencesText } from '../localization/preferences';
@@ -1047,23 +1046,6 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: defaultWelcomePageImage,
             type: 'text',
-          }),
-        },
-      },
-    },
-  },
-  securityPanel: {
-    title: adminText('securityPanel'),
-    subCategories: {
-      appearance: {
-        title: preferencesText('appearance'),
-        items: {
-          colorizeActionNames: defineItem<boolean>({
-            title: preferencesText('colorizeActionNames'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
           }),
         },
       },

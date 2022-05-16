@@ -24,33 +24,10 @@ import {
 import type { IR, R, RA } from '../types';
 import { filterArray } from '../types';
 import { Button, className, Input, Label, Summary, Ul } from './basic';
-import { stringToColor, TableIcon } from './common';
+import { TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
-import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { userInformation } from '../userinfo';
-
-export function PermissionAction({
-  children,
-}: {
-  readonly children: string;
-}): JSX.Element {
-  const [colorizeActionNames] = usePref(
-    'securityPanel',
-    'appearance',
-    'colorizeActionNames'
-  );
-  const action = actionToLabel(children);
-  return (
-    <span
-      style={{
-        color: colorizeActionNames ? stringToColor(action) : undefined,
-      }}
-    >
-      {action}
-    </span>
-  );
-}
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
@@ -89,7 +66,7 @@ function ReasonExplanation({
             >
               {[
                 role.rolename,
-                <PermissionAction>{role.action}</PermissionAction>,
+                actionToLabel(role.action),
                 resourceNameToLabel(role.resource),
               ].map((value, index) => (
                 <div role="cell" className="p-2" key={index}>
@@ -137,7 +114,7 @@ function ReasonExplanation({
                 policy.collectionid === null
                   ? adminText('allCollections')
                   : adminText('thisCollection'),
-                <PermissionAction>{policy.action}</PermissionAction>,
+                actionToLabel(policy.action),
                 resourceNameToLabel(policy.resource),
               ].map((value, index) => (
                 <div role="cell" key={index} className="p-2">
