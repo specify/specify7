@@ -74,10 +74,6 @@ export function setPref<
   value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 ): void {
   const definition = getPrefDefinition(category, subcategory, item);
-  if (typeof definition.onChange === 'function') {
-    Promise.resolve(definition.onChange(value)).catch(crash);
-    return;
-  }
 
   let parsed;
   if ('type' in definition) {

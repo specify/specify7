@@ -10,7 +10,7 @@ import { formsText } from '../localization/forms';
 import { preferencesText } from '../localization/preferences';
 import { queryText } from '../localization/query';
 import type { Language } from '../localization/utils';
-import { DEFAULT_LANGUAGE } from '../localization/utils';
+import { LANGUAGE } from '../localization/utils';
 import { wbText } from '../localization/workbench';
 import type { JavaType } from '../specifyfield';
 import type { IR, RA } from '../types';
@@ -28,7 +28,6 @@ import {
   WelcomePageModePreferenceItem,
 } from './preferencesrenderers';
 import {
-  handleLanguageChange,
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
@@ -54,8 +53,6 @@ export type PreferenceItem<VALUE> = {
    */
   readonly visible: boolean | 'adminsOnly';
   readonly defaultValue: VALUE;
-  // Custom onChange handler
-  readonly onChange?: (value: VALUE) => void | Promise<void>;
 } & (
   | {
       readonly values:
@@ -104,8 +101,7 @@ export const preferenceDefinitions = {
             title: preferencesText('language'),
             requiresReload: true,
             visible: true,
-            defaultValue: DEFAULT_LANGUAGE,
-            onChange: handleLanguageChange,
+            defaultValue: LANGUAGE,
             renderer: LanguagePreferencesItem,
           }),
           theme: defineItem<'system' | 'light' | 'dark'>({

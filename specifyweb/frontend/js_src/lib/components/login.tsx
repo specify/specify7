@@ -16,6 +16,7 @@ import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
 import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
+import { LoadingContext } from './contexts';
 
 function Login({
   data,
@@ -44,6 +45,7 @@ function Login({
 
   React.useEffect(() => inputRef.current?.focus());
 
+  const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
       <LanguageSelection<Language>
@@ -51,7 +53,13 @@ function Login({
           data.languages.filter(([code]) => enabledLanguages.includes(code))
         )}
         value={LANGUAGE}
-        onChange={handleLanguageChange}
+        onChange={(language): void =>
+          loading(
+            handleLanguageChange(language).then((): void =>
+              window.location.reload()
+            )
+          )
+        }
       />
       {typeof data.externalUser === 'object' && (
         <p>

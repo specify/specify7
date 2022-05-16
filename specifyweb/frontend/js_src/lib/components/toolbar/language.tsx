@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { ajax, ping } from '../../ajax';
+import { ajax, formData, ping } from '../../ajax';
 import { csrfToken } from '../../csrftoken';
 import { f } from '../../functools';
 import { cachableUrl } from '../../initialcontext';
@@ -13,18 +13,19 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';
 import { Select } from '../basic';
-import { supportLink } from '../errorboundary';
+import { crash, supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
-import type { PreferenceItemComponent } from '../preferences';
+import type { PreferenceItem, PreferenceItemComponent } from '../preferences';
+import { prefEvents } from '../preferenceshooks';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
     method: 'POST',
-    body: {
+    body: formData({
       language,
       csrfmiddlewaretoken: csrfToken,
-    },
+    }),
   }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
@@ -42,7 +43,7 @@ export function LanguageSelection<LANGUAGES extends string>({
 
   return (
     <>
-      {showSupportDialog ? (
+      {showSupportDialog && (
         <Dialog
           header={commonText('helpLocalizeSpecify')}
           onClose={(): void => setShowSupportDialog(false)}
@@ -53,7 +54,8 @@ export function LanguageSelection<LANGUAGES extends string>({
         >
           <p>{commonText('helpLocalizeSpecifyDialogText', supportLink)}</p>
         </Dialog>
-      ) : typeof languages === 'object' ? (
+      )}
+      {typeof languages === 'object' ? (
         <Select
           aria-label={commonText('language')}
           value={value}
@@ -80,11 +82,7 @@ export function LanguageSelection<LANGUAGES extends string>({
 
 const url = cachableUrl('/context/language/');
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({
-    value,
-    onChange: handleChange,
-    isReadOnly,
-  }) {
+  function LanguagePreferencesItem({ isReadOnly, definition }) {
     const [languages] = useAsyncState<IR<string>>(
       React.useCallback(
         async () =>
@@ -109,11 +107,22 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       ),
       false
     );
+    const [language, setLanguage] = React.useState(LANGUAGE);
     return (
       <LanguageSelection<Language>
         languages={languages ?? { loading: commonText('loading') }}
-        value={value}
-        onChange={handleChange}
+        value={language}
+        onChange={(language): void => {
+          /*
+           * This component does not actually save the current language into
+           * preferences but immediately sends it to the back-end.
+           * This is why it has an independent state and manually triggers
+           * save button
+           */
+          handleLanguageChange(language).catch(crash);
+          setLanguage(language);
+          prefEvents.trigger('update', definition as PreferenceItem<unknown>);
+        }}
         isReadOnly={isReadOnly || typeof languages === 'undefined'}
       />
     );
