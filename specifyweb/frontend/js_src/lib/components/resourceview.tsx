@@ -414,7 +414,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 )
               }
               className={{
-                content: `${className.formStyles} ${dialogClassNames.normalContainer}`,
+                content: `${className.formStyles} ${dialogClassNames.flexContent}`,
               }}
               onClose={(): void => {
                 if (isModified) setShowUnloadProtect(true);
