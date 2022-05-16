@@ -163,9 +163,7 @@ export function SecurityUser({
                 canCreateInviteLink ||
                 canSeeInstitutionalPolicies ? (
                   <section>
-                    <h4 className={className.headerGray}>
-                      {commonText('actions')}
-                    </h4>
+                    <h4>{commonText('actions')}</h4>
                     <div className="flex items-center gap-2">
                       {canSetPassword && <PasswordPlugin onSet={setPassword} />}
                       {canCreateInviteLink && (
@@ -241,12 +239,17 @@ export function SecurityUser({
                           onOpenRole={handleOpenRole}
                         />
                       ) : undefined}
-                      {!isSuperAdmin &&
+                      {
+                        /*
+                         * If user is a super admin, they have all policies, so
+                         * no sense in showing them
+                         */
+                        !isSuperAdmin &&
                         hasPermission(
                           '/permissions/policies/user',
                           'read',
                           collectionId
-                        ) && (
+                        ) ? (
                           <SecurityPolicies
                             policies={userPolicies?.[collectionId]}
                             isReadOnly={
@@ -271,7 +274,8 @@ export function SecurityUser({
                             collapsable={false}
                             limitHeight
                           />
-                        )}
+                        ) : undefined
+                      }
                       {typeof userResource.id === 'number' && (
                         <PreviewPermissions
                           userId={userResource.id}

@@ -18,18 +18,20 @@ import { QueryComboBox } from './querycombobox';
 import type { UserAgents } from './securityuserhooks';
 
 export type SetAgentsResponse = Partial<{
-  AgentInUseException: RA<number>;
-  MultipleAgentsException: RA<{
+  readonly AgentInUseException: RA<number>;
+  readonly MultipleAgentsException: RA<{
     readonly divisionid: number;
     readonly agentid1: number;
     readonly agentid2: number;
   }>;
-  MissingAgentForAccessibleCollection: {
+  readonly MissingAgentForAccessibleCollection: {
     readonly all_accessible_divisions: RA<number>;
     readonly missing_for_6: RA<number>;
     readonly missing_for_7: RA<number>;
   };
 }>;
+
+// FIXME: check for permissions here:
 
 /**
  * If user is missing agents for some accessible collections, this dialog

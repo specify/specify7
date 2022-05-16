@@ -382,6 +382,10 @@ export const fetchUserPermissions = async (
 
 export const fetchContext = fetchUserPermissions();
 
+/**
+ * Security errors are logged so that admins can see why a particular UI
+ * component is disabled or missing
+ */
 export const hasTablePermission = (
   tableName: keyof Tables,
   action: typeof tableActions[number],

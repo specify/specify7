@@ -198,7 +198,10 @@ export function RoleView({
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete', collectionId) ? (
           <Button.Red
-            disabled={typeof userRoles === 'undefined'}
+            disabled={
+              typeof userRoles === 'undefined' &&
+              typeof handleAddUser === 'function'
+            }
             onClick={
               userRoles?.length === 0
                 ? handleDelete

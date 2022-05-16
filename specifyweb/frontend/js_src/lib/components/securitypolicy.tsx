@@ -423,10 +423,11 @@ export function SecurityPolicies({
   return collapsable ? (
     <details open={isExpanded}>
       <Summary onToggle={setExpanded}>
-        <span className="inline-flex items-center gap-4">
-          {header}
-          {switchButton}
-        </span>
+        <span className="inline-flex items-center gap-4">{header}</span>
+        {/*
+         * There is no switchButton here as interactive elements should not
+         * be inside of <summary>
+         */}
       </Summary>
       <div className="flex flex-col gap-2 pt-2">{children}</div>
     </details>

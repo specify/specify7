@@ -115,10 +115,6 @@ export function SecurityInsitution({
     state.type === 'MainState' ? institution.name ?? undefined : undefined
   );
 
-  /*
-   * TODO: securityCollection.tsx and securityInstitution.tsx are very similar
-   *   probably could merge them
-   */
   return (
     <Container.Base className="flex-1">
       {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
@@ -147,12 +143,6 @@ export function SecurityInsitution({
                     {Object.values(libraryRoles).map((role) => (
                       <li key={role.id}>
                         <Button.LikeLink
-                          disabled={
-                            !hasPermission(
-                              '/permissions/library/roles',
-                              'update'
-                            )
-                          }
                           onClick={(): void =>
                             setState({
                               type: 'RoleState',

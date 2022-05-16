@@ -28,6 +28,7 @@ import { stringToColor, TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
 import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
+import { userInformation } from '../userinfo';
 
 export function PermissionAction({
   children,
@@ -326,7 +327,7 @@ function TreeView({
                             disabled
                             checked={rest.allowed}
                             className="cursor-pointer"
-                          />{' '}
+                          />
                           {actionToLabel(action)}
                         </Label.ForCheckbox>
                       </summary>
@@ -407,8 +408,9 @@ export function PreviewPermissions({
   const [query] = useAsyncState(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/policies/user', 'read', collectionId) &&
-        hasPermission('/permissions/roles', 'read', collectionId)
+        (hasPermission('/permissions/policies/user', 'read', collectionId) &&
+          hasPermission('/permissions/roles', 'read', collectionId)) ||
+        userId === userInformation.id
           ? queryUserPermissions(userId, collectionId).then(
               compressPermissionQuery
             )

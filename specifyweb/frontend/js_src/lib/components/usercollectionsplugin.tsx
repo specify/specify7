@@ -28,7 +28,10 @@ function UserCollectionsUi({
 }): JSX.Element | null {
   const [allCollections] = useAsyncState(
     React.useCallback(
-      async () => fetchCollection('Collection', { limit: 0 }),
+      async () =>
+        fetchCollection('Collection', { limit: 0 }).then(
+          ({ records }) => records
+        ),
       []
     ),
     true
@@ -36,6 +39,8 @@ function UserCollectionsUi({
   const [selected, setSelected] = useAsyncState(
     React.useCallback(
       async () =>
+        // FIXME: catch an error that may happen here due to lack of agents
+        // FIXME: SecurityUser chagne collection not loading preview and policies
         ajax<RA<number>>(`/context/user_collection_access_for_sp6/${userId}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
@@ -46,7 +51,7 @@ function UserCollectionsUi({
   const id = useId('user-collection-ui');
   const loading = React.useContext(LoadingContext);
 
-  return typeof allCollections === 'object' && Array.isArray(selected) ? (
+  return Array.isArray(allCollections) && Array.isArray(selected) ? (
     <Dialog
       header={adminText('userCollectionsPluginDialogTitle')}
       onClose={handleClose}
@@ -71,17 +76,16 @@ function UserCollectionsUi({
           )
         }
       >
-        {allCollections.records.map((collection) => (
+        {allCollections.map((collection) => (
           <Label.ForCheckbox key={collection.id}>
             <Input.Checkbox
               checked={selected.includes(collection.id)}
               onChange={(): void =>
                 setSelected(toggleItem(selected, collection.id))
               }
-              isReadOnly={hasPermission(
-                '/admin/user/sp6/collection_access',
-                'update'
-              )}
+              isReadOnly={
+                !hasPermission('/admin/user/sp6/collection_access', 'update')
+              }
             />
             {collection.collectionName}
           </Label.ForCheckbox>
@@ -103,6 +107,7 @@ export function UserCollectionsPlugin({
         onClick={handleOpen}
         className="w-fit"
         disabled={
+          // Admin users have access to all collections
           typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
         }
         title={

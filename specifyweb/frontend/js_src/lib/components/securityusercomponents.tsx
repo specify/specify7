@@ -8,7 +8,11 @@ import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
-import { collectionAccessResource, hasPermission } from '../permissions';
+import {
+  collectionAccessResource,
+  hasPermission,
+  hasTablePermission,
+} from '../permissions';
 import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import { anyResource } from '../securityutils';
@@ -128,16 +132,16 @@ export function UserRoles({
                           f
                             .maybe(userRoles[collectionId], (roles) =>
                               roles.some(({ roleId }) => roleId === role.id)
-                                ? [
+                                ? roles.filter(
+                                    ({ roleId }) => roleId !== role.id
+                                  )
+                                : [
                                     ...roles,
                                     {
                                       roleId: role.id,
                                       roleName: role.name,
                                     },
                                   ]
-                                : roles.filter(
-                                    ({ roleId }) => roleId !== role.id
-                                  )
                             )
                             /*
                              * Sort all roles by ID, so that can easier detect if user roles changed
@@ -176,10 +180,11 @@ export function LegacyPermissions({
     <section className="flex flex-col gap-2">
       <h4 className={className.headerGray}>{adminText('legacyPermissions')}</h4>
       <div className="flex gap-2">
-        <AdminStatusPlugin user={userResource} mode={mode} />
-        {hasPermission('/admin/user/sp6/collection_access', 'read') && (
+        <AdminStatusPlugin user={userResource} />
+        {hasPermission('/admin/user/sp6/collection_access', 'read') &&
+        hasTablePermission('Collection', 'read') ? (
           <UserCollectionsPlugin user={userResource} />
-        )}
+        ) : undefined}
       </div>
       {f.var(
         defined(schema.models.SpecifyUser.getLiteralField('userType')),
@@ -261,6 +266,8 @@ export function SetCollection({
   );
 }
 
+// FIXME: test this part (setting agent in one division shouldn't set it in
+//   all
 export function CollectionAccess({
   userPolicies,
   onChange: handleChange,

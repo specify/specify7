@@ -9,7 +9,6 @@ import { ajax, formData } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
-import type { FormMode } from '../parseform';
 import { hasPermission } from '../permissions';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
@@ -18,10 +17,8 @@ import { useResource } from './resource';
 
 export function AdminStatusPlugin({
   user: resource,
-  mode,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [user, setUser] = useResource(resource);
@@ -31,10 +28,11 @@ export function AdminStatusPlugin({
     <Button.Small
       className="w-fit"
       disabled={
-        mode === 'view' ||
         !hasPermission('/admin/user/sp6/is_admin', 'update') ||
         resource.isNew() ||
+        // Only managers can be admins
         user.userType != 'Manager' ||
+        // Can't remove admin status from yourself
         (user.isAdmin && isCurrentUser)
       }
       title={
@@ -51,7 +49,7 @@ export function AdminStatusPlugin({
           ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
             method: 'POST',
             body: formData({
-              admin_status: user.isAdmin,
+              admin_status: !user.isAdmin,
             }),
             headers: {
               Accept: 'text/plain',

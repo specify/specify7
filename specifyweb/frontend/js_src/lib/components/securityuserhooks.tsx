@@ -191,12 +191,6 @@ export function useUserAgents(
   return userAgents;
 }
 
-/*
- * FIXME: test permisions with library roles
- * FIXME: test permissions with institution
- * FIXME: test security panel in general
- */
-
 /** Fetching user policies */
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
