@@ -462,7 +462,7 @@ class UserRoles(LoginRequiredMixin, View):
         check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.read])
 
         data = [
-            serialize_role(ur.role)
+            {'id': ur.role.id, 'name': ur.role.name}
             for ur in models.UserRole.objects.select_related('role').filter(
                     role__collection_id=collectionid,
                     specifyuser_id=userid
@@ -501,28 +501,15 @@ user_roles = openapi(schema={
                     "application/json": {
                         "schema": {
                             "type": "array",
+                            "description": "List of roles the user is assigned.",
                             "items": {
                                 "type": "object",
                                 "properties": {
                                     "id": { "type": "integer", "description": "The role id." },
                                     "name": { "type": "string", "description": "The role name." },
-                                    "policies": {
-                                        "type": "object",
-                                        "description": "The resources.",
-                                        "example": {
-                                            "/table/agent": ["read"],
-                                            "/table/collectionobject": ["create", "read", "update", "delete"],
-                                        },
-                                        "additionalProperties": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "description": "The supported actions for the resource."
-                                            }
-                                        }
-                                    }
+
                                 },
-                                'required': ['id', 'name', 'policies'],
+                                'required': ['id', 'name'],
                                 'additionalProperties': False
                             }
                         }

@@ -317,7 +317,7 @@ class PermissionsApiTest(ApiTests):
         # check user roles contains assigned role
         response = c.get(f'/permissions/user_roles/{self.collection.id}/{self.specifyuser.id}/')
         data = json.loads(response.content)
-        self.assertEqual(data, [role])
+        self.assertEqual(data, [{'id': role['id'], 'name': role['name']}])
 
         # set user roles to empty
         response = c.put(
