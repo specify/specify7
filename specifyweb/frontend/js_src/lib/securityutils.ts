@@ -3,7 +3,13 @@ import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
 import { f } from './functools';
-import { group, lowerToHuman, replaceItem, toLowerCase } from './helpers';
+import {
+  group,
+  lowerToHuman,
+  replaceItem,
+  replaceKey,
+  toLowerCase,
+} from './helpers';
 import { adminText } from './localization/admin';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
@@ -72,19 +78,27 @@ export const getRegistriesFromPath = (
     [buildRegistry()]
   );
 
-/**
- * Like getRegistriesFromPath, but excludes institutional policies
- */
+/** Like getRegistriesFromPath, but excludes institutional policies */
 export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
   const registries = getRegistriesFromPath(resourceParts);
   return registries.map((part, index) =>
     typeof part === 'undefined'
       ? undefined
       : Object.fromEntries(
-          Object.entries(part).filter(
-            ([resource, { isInstitutional }]) =>
-              !isInstitutional || resource === resourceParts[index]
-          )
+          Object.entries(part).map(([resource, data]) => [
+            resource,
+            /*
+             * Put institutional policy into a separate group, unless
+             * it is selected
+             */
+            data.isInstitutional && resource !== resourceParts[index]
+              ? replaceKey(
+                  data,
+                  'groupName',
+                  adminText('excludedInstitutionalPolicies')
+                )
+              : data,
+          ])
         )
   );
 }

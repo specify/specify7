@@ -199,27 +199,34 @@ export function CollectionView({
       setRoles(replaceKey(defined(roles), role.id.toString(), role))
     );
 
-  const createRole = async (role: NewRole): Promise<void> =>
-    ajax<BackEndRole>(
-      `/permissions/roles/${collection.id}/`,
-      {
-        method: 'POST',
-        body: {
-          ...removeKey(role, 'id'),
-          policies: decompressPolicies(role.policies),
-        },
-        headers: { Accept: 'application/json' },
-      },
-      { expectedResponseCodes: [Http.CREATED] }
-    ).then(({ data: role }) =>
-      setRoles((roles) => ({
-        ...roles,
-        [role.id]: {
-          ...role,
-          policies: processPolicies(role.policies),
-        },
-      }))
-    );
+  const createRole = async (role: Role | NewRole): Promise<void> =>
+    typeof role.id === 'number'
+      ? setRoles((roles) => ({
+          ...roles,
+          [defined(role.id)]: {
+            ...role,
+          },
+        }))
+      : ajax<BackEndRole>(
+          `/permissions/roles/${collection.id}/`,
+          {
+            method: 'POST',
+            body: {
+              ...removeKey(role, 'id'),
+              policies: decompressPolicies(role.policies),
+            },
+            headers: { Accept: 'application/json' },
+          },
+          { expectedResponseCodes: [Http.CREATED] }
+        ).then(({ data: role }) =>
+          setRoles((roles) => ({
+            ...roles,
+            [role.id]: {
+              ...role,
+              policies: processPolicies(role.policies),
+            },
+          }))
+        );
 
   useTitle(
     state.type === 'MainState'
@@ -279,11 +286,12 @@ export function CollectionView({
               </div>
               <div className="flex gap-2">
                 {hasPermission('/permissions/roles', 'create', collection.id) ||
-                hasPermission(
+                (hasPermission(
                   '/permissions/roles',
                   'copy_from_library',
                   collection.id
-                ) ? (
+                ) &&
+                  hasPermission('/permissions/library/roles', 'read')) ? (
                   <Button.Green
                     onClick={(): void =>
                       setState({
@@ -387,14 +395,21 @@ export function CollectionView({
           libraryRoles={libraryRoles}
           collections={collections}
           onCreated={(role): void =>
-            setState({
-              type: 'RoleState',
-              role,
-              userRoles:
-                userRoles?.filter(({ roles }) =>
-                  roles.some(({ roleId }) => roleId === initialRoleId)
-                ) ?? [],
-            })
+            loading(
+              (typeof role.id === 'number'
+                ? createRole(role)
+                : Promise.resolve(undefined)
+              ).then(() =>
+                setState({
+                  type: 'RoleState',
+                  role,
+                  userRoles:
+                    userRoles?.filter(({ roles }) =>
+                      roles.some(({ roleId }) => roleId === initialRoleId)
+                    ) ?? [],
+                })
+              )
+            )
           }
           onClose={(): void =>
             setState({

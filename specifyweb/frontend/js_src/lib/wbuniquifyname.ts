@@ -1,16 +1,22 @@
 import { ajax } from './ajax';
 import type { DatasetBrief } from './components/wbplanview';
+import { f } from './functools';
+import { escapeRegExp } from './helpers';
 import type { RA } from './types';
 import { filterArray } from './types';
-import { escapeRegExp } from './helpers';
-import { f } from './functools';
 
 const MAX_NAME_LENGTH = 64;
 
 export function getUniqueName(
   name: string,
   usedNames: RA<string>,
-  // Can get this number from SQL schema for a given field
+  /**
+   * In the process of making the name unique, its length may increase.
+   * This trims the string if needed, while still keeping it unique
+   *
+   * @remarks
+   * Can get this number from SQL schema for a given field
+   */
   maxLength: number = Number.POSITIVE_INFINITY
 ): string {
   if (!usedNames.includes(name)) return name;
@@ -27,16 +33,13 @@ export function getUniqueName(
         ),
       ])
     ) + 1;
+  const uniquePart = ` (${newIndex})`;
   const newName =
     newIndex === 1 && length === 0
       ? strippedName
-      : `${strippedName} (${newIndex})`;
+      : `${strippedName}${uniquePart}`;
   return newName.length > maxLength
-    ? getUniqueName(
-        name.slice(0, -1 * ` (${newIndex})`.length),
-        usedNames,
-        maxLength
-      )
+    ? getUniqueName(name.slice(0, -1 * uniquePart.length), usedNames, maxLength)
     : newName;
 }
 

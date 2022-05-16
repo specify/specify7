@@ -18,20 +18,20 @@ import type { RA } from './types';
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
   readonly forms: {
-    // Print label on form save
+    /** Print label on form save */
     readonly printOnSave: boolean;
   };
   readonly wbPlanViewUi: {
-    // Whether to show less commonly used tables when selected base table
+    /** Whether to show less commonly used tables when selected base table */
     readonly showHiddenTables: boolean;
-    // Whether to show fields hidden in schema in the mapper
+    /** Whether to show fields hidden in schema in the mapper */
     readonly showHiddenFields: boolean;
-    // Whether to show Mapping Editor in the mapper
+    /** Whether to show Mapping Editor in the mapper */
     readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
   };
   readonly queryBuilder: {
-    // Whether to show fields hidden in schema in the query builder
+    /** Whether to show fields hidden in schema in the query builder */
     readonly showHiddenFields: boolean;
     readonly mappingViewHeight: number;
   };
@@ -39,28 +39,24 @@ export type CacheDefinitions = {
     readonly showHiddenTables: boolean;
   };
   readonly leaflet: {
-    // eslint-disable-next-line multiline-comment-style, capitalized-comments
-    // prettier-ignore
-    // Remembers the selected base layer
-    readonly [Property in `currentLayer${LeafletCacheSalt}`]: string;
+    readonly /** Remembers the selected base layer */
+    [Property in `currentLayer${LeafletCacheSalt}`]: string;
   } & {
-    // eslint-disable-next-line multiline-comment-style, capitalized-comments
-    // prettier-ignore
-    // Remembers the chosen overlays (markers/polygons/boundaries/...)
-    readonly [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
+    readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
+    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
   };
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
   };
   readonly tree: {
-    readonly // Collapsed ranks in a given tree
+    readonly /** Collapsed ranks in a given tree */
     [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
   } & {
-    readonly // Open nodes in a given tree
+    readonly /** Open nodes in a given tree */
     [key in `conformation${AnyTree['tableName']}`]: string;
   };
   readonly workBenchSortConfig: {
-    readonly /*
+    readonly /**
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
@@ -83,10 +79,11 @@ export type CacheDefinitions = {
       | State<'all'>
       | State<'unused'>
       | State<'byTable', { readonly tableName: keyof Tables }>;
-    // Attachments grid scale
+    /** Attachments grid scale */
     readonly scale: number;
   };
   readonly geoLocate: {
+    /** Remember dialog window dimentions from the last session */
     readonly width: number;
     readonly height: number;
   };
@@ -113,5 +110,6 @@ export type CacheDefinitions = {
     readonly previewCollapsed: boolean;
     readonly advancedPreviewCollapsed: boolean;
     readonly institutionPoliciesExpanded: boolean;
+    readonly excludedPoliciesMessageVisible: boolean;
   };
 };

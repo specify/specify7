@@ -17,9 +17,9 @@
  */
 
 import type { CacheDefinitions } from './cachedefinitions';
-import type { R } from './types';
-import { removeKey } from './helpers';
 import { eventListener } from './events';
+import { removeKey } from './helpers';
+import type { R } from './types';
 
 /** Determines how persistent bucket's storage would be */
 export type BucketType =
@@ -31,7 +31,15 @@ export type BucketType =
 type BucketData = {
   // A dictionary of cache records
   records: R<{
-    // The amount times a particular cache value was used
+    /*
+     * The amount of times a particular cache value was used.
+     * This was needed for the automatic cache trimming algorithm when cache size
+     * was growing close to the limit. Since data model is no longer stored
+     * in localStorage, there is lots of space available and this is no longer
+     * needed.
+     * It remains mostly for analytical purposes to help track how many times
+     * a given page has been rendered
+     */
     useCount: number;
     // The value that is stored in a particular cache record
     value: unknown;
@@ -53,7 +61,8 @@ const buckets: R<BucketData> = {};
  * to localStorage.
  *
  * It is used to avoid collisions with other applications when running Specify 7
- * in development on localhost
+ * in development on localhost as well as to differentiate the localStorage
+ * usages by this component from other components and third party libraries.
  */
 const cachePrefix = 'specify7-';
 

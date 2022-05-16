@@ -514,4 +514,20 @@ export const adminText = createDictionary({
     ca: 'Domain tables',
     'es-es': 'Domain tables',
   },
+  excludedInstitutionalPolicies: {
+    'en-us': 'Excluded institutional policies:',
+    'ru-ru': 'Excluded institutional policies:',
+    ca: 'Excluded institutional policies:',
+    'es-es': 'Excluded institutional policies:',
+  },
+  excludedInstitutionalPoliciesDescription: {
+    'en-us': `Some policies apply only on the institutional level, and so are
+      removed from these lists`,
+    'ru-ru': `Some policies apply only on the institutional level, and so are
+      removed from these lists`,
+    ca: `Some policies apply only on the institutional level, and so are
+      removed from these lists`,
+    'es-es': `Some policies apply only on the institutional level, and so are
+      removed from these lists`,
+  },
 });

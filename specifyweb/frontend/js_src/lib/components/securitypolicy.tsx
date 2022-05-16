@@ -75,6 +75,7 @@ function PolicyView({
               children: {},
               groupName: '',
               label: lowerToHuman(resourceParts[index]),
+              isInstitutional: false,
             },
           }
         : {}),
@@ -124,7 +125,15 @@ function PolicyView({
                     const child = Object.keys(childResources).find(
                       (part) => part !== anyResource
                     );
-                    if (typeof child === 'undefined') break;
+                    if (
+                      typeof child === 'undefined' ||
+                      // Don't select the part if it is disabled
+                      (childResources[child].actions.length > 0 &&
+                        isResourceMapped(
+                          partsToResourceName([...parts, child])
+                        ))
+                    )
+                      break;
                     parts.push(child);
                   }
                   handleChange({
@@ -143,7 +152,11 @@ function PolicyView({
                 ).map(([groupName, permissions]) =>
                   f.var(
                     permissions.map(
-                      ([partName, { label, actions }], _index, { length }) =>
+                      (
+                        [partName, { label, actions, isInstitutional }],
+                        _index,
+                        { length }
+                      ) =>
                         /*
                          * Don't show Any if there is only one other option,
                          * and it is the default value
@@ -155,13 +168,22 @@ function PolicyView({
                             key={partName}
                             value={partName}
                             disabled={
-                              actions.length > 0 &&
-                              isResourceMapped(
-                                partsToResourceName([
-                                  ...resourceNameToParts(resource),
-                                  partName,
-                                ])
-                              )
+                              /*
+                               * Disable terminal resource parts if they are
+                               * Already mapped
+                               */
+                              (actions.length > 0 &&
+                                isResourceMapped(
+                                  partsToResourceName([
+                                    ...resourceNameToParts(resource),
+                                    partName,
+                                  ])
+                                )) ||
+                              /*
+                               * Disable institutional policies on the
+                               * collection level
+                               */
+                              (scope !== 'institution' && isInstitutional)
                             }
                           >
                             {label}
@@ -303,12 +325,17 @@ export function PoliciesView({
                   ? replaceItem(
                       policies,
                       index,
+                      /*
+                       * Only auto-modify the list of actions if user changed
+                       * the resource, not if user changed actions
+                       */
                       policies[index].resource === policy.resource
                         ? policy
                         : f.var(
                             getAllActions(policy.resource),
                             (possibleActions) =>
                               f.var(
+                                // Filter out non-existing actions
                                 policy.actions.filter((action) =>
                                   possibleActions.includes(action)
                                 ),
@@ -319,8 +346,8 @@ export function PoliciesView({
                                     /*
                                      * If new policy has only one action,
                                      * check it by default.
-                                     * If new policy is for a table, check
-                                     * "read" by default
+                                     * If new policy is for a CRUD resource,
+                                     * check "read" by default
                                      */
                                     possibleActions.length === 1
                                       ? possibleActions
@@ -338,6 +365,7 @@ export function PoliciesView({
           />
         ))}
       </Ul>
+      {scope !== 'institution' && <ExcludedPolicyWarning />}
       {!isReadOnly && (
         <div>
           <Button.Green
@@ -406,4 +434,26 @@ export function PoliciesView({
       {children}
     </fieldset>
   );
+}
+
+function ExcludedPolicyWarning(): JSX.Element | null {
+  const [isVisible = true, setIsVisible] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'excludedPoliciesMessageVisible',
+    defaultValue: true,
+    staleWhileRefresh: false,
+  });
+  return isVisible ? (
+    <div className="dark:bg-neutral-500 flex gap-2 p-2 bg-gray-300 rounded">
+      <span className="flex-1">
+        {adminText('excludedInstitutionalPoliciesDescription')}
+      </span>
+      <Button.Icon
+        icon="x"
+        onClick={(): void => setIsVisible(false)}
+        title={commonText('dismiss')}
+        aria-label={commonText('dismiss')}
+      />
+    </div>
+  ) : null;
 }

@@ -92,7 +92,7 @@ export function RoleView({
         {icons.arrowLeft}
         {parentName}
       </Button.LikeLink>
-      <div className="flex flex-col gap-2 overflow-scroll">
+      <div className="flex flex-col flex-1 gap-2 overflow-scroll">
         {!isReadOnly && (
           <Label.Generic>
             {commonText('name')}

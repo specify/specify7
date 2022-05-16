@@ -1,10 +1,11 @@
 import json
 from collections import defaultdict
+from typing import Dict, Union, Optional, List
+
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction, connection
 from django.views import View
-from typing import Dict, Union, Optional, List
 
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import openapi
@@ -135,8 +136,8 @@ policy_registry = openapi(schema={
 
 class PoliciesUserPT(PermissionTarget):
     resource = "/permissions/policies/user"
-    update = PermissionTargetAction()
     read = PermissionTargetAction()
+    update = PermissionTargetAction()
 
 
 class AllUserPolicies(LoginRequiredMixin, View):
@@ -396,8 +397,8 @@ def user_policies_institution(request, userid: int) -> http.HttpResponse:
 
 class UserRolesPT(PermissionTarget):
     resource = "/permissions/user/roles"
-    update = PermissionTargetAction()
     read = PermissionTargetAction()
+    update = PermissionTargetAction()
 
 class AllUserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
@@ -569,8 +570,8 @@ def serialize_role(role: Union[models.Role, models.LibraryRole]) -> Dict:
 
 class RolePT(PermissionTarget):
     resource = "/permissions/roles"
-    create = PermissionTargetAction()
     read = PermissionTargetAction()
+    create = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
     copy_from_library = PermissionTargetAction()
@@ -802,7 +803,7 @@ class Roles(LoginRequiredMixin, View):
             with transaction.atomic():
                 r = models.Role.objects.create(
                     collection_id=collectionid,
-                    name=lr.name,
+                    name=data['name'] if 'name' in data else lr.name,
                     description=lr.description,
                 )
 
@@ -877,7 +878,14 @@ roles = openapi(schema={
                                 "type": "object",
                                 "description": "Copy a role from the role library.",
                                 "properties": {
-                                    "libraryroleid": { "type": "integer", "description": "The id of the library role to copy." }
+                                    "libraryroleid": {
+                                        "type": "integer",
+                                        "description": "The id of the library role to copy."
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Name of the new role. If not provided, library role name would be used."
+                                    }
                                 },
                                 "additionalProperties": False,
                                 "required": ["libraryroleid"],
@@ -951,8 +959,8 @@ roles = openapi(schema={
 
 class LibraryRolePT(PermissionTarget):
     resource = "/permissions/library/roles"
-    create = PermissionTargetAction()
     read = PermissionTargetAction()
+    create = PermissionTargetAction()
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 

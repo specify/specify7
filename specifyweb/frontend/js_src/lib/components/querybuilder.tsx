@@ -171,7 +171,6 @@ export function QueryBuilder({
 
   // FIXME: before executitng the query check if there are any no-permission fields
   // const canExecuteQuery = hasTablePermission(getModelById(query.get('contextTableId')).name,'read');
-  // FIXME: test tree query without access to treedef items
 
   return typeof treeRanks === 'object' ? (
     <Container.Full
