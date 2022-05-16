@@ -470,7 +470,7 @@ export const preferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
           }),
           maxWidth: defineItem<number>({
-            title: preferencesText('maxWidth'),
+            title: preferencesText('maxFormWidth'),
             requiresReload: false,
             visible: true,
             defaultValue: 1200,
@@ -479,6 +479,13 @@ export const preferenceDefinitions = {
               min: 100,
               max: 10_000,
             },
+          }),
+          limitMaxFieldWidth: defineItem<boolean>({
+            title: preferencesText('limitMaxFieldWidth'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           specifyNetworkBadge: defineItem<boolean>({
             title: preferencesText('specifyNetworkBadge'),

@@ -155,6 +155,7 @@ export const className = {
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
   formTitle: 'text-lg font-bold',
   formStyles,
+  limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
@@ -207,14 +208,14 @@ export const DataEntry = {
     ({
       viewDefinition,
       display,
-      className,
+      className: classNameString,
       flexibleColumnWidth,
       style,
       ...props
     }) => ({
       className: `${display === 'inline' ? 'inline-grid' : 'grid'} ${
-        className ?? ''
-      }`,
+        classNameString ?? ''
+      } ${viewDefinition.columns.length === 1 ? className.limitedWidth : ''}`,
       style: {
         gridTemplateColumns: viewDefinition.columns
           .map((width) =>

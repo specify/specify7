@@ -209,7 +209,7 @@ function DataSets({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href={'/workbench-import/'}>
+              <Link.Blue href={'/specify/workbench-import/'}>
                 {wbText('importFile')}
               </Link.Blue>
               <Button.Blue onClick={createEmptyDataSet}>

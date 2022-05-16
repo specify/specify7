@@ -434,7 +434,7 @@ export function SecurityPolicies({
   ) : (
     <fieldset className="flex flex-col gap-2">
       <div className="flex items-center gap-4">
-        <h4 className={className.headerGray}>{header}</h4>
+        <h4>{header}</h4>
         {switchButton}
       </div>
       {children}

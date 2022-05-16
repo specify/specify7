@@ -408,10 +408,10 @@ export const commonText = createDictionary({
     'es-es': 'Current Collection',
   },
   actions: {
-    'en-us': 'Actions:',
-    'ru-ru': 'Действия:',
-    ca: 'Accions:',
-    'es-es': 'Actions:',
+    'en-us': 'Actions',
+    'ru-ru': 'Действия',
+    ca: 'Accions',
+    'es-es': 'Actions',
   },
 
   // Login screen

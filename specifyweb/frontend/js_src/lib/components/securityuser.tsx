@@ -165,7 +165,12 @@ export function SecurityUser({
                   <section>
                     <h4>{commonText('actions')}</h4>
                     <div className="flex items-center gap-2">
-                      {canSetPassword && <PasswordPlugin onSet={setPassword} />}
+                      {canSetPassword && (
+                        <PasswordPlugin
+                          onSet={setPassword}
+                          isNew={userResource.isNew()}
+                        />
+                      )}
                       {canCreateInviteLink && (
                         <UserInviteLinkPlugin
                           user={user}
@@ -292,7 +297,7 @@ export function SecurityUser({
                 </SetPermissionContext>
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
-              'overflow-y-auto -mx-4 p-4 pt-0 flex-1'
+              'overflow-y-auto -mx-4 p-4 pt-0 flex-1 gap-6'
             )}
             <DataEntry.Footer>
               {changesMade ? (

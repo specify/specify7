@@ -252,7 +252,7 @@ const WBView = Backbone.View.extend({
               buttons: (
                 <>
                   <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Link.Blue href={`/workbench-plan/${this.dataset.id}/`}>
+                  <Link.Blue href={`/specify/workbench-plan/${this.dataset.id}/`}>
                     {commonText('create')}
                   </Link.Blue>
                 </>
@@ -1940,7 +1940,7 @@ const WBView = Backbone.View.extend({
         buttons: (
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Link.Blue href={`/workbench-plan/${this.dataset.id}/`}>
+            <Link.Blue href={`/specify/workbench-plan/${this.dataset.id}/`}>
               {commonText('create')}
             </Link.Blue>
           </>

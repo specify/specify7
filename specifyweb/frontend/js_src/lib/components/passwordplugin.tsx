@@ -77,15 +77,17 @@ export function PasswordResetDialog({
 }
 
 export function PasswordPlugin({
+  isNew,
   onSet: handleSet,
 }: {
+  readonly isNew: boolean;
   readonly onSet: (password: string) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {adminText('setPassword')}
+        {isNew ? adminText('setPassword') : adminText('changePassword')}
       </Button.Small>
       {isOpen && (
         <PasswordResetDialog onSet={handleSet} onClose={handleClose} />

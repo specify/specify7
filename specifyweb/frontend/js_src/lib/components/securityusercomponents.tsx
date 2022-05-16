@@ -112,7 +112,7 @@ export function UserRoles({
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
-        <span className={className.headerGray}>{adminText('userRoles')}:</span>
+        <span>{adminText('userRoles')}:</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
@@ -169,48 +169,6 @@ export function UserRoles({
   ) : null;
 }
 
-export function LegacyPermissions({
-  userResource,
-  mode,
-}: {
-  readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
-}): JSX.Element {
-  return (
-    <section className="flex flex-col gap-2">
-      <h4 className={className.headerGray}>{adminText('legacyPermissions')}</h4>
-      <div className="flex gap-2">
-        <AdminStatusPlugin user={userResource} />
-        {hasPermission('/admin/user/sp6/collection_access', 'read') &&
-        hasTablePermission('Collection', 'read') ? (
-          <UserCollectionsPlugin user={userResource} />
-        ) : undefined}
-      </div>
-      {f.var(
-        defined(schema.models.SpecifyUser.getLiteralField('userType')),
-        (userType) => (
-          <Label.Generic title={userType.getLocalizedDesc()}>
-            {userType.label}
-            <ComboBox
-              id={undefined}
-              model={userResource}
-              resource={userResource}
-              field={userType}
-              fieldName={userType.name}
-              pickListName={undefined}
-              defaultValue={undefined}
-              mode={mode}
-              isRequired={true}
-              isDisabled={false}
-              formType="form"
-            />
-          </Label.Generic>
-        )
-      )}
-    </section>
-  );
-}
-
 export function SetPasswordPrompt({
   onClose: handleClose,
   onSet: handleSet,
@@ -248,10 +206,8 @@ export function SetCollection({
   readonly onChange: (collectionId: number) => void;
 }): JSX.Element {
   return (
-    <Label.Generic>
-      <span className={className.headerGray}>
-        {schema.models.Collection.label}
-      </span>
+    <Label.Generic className={className.limitedWidth}>
+      {schema.models.Collection.label}
       <Select
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}
@@ -305,7 +261,7 @@ export function CollectionAccess({
   return (
     <div className="flex flex-col gap-4">
       {hasPermission('/permissions/policies/user', 'read', collectionId) && (
-        <Label.ForCheckbox>
+        <Label.ForCheckbox className={className.limitedWidth}>
           <Input.Checkbox
             isReadOnly={
               !hasPermission(
@@ -341,7 +297,7 @@ export function CollectionAccess({
           {adminText('collectionAccess')}
         </Label.ForCheckbox>
       )}
-      <Label.Generic>
+      <Label.Generic className={className.limitedWidth}>
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
@@ -371,11 +327,7 @@ export function UserIdentityProviders({
   return typeof identityProviders === 'undefined' ||
     Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
-      <legend>
-        <span className={className.headerGray}>
-          {adminText('externalIdentityProviders')}
-        </span>
-      </legend>
+      <legend>{adminText('externalIdentityProviders')}</legend>
       <Ul className="flex flex-col gap-1">
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
@@ -387,5 +339,50 @@ export function UserIdentityProviders({
         ))}
       </Ul>
     </fieldset>
+  );
+}
+
+export function LegacyPermissions({
+  userResource,
+  mode,
+}: {
+  readonly userResource: SpecifyResource<SpecifyUser>;
+  readonly mode: FormMode;
+}): JSX.Element {
+  return (
+    <section className="flex flex-col gap-2">
+      <h4>{adminText('legacyPermissions')}</h4>
+      <div className="flex gap-2">
+        <AdminStatusPlugin user={userResource} />
+        {hasPermission('/admin/user/sp6/collection_access', 'read') &&
+        hasTablePermission('Collection', 'read') ? (
+          <UserCollectionsPlugin user={userResource} />
+        ) : undefined}
+      </div>
+      {f.var(
+        defined(schema.models.SpecifyUser.getLiteralField('userType')),
+        (userType) => (
+          <Label.Generic
+            title={userType.getLocalizedDesc()}
+            className={className.limitedWidth}
+          >
+            {userType.label}
+            <ComboBox
+              id={undefined}
+              model={userResource}
+              resource={userResource}
+              field={userType}
+              fieldName={userType.name}
+              pickListName={undefined}
+              defaultValue={undefined}
+              mode={mode}
+              isRequired={true}
+              isDisabled={false}
+              formType="form"
+            />
+          </Label.Generic>
+        )
+      )}
+    </section>
   );
 }

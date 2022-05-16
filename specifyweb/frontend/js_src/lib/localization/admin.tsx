@@ -530,4 +530,10 @@ export const adminText = createDictionary({
     'es-es': `Some policies apply only on the institutional level, and so are
       removed from these lists`,
   },
+  changePassword: {
+    'en-us': 'Change Password',
+    'ru-ru': 'Change Password',
+    ca: 'Change Password',
+    'es-es': 'Change Password',
+  },
 });

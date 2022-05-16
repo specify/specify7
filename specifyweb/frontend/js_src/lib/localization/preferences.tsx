@@ -126,7 +126,7 @@ export const preferencesText = createDictionary({
     ca: '(default font)',
     'es-es': '(default font)',
   },
-  maxWidth: {
+  maxFormWidth: {
     'en-us': 'Max form width',
     'ru-ru': 'Максимальная ширина формы',
     ca: 'Max form width',
@@ -884,5 +884,11 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Rounded corners',
     ca: 'Rounded corners',
     'es-es': 'Rounded corners',
+  },
+  limitMaxFieldWidth: {
+    'en-us': 'Limit max field width',
+    'ru-ru': 'Limit max field width',
+    ca: 'Limit max field width',
+    'es-es': 'Limit max field width',
   },
 });

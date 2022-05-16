@@ -76,7 +76,7 @@ function WbView({
         </Button.Small>
         <span className="flex-1 -ml-1" />
         <Button.Small className="wb-show-plan hidden">Show Plan</Button.Small>
-        <Link.LikeButton href={`/workbench-plan/${dataSetId}/`}>
+        <Link.LikeButton href={`/specify/workbench-plan/${dataSetId}/`}>
           {wbText('dataMapper')}
         </Link.LikeButton>
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (

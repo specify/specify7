@@ -212,6 +212,7 @@ export function SetCssVariables(): null {
       darkFormBackground: getUserPref('form', 'appearance', 'darkBackground'),
       formFontFamily: getUserPref('form', 'ui', 'fontFamily'),
       formFontSize: getUserPref('form', 'ui', 'fontSize'),
+      limitMaxFieldWidth: getUserPref('form', 'ui', 'limitMaxFieldWidth'),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [version]
@@ -365,6 +366,15 @@ export function SetCssVariables(): null {
         `${prefs.formFontSize}%`
       ),
     [prefs.formFontSize]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--max-field-width',
+        `${prefs.limitMaxFieldWidth ? '40' : '4000'}rem`
+      ),
+    [prefs.limitMaxFieldWidth]
   );
 
   return null;

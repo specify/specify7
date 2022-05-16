@@ -11,7 +11,7 @@ import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Form, Input, Label, Submit, Ul } from './basic';
+import { Button, className, Form, Input, Label, Submit, Ul } from './basic';
 import { AppTitle, AutoGrowTextArea } from './common';
 import { useLiveState, useTriggerState } from './hooks';
 import { icons } from './icons';
@@ -95,7 +95,7 @@ export function RoleView({
       </Button.LikeLink>
       <div className="flex flex-col flex-1 gap-2 overflow-scroll">
         {!isReadOnly && (
-          <Label.Generic>
+          <Label.Generic className={className.limitedWidth}>
             {commonText('name')}
             <Input.Text
               value={role.name}
@@ -107,7 +107,7 @@ export function RoleView({
             />
           </Label.Generic>
         )}
-        <Label.Generic>
+        <Label.Generic className={className.limitedWidth}>
           {commonText('description')}
           <AutoGrowTextArea
             isReadOnly={isReadOnly}

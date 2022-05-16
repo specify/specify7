@@ -388,7 +388,7 @@ export function WbPlanViewMapper(props: {
           )}
           <Link.LikeButton
             aria-haspopup="dialog"
-            href={`/workbench/${props.dataset.id}/`}
+            href={`/specify/workbench/${props.dataset.id}/`}
           >
             {props.isReadOnly ? wbText('dataEditor') : commonText('cancel')}
           </Link.LikeButton>
