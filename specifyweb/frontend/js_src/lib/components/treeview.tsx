@@ -20,7 +20,6 @@ import {
   deserializeConformation,
   fetchRows,
   fetchStats,
-  pipe,
   serializeConformation,
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
@@ -38,6 +37,7 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { f } from '../functools';
 
 const defaultCacheValue = [] as const;
 
@@ -301,11 +301,12 @@ function TreeView<SCHEMA extends AnyTree>({
                           )
                       : undefined
                   }
+                  className="normal-case"
                 >
-                  {pipe(
-                    rank.title || rank.name,
-                    collapsedRanks?.includes(rank.rankId) ?? false,
-                    (name) => name[0]
+                  {f.var(rank.title || rank.name, (rankName) =>
+                    collapsedRanks?.includes(rank.rankId) ?? false
+                      ? rankName[0]
+                      : rankName
                   )}
                 </Button.LikeLink>
                 {isEditingRanks &&

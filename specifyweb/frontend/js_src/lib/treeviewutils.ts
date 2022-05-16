@@ -2,11 +2,11 @@ import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from './ajax';
-import type { RA, RR } from './types';
-import { filterArray } from './types';
-import { treeText } from './localization/tree';
 import { formatNumber } from './components/internationalization';
 import { getTransitionDuration } from './components/preferenceshooks';
+import { treeText } from './localization/tree';
+import type { RA, RR } from './types';
+import { filterArray } from './types';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -95,15 +95,6 @@ export const fetchStats = async (url: string): Promise<Stats> =>
     });
 
 export type Row = Awaited<ReturnType<typeof fetchRows>>[number];
-
-/**
- * Conditional Pipe. Like Ramda's lenses
- */
-export const pipe = <T, V>(
-  value: T,
-  condition: boolean,
-  mapper: (value: T) => V
-): T | V => (condition ? mapper(value) : value);
 
 export type Conformations = RA<Conformation>;
 
