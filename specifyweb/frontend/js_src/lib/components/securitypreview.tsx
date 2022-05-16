@@ -8,6 +8,7 @@ import { commonText } from '../localization/common';
 import type { PermissionsQueryItem } from '../permissions';
 import {
   getTablePermissions,
+  hasPermission,
   queryUserPermissions,
   tableActions,
 } from '../permissions';
@@ -402,13 +403,16 @@ export function PreviewPermissions({
   readonly collectionId: number;
   readonly changesMade: boolean;
   readonly onOpenRole: (roleId: number) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [query] = useAsyncState(
     React.useCallback(
       async () =>
-        queryUserPermissions(userId, collectionId).then(
-          compressPermissionQuery
-        ),
+        hasPermission('/permissions/policies/user', 'read', collectionId) &&
+        hasPermission('/permissions/roles', 'read', collectionId)
+          ? queryUserPermissions(userId, collectionId).then(
+              compressPermissionQuery
+            )
+          : false,
       // Force requery user permissions when user is saved
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [userId, collectionId, userVersion]
@@ -427,7 +431,7 @@ export function PreviewPermissions({
     defaultValue: false,
     staleWhileRefresh: false,
   });
-  return (
+  return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className={className.headerGray} onToggle={setCollapsed}>
         {adminText('preview')}

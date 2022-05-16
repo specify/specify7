@@ -25,7 +25,7 @@ import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
 
-export function InstitutionView({
+export function SecurityInsitution({
   institution,
   users,
   onOpenUser: handleOpenUser,
@@ -217,17 +217,14 @@ export function InstitutionView({
                 <Ul>
                   {Object.values(users)
                     .sort(sortFunction(({ name }) => name))
-                    .filter(
-                      ({ id }) =>
-                        id === userInformation.id ||
-                        hasTablePermission('SpecifyUser', 'update') ||
-                        hasPermission('/permissions/policies/user', 'update') ||
-                        hasPermission('/permissions/user/roles', 'update')
-                    )
                     .map((user) => (
                       <li key={user.id}>
                         <Button.LikeLink
                           onClick={(): void => handleOpenUser(user.id)}
+                          disabled={
+                            user.id !== userInformation.id &&
+                            !hasTablePermission('SpecifyUser', 'read')
+                          }
                         >
                           {`${user.name}`}
                           <span className="text-gray-500">{`${

@@ -3,7 +3,7 @@ import React from 'react';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { replaceItem, replaceKey, sortFunction, toggleItem } from '../helpers';
+import { replaceItem, replaceKey, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
@@ -28,6 +28,7 @@ import {
 import { ComboBox } from './combobox';
 import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
+import type { RoleBase } from './securitycollection';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 import type { UserAgents } from './securityuserhooks';
@@ -99,34 +100,50 @@ export function UserRoles({
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
-  readonly userRoles: IR<RA<number>> | undefined;
-  readonly onChange: (value: IR<RA<number>>) => void;
+  readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
+  readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
 }): JSX.Element | null {
-  return typeof collectionRoles !== 'object' ||
-    typeof collectionRoles[collectionId] === 'object' ? (
+  return typeof userRoles !== 'object' ||
+    typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
         <span className={className.headerGray}>{adminText('userRoles')}:</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-          ? defined(collectionRoles[collectionId]).map((role) => (
+          ? collectionRoles[collectionId]?.map((role) => (
               <li key={role.id} className="flex items-center gap-2">
                 <Label.ForCheckbox>
                   <Input.Checkbox
-                    disabled={
-                      !hasPermission('/permissions/user/roles', 'update')
-                    }
-                    checked={userRoles[collectionId].includes(role.id)}
+                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    checked={userRoles?.[collectionId]?.some(
+                      ({ roleId }) => roleId === role.id
+                    )}
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(
                           userRoles,
                           collectionId.toString(),
-                          Array.from(
-                            toggleItem(userRoles[collectionId], role.id)
-                          ).sort(sortFunction(f.id))
+                          f
+                            .maybe(userRoles[collectionId], (roles) =>
+                              roles.some(({ roleId }) => roleId === role.id)
+                                ? [
+                                    ...roles,
+                                    {
+                                      roleId: role.id,
+                                      roleName: role.name,
+                                    },
+                                  ]
+                                : roles.filter(
+                                    ({ roleId }) => roleId !== role.id
+                                  )
+                            )
+                            /*
+                             * Sort all roles by ID, so that can easier detect if user roles changed
+                             * Since last save
+                             */
+                            ?.sort(sortFunction(({ roleId }) => roleId))
                         )
                       )
                     }
@@ -138,6 +155,9 @@ export function UserRoles({
                   onClick={(): void => handleOpenRole(collectionId, role.id)}
                 />
               </li>
+            )) ??
+            defined(userRoles[collectionId]).map(({ roleId, roleName }) => (
+              <li key={roleId}>{roleName}</li>
             ))
           : commonText('loading')}
       </Ul>
@@ -249,15 +269,17 @@ export function CollectionAccess({
   userAgents,
   mode,
 }: {
-  readonly userPolicies: IR<RA<Policy>> | undefined;
-  readonly onChange: (userPolicies: IR<RA<Policy>> | undefined) => void;
+  readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
+  readonly onChange: (
+    userPolicies: IR<RA<Policy> | undefined> | undefined
+  ) => void;
   readonly onChangedAgent: () => void;
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
   readonly mode: FormMode;
 }): JSX.Element {
   const hasCollectionAccess =
-    userPolicies?.[collectionId].some(
+    userPolicies?.[collectionId]?.some(
       ({ resource, actions }) =>
         resource === collectionAccessResource && actions.includes('access')
     ) ?? false;
@@ -275,41 +297,43 @@ export function CollectionAccess({
 
   return (
     <div className="flex flex-col gap-4">
-      <Label.ForCheckbox>
-        <Input.Checkbox
-          isReadOnly={
-            !hasPermission('/permissions/policies/user', 'update') ||
-            typeof userPolicies === 'undefined'
-          }
-          onValueChange={
-            hasPermission('/permissions/policies/user', 'update')
-              ? (): void =>
-                  handleChange(
-                    typeof userPolicies === 'object'
-                      ? replaceKey(
-                          userPolicies,
-                          collectionId.toString(),
-                          hasCollectionAccess
-                            ? userPolicies[collectionId].filter(
-                                ({ resource }) =>
-                                  resource !== collectionAccessResource
-                              )
-                            : [
-                                ...userPolicies[collectionId],
-                                {
-                                  resource: collectionAccessResource,
-                                  actions: ['access'],
-                                },
-                              ]
-                        )
-                      : undefined
-                  )
-              : undefined
-          }
-          checked={hasCollectionAccess}
-        />
-        {adminText('collectionAccess')}
-      </Label.ForCheckbox>
+      {hasPermission('/permissions/policies/user', 'read', collectionId) && (
+        <Label.ForCheckbox>
+          <Input.Checkbox
+            isReadOnly={
+              !hasPermission(
+                '/permissions/policies/user',
+                'update',
+                collectionId
+              ) || typeof userPolicies === 'undefined'
+            }
+            onValueChange={(): void =>
+              handleChange(
+                typeof userPolicies === 'object'
+                  ? replaceKey(
+                      userPolicies,
+                      collectionId.toString(),
+                      hasCollectionAccess
+                        ? defined(userPolicies[collectionId]).filter(
+                            ({ resource }) =>
+                              resource !== collectionAccessResource
+                          )
+                        : [
+                            ...defined(userPolicies[collectionId]),
+                            {
+                              resource: collectionAccessResource,
+                              actions: ['access'],
+                            },
+                          ]
+                    )
+                  : undefined
+              )
+            }
+            checked={hasCollectionAccess}
+          />
+          {adminText('collectionAccess')}
+        </Label.ForCheckbox>
+      )}
       <Label.Generic>
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (

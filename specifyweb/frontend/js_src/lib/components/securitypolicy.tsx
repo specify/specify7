@@ -42,7 +42,7 @@ export type PolicyScope = 'institution' | 'collection';
 const hasTableActions = (actions: RA<string>): boolean =>
   tableActions.every((action) => actions.includes(action));
 
-function PolicyView({
+function SecurityPolicy({
   policy: { resource, actions },
   isReadOnly,
   isResourceMapped,
@@ -263,7 +263,12 @@ function PolicyView({
   );
 }
 
-export function PoliciesView({
+/*
+ * TODO: extend the checks for redundant policies and policies that don't have
+ *   any effect (i.e, /permissions/user/roles/ update has no effect unless
+ *   /permission/roles/ is read)
+ */
+export function SecurityPolicies({
   policies,
   isReadOnly,
   onChange: handleChange,
@@ -311,7 +316,7 @@ export function PoliciesView({
         forwardRef={listRef}
       >
         {policies.map((policy, index) => (
-          <PolicyView
+          <SecurityPolicy
             key={index}
             scope={scope}
             policy={policy}

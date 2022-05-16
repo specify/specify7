@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { ajax } from '../ajax';
+import { ajax, Http } from '../ajax';
 import { fetchCollection } from '../collection';
 import type { Address, Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
-import { group, sortFunction } from '../helpers';
+import { group } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import {
   hasDerivedPermission,
@@ -15,11 +15,12 @@ import {
 } from '../permissions';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
-import { fetchRoles, processPolicies } from '../securityutils';
+import { fetchRoles, fetchUserRoles, processPolicies } from '../securityutils';
 import type { IR, RA, RR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
+import type { RoleBase } from './securitycollection';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 
@@ -32,7 +33,7 @@ export function useCollectionRoles(
       async () =>
         Promise.all(
           collections.map(async (collection) =>
-            fetchRoles(collection.id, undefined).then(
+            fetchRoles(collection.id).then(
               (roles) => [collection.id, roles] as const
             )
           )
@@ -49,28 +50,21 @@ export function useUserRoles(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>
 ): [
-  userRoles: IR<RA<number>> | undefined,
-  setUserRoles: (value: IR<RA<number>>) => void,
-  initialRoles: React.MutableRefObject<IR<RA<number>>>,
+  userRoles: IR<RA<RoleBase> | undefined> | undefined,
+  setUserRoles: (value: IR<RA<RoleBase> | undefined>) => void,
+  initialRoles: React.MutableRefObject<IR<RA<RoleBase> | undefined>>,
   hasChanges: boolean
 ] {
-  const initialUserRoles = React.useRef<IR<RA<number>>>({});
-  const [userRoles, setUserRoles] = useAsyncState<IR<RA<number>>>(
+  const initialUserRoles = React.useRef<IR<RA<RoleBase> | undefined>>({});
+  const [userRoles, setUserRoles] = useAsyncState<IR<RA<RoleBase> | undefined>>(
     React.useCallback(
       async () =>
         userResource.isNew()
           ? Object.fromEntries(collections.map(({ id }) => [id, []]))
-          : hasPermission('/permissions/user/roles', 'read') &&
-            hasPermission('/permissions/roles', 'read')
-          ? Promise.all(
+          : Promise.all(
               collections.map(async (collection) =>
-                fetchRoles(collection.id, userResource.id).then(
-                  (roles) =>
-                    [
-                      collection.id,
-                      roles?.map((role) => role.id).sort(sortFunction(f.id)) ??
-                        [],
-                    ] as const
+                fetchUserRoles(collection.id, userResource.id).then(
+                  (roles) => [collection.id, roles] as const
                 )
               )
             )
@@ -78,8 +72,7 @@ export function useUserRoles(
               .then((userRoles) => {
                 initialUserRoles.current = userRoles;
                 return userRoles;
-              })
-          : undefined,
+              }),
       [userResource, collections]
     ),
     false
@@ -198,32 +191,52 @@ export function useUserAgents(
   return userAgents;
 }
 
+/*
+ * FIXME: test permisions with library roles
+ * FIXME: test permissions with institution
+ * FIXME: test security panel in general
+ */
+
 /** Fetching user policies */
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>
 ): [
-  userPolicies: IR<RA<Policy>> | undefined,
-  setUserPolicies: (value: IR<RA<Policy>> | undefined) => void,
-  initialPolicies: React.MutableRefObject<IR<RA<Policy>>>,
+  userPolicies: IR<RA<Policy> | undefined> | undefined,
+  setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
+  initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
   hasChanges: boolean
 ] {
-  const initialUserPolicies = React.useRef<IR<RA<Policy>>>({});
+  const initialUserPolicies = React.useRef<IR<RA<Policy> | undefined>>({});
   const [userPolicies, setUserPolicies] = useAsyncState(
     React.useCallback(
       async () =>
         userResource.isNew()
           ? Object.fromEntries(collections.map(({ id }) => [id, []]))
-          : hasPermission('/permissions/policies/user', 'read')
-          ? Promise.all(
+          : Promise.all(
               collections.map(async (collection) =>
                 ajax<IR<RA<string>>>(
                   `/permissions/user_policies/${collection.id}/${userResource.id}/`,
                   {
                     headers: { Accept: 'application/json' },
+                  },
+                  {
+                    /*
+                     * When looking at a different collection, it is not yet
+                     * know if user has read permission. Instead of waiting for
+                     * permission query to complete, query anyway and silently
+                     * handle the permission denied error
+                     */
+                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
                   }
                 ).then(
-                  ({ data }) => [collection.id, processPolicies(data)] as const
+                  ({ data, status }) =>
+                    [
+                      collection.id,
+                      status === Http.FORBIDDEN
+                        ? undefined
+                        : processPolicies(data),
+                    ] as const
                 )
               )
             )
@@ -231,8 +244,7 @@ export function useUserPolicies(
               .then((policies) => {
                 initialUserPolicies.current = policies;
                 return policies;
-              })
-          : undefined,
+              }),
       [userResource, collections]
     ),
     false

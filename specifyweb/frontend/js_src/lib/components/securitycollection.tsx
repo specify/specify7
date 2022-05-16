@@ -35,16 +35,18 @@ import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
 
+export type RoleBase = {
+  readonly roleId: number;
+  readonly roleName: string;
+};
+
 export type UserRoles = RA<{
   readonly userId: number;
   readonly userName: string;
-  readonly roles: RA<{
-    readonly roleId: number;
-    readonly roleName: string;
-  }>;
+  readonly roles: RA<RoleBase>;
 }>;
 
-export function CollectionView({
+export function SecurityCollection({
   collection,
   collections,
   initialRoleId,
@@ -61,9 +63,7 @@ export function CollectionView({
     React.useCallback(
       async () =>
         hasPermission('/permissions/roles', 'read', collection.id)
-          ? fetchRoles(collection.id, undefined).then((roles) =>
-              index(defined(roles))
-            )
+          ? fetchRoles(collection.id).then((roles) => index(defined(roles)))
           : undefined,
       [collection.id]
     ),
@@ -94,7 +94,7 @@ export function CollectionView({
                   }))
               )
             )
-          : undefined,
+          : [{ userId: userInformation.id, userName: userInformation.name }],
       [collection.id]
     ),
     false
@@ -103,8 +103,7 @@ export function CollectionView({
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/user/roles', 'read', collection.id) &&
-        hasPermission('/permissions/roles', 'read', collection.id)
+        hasPermission('/permissions/user/roles', 'read', collection.id)
           ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
               `/permissions/user_roles/${collection.id}/`,
               {
@@ -151,10 +150,7 @@ export function CollectionView({
     | State<'MainState'>
     | State<'CreatingRoleState'>
     | State<'LoadingRole'>
-    | State<
-        'RoleState',
-        { readonly role: Role | NewRole; readonly userRoles: UserRoles }
-      >
+    | State<'RoleState', { readonly role: Role | NewRole }>
   >(
     React.useCallback(
       () =>
@@ -172,17 +168,22 @@ export function CollectionView({
     if (
       state.type === 'LoadingRole' &&
       typeof initialRoleId === 'number' &&
-      typeof roles === 'object' &&
-      Array.isArray(userRoles)
+      typeof roles === 'object'
     )
       setState({
         type: 'RoleState',
         role: roles[initialRoleId],
-        userRoles: userRoles.filter(({ roles }) =>
-          roles.some(({ roleId }) => roleId === initialRoleId)
-        ),
       });
   }, [roles, state, initialRoleId, setState, userRoles]);
+  const roleUsers = React.useMemo(
+    () =>
+      state.type === 'RoleState'
+        ? userRoles?.filter(({ roles }) =>
+            roles.some(({ roleId }) => roleId === state.role.id)
+          )
+        : undefined,
+    [userRoles, state]
+  );
 
   const updateRole = async (role: Role): Promise<void> =>
     ping(
@@ -266,12 +267,6 @@ export function CollectionView({
                             setState({
                               type: 'RoleState',
                               role,
-                              userRoles:
-                                userRoles?.filter(({ roles }) =>
-                                  roles.some(
-                                    ({ roleId }) => roleId === initialRoleId
-                                  )
-                                ) ?? [],
                             })
                           }
                         >
@@ -324,61 +319,46 @@ export function CollectionView({
           <section className="flex flex-col gap-2">
             <h4 className={className.headerGray}>{adminText('users')}:</h4>
             {typeof mergedUsers === 'object' ? (
-              f.var(
-                mergedUsers.filter(
-                  ({ userId }) =>
-                    userId === userInformation.id ||
-                    hasTablePermission('SpecifyUser', 'update') ||
-                    hasPermission(
-                      '/permissions/policies/user',
-                      'update',
-                      collection.id
-                    ) ||
-                    hasPermission(
-                      '/permissions/user/roles',
-                      'update',
-                      collection.id
-                    )
-                ),
-                (users) =>
-                  users.length === 0 ? (
-                    commonText('none')
-                  ) : (
-                    <>
-                      <Ul>
-                        {users.map(({ userId, userName, roles }) => (
-                          <li key={userId}>
-                            <Button.LikeLink
-                              onClick={(): void => handleOpenUser(userId)}
-                            >
-                              {userName}
-                              {roles.length > 0 && (
-                                <span className="text-gray-500">
-                                  {`(${formatList(
-                                    roles.map(({ roleName }) => roleName)
-                                  )})`}
-                                </span>
-                              )}
-                            </Button.LikeLink>
-                          </li>
-                        ))}
-                      </Ul>
-                      <div>
-                        <Button.Green
-                          onClick={(): void => handleOpenUser(undefined)}
+              mergedUsers.length === 0 ? (
+                commonText('none')
+              ) : (
+                <>
+                  <Ul>
+                    {mergedUsers.map(({ userId, userName, roles }) => (
+                      <li key={userId}>
+                        <Button.LikeLink
+                          onClick={(): void => handleOpenUser(userId)}
+                          disabled={
+                            userId !== userInformation.id &&
+                            !hasTablePermission('SpecifyUser', 'read')
+                          }
                         >
-                          {commonText('create')}
-                        </Button.Green>
-                      </div>
-                    </>
-                  )
+                          {userName}
+                          {roles.length > 0 && (
+                            <span className="text-gray-500">
+                              {`(${formatList(
+                                roles.map(({ roleName }) => roleName)
+                              )})`}
+                            </span>
+                          )}
+                        </Button.LikeLink>
+                      </li>
+                    ))}
+                  </Ul>
+                  <div>
+                    <Button.Green
+                      onClick={(): void => handleOpenUser(undefined)}
+                    >
+                      {commonText('create')}
+                    </Button.Green>
+                  </div>
+                </>
               )
             ) : hasPermission(
                 '/permissions/user/roles',
                 'read',
                 collection.id
-              ) &&
-              hasPermission('/permissions/roles', 'read', collection.id) ? (
+              ) ? (
               commonText('loading')
             ) : (
               <Button.LikeLink
@@ -403,10 +383,6 @@ export function CollectionView({
                 setState({
                   type: 'RoleState',
                   role,
-                  userRoles:
-                    userRoles?.filter(({ roles }) =>
-                      roles.some(({ roleId }) => roleId === initialRoleId)
-                    ) ?? [],
                 })
               )
             )
@@ -452,34 +428,33 @@ export function CollectionView({
                   )
                 : undefined
             }
-            userRoles={state.userRoles}
+            userRoles={roleUsers}
             permissionName="/permissions/roles"
             collectionId={collection.id}
             onOpenUser={handleOpenUser}
             onAddUser={(user): void =>
               typeof userRoles === 'object' && typeof state.role.id === 'number'
                 ? f.var(
-                    userRoles[user.id].roles.map(({ roleId }) => roleId),
-                    (currentUserRoles) =>
-                      currentUserRoles.includes(defined(state.role.id))
-                        ? undefined
-                        : loading(
-                            ping(
-                              `/permissions/user_roles/${collection.id}/${user.id}/`,
-                              {
-                                method: 'PUT',
-                                body: [...currentUserRoles, state.role.id].map(
-                                  (id) => ({ id })
-                                ),
-                              },
-                              { expectedResponseCodes: [Http.NO_CONTENT] }
-                            ).then(() =>
-                              setUserRoles(
-                                f.var(
-                                  userRoles.findIndex(
-                                    ({ userId }) => userId === user.id
-                                  ),
-                                  (userIndex) =>
+                    userRoles.findIndex(({ userId }) => userId === user.id),
+                    (userIndex) =>
+                      f.var(
+                        userRoles[userIndex].roles.map(({ roleId }) => roleId),
+                        (currentUserRoles) =>
+                          currentUserRoles.includes(defined(state.role.id))
+                            ? undefined
+                            : loading(
+                                ping(
+                                  `/permissions/user_roles/${collection.id}/${user.id}/`,
+                                  {
+                                    method: 'PUT',
+                                    body: [
+                                      ...currentUserRoles,
+                                      state.role.id,
+                                    ].map((id) => ({ id })),
+                                  },
+                                  { expectedResponseCodes: [Http.NO_CONTENT] }
+                                ).then(() =>
+                                  setUserRoles(
                                     replaceItem(userRoles, userIndex, {
                                       ...userRoles[userIndex],
                                       roles: [
@@ -490,10 +465,10 @@ export function CollectionView({
                                         },
                                       ],
                                     })
+                                  )
                                 )
                               )
-                            )
-                          )
+                      )
                   )
                 : undefined
             }

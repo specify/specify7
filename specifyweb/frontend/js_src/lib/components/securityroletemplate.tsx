@@ -39,7 +39,7 @@ export function CreateRole({
       async () =>
         Promise.all(
           collections.map(async (collection) =>
-            fetchRoles(collection.id, undefined).then(
+            fetchRoles(collection.id).then(
               (roles) => [collection ?? '', roles ?? []] as const
             )
           )

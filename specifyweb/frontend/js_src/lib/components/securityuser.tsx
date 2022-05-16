@@ -11,6 +11,7 @@ import { replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import {
+  getOperationPermissions,
   hasDerivedPermission,
   hasPermission,
   hasTablePermission,
@@ -31,10 +32,11 @@ import { DeleteButton } from './deletebutton';
 import { useBooleanState, useIsModified, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
+import { SetPermissionContext } from './permissioncontext';
 import { deserializeResource } from './resource';
 import { augmentMode, BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';
-import { PoliciesView } from './securitypolicy';
+import { SecurityPolicies } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
 import {
   CollectionAccess,
@@ -58,7 +60,7 @@ import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
 // TODO: allow editing linkages with external accounts
-export function UserView({
+export function SecurityUser({
   user,
   initialCollection,
   collections,
@@ -193,7 +195,7 @@ export function UserView({
                       '/permissions/institutional_policies/user',
                       'read'
                     ) && (
-                      <PoliciesView
+                      <SecurityPolicies
                         policies={institutionPolicies}
                         isReadOnly={!userInformation.isadmin}
                         scope="institution"
@@ -214,58 +216,76 @@ export function UserView({
                   collections={collections}
                   onChange={setCollectionId}
                 />
-                <CollectionAccess
-                  userPolicies={userPolicies}
-                  onChange={setUserPolicies}
-                  onChangedAgent={handleChangedAgent}
-                  collectionId={collectionId}
-                  userAgents={userAgents}
-                  mode={mode}
-                />
-                {hasPermission('/permissions/user/roles', 'read') &&
-                hasPermission('/permissions/roles', 'read') ? (
-                  <UserRoles
-                    collectionRoles={collectionRoles}
-                    collectionId={collectionId}
-                    userRoles={userRoles}
-                    onChange={setUserRoles}
-                    onOpenRole={handleOpenRole}
-                  />
-                ) : undefined}
-                {!isSuperAdmin &&
-                  hasPermission('/permissions/policies/user', 'read') && (
-                    <PoliciesView
-                      policies={userPolicies?.[collectionId]}
-                      isReadOnly={
-                        !hasPermission('/permissions/policies/user', 'update')
-                      }
-                      scope="collection"
-                      onChange={(policies): void =>
-                        typeof userPolicies === 'object'
-                          ? setUserPolicies(
-                              replaceKey(
-                                userPolicies,
-                                collectionId.toString(),
-                                policies
+                <SetPermissionContext collectionId={collectionId}>
+                  {typeof getOperationPermissions()[collectionId] ===
+                    'object' && (
+                    <>
+                      <CollectionAccess
+                        userPolicies={userPolicies}
+                        onChange={setUserPolicies}
+                        onChangedAgent={handleChangedAgent}
+                        collectionId={collectionId}
+                        userAgents={userAgents}
+                        mode={mode}
+                      />
+                      {hasPermission(
+                        '/permissions/user/roles',
+                        'read',
+                        collectionId
+                      ) ? (
+                        <UserRoles
+                          collectionRoles={collectionRoles}
+                          collectionId={collectionId}
+                          userRoles={userRoles}
+                          onChange={setUserRoles}
+                          onOpenRole={handleOpenRole}
+                        />
+                      ) : undefined}
+                      {!isSuperAdmin &&
+                        hasPermission(
+                          '/permissions/policies/user',
+                          'read',
+                          collectionId
+                        ) && (
+                          <SecurityPolicies
+                            policies={userPolicies?.[collectionId]}
+                            isReadOnly={
+                              !hasPermission(
+                                '/permissions/policies/user',
+                                'update',
+                                collectionId
                               )
-                            )
-                          : undefined
-                      }
-                      collapsable={false}
-                      limitHeight
-                    />
+                            }
+                            scope="collection"
+                            onChange={(policies): void =>
+                              typeof userPolicies === 'object'
+                                ? setUserPolicies(
+                                    replaceKey(
+                                      userPolicies,
+                                      collectionId.toString(),
+                                      policies
+                                    )
+                                  )
+                                : undefined
+                            }
+                            collapsable={false}
+                            limitHeight
+                          />
+                        )}
+                      {typeof userResource.id === 'number' && (
+                        <PreviewPermissions
+                          userId={userResource.id}
+                          userVersion={version}
+                          collectionId={collectionId}
+                          changesMade={previewAffected}
+                          onOpenRole={(roleId): void =>
+                            handleOpenRole(collectionId, roleId)
+                          }
+                        />
+                      )}
+                    </>
                   )}
-                {typeof userResource.id === 'number' && (
-                  <PreviewPermissions
-                    userId={userResource.id}
-                    userVersion={version}
-                    collectionId={collectionId}
-                    changesMade={previewAffected}
-                    onOpenRole={(roleId): void =>
-                      handleOpenRole(collectionId, roleId)
-                    }
-                  />
-                )}
+                </SetPermissionContext>
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
               'overflow-y-auto -mx-4 p-4 pt-0 flex-1'
@@ -289,11 +309,25 @@ export function UserView({
                 />
               ) : undefined}
               <span className="flex-1 -ml-2" />
-              {((hasPermission('/permissions/policies/user', 'update') &&
-                hasPermission('/permissions/roles', 'read')) ||
-                hasPermission('/permissions/user/roles', 'update') ||
-                mode === 'edit') &&
-              formElement !== null ? (
+              {formElement !== null &&
+              (mode === 'edit' ||
+                // Check if has update access in any collection
+                collections
+                  /*
+                   * Permissions are only fetched for collections that were
+                   * displayed. If permissions aren't fetched, then safe to
+                   * assume they were not edited
+                   */
+                  .filter(({ id }) => id in getOperationPermissions())
+                  .some(
+                    ({ id }) =>
+                      hasPermission(
+                        '/permissions/policies/user',
+                        'update',
+                        id
+                      ) ||
+                      hasPermission('/permissions/user/roles', 'update', id)
+                  )) ? (
                 <SaveButton
                   resource={userResource}
                   form={formElement}
@@ -409,18 +443,20 @@ export function UserView({
                                       )
                                   )
                                   .map(async ([collectionId, roles]) =>
-                                    ping(
-                                      `/permissions/user_roles/${collectionId}/${userResource.id}/`,
-                                      {
-                                        method: 'PUT',
-                                        body: roles.map((id) => ({ id })),
-                                      },
-                                      {
-                                        expectedResponseCodes: [
-                                          Http.NO_CONTENT,
-                                        ],
-                                      }
-                                    )
+                                    Array.isArray(roles)
+                                      ? ping(
+                                          `/permissions/user_roles/${collectionId}/${userResource.id}/`,
+                                          {
+                                            method: 'PUT',
+                                            body: roles.map((id) => ({ id })),
+                                          },
+                                          {
+                                            expectedResponseCodes: [
+                                              Http.NO_CONTENT,
+                                            ],
+                                          }
+                                        )
+                                      : undefined
                                   ),
                                 ...Object.entries(userPolicies ?? {})
                                   .filter(
@@ -433,18 +469,20 @@ export function UserView({
                                       )
                                   )
                                   .map(async ([collectionId, policies]) =>
-                                    ping(
-                                      `/permissions/user_policies/${collectionId}/${userResource.id}/`,
-                                      {
-                                        method: 'PUT',
-                                        body: decompressPolicies(policies),
-                                      },
-                                      {
-                                        expectedResponseCodes: [
-                                          Http.NO_CONTENT,
-                                        ],
-                                      }
-                                    )
+                                    Array.isArray(policies)
+                                      ? ping(
+                                          `/permissions/user_policies/${collectionId}/${userResource.id}/`,
+                                          {
+                                            method: 'PUT',
+                                            body: decompressPolicies(policies),
+                                          },
+                                          {
+                                            expectedResponseCodes: [
+                                              Http.NO_CONTENT,
+                                            ],
+                                          }
+                                        )
+                                      : undefined
                                   ),
                               ])
                                 .then(() =>

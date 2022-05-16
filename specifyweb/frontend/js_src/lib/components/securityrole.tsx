@@ -21,7 +21,7 @@ import { SearchDialog } from './searchdialog';
 import type { UserRoles } from './securitycollection';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
-import { PoliciesView } from './securitypolicy';
+import { SecurityPolicies } from './securitypolicy';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -82,7 +82,8 @@ export function RoleView({
   >(React.useCallback(() => ({ type: 'MainState' }), [userRoles]));
 
   const isReadOnly =
-    typeof role.id === 'number' && !hasPermission(permissionName, 'update');
+    typeof role.id === 'number' &&
+    !hasPermission(permissionName, 'update', collectionId);
 
   return (
     <Form onSubmit={(): void => handleSave(role)} className="contents">
@@ -118,7 +119,7 @@ export function RoleView({
         </Label.Generic>
         {typeof role.id === 'number' &&
         typeof handleOpenUser === 'function' &&
-        hasPermission('/permissions/user/roles', 'read') ? (
+        hasPermission('/permissions/user/roles', 'read', collectionId) ? (
           <fieldset className="flex flex-col gap-2">
             <legend>{adminText('users')}:</legend>
             {typeof userRoles === 'object' ? (
@@ -129,12 +130,7 @@ export function RoleView({
                       <Button.LikeLink
                         disabled={
                           userId !== userInformation.id &&
-                          !hasTablePermission('SpecifyUser', 'update') &&
-                          !hasPermission(
-                            '/permissions/policies/user',
-                            'update'
-                          ) &&
-                          !hasPermission('/permissions/user/roles', 'update')
+                          !hasTablePermission('SpecifyUser', 'read')
                         }
                         // TODO: trigger unload protect
                         onClick={(): void => handleOpenUser(userId)}
@@ -144,7 +140,11 @@ export function RoleView({
                     </li>
                   ))}
                 </Ul>
-                {hasPermission('/permissions/user/roles', 'update') && (
+                {hasPermission(
+                  '/permissions/user/roles',
+                  'update',
+                  collectionId
+                ) && (
                   <div>
                     <Button.Green
                       onClick={(): void =>
@@ -183,7 +183,7 @@ export function RoleView({
             )}
           </fieldset>
         ) : undefined}
-        <PoliciesView
+        <SecurityPolicies
           policies={role.policies}
           onChange={(policies): void =>
             setRole(replaceKey(role, 'policies', policies))
@@ -196,7 +196,7 @@ export function RoleView({
       </div>
       <div className="flex gap-2">
         {typeof role.id === 'number' &&
-        hasPermission(permissionName, 'delete') ? (
+        hasPermission(permissionName, 'delete', collectionId) ? (
           <Button.Red
             disabled={typeof userRoles === 'undefined'}
             onClick={

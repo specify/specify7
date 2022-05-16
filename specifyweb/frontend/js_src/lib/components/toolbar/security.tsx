@@ -25,10 +25,10 @@ import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { useAvailableCollections } from '../othercollectionview';
 import { SetPermissionContext } from '../permissioncontext';
-import { CollectionView } from '../securitycollection';
-import { InstitutionView } from '../securityinstitution';
+import { SecurityCollection } from '../securitycollection';
+import { SecurityInsitution } from '../securityinstitution';
 import type { Role } from '../securityrole';
-import { UserView } from '../securityuser';
+import { SecurityUser } from '../securityuser';
 
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -149,7 +149,7 @@ export function SecurityPanel(): JSX.Element | null {
         </aside>
         {state.type === 'InstitutionState' &&
         typeof institution === 'object' ? (
-          <InstitutionView
+          <SecurityInsitution
             institution={institution}
             collections={availableCollections}
             users={users}
@@ -175,7 +175,7 @@ export function SecurityPanel(): JSX.Element | null {
         ) : undefined}
         {state.type === 'CollectionState' && (
           <SetPermissionContext collectionId={state.collectionId}>
-            <CollectionView
+            <SecurityCollection
               collection={defined(
                 availableCollections.find(({ id }) => id === state.collectionId)
               )}
@@ -196,7 +196,7 @@ export function SecurityPanel(): JSX.Element | null {
           </SetPermissionContext>
         )}
         {state.type === 'UserState' && typeof users === 'object' ? (
-          <UserView
+          <SecurityUser
             user={state.user}
             collections={availableCollections}
             initialCollection={state.initialCollection}

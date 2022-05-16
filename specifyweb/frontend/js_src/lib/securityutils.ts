@@ -1,4 +1,5 @@
 import { ajax, Http } from './ajax';
+import type { RoleBase } from './components/securitycollection';
 import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
@@ -8,6 +9,7 @@ import {
   lowerToHuman,
   replaceItem,
   replaceKey,
+  sortFunction,
   toLowerCase,
 } from './helpers';
 import { adminText } from './localization/admin';
@@ -30,17 +32,19 @@ export type BackEndRole = Omit<Role, 'policies'> & {
 };
 
 export const fetchRoles = async (
-  collectionId: number,
-  userId: number | undefined
+  collectionId: number
 ): Promise<RA<Role> | undefined> =>
   ajax<RA<BackEndRole>>(
-    typeof userId === 'undefined'
-      ? `/permissions/roles/${collectionId}/`
-      : `/permissions/user_roles/${collectionId}/${userId}/`,
+    `/permissions/roles/${collectionId}/`,
     {
       headers: { Accept: 'application/json' },
     },
     {
+      /*
+       * When looking at a different collection, it is not yet know if user has
+       * read permission. Instead of waiting for permission query to complete,
+       * query anyway and silently handle the permission denied error
+       */
       expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
     }
   ).then(({ data, status }) =>
@@ -50,6 +54,35 @@ export const fetchRoles = async (
           ...role,
           policies: processPolicies(role.policies),
         }))
+  );
+
+export const fetchUserRoles = async (
+  collectionId: number,
+  userId: number
+): Promise<RA<RoleBase> | undefined> =>
+  ajax<RA<{ readonly id: number; readonly name: string }>>(
+    `/permissions/user_roles/${collectionId}/${userId}`,
+    {
+      headers: { Accept: 'application/json' },
+    },
+    {
+      /*
+       * When looking at a different collection, it is not yet know if user has
+       * read permission. Instead of waiting for permission query to complete,
+       * query anyway and silently handle the permission denied error
+       */
+      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+    }
+  ).then(({ data, status }) =>
+    status === Http.FORBIDDEN
+      ? undefined
+      : data
+          .map(({ id, name }) => ({ roleId: id, roleName: name }))
+          /*
+           * Sort all roles by ID, so that can easier detect if user roles changed
+           * Since last save
+           */
+          .sort(sortFunction(({ roleId }) => roleId))
   );
 
 export const resourceNameToLabel = (resource: string): string =>
