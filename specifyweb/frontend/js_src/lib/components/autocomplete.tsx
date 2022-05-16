@@ -416,8 +416,9 @@ export function Autocomplete<T>({
                 const stringLabel =
                   typeof item.label === 'string' ? item.label : undefined;
                 const label =
-                  typeof stringLabel === 'string' && highlightMatch
-                    ? stringLabel
+                  typeof stringLabel === 'string' && highlightMatch ? (
+                    <span>
+                      {stringLabel
                         // Convert to lower case as search may be case-insensitive
                         .toLowerCase()
                         .split(pendingValue.toLowerCase())
@@ -446,8 +447,11 @@ export function Autocomplete<T>({
                               )}
                             </React.Fragment>
                           );
-                        })
-                    : item.label;
+                        })}
+                    </span>
+                  ) : (
+                    item.label
+                  );
                 const fullLabel =
                   typeof item.subLabel === 'string' ? (
                     <div className="flex flex-col justify-center">
