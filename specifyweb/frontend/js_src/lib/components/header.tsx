@@ -305,11 +305,22 @@ export function UserTools({
 }): JSX.Element {
   /*
    * Can't split columns with CSS because break-inside:avoid is not yet
-   * very well supported
+   * very well-supported
    */
   const [leftColumn, rightColumn] = split(
-    group(
-      userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
+    Array.from(
+      group(
+        userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
+      ),
+      ([label, items]) =>
+        [
+          label,
+          /*
+           * Sort items only after they are grouped so that group order
+           * stays the same regardless of the UI language
+           */
+          Array.from(items).sort(sortFunction(({ title }) => title)),
+        ] as const
     ),
     (_item, index, { length }) => index >= length / 2
   );

@@ -49,12 +49,15 @@ function AboutDialog({
       header={commonText('specifySeven')}
       className={{
         container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
+        content: `${dialogClassNames.flexContent} pr-4`,
         header: 'text-3xl',
       }}
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      <p>{welcomeText('fullAddress')}</p>
+      <p>
+        <b>{welcomeText('fullAddress')}</b>
+      </p>
       <address>
         <p>
           <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
@@ -71,7 +74,7 @@ function AboutDialog({
         <table className="grid-table gap-1 grid-cols-[auto,auto]">
           <tbody>
             {[
-              [welcomeText('version'), getSystemInfo().version],
+              [welcomeText('specifyVersion'), getSystemInfo().version],
               [
                 welcomeText('specifySixVersion'),
                 getSystemInfo().specify6_version,

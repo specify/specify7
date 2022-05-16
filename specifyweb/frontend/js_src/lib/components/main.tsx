@@ -141,22 +141,22 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
           groupLabel: commonText('documentation'),
         },
       },
+      {
+        userTool: {
+          task: 'technical_documentation',
+          title: commonText('technicalDocumentation'),
+          basePath: '',
+          view: 'https://github.com/specify/specify7/wiki',
+          isOverlay: false,
+          groupLabel: commonText('documentation'),
+        },
+      },
       // Developers
       import('./toolbar/schema'),
       import('./toolbar/cachebuster'),
       import('./toolbar/swagger').then(({ userTools }) =>
         userTools.map((userTool) => ({ userTool }))
       ),
-      {
-        userTool: {
-          task: 'password_change',
-          title: commonText('githubWiki'),
-          basePath: '',
-          view: 'https://github.com/specify/specify7/wiki',
-          isOverlay: false,
-          groupLabel: commonText('developers'),
-        },
-      },
     ])
   )
   .then((items) => items.flat())

@@ -70,7 +70,7 @@ const dialogIndexes: Set<number> = new Set();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-const supportsBackdropBlur = CSS.supports(
+export const supportsBackdropBlur = CSS.supports(
   '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
 );
 

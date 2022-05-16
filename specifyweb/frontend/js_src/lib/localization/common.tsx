@@ -564,10 +564,10 @@ export const commonText = createDictionary({
     'es-es': 'Data Entry',
   },
   makeDwca: {
-    'en-us': 'Make DwCA',
-    'ru-ru': 'Создать DwCA',
-    ca: 'Make DwCA',
-    'es-es': 'Make DwCA',
+    'en-us': 'Create DwCA Archive',
+    'ru-ru': 'Создать DwCA архив',
+    ca: 'Create DwCA Archive',
+    'es-es': 'Create DwCA Archive',
   },
   definitionResourceNotFound: {
     'en-us': (resourceName: string) =>
@@ -590,10 +590,10 @@ export const commonText = createDictionary({
       `Metadata resource "${resourceName}" was not found.`,
   },
   updateExportFeed: {
-    'en-us': 'Update Feed Now',
-    'ru-ru': 'Обновить фид',
-    ca: 'Update Feed Now',
-    'es-es': 'Update Feed Now',
+    'en-us': 'Update RSS Feed',
+    'ru-ru': 'Обновить RSS фид',
+    ca: 'Update RSS Feed',
+    'es-es': 'Update RSS Feed',
   },
   updateExportFeedDialogTitle: {
     'en-us': 'Export Feed',
@@ -1055,10 +1055,10 @@ export const commonText = createDictionary({
     'es-es': 'Notifications',
   },
   feedItemUpdated: {
-    'en-us': 'Export feed item updated.',
+    'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
-    ca: 'Export feed item updated.',
-    'es-es': 'Export feed item updated.',
+    ca: 'RSS Export feed has been updated.',
+    'es-es': 'RSS Export feed has been updated.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
@@ -1642,11 +1642,11 @@ export const commonText = createDictionary({
     ca: 'Relationship count',
     'es-es': 'Relationship count',
   },
-  datamodel: {
-    'en-us': 'Data Model',
-    'ru-ru': 'Схема базы данных',
-    ca: 'Data Model',
-    'es-es': 'Data Model',
+  databaseSchema: {
+    'en-us': 'Database Schema',
+    'ru-ru': 'Database Schema',
+    ca: 'Database Schema',
+    'es-es': 'Database Schema',
   },
   tableApi: {
     'en-us': 'Tables API',
@@ -1709,22 +1709,22 @@ export const commonText = createDictionary({
     'es-es': 'Documentation',
   },
   developers: {
-    'en-us': 'Developer Tools',
+    'en-us': 'Developer Resources',
     'ru-ru': 'Инструменты разработчика',
-    ca: 'Developer Tools',
-    'es-es': 'Developer Tools',
+    ca: 'Developer Resources',
+    'es-es': 'Developer Resources',
   },
   forum: {
-    'en-us': 'Forum',
-    'ru-ru': 'Форум',
-    ca: 'Forum',
-    'es-es': 'Forum',
+    'en-us': 'Community Forum',
+    'ru-ru': 'Specify Форум',
+    ca: 'Community Forum',
+    'es-es': 'Community Forum',
   },
   clearCache: {
-    'en-us': 'Clear Cache',
+    'en-us': 'Clear Web Cache',
     'ru-ru': 'Очистить кеш',
-    ca: 'Clear Cache',
-    'es-es': 'Clear Cache',
+    ca: 'Clear Web Cache',
+    'es-es': 'Clear Web Cache',
   },
   clearedCacheDialogText: {
     'en-us': 'Cache has been cleaned. Please reload the page.',
@@ -1738,11 +1738,11 @@ export const commonText = createDictionary({
     ca: 'Reload',
     'es-es': 'Reload',
   },
-  githubWiki: {
-    'en-us': 'GitHub Wiki',
-    'ru-ru': 'GitHub Вики',
-    ca: 'GitHub Wiki',
-    'es-es': 'GitHub Wiki',
+  technicalDocumentation: {
+    'en-us': 'Technical documentation',
+    'ru-ru': 'Technical documentation',
+    ca: 'Technical documentation',
+    'es-es': 'Technical documentation',
   },
   dismiss: {
     'en-us': 'Dismiss',

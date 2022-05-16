@@ -4,8 +4,9 @@ import { ajax, formData, ping } from '../ajax';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
-import { Button, Link } from './basic';
+import { Button, className, Link } from './basic';
 import { useBooleanState } from './hooks';
+import { icons } from './icons';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -157,22 +158,20 @@ export function Notifications(): JSX.Element {
           buttons={commonText('close')}
           className={{
             container: dialogClassNames.narrowContainer,
-            content: `${dialogClassNames.flexContent} gap-y-3`,
+            content: `${dialogClassNames.flexContent} gap-y-3 divide-y divide-gray-500`,
           }}
         >
-          {notifications.map((notification, index, { length }) => (
-            <React.Fragment key={index}>
-              <NotificationComponent
-                notification={notification}
-                onDelete={(promise): void => {
-                  deletingPromise.current = promise;
-                  setNotifications(
-                    notifications.filter((item) => item !== notification)
-                  );
-                }}
-              />
-              {index + 1 !== length && <div className="h-0.5 bg-gray-400" />}
-            </React.Fragment>
+          {notifications.map((notification, index) => (
+            <NotificationComponent
+              key={index}
+              notification={notification}
+              onDelete={(promise): void => {
+                deletingPromise.current = promise;
+                setNotifications(
+                  notifications.filter((item) => item !== notification)
+                );
+              }}
+            />
           ))}
         </Dialog>
       )}
@@ -188,41 +187,48 @@ function NotificationComponent({
   readonly onDelete: (promise: Promise<void>) => void;
 }): JSX.Element {
   return (
-    <article
-      className={`flex flex-col p-2 ${
-        notification.read ? undefined : 'bg-amber-100 dark:bg-amber-900 rounded'
-      }`}
-    >
-      <header className="flex justify-between">
-        <DateElement date={notification.timestamp} />
-        <Button.Icon
-          icon="trash"
-          title={commonText('delete')}
-          aria-label={commonText('delete')}
-          onClick={(): void =>
-            handleDelete(
-              ping(
-                '/notifications/delete/',
-                {
-                  method: 'POST',
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  body: formData({ message_id: notification.messageId }),
-                },
-                { strict: false }
-              ).then(f.void)
-            )
-          }
-        />
-      </header>
-      <p>
-        {
-          // TODO: close the dialog when link is clicked
-          (
-            notificationRenderers[notification.type] ??
-            notificationRenderers.default
-          )(notification)
+    <article className="flex gap-2 pt-2">
+      <span
+        className={
+          notification.read
+            ? undefined
+            : 'w-3 h-3 mt-1.5 bg-blue-500 rounded-full'
         }
-      </p>
+      />
+      <div className="flex flex-col gap-2">
+        <p>
+          {
+            // TODO: close the dialog when link is clicked
+            (
+              notificationRenderers[notification.type] ??
+              notificationRenderers.default
+            )(notification)
+          }
+        </p>
+        <span className="text-gray-500">
+          <DateElement date={notification.timestamp} />
+        </span>
+      </div>
+      <Button.Small
+        variant={className.redButton}
+        title={commonText('delete')}
+        aria-label={commonText('delete')}
+        onClick={(): void =>
+          handleDelete(
+            ping(
+              '/notifications/delete/',
+              {
+                method: 'POST',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                body: formData({ message_id: notification.messageId }),
+              },
+              { strict: false }
+            ).then(f.void)
+          )
+        }
+      >
+        {icons.x}
+      </Button.Small>
     </article>
   );
 }

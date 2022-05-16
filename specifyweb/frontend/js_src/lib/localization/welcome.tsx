@@ -18,10 +18,10 @@ export const welcomeText = createDictionary({
     'es-es': 'Welcome',
   },
   aboutSpecify: {
-    'en-us': 'About Specify',
-    'ru-ru': 'О Specify',
-    ca: 'About Specify',
-    'es-es': 'About Specify',
+    'en-us': 'About Specify 7',
+    'ru-ru': 'О Specify 7',
+    ca: 'About Specify 7',
+    'es-es': 'About Specify 7',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -163,11 +163,11 @@ export const welcomeText = createDictionary({
     ca: 'System Information',
     'es-es': 'System Information',
   },
-  version: {
-    'en-us': 'Version:',
-    'ru-ru': 'Версия:',
-    ca: 'Version:',
-    'es-es': 'Version:',
+  specifyVersion: {
+    'en-us': 'Specify 7 Version:',
+    'ru-ru': 'Specify 7 Версия:',
+    ca: 'Specify 7 Version:',
+    'es-es': 'Specify 7 Version:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -182,10 +182,10 @@ export const welcomeText = createDictionary({
     'es-es': 'Database Version:',
   },
   schemaVersion: {
-    'en-us': 'Schema Version:',
+    'en-us': 'DB Schema Version:',
     'ru-ru': 'Версия схемы базы данных:',
-    ca: 'Schema Version:',
-    'es-es': 'Schema Version:',
+    ca: 'DB Schema Version:',
+    'es-es': 'DB Schema Version:',
   },
   databaseName: {
     'en-us': 'Database Name:',
@@ -206,16 +206,16 @@ export const welcomeText = createDictionary({
     'es-es': 'ISA Number:',
   },
   browser: {
-    'en-us': 'Browser',
-    'ru-ru': 'Браузер',
-    ca: 'Browser',
-    'es-es': 'Browser',
+    'en-us': 'Browser:',
+    'ru-ru': 'Браузер:',
+    ca: 'Browser:',
+    'es-es': 'Browser:',
   },
   // TODO:
   databaseCreationDate: {
-    'en-us': 'Database creation date:',
-    'ru-ru': 'Database creation date:',
-    ca: 'Database creation date:',
-    'es-es': 'Database creation date:',
+    'en-us': 'DB Creation Date:',
+    'ru-ru': 'DB Creation Date:',
+    ca: 'DB Creation Date:',
+    'es-es': 'DB Creation Date:',
   },
 });

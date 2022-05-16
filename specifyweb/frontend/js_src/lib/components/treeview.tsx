@@ -7,6 +7,7 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../datamodelutils';
+import { f } from '../functools';
 import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
@@ -27,6 +28,7 @@ import { Autocomplete } from './autocomplete';
 import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
+import { supportsBackdropBlur } from './modaldialog';
 import { pushUrl } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTree } from './permissiondenied';
@@ -37,7 +39,6 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { f } from '../functools';
 
 const defaultCacheValue = [] as const;
 
@@ -285,7 +286,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
                   ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}
                   ${
-                    reduceTransparency
+                    reduceTransparency || !supportsBackdropBlur
                       ? 'bg-gray-100 dark:bg-neutral-900'
                       : 'backdrop-blur-sm bg-gray-100/60 dark:bg-neutral-900/60'
                   }

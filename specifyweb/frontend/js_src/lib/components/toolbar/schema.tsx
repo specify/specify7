@@ -87,7 +87,7 @@ export function DataModelView({
 }: {
   readonly model: SpecifyModel | undefined;
 }): JSX.Element {
-  useTitle(commonText('datamodel'));
+  useTitle(commonText('databaseSchema'));
 
   const [model] = React.useState<SpecifyModel | undefined>(initialModel);
 
@@ -245,7 +245,7 @@ export function DataModelView({
 
 export const userTool: UserTool = {
   task: 'schema',
-  title: commonText('datamodel'),
+  title: commonText('databaseSchema'),
   isOverlay: false,
   view: '/specify/datamodel/',
   groupLabel: commonText('developers'),
