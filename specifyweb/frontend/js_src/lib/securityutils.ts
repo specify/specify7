@@ -1,4 +1,4 @@
-import { ajax } from './ajax';
+import { ajax, Http } from './ajax';
 import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';
 import type { Tables } from './datamodel';
@@ -26,19 +26,24 @@ export type BackEndRole = Omit<Role, 'policies'> & {
 export const fetchRoles = async (
   collectionId: number,
   userId: number | undefined
-): Promise<RA<Role>> =>
+): Promise<RA<Role> | undefined> =>
   ajax<RA<BackEndRole>>(
     typeof userId === 'undefined'
       ? `/permissions/roles/${collectionId}/`
       : `/permissions/user_roles/${collectionId}/${userId}/`,
     {
       headers: { Accept: 'application/json' },
+    },
+    {
+      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
     }
-  ).then(({ data }) =>
-    data.map((role) => ({
-      ...role,
-      policies: processPolicies(role.policies),
-    }))
+  ).then(({ data, status }) =>
+    status === Http.FORBIDDEN
+      ? undefined
+      : data.map((role) => ({
+          ...role,
+          policies: processPolicies(role.policies),
+        }))
   );
 
 export const resourceNameToLabel = (resource: string): string =>

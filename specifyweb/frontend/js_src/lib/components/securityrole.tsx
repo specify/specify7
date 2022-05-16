@@ -38,12 +38,13 @@ export function RoleView({
   role: initialRole,
   parentName,
   userRoles,
+  permissionName,
+  collectionId,
   onDelete: handleDelete,
   onSave: handleSave,
   onClose: handleClose,
   onOpenUser: handleOpenUser,
   onAddUser: handleAddUser,
-  permissionName,
 }: {
   readonly role: Role | NewRole;
   readonly parentName: string | undefined;
@@ -52,6 +53,8 @@ export function RoleView({
    * All these are delegated to the parent resource so that the parent
    * can update its list of roles
    */
+  readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
+  readonly collectionId: number;
   readonly onSave: (role: Role | NewRole) => void;
   readonly onDelete: () => void;
   readonly onClose: () => void;
@@ -59,7 +62,6 @@ export function RoleView({
   readonly onAddUser:
     | ((user: SpecifyResource<SpecifyUser>) => void)
     | undefined;
-  readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
 }): JSX.Element {
   const [role, setRole] = useTriggerState(initialRole);
   const changesMade =
@@ -228,6 +230,7 @@ export function RoleView({
             permissionName={permissionName}
             isReadOnly={true}
             baseName={role.name ?? ''}
+            collectionId={collectionId}
             onUpdateRole={f.never}
             onCreateRole={f.never}
           />

@@ -23,22 +23,20 @@ import { useAsyncState } from './hooks';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 
-// Fetch roles from all collections
+/** Fetch roles from all collections */
 export function useCollectionRoles(
   collections: RA<SerializedResource<Collection>>
-): RR<number, RA<Role>> | undefined {
+): RR<number, RA<Role> | undefined> | undefined {
   const [collectionRoles] = useAsyncState(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/roles', 'read')
-          ? Promise.all(
-              collections.map(async (collection) =>
-                fetchRoles(collection.id, undefined).then(
-                  (roles) => [collection.id, roles] as const
-                )
-              )
-            ).then((entries) => Object.fromEntries(entries))
-          : undefined,
+        Promise.all(
+          collections.map(async (collection) =>
+            fetchRoles(collection.id, undefined).then(
+              (roles) => [collection.id, roles] as const
+            )
+          )
+        ).then((entries) => Object.fromEntries(entries)),
       [collections]
     ),
     false
@@ -46,7 +44,7 @@ export function useCollectionRoles(
   return collectionRoles;
 }
 
-// Fetch user roles in all collections
+/** Fetch user roles in all collections */
 export function useUserRoles(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>
@@ -70,7 +68,8 @@ export function useUserRoles(
                   (roles) =>
                     [
                       collection.id,
-                      roles.map((role) => role.id).sort(sortFunction(f.id)),
+                      roles?.map((role) => role.id).sort(sortFunction(f.id)) ??
+                        [],
                     ] as const
                 )
               )
@@ -106,7 +105,7 @@ export type UserAgents = RA<{
   readonly address: SpecifyResource<Address>;
 }>;
 
-// Fetch User Agents in all Collections
+/** Fetch User Agents in all Collections */
 export function useUserAgents(
   userId: number | undefined,
   collections: RA<SerializedResource<Collection>>,
@@ -199,7 +198,7 @@ export function useUserAgents(
   return userAgents;
 }
 
-// Fetching user policies
+/** Fetching user policies */
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>
@@ -246,7 +245,7 @@ export function useUserPolicies(
   return [userPolicies, setUserPolicies, initialUserPolicies, changedPolices];
 }
 
-// Fetching user institutional policies
+/** Fetching user institutional policies */
 export function useUserInstitutionalPolicies(
   userResource: SpecifyResource<SpecifyUser>
 ): [
@@ -293,6 +292,7 @@ export function useUserInstitutionalPolicies(
   ];
 }
 
+/** Fetch User's OpenID Connect providers */
 export function useUserProviders(
   userId: number | undefined
 ): IR<boolean> | undefined {

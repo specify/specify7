@@ -226,7 +226,11 @@ function PreviewTables({
       group(
         filterArray(
           query
-            .filter(({ resource }) => resource in getTablePermissions())
+            .filter(
+              ({ resource }) =>
+                resource in
+                getTablePermissions()[schema.domainLevelIds.collection]
+            )
             .map((entry) =>
               f.var(resourceNameToModel(entry.resource), (model) =>
                 model.overrides.isHidden === isHidden
@@ -244,7 +248,7 @@ function PreviewTables({
             ),
           ] as const
       ),
-    [query]
+    [query, isHidden]
   );
   return (
     <div
@@ -355,7 +359,13 @@ function PreviewOperations({
     () =>
       group(
         query
-          .filter(({ resource }) => !(resource in getTablePermissions()))
+          .filter(
+            ({ resource }) =>
+              !(
+                resource in
+                getTablePermissions()[schema.domainLevelIds.collection]
+              )
+          )
           .map(({ resource, ...rest }) => [resource, rest] as const)
       ).reduce<R<WritableTree>>((tree, [resource, actions]) => {
         const resourceParts = resourceNameToParts(resource);

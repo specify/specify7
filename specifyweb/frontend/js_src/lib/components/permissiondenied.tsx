@@ -87,14 +87,14 @@ export function ProtectedTool({
 }
 
 export function PermissionDenied<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
 >({
   resource,
   action,
 }: {
   readonly resource: RESOURCE;
   readonly action: string &
-    keyof ReturnType<typeof getOperationPermissions>[RESOURCE];
+    keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE];
 }): JSX.Element {
   return (
     <PermissionError
@@ -117,7 +117,7 @@ export function PermissionDenied<
 }
 
 export function ProtectedAction<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
 >({
   resource,
   action,
@@ -125,7 +125,7 @@ export function ProtectedAction<
 }: {
   readonly resource: RESOURCE;
   readonly action: string &
-    keyof ReturnType<typeof getOperationPermissions>[RESOURCE];
+    keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE];
   readonly children: JSX.Element;
 }): JSX.Element {
   return hasPermission(resource, action) ? (

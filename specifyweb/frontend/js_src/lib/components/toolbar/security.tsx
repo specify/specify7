@@ -24,6 +24,7 @@ import { Button, className, Container, H2, H3 } from '../basic';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { useAvailableCollections } from '../othercollectionview';
+import { SetPermissionContext } from '../permissioncontext';
 import { CollectionView } from '../securitycollection';
 import { InstitutionView } from '../securityinstitution';
 import type { Role } from '../securityrole';
@@ -173,24 +174,26 @@ export function SecurityPanel(): JSX.Element | null {
           />
         ) : undefined}
         {state.type === 'CollectionState' && (
-          <CollectionView
-            collection={defined(
-              availableCollections.find(({ id }) => id === state.collectionId)
-            )}
-            collections={availableCollections}
-            initialRoleId={state.initialRole}
-            libraryRoles={libraryRoles}
-            onOpenUser={(userId): void =>
-              setState({
-                type: 'UserState',
-                user:
-                  typeof userId === 'number'
-                    ? defined(users)[userId]
-                    : addMissingFields('SpecifyUser', {}),
-                initialCollection: state.collectionId,
-              })
-            }
-          />
+          <SetPermissionContext collectionId={state.collectionId}>
+            <CollectionView
+              collection={defined(
+                availableCollections.find(({ id }) => id === state.collectionId)
+              )}
+              collections={availableCollections}
+              initialRoleId={state.initialRole}
+              libraryRoles={libraryRoles}
+              onOpenUser={(userId): void =>
+                setState({
+                  type: 'UserState',
+                  user:
+                    typeof userId === 'number'
+                      ? defined(users)[userId]
+                      : addMissingFields('SpecifyUser', {}),
+                  initialCollection: state.collectionId,
+                })
+              }
+            />
+          </SetPermissionContext>
         )}
         {state.type === 'UserState' && typeof users === 'object' ? (
           <UserView

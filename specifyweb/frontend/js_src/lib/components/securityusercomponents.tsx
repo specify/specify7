@@ -97,20 +97,21 @@ export function UserRoles({
   onChange: handleChange,
   onOpenRole: handleOpenRole,
 }: {
-  readonly collectionRoles: RR<number, RA<Role>> | undefined;
+  readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<number>> | undefined;
   readonly onChange: (value: IR<RA<number>>) => void;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
-}): JSX.Element {
-  return (
+}): JSX.Element | null {
+  return typeof collectionRoles !== 'object' ||
+    typeof collectionRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
         <span className={className.headerGray}>{adminText('userRoles')}:</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-          ? collectionRoles[collectionId].map((role) => (
+          ? defined(collectionRoles[collectionId]).map((role) => (
               <li key={role.id} className="flex items-center gap-2">
                 <Label.ForCheckbox>
                   <Input.Checkbox
@@ -141,7 +142,7 @@ export function UserRoles({
           : commonText('loading')}
       </Ul>
     </fieldset>
-  );
+  ) : null;
 }
 
 export function LegacyPermissions({

@@ -203,6 +203,7 @@ export function InstitutionView({
                   roles={libraryRoles}
                   permissionName="/permissions/library/roles"
                   baseName={institution.name ?? ''}
+                  collectionId={schema.domainLevelIds.collection}
                   onUpdateRole={updateRole}
                   onCreateRole={createRole}
                 />
@@ -309,6 +310,7 @@ export function InstitutionView({
             onOpenUser={undefined}
             onAddUser={undefined}
             permissionName="/permissions/library/roles"
+            collectionId={schema.domainLevelIds.collection}
           />
         ) : (
           <LoadingScreen />

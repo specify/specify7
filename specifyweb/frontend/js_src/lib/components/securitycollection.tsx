@@ -60,8 +60,10 @@ export function CollectionView({
   const [roles, setRoles] = useAsyncState<IR<Role>>(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/roles', 'read')
-          ? fetchRoles(collection.id, undefined).then(index)
+        hasPermission('/permissions/roles', 'read', collection.id)
+          ? fetchRoles(collection.id, undefined).then((roles) =>
+              index(defined(roles))
+            )
           : undefined,
       [collection.id]
     ),
@@ -73,7 +75,7 @@ export function CollectionView({
   >(
     React.useCallback(
       () =>
-        hasPermission('/permissions/policies/user', 'read') &&
+        hasPermission('/permissions/policies/user', 'read', collection.id) &&
         hasTablePermission('SpecifyUser', 'read')
           ? ajax<RR<number, IR<RA<string>>>>(
               `/permissions/user_policies/${collection.id}/`,
@@ -101,8 +103,8 @@ export function CollectionView({
   const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
-        hasPermission('/permissions/user/roles', 'read') &&
-        hasPermission('/permissions/roles', 'read')
+        hasPermission('/permissions/user/roles', 'read', collection.id) &&
+        hasPermission('/permissions/roles', 'read', collection.id)
           ? ajax<RA<KeysToLowerCase<UserRoles[number]>>>(
               `/permissions/user_roles/${collection.id}/`,
               {
@@ -242,7 +244,7 @@ export function CollectionView({
               />
             )}
           </div>
-          {hasPermission('/permissions/roles', 'read') && (
+          {hasPermission('/permissions/roles', 'read', collection.id) && (
             <section className="flex flex-col gap-2">
               <div>
                 <h4 className={className.headerGray}>
@@ -276,8 +278,12 @@ export function CollectionView({
                 )}
               </div>
               <div className="flex gap-2">
-                {hasPermission('/permissions/roles', 'create') ||
-                hasPermission('/permissions/roles', 'copy_from_library') ? (
+                {hasPermission('/permissions/roles', 'create', collection.id) ||
+                hasPermission(
+                  '/permissions/roles',
+                  'copy_from_library',
+                  collection.id
+                ) ? (
                   <Button.Green
                     onClick={(): void =>
                       setState({
@@ -286,7 +292,11 @@ export function CollectionView({
                     }
                     disabled={
                       !Array.isArray(userRoles) &&
-                      hasPermission('/permissions/user/roles', 'read')
+                      hasPermission(
+                        '/permissions/user/roles',
+                        'read',
+                        collection.id
+                      )
                     }
                   >
                     {commonText('create')}
@@ -296,6 +306,7 @@ export function CollectionView({
                   roles={roles}
                   permissionName="/permissions/roles"
                   baseName={collection.collectionName ?? ''}
+                  collectionId={collection.id}
                   onUpdateRole={updateRole}
                   onCreateRole={createRole}
                 />
@@ -310,8 +321,16 @@ export function CollectionView({
                   ({ userId }) =>
                     userId === userInformation.id ||
                     hasTablePermission('SpecifyUser', 'update') ||
-                    hasPermission('/permissions/policies/user', 'update') ||
-                    hasPermission('/permissions/user/roles', 'update')
+                    hasPermission(
+                      '/permissions/policies/user',
+                      'update',
+                      collection.id
+                    ) ||
+                    hasPermission(
+                      '/permissions/user/roles',
+                      'update',
+                      collection.id
+                    )
                 ),
                 (users) =>
                   users.length === 0 ? (
@@ -346,8 +365,12 @@ export function CollectionView({
                     </>
                   )
               )
-            ) : hasPermission('/permissions/user/roles', 'read') &&
-              hasPermission('/permissions/roles', 'read') ? (
+            ) : hasPermission(
+                '/permissions/user/roles',
+                'read',
+                collection.id
+              ) &&
+              hasPermission('/permissions/roles', 'read', collection.id) ? (
               commonText('loading')
             ) : (
               <Button.LikeLink
@@ -415,6 +438,8 @@ export function CollectionView({
                 : undefined
             }
             userRoles={state.userRoles}
+            permissionName="/permissions/roles"
+            collectionId={collection.id}
             onOpenUser={handleOpenUser}
             onAddUser={(user): void =>
               typeof userRoles === 'object' && typeof state.role.id === 'number'
@@ -457,7 +482,6 @@ export function CollectionView({
                   )
                 : undefined
             }
-            permissionName="/permissions/roles"
           />
         ) : (
           <LoadingScreen />

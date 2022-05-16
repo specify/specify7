@@ -32,9 +32,11 @@ export function CreateRole({
         Promise.all(
           collections.map(async (collection) =>
             fetchRoles(collection.id, undefined).then(
-              (roles) => [collection ?? '', roles] as const
+              (roles) => [collection ?? '', roles ?? []] as const
             )
           )
+        ).then((roles) =>
+          roles.filter(([_collection, roles]) => roles.length > 0)
         ),
       [collections]
     ),
@@ -105,7 +107,7 @@ export function CreateRole({
                 .filter(([_collection, roles]) => roles.length > 0)
                 .map(([collection, roles]) => (
                   <article key={collection.id}>
-                    {`${collection.collectionName}:`}
+                    {`${collection.collectionName ?? collection.id}:`}
                     <Ul>
                       {roles.map((role) => (
                         <li key={role.id}>

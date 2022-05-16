@@ -24,17 +24,19 @@ const categoryLabels = {
 export function SecurityImportExport({
   roles,
   baseName,
-  onUpdateRole: handleUpdateRole,
-  onCreateRole: handleCreateRole,
+  collectionId,
   permissionName,
   isReadOnly = false,
+  onUpdateRole: handleUpdateRole,
+  onCreateRole: handleCreateRole,
 }: {
   readonly roles: IR<Role> | undefined;
   readonly baseName: string;
-  readonly onUpdateRole: (role: Role) => void;
-  readonly onCreateRole: (role: NewRole) => void;
+  readonly collectionId: number;
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly isReadOnly?: boolean;
+  readonly onUpdateRole: (role: Role) => void;
+  readonly onCreateRole: (role: NewRole) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const loading = React.useContext(LoadingContext);
@@ -53,8 +55,8 @@ export function SecurityImportExport({
   return (
     <>
       {!isReadOnly &&
-        (hasPermission(permissionName, 'update') ||
-          hasPermission(permissionName, 'create')) && (
+        (hasPermission(permissionName, 'update', collectionId) ||
+          hasPermission(permissionName, 'create', collectionId)) && (
           <Button.Blue
             disabled={typeof roles === 'undefined'}
             onClick={handleOpen}
@@ -196,12 +198,14 @@ export function SecurityImportExport({
                                         (groupName === 'changed' &&
                                           !hasPermission(
                                             permissionName,
-                                            'update'
+                                            'update',
+                                            collectionId
                                           )) ||
                                         (groupName === 'created' &&
                                           !hasPermission(
                                             permissionName,
-                                            'create'
+                                            'create',
+                                            collectionId
                                           ))
                                           ? undefined
                                           : [

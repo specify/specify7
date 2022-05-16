@@ -18,7 +18,7 @@ import {
 } from './securityutils';
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
-import { userInformation } from './userinfo';
+import { fetchContext as fetchUser, userInformation } from './userinfo';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -28,7 +28,12 @@ export const tableActions = ['read', 'create', 'update', 'delete'] as const;
  * to make sure they haven't changed
  */
 const checkRegistry = async (): Promise<void> =>
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production' ||
+  /*
+   * If already checked the registry when fetching permissions for one
+   * Collection, no need to do it again for other collections
+   */
+  Object.keys(operationPermissions).length === 1
     ? Promise.resolve()
     : load<typeof operationPolicies>(
         '/permissions/registry/',
@@ -139,31 +144,40 @@ export const derivedPolicies = {
    * institutional level
    */
   '/permissions/institutional_policies/user': ['update', 'read'],
-};
+} as const;
 
-let operationPermissions: {
-  readonly [RESOURCE in keyof typeof operationPolicies]: RR<
-    typeof operationPolicies[RESOURCE][number],
-    boolean
-  >;
-} & RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
-    readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
-      typeof frontEndPermissions[RESOURCE][number],
+let operationPermissions: RR<
+  number,
+  {
+    readonly [RESOURCE in keyof typeof operationPolicies]: RR<
+      typeof operationPolicies[RESOURCE][number],
       boolean
     >;
-  };
-let tablePermissions: {
-  readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
-    typeof tableActions[number],
-    boolean
-  >;
-};
-let derivedPermissions: {
-  readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
-    typeof derivedPolicies[RESOURCE][number],
-    boolean
-  >;
-};
+  } & RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
+      readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
+        typeof frontEndPermissions[RESOURCE][number],
+        boolean
+      >;
+    }
+> = {};
+let tablePermissions: RR<
+  number,
+  {
+    readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
+      typeof tableActions[number],
+      boolean
+    >;
+  }
+> = {};
+let derivedPermissions: RR<
+  number,
+  {
+    readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
+      typeof derivedPolicies[RESOURCE][number],
+      boolean
+    >;
+  }
+> = {};
 
 export const getTablePermissions = () => tablePermissions;
 export const getOperationPermissions = () => operationPermissions;
@@ -249,7 +263,7 @@ export const queryUserPermissions = async (
 
 const calculateDerivedPermissions = (
   items: RA<PermissionsQueryItem>
-): typeof derivedPermissions =>
+): typeof derivedPermissions[number] =>
   Object.fromEntries(
     indexQueryItems(
       items
@@ -275,7 +289,7 @@ const calculateDerivedPermissions = (
           })
         )
     )
-  ) as typeof derivedPermissions;
+  ) as typeof derivedPermissions[number];
 
 const indexQueryItems = (
   query: RA<PermissionsQueryItem>
@@ -289,72 +303,133 @@ const indexQueryItems = (
     ([resource, actions]) => [resource, Object.fromEntries(actions)] as const
   );
 
-export const fetchContext = import('./schemabase')
-  .then(async ({ fetchContext }) => fetchContext)
-  .then(async (schema) =>
-    queryUserPermissions(
-      userInformation.id,
-      schema.domainLevelIds.collection
-    ).then((query) => {
-      const [operations, tables] = split(indexQueryItems(query), ([key]) =>
-        key.startsWith(tablePermissionsPrefix)
-      ).map(Object.fromEntries);
-      operationPermissions =
-        operations as unknown as typeof operationPermissions;
-      tablePermissions = tables as unknown as typeof tablePermissions;
-      derivedPermissions = calculateDerivedPermissions(query);
-      if (process.env.NODE_ENV !== 'production') {
-        // @ts-expect-error Declaring a global object
-        window._permissions = {
-          table: tablePermissions,
-          operations: operationPermissions,
-        };
-      }
-      void checkRegistry();
+const permissionPromises: Record<number, Promise<number>> = {};
+
+/** Fetch current user permissions for a given collection */
+export const fetchUserPermissions = async (
+  collectionId?: number
+  /*
+   * Returning a number rather than void so that React can reRender the
+   * SetPermissionContext when collectionId changes
+   */
+): Promise<number> =>
+  f
+    .all({
+      schema: import('./schemabase').then(
+        async ({ fetchContext }) => fetchContext
+      ),
+      fetchUser,
     })
-  );
+    .then(async ({ schema }) => {
+      const collection = collectionId ?? schema.domainLevelIds.collection;
+      if (typeof permissionPromises[collection] === 'undefined')
+        permissionPromises[collection] =
+          /*
+           * If fetching permissions for a non-current collection for a super
+           * admin, can jsut copy permissions from the other collection as such
+           * user has all permissions in all collections
+           */
+          (
+            userInformation.isadmin &&
+            collection !== schema.domainLevelIds.collection
+              ? Promise.resolve({
+                  operations:
+                    operationPermissions[schema.domainLevelIds.collection],
+                  tables: tablePermissions[schema.domainLevelIds.collection],
+                  derived: derivedPermissions[schema.domainLevelIds.collection],
+                })
+              : queryUserPermissions(userInformation.id, collection).then(
+                  (query) => {
+                    const [operations, tables] = split(
+                      indexQueryItems(query),
+                      ([key]) => key.startsWith(tablePermissionsPrefix)
+                    ).map(Object.fromEntries);
+                    return {
+                      operations:
+                        operations as unknown as typeof operationPermissions[number],
+                      tables:
+                        tables as unknown as typeof tablePermissions[number],
+                      derived: calculateDerivedPermissions(query),
+                    };
+                  }
+                )
+          ).then(({ operations, tables, derived }) => {
+            operationPermissions = {
+              ...operationPermissions,
+              [collection]: operations,
+            };
+            tablePermissions = {
+              ...tablePermissions,
+              [collection]: tables,
+            };
+            derivedPermissions = {
+              ...derivedPermissions,
+              [collection]: derived,
+            };
+            if (process.env.NODE_ENV !== 'production') {
+              // @ts-expect-error Declaring a global object
+              window._permissions = {
+                table: tablePermissions,
+                operations: operationPermissions,
+                derived: derivedPermissions,
+              };
+            }
+            void checkRegistry();
+            return collection;
+          });
+      return permissionPromises[collection];
+    });
+
+export const fetchContext = fetchUserPermissions();
 
 export const hasTablePermission = (
   tableName: keyof Tables,
-  action: typeof tableActions[number]
+  action: typeof tableActions[number],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  defined(tablePermissions)[tableNameToResourceName(tableName)][action]
+  defined(tablePermissions)[collectionId][tableNameToResourceName(tableName)][
+    action
+  ]
     ? true
     : f.log(`No permission to ${action} ${tableName}`) ?? false;
 
 export const hasPermission = <
-  RESOURCE extends keyof typeof operationPermissions
+  RESOURCE extends keyof typeof operationPermissions[number]
 >(
   resource: RESOURCE,
-  action: keyof typeof operationPermissions[RESOURCE]
+  action: keyof typeof operationPermissions[number][RESOURCE],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  defined(operationPermissions)[resource][action]
+  defined(operationPermissions)[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
 export const hasToolPermission = (
   tool: keyof ReturnType<typeof toolDefinitions>,
-  action: typeof tableActions[number]
+  action: typeof tableActions[number],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
   (toolDefinitions()[tool].tables as RA<keyof Tables>).every((tableName) =>
-    hasTablePermission(tableName, action)
+    hasTablePermission(tableName, action, collectionId)
   );
 
 export const hasTreeAccess = (
   treeName: AnyTree['tableName'],
-  action: typeof tableActions[number]
+  action: typeof tableActions[number],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  hasTablePermission(treeName, action) &&
-  hasTablePermission(`${treeName}TreeDef`, action) &&
-  hasTablePermission(`${treeName}TreeDefItem`, action);
+  hasTablePermission(treeName, action, collectionId) &&
+  hasTablePermission(`${treeName}TreeDef`, action, collectionId) &&
+  hasTablePermission(`${treeName}TreeDefItem`, action, collectionId);
 
 export const hasDerivedPermission = <
-  RESOURCE extends keyof typeof derivedPermissions
+  RESOURCE extends keyof typeof derivedPermissions[number]
 >(
   resource: RESOURCE,
-  action: keyof typeof derivedPermissions[RESOURCE]
+  action: keyof typeof derivedPermissions[number][RESOURCE],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  defined(derivedPermissions)[resource][action]
+  defined(derivedPermissions)[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
@@ -362,10 +437,11 @@ export const hasDerivedPermission = <
 export const hasPathPermission = (
   baseTableName: keyof Tables,
   mappingPath: RA<string>,
-  action: typeof tableActions[number]
+  action: typeof tableActions[number],
+  collectionId = schema.domainLevelIds.collection
 ): boolean =>
   mappingPathToTableNames(baseTableName, mappingPath, true).every((tableName) =>
-    hasTablePermission(tableName, action)
+    hasTablePermission(tableName, action, collectionId)
   );
 
 export const mappingPathToTableNames = (
