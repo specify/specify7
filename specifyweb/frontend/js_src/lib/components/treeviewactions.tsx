@@ -204,7 +204,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       {isOpen && typeof resource === 'object' && (
         <ResourceView
           resource={resource}
-          dialog="modal"
+          dialog="nonModal"
           onSaved={({ newResource }): void => {
             if (typeof newResource === 'object') {
               setResource(newResource);
