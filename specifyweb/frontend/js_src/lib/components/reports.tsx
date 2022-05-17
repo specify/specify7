@@ -649,7 +649,7 @@ function QueryParametersDialog({
       recordSetId={recordSetId}
       definition={definition}
       parameters={parameters}
-      onClose={handleClose}
+      onClose={(): void => setState({ type: 'Main' })}
     />
   ) : (
     <Dialog
@@ -658,7 +658,7 @@ function QueryParametersDialog({
       onClose={handleClose}
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{formsText('runReport')}</Submit.Blue>
         </>
       }

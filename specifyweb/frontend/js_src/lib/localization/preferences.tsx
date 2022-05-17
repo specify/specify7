@@ -205,10 +205,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Translucent dialogs',
   },
   translucentDialogDescription: {
-    'en-us': 'Whether dialogs have translucent background (easter egg)',
+    'en-us': 'Whether dialogs have translucent background',
     'ru-ru': 'Диалоги имеют полупрозрачный фон',
-    ca: 'Whether dialogs have translucent background (easter egg)',
-    'es-es': 'Whether dialogs have translucent background (easter egg)',
+    ca: 'Whether dialogs have translucent background',
+    'es-es': 'Whether dialogs have translucent background',
   },
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',

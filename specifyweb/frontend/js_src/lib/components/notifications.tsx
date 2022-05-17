@@ -189,11 +189,9 @@ function NotificationComponent({
   return (
     <article className="flex gap-2 pt-2">
       <span
-        className={
-          notification.read
-            ? undefined
-            : 'w-3 h-3 mt-1.5 bg-blue-500 rounded-full'
-        }
+        className={`w-3 h-3 mt-1.5 ${
+          notification.read ? '' : 'bg-blue-500 rounded-full'
+        }`}
       />
       <div className="flex flex-col gap-2">
         <p>
