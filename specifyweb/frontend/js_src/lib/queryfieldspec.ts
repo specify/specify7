@@ -172,7 +172,7 @@ export class QueryFieldSpec {
         field.isRelationship
           ? field.relatedModel.name.toLowerCase() === field.name.toLowerCase()
             ? field.relatedModel.tableId.toString()
-            : `${field.relatedModel.tableId}-${field.name.toLowerCase()}`
+            : `${field.relatedModel.tableId}-${field.name}`
           : undefined
       )
     );

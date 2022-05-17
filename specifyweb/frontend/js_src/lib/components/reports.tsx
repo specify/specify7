@@ -736,6 +736,7 @@ function RunReport({
       method="post"
       target={reportWindowContext}
       ref={setForm}
+      className="hidden"
     >
       <input
         type="hidden"
