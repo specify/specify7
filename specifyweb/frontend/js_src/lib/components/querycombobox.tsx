@@ -46,7 +46,7 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
 import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
-import { ResourceView } from './resourceview';
+import { NO_ADD_ANOTHER, ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
@@ -508,20 +508,24 @@ export function QueryComboBox({
               }
               onClick={handleOpenRelated}
             />
-            <DataEntry.Add
-              aria-pressed={state.type === 'AddResourceState'}
-              disabled={field?.isRelationship !== true}
-              onClick={(): void =>
-                field?.isRelationship === true
-                  ? state.type === 'AddResourceState'
-                    ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: pendingValueToResource(field),
-                      })
-                  : undefined
-              }
-            />
+            {typeof field === 'undefined' ||
+            field.isRelationship === false ||
+            !NO_ADD_ANOTHER.has(field.relatedModel.name) ? (
+              <DataEntry.Add
+                aria-pressed={state.type === 'AddResourceState'}
+                disabled={field?.isRelationship !== true}
+                onClick={(): void =>
+                  field?.isRelationship === true
+                    ? state.type === 'AddResourceState'
+                      ? setState({ type: 'MainState' })
+                      : setState({
+                          type: 'AddResourceState',
+                          resource: pendingValueToResource(field),
+                        })
+                    : undefined
+                }
+              />
+            ) : undefined}
             {hasCloneButton && (
               <DataEntry.Clone
                 disabled={typeof formatted?.resource === 'undefined'}

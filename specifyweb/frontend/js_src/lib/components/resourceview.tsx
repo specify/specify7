@@ -35,7 +35,7 @@ import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
  *
  * That is why "Add another" button is disabled for these tables.
  */
-const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
+export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   // Shouldn't clone preparations
   'Gift',
   'Borrow',
