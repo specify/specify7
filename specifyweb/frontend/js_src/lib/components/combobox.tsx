@@ -116,7 +116,7 @@ export function ComboBox({
 }: Omit<DefaultComboBoxProps, 'field'> & {
   readonly field: LiteralField | Relationship | undefined;
   readonly fieldName: string | undefined;
-}): JSX.Element {
+}): JSX.Element | null {
   const { resource, field, model, id, mode, formType, isRequired } = props;
 
   if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
@@ -172,10 +172,12 @@ export function ComboBox({
       ? defined(schema.models.PickList.getField('type'))
       : field;
 
-  if (typeof resolvedField !== 'object')
-    throw new Error(
+  if (typeof resolvedField !== 'object') {
+    console.error(
       `can't setup picklist for unknown field ${model.specifyModel.name}.${fieldName}`
     );
+    return null;
+  }
 
   const pickListName = props.pickListName ?? resolvedField.getPickList();
 
