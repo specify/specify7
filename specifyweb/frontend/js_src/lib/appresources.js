@@ -603,7 +603,7 @@ const CollectionResourcesView = Backbone.View.extend({
         this.collection = collection;
 
         this.directories = directories
-            .filter(dir => dir.get('collection') === collection.get('resource_uri') && dir.get('usertype') == null && dir.get('specifyuser') == null);
+            .filter(dir => dir.get('collection') === collection.get('resource_uri') && dir.get('usertype') == null);
 
         const dirs = this.directories.map(dir => dir.get('resource_uri'));
         this.resources = resources.filter(r => dirs.includes(r.get('spappresourcedir')));
