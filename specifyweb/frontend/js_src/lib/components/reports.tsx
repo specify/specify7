@@ -585,25 +585,46 @@ function RecordSets({
     () =>
       void recordSetsPromise
         .then(({ totalCount }) =>
-          totalCount === 0 ? setRecordSet(false) : undefined
+          totalCount === 0 ? setState({ type: 'Raw' }) : undefined
         )
         .catch(console.error),
     [recordSetsPromise]
   );
-  const [recordSet, setRecordSet] = React.useState<
-    undefined | false | SerializedResource<RecordSet>
-  >(undefined);
-  return typeof recordSet === 'undefined' ? (
+  const [state, setState] = React.useState<
+    | State<'Main'>
+    | State<
+        'RecordSet',
+        {
+          readonly recordSet: SerializedResource<RecordSet>;
+          readonly autoRun: boolean;
+        }
+      >
+    | State<'Raw'>
+  >({ type: 'Main' });
+  return state.type === 'Main' ? (
     <RecordSetsDialog
       recordSetsPromise={recordSetsPromise}
       onClose={handleClose}
       isReadOnly
-      onSelect={setRecordSet}
+      onConfigure={(recordSet): void =>
+        setState({
+          type: 'RecordSet',
+          recordSet,
+          autoRun: false,
+        })
+      }
+      onSelect={(recordSet): void =>
+        setState({
+          type: 'RecordSet',
+          recordSet,
+          autoRun: true,
+        })
+      }
     >
       {({ children, dialog }): JSX.Element =>
         dialog(
           children,
-          <Button.Blue onClick={(): void => setRecordSet(false)}>
+          <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
             {commonText('query')}
           </Button.Blue>
         )
@@ -612,7 +633,8 @@ function RecordSets({
   ) : (
     <QueryParametersDialog
       query={query}
-      recordSetId={typeof recordSet === 'object' ? recordSet.id : undefined}
+      autoRun={state.type === 'RecordSet' && state.autoRun}
+      recordSetId={state.type === 'RecordSet' ? state.recordSet.id : undefined}
       definition={definition}
       parameters={parameters}
       onClose={handleClose}
@@ -625,12 +647,14 @@ function QueryParametersDialog({
   recordSetId,
   definition,
   parameters,
+  autoRun,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly recordSetId: number | undefined;
   readonly definition: Document;
   readonly parameters: IR<string>;
+  readonly autoRun: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const model = getModelById(query.contextTableId);
@@ -639,9 +663,30 @@ function QueryParametersDialog({
     React.useCallback(() => parseQueryFields(query.fields), [query])
   );
   const id = useId('report-query');
-  const [state, setState] = React.useState<
-    State<'Main'> | State<'Running', { query: SerializedResource<SpQuery> }>
-  >({ type: 'Main' });
+  const [state, setState] = useLiveState<
+    | State<'Main'>
+    | State<
+        'Running',
+        {
+          /*
+           * This query here may be different from the one passed as a prop
+           * since user can modify filters
+           */
+          query: SerializedResource<SpQuery>;
+        }
+      >
+  >(
+    React.useCallback(
+      () =>
+        autoRun
+          ? {
+              type: 'Running',
+              query,
+            }
+          : { type: 'Main' },
+      [autoRun, query]
+    )
+  );
 
   return state.type === 'Running' ? (
     <RunReport

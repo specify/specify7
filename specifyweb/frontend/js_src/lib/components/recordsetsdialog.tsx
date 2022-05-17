@@ -28,10 +28,12 @@ import { QueryToolbarItem } from './toolbar/query';
 function Row({
   recordSet,
   onSelect: handleSelect,
+  onConfigure: handleConfigure,
   onEdit: handleEdit,
 }: {
   readonly recordSet: SerializedResource<RecordSet>;
   readonly onSelect?: () => void;
+  readonly onConfigure?: () => void;
   readonly onEdit?: () => void;
 }): JSX.Element | null {
   const [count] = useAsyncState(
@@ -81,6 +83,14 @@ function Row({
         {typeof handleEdit === 'function' && (
           <DataEntry.Edit onClick={handleEdit} />
         )}
+        {typeof handleConfigure === 'function' && (
+          <Button.Icon
+            icon="cog"
+            title={commonText('edit')}
+            aria-label={commonText('edit')}
+            onClick={handleConfigure}
+          />
+        )}
       </td>
     </tr>
   );
@@ -90,8 +100,9 @@ export function RecordSetsDialog({
   recordSetsPromise,
   onClose: handleClose,
   isReadOnly,
+  onConfigure: handleConfigure,
   onSelect: handleSelect,
-  children = ({ children, dialog }) => dialog(children),
+  children = ({ children, dialog }): JSX.Element => dialog(children),
 }: {
   readonly recordSetsPromise: Promise<{
     readonly totalCount: number;
@@ -99,6 +110,7 @@ export function RecordSetsDialog({
   }>;
   readonly onClose: () => void;
   readonly isReadOnly: boolean;
+  readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: (props: {
     readonly totalCount: number;
@@ -157,6 +169,7 @@ export function RecordSetsDialog({
                             recordSet: deserializeResource(recordSet),
                           })
                   }
+                  onConfigure={handleConfigure?.bind(undefined, recordSet)}
                   key={recordSet.id}
                 />
               ))}
