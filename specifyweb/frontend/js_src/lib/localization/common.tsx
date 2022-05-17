@@ -923,16 +923,16 @@ export const commonText = createDictionary({
     'es-es': 'Unexpected Error',
   },
   errorBoundaryDialogHeader: {
-    'en-us': 'An unexpected error has occurred',
+    'en-us': 'We are sorry, an error has occurred',
     'ru-ru': 'Произошла неожиданная ошибка',
-    ca: 'An unexpected error has occurred',
-    'es-es': 'An unexpected error has occurred',
+    ca: 'We are sorry, an error has occurred',
+    'es-es': 'We are sorry, an error has occurred',
   },
   errorBoundaryDialogText: {
-    'en-us': 'Please reload the page and try again.',
+    'en-us': 'Please use the web browser to reload the page and try again.',
     'ru-ru': 'Пожалуйста, обновите страницу и попробуйте еще раз.',
-    ca: 'Please reload the page and try again.',
-    'es-es': 'Please reload the page and try again.',
+    ca: 'Please use the web browser to reload the page and try again.',
+    'es-es': 'Please use the web browser to reload the page and try again.',
   },
   errorBoundaryDialogSecondMessage: {
     'en-us': (email: JSX.Element) => (

@@ -156,7 +156,7 @@ export function Notifications(): JSX.Element {
           }}
           buttons={commonText('close')}
           className={{
-            container: dialogClassNames.narrowContainer,
+            container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-y-3 divide-y divide-gray-500`,
           }}
         >
@@ -234,7 +234,8 @@ const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {commonText('feedItemUpdated')}{' '}
+        {commonText('feedItemUpdated')}
+        <br />
         <Link.Default
           download
           href={`/static/depository/export_feed/${filename}`}
@@ -247,7 +248,8 @@ const notificationRenderers: IR<
   'update-feed-failed'(notification) {
     return (
       <>
-        {commonText('updateFeedFailed')}{' '}
+        {commonText('updateFeedFailed')}
+        <br />
         <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -260,7 +262,8 @@ const notificationRenderers: IR<
   'dwca-export-complete'(notification) {
     return (
       <>
-        {commonText('dwcaExportCompleted')}{' '}
+        {commonText('dwcaExportCompleted')}
+        <br />
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}
@@ -273,7 +276,8 @@ const notificationRenderers: IR<
   'dwca-export-failed'(notification) {
     return (
       <>
-        {commonText('dwcaExportFailed')}{' '}
+        {commonText('dwcaExportFailed')}
+        <br />
         <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -286,7 +290,8 @@ const notificationRenderers: IR<
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToCsvCompleted')}{' '}
+        {commonText('queryExportToCsvCompleted')}
+        <br />
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}
@@ -299,7 +304,8 @@ const notificationRenderers: IR<
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToKmlCompleted')}{' '}
+        {commonText('queryExportToKmlCompleted')}
+        <br />
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}

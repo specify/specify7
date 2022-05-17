@@ -104,11 +104,9 @@ function ErrorDialog({
       forceToTop={true}
       onClose={undefined}
     >
-      <p>
-        {commonText('errorBoundaryDialogText')}
-        <br />
-        {commonText('errorBoundaryDialogSecondMessage', supportLink)}
-      </p>
+      <p>{commonText('errorBoundaryDialogText')}</p>
+      <br />
+      <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
       <details
         className="contents whitespace-pre-wrap"
         open={process.env.NODE_ENV !== 'production'}
