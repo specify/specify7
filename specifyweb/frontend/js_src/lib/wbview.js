@@ -41,7 +41,7 @@ import {getIcon, unknownIcon} from './icons';
 import {wbText} from './localization/workbench';
 import {commonText} from './localization/common';
 import {showDialog} from './components/legacydialog';
-import {loadingBar} from './components/modaldialog';
+import {dialogClassNames, loadingBar} from './components/modaldialog';
 import {format} from './dataobjformatters';
 import {iconClassName, legacyNonJsxIcons} from './components/icons';
 import {LANGUAGE} from './localization/utils';
@@ -208,7 +208,7 @@ const WBView = Backbone.View.extend({
      * time in a very short amount of time.
      *
      */
-    const throttleRate = Math.ceil(clamp(10, 2000, this.data.length / 10));
+    const throttleRate = Math.ceil(clamp(10, this.data.length / 10, 2000));
     this.updateCellInfoStats = _.throttle(
       this.updateCellInfoStats,
       throttleRate
@@ -1887,6 +1887,9 @@ const WBView = Backbone.View.extend({
       title: wbText('rollbackDialogTitle'),
       header: wbText('rollbackDialogHeader'),
       content: wbText('rollbackDialogText'),
+      className: {
+        container: dialogClassNames.narrowContainer,
+      },
       onClose: () => dialog.remove(),
       buttons: (
         <>

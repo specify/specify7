@@ -175,7 +175,7 @@ export function RecordSetsDialog({
             onClose={handleClose}
             buttons={
               <>
-                <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
                 {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                   <Button.Blue
                     onClick={(): void => setState({ type: 'CreateState' })}

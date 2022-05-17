@@ -94,8 +94,10 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   // Fetch records if needed
   React.useEffect(() => {
-    // TODO: make this more efficient (if going to the last record,
-    //   don't need to fetch all records in between)
+    /*
+     * TODO: make this more efficient (if going to the last record,
+     *   don't need to fetch all records in between)
+     */
     if (
       isLazy &&
       collection.related?.isNew() !== true &&
@@ -590,17 +592,19 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
     if (typeof currentRecordId === 'undefined')
-      // FIXME: test this code when deleting items from record set or adding
-      //   new items
+      /*
+       * FIXME: test this code when deleting items from record set or adding
+       *   new items
+       */
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 ids
         clamp(
           0,
-          totalCount,
           previousIndex.current > index
             ? index - DEFAULT_FETCH_LIMIT + 1
-            : index
+            : index,
+          totalCount
         )
       )
         .then((updateIds) =>
@@ -687,8 +691,14 @@ export function RecordSet<SCHEMA extends AnySchema>({
                       isAddingNew: false,
                       index: clamp(
                         0,
-                        totalCount - 1,
-                        previousIndex.current > index ? index - 1 : index
+                        /*
+                         * Previous index decides which direction to go in
+                         * Once item is deleted
+                         */
+                        previousIndex.current > index
+                          ? Math.max(0, index - 1)
+                          : index,
+                        totalCount - 1
                       ),
                     });
                     if (totalCount === 1) handleClose();

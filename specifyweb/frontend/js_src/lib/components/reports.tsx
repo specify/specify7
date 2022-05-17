@@ -118,7 +118,7 @@ export function ReportsView({
         icon={<span className="text-blue-500">{icons.documentReport}</span>}
         header={commonText('reports')}
         onClose={handleClose}
-        buttons={commonText('close')}
+        buttons={commonText('cancel')}
       >
         <section>
           <h2>{commonText('reports')}</h2>
@@ -658,7 +658,7 @@ function QueryParametersDialog({
       onClose={handleClose}
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{formsText('runReport')}</Submit.Blue>
         </>
       }

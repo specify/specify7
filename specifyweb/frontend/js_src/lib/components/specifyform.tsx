@@ -146,9 +146,13 @@ export function RenderForm<SCHEMA extends AnySchema>({
   const oldResourceRef = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined
   );
-  React.useEffect(() => {
-    oldResourceRef.current = resource;
-  }, [resource]);
+  React.useEffect(
+    // TODO: this is probably not working like expected. Change to () => () => {
+    () => {
+      oldResourceRef.current = resource;
+    },
+    [resource]
+  );
 
   const [loadedResource] = useAsyncState(
     React.useCallback(

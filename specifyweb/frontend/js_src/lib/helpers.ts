@@ -192,8 +192,8 @@ export const removeKey = <
     Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
   );
 
-export const clamp = (min: number, max: number, value: number) =>
-  Math.min(max, Math.max(min, value));
+export const clamp = (min: number, value: number, max: number) =>
+  Math.max(min, Math.min(max, value));
 
 /** Create a new array with a new item at a given position */
 export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [

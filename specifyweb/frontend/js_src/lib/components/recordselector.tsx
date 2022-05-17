@@ -73,7 +73,7 @@ export function Slider({
             // Convert 0-based indexing to 1-based
             value={Number.isNaN(pendingValue) ? '' : pendingValue + 1}
             onValueChange={(value): void => {
-              const newValue = clamp(0, count - 1, value - 1);
+              const newValue = clamp(0, value - 1, count - 1);
               setPendingValue(newValue);
               if (!Number.isNaN(value)) handleChange(newValue);
             }}
@@ -252,7 +252,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
       typeof handleDelete === 'function'
         ? (source): void => {
             if (records.length === 0) return;
-            handleSlide(Math.min(index, totalCount - 2));
+            handleSlide(clamp(0, index, totalCount - 2));
             handleDelete(index, source);
           }
         : undefined,

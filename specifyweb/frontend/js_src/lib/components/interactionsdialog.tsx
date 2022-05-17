@@ -178,7 +178,7 @@ function Interactions({
         container: dialogClassNames.narrowContainer,
       }}
       onClose={handleClose}
-      buttons={commonText('close')}
+      buttons={commonText('cancel')}
     >
       <Ul>
         {entries

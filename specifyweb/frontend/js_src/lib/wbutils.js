@@ -59,7 +59,7 @@ export const WBUtils = Backbone.View.extend({
     this.geoMapDialog = undefined;
     this.searchCells = _.debounce(
       this.searchCells,
-      Math.ceil(clamp(10, 200, this.wbview.data.length / 20)),
+      Math.ceil(clamp(10, this.wbview.data.length / 20, 200)),
       false
     );
   },

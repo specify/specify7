@@ -206,7 +206,7 @@ function DataSets({
       onClose={handleClose}
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           {canImport && (
             <>
               <Link.Blue href={'/specify/workbench-import/'}>
