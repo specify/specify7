@@ -33,7 +33,7 @@ const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: keyof SCHEMA['fields'] | keyof CommonFields;
-  readonly operation: 'notIn' | 'in' | 'between' | 'lessThan';
+  readonly operation: 'notIn' | 'in' | 'notBetween' | 'lessThan';
   readonly values: RA<string>;
 };
 
@@ -85,7 +85,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
       modal={false}
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <ProtectedAction resource="/querybuilder/query" action="execute">
             <Button.Blue onClick={(): void => setViewName(false)}>
               {queryText('queryBuilder')}
@@ -187,8 +187,8 @@ const testFilter = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
   { operation, field, values }: QueryComboBoxFilter<SCHEMA>
 ): boolean =>
-  operation === 'between'
-    ? resource.get(field) < values[0] && resource.get(field) > values[1]
+  operation === 'notBetween'
+    ? resource.get(field) < values[0] || resource.get(field) > values[1]
     : operation === 'in'
     ? values.some(f.equal(resource.get(field)))
     : operation === 'notIn'

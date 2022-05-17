@@ -587,7 +587,7 @@ export function QueryComboBox({
                               : fieldName === 'nodeNumber'
                               ? {
                                   field: 'nodeNumber',
-                                  operation: 'between',
+                                  operation: 'notBetween',
                                   values: startValue.split(','),
                                 }
                               : fieldName === 'collectionRelTypeId'
