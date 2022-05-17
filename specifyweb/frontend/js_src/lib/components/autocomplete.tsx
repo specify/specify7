@@ -180,7 +180,7 @@ export function Autocomplete<T>({
    */
   const ignoreFilter =
     filteredItems.length === 1 &&
-    currentValue === (filteredItems[0].searchValue ?? filteredItems[0].data) &&
+    currentValue === (filteredItems[0].searchValue ?? filteredItems[0].label) &&
     currentValue === pendingValue;
   const itemSource = ignoreFilter ? results : filteredItems;
 
