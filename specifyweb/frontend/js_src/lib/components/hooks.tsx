@@ -462,10 +462,7 @@ export function useResourceValue<
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
     function updateValue(newValue: T, validate = true) {
-      if (ignoreChangeRef.current) {
-        ignoreChangeRef.current = false;
-        return;
-      }
+      if (ignoreChangeRef.current) return;
 
       /*
        * Converting ref to state so that React.useEffect can be triggered
@@ -491,8 +488,8 @@ export function useResourceValue<
       );
 
       const storedValue = (
-        parser.type === 'number'
-          ? f.parseInt(parser?.printFormatter?.(newValue, parser) ?? '') ??
+        parser.type === 'number' && validate
+          ? f.parseFloat(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
           : (['checkbox', 'date'].includes(parser.type ?? '') || validate) &&
             parseResults.isValid

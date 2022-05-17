@@ -118,7 +118,7 @@ const processFieldType: {
     ...withStringDefault(cell),
     min: f.parseInt(getProperty('min') ?? ''),
     max: f.parseInt(getProperty('max') ?? ''),
-    step: f.parseInt(getProperty('step') ?? ''),
+    step: f.parseFloat(getProperty('step') ?? ''),
   }),
   QueryComboBox: (_cell, getProperty) => ({
     type: 'QueryComboBox',

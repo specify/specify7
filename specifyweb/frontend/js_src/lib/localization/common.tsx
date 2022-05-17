@@ -1721,10 +1721,10 @@ export const commonText = createDictionary({
     'es-es': 'Community Forum',
   },
   clearCache: {
-    'en-us': 'Clear Web Cache',
+    'en-us': 'Clear Browser Cache',
     'ru-ru': 'Очистить кеш',
-    ca: 'Clear Web Cache',
-    'es-es': 'Clear Web Cache',
+    ca: 'Clear Browser Cache',
+    'es-es': 'Clear Browser Cache',
   },
   clearedCacheDialogText: {
     'en-us': 'Cache has been cleaned. Please reload the page.',
