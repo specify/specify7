@@ -4,9 +4,8 @@ import { ajax, formData, ping } from '../ajax';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
-import { Button, className, Link } from './basic';
+import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
-import { icons } from './icons';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
 
@@ -187,46 +186,43 @@ function NotificationComponent({
   readonly onDelete: (promise: Promise<void>) => void;
 }): JSX.Element {
   return (
-    <article className="flex gap-2 pt-2">
-      <span
-        className={`w-3 h-3 mt-1.5 ${
-          notification.read ? '' : 'bg-blue-500 rounded-full'
-        }`}
-      />
-      <div className="flex flex-col gap-2">
-        <p>
-          {
-            // TODO: close the dialog when link is clicked
-            (
-              notificationRenderers[notification.type] ??
-              notificationRenderers.default
-            )(notification)
-          }
-        </p>
+    <article className="flex flex-col gap-2 pt-2">
+      <div className="flex gap-2">
+        {!notification.read && (
+          <span className="w-3 h-3 mt-1.5 bg-blue-500 rounded-full" />
+        )}
         <span className="text-gray-500">
           <DateElement date={notification.timestamp} />
         </span>
+        <span className="flex-1 -ml-2" />
+        <Button.Icon
+          icon="x"
+          title={commonText('delete')}
+          aria-label={commonText('delete')}
+          onClick={(): void =>
+            handleDelete(
+              ping(
+                '/notifications/delete/',
+                {
+                  method: 'POST',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  body: formData({ message_id: notification.messageId }),
+                },
+                { strict: false }
+              ).then(f.void)
+            )
+          }
+        />
       </div>
-      <Button.Small
-        variant={className.redButton}
-        title={commonText('delete')}
-        aria-label={commonText('delete')}
-        onClick={(): void =>
-          handleDelete(
-            ping(
-              '/notifications/delete/',
-              {
-                method: 'POST',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                body: formData({ message_id: notification.messageId }),
-              },
-              { strict: false }
-            ).then(f.void)
-          )
+      <p>
+        {
+          // TODO: close the dialog when link is clicked
+          (
+            notificationRenderers[notification.type] ??
+            notificationRenderers.default
+          )(notification)
         }
-      >
-        {icons.x}
-      </Button.Small>
+      </p>
     </article>
   );
 }

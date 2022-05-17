@@ -3,6 +3,7 @@ import React from 'react';
 import { fetchCollection } from '../collection';
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
+import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
 import { makeTreeMap } from '../taxontiles';
@@ -14,7 +15,6 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
-import { hasTablePermission } from '../permissions';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -45,8 +45,7 @@ function AboutDialog({
   return (
     <Dialog
       isOpen={isOpen}
-      title={welcomeText('aboutSpecifyDialogTitle')}
-      header={commonText('specifySeven')}
+      header={welcomeText('aboutSpecify')}
       className={{
         container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
         content: `${dialogClassNames.flexContent} pr-4`,

@@ -39,12 +39,6 @@ export const welcomeText = createDictionary({
     'es-es': (count: number) =>
       `Showing Taxa with ${count} or more Collection Objects`,
   },
-  aboutSpecifyDialogTitle: {
-    'en-us': 'About Specify',
-    'ru-ru': 'О Specify',
-    ca: 'About Specify',
-    'es-es': 'About Specify',
-  },
   fullAddress: {
     'en-us': (
       <>
