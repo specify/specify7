@@ -46,6 +46,10 @@ export type PreferenceItem<VALUE> = {
   // Whether app needs to be reloaded if this preference changes
   readonly requiresReload: boolean;
   /*
+   * Set value only on field blur, rather than as soon as the user changed it
+   */
+  readonly setOnBlurOnly?: boolean;
+  /*
    * Whether to render this item in the Preferences Menu
    * Invisible items are usually set by components outside the preferences menu
    *
@@ -172,6 +176,7 @@ export const preferenceDefinitions = {
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,
+            setOnBlurOnly: true,
             visible: true,
             defaultValue: 100,
             type: 'java.lang.Double',
@@ -449,6 +454,7 @@ export const preferenceDefinitions = {
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,
+            setOnBlurOnly: true,
             visible: true,
             defaultValue: 100,
             type: 'java.lang.Float',
@@ -468,6 +474,7 @@ export const preferenceDefinitions = {
           maxWidth: defineItem<number>({
             title: preferencesText('maxFormWidth'),
             requiresReload: false,
+            setOnBlurOnly: true,
             visible: true,
             defaultValue: 1200,
             type: 'java.lang.Float',

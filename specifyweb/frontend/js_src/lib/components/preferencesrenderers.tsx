@@ -23,7 +23,7 @@ import {
 } from '../uiparse';
 import { Autocomplete } from './autocomplete';
 import { Input, Select } from './basic';
-import { useValidation } from './hooks';
+import { useTriggerState, useValidation } from './hooks';
 import { iconClassName } from './icons';
 import type { PreferenceItem, PreferenceItemComponent } from './preferences';
 import { usePref } from './preferenceshooks';
@@ -248,11 +248,19 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       [parser]
     );
     const { validationRef, inputRef, setValidation } = useValidation();
+    const [internalValue, setInternalValue] = useTriggerState(value);
+    const handleChanged =
+      definition.setOnBlurOnly === true ? setInternalValue : handleChange;
+    const handleBlur =
+      definition.setOnBlurOnly === true
+        ? (): void => handleChange(internalValue)
+        : undefined;
     return 'values' in definition ? (
       <>
         <Select
-          value={value}
-          onValueChange={handleChange}
+          value={internalValue}
+          onValueChange={handleChanged}
+          onBlur={handleBlur}
           disabled={isReadOnly}
         >
           {definition.values.map(({ value, title }) => (
@@ -278,15 +286,16 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       <Input.Generic
         forwardRef={validationRef}
         {...(validationAttributes ?? { type: 'text' })}
-        value={value}
+        value={internalValue}
         isReadOnly={isReadOnly}
         onValueChange={(newValue): void => {
           if (typeof parser === 'object' && inputRef.current !== null) {
             const parsed = parseValue(parser, inputRef.current, newValue);
-            if (parsed.isValid) handleChange(newValue);
+            if (parsed.isValid) handleChanged(newValue);
             else setValidation(parsed.reason);
-          } else handleChange(newValue);
+          } else handleChanged(newValue);
         }}
+        onBlur={handleBlur}
       />
     );
   };
