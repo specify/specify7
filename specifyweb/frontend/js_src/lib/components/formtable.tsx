@@ -110,7 +110,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         role="table"
         viewDefinition={viewDefinition}
         flexibleColumnWidth={flexibleColumnWidth}
-        display="block"
+        display="inline"
+        className="w-fit"
         style={{
           gridTemplateColumns: `min-content repeat(${
             viewDefinition.columns.length
