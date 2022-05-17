@@ -248,6 +248,7 @@ function UserToolsColumn({
                     : '/specify/task/',
               }))
               .map(({ task, title, basePath, view, isOverlay }) => {
+                // TODO: simplify all of this
                 const isExternalLink =
                   typeof view === 'string' &&
                   basePath !== '/' &&

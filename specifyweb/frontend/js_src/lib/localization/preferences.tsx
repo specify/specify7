@@ -248,10 +248,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Show an informational message when creating a new Data Set',
   },
   header: {
-    'en-us': 'Header',
+    'en-us': 'Top Level Menu',
     'ru-ru': 'Главное меню',
-    ca: 'Header',
-    'es-es': 'Header',
+    ca: 'Top Level Menu',
+    'es-es': 'Top Level Menu',
   },
   menu: {
     'en-us': 'Menu',

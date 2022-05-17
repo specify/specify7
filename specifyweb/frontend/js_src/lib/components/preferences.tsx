@@ -320,6 +320,36 @@ export const preferenceDefinitions = {
       },
     },
   },
+  welcomePage: {
+    title: preferencesText('welcomePage'),
+    subCategories: {
+      general: {
+        title: preferencesText('general'),
+        items: {
+          mode: defineItem<WelcomePageMode>({
+            title: preferencesText('content'),
+            description: (
+              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+                {commonText('documentation')}
+              </Link.NewTab>
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'default',
+            renderer: WelcomePageModePreferenceItem,
+          }),
+          source: defineItem<string>({
+            title: '',
+            requiresReload: false,
+            // This item is rendered inside of WelcomePageModePreferenceItem
+            visible: false,
+            defaultValue: defaultWelcomePageImage,
+            type: 'text',
+          }),
+        },
+      },
+    },
+  },
   header: {
     title: preferencesText('header'),
     subCategories: {
@@ -1026,36 +1056,6 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
-          }),
-        },
-      },
-    },
-  },
-  welcomePage: {
-    title: preferencesText('welcomePage'),
-    subCategories: {
-      general: {
-        title: preferencesText('general'),
-        items: {
-          mode: defineItem<WelcomePageMode>({
-            title: preferencesText('content'),
-            description: (
-              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
-                {commonText('documentation')}
-              </Link.NewTab>
-            ),
-            requiresReload: false,
-            visible: true,
-            defaultValue: 'default',
-            renderer: WelcomePageModePreferenceItem,
-          }),
-          source: defineItem<string>({
-            title: '',
-            requiresReload: false,
-            // This item is rendered inside of WelcomePageModePreferenceItem
-            visible: false,
-            defaultValue: defaultWelcomePageImage,
-            type: 'text',
           }),
         },
       },
