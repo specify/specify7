@@ -5,33 +5,30 @@
 import React from 'react';
 
 import { Http, ping } from '../../ajax';
+import { f } from '../../functools';
 import { cachableUrls } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import { useAsyncState } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 
-function CacheBuster(): JSX.Element | null {
-  const [isLoaded] = useAsyncState(
-    React.useCallback(
-      async () =>
-        Promise.all(
-          Array.from(cachableUrls, async (endpoint) =>
-            ping(
-              endpoint,
-              { method: 'HEAD', cache: 'no-cache' },
-              {
-                expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-              }
-            ).then(() => console.log(`Cleaned cache from ${endpoint}`))
-          )
-        ),
-      []
-    ),
-    true
-  );
+export const clearCache = async (): Promise<true> =>
+  Promise.all(
+    Array.from(cachableUrls, async (endpoint) =>
+      ping(
+        endpoint,
+        { method: 'HEAD', cache: 'no-cache' },
+        {
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+        }
+      ).then(() => f.log(`Cleaned cache from ${endpoint}`))
+    )
+  ).then(f.true);
 
-  return isLoaded ? (
+function CacheBuster(): JSX.Element | null {
+  const [isLoaded] = useAsyncState(clearCache, true);
+
+  return isLoaded === true ? (
     <Dialog
       header={commonText('clearCache')}
       onClose={(): void => window.location.assign('/')}

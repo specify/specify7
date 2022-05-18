@@ -17,6 +17,9 @@ import type { RA } from './types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly general: {
+    readonly clearCacheOnException: boolean;
+  };
   readonly forms: {
     /** Print label on form save */
     readonly printOnSave: boolean;

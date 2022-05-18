@@ -295,6 +295,13 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          blurContentBehindDialog: defineItem<boolean>({
+            title: preferencesText('blurContentBehindDialog'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           showIcon: defineItem<boolean>({
             title: preferencesText('showDialogIcon'),
             requiresReload: false,

@@ -18,15 +18,17 @@ import { schema } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import { userInformation } from '../userinfo';
-import { Button, className, Link } from './basic';
+import { Button, Input, Label, Link } from './basic';
 import { CopyButton } from './common';
-import { displayError } from './contexts';
+import { displayError, legacyLoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
+import { useCachedState } from './statecache';
+import { clearCache } from './toolbar/cachebuster';
 
 type ErrorBoundaryState =
   | {
@@ -66,6 +68,12 @@ function ErrorDialog({
     'application',
     'allowDismissingErrors'
   );
+  const [clearCacheOnException = false, setClearCache] = useCachedState({
+    bucketName: 'general',
+    cacheName: 'clearCacheOnException',
+    defaultValue: false,
+    staleWhileRefresh: false,
+  });
   return (
     <Dialog
       title={title}
@@ -86,13 +94,27 @@ function ErrorDialog({
             text={copiableMessage}
             label={commonText('copyErrorMessage')}
           />
-          <Link.Blue href="/specify/task/cache-buster/">
-            {commonText('clearCache')}
-          </Link.Blue>
           <span className="flex-1 -ml-2" />
-          <Link.Red href="/specify/" className={className.navigationHandled}>
+          <Label.ForCheckbox>
+            <Input.Checkbox
+              checked={clearCacheOnException}
+              onValueChange={setClearCache}
+            />
+            {commonText('clearCache')}
+          </Label.ForCheckbox>
+          <Button.Red
+            onClick={(): void =>
+              // TODO: use loading() here after everything is using React
+              legacyLoadingContext(
+                (clearCacheOnException
+                  ? clearCache()
+                  : Promise.resolve(undefined)
+                ).then(() => window.location.assign('/specify/'))
+              )
+            }
+          >
             {commonText('goToHomepage')}
-          </Link.Red>
+          </Button.Red>
           {(canDismiss || process.env.NODE_ENV !== 'production') &&
             typeof handleClose === 'function' && (
               <Button.Blue onClick={handleClose}>
@@ -239,8 +261,12 @@ function formatError(
       errorObject.push(
         <React.Fragment key="stack">
           <p>{error.message}</p>
-          <p>Stack:</p>
-          <pre>{error.stack}</pre>
+          {typeof error.stack === 'string' && error.stack.length > 0 && (
+            <>
+              <p>Stack:</p>
+              <pre>{error.stack}</pre>
+            </>
+          )}
         </React.Fragment>
       );
       errorMessage.push(`Error: ${error.message}`);

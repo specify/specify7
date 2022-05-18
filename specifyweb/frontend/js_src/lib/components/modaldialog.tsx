@@ -165,6 +165,11 @@ export function Dialog({
     'dialog',
     'transparentBackground'
   );
+  const [blurContentBehindDialog] = usePref(
+    'general',
+    'dialog',
+    'blurContentBehindDialog'
+  );
   const [showIcon] = usePref('general', 'dialog', 'showIcon');
 
   const [closeOnEsc] = usePref('general', 'dialog', 'closeOnEsc');
@@ -313,7 +318,7 @@ export function Dialog({
             modal
               ? 'bg-gray-500/70 dark:bg-neutral-900/70'
               : 'pointer-events-none'
-          }`,
+          } ${blurContentBehindDialog ? 'backdrop-blur' : ''}`,
         afterOpen: 'opacity-100',
         beforeClose: '!opacity-0',
       }}

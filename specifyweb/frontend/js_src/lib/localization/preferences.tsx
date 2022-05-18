@@ -898,4 +898,10 @@ export const preferencesText = createDictionary({
     ca: 'Condensed Query Result',
     'es-es': 'Condensed Query Result',
   },
+  blurContentBehindDialog: {
+    'en-us': 'Blur content behind the dialog',
+    'ru-ru': 'Blur content behind the dialog',
+    ca: 'Blur content behind the dialog',
+    'es-es': 'Blur content behind the dialog',
+  },
 });
