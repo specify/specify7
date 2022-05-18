@@ -35,7 +35,7 @@ export function SecurityInsitution({
 }: {
   readonly institution: SerializedResource<Institution>;
   readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
-  readonly onOpenUser: (userId: number | undefined) => void;
+  readonly onOpenUser: ((userId: number | undefined) => void) | undefined;
   readonly libraryRoles: IR<Role> | undefined;
   readonly collections: RA<SerializedResource<Collection>>;
   readonly onChangeLibraryRoles: (
@@ -210,10 +210,11 @@ export function SecurityInsitution({
                     .map((user) => (
                       <li key={user.id}>
                         <Button.LikeLink
-                          onClick={(): void => handleOpenUser(user.id)}
+                          onClick={handleOpenUser?.bind(undefined, user.id)}
                           disabled={
-                            user.id !== userInformation.id &&
-                            !hasTablePermission('SpecifyUser', 'read')
+                            typeof handleOpenUser === 'undefined' ||
+                            (user.id !== userInformation.id &&
+                              !hasTablePermission('SpecifyUser', 'read'))
                           }
                         >
                           {`${user.name}`}
@@ -233,7 +234,7 @@ export function SecurityInsitution({
                 {hasTablePermission('SpecifyUser', 'create') && (
                   <div>
                     <Button.Green
-                      onClick={(): void => handleOpenUser(undefined)}
+                      onClick={handleOpenUser?.bind(undefined, undefined)}
                     >
                       {commonText('create')}
                     </Button.Green>

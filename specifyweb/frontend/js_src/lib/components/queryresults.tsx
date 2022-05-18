@@ -15,9 +15,9 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { fieldFormat } from '../uiparse';
 import { Input, Link } from './basic';
-import { useAsyncState } from './hooks';
-import { queryIdField } from './queryresultstable';
+import { useAsyncState, useLiveState } from './hooks';
 import { usePref } from './preferenceshooks';
+import { queryIdField } from './queryresultstable';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>
@@ -101,11 +101,12 @@ function getAuditRecordFormatter(
     );
 }
 
-function getClassName(condensedQueryResult) {
-  return `border-gray-500 border-r bg-[color:var(--bg)] p-${
-    condensedQueryResult ? '0.5' : '1'
-  } first:border-l min-h-[theme(spacing.${condensedQueryResult ? '4' : '8'} )]`;
-}
+const getCellClassName = (condenseQueryResults: boolean): string =>
+  `border-gray-500 border-r bg-[color:var(--bg)] ${
+    condenseQueryResults ? 'p-0.5' : 'p-1'
+  } first:border-l ${
+    condenseQueryResults ? 'min-h-[theme(spacing.4' : 'min-h-[theme(spacing.8'
+  } )]`;
 
 function QueryResultCell({
   fieldSpec,
@@ -132,7 +133,7 @@ function QueryResultCell({
   return (
     <span
       role="cell"
-      className={`${getClassName(condensedQueryResult)} ${
+      className={`${getCellClassName(condensedQueryResult)} ${
         value === null ? 'text-gray-700 dark:text-neutral-500' : ''
       } ${
         fieldSpec?.parser.type === 'number' ? 'tabular-nums justify-end' : ''
@@ -169,14 +170,16 @@ function QueryResult({
   readonly isSelected: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
-  const [resource] = React.useState<
+  const [resource] = useLiveState<
     SpecifyResource<AnySchema> | undefined | false
-  >((): SpecifyResource<AnySchema> | false => {
-    if (!hasIdField) return false;
-    return new model.Resource({
-      id: result[queryIdField],
-    });
-  });
+  >(
+    React.useCallback((): SpecifyResource<AnySchema> | false => {
+      if (!hasIdField) return false;
+      return new model.Resource({
+        id: result[queryIdField],
+      });
+    }, [hasIdField, model, result])
+  );
   const [formattedValues] = useAsyncState(
     React.useCallback(
       () => recordFormatter?.(result),
@@ -189,21 +192,6 @@ function QueryResult({
     'appearance',
     'condensedQueryResult'
   );
-  const cells = result
-    .filter((_, index) => !hasIdField || index !== queryIdField)
-    .map((value, index) => (
-      <QueryResultCell
-        key={index}
-        value={formattedValues?.[index] ?? value}
-        fieldSpec={
-          typeof formattedValues?.[index] === 'undefined'
-            ? fieldSpecs[index]
-            : undefined
-        }
-        condensedQueryResult={condensedQueryResult}
-      />
-    ));
-
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
   return (
@@ -227,7 +215,7 @@ function QueryResult({
       {typeof handleSelected === 'function' && (
         <span
           role="cell"
-          className={`${getClassName(condensedQueryResult)} sticky`}
+          className={`${getCellClassName(condensedQueryResult)} sticky`}
         >
           <Input.Checkbox
             checked={isSelected}
@@ -239,7 +227,7 @@ function QueryResult({
       {typeof viewUrl === 'string' && (
         <span
           role="cell"
-          className={`${getClassName(condensedQueryResult)} sticky`}
+          className={`${getCellClassName(condensedQueryResult)} sticky`}
         >
           <Link.NewTab
             className="print:hidden"
@@ -249,7 +237,20 @@ function QueryResult({
           />
         </span>
       )}
-      {cells}
+      {result
+        .filter((_, index) => !hasIdField || index !== queryIdField)
+        .map((value, index) => (
+          <QueryResultCell
+            key={index}
+            value={formattedValues?.[index] ?? value}
+            fieldSpec={
+              typeof formattedValues?.[index] === 'undefined'
+                ? fieldSpecs[index]
+                : undefined
+            }
+            condensedQueryResult={condensedQueryResult}
+          />
+        ))}
     </div>
   );
 }

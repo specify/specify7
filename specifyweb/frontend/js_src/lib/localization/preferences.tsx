@@ -4,9 +4,10 @@
  * @module
  */
 
-import { createDictionary } from './utils';
-import { Key } from '../components/basic';
 import React from 'react';
+
+import { Key } from '../components/basic';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -873,7 +874,6 @@ export const preferencesText = createDictionary({
     ca: 'Use accessible month picker',
     'es-es': 'Use accessible month picker',
   },
-<<<<<<< HEAD
   rightAlignNumberFields: {
     'en-us': 'Right-Justify numeric fields',
     'ru-ru': 'Right-Justify numeric fields',
@@ -891,12 +891,11 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Limit max field width',
     ca: 'Limit max field width',
     'es-es': 'Limit max field width',
-=======
+  },
   condensedQueryResult: {
     'en-us': 'Condensed Query Result',
     'ru-ru': 'Condensed Query Result',
     ca: 'Condensed Query Result',
     'es-es': 'Condensed Query Result',
->>>>>>> Query Results Preferences for Padding Feature
   },
 });

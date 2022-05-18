@@ -90,7 +90,7 @@ function ErrorDialog({
             {commonText('clearCache')}
           </Link.Blue>
           <span className="flex-1 -ml-2" />
-          <Link.Red href="/" className={className.navigationHandled}>
+          <Link.Red href="/specify/" className={className.navigationHandled}>
             {commonText('goToHomepage')}
           </Link.Red>
           {(canDismiss || process.env.NODE_ENV !== 'production') &&

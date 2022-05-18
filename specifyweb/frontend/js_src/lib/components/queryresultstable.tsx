@@ -258,7 +258,7 @@ export function QueryResultsTable({
   label = commonText('results'),
   hasIdField,
   fetchResults,
-  totalCount,
+  totalCount: initialTotalCount,
   fieldSpecs,
   initialData,
   sortConfig,
@@ -312,12 +312,14 @@ export function QueryResultsTable({
     false
   );
 
+  const [totalCount, setTotalCount] = useTriggerState(initialTotalCount);
+
   const [selectedRows, setSelectedRows] = React.useState<Set<number>>(
     new Set()
   );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
-  React.useEffect(() => setSelectedRows(new Set()), [totalCount]);
+  React.useEffect(() => setSelectedRows(new Set()), [initialTotalCount]);
 
   function fetchMore(): void {
     if (!Array.isArray(results)) return;
@@ -367,6 +369,7 @@ export function QueryResultsTable({
                 model={model}
                 onFetchMore={isFetching ? undefined : fetchMore}
                 onDelete={(index): void => {
+                  setTotalCount(totalCount - 1);
                   setResults(removeItem(results, index));
                   setSelectedRows(
                     new Set(
