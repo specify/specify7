@@ -639,7 +639,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         totalCount: totalCount + 1,
         ids: typeof resource.id === 'undefined' ? ids : [...ids, resource.id],
         isAddingNew: typeof resource.id === 'undefined',
-        index: totalCount + 1,
+        index: totalCount,
       };
     });
 
@@ -698,7 +698,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                         previousIndex.current > index
                           ? Math.max(0, index - 1)
                           : index,
-                        totalCount - 1
+                        totalCount - 2
                       ),
                     });
                     if (totalCount === 1) handleClose();
