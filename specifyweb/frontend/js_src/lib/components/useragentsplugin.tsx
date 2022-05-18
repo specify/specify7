@@ -108,10 +108,12 @@ export function UserAgentsDialog({
                 ),
               },
               {
-                expectedResponseCodes: [Http.OK, Http.NO_CONTENT],
+                expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
               }
             ).then(({ data, status }) =>
-              status === Http.OK ? handleClose() : setResponse(JSON.parse(data))
+              status === Http.NO_CONTENT
+                ? handleClose()
+                : setResponse(JSON.parse(data))
             )
           )
         }

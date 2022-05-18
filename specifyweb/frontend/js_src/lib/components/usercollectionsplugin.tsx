@@ -29,6 +29,7 @@ function UserCollectionsUi({
   const [allCollections] = useAsyncState(
     React.useCallback(
       async () =>
+        // TODO: this will throw if user doesn't have collection read access
         fetchCollection('Collection', { limit: 0 }).then(
           ({ records }) => records
         ),
