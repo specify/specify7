@@ -25,7 +25,7 @@ import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
 
-export function SecurityInsitution({
+export function SecurityInstitution({
   institution,
   users,
   onOpenUser: handleOpenUser,
@@ -132,122 +132,124 @@ export function SecurityInsitution({
               aria-label={commonText('edit')}
             />
           </div>
-          {hasPermission('/permissions/library/roles', 'read') && (
-            <section className="flex flex-col gap-2">
-              <div>
-                <h4 className={className.headerGray}>
-                  {adminText('userRoleLibrary')}
-                </h4>
-                {typeof libraryRoles === 'object' ? (
-                  <ul>
-                    {Object.values(libraryRoles).map((role) => (
-                      <li key={role.id}>
-                        <Button.LikeLink
-                          onClick={(): void =>
-                            setState({
-                              type: 'RoleState',
-                              roleId: role.id,
-                            })
-                          }
-                        >
-                          {role.name}
-                        </Button.LikeLink>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  commonText('loading')
-                )}
-              </div>
-              <div className="flex gap-2">
-                {hasPermission('/permissions/library/roles', 'create') && (
-                  <Button.Green
-                    onClick={(): void =>
-                      setState({
-                        type: 'CreatingRoleState',
-                      })
-                    }
-                  >
-                    {commonText('create')}
-                  </Button.Green>
-                )}
-                {state.type === 'CreatingRoleState' && (
-                  <CreateRole
-                    libraryRoles={libraryRoles}
-                    collections={collections}
-                    onCreated={(role): void =>
-                      setState({
-                        type: 'RoleState',
-                        roleId: role.id,
-                      })
-                    }
-                    onClose={(): void =>
-                      setState({
-                        type: 'MainState',
-                      })
-                    }
-                    scope="institution"
-                  />
-                )}
-                <SecurityImportExport
-                  roles={libraryRoles}
-                  permissionName="/permissions/library/roles"
-                  baseName={institution.name ?? ''}
-                  collectionId={schema.domainLevelIds.collection}
-                  onUpdateRole={updateRole}
-                  onCreateRole={createRole}
-                />
-              </div>
-            </section>
-          )}
-          <section className="flex flex-col gap-2">
-            <h4 className={className.headerGray}>{adminText('users')}:</h4>
-            {typeof users === 'object' ? (
-              <>
-                <Ul>
-                  {Object.values(users)
-                    .sort(sortFunction(({ name }) => name))
-                    .map((user) => (
-                      <li key={user.id}>
-                        <Button.LikeLink
-                          onClick={handleOpenUser?.bind(undefined, user.id)}
-                          disabled={
-                            typeof handleOpenUser === 'undefined' ||
-                            (user.id !== userInformation.id &&
-                              !hasTablePermission('SpecifyUser', 'read'))
-                          }
-                        >
-                          {`${user.name}`}
-                          <span className="text-gray-500">{`${
-                            admins?.admins.has(user.id)
-                              ? ` ${adminText('specifyAdmin')}`
-                              : ''
-                          }${
-                            admins?.legacyAdmins.has(user.id)
-                              ? ` ${adminText('legacyAdmin')}`
-                              : ''
-                          }`}</span>
-                        </Button.LikeLink>
-                      </li>
-                    ))}
-                </Ul>
-                {hasTablePermission('SpecifyUser', 'create') && (
-                  <div>
+          <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
+            {hasPermission('/permissions/library/roles', 'read') && (
+              <section className="flex flex-col gap-2">
+                <div>
+                  <h4 className={className.headerGray}>
+                    {adminText('userRoleLibrary')}
+                  </h4>
+                  {typeof libraryRoles === 'object' ? (
+                    <ul>
+                      {Object.values(libraryRoles).map((role) => (
+                        <li key={role.id}>
+                          <Button.LikeLink
+                            onClick={(): void =>
+                              setState({
+                                type: 'RoleState',
+                                roleId: role.id,
+                              })
+                            }
+                          >
+                            {role.name}
+                          </Button.LikeLink>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    commonText('loading')
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  {hasPermission('/permissions/library/roles', 'create') && (
                     <Button.Green
-                      onClick={handleOpenUser?.bind(undefined, undefined)}
+                      onClick={(): void =>
+                        setState({
+                          type: 'CreatingRoleState',
+                        })
+                      }
                     >
                       {commonText('create')}
                     </Button.Green>
-                  </div>
-                )}
-              </>
-            ) : (
-              commonText('loading')
+                  )}
+                  {state.type === 'CreatingRoleState' && (
+                    <CreateRole
+                      libraryRoles={libraryRoles}
+                      collections={collections}
+                      onCreated={(role): void =>
+                        setState({
+                          type: 'RoleState',
+                          roleId: role.id,
+                        })
+                      }
+                      onClose={(): void =>
+                        setState({
+                          type: 'MainState',
+                        })
+                      }
+                      scope="institution"
+                    />
+                  )}
+                  <SecurityImportExport
+                    roles={libraryRoles}
+                    permissionName="/permissions/library/roles"
+                    baseName={institution.name ?? ''}
+                    collectionId={schema.domainLevelIds.collection}
+                    onUpdateRole={updateRole}
+                    onCreateRole={createRole}
+                  />
+                </div>
+              </section>
             )}
-            {typeof users === 'object' && typeof admins === 'undefined' && (
-              <p>{adminText('loadingAdmins')}</p>
-            )}
-          </section>
+            <section className="flex flex-col gap-2">
+              <h4 className={className.headerGray}>{adminText('users')}:</h4>
+              {typeof users === 'object' ? (
+                <>
+                  <Ul>
+                    {Object.values(users)
+                      .sort(sortFunction(({ name }) => name))
+                      .map((user) => (
+                        <li key={user.id}>
+                          <Button.LikeLink
+                            onClick={handleOpenUser?.bind(undefined, user.id)}
+                            disabled={
+                              typeof handleOpenUser === 'undefined' ||
+                              (user.id !== userInformation.id &&
+                                !hasTablePermission('SpecifyUser', 'read'))
+                            }
+                          >
+                            {`${user.name}`}
+                            <span className="text-gray-500">{`${
+                              admins?.admins.has(user.id)
+                                ? ` ${adminText('specifyAdmin')}`
+                                : ''
+                            }${
+                              admins?.legacyAdmins.has(user.id)
+                                ? ` ${adminText('legacyAdmin')}`
+                                : ''
+                            }`}</span>
+                          </Button.LikeLink>
+                        </li>
+                      ))}
+                  </Ul>
+                  {hasTablePermission('SpecifyUser', 'create') && (
+                    <div>
+                      <Button.Green
+                        onClick={handleOpenUser?.bind(undefined, undefined)}
+                      >
+                        {commonText('create')}
+                      </Button.Green>
+                    </div>
+                  )}
+                </>
+              ) : (
+                commonText('loading')
+              )}
+              {typeof users === 'object' && typeof admins === 'undefined' && (
+                <p>{adminText('loadingAdmins')}</p>
+              )}
+            </section>
+          </div>
         </>
       ) : state.type === 'RoleState' ? (
         typeof libraryRoles === 'object' ? (

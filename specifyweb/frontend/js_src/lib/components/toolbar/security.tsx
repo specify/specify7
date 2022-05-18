@@ -149,7 +149,7 @@ export function SecurityPanel(): JSX.Element | null {
         </aside>
         {state.type === 'InstitutionState' &&
         typeof institution === 'object' ? (
-          <SecurityInsitution
+          <SecurityInstitution
             institution={institution}
             collections={availableCollections}
             users={users}

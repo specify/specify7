@@ -88,7 +88,7 @@ function AboutDialog({
                 ? [
                     [
                       welcomeText('databaseCreationDate'),
-                      <DatabaseCreationDate />,
+                      <DatabaseCreationDate key="" />,
                     ],
                   ]
                 : []),

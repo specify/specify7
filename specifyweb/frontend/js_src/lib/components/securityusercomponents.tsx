@@ -222,8 +222,6 @@ export function SetCollection({
   );
 }
 
-// FIXME: test this part (setting agent in one division shouldn't set it in
-//   all
 export function CollectionAccess({
   userPolicies,
   onChange: handleChange,
@@ -351,7 +349,7 @@ export function LegacyPermissions({
 }): JSX.Element {
   return (
     <section className="flex flex-col gap-2">
-      <h4>{adminText('legacyPermissions')}</h4>
+      <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
       <div className="flex gap-2">
         <AdminStatusPlugin user={userResource} />
         {hasPermission('/admin/user/sp6/collection_access', 'read') &&

@@ -252,122 +252,128 @@ export function SecurityCollection({
               />
             )}
           </div>
-          {hasPermission('/permissions/roles', 'read', collection.id) && (
-            <section className="flex flex-col gap-1">
-              <div>
-                <h4 className={className.headerGray}>
-                  {adminText('userRoles')}:
-                </h4>
-                {typeof roles === 'object' ? (
-                  <Ul>
-                    {Object.values(roles).map((role) => (
-                      <li key={role.id}>
-                        <Button.LikeLink
-                          onClick={(): void =>
-                            setState({
-                              type: 'RoleState',
-                              role,
-                            })
-                          }
-                        >
-                          {role.name}
-                        </Button.LikeLink>
-                      </li>
-                    ))}
-                  </Ul>
-                ) : (
-                  commonText('loading')
-                )}
-              </div>
-              <div className="flex gap-2">
-                {hasPermission('/permissions/roles', 'create', collection.id) ||
-                (hasPermission(
-                  '/permissions/roles',
-                  'copy_from_library',
-                  collection.id
-                ) &&
-                  hasPermission('/permissions/library/roles', 'read')) ? (
-                  <Button.Green
-                    onClick={(): void =>
-                      setState({
-                        type: 'CreatingRoleState',
-                      })
-                    }
-                    disabled={
-                      !Array.isArray(userRoles) &&
-                      hasPermission(
-                        '/permissions/user/roles',
-                        'read',
-                        collection.id
-                      )
-                    }
-                  >
-                    {commonText('create')}
-                  </Button.Green>
-                ) : undefined}
-                <SecurityImportExport
-                  roles={roles}
-                  permissionName="/permissions/roles"
-                  baseName={collection.collectionName ?? ''}
-                  collectionId={collection.id}
-                  onUpdateRole={updateRole}
-                  onCreateRole={createRole}
-                />
-              </div>
-            </section>
-          )}
-          <section className="flex flex-col gap-2">
-            <h4 className={className.headerGray}>{adminText('users')}:</h4>
-            {typeof mergedUsers === 'object' ? (
-              mergedUsers.length === 0 ? (
-                commonText('none')
-              ) : (
-                <>
-                  <Ul>
-                    {mergedUsers.map(({ userId, userName, roles }) => (
-                      <li key={userId}>
-                        <Button.LikeLink
-                          onClick={(): void => handleOpenUser(userId)}
-                          disabled={
-                            userId !== userInformation.id &&
-                            !hasTablePermission('SpecifyUser', 'read')
-                          }
-                        >
-                          {userName}
-                          {roles.length > 0 && (
-                            <span className="text-gray-500">
-                              {`(${formatList(
-                                roles.map(({ roleName }) => roleName)
-                              )})`}
-                            </span>
-                          )}
-                        </Button.LikeLink>
-                      </li>
-                    ))}
-                  </Ul>
-                  <div>
+          <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
+            {hasPermission('/permissions/roles', 'read', collection.id) && (
+              <section className="flex flex-col gap-1">
+                <div>
+                  <h4 className={className.headerGray}>
+                    {adminText('userRoles')}:
+                  </h4>
+                  {typeof roles === 'object' ? (
+                    <Ul>
+                      {Object.values(roles).map((role) => (
+                        <li key={role.id}>
+                          <Button.LikeLink
+                            onClick={(): void =>
+                              setState({
+                                type: 'RoleState',
+                                role,
+                              })
+                            }
+                          >
+                            {role.name}
+                          </Button.LikeLink>
+                        </li>
+                      ))}
+                    </Ul>
+                  ) : (
+                    commonText('loading')
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  {hasPermission(
+                    '/permissions/roles',
+                    'create',
+                    collection.id
+                  ) ||
+                  (hasPermission(
+                    '/permissions/roles',
+                    'copy_from_library',
+                    collection.id
+                  ) &&
+                    hasPermission('/permissions/library/roles', 'read')) ? (
                     <Button.Green
-                      onClick={(): void => handleOpenUser(undefined)}
+                      onClick={(): void =>
+                        setState({
+                          type: 'CreatingRoleState',
+                        })
+                      }
+                      disabled={
+                        !Array.isArray(userRoles) &&
+                        hasPermission(
+                          '/permissions/user/roles',
+                          'read',
+                          collection.id
+                        )
+                      }
                     >
                       {commonText('create')}
                     </Button.Green>
-                  </div>
-                </>
-              )
-            ) : hasPermission(
-                '/permissions/user/roles',
-                'read',
-                collection.id
-              ) ? (
-              commonText('loading')
-            ) : (
-              <Button.LikeLink
-                onClick={(): void => handleOpenUser(userInformation.id)}
-              >
-                {userInformation.name}
-              </Button.LikeLink>
+                  ) : undefined}
+                  <SecurityImportExport
+                    roles={roles}
+                    permissionName="/permissions/roles"
+                    baseName={collection.collectionName ?? ''}
+                    collectionId={collection.id}
+                    onUpdateRole={updateRole}
+                    onCreateRole={createRole}
+                  />
+                </div>
+              </section>
             )}
-          </section>
+            <section className="flex flex-col gap-2">
+              <h4 className={className.headerGray}>{adminText('users')}:</h4>
+              {typeof mergedUsers === 'object' ? (
+                mergedUsers.length === 0 ? (
+                  commonText('none')
+                ) : (
+                  <>
+                    <Ul>
+                      {mergedUsers.map(({ userId, userName, roles }) => (
+                        <li key={userId}>
+                          <Button.LikeLink
+                            onClick={(): void => handleOpenUser(userId)}
+                            disabled={
+                              userId !== userInformation.id &&
+                              !hasTablePermission('SpecifyUser', 'read')
+                            }
+                          >
+                            {userName}
+                            {roles.length > 0 && (
+                              <span className="text-gray-500">
+                                {`(${formatList(
+                                  roles.map(({ roleName }) => roleName)
+                                )})`}
+                              </span>
+                            )}
+                          </Button.LikeLink>
+                        </li>
+                      ))}
+                    </Ul>
+                    <div>
+                      <Button.Green
+                        onClick={(): void => handleOpenUser(undefined)}
+                      >
+                        {commonText('create')}
+                      </Button.Green>
+                    </div>
+                  </>
+                )
+              ) : hasPermission(
+                  '/permissions/user/roles',
+                  'read',
+                  collection.id
+                ) ? (
+                commonText('loading')
+              ) : (
+                <Button.LikeLink
+                  onClick={(): void => handleOpenUser(userInformation.id)}
+                >
+                  {userInformation.name}
+                </Button.LikeLink>
+              )}
+            </section>
+          </div>
         </>
       )}
       {state.type === 'CreatingRoleState' && (
