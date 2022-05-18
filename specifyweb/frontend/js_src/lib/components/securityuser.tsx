@@ -457,7 +457,9 @@ export function SecurityUser({
                                           `/permissions/user_roles/${collectionId}/${userResource.id}/`,
                                           {
                                             method: 'PUT',
-                                            body: roles.map((id) => ({ id })),
+                                            body: roles.map(({ roleId }) => ({
+                                              id: roleId,
+                                            })),
                                           },
                                           {
                                             expectedResponseCodes: [
