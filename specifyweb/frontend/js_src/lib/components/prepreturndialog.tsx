@@ -3,6 +3,7 @@ import React from 'react';
 import type { Loan, LoanPreparation } from '../datamodel';
 import { getDateInputValue } from '../dayjs';
 import { f } from '../functools';
+import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -13,101 +14,20 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { fieldFormat } from '../uiparse';
 import { userInformation } from '../userinfo';
-import { Button, Input } from './basic';
-import { useAsyncState, useBooleanState } from './hooks';
+import { Button, Form, Input, Submit } from './basic';
+import { AutoGrowTextArea } from './common';
+import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
 
-function formatCatNo(catNo: string): string {
-  const field = schema.models.CollectionObject.getLiteralField('catalognumber');
-  return typeof field === 'string' ? fieldFormat(field, undefined, catNo) : '';
-}
-
 const metaDataFormDefinition = f.store(
-  (): ViewDescription => ({
-    columns: Array.from<undefined>({ length: 4 }).fill(undefined),
-    rows: [
-      [
-        {
-          id: undefined,
-          colSpan: 1,
-          type: 'Label',
-          text: '',
-          labelForCellId: '1',
-          fieldName: 'receivedBy',
-          align: 'left',
-          visible: true,
-          ariaLabel: undefined,
-          title: undefined,
-        },
-        {
-          id: '1',
-          align: 'left',
-          colSpan: 1,
-          type: 'Field',
-          fieldName: 'receivedBy',
-          isRequired: true,
-          visible: true,
-          fieldDefinition: {
-            isReadOnly: false,
-            type: 'QueryComboBox',
-            hasCloneButton: false,
-            typeSearch: 'Agent',
-          },
-          ariaLabel: undefined,
-        },
-        {
-          id: undefined,
-          align: 'left',
-          colSpan: 1,
-          type: 'Label',
-          text: '',
-          labelForCellId: '2',
-          fieldName: 'returnedDate',
-          visible: true,
-          ariaLabel: undefined,
-          title:
-            schema.models.LoanReturnPreparation.getField(
-              'returnedDate'
-            )?.getLocalizedDesc(),
-        },
-        {
-          id: '2',
-          align: 'left',
-          colSpan: 1,
-          type: 'Field',
-          fieldName: 'returnedDate',
-          isRequired: true,
-          visible: true,
-          fieldDefinition: {
-            isReadOnly: false,
-            type: 'Text',
-            defaultValue: undefined,
-            min: undefined,
-            max: undefined,
-            step: undefined,
-          },
-          ariaLabel: undefined,
-        },
-      ],
-      [
-        {
-          id: undefined,
-          align: 'left',
-          colSpan: 4,
-          type: 'Separator',
-          label: undefined,
-          visible: true,
-          ariaLabel: undefined,
-          icon: undefined,
-          forClass: undefined,
-        },
-      ],
-    ],
-    formType: 'form',
-    mode: 'edit',
-    model: schema.models.LoanReturnPreparation,
-  })
+  (): ViewDescription =>
+    autoGenerateViewDefinition(
+      schema.models.LoanReturnPreparation,
+      'form',
+      'edit',
+      ['receivedBy', 'returnedDate']
+    )
 );
 
 type RowState = {
@@ -149,7 +69,13 @@ function Row({
                   readonly catalogNumber: string;
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
-                  catalogNumber: formatCatNo(
+                  catalogNumber: fieldFormat(
+                    defined(
+                      schema.models.CollectionObject.getLiteralField(
+                        'catalogNumber'
+                      )
+                    ),
+                    undefined,
                     collectionObject.get('catalogNumber')
                   ),
                   taxon: await collectionObject
@@ -240,9 +166,10 @@ function Row({
         <td>
           {resolve > 0 && (
             <Button.Icon
-              className="return-remark hidden w-full"
+              className="return-remark w-full"
               title={formsText('remarks')}
               aria-label={formsText('remarks')}
+              aria-pressed={showRemarks}
               icon="annotation"
               onClick={handleToggle}
             />
@@ -252,8 +179,8 @@ function Row({
       {showRemarks && resolve > 0 ? (
         <tr>
           <td />
-          <td colSpan={6}>
-            <Input.Text
+          <td className="col-span-7">
+            <AutoGrowTextArea
               placeholder={formsText('remarks')}
               title={formsText('remarks')}
               aria-label={formsText('remarks')}
@@ -266,6 +193,7 @@ function Row({
                   remarks,
                 })
               }
+              containerClassName="w-full"
               // Focus the input when toggled
               forwardRef={(target): void => target?.focus()}
             />
@@ -300,6 +228,7 @@ function PreparationReturn({
       remarks: '',
     }))
   );
+  const id = useId('prep-return-dialog');
   return (
     <Dialog
       header={schema.models.LoanPreparation.label}
@@ -336,105 +265,110 @@ function PreparationReturn({
           >
             {formsText('deselectAll')}
           </Button.Blue>
-          <Button.Green
-            onClick={(): void => {
-              state
-                .map((state, index) => ({
-                  preparation: preparations[index],
-                  ...state,
-                }))
-                .filter(({ resolve }) => resolve > 0)
-                .forEach(({ preparation, resolve, returns, remarks }) => {
-                  preparation.set(
-                    'quantityReturned',
-                    (preparation.get('quantityReturned') ?? 0) + returns
-                  );
-                  preparation.set(
-                    'quantityResolved',
-                    (preparation.get('quantityResolved') ?? 0) + resolve
-                  );
-                  preparation.set(
-                    'isResolved',
-                    (preparation.get('quantityResolved') ?? 0) >=
-                      (preparation.get('quantity') ?? 0)
-                  );
-
-                  const loanReturn =
-                    new schema.models.LoanReturnPreparation.Resource();
-                  loanReturn.set('loanPreparation', preparation.url());
-                  loanReturn.set('remarks', remarks);
-                  loanReturn.set('quantityResolved', returns);
-                  loanReturn.set('quantityReturned', returns);
-                  loanReturn.set(
-                    'receivedBy',
-                    loanReturnPreparation.current.get('receivedBy')
-                  );
-                  loanReturn.set(
-                    'returnedDate',
-                    loanReturnPreparation.current.get('returnedDate')
-                  );
-
-                  const loanPreparations = preparation.getDependentResource(
-                    'loanReturnPreparations'
-                  );
-                  if (typeof loanPreparations === 'object')
-                    loanPreparations.add(loanReturn);
-                });
-              handleClose();
-            }}
+          <Submit.Green
+            form={id('form')}
             title={formsText('returnSelectedPreparations')}
           >
             {commonText('apply')}
-          </Button.Green>
+          </Submit.Green>
         </>
       }
     >
-      <RenderForm
-        resource={loanReturnPreparation.current}
-        viewDefinition={metaDataFormDefinition()}
-        display="inline"
-      />
-      <table>
-        <thead>
-          <tr>
-            <td />
-            <th scope="col" className="text-center">
-              {
-                defined(
-                  schema.models.CollectionObject.getField('catalogNumber')
-                ).label
-              }
-            </th>
-            <th scope="col" className="text-center">
-              {defined(schema.models.Determination.getField('taxon')).label}
-            </th>
-            <th scope="col" className="text-center">
-              {defined(schema.models.Preparation.getField('prepType')).label}
-            </th>
-            <th scope="col" className="text-center">
-              {formsText('unresolved')}
-            </th>
-            <th scope="col" className="text-center">
-              {formsText('return')}
-            </th>
-            <th scope="col" className="text-center" colSpan={2}>
-              {formsText('resolve')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {preparations.map((preparation, index) => (
-            <Row
-              preparation={preparation}
-              key={preparation.cid}
-              {...state[index]}
-              onChange={(newState): void =>
-                setState(replaceItem(state, index, newState))
-              }
-            />
-          ))}
-        </tbody>
-      </table>
+      <Form
+        id={id('form')}
+        onSubmit={(): void => {
+          state
+            .map((state, index) => ({
+              preparation: preparations[index],
+              ...state,
+            }))
+            .filter(({ resolve }) => resolve > 0)
+            .forEach(({ preparation, resolve, returns, remarks }) => {
+              preparation.set(
+                'quantityReturned',
+                (preparation.get('quantityReturned') ?? 0) + returns
+              );
+              preparation.set(
+                'quantityResolved',
+                (preparation.get('quantityResolved') ?? 0) + resolve
+              );
+              preparation.set(
+                'isResolved',
+                (preparation.get('quantityResolved') ?? 0) >=
+                  (preparation.get('quantity') ?? 0)
+              );
+
+              const loanReturn =
+                new schema.models.LoanReturnPreparation.Resource();
+              loanReturn.set('loanPreparation', preparation.url());
+              loanReturn.set('remarks', remarks);
+              loanReturn.set('quantityResolved', returns);
+              loanReturn.set('quantityReturned', returns);
+              loanReturn.set(
+                'receivedBy',
+                loanReturnPreparation.current.get('receivedBy')
+              );
+              loanReturn.set(
+                'returnedDate',
+                loanReturnPreparation.current.get('returnedDate')
+              );
+
+              const loanPreparations = preparation.getDependentResource(
+                'loanReturnPreparations'
+              );
+              if (typeof loanPreparations === 'object')
+                loanPreparations.add(loanReturn);
+            });
+          handleClose();
+        }}
+      >
+        <RenderForm
+          resource={loanReturnPreparation.current}
+          viewDefinition={metaDataFormDefinition()}
+          display="block"
+        />
+        <table className="grid-table gap-2 grid-cols-[repeat(8,auto)]">
+          <thead>
+            <tr>
+              <td />
+              <th scope="col" className="text-center">
+                {
+                  defined(
+                    schema.models.CollectionObject.getField('catalogNumber')
+                  ).label
+                }
+              </th>
+              <th scope="col" className="text-center">
+                {defined(schema.models.Determination.getField('taxon')).label}
+              </th>
+              <th scope="col" className="text-center">
+                {defined(schema.models.Preparation.getField('prepType')).label}
+              </th>
+              <th scope="col" className="text-center">
+                {formsText('unresolved')}
+              </th>
+              <th scope="col" className="text-center">
+                {formsText('return')}
+              </th>
+              <th scope="col" className="col-span-2 text-center">
+                {formsText('resolve')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {preparations.map((preparation, index) => (
+              <Row
+                preparation={preparation}
+                key={preparation.cid}
+                {...state[index]}
+                onChange={(newState): void =>
+                  setState(replaceItem(state, index, newState))
+                }
+              />
+            ))}
+          </tbody>
+        </table>
+      </Form>
     </Dialog>
   );
 }

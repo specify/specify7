@@ -108,7 +108,7 @@ const cellRenderers: {
     formType: parentFormType,
     cellData: { fieldName, formType, isButton, icon, viewName, sortField },
   }) {
-    const field = resource.specifyModel.getRelationship(fieldName ?? '');
+    const relationship = resource.specifyModel.getRelationship(fieldName ?? '');
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -117,8 +117,8 @@ const cellRenderers: {
     const [actualFormType] = useAsyncState<FormType>(
       React.useCallback(
         async () =>
-          typeof field === 'object'
-            ? getView(viewName ?? field.relatedModel.view)
+          typeof relationship === 'object'
+            ? getView(viewName ?? relationship.relatedModel.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
                     ? processViewDefinition(viewDefinition, formType, mode)
@@ -130,7 +130,7 @@ const cellRenderers: {
                   fieldName ?? 'undefined'
                 }`
               ),
-        [viewName, field?.relatedModel, formType, mode, field, fieldName]
+        [viewName, formType, mode, relationship, fieldName]
       ),
       false
     );
@@ -140,23 +140,23 @@ const cellRenderers: {
     >(
       React.useCallback(
         () =>
-          typeof field === 'object' &&
-          relationshipIsToMany(field) &&
+          typeof relationship === 'object' &&
+          relationshipIsToMany(relationship) &&
           [
             'LoanPreparation',
             'GiftPreparation',
             'DisposalPreparation',
-          ].includes(field.relatedModel.name)
-            ? resource.rgetCollection(field.name)
+          ].includes(relationship.relatedModel.name)
+            ? resource.rgetCollection(relationship.name)
             : false,
-        [field, resource]
+        [relationship, resource]
       ),
       false
     );
 
-    return typeof field === 'undefined' ? null : hasPathPermission(
+    return typeof relationship === 'undefined' ? null : hasPathPermission(
         resource.specifyModel.name,
-        field.relatedModel.name.split('.'),
+        relationship.relatedModel.name.split('.'),
         'read'
       ) ? (
       typeof interactionCollection === 'undefined' ||
@@ -168,7 +168,7 @@ const cellRenderers: {
           parentFormType={parentFormType}
           formType={actualFormType}
           parentResource={resource}
-          field={field}
+          relationship={relationship}
           viewName={viewName}
           icon={icon}
           sortField={sortField}
@@ -185,7 +185,7 @@ const cellRenderers: {
       )
     ) : (
       f.log(
-        `SubView hidden due to lack of read permissions to ${resource.specifyModel.name}.${field.relatedModel.name}`
+        `SubView hidden due to lack of read permissions to ${resource.specifyModel.name}.${relationship.relatedModel.name}`
       ) ?? null
     );
   },

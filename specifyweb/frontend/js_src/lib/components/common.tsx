@@ -203,11 +203,14 @@ export function AppTitle({
   return null;
 }
 
-export function AutoGrowTextArea(
-  props: Parameters<typeof Textarea>[0]
-): JSX.Element {
+export function AutoGrowTextArea({
+  containerClassName,
+  ...props
+}: Parameters<typeof Textarea>[0] & {
+  readonly containerClassName?: string;
+}): JSX.Element {
   return (
-    <div className="grid">
+    <div className={`grid ${containerClassName ?? ''}`}>
       {/*
        * Shadow a textarea with a div, allowing it to autoGrow. Source:
        * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/

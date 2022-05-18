@@ -3,7 +3,10 @@
  */
 
 import { f } from './functools';
-import { autoGenerateViewDefinition } from './generateformdefinitions';
+import {
+  autoGenerateViewDefinition,
+  getFieldsForAutoView,
+} from './generateformdefinitions';
 import { commonText } from './localization/common';
 import type { ParsedFormDefinition } from './parseform';
 import { schema } from './schema';
@@ -44,7 +47,7 @@ export const webOnlyViews = f.store(() =>
       schema.models.SpecifyUser,
       'form',
       'edit',
-      ['password', 'userType']
+      getFieldsForAutoView(schema.models.SpecifyUser, ['password', 'userType'])
     ),
   } as const)
 );

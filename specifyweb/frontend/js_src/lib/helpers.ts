@@ -126,20 +126,28 @@ export const sortFunction =
   };
 
 /** Split array in half according to a discriminator function */
-export const split = <ITEM>(
-  array: RA<ITEM>,
+export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
+  array: RA<LEFT_ITEM | RIGHT_ITEM>,
   // If returns true, item would go to the right array
-  discriminator: (item: ITEM, index: number, array: RA<ITEM>) => boolean
-): Readonly<[left: RA<ITEM>, right: RA<ITEM>]> =>
+  discriminator: (
+    item: LEFT_ITEM | RIGHT_ITEM,
+    index: number,
+    array: RA<LEFT_ITEM | RIGHT_ITEM>
+  ) => boolean
+): Readonly<[left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>]> =>
   array
     .map((item, index) => [item, discriminator(item, index, array)] as const)
-    .reduce<Readonly<[left: RA<ITEM>, right: RA<ITEM>]>>(
+    .reduce<
+      Readonly<
+        [left: RA<LEFT_ITEM | RIGHT_ITEM>, right: RA<LEFT_ITEM | RIGHT_ITEM>]
+      >
+    >(
       ([left, right], [item, isRight]) => [
         [...left, ...(isRight ? [] : [item])],
         [...right, ...(isRight ? [item] : [])],
       ],
       [[], []]
-    );
+    ) as [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>];
 
 /**
  * Convert an array of [key,value] tuples to a RA<[key, RA<value>]>

@@ -21,17 +21,17 @@ export const SubViewContext = React.createContext<Relationship | undefined>(
 SubViewContext.displayName = 'SubViewContext';
 
 export function SubView({
-  field,
+  relationship,
   parentResource,
   mode: initialMode,
   parentFormType,
   formType,
   isButton,
-  viewName = field.relatedModel.view,
-  icon = field.relatedModel.name,
+  viewName = relationship.relatedModel.view,
+  icon = relationship.relatedModel.name,
   sortField,
 }: {
-  readonly field: Relationship;
+  readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
   readonly parentFormType: FormType;
@@ -45,46 +45,49 @@ export function SubView({
     async function fetchCollection(): Promise<
       Collection<AnySchema> | undefined
     > {
-      const resourceUrl = parentResource.get(field.name);
-      if (resourceUrl === '') return undefined;
-      else if (relationshipIsToMany(field) && field.type !== 'zero-to-one')
-        return parentResource.rgetCollection(field.name).then((collection) => {
-          if (collection === null)
-            return new field.relatedModel.DependentCollection({
-              related: parentResource,
-              field: field.getReverse(),
-            }) as Collection<AnySchema>;
-          if (typeof sortField === 'undefined') return collection;
-          const isReverse = sortField.startsWith('-');
-          const fieldName = sortField.startsWith('-')
-            ? sortField.slice(1)
-            : sortField;
-          // @ts-expect-error Overwriting the models on the collection
-          collection.models = Array.from(collection.models).sort(
-            sortFunction((resource) => resource.get(fieldName), isReverse)
-          );
-          return collection;
-        });
-      else {
-        const resource = await parentResource.rgetPromise(field.name);
-        const collection = (
-          field.isDependent()
-            ? new field.relatedModel.DependentCollection({
+      if (
+        relationshipIsToMany(relationship) &&
+        relationship.type !== 'zero-to-one'
+      )
+        return parentResource
+          .rgetCollection(relationship.name)
+          .then((collection) => {
+            if (collection === null)
+              return new relationship.relatedModel.DependentCollection({
                 related: parentResource,
-                field: field.getReverse(),
+                field: relationship.getReverse(),
+              }) as Collection<AnySchema>;
+            if (typeof sortField === 'undefined') return collection;
+            const isReverse = sortField.startsWith('-');
+            const fieldName = sortField.startsWith('-')
+              ? sortField.slice(1)
+              : sortField;
+            // @ts-expect-error Overwriting the models on the collection
+            collection.models = Array.from(collection.models).sort(
+              sortFunction((resource) => resource.get(fieldName), isReverse)
+            );
+            return collection;
+          });
+      else {
+        const resource = await parentResource.rgetPromise(relationship.name);
+        const collection = (
+          relationship.isDependent()
+            ? new relationship.relatedModel.DependentCollection({
+                related: parentResource,
+                field: relationship.getReverse(),
               })
-            : new field.relatedModel.LazyCollection()
+            : new relationship.relatedModel.LazyCollection()
         ) as Collection<AnySchema>;
         if (typeof resource === 'object' && resource !== null)
           collection.add(resource);
         // @ts-expect-error Overwriting read-only property
         collection.related ??= parentResource;
         // @ts-expect-error Overwriting read-only property
-        collection.field ??= field.getReverse();
+        collection.field ??= relationship.getReverse();
         return collection;
       }
     },
-    [parentResource, field, sortField]
+    [parentResource, relationship, sortField]
   );
 
   const [collection, setCollection] = React.useState<
@@ -94,20 +97,20 @@ export function SubView({
     () =>
       resourceOn(
         parentResource,
-        `change:${field.name}`,
+        `change:${relationship.name}`,
         (): void => void fetchCollection().then(setCollection).catch(crash),
         true
       ),
-    [parentResource, field, fetchCollection]
+    [parentResource, relationship, fetchCollection]
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
   return (
-    <SubViewContext.Provider value={field}>
+    <SubViewContext.Provider value={relationship}>
       {isButton && (
         <Button.BorderedGray
-          title={field.label}
-          aria-label={field.label}
+          title={relationship.label}
+          aria-label={relationship.label}
           aria-pressed={isOpen}
           onClick={handleToggle}
           className="w-fit"
@@ -131,18 +134,26 @@ export function SubView({
           viewName={viewName}
           formType={formType}
           dialog={isButton ? 'nonModal' : false}
-          mode={field.isDependent() && initialMode !== 'view' ? 'edit' : 'view'}
+          mode={
+            relationship.isDependent() && initialMode !== 'view'
+              ? 'edit'
+              : 'view'
+          }
           collection={collection}
+          relationship={relationship}
           onAdd={
-            relationshipIsToMany(field) && field.type !== 'zero-to-one'
+            relationshipIsToMany(relationship) &&
+            relationship.type !== 'zero-to-one'
               ? undefined
               : (resource): void =>
-                  void parentResource.set(field.name, resource as never)
+                  void parentResource.set(relationship.name, resource as never)
           }
           onDelete={
-            relationshipIsToMany(field) && field.type !== 'zero-to-one'
+            relationshipIsToMany(relationship) &&
+            relationship.type !== 'zero-to-one'
               ? undefined
-              : (): void => void parentResource.set(field.name, null as never)
+              : (): void =>
+                  void parentResource.set(relationship.name, null as never)
           }
           onClose={handleClose}
           sortField={sortField}

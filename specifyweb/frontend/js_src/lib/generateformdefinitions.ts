@@ -1,4 +1,5 @@
 import type { AnySchema, TableFields } from './datamodelutils';
+import { split } from './helpers';
 import { commonText } from './localization/common';
 import type {
   FormMode,
@@ -7,11 +8,40 @@ import type {
   ViewDescription,
 } from './parseform';
 import type { CellTypes, FormCellDefinition } from './parseformcells';
-import type { LiteralField } from './specifyfield';
+import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
-import { filterArray } from './types';
+import { defined, filterArray } from './types';
 import { resolveParser } from './uiparse';
+import { relationshipIsToMany } from './wbplanviewmappinghelper';
+
+export function getFieldsForAutoView<SCHEMA extends AnySchema>(
+  model: SpecifyModel<SCHEMA>,
+  fieldsToSkip: RA<TableFields<SCHEMA>>
+): RA<TableFields<SCHEMA>> {
+  // Hide hidden fields, unless all fields are hidden
+  const baseFields = model.literalFields.filter(
+    (field) => !fieldsToSkip.includes(field.name)
+  );
+  const filteredFields = baseFields.filter(
+    (field) => !field.isHidden && !field.isReadOnly
+  );
+  const baseRelationships = model.relationships.filter(
+    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
+  );
+  const filteredRelationships = baseRelationships.filter(
+    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
+  );
+  const fields =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredFields
+      : baseFields;
+  const relationships =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredRelationships
+      : baseRelationships;
+  return [...fields, ...relationships].map((field) => field.name);
+}
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -20,13 +50,13 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
   model: SpecifyModel<SCHEMA>,
   formType: FormType,
   mode: FormMode,
-  fieldsToSkip: RA<TableFields<SCHEMA>> = []
+  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(model, [])
 ): ViewDescription {
   return {
     ...(formType === 'form' ? generateForm : generateFormTable)(
       model,
       mode,
-      fieldsToSkip
+      fieldsToShow
     ),
     formType,
     mode,
@@ -37,12 +67,14 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
 function generateFormTable(
   model: SpecifyModel,
   _mode: FormMode,
-  fieldsToSkip: RA<string>
+  fieldsToShow: RA<string>
 ): ParsedFormDefinition {
-  const fields = model.literalFields.filter(
-    (field) =>
-      !field.isHidden && !field.isReadOnly && !fieldsToSkip.includes(field.name)
-  );
+  const fields = fieldsToShow
+    .map((fieldName) => defined(model.getField(fieldName)))
+    .filter(
+      (field): field is LiteralField =>
+        !field.isRelationship && !field.isHidden && !field.isReadOnly
+    );
   return {
     columns: Array.from(fields).fill(undefined),
     rows: [
@@ -66,31 +98,19 @@ const cellAttributes = {
 function generateForm(
   model: SpecifyModel,
   mode: FormMode,
-  fieldsToSkip: RA<string>
+  fieldsToShow: RA<string>
 ): ParsedFormDefinition {
-  // Hide hidden fields, unless all fields are hidden
-  const baseFields = model.literalFields.filter(
-    (field) => !fieldsToSkip.includes(field.name)
+  const allFields = fieldsToShow.map((fieldName) =>
+    defined(model.getField(fieldName))
   );
-  const filteredFields = baseFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
+  const [fields, relationships] = split<LiteralField, Relationship>(
+    allFields,
+    (field) => field.isRelationship
   );
-  const baseRelationships = model.relationships.filter(
-    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
-  );
-  const filteredRelationships = baseRelationships.filter(
-    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
-  );
-  const fields =
-    filteredFields.length > 0 || filteredRelationships.length > 0
-      ? filteredFields
-      : baseFields;
-  const relationships =
-    filteredFields.length > 0 || filteredRelationships.length > 0
-      ? filteredRelationships
-      : baseRelationships;
-
-  const skipLabels = fields.length === 0 || relationships.length === 0;
+  const skipLabels =
+    fields.length === 0 ||
+    relationships.length === 0 ||
+    fields.length + relationships.length < 10;
   return {
     columns: [undefined],
     rows: filterArray([
@@ -157,22 +177,34 @@ function generateForm(
               },
             ],
             [
-              {
-                ...cellAttributes,
-                id: field.name,
-                type: 'SubView',
-                formType: 'form',
-                mode,
-                fieldName: field.name,
-                viewName: undefined,
-                isButton: true,
-                icon: undefined,
-                isRequired: false,
-                sortField: 'id',
-                fieldDefinition: {
-                  type: 'SubView',
-                },
-              },
+              relationshipIsToMany(field)
+                ? ({
+                    ...cellAttributes,
+                    id: field.name,
+                    type: 'SubView',
+                    formType: 'form',
+                    mode,
+                    fieldName: field.name,
+                    viewName: undefined,
+                    isButton: true,
+                    icon: undefined,
+                    isRequired: false,
+                    sortField: 'id',
+                  } as const)
+                : ({
+                    ...cellAttributes,
+                    id: field.name,
+                    type: 'Field',
+                    fieldName: field.name,
+                    fieldDefinition: {
+                      type: 'QueryComboBox',
+                      hasCloneButton: false,
+                      typeSearch: undefined,
+                      isReadOnly: mode === 'view',
+                    },
+                    isRequired: false,
+                    viewName: undefined,
+                  } as const),
             ],
           ] as const
       ),

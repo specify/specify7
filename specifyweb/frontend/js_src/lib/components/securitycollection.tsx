@@ -237,7 +237,7 @@ export function SecurityCollection({
 
   const loading = React.useContext(LoadingContext);
   return (
-    <Container.Base className="flex-1">
+    <Container.Base className="flex-1 gap-6">
       {state.type === 'MainState' && (
         <>
           <div className="flex gap-2">
@@ -253,7 +253,7 @@ export function SecurityCollection({
             )}
           </div>
           {hasPermission('/permissions/roles', 'read', collection.id) && (
-            <section className="flex flex-col gap-2">
+            <section className="flex flex-col gap-1">
               <div>
                 <h4 className={className.headerGray}>
                   {adminText('userRoles')}:

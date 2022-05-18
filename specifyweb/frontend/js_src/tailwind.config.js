@@ -7,6 +7,8 @@
 
 // TODO: evaluate usages of arbitrary values in class names
 // TODO: consider changing defaults for values (i.e ring-1)
+// TODO: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
+//    instead of grid-template-columns:repeat(n,1fr)
 // eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   content: [

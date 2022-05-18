@@ -14,6 +14,7 @@ import { hasTablePermission, hasToolPermission } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
 import { deleteResource, getResourceViewUrl, resourceOn } from '../resource';
 import { schema } from '../schema';
+import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
 import { defined } from '../types';
@@ -42,6 +43,7 @@ function setQueryParameter(queryParameter: string, index: number): void {
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   collection,
+  relationship,
   onAdd: handleAdd,
   onDelete: handleDelete,
   onSlide: handleSlide,
@@ -50,6 +52,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   ...rest
 }: {
   readonly collection: Collection<SCHEMA>;
+  readonly relationship: Relationship;
   readonly defaultIndex?: number;
 } & Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> &
   Omit<
@@ -73,8 +76,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
-  const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field) || field.type === 'zero-to-one';
+  const isToOne =
+    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
 
   // Listen for changes to collection
   React.useEffect(
@@ -150,6 +153,7 @@ export function IntegratedRecordSelector({
   onClose: handleClose,
   formType,
   sortField,
+  relationship,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -164,9 +168,9 @@ export function IntegratedRecordSelector({
   readonly sortField: string | undefined;
 }): JSX.Element {
   const isDependent = collection instanceof DependentCollection;
-  const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field) || field.type === 'zero-to-one';
-  const mode = augmentMode(initialMode, false, field.relatedModel.name);
+  const isToOne =
+    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -191,6 +195,7 @@ export function IntegratedRecordSelector({
           ? setQueryParameter(urlParameter, index)
           : undefined
       }
+      relationship={relationship}
       {...rest}
     >
       {({
@@ -206,7 +211,7 @@ export function IntegratedRecordSelector({
             isLoading={isLoading}
             resource={resource}
             dialog={dialog}
-            title={`${field?.label ?? collection.model.specifyModel?.label}`}
+            title={`${relationship.label}`}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
@@ -219,7 +224,7 @@ export function IntegratedRecordSelector({
                   }
                 />
                 {hasTablePermission(
-                  field.relatedModel.name,
+                  relationship.relatedModel.name,
                   isDependent ? 'create' : 'read'
                 ) && (
                   <DataEntry.Add
@@ -231,7 +236,7 @@ export function IntegratedRecordSelector({
                   />
                 )}
                 {hasTablePermission(
-                  field.relatedModel.name,
+                  relationship.relatedModel.name,
                   isDependent ? 'create' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Delete
