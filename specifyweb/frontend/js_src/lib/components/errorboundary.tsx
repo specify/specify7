@@ -108,7 +108,7 @@ function ErrorDialog({
       <br />
       <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
       <details
-        className="contents whitespace-pre-wrap"
+        className="whitespace-pre-wrap"
         open={process.env.NODE_ENV !== 'production'}
       >
         <summary>{commonText('errorMessage')}</summary>

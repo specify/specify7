@@ -169,10 +169,6 @@ export function QueryBuilder({
     'stickyScrolling'
   );
 
-  // FIXME: before executitng the query check if there are any no-permission fields
-  // FIXME: test opening a query that has no-permission fields
-  // const canExecuteQuery = hasTablePermission(getModelById(query.get('contextTableId')).name,'read');
-
   return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
