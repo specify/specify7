@@ -39,74 +39,86 @@ def create_admins() -> None:
             )
 
 def create_roles() -> None:
-    if LibraryRole.objects.exists():
-        # don't do anything if there are already library roles defined
-        return
+    users = Specifyuser.objects.all()
+    user_types = set((user.usertype for user in users))
 
-    ca = LibraryRole.objects.create(name='Collection Admin',)
-    ca.policies.create(resource="%", action="%")
+    if 'Guest' in user_types or 'LimitedAccess' in user_types:
+        for collection in Collection.objects.all():
+            read_only = Role.objects.create(
+                collection=collection,
+                name="Read Only - Legacy",
+                description="This is a legacy role that provides "
+                "read only access and is assigned to user in the "
+                "Limited Access and Guest groups from Specify 6. "
+                "This is to maintain consistency with the permissions "
+                "granted these users in previous versions of Specify 7."
+            )
+            read_only.policies.create(resource="/field/%", action="%")
+            read_only.policies.create(resource="/table/%", action="read")
 
-    ################################
+            read_only.policies.create(resource="/querybuilder/%", action="%")
 
-    full_access = LibraryRole.objects.create(name='Full Access',)
-    full_access.policies.create(resource="/field/%", action="%")
-    full_access.policies.create(resource="/table/%", action="read")
+    if 'FullAccess' in user_types:
+        for collection in Collection.objects.all():
+            full_access = Role.objects.create(
+                collection=collection,
+                name='Full Access - Legacy',
+                description="This is a legacy role that provides "
+                "read write access to most Specify resources and "
+                "is assigned to users in the Full Access group from Specify 6. "
+                "This is to maintain consistency with the permissions "
+                "granted these users in previous versions of Specify 7."
+            )
 
-    for table in datamodel.tables:
-        if not table.system or table.name.endswith('Attachment'):
-            full_access.policies.get_or_create(resource=f"/table/{table.name.lower()}", action="%")
+            full_access.policies.create(resource="/field/%", action="%")
+            full_access.policies.create(resource="/table/%", action="read")
 
-    full_access.policies.get_or_create(resource="/table/picklist", action="%")
-    full_access.policies.get_or_create(resource="/table/picklistitem", action="%")
+            for table in datamodel.tables:
+                if not table.system or table.name.endswith('Attachment'):
+                    full_access.policies.get_or_create(resource=f"/table/{table.name.lower()}", action="%")
 
-    full_access.policies.get_or_create(resource="/table/recordset", action="%")
-    full_access.policies.get_or_create(resource="/table/recordsetitem", action="%")
+            full_access.policies.get_or_create(resource="/table/picklist", action="%")
+            full_access.policies.get_or_create(resource="/table/picklistitem", action="%")
 
-    full_access.policies.get_or_create(resource="/table/spquery", action="%")
-    full_access.policies.get_or_create(resource="/table/spqueryfield", action="%")
+            full_access.policies.get_or_create(resource="/table/recordset", action="%")
+            full_access.policies.get_or_create(resource="/table/recordsetitem", action="%")
 
-    full_access.policies.create(resource="/tree/%", action="%")
-    full_access.policies.create(resource="/report", action="%")
-    full_access.policies.create(resource="/querybuilder/%", action="%")
+            full_access.policies.get_or_create(resource="/table/spquery", action="%")
+            full_access.policies.get_or_create(resource="/table/spqueryfield", action="%")
 
-    ###############################
+            full_access.policies.create(resource="/tree/%", action="%")
+            full_access.policies.create(resource="/report", action="%")
+            full_access.policies.create(resource="/querybuilder/%", action="%")
 
-    limited_access = LibraryRole.objects.create(name='Limited Access',)
-    limited_access.policies.create(resource="/field/%", action="%")
-    limited_access.policies.create(resource="/table/%", action="read")
 
-    limited_access.policies.create(resource="/querybuilder/%", action="%")
+    # Create a library role for collection admin.
+    collection_admin = LibraryRole.objects.create(name='Collection Admin',)
+    collection_admin.policies.create(resource="%", action="%")
 
-    ###############################
-
-    guest = LibraryRole.objects.create(name='Guest',)
-    guest.policies.create(resource="/field/%", action="%")
-    guest.policies.create(resource="/table/%", action="read")
-
-    guest.policies.create(resource="/querybuilder/%", action="%")
-
-    ## Copy library roles to collections
 
     for collection in Collection.objects.all():
-        if Role.objects.filter(collection_id=collection.id).exists():
-            # don't do anything if there are already roles defined for
-            # the collection
-            continue
-
-        for lr in LibraryRole.objects.all():
-            r = Role.objects.create(
-                collection_id=collection.id,
-                name=lr.name,
-                description=lr.description,
-            )
-            for lp in lr.policies.all():
-                r.policies.create(resource=lp.resource, action=lp.action)
+        # Copy the collection admin role into the collection roles.
+        ca = Role.objects.create(
+            collection_id=collection.id,
+            name=collection_admin.name,
+            description=collection_admin.description,
+        )
+        for lp in collection_admin.policies.all():
+            ca.policies.create(resource=lp.resource, action=lp.action)
 
 def assign_users_to_roles() -> None:
     from specifyweb.context.views import users_collections_for_sp6
 
     cursor = connection.cursor()
     for user in Specifyuser.objects.all():
+        for collection in Collection.objects.all():
+            if user.usertype == 'Manager':
+                user.roles.create(role=Role.objects.get(collection=collection, name="Collection Admin"))
+            if user.usertype == 'FullAccess':
+                user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
+            if user.usertype in ('LimitedAccess', 'Guest'):
+                user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
+
         for colid, _ in users_collections_for_sp6(cursor, user.id):
             # Does the user has an agent for the collection?
             if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
@@ -118,11 +130,3 @@ def assign_users_to_roles() -> None:
                     action=CollectionAccessPT.access.action(),
                 )
 
-            if user.usertype == 'Manager':
-                user.roles.create(role=Role.objects.get(collection_id=colid, name="Collection Admin"))
-            if user.usertype == 'FullAccess':
-                user.roles.create(role=Role.objects.get(collection_id=colid, name="Full Access"))
-            if user.usertype == 'LimitedAccess':
-                user.roles.create(role=Role.objects.get(collection_id=colid, name="Limited Access"))
-            if user.usertype == 'Guest':
-                user.roles.create(role=Role.objects.get(collection_id=colid, name="Guest"))
