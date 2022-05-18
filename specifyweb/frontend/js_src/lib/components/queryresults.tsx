@@ -15,6 +15,7 @@ import { fieldFormat } from '../uiparse';
 import { Input, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { queryIdField } from './queryresultstable';
+import { usePref } from './preferenceshooks';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>
@@ -97,13 +98,18 @@ function getAuditRecordFormatter(
     );
 }
 
-const cellClassName = `border-gray-500 border-r bg-[color:var(--bg)] p-1
-  first:border-l min-h-[theme(spacing.8)]`;
+function getClassName(condensedQueryResult) {
+  return `border-gray-500 border-r bg-[color:var(--bg)] p-${
+    condensedQueryResult ? '0.5' : '1'
+  } first:border-l min-h-[theme(spacing.${condensedQueryResult ? '4' : '8'} )]`;
+}
 
 function QueryResultCell({
   fieldSpec,
   value,
+  condensedQueryResult,
 }: {
+  readonly condensedQueryResult: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly value: JSX.Element | string | number | null;
 }): JSX.Element {
@@ -123,7 +129,7 @@ function QueryResultCell({
   return (
     <span
       role="cell"
-      className={`${cellClassName} ${
+      className={`${getClassName(condensedQueryResult)} ${
         value === null ? 'text-gray-700 dark:text-neutral-500' : ''
       } ${
         fieldSpec?.parser.type === 'number' ? 'tabular-nums justify-end' : ''
@@ -175,7 +181,11 @@ function QueryResult({
     ),
     false
   );
-
+  const [condensedQueryResult] = usePref(
+    'queryBuilder',
+    'appearance',
+    'condensedQueryResult'
+  );
   const cells = result
     .filter((_, index) => !hasIdField || index !== queryIdField)
     .map((value, index) => (
@@ -187,16 +197,20 @@ function QueryResult({
             ? fieldSpecs[index]
             : undefined
         }
+        condensedQueryResult={condensedQueryResult}
       />
     ));
 
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
+
   return (
     <div
       role="row"
       className={`query-result sticky even:[--bg:transparent]
         odd:[--bg:theme(colors.gray.100)]
-        odd:dark:[--bg:theme(colors.neutral.700)]`}
+        odd:dark:[--bg:theme(colors.neutral.700)] ${
+          condensedQueryResult ? 'text-sm' : ''
+        }`}
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
@@ -208,7 +222,10 @@ function QueryResult({
       }
     >
       {typeof handleSelected === 'function' && (
-        <span role="cell" className={`${cellClassName} sticky`}>
+        <span
+          role="cell"
+          className={`${getClassName(condensedQueryResult)} sticky`}
+        >
           <Input.Checkbox
             checked={isSelected}
             /* Ignore click event, as click would be handled by onClick on row */
@@ -217,7 +234,10 @@ function QueryResult({
         </span>
       )}
       {typeof viewUrl === 'string' && (
-        <span role="cell" className={`${cellClassName} sticky`}>
+        <span
+          role="cell"
+          className={`${getClassName(condensedQueryResult)} sticky`}
+        >
           <Link.NewTab
             className="print:hidden"
             href={viewUrl}

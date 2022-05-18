@@ -810,6 +810,18 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      appearance: {
+        title: preferencesText('appearance'),
+        items: {
+          condensedQueryResult: defineItem<boolean>({
+            title: preferencesText('condensedQueryResult'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
     },
   },
   reports: {

@@ -873,4 +873,10 @@ export const preferencesText = createDictionary({
     ca: 'Use accessible month picker',
     'es-es': 'Use accessible month picker',
   },
+  condensedQueryResult: {
+    'en-us': 'Condensed Query Result',
+    'ru-ru': 'Condensed Query Result',
+    ca: 'Condensed Query Result',
+    'es-es': 'Condensed Query Result',
+  },
 });
