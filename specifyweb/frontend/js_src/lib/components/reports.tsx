@@ -223,9 +223,9 @@ function Report({
     React.useCallback(
       () =>
         typeof report === 'object'
-          ? fetchResource('SpQuery', defined(idFromUrl(report.query))).then(
-              (resource) => resource ?? false
-            )
+          ? f.maybe(idFromUrl(report.query), (id) =>
+              fetchResource('SpQuery', id).then((resource) => resource ?? false)
+            ) ?? false
           : undefined,
       [report]
     ),
