@@ -15,34 +15,6 @@ import { defined, filterArray } from './types';
 import { resolveParser } from './uiparse';
 import { relationshipIsToMany } from './wbplanviewmappinghelper';
 
-export function getFieldsForAutoView<SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
-  fieldsToSkip: RA<TableFields<SCHEMA>>
-): RA<TableFields<SCHEMA>> {
-  // Hide hidden fields, unless all fields are hidden
-  const baseFields = model.literalFields.filter(
-    (field) => !fieldsToSkip.includes(field.name)
-  );
-  const filteredFields = baseFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
-  );
-  const baseRelationships = model.relationships.filter(
-    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
-  );
-  const filteredRelationships = baseRelationships.filter(
-    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
-  );
-  const fields =
-    filteredFields.length > 0 || filteredRelationships.length > 0
-      ? filteredFields
-      : baseFields;
-  const relationships =
-    filteredFields.length > 0 || filteredRelationships.length > 0
-      ? filteredRelationships
-      : baseRelationships;
-  return [...fields, ...relationships].map((field) => field.name);
-}
-
 /**
  * If form definition is missing, this function will generate one on the fly
  */
@@ -62,6 +34,39 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
     mode,
     model,
   };
+}
+
+/**
+ * Get fields that a user would most likely want to see.
+ * The "fieldsToSkip" can be replaced by filtering the output array, however,
+ * that won't be as type safe
+ */
+export function getFieldsForAutoView<SCHEMA extends AnySchema>(
+  model: SpecifyModel<SCHEMA>,
+  fieldsToSkip: RA<TableFields<SCHEMA>>
+): RA<TableFields<SCHEMA>> {
+  const baseFields = model.literalFields.filter(
+    (field) => !fieldsToSkip.includes(field.name)
+  );
+  const filteredFields = baseFields.filter(
+    (field) => !field.isHidden && !field.isReadOnly
+  );
+  const baseRelationships = model.relationships.filter(
+    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
+  );
+  const filteredRelationships = baseRelationships.filter(
+    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
+  );
+  // Hide hidden fields, unless all fields are hidden
+  const fields =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredFields
+      : baseFields;
+  const relationships =
+    filteredFields.length > 0 || filteredRelationships.length > 0
+      ? filteredRelationships
+      : baseRelationships;
+  return [...fields, ...relationships].map((field) => field.name);
 }
 
 function generateFormTable(

@@ -26,7 +26,7 @@ import type { UserTool } from '../main';
 import { useAvailableCollections } from '../othercollectionview';
 import { SetPermissionContext } from '../permissioncontext';
 import { SecurityCollection } from '../securitycollection';
-import { SecurityInsitution } from '../securityinstitution';
+import { SecurityInstitution } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { SecurityUser } from '../securityuser';
 
@@ -60,7 +60,7 @@ export function SecurityPanel(): JSX.Element | null {
     | State<
         'UserState',
         {
-          readonly initialCollection: number;
+          readonly initialCollection: number | undefined;
           readonly user: SerializedResource<SpecifyUser>;
         }
       >
@@ -168,7 +168,7 @@ export function SecurityPanel(): JSX.Element | null {
                   typeof userId === 'number'
                     ? defined(users)[userId]
                     : addMissingFields('SpecifyUser', {}),
-                initialCollection: availableCollections[0].id,
+                initialCollection: undefined,
               })
             }
           />

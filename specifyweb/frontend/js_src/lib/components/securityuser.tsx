@@ -70,7 +70,7 @@ export function SecurityUser({
   onSave: handleSave,
 }: {
   readonly user: SerializedResource<SpecifyUser>;
-  readonly initialCollection: number;
+  readonly initialCollection: number | undefined;
   readonly collections: RA<SerializedResource<Collection>>;
   readonly onOpenRole: (collectionId: number, roleId: number) => void;
   readonly onClose: () => void;
@@ -85,7 +85,7 @@ export function SecurityUser({
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
-    useUserPolicies(userResource, collections);
+    useUserPolicies(userResource, collections, initialCollection);
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -109,8 +109,17 @@ export function SecurityUser({
   const isChanged =
     changedAgent || previewAffected || (password ?? '').length > 0;
   const changesMade = useIsModified(userResource) || isChanged;
-  const [collectionId, setCollectionId] = React.useState(initialCollection);
   const loading = React.useContext(LoadingContext);
+
+  const [rawCollectionId, setCollectionId] = React.useState<number>(
+    initialCollection ?? -1
+  );
+  const collectionId =
+    rawCollectionId === -1
+      ? Array.isArray(collections)
+        ? collections[0].id
+        : -1
+      : rawCollectionId;
 
   const mode = augmentMode('edit', userResource.isNew(), 'SpecifyUser');
   const [state, setState] = React.useState<

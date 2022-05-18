@@ -194,7 +194,8 @@ export function useUserAgents(
 /** Fetching user policies */
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
-  collections: RA<SerializedResource<Collection>>
+  collections: RA<SerializedResource<Collection>>,
+  initialCollection: number | undefined
 ): [
   userPolicies: IR<RA<Policy> | undefined> | undefined,
   setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
@@ -206,7 +207,19 @@ export function useUserPolicies(
     React.useCallback(
       async () =>
         userResource.isNew()
-          ? Object.fromEntries(collections.map(({ id }) => [id, []]))
+          ? Object.fromEntries(
+              collections.map(({ id }) => [
+                id,
+                id === initialCollection
+                  ? [
+                      {
+                        resource: '/system/sp7/collection',
+                        actions: ['access'],
+                      },
+                    ]
+                  : [],
+              ])
+            )
           : Promise.all(
               collections.map(async (collection) =>
                 ajax<IR<RA<string>>>(
@@ -239,7 +252,7 @@ export function useUserPolicies(
                 initialUserPolicies.current = policies;
                 return policies;
               }),
-      [userResource, collections]
+      [userResource, collections, initialCollection]
     ),
     false
   );
