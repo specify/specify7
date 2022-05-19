@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: 'npm'
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
