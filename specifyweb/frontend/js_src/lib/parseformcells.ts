@@ -261,7 +261,24 @@ export function parseFormCell(
       : cellType === 'Label'
       ? 'right'
       : 'left',
-    visible: getProperty('visible')?.toLowerCase() !== 'false',
+    /*
+     * Specify 6 has `initialize="visible=false"` and
+     * `initialize="vis=false"` attributes for some cell definitions.
+     * vis=false doesn't seem to be implemented at all. visible=false seems to
+     * be implemented for buttons and panels only, but from tests we did, it
+     * does not seem to work either.
+     * Specify 7.6.1 and prior ignored both of these attributes.
+     * Specify 7.7.0 was going to respect visible=false for all cell types,
+     * but it ran into problem: "Generate Label on Save" checkbox and
+     * "Generate Label" buttons on the default Collection Object form have
+     * visible=false. Adding support for that attribute in Specify 7 would mean
+     * this checkbox and button would disappear from forms in Specify 7 when
+     * users update to 7.7.0.
+     * Thus, support for visible=false was cut out of the 7.7.0 release, but
+     * can be reenabled in the future by uncommenting the following line:
+     */
+    // visible: getProperty('visible')?.toLowerCase() !== 'false',
+    visible: true,
     ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
