@@ -96,7 +96,7 @@ function Login({
         </Label.Generic>
         <input type="hidden" name="next" value={nextUrl} />
         <input type="hidden" name="this_is_the_login_form" value="1" />
-        <Submit.Fancy>{commonText('login')}</Submit.Fancy>
+        <Submit.Fancy className="mt-1">{commonText('login')}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

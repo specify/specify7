@@ -599,16 +599,16 @@ export const preferencesText = createDictionary({
     'es-es': 'Number of blank rows at the bottom',
   },
   autoWrapCols: {
-    'en-us': 'Navigate to the other side when reached the edge column',
+    'en-us': 'Navigate to the other side when reaching the edge column',
     'ru-ru': 'Перейты на другую сторону, когда достигнете краевого столбца.',
-    ca: 'Navigate to the other side when reached the edge column',
-    'es-es': 'Navigate to the other side when reached the edge column',
+    ca: 'Navigate to the other side when reaching the edge column',
+    'es-es': 'Navigate to the other side when reaching the edge column',
   },
   autoWrapRows: {
-    'en-us': 'Navigate to the other side when reached the edge row',
+    'en-us': 'Navigate to the other side when reaching the edge row',
     'ru-ru': 'Перейты на другую сторону, когда достигнете краевого ряда',
-    ca: 'Navigate to the other side when reached the edge row',
-    'es-es': 'Navigate to the other side when reached the edge row',
+    ca: 'Navigate to the other side when reaching the edge row',
+    'es-es': 'Navigate to the other side when reaching the edge row',
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',

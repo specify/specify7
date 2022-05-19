@@ -27,7 +27,7 @@ export function makeTreeMap(container) {
 
   const div = d3.select(container)
     .append('div')
-    .attr('class', 'treemap')
+    .attr('class', 'treemap text-xl')
     .style('position', 'relative')
     .style('width', `${container.clientWidth}px`)
     .style('height', `${container.clientHeight}px`)

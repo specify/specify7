@@ -125,6 +125,8 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
           collection.related?.placeInSameHierarchy(resource);
         collection.add(resource);
         handleAdd?.(resource);
+        setIndex(collection.models.length - 1);
+        handleSlide?.(collection.models.length - 1);
         // Updates the state to trigger a reRender
         setRecords(getRecords);
       }}
