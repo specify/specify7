@@ -41,7 +41,6 @@ function Row({
       async () =>
         fetchCollection('RecordSetItem', {
           limit: 1,
-          orderBy: 'id',
           recordSet: recordSet.id,
         }).then(({ totalCount }) => totalCount),
       [recordSet]

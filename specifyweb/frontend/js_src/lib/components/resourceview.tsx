@@ -474,16 +474,23 @@ export function ShowResource({
     React.useCallback(async () => {
       if (resource.isNew()) return 0;
       return typeof recordSet === 'object'
-        ? fetchCollection(
-            'RecordSetItem',
-            {
-              recordSet: recordSet.id,
-              limit: 1,
-              orderBy: 'id',
-            },
-            { recordId__lt: resource.id }
-          )
-            .then(({ totalCount }) => totalCount)
+        ? fetchCollection('RecordSetItem', {
+            recordSet: recordSet.id,
+            limit: 1,
+            recordId: resource.id,
+          })
+            .then(({ records }) =>
+              f.maybe(records[0]?.id, (recordSetItemId) =>
+                fetchCollection(
+                  'RecordSetItem',
+                  {
+                    recordSet: recordSet.id,
+                    limit: 1,
+                  },
+                  { id__lt: recordSetItemId }
+                ).then(({ totalCount }) => totalCount)
+              )
+            )
             .catch(crash)
         : undefined;
     }, [recordSet, resource]),
