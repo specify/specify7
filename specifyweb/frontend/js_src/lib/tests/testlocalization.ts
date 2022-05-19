@@ -10,6 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import { f } from '../functools';
 import type {
   Dictionary as LanguageDictionary,
   Language,
@@ -18,13 +19,12 @@ import type {
 import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
 import type { IR, R } from '../types';
 import { filterArray } from '../types';
-import { f } from '../functools';
 
 if (typeof process.argv[1] === 'undefined')
   throw new Error('Unable to find the path of the current directory');
 
 // CONFIGURATION
-/*
+/**
  * When tests are build, this scrip would get executed from
  * `js_src/testBuild/tests/testlocalization.js`. We need to go up two
  * levels to get to the `js_src` directory.
@@ -40,15 +40,19 @@ const compiledLocalizationDirectory = '../localization';
 // Directories that contain front-end source code (non-recursively)
 const directoriesToScan = ['./', './components', '/components/toolbar'];
 
+const extensionsToScan = ['js', 'jsx', 'ts', 'tsx', 'html'];
+
 // Decide whether verbose mode should be turned on
 const verbose = process.argv[2] === '--verbose';
 
 const log = console.log;
+const debug = verbose ? console.log : () => undefined;
 
 let todosCount = 0;
 
 function todo(value: string): void {
   todosCount += 1;
+  // Green
   console.warn(`\u001B[36m${value}\u001B[0m\n`);
 }
 
@@ -56,6 +60,7 @@ let warningsCount = 0;
 
 function warn(value: string): void {
   warningsCount += 1;
+  // Orange
   console.warn(`\u001B[33m${value}\u001B[0m\n`);
 }
 
@@ -64,10 +69,9 @@ let errorsCount = 0;
 function error(value: string): void {
   errorsCount += 1;
   process.exitCode = 1;
+  // Red
   console.error(`\u001B[31m${value}\u001B[0m\n\n`);
 }
-
-const reDictionaryName = /export const (?<dictionaryName>\w+) =/;
 
 log(`Looking for localization dictionaries in ${localizationDirectory}`);
 
@@ -101,24 +105,29 @@ type Dictionary = IR<Key>;
                 .join('.');
 
               const dictionaryFile = await import(filePathWithoutExtension);
-              const dictionary = dictionaryFile?.default?.dictionary as
-                | LanguageDictionary
-                | undefined;
-              if (typeof dictionary !== 'object') {
+              const dictionaries = Object.keys(dictionaryFile ?? {}).filter(
+                (dictionaryName) => dictionaryName.endsWith('Text')
+              );
+              if (dictionaries.length > 1) {
+                error(
+                  `Found multiple dictionaries in ${fileName}: ${dictionaries.join(
+                    ', '
+                  )}`
+                );
+                return undefined;
+              }
+              const dictionaryName = dictionaries[0];
+              const dictionary = dictionaryFile?.[dictionaryName ?? '']
+                ?.dictionary as LanguageDictionary | undefined;
+              if (
+                typeof dictionaryName !== 'string' ||
+                typeof dictionary !== 'object'
+              ) {
+                // This is not thrown as an error because of "utils.tsx"
                 warn(`Unable to find a dictionary in ${fileName}`);
                 return undefined;
               }
-              if (verbose) log(`Found a dictionary in ${fileName}`);
-
-              const filePath = path.join(localizationDirectory, fileName);
-              const fileContent = fs.readFileSync(filePath).toString();
-              const regexMatch = reDictionaryName.exec(fileContent);
-              const dictionaryName = regexMatch?.groups?.dictionaryName;
-
-              if (typeof dictionaryName !== 'string') {
-                error(`Unable to find a dictionary in ${fileName}`);
-                return undefined;
-              }
+              debug(`Found a ${dictionaryName} dictionary in ${fileName}`);
 
               if (Object.keys(dictionary).length === 0) {
                 error(
@@ -179,13 +188,12 @@ type Dictionary = IR<Key>;
         .map((fileName) => path.join(directoryName, fileName))
     )
     .filter((fileName) =>
-      ['js', 'jsx', 'ts', 'tsx', 'html'].includes(
-        fileName.split('.').slice(-1)[0]
-      )
+      extensionsToScan.includes(fileName.split('.').slice(-1)[0])
     );
 
+  debug('Looking for usages of strings');
   sourceFiles.forEach((fileName) => {
-    if (verbose) log(`Looking for language string usages in ${fileName}`);
+    debug(`Looking for language string usages in ${fileName}`);
 
     const fileContent = fs
       .readFileSync(path.join(libraryDirectory, fileName))
@@ -194,7 +202,7 @@ type Dictionary = IR<Key>;
 
     Object.entries(dictionaries).forEach(([dictionaryName, entries]) => {
       const regex = new RegExp(
-        `${dictionaryName}\\s*\\(\\s*(?<keyName>[^)]+)\\s*\\)\\s*(?<hasArguments>\\()?`,
+        `${dictionaryName}\\s*\\(\\s*((?<parameters>[^)]+))`,
         'g'
       );
 
@@ -202,10 +210,12 @@ type Dictionary = IR<Key>;
         if (typeof groups === 'undefined' || typeof index === 'undefined')
           return;
 
-        const hasArguments = typeof groups.hasArguments !== 'undefined';
+        const parameters = groups.parameters;
+        const [rawPaddedKeyName, ...args] = parameters.split(',');
+        const hasArguments = args.join('').length > 0;
 
-        const paddedKeyName = groups.keyName.trim();
-        const keyName = paddedKeyName.slice(1, -1).trim();
+        const paddedKeyName = rawPaddedKeyName.trim();
+        const keyName = paddedKeyName.slice(1, -1);
 
         const position = fileContent.slice(
           index - lookAroundLength,
@@ -216,7 +226,7 @@ type Dictionary = IR<Key>;
 
         if (
           !`'"\``.includes(paddedKeyName[0]) ||
-          !paddedKeyName.startsWith(paddedKeyName.slice(-1)[0])
+          !paddedKeyName.endsWith(paddedKeyName[0])
         ) {
           error(
             [
@@ -272,7 +282,7 @@ type Dictionary = IR<Key>;
       });
     });
 
-    if (!foundUsages && verbose) log(`Didn't find any usages in ${fileName}`);
+    if (!foundUsages) debug(`Didn't find any usages in ${fileName}`);
   });
 
   // Find duplicate values
@@ -287,12 +297,9 @@ type Dictionary = IR<Key>;
             : typeof value === 'object'
             ? JSON.stringify(value)
             : (value ?? '').toString();
-        compoundDictionaries[language as Language] ??= {};
-        compoundDictionaries[language as Language]![valueString] ??= [];
-        compoundDictionaries[language as Language]![valueString].push([
-          fileName,
-          key,
-        ]);
+        compoundDictionaries[language] ??= {};
+        compoundDictionaries[language]![valueString] ??= [];
+        compoundDictionaries[language]![valueString].push([fileName, key]);
       })
     );
     return compoundDictionaries;
@@ -325,8 +332,8 @@ type Dictionary = IR<Key>;
   );
 
   // Output stats
-  if (verbose) {
-    log(dictionaries);
+  debug(dictionaries);
+  if (verbose)
     Object.entries(dictionaries).forEach(([dictionaryName, keys]) =>
       log(
         `${dictionaryName} has ${
@@ -336,8 +343,8 @@ type Dictionary = IR<Key>;
           .reduce((total, useCount) => total + useCount, 0)}`
       )
     );
-  }
   todo(`TODOs: ${todosCount}`);
   warn(`Warnings: ${warningsCount}`);
+  // Not using error() here as that would change the exit code to 1
   warn(`Errors: ${errorsCount}`);
 })();
