@@ -137,9 +137,14 @@ const listFormatter = new Intl.ListFormat(LANGUAGE, {
 export const formatList = (list: RA<string>): string =>
   listFormatter.format(list);
 
-const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
-  type: 'dateTimeField',
-});
+const datePartLocalizer =
+  process.env.NODE_ENV === 'test'
+    ? {
+        of: (code: string): string => code,
+      }
+    : new Intl.DisplayNames(LANGUAGE, {
+        type: 'dateTimeField',
+      });
 export const dateParts = {
   fullDate: commonText('fullDate'),
   day: capitalize(datePartLocalizer.of('day')),
@@ -172,7 +177,11 @@ export function getRelativeDate(date: Readonly<Date>): string {
   if (timePassed < 0) {
     /*
      * This happens due to time zone conversion issues.
-     * Need to fix that issue on the front-end first.
+     * Need to fix that issue on the back-end first.
+     * See: https://github.com/specify/specify7/issues/641
+     * Adding support for future dates is not hard, but it would be weird to
+     * create a data set and see its date of creation be 5 hours into the
+     * future
      */
     // Throw new Error('Future dates are not supported');
     console.error('Future dates are not supported');
@@ -192,6 +201,7 @@ export function getRelativeDate(date: Readonly<Date>): string {
   else return relativeDate.format(-Math.round(timePassed / YEAR), 'year');
 }
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 export const compareStrings = new Intl.Collator(
   typeof window === 'object' ? window.navigator.language : 'en-us',
   {

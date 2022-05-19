@@ -19,7 +19,6 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 
-// FIXME: SecurityUser chagne collection not loading preview and policies
 function UserCollectionsUi({
   userId,
   onClose: handleClose,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
+import { fetchCollection } from '../collection';
 import { DependentCollection, LazyCollection } from '../collectionapi';
 import type { RecordSet as RecordSetSchema } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -334,8 +334,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) =>
         typeof id === 'undefined'
           ? undefined
-          : records[index] ??
-            new model.Resource({ id: typeof id === 'number' ? id : undefined })
+          : (records[index]?.id === id ? records[index] : undefined) ??
+            new model.Resource({ id })
       )
     );
 
@@ -513,6 +513,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 }
 
+// FIXME: remove this
+const fetchLimit = 3;
+
 /**
  * Fetch IDs of records in a record set at a given position
  */
@@ -526,7 +529,7 @@ const fetchItems = async (
   }
 > =>
   fetchCollection('RecordSetItem', {
-    limit: DEFAULT_FETCH_LIMIT,
+    limit: fetchLimit,
     recordSet: recordSetId,
     offset,
   }).then(({ records, totalCount }) => (ids: RA<number | undefined>) => ({
@@ -545,13 +548,6 @@ const fetchItems = async (
          */
       }, ids.map(f.id) ?? []),
   }));
-
-const defaultRecordSetState = {
-  totalCount: 0,
-  ids: [],
-  isAddingNew: false,
-  index: 0,
-};
 
 export function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
@@ -589,6 +585,12 @@ export function RecordSet<SCHEMA extends AnySchema>({
       }
     | undefined
   >(undefined);
+  const defaultRecordSetState = {
+    totalCount: 0,
+    ids: [],
+    isAddingNew: false,
+    index: defaultResourceIndex ?? 0,
+  };
   const { totalCount, ids, isAddingNew, index } =
     items ?? defaultRecordSetState;
 
@@ -606,9 +608,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         // If new index is smaller (i.e, going back), fetch previous 20 ids
         clamp(
           0,
-          previousIndex.current > index
-            ? index - DEFAULT_FETCH_LIMIT + 1
-            : index,
+          previousIndex.current > index ? index - fetchLimit + 1 : index,
           totalCount
         )
       )

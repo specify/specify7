@@ -119,13 +119,13 @@ function DisplayRecordSet({
 const newResourceView = async (tableName: string): Promise<void> =>
   f.var(getModel(tableName)?.name, async (tableName) =>
     typeof tableName === 'string'
-      ? !hasTablePermission(tableName, 'create')
-        ? Promise.resolve(
+      ? hasTablePermission(tableName, 'create')
+        ? resourceView(tableName, undefined)
+        : Promise.resolve(
             void setCurrentComponent(
               <TablePermissionDenied tableName={tableName} action="create" />
             )
           )
-        : resourceView(tableName, undefined)
       : Promise.resolve(void setCurrentComponent(<NotFoundView />))
   );
 

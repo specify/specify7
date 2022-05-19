@@ -33,6 +33,7 @@ import { useBooleanState, useIsModified, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { SetPermissionContext } from './permissioncontext';
+import { ProtectedAction, ProtectedTable } from './permissiondenied';
 import { deserializeResource } from './resource';
 import { augmentMode, BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';
@@ -229,8 +230,7 @@ export function SecurityUser({
                   onChange={setCollectionId}
                 />
                 <SetPermissionContext collectionId={collectionId}>
-                  {typeof getOperationPermissions()[collectionId] ===
-                    'object' && (
+                  {(): JSX.Element => (
                     <>
                       <CollectionAccess
                         userPolicies={userPolicies}
@@ -556,13 +556,17 @@ export function SecurityUser({
         />
       )}
       {state.type === 'SettingAgents' && (
-        <UserAgentsDialog
-          userAgents={userAgents}
-          userId={userResource.id}
-          onClose={(): void => setState({ type: 'Main' })}
-          mode={mode}
-          response={state.response}
-        />
+        <ProtectedTable tableName="Division" action="read">
+          <ProtectedAction resource="/admin/user/agents" action="update">
+            <UserAgentsDialog
+              userAgents={userAgents}
+              userId={userResource.id}
+              onClose={(): void => setState({ type: 'Main' })}
+              mode={mode}
+              response={state.response}
+            />
+          </ProtectedAction>
+        </ProtectedTable>
       )}
       {state.type === 'NoAdminsError' && (
         <Dialog

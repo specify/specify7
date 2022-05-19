@@ -19,7 +19,7 @@ export function SetPermissionContext({
   children,
 }: {
   readonly collectionId: number;
-  readonly children: React.ReactNode;
+  readonly children: (() => React.ReactNode) | React.ReactNode;
 }): JSX.Element {
   const [fetchedCollection] = useAsyncState(
     React.useCallback(
@@ -30,7 +30,11 @@ export function SetPermissionContext({
   );
   return (
     <PermissionContext.Provider value={collectionId}>
-      {fetchedCollection === collectionId ? children : undefined}
+      {fetchedCollection === collectionId
+        ? typeof children === 'function'
+          ? children()
+          : children
+        : undefined}
     </PermissionContext.Provider>
   );
 }

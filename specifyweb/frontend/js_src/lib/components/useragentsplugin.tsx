@@ -31,8 +31,6 @@ export type SetAgentsResponse = Partial<{
   };
 }>;
 
-// FIXME: check for permissions here:
-
 /**
  * If user is missing agents for some accessible collections, this dialog
  * would ask them to assign the missing agents
