@@ -72,7 +72,9 @@ export function Autocomplete<T>({
   readonly onNewValue?: (value: string) => void;
   readonly onChange: (item: Item<T>) => void;
   readonly onCleared?: () => void;
-  readonly forwardRef?: React.Ref<HTMLInputElement>;
+  readonly forwardRef?:
+    | React.MutableRefObject<HTMLInputElement | null>
+    | React.RefCallback<HTMLInputElement>;
   readonly filterItems: boolean;
   readonly children: (props: {
     readonly forwardRef: React.RefCallback<HTMLInputElement>;
@@ -334,7 +336,6 @@ export function Autocomplete<T>({
         forwardRef(input): void {
           setInput(input);
           if (typeof forwardRef === 'object' && forwardRef !== null)
-            // @ts-expect-error Assigning to ref manually
             forwardRef.current = input;
           else if (typeof forwardRef === 'function') forwardRef(input);
         },
@@ -361,9 +362,7 @@ export function Autocomplete<T>({
             dataListRef.current?.contains(relatedTarget as Node) === false
           ) {
             handleBlur();
-            if (closeOnOutsideClick) {
-              setPendingValue(currentValue);
-            }
+            if (closeOnOutsideClick) setPendingValue(currentValue);
           }
         },
       })}

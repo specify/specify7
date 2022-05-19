@@ -91,7 +91,7 @@ export class QueryFieldSpec {
                   ? 'ID'
                   : field.name === 'author'
                   ? 'Author'
-                  : field.name === 'fullName'
+                  : field.name === 'fullName' && this.treeRank !== anyTreeRank
                   ? ''
                   : field.name
                 : field.name
