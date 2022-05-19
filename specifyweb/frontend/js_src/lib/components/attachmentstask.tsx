@@ -313,7 +313,7 @@ export function AttachmentsView(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <header className="gap-x-2 flex items-center">
+      <header className="gap-x-2 has-alt-background flex items-center">
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>
           <span className="sr-only">{commonText('filter')}</span>
