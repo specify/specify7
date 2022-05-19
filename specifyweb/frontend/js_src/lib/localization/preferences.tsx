@@ -892,10 +892,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Limit max field width',
   },
   condenseQueryResults: {
-    'en-us': 'Condence query results',
+    'en-us': 'Condense query results',
     'ru-ru': 'Сжатые результаты',
-    ca: 'Condence query results',
-    'es-es': 'Condence query results',
+    ca: 'Condense query results',
+    'es-es': 'Condense query results',
   },
   blurContentBehindDialog: {
     'en-us': 'Blur content behind the dialog',

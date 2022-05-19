@@ -201,13 +201,6 @@ export const preferenceDefinitions = {
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
           }),
-          roundedCorners: defineItem<boolean>({
-            title: preferencesText('roundedCorners'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
         },
       },
       appearance: {
@@ -261,6 +254,13 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#703200',
             renderer: ColorPickerPreferenceItem,
+          }),
+          roundedCorners: defineItem<boolean>({
+            title: preferencesText('roundedCorners'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
         },
       },
@@ -345,6 +345,7 @@ export const preferenceDefinitions = {
             defaultValue: 'default',
             renderer: WelcomePageModePreferenceItem,
           }),
+          // TODO: allow selecting attachments
           source: defineItem<string>({
             title: '',
             requiresReload: false,
@@ -464,6 +465,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          tableNameInTitle: defineItem<boolean>({
+            title: preferencesText('tableNameInTitle'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       definition: {
@@ -481,13 +489,6 @@ export const preferenceDefinitions = {
       ui: {
         title: preferencesText('ui'),
         items: {
-          tableNameInTitle: defineItem<boolean>({
-            title: preferencesText('tableNameInTitle'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,

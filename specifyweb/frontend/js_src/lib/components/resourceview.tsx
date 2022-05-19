@@ -132,7 +132,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     );
 
-  const [tableNameInTitle] = usePref('form', 'ui', 'tableNameInTitle');
+  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
   const title = `${
     typeof resource === 'undefined'
       ? ''

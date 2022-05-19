@@ -205,7 +205,7 @@ export function SetCssVariables(): null {
       accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
       accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
       accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
-      roundedCorners: getUserPref('general', 'ui', 'roundedCorners'),
+      roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
       formForeground: getUserPref('form', 'appearance', 'foreground'),
       darkFormForeground: getUserPref('form', 'appearance', 'darkForeground'),
       formBackground: getUserPref('form', 'appearance', 'background'),
