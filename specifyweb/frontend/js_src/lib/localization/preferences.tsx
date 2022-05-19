@@ -909,4 +909,22 @@ export const preferencesText = createDictionary({
     ca: 'This determines the visual order of collections',
     'es-es': 'This determines the visual order of collections',
   },
+  recordSetRecordToOpen: {
+    'en-us': 'Record to open by default',
+    'ru-ru': 'Размыть содержимое за диалогом',
+    ca: 'Record to open by default',
+    'es-es': 'Record to open by default',
+  },
+  firstRecord: {
+    'en-us': 'First record',
+    'ru-ru': 'First record',
+    ca: 'First record',
+    'es-es': 'First record',
+  },
+  lastRecord: {
+    'en-us': 'Last record',
+    'ru-ru': 'Last record',
+    ca: 'Last record',
+    'es-es': 'Last record',
+  },
 });

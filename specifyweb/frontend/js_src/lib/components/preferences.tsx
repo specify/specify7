@@ -706,6 +706,28 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      recordSet: {
+        title: '_recordSet',
+        items: {
+          recordToOpen: defineItem<'first' | 'last'>({
+            title: preferencesText('recordSetRecordToOpen'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'first',
+            // TODO: define pick list values as IR<> instead of RA<>
+            values: [
+              {
+                value: 'first',
+                title: preferencesText('firstRecord'),
+              },
+              {
+                value: 'last',
+                title: preferencesText('lastRecord'),
+              },
+            ],
+          }),
+        },
+      },
     },
   },
   chooseCollection: {
@@ -1100,6 +1122,9 @@ import('../schema')
       trees.geologicTimePeriod.title = schema.models.GeologicTimePeriod.label;
       // @ts-expect-error Assigning to read-only
       trees.lithoStrat.title = schema.models.LithoStrat.label;
+      // @ts-expect-error Assigning to read-only
+      preferenceDefinitions.form.subCategories.recordSet.title =
+        schema.models.RecordSet.label;
     })
   )
   .catch(crash);

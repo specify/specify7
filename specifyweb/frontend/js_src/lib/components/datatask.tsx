@@ -28,6 +28,7 @@ import { NotFoundView } from './notfoundview';
 import { OtherCollection } from './othercollectionview';
 import { ProtectedTool, TablePermissionDenied } from './permissiondenied';
 import { ShowResource } from './resourceview';
+import { usePref } from './preferenceshooks';
 
 const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
 
@@ -86,13 +87,14 @@ function DisplayRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
 }): null {
+  const [recordToOpen] = usePref('form', 'recordSet', 'recordToOpen');
   useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSetItem', {
           recordSet: recordSet.id,
           offset: resourceIndex,
-          orderBy: 'id',
+          orderBy: recordToOpen === 'first' ? 'id' : '-id',
           limit: 1,
         }).then(({ records }) =>
           navigate(
@@ -109,7 +111,7 @@ function DisplayRecordSet({
             }
           )
         ),
-      [recordSet, resourceIndex]
+      [recordSet, resourceIndex, recordToOpen]
     ),
     true
   );
