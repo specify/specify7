@@ -611,7 +611,6 @@ export function QueryComboBox({
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
-          title={commonText('collectionAccessDeniedDialogTitle')}
           header={commonText('collectionAccessDeniedDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}

@@ -17,9 +17,8 @@
 
 - Similarly, try to be as consistent as possible in key naming. For example, in
   case of the dialog that appears when upload plan is not defined, use
-  `noUploadPlanDialogTitle`, `noUploadPlanDialogHeading`,
-  `noUploadPlanDialogText` for specifying the title, heading and the message of
-  the dialog respectively.
+  `noUploadPlanDialogHeader`, `noUploadPlanDialogText` for specifying the header
+  and the message of the dialog respectively.
 
 - Each dictionary must be named in camel case and end with "Text" for
   consistency and easy grepping

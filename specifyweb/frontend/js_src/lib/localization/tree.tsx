@@ -34,12 +34,6 @@ export const treeText = createDictionary({
     ca: 'Synonymize',
     'es-es': 'Synonymize',
   },
-  actionFailedDialogTitle: {
-    'en-us': 'Operation failed',
-    'ru-ru': 'Операция провалена',
-    ca: 'Operation failed',
-    'es-es': 'Operation failed',
-  },
   actionFailedDialogHeader: {
     'en-us': 'Operation failed',
     'ru-ru': 'Операция провалена',

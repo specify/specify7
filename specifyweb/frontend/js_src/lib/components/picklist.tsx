@@ -230,7 +230,6 @@ function AddingToPicklist({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      title={formsText('addToPickListConfirmationDialogTitle')}
       header={formsText('addToPickListConfirmationDialogHeader')}
       onClose={handleClose}
       buttons={

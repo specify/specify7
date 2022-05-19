@@ -539,7 +539,6 @@ function DwcaQueryExport({
 
   return typeof exported === 'string' ? (
     <Dialog
-      title={commonText('exportQueryForDwcaDialogTitle')}
       header={commonText('exportQueryForDwcaDialogHeader')}
       className={{
         container: dialogClassNames.wideContainer,
@@ -567,11 +566,6 @@ function QueryExport({
 
   return (
     <Dialog
-      title={
-        asLabel
-          ? commonText('createLabelDialogTitle')
-          : commonText('createReportDialogTitle')
-      }
       header={
         asLabel
           ? commonText('createLabelDialogHeader')

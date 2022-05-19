@@ -297,7 +297,6 @@ const ResourceDataView = Backbone.View.extend({
     loadFile() {
         const fileInput = $('<input type="file">');
         const dialog = showDialog({
-            title: adminText('resourceLoadDialogTitle'),
             header: adminText('resourceLoadDialogHeader'),
             content: $('<div>')
               .append(`<p>${adminText('resourceLoadDialogText')}</p>`)
@@ -396,7 +395,6 @@ const ResourceList = Backbone.View.extend({
     openNameDialog() {
         let name = '';
         const dialog = showDialog({
-            title: adminText('createResourceDialogTitle'),
             header: adminText('createResourceDialogHeader'),
             content: <Form id="app-resources-new-resource-form" onSubmit={()=>{
               this.createResource(name)

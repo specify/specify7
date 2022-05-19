@@ -71,7 +71,6 @@ export function ValidationResults(props: {
 
   return (
     <Dialog
-      title={wbText('validationFailedDialogTitle')}
       header={wbText('validationFailedDialogHeader')}
       modal={false}
       onClose={props.onDismissValidation}
@@ -191,7 +190,6 @@ export function EmptyDataSetDialog({
   return (
     <Dialog
       isOpen={showDialog}
-      title={wbText('emptyDataSetDialogTitle')}
       header={wbText('emptyDataSetDialogHeader')}
       onClose={handleClose}
       buttons={commonText('close')}
@@ -312,7 +310,6 @@ export function ChangeBaseTable({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogTitle={wbText('goToBaseTableDialogTitle')}
       dialogHeader={wbText('goToBaseTableDialogHeader')}
       dialogMessage={wbText('goToBaseTableDialogText')}
       dialogButtons={(confirm) => (
@@ -339,7 +336,6 @@ export function ReRunAutoMapper({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogTitle={wbText('reRunAutoMapperDialogTitle')}
       dialogHeader={wbText('reRunAutoMapperDialogHeader')}
       dialogMessage={wbText('reRunAutoMapperDialogText')}
       dialogButtons={(confirm) => (

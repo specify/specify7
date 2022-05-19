@@ -252,7 +252,6 @@ function ChangeOwner({
 
   return typeof users === 'undefined' ? null : isChanged ? (
     <Dialog
-      title={wbText('dataSetOwnerChangedDialogTitle')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
       onClose={(): void => goTo('/')}
       buttons={commonText('close')}
@@ -261,7 +260,6 @@ function ChangeOwner({
     </Dialog>
   ) : (
     <Dialog
-      title={wbText('changeDataSetOwnerDialogTitle')}
       header={wbText('changeDataSetOwnerDialogHeader')}
       onClose={handleClose}
       buttons={

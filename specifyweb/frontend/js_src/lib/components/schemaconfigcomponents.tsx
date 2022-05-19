@@ -109,7 +109,6 @@ export function AddLanguage({
   const [country, setCountry] = React.useState<string>('');
   return (
     <Dialog
-      title={commonText('addLanguageDialogTitle')}
       header={commonText('addLanguageDialogHeader')}
       onClose={handleClose}
       buttons={

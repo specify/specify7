@@ -36,7 +36,6 @@ function QueryButton({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogTitle={queryText('queryDeleteIncompleteDialogTitle')}
       dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
       dialogMessage={queryText('queryDeleteIncompleteDialogText')}
       dialogButtons={(confirm): JSX.Element => (
@@ -188,7 +187,6 @@ export function MakeRecordSetButton({
             )}
             {state === 'saving' && (
               <Dialog
-                title={queryText('recordSetToQueryDialogTitle')}
                 header={queryText('recordSetToQueryDialogHeader')}
                 onClose={(): void => setState(undefined)}
                 buttons={undefined}
@@ -200,7 +198,6 @@ export function MakeRecordSetButton({
           </>
         ) : state === 'saved' && typeof recordSet === 'object' ? (
           <Dialog
-            title={queryText('recordSetCreatedDialogTitle')}
             header={queryText('recordSetCreatedDialogHeader')}
             onClose={(): void => setState(undefined)}
             buttons={
@@ -258,7 +255,6 @@ export function QueryExportButtons({
     <>
       {state === 'creating' ? (
         <Dialog
-          title={queryText('queryExportStartedDialogTitle')}
           header={queryText('queryExportStartedDialogHeader')}
           onClose={(): void => setState(undefined)}
           buttons={commonText('close')}
@@ -267,7 +263,6 @@ export function QueryExportButtons({
         </Dialog>
       ) : state === 'warning' ? (
         <Dialog
-          title={queryText('unableToExportAsKmlDialogTitle')}
           header={queryText('unableToExportAsKmlDialogHeader')}
           onClose={(): void => setState(undefined)}
           buttons={commonText('close')}

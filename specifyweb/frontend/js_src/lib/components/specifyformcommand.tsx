@@ -104,7 +104,6 @@ const commandRenderers: {
         <Dialog
           isOpen={isClicked}
           onClose={handleHide}
-          title={formsText('unavailableCommandDialogTitle')}
           header={formsText('unavailableCommandDialogHeader')}
           buttons={commonText('close')}
         >

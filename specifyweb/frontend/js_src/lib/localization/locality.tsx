@@ -59,12 +59,6 @@ export const localityText = createDictionary({
     ca: 'GEOLocate',
     'es-es': 'GEOLocate',
   },
-  geographyRequiredDialogTitle: {
-    'en-us': 'Geography Required',
-    'ru-ru': 'Требуется география',
-    ca: 'Geography Required',
-    'es-es': 'Geography Required',
-  },
   geographyRequiredDialogHeader: {
     'en-us': 'Geography must be mapped',
     'ru-ru': 'География должна быть связана',

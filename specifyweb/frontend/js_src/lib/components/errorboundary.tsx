@@ -50,7 +50,6 @@ export const supportLink =
   );
 
 function ErrorDialog({
-  title = commonText('errorBoundaryDialogTitle'),
   header = commonText('errorBoundaryDialogHeader'),
   children,
   copiableMessage,
@@ -76,7 +75,6 @@ function ErrorDialog({
   });
   return (
     <Dialog
-      title={title}
       header={header}
       buttons={
         <>
@@ -388,7 +386,6 @@ export function handleAjaxError(
   if (strict && !isPermissionError)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
-        title={commonText('backEndErrorDialogTitle')}
         header={commonText('backEndErrorDialogHeader')}
         onClose={handleClose}
         copiableMessage={copiableMessage}
@@ -417,7 +414,7 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
 
   return (
     <iframe
-      title={commonText('backEndErrorDialogTitle')}
+      title={commonText('backEndErrorDialogHeader')}
       className="h-full"
       ref={iframeRef}
     />

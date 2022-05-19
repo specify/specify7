@@ -34,7 +34,6 @@ function MasterKey({
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   ) : (
     <Dialog
-      title={commonText('generateMasterKeyDialogTitle')}
       header={commonText('generateMasterKeyDialogHeader')}
       onClose={handleClose}
       buttons={
@@ -100,7 +99,6 @@ function ShowKey({
 }): JSX.Element {
   return (
     <Dialog
-      title={commonText('masterKeyDialogTitle')}
       header={commonText('masterKeyDialogHeader')}
       onClose={handleClose}
       buttons={commonText('close')}

@@ -231,7 +231,6 @@ export function PermissionError({
     </Dialog>
   ) : (
     <Dialog
-      title={commonText('sessionTimeOutDialogTitle')}
       header={commonText('sessionTimeOutDialogHeader')}
       forceToTop={true}
       onClose={(): void =>
@@ -312,7 +311,7 @@ export function formatPermissionsError(
   url: string
 ): Readonly<[errorObject: JSX.Element | undefined, errorMessage: string]> {
   if (response.length === 0)
-    return [undefined, commonText('sessionTimeOutDialogTitle')];
+    return [undefined, commonText('sessionTimeOutDialogHeader')];
   const error = (JSON.parse(response) as PermissionErrorSchema)
     .NoMatchingRuleException;
 

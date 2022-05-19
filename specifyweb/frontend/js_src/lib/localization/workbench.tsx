@@ -169,12 +169,6 @@ export const wbText = createDictionary({
     'es-es': 'Data Editor',
   },
   // Dialogs
-  noUploadPlanDialogTitle: {
-    'en-us': 'Upload Plan Status',
-    'ru-ru': 'Статус плана загрузки',
-    ca: 'Upload Plan Status',
-    'es-es': 'Upload Plan Status',
-  },
   noUploadPlanDialogHeader: {
     'en-us': 'No Upload Plan is Defined',
     'ru-ru': 'План загрузки не определен',
@@ -189,12 +183,6 @@ export const wbText = createDictionary({
     ca: 'No Upload Plan has been defined for this Data Set. Create one now?',
     'es-es':
       'No Upload Plan has been defined for this Data Set. Create one now?',
-  },
-  noDisambiguationResultsDialogTitle: {
-    'en-us': 'Disambiguate',
-    'ru-ru': 'Устранить неоднозначность',
-    ca: 'Disambiguate',
-    'es-es': 'Disambiguate',
   },
   noDisambiguationResultsDialogHeader: {
     'en-us': 'Unable to disambiguate',
@@ -244,12 +232,6 @@ export const wbText = createDictionary({
     ca: '"Apply All" is not available while Data Check is in progress.',
     'es-es': '"Apply All" is not available while Data Check is in progress.',
   },
-  rollbackDialogTitle: {
-    'en-us': 'Data Set Roll Back',
-    'ru-ru': 'Откат набора данных',
-    ca: 'Data Set Roll Back',
-    'es-es': 'Data Set Roll Back',
-  },
   rollbackDialogHeader: {
     'en-us': 'Begin Data Set Roll Back?',
     'ru-ru': 'Начать откат набора данных?',
@@ -277,12 +259,6 @@ export const wbText = createDictionary({
       uploaded data have been referenced (re-used) by other data records since
       they were uploaded.`,
   },
-  startUploadDialogTitle: {
-    'en-us': 'Data Set Upload',
-    'ru-ru': 'Загрузка набора данных',
-    ca: 'Data Set Upload',
-    'es-es': 'Data Set Upload',
-  },
   startUploadDialogHeader: {
     'en-us': 'Begin Data Set Upload?',
     'ru-ru': 'Начать загрузку набора данных?',
@@ -298,12 +274,6 @@ export const wbText = createDictionary({
       Uploading the Data Set will add the data to the Specify database.`,
     'es-es': `
       Uploading the Data Set will add the data to the Specify database.`,
-  },
-  deleteDataSetDialogTitle: {
-    'en-us': 'Delete Data Set',
-    'ru-ru': 'Удалить набор данных',
-    ca: 'Delete Data Set',
-    'es-es': 'Delete Data Set',
   },
   deleteDataSetDialogHeader: {
     'en-us': 'Delete this Data Set?',
@@ -331,12 +301,6 @@ export const wbText = createDictionary({
       Data Sets. Also after deleting, Rollback will no longer be an option for
       an uploaded Data Set.`,
   },
-  dataSetDeletedDialogTitle: {
-    'en-us': 'Delete Data Set',
-    'ru-ru': 'Удалить набор данных',
-    ca: 'Delete Data Set',
-    'es-es': 'Delete Data Set',
-  },
   dataSetDeletedDialogHeader: {
     'en-us': 'Data Set successfully deleted',
     'ru-ru': 'Набор данных успешно удален',
@@ -348,12 +312,6 @@ export const wbText = createDictionary({
     'ru-ru': 'Набор данных успешно удален.',
     ca: 'Data Set successfully deleted.',
     'es-es': 'Data Set successfully deleted.',
-  },
-  revertChangesDialogTitle: {
-    'en-us': 'Revert Changes',
-    'ru-ru': 'Отменить изменения',
-    ca: 'Revert Changes',
-    'es-es': 'Revert Changes',
   },
   revertChangesDialogHeader: {
     'en-us': 'Revert Unsaved Changes?',
@@ -440,12 +398,6 @@ export const wbText = createDictionary({
       This value matches two or more existing database records and the match
       must be disambiguated before uploading.`),
   },
-  validationNoErrorsDialogTitle: {
-    'en-us': 'Data Set Validation',
-    'ru-ru': 'Проверка набора данных',
-    ca: 'Data Set Validation',
-    'es-es': 'Data Set Validation',
-  },
   validationNoErrorsDialogHeader: {
     'en-us': 'Validate Completed with No Errors',
     'ru-ru': 'Проверка завершена без ошибок',
@@ -494,12 +446,6 @@ export const wbText = createDictionary({
       </>
     ),
   },
-  validationErrorsDialogTitle: {
-    'en-us': 'Data Set Validation',
-    'ru-ru': 'Проверка набора данных',
-    ca: 'Data Set Validation',
-    'es-es': 'Data Set Validation',
-  },
   validationErrorsDialogHeader: {
     'en-us': 'Validate Completed with Errors',
     'ru-ru': 'Проверка завершена с ошибками',
@@ -544,12 +490,6 @@ export const wbText = createDictionary({
       </>
     ),
   },
-  uploadNoErrorsDialogTitle: {
-    'en-us': 'Data Set Upload',
-    'ru-ru': 'Загрузка набора данных',
-    ca: 'Data Set Upload',
-    'es-es': 'Data Set Upload',
-  },
   uploadNoErrorsDialogHeader: {
     'en-us': 'Upload Completed with No Errors',
     'ru-ru': 'Загрузка завершена без ошибок',
@@ -569,12 +509,6 @@ export const wbText = createDictionary({
     'es-es': `
       Click on the "Results" button to see the number of new records
       added to each database table.`,
-  },
-  uploadErrorsDialogTitle: {
-    'en-us': 'Data Set Upload',
-    'ru-ru': 'Загрузка набора данных',
-    ca: 'Data Set Upload',
-    'es-es': 'Data Set Upload',
   },
   uploadErrorsDialogHeader: {
     'en-us': 'Upload Failed due to Error Cells',
@@ -621,12 +555,6 @@ export const wbText = createDictionary({
       </>
     ),
   },
-  dataSetRollbackDialogTitle: {
-    'en-us': 'Data Set Rollback',
-    'ru-ru': 'Откат набора данных',
-    ca: 'Data Set Rollback',
-    'es-es': 'Data Set Rollback',
-  },
   dataSetRollbackDialogHeader: {
     'en-us': 'Data Set was rolled back successfully',
     'ru-ru': 'Набор данных был успешно откат',
@@ -642,12 +570,6 @@ export const wbText = createDictionary({
     'es-es':
       'This Rolledback Data Set is saved, and can be edited or re-uploaded.',
   },
-  validationCanceledDialogTitle: {
-    'en-us': 'Data Set Validation',
-    'ru-ru': 'Проверка набора данных',
-    ca: 'Data Set Validation',
-    'es-es': 'Data Set Validation',
-  },
   validationCanceledDialogHeader: {
     'en-us': 'Validation Canceled',
     'ru-ru': 'Проверка отменена',
@@ -660,12 +582,6 @@ export const wbText = createDictionary({
     ca: 'Data Set Validation cancelled.',
     'es-es': 'Data Set Validation cancelled.',
   },
-  rollbackCanceledDialogTitle: {
-    'en-us': 'Data Set Rollback',
-    'ru-ru': 'Откат набора данных',
-    ca: 'Data Set Rollback',
-    'es-es': 'Data Set Rollback',
-  },
   rollbackCanceledDialogHeader: {
     'en-us': 'Rollback Canceled',
     'ru-ru': 'Откат отменен',
@@ -677,12 +593,6 @@ export const wbText = createDictionary({
     'ru-ru': 'Откат набора данных отменен.',
     ca: 'Data Set Rollback cancelled.',
     'es-es': 'Data Set Rollback cancelled.',
-  },
-  uploadCanceledDialogTitle: {
-    'en-us': 'Data Set Upload',
-    'ru-ru': 'Загрузка набора данных',
-    ca: 'Data Set Upload',
-    'es-es': 'Data Set Upload',
   },
   uploadCanceledDialogHeader: {
     'en-us': 'Upload Canceled',
@@ -1135,12 +1045,6 @@ export const wbText = createDictionary({
     ca: 'Reveal Hidden Form Fields',
     'es-es': 'Reveal Hidden Form Fields',
   },
-  validationFailedDialogTitle: {
-    'en-us': 'Upload Plan Validation',
-    'ru-ru': 'Проверка плана загрузки',
-    ca: 'Upload Plan Validation',
-    'es-es': 'Upload Plan Validation',
-  },
   validationFailedDialogHeader: {
     'en-us': 'Validation found missing mappings:',
     'ru-ru': 'Проверка обнаружила недостающие сопоставления:',
@@ -1273,12 +1177,6 @@ export const wbText = createDictionary({
     ca: 'Base Table',
     'es-es': 'Base Table',
   },
-  goToBaseTableDialogTitle: {
-    'en-us': 'Change Base Table',
-    'ru-ru': 'Изменить базовую таблицу',
-    ca: 'Change Base Table',
-    'es-es': 'Change Base Table',
-  },
   goToBaseTableDialogHeader: {
     'en-us': 'Change the Base Table for Mapping Data Set Columns?',
     'ru-ru':
@@ -1356,12 +1254,6 @@ export const wbText = createDictionary({
     ca: 'Clear Mappings',
     'es-es': 'Clear Mappings',
   },
-  emptyDataSetDialogTitle: {
-    'en-us': 'Empty Data Set',
-    'ru-ru': 'Пустой набор данных',
-    ca: 'Empty Data Set',
-    'es-es': 'Empty Data Set',
-  },
   emptyDataSetDialogHeader: {
     'en-us': 'Empty Data Set',
     'ru-ru': 'Пустой набор данных',
@@ -1402,12 +1294,6 @@ export const wbText = createDictionary({
       </>
     ),
   },
-  reRunAutoMapperDialogTitle: {
-    'en-us': 'AutoMapper',
-    'ru-ru': 'AutoMapper',
-    ca: 'AutoMapper',
-    'es-es': 'AutoMapper',
-  },
   reRunAutoMapperDialogHeader: {
     'en-us': 'Automap to start a new Upload Plan?',
     'ru-ru': 'Автоматически сопоставить?',
@@ -1419,25 +1305,6 @@ export const wbText = createDictionary({
     'ru-ru': 'Это сотрет существующие сопоставления.',
     ca: 'This will erase existing data field mappings.',
     'es-es': 'This will erase existing data field mappings.',
-  },
-  nothingToValidateDialogTitle: {
-    'en-us': 'Nothing to validate',
-    'ru-ru': 'Нет сопоставлений для проверки',
-    ca: 'Nothing to validate',
-    'es-es': 'Nothing to validate',
-  },
-  nothingToValidateDialogHeader: {
-    'en-us': 'There are no mappings to validate',
-    'ru-ru': 'Нет сопоставлений для проверки',
-    ca: 'There are no mappings to validate',
-    'es-es': 'There are no mappings to validate',
-  },
-  nothingToValidateDialogText: {
-    'en-us': 'Please map some headers before running the validation.',
-    'ru-ru':
-      'Пожалуйста, сопоставьте некоторые заголовки перед запуском проверки.',
-    ca: 'Please map some headers before running the validation.',
-    'es-es': 'Please map some headers before running the validation.',
   },
   matchingLogicDialogTitle: {
     'en-us': 'Change Matching Logic',
@@ -1591,12 +1458,6 @@ export const wbText = createDictionary({
     ca: '(no file name)',
     'es-es': '(no file name)',
   },
-  changeDataSetOwnerDialogTitle: {
-    'en-us': 'Data Set Properties',
-    'ru-ru': 'Свойства набора данных',
-    ca: 'Data Set Properties',
-    'es-es': 'Data Set Properties',
-  },
   changeDataSetOwnerDialogHeader: {
     'en-us': 'Change Data Set Owner',
     'ru-ru': 'Изменить владельца набора данных',
@@ -1608,12 +1469,6 @@ export const wbText = createDictionary({
     'ru-ru': 'Выберите нового владельца:',
     ca: 'Select New Owner:',
     'es-es': 'Select New Owner:',
-  },
-  dataSetOwnerChangedDialogTitle: {
-    'en-us': 'Data Set Properties',
-    'ru-ru': 'Свойства набора данных',
-    ca: 'Data Set Properties',
-    'es-es': 'Data Set Properties',
   },
   dataSetOwnerChangedDialogHeader: {
     'en-us': 'Data Set owner changed',

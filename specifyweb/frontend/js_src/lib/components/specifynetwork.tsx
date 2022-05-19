@@ -223,7 +223,6 @@ function SpecifyNetwork({
       {isPending && <LoadingScreen />}
       {hasFailure && (
         <Dialog
-          title={specifyNetworkText('failedToOpenPopUpDialogTitle')}
           header={specifyNetworkText('failedToOpenPopUpDialogHeader')}
           onClose={handleNoFailure}
           buttons={commonText('close')}

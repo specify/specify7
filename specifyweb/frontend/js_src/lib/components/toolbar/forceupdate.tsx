@@ -24,7 +24,6 @@ function ForceUpdateFeed({
 
   return isActivated ? (
     <Dialog
-      title={commonText('feedExportStartedDialogTitle')}
       header={commonText('feedExportStartedDialogHeader')}
       onClose={handleClose}
       buttons={commonText('close')}
@@ -33,7 +32,6 @@ function ForceUpdateFeed({
     </Dialog>
   ) : (
     <Dialog
-      title={commonText('updateExportFeedDialogTitle')}
       header={commonText('updateExportFeedDialogHeader')}
       onClose={handleClose}
       buttons={

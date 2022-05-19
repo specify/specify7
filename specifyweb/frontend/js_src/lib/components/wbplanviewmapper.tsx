@@ -39,7 +39,6 @@ import type { MappingElementProps } from './wbplanviewcomponents';
 import {
   getMappingLineProps,
   MappingLineComponent,
-  ValidationButton,
 } from './wbplanviewcomponents';
 import { Layout } from './wbplanviewheader';
 import {
@@ -373,18 +372,25 @@ export function WbPlanViewMapper(props: {
             }}
           />
           {!props.isReadOnly && (
-            <ValidationButton
-              canValidate={state.lines.some(({ mappingPath }) =>
-                mappingPathIsComplete(mappingPath)
-              )}
-              isValidated={state.mappingsAreValidated}
+            <Button.Small
+              className={
+                state.mappingsAreValidated
+                  ? 'bg-green-400 dark:bg-green-700'
+                  : undefined
+              }
+              role="menuitem"
               onClick={(): void =>
                 dispatch({
                   type: 'ValidationAction',
                   validationResults: validate(),
                 })
               }
-            />
+              disabled={state.lines.every(
+                ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+              )}
+            >
+              {wbText('validate')}
+            </Button.Small>
           )}
           <Link.LikeButton
             aria-haspopup="dialog"

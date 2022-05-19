@@ -218,7 +218,6 @@ function CreateRecordSet({
       )}
       {state.type === 'Saving' && (
         <Dialog
-          title={queryText('recordSetToQueryDialogTitle')}
           header={queryText('recordSetToQueryDialogHeader')}
           onClose={(): void => setState({ type: 'Main' })}
           buttons={undefined}
@@ -229,7 +228,6 @@ function CreateRecordSet({
       )}
       {state.type === 'Saved' && (
         <Dialog
-          title={queryText('recordSetCreatedDialogTitle')}
           header={queryText('recordSetCreatedDialogHeader')}
           onClose={(): void => setState({ type: 'Main' })}
           buttons={

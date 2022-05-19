@@ -13,12 +13,6 @@ export const specifyNetworkText = createDictionary({
     ca: 'Specify Network (opens in new tab)',
     'es-es': 'Specify Network (opens in new tab)',
   },
-  failedToOpenPopUpDialogTitle: {
-    'en-us': 'Failed to open the page',
-    'ru-ru': 'Не удалось открыть страницу',
-    ca: "No s'ha pogut obrir la pàgina",
-    'es-es': 'Failed to open the page',
-  },
   failedToOpenPopUpDialogHeader: {
     'en-us': 'Failed to open Specify Network Page',
     'ru-ru': 'Не удалось открыть страницу Specify Network',

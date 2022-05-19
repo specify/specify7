@@ -172,7 +172,6 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
 const resourceDeletedDialog = (
   <Dialog
-    title={commonText('resourceDeletedDialogTitle')}
     header={commonText('resourceDeletedDialogHeader')}
     buttons={commonText('close')}
     onClose={(): void => goTo('/')}
@@ -424,7 +423,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
               {form(children)}
               {showUnloadProtect && (
                 <Dialog
-                  title={commonText('leavePageDialogTitle')}
                   header={commonText('leavePageDialogHeader')}
                   onClose={(): void => setShowUnloadProtect(false)}
                   buttons={

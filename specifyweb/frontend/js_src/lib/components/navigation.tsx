@@ -170,7 +170,6 @@ function defaultConfirmNavigationHandler(
   const { message } = unloadBlockers[unloadBlockers.length - 1];
 
   const dialog = showDialog({
-    title: commonText('leavePageDialogTitle'),
     header: commonText('leavePageDialogHeader'),
     content: message,
     onClose() {

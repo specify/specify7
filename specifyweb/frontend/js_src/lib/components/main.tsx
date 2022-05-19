@@ -247,7 +247,6 @@ export function Main({
 
       {showVersionMismatch && (
         <Dialog
-          title={commonText('versionMismatchDialogTitle')}
           header={commonText('versionMismatchDialogHeader')}
           onClose={(): void => setShowVersionMismatch(false)}
           buttons={
@@ -271,7 +270,6 @@ export function Main({
         <main className="flex-1 overflow-auto" ref={mainRef} />
       ) : (
         <Dialog
-          title={commonText('noAgentDialogTitle')}
           header={commonText('noAgentDialogHeader')}
           className={{
             container: `${dialogClassNames.narrowContainer}`,

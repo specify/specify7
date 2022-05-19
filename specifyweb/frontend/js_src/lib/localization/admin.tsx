@@ -68,12 +68,6 @@ export const adminText = createDictionary({
       being saved by another session. It can be deleted if that is not the
       case.`,
   },
-  resourceLoadDialogTitle: {
-    'en-us': 'Load file',
-    'ru-ru': 'Загрузить файл',
-    ca: 'Load file',
-    'es-es': 'Load file',
-  },
   resourceLoadDialogHeader: {
     'en-us': 'Load resource file',
     'ru-ru': 'Загрузить файл ресурсов',
@@ -116,12 +110,6 @@ export const adminText = createDictionary({
     'ru-ru': 'Пользователи',
     ca: 'Users',
     'es-es': 'Users',
-  },
-  createResourceDialogTitle: {
-    'en-us': 'Create Resource',
-    'ru-ru': 'Создать ресурс',
-    ca: 'Create Resource',
-    'es-es': 'Create Resource',
   },
   createResourceDialogHeader: {
     'en-us': 'Create New Resource File',

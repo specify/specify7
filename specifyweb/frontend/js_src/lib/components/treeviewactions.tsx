@@ -311,7 +311,6 @@ function ActiveAction<SCHEMA extends AnyTree>({
       </Button.Small>
       {typeof error === 'object' ? (
         <Dialog
-          title={treeText('actionFailedDialogTitle')}
           header={treeText('actionFailedDialogHeader')}
           onClose={handleCancelAction}
           buttons={commonText('close')}

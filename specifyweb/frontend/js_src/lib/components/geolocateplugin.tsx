@@ -110,7 +110,6 @@ function GeoLocate({
   return typeof data === 'undefined' ? null : data === false ? (
     <Dialog
       onClose={handleClose}
-      title={localityText('geographyRequiredDialogTitle')}
       header={localityText('geographyRequiredDialogHeader')}
       buttons={commonText('close')}
     >

@@ -20,7 +20,6 @@ function AppResourceDialog({
 
   return (
     <Dialog
-      title={commonText('resourcesDialogTitle')}
       header={commonText('resourcesDialogHeader')}
       onClose={handleClose}
       buttons={commonText('cancel')}

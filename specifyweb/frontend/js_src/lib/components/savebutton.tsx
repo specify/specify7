@@ -206,7 +206,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       )}
       {isSaveConflict ? (
         <Dialog
-          title={formsText('saveConflictDialogTitle')}
           header={formsText('saveConflictDialogHeader')}
           buttons={
             <Button.Red onClick={(): void => window.location.reload()}>
@@ -219,7 +218,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         </Dialog>
       ) : showSaveBlockedDialog ? (
         <Dialog
-          title={formsText('saveBlockedDialogTitle')}
           header={formsText('saveBlockedDialogHeader')}
           buttons={commonText('close')}
           onClose={(): void => setShowBlockedDialog(false)}

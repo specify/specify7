@@ -84,12 +84,6 @@ export const queryText = createDictionary({
     ca: 'Query Name:',
     'es-es': 'Query Name:',
   },
-  queryDeleteIncompleteDialogTitle: {
-    'en-us': 'Incomplete fields',
-    'ru-ru': 'Неполные поля',
-    ca: 'Incomplete fields',
-    'es-es': 'Incomplete fields',
-  },
   queryDeleteIncompleteDialogHeader: {
     'en-us': 'Query definition contains incomplete fields',
     'ru-ru': 'Определение запроса содержит неполные поля',
@@ -115,12 +109,6 @@ export const queryText = createDictionary({
     ca: 'This query definition has not been saved.',
     'es-es': 'This query definition has not been saved.',
   },
-  recordSetToQueryDialogTitle: {
-    'en-us': 'Record Set',
-    'ru-ru': 'Набор объектов',
-    ca: 'Record Set',
-    'es-es': 'Record Set',
-  },
   recordSetToQueryDialogHeader: {
     'en-us': 'Creating a Record Set from Query',
     'ru-ru': 'Создание набор объектов из запроса',
@@ -133,29 +121,17 @@ export const queryText = createDictionary({
     ca: 'Generating Record Set...',
     'es-es': 'Generating Record Set...',
   },
-  recordSetCreatedDialogTitle: {
-    'en-us': 'Record Set Created',
-    'ru-ru': 'Набор объектов создан',
-    ca: 'Record Set Created',
-    'es-es': 'Record Set Created',
-  },
   recordSetCreatedDialogHeader: {
-    'en-us': 'Open newly created record set now?',
+    'en-us': 'Record set created. Open it now?',
     'ru-ru': 'Открыть только что созданный набор объектов?',
-    ca: 'Open newly created record set now?',
-    'es-es': 'Open newly created record set now?',
+    ca: 'Record set created. Open it now?',
+    'es-es': 'Record set created. Open it now?',
   },
   recordSetCreatedDialogText: {
     'en-us': 'Open newly created record set now?',
     'ru-ru': 'Открыть только что созданный набор объектов?',
     ca: 'Open newly created record set now?',
     'es-es': 'Open newly created record set now?',
-  },
-  unableToExportAsKmlDialogTitle: {
-    'en-us': 'KML Export',
-    'ru-ru': 'KML экспорт',
-    ca: 'KML Export',
-    'es-es': 'KML Export',
   },
   unableToExportAsKmlDialogHeader: {
     'en-us': 'Unable to export to KML',
@@ -168,12 +144,6 @@ export const queryText = createDictionary({
     'ru-ru': 'Пожалуйста, добавьте в запрос поля широты и долготы.',
     ca: 'Please add latitude and longitude fields to the query.',
     'es-es': 'Please add latitude and longitude fields to the query.',
-  },
-  queryExportStartedDialogTitle: {
-    'en-us': 'Export Query',
-    'ru-ru': 'Экспорт запроса',
-    ca: 'Export Query',
-    'es-es': 'Export Query',
   },
   queryExportStartedDialogHeader: {
     'en-us': 'Query Export started',

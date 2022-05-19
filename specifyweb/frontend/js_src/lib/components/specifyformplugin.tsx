@@ -41,7 +41,6 @@ function WrongTable({
       <Dialog
         isOpen={isVisible}
         onClose={handleHide}
-        title={formsText('pluginName')}
         header={formsText('unavailablePluginDialogHeader')}
         buttons={commonText('close')}
       >
@@ -232,7 +231,6 @@ const pluginRenderers: {
         <Dialog
           isOpen={isVisible}
           onClose={handleHide}
-          title={formsText('unavailablePluginDialogTitle')}
           header={formsText('unavailablePluginDialogHeader')}
           buttons={commonText('close')}
         >

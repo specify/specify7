@@ -142,7 +142,6 @@ function ExportStarted({
 }): JSX.Element {
   return (
     <Dialog
-      title={commonText('dwcaExportStartedDialogTitle')}
       header={commonText('dwcaExportStartedDialogHeader')}
       onClose={handleClose}
       buttons={commonText('close')}

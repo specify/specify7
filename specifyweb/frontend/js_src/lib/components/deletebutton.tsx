@@ -68,7 +68,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           </Dialog>
         ) : blockers.length === 0 ? (
           <Dialog
-            title={formsText('deleteConfirmationDialogTitle')}
             header={formsText('deleteConfirmationDialogHeader')}
             onClose={handleClose}
             className={{
@@ -91,7 +90,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           </Dialog>
         ) : (
           <Dialog
-            title={formsText('deleteBlockedDialogTitle')}
             header={formsText('deleteBlockedDialogHeader')}
             buttons={commonText('close')}
             onClose={handleClose}

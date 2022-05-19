@@ -87,12 +87,6 @@ export const formsText = createDictionary({
     ca: 'Checking if resource can be deleted...',
     'es-es': 'Checking if resource can be deleted...',
   },
-  deleteBlockedDialogTitle: {
-    'en-us': 'Delete resource',
-    'ru-ru': 'Удалить ресурс',
-    ca: 'Delete resource',
-    'es-es': 'Delete resource',
-  },
   deleteBlockedDialogHeader: {
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
@@ -286,12 +280,6 @@ export const formsText = createDictionary({
     ca: 'Paleo Map',
     'es-es': 'Paleo Map',
   },
-  paleoRequiresGeographyDialogTitle: {
-    'en-us': 'Paleo Map',
-    'ru-ru': 'Карта Палео',
-    ca: 'Paleo Map',
-    'es-es': 'Paleo Map',
-  },
   paleoRequiresGeographyDialogHeader: {
     'en-us': 'Geography Required',
     'ru-ru': 'Требуется география',
@@ -315,12 +303,6 @@ export const formsText = createDictionary({
       The Paleo Map plugin requires that the locality have geographic
       coordinates and that the paleo context have a geographic age with at
       least a start time or and end time populated.`,
-  },
-  unsupportedFormDialogTitle: {
-    'en-us': 'Unsupported Plugin',
-    'ru-ru': 'Неподдерживаемый плагин',
-    ca: 'Unsupported Plugin',
-    'es-es': 'Unsupported Plugin',
   },
   unsupportedFormDialogHeader: {
     'en-us': 'Incorrect Form',
@@ -350,12 +332,6 @@ export const formsText = createDictionary({
     'es-es': 'Invalid Date',
   },
   // DeleteButton
-  deleteConfirmationDialogTitle: {
-    'en-us': 'Delete?',
-    'ru-ru': 'Удалить?',
-    ca: 'Delete?',
-    'es-es': 'Delete?',
-  },
   deleteConfirmationDialogHeader: {
     'en-us': 'Are you sure you want to permanently delete this item(s)?',
     'ru-ru': 'Вы уверены, что хотите навсегда удалить этот элемент(ы)?',
@@ -400,12 +376,6 @@ export const formsText = createDictionary({
     'es-es': 'Set to current date',
   },
   // PickListBox
-  addToPickListConfirmationDialogTitle: {
-    'en-us': 'Pick List',
-    'ru-ru': 'Список выбора',
-    ca: 'Pick List',
-    'es-es': 'Pick List',
-  },
   addToPickListConfirmationDialogHeader: {
     'en-us': 'Add to pick list?',
     'ru-ru': 'Добавить в список выбора?',
@@ -592,12 +562,6 @@ export const formsText = createDictionary({
       another browser tab and is out of date. The page must be reloaded to
       prevent inconsistent data from being saved.`,
   },
-  saveBlockedDialogTitle: {
-    'en-us': 'Save record',
-    'ru-ru': 'Сохранить запись',
-    ca: 'Save record',
-    'es-es': 'Save record',
-  },
   saveBlockedDialogHeader: {
     'en-us': 'Save blocked',
     'ru-ru': 'Сохранение заблокировано',
@@ -642,12 +606,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Команда недоступна',
     ca: 'Command N/A',
     'es-es': 'Command N/A',
-  },
-  unavailableCommandDialogTitle: {
-    'en-us': 'Command Not Available',
-    'ru-ru': 'Команда недоступна',
-    ca: 'Command Not Available',
-    'es-es': 'Command Not Available',
   },
   unavailableCommandDialogHeader: {
     'en-us': 'Command Not Available',
@@ -697,12 +655,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Плагин недоступен',
     ca: 'Plugin N/A',
     'es-es': 'Plugin N/A',
-  },
-  unavailablePluginDialogTitle: {
-    'en-us': 'Plugin Not Available',
-    'ru-ru': 'Плагин недоступен',
-    ca: 'Plugin Not Available',
-    'es-es': 'Plugin Not Available',
   },
   unavailablePluginDialogHeader: {
     'en-us': 'Plugin Not Available',

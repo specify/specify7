@@ -24,12 +24,6 @@ export const commonText = createDictionary({
     ca: 'Page Not Found',
     'es-es': 'Page Not Found',
   },
-  collectionAccessDeniedDialogTitle: {
-    'en-us': 'Access denied',
-    'ru-ru': 'Доступ отказано',
-    ca: 'Access denied',
-    'es-es': 'Access denied',
-  },
   collectionAccessDeniedDialogHeader: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
@@ -49,12 +43,6 @@ export const commonText = createDictionary({
     'es-es': (collectionName: string) =>
       `The currently logged in account does not have access to the
        ${collectionName} collection.`,
-  },
-  noAgentDialogTitle: {
-    'en-us': 'No Agent assigned',
-    'ru-ru': 'Агент не назначен',
-    ca: "No s'ha assignat cap agent",
-    'es-es': 'No Agent assigned',
   },
   noAgentDialogHeader: {
     'en-us': 'Current user does not have an agent assigned',
@@ -595,12 +583,6 @@ export const commonText = createDictionary({
     ca: 'Update RSS Feed',
     'es-es': 'Update RSS Feed',
   },
-  updateExportFeedDialogTitle: {
-    'en-us': 'Export Feed',
-    'ru-ru': 'Экспорт фида',
-    ca: 'Export Feed',
-    'es-es': 'Export Feed',
-  },
   updateExportFeedDialogHeader: {
     'en-us': 'Update all export feed items now?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
@@ -612,12 +594,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
     ca: 'Update all export feed items now?',
     'es-es': 'Update all export feed items now?',
-  },
-  feedExportStartedDialogTitle: {
-    'en-us': 'Export Feed',
-    'ru-ru': 'Экспорт фида',
-    ca: 'Export Feed',
-    'es-es': 'Export Feed',
   },
   feedExportStartedDialogHeader: {
     'en-us': 'Export feed update started',
@@ -637,12 +613,6 @@ export const commonText = createDictionary({
     'es-es': `
       Update started. You will receive a notification for each feed item
       updated.`,
-  },
-  dwcaExportStartedDialogTitle: {
-    'en-us': 'DwCA',
-    'ru-ru': 'DwCA',
-    ca: 'DwCA',
-    'es-es': 'DwCA',
   },
   dwcaExportStartedDialogHeader: {
     'en-us': 'DwCA export started',
@@ -675,12 +645,6 @@ export const commonText = createDictionary({
     ca: 'Generate Master Key',
     'es-es': 'Generate Master Key',
   },
-  generateMasterKeyDialogTitle: {
-    'en-us': 'Master Key',
-    'ru-ru': 'Мастер ключ',
-    ca: 'Master Key',
-    'es-es': 'Master Key',
-  },
   generateMasterKeyDialogHeader: {
     'en-us': 'Generate Master Key',
     'ru-ru': 'Сгенерировать мастер-ключ',
@@ -692,12 +656,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Пользовательский пароль:',
     ca: 'User Password:',
     'es-es': 'User Password:',
-  },
-  masterKeyDialogTitle: {
-    'en-us': 'Master Key',
-    'ru-ru': 'Мастер ключ',
-    ca: 'Master Key',
-    'es-es': 'Master Key',
   },
   masterKeyDialogHeader: {
     'en-us': 'Master key generated',
@@ -753,12 +711,6 @@ export const commonText = createDictionary({
     ca: 'Export query for DwCA definition',
     'es-es': 'Export query for DwCA definition',
   },
-  exportQueryForDwcaDialogTitle: {
-    'en-us': 'Query XML for DwCA definition',
-    'ru-ru': 'XML Запроса для определения DwCA',
-    ca: 'Query XML for DwCA definition',
-    'es-es': 'Query XML for DwCA definition',
-  },
   exportQueryForDwcaDialogHeader: {
     'en-us': 'Query XML for DwCA definition',
     'ru-ru': 'XML Запроса для определения DwCA',
@@ -795,23 +747,11 @@ export const commonText = createDictionary({
     ca: 'Report Name',
     'es-es': 'Report Name',
   },
-  createLabelDialogTitle: {
-    'en-us': 'Labels',
-    'ru-ru': 'Этикетки',
-    ca: 'Labels',
-    'es-es': 'Labels',
-  },
   createLabelDialogHeader: {
     'en-us': 'Create new label',
     'ru-ru': 'Создать новую этикетку',
     ca: 'Create new label',
     'es-es': 'Create new label',
-  },
-  createReportDialogTitle: {
-    'en-us': 'Reports',
-    'ru-ru': 'Отчеты',
-    ca: 'Reports',
-    'es-es': 'Reports',
   },
   createReportDialogHeader: {
     'en-us': 'Create new report',
@@ -842,12 +782,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Ресурсы для просмотров',
     ca: 'View Sets',
     'es-es': 'View Sets',
-  },
-  resourcesDialogTitle: {
-    'en-us': 'Resources',
-    'ru-ru': 'Ресурсы',
-    ca: 'Resources',
-    'es-es': 'Resources',
   },
   resourcesDialogHeader: {
     'en-us': 'Choose the resource type you wish to edit:',
@@ -916,12 +850,6 @@ export const commonText = createDictionary({
     'es-es': 'Metadata resource:',
   },
   // Error Boundary
-  errorBoundaryDialogTitle: {
-    'en-us': 'Unexpected Error',
-    'ru-ru': 'Неожиданная ошибка',
-    ca: 'Unexpected Error',
-    'es-es': 'Unexpected Error',
-  },
   errorBoundaryDialogHeader: {
     'en-us': 'We are sorry, an error has occurred',
     'ru-ru': 'Произошла неожиданная ошибка',
@@ -965,12 +893,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Описание ошибки',
     ca: "Missatge d'error",
     'es-es': 'Error Message',
-  },
-  backEndErrorDialogTitle: {
-    'en-us': 'Server Error',
-    'ru-ru': 'Ошибка на сервере',
-    ca: 'Server Error',
-    'es-es': 'Server Error',
   },
   backEndErrorDialogHeader: {
     'en-us': 'An error occurred communicating with the Specify 7 server.',
@@ -1022,12 +944,6 @@ export const commonText = createDictionary({
     'es-es': 'Unknown',
   },
   // Unload Protection
-  leavePageDialogTitle: {
-    'en-us': 'Unsaved changes detected',
-    'ru-ru': 'Обнаружены несохраненные изменения',
-    ca: 'Unsaved changes detected',
-    'es-es': 'Unsaved changes detected',
-  },
   leavePageDialogHeader: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
@@ -1175,12 +1091,6 @@ export const commonText = createDictionary({
     'es-es': 'You can login to the collection, to proceed:',
   },
   // SpecifyApp
-  versionMismatchDialogTitle: {
-    'en-us': 'Version Mismatch',
-    'ru-ru': 'Несоответствие версий',
-    ca: 'Version Mismatch',
-    'es-es': 'Version Mismatch',
-  },
   versionMismatchDialogHeader: {
     'en-us': 'Specify version does not match database version',
     'ru-ru': 'Specify версия не соответствует версии базы данных',
@@ -1209,12 +1119,6 @@ export const commonText = createDictionary({
     'es-es':
       'Some features of Specify 7 may therefore fail to operate correctly.',
   },
-  resourceDeletedDialogTitle: {
-    'en-us': 'Deleted',
-    'ru-ru': 'Удалено',
-    ca: 'Deleted',
-    'es-es': 'Deleted',
-  },
   resourceDeletedDialogHeader: {
     'en-us': 'Item deleted',
     'ru-ru': 'Удалено',
@@ -1238,12 +1142,6 @@ export const commonText = createDictionary({
       `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
   },
   // StartApp
-  sessionTimeOutDialogTitle: {
-    'en-us': 'Access denied',
-    'ru-ru': 'Доступе Отказано',
-    ca: 'Access denied',
-    'es-es': 'Access denied',
-  },
   sessionTimeOutDialogHeader: {
     'en-us': 'Insufficient Privileges',
     'ru-ru': 'Insufficient Privileges',
@@ -1256,7 +1154,7 @@ export const commonText = createDictionary({
       session has been logged out.`,
     'ru-ru': `
       У вас недостаточно прав для этого действия, или текещий сеанс был
-      отключен..`,
+      отключен.`,
     ca: `
       You lack sufficient privileges for that action, or your current
       session has been logged out.`,
@@ -1487,12 +1385,6 @@ export const commonText = createDictionary({
     'es-es': 'User Defined',
   },
   addLanguage: {
-    'en-us': 'Add Language',
-    'ru-ru': 'Добавить язык',
-    ca: "Afegeix l'idioma",
-    'es-es': 'Add Language',
-  },
-  addLanguageDialogTitle: {
     'en-us': 'Add Language',
     'ru-ru': 'Добавить язык',
     ca: "Afegeix l'idioma",

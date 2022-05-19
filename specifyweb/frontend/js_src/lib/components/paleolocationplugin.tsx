@@ -50,7 +50,6 @@ export function PaleoLocationMapPlugin({
       </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
-          title={formsText('unsupportedFormDialogTitle')}
           header={formsText('unsupportedFormDialogHeader')}
           onClose={(): void =>
             setState({
@@ -64,17 +63,6 @@ export function PaleoLocationMapPlugin({
       )}
       {state.type === 'NoDataState' && (
         <Dialog
-          title={formsText('paleoRequiresGeographyDialogTitle')}
-          header={formsText('paleoRequiresGeographyDialogHeader')}
-          onClose={(): void => setState({ type: 'MainState' })}
-          buttons={commonText('close')}
-        >
-          {formsText('paleoRequiresGeographyDialogText')}
-        </Dialog>
-      )}
-      {state.type === 'NoDataState' && (
-        <Dialog
-          title={formsText('paleoRequiresGeographyDialogTitle')}
           header={formsText('paleoRequiresGeographyDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
           buttons={commonText('close')}

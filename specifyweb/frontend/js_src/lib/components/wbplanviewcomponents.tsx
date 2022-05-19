@@ -7,7 +7,6 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
-import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
@@ -114,7 +113,6 @@ export function ListOfBaseTables({
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
-  readonly dialogTitle: string;
   readonly dialogHeader: string;
   readonly dialogMessage: React.ReactNode;
   readonly dialogButtons: (
@@ -142,7 +140,6 @@ export function ButtonWithConfirmation(props: {
       </Button.Small>
       <Dialog
         isOpen={displayPrompt}
-        title={props.dialogTitle}
         header={props.dialogHeader}
         onClose={handleHide}
         className={{
@@ -154,37 +151,6 @@ export function ButtonWithConfirmation(props: {
         })}
       >
         {props.dialogMessage}
-      </Dialog>
-    </>
-  );
-}
-
-export function ValidationButton(props: {
-  readonly canValidate: boolean;
-  readonly isValidated: boolean;
-  readonly onClick: () => void;
-}): JSX.Element {
-  const [displayPrompt, handleShow, handleHide] = useBooleanState();
-
-  return (
-    <>
-      <Button.Small
-        className={
-          props.isValidated ? 'bg-green-400 dark:bg-green-700' : undefined
-        }
-        role="menuitem"
-        onClick={props.canValidate ? props.onClick : handleShow}
-      >
-        {wbText('validate')}
-      </Button.Small>
-      <Dialog
-        isOpen={displayPrompt}
-        title={wbText('nothingToValidateDialogTitle')}
-        header={wbText('nothingToValidateDialogHeader')}
-        onClose={handleHide}
-        buttons={commonText('close')}
-      >
-        {wbText('nothingToValidateDialogText')}
       </Dialog>
     </>
   );
