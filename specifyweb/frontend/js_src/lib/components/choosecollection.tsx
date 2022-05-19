@@ -103,7 +103,7 @@ function ChooseCollection({
   return (
     <SplashScreen>
       <Form method="post" forwardRef={formRef}>
-        <h2>{commonText('chooseCollection')}</h2>
+        <h2>{commonText('chooseCollection')}:</h2>
         {data.errors.length > 0 && <ErrorMessage>{data.errors}</ErrorMessage>}
         {hasAccess ? (
           <>

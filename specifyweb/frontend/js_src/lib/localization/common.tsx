@@ -481,10 +481,10 @@ export const commonText = createDictionary({
 
   // Choose Collection
   chooseCollection: {
-    'en-us': 'Choose Collection',
+    'en-us': 'Collection Choice',
     'ru-ru': 'Выбрать коллекцию',
     ca: 'Trieu Col·lecció',
-    'es-es': 'Choose Collection',
+    'es-es': 'Collection Choice',
   },
   noAccessToCollections: {
     'en-us': `

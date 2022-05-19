@@ -92,6 +92,7 @@ function DisplayRecordSet({
         fetchCollection('RecordSetItem', {
           recordSet: recordSet.id,
           offset: resourceIndex,
+          orderBy: 'id',
           limit: 1,
         }).then(({ records }) =>
           navigate(

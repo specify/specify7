@@ -903,4 +903,10 @@ export const preferencesText = createDictionary({
     ca: 'Blur content behind the dialog',
     'es-es': 'Blur content behind the dialog',
   },
+  collectionSortOrderDescription: {
+    'en-us': 'This determines the visual order of collections',
+    'ru-ru': 'Это определяет порядок коллекций',
+    ca: 'This determines the visual order of collections',
+    'es-es': 'This determines the visual order of collections',
+  },
 });

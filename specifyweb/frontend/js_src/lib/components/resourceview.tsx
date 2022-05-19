@@ -479,6 +479,7 @@ export function ShowResource({
             {
               recordSet: recordSet.id,
               limit: 1,
+              orderBy: 'id',
             },
             { recordId__lt: resource.id }
           )

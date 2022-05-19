@@ -528,6 +528,7 @@ const fetchItems = async (
   fetchCollection('RecordSetItem', {
     limit: DEFAULT_FETCH_LIMIT,
     recordSet: recordSetId,
+    orderBy: 'id',
     offset,
   }).then(({ records, totalCount }) => (ids: RA<number | undefined>) => ({
     totalCount,
@@ -634,6 +635,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         : fetchCollection('RecordSetItem', {
             recordSet: recordSet.id,
             recordId: resource.id,
+            orderBy: 'id',
             limit: 1,
           }).then(({ totalCount }) => totalCount !== 0)
       ).then((isDuplicate) =>
@@ -702,6 +704,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                       ? fetchCollection('RecordSetItem', {
                           limit: 1,
                           recordId: ids[index],
+                          orderBy: 'id',
                           recordSet: recordSet.id,
                         }).then(async ({ records }) =>
                           deleteResource(

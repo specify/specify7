@@ -725,6 +725,7 @@ export const preferenceDefinitions = {
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
           >({
             title: formsText('order'),
+            description: preferencesText('collectionSortOrderDescription'),
             requiresReload: false,
             visible: true,
             defaultValue: 'collectionName',

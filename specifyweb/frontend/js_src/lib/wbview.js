@@ -12,7 +12,7 @@
 
 'use strict';
 
-if (proces.env.NODE_ENV !== 'test') require('../css/workbench.css');
+if (process.env.NODE_ENV !== 'test') require('../css/workbench.css');
 
 import $ from 'jquery';
 import React from 'react';

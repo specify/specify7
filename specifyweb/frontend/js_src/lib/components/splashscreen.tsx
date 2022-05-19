@@ -24,7 +24,7 @@ export function SplashScreen({
         className={`sm:max-w-md flex flex-col w-full gap-4 p-16 bg-gray-100
           dark:bg-neutral-800 rounded shadow-2xl`}
       >
-        <header>
+        <header className="pb-2">
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
           <img
             src="/static/img/seven_logo.png"
