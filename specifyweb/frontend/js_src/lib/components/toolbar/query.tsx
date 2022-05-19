@@ -49,27 +49,30 @@ import { useCachedState } from '../statecache';
 const url = cachableUrl('/static/config/querybuilder.xml');
 const fetchTablesToShow = f.store(
   async (): Promise<RA<keyof Tables>> =>
-    ajax<Document>(
-      url,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      { headers: { Accept: 'application/xml' } }
-    )
-      .then(({ data: document }) =>
-        f.unique(
-          filterArray(
-            Array.from(document.querySelectorAll('database > table'), (table) =>
-              getModel(table.getAttribute('name') ?? '')
+    process.env.NODE_ENV === 'test'
+      ? []
+      : ajax<Document>(
+          url,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { headers: { Accept: 'application/xml' } }
+        )
+          .then(({ data: document }) =>
+            f.unique(
+              filterArray(
+                Array.from(
+                  document.querySelectorAll('database > table'),
+                  (table) => getModel(table.getAttribute('name') ?? '')
+                )
+              )
+                .map(({ name }) => name)
+                // TODO: use sortFunction
+                .sort()
             )
           )
-            .map(({ name }) => name)
-            // TODO: use sortFunction
-            .sort()
-        )
-      )
-      .catch((error) => {
-        console.error(error);
-        return [];
-      })
+          .catch((error) => {
+            console.error(error);
+            return [];
+          })
 );
 
 const defaultSortConfig = {

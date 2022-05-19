@@ -14,7 +14,7 @@ import {
 import {
   cachableUrl,
   contextUnlockedPromise,
-  foreverPromise,
+  foreverFetch,
 } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
@@ -62,7 +62,7 @@ export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
+  entrypoint === 'main' && process.env.NODE_ENV !== 'test'
     ? ajax<Document>(
         cachableUrl(
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
@@ -126,10 +126,10 @@ export const fetchFormatters: Promise<{
           )
         ),
       }))
-    : (foreverPromise as Promise<{
+    : foreverFetch<{
         readonly formatters: RA<Formatter>;
         readonly aggregators: RA<Aggregator>;
-      }>)
+      }>()
 );
 
 export async function format<SCHEMA extends AnySchema>(

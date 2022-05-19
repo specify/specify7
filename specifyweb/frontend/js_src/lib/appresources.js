@@ -31,6 +31,7 @@ import {setCurrentView} from './specifyapp';
 import {hasToolPermission} from './permissions';
 import {goTo} from './components/navigation';
 import {shouldUseDarkMode} from './components/preferenceshooks';
+import {parseXml} from './ajax';
 
 // TODO: rewrite to React
 
@@ -257,21 +258,13 @@ const ResourceDataView = Backbone.View.extend({
     },
     validateResource(value){
         try {
-        const resolvedMimeType = modeForResource(this.model);
-        if(resolvedMimeType === 'ace/mode/xml'){
-             const parsedXml = new DOMParser().parseFromString(value,'text/xml');
-
-             // Chrome, Safari
-             const parseError = parsedXml.documentElement.getElementsByTagName('parsererror')[0];
-             if(parseError)
-                 return parseError.children[1].textContent;
-
-             // Firefox
-             else if (parsedXml.documentElement.tagName === 'parsererror')
-                 return parsedXml.documentElement.textContent;
-        }
-        if(resolvedMimeType === 'ace/mode/json')
-            JSON.parse(value);
+            const resolvedMimeType = modeForResource(this.model);
+            if(resolvedMimeType === 'ace/mode/xml'){
+                const parsed = parseXml(value);
+                if(typeof parsed === 'string') return parsed;
+            }
+            if(resolvedMimeType === 'ace/mode/json')
+                JSON.parse(value);
         } catch(error){
             return error.toString();
         }

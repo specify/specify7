@@ -1,16 +1,18 @@
 import QUnit from 'qunit';
 
 import { initialContext, unlockInitialContext } from '../initialcontext';
+import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
+import { leafletStub } from './leafletstub';
 import { testAutoMapper } from './testautomapper';
 import { testLatLongUtils } from './testlatlongutils';
 import { testUploadPlanBuilder } from './testuploadplanbuilder';
 import { testUploadPlanParser } from './testuploadplanparser';
 import { testWbPlanViewLinesGetter } from './testwbplanviewlinesgetter';
+import { testWbPlanViewMappingHelper } from './testwbplanviewmappinghelper';
 import { testWbPlanViewTreePreview } from './testwbplanviewmappingpreview';
 import { testWbPlanViewModelHelper } from './testwbplanviewmodelhelper';
 import { testWbPlanViewNavigator } from './testwbplanviewnavigator';
-import { testWbPlanViewMappingHelper } from './testwbplanviewmappinghelper';
 
 export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   moduleName: string,
@@ -26,18 +28,31 @@ export function runTest<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
 }
 
 async function runTests(): Promise<void> {
-  unlockInitialContext('main');
-  await initialContext;
+  leafletStub();
 
-  testLatLongUtils();
-  testUploadPlanParser();
-  testUploadPlanBuilder();
-  testWbPlanViewLinesGetter();
-  testWbPlanViewModelHelper();
-  testWbPlanViewNavigator();
-  testWbPlanViewTreePreview();
-  testWbPlanViewMappingHelper();
-  testAutoMapper();
+  unlockInitialContext('main');
+
+  const groupName = 'Loading initial context';
+  QUnit.test(groupName, async (assert) => {
+    assert.expect(0);
+    // This is needed to make QUnit wait for async promises to complete
+    const done = assert.async();
+    console.group(groupName);
+    await initialContext;
+    await treeRanksPromise;
+    console.groupEnd();
+    done();
+
+    testLatLongUtils();
+    testUploadPlanParser();
+    testUploadPlanBuilder();
+    testWbPlanViewLinesGetter();
+    testWbPlanViewModelHelper();
+    testWbPlanViewNavigator();
+    testWbPlanViewTreePreview();
+    testWbPlanViewMappingHelper();
+    testAutoMapper();
+  });
 }
 
 runTests();

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 10,
+    "name": "QueryFreqList",
+    "mimetype": "text/xml",
+    "metadata": null
+  },
+  {
+    "id": 11,
+    "name": "QueryExtraList",
+    "mimetype": "text/xml",
+    "metadata": null
+  },
+  {
+    "id": 15,
+    "name": "ExpressSearchConfig",
+    "mimetype": "text/xml",
+    "metadata": null
+  },
+  {
+    "id": 17,
+    "name": "DataEntryTaskInit",
+    "mimetype": "text/xml",
+    "metadata": null
+  },
+  {
+    "id": 147,
+    "name": "UserPreferences",
+    "mimetype": "application/json",
+    "metadata": ""
+  }
+]

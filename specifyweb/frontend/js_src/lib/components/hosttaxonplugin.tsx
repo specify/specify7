@@ -1,23 +1,27 @@
 import React from 'react';
 
+import { fetchCollection } from '../collection';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
+import { hasTreeAccess } from '../permissions';
 import { schema } from '../schema';
 import { defined } from '../types';
 import { Input } from './basic';
 import { useAsyncState } from './hooks';
 import { QueryComboBox } from './querycombobox';
-import { f } from '../functools';
-import { fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
-import { hasTreeAccess } from '../permissions';
 
-const template = document.createElement('template');
-template.innerHTML =
-  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
-const hostTaxonTypeSearch = defined(
-  template.content.firstChild ?? undefined
+const template =
+  typeof document === 'object' ? document.createElement('template') : undefined;
+if (typeof template === 'object')
+  template.innerHTML =
+    '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
+const hostTaxonTypeSearch = (
+  typeof template === 'object'
+    ? defined(template.content.firstChild ?? undefined)
+    : undefined
 ) as Element;
 
 export function HostTaxonPlugin({

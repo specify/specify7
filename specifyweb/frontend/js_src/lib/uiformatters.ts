@@ -11,57 +11,75 @@ import {
   getParsedAttribute,
 } from './helpers';
 import { load } from './initialcontext';
+import { formatUrl } from './querystring';
 import { parseClassName } from './resource';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { formatUrl } from './querystring';
 
 let uiFormatters: IR<UiFormatter>;
-export const fetchContext = load<Document>(
-  formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-  'application/xml'
-).then((formatters) => {
-  uiFormatters = Object.fromEntries(
-    filterArray(
-      Array.from(formatters.getElementsByTagName('format'), (formatter) => {
-        const external = formatter
-          .getElementsByTagName('external')[0]
-          ?.textContent?.trim();
-        let resolvedFormatter;
-        if (typeof external === 'string') {
-          if (parseClassName(external) === 'CatalogNumberUIFieldFormatter')
-            resolvedFormatter = new CatalogNumberNumeric();
-          else return undefined;
-        } else {
-          const fields = filterArray(
-            Array.from(formatter.getElementsByTagName('field'), (field) => {
-              const FieldClass =
-                fieldMapper[
-                  (getParsedAttribute(field, 'type') ??
-                    '') as keyof typeof fieldMapper
-                ];
-              if (typeof FieldClass === 'undefined') return undefined;
-              return new FieldClass({
-                size: f.parseInt(getParsedAttribute(field, 'size') ?? '') ?? 1,
-                value: getAttribute(field, 'value') ?? ' ',
-                autoIncrement: getBooleanAttribute(field, 'inc') ?? false,
-                byYear: getBooleanAttribute(field, 'byYear') ?? false,
-                pattern: getAttribute(field, 'pattern') ?? '',
-              });
-            })
-          );
-          resolvedFormatter = new UiFormatter(
-            getBooleanAttribute(formatter, 'system') ?? false,
-            fields
-          );
-        }
+export const fetchContext =
+  process.env.NODE_ENV === 'test'
+    ? Promise.resolve<IR<UiFormatter>>({})
+    : load<Document>(
+        formatUrl('/context/app.resource', { name: 'UIFormatters' }),
+        'application/xml'
+      ).then((formatters) => {
+        uiFormatters = Object.fromEntries(
+          filterArray(
+            Array.from(
+              formatters.getElementsByTagName('format'),
+              (formatter) => {
+                const external = formatter
+                  .getElementsByTagName('external')[0]
+                  ?.textContent?.trim();
+                let resolvedFormatter;
+                if (typeof external === 'string') {
+                  if (
+                    parseClassName(external) === 'CatalogNumberUIFieldFormatter'
+                  )
+                    resolvedFormatter = new CatalogNumberNumeric();
+                  else return undefined;
+                } else {
+                  const fields = filterArray(
+                    Array.from(
+                      formatter.getElementsByTagName('field'),
+                      (field) => {
+                        const FieldClass =
+                          fieldMapper[
+                            (getParsedAttribute(field, 'type') ??
+                              '') as keyof typeof fieldMapper
+                          ];
+                        if (typeof FieldClass === 'undefined') return undefined;
+                        return new FieldClass({
+                          size:
+                            f.parseInt(
+                              getParsedAttribute(field, 'size') ?? ''
+                            ) ?? 1,
+                          value: getAttribute(field, 'value') ?? ' ',
+                          autoIncrement:
+                            getBooleanAttribute(field, 'inc') ?? false,
+                          byYear: getBooleanAttribute(field, 'byYear') ?? false,
+                          pattern: getAttribute(field, 'pattern') ?? '',
+                        });
+                      }
+                    )
+                  );
+                  resolvedFormatter = new UiFormatter(
+                    getBooleanAttribute(formatter, 'system') ?? false,
+                    fields
+                  );
+                }
 
-        return [getParsedAttribute(formatter, 'name') ?? '', resolvedFormatter];
-      })
-    )
-  );
-  return uiFormatters;
-});
+                return [
+                  getParsedAttribute(formatter, 'name') ?? '',
+                  resolvedFormatter,
+                ];
+              }
+            )
+          )
+        );
+        return uiFormatters;
+      });
 export const getUiFormatters = () =>
   uiFormatters ?? error('Accessing UI formatters before fetching');
 

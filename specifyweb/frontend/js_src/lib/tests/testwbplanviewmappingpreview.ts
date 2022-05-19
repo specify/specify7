@@ -1,11 +1,11 @@
-import { runTest } from './testmain';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
+import { runTest } from './testmain';
 
 export function testWbPlanViewTreePreview(): void {
   runTest(
     'WbPlanViewMappingPreview.generateMappingPathPreview',
     [
-      [['CollectionObject', ['catalognumber']], 'Catalog Number'],
+      [['CollectionObject', ['catalogNumber']], 'Cat #'],
       [['CollectionObject', ['guid']], 'Collection Object GUID'],
       [['CollectionObject', ['void']], 'Collection Object Void'],
       [
@@ -14,25 +14,22 @@ export function testWbPlanViewTreePreview(): void {
       ],
       [['CollectionObject', ['name']], 'Collection Object'],
       [['CollectionObject', ['someDnaSequence']], 'Some DNA Sequence'],
+      [['CollectionObject', ['accession', 'accessionNumber']], 'Accession #'],
       [
-        ['CollectionObject', ['accession', 'accessionnumber']],
-        'Accession Number',
-      ],
-      [
-        ['CollectionObject', ['accession', 'accessionagents', '#1', 'role']],
+        ['CollectionObject', ['accession', 'accessionAgents', '#1', 'role']],
         'Accession Agents Role',
       ],
       [
         [
           'CollectionObject',
-          ['accession', 'accessionagents', '#1', 'agent', 'abbreviation'],
+          ['accession', 'accessionAgents', '#1', 'agent', 'abbreviation'],
         ],
         'Accession Agents Abbreviation',
       ],
       [
         [
           'CollectionObject',
-          ['accession', 'accessioncitations', '#1', 'referencework', 'title'],
+          ['accession', 'accessionCitations', '#1', 'referenceWork', 'title'],
         ],
         'Accession Citations Reference Work Title',
       ],
@@ -56,9 +53,9 @@ export function testWbPlanViewTreePreview(): void {
         [
           'Accession',
           [
-            'collectionobjects',
+            'collectionObjects',
             '#1',
-            'collectingevent',
+            'collectingEvent',
             'locality',
             'geography',
             '$State',
@@ -71,9 +68,9 @@ export function testWbPlanViewTreePreview(): void {
         [
           'Accession',
           [
-            'collectionobjects',
+            'collectionObjects',
             '#2',
-            'collectingevent',
+            'collectingEvent',
             'locality',
             'geography',
             '$State',
@@ -86,9 +83,9 @@ export function testWbPlanViewTreePreview(): void {
         [
           'Accession',
           [
-            'collectionobjects',
+            'collectionObjects',
             '#99',
-            'collectingevent',
+            'collectingEvent',
             'locality',
             'geography',
             '$State',
@@ -101,22 +98,22 @@ export function testWbPlanViewTreePreview(): void {
         [
           'CollectionObject',
           [
-            'collectionobjectcitations',
+            'collectionObjectCitations',
             '#1',
-            'referencework',
-            'referenceworktype',
+            'referenceWork',
+            'referenceWorkType',
           ],
         ],
         'Collection Object Citations Reference Work Type',
       ],
       [
-        ['CollectionObject', ['dnasequences', '#1', 'ambiguousresidues']],
+        ['CollectionObject', ['dnaSequences', '#1', 'ambiguousResidues']],
         'DNA Sequences Ambiguous',
       ],
       [
         [
           'CollectionObject',
-          ['exsiccataitems', '#1', 'exsiccata', 'referencework', 'title'],
+          ['exsiccataItems', '#1', 'exsiccata', 'referenceWork', 'title'],
         ],
         'Exsiccata Reference Work Title',
       ],

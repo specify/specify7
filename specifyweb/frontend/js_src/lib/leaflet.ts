@@ -13,7 +13,7 @@ import { capitalize } from './helpers';
 import {
   cachableUrl,
   contextUnlockedPromise,
-  foreverPromise,
+  foreverFetch,
 } from './initialcontext';
 import {
   leafletLayersEndpoint,
@@ -83,7 +83,7 @@ export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
             console.error(error);
             return leafletTileServers;
           })
-      : (foreverPromise as Promise<typeof leafletTileServers>)
+      : foreverFetch<typeof leafletTileServers>()
   );
 
 export async function showLeafletMap({

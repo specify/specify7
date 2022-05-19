@@ -1,4 +1,4 @@
-import '../../css/main.css';
+if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -43,12 +43,15 @@ export function SplashScreen({
  * <script> tags
  */
 export const parseDjangoDump = <T,>(id: string): T =>
-  JSON.parse(document.getElementById(id)?.textContent ?? '[]') as T;
+  (typeof document === 'object'
+    ? JSON.parse(document.getElementById(id)?.textContent ?? '[]')
+    : []) as T;
 
 export function entrypoint(
   name: ReturnType<typeof getEntrypointName>,
   getContent: () => JSX.Element
 ): void {
+  if (process.env.NODE_ENV === 'test') return;
   console.group('Specify App Starting');
   unlockInitialContext(name);
   window.addEventListener('load', () => {

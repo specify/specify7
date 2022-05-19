@@ -1,0 +1,7 @@
+{
+  "id": 147,
+  "name": "UserPreferences",
+  "mimetype": "application/json",
+  "metadata": "",
+  "data": "{\"general\":{\"ui\":{\"language\":\"ru-ru\"}},\"treeEditor\":{\"geography\":{\"evenColumnColor\":\"#cfbaba\",\"oddColumnColor\":\"#f59e9e\",\"treeColor\":\"#495ce9\"},\"taxon\":{\"treeColor\":\"#48f745\"},\"geologicTimePeriod\":{\"treeColor\":\"#f74545\"},\"lithoStrat\":{\"treeColor\":\"#45d4f7\"}},\"workBench\":{\"wbPlanView\":{\"showNewDataSetWarning\":false}},\"welcomePage\":{\"general\":{\"source\":\"/static/img/seven_logo.png\"}},\"queryBuilder\":{\"behavior\":{\"stickyScrolling\":false},\"appearance\":{\"condensedQueryResult\":true}},\"form\":{\"behavior\":{\"autoFocusFirstField\":true},\"queryComboBox\":{\"closeOnOutsideClick\":false}},\"chooseCollection\":{\"general\":{\"sortOrder\":\"-collectionName\"}}}"
+}

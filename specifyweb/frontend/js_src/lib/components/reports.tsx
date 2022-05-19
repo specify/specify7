@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax } from '../ajax';
+import { ajax, parseXml } from '../ajax';
 import { error } from '../assert';
 import {
   attachmentsAvailable,
@@ -196,12 +196,15 @@ function Report({
         fetchCollection('SpAppResourceData', {
           limit: 1,
           spAppResource: appResource.id,
-        }).then(({ records }) =>
-          new window.DOMParser().parseFromString(
-            defined(records[0].data ?? undefined),
-            'text/xml'
+        })
+          .then(({ records }) =>
+            parseXml(defined(records[0].data ?? undefined))
           )
-        ),
+          .then((parsed) =>
+            typeof parsed === 'object'
+              ? parsed
+              : error(`Failed parsing XML report definition`, { report })
+          ),
       [appResource]
     ),
     true

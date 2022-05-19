@@ -3,9 +3,9 @@
  */
 
 import type { MimeType } from './ajax';
-import { defined } from './types';
 import { formatNumber, MILLISECONDS } from './components/internationalization';
 import { f } from './functools';
+import { defined } from './types';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -36,9 +36,14 @@ export const contextUnlockedPromise = new Promise<typeof entrypointName>(
   }
 );
 
-export const foreverPromise = new Promise<any>(() => {
+const foreverPromise = new Promise<any>(() => {
   /* Never resolve it */
 });
+/**
+ * This is used to gracefully prevent fetching of some resources when running
+ * front-end tests
+ */
+export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
@@ -72,7 +77,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
             return data;
           });
         })
-      : (foreverPromise as Promise<T>)
+      : foreverFetch<T>()
   );
 
 export const initialContext = Promise.all([

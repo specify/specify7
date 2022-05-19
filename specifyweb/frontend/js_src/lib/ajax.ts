@@ -2,8 +2,8 @@ import { handleAjaxError } from './components/errorboundary';
 import { formatList } from './components/internationalization';
 import { csrfToken } from './csrftoken';
 import { f } from './functools';
-import type { IR, PartialBy, RA } from './types';
 import { sortFunction } from './helpers';
+import type { IR, PartialBy, RA } from './types';
 
 export const isExternalUrl = (url: string): boolean =>
   /*
@@ -122,7 +122,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
    */
   process.env.NODE_ENV === 'test'
     ? import('./tests/ajax').then(async ({ interceptRequest }) =>
-        interceptRequest<RESPONSE_TYPE>(url)
+        interceptRequest<RESPONSE_TYPE>(url, expectedResponseCodes)
       )
     : fetch(url, {
         ...options,
@@ -182,23 +182,20 @@ export function handleResponse<RESPONSE_TYPE = string>({
           };
         }
       } else if (response.ok && accept === 'application/xml') {
-        try {
+        const parsed = parseXml(text);
+        if (typeof parsed === 'object')
           return {
-            data: new window.DOMParser().parseFromString(
-              text,
-              'text/xml'
-              // Assuming that RESPONSE_TYPE extends Document
-            ) as unknown as RESPONSE_TYPE,
+            // Assuming that RESPONSE_TYPE extends Document
+            data: parsed as unknown as RESPONSE_TYPE,
             response,
             status: response.status,
           };
-        } catch {
+        else
           throw {
             type: 'xmlParseFailure',
-            statusText: 'Failed parsing XML response:',
+            statusText: `Failed parsing XML response: ${parsed}`,
             responseText: text,
           };
-        }
       } else
         return {
           // Assuming that RESPONSE_TYPE extends string
@@ -227,8 +224,26 @@ export function handleResponse<RESPONSE_TYPE = string>({
       };
     }
   } catch (error) {
+    console.error(error);
     handleAjaxError(error, response, strict);
   }
+}
+
+export function parseXml(string: string): Document | string {
+  const parsedXml = new DOMParser().parseFromString(string, 'text/xml');
+
+  // Chrome, Safari
+  const parseError =
+    parsedXml.documentElement.getElementsByTagName('parsererror')[0];
+  if (typeof parseError === 'object')
+    return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
+  // Firefox
+  else if (parsedXml.documentElement.tagName === 'parsererror')
+    return (
+      parsedXml.documentElement.textContent ??
+      parsedXml.documentElement.innerHTML
+    ).trim();
+  else return parsedXml;
 }
 
 /**

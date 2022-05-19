@@ -9,9 +9,9 @@
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
+import { camelToHuman } from './helpers';
 import { getModel } from './schema';
 import { defined, filterArray } from './types';
-import { camelToHuman } from './helpers';
 import {
   anyTreeRank,
   formatTreeRank,
@@ -46,7 +46,7 @@ const nonGenericFields: Set<string> = new Set([
 const tablesToHide: Set<string> = new Set(['agent', 'addresses']);
 
 /** Use both parent table label and this table label (if possible) */
-const genericTables: Set<string> = new Set(['referencework']);
+const genericTables: Set<string> = new Set(['referenceWork']);
 
 /**
  * NOTE: subset is reversed so that array destructuring works right for mapping
@@ -59,6 +59,10 @@ const mappingPathSubset = (mappingPath: MappingPath): MappingPath => [
   ...Array.from<string>({ length: 3 }).fill(''),
 ];
 
+/**
+ * Generate a short and human friendly label from a potentially long
+ * mapping path
+ */
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
@@ -114,17 +118,19 @@ export function generateMappingPathPreview(
       ? tableOrRankName
       : undefined;
   const tableNameFormatted = tablesToHide.has(databaseTableOrRankName)
-    ? parentTableName || tableNameNonEmpty
+    ? [parentTableName || tableNameNonEmpty]
     : genericTables.has(databaseTableOrRankName)
     ? [parentTableName, tableNameNonEmpty]
-    : tableNameNonEmpty;
+    : [tableNameNonEmpty];
 
   return filterArray([
-    valueIsTreeRank(databaseTableOrRankName)
-      ? databaseTableOrRankName === formatTreeRank(anyTreeRank)
-        ? parentTableName
-        : tableOrRankName
-      : tableNameFormatted,
+    ...(valueIsTreeRank(databaseTableOrRankName)
+      ? [
+          databaseTableOrRankName === formatTreeRank(anyTreeRank)
+            ? parentTableName
+            : tableOrRankName,
+        ]
+      : tableNameFormatted),
     fieldNameFormatted,
     toManyIndexFormatted,
   ]).join(' ');

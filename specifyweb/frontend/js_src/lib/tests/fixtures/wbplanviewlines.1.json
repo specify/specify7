@@ -1,8 +1,8 @@
 {
-  "baseTableName": "collectionobject",
+  "baseTableName": "CollectionObject",
   "lines": [
     {
-      "mappingPath": ["catalognumber"],
+      "mappingPath": ["catalogNumber"],
       "headerName": "BMSM No.",
       "columnOptions": {
         "matchBehavior": "ignoreWhenBlank",
@@ -92,7 +92,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#1", "determiner", "firstname"],
+      "mappingPath": ["determinations", "#1", "determiner", "firstName"],
       "headerName": "Who ID First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -110,7 +110,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#2", "determiner", "firstname"],
+      "mappingPath": ["determinations", "#2", "determiner", "firstName"],
       "headerName": "Determiner 1 First Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -119,7 +119,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#1", "determiner", "middleinitial"],
+      "mappingPath": ["determinations", "#1", "determiner", "middleInitial"],
       "headerName": "Determiner 1 Middle Initial",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -128,7 +128,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#1", "determiner", "lastname"],
+      "mappingPath": ["determinations", "#1", "determiner", "lastName"],
       "headerName": "Determiner 1 Last Name",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -137,7 +137,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#2", "determineddate"],
+      "mappingPath": ["determinations", "#2", "determinedDate"],
       "headerName": "ID Date Verbatim",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -146,7 +146,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#1", "determineddate"],
+      "mappingPath": ["determinations", "#1", "determinedDate"],
       "headerName": "ID Date",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -155,7 +155,7 @@
       }
     },
     {
-      "mappingPath": ["determinations", "#1", "typestatusname"],
+      "mappingPath": ["determinations", "#1", "typeStatusName"],
       "headerName": "ID Status",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -165,7 +165,7 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "locality",
         "geography",
         "$Country",
@@ -180,7 +180,7 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "locality",
         "geography",
         "$State",
@@ -222,7 +222,7 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "locality",
         "geography",
         "$Continent",
@@ -245,7 +245,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "startdate"],
+      "mappingPath": ["collectingEvent", "startDate"],
       "headerName": "Start Date Collected",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -254,7 +254,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "enddate"],
+      "mappingPath": ["collectingEvent", "endDate"],
       "headerName": "End Date Collected",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -263,7 +263,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "method"],
+      "mappingPath": ["collectingEvent", "method"],
       "headerName": "Collection Method",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -276,7 +276,7 @@
         "cataloger",
         "collectors",
         "#1",
-        "collectingevent",
+        "collectingEvent",
         "method"
       ],
       "headerName": "Verbatim Collecting method",
@@ -323,7 +323,7 @@
       }
     },
     {
-      "mappingPath": ["preparations", "#1", "preptype", "name"],
+      "mappingPath": ["preparations", "#1", "prepType", "name"],
       "headerName": "Prep Type 1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -359,7 +359,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "minelevation"],
+      "mappingPath": ["collectingEvent", "locality", "minElevation"],
       "headerName": "Min Depth (M)",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -368,7 +368,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "maxelevation"],
+      "mappingPath": ["collectingEvent", "locality", "maxElevation"],
       "headerName": "Max Depth (M)",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -413,7 +413,7 @@
       }
     },
     {
-      "mappingPath": ["accession", "accessionnumber"],
+      "mappingPath": ["accession", "accessionNumber"],
       "headerName": "Accession No.",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -431,7 +431,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "remarks"],
+      "mappingPath": ["collectingEvent", "remarks"],
       "headerName": "Remarks",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -449,7 +449,7 @@
       }
     },
     {
-      "mappingPath": ["cataloger", "lastname"],
+      "mappingPath": ["cataloger", "lastName"],
       "headerName": "Cataloged by",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -467,7 +467,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "latitude1"],
+      "mappingPath": ["collectingEvent", "locality", "latitude1"],
       "headerName": "Latitude1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -476,7 +476,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "latitude2"],
+      "mappingPath": ["collectingEvent", "locality", "latitude2"],
       "headerName": "Latitude2",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -485,7 +485,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "longitude1"],
+      "mappingPath": ["collectingEvent", "locality", "longitude1"],
       "headerName": "Longitude1",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -494,7 +494,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "longitude2"],
+      "mappingPath": ["collectingEvent", "locality", "longitude2"],
       "headerName": "Longitude2",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -503,7 +503,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "locality", "latlongtype"],
+      "mappingPath": ["collectingEvent", "locality", "latLongType"],
       "headerName": "Lat Long Type",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -575,7 +575,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "collectors", "#1", "agent", "title"],
+      "mappingPath": ["collectingEvent", "collectors", "#1", "agent", "title"],
       "headerName": "Collector 1 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -585,11 +585,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#1",
         "agent",
-        "firstname"
+        "firstName"
       ],
       "headerName": "Collector 1 First Name",
       "columnOptions": {
@@ -600,11 +600,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#1",
         "agent",
-        "middleinitial"
+        "middleInitial"
       ],
       "headerName": "Collector 1 Middle Initial",
       "columnOptions": {
@@ -615,11 +615,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#1",
         "agent",
-        "lastname"
+        "lastName"
       ],
       "headerName": "Collector 1 Last Name",
       "columnOptions": {
@@ -629,7 +629,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "collectors", "#2", "agent", "title"],
+      "mappingPath": ["collectingEvent", "collectors", "#2", "agent", "title"],
       "headerName": "Collector 2 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -639,11 +639,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#2",
         "agent",
-        "firstname"
+        "firstName"
       ],
       "headerName": "Collector 2 First Name",
       "columnOptions": {
@@ -654,11 +654,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#2",
         "agent",
-        "middleinitial"
+        "middleInitial"
       ],
       "headerName": "Collector 2 Middle Initial",
       "columnOptions": {
@@ -669,11 +669,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#2",
         "agent",
-        "lastname"
+        "lastName"
       ],
       "headerName": "Collector 2 Last name",
       "columnOptions": {
@@ -683,7 +683,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "collectors", "#3", "agent", "title"],
+      "mappingPath": ["collectingEvent", "collectors", "#3", "agent", "title"],
       "headerName": "Collector 3 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -693,11 +693,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#3",
         "agent",
-        "firstname"
+        "firstName"
       ],
       "headerName": "Collector 3 First Name",
       "columnOptions": {
@@ -708,11 +708,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#3",
         "agent",
-        "middleinitial"
+        "middleInitial"
       ],
       "headerName": "Collector 3 Middle Initial",
       "columnOptions": {
@@ -723,11 +723,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#3",
         "agent",
-        "lastname"
+        "lastName"
       ],
       "headerName": "Collector 3 Last Name",
       "columnOptions": {
@@ -737,7 +737,7 @@
       }
     },
     {
-      "mappingPath": ["collectingevent", "collectors", "#4", "agent", "title"],
+      "mappingPath": ["collectingEvent", "collectors", "#4", "agent", "title"],
       "headerName": "Collector 4 Title",
       "columnOptions": {
         "matchBehavior": "ignoreNever",
@@ -747,11 +747,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#4",
         "agent",
-        "firstname"
+        "firstName"
       ],
       "headerName": "Collector 4 First Name",
       "columnOptions": {
@@ -762,11 +762,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#4",
         "agent",
-        "middleinitial"
+        "middleInitial"
       ],
       "headerName": "Collector 4 Middle Initial",
       "columnOptions": {
@@ -777,11 +777,11 @@
     },
     {
       "mappingPath": [
-        "collectingevent",
+        "collectingEvent",
         "collectors",
         "#4",
         "agent",
-        "lastname"
+        "lastName"
       ],
       "headerName": "Collector 4 Last Name",
       "columnOptions": {
@@ -792,9 +792,9 @@
     }
   ],
   "mustMatchPreferences": {
-    "collectingevent": true,
-    "geography": true,
-    "accession": true,
-    "taxon": true
+    "CollectingEvent": true,
+    "Geography": true,
+    "Accession": true,
+    "Taxon": true
   }
 }

@@ -6,26 +6,27 @@
 
 // eslint-disable-next-line simple-import-sort/imports
 import L from 'leaflet';
-
-import 'leaflet/dist/leaflet.css';
-// Marker Clustering
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet.markercluster/dist/leaflet.markercluster';
-// Create sub-layers to selectively toggle markers in clusters
-import 'leaflet.featuregroup.subgroup';
-
 import { localityText } from './localization/locality';
 import { legacyNonJsxIcons } from './components/icons';
 
-/* This code is needed to properly load the images in the Leaflet's CSS */
-// @ts-expect-error
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
+if (process.env.NODE_ENV !== 'test') {
+  require('leaflet/dist/leaflet.css');
+  // Marker Clustering
+  require('leaflet.markercluster/dist/MarkerCluster.css');
+  require('leaflet.markercluster/dist/MarkerCluster.Default.css');
+  require('leaflet.markercluster/dist/leaflet.markercluster');
+  // Create sub-layers to selectively toggle markers in clusters
+  require('leaflet.featuregroup.subgroup');
+
+  /* This code is needed to properly load the images in the Leaflet's CSS */
+  // @ts-expect-error
+  delete L.Icon.Default.prototype._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  });
+}
 
 /* Create a "full screen" button */
 // @ts-expect-error

@@ -11,7 +11,7 @@ import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
 import { f } from './functools';
 import { keysToLowerCase, replaceKey } from './helpers';
-import { contextUnlockedPromise, foreverPromise } from './initialcontext';
+import { contextUnlockedPromise, foreverFetch } from './initialcontext';
 import { formatUrl } from './querystring';
 import type { RA } from './types';
 import { filterArray } from './types';
@@ -59,7 +59,10 @@ let preferences: {
       [ITEM in keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
     };
   };
-} = getCache('userPreferences', 'cached', { defaultValue: {} });
+} =
+  process.env.NODE_ENV === 'test'
+    ? {}
+    : getCache('userPreferences', 'cached', { defaultValue: {} });
 export type UserPreferences = typeof preferences;
 export const getRawUserPreferences = () => preferences;
 
@@ -134,7 +137,8 @@ export function setPref<
   }
 
   prefEvents.trigger('update', definition);
-  setCache('userPreferences', 'cached', preferences);
+  if (process.env.NODE_ENV !== 'test')
+    setCache('userPreferences', 'cached', preferences);
   requestPreferencesSync();
 }
 
@@ -206,18 +210,19 @@ const defaultResourceName = 'DefaultUserPreferences';
 const mimeType = 'application/json';
 
 let userResource: ResourceWithData = undefined!;
-let defaultPreferences: UserPreferences = getCache(
-  'userPreferences',
-  'defaultCached',
-  { defaultValue: {} }
-);
+let defaultPreferences: UserPreferences =
+  process.env.NODE_ENV === 'test'
+    ? {}
+    : getCache('userPreferences', 'defaultCached', { defaultValue: {} });
 
 function updatePreferences(resource: ResourceWithData): ResourceWithData {
   userResource = resource;
   preferences = JSON.parse(userResource.data ?? '{}');
   prefEvents.trigger('update', undefined);
-  setCache('userPreferences', 'cached', preferences);
-  setCache('userPreferences', 'defaultCached', defaultPreferences);
+  if (process.env.NODE_ENV !== 'test') {
+    setCache('userPreferences', 'cached', preferences);
+    setCache('userPreferences', 'defaultCached', defaultPreferences);
+  }
   return userResource;
 }
 
@@ -300,5 +305,5 @@ export const preferencesPromise = contextUnlockedPromise.then(
             updatePreferences(items);
             return items;
           })
-      : foreverPromise
+      : foreverFetch<ResourceWithData>()
 );

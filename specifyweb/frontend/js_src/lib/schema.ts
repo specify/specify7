@@ -106,7 +106,7 @@ export const fetchContext = f
 export const schema = schemaBase;
 
 // Leak schema object when in development for easier debugging
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'production' && typeof window === 'object')
   // @ts-expect-error Creating a global value
   window._schema = schema;
 

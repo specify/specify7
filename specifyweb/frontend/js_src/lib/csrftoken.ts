@@ -10,6 +10,6 @@ import { readCookie } from './cookies';
 export const csrfToken =
   readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token');
 
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'production' && typeof window === 'object')
   // @ts-expect-error Exposing token as global when in development
   window._csrf = csrfToken;

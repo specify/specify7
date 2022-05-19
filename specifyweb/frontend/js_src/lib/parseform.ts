@@ -3,7 +3,8 @@
  * adding type safety and strictness to help resolve ambiguities
  */
 
-import { ajax, Http } from './ajax';
+import { ajax, Http, parseXml } from './ajax';
+import { error } from './assert';
 import { f } from './functools';
 import { getParsedAttribute } from './helpers';
 import { cachableUrl } from './initialcontext';
@@ -363,12 +364,15 @@ export function processViewDefinition(
   if (altViews.length === 0) altViews = Object.values(view.altviews);
 
   const viewDefinitions = Object.fromEntries(
-    Object.entries(view.viewdefs).map(([name, xml]) => [
-      name,
-      new window.DOMParser()
-        .parseFromString(xml, 'text/xml')
-        .getElementsByTagName('viewdef')[0],
-    ])
+    Object.entries(view.viewdefs).map(([name, xml]) => {
+      const parsed = parseXml(xml);
+      if (typeof parsed === 'string')
+        error(`Failed parsing XML for view definition`, {
+          error: parsed,
+          xml,
+        });
+      return [name, parsed.getElementsByTagName('viewdef')[0]];
+    })
   );
 
   let viewDefinition;

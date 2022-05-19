@@ -52,7 +52,7 @@ function assertExhaustive(key: string): never {
    * may be thrown at runtime.
    * To prevent runtime errors, a ../tests/testlocalization.ts script has been
    * added. It checks both for nonexistent key usages, invalid usages and unused
-   * keys. It also warns about duplicate key values.
+   * keys. It also warns about duplicate localization strings.
    */
   const errorMessage = `
     Trying to access the value for a non-existent localization key "${key}"`;

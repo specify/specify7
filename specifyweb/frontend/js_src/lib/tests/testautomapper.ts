@@ -2,8 +2,8 @@ import {
   AutoMapper,
   type AutoMapperConstructorParameters,
 } from '../automapper';
+import type { RA } from '../types';
 import { runTest } from './testmain';
-import { RA } from '../types';
 
 export function testAutoMapper(): void {
   runTest(
@@ -29,9 +29,9 @@ export function testAutoMapper(): void {
               'Determiner 1 First Name',
               'Determiner 1 Middle Initial',
               'Determiner 1 Last Name',
-              'ID Date Verbatim',
-              'ID Date',
-              'ID Status',
+              'Determination Date Verbatim',
+              'Determination Date',
+              'Determination Status',
               'Country',
               'State/Prov/Pref',
               'Region',
@@ -97,83 +97,82 @@ export function testAutoMapper(): void {
           },
         ],
         {
-          'Cataloged by': [['cataloger', 'lastname']],
-          'End Date Collected': [['collectingevent', 'enddate']],
-          'Collection Method': [['collectingevent', 'method']],
-          'Start Date Collected': [['collectingevent', 'startdate']],
-          'ID Date': [['determinations', '#1', 'determineddate']],
-          'ID Status': [['determinations', '#1', 'typestatusname']],
-          'Lat Long Type': [['collectingevent', 'locality', 'latlongtype']],
-          Latitude1: [['collectingevent', 'locality', 'latitude1']],
-          Latitude2: [['collectingevent', 'locality', 'latitude2']],
-          Longitude1: [['collectingevent', 'locality', 'longitude1']],
-          Longitude2: [['collectingevent', 'locality', 'longitude2']],
-          'Max Depth (M)': [['collectingevent', 'locality', 'maxelevation']],
-          'Min Depth (M)': [['collectingevent', 'locality', 'minelevation']],
+          'Cataloged by': [['cataloger', 'lastName']],
+          'Date Collected': [['collectingEvent', 'startDate']],
+          'Collection Method': [['collectingEvent', 'method']],
+          'Determination Date': [['determinations', '#1', 'determinedDate']],
+          'Determination Status': [['determinations', '#1', 'typeStatusName']],
+          'Max Depth (M)': [['collectingEvent', 'locality', 'maxElevation']],
+          'Min Depth (M)': [['collectingEvent', 'locality', 'minElevation']],
           'Who ID First Name': [
-            ['determinations', '#1', 'determiner', 'firstname'],
+            ['determinations', '#1', 'determiner', 'firstName'],
           ],
           'Determiner 1 First Name': [
-            ['determinations', '#2', 'determiner', 'firstname'],
+            ['determinations', '#2', 'determiner', 'firstName'],
           ],
           'Determiner 1 Last Name': [
-            ['determinations', '#1', 'determiner', 'lastname'],
+            ['determinations', '#1', 'determiner', 'lastName'],
           ],
           'Determiner 1 Middle Initial': [
-            ['determinations', '#1', 'determiner', 'middleinitial'],
+            ['determinations', '#1', 'determiner', 'middleInitial'],
           ],
           'Determiner 1 Title': [
             ['determinations', '#1', 'determiner', 'title'],
           ],
           'Collector 1 First Name': [
-            ['collectingevent', 'collectors', '#1', 'agent', 'firstname'],
+            ['collectingEvent', 'collectors', '#1', 'agent', 'firstName'],
           ],
           'Collector 2 First Name': [
-            ['collectingevent', 'collectors', '#2', 'agent', 'firstname'],
+            ['collectingEvent', 'collectors', '#2', 'agent', 'firstName'],
           ],
           'Collector 3 First Name': [
-            ['collectingevent', 'collectors', '#3', 'agent', 'firstname'],
+            ['collectingEvent', 'collectors', '#3', 'agent', 'firstName'],
           ],
           'Collector 4 First Name': [
-            ['collectingevent', 'collectors', '#4', 'agent', 'firstname'],
+            ['collectingEvent', 'collectors', '#4', 'agent', 'firstName'],
           ],
           'Collector 1 Last Name': [
-            ['collectingevent', 'collectors', '#1', 'agent', 'lastname'],
+            ['collectingEvent', 'collectors', '#1', 'agent', 'lastName'],
           ],
           'Collector 2 Last name': [
-            ['collectingevent', 'collectors', '#2', 'agent', 'lastname'],
+            ['collectingEvent', 'collectors', '#2', 'agent', 'lastName'],
           ],
           'Collector 3 Last Name': [
-            ['collectingevent', 'collectors', '#3', 'agent', 'lastname'],
+            ['collectingEvent', 'collectors', '#3', 'agent', 'lastName'],
           ],
           'Collector 4 Last Name': [
-            ['collectingevent', 'collectors', '#4', 'agent', 'lastname'],
+            ['collectingEvent', 'collectors', '#4', 'agent', 'lastName'],
           ],
           'Collector 1 Middle Initial': [
-            ['collectingevent', 'collectors', '#1', 'agent', 'middleinitial'],
+            ['collectingEvent', 'collectors', '#1', 'agent', 'middleInitial'],
           ],
           'Collector 2 Middle Initial': [
-            ['collectingevent', 'collectors', '#2', 'agent', 'middleinitial'],
+            ['collectingEvent', 'collectors', '#2', 'agent', 'middleInitial'],
           ],
           'Collector 3 Middle Initial': [
-            ['collectingevent', 'collectors', '#3', 'agent', 'middleinitial'],
+            ['collectingEvent', 'collectors', '#3', 'agent', 'middleInitial'],
           ],
           'Collector 4 Middle Initial': [
-            ['collectingevent', 'collectors', '#4', 'agent', 'middleinitial'],
+            ['collectingEvent', 'collectors', '#4', 'agent', 'middleInitial'],
           ],
           'Collector 1 Title': [
-            ['collectingevent', 'collectors', '#1', 'agent', 'title'],
+            ['collectingEvent', 'collectors', '#1', 'agent', 'title'],
           ],
           'Collector 2 Title': [
-            ['collectingevent', 'collectors', '#2', 'agent', 'title'],
+            ['collectingEvent', 'collectors', '#2', 'agent', 'title'],
           ],
           'Collector 3 Title': [
-            ['collectingevent', 'collectors', '#3', 'agent', 'title'],
+            ['collectingEvent', 'collectors', '#3', 'agent', 'title'],
           ],
           'Collector 4 Title': [
-            ['collectingevent', 'collectors', '#4', 'agent', 'title'],
+            ['collectingEvent', 'collectors', '#4', 'agent', 'title'],
           ],
-          'Accession No.': [['accession', 'accessionnumber']],
+          'Accession No.': [['accession', 'accessionNumber']],
+          'Lat Long Type': [['collectingEvent', 'locality', 'latLongType']],
+          Latitude1: [['collectingEvent', 'locality', 'latitude1']],
+          Latitude2: [['collectingEvent', 'locality', 'latitude2']],
+          Longitude1: [['collectingEvent', 'locality', 'longitude1']],
+          Longitude2: [['collectingEvent', 'locality', 'longitude2']],
           Class: [['determinations', '#1', 'taxon', '$Class', 'name']],
           Family: [['determinations', '#1', 'taxon', '$Family', 'name']],
           Genus: [['determinations', '#1', 'taxon', '$Genus', 'name']],
@@ -188,15 +187,9 @@ export function testAutoMapper(): void {
           Subspecies: [
             ['determinations', '#1', 'taxon', '$Subspecies', 'name'],
           ],
-          'Prep Type 1': [['preparations', '#1', 'preptype', 'name']],
-          'Continent/Ocean': [
-            ['collectingevent', 'locality', 'geography', '$Continent', 'name'],
-          ],
+          'Prep Type 1': [['preparations', '#1', 'prepType', 'name']],
           Country: [
-            ['collectingevent', 'locality', 'geography', '$Country', 'name'],
-          ],
-          'State/Prov/Pref': [
-            ['collectingevent', 'locality', 'geography', '$State', 'name'],
+            ['collectingEvent', 'locality', 'geography', '$Country', 'name'],
           ],
         },
       ],

@@ -61,42 +61,50 @@ const url = cachableUrl(
 );
 const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
-    ajax<Element>(url, {
-      headers: { Accept: 'application/xml' },
-    }).then<RA<InteractionEntry>>(async ({ data }) =>
-      Promise.all(
-        Array.from(data.querySelectorAll('entry'), async (entry) =>
-          f.var(getParsedAttribute(entry, 'action'), async (action) =>
-            getBooleanAttribute(entry, 'isOnLeft') ?? false
-              ? ({
-                  action: f.includes(supportedActions, action)
-                    ? action
-                    : undefined,
-                  table:
-                    action === 'NEW_GIFT'
-                      ? 'Gift'
-                      : action === 'NEW_LOAN'
-                      ? 'Loan'
-                      : defined(
-                          (await f
-                            .maybe(getParsedAttribute(entry, 'view'), getView)
-                            ?.then((view) =>
-                              typeof view === 'object'
-                                ? (parseClassName(view.class) as keyof Tables)
-                                : undefined
-                            )) ??
-                            getModel(getParsedAttribute(entry, 'table') ?? '')
-                              ?.name
-                        ),
-                  label: getParsedAttribute(entry, 'label'),
-                  tooltip: getParsedAttribute(entry, 'tooltip'),
-                  icon: getParsedAttribute(entry, 'icon'),
-                } as const)
-              : undefined
-          )
+    process.env.NODE_ENV === 'test'
+      ? []
+      : ajax<Element>(url, {
+          headers: { Accept: 'application/xml' },
+        }).then<RA<InteractionEntry>>(async ({ data }) =>
+          Promise.all(
+            Array.from(data.querySelectorAll('entry'), async (entry) =>
+              f.var(getParsedAttribute(entry, 'action'), async (action) =>
+                getBooleanAttribute(entry, 'isOnLeft') ?? false
+                  ? ({
+                      action: f.includes(supportedActions, action)
+                        ? action
+                        : undefined,
+                      table:
+                        action === 'NEW_GIFT'
+                          ? 'Gift'
+                          : action === 'NEW_LOAN'
+                          ? 'Loan'
+                          : defined(
+                              (await f
+                                .maybe(
+                                  getParsedAttribute(entry, 'view'),
+                                  getView
+                                )
+                                ?.then((view) =>
+                                  typeof view === 'object'
+                                    ? (parseClassName(
+                                        view.class
+                                      ) as keyof Tables)
+                                    : undefined
+                                )) ??
+                                getModel(
+                                  getParsedAttribute(entry, 'table') ?? ''
+                                )?.name
+                            ),
+                      label: getParsedAttribute(entry, 'label'),
+                      tooltip: getParsedAttribute(entry, 'tooltip'),
+                      icon: getParsedAttribute(entry, 'icon'),
+                    } as const)
+                  : undefined
+              )
+            )
+          ).then(filterArray)
         )
-      ).then(filterArray)
-    )
 );
 
 function Interactions({

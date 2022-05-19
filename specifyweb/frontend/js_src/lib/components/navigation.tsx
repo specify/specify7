@@ -240,7 +240,7 @@ export const startNavigation = (): void =>
 export const goTo = (url: string): void => navigate(url, { trigger: true });
 
 // Leak goTo function in development for quicker development
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'production' && typeof window === 'object')
   // @ts-expect-error Creating a global value
   window._goTo = goTo;
 

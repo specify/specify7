@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
-import { contextUnlockedPromise, foreverPromise } from '../initialcontext';
+import { contextUnlockedPromise, foreverFetch } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { formatUrl, parseUrl } from '../querystring';
@@ -25,7 +25,7 @@ const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
         // eslint-disable-next-line @typescript-eslint/naming-convention
         { headers: { Accept: 'application/json' } }
       ).then(({ data }) => data)
-    : (foreverPromise as Promise<RA<string>>)
+    : foreverFetch<RA<string>>()
 );
 
 type FieldSpec = {

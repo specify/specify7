@@ -182,7 +182,7 @@ const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
 const depthLimit = 6;
 
 // The definitions for the comparison functions
-const headerComparisions: {
+const headerComparisons: {
   [key in keyof Options]:
     | ((header: string, match: string) => boolean)
     | ((header: string, match: RegExp) => boolean);
@@ -325,7 +325,7 @@ export class AutoMapper {
          * autoMapperDefinitions
          */
         .filter(({ headerData: { lowercaseHeaderName } }) =>
-          Object.entries(headerComparisions)
+          Object.entries(headerComparisons)
             .filter(
               (
                 // Loop over defined comparisons only
@@ -440,7 +440,7 @@ export class AutoMapper {
     tableName: keyof Tables
   ) =>
     this.getUnmappedHeaders().forEach(([headerKey, { lowercaseHeaderName }]) =>
-      Object.entries(headerComparisions)
+      Object.entries(headerComparisons)
         .filter(
           (
             // Loop over defined comparisons
@@ -639,44 +639,43 @@ export class AutoMapper {
           ),
         ];
 
-        rankSynonyms.forEach((stripedRankName) => {
-          if (mode !== 'synonymsAndMatches') return;
-
-          fields
-            .map((field) => [field.label.toLowerCase(), field.name])
-            .forEach(([label, fieldName]) =>
-              this.getUnmappedHeaders().some(
-                ([headerName, { strippedHeaderName, finalHeaderName }]) =>
-                  (matchBaseRankName(
-                    label,
-                    stripedRankName,
-                    strippedHeaderName
-                  ) ||
-                    matchBaseRankName(
+        if (mode === 'synonymsAndMatches')
+          rankSynonyms.forEach((stripedRankName) =>
+            fields
+              .map((field) => [field.label.toLowerCase(), field.name])
+              .forEach(([label, fieldName]) =>
+                this.getUnmappedHeaders().some(
+                  ([headerName, { strippedHeaderName, finalHeaderName }]) =>
+                    (matchBaseRankName(
                       label,
                       stripedRankName,
-                      finalHeaderName
+                      strippedHeaderName
                     ) ||
-                    matchRankAndFieldName(
-                      strippedHeaderName,
-                      stripedRankName,
-                      label,
-                      finalHeaderName,
-                      fieldName
-                    )) &&
-                  /*
-                   * Don't search for further mappings for this field if we can
-                   * only map a single header to this field
-                   */
-                  this.makeMapping(
-                    mappingPath,
-                    pushRankToPath ? [finalRankName, fieldName] : [fieldName],
-                    headerName,
-                    tableName
-                  )
+                      matchBaseRankName(
+                        label,
+                        stripedRankName,
+                        finalHeaderName
+                      ) ||
+                      matchRankAndFieldName(
+                        strippedHeaderName,
+                        stripedRankName,
+                        label,
+                        finalHeaderName,
+                        fieldName
+                      )) &&
+                    /*
+                     * Don't search for further mappings for this field if we can
+                     * only map a single header to this field
+                     */
+                    this.makeMapping(
+                      mappingPath,
+                      pushRankToPath ? [finalRankName, fieldName] : [fieldName],
+                      headerName,
+                      tableName
+                    )
+                )
               )
-            );
-        });
+          );
       });
 
       return;
@@ -727,6 +726,8 @@ export class AutoMapper {
         tableName,
         field.name
       );
+      if (headerFieldSynonyms.length === 0 && field.isRelationship) return;
+
       const fieldNames = f.unique([
         ...headerFieldSynonyms,
         label,

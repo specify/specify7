@@ -12,7 +12,7 @@
 
 'use strict';
 
-import '../css/workbench.css';
+if (proces.env.NODE_ENV !== 'test') require('../css/workbench.css');
 
 import $ from 'jquery';
 import React from 'react';
@@ -251,7 +251,9 @@ const WBView = Backbone.View.extend({
               buttons: (
                 <>
                   <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Link.Blue href={`/specify/workbench-plan/${this.dataset.id}/`}>
+                  <Link.Blue
+                    href={`/specify/workbench-plan/${this.dataset.id}/`}
+                  >
                     {commonText('create')}
                   </Link.Blue>
                 </>
