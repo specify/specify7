@@ -23,7 +23,7 @@ import { Button, DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
-import { useTriggerState } from './hooks';
+import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
@@ -621,99 +621,135 @@ export function RecordSet<SCHEMA extends AnySchema>({
     };
   }, [totalCount, currentRecordId, index, recordSet.id]);
 
-  const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
-    setItems(({ totalCount, ids } = defaultRecordSetState) => {
-      if (resource.recordsetid !== recordSet.id) {
-        resource.recordsetid = recordSet.id;
-        if (!resource.isNew()) {
-          const recordSetItem = new schema.models.RecordSetItem.Resource({
-            recordId: resource.id,
-            recordSet: recordSet.get('resource_uri'),
-          });
-          loading(recordSetItem.save());
-        }
-      }
-      return {
-        totalCount: totalCount + 1,
-        ids: typeof resource.id === 'undefined' ? ids : [...ids, resource.id],
-        isAddingNew: typeof resource.id === 'undefined',
-        index: totalCount,
-      };
-    });
-
   const loading = React.useContext(LoadingContext);
+  const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
+    useBooleanState();
+  const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
+    loading(
+      // Detect duplicate record set item
+      (resource.isNew()
+        ? Promise.resolve(false)
+        : fetchCollection('RecordSetItem', {
+            recordSet: recordSet.id,
+            recordId: resource.id,
+            limit: 1,
+          }).then(({ totalCount }) => totalCount !== 0)
+      ).then((isDuplicate) =>
+        isDuplicate
+          ? handleHasDuplicate()
+          : setItems(({ totalCount, ids } = defaultRecordSetState) => {
+              if (resource.recordsetid !== recordSet.id) {
+                resource.recordsetid = recordSet.id;
+                if (!resource.isNew()) {
+                  const recordSetItem =
+                    new schema.models.RecordSetItem.Resource({
+                      recordId: resource.id,
+                      recordSet: recordSet.get('resource_uri'),
+                    });
+                  loading(recordSetItem.save());
+                }
+              }
+              return {
+                totalCount: totalCount + 1,
+                ids:
+                  typeof resource.id === 'undefined'
+                    ? ids
+                    : [...ids, resource.id],
+                isAddingNew: typeof resource.id === 'undefined',
+                index: totalCount,
+              };
+            })
+      )
+    );
+
   return totalCount === 0 && !isAddingNew ? (
     <LoadingScreen />
   ) : (
-    <RecordSelectorFromIds<SCHEMA>
-      {...rest}
-      ids={ids}
-      title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
-      isDependent={false}
-      isAddingNew={isAddingNew}
-      dialog={dialog}
-      mode={mode}
-      canAddAnother={canAddAnother}
-      onClose={handleClose}
-      totalCount={totalCount}
-      defaultIndex={defaultResourceIndex ?? 0}
-      onSaved={({ newResource, wasNew, resource }): void => {
-        if (wasNew) {
-          handleAdd(resource);
-          pushUrl(resource.viewUrl());
+    <>
+      <RecordSelectorFromIds<SCHEMA>
+        {...rest}
+        ids={ids}
+        title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
+        isDependent={false}
+        isAddingNew={isAddingNew}
+        dialog={dialog}
+        mode={mode}
+        canAddAnother={canAddAnother}
+        onClose={handleClose}
+        totalCount={totalCount}
+        defaultIndex={defaultResourceIndex ?? 0}
+        onSaved={({ newResource, wasNew, resource }): void => {
+          if (wasNew) {
+            handleAdd(resource);
+            pushUrl(resource.viewUrl());
+          }
+          if (typeof newResource === 'object') handleAdd(newResource);
+        }}
+        onAdd={
+          hasToolPermission('recordSets', 'create') ? handleAdd : undefined
         }
-        if (typeof newResource === 'object') handleAdd(newResource);
-      }}
-      onAdd={hasToolPermission('recordSets', 'create') ? handleAdd : undefined}
-      onDelete={
-        (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-        (!isAddingNew || totalCount !== 0)
-          ? (_index, source): void => {
-              if (isAddingNew)
-                setItems({ totalCount, ids, isAddingNew: false, index });
-              else
-                loading(
-                  (source === 'minusButton'
-                    ? fetchCollection('RecordSetItem', {
-                        limit: 1,
-                        recordId: ids[index],
-                        recordSet: recordSet.id,
-                      }).then(async ({ records }) =>
-                        deleteResource('RecordSetItem', defined(records[0]).id)
-                      )
-                    : Promise.resolve()
-                  ).then(() => {
-                    setItems({
-                      totalCount: totalCount - 1,
-                      ids: removeItem(ids, index),
-                      isAddingNew: false,
-                      index: clamp(
-                        0,
-                        /*
-                         * Previous index decides which direction to go in
-                         * Once item is deleted
-                         */
-                        previousIndex.current > index
-                          ? Math.max(0, index - 1)
-                          : index,
-                        totalCount - 2
-                      ),
-                    });
-                    if (totalCount === 1) handleClose();
-                  })
-                );
-            }
-          : undefined
-      }
-      onSlide={(index): void =>
-        setItems({
-          totalCount,
-          ids,
-          isAddingNew: false,
-          index: Math.min(index, totalCount - 1),
-        })
-      }
-      urlContext={recordSet.id}
-    />
+        onDelete={
+          (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
+          (!isAddingNew || totalCount !== 0)
+            ? (_index, source): void => {
+                if (isAddingNew)
+                  setItems({ totalCount, ids, isAddingNew: false, index });
+                else
+                  loading(
+                    (source === 'minusButton'
+                      ? fetchCollection('RecordSetItem', {
+                          limit: 1,
+                          recordId: ids[index],
+                          recordSet: recordSet.id,
+                        }).then(async ({ records }) =>
+                          deleteResource(
+                            'RecordSetItem',
+                            defined(records[0]).id
+                          )
+                        )
+                      : Promise.resolve()
+                    ).then(() => {
+                      setItems({
+                        totalCount: totalCount - 1,
+                        ids: removeItem(ids, index),
+                        isAddingNew: false,
+                        index: clamp(
+                          0,
+                          /*
+                           * Previous index decides which direction to go in
+                           * Once item is deleted
+                           */
+                          previousIndex.current > index
+                            ? Math.max(0, index - 1)
+                            : index,
+                          totalCount - 2
+                        ),
+                      });
+                      if (totalCount === 1) handleClose();
+                    })
+                  );
+              }
+            : undefined
+        }
+        onSlide={(index): void =>
+          setItems({
+            totalCount,
+            ids,
+            isAddingNew: false,
+            index: Math.min(index, totalCount - 1),
+          })
+        }
+        urlContext={recordSet.id}
+      />
+      {hasDuplicate && (
+        <Dialog
+          header={formsText('duplicateRecordSetItemDialogHeader')}
+          buttons={commonText('close')}
+          onClose={handleDismissDuplicate}
+        >
+          {formsText('duplicateRecordSetItemDialogText')}
+        </Dialog>
+      )}
+    </>
   );
 }

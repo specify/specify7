@@ -989,4 +989,16 @@ export const formsText = createDictionary({
     ca: '(deleted)',
     'es-es': '(deleted)',
   },
+  duplicateRecordSetItemDialogHeader: {
+    'en-us': 'Duplicate Record Set Item',
+    'ru-ru': 'Дублирующий элемент набора записей',
+    ca: 'Duplicate Record Set Item',
+    'es-es': 'Duplicate Record Set Item',
+  },
+  duplicateRecordSetItemDialogText: {
+    'en-us': 'This record is already present in the current record set',
+    'ru-ru': 'Этот объект уже присутствует в текущем наборе записей',
+    ca: 'This record is already present in the current record set',
+    'es-es': 'This record is already present in the current record set',
+  },
 });
