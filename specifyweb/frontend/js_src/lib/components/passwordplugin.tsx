@@ -87,7 +87,7 @@ export function PasswordPlugin({
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {isNew ? adminText('setPassword') : adminText('changePassword')}
+        {isNew ? adminText('setPassword') : commonText('changePassword')}
       </Button.Small>
       {isOpen && (
         <PasswordResetDialog onSet={handleSet} onClose={handleClose} />

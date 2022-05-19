@@ -1738,10 +1738,9 @@ export const commonText = createDictionary({
     ca: 'Reload',
     'es-es': 'Reload',
   },
-  // FIXME: localize
   technicalDocumentation: {
     'en-us': 'Technical docs',
-    'ru-ru': 'Technical docs',
+    'ru-ru': 'Тех. документы',
     ca: 'Technical docs',
     'es-es': 'Technical docs',
   },

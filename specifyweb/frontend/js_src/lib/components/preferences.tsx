@@ -874,8 +874,8 @@ export const preferenceDefinitions = {
       appearance: {
         title: preferencesText('appearance'),
         items: {
-          condensedQueryResult: defineItem<boolean>({
-            title: preferencesText('condensedQueryResult'),
+          condenseQueryResults: defineItem<boolean>({
+            title: preferencesText('condenseQueryResults'),
             requiresReload: false,
             visible: true,
             defaultValue: false,

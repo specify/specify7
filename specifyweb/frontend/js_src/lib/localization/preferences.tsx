@@ -815,16 +815,15 @@ export const preferencesText = createDictionary({
     ca: 'Scroll wheel zoom',
     'es-es': 'Scroll wheel zoom',
   },
-  // FIXME: localize
   definition: {
     'en-us': 'Definition',
-    'ru-ru': 'Definition',
+    'ru-ru': 'Схема',
     ca: 'Definition',
     'es-es': 'Definition',
   },
   flexibleColumnWidth: {
     'en-us': 'Flexible column width',
-    'ru-ru': 'Flexible column width',
+    'ru-ru': 'Гибкая ширина столбцов',
     ca: 'Flexible column width',
     'es-es': 'Flexible column width',
   },
@@ -836,7 +835,7 @@ export const preferencesText = createDictionary({
     ),
     'ru-ru': (
       <>
-        Close on <Key>ESC</Key> key press
+        Закрыть при нажатии клавиши <Key>ESC</Key>
       </>
     ),
     ca: (
@@ -852,55 +851,55 @@ export const preferencesText = createDictionary({
   },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
-    'ru-ru': 'Close on outside click',
+    'ru-ru': 'Закрыть по внешнему клику',
     ca: 'Close on outside click',
     'es-es': 'Close on outside click',
   },
   specifyNetworkBadge: {
     'en-us': 'Specify Network Badge',
-    'ru-ru': 'Specify Network Badge',
+    'ru-ru': 'Значок «Specify Network»',
     ca: 'Specify Network Badge',
     'es-es': 'Specify Network Badge',
   },
   useAccessibleFullDatePicker: {
     'en-us': 'Use accessible full date picker',
-    'ru-ru': 'Use accessible full date picker',
+    'ru-ru': 'Включить умный полный выбор даты',
     ca: 'Use accessible full date picker',
     'es-es': 'Use accessible full date picker',
   },
   useAccessibleMonthPicker: {
     'en-us': 'Use accessible month picker',
-    'ru-ru': 'Use accessible month picker',
+    'ru-ru': 'Включить умный выбор месяца',
     ca: 'Use accessible month picker',
     'es-es': 'Use accessible month picker',
   },
   rightAlignNumberFields: {
     'en-us': 'Right-Justify numeric fields',
-    'ru-ru': 'Right-Justify numeric fields',
+    'ru-ru': 'Выровнять числовые поля по правому краю',
     ca: 'Right-Justify numeric fields',
     'es-es': 'Right-Justify numeric fields',
   },
   roundedCorners: {
     'en-us': 'Rounded corners',
-    'ru-ru': 'Rounded corners',
+    'ru-ru': 'Закругленные углы',
     ca: 'Rounded corners',
     'es-es': 'Rounded corners',
   },
   limitMaxFieldWidth: {
     'en-us': 'Limit max field width',
-    'ru-ru': 'Limit max field width',
+    'ru-ru': 'Ограничить максимальную ширину поля',
     ca: 'Limit max field width',
     'es-es': 'Limit max field width',
   },
-  condensedQueryResult: {
-    'en-us': 'Condensed Query Result',
-    'ru-ru': 'Condensed Query Result',
-    ca: 'Condensed Query Result',
-    'es-es': 'Condensed Query Result',
+  condenseQueryResults: {
+    'en-us': 'Condence query results',
+    'ru-ru': 'Сжатые результаты',
+    ca: 'Condence query results',
+    'es-es': 'Condence query results',
   },
   blurContentBehindDialog: {
     'en-us': 'Blur content behind the dialog',
-    'ru-ru': 'Blur content behind the dialog',
+    'ru-ru': 'Размыть содержимое за диалогом',
     ca: 'Blur content behind the dialog',
     'es-es': 'Blur content behind the dialog',
   },

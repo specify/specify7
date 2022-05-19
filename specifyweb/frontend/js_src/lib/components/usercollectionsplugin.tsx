@@ -19,6 +19,7 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 
+// FIXME: SecurityUser chagne collection not loading preview and policies
 function UserCollectionsUi({
   userId,
   onClose: handleClose,
@@ -29,7 +30,6 @@ function UserCollectionsUi({
   const [allCollections] = useAsyncState(
     React.useCallback(
       async () =>
-        // TODO: this will throw if user doesn't have collection read access
         fetchCollection('Collection', { limit: 0 }).then(
           ({ records }) => records
         ),
@@ -40,8 +40,6 @@ function UserCollectionsUi({
   const [selected, setSelected] = useAsyncState(
     React.useCallback(
       async () =>
-        // FIXME: catch an error that may happen here due to lack of agents
-        // FIXME: SecurityUser chagne collection not loading preview and policies
         ajax<RA<number>>(`/context/user_collection_access_for_sp6/${userId}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),

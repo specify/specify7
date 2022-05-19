@@ -376,12 +376,11 @@ export const adminText = createDictionary({
       them to log in for the first time.
     `,
   },
-  // FIXME: localize
   userInviteLinkInvalidDialogText: {
     'en-us': `No external identity provider is configured.
       You can configure some in Specify 7 server settings`,
-    'ru-ru': `No external identity provider is configured.
-      You can configure some in Specify 7 server settings`,
+    'ru-ru': `Внешний поставщик удостоверений не настроен.
+     Вы можете настроить некоторые в настройках сервера Specify 7.`,
     ca: `No external identity provider is configured.
       You can configure some in Specify 7 server settings`,
     'es-es': `No external identity provider is configured.
@@ -501,21 +500,14 @@ export const adminText = createDictionary({
     ca: 'Switch to vertical layout',
     'es-es': 'Switch to vertical layout',
   },
-  // FIXME: localize
   advancedTables: {
     'en-us': 'Advanced tables',
-    'ru-ru': 'Advanced tables',
+    'ru-ru': 'Дополнительные таблицы',
     ca: 'Advanced tables',
     'es-es': 'Advanced tables',
   },
-  domainTables: {
-    'en-us': 'Domain tables',
-    'ru-ru': 'Domain tables',
-    ca: 'Domain tables',
-    'es-es': 'Domain tables',
-  },
   excludedInstitutionalPolicies: {
-    'en-us': 'Excluded institutional policies:',
+    'en-us': 'Исключенные институциональные политики:',
     'ru-ru': 'Excluded institutional policies:',
     ca: 'Excluded institutional policies:',
     'es-es': 'Excluded institutional policies:',
@@ -523,17 +515,11 @@ export const adminText = createDictionary({
   excludedInstitutionalPoliciesDescription: {
     'en-us': `Some policies apply only on the institutional level, and so are
       removed from these lists`,
-    'ru-ru': `Some policies apply only on the institutional level, and so are
-      removed from these lists`,
+    'ru-ru': `Некоторые политики применяются только на институциональном уровне,
+      поэтому они удалены из этих списков.`,
     ca: `Some policies apply only on the institutional level, and so are
       removed from these lists`,
     'es-es': `Some policies apply only on the institutional level, and so are
       removed from these lists`,
-  },
-  changePassword: {
-    'en-us': 'Change Password',
-    'ru-ru': 'Change Password',
-    ca: 'Change Password',
-    'es-es': 'Change Password',
   },
 });

@@ -105,15 +105,15 @@ const getCellClassName = (condenseQueryResults: boolean): string =>
   `border-gray-500 border-r bg-[color:var(--bg)] ${
     condenseQueryResults ? 'p-0.5' : 'p-1'
   } first:border-l ${
-    condenseQueryResults ? 'min-h-[theme(spacing.4' : 'min-h-[theme(spacing.8'
-  } )]`;
+    condenseQueryResults ? 'min-h-[theme(spacing.4)' : 'min-h-[theme(spacing.8)'
+  }]`;
 
 function QueryResultCell({
   fieldSpec,
   value,
-  condensedQueryResult,
+  condenseQueryResults,
 }: {
-  readonly condensedQueryResult: boolean;
+  readonly condenseQueryResults: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly value: JSX.Element | string | number | null;
 }): JSX.Element {
@@ -133,7 +133,7 @@ function QueryResultCell({
   return (
     <span
       role="cell"
-      className={`${getCellClassName(condensedQueryResult)} ${
+      className={`${getCellClassName(condenseQueryResults)} ${
         value === null ? 'text-gray-700 dark:text-neutral-500' : ''
       } ${
         fieldSpec?.parser.type === 'number' ? 'tabular-nums justify-end' : ''
@@ -187,10 +187,10 @@ function QueryResult({
     ),
     false
   );
-  const [condensedQueryResult] = usePref(
+  const [condenseQueryResults] = usePref(
     'queryBuilder',
     'appearance',
-    'condensedQueryResult'
+    'condenseQueryResults'
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
@@ -200,7 +200,7 @@ function QueryResult({
       className={`query-result sticky even:[--bg:transparent]
         odd:[--bg:theme(colors.gray.100)]
         odd:dark:[--bg:theme(colors.neutral.700)] ${
-          condensedQueryResult ? 'text-sm' : ''
+          condenseQueryResults ? 'text-sm' : ''
         }`}
       onClick={
         typeof handleSelected === 'function'
@@ -215,7 +215,7 @@ function QueryResult({
       {typeof handleSelected === 'function' && (
         <span
           role="cell"
-          className={`${getCellClassName(condensedQueryResult)} sticky`}
+          className={`${getCellClassName(condenseQueryResults)} sticky`}
         >
           <Input.Checkbox
             checked={isSelected}
@@ -227,7 +227,7 @@ function QueryResult({
       {typeof viewUrl === 'string' && (
         <span
           role="cell"
-          className={`${getCellClassName(condensedQueryResult)} sticky`}
+          className={`${getCellClassName(condenseQueryResults)} sticky`}
         >
           <Link.NewTab
             className="print:hidden"
@@ -248,7 +248,7 @@ function QueryResult({
                 ? fieldSpecs[index]
                 : undefined
             }
-            condensedQueryResult={condensedQueryResult}
+            condenseQueryResults={condenseQueryResults}
           />
         ))}
     </div>
