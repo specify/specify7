@@ -5,14 +5,12 @@
 import { keysToLowerCase } from './helpers';
 import type { IR } from './types';
 
-const href =
-  typeof window === 'object' ? window.location.href : 'http://localhost/';
 export function formatUrl(
   url: string,
   parameters: IR<string>,
   toLowerCase = true
 ): string {
-  const urlObject = new URL(url, href);
+  const urlObject = new URL(url, getUrl());
   urlObject.search = new URLSearchParams({
     ...Object.fromEntries(urlObject.searchParams),
     ...(toLowerCase ? keysToLowerCase(parameters) : parameters),
@@ -23,5 +21,8 @@ export function formatUrl(
     : urlObject.toString();
 }
 
-export const parseUrl = (url: string = href): IR<string> =>
-  Object.fromEntries(new URL(url, href).searchParams);
+const getUrl = (): string =>
+  typeof window === 'object' ? window.location.href : 'http://localhost/';
+
+export const parseUrl = (url: string = getUrl()): IR<string> =>
+  Object.fromEntries(new URL(url, getUrl()).searchParams);

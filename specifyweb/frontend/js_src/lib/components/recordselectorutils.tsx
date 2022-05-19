@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchCollection } from '../collection';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import { DependentCollection, LazyCollection } from '../collectionapi';
 import type { RecordSet as RecordSetSchema } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -513,12 +513,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 }
 
-// FIXME: remove this
-const fetchLimit = 3;
-
-/**
- * Fetch IDs of records in a record set at a given position
- */
+/** Fetch IDs of records in a record set at a given position */
 const fetchItems = async (
   recordSetId: number,
   offset: number
@@ -529,7 +524,7 @@ const fetchItems = async (
   }
 > =>
   fetchCollection('RecordSetItem', {
-    limit: fetchLimit,
+    limit: DEFAULT_FETCH_LIMIT,
     recordSet: recordSetId,
     offset,
   }).then(({ records, totalCount }) => (ids: RA<number | undefined>) => ({
@@ -599,16 +594,14 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
     if (typeof currentRecordId === 'undefined')
-      /*
-       * FIXME: test this code when deleting items from record set or adding
-       *   new items
-       */
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 ids
         clamp(
           0,
-          previousIndex.current > index ? index - fetchLimit + 1 : index,
+          previousIndex.current > index
+            ? index - DEFAULT_FETCH_LIMIT + 1
+            : index,
           totalCount
         )
       )
