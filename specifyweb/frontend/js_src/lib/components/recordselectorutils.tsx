@@ -349,6 +349,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
   React.useEffect(
     () =>
+      typeof defaultIndex === 'number' ? setIndex(defaultIndex) : undefined,
+    [defaultIndex]
+  );
+  React.useEffect(
+    () =>
       setIndex((index) =>
         isAddingNew ? rest.totalCount : Math.min(index, rest.totalCount - 1)
       ),
@@ -681,7 +686,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         canAddAnother={canAddAnother}
         onClose={handleClose}
         totalCount={totalCount}
-        defaultIndex={defaultResourceIndex ?? 0}
+        defaultIndex={index}
         onSaved={({ newResource, wasNew, resource }): void => {
           if (wasNew) {
             handleAdd(resource);
