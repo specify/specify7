@@ -151,6 +151,7 @@ let isSyncing = false;
 export async function awaitPrefsSynced(): Promise<void> {
   if (typeof syncTimeoutInstance === 'number') {
     clearTimeout(syncTimeoutInstance);
+    syncTimeoutInstance = undefined;
     syncPreferences().catch(crash);
   }
 

@@ -172,8 +172,8 @@ export function CollectionOneToManyPlugin({
       <table className="grid-table w-fit grid-cols-3 gap-2">
         <thead>
           <tr>
-            <th>{formsText('collectionObject')}</th>
-            <th>{schema.models.Collection.label}</th>
+            <th scope="col">{formsText('collectionObject')}</th>
+            <th scope="col">{schema.models.Collection.label}</th>
             <td />
           </tr>
         </thead>

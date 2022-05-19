@@ -130,7 +130,7 @@ function CoordinatePoint({
   );
   return (
     <tr>
-      <th>{label}</th>
+      <th scope="row">{label}</th>
       <td>
         <label>
           <span className="sr-only">{`${localityText(
