@@ -198,7 +198,7 @@ export function PrepDialog({
                     .label
                 }
               </th>
-              <th scope="col">{formsText('selected')}</th>
+              <th scope="col">{commonText('selected')}</th>
               <th scope="col">{formsText('available')}</th>
               <th scope="col">{formsText('unavailable')}</th>
             </tr>

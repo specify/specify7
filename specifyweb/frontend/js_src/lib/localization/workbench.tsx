@@ -1115,12 +1115,6 @@ export const wbText = createDictionary({
     ca: 'Relació',
     'es-es': 'Relationship',
   },
-  selected: {
-    'en-us': 'Selected',
-    'ru-ru': 'Выбрано',
-    ca: 'Seleccionat',
-    'es-es': 'Selected',
-  },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
     'ru-ru': 'Выберите базовую таблицу',

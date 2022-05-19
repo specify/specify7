@@ -432,6 +432,7 @@ export const preferenceDefinitions = {
         items: {
           language: defineItem<string>({
             title: preferencesText('language'),
+            description: preferencesText('languageDescription'),
             requiresReload: true,
             visible: true,
             defaultValue: 'en',

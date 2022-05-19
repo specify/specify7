@@ -89,6 +89,7 @@ export function ReportsView({
   const [selectedReport, setSelectedReport] = useLiveState(
     React.useCallback(
       () =>
+        // Select the first one automatically
         autoSelectSingle &&
         Array.isArray(appResources) &&
         appResources.flat().length === 1

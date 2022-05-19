@@ -197,12 +197,6 @@ export const adminText = createDictionary({
     ca: 'Role:',
     'es-es': 'Role:',
   },
-  user: {
-    'en-us': 'User:',
-    'ru-ru': 'Пользователь:',
-    ca: 'User:',
-    'es-es': 'User:',
-  },
   read: {
     'en-us': 'Read',
     'ru-ru': 'Читать',

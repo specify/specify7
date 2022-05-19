@@ -427,12 +427,6 @@ export const formsText = createDictionary({
     ca: 'Reports/Labels cannot be printed in this context.',
     'es-es': 'Reports/Labels cannot be printed in this context.',
   },
-  noReportsAvailable: {
-    'en-us': 'No reports are available for this table.',
-    'ru-ru': 'Для этой таблицы нет отчетов.',
-    ca: 'No reports are available for this table.',
-    'es-es': 'No reports are available for this table.',
-  },
   reportProblemsDialogTitle: {
     'en-us': 'Problems with report',
     'ru-ru': 'Проблемы с отчетом',
@@ -469,12 +463,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Параметры отчета',
     ca: 'Report Parameters',
     'es-es': 'Report Parameters',
-  },
-  labelFromRecordSetDialogTitle: {
-    'en-us': 'From Record Set',
-    'ru-ru': 'Из набора объектов',
-    ca: 'From Record Set',
-    'es-es': 'From Record Set',
   },
   runReport: {
     'en-us': 'Run Report',
@@ -531,12 +519,6 @@ export const formsText = createDictionary({
     'ru-ru': 'добавить еще',
     ca: 'Add Another',
     'es-es': 'Add Another',
-  },
-  saveConflictDialogTitle: {
-    'en-us': 'Save record',
-    'ru-ru': 'Сохранить запись',
-    ca: 'Save record',
-    'es-es': 'Save record',
   },
   saveConflictDialogHeader: {
     'en-us': 'Save conflict',
@@ -910,12 +892,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Отменить выбор',
     ca: 'Deselect all',
     'es-es': 'Deselect all',
-  },
-  selected: {
-    'en-us': 'Selected',
-    'ru-ru': 'Выбрано',
-    ca: 'Selected',
-    'es-es': 'Selected',
   },
   available: {
     'en-us': 'Available',

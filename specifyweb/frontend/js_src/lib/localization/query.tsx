@@ -39,13 +39,6 @@ export const queryText = createDictionary({
     ca: 'End Value',
     'es-es': 'End Value',
   },
-  addValuesHint: {
-    'en-us': 'Add values one by one, or as comma-separated list:',
-    'ru-ru':
-      'Добавьте значения по одному или в виде списка, разделенного запятыми:',
-    ca: 'Add values one by one, or as comma-separated list:',
-    'es-es': 'Add values one by one, or as comma-separated list:',
-  },
   saveQueryDialogHeader: {
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
@@ -297,12 +290,6 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     ca: '(formatted)',
     'es-es': '(formatted)',
-  },
-  filter: {
-    'en-us': 'Filter',
-    'ru-ru': 'Фильтр',
-    ca: 'Filter',
-    'es-es': 'Filter',
   },
   like: {
     'en-us': 'Like',

@@ -23,6 +23,7 @@ import {
 } from './common';
 import { iconClassName, icons } from './icons';
 import { scrollIntoView } from '../treeviewutils';
+import { commonText } from '../localization/common';
 
 type Properties =
   /*
@@ -279,7 +280,7 @@ function Option({
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
     isRelationship ? `(${wbText('relationshipInline')})` : '',
-    isDefault ? `(${wbText('selected')})` : '',
+    isDefault ? `(${commonText('selected')})` : '',
   ]).join(' ');
 
   return (

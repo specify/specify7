@@ -161,8 +161,8 @@ export const commonText = createDictionary({
   },
   tableInline: {
     'en-us': 'Table:',
-    'ru-ru': 'Таблица',
-    ca: 'Taula',
+    'ru-ru': 'Таблица:',
+    ca: 'Taula:',
     'es-es': 'Table:',
   },
   tableName: {
@@ -584,16 +584,16 @@ export const commonText = createDictionary({
     'es-es': 'Update RSS Feed',
   },
   updateExportFeedDialogHeader: {
-    'en-us': 'Update all export feed items now?',
+    'en-us': 'Update export feed?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
-    ca: 'Update all export feed items now?',
-    'es-es': 'Update all export feed items now?',
+    ca: 'Update export feed?',
+    'es-es': 'Update export feed?',
   },
   updateExportFeedDialogText: {
-    'en-us': 'Update all export feed items now?',
-    'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
-    ca: 'Update all export feed items now?',
-    'es-es': 'Update all export feed items now?',
+    'en-us': 'Update all RSS export feed items now?',
+    'ru-ru': 'Обновить все элементы RSS фида экспорта сейчас?',
+    ca: 'Update all RSS export feed items now?',
+    'es-es': 'Update all RSS export feed items now?',
   },
   feedExportStartedDialogHeader: {
     'en-us': 'Export feed update started',
@@ -1077,12 +1077,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Выберите одну из следующих коллекций:',
     ca: 'Select one of the following collections:',
     'es-es': 'Select one of the following collections:',
-  },
-  collection: {
-    'en-us': 'Collection',
-    'ru-ru': 'Коллекция',
-    ca: 'Collection',
-    'es-es': 'Collection',
   },
   loginToProceed: {
     'en-us': 'You can login to the collection, to proceed:',
@@ -1735,5 +1729,11 @@ export const commonText = createDictionary({
     'ru-ru': 'Скопировать в буфер обмена',
     ca: 'Copy to clipboard',
     'es-es': 'Copy to clipboard',
+  },
+  selected: {
+    'en-us': 'Selected',
+    'ru-ru': 'Выбрано',
+    ca: 'Selected',
+    'es-es': 'Selected',
   },
 });
