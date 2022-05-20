@@ -175,7 +175,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   // Current index in the collection
   readonly index: number;
   // Event handler for index change
-  readonly onSlide: (newIndex: number) => void;
+  readonly onSlide: (newIndex: number, callback?: () => void) => void;
   // Total number of elements in the collection
   readonly totalCount: number;
 };
@@ -250,11 +250,12 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
         : undefined,
     onRemove:
       typeof handleDelete === 'function'
-        ? (source): void => {
-            if (records.length === 0) return;
-            handleSlide(clamp(0, index, totalCount - 2));
-            handleDelete(index, source);
-          }
+        ? (source): void =>
+            records.length > 0
+              ? handleSlide(clamp(0, index, totalCount - 2), () =>
+                  handleDelete(index, source)
+                )
+              : undefined
         : undefined,
   });
 }

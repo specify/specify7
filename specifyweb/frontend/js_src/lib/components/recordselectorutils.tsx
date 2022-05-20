@@ -136,9 +136,10 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         setRecords(getRecords);
       }}
       index={index}
-      onSlide={(index: number): void => {
+      onSlide={(index, callback): void => {
         setIndex(index);
         handleSlide?.(index);
+        callback?.();
       }}
     >
       {children}
@@ -412,15 +413,19 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       records={
         typeof newResource === 'object' ? [...records, newResource] : records
       }
-      onSlide={(index: number): void => {
-        function callback(): void {
+      onSlide={(index, callback): void => {
+        function doSlide(): void {
           setIndex(index);
           handleSlide?.(index);
+          callback?.();
         }
 
-        if (currentResource?.isNew() === true && currentResource.needsSaved)
-          setUnloadProtect(() => callback);
-        else callback();
+        if (
+          currentResource?.isNew() === true ||
+          currentResource?.needsSaved === true
+        )
+          setUnloadProtect(() => doSlide);
+        else doSlide();
       }}
     >
       {({

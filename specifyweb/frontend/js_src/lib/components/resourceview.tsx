@@ -295,7 +295,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               }
               onSaving={handleSaving}
               onSaved={(payload): void =>
-                formMeta.printOnSave === true
+                formMeta.printOnSave === true && payload.wasChanged
                   ? setState({
                       type: 'Report',
                       onDone: () => handleSaved(payload),
@@ -361,7 +361,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
             </DataEntry.SubForm>
           ) : (
             <Container.FullGray>
-              {report}
               <Container.Center className="!w-auto">
                 <DataEntry.Header>
                   <AppTitle title={titleOverride ?? formatted} type="form" />

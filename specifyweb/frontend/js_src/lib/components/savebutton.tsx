@@ -43,6 +43,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onSaved?: (payload: {
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
+    readonly wasChanged: boolean;
   }) => void;
   readonly disabled?: boolean;
   /*
@@ -126,6 +127,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      */
     const newResource = addAnother ? await resource.clone() : undefined;
     const wasNew = resource.isNew();
+    const wasChanged = resource.needsSaved;
 
     /*
      * Save process is canceled if false was returned. This also allows to
@@ -144,6 +146,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           handleSaved?.({
             newResource,
             wasNew,
+            wasChanged,
           });
         })
         .then(() => resource.trigger('saved'))
