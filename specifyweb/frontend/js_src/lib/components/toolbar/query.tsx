@@ -12,7 +12,7 @@ import { fetchCollection } from '../../collection';
 import type { SpQuery, SpReport, Tables } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
-import { removeKey } from '../../helpers';
+import { removeKey, replaceKey } from '../../helpers';
 import { cachableUrl } from '../../initialcontext';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
@@ -333,11 +333,6 @@ export function QueryToolbarItem({
         header={commonText('newQueryDialogTitle')}
         buttons={
           <>
-            <Button.Transparent
-              onClick={(): void => setState({ type: 'ShowQueryListState' })}
-            >
-              {commonText('cancel')}
-            </Button.Transparent>
             {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
               <Button.Green
                 onClick={(): void => setState({ type: 'ImportQueryState' })}
@@ -345,6 +340,12 @@ export function QueryToolbarItem({
                 {commonText('import')}
               </Button.Green>
             ) : undefined}
+            <span className="flex-1 -ml-2" />
+            <Button.Transparent
+              onClick={(): void => setState({ type: 'ShowQueryListState' })}
+            >
+              {commonText('cancel')}
+            </Button.Transparent>
           </>
         }
       >
@@ -491,7 +492,18 @@ function QueryImport({
                 .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
                 .then(
                   async (query) =>
-                    new schema.models.SpQuery.Resource(removeKey(query, 'id'))
+                    new schema.models.SpQuery.Resource(
+                      removeKey(
+                        replaceKey(
+                          query,
+                          'fields',
+                          query.fields.map((field) =>
+                            replaceKey(field, 'id', undefined)
+                          )
+                        ),
+                        'id'
+                      )
+                    )
                 )
                 .then((queryResource) =>
                   queryResource.set(
