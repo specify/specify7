@@ -327,9 +327,7 @@ export function getMappingLineData({
                       isDefault:
                         internalState.defaultValue ===
                         formatTreeRank(anyTreeRank),
-                      isEnabled: !internalState.mappedFields.includes(
-                        formatTreeRank(anyTreeRank)
-                      ),
+                      isEnabled: true,
                       tableName: model.name,
                     },
                   ]
