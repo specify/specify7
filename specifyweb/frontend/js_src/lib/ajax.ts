@@ -8,10 +8,12 @@ import type { IR, PartialBy, RA } from './types';
 export const isExternalUrl = (url: string): boolean =>
   /*
    * Blob URLs may point to the same origin, but should be treated as external
-   * by the navigator. Also accounts pages are outside the SPA context.
+   * by the navigator. Also accounts and documentation pages are outside the
+   * router context.
    */
   url.startsWith('blob:') ||
   new URL(url, window.location.origin).pathname.startsWith('/accounts/') ||
+  new URL(url, window.location.origin).pathname.startsWith('/documentation/') ||
   new URL(url, window.location.origin).origin !== window.location.origin;
 
 // These HTTP methods do not require CSRF protection
