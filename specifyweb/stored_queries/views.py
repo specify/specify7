@@ -1,21 +1,24 @@
-import logging
 import json
-from threading import Thread
-from datetime import datetime
+import logging
 from collections import defaultdict
+from datetime import datetime
+from threading import Thread
 
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
-from django.views.decorators.http import require_GET, require_POST
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    HttpResponseRedirect, JsonResponse
 from django.views.decorators.cache import never_cache
-
-from ..specify.models import Collection, Recordset
-from ..specify.api import toJson, uri_for_model
-from ..specify.views import login_maybe_required
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, check_table_permissions
+from django.views.decorators.http import require_GET, require_POST
 
 from . import models
+from .execution import execute, run_ephemeral_query, do_export, recordset, \
+    return_loan_preps as rlp
 from .queryfield import QueryField
-from .execution import execute, run_ephemeral_query, do_export, recordset, return_loan_preps as rlp
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, check_table_permissions
+from ..specify.api import toJson, uri_for_model
+from ..specify.models import Collection, Recordset, Loanreturnpreparation, \
+    Loanpreparation, Loan
+from ..specify.views import login_maybe_required
 
 logger = logging.getLogger(__name__)
 
@@ -151,9 +154,12 @@ def make_recordset(request):
 
 @require_POST
 @login_maybe_required
-@apply_access_control
 @never_cache
 def return_loan_preps(request):
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
+    check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "read")
+    check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
     try:
         data = json.load(request)
     except ValueError as e:

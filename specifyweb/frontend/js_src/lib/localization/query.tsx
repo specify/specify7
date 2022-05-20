@@ -421,4 +421,22 @@ export const queryText = createDictionary({
     ca: 'Query Builder',
     'es-es': 'Query Builder',
   },
+  returnLoan: {
+    'en-us': 'Return Loan',
+    'ru-ru': 'Return Loan',
+    ca: 'Return Loan',
+    'es-es': 'Return Loan',
+  },
+  noPreparationsToReturn: {
+    'en-us': 'There are no unresolved items to return',
+    'ru-ru': 'Нет нерешенных приготовлений к возвращению',
+    ca: 'There are no unresolved items to return',
+    'es-es': 'There are no unresolved items to return',
+  },
+  itemsReturned: {
+    'en-us': 'Items have been returned',
+    'ru-ru': 'Items have been returned',
+    ca: 'Items have been returned',
+    'es-es': 'Items have been returned',
+  },
 });

@@ -1736,4 +1736,10 @@ export const commonText = createDictionary({
     ca: 'Selected',
     'es-es': 'Selected',
   },
+  quantity: {
+    'en-us': 'Quantity',
+    'ru-ru': 'Количество',
+    ca: 'Quantity',
+    'es-es': 'Quantity',
+  },
 });

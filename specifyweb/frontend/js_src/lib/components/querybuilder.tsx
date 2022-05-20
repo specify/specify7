@@ -30,10 +30,12 @@ import {
 } from './hooks';
 import { icons } from './icons';
 import { useUnloadProtect } from './navigation';
+import { ProtectedAction, ProtectedTable } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
+  QueryLoanReturn,
   SaveQueryButtons,
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
@@ -207,6 +209,24 @@ export function QueryBuilder({
                 : queryText('queryTaskTitle', query.name)}
             </H2>
             <span className="flex-1 ml-2" />
+            {state.baseTableName === 'LoanPreparation' && (
+              <ProtectedAction resource="/querybuilder/query" action="execute">
+                <ProtectedTable tableName="Loan" action="update">
+                  <ProtectedTable
+                    tableName="LoanReturnPreparation"
+                    action="create"
+                  >
+                    <ProtectedTable tableName="LoanPreparation" action="read">
+                      <QueryLoanReturn
+                        fields={state.fields}
+                        queryResource={queryResource}
+                        getQueryFieldRecords={getQueryFieldRecords}
+                      />
+                    </ProtectedTable>
+                  </ProtectedTable>
+                </ProtectedTable>
+              </ProtectedAction>
+            )}
             <QueryExportButtons
               baseTableName={state.baseTableName}
               fields={state.fields}

@@ -20,7 +20,7 @@ import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { RenderForm } from './specifyform';
 
-const metaDataFormDefinition = f.store(
+export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
     autoGenerateViewDefinition(
       schema.models.LoanReturnPreparation,
@@ -235,6 +235,7 @@ function PreparationReturn({
       onClose={handleClose}
       buttons={
         <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Blue
             onClick={(): void =>
               setState(
@@ -324,7 +325,7 @@ function PreparationReturn({
       >
         <RenderForm
           resource={loanReturnPreparation.current}
-          viewDefinition={metaDataFormDefinition()}
+          viewDefinition={loanReturnPrepForm()}
           display="block"
         />
         <table className="grid-table gap-2 grid-cols-[repeat(8,auto)]">

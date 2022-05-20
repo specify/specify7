@@ -1,26 +1,41 @@
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
-import { ping } from '../ajax';
-import type { RecordSet, SpQuery, SpQueryField, Tables } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
+import { ajax, ping } from '../ajax';
+import type {
+  LoanPreparation,
+  LoanReturnPreparation,
+  RecordSet,
+  SpQuery,
+  SpQueryField,
+  Tables,
+} from '../datamodel';
+import type { SerializedModel, SerializedResource } from '../datamodelutils';
+import { getDateInputValue } from '../dayjs';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
 import { hasPermission } from '../permissions';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
+import { getResourceViewUrl, idFromUrl, resourceToJson } from '../resource';
 import { getModel, schema } from '../schema';
-import type { RA } from '../types';
+import type { RA, RR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
-import { Button, className, Link } from './basic';
+import { Button, className, Form, Link, Submit } from './basic';
+import { LoadingContext } from './contexts';
+import { useAsyncState, useId } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
 import { goTo } from './navigation';
+import { loanReturnPrepForm } from './prepreturndialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
+import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
 
 function QueryButton({
@@ -298,6 +313,189 @@ export function QueryExportButtons({
         >
           {queryText('createKml')}
         </QueryButton>
+      )}
+    </>
+  );
+}
+
+const returnLoanPreps = async (
+  query: SerializedModel<SpQuery>,
+  loanReturnPreparation: SpecifyResource<LoanReturnPreparation>,
+  commit: boolean
+): Promise<
+  RA<{
+    readonly loanId: number;
+    readonly loanNumber: string;
+    readonly totalPreps: number;
+  }>
+> =>
+  ajax<
+    RR<
+      number,
+      {
+        readonly loanpreparations: RA<SerializedModel<LoanPreparation>>;
+        readonly loannumber: string;
+      }
+    >
+  >('/stored_query/return_loan_preps/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: {
+      query,
+      commit,
+      returneddate: loanReturnPreparation.get('returnedDate'),
+      receivedby: idFromUrl(loanReturnPreparation.get('receivedBy') ?? ''),
+    },
+  }).then(({ data }) =>
+    Object.entries(data).map(([loanId, { loanpreparations, loannumber }]) => ({
+      loanId: Number.parseInt(loanId),
+      loanNumber: loannumber,
+      totalPreps: loanpreparations.reduce(
+        (count, { quantity }) => count + (quantity ?? 0),
+        0
+      ),
+    }))
+  );
+
+export function QueryLoanReturn({
+  fields,
+  queryResource,
+  getQueryFieldRecords,
+}: {
+  readonly fields: RA<QueryField>;
+  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+}): JSX.Element {
+  const showConfirmation = (): boolean =>
+    fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
+  const [state, setState] = React.useState<
+    | State<'Main'>
+    | State<
+        'Dialog',
+        {
+          queryResource: SerializedModel<SpQuery>;
+          loanReturnPreparation: SpecifyResource<LoanReturnPreparation>;
+        }
+      >
+    | State<'Returned'>
+  >({
+    type: 'Main',
+  });
+  const [toReturn] = useAsyncState(
+    React.useCallback(
+      () =>
+        state.type === 'Dialog'
+          ? returnLoanPreps(
+              state.queryResource,
+              state.loanReturnPreparation,
+              false
+            )
+          : undefined,
+      [state]
+    ),
+    true
+  );
+  const id = useId('query-loan-return');
+  const loading = React.useContext(LoadingContext);
+  return (
+    <>
+      <QueryButton
+        disabled={fields.length === 0}
+        onClick={(): void =>
+          setState({
+            type: 'Dialog',
+            loanReturnPreparation:
+              new schema.models.LoanReturnPreparation.Resource({
+                returneddate: getDateInputValue(new Date()),
+                receivedby: userInformation.agent.resource_uri,
+              }),
+            queryResource: resourceToJson(
+              queryResource.set('fields', getQueryFieldRecords())
+            ),
+          })
+        }
+        showConfirmation={showConfirmation}
+      >
+        {queryText('returnLoan')}
+      </QueryButton>
+      {state.type === 'Dialog' && Array.isArray(toReturn) ? (
+        <Dialog
+          header={schema.models.LoanPreparation.label}
+          onClose={(): void => setState({ type: 'Main' })}
+          buttons={
+            toReturn.length === 0 ? (
+              commonText('close')
+            ) : (
+              <>
+                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Submit.Green
+                  form={id('form')}
+                  title={formsText('returnSelectedPreparations')}
+                >
+                  {formsText('return')}
+                </Submit.Green>
+              </>
+            )
+          }
+        >
+          {toReturn.length === 0 ? (
+            queryText('noPreparationsToReturn')
+          ) : (
+            <Form
+              id={id('form')}
+              onSubmit={(): void =>
+                loading(
+                  returnLoanPreps(
+                    state.queryResource,
+                    state.loanReturnPreparation,
+                    true
+                  ).then((): void => setState({ type: 'Returned' }))
+                )
+              }
+            >
+              <RenderForm
+                resource={state.loanReturnPreparation}
+                viewDefinition={loanReturnPrepForm()}
+                display="block"
+              />
+              <table className="grid-table grid-cols-2 gap-2">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      {
+                        defined(
+                          schema.models.Loan.getLiteralField('loanNumber')
+                        ).label
+                      }
+                    </th>
+                    <th scope="col">{commonText('quantity')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {toReturn.map(({ loanId, loanNumber, totalPreps }) => (
+                    <tr key={loanId}>
+                      <td>
+                        <Link.NewTab href={getResourceViewUrl('Loan', loanId)}>
+                          {loanNumber}
+                        </Link.NewTab>
+                      </td>
+                      <td className="tabular-nums justify-end">{totalPreps}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Form>
+          )}
+        </Dialog>
+      ) : undefined}
+      {state.type === 'Returned' && (
+        <Dialog
+          header={schema.models.LoanPreparation.label}
+          onClose={(): void => setState({ type: 'Main' })}
+          buttons={commonText('close')}
+        >
+          {queryText('itemsReturned')}
+        </Dialog>
       )}
     </>
   );
