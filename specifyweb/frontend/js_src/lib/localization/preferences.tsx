@@ -927,4 +927,52 @@ export const preferencesText = createDictionary({
     ca: 'Last record',
     'es-es': 'Last record',
   },
+  altClickToSupressNewTab: {
+    'en-us': (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+      </>
+    ),
+    'ru-ru': (
+      <>
+        <Key>Alt</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
+      </>
+    ),
+    ca: (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+      </>
+    ),
+    'es-es': (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+      </>
+    ),
+  },
+  altClickToSupressNewTabDescription: {
+    'en-us': (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
+        tab to open it in the current tab
+      </>
+    ),
+    'ru-ru': (
+      <>
+        <Key>Alt</Key>+<Key>Клик</Key> на ссылку, которая обычно открывается в
+        новой вкладке, чтобы открыть ее в текущей вкладке
+      </>
+    ),
+    ca: (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
+        tab to open it in the current tab
+      </>
+    ),
+    'es-es': (
+      <>
+        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
+        tab to open it in the current tab
+      </>
+    ),
+  },
 });

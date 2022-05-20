@@ -7,6 +7,7 @@ import React from 'react';
 import { listen } from '../events';
 import { initialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
+import { getUserPref } from '../preferencesutils';
 import { startApp } from '../startapp';
 import { className } from './basic';
 import { crash } from './errorboundary';
@@ -15,7 +16,6 @@ import { Main } from './main';
 import { goTo } from './navigation';
 import { entrypoint, SplashScreen } from './splashscreen';
 
-// TODO: document that you can alt click on new tab links
 function handleClick(event: Readonly<MouseEvent>): void {
   const link = (event.target as HTMLElement)?.closest('a');
   if (
@@ -23,7 +23,9 @@ function handleClick(event: Readonly<MouseEvent>): void {
     link.href.length > 0 &&
     link.getAttribute('href')?.startsWith('#') === false &&
     link.getAttribute('download') === null &&
-    (link.target !== '_blank' || event.altKey) &&
+    (link.target !== '_blank' ||
+      (getUserPref('general', 'behavior', 'altClickToSupressNewTab') &&
+        event.altKey)) &&
     !link.classList.contains(className.navigationHandled)
   ) {
     event.preventDefault();
@@ -48,7 +50,7 @@ function Root(): JSX.Element | null {
 
   /*
    * Show loading screen only if didn't finish loading within 2 seconds.
-   * This is to prevent briefly flashing the dialog on fast systems.
+   * Used to prevent briefly flashing the dialog on fast systems.
    */
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined

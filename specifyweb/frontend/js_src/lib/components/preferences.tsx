@@ -325,6 +325,19 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          altClickToSupressNewTab: defineItem<boolean>({
+            title: preferencesText('altClickToSupressNewTab'),
+            description: preferencesText('altClickToSupressNewTabDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
     },
   },
   welcomePage: {

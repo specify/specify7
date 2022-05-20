@@ -211,7 +211,9 @@ export function ExpressSearch(): JSX.Element {
       <Input.Generic
         type="search"
         className="flex-1"
-        name="q"
+        autoComplete="on"
+        /* Name is for autocomplete purposes only */
+        name="searchQuery"
         placeholder={commonText('search')}
         aria-label={commonText('search')}
         value={searchQuery}

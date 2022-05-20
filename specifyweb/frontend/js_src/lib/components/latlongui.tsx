@@ -6,8 +6,8 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import type { FormMode } from '../parseform';
-import { Input, Select } from './basic';
 import { resourceOn } from '../resource';
+import { Input, Select } from './basic';
 
 type CoordinateType = 'Point' | 'Line' | 'Rectangle';
 
@@ -27,16 +27,8 @@ function Coordinate({
   step,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly coordinateField:
-    | 'latitude1'
-    | 'latitude2'
-    | 'longitude1'
-    | 'longitude2';
-  readonly coordinateTextField:
-    | 'lat1text'
-    | 'lat2text'
-    | 'long1text'
-    | 'long2text';
+  readonly coordinateField: `${'latitude' | 'longitude'}${1 | 2}`;
+  readonly coordinateTextField: `${'lat' | 'long'}${1 | 2}text`;
   readonly fieldType: 'Lat' | 'Long';
   readonly isReadOnly: boolean;
   readonly onChange: (parsed: string) => void;
@@ -49,12 +41,12 @@ function Coordinate({
       ''
   );
 
-  const onChange = (raw: string, formatted: string | undefined) =>
+  const handleChanged = (raw: string, formatted: string | undefined) =>
     handleChange(raw === '' ? commonText('notApplicable') : formatted ?? '???');
 
   React.useEffect(() => {
     const handleChange = (coordinate: string): void =>
-      onChange(
+      handleChanged(
         coordinate,
         (
           (fieldType === 'Lat' ? Lat : Long).parse(coordinate) as Parsed | null
@@ -69,7 +61,9 @@ function Coordinate({
             resource.get(coordinateField)?.toString() ??
             ''
         );
-        handleChange(resource.get(coordinateTextField));
+        handleChange(
+          resource.get(coordinateTextField) ?? resource.get(coordinateField)
+        );
       },
       // Update parent's Preview column with initial values on first render
       true
@@ -98,7 +92,7 @@ function Coordinate({
               | Parsed
               | undefined)
           : undefined;
-        onChange(value.trim(), parsed?.format(step));
+        handleChanged(value.trim(), parsed?.format(step));
 
         resource.set(coordinateTextField, value);
         resource.set(coordinateField, parsed?.asFloat() ?? null);
