@@ -829,24 +829,24 @@ export const preferencesText = createDictionary({
   },
   closeOnEsc: {
     'en-us': (
-      <>
+      <span>
         Close on <Key>ESC</Key> key press
-      </>
+      </span>
     ),
     'ru-ru': (
-      <>
+      <span>
         Закрыть при нажатии клавиши <Key>ESC</Key>
-      </>
+      </span>
     ),
     ca: (
-      <>
+      <span>
         Close on <Key>ESC</Key> key press
-      </>
+      </span>
     ),
     'es-es': (
-      <>
+      <span>
         Close on <Key>ESC</Key> key press
-      </>
+      </span>
     ),
   },
   closeOnOutsideClick: {
@@ -929,50 +929,50 @@ export const preferencesText = createDictionary({
   },
   altClickToSupressNewTab: {
     'en-us': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
-      </>
+      </span>
     ),
     'ru-ru': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
-      </>
+      </span>
     ),
     ca: (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
-      </>
+      </span>
     ),
     'es-es': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
-      </>
+      </span>
     ),
   },
   altClickToSupressNewTabDescription: {
     'en-us': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
         tab to open it in the current tab
-      </>
+      </span>
     ),
     'ru-ru': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Клик</Key> на ссылку, которая обычно открывается в
         новой вкладке, чтобы открыть ее в текущей вкладке
-      </>
+      </span>
     ),
     ca: (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
         tab to open it in the current tab
-      </>
+      </span>
     ),
     'es-es': (
-      <>
+      <span>
         <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
         tab to open it in the current tab
-      </>
+      </span>
     ),
   },
 });
