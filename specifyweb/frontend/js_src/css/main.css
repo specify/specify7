@@ -189,7 +189,7 @@
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
-    @apply !bg-transparent text-brand-200 dark:text-brand-400;
+    @apply !bg-transparent text-brand-300 dark:text-brand-400;
   }
 
   .link {

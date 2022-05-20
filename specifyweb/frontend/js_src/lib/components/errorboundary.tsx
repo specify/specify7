@@ -128,7 +128,7 @@ function ErrorDialog({
       <br />
       <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
       <details
-        className="whitespace-pre-wrap"
+        className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV !== 'production'}
       >
         <summary>{commonText('errorMessage')}</summary>
@@ -307,7 +307,7 @@ function formatError(
   }
 
   return [
-    <div key="object" className="gap-y-2 flex flex-col flex-1">
+    <div key="object" className="gap-y-2 flex flex-col h-full">
       {errorObject}
     </div>,
     errorMessage.join('\n'),

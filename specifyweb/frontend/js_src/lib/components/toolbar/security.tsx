@@ -161,15 +161,18 @@ export function SecurityPanel(): JSX.Element | null {
                   : newState
               )
             }
-            onOpenUser={(userId): void =>
-              setState({
-                type: 'UserState',
-                user:
-                  typeof userId === 'number'
-                    ? defined(users)[userId]
-                    : addMissingFields('SpecifyUser', {}),
-                initialCollection: undefined,
-              })
+            onOpenUser={
+              typeof users === 'object'
+                ? (userId): void =>
+                    setState({
+                      type: 'UserState',
+                      user:
+                        typeof userId === 'number'
+                          ? users[userId]
+                          : addMissingFields('SpecifyUser', {}),
+                      initialCollection: undefined,
+                    })
+                : undefined
             }
           />
         ) : undefined}

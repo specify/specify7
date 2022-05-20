@@ -281,6 +281,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
         forwardRef={(element): void => {
           focusRef.current = element;
         }}
+        className="normal-case"
         disabled={disabled}
         onClick={disabled ? undefined : (): void => setShowPrompt(true)}
         title={

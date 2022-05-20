@@ -24,7 +24,7 @@ export const menuItem = ajax<{ readonly available: boolean }>(
     enabled:
       available &&
       hasPermission('/report', 'execute') &&
-      getUserPref('header', 'menu', 'showQueries'),
+      getUserPref('header', 'menu', 'showReports'),
     isOverlay: true,
     view: ({ onClose: handleClose }) => (
       <ReportsView

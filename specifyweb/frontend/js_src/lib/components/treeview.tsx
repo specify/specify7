@@ -302,7 +302,6 @@ function TreeView<SCHEMA extends AnyTree>({
                           )
                       : undefined
                   }
-                  className="normal-case"
                 >
                   {f.var(rank.title || rank.name, (rankName) =>
                     collapsedRanks?.includes(rank.rankId) ?? false
