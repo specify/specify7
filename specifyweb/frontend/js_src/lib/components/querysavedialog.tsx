@@ -9,6 +9,7 @@ import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { getUniqueName } from '../wbuniquifyname';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -34,7 +35,11 @@ export function QuerySaveDialog({
   readonly onSaved: (queryId: number) => void;
 }): JSX.Element | null {
   const id = useId('id');
-  const [name, setName] = React.useState<string>(query.get('name'));
+  const [name, setName] = React.useState<string>((): string =>
+    isSaveAs
+      ? getUniqueName(query.get('name'), [query.get('name')])
+      : query.get('name')
+  );
 
   const loading = React.useContext(LoadingContext);
 

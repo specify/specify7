@@ -68,30 +68,38 @@ function getAuditRecordFormatter(
       .map((field) => (field?.isRelationship === false ? field : undefined))
   );
 
-  const modelId = fields.findIndex((field) => field?.name === 'tableNum');
-  if (modelId === -1) return undefined;
-  const model = getModelById(modelId);
+  const modelIdIndex = fields.findIndex((field) => field?.name === 'tableNum');
+  if (modelIdIndex <= 0) return undefined;
 
-  const parentModelId = fields.findIndex(
+  const parentModelIdIndex = fields.findIndex(
     (field) => field?.name === 'parentTableNum'
   );
-  if (parentModelId === -1) return undefined;
-  const parentModel = getModelById(parentModelId);
+  if (parentModelIdIndex <= 0) return undefined;
 
   return async (resultRow): Promise<RA<string | JSX.Element>> =>
     Promise.all(
       resultRow
         .filter((_, index) => !hasIdField || index !== queryIdField)
-        .map(async (value, index) => {
+        .map((value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
-          if (fields[index]?.name === 'fieldName')
-            return model.getField(stringValue)?.label ?? stringValue;
-          else if (fields[index]?.name === 'recordId')
-            return resourceToLink(model, Number(value));
-          else if (fields[index]?.name === 'parentRecordId')
-            return resourceToLink(parentModel, Number(value));
-          else
+          if (fields[index]?.name === 'fieldName') {
+            const modelId = row[modelIdIndex];
+            return typeof modelId === 'number'
+              ? getModelById(modelId).getField(stringValue)?.label ??
+                  stringValue
+              : modelId ?? '';
+          } else if (fields[index]?.name === 'recordId') {
+            const modelId = row[modelIdIndex];
+            return typeof modelId === 'number'
+              ? resourceToLink(getModelById(modelId), Number(value))
+              : modelId ?? '';
+          } else if (fields[index]?.name === 'parentRecordId') {
+            const modelId = row[parentModelIdIndex];
+            return typeof modelId === 'number'
+              ? resourceToLink(getModelById(modelId), Number(value))
+              : modelId ?? '';
+          } else
             return fieldFormat(
               fields[index],
               fieldSpecs[index].parser,
@@ -119,6 +127,7 @@ function QueryResultCell({
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
+  // TODO: move this hook into parent for performance reasons
   const formatted = React.useMemo<string | number | undefined | JSX.Element>(
     () =>
       typeof value !== 'object' &&
