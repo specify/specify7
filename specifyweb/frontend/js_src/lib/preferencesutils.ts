@@ -152,7 +152,7 @@ export async function awaitPrefsSynced(): Promise<void> {
   if (typeof syncTimeoutInstance === 'number') {
     clearTimeout(syncTimeoutInstance);
     syncTimeoutInstance = undefined;
-    syncPreferences().catch(crash);
+    return syncPreferences();
   }
 
   return isSyncing
