@@ -189,6 +189,7 @@ function CreateRecordSet({
             createResource('RecordSet', {
               ...serializeResource(state.recordSet),
               version: 1,
+              type: 0,
               dbTableId: defined(getModel(baseTableName)).tableId,
               /*
                * Back-end has an exception allowing passing

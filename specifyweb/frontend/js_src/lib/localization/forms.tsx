@@ -333,10 +333,13 @@ export const formsText = createDictionary({
   },
   // DeleteButton
   deleteConfirmationDialogHeader: {
-    'en-us': 'Are you sure you want to permanently delete this item(s)?',
-    'ru-ru': 'Вы уверены, что хотите навсегда удалить этот элемент(ы)?',
-    ca: 'Are you sure you want to permanently delete this item(s)?',
-    'es-es': 'Are you sure you want to permanently delete this item(s)?',
+    'en-us':
+      'Are you sure you want to permanently delete this item(s) from the database?',
+    'ru-ru':
+      'Вы уверены, что хотите навсегда удалить этот элемент(ы) из базы данных?',
+    ca: 'Are you sure you want to permanently delete this item(s) from the database?',
+    'es-es':
+      'Are you sure you want to permanently delete this item(s) from the database?',
   },
   deleteConfirmationDialogText: {
     'en-us': 'This action cannot be undone.',
