@@ -23,6 +23,18 @@ def added_user(sender, instance, created, raw, **kwargs):
         # cursor.execute('insert into specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) values (%s, %s)',
         #                (user.id, principal.id))
 
+
+    group_principals = Spprincipal.objects.filter(
+        groupsubclass='edu.ku.brc.af.auth.specify.principal.GroupPrincipal',
+        grouptype=user.usertype,
+    )
+
+    for gp in group_principals:
+        cursor.execute(
+            'insert into specifyuser_spprincipal(specifyuserid, spprincipalid) values (%s, %s)',
+            [user.id, gp.id]
+        )
+
 @receiver(signals.pre_delete, sender=Specifyuser)
 def deleting_user(sender, instance, **kwargs):
     user = instance
