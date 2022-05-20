@@ -82,7 +82,8 @@ type Actions =
         readonly newTableName: keyof Tables | undefined;
         readonly currentTableName: keyof Tables | undefined;
       }
-    >;
+    >
+  | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
   RunQueryAction: ({ state }) => ({
@@ -179,4 +180,5 @@ export const reducer = generateReducer<MainState, Actions>({
       saveRequired: true,
     };
   },
+  SavedQueryAction: ({ state }) => ({ ...state, saveRequired: false }),
 });

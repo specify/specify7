@@ -78,6 +78,7 @@ export function SaveQueryButtons({
   queryResource,
   unsetUnloadProtect,
   getQueryFieldRecords,
+  onSaved: handleSaved,
   onTriedToSave: handleTriedToSave,
 }: {
   readonly isReadOnly: boolean;
@@ -87,6 +88,7 @@ export function SaveQueryButtons({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
   const [showDialog, setShowDialog] = React.useState<false | 'save' | 'saveAs'>(
@@ -108,6 +110,8 @@ export function SaveQueryButtons({
           isSaveAs={showDialog === 'saveAs'}
           onClose={(): void => setShowDialog(false)}
           onSaved={(queryId: number): void => {
+            handleSaved();
+            setShowDialog(false);
             unsetUnloadProtect();
             goTo(`/specify/query/${queryId}/`);
           }}

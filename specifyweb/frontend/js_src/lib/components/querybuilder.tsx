@@ -259,6 +259,7 @@ export function QueryBuilder({
                   saveRequired={saveRequired}
                   unsetUnloadProtect={unsetUnloadProtect}
                   getQueryFieldRecords={getQueryFieldRecords}
+                  onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
                   onTriedToSave={(): boolean => {
                     handleTriedToSave();
                     const fieldLengthLimit =

@@ -45,7 +45,7 @@ export function QuerySaveDialog({
 
   React.useEffect(() => {
     if (query.isNew() || isSaveAs) return;
-    loading(doSave(query, name, isSaveAs).then(handleClose));
+    loading(doSave(query, name, isSaveAs).then(handleSaved));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

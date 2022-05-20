@@ -149,7 +149,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             wasChanged,
           });
         })
-        .then(() => resource.trigger('saved'))
         .then(() => setIsSaving(false))
         .catch((error_) =>
           Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===

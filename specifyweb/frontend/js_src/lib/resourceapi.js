@@ -459,7 +459,8 @@ function eventHandlerForToOne(related, field) {
             resource.needsSaved = false;
 
             let errorHandled = false;
-            const save = ()=>Backbone.Model.prototype.save.apply(resource, []);
+            const save = ()=>Backbone.Model.prototype.save.apply(resource, [])
+              .then(()=>resource.trigger('saved'));
             resource._save =
               typeof conflictCallback === 'function'
                 ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
