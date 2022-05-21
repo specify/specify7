@@ -22,8 +22,10 @@ import type { IR, RA } from './types';
 import { uploadPlanBuilder } from './uploadplanbuilder';
 import { renameNewlyCreatedHeaders } from './wbplanviewheaderhelper';
 import {
+  anyTreeRank,
   findDuplicateMappings,
   formatToManyIndex,
+  formatTreeRank,
   mappingPathToString,
   relationshipIsToMany,
   valueIsToManyIndex,
@@ -282,7 +284,9 @@ export function mutateMappingPath({
     isCurrentToMany === isNewToMany &&
     (valueIsToManyIndex(newValue) ||
       valueIsTreeRank(newValue) ||
-      currentTableName === newTableName);
+      currentTableName === newTableName) &&
+    mappingPath[index] !== formatTreeRank(anyTreeRank) &&
+    newValue !== formatTreeRank(anyTreeRank);
 
   if (preserveMappingPathToRight) mappingPath[index] = newValue;
   // Clear mapping path to the right of current box

@@ -6,9 +6,9 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import type { MappingPath } from './components/wbplanviewmapper';
-import { replaceItem } from './helpers';
 import type { SpQuery, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
+import { replaceItem } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import type { QueryField } from './querybuilderutils';
 import { parseQueryFields } from './querybuilderutils';

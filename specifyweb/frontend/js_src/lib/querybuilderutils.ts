@@ -83,11 +83,12 @@ export function parseQueryFields(
                 .join(',')
             : field.startValue;
 
+        const mappingPath = fieldSpec.toMappingPath();
         return [
-          mappingPathToString(fieldSpec.toMappingPath()),
+          mappingPathToString(mappingPath),
           {
             id: id ?? index,
-            mappingPath: fieldSpec.toMappingPath(),
+            mappingPath,
             sortType: sortTypes[field.sortType],
             filter: {
               type: resetToAny

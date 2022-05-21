@@ -6,7 +6,7 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField } from './datamodel';
 import { f } from './functools';
-import { capitalize, insertItem, toLowerCase } from './helpers';
+import { capitalize, replaceItem, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
@@ -132,10 +132,18 @@ export class QueryFieldSpec {
 
   public toMappingPath(): MappingPath {
     let path = filterArray(
-      this.joinPath.flatMap((field) => [
+      this.joinPath.flatMap((field, index, { length }) => [
         field.name,
-        field.isRelationship && relationshipIsToMany(field)
-          ? formatToManyIndex(1)
+        field.isRelationship
+          ? relationshipIsToMany(field)
+            ? formatToManyIndex(1)
+            : isTreeModel(field.relatedModel.name)
+            ? formatTreeRank(
+                index + 1 === length
+                  ? this.treeRank ?? anyTreeRank
+                  : anyTreeRank
+              )
+            : undefined
           : undefined,
       ])
     );
@@ -149,8 +157,8 @@ export class QueryFieldSpec {
 
     // Insert rank name (or anyRank) into the path
     if (typeof this.treeRank === 'string')
-      path = insertItem(path, -1, formatTreeRank(this.treeRank));
-    else if (isTreeModel(this.baseTable.name))
+      path = replaceItem(path, path.length - 2, formatTreeRank(this.treeRank));
+    if (isTreeModel(this.baseTable.name) && !valueIsTreeRank(path[0]))
       path = [formatTreeRank(anyTreeRank), ...path];
 
     // Format date field
@@ -274,12 +282,13 @@ export class QueryFieldSpec {
           : fieldName || anyTreeRank;
       fieldSpec.joinPath = filterArray([
         ...fieldSpec.joinPath,
-        // If no field provided, use fullName
-        fieldSpec.joinPath.slice(-1)[0]?.isRelationship !== false &&
-        fieldSpec.treeRank !== anyTreeRank
-          ? defined(fieldSpec.table.getField('fullName'))
-          : typeof field === 'undefined'
-          ? parsedField
+        typeof field === 'undefined'
+          ? parsedField ??
+            // If no field provided, use fullName
+            (fieldSpec.joinPath.slice(-1)[0]?.isRelationship !== false &&
+            fieldSpec.treeRank !== anyTreeRank
+              ? defined(fieldSpec.table.getField('fullName'))
+              : undefined)
           : undefined,
       ]);
     }
