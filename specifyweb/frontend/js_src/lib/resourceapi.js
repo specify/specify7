@@ -191,9 +191,21 @@ function eventHandlerForToOne(related, field) {
             const oldValue = typeof key === 'string'
               ? this.attributes[key.toLowerCase()] ?? undefined
               : undefined;
-            // Don't needlessly trigger unload protect if value didn't chane
-            if(typeof key === 'string' && oldValue === newValue)
-                return this;
+            if (
+              typeof key === 'string' &&
+              // Don't needlessly trigger unload protect if value didn't change
+              (oldValue === newValue ||
+                /*
+                 * Do a shallow comparison if value changed from string to
+                 * number (back-end sends certain numeric fields as strings.
+                 * Front-end converts those to numbers)
+                 * TODO: this logic should be moved to this.parse()
+                 */
+                (typeof oldValue === 'string' &&
+                  typeof newValue === 'number' &&
+                  Number.parseInt(oldValue) === newValue))
+            )
+              return this;
             // make the keys case insensitive
             var attrs = {};
             if (_.isObject(key) || key == null) {

@@ -169,7 +169,7 @@ export function CollectionOneToManyPlugin({
   const loading = React.useContext(LoadingContext);
   return (
     <div className="bg-[color:var(--form-background)] rounded p-2">
-      <table className="grid-table w-fit grid-cols-3 gap-2">
+      <table className="grid-table w-fit grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
             <th scope="col">{formsText('collectionObject')}</th>
