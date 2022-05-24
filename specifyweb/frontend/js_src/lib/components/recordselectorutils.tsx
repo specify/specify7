@@ -548,13 +548,10 @@ const fetchItems = async (
         items[order] = recordId;
         return items;
         /*
-         * Map over array to create a copy. Can't use Array.from because
-         * that decompresses a shallow array (ids is a shallow array because
-         * some record sets may have tens of thousands of items)
-         * Also, an array with 40k elements in a React State causes React
-         * DevTools to crash
+         * A trivial slice to create a shallow copy. Can't use Array.from
+         * because that decompresses a sparse array
          */
-      }, ids.map(f.id) ?? []),
+      }, ids.slice() ?? []),
   }));
 
 export function RecordSet<SCHEMA extends AnySchema>({
@@ -586,7 +583,12 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const [items, setItems] = React.useState<
     | {
         readonly totalCount: number;
-        // Caution, this array can be sparse
+        /*
+         * Caution, this array can be sparse
+         * Ids is a sparse array because some record sets may have tens of
+         * thousands of items), Also, an array with 40k elements in a React
+         * State causes React DevTools to crash
+         */
         readonly ids: RA<number | undefined>;
         readonly isAddingNew: boolean;
         readonly index: number;

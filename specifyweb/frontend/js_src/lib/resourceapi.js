@@ -189,11 +189,14 @@ function eventHandlerForToOne(related, field) {
             // Set may get called with "null" or "undefined"
             const newValue = value ?? undefined;
             const oldValue = typeof key === 'string'
-              ? this.attributes[key.toLowerCase()] ?? undefined
+              ? this.attributes[key.toLowerCase()] ??
+                this.dependentResources[key.toLowerCase()] ?? undefined
               : undefined;
+            // Don't needlessly trigger unload protect if value didn't change
             if (
               typeof key === 'string' &&
-              // Don't needlessly trigger unload protect if value didn't change
+              typeof (oldValue??'') !== 'object' &&
+              typeof (newValue??'') !== 'object' &&
               (oldValue === newValue ||
                 /*
                  * Do a shallow comparison if value changed from string to
