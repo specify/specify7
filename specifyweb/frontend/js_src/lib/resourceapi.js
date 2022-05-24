@@ -188,7 +188,9 @@ function eventHandlerForToOne(related, field) {
         set(key, value, options) {
             // Set may get called with "null" or "undefined"
             const newValue = value ?? undefined;
-            const oldValue = this.attributes[key] ?? undefined;
+            const oldValue = typeof key === 'string'
+              ? this.attributes[key.toLowerCase()] ?? undefined
+              : undefined;
             // Don't needlessly trigger unload protect if value didn't chane
             if(typeof key === 'string' && oldValue === newValue)
                 return this;

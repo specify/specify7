@@ -187,16 +187,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         <SubmitComponent
           form={formId}
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
-          /*
-           * Don't disable the button if saveBlocked, so that clicking the button
-           * would make browser focus the invalid field
-           */
           disabled={
             disabled ||
             isSaving ||
             (!saveRequired &&
               !externalSaveRequired &&
+              /*
+               * Don't disable the button if saveBlocked, so that clicking the
+               * button would make browser focus the invalid field
+               */
               !saveBlocked &&
+              /*
+               * Enable the button for new resources, even if there are no
+               * unsaved changes so that empty resources can be saved. If that
+               * is not desirable, remove the following line
+               */
               !resource.isNew())
           }
           onClick={(): void =>
