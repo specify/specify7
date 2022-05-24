@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.db import connection
 
 from specifyweb.specify.models import Specifyuser, Spprincipal, Collection
+from .exceptions import BusinessRuleException
 
 
 @receiver(signals.post_save, sender=Specifyuser)
@@ -38,6 +39,13 @@ def added_user(sender, instance, created, raw, **kwargs):
 @receiver(signals.pre_delete, sender=Specifyuser)
 def deleting_user(sender, instance, **kwargs):
     user = instance
+
+    nonpersonal_appresources = user.spappresources.filter(spappresourcedir__ispersonal=False)
+    if nonpersonal_appresources.exists():
+        raise BusinessRuleException(
+            f"user {user.name} owns nonpersonal appresources {[r.name for r in nonpersonal_appresources]}"
+        )
+
     cursor = connection.cursor()
     cursor.execute('delete from specifyuser_spprincipal where SpecifyUserID = %s', [user.id])
     # Clean up unused user principal rows.

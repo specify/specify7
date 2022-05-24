@@ -83,6 +83,9 @@ SPECIAL_DELETION_RULES = {
     'Workbenchrowimage.workbenchrow': models.DO_NOTHING,
     'Workbenchrowexportedrelationship.workbenchrow': models.DO_NOTHING,
 
+    'Spappresourcedir.specifyuser': models.CASCADE,
+    'Spappresource.specifyuser': models.CASCADE,
+    'Spappresource.spappresourcedir': models.CASCADE,
     'Spappresourcedata.spappresource': models.CASCADE,
     'Spappresourcedata.spviewsetobj': models.CASCADE,
     'Spreport.appresource': models.CASCADE,
