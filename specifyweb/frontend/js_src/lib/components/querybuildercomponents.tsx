@@ -87,7 +87,9 @@ export function SaveQueryButtons({
   readonly isValid: () => void;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
-  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly getQueryFieldRecords:
+    | (() => RA<SerializedResource<SpQueryField>>)
+    | undefined;
   readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
@@ -98,7 +100,10 @@ export function SaveQueryButtons({
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
 
   function handleSave(newState: typeof showDialog): void {
-    if (newState === 'save' || newState === 'saveAs')
+    if (
+      typeof getQueryFieldRecords === 'function' &&
+      (newState === 'save' || newState === 'saveAs')
+    )
       queryResource.set('fields', getQueryFieldRecords());
     setShowDialog(newState);
   }
@@ -155,7 +160,9 @@ export function MakeRecordSetButton({
   readonly baseTableName: keyof Tables;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
-  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly getQueryFieldRecords:
+    | (() => RA<SerializedResource<SpQueryField>>)
+    | undefined;
 }): JSX.Element {
   const [state, setState] = React.useState<
     undefined | 'editing' | 'saving' | 'saved'
@@ -174,7 +181,8 @@ export function MakeRecordSetButton({
         disabled={fields.length === 0}
         onClick={(): void => {
           setState('editing');
-          queryResource.set('fields', getQueryFieldRecords());
+          if (typeof getQueryFieldRecords === 'function')
+            queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new schema.models.RecordSet.Resource();
           recordSet.set('dbTableId', defined(getModel(baseTableName)).tableId);
@@ -221,7 +229,8 @@ export function MakeRecordSetButton({
             onClose={(): void => setState(undefined)}
             buttons={
               <>
-                <Button.DialogClose>{commonText('no')}</Button.DialogClose>
+                <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+                {/* TODO: this link is not blue in dark mode. fix it */}
                 <Link.LikeButton
                   className={className.blueButton}
                   href={`/specify/recordset/${recordSet.id}/`}
@@ -248,7 +257,9 @@ export function QueryExportButtons({
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
-  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly getQueryFieldRecords:
+    | (() => RA<SerializedResource<SpQueryField>>)
+    | undefined;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -258,7 +269,8 @@ export function QueryExportButtons({
   );
 
   function doQueryExport(url: string, captions?: RA<string>): void {
-    queryResource.set('fields', getQueryFieldRecords());
+    if (typeof getQueryFieldRecords === 'function')
+      queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
     setState('creating');
     void ping(url, {
@@ -368,7 +380,9 @@ export function QueryLoanReturn({
 }: {
   readonly fields: RA<QueryField>;
   readonly queryResource: SpecifyResource<SpQuery>;
-  readonly getQueryFieldRecords: () => RA<SerializedResource<SpQueryField>>;
+  readonly getQueryFieldRecords:
+    | (() => RA<SerializedResource<SpQueryField>>)
+    | undefined;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -414,7 +428,9 @@ export function QueryLoanReturn({
                 receivedby: userInformation.agent.resource_uri,
               }),
             queryResource: resourceToJson(
-              queryResource.set('fields', getQueryFieldRecords())
+              typeof getQueryFieldRecords === 'function'
+                ? queryResource.set('fields', getQueryFieldRecords())
+                : queryResource
             ),
           })
         }

@@ -234,8 +234,7 @@ const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {commonText('feedItemUpdated')}
-        <br />
+        {commonText('feedItemUpdated')}{' '}
         <Link.Default
           download
           href={`/static/depository/export_feed/${filename}`}
@@ -248,8 +247,7 @@ const notificationRenderers: IR<
   'update-feed-failed'(notification) {
     return (
       <>
-        {commonText('updateFeedFailed')}
-        <br />
+        {commonText('updateFeedFailed')}{' '}
         <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -262,8 +260,7 @@ const notificationRenderers: IR<
   'dwca-export-complete'(notification) {
     return (
       <>
-        {commonText('dwcaExportCompleted')}
-        <br />
+        {commonText('dwcaExportCompleted')}{' '}
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}
@@ -276,8 +273,7 @@ const notificationRenderers: IR<
   'dwca-export-failed'(notification) {
     return (
       <>
-        {commonText('dwcaExportFailed')}
-        <br />
+        {commonText('dwcaExportFailed')}{' '}
         <Link.Default
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
@@ -290,8 +286,7 @@ const notificationRenderers: IR<
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToCsvCompleted')}
-        <br />
+        {commonText('queryExportToCsvCompleted')}{' '}
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}
@@ -304,8 +299,7 @@ const notificationRenderers: IR<
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToKmlCompleted')}
-        <br />
+        {commonText('queryExportToKmlCompleted')}{' '}
         <Link.Default
           download
           href={`/static/depository/${notification.payload.file}`}

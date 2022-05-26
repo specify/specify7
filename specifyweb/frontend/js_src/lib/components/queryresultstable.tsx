@@ -233,7 +233,7 @@ function CreateRecordSet({
           onClose={(): void => setState({ type: 'Main' })}
           buttons={
             <>
-              <Button.DialogClose>{commonText('no')}</Button.DialogClose>
+              <Button.DialogClose>{commonText('close')}</Button.DialogClose>
               <Link.Blue href={`/specify/recordset/${state.recordSetId}/`}>
                 {commonText('open')}
               </Link.Blue>

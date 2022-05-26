@@ -16,7 +16,7 @@ function eventHandlerForToOne(related, field) {
 
             switch (event) {
             case 'saverequired':
-                this.needsSaved = true;
+                this.handleChanged();
                 this.trigger.apply(this, args);
                 return;
             case  'change:id':
@@ -44,7 +44,7 @@ function eventHandlerForToOne(related, field) {
                 this.trigger.apply(this, args);
                 break;
             case 'saverequired':
-                this.needsSaved = true;
+                this.handleChanged();
                 this.trigger.apply(this, args);
                 break;
             case 'add':
@@ -83,7 +83,7 @@ function eventHandlerForToOne(related, field) {
             // or updated during a save
             this.on('change', function() {
                 if (!this._fetch && !this._save) {
-                    this.needsSaved = true;
+                    this.handleChanged();
                     this.trigger('saverequired');
                 }
             });
@@ -91,6 +91,13 @@ function eventHandlerForToOne(related, field) {
             globalEvents.trigger('initResource', this);
             if(this.isNew())
                 globalEvents.trigger('newResource', this);
+        },
+        /*
+         * This is encapsulated into a separate function so that can set a
+         * breakpoint in a single place
+         */
+        handleChanged(){
+            this.needsSaved = true;
         },
         async clone() {
             var self = this;

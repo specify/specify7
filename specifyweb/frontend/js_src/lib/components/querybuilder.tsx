@@ -128,10 +128,16 @@ export function QueryBuilder({
     mappingPathIsComplete(mappingPath)
   );
 
-  const getQueryFieldRecords = (
-    fields: typeof state.fields = state.fields
-  ): ReturnType<typeof unParseQueryFields> =>
-    unParseQueryFields(state.baseTableName, fields, originalQueryFields);
+  /*
+   * That function does not need to be called most of the time if query
+   * fields haven't changed yet. This avoids triggering needless save blocker
+   */
+  const getQueryFieldRecords = saveRequired
+    ? (
+        fields: typeof state.fields = state.fields
+      ): ReturnType<typeof unParseQueryFields> =>
+        unParseQueryFields(state.baseTableName, fields, originalQueryFields)
+    : undefined;
 
   function runQuery(
     mode: 'regular' | 'count',
@@ -140,7 +146,7 @@ export function QueryBuilder({
     if (!isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
       ...query,
-      fields: getQueryFieldRecords(fields),
+      fields: getQueryFieldRecords?.(fields) ?? query.fields,
       countOnly: mode === 'count',
     });
     setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
@@ -231,32 +237,30 @@ export function QueryBuilder({
               'queryBuilder',
               queryResource.isNew() ? 'create' : 'update'
             ) && (
-              <>
-                <SaveQueryButtons
-                  isReadOnly={isReadOnly}
-                  queryResource={queryResource}
-                  fields={state.fields}
-                  isValid={(): boolean =>
-                    formRef.current?.reportValidity() ?? false
-                  }
-                  saveRequired={saveRequired}
-                  unsetUnloadProtect={unsetUnloadProtect}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                  onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
-                  onTriedToSave={(): boolean => {
-                    handleTriedToSave();
-                    const fieldLengthLimit =
-                      defined(
-                        schema.models.SpQueryField.getLiteralField('startValue')
-                      ).length ?? Number.POSITIVE_INFINITY;
-                    return state.fields.every((field) =>
-                      field.filters.every(
-                        ({ startValue }) => startValue.length < fieldLengthLimit
-                      )
-                    );
-                  }}
-                />
-              </>
+              <SaveQueryButtons
+                isReadOnly={isReadOnly}
+                queryResource={queryResource}
+                fields={state.fields}
+                isValid={(): boolean =>
+                  formRef.current?.reportValidity() ?? false
+                }
+                saveRequired={saveRequired}
+                unsetUnloadProtect={unsetUnloadProtect}
+                getQueryFieldRecords={getQueryFieldRecords}
+                onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+                onTriedToSave={(): boolean => {
+                  handleTriedToSave();
+                  const fieldLengthLimit =
+                    defined(
+                      schema.models.SpQueryField.getLiteralField('startValue')
+                    ).length ?? Number.POSITIVE_INFINITY;
+                  return state.fields.every((field) =>
+                    field.filters.every(
+                      ({ startValue }) => startValue.length < fieldLengthLimit
+                    )
+                  );
+                }}
+              />
             )}
           </header>
         )}
