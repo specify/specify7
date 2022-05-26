@@ -261,6 +261,12 @@ export const commonText = createDictionary({
     ca: 'Ignore',
     'es-es': 'Ignore',
   },
+  proceed: {
+    'en-us': 'Proceed',
+    'ru-ru': 'Продолжить',
+    ca: 'Proceed',
+    'es-es': 'Proceed',
+  },
   logIn: {
     'en-us': 'Log In',
     'ru-ru': 'Авторизоваться',
