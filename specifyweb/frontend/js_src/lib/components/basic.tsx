@@ -136,8 +136,6 @@ export const className = {
   button: 'button',
   link: 'link',
   icon: 'icon link',
-  transparentButton: `hover:bg-gray-300 hover:dark:bg-neutral-500
-    text-gray-800 dark:text-neutral-200`,
   grayButton,
   borderedGrayButton: `${grayButton} ring-1 ring-gray-400 dark:ring-0
     disabled:ring-gray-500 disabled:dark:ring-neutral-500`,
@@ -636,16 +634,7 @@ export const Link = {
     ),
   })),
   LikeButton: wrap('Link.LikeButton', 'a', className.button),
-  Fancy: wrap(
-    'Link.Transparent',
-    'a',
-    `${niceButton} ${className.fancyButton}`
-  ),
-  Transparent: wrap(
-    'Link.Transparent',
-    'a',
-    `${niceButton} ${className.transparentButton}`
-  ),
+  Fancy: wrap('Link.Fancy', 'a', `${niceButton} ${className.fancyButton}`),
   Gray: wrap('Link.Gray', 'a', `${niceButton} ${className.grayButton}`),
   BorderedGray: wrap(
     'Link.BorderedGray',
@@ -681,10 +670,10 @@ DialogContext.displayName = 'DialogContext';
  * in the button's onClick and the dialog's onClose
  */
 function DialogCloseButton({
-  component: ButtonComponent = Button.Transparent,
+  component: ButtonComponent = Button.Gray,
   ...props
-}: Omit<Parameters<typeof Button.Transparent>[0], 'onClick'> & {
-  readonly component?: typeof Button.Transparent;
+}: Omit<Parameters<typeof Button.Gray>[0], 'onClick'> & {
+  readonly component?: typeof Button.Gray;
 }): JSX.Element {
   const handleClose = React.useContext(DialogContext);
   if (typeof handleClose === 'undefined')
@@ -728,10 +717,6 @@ export const Button = {
     })
   ),
   Fancy: button('Button.LikeLink', `${niceButton} ${className.fancyButton}`),
-  Transparent: button(
-    'Button.Transparent',
-    `${niceButton} ${className.transparentButton}`
-  ),
   Gray: button('Button.Gray', `${niceButton} ${className.grayButton}`),
   BorderedGray: button(
     'Button.BorderedGray',
@@ -778,10 +763,6 @@ export const Submit = {
   Fancy: submitButton(
     'Submit.Fancy',
     `${niceButton} ${className.fancyButton} !inline`
-  ),
-  Transparent: submitButton(
-    'Submit.Transparent',
-    `${niceButton} ${className.transparentButton}`
   ),
   Gray: submitButton('Submit.Gray', `${niceButton} ${className.grayButton}`),
   Red: submitButton('Submit.Red', `${niceButton} ${className.redButton}`),

@@ -113,9 +113,7 @@ export function AddLanguage({
       onClose={handleClose}
       buttons={
         <>
-          <Button.Transparent onClick={handleGoBack}>
-            {commonText('back')}
-          </Button.Transparent>
+          <Button.Gray onClick={handleGoBack}>{commonText('back')}</Button.Gray>
           <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
         </>
       }

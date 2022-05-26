@@ -149,9 +149,7 @@ function ChooseBaseTable({
             {commonText('export')}
           </Link.Green>
           <span className="flex-1 -ml-2" />
-          <Button.Transparent onClick={handleBack}>
-            {commonText('back')}
-          </Button.Transparent>
+          <Button.Gray onClick={handleBack}>{commonText('back')}</Button.Gray>
         </>
       }
     >

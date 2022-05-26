@@ -49,9 +49,7 @@ export function TreeSelectDialog({
       header={title}
       onClose={handleClose}
       buttons={
-        <Button.Transparent onClick={handleClose}>
-          {commonText('cancel')}
-        </Button.Transparent>
+        <Button.Gray onClick={handleClose}>{commonText('cancel')}</Button.Gray>
       }
     >
       <nav>

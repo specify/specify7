@@ -341,11 +341,11 @@ export function QueryToolbarItem({
               </Button.Green>
             ) : undefined}
             <span className="flex-1 -ml-2" />
-            <Button.Transparent
+            <Button.Gray
               onClick={(): void => setState({ type: 'ShowQueryListState' })}
             >
               {commonText('cancel')}
-            </Button.Transparent>
+            </Button.Gray>
           </>
         }
       >

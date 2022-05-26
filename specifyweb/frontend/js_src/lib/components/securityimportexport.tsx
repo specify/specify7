@@ -88,9 +88,7 @@ export function SecurityImportExport({
           }}
           buttons={
             <>
-              <Button.DialogClose component={Button.Transparent}>
-                {commonText('cancel')}
-              </Button.DialogClose>
+              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Submit.Green
                 disabled={typeof newRoles === 'undefined'}
                 form={id('form')}
