@@ -227,28 +227,11 @@ export function QueryBuilder({
                 </ProtectedTable>
               </ProtectedAction>
             )}
-            <QueryExportButtons
-              baseTableName={state.baseTableName}
-              fields={state.fields}
-              queryResource={queryResource}
-              getQueryFieldRecords={getQueryFieldRecords}
-            />
             {hasToolPermission(
               'queryBuilder',
               queryResource.isNew() ? 'create' : 'update'
             ) && (
               <>
-                {!queryResource.isNew() && (
-                  <Button.Small
-                    disabled={!saveRequired}
-                    onClick={(): void => {
-                      unsetUnloadProtect();
-                      window.location.reload();
-                    }}
-                  >
-                    {queryText('abandonChanges')}
-                  </Button.Small>
-                )}
                 <SaveQueryButtons
                   isReadOnly={isReadOnly}
                   queryResource={queryResource}
@@ -464,6 +447,14 @@ export function QueryBuilder({
                   })
                 );
               }}
+              extraButtons={
+                <QueryExportButtons
+                  baseTableName={state.baseTableName}
+                  fields={state.fields}
+                  queryResource={queryResource}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                />
+              }
               createRecordSet={
                 !isReadOnly &&
                 hasPermission('/querybuilder/query', 'create_recordset') ? (

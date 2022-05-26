@@ -128,7 +128,7 @@ export function SaveQueryButtons({
           }
           showConfirmation={showConfirmation}
         >
-          {commonText('save')}
+          {queryText('saveQuery')}
         </QueryButton>
       )}
       {isReadOnly || queryResource.isNew() ? undefined : (

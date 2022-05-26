@@ -263,6 +263,7 @@ export function QueryResultsTable({
   sortConfig,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  extraButtons,
   createRecordSet,
 }: {
   readonly model: SpecifyModel;
@@ -280,6 +281,7 @@ export function QueryResultsTable({
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
+  readonly extraButtons: JSX.Element | undefined;
   readonly createRecordSet: JSX.Element | undefined;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
@@ -332,7 +334,7 @@ export function QueryResultsTable({
   const loading = React.useContext(LoadingContext);
 
   return (
-    <Container.Base className="w-full">
+    <Container.Base className="w-full bg-[color:var(--form-background)]">
       <div className="gap-x-2 flex items-center">
         <H3>{`${label}: (${
           selectedRows.size === 0
@@ -342,25 +344,28 @@ export function QueryResultsTable({
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) && results.length > 0 ? (
           <>
-            {selectedRows.size > 0
-              ? hasToolPermission('recordSets', 'create') && (
-                  <CreateRecordSet
-                    /*
-                     * This is needed so that IDs are in the same order as they
-                     * are in query results (selectedRows set may be out of order
-                     * if records were selected out of order)
-                     */
-                    getIds={(): RA<number> =>
-                      defined(results)
-                        .filter((result) =>
-                          selectedRows.has(result[queryIdField] as number)
-                        )
-                        .map((result) => result[queryIdField] as number)
-                    }
-                    baseTableName={fieldSpecs[0].baseTable.name}
-                  />
-                )
-              : createRecordSet}
+            {extraButtons}
+            {hasToolPermission('recordSets', 'create') ? (
+              selectedRows.size > 0 ? (
+                <CreateRecordSet
+                  /*
+                   * This is needed so that IDs are in the same order as they
+                   * are in query results (selectedRows set may be out of order
+                   * if records were selected out of order)
+                   */
+                  getIds={(): RA<number> =>
+                    defined(results)
+                      .filter((result) =>
+                        selectedRows.has(result[queryIdField] as number)
+                      )
+                      .map((result) => result[queryIdField] as number)
+                  }
+                  baseTableName={fieldSpecs[0].baseTable.name}
+                />
+              ) : (
+                createRecordSet
+              )
+            ) : undefined}
             {typeof handleSelected === 'undefined' && (
               <ViewRecords
                 selectedRows={selectedRows}
@@ -515,9 +520,10 @@ export function QueryResultsWrapper({
   queryResource,
   fields,
   recordSetId,
+  extraButtons,
+  createRecordSet,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
-  createRecordSet,
 }: {
   readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
@@ -525,12 +531,13 @@ export function QueryResultsWrapper({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
+  readonly extraButtons: JSX.Element | undefined;
+  readonly createRecordSet: JSX.Element | undefined;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
-  readonly createRecordSet: JSX.Element | undefined;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (offset: number) =>
@@ -610,6 +617,7 @@ export function QueryResultsWrapper({
           initialData,
           sortConfig: fields.map((field) => field.sortType),
           onSortChange: handleSortChange,
+          extraButtons,
           createRecordSet,
         })
       )

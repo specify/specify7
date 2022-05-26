@@ -217,12 +217,6 @@ export const queryText = createDictionary({
     ca: 'Make Record Set',
     'es-es': 'Make Record Set',
   },
-  abandonChanges: {
-    'en-us': 'Abandon Changes',
-    'ru-ru': 'Отказаться от изменений',
-    ca: 'Abandon Changes',
-    'es-es': 'Abandon Changes',
-  },
   saveAs: {
     'en-us': 'Save As',
     'ru-ru': 'Сохранить как',
@@ -438,5 +432,11 @@ export const queryText = createDictionary({
     'ru-ru': 'Items have been returned',
     ca: 'Items have been returned',
     'es-es': 'Items have been returned',
+  },
+  saveQuery: {
+    'en-us': 'Save Query',
+    'ru-ru': 'Сохранить запрос',
+    ca: 'Save Query',
+    'es-es': 'Save Query',
   },
 });
