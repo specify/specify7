@@ -63,7 +63,6 @@ function eventHandlerForToOne(related, field) {
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
-        _ignoreChanges: false,  // Don't trigger saveRequried when setting default values
 
         constructor() {
             this.specifyModel = this.constructor.specifyModel;

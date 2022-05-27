@@ -7,10 +7,10 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { RA } from '../types';
 import { Button, Ul } from './basic';
+import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
-import { LoadingContext } from './contexts';
 
 /**
  * A button to delele a resorce
@@ -76,9 +76,14 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             buttons={
               <>
                 <Button.Red
-                  onClick={(): void =>
-                    loading(resource.destroy().then(handleDeleted))
-                  }
+                  onClick={(): void => {
+                    /*
+                     * TODO: move this into ResourceApi.js
+                     */
+                    // @ts-expect-error Changing a read-only parameter
+                    resource.needsSaved = false;
+                    loading(resource.destroy().then(handleDeleted));
+                  }}
                 >
                   {commonText('delete')}
                 </Button.Red>
