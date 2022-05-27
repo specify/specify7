@@ -82,7 +82,12 @@ function AboutDialog({
                 welcomeText('databaseVersion'),
                 getSystemInfo().database_version,
               ],
-              [welcomeText('schemaVersion'), getSystemInfo().schema_version],
+              [
+                welcomeText('schemaVersion'),
+                <Link.Default href="/specify/datamodel/" key="link">
+                  {getSystemInfo().schema_version}
+                </Link.Default>,
+              ],
               [welcomeText('databaseName'), getSystemInfo().database],
               ...(hasTablePermission('SpVersion', 'read')
                 ? [
