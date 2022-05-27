@@ -511,12 +511,6 @@ export const formsText = createDictionary({
     ca: 'This form has not been saved.',
     'es-es': 'This form has not been saved.',
   },
-  clone: {
-    'en-us': 'Clone',
-    'ru-ru': 'Клонировать',
-    ca: 'Clone',
-    'es-es': 'Clone',
-  },
   saveConflictDialogHeader: {
     'en-us': 'Save conflict',
     'ru-ru': 'Сохранить конфликт',
