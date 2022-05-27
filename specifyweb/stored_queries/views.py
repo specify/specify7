@@ -2,17 +2,18 @@ import logging
 import json
 from threading import Thread
 from datetime import datetime
-
+from uuid import uuid4
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
+from django import http
 
 from ..specify.models import Collection, Recordset
 from ..specify.api import toJson, uri_for_model
 from ..specify.views import login_maybe_required
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, check_table_permissions
 
-from . import models
+from . import models, tasks
 from .queryfield import QueryField
 from .execution import execute, run_ephemeral_query, do_export, recordset
 
@@ -92,10 +93,11 @@ def export_csv(request):
         collection = request.specify_collection
 
     filename = 'query_results_%s.csv' % datetime.now().isoformat()
+    taskid = str(uuid4())
+    async_result = tasks.do_export.apply_async([
+        spquery, collection.id, request.specify_user.id, filename, 'csv', None
+    ], task_id = taskid)
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'csv', None))
-    thread.daemon = True
-    thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
 @require_POST
@@ -123,9 +125,11 @@ def export_kml(request):
 
     filename = 'query_results_%s.kml' % datetime.now().isoformat()
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'kml', the_host))
-    thread.daemon = True
-    thread.start()
+    taskid = str(uuid4())
+    async_result = tasks.do_export.apply_async([
+        spquery, collection.id, request.specify_user.id, filename, 'kml', None
+    ], task_id = taskid)
+
     return HttpResponse('OK', content_type='text/plain')
 
 @require_POST
