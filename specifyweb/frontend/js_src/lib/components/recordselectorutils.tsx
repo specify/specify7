@@ -445,7 +445,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
-                  resource={isDependent ? undefined : resource}
+                  resource={
+                    !isDependent && dialog !== false ? resource : undefined
+                  }
                 />
                 {hasTablePermission(
                   model.name,
