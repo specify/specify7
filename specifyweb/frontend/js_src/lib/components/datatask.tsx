@@ -160,14 +160,6 @@ async function resourceView(
   // Look to see if we are in the context of a recordset
 
   const resource = new model.Resource({ id });
-  /**
-   * Business rules may set scoping fields or create CollectionEvent for
-   * CollectionObject. These changes would be overwritten when resource is
-   * fetched from the back-end
-   * TODO: move this code into the fetch() function of ResourceApi.js
-   */
-  // @ts-expect-error Changing read only field
-  resource.needsSaved = false;
 
   const parameters = parseUrl();
   const recordSetId = f.parseInt(parameters.recordsetid);
