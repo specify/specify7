@@ -7,7 +7,7 @@ import React from 'react';
 import { f } from '../../functools';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
+import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import { schema } from '../../schema';
 import {
@@ -22,8 +22,8 @@ import { Button, className, Container, H2, H3, Link } from '../basic';
 import { TableIcon } from '../common';
 import { downloadFile } from '../filepicker';
 import { useTitle } from '../hooks';
-import type { UserTool } from '../main';
 import { formatNumber } from '../internationalization';
+import type { UserTool } from '../main';
 
 function Table({
   children,
@@ -178,7 +178,9 @@ export function DataModelView({
   ) : (
     <Container.Full>
       <div className="flex items-center gap-2">
-        <H2 className="text-2xl">{formsText('specifySchema')}</H2>
+        <H2 className="text-2xl">
+          {`${welcomeText('schemaVersion')} ${getSystemInfo().schema_version}`}
+        </H2>
         <span className="flex-1 -ml-2" />
         <Link.Green
           href="/context/datamodel.json"

@@ -73,13 +73,6 @@ export const formsText = createDictionary({
     ca: 'Collection Object',
     'es-es': 'Collection Object',
   },
-  // Data Model
-  specifySchema: {
-    'en-us': 'Specify Schema',
-    'ru-ru': 'Схема базы данных Specify',
-    ca: 'Specify Schema',
-    'es-es': 'Specify Schema',
-  },
   // Data View
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted...',
