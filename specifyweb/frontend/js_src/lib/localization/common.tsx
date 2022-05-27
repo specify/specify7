@@ -1414,11 +1414,11 @@ export const commonText = createDictionary({
     ca: 'View Record',
     'es-es': 'View Record',
   },
-  viewRecords: {
-    'en-us': 'View Records',
+  formView: {
+    'en-us': 'Form View',
     'ru-ru': 'Открыть записи',
-    ca: 'View Records',
-    'es-es': 'View Records',
+    ca: 'Form View',
+    'es-es': 'Form View',
   },
   selectRecord: {
     'en-us': 'Select Record',

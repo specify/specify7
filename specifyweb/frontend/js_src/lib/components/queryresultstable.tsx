@@ -122,7 +122,7 @@ function ViewRecords({
   return (
     <>
       <Button.Small onClick={handleOpen} disabled={results.length === 0}>
-        {commonText('viewRecords')}
+        {commonText('formView')}
       </Button.Small>
       {isOpen && (
         <RecordSelectorFromIds

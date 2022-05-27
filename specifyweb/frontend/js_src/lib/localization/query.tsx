@@ -4,7 +4,7 @@
  * @module
  */
 
-import { createDictionary, whitespaceSensitive } from './utils';
+import {createDictionary, whitespaceSensitive} from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -139,24 +139,24 @@ export const queryText = createDictionary({
     'es-es': 'Please add latitude and longitude fields to the query.',
   },
   queryExportStartedDialogHeader: {
-    'en-us': 'Query Export started',
+    'en-us': 'Export File Being Created',
     'ru-ru': 'Экспорт запроса запущен',
-    ca: 'Query Export started',
-    'es-es': 'Query Export started',
+    ca: 'Export File Being Created',
+    'es-es': 'Export File Being Created',
   },
   queryExportStartedDialogText: {
     'en-us': `
-      The query has begun executing. You will receive a notification when the
-      results file is ready for download.`,
+      A notification will appear when the export file is complete and ready for
+      download.`,
     'ru-ru': `
       Запрос начал выполняться. Вы получите уведомление, когда
       файл будет готов к загрузке.`,
     ca: `
-      The query has begun executing. You will receive a notification when the
-      results file is ready for download.`,
+      A notification will appear when the export file is complete and ready for
+      download.`,
     'es-es': `
-      The query has begun executing. You will receive a notification when the
-      results file is ready for download.`,
+      A notification will appear when the export file is complete and ready for
+      download.`,
   },
   invalidPicklistValue: {
     'en-us': (value: string) => `${value} (current, invalid value)`,
