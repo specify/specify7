@@ -342,7 +342,7 @@ export function UserTools({
         isOpen={isOpen}
         header={commonText('userToolsDialogTitle')}
         onClose={handleClose}
-        buttons={commonText('close')}
+        buttons={<Button.Gray>{commonText('close')}</Button.Gray>}
       >
         <nav className="flex gap-2">
           <UserToolsColumn groups={leftColumn} onClose={handleClose} />
