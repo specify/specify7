@@ -12,8 +12,12 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import { formatUrl, parseUrl } from '../querystring';
-import { deleteResource, getResourceViewUrl, resourceOn } from '../resource';
-import { schema } from '../schema';
+import {
+  createResource,
+  deleteResource,
+  getResourceViewUrl,
+  resourceOn,
+} from '../resource';
 import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
@@ -655,17 +659,23 @@ export function RecordSet<SCHEMA extends AnySchema>({
         isDuplicate
           ? handleHasDuplicate()
           : setItems(({ totalCount, ids } = defaultRecordSetState) => {
+              // If resource is not yet in a context of a record set, make it
               if (resource.recordsetid !== recordSet.id) {
                 resource.recordsetid = recordSet.id;
-                if (!resource.isNew()) {
-                  const recordSetItem =
-                    new schema.models.RecordSetItem.Resource({
+                /*
+                 * For new resources, RecordSetItem would be created by the
+                 * back-end on save. For existing resources have to do that
+                 * manually
+                 */
+                if (!resource.isNew())
+                  loading(
+                    createResource('RecordSetItem', {
                       recordId: resource.id,
                       recordSet: recordSet.get('resource_uri'),
-                    });
-                  loading(recordSetItem.save());
-                }
+                    })
+                  );
               }
+              // TODO: this does not work with carry over
               return {
                 totalCount: totalCount + 1,
                 ids:
