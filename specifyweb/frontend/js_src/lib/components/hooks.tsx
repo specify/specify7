@@ -414,31 +414,30 @@ export function useResourceValue<
   const blockers = React.useRef<RA<string>>([]);
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
-  React.useEffect(
-    () =>
-      typeof fieldName === 'string'
-        ? resourceOn(resource, 'blockersChanged', (): void => {
-            if (typeof fieldName === 'undefined') return undefined;
-            blockers.current =
-              resource.saveBlockers
-                ?.blockersForField(fieldName)
-                .filter(({ deferred }) => !deferred || triedToSubmit)
-                .map(({ reason }) => reason) ?? [];
-            handleDontIgnoreError();
-            // Report validity only if not focused
-            if (document.activeElement !== inputRef.current)
-              setValidation(blockers.current);
-          })
-        : undefined,
-    [
-      triedToSubmit,
-      resource,
-      fieldName,
-      setValidation,
-      inputRef,
-      handleDontIgnoreError,
-    ]
-  );
+  React.useEffect(() => {
+    if (typeof fieldName === 'undefined') return;
+    const getBlockers = (): RA<string> =>
+      resource.saveBlockers
+        ?.blockersForField(fieldName)
+        .filter(({ deferred }) => !deferred || triedToSubmit)
+        .map(({ reason }) => reason) ?? [];
+    blockers.current = getBlockers();
+    resourceOn(resource, 'blockersChanged', (): void => {
+      if (typeof fieldName === 'undefined') return;
+      blockers.current = getBlockers();
+      handleDontIgnoreError();
+      // Report validity only if not focused
+      if (document.activeElement !== inputRef.current)
+        setValidation(blockers.current);
+    });
+  }, [
+    triedToSubmit,
+    resource,
+    fieldName,
+    setValidation,
+    inputRef,
+    handleDontIgnoreError,
+  ]);
   React.useEffect(
     () =>
       input === null || typeof fieldName === 'undefined'
