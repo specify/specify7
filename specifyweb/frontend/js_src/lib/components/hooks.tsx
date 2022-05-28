@@ -19,6 +19,7 @@ import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
 import { mergeParsers, parseValue, resolveParser } from '../uiparse';
 import { hasNativeErrors, isInputTouched } from '../validationmessages';
+import { className } from './basic';
 import { FormContext, LoadingContext } from './contexts';
 
 const idStore: R<number> = {};
@@ -470,6 +471,12 @@ export function useResourceValue<
       setInput(inputRef.current);
 
       if (typeof parser.type === 'undefined') return;
+
+      /*
+       * If in a slider resource changes, the component is reUsed by React, thus
+       * need to manually add back the "notTouchedInput" class name
+       */
+      inputRef.current?.classList.add(className.notTouchedInput);
 
       /**
        * If updateValue is called from the onChange event handled and field is
