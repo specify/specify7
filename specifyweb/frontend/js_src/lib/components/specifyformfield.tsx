@@ -66,6 +66,7 @@ const fieldRenderers: {
     fieldName,
     isRequired,
     fieldDefinition: { defaultValue, rows },
+    formType,
   }) {
     const { value, updateValue, validationRef, parser } = useResourceValue(
       resource,
@@ -88,7 +89,8 @@ const fieldRenderers: {
     );
 
     const [autoGrow] = usePref('form', 'behavior', 'textAreaAutoGrow');
-    const Component = autoGrow ? AutoGrowTextArea : Textarea;
+    const Component =
+      autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
     return (
       <Component
