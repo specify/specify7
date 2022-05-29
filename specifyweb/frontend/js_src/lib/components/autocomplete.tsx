@@ -330,15 +330,21 @@ export function Autocomplete<T>({
     [input]
   );
 
+  const forwardChildRef: React.RefCallback<HTMLInputElement> =
+    React.useCallback(
+      (input): void => {
+        setInput(input);
+        if (typeof forwardRef === 'object' && forwardRef !== null)
+          forwardRef.current = input;
+        else if (typeof forwardRef === 'function') forwardRef(input);
+      },
+      [forwardRef]
+    );
+
   return (
     <>
       {children({
-        forwardRef(input): void {
-          setInput(input);
-          if (typeof forwardRef === 'object' && forwardRef !== null)
-            forwardRef.current = input;
-          else if (typeof forwardRef === 'function') forwardRef(input);
-        },
+        forwardRef: forwardChildRef,
         value: pendingValue,
         type: 'search',
         autoComplete: 'off',
