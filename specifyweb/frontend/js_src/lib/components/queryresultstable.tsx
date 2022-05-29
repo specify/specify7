@@ -38,6 +38,7 @@ import {
 } from './querybuildercomponents';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
+import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 
 function TableHeaderCell({
@@ -171,7 +172,7 @@ function CreateRecordSet({
     | State<'Main'>
     | State<'Editing', { recordSet: SpecifyResource<RecordSet> }>
     | State<'Saving'>
-    | State<'Saved', { recordSetId: number }>
+    | State<'Saved', { recordSet: SpecifyResource<RecordSet> }>
   >({ type: 'Main' });
 
   return (
@@ -208,10 +209,10 @@ function CreateRecordSet({
                 recordId: id,
               })),
             })
-              .then(({ id }) =>
+              .then((recordSet) =>
                 setState({
                   type: 'Saved',
-                  recordSetId: id,
+                  recordSet: deserializeResource(recordSet),
                 })
               )
               .catch(crash);
@@ -228,7 +229,7 @@ function CreateRecordSet({
       {state.type === 'Saving' && recordSetFromQueryLoading}
       {state.type === 'Saved' && (
         <RecordSetCreated
-          recordSetId={state.recordSetId}
+          recordSet={state.recordSet}
           onClose={(): void => setState({ type: 'Main' })}
         />
       )}

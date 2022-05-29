@@ -4,7 +4,7 @@
  * @module
  */
 
-import {createDictionary, whitespaceSensitive} from './utils';
+import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
@@ -115,16 +115,10 @@ export const queryText = createDictionary({
     'es-es': 'Generating Record Set...',
   },
   recordSetCreatedDialogHeader: {
-    'en-us': 'Record set created. Open it now?',
-    'ru-ru': 'Открыть только что созданный набор объектов?',
-    ca: 'Record set created. Open it now?',
-    'es-es': 'Record set created. Open it now?',
-  },
-  recordSetCreatedDialogText: {
-    'en-us': 'Open newly created record set now?',
-    'ru-ru': 'Открыть только что созданный набор объектов?',
-    ca: 'Open newly created record set now?',
-    'es-es': 'Open newly created record set now?',
+    'en-us': 'Record set created',
+    'ru-ru': 'Набор объектов созданный',
+    ca: 'Record set created',
+    'es-es': 'Record set created',
   },
   unableToExportAsKmlDialogHeader: {
     'en-us': 'Unable to export to KML',

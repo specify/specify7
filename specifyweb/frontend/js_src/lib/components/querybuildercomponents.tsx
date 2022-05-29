@@ -21,13 +21,13 @@ import { hasPermission } from '../permissions';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
 import { getResourceViewUrl, idFromUrl, resourceToJson } from '../resource';
-import { getModel, schema } from '../schema';
+import { getModel, getModelById, schema } from '../schema';
 import type { RA, RR } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
-import { Button, className, Form, Link, Submit } from './basic';
+import { Button, Form, Link, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useId } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
@@ -37,6 +37,7 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { TableIcon } from './common';
 
 function QueryButton({
   disabled,
@@ -219,7 +220,7 @@ export function MakeRecordSetButton({
       ) : undefined}
       {state === 'saved' && typeof recordSet === 'object' ? (
         <RecordSetCreated
-          recordSetId={recordSet.id}
+          recordSet={recordSet}
           onClose={(): void => setState(undefined)}
         />
       ) : undefined}
@@ -239,30 +240,24 @@ export const recordSetFromQueryLoading = (
 );
 
 export function RecordSetCreated({
-  recordSetId,
+  recordSet,
   onClose: handleClose,
 }: {
-  readonly recordSetId: number;
+  readonly recordSet: SpecifyResource<RecordSet>;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <Dialog
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
-      buttons={
-        <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          {/* TODO: this link is not blue in dark mode. fix it */}
-          <Link.LikeButton
-            className={className.blueButton}
-            href={`/specify/recordset/${recordSetId}/`}
-          >
-            {commonText('open')}
-          </Link.LikeButton>
-        </>
-      }
+      buttons={commonText('close')}
     >
-      {queryText('recordSetCreatedDialogText')}
+      <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
+        <TableIcon
+          name={defined(getModelById(recordSet.get('dbTableId'))).name}
+        />
+        {recordSet.get('name')}
+      </Link.Default>
     </Dialog>
   );
 }
