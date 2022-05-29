@@ -461,6 +461,11 @@ export function useResourceValue<
 
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
+    /*
+     * TODO: disable @typescript-eslint/no-inferrable-types and set
+     *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
+     *   infer implicit types
+     */
     function updateValue(newValue: T, validate = true) {
       if (ignoreChangeRef.current) return;
 
@@ -493,7 +498,7 @@ export function useResourceValue<
         newValue?.toString() ?? ''
       );
 
-      const storedValue = (
+      const formattedValue = (
         parser.type === 'number' && validate
           ? f.parseFloat(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
@@ -502,11 +507,12 @@ export function useResourceValue<
           ? parseResults.parsed
           : newValue
       ) as T;
-      setValue(storedValue);
+      setValue(formattedValue);
       if (typeof fieldName === 'undefined') return;
+      // TODO: simplify this part
       if (!validate) {
         ignoreChangeRef.current = true;
-        resource.set(fieldName, storedValue as never);
+        resource.set(fieldName, formattedValue as never);
         ignoreChangeRef.current = false;
         return;
       }
@@ -516,15 +522,15 @@ export function useResourceValue<
         setValidation(blockers.current, validate ? 'auto' : 'silent');
         ignoreChangeRef.current = true;
         if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
-          resource.set(fieldName, storedValue as never, {
+          resource.set(fieldName, formattedValue as never, {
             // Don't trigger save blocker for this trivial change
-            silent: storedValue === null && resource.get(fieldName) === '',
+            silent: formattedValue === null && resource.get(fieldName) === '',
           });
         else {
           const parsedValue = parseResults.parsed as string;
           if (
             resource.get(fieldName) !== newValue &&
-            resource.get(fieldName) !== storedValue
+            resource.get(fieldName) !== formattedValue
           )
             resource.set(fieldName, parsedValue as never);
         }
@@ -631,7 +637,7 @@ export function useIsModified(
   ignoreBrandNew = true
 ): boolean {
   const [saveRequired, handleNeedsSaving, handleSaved] = useBooleanState(
-    resource?.needsSaved && (!resource?.isNew() || !ignoreBrandNew)
+    resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew)
   );
 
   React.useEffect(

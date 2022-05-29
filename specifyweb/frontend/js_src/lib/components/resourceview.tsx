@@ -519,7 +519,7 @@ export function ShowResource({
       isSubForm={false}
       mode="edit"
       viewName={resource.specifyModel.view}
-      onDeleted={(): void => goTo('/')}
+      onDeleted={f.void}
       onSaved={({ wasNew, newResource }): void => {
         if (typeof newResource === 'object')
           setRecord({ resource: newResource, recordSet });
