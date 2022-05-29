@@ -151,6 +151,9 @@ export function SaveQueryButtons({
   );
 }
 
+/**
+ * See also `CreateRecordSet`
+ */
 export function MakeRecordSetButton({
   baseTableName,
   queryResource,
@@ -212,39 +215,56 @@ export function MakeRecordSetButton({
                 isDependent={false}
               />
             )}
-            {state === 'saving' && (
-              <Dialog
-                header={queryText('recordSetToQueryDialogHeader')}
-                onClose={(): void => setState(undefined)}
-                buttons={undefined}
-              >
-                {queryText('recordSetToQueryDialogText')}
-                {loadingBar}
-              </Dialog>
-            )}
+            {state === 'saving' && recordSetFromQueryLoading}
           </>
         ) : state === 'saved' && typeof recordSet === 'object' ? (
-          <Dialog
-            header={queryText('recordSetCreatedDialogHeader')}
+          <RecordSetCreated
+            recordSetId={recordSet.id}
             onClose={(): void => setState(undefined)}
-            buttons={
-              <>
-                <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                {/* TODO: this link is not blue in dark mode. fix it */}
-                <Link.LikeButton
-                  className={className.blueButton}
-                  href={`/specify/recordset/${recordSet.id}/`}
-                >
-                  {commonText('open')}
-                </Link.LikeButton>
-              </>
-            }
-          >
-            {queryText('recordSetCreatedDialogText')}
-          </Dialog>
+          />
         ) : undefined
       ) : undefined}
     </>
+  );
+}
+
+export const recordSetFromQueryLoading = (
+  <Dialog
+    header={queryText('recordSetToQueryDialogHeader')}
+    onClose={undefined}
+    buttons={undefined}
+  >
+    {queryText('recordSetToQueryDialogText')}
+    {loadingBar}
+  </Dialog>
+);
+
+export function RecordSetCreated({
+  recordSetId,
+  onClose: handleClose,
+}: {
+  readonly recordSetId: number;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      header={queryText('recordSetCreatedDialogHeader')}
+      onClose={handleClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          {/* TODO: this link is not blue in dark mode. fix it */}
+          <Link.LikeButton
+            className={className.blueButton}
+            href={`/specify/recordset/${recordSetId}/`}
+          >
+            {commonText('open')}
+          </Link.LikeButton>
+        </>
+      }
+    >
+      {queryText('recordSetCreatedDialogText')}
+    </Dialog>
   );
 }
 

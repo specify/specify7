@@ -27,12 +27,16 @@ import { treeRanksPromise } from '../treedefinitions';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import { Button, Container, H3, Link } from './basic';
+import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
+import {
+  RecordSetCreated,
+  recordSetFromQueryLoading
+} from './querybuildercomponents';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { ResourceView } from './resourceview';
@@ -133,8 +137,10 @@ function ViewRecords({
           model={model}
           onAdd={undefined}
           onDelete={handleDelete}
-          // TODO: make fetching more efficient when fetching last query item
-          //   (don't fetch all intermediate results)
+          /*
+           * TODO: make fetching more efficient when fetching last query item
+           *   (don't fetch all intermediate results)
+           */
           onSlide={(index): void =>
             index >= ids.length - 1 ? handleFetchMore?.() : undefined
           }
@@ -152,6 +158,9 @@ function ViewRecords({
   );
 }
 
+/**
+ * See also `MakeRecordSetButton`
+ */
 function CreateRecordSet({
   getIds,
   baseTableName,
@@ -217,31 +226,12 @@ function CreateRecordSet({
           isDependent={false}
         />
       )}
-      {state.type === 'Saving' && (
-        <Dialog
-          header={queryText('recordSetToQueryDialogHeader')}
-          onClose={(): void => setState({ type: 'Main' })}
-          buttons={undefined}
-        >
-          {queryText('recordSetToQueryDialogText')}
-          {loadingBar}
-        </Dialog>
-      )}
+      {state.type === 'Saving' && recordSetFromQueryLoading}
       {state.type === 'Saved' && (
-        <Dialog
-          header={queryText('recordSetCreatedDialogHeader')}
+        <RecordSetCreated
+          recordSetId={state.recordSetId}
           onClose={(): void => setState({ type: 'Main' })}
-          buttons={
-            <>
-              <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-              <Link.Blue href={`/specify/recordset/${state.recordSetId}/`}>
-                {commonText('open')}
-              </Link.Blue>
-            </>
-          }
-        >
-          {queryText('recordSetCreatedDialogText')}
-        </Dialog>
+        />
       )}
     </>
   );
