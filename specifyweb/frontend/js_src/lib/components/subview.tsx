@@ -100,12 +100,28 @@ export function SubView({
   const [collection, setCollection] = React.useState<
     Collection<AnySchema> | undefined
   >(undefined);
+  const versionRef = React.useRef<number>(0);
   React.useEffect(
     () =>
       resourceOn(
         parentResource,
         `change:${relationship.name}`,
-        (): void => void fetchCollection().then(setCollection).catch(crash),
+        (): void => {
+          versionRef.current += 1;
+          const localVersionRef = versionRef.current;
+          fetchCollection()
+            .then((collection) =>
+              /*
+               * If value changed since begun fetching, don't update the
+               * collection to prevent a race condition.
+               * TODO: simplify this
+               */
+              versionRef.current === localVersionRef
+                ? setCollection(collection)
+                : undefined
+            )
+            .catch(crash);
+        },
         true
       ),
     [parentResource, relationship, fetchCollection]

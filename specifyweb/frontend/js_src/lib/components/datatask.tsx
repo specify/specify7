@@ -157,10 +157,9 @@ async function resourceView(
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
 
-  // Look to see if we are in the context of a recordset
-
   const resource = new model.Resource({ id });
 
+  // Look to see if we are in the context of a recordset
   const parameters = parseUrl();
   const recordSetId = f.parseInt(parameters.recordsetid);
   const recordSet =
