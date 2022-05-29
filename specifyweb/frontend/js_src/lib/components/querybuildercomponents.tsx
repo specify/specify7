@@ -198,31 +198,30 @@ export function MakeRecordSetButton({
       >
         {queryText('makeRecordSet')}
       </QueryButton>
-      {typeof state === 'string' ? (
-        state === 'editing' || state === 'saving' ? (
-          <>
-            {typeof recordSet === 'object' && (
-              <ResourceView
-                dialog="modal"
-                canAddAnother={false}
-                resource={recordSet}
-                onSaving={(): void => setState('saving')}
-                onSaved={(): void => setState('saved')}
-                onClose={(): void => setState(undefined)}
-                onDeleted={f.never}
-                mode="edit"
-                isSubForm={false}
-                isDependent={false}
-              />
-            )}
-            {state === 'saving' && recordSetFromQueryLoading}
-          </>
-        ) : state === 'saved' && typeof recordSet === 'object' ? (
-          <RecordSetCreated
-            recordSetId={recordSet.id}
-            onClose={(): void => setState(undefined)}
-          />
-        ) : undefined
+      {state === 'editing' || state === 'saving' ? (
+        <>
+          {typeof recordSet === 'object' && (
+            <ResourceView
+              dialog="modal"
+              canAddAnother={false}
+              resource={recordSet}
+              onSaving={(): void => setState('saving')}
+              onSaved={(): void => setState('saved')}
+              onClose={(): void => setState(undefined)}
+              onDeleted={f.never}
+              mode="edit"
+              isSubForm={false}
+              isDependent={false}
+            />
+          )}
+          {state === 'saving' && recordSetFromQueryLoading}
+        </>
+      ) : undefined}
+      {state === 'saved' && typeof recordSet === 'object' ? (
+        <RecordSetCreated
+          recordSetId={recordSet.id}
+          onClose={(): void => setState(undefined)}
+        />
       ) : undefined}
     </>
   );

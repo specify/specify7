@@ -32,10 +32,9 @@ import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
-import { Dialog, loadingBar } from './modaldialog';
 import {
   RecordSetCreated,
-  recordSetFromQueryLoading
+  recordSetFromQueryLoading,
 } from './querybuildercomponents';
 import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
