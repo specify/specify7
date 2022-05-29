@@ -23,7 +23,16 @@ import { getModel, getModelById, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
-import { Button, Container, H2, Input, Label, Link, Select } from './basic';
+import {
+  Button,
+  className,
+  Container,
+  H2,
+  Input,
+  Label,
+  Link,
+  Select,
+} from './basic';
 import { useCollection } from './collection';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
@@ -313,7 +322,9 @@ export function AttachmentsView(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <header className="gap-x-2 has-alt-background flex items-center">
+      <header
+        className={`gap-x-2 flex items-center ${className.hasAltBackground}`}
+      >
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>
           <span className="sr-only">{commonText('filter')}</span>

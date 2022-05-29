@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { tap } from '../assert';
+import { error, tap } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
 import { listen, registerBlurListener } from '../events';
@@ -18,7 +18,7 @@ import type { Input } from '../saveblockers';
 import type { R, RA } from '../types';
 import type { Parser } from '../uiparse';
 import { mergeParsers, parseValue, resolveParser } from '../uiparse';
-import { hasNativeErrors, isInputTouched } from '../validationmessages';
+import { isInputTouched } from '../validationmessages';
 import { className } from './basic';
 import { FormContext, LoadingContext } from './contexts';
 
@@ -381,7 +381,7 @@ export function useBooleanState(
  *
  */
 export function useResourceValue<
-  T extends string | number | boolean,
+  T extends string | number | boolean | null,
   INPUT extends Input = HTMLInputElement
 >(
   resource: SpecifyResource<AnySchema>,
@@ -391,7 +391,7 @@ export function useResourceValue<
   validationMessage?: string | RA<string>
 ): {
   readonly value: T | undefined;
-  readonly updateValue: (newValue: T, validate?: boolean) => void;
+  readonly updateValue: (newValue: T, reportError?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
@@ -405,6 +405,18 @@ export function useResourceValue<
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
+  const field = React.useMemo(
+    () =>
+      typeof fieldName === 'string'
+        ? resource.specifyModel.getField(fieldName) ??
+          error(
+            `${fieldName} does not exist on ${resource.specifyModel.name}`,
+            { resource }
+          )
+        : undefined,
+    [fieldName, resource]
+  );
+
   const [{ triedToSubmit }] = React.useContext(FormContext);
 
   /*
@@ -416,15 +428,15 @@ export function useResourceValue<
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
   React.useEffect(() => {
-    if (typeof fieldName === 'undefined') return;
+    if (typeof field === 'undefined') return;
     const getBlockers = (): RA<string> =>
       resource.saveBlockers
-        ?.blockersForField(fieldName)
+        ?.blockersForField(field.name)
         .filter(({ deferred }) => !deferred || triedToSubmit)
         .map(({ reason }) => reason) ?? [];
     blockers.current = getBlockers();
     resourceOn(resource, 'blockersChanged', (): void => {
-      if (typeof fieldName === 'undefined') return;
+      if (typeof field === 'undefined') return;
       blockers.current = getBlockers();
       handleDontIgnoreError();
       // Report validity only if not focused
@@ -434,14 +446,14 @@ export function useResourceValue<
   }, [
     triedToSubmit,
     resource,
-    fieldName,
+    field,
     setValidation,
     inputRef,
     handleDontIgnoreError,
   ]);
   React.useEffect(
     () =>
-      input === null || typeof fieldName === 'undefined'
+      input === null || typeof field === 'undefined'
         ? undefined
         : registerBlurListener(input, (): void => {
             // Don't report the same error twice
@@ -449,7 +461,7 @@ export function useResourceValue<
             setValidation(blockers.current);
             handleIgnoreError();
           }),
-    [input, setValidation, fieldName, ignoreError, handleIgnoreError]
+    [input, setValidation, field, ignoreError, handleIgnoreError]
   );
 
   /*
@@ -466,7 +478,7 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    function updateValue(newValue: T, validate = true) {
+    function updateValue(newValue: T, reportError = true) {
       if (ignoreChangeRef.current) return;
 
       /*
@@ -478,13 +490,7 @@ export function useResourceValue<
       if (typeof parser.type === 'undefined') return;
 
       /*
-       * If in a slider resource changes, the component is reUsed by React, thus
-       * need to manually add back the "notTouchedInput" class name
-       */
-      inputRef.current?.classList.add(className.notTouchedInput);
-
-      /**
-       * If updateValue is called from the onChange event handled and field is
+       * If updateValue is called from the onChange event handler and field is
        * required and field did not have a value when onChange occurred, then
        * parseValue() is going to report "Value missing" error. This fixes that
        * issue. See https://github.com/specify/specify7/issues/1427
@@ -499,60 +505,45 @@ export function useResourceValue<
       );
 
       const formattedValue = (
-        parser.type === 'number' && validate
+        field?.isRelationship === true && newValue === ''
+          ? null
+          : parser.type === 'number' && reportError
           ? f.parseFloat(parser?.printFormatter?.(newValue, parser) ?? '') ??
             newValue
-          : (['checkbox', 'date'].includes(parser.type ?? '') || validate) &&
+          : (['checkbox', 'date'].includes(parser.type ?? '') || reportError) &&
             parseResults.isValid
           ? parseResults.parsed
           : newValue
       ) as T;
       setValue(formattedValue);
-      if (typeof fieldName === 'undefined') return;
-      // TODO: simplify this part
-      if (!validate) {
-        ignoreChangeRef.current = true;
-        resource.set(fieldName, formattedValue as never);
-        ignoreChangeRef.current = false;
-        return;
-      }
-      const key = `parseError:${fieldName.toLowerCase()}`;
-      if (parseResults.isValid) {
-        resource.saveBlockers?.remove(key);
-        setValidation(blockers.current, validate ? 'auto' : 'silent');
-        ignoreChangeRef.current = true;
-        if (f.maybe(inputRef.current ?? undefined, hasNativeErrors) === false)
-          resource.set(fieldName, formattedValue as never, {
-            // Don't trigger save blocker for this trivial change
-            silent: formattedValue === null && resource.get(fieldName) === '',
-          });
-        else {
-          const parsedValue = parseResults.parsed as string;
-          if (
-            resource.get(fieldName) !== newValue &&
-            resource.get(fieldName) !== formattedValue
-          )
-            resource.set(fieldName, parsedValue as never);
-        }
-        ignoreChangeRef.current = false;
-      } else {
-        setValidation(parseResults.reason, validate ? 'auto' : 'silent');
-        resource.saveBlockers?.add(key, fieldName, parseResults.reason);
-      }
+      if (typeof field === 'undefined') return;
+      const key = `parseError:${field.name.toLowerCase()}`;
+      if (parseResults.isValid) resource.saveBlockers?.remove(key);
+      else resource.saveBlockers?.add(key, field.name, parseResults.reason);
+      setValidation(blockers.current, reportError ? 'auto' : 'silent');
+      ignoreChangeRef.current = true;
+      resource.set(field.name, formattedValue as never, {
+        // Don't trigger save blocker for this trivial change
+        silent: formattedValue === null && resource.get(field.name) === '',
+      });
+      ignoreChangeRef.current = false;
     },
-    [resource, fieldName, parser, inputRef, setValidation]
+    [resource, field, parser, inputRef, setValidation]
+  );
+
+  /*
+   * Resource changes when sliding in a record selector, but react reuses
+   * the DOM component, thus need to manually add back the "notTouchedInput"
+   * class name
+   */
+  React.useEffect(
+    () => input?.classList.add(className.notTouchedInput),
+    [input, resource]
   );
 
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
-    if (typeof fieldName === 'undefined') return;
-
-    const field = resource.specifyModel.getField(fieldName);
-    if (typeof field === 'undefined')
-      console.error(
-        `${fieldName} does not exist on ${resource.specifyModel.name}`,
-        { resource }
-      );
+    if (typeof field === 'undefined') return;
 
     /*
      * Disable parser when validation is disabled. This is useful in search
@@ -580,13 +571,13 @@ export function useResourceValue<
        */
       resource.isNew() &&
       (parser.type !== 'number' ||
-        typeof resource.get(fieldName) !== 'number' ||
-        resource.get(fieldName) === 0) &&
+        typeof resource.get(field.name) !== 'number' ||
+        resource.get(field.name) === 0) &&
       ((parser.type !== 'text' && parser.type !== 'date') ||
-        typeof resource.get(fieldName) !== 'string' ||
-        resource.get(fieldName) === '') &&
+        typeof resource.get(field.name) !== 'string' ||
+        resource.get(field.name) === '') &&
       parser.type !== 'checkbox' &&
-      resource.get(fieldName) !== true &&
+      resource.get(field.name) !== true &&
       /*
        * Don't auto set numeric fields to "0", unless it is the default value
        * in the form definition
@@ -596,7 +587,7 @@ export function useResourceValue<
         (defaultParser?.value ?? 0) !== 0)
     )
       resource.set(
-        fieldName,
+        field.name,
         (parser.type === 'date'
           ? getDateInputValue(
               parseRelativeDate(
@@ -606,19 +597,19 @@ export function useResourceValue<
           : parser.value) as never,
         { silent: true }
       );
-  }, [resource, fieldName, defaultParser]);
+  }, [resource, field, defaultParser]);
 
   React.useEffect(
     () =>
-      typeof fieldName === 'string'
+      typeof field === 'object'
         ? resourceOn(
             resource,
-            `change:${fieldName}`,
-            (): void => updateValue(resource.get(fieldName) as T),
+            `change:${field.name}`,
+            (): void => updateValue(resource.get(field.name) as T),
             true
           )
         : undefined,
-    [fieldName, updateValue, resource, parser]
+    [field, updateValue, resource, parser]
   );
 
   return {

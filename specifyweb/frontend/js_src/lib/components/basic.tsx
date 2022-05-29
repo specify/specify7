@@ -119,14 +119,19 @@ const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 // TODO: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
+  /*
+   * Most fields in Specify are rendered on top of var(--form-background). For
+   * some fields that are rendered on top of var(--background), this class
+   * name is added to prevent background from clashing
+   */
   hasAltBackground: 'has-alt-background',
   /*
-   * Do not show validation errors until tried to submit the form
-   * The class name is negated so that if you forgot to add it in some place,
-   * the validation errors do not get permanently silenced
+   * Do not show validation errors until tried to submit the form or field lost
+   * focus
+   * These class names are negated so that if you forgot to add it in some
+   * place, the validation errors do not get permanently silenced
    */
   notSubmittedForm: 'not-submitted',
-  // Or field lost focus
   notTouchedInput: 'not-touched',
   // Disable default link click intercept action
   navigationHandled: 'navigation-handled',
