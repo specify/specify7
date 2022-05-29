@@ -88,14 +88,13 @@ function eventHandlerForToOne(related, field) {
             });
 
             globalEvents.trigger('initResource', this);
-            if(this.isNew()){
+            if(this.isNew())
                 globalEvents.trigger('newResource', this);
-                /*
-                 * Business rules may set some fields on resource creation
-                 * Those default values should not trigger unload protect
-                 */
-                this.needsSaved = false;
-            }
+            /*
+             * Business rules may set some fields on resource creation
+             * Those default values should not trigger unload protect
+             */
+            this.needsSaved = false;
         },
         /*
          * This is encapsulated into a separate function so that can set a
