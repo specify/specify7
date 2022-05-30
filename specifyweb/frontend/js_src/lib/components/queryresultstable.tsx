@@ -265,7 +265,6 @@ export function QueryResultsTable({
   sortConfig,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
-  extraButtons,
   createRecordSet,
 }: {
   readonly model: SpecifyModel;
@@ -283,7 +282,6 @@ export function QueryResultsTable({
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
-  readonly extraButtons: JSX.Element | undefined;
   readonly createRecordSet: JSX.Element | undefined;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
@@ -346,7 +344,6 @@ export function QueryResultsTable({
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) && results.length > 0 ? (
           <>
-            {extraButtons}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
@@ -522,7 +519,6 @@ export function QueryResultsWrapper({
   queryResource,
   fields,
   recordSetId,
-  extraButtons,
   createRecordSet,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
@@ -533,7 +529,6 @@ export function QueryResultsWrapper({
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
-  readonly extraButtons: JSX.Element | undefined;
   readonly createRecordSet: JSX.Element | undefined;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSortChange?: (
@@ -619,7 +614,6 @@ export function QueryResultsWrapper({
           initialData,
           sortConfig: fields.map((field) => field.sortType),
           onSortChange: handleSortChange,
-          extraButtons,
           createRecordSet,
         })
       )

@@ -106,7 +106,6 @@ function TableResults({
                 ).then(({ data }) => data[model.name].results)
               }
               createRecordSet={undefined}
-              extraButtons={undefined}
             />
           </details>
         ))

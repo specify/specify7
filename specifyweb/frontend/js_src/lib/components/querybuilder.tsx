@@ -233,6 +233,12 @@ export function QueryBuilder({
                 </ProtectedTable>
               </ProtectedAction>
             )}
+            <QueryExportButtons
+              baseTableName={state.baseTableName}
+              fields={state.fields}
+              queryResource={queryResource}
+              getQueryFieldRecords={getQueryFieldRecords}
+            />
             {hasToolPermission(
               'queryBuilder',
               queryResource.isNew() ? 'create' : 'update'
@@ -451,14 +457,6 @@ export function QueryBuilder({
                   })
                 );
               }}
-              extraButtons={
-                <QueryExportButtons
-                  baseTableName={state.baseTableName}
-                  fields={state.fields}
-                  queryResource={queryResource}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                />
-              }
               createRecordSet={
                 !isReadOnly &&
                 hasPermission('/querybuilder/query', 'create_recordset') ? (
