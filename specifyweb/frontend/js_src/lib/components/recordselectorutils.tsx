@@ -33,6 +33,7 @@ import { pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
+import { getModelById } from '../schema';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(parseUrl()[queryParameter], (index) =>
@@ -285,7 +286,7 @@ export function IntegratedRecordSelector({
  */
 export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   ids,
-  isAddingNew,
+  newResource,
   onSlide: handleSlide,
   defaultIndex,
   model,
@@ -307,7 +308,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    * sets or query results with thousands of items)
    */
   readonly ids: RA<number | undefined>;
-  readonly isAddingNew: boolean;
+  readonly newResource: SpecifyResource<SCHEMA> | undefined;
   readonly defaultIndex?: number;
   readonly title: string | undefined;
   readonly dialog: false | 'modal' | 'nonModal';
@@ -360,15 +361,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   React.useEffect(
     () =>
       setIndex((index) =>
-        isAddingNew ? rest.totalCount : Math.min(index, rest.totalCount - 1)
+        typeof newResource === 'object'
+          ? rest.totalCount
+          : Math.min(index, rest.totalCount - 1)
       ),
-    [isAddingNew, rest.totalCount]
+    [newResource, rest.totalCount]
   );
 
-  const newResource = React.useMemo(
-    () => (isAddingNew ? new model.Resource({ id: undefined }) : undefined),
-    [isAddingNew, model]
-  );
   const currentResource = newResource ?? records[index];
   const currentResourceId = currentResource?.id;
   React.useEffect(
@@ -411,7 +410,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             }
           : undefined
       }
-      totalCount={rest.totalCount + (isAddingNew ? 1 : 0)}
+      totalCount={rest.totalCount + (typeof newResource === 'object' ? 1 : 0)}
       index={index}
       model={model}
       records={
@@ -472,7 +471,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}
-                {isAddingNew ? (
+                {typeof newResource === 'object' ? (
                   <p className="flex-1">{formsText('creatingNewRecord')}</p>
                 ) : (
                   <span
@@ -596,7 +595,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
          * State causes React DevTools to crash
          */
         readonly ids: RA<number | undefined>;
-        readonly isAddingNew: boolean;
+        readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly index: number;
       }
     | undefined
@@ -604,10 +603,10 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const defaultRecordSetState = {
     totalCount: 0,
     ids: [],
-    isAddingNew: false,
+    newResource: undefined,
     index: defaultResourceIndex ?? 0,
   };
-  const { totalCount, ids, isAddingNew, index } =
+  const { totalCount, ids, newResource, index } =
     items ?? defaultRecordSetState;
 
   // Fetch ID of record at current index
@@ -627,11 +626,18 @@ export function RecordSet<SCHEMA extends AnySchema>({
         )
       )
         .then((updateIds) =>
-          setItems(({ ids, isAddingNew, index } = defaultRecordSetState) =>
+          setItems(({ ids, newResource, index } = defaultRecordSetState) =>
             f.var(updateIds(ids), ({ totalCount, ids }) => ({
               ids,
               totalCount,
-              isAddingNew: isAddingNew || totalCount === 0,
+              newResource:
+                newResource ??
+                (totalCount === 0
+                  ? f.var(
+                      getModelById(recordSet.get('dbTableId')),
+                      (model) => new model.Resource()
+                    )
+                  : undefined),
               index,
             }))
           )
@@ -675,21 +681,17 @@ export function RecordSet<SCHEMA extends AnySchema>({
                     })
                   );
               }
-              // TODO: this does not work with carry over
               return {
                 totalCount: totalCount + 1,
-                ids:
-                  typeof resource.id === 'undefined'
-                    ? ids
-                    : [...ids, resource.id],
-                isAddingNew: typeof resource.id === 'undefined',
+                ids: resource.isNew() ? ids : [...ids, resource.id],
+                newResource: resource.isNew() ? resource : undefined,
                 index: totalCount,
               };
             })
       )
     );
 
-  return totalCount === 0 && !isAddingNew ? (
+  return totalCount === 0 && typeof newResource === 'undefined' ? (
     <LoadingScreen />
   ) : (
     <>
@@ -698,7 +700,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         ids={ids}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
         isDependent={false}
-        isAddingNew={isAddingNew}
+        newResource={newResource}
         dialog={dialog}
         mode={mode}
         canAddAnother={canAddAnother}
@@ -717,10 +719,10 @@ export function RecordSet<SCHEMA extends AnySchema>({
         }
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-          (!isAddingNew || totalCount !== 0)
+          (typeof newResource === 'undefined' || totalCount !== 0)
             ? (_index, source): void => {
-                if (isAddingNew)
-                  setItems({ totalCount, ids, isAddingNew: false, index });
+                if (typeof newResource === 'object')
+                  setItems({ totalCount, ids, newResource: undefined, index });
                 else
                   loading(
                     (source === 'minusButton'
@@ -739,7 +741,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                       setItems({
                         totalCount: totalCount - 1,
                         ids: removeItem(ids, index),
-                        isAddingNew: false,
+                        newResource: undefined,
                         index: clamp(
                           0,
                           /*
@@ -762,7 +764,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
           setItems({
             totalCount,
             ids,
-            isAddingNew: false,
+            newResource: undefined,
             index: Math.min(index, totalCount - 1),
           })
         }
