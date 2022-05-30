@@ -129,6 +129,10 @@ export const WBUtils = Backbone.View.extend({
     currentCell = undefined
   ) {
     const button = event.target;
+    /*
+     * Can get data-* via button.dataset, but this way is better as can find
+     * usages this way easily (the button.dataset converts keys to camelCase)
+     */
     const direction = button.getAttribute('data-navigation-direction');
     const buttonParent = button.parentElement;
     const type = buttonParent.getAttribute('data-navigation-type');

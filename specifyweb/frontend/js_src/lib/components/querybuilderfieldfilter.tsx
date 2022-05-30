@@ -150,13 +150,14 @@ function QueryInputField({
             .filter(({ parsed }) => parsed !== null)
             .map(({ parsed }) => (parsed as number | string).toString())
             .join(', ');
+
+      handleChange?.(parsed);
       /*
        * HandleChange() would update "value" only if that value has changed
        * since last call, which does not happen if previous value was invalid.
        * Thus, need to also call setValue()
        */
       setValue(parsed);
-      handleChange?.(parsed);
     },
   };
 

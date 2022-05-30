@@ -171,6 +171,7 @@ export function handleResponse<RESPONSE_TYPE = string>({
   readonly strict: boolean;
   readonly text: string;
 }): AjaxResponseObject<RESPONSE_TYPE> {
+  // TODO: silence all errors if the page begun reloading
   try {
     if (expectedResponseCodes.includes(response.status)) {
       if (response.ok && accept === 'application/json') {
