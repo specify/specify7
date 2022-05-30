@@ -214,7 +214,10 @@ function QueryResult({
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
-              // Ignore clicks on the "View" links
+              /*
+               * Ignore clicks on the "View" links and formatted audit log cell
+               * links
+               */
               (target as Element).closest('a') === null
                 ? handleSelected?.(!isSelected, shiftKey)
                 : undefined

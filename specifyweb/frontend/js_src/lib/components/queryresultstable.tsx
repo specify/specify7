@@ -132,17 +132,29 @@ function ViewRecords({
         <RecordSelectorFromIds
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           ids={ids}
-          isAddingNew={false}
+          newResource={undefined}
           defaultIndex={0}
           model={model}
           onAdd={undefined}
-          onDelete={handleDelete}
+          onDelete={(index): void =>
+            handleDelete(
+              selectedRows.size === 0
+                ? index
+                : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
+                    results.findIndex(
+                      (row) => row[queryIdField] === deletedRecordId
+                    )
+                  )
+            )
+          }
           /*
            * TODO: make fetching more efficient when fetching last query item
            *   (don't fetch all intermediate results)
            */
           onSlide={(index): void =>
-            index >= ids.length - 1 ? handleFetchMore?.() : undefined
+            index >= ids.length - 1 && selectedRows.size === 0
+              ? handleFetchMore?.()
+              : undefined
           }
           dialog="modal"
           onClose={handleClose}
