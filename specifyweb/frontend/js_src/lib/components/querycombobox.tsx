@@ -50,6 +50,7 @@ import { NO_ADD_ANOTHER, ResourceView } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
+import { fetchPickLists } from '../picklists';
 
 const typeSearches =
   process.env.NODE_ENV === 'test'
@@ -279,21 +280,25 @@ export function QueryComboBox({
                       label: '',
                       resource: undefined,
                     }
-                  : format(
-                      resource,
-                      typeof typeSearch === 'object'
-                        ? typeSearch.dataObjectFormatter
-                        : undefined
-                    ).then((formatted) => ({
-                      label:
-                        formatted ??
-                        `${
-                          field?.isRelationship === true
-                            ? field.relatedModel.label
-                            : resource.specifyModel.label
-                        } #${resource.id}`,
-                      resource,
-                    }))
+                  : fetchPickLists()
+                      .then(() =>
+                        format(
+                          resource,
+                          typeof typeSearch === 'object'
+                            ? typeSearch.dataObjectFormatter
+                            : undefined
+                        )
+                      )
+                      .then((formatted) => ({
+                        label:
+                          formatted ??
+                          `${
+                            field?.isRelationship === true
+                              ? field.relatedModel.label
+                              : resource.specifyModel.label
+                          } #${resource.id}`,
+                        resource,
+                      }))
               )
           : { label: commonText('noPermission'), resource: undefined },
       [value, resource, field, typeSearch]
