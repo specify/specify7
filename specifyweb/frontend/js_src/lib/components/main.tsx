@@ -52,17 +52,17 @@ const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
   .then(async () =>
     Promise.all([
       import('./toolbar/dataentry'),
-      import('./toolbar/interactions'),
       import('./toolbar/trees'),
-      import('./toolbar/recordsets'),
+      import('./toolbar/interactions'),
       import('./toolbar/query'),
+      import('./toolbar/recordsets'),
       import('./toolbar/report').then(async ({ menuItem }) => ({
         menuItem: await menuItem,
       })),
+      import('./toolbar/wbsdialog'),
       import('../toolbarattachments').then(async ({ menuItem }) => ({
         menuItem: await menuItem,
       })),
-      import('./toolbar/wbsdialog'),
     ])
   )
   .then((items) => processMenuItems(items.map(({ menuItem }) => menuItem)));

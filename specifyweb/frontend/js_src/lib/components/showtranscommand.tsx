@@ -42,7 +42,7 @@ function List({
   );
 
   return resources.length === 0 ? (
-    <>{commonText('nullInline')}</>
+    <>{commonText('noResults')}</>
   ) : Array.isArray(entries) ? (
     <Ul>
       {entries.map(({ label, href }, index) => (
