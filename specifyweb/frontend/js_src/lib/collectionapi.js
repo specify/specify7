@@ -34,6 +34,8 @@ var Base =  Backbone.Collection.extend({
         },
         initialize(_models, options) {
             this.on('add remove', function() {
+                // Warning: changing a collection record does not trigger a
+                // change event in the parent (though it probably should)
                 this.trigger('saverequired');
             }, this);
 
@@ -43,7 +45,7 @@ var Base =  Backbone.Collection.extend({
             // all the objects that point to it with the new pointer.
             // This is to support having collections of objects attached to
             // newly created resources that don't have ids yet. When the
-            // resource is saved, the related objects can have their FKs
+            // resource is saved, the related objects can have their foreign keys
             // set correctly.
             this.related.on('change:id', function() {
                 var relatedUrl = this.related.url();

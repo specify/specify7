@@ -6,6 +6,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode, FormType } from '../parseform';
 import { resourceOn } from '../resource';
+import { schema } from '../schema';
 import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
@@ -105,7 +106,25 @@ export function SubView({
     () =>
       resourceOn(
         parentResource,
-        `change:${relationship.name}`,
+        /**
+         * The change event is not triggered for collecting event records when
+         * saving the collection object form in a collection that has
+         * embeddedCollectingEvent=true. The change event is triggered on save
+         * in all other cases.
+         * Need to make sure to add "saved" listener only in this case, as
+         * otherwise the callback would be called twice for all other cases
+         * when record is saved, as change and saved events would be triggered
+         * at the same time in other cases, and that would call this callback
+         * twice.
+         * Note, this does not fix the issue fully as the same bug occurs in
+         * such cases if collectingEvent is a QueryComboBox
+         * TODO: remove the need for "saved" from here
+         */
+        schema.embeddedCollectingEvent &&
+          parentResource.specifyModel.name === 'CollectionObject' &&
+          relationship.name === 'collectingEvent'
+          ? `change:${relationship.name} saved`
+          : `change:${relationship.name}`,
         (): void => {
           versionRef.current += 1;
           const localVersionRef = versionRef.current;
