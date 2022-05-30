@@ -106,13 +106,6 @@ export const formsText = createDictionary({
     ca: 'Contract',
     'es-es': 'Contract',
   },
-  // Forms Dialog
-  formsDialogTitle: {
-    'en-us': 'Forms',
-    'ru-ru': 'Формы',
-    ca: 'Forms',
-    'es-es': 'Forms',
-  },
   // Interactions
   addItems: {
     'en-us': 'Add Items',

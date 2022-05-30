@@ -214,15 +214,20 @@ function NotificationComponent({
           }
         />
       </div>
-      <p>
+      <div className="flex flex-col gap-2">
         {
-          // TODO: close the dialog when link is clicked
+          /*
+           * TODO: when clicking on a dataset link in dataset transferred
+           *   notification, the dialog does not close. Need to fix that. But,
+           *   the dialog should still remain open when clicking on a new tab
+           *   link
+           */
           (
             notificationRenderers[notification.type] ??
             notificationRenderers.default
           )(notification)
         }
-      </p>
+      </div>
     </article>
   );
 }
@@ -234,78 +239,84 @@ const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {commonText('feedItemUpdated')}{' '}
-        <Link.Default
+        {commonText('feedItemUpdated')}
+        <Link.Green
           download
           href={`/static/depository/export_feed/${filename}`}
+          className="w-fit"
         >
           {filename}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },
   'update-feed-failed'(notification) {
     return (
       <>
-        {commonText('updateFeedFailed')}{' '}
-        <Link.Default
+        {commonText('updateFeedFailed')}
+        <Link.Green
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
+          className="w-fit"
         >
           {commonText('exception')}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },
   'dwca-export-complete'(notification) {
     return (
       <>
-        {commonText('dwcaExportCompleted')}{' '}
-        <Link.Default
+        {commonText('dwcaExportCompleted')}
+        <Link.Green
           download
           href={`/static/depository/${notification.payload.file}`}
+          className="w-fit"
         >
           {commonText('download')}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },
   'dwca-export-failed'(notification) {
     return (
       <>
-        {commonText('dwcaExportFailed')}{' '}
-        <Link.Default
+        {commonText('dwcaExportFailed')}
+        <Link.Green
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
+          className="w-fit"
         >
           {commonText('exception')}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToCsvCompleted')}{' '}
-        <Link.Default
+        {commonText('queryExportToCsvCompleted')}
+        <Link.Green
           download
           href={`/static/depository/${notification.payload.file}`}
+          className="w-fit"
         >
           {commonText('download')}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToKmlCompleted')}{' '}
-        <Link.Default
+        {commonText('queryExportToKmlCompleted')}
+        <Link.Green
           download
           href={`/static/depository/${notification.payload.file}`}
+          className="w-fit"
         >
           {commonText('download')}
-        </Link.Default>
+        </Link.Green>
       </>
     );
   },

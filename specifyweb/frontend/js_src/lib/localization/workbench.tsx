@@ -1350,10 +1350,10 @@ export const wbText = createDictionary({
   },
   // WbsDialog
   wbsDialogDefaultDialogTitle: {
-    'en-us': (dataSetCount: number) => `Data Sets (${dataSetCount})`,
+    'en-us': (dataSetCount: number) => `WorkBench Data Sets (${dataSetCount})`,
     'ru-ru': (dataSetCount: number) => `Наборы данных (${dataSetCount})`,
-    ca: (dataSetCount: number) => `Data Sets (${dataSetCount})`,
-    'es-es': (dataSetCount: number) => `Data Sets (${dataSetCount})`,
+    ca: (dataSetCount: number) => `WorkBench Data Sets (${dataSetCount})`,
+    'es-es': (dataSetCount: number) => `WorkBench Data Sets (${dataSetCount})`,
   },
   wbsDialogEmptyDefaultDialogText: {
     'en-us': 'Currently no Data Sets exist.',

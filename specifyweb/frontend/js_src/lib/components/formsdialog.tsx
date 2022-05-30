@@ -10,7 +10,6 @@ import {
 } from '../helpers';
 import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
-import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { formatUrl } from '../querystring';
@@ -86,7 +85,7 @@ export function FormsDialog({
   return Array.isArray(forms) ? (
     <Dialog
       icon={<span className="text-blue-500">{icons.pencilAt}</span>}
-      header={formsText('formsDialogTitle')}
+      header={commonText('dataEntry')}
       className={{ container: dialogClassNames.narrowContainer }}
       buttons={commonText('cancel')}
       onClose={handleClose}
