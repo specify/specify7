@@ -8,6 +8,7 @@ import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { sortFunction } from '../helpers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -80,16 +81,24 @@ export function Notifications(): JSX.Element {
         .then(({ data: notifications }) => {
           if (destructorCalled) return undefined;
           setNotifications(
-            notifications.map(
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              ({ message_id, read, timestamp, type, ...rest }) => ({
-                messageId: message_id,
-                read,
-                timestamp,
-                type,
-                payload: rest as IR<string>,
-              })
-            )
+            notifications
+              .map(
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                ({ message_id, read, timestamp, type, ...rest }) => ({
+                  messageId: message_id,
+                  read,
+                  timestamp,
+                  type,
+                  payload: rest as IR<string>,
+                })
+              )
+              // Make most recent notification first
+              .sort(
+                sortFunction(
+                  ({ timestamp }) => new Date(timestamp).getTime(),
+                  true
+                )
+              )
           );
           // Stop updating if tab is hidden
           timeout =
