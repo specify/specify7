@@ -459,6 +459,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   <DataEntry.Add
                     disabled={mode === 'view'}
                     onClick={handleAdd}
+                    title={
+                      typeof urlContext === 'number'
+                        ? formsText('addToRecordSet')
+                        : commonText('add')
+                    }
+                    aria-label={
+                      typeof urlContext === 'number'
+                        ? formsText('addToRecordSet')
+                        : commonText('add')
+                    }
                   />
                 )}
                 {(resource?.isNew() === true ||
@@ -469,6 +479,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                       typeof resource === 'undefined' || mode === 'view'
                     }
                     onClick={(): void => handleRemove('minusButton')}
+                    title={
+                      typeof urlContext === 'number'
+                        ? formsText('deleteFromRecordSet')
+                        : commonText('delete')
+                    }
+                    aria-label={
+                      typeof urlContext === 'number'
+                        ? formsText('deleteFromRecordSet')
+                        : commonText('delete')
+                    }
                   />
                 ) : undefined}
                 {typeof newResource === 'object' ? (
@@ -493,11 +513,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={
-              typeof handleRemove === 'function'
-                ? (): void => handleRemove('deleteButton')
-                : undefined
-            }
+            onDeleted={handleRemove?.bind(undefined, 'deleteButton')}
             onClose={handleClose}
           />
           {dialogs}

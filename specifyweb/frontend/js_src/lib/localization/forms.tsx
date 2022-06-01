@@ -978,4 +978,16 @@ export const formsText = createDictionary({
     ca: 'This record is already present in the current record set',
     'es-es': 'This record is already present in the current record set',
   },
+  addToRecordSet: {
+    'en-us': 'Add to Record Set',
+    'ru-ru': 'Добавить в набор записей',
+    ca: 'Add to Record Set',
+    'es-es': 'Add to Record Set',
+  },
+  deleteFromRecordSet: {
+    'en-us': 'Delete from Record Set',
+    'ru-ru': 'Удалить из набора записей',
+    ca: 'Delete from Record Set',
+    'es-es': 'Delete from Record Set',
+  },
 });

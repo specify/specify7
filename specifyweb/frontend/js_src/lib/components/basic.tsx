@@ -175,12 +175,7 @@ export const className = {
 
 const dataEntryButton =
   (className: string, title: string, icon: keyof typeof icons) =>
-  (
-    props: Omit<
-      TagProps<'button'>,
-      'type' | 'title' | 'aria-label' | 'children'
-    >
-  ) =>
+  (props: Omit<TagProps<'button'>, 'type' | 'children'>) =>
     (
       <Button.Icon
         className={`${className} ${props.className ?? ''}`}
