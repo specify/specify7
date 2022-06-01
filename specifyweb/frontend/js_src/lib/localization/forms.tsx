@@ -984,10 +984,10 @@ export const formsText = createDictionary({
     ca: 'Add to Record Set',
     'es-es': 'Add to Record Set',
   },
-  deleteFromRecordSet: {
-    'en-us': 'Delete from Record Set',
+  removeFromRecordSet: {
+    'en-us': 'Remove from Record Set',
     'ru-ru': 'Удалить из набора записей',
-    ca: 'Delete from Record Set',
-    'es-es': 'Delete from Record Set',
+    ca: 'Remove from Record Set',
+    'es-es': 'Remove from Record Set',
   },
 });

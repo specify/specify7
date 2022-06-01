@@ -18,6 +18,7 @@ import {
   getResourceViewUrl,
   resourceOn,
 } from '../resource';
+import { getModelById } from '../schema';
 import type { Relationship } from '../specifyfield';
 import type { Collection } from '../specifymodel';
 import type { RA } from '../types';
@@ -33,7 +34,6 @@ import { pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { augmentMode, ResourceView } from './resourceview';
-import { getModelById } from '../schema';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
   f.var(parseUrl()[queryParameter], (index) =>
@@ -391,7 +391,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       onAdd={
         typeof handleAdd === 'function'
           ? (resource): void => {
-              if (currentResource?.isNew() === true)
+              if (currentResource?.needsSaved === true)
                 /*
                  * Since React's setState has a special behavior when a function
                  * argument is passed, need to wrap a function in a function
@@ -424,8 +424,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         }
 
         if (
-          currentResource?.isNew() === true ||
-          currentResource?.needsSaved === true
+          currentResource?.needsSaved === true ||
+          /*
+           * If adding new resource that hasn't yet been modified, show a
+           * warning anyway because navigating away before saving in a
+           * RecordSet cancels the record adding process
+           */
+          currentResource?.isNew() === true
         )
           setUnloadProtect(() => doSlide);
         else doSlide();
@@ -481,12 +486,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     onClick={(): void => handleRemove('minusButton')}
                     title={
                       typeof urlContext === 'number'
-                        ? formsText('deleteFromRecordSet')
+                        ? formsText('removeFromRecordSet')
                         : commonText('delete')
                     }
                     aria-label={
                       typeof urlContext === 'number'
-                        ? formsText('deleteFromRecordSet')
+                        ? formsText('removeFromRecordSet')
                         : commonText('delete')
                     }
                   />
