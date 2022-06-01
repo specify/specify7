@@ -167,13 +167,13 @@ export const queryText = createDictionary({
   },
   queryRecordSetTitle: {
     'en-us': (queryName: string, recordSetName: string) =>
-      `Query: "${queryName}" on Record Set: ${recordSetName}`,
+      `Query: "${queryName}" on Record Set: "${recordSetName}"`,
     'ru-ru': (queryName: string, recordSetName: string) =>
-      `Запрос: "${queryName}" на наборе записей: ${recordSetName}`,
+      `Запрос: "${queryName}" на наборе записей: "${recordSetName}"`,
     ca: (queryName: string, recordSetName: string) =>
-      `Query: "${queryName}" on Record Set: ${recordSetName}`,
+      `Query: "${queryName}" on Record Set: "${recordSetName}"`,
     'es-es': (queryName: string, recordSetName: string) =>
-      `Query: "${queryName}" on Record Set: ${recordSetName}`,
+      `Query: "${queryName}" on Record Set: "${recordSetName}"`,
   },
   newButtonDescription: {
     'en-us': 'Add New Field',

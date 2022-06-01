@@ -633,7 +633,11 @@ export function QueryResultsWrapper({
       <div className="snap-start flex-1">{loadingGif}</div>
     )
   ) : (
-    <div className="snap-start flex flex-1">
+    <div
+      className={`nap-start flex flex-1 ${
+        typeof handleSelected === 'function' ? 'max-h-[70vh]' : ''
+      }`}
+    >
       <QueryResultsTable {...props} onSelected={handleSelected} />
     </div>
   );

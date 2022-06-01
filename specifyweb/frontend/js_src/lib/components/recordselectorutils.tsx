@@ -767,7 +767,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                           0,
                           /*
                            * Previous index decides which direction to go in
-                           * Once item is deleted
+                           * once item is deleted
                            */
                           previousIndex.current > index
                             ? Math.max(0, index - 1)
