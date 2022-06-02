@@ -197,7 +197,7 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText('makeRecordSet')}
+        {queryText('createRecordSet')}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>

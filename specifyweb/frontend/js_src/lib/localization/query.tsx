@@ -205,11 +205,11 @@ export const queryText = createDictionary({
     ca: 'Create KML',
     'es-es': 'Create KML',
   },
-  makeRecordSet: {
-    'en-us': 'Make Record Set',
+  createRecordSet: {
+    'en-us': 'Create Record Set',
     'ru-ru': 'Сделать набор объектов',
-    ca: 'Make Record Set',
-    'es-es': 'Make Record Set',
+    ca: 'Create Record Set',
+    'es-es': 'Create Record Set',
   },
   saveAs: {
     'en-us': 'Save As',

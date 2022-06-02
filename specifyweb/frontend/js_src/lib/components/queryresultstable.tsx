@@ -198,7 +198,7 @@ function CreateRecordSet({
           })
         }
       >
-        {queryText('makeRecordSet')}
+        {queryText('createRecordSet')}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
