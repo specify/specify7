@@ -208,7 +208,10 @@ export function PickListComboBox(
           <AddingToPicklist
             value={pendingNewValue}
             pickList={props.pickList}
-            onAdd={(): void => handleAdd?.(pendingNewValue)}
+            onAdd={(): void => {
+              handleAdd?.(pendingNewValue);
+              updateValue(pendingNewValue);
+            }}
             onClose={(): void => setPendingNewValue(undefined)}
           />
         )}
