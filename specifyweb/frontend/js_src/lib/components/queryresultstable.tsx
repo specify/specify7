@@ -163,6 +163,7 @@ function ViewRecords({
           title={undefined}
           mode="edit"
           canAddAnother={false}
+          canRemove={false}
           urlContext={false}
         />
       )}

@@ -295,8 +295,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   dialog,
   isDependent,
   mode,
-  onClose: handleClose,
   canAddAnother,
+  canRemove = true,
+  onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
   onDelete: handleDelete,
@@ -315,8 +316,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly isDependent: boolean;
   readonly mode: FormMode;
   readonly viewName?: string;
-  readonly onClose: () => void;
   readonly canAddAnother: boolean;
+  readonly canRemove?: boolean;
+  readonly onClose: () => void;
   readonly onSaved: (payload: {
     readonly resource: SpecifyResource<SCHEMA>;
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
@@ -478,7 +480,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 ) : undefined}
                 {(resource?.isNew() === true ||
                   hasTablePermission(model.name, 'delete')) &&
-                typeof handleRemove === 'function' ? (
+                typeof handleRemove === 'function' &&
+                canRemove ? (
                   <DataEntry.Remove
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
