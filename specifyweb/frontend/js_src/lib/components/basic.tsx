@@ -183,7 +183,7 @@ const dataEntryButton =
         aria-label={title}
         icon={icon}
         {...props}
-        disabled={typeof props.onClick === 'function' || props.disabled}
+        disabled={typeof props.onClick === 'undefined' || props.disabled}
       />
     );
 
