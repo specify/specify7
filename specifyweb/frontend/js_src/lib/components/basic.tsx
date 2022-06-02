@@ -169,7 +169,7 @@ export const className = {
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-500 print:hidden',
-  dataEntryDelete: '!text-red-700 print:hidden',
+  dataEntryRemove: '!text-red-700 print:hidden',
   dataEntryVisit: '!text-blue-700 print:hidden',
 } as const;
 
@@ -289,9 +289,9 @@ export const DataEntry = {
     commonText('search'),
     'search'
   ),
-  Delete: dataEntryButton(
-    className.dataEntryDelete,
-    commonText('delete'),
+  Remove: dataEntryButton(
+    className.dataEntryRemove,
+    commonText('remove'),
     'minus'
   ),
   Visit({

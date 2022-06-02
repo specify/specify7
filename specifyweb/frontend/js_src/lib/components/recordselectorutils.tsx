@@ -247,7 +247,7 @@ export function IntegratedRecordSelector({
                   relationship.relatedModel.name,
                   isDependent ? 'create' : 'read'
                 ) && typeof handleRemove === 'function' ? (
-                  <DataEntry.Delete
+                  <DataEntry.Remove
                     onClick={(): void => handleRemove('minusButton')}
                     disabled={mode === 'view' || collection.models.length === 0}
                   />
@@ -479,7 +479,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 {(resource?.isNew() === true ||
                   hasTablePermission(model.name, 'delete')) &&
                 typeof handleRemove === 'function' ? (
-                  <DataEntry.Delete
+                  <DataEntry.Remove
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
                     }
