@@ -185,7 +185,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   return (
     <div className={showLoading ? 'relative' : undefined}>
       {showLoading && (
-        <div className="top-10 absolute z-10 flex justify-center w-full">
+        <div className="absolute z-10 flex items-center justify-center w-full h-full">
           {loadingGif}
         </div>
       )}

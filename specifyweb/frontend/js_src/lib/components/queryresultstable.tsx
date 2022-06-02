@@ -504,7 +504,7 @@ export const loadingGif = (
   <img
     src="/static/img/specify128spinner.gif"
     alt={commonText('loading')}
-    className="w-10"
+    className="w-20"
     aria-live="polite"
   />
 );
