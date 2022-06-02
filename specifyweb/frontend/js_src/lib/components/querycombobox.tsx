@@ -296,7 +296,11 @@ export function QueryComboBox({
                             field?.isRelationship === true
                               ? field.relatedModel.label
                               : resource.specifyModel.label
-                          } #${resource.id}`,
+                          }${
+                            typeof resource.id === 'number'
+                              ? ` #${resource.id}`
+                              : ''
+                          }`,
                         resource,
                       }))
               )
