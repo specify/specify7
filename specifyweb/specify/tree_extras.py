@@ -13,13 +13,14 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_UNSYNONYMIZE
 
 @contextmanager
-def validate_node_numbers(table):
+def validate_node_numbers(table, revalidate_after=True):
     try:
         validate_tree_numbering(table)
     except AssertionError:
         renumber_tree(table)
     yield
-    validate_tree_numbering(table)
+    if revalidate_after:
+        validate_tree_numbering(table)
 
 class Tree(models.Model):
     class Meta:
@@ -55,7 +56,7 @@ class Tree(models.Model):
                 save()
                 return
 
-            with validate_node_numbers(self._meta.db_table):
+            with validate_node_numbers(self._meta.db_table, revalidate_after=False):
                 adding_node(self)
                 save()
         elif prev_self.parent_id != self.parent_id:
@@ -73,8 +74,10 @@ class Tree(models.Model):
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
             raise BusinessRuleException("Tree node's rank is greater than some of its children.")
 
-        if (prev_self is None
-            or prev_self.name != self.name
+        if prev_self is None:
+             reset_fullnames(self.definition, null_only=True)
+        elif (
+            prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
