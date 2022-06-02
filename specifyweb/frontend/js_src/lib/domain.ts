@@ -24,8 +24,10 @@ globalEvents.on('newResource', (resource) => {
   const domainFieldName =
     domainField.name as keyof typeof schema.domainLevelIds;
 
+  const parentResource = getDomainResource(domainFieldName);
+
   if (
-    typeof domainField === 'object' &&
+    typeof parentResource === 'object' &&
     !Boolean(resource.get(domainField.name))
   )
     resource.set(
@@ -38,9 +40,6 @@ globalEvents.on('newResource', (resource) => {
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
-  const parentResource = domainField
-    ? getDomainResource(domainFieldName)
-    : undefined;
   if (typeof parentResource === 'undefined') return;
 
   const collectionObject = toTable(resource, 'CollectionObject');

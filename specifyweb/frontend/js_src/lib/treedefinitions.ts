@@ -19,10 +19,9 @@ export const getDomainResource = <
   LEVEL extends keyof typeof schema.domainLevelIds
 >(
   level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> =>
-  f.var(
-    defined(getModel(level)),
-    (model) => new model.Resource({ id: schema.domainLevelIds[level] })
+): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
+  f.maybe(schema.domainLevelIds[level], (id) =>
+    f.var(defined(getModel(level)), (model) => new model.Resource({ id }))
   );
 
 let treeDefinitions: {
