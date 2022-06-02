@@ -526,14 +526,15 @@ export function QueryComboBox({
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
                 disabled={field?.isRelationship !== true}
-                onClick={(): void =>
+                onClick={
                   field?.isRelationship === true
-                    ? state.type === 'AddResourceState'
-                      ? setState({ type: 'MainState' })
-                      : setState({
-                          type: 'AddResourceState',
-                          resource: pendingValueToResource(field),
-                        })
+                    ? (): void =>
+                        state.type === 'AddResourceState'
+                          ? setState({ type: 'MainState' })
+                          : setState({
+                              type: 'AddResourceState',
+                              resource: pendingValueToResource(field),
+                            })
                     : undefined
                 }
               />
@@ -559,62 +560,64 @@ export function QueryComboBox({
             )}
             <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
-              disabled={!isLoaded || typeof typeSearch !== 'object'}
-              onClick={(): void =>
+              onClick={
                 isLoaded && typeof typeSearch === 'object'
-                  ? setState({
-                      type: 'SearchState',
-                      templateResource: new typeSearch.relatedModel.Resource(
-                        {},
-                        {
-                          noBusinessRules: true,
-                          noValidation: true,
-                        }
-                      ),
-                      extraConditions: filterArray(
-                        getQueryComboBoxConditions({
-                          resource,
-                          fieldName: defined(field?.name),
-                          collectionRelationships:
-                            typeof collectionRelationships === 'object'
-                              ? collectionRelationships
-                              : undefined,
-                          treeData:
-                            typeof treeData === 'object' ? treeData : undefined,
-                          typeSearch,
-                          subViewRelationship,
-                        })
-                          .map(serializeResource)
-                          /*
-                           * Send special conditions to dialog
-                           * extremely skimpy. will work only for current known cases
-                           */
-                          .map(({ fieldName, startValue }) =>
-                            fieldName === 'rankId'
-                              ? {
-                                  field: 'rankId',
-                                  operation: 'lessThan',
-                                  values: [startValue],
-                                }
-                              : fieldName === 'nodeNumber'
-                              ? {
-                                  field: 'nodeNumber',
-                                  operation: 'notBetween',
-                                  values: startValue.split(','),
-                                }
-                              : fieldName === 'collectionRelTypeId'
-                              ? {
-                                  field: 'id',
-                                  operation: 'in',
-                                  values: startValue.split(','),
-                                }
-                              : f.error(`extended filter not created`, {
-                                  fieldName,
-                                  startValue,
-                                })
-                          )
-                      ),
-                    })
+                  ? (): void =>
+                      setState({
+                        type: 'SearchState',
+                        templateResource: new typeSearch.relatedModel.Resource(
+                          {},
+                          {
+                            noBusinessRules: true,
+                            noValidation: true,
+                          }
+                        ),
+                        extraConditions: filterArray(
+                          getQueryComboBoxConditions({
+                            resource,
+                            fieldName: defined(field?.name),
+                            collectionRelationships:
+                              typeof collectionRelationships === 'object'
+                                ? collectionRelationships
+                                : undefined,
+                            treeData:
+                              typeof treeData === 'object'
+                                ? treeData
+                                : undefined,
+                            typeSearch,
+                            subViewRelationship,
+                          })
+                            .map(serializeResource)
+                            /*
+                             * Send special conditions to dialog
+                             * extremely skimpy. will work only for current known cases
+                             */
+                            .map(({ fieldName, startValue }) =>
+                              fieldName === 'rankId'
+                                ? {
+                                    field: 'rankId',
+                                    operation: 'lessThan',
+                                    values: [startValue],
+                                  }
+                                : fieldName === 'nodeNumber'
+                                ? {
+                                    field: 'nodeNumber',
+                                    operation: 'notBetween',
+                                    values: startValue.split(','),
+                                  }
+                                : fieldName === 'collectionRelTypeId'
+                                ? {
+                                    field: 'id',
+                                    operation: 'in',
+                                    values: startValue.split(','),
+                                  }
+                                : f.error(`extended filter not created`, {
+                                    fieldName,
+                                    startValue,
+                                  })
+                            )
+                        ),
+                      })
                   : undefined
               }
             />

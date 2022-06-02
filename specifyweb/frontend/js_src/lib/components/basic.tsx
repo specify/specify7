@@ -175,7 +175,7 @@ export const className = {
 
 const dataEntryButton =
   (className: string, title: string, icon: keyof typeof icons) =>
-  (props: Omit<TagProps<'button'>, 'type' | 'children'>) =>
+  (props: Omit<TagProps<'button'>, 'type' | 'children'>): JSX.Element =>
     (
       <Button.Icon
         className={`${className} ${props.className ?? ''}`}
@@ -183,6 +183,7 @@ const dataEntryButton =
         aria-label={title}
         icon={icon}
         {...props}
+        disabled={typeof props.onClick === 'function' || props.disabled}
       />
     );
 
@@ -685,6 +686,7 @@ const button = (name: string, className: string) =>
   wrap(name, 'button', className, {
     type: 'button',
   });
+// TODO: if onClick===undefined, button should be disabled
 export const Button = {
   Simple: button('Button.Simple', className.button),
   /*

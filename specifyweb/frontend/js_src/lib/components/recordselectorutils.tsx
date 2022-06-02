@@ -234,7 +234,7 @@ export function IntegratedRecordSelector({
                 {hasTablePermission(
                   relationship.relatedModel.name,
                   isDependent ? 'create' : 'read'
-                ) && (
+                ) && typeof handleAdd === 'function' ? (
                   <DataEntry.Add
                     onClick={handleAdd}
                     disabled={
@@ -242,7 +242,7 @@ export function IntegratedRecordSelector({
                       (isToOne && collection.models.length > 0)
                     }
                   />
-                )}
+                ) : undefined}
                 {hasTablePermission(
                   relationship.relatedModel.name,
                   isDependent ? 'create' : 'read'
@@ -460,7 +460,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 {hasTablePermission(
                   model.name,
                   isDependent ? 'create' : 'read'
-                ) && (
+                ) && typeof handleAdd === 'function' ? (
                   <DataEntry.Add
                     disabled={mode === 'view'}
                     onClick={handleAdd}
@@ -475,7 +475,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                         : commonText('add')
                     }
                   />
-                )}
+                ) : undefined}
                 {(resource?.isNew() === true ||
                   hasTablePermission(model.name, 'delete')) &&
                 typeof handleRemove === 'function' ? (
