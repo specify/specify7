@@ -904,7 +904,12 @@ export const preferenceDefinitions = {
             title: preferencesText('stickyScrolling'),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
+            /**
+             * This used to be checked by default but was temporary disabled
+             * because of https://github.com/specify/specify7/issues/1719.
+             * TODO: Need to reEnable after that issue is fixed
+             */
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
         },
