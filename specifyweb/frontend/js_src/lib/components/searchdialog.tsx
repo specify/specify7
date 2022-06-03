@@ -227,7 +227,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     <Dialog
       header={queryText('queryBuilder')}
       onClose={handleClose}
-      buttons={commonText('close')}
+      buttons={<Button.Gray>{commonText('close')}</Button.Gray>}
       className={{
         container: dialogClassNames.wideContainer,
       }}
