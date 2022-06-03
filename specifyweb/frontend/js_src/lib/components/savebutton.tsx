@@ -174,10 +174,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const isChanged = saveRequired || externalSaveRequired || resource.isNew();
   return (
     <>
-      {canAddAnother && canCreate && !isChanged ? (
+      {canAddAnother && canCreate ? (
         <ButtonComponent
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
-          disabled={isSaving}
+          disabled={isSaving || isChanged}
           onClick={(event): void => void handleSubmit(event, true).catch(crash)}
         >
           {formsText('clone')}
