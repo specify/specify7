@@ -573,14 +573,23 @@ const fetchItems = async (
     totalCount,
     ids: records
       .map(({ recordId }, index) => [offset + index, recordId] as const)
-      .reduce((items, [order, recordId]) => {
-        items[order] = recordId;
-        return items;
-        /*
-         * A trivial slice to create a shallow copy. Can't use Array.from
-         * because that decompresses a sparse array
-         */
-      }, ids.slice() ?? []),
+      .reduce(
+        (items, [order, recordId]) => {
+          items[order] = recordId;
+          return items;
+        },
+
+        ids.length === 0
+          ? /*
+             * Creating a sparse array of correct length here
+             */
+            new Array(totalCount)
+          : /*
+             * A trivial slice to create a shallow copy. Can't use Array.from
+             * because that decompresses a sparse array
+             */
+            ids.slice()
+      ),
   }));
 
 export function RecordSet<SCHEMA extends AnySchema>({
@@ -614,7 +623,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         readonly totalCount: number;
         /*
          * Caution, this array can be sparse
-         * Ids is a sparse array because some record sets may have tens of
+         * IDs is a sparse array because some record sets may have tens of
          * thousands of items), Also, an array with 40k elements in a React
          * State causes React DevTools to crash
          */
@@ -640,7 +649,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
     if (typeof currentRecordId === 'undefined')
       fetchItems(
         recordSet.id,
-        // If new index is smaller (i.e, going back), fetch previous 20 ids
+        // If new index is smaller (i.e, going back), fetch previous 20 IDs
         clamp(
           0,
           previousIndex.current > index
