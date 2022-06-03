@@ -40,6 +40,7 @@ import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { formsText } from '../localization/forms';
 
 function TableHeaderCell({
   fieldSpec,
@@ -342,6 +343,11 @@ export function QueryResultsTable({
             ? totalCount
             : `${selectedRows.size}/${totalCount}`
         })`}</H3>
+        {selectedRows.size > 0 && (
+          <Button.Small onClick={(): void => setSelectedRows(new Set())}>
+            {formsText('deselectAll')}
+          </Button.Small>
+        )}
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) && results.length > 0 ? (
           <>
