@@ -14,11 +14,13 @@ import {
 import type { Attachment } from '../datamodel';
 import type { AnySchema, SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
+import { toTable } from '../specifymodel';
 import { AttachmentCell } from './attachmentstask';
 import { Progress } from './basic';
 import { crash } from './errorboundary';
@@ -50,7 +52,14 @@ export function AttachmentPlugin({
         attachmentSettingsPromise.then(() =>
           attachmentsAvailable()
             ? (
-                resource?.rgetPromise('attachment') ?? Promise.resolve(null)
+                f.maybe(
+                  f.maybe(resource, (resource) =>
+                    toTable(resource, 'Attachment')
+                  ),
+                  async (attachment) => attachment
+                ) ??
+                resource?.rgetPromise('attachment') ??
+                Promise.resolve(null)
               ).then((attachment) =>
                 attachment === null
                   ? { type: 'AddAttachment' }

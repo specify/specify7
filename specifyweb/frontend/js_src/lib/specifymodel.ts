@@ -189,7 +189,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
     this.name = parseClassName(this.longName) as SCHEMA['tableName'];
-    this.view = tableDefinition.view ?? modelViews[this.name] ?? this.name;
+    this.view =
+      this.name === 'Attachment'
+        ? // Render the attachment plugin rather than the form
+          'ObjectAttachment'
+        : tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;
@@ -265,6 +269,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * If you are absolutely sure that field exists, wrap the call to this.getField
    * in defined()
    */
+
   /*
    * TODO: replace this with a direct access on indexed fields dict for static
    *   references
