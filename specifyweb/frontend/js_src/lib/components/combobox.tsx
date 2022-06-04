@@ -87,7 +87,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
       {...props}
-      mode={mode}
+      mode={props.mode}
       pickList={pickList}
       items={items}
       onAdd={

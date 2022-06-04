@@ -137,6 +137,10 @@ export function PickListComboBox(
     : undefined;
 
   const isDisabled = props.isDisabled || typeof props.items === 'undefined';
+  const isRequired =
+    ('required' in validationAttributes || props.isRequired) &&
+    props.mode !== 'search';
+  const name = props.pickList?.get('name') ?? props.pickListName;
 
   return (
     <>
@@ -146,18 +150,20 @@ export function PickListComboBox(
           // "null" value is represented as an empty string
           value={value ?? ''}
           {...validationAttributes}
-          required={
-            ('required' in validationAttributes || props.isRequired) &&
-            props.mode !== 'search'
-          }
+          required={isRequired}
           onValueChange={(newValue): void =>
             props.items?.some(({ value }) => value === newValue) === true
               ? updateValue(newValue)
               : undefined
           }
-          disabled={isDisabled}
+          name={name}
+          disabled={isDisabled || props.mode === 'view'}
         >
-          {isExistingValue ? undefined : value === null ? (
+          {isExistingValue ? (
+            isRequired ? undefined : (
+              <option key="nullValue" />
+            )
+          ) : value === null ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
@@ -190,13 +196,10 @@ export function PickListComboBox(
           {(inputProps): JSX.Element => (
             <Input.Generic
               id={props.id}
-              name={props.pickList?.get('name') ?? props.pickListName}
-              disabled={props.isDisabled || typeof props.items === 'undefined'}
+              name={name}
+              disabled={isDisabled}
               isReadOnly={props.mode === 'view'}
-              required={
-                ('required' in validationAttributes || props.isRequired) &&
-                props.mode !== 'search'
-              }
+              required={isRequired}
               {...inputProps}
             />
           )}
