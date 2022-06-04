@@ -523,6 +523,7 @@ function QueryImport({
             )
           }
         />
+        {/* This button is never actually clicked. */}
         <Submit.Green disabled className="sr-only">
           {commonText('import')}
         </Submit.Green>

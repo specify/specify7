@@ -93,23 +93,26 @@ export function AttachmentPlugin({
     [setState, state, resource, handleUploadComplete]
   );
 
+  const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
+
   return typeof state === 'undefined' ? (
     <>{commonText('loading')}</>
   ) : state.type === 'Unavailable' ? (
     <div>{formsText('attachmentServerUnavailable')}</div>
   ) : (
-    <div className="w-72 h-72">
+    <div className="w-72 h-72" ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
         mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
           <p>{formsText('noData')}</p>
         ) : (
           <FilePicker
-            onSelected={(file): void =>
+            onSelected={(file): void => {
+              filePickerContainer.current?.focus();
               setState({
                 type: 'FileUpload',
                 file,
-              })
-            }
+              });
+            }}
             acceptedFormats={undefined}
             id={id}
             name={name}
