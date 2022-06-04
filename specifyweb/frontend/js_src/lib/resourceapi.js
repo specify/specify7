@@ -207,19 +207,22 @@ function eventHandlerForToOne(related, field) {
             if (
               typeof key === 'string' &&
               typeof (oldValue??'') !== 'object' &&
-              typeof (newValue??'') !== 'object' &&
-              (oldValue === newValue ||
-                /*
-                 * Do a shallow comparison if value changed from string to
-                 * number (back-end sends certain numeric fields as strings.
-                 * Front-end converts those to numbers)
-                 * TODO: this logic should be moved to this.parse()
-                 */
-                (typeof oldValue === 'string' &&
+              typeof (newValue??'') !== 'object'
+            ) {
+                if(oldValue === newValue) return this;
+                else if(
+                  /*
+                   * Don't trigger unload protect if value changed from
+                   * string to numberr (back-end sends certain numeric fields
+                   * as strings. Front-end converts those to numbers)
+                   * TODO: this logic should be moved to this.parse()
+                   */
+                  typeof oldValue === 'string' &&
                   typeof newValue === 'number' &&
-                  Number.parseInt(oldValue) === newValue))
-            )
-              return this;
+                  Number.parseInt(oldValue) === newValue
+                )
+                    options ??= {silent: true};
+            }
             // make the keys case insensitive
             var attrs = {};
             if (_.isObject(key) || key == null) {
