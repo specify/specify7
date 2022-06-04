@@ -29,7 +29,7 @@ const idStore: R<number> = {};
  * and unchanging for the lifecycle of a component
  *
  * @remarks
- * No matter which prefix is chosen, the final id is guaranteed to be unique
+ * No matter which prefix is chosen, the final ID is guaranteed to be unique
  * among all components. Thus, you shouldn't worry about prefixes being globally
  * unique. The specific prefix does not matter at all, except it makes debugging
  * easier.
@@ -478,7 +478,7 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    function updateValue(newValue: T, reportError = true) {
+    function updateValue(newValue: T, reportErrors = true) {
       if (ignoreChangeRef.current) return;
 
       /*
@@ -504,26 +504,27 @@ export function useResourceValue<
         newValue?.toString() ?? ''
       );
 
-      const formattedValue = (
+      const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
+      const formattedValue =
         field?.isRelationship === true && newValue === ''
           ? null
-          : parser.type === 'number' && reportError
-          ? f.parseFloat(parser?.printFormatter?.(newValue, parser) ?? '') ??
-            newValue
-          : (['checkbox', 'date'].includes(parser.type ?? '') || reportError) &&
-            parseResults.isValid
-          ? parseResults.parsed
-          : newValue
-      ) as T;
-      setValue(formattedValue);
+          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
+          ? parsedValue
+          : newValue;
+      setValue(
+        (parser.type === 'number' && reportErrors
+          ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
+            parsedValue
+          : formattedValue) as T
+      );
       if (typeof field === 'undefined') return;
       const key = `parseError:${field.name.toLowerCase()}`;
       if (parseResults.isValid) resource.saveBlockers?.remove(key);
       else resource.saveBlockers?.add(key, field.name, parseResults.reason);
-      setValidation(blockers.current, reportError ? 'auto' : 'silent');
+      setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
       ignoreChangeRef.current = true;
       resource.set(field.name, formattedValue as never, {
-        // Don't trigger save blocker for this trivial change
+        // Don't trigger the save blocker for this trivial change
         silent: formattedValue === null && resource.get(field.name) === '',
       });
       ignoreChangeRef.current = false;
