@@ -1,7 +1,7 @@
 import { error } from './assert';
 import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import { createQuery } from './components/querytask';
-import type { SpQuery, SpQueryField } from './datamodel';
+import type { SpQuery, SpQueryField, TaxonTreeDefItem } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
@@ -12,6 +12,7 @@ import { getTreeModel, schema } from './schema';
 import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
+import { formatTreeRank } from './wbplanviewmappinghelper';
 
 function makeField(
   path: string,
@@ -34,14 +35,17 @@ function makeField(
 
 const defaultFields: RR<
   AnyTree['tableName'],
-  (nodeId: number) => Promise<RA<SpecifyResource<SpQueryField>>>
+  (
+    nodeId: number,
+    rankName: string
+  ) => Promise<RA<SpecifyResource<SpQueryField>>>
 > = {
-  Taxon: async (nodeId) => [
+  Taxon: async (nodeId, rankName) => [
     makeField('catalogNumber', {
       sortType: flippedSortTypes.ascending,
     }),
     makeField('determinations.taxon.fullName', {}),
-    makeField('determinations.taxon.taxonId', {
+    makeField(`determinations.taxon.${rankName}.taxonId`, {
       operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
       isDisplay: false,
@@ -51,7 +55,7 @@ const defaultFields: RR<
       isDisplay: false,
     }),
   ],
-  Geography: async (nodeId) => [
+  Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),
     makeField('determinations.taxon.fullName', {
       sortType: flippedSortTypes.ascending,
@@ -64,13 +68,13 @@ const defaultFields: RR<
     makeField('collectingEvent.locality.geography.fullName', {
       sortType: flippedSortTypes.ascending,
     }),
-    makeField('collectingEvent.locality.geography.geographyId', {
+    makeField(`collectingEvent.locality.geography.${rankName}.geographyId`, {
       isDisplay: false,
       operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
-  Storage: async (nodeId) => [
+  Storage: async (nodeId, rankId) => [
     makeField('catalogNumber', {
       sortType: flippedSortTypes.ascending,
     }),
@@ -80,13 +84,13 @@ const defaultFields: RR<
       operStart: queryFieldFilters.trueOrNull.id,
     }),
     makeField('preparations.storage.fullName', {}),
-    makeField('preparations.storage.storageId', {
+    makeField(`preparations.storage.${rankId}.storageId`, {
       isDisplay: false,
       operStart: queryFieldFilters.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
-  GeologicTimePeriod: async (nodeId) =>
+  GeologicTimePeriod: async (nodeId, rankName) =>
     f.var(await fetchPaleoPath(), (paleoPath) => [
       makeField('catalogNumber', {}),
       makeField('determinations.taxon.fullName', {
@@ -100,15 +104,18 @@ const defaultFields: RR<
       ...(typeof paleoPath === 'string'
         ? [
             makeField(`${paleoPath}.chronosStrat.fullName`, {}),
-            makeField(`${paleoPath}.chronosStrat.geologicTimePeriodId`, {
-              isDisplay: false,
-              operStart: queryFieldFilters.equal.id,
-              startValue: nodeId.toString(),
-            }),
+            makeField(
+              `${paleoPath}.chronosStrat.${rankName}.geologicTimePeriodId`,
+              {
+                isDisplay: false,
+                operStart: queryFieldFilters.equal.id,
+                startValue: nodeId.toString(),
+              }
+            ),
           ]
         : []),
     ]),
-  LithoStrat: async (nodeId) =>
+  LithoStrat: async (nodeId, rankName) =>
     f.var(await fetchPaleoPath(), (paleoPath) => [
       makeField('catalogNumber', {}),
       makeField('determinations.taxon.fullName', {
@@ -121,7 +128,7 @@ const defaultFields: RR<
       ...(typeof paleoPath === 'string'
         ? [
             makeField(`${paleoPath}.lithoStrat.fullName`, {}),
-            makeField(`${paleoPath}.lithoStrat.lithoStratId`, {
+            makeField(`${paleoPath}.lithoStrat.${rankName}.lithoStratId`, {
               operStart: queryFieldFilters.equal.id,
               startValue: nodeId.toString(),
               isDisplay: false,
@@ -162,7 +169,16 @@ export async function queryFromTree(
     model
   );
 
-  query.set('fields', await defaultFields[tree.name](nodeId));
+  const rank: SpecifyResource<TaxonTreeDefItem> = await node.rgetPromise(
+    'definitionItem'
+  );
+  query.set(
+    'fields',
+    await defaultFields[tree.name](
+      nodeId,
+      formatTreeRank(rank.get('name') ?? rank.get('title'))
+    )
+  );
 
   return query;
 }
