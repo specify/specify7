@@ -48,9 +48,11 @@ function ChangePassword({
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Generic>
           {commonText('oldPassword')}
-          <Input.Text
+          <Input.Generic
             required={true}
             name="old_password"
+            type="password"
+            autoComplete="current-password"
             defaultValue={''}
             forwardRef={oldPasswordRef}
           />
@@ -62,6 +64,7 @@ function ChangePassword({
             required={true}
             name="new_password1"
             minLength={MIN_PASSWORD_LENGTH}
+            autoComplete="new-password"
             defaultValue={''}
             forwardRef={newPasswordRef}
           />
@@ -73,6 +76,7 @@ function ChangePassword({
             required={true}
             name="new_password2"
             defaultValue={''}
+            autoComplete="new-password"
             minLength={MIN_PASSWORD_LENGTH}
             forwardRef={repeatPasswordRef}
           />
