@@ -437,10 +437,10 @@ export const preferencesText = createDictionary({
     'es-es': 'Scale interface to match font size',
   },
   welcomePage: {
-    'en-us': 'Welcome Page',
+    'en-us': 'Home Page',
     'ru-ru': 'Страница Приветствия',
-    ca: 'Welcome Page',
-    'es-es': 'Welcome Page',
+    ca: 'Home Page',
+    'es-es': 'Home Page',
   },
   content: {
     'en-us': 'Content',
