@@ -29,21 +29,17 @@ import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
 
 /**
- * Threre is special behavior required when creating one of these resources,
+ * There is special behavior required when creating one of these resources,
  * or some additional things need to be done after resource is created, or
  * resource clone operation needs to be handled in a special way.
- *
- * That is why "Add another" button is disabled for these tables.
  */
-export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
+export const RESTRICT_ADDING: Set<keyof Tables> = new Set([
   // Shouldn't clone preparations
   'Gift',
   'Borrow',
   'Loan',
   'ExchangeIn',
   'ExchangeOut',
-  'Permit',
-  'RepositoryAgreement',
   // Shouldn't allow creating new resources of this type
   'TaxonTreeDef',
   'TaxonTreeDefItem',
@@ -59,6 +55,17 @@ export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'Division',
   'Discipline',
   'Collection',
+]);
+
+/**
+ * Like RESTRICT_ADDING, but also restricts cloning
+ * That is why "Add another" button is disabled for these tables.
+ */
+export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
+  ...RESTRICT_ADDING,
+  // TODO: remove these two after #124 is fixed
+  'Permit',
+  'RepositoryAgreement',
 ]);
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {

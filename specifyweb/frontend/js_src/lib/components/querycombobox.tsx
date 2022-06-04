@@ -46,7 +46,7 @@ import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
 import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
-import { NO_ADD_ANOTHER, ResourceView } from './resourceview';
+import { ResourceView, RESTRICT_ADDING } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
@@ -522,7 +522,7 @@ export function QueryComboBox({
             />
             {typeof field === 'undefined' ||
             field.isRelationship === false ||
-            !NO_ADD_ANOTHER.has(field.relatedModel.name) ? (
+            !RESTRICT_ADDING.has(field.relatedModel.name) ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
                 disabled={field?.isRelationship !== true}
