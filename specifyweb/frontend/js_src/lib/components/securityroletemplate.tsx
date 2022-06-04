@@ -61,21 +61,21 @@ export function CreateRole({
       header={adminText('createRoleDialogHeader')}
       buttons={
         <>
-          {scope === 'institution' ||
-            (hasPermission('/permissions/roles', 'create', collectionId) && (
-              <Button.Blue
-                onClick={(): void =>
-                  handleCreated({
-                    id: undefined,
-                    name: adminText('newRole'),
-                    description: '',
-                    policies: [],
-                  })
-                }
-              >
-                {commonText('new')}
-              </Button.Blue>
-            ))}
+          {(scope === 'institution' ||
+            hasPermission('/permissions/roles', 'create', collectionId)) && (
+            <Button.Blue
+              onClick={(): void =>
+                handleCreated({
+                  id: undefined,
+                  name: adminText('newRole'),
+                  description: '',
+                  policies: [],
+                })
+              }
+            >
+              {commonText('new')}
+            </Button.Blue>
+          )}
           <span className="flex-1 -ml-2" />
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
