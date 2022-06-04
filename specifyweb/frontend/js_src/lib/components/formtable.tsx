@@ -100,6 +100,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   );
   const displayDeleteButton = mode !== 'view';
   const displayViewButton = !isDependent;
+  const headerIsVisible =
+    resources.length !== 1 || !isExpanded[resources[0].cid];
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
@@ -120,14 +122,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           }`,
         }}
       >
-        <div
-          className={
-            resources.length === 1 && isExpanded[resources[0].cid]
-              ? 'sr-only'
-              : 'contents'
-          }
-          role="row"
-        >
+        <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
           <div role="columnheader">
             <span className="sr-only">{commonText('expand')}</span>
           </div>
@@ -149,6 +144,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 {(cell.type === 'Field' || cell.type === 'SubView') &&
                 typeof cell.fieldName === 'string' ? (
                   <Button.LikeLink
+                    tabIndex={headerIsVisible ? undefined : -1}
                     onClick={(): void =>
                       setSortConfig({
                         sortField: defined(cell.fieldName),
