@@ -125,6 +125,9 @@ export function SpecifyForm({
   );
 }
 
+const FormLoadingContext = React.createContext<boolean>(false);
+FormLoadingContext.displayName = 'FormLoadingContext';
+
 /**
  * Renders a form from ViewDescription
  * Useful when need to render a hard-coded front-end only form
@@ -175,84 +178,90 @@ export function RenderForm<SCHEMA extends AnySchema>({
   const resolvedResource = loadedResource ?? oldResourceRef.current;
   const formIsLoaded =
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
+
+  // If parent resource is loading, don't duplicate the loading bar in children
+  const isAlreadyLoading = React.useContext(FormLoadingContext);
   const showLoading =
-    formIsLoaded && (isLoading === true || isShowingOldResource);
+    !formIsLoaded ||
+    (!isAlreadyLoading && (isLoading === true || isShowingOldResource));
   const [flexibleColumnWidth] = usePref(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
   return (
-    <div className={showLoading ? 'relative' : undefined}>
-      {showLoading && (
-        <div className="absolute z-10 flex items-center justify-center w-full h-full">
-          {loadingGif}
-        </div>
-      )}
-      {formIsLoaded ? (
-        <DataEntry.Grid
-          viewDefinition={viewDefinition}
-          aria-hidden={showLoading}
-          className={showLoading ? 'opacity-50 pointer-events-none' : undefined}
-          flexibleColumnWidth={flexibleColumnWidth}
-          display={viewDefinition?.columns.length === 1 ? 'block' : display}
-        >
-          {viewDefinition.rows.map((cells, index) => (
-            <React.Fragment key={index}>
-              {/*
-               * This is used to help with debugging only. Previous implementation
-               * was wrapping row in div.contents, but that caused elements
-               * within to be not focusable when rendered inside a dialog because
-               * of this bug: https://github.com/reactjs/react-modal/issues/905
-               */}
-              {process.env.NODE_ENV !== 'production' && (
-                <span
-                  className="contents"
-                  aria-hidden
-                  data--row-index={index}
-                />
-              )}
-              {cells.map(
-                (
-                  {
-                    colSpan,
-                    align,
-                    visible,
-                    id: cellId,
-                    ariaLabel,
-                    ...cellData
-                  },
-                  index
-                ) => (
-                  <DataEntry.Cell
-                    key={index}
-                    colSpan={colSpan}
-                    align={align}
-                    visible={visible}
-                    ariaLabel={
-                      viewDefinition?.formType === 'formTable'
-                        ? undefined
-                        : ariaLabel
-                    }
-                  >
-                    <FormCell
+    <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
+      <div className={showLoading ? 'relative' : undefined}>
+        {showLoading && (
+          <div className="absolute z-10 flex items-center justify-center w-full h-full">
+            {loadingGif}
+          </div>
+        )}
+        {formIsLoaded && (
+          <DataEntry.Grid
+            viewDefinition={viewDefinition}
+            aria-hidden={showLoading}
+            className={
+              showLoading ? 'opacity-50 pointer-events-none' : undefined
+            }
+            flexibleColumnWidth={flexibleColumnWidth}
+            display={viewDefinition?.columns.length === 1 ? 'block' : display}
+          >
+            {viewDefinition.rows.map((cells, index) => (
+              <React.Fragment key={index}>
+                {/*
+                 * This is used to help with debugging only. Previous implementation
+                 * was wrapping row in div.contents, but that caused elements
+                 * within to be not focusable when rendered inside a dialog because
+                 * of this bug: https://github.com/reactjs/react-modal/issues/905
+                 */}
+                {process.env.NODE_ENV !== 'production' && (
+                  <span
+                    className="contents"
+                    aria-hidden
+                    data--row-index={index}
+                  />
+                )}
+                {cells.map(
+                  (
+                    {
+                      colSpan,
+                      align,
+                      visible,
+                      id: cellId,
+                      ariaLabel,
+                      ...cellData
+                    },
+                    index
+                  ) => (
+                    <DataEntry.Cell
+                      key={index}
+                      colSpan={colSpan}
                       align={align}
-                      resource={resolvedResource}
-                      mode={viewDefinition.mode}
-                      formType={viewDefinition.formType}
-                      cellData={cellData}
-                      id={cellId}
-                      formatId={id}
-                    />
-                  </DataEntry.Cell>
-                )
-              )}
-            </React.Fragment>
-          ))}
-        </DataEntry.Grid>
-      ) : (
-        loadingGif
-      )}
-    </div>
+                      visible={visible}
+                      ariaLabel={
+                        viewDefinition?.formType === 'formTable'
+                          ? undefined
+                          : ariaLabel
+                      }
+                    >
+                      <FormCell
+                        align={align}
+                        resource={resolvedResource}
+                        mode={viewDefinition.mode}
+                        formType={viewDefinition.formType}
+                        cellData={cellData}
+                        id={cellId}
+                        formatId={id}
+                      />
+                    </DataEntry.Cell>
+                  )
+                )}
+              </React.Fragment>
+            ))}
+          </DataEntry.Grid>
+        )}
+      </div>
+    </FormLoadingContext.Provider>
   );
 }
