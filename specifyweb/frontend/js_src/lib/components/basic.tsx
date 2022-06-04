@@ -686,7 +686,8 @@ const button = (name: string, className: string) =>
   wrap(name, 'button', className, {
     type: 'button',
   });
-// TODO: if onClick===undefined, button should be disabled
+// TODO: if onClick===undefined, button should be disabled, but only if expicily
+//   provided. Make missing onClick a type error
 export const Button = {
   Simple: button('Button.Simple', className.button),
   /*
