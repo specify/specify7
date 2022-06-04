@@ -186,6 +186,19 @@ export function Autocomplete<T>({
     currentValue === pendingValue;
   const itemSource = ignoreFilter ? results : filteredItems;
 
+  const showAdd =
+    !isLoading &&
+    typeof handleNewValue === 'function' &&
+    pendingValue !== currentValue;
+  const listHasItems = showAdd || isLoading || itemSource.length > 0;
+  const showList = isOpen && listHasItems;
+
+  function handleAddNew(): void {
+    handleBlur();
+    handleClose();
+    handleNewValue?.(pendingValue);
+  }
+
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
   ): void {
@@ -194,6 +207,7 @@ export function Autocomplete<T>({
       event.preventDefault();
       const newItem = itemSource[currentIndex];
       if (typeof newItem === 'object') handleChange(newItem);
+      else if (currentIndex === itemSource.length && showAdd) handleAddNew();
       handleClose();
       input?.focus();
     } else if (event.key === 'ArrowUp')
@@ -202,8 +216,8 @@ export function Autocomplete<T>({
 
     if (newIndex !== currentIndex) {
       event.preventDefault();
-      const finalIndex =
-        (itemSource.length + newIndex) % Math.max(itemSource.length, 1);
+      const itemCount = itemSource.length + (showAdd ? 1 : 0);
+      const finalIndex = (itemCount + newIndex) % Math.max(itemCount, 1);
       setCurrentIndex(finalIndex);
       const item = dataListRef.current?.children?.[finalIndex];
       (item as HTMLElement)?.focus();
@@ -217,13 +231,6 @@ export function Autocomplete<T>({
     role: 'options',
     tabIndex: -1,
   } as const);
-
-  const showAdd =
-    !isLoading &&
-    typeof handleNewValue === 'function' &&
-    pendingValue !== currentValue;
-  const listHasItems = showAdd || isLoading || itemSource.length > 0;
-  const showList = isOpen && listHasItems;
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
@@ -498,14 +505,10 @@ export function Autocomplete<T>({
               })}
               {showAdd && (
                 <li
-                  aria-selected={false}
-                  aria-posinset={length}
-                  aria-setsize={length + 1}
-                  onClick={(): void => {
-                    handleBlur();
-                    handleClose();
-                    handleNewValue(pendingValue);
-                  }}
+                  aria-selected={itemSource.length === currentIndex}
+                  aria-posinset={itemSource.length}
+                  aria-setsize={itemSource.length + 1}
+                  onClick={handleAddNew}
                   {...itemProps}
                 >
                   <div className="flex items-center">
