@@ -26,6 +26,7 @@ import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
+import { Tables } from './datamodel';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -132,6 +133,16 @@ export const fetchFormatters: Promise<{
       }>()
 );
 
+export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
+  schema.models[tableName].literalFields
+    .filter(
+      ({ type, overrides }) =>
+        type === 'java.lang.String' &&
+        !overrides.isHidden &&
+        !overrides.isReadOnly
+    )
+    .sort(sortFunction(({ isRequired }) => isRequired, true));
+
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   formatterName?: string,
@@ -162,20 +173,12 @@ export async function format<SCHEMA extends AnySchema>(
         {
           value: undefined,
           fields: filterArray([
-            resource.specifyModel.literalFields
-              .filter(
-                ({ type, overrides }) =>
-                  type === 'java.lang.String' &&
-                  !overrides.isHidden &&
-                  !overrides.isReadOnly
-              )
-              .sort(sortFunction(({ isRequired }) => isRequired, true))
-              .map((field) => ({
-                fieldName: field.name,
-                separator: '',
-                formatter: '',
-                fieldFormatter: 'true',
-              }))[0],
+            getMainTableFields(resource.specifyModel.name).map((field) => ({
+              fieldName: field.name,
+              separator: '',
+              formatter: '',
+              fieldFormatter: 'true',
+            }))[0],
           ]),
         },
       ],

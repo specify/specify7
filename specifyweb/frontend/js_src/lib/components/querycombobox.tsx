@@ -5,7 +5,7 @@ import { ajax } from '../ajax';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type { AnySchema } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
-import { format } from '../dataobjformatters';
+import { format, getMainTableFields } from '../dataobjformatters';
 import { f } from '../functools';
 import { getParsedAttribute, keysToLowerCase } from '../helpers';
 import { load } from '../initialcontext';
@@ -15,6 +15,7 @@ import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
 import { columnToFieldMapper } from '../parseselect';
 import { hasTablePermission, hasTreeAccess } from '../permissions';
+import { fetchPickLists } from '../picklists';
 import type {
   CollectionRelationships,
   QueryComboBoxTreeData,
@@ -50,7 +51,6 @@ import { ResourceView, RESTRICT_ADDING } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
-import { fetchPickLists } from '../picklists';
 
 const typeSearches =
   process.env.NODE_ENV === 'test'
@@ -281,7 +281,7 @@ export function QueryComboBox({
                       resource: undefined,
                     }
                   : fetchPickLists()
-                      .then(() =>
+                      .then(async () =>
                         format(
                           resource,
                           typeof typeSearch === 'object'
@@ -360,14 +360,20 @@ export function QueryComboBox({
     relationship: Relationship
   ): SpecifyResource<AnySchema> =>
     new relationship.relatedModel.Resource(
+      /*
+       * If some value is currently in the input field, try to figure out which
+       * field it is intended for and populate that field in the new resource.
+       * Most of the time, that field is determined based on the search field
+       */
       f.maybe(
-        typeof typeSearch === 'object'
+        (typeof typeSearch === 'object'
           ? typeSearch.searchFields.find(
               (searchField) =>
                 !searchField.isRelationship &&
                 searchField.model === relationship.relatedModel
             )?.name
-          : undefined,
+          : undefined) ??
+          getMainTableFields(relationship.relatedModel.name)[0]?.name,
         (fieldName) => ({ [fieldName]: pendingValueRef.current })
       ) ?? {}
     );
@@ -521,7 +527,7 @@ export function QueryComboBox({
               onClick={handleOpenRelated}
             />
             {typeof field === 'undefined' ||
-            field.isRelationship === false ||
+            !field.isRelationship ||
             !RESTRICT_ADDING.has(field.relatedModel.name) ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
