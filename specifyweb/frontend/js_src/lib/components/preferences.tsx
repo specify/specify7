@@ -486,6 +486,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          makeFormDialogsModal: defineItem<boolean>({
+            title: preferencesText('makeFormDialogsModal'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       definition: {

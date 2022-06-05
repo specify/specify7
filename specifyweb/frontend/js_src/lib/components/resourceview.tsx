@@ -271,6 +271,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
     State<'Main'> | State<'Report', { readonly onDone: () => void }>
   >({ type: 'Main' });
 
+  const [makeFormDialogsModal] = usePref(
+    'form',
+    'behavior',
+    'makeFormDialogsModal'
+  );
+
   return isDeleted ? (
     resourceDeletedDialog
   ) : (
@@ -388,7 +394,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             <Dialog
               header={titleOverride ?? title}
               icon="none"
-              modal={dialog === 'modal'}
+              modal={dialog === 'modal' || makeFormDialogsModal}
               headerButtons={
                 <>
                   {headerButtons?.(specifyNetworkBadge) ?? (

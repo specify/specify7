@@ -975,4 +975,10 @@ export const preferencesText = createDictionary({
       </span>
     ),
   },
+  makeFormDialogsModal: {
+    'en-us': 'Make form dialogs gray out the background',
+    'ru-ru': 'Сделать диалоги формы серым фоном',
+    ca: 'Make form dialogs gray out the background',
+    'es-es': 'Make form dialogs gray out the background',
+  },
 });
