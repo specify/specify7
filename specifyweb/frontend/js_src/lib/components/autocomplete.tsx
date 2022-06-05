@@ -121,8 +121,21 @@ export function Autocomplete<T>({
         : newResults,
     [shouldFilterItems]
   );
+
+  /*
+   * If currently focused autoComplete item is removed, focus would be lost.
+   * In such cases, need to move the focus to the input element
+   */
+  const resqueFocus = (): void =>
+    f.maybe(document.activeElement?.closest('li') ?? undefined, (li) =>
+      typeof li === 'object' && li.closest('ul') === dataListRef.current
+        ? inputRef.current?.focus()
+        : undefined
+    );
   const updateItems = React.useCallback(
     (items: RA<Item<T>>, pendingValue: string): void => {
+      // Focus might have moved since began fetching, thus need to rescue again
+      resqueFocus();
       setResults(items);
       setFilteredItems(filterItems(items, pendingValue));
     },
@@ -148,6 +161,7 @@ export function Autocomplete<T>({
 
       if (value.length < minLength) return;
 
+      resqueFocus();
       handleLoading();
       void fetchItems(value)
         .then((items) => updateItems(items, value))
@@ -177,8 +191,10 @@ export function Autocomplete<T>({
   );
 
   /*
-   * When a value is selected and you open a list again, show all results, not
-   * just filtered down ones
+   * If a value is already selected and you open a list again, show all results,
+   * not just the filtered results. This is because most of the time there is
+   * only one element that starts with the current value (the current element),
+   * thus the filtered list of items has only one item.
    */
   const ignoreFilter =
     filteredItems.length === 1 &&
@@ -346,10 +362,12 @@ export function Autocomplete<T>({
     [input]
   );
 
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
       (input): void => {
         setInput(input);
+        inputRef.current = input;
         if (typeof forwardRef === 'object' && forwardRef !== null)
           forwardRef.current = input;
         else if (typeof forwardRef === 'function') forwardRef(input);
