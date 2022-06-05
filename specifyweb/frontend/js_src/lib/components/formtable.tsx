@@ -178,7 +178,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             <div className="contents" role="row" key={resource.cid}>
               {isExpanded[resource.cid] ? (
                 <>
-                  <div role="cell">
+                  <div role="cell" className="flex justify-center">
                     <Button.Icon
                       title={formsText('contract')}
                       aria-label={formsText('contract')}
@@ -210,7 +210,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 </>
               ) : (
                 <>
-                  <div role="cell">
+                  <div role="cell" className="flex justify-center">
                     <Button.Icon
                       title={commonText('expand')}
                       aria-label={commonText('expand')}
@@ -251,14 +251,14 @@ export function FormTable<SCHEMA extends AnySchema>({
                     )
                   )}
                   {displayViewButton && (
-                    <div role="cell">
+                    <div role="cell" className="flex justify-center">
                       <DataEntry.Visit resource={resource} />
                     </div>
                   )}
                 </>
               )}
               {displayDeleteButton && (
-                <div role="cell">
+                <div role="cell" className="flex justify-center">
                   {(!resource.isNew() ||
                     hasTablePermission(
                       relationship.relatedModel.name,

@@ -215,6 +215,7 @@
     @apply bg-gray-200 dark:bg-neutral-700 rounded;
   }
 
+  /* TODO: Can combine the next two selectors using :is() */
   progress::-webkit-progress-value {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
@@ -255,6 +256,10 @@
     @apply flex items-center gap-x-1;
   }
 
+  /*
+   * Without this, sr-only elements where causing scroll bars to appear in
+   * some browsers
+   */
   .sr-only {
     @apply top-0;
   }

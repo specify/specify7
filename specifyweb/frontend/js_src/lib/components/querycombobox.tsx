@@ -370,7 +370,8 @@ export function QueryComboBox({
           ? typeSearch.searchFields.find(
               (searchField) =>
                 !searchField.isRelationship &&
-                searchField.model === relationship.relatedModel
+                searchField.model === relationship.relatedModel &&
+                !searchField.isReadOnly
             )?.name
           : undefined) ??
           getMainTableFields(relationship.relatedModel.name)[0]?.name,
