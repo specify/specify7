@@ -197,6 +197,17 @@ export function Autocomplete<T>({
     handleBlur();
     handleClose();
     handleNewValue?.(pendingValue);
+    input?.focus();
+  }
+
+  function handleChanged(item: Item<T>): void {
+    handleChange(item);
+    const value =
+      typeof item.label === 'string' ? item.label : item.searchValue ?? '';
+    setPendingValue(value);
+    if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
+    handleClose();
+    input?.focus();
   }
 
   function handleKeyDown(
@@ -206,10 +217,8 @@ export function Autocomplete<T>({
     if (event.key === 'Escape' || event.key === 'Enter') {
       event.preventDefault();
       const newItem = itemSource[currentIndex];
-      if (typeof newItem === 'object') handleChange(newItem);
+      if (typeof newItem === 'object') handleChanged(newItem);
       else if (currentIndex === itemSource.length && showAdd) handleAddNew();
-      handleClose();
-      input?.focus();
     } else if (event.key === 'ArrowUp')
       newIndex = Math.max(currentIndex - 1, -1);
     else if (event.key === 'ArrowDown') newIndex = currentIndex + 1;
@@ -479,17 +488,7 @@ export function Autocomplete<T>({
                     aria-posinset={index + 1}
                     aria-setsize={length + Number(showAdd)}
                     aria-selected={index === currentIndex}
-                    onClick={(): void => {
-                      handleChange(item);
-                      const value =
-                        typeof item.label === 'string'
-                          ? item.label
-                          : item.searchValue ?? '';
-                      setPendingValue(value);
-                      if (typeof pendingValueRef === 'object')
-                        pendingValueRef.current = value;
-                      handleClose();
-                    }}
+                    onClick={handleChanged.bind(undefined, item)}
                     {...itemProps}
                   >
                     {typeof item.icon === 'string' ? (
