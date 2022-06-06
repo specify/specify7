@@ -494,9 +494,10 @@ function QueryImport({
                   )
                 )
                 .then(async (queryResource) => queryResource.save())
-                .then((queryResource) =>
-                  goTo(`/specify/query/${queryResource.id}/`)
-                )
+                .then((queryResource) => {
+                  console.log(queryResource);
+                  goTo(`/specify/query/${queryResource.id}/`);
+                })
             )
           }
         />

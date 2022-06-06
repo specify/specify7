@@ -179,6 +179,7 @@ export function QueryLine({
     scope: 'queryBuilder',
     getMappedFields,
   });
+  console.log('lineData', lineData);
 
   const mappingLineProps = getMappingLineProps({
     mappingLineData: mutateLineData(lineData),

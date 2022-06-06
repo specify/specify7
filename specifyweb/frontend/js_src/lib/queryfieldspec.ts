@@ -224,7 +224,7 @@ export class QueryFieldSpec {
     isRelationship: boolean
   ): QueryFieldSpec {
     const match = defined(reStringId.exec(stringId) ?? undefined);
-    const [fullPath, _tableName, fullFieldName] = match.slice(1);
+    const [fullPath, tableName, fullFieldName] = match.slice(1);
     const [baseTableId, ...path] = isRelationship
       ? fullPath.split(',').slice(0, -1)
       : fullPath.split(',');

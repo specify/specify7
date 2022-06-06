@@ -200,7 +200,7 @@ function QueryResult({
         condensedQueryResult={condensedQueryResult}
       />
     ));
-
+  console.log('fieldSpecs: ', fieldSpecs);
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
   return (

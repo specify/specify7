@@ -15,6 +15,8 @@ from xml.dom import minidom
 from specifyweb.stored_queries.execution import EphemeralField, query_to_csv
 from specifyweb.stored_queries.queryfield import QueryField
 from specifyweb.stored_queries.models import session_context
+from specifyweb.specify import models
+from specifyweb.specify import load_datamodel
 
 logger = logging.getLogger(__name__)
 ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
@@ -182,7 +184,8 @@ def make_dwca(collection, user, definition, output_file, eml=None):
     output_dir = mkdtemp()
     try:
         element_tree = ET.fromstring(definition)
-
+        with open(os.path.join(output_dir, 'xmlmaybe.txt'), 'w') as string_xml:
+            string_xml.write(str(definition))
         core_stanza = Stanza.from_xml(element_tree.find('core'))
         extension_stanzas = [Stanza.from_xml(node) for node in element_tree.findall('extension')]
 
@@ -208,11 +211,82 @@ def make_dwca(collection, user, definition, output_file, eml=None):
             core_ids.add(row[core_stanza.id_field_idx + 1])
             return True
 
+        def get_solr_type(fldid, fldtype):
+            if fldtype == 'java.lang.String':
+                return 'string'
+            elif fldtype == 'java.util.Calendar':
+                if fldid.endswith('NumericDay') or fldid.endswith('NumericMonth') or fldid.endswith('NumericYear'):
+                    return 'pint'
+                else:
+                    return 'string'
+            elif fldtype == 'java.lang.Float':
+                return 'pfloat'
+            elif fldtype == 'text':
+                return 'string'
+            elif fldtype == 'java.sql.Timestamp':
+                return 'string'
+            elif fldtype == 'java.math.BigDecimal':
+                return 'pdouble'
+            elif fldtype == 'java.lang.Integer':
+                return 'pint'
+            elif fldtype == 'java.lang.Boolean':
+                return 'string'
+            elif fldtype == 'java.lang.Byte':
+                return 'pint'
+            elif fldtype == 'java.lang.Double':
+                return 'pdouble'
+            elif fldtype == 'java.lang.Short':
+                return 'pint'
+            elif fldtype == "java.util.Date":
+                return 'string'
+            elif fldtype == "java.lang.Long":
+                return 'plong'
+            else:
+                return 'string'
+
+        def solr_xml(fldid, fld_solr_type, indx, stred, reqrd):
+            indexed = 'true' if indx else 'false'
+            stored = 'true' if stred else 'false'
+            required = 'true' if reqrd else 'false'
+            return f'<field name="{fldid}" type="{fld_solr_type}" indexed="{indexed}" stored="{stored}" required="{required}"/>\n'
+
+        def sum_string_list(list_inst):
+            empty_str = ''
+            for _ in list_inst:
+                empty_str += _
+            return empty_str
+
+        def get_solr_query(input_query, datamodel_inst):
+            field_xml = ''
+            table_id = input_query.tableid
+            field_specs = input_query.get_field_specs()
+            temp_table_ = datamodel_inst.get_table_by_id_strict(table_id)
+            query_string_arr_ = list(map(lambda x: x.split('.')[-1],
+                                        [fs.fieldspec.to_stringid() for fs
+                                         in field_specs if
+                                         fs.display]))
+            field_xml += sum_string_list(list(map(lambda x: solr_xml(x,get_solr_type(x,temp_table_.get_field_strict(x).type),True, True,False),query_string_arr_)))
+            return field_xml
+
+        solr_data_type_arr = [
+            ['contents', 'text_general', True, False, True],
+            ['geoc', 'string', True, True, False],
+            ['img', 'string', True, True, False],
+            ['spid', 'string', True, True, True]
+        ]
+
+        datamodel_inst = load_datamodel.load_datamodel()
         with session_context() as session:
+            field_xml = ''
             for query in core_stanza.queries:
                 path = os.path.join(output_dir, query.file_name)
                 query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
                              strip_id=True, row_filter=collect_ids)
+                field_xml += get_solr_query(query, datamodel_inst)
+                logger.warning(f"field xml: {field_xml}")
+            field_xml += sum_string_list(list(map(lambda x: solr_xml(x[0], x[1], x[2], x[3], x[4]), solr_data_type_arr)))
+            with open(os.path.join(output_dir, 'SolrFldSchema.xml'), 'w') as tempfile:
+                tempfile.write(field_xml)
 
             for stanza in extension_stanzas:
                 def filter_ids(row):
@@ -222,6 +296,7 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                     path = os.path.join(output_dir, query.file_name)
                     query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
                                  strip_id=True, row_filter=filter_ids)
+
 
         basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)
