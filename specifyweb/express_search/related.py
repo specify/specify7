@@ -139,7 +139,7 @@ class RelatedSearch(object, metaclass=RelatedSearchMeta):
 
         queryfields = self.display_fields + self.filter_fields + [primary_field]
 
-        related_query, _ = build_query(session, collection, user, self.root.tableId, queryfields)
+        related_query, _ = build_query(session, collection, user, self.root.tableId, queryfields, implicit_or=False)
 
         if self.distinct:
             related_query = related_query.distinct()

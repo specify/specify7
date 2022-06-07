@@ -526,7 +526,8 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)}
 
-def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False):
+def build_query(session, collection, user, tableid, field_specs,
+                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, implicit_or=True):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -595,14 +596,18 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
         if predicate is not None:
             predicates_by_stringid[fs.fieldspec.to_stringid()].append(predicate)
 
-    implicit_ors = [
-        reduce(sql.or_, ps)
-        for ps in predicates_by_stringid.values()
-        if ps
-    ]
+    if implicit_or:
+        implicit_ors = [
+            reduce(sql.or_, ps)
+            for ps in predicates_by_stringid.values()
+            if ps
+        ]
 
-    if implicit_ors:
-        where = reduce(sql.and_, implicit_ors)
+        if implicit_ors:
+            where = reduce(sql.and_, implicit_ors)
+            query = query.filter(where)
+    else:
+        where = reduce(sql.and_, (p for ps in predicates_by_stringid.values() for p in ps))
         query = query.filter(where)
 
     logger.debug("query: %s", query.query)
