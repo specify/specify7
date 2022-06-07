@@ -362,8 +362,9 @@ function FixImagesDialog({
       {formsText('reportsProblemsDialogText')}
       <H3>{formsText('missingAttachments')}</H3>
       <Ul>
-        {missingAttachments.map((fileName) => (
+        {missingAttachments.map((fileName, index) => (
           <Button.LikeLink
+            onClick={(): void => setIndex(index)}
             key={fileName}
             aria-label={formsText('fix')}
             title={formsText('fix')}

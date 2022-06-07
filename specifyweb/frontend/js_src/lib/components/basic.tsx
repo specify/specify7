@@ -175,7 +175,13 @@ export const className = {
 
 const dataEntryButton =
   (className: string, title: string, icon: keyof typeof icons) =>
-  (props: Omit<TagProps<'button'>, 'type' | 'children'>): JSX.Element =>
+  (
+    props: Omit<TagProps<'button'>, 'type' | 'children'> & {
+      readonly onClick:
+        | ((event: React.MouseEvent<HTMLButtonElement>) => void)
+        | undefined;
+    }
+  ): JSX.Element =>
     (
       <Button.Icon
         className={`${className} ${props.className ?? ''}`}
@@ -683,11 +689,18 @@ function DialogCloseButton({
 }
 
 const button = (name: string, className: string) =>
-  wrap(name, 'button', className, {
+  wrap<
+    'button',
+    {
+      readonly onClick:
+        | ((event: React.MouseEvent<HTMLButtonElement>) => void)
+        | undefined;
+    }
+  >(name, 'button', className, {
     type: 'button',
   });
 // TODO: if onClick===undefined, button should be disabled, but only if expicily
-//   provided. Make missing onClick a type error
+//   provided
 export const Button = {
   Simple: button('Button.Simple', className.button),
   /*
@@ -730,16 +743,18 @@ export const Button = {
   Orange: button('Button.Orange', `${niceButton} ${className.orangeButton}`),
   Green: button('Button.Green', `${niceButton} ${className.greenButton}`),
   DialogClose: DialogCloseButton,
-  Icon: wrap<'button', IconProps>(
-    'Button.Icon',
+  Icon: wrap<
     'button',
-    `${className.icon} rounded`,
-    (props) => ({
-      ...props,
-      type: 'button',
-      children: icons[props.icon],
-    })
-  ),
+    IconProps & {
+      readonly onClick:
+        | ((event: React.MouseEvent<HTMLButtonElement>) => void)
+        | undefined;
+    }
+  >('Button.Icon', 'button', `${className.icon} rounded`, (props) => ({
+    ...props,
+    type: 'button',
+    children: icons[props.icon],
+  })),
 } as const;
 
 type SubmitProps = {

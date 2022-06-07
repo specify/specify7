@@ -62,7 +62,7 @@ export function useCachedState<
         : Promise.resolve(defaultValue)
       )
         .then((value) =>
-          typeof value === 'undefined' ? undefined : setCachedState(value)
+          f.maybe(value,setCachedState)
         )
         .catch(crash);
   }, [isUndefined, defaultValue, setCachedState, staleWhileRefresh]);
