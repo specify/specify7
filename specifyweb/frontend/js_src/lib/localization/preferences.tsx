@@ -372,12 +372,12 @@ export const preferencesText = createDictionary({
   },
   startsWithCaseSensitiveDescription: {
     'en-us':
-      'Search for values that begin with a given query string. Can use wildcards',
+      'Search for values that begin with a given query string. Can use _ to match any single character or % to match any number of characters',
     'ru-ru':
-      'Поиск значений, начинающихся с заданной строки запроса. Можно использовать подстановочные знаки',
-    ca: 'Search for values that begin with a given query string. Can use wildcards',
+      'Поиск значений, начинающихся с заданной строки запроса. Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+    ca: 'Search for values that begin with a given query string. Can use _ to match any single character or % to match any number of characters',
     'es-es':
-      'Search for values that begin with a given query string. Can use wildcards',
+      'Search for values that begin with a given query string. Can use _ to match any single character or % to match any number of characters',
   },
   contains: {
     'en-us': 'Contains (case-sensitive)',
@@ -386,12 +386,13 @@ export const preferencesText = createDictionary({
     'es-es': 'Contains (case-sensitive)',
   },
   containsDescription: {
-    'en-us': 'Search for values that contain a given query string',
+    'en-us':
+      'Search for values that contain a given query string (case-sensitive). Can use _ to match any single character or % to match any number of characters',
     'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (с учетом регистра)',
-    ca: 'Search for values that contain a given query string (case-sensitive)',
+      'Поиск значений, содержащих заданную строку запроса (с учетом регистра). Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+    ca: 'Search for values that contain a given query string (case-sensitive). Can use _ to match any single character or % to match any number of characters',
     'es-es':
-      'Search for values that contain a given query string (case-sensitive)',
+      'Search for values that contain a given query string (case-sensitive). Can use _ to match any single character or % to match any number of characters',
   },
   highlightMatch: {
     'en-us': 'Highlight matched substring',
