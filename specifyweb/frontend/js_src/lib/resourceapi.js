@@ -9,6 +9,7 @@ import {hijackBackboneAjax} from './startapp';
 import {Http} from './ajax';
 import {schema} from './schema';
 import {formatUrl} from './querystring';
+import {businessRuleDefs} from './businessruledefs';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -108,6 +109,13 @@ function eventHandlerForToOne(related, field) {
             var newResource = Backbone.Model.prototype.clone.call(self);
             delete newResource.id;
             delete newResource.attributes.id;
+
+            // Don't clone unique fields
+            Object.keys(businessRuleDefs[this.specifyModel.name]?.uniqueIn)
+              .map(fieldName=>
+                delete newResource.attributes[fieldName.toLowerCase()]
+              );
+
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
