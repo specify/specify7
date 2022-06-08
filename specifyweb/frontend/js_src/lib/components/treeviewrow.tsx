@@ -9,6 +9,7 @@ import type { RA } from '../types';
 import { Button } from './basic';
 import { useId } from './hooks';
 import { icons } from './icons';
+import { getUserPref } from '../preferencesutils';
 
 export function TreeRow({
   row,
@@ -149,7 +150,8 @@ export function TreeRow({
                   ? (element: HTMLButtonElement | null): void => {
                       if (element === null) return;
                       element.focus();
-                      scrollIntoView(element);
+                      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+                        scrollIntoView(element);
                     }
                   : undefined
               }

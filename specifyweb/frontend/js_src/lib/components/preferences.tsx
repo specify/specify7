@@ -780,6 +780,18 @@ export const preferenceDefinitions = {
   treeEditor: {
     title: preferencesText('treeEditor'),
     subCategories: {
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          autoScroll: defineItem<boolean>({
+            title: preferencesText('autoScrollTree'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
       geography: {
         /*
          * This would be replaced with labels from schema once

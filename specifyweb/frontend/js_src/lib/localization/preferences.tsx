@@ -982,4 +982,11 @@ export const preferencesText = createDictionary({
     ca: 'Make form dialogs gray out the background',
     'es-es': 'Make form dialogs gray out the background',
   },
+  autoScrollTree: {
+    'en-us': 'Auto scroll tree to focused node',
+    'ru-ru':
+      'Автоматически прокручивать страницу до сфокусированного узла дерева',
+    ca: 'Auto scroll tree to focused node',
+    'es-es': 'Auto scroll tree to focused node',
+  },
 });
