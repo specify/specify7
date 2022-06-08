@@ -489,8 +489,8 @@ export const adminText = createDictionary({
     'es-es': 'Advanced tables',
   },
   excludedInstitutionalPolicies: {
-    'en-us': 'Исключенные институциональные политики:',
-    'ru-ru': 'Excluded institutional policies:',
+    'en-us': 'Excluded institutional policies:',
+    'ru-ru': 'Исключенные институциональные политики:',
     ca: 'Excluded institutional policies:',
     'es-es': 'Excluded institutional policies:',
   },
