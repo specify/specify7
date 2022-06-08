@@ -111,7 +111,7 @@ function eventHandlerForToOne(related, field) {
             delete newResource.attributes.id;
 
             // Don't clone unique fields
-            Object.keys(businessRuleDefs[this.specifyModel.name]?.uniqueIn)
+            Object.keys(businessRuleDefs[this.specifyModel.name]?.uniqueIn ?? {})
               .map(fieldName=>
                 delete newResource.attributes[fieldName.toLowerCase()]
               );
