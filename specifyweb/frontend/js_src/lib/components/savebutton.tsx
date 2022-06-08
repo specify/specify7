@@ -90,7 +90,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   async function handleSubmit(
     event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    addAnother = false
+    mode: 'addAnother' | 'clone' | 'save' = 'save'
   ): Promise<void> {
     if (!form.reportValidity()) return;
 
@@ -99,11 +99,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     event.stopPropagation();
 
     if (
-      (addAnother ? !canCreate : !canSave) ||
+      // Cancel if don't have permission for this action
+      (mode === 'save' ? !canSave : !canCreate) ||
+      // Or save is blocked
       saveBlocked ||
+      // Or trying to save a resources that doesn't need saving
       (!saveRequired &&
         !externalSaveRequired &&
-        !addAnother &&
+        mode === 'save' &&
         !resource.isNew())
     )
       return;
@@ -125,7 +128,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * This has to be done before saving so that the data we get back isn't copied.
      * Eg. autonumber fields, the id, etc.
      */
-    const newResource = addAnother ? await resource.clone() : undefined;
+    const newResource =
+      mode === 'clone'
+        ? await resource.clone()
+        : mode === 'addAnother'
+        ? new resource.specifyModel.Resource()
+        : undefined;
     const wasNew = resource.isNew();
     const wasChanged = resource.needsSaved;
 
@@ -175,13 +183,27 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   return (
     <>
       {canAddAnother && canCreate ? (
-        <ButtonComponent
-          className={saveBlocked ? '!cursor-not-allowed' : undefined}
-          disabled={isSaving || isChanged}
-          onClick={(event): void => void handleSubmit(event, true).catch(crash)}
-        >
-          {formsText('clone')}
-        </ButtonComponent>
+        <>
+          <ButtonComponent
+            className={saveBlocked ? '!cursor-not-allowed' : undefined}
+            disabled={isSaving || isChanged}
+            onClick={(event): void =>
+              void handleSubmit(event, 'clone').catch(crash)
+            }
+          >
+            {formsText('clone')}
+          </ButtonComponent>
+
+          <ButtonComponent
+            className={saveBlocked ? '!cursor-not-allowed' : undefined}
+            disabled={isSaving || isChanged}
+            onClick={(event): void =>
+              void handleSubmit(event, 'addAnother').catch(crash)
+            }
+          >
+            {formsText('addAnother')}
+          </ButtonComponent>
+        </>
       ) : undefined}
       {canSave && (
         <SubmitComponent
