@@ -414,7 +414,7 @@ export function SecurityPolicies({
           setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
         }
       >
-        {orientation === 'vertical'
+        {orientation === 'horizontal'
           ? icons.switchVertical
           : icons.switchHorizontal}
       </Button.Small>
