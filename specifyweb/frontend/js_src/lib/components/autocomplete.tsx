@@ -196,10 +196,7 @@ export function Autocomplete<T>({
    * only one element that starts with the current value (the current element),
    * thus the filtered list of items has only one item.
    */
-  const ignoreFilter =
-    filteredItems.length === 1 &&
-    currentValue === (filteredItems[0].searchValue ?? filteredItems[0].label) &&
-    currentValue === pendingValue;
+  const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? results : filteredItems;
 
   const showAdd =
