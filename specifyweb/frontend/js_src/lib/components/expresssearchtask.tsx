@@ -94,16 +94,24 @@ function TableResults({
               fetchResults={async (
                 offset: number
               ): Promise<RA<RA<string | number>>> =>
-                ajax<IR<QueryTableResult>>(
+                ajax<IR<QueryTableResult> | QueryTableResult>(
                   formatUrl(ajaxUrl, {
                     name: model.name,
+                    // The URL may already have a "name" parameter
+                    ...parseUrl(ajaxUrl),
                     offset: offset.toString(),
                   }),
                   {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     headers: { Accept: 'application/json' },
                   }
-                ).then(({ data }) => data[model.name].results)
+                ).then(
+                  ({ data }) =>
+                    (model.name in data
+                      ? (data as IR<QueryTableResult>)[model.name]
+                      : (data as QueryTableResult)
+                    ).results
+                )
               }
               createRecordSet={undefined}
             />
@@ -146,10 +154,10 @@ export function ExpressSearchView(): JSX.Element {
         relatedSearchesPromise
           .then(async (relatedSearches) =>
             Promise.all(
-              relatedSearches.map(async (tableName) => {
+              relatedSearches.map(async (name) => {
                 const ajaxUrl = formatUrl('/express_search/related/', {
                   q: query,
-                  name: tableName,
+                  name,
                 });
                 return ajax<RelatedTableResult>(ajaxUrl, {
                   // eslint-disable-next-line @typescript-eslint/naming-convention
