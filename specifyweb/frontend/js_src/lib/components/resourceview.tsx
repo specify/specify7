@@ -68,6 +68,12 @@ export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'RepositoryAgreement',
 ]);
 
+export const NO_CLONE: set<keyof Tables> = new Set([
+  ...NO_ADD_ANOTHER,
+  // To properly clone a user need to also clone their roles and policies
+  'SpecifyUser',
+]);
+
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;

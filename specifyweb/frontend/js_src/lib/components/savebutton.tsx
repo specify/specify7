@@ -16,6 +16,7 @@ import { crash } from './errorboundary';
 import { useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
+import { NO_CLONE } from './resourceview';
 
 /*
  * TODO: move this logic into ResourceView, so that <form> and button is
@@ -184,16 +185,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {canAddAnother && canCreate ? (
         <>
-          <ButtonComponent
-            className={saveBlocked ? '!cursor-not-allowed' : undefined}
-            disabled={isSaving || isChanged}
-            onClick={(event): void =>
-              void handleSubmit(event, 'clone').catch(crash)
-            }
-          >
-            {formsText('clone')}
-          </ButtonComponent>
-
+          {!NO_CLONE.has(resource.specifyModel.name) && (
+            <ButtonComponent
+              className={saveBlocked ? '!cursor-not-allowed' : undefined}
+              disabled={isSaving || isChanged}
+              onClick={(event): void =>
+                void handleSubmit(event, 'clone').catch(crash)
+              }
+            >
+              {formsText('clone')}
+            </ButtonComponent>
+          )}
           <ButtonComponent
             className={saveBlocked ? '!cursor-not-allowed' : undefined}
             disabled={isSaving || isChanged}
