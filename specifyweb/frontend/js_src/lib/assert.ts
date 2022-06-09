@@ -17,7 +17,8 @@ export function error(message: string | Error, ...rest: RA<unknown>): never {
   breakpoint();
   const error = message instanceof Error ? message : new Error(message);
   // This is for the "Copy Error Message" feature:
-  Object.defineProperty(error, 'details', { value: rest, enumerable: false });
+  if (!('details' in error))
+    Object.defineProperty(error, 'details', { value: rest, enumerable: false });
   throw error;
 }
 
