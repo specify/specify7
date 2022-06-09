@@ -121,7 +121,7 @@ export function RoleView({
         typeof handleOpenUser === 'function' &&
         hasPermission('/permissions/user/roles', 'read', collectionId) ? (
           <fieldset className="flex flex-col gap-2">
-            <legend>{adminText('users')}:</legend>
+            <legend>{adminText('users')}</legend>
             {typeof userRoles === 'object' ? (
               <>
                 <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">

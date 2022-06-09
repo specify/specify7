@@ -106,10 +106,16 @@ export const adminText = createDictionary({
     'es-es': 'User Types',
   },
   users: {
-    'en-us': 'Users',
+    'en-us': 'User Accounts',
     'ru-ru': 'Пользователи',
-    ca: 'Users',
-    'es-es': 'Users',
+    ca: 'User Accounts',
+    'es-es': 'User Accounts',
+  },
+  collectionUsers: {
+    'en-us': 'Collection User Accounts',
+    'ru-ru': 'Пользователи',
+    ca: 'Collection User Accounts',
+    'es-es': 'Collection User Accounts',
   },
   createResourceDialogHeader: {
     'en-us': 'Create New Resource File',
@@ -168,16 +174,16 @@ export const adminText = createDictionary({
     'es-es': 'Permissions Panel',
   },
   userRoleLibrary: {
-    'en-us': 'User role library:',
+    'en-us': 'Institutional User Role Library:',
     'ru-ru': 'Библиотека ролей пользователей:',
-    ca: 'User role library:',
-    'es-es': 'User role library:',
+    ca: 'Institutional User Role Library:',
+    'es-es': 'Institutional User Role Library:',
   },
   userRoles: {
-    'en-us': 'User roles',
+    'en-us': 'Collection User Roles',
     'ru-ru': 'Роли пользователей',
-    ca: 'User roles',
-    'es-es': 'User roles',
+    ca: 'Collection User Roles',
+    'es-es': 'Collection User Roles',
   },
   table: {
     'en-us': 'Table',
@@ -186,10 +192,10 @@ export const adminText = createDictionary({
     'es-es': 'Table',
   },
   policies: {
-    'en-us': 'Policies',
+    'en-us': 'User Permission Policies',
     'ru-ru': 'Политики',
-    ca: 'Policies',
-    'es-es': 'Policies',
+    ca: 'User Permission Policies',
+    'es-es': 'User Permission Policies',
   },
   role: {
     'en-us': 'Role:',
@@ -204,10 +210,10 @@ export const adminText = createDictionary({
     'es-es': 'Read',
   },
   preview: {
-    'en-us': 'Preview',
+    'en-us': 'User Permissions Preview',
     'ru-ru': 'Предварительный просмотр',
-    ca: 'Preview',
-    'es-es': 'Preview',
+    ca: 'User Permissions Preview',
+    'es-es': 'User Permissions Preview',
   },
   outOfDateWarning: {
     'en-us':
@@ -445,10 +451,10 @@ export const adminText = createDictionary({
     'es-es': 'Users will not be deleted, but they would lose this role.',
   },
   institutionPolicies: {
-    'en-us': 'Institution policies',
+    'en-us': 'Institution Permission Policies',
     'ru-ru': 'Глобальная политика',
-    ca: 'Institution policies',
-    'es-es': 'Institution policies',
+    ca: 'Institution Permission Policies',
+    'es-es': 'Institution Permission Policies',
   },
   noAdminsErrorDialogHeader: {
     'en-us': "Can't remove Institution Admin status",
@@ -503,5 +509,11 @@ export const adminText = createDictionary({
       removed from these lists`,
     'es-es': `Some policies apply only on the institutional level, and so are
       removed from these lists`,
+  },
+  accountSetupOptions: {
+    'en-us': 'Account Setup Options',
+    'ru-ru': 'Параметры учетной записи',
+    ca: 'Account Setup Options',
+    'es-es': 'Account Setup Options',
   },
 });

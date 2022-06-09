@@ -120,7 +120,9 @@ export function SecurityInstitution({
       {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
         <>
           <div className="flex gap-2">
-            <h3 className="text-xl">{institution.name}</h3>
+            <h3 className="text-xl">
+              {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
+            </h3>
             <Link.Icon
               href={getResourceViewUrl(
                 'Institution',
@@ -202,7 +204,7 @@ export function SecurityInstitution({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className={className.headerGray}>{adminText('users')}:</h4>
+              <h4 className={className.headerGray}>{adminText('users')}</h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>

@@ -173,7 +173,7 @@ export function SecurityUser({
                 canCreateInviteLink ||
                 canSeeInstitutionalPolicies ? (
                   <section>
-                    <h4>{commonText('actions')}</h4>
+                    <h4>{adminText('accountSetupOptions')}</h4>
                     <div className="flex items-center gap-2">
                       {canSetPassword && (
                         <PasswordPlugin
@@ -349,7 +349,7 @@ export function SecurityUser({
                 <SaveButton
                   resource={userResource}
                   form={formElement}
-                  canAddAnother={true}
+                  canAddAnother={Array.isArray(userAgents)}
                   onSaving={(): undefined | false => {
                     if (
                       userResource.isNew() &&

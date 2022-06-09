@@ -34,6 +34,7 @@ import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
+import { schema } from '../schema';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -241,7 +242,11 @@ export function SecurityCollection({
       {state.type === 'MainState' && (
         <>
           <div className="flex gap-2">
-            <h3 className="text-xl">{collection.collectionName}</h3>
+            <h3 className="text-xl">
+              {`${schema.models.Collection.label}: ${
+                collection.collectionName ?? ''
+              }`}
+            </h3>
             {hasTablePermission('Collection', 'read') && (
               <Link.Icon
                 href={getResourceViewUrl('Collection', collection.id)}
@@ -257,7 +262,7 @@ export function SecurityCollection({
               <section className="flex flex-col gap-1">
                 <div>
                   <h4 className={className.headerGray}>
-                    {adminText('userRoles')}:
+                    {adminText('userRoles')}
                   </h4>
                   {typeof roles === 'object' ? (
                     <Ul>
@@ -322,7 +327,7 @@ export function SecurityCollection({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className={className.headerGray}>{adminText('users')}:</h4>
+              <h4 className={className.headerGray}>{adminText('users')}</h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText('none')
