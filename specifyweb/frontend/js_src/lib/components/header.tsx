@@ -332,7 +332,8 @@ export function UserTools({
     <>
       {/* TODO: get rid of usages of "px" units in the header */}
       <Button.Small
-        className="max-w-[110px] overflow-hidden whitespace-nowrap text-overflow-ellipsis"
+        className={`max-w-[110px] overflow-hidden whitespace-nowrap
+          text-overflow-ellipsis normal-case`}
         title={commonText('currentUser')}
         onClick={handleOpen}
       >
