@@ -9,6 +9,8 @@ import React from 'react';
 import { Key } from '../components/basic';
 import { createDictionary } from './utils';
 
+const altKeyName = navigator.appVersion.includes('Mac') ? 'Option' : 'Alt';
+
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const preferencesText = createDictionary({
@@ -931,48 +933,48 @@ export const preferencesText = createDictionary({
   altClickToSupressNewTab: {
     'en-us': (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
       </span>
     ),
     'ru-ru': (
       <span>
-        <Key>Alt</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
+        <Key>{altKeyName}</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
       </span>
     ),
     ca: (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
       </span>
     ),
     'es-es': (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> to suppress new tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
       </span>
     ),
   },
   altClickToSupressNewTabDescription: {
     'en-us': (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
-        tab to open it in the current tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
+        in a new tab to open it in the current tab
       </span>
     ),
     'ru-ru': (
       <span>
-        <Key>Alt</Key>+<Key>Клик</Key> на ссылку, которая обычно открывается в
-        новой вкладке, чтобы открыть ее в текущей вкладке
+        <Key>{altKeyName}</Key>+<Key>Клик</Key> на ссылку, которая обычно
+        открывается в новой вкладке, чтобы открыть ее в текущей вкладке
       </span>
     ),
     ca: (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
-        tab to open it in the current tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
+        in a new tab to open it in the current tab
       </span>
     ),
     'es-es': (
       <span>
-        <Key>Alt</Key>+<Key>Click</Key> on a link that normally opens in a new
-        tab to open it in the current tab
+        <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
+        in a new tab to open it in the current tab
       </span>
     ),
   },
