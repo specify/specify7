@@ -126,7 +126,9 @@ function Preferences({
                       >
                         <div className="flex items-center">
                           <span className="flex-1" />
-                          <h4 className={`${className.headerGray} text-center`}>
+                          <h4
+                            className={`${className.headerGray} text-xl text-center`}
+                          >
                             {title}
                           </h4>
                           <div className="flex justify-end flex-1">
