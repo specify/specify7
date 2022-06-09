@@ -114,6 +114,7 @@ function TableResults({
                 )
               }
               createRecordSet={undefined}
+              tableClassName="max-h-[70vh]"
             />
           </details>
         ))

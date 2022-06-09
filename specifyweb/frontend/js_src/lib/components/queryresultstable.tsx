@@ -9,6 +9,7 @@ import { f } from '../functools';
 import { keysToLowerCase, removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
 import { hasToolPermission } from '../permissions';
 import { fetchPickList } from '../picklistmixins';
@@ -40,7 +41,6 @@ import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
-import { formsText } from '../localization/forms';
 
 function TableHeaderCell({
   fieldSpec,
@@ -268,6 +268,7 @@ export function QueryResultsTable({
   onSelected: handleSelected,
   onSortChange: handleSortChange,
   createRecordSet,
+  tableClassName,
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
@@ -285,6 +286,7 @@ export function QueryResultsTable({
     direction: 'ascending' | 'descending' | undefined
   ) => void;
   readonly createRecordSet: JSX.Element | undefined;
+  readonly tableClassName?: string;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
   const [results, setResults] = useTriggerState(initialData);
@@ -325,13 +327,15 @@ export function QueryResultsTable({
   React.useEffect(() => setSelectedRows(new Set()), [initialTotalCount]);
 
   function fetchMore(): void {
-    if (!Array.isArray(results)) return;
+    if (!Array.isArray(results) || isFetching) return;
     handleFetching();
     fetchResults(results.length)
       .then((newResults) => setResults([...results, ...newResults]))
       .then(handleFetched)
       .catch(crash);
   }
+
+  React.useEffect(fetchMore, []);
 
   const loading = React.useContext(LoadingContext);
   const showResults =
@@ -405,6 +409,7 @@ export function QueryResultsTable({
           role="table"
           className={`grid-table overflow-auto border-b border-gray-500
             auto-rows-min
+            ${tableClassName ?? ''}
             ${
               hasIdField
                 ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
