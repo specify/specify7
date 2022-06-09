@@ -112,7 +112,7 @@ export function UserRoles({
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
-        <span>{adminText('userRoles')}</span>
+        <span>{adminText('collectionUserRoles')}</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'

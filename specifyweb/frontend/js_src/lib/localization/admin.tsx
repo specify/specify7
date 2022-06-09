@@ -185,6 +185,12 @@ export const adminText = createDictionary({
     ca: 'Collection User Roles',
     'es-es': 'Collection User Roles',
   },
+  collectionUserRoles: {
+    'en-us': 'User Roles',
+    'ru-ru': 'Роли пользователей',
+    ca: 'User Roles',
+    'es-es': 'User Roles',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Таблица',

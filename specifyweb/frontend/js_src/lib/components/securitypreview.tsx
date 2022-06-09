@@ -44,7 +44,7 @@ function ReasonExplanation({
       >
         <div role="row">
           {[
-            adminText('userRoles'),
+            adminText('collectionUserRoles'),
             adminText('action'),
             adminText('resource'),
           ].map((label, index) => (

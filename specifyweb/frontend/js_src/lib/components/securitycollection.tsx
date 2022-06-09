@@ -262,7 +262,7 @@ export function SecurityCollection({
               <section className="flex flex-col gap-1">
                 <div>
                   <h4 className={className.headerGray}>
-                    {adminText('userRoles')}
+                    {adminText('collectionUserRoles')}
                   </h4>
                   {typeof roles === 'object' ? (
                     <Ul>
