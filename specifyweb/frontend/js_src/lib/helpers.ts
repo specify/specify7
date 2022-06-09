@@ -246,6 +246,7 @@ export const replaceKey = <T extends IR<unknown>>(
 export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
   Object.fromEntries(data.map((item) => [item.id, item]));
 
+/** Escape all characters that have special meaning in regular expressions */
 export const escapeRegExp = (string: string): string =>
   string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 

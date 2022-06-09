@@ -11,7 +11,7 @@ const reParse = /today\s*([+-])\s*(\d+)\s*(day|week|month|year)/;
 export function parseRelativeDate(value: string): Date | undefined {
   if (value === 'today') return new Date();
 
-  const parsed = reParse.exec(value)?.slice(1, 3);
+  const parsed = reParse.exec(value.toLowerCase())?.slice(1, 3);
   if (Array.isArray(parsed)) {
     const [direction, size, type] = parsed;
     const number = (direction === '-' ? -1 : 1) * Number.parseInt(size);

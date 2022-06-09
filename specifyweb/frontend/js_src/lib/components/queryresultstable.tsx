@@ -334,6 +334,11 @@ export function QueryResultsTable({
   }
 
   const loading = React.useContext(LoadingContext);
+  const showResults =
+    Array.isArray(results) &&
+    fieldSpecs.length > 0 &&
+    pickListsLoaded === true &&
+    treeRanksLoaded === true;
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -395,10 +400,7 @@ export function QueryResultsTable({
           </>
         ) : undefined}
       </div>
-      {Array.isArray(results) &&
-      fieldSpecs.length > 0 &&
-      pickListsLoaded === true &&
-      treeRanksLoaded === true ? (
+      {showResults ? (
         <div
           role="table"
           className={`grid-table overflow-auto border-b border-gray-500
@@ -502,7 +504,7 @@ export function QueryResultsTable({
           />
         </div>
       ) : undefined}
-      {isFetching && loadingGif}
+      {isFetching || showResults ? loadingGif : undefined}
     </Container.Base>
   );
 }
