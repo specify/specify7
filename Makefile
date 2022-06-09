@@ -6,7 +6,7 @@ MYPY = $(VIRTUAL_ENV)/bin/mypy
 
 .PHONY: clean runserver webpack_watch pip_requirements django_migrations frontend build
 
-build: frontend specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+build: frontend specifyweb/settings/build_version.py specifyweb/settings/secret_key.py django_migrations
 
 frontend:
 	$(MAKE) -C specifyweb/frontend/js_src
@@ -14,7 +14,7 @@ frontend:
 pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt
 
-django_migrations: python_prep
+django_migrations:
 	$(PYTHON) manage.py migrate notifications
 	$(PYTHON) manage.py migrate workbench
 	$(PYTHON) manage.py migrate accounts
