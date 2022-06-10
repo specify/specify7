@@ -82,7 +82,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             join_path.append(node.idField)
 
         return cls(root_table=root_table,
-                   join_path=join_path,
+                   join_path=tuple(join_path),
                    table=node,
                    date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
                    tree_rank=None,
@@ -132,7 +132,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 date_part = "Full Date"
 
         result = cls(root_table=root_table,
-                     join_path=join_path,
+                     join_path=tuple(join_path),
                      table=node,
                      date_part=date_part,
                      tree_rank=tree_rank,
@@ -145,9 +145,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
     def __init__(self, *args, **kwargs):
         assert self.is_temporal() or self.date_part is None
         assert self.date_part in ('Full Date', 'Day', 'Month', 'Year', None)
-
-    def __hash__(self):
-        return hash((self.root_table, repr(self.join_path), self.table, self.date_part, self.tree_rank, self.tree_field))
 
     def to_spquery_attrs(self):
         table_list = make_table_list(self)
