@@ -68,7 +68,7 @@ export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   'RepositoryAgreement',
 ]);
 
-export const NO_CLONE: set<keyof Tables> = new Set([
+export const NO_CLONE: Set<keyof Tables> = new Set([
   ...NO_ADD_ANOTHER,
   // To properly clone a user need to also clone their roles and policies
   'SpecifyUser',
