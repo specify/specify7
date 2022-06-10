@@ -54,7 +54,7 @@ def make_table_list(fs):
     return ','.join(first + rest)
 
 def make_stringid(fs, table_list):
-    field_name = fs.tree_rank or fs.join_path[-1].name if fs.join_path else ''
+    field_name = fs.tree_rank or (fs.join_path[-1].name if fs.join_path else '')
     if fs.date_part is not None and fs.date_part != "Full Date":
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name

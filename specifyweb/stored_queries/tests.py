@@ -1,9 +1,17 @@
 from sqlalchemy import orm
 from unittest import skip
 
+from django.test import TestCase
+
 from specifyweb.specify.api_tests import ApiTests
 from .queryfieldspec import QueryFieldSpec
 from . import models
+
+
+class QueryFieldTests(TestCase):
+    def test_stringid_roundtrip_from_bug(self) -> None:
+        fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
+        self.assertEqual("4.taxon.Genus", fs.to_stringid())
 
 @skip("These tests are out of date.")
 class StoredQueriesTests(ApiTests):
