@@ -146,6 +146,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         assert self.is_temporal() or self.date_part is None
         assert self.date_part in ('Full Date', 'Day', 'Month', 'Year', None)
 
+    def __hash__(self):
+        return hash((self.root_table, repr(self.join_path), self.table, self.date_part, self.tree_rank, self.tree_field))
+
     def to_spquery_attrs(self):
         table_list = make_table_list(self)
         stringid = make_stringid(self, table_list)

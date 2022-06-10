@@ -581,7 +581,7 @@ def build_query(session, collection, user, tableid, field_specs,
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
-    predicates_by_stringid = defaultdict(list)
+    predicates_by_field = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
@@ -594,12 +594,12 @@ def build_query(session, collection, user, tableid, field_specs,
             order_by_exprs.append(sort_type(field))
 
         if predicate is not None:
-            predicates_by_stringid[fs.fieldspec.to_stringid()].append(predicate)
+            predicates_by_field[fs.fieldspec].append(predicate)
 
     if implicit_or:
         implicit_ors = [
             reduce(sql.or_, ps)
-            for ps in predicates_by_stringid.values()
+            for ps in predicates_by_field.values()
             if ps
         ]
 
@@ -607,7 +607,7 @@ def build_query(session, collection, user, tableid, field_specs,
             where = reduce(sql.and_, implicit_ors)
             query = query.filter(where)
     else:
-        where = reduce(sql.and_, (p for ps in predicates_by_stringid.values() for p in ps))
+        where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
     logger.debug("query: %s", query.query)
