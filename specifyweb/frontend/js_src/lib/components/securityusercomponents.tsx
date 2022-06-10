@@ -112,7 +112,7 @@ export function UserRoles({
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
-        <span>{adminText('collectionUserRoles')}</span>
+        <span className="text-xl">{adminText('collectionUserRoles')}</span>
       </legend>
       <Ul className="flex flex-col gap-1">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
@@ -207,7 +207,7 @@ export function SetCollection({
 }): JSX.Element {
   return (
     <Label.Generic className={className.limitedWidth}>
-      {schema.models.Collection.label}
+      <span className="text-xl">{schema.models.Collection.label}</span>
       <Select
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}

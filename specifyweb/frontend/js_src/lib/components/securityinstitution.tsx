@@ -120,7 +120,7 @@ export function SecurityInstitution({
       {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
         <>
           <div className="flex gap-2">
-            <h3 className="text-xl">
+            <h3 className="text-2xl">
               {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
             </h3>
             <Link.Icon
@@ -134,13 +134,11 @@ export function SecurityInstitution({
               aria-label={commonText('edit')}
             />
           </div>
-          <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
+          <div className="flex flex-col flex-1 gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
                 <div>
-                  <h4 className={className.headerGray}>
-                    {adminText('userRoleLibrary')}
-                  </h4>
+                  <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>
                   {typeof libraryRoles === 'object' ? (
                     <ul>
                       {Object.values(libraryRoles).map((role) => (
@@ -204,49 +202,54 @@ export function SecurityInstitution({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className={className.headerGray}>{adminText('users')}</h4>
-              {typeof users === 'object' ? (
-                <>
-                  <Ul>
-                    {Object.values(users)
-                      .sort(sortFunction(({ name }) => name))
-                      .map((user) => (
-                        <li key={user.id}>
-                          <Button.LikeLink
-                            onClick={handleOpenUser?.bind(undefined, user.id)}
-                            disabled={
-                              typeof handleOpenUser === 'undefined' ||
-                              (user.id !== userInformation.id &&
-                                !hasTablePermission('SpecifyUser', 'read'))
-                            }
-                          >
-                            {`${user.name}`}
-                            <span className="text-gray-500">{`${
-                              admins?.admins.has(user.id)
-                                ? ` ${adminText('specifyAdmin')}`
-                                : ''
-                            }${
-                              admins?.legacyAdmins.has(user.id)
-                                ? ` ${adminText('legacyAdmin')}`
-                                : ''
-                            }`}</span>
-                          </Button.LikeLink>
-                        </li>
-                      ))}
-                  </Ul>
-                  {hasTablePermission('SpecifyUser', 'create') && (
-                    <div>
-                      <Button.Green
-                        onClick={handleOpenUser?.bind(undefined, undefined)}
-                      >
-                        {commonText('create')}
-                      </Button.Green>
-                    </div>
-                  )}
-                </>
-              ) : (
-                commonText('loading')
-              )}
+              <div>
+                <h4 className="text-xl">
+                  {adminText('institutionUserAccounts')}
+                </h4>
+                {typeof users === 'object' ? (
+                  <>
+                    <Ul>
+                      {Object.values(users)
+                        .sort(sortFunction(({ name }) => name))
+                        .map((user) => (
+                          <li key={user.id}>
+                            <Button.LikeLink
+                              onClick={handleOpenUser?.bind(undefined, user.id)}
+                              disabled={
+                                typeof handleOpenUser === 'undefined' ||
+                                (user.id !== userInformation.id &&
+                                  !hasTablePermission('SpecifyUser', 'read'))
+                              }
+                            >
+                              {`${user.name}`}
+                              <span className="text-gray-500">{`${
+                                admins?.admins.has(user.id)
+                                  ? ` ${adminText('specifyAdmin')}`
+                                  : ''
+                              }${
+                                admins?.legacyAdmins.has(user.id)
+                                  ? ` ${adminText('legacyAdmin')}`
+                                  : ''
+                              }`}</span>
+                            </Button.LikeLink>
+                          </li>
+                        ))}
+                    </Ul>
+                  </>
+                ) : (
+                  commonText('loading')
+                )}
+              </div>
+              {typeof users === 'object' &&
+                hasTablePermission('SpecifyUser', 'create') && (
+                  <div>
+                    <Button.Green
+                      onClick={handleOpenUser?.bind(undefined, undefined)}
+                    >
+                      {commonText('create')}
+                    </Button.Green>
+                  </div>
+                )}
               {typeof users === 'object' && typeof admins === 'undefined' && (
                 <p>{adminText('loadingAdmins')}</p>
               )}

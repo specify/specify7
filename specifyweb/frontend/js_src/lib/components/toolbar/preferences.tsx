@@ -79,7 +79,7 @@ function Preferences({
   const id = useId('preferences');
   return (
     <Container.FullGray>
-      <H2>{commonText('preferences')}</H2>
+      <H2 className="text-2xl">{commonText('preferences')}</H2>
       <Form
         className="contents"
         onSubmit={(): void =>

@@ -164,7 +164,7 @@ export function SecurityUser({
         {({ title, formatted, formElement, form }): JSX.Element => (
           <>
             <DataEntry.Header>
-              <h3 className="text-xl">{title}</h3>
+              <h3 className="text-2xl">{title}</h3>
               <AppTitle title={formatted} type="form" />
             </DataEntry.Header>
             {form(
@@ -173,7 +173,9 @@ export function SecurityUser({
                 canCreateInviteLink ||
                 canSeeInstitutionalPolicies ? (
                   <section>
-                    <h4>{adminText('accountSetupOptions')}</h4>
+                    <h4 className="text-xl">
+                      {adminText('accountSetupOptions')}
+                    </h4>
                     <div className="flex items-center gap-2">
                       {canSetPassword && (
                         <PasswordPlugin
@@ -306,7 +308,7 @@ export function SecurityUser({
                 </SetPermissionContext>
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
-              'overflow-y-auto -mx-4 p-4 pt-0 flex-1 gap-6'
+              'overflow-y-auto -mx-4 p-4 pt-0 flex-1 gap-8'
             )}
             <DataEntry.Footer>
               {changesMade ? (
