@@ -509,7 +509,7 @@ export function QueryResultsTable({
           />
         </div>
       ) : undefined}
-      {isFetching || showResults ? loadingGif : undefined}
+      {isFetching || !showResults ? loadingGif : undefined}
     </Container.Base>
   );
 }
