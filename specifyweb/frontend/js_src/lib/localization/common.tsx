@@ -558,10 +558,10 @@ export const commonText = createDictionary({
     'es-es': 'Data Entry',
   },
   makeDwca: {
-    'en-us': 'Create DwCA Archive',
-    'ru-ru': 'Создать DwCA архив',
-    ca: 'Create DwCA Archive',
-    'es-es': 'Create DwCA Archive',
+    'en-us': 'Create DwC Archive',
+    'ru-ru': 'Создать DwC архив',
+    ca: 'Create DwC Archive',
+    'es-es': 'Create DwC Archive',
   },
   definitionResourceNotFound: {
     'en-us': (resourceName: string) =>
@@ -1164,10 +1164,10 @@ export const commonText = createDictionary({
   },
   // UserTools
   logOut: {
-    'en-us': 'Log out',
+    'en-us': 'Log Out',
     'ru-ru': 'Выйти',
-    ca: 'Log out',
-    'es-es': 'Log out',
+    ca: 'Log Out',
+    'es-es': 'Log Out',
   },
   userToolsDialogTitle: {
     'en-us': 'User Tools',
@@ -1631,10 +1631,10 @@ export const commonText = createDictionary({
     'es-es': 'Reload',
   },
   technicalDocumentation: {
-    'en-us': 'Technical docs',
-    'ru-ru': 'Тех. документы',
-    ca: 'Technical docs',
-    'es-es': 'Technical docs',
+    'en-us': 'Technical Docs',
+    'ru-ru': 'Тех. Документы',
+    ca: 'Technical Docs',
+    'es-es': 'Technical Docs',
   },
   dismiss: {
     'en-us': 'Dismiss',
@@ -1675,12 +1675,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Результаты',
     ca: 'Results',
     'es-es': 'Results',
-  },
-  downloadErrorMessage: {
-    'en-us': 'Download Error Message',
-    'ru-ru': 'Скачать ошибку',
-    ca: 'Download Error Message',
-    'es-es': 'Download Error Message',
   },
   copyErrorMessage: {
     'en-us': 'Copy Error Message',

@@ -111,6 +111,12 @@ export const adminText = createDictionary({
     ca: 'User Accounts',
     'es-es': 'User Accounts',
   },
+  institutionUserAccounts: {
+    'en-us': 'Institution User Accounts',
+    'ru-ru': 'Пользователи',
+    ca: 'Institution User Accounts',
+    'es-es': 'Institution User Accounts',
+  },
   collectionUsers: {
     'en-us': 'Collection User Accounts',
     'ru-ru': 'Пользователи',
@@ -148,12 +154,11 @@ export const adminText = createDictionary({
     ca: 'Confirm',
     'es-es': 'Confirm',
   },
-  // UserCollectionsPlugin
   collections: {
-    'en-us': 'Collections',
+    'en-us': 'Collection(s)',
     'ru-ru': 'Коллекции',
-    ca: 'Collections',
-    'es-es': 'Collections',
+    ca: 'Collection(s)',
+    'es-es': 'Collection(s)',
   },
   notAvailableOnAdmins: {
     'en-us': 'This option is unavailable for admin users',
@@ -168,28 +173,28 @@ export const adminText = createDictionary({
     'es-es': 'Select user collection access',
   },
   securityPanel: {
-    'en-us': 'Permissions Panel',
+    'en-us': 'Permissions PaneR',
     'ru-ru': 'Защита',
     ca: 'Permissions Panel',
     'es-es': 'Permissions Panel',
   },
   userRoleLibrary: {
-    'en-us': 'Institutional User Role Library:',
+    'en-us': 'Institution Role Library',
     'ru-ru': 'Библиотека ролей пользователей:',
-    ca: 'Institutional User Role Library:',
-    'es-es': 'Institutional User Role Library:',
+    ca: 'Institution Role Library',
+    'es-es': 'Institution Role Library',
   },
   userRoles: {
-    'en-us': 'Collection User Roles',
-    'ru-ru': 'Роли пользователей',
-    ca: 'Collection User Roles',
-    'es-es': 'Collection User Roles',
-  },
-  collectionUserRoles: {
     'en-us': 'User Roles',
     'ru-ru': 'Роли пользователей',
     ca: 'User Roles',
     'es-es': 'User Roles',
+  },
+  collectionUserRoles: {
+    'en-us': 'Collection User Roles',
+    'ru-ru': 'Роли пользователей',
+    ca: 'Collection User Roles',
+    'es-es': 'Collection User Roles',
   },
   table: {
     'en-us': 'Table',
