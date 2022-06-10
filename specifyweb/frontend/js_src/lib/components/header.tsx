@@ -37,6 +37,7 @@ import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { usePref } from './preferenceshooks';
 import { createBackboneView } from './reactbackboneextend';
+import { icons } from './icons';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -340,6 +341,7 @@ export function UserTools({
         {userInformation.name}
       </Button.Small>
       <Dialog
+        icon={<span className="text-blue-500">{icons.cog}</span>}
         isOpen={isOpen}
         header={commonText('userToolsDialogTitle')}
         onClose={handleClose}
