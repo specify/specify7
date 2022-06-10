@@ -21,7 +21,6 @@ import { userInformation } from '../userinfo';
 import { Button, Input, Label, Link } from './basic';
 import { CopyButton } from './common';
 import { displayError, legacyLoadingContext } from './contexts';
-import { downloadFile } from './filepicker';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
@@ -78,16 +77,6 @@ function ErrorDialog({
       header={header}
       buttons={
         <>
-          <Button.Blue
-            onClick={(): void =>
-              void downloadFile(
-                `Specify 7 Crash Report - ${new Date().toJSON()}.json`,
-                copiableMessage
-              )
-            }
-          >
-            {commonText('downloadErrorMessage')}
-          </Button.Blue>
           <CopyButton
             text={copiableMessage}
             label={commonText('copyErrorMessage')}
