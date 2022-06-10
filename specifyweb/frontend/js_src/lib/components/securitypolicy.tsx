@@ -370,7 +370,9 @@ export function SecurityPolicies({
           />
         ))}
       </Ul>
-      {scope !== 'institution' && <ExcludedPolicyWarning />}
+      {scope !== 'institution' && (
+        <p>{adminText('excludedInstitutionalPoliciesDescription')}</p>
+      )}
       {!isReadOnly && (
         <div>
           <Button.Green
@@ -440,26 +442,4 @@ export function SecurityPolicies({
       {children}
     </fieldset>
   );
-}
-
-function ExcludedPolicyWarning(): JSX.Element | null {
-  const [isVisible = true, setIsVisible] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'excludedPoliciesMessageVisible',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
-  return isVisible ? (
-    <div className="dark:bg-neutral-500 flex gap-2 p-2 bg-gray-300 rounded">
-      <span className="flex-1">
-        {adminText('excludedInstitutionalPoliciesDescription')}
-      </span>
-      <Button.Icon
-        icon="x"
-        onClick={(): void => setIsVisible(false)}
-        title={commonText('dismiss')}
-        aria-label={commonText('dismiss')}
-      />
-    </div>
-  ) : null;
 }

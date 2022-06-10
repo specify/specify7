@@ -113,6 +113,5 @@ export type CacheDefinitions = {
     readonly previewCollapsed: boolean;
     readonly advancedPreviewCollapsed: boolean;
     readonly institutionPoliciesExpanded: boolean;
-    readonly excludedPoliciesMessageVisible: boolean;
   };
 };
