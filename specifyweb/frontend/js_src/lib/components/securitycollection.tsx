@@ -327,7 +327,9 @@ export function SecurityCollection({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className={className.headerGray}>{adminText('users')}</h4>
+              <h4 className={className.headerGray}>
+                {adminText('collectionUsers')}
+              </h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText('none')

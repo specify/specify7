@@ -9,7 +9,10 @@ import React from 'react';
 import { Key } from '../components/basic';
 import { createDictionary } from './utils';
 
-const altKeyName = navigator.appVersion.includes('Mac') ? 'Option' : 'Alt';
+const altKeyName =
+  typeof navigator === 'object' && navigator.appVersion.includes('Mac')
+    ? 'Option'
+    : 'Alt';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
