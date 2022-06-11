@@ -167,6 +167,7 @@ function QueryResult({
   result,
   recordFormatter,
   isSelected,
+  isLast,
   onSelected: handleSelected,
 }: {
   readonly model: SpecifyModel;
@@ -177,6 +178,7 @@ function QueryResult({
     result: RA<string | number | null>
   ) => Promise<RA<string | JSX.Element>>;
   readonly isSelected: boolean;
+  readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
   const [resource] = useLiveState<
@@ -206,11 +208,10 @@ function QueryResult({
   return (
     <div
       role="row"
-      className={`query-result sticky even:[--bg:transparent]
-        odd:[--bg:theme(colors.gray.100)]
-        odd:dark:[--bg:theme(colors.neutral.700)] ${
-          condenseQueryResults ? 'text-sm' : ''
-        }`}
+      className={`even:[--bg:transparent] odd:[--bg:theme(colors.gray.100)]
+        odd:dark:[--bg:theme(colors.neutral.700)]
+        ${condenseQueryResults ? 'text-sm' : ''}
+      `}
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
@@ -224,30 +225,32 @@ function QueryResult({
           : undefined
       }
     >
-      {typeof handleSelected === 'function' && (
-        <span
-          role="cell"
-          className={`${getCellClassName(condenseQueryResults)} sticky`}
-        >
-          <Input.Checkbox
-            checked={isSelected}
-            /* Ignore click event, as click would be handled by onClick on row */
-            onChange={f.undefined}
-          />
-        </span>
-      )}
-      {typeof viewUrl === 'string' && (
-        <span
-          role="cell"
-          className={`${getCellClassName(condenseQueryResults)} sticky`}
-        >
-          <Link.NewTab
-            className="print:hidden"
-            href={viewUrl}
-            role="row"
-            rel="noreferrer"
-          />
-        </span>
+      {hasIdField && (
+        <>
+          <span
+            role="cell"
+            className={`${getCellClassName(condenseQueryResults)} sticky
+              ${isLast ? 'rounded-bl' : ''}
+            `}
+          >
+            <Input.Checkbox
+              checked={isSelected}
+              /* Ignore click event, as click would be handled by onClick on row */
+              onChange={f.undefined}
+            />
+          </span>
+          <span
+            role="cell"
+            className={`${getCellClassName(condenseQueryResults)} sticky`}
+          >
+            <Link.NewTab
+              className="print:hidden"
+              href={viewUrl}
+              role="row"
+              rel="noreferrer"
+            />
+          </span>
+        </>
       )}
       {result
         .filter((_, index) => !hasIdField || index !== queryIdField)
@@ -280,7 +283,7 @@ export function QueryResults({
   readonly hasIdField: boolean;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
-  readonly onSelected?: (
+  readonly onSelected: (
     id: number,
     isSelected: boolean,
     isShiftClick: boolean
@@ -292,7 +295,7 @@ export function QueryResults({
   );
   return (
     <>
-      {results.map((result, index) => (
+      {results.map((result, index, { length }) => (
         <QueryResult
           key={index}
           model={model}
@@ -304,8 +307,9 @@ export function QueryResults({
             hasIdField &&
             selectedRows.has(results[index][queryIdField] as number)
           }
+          isLast={index + 1 === length}
           onSelected={
-            typeof handleSelected === 'function' && hasIdField
+            hasIdField
               ? (isSelected, isShiftClick): void =>
                   handleSelected(
                     result[queryIdField] as number,

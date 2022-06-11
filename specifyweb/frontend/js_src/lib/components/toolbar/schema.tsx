@@ -35,7 +35,8 @@ function Table({
   return (
     <div
       role="table"
-      className="grid-table grid-cols-[repeat(var(--cols),auto)] border flex-1 overflow-auto"
+      className={`grid-table grid-cols-[repeat(var(--cols),auto)] border rounded
+        flex-1 overflow-auto`}
       style={{ '--cols': headers.length } as React.CSSProperties}
     >
       <div role="row">
@@ -43,7 +44,7 @@ function Table({
           <div
             key={index}
             role="columnheader"
-            className="sticky top-0 p-2 font-bold border bg-[color:var(--background)]"
+            className={`sticky top-0 p-2 font-bold border bg-[color:var(--background)]`}
           >
             {label}
           </div>

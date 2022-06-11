@@ -263,10 +263,16 @@ function FormatPermissionError({
               adminText('resource'),
               schema.models.Collection.name,
               schema.models.SpecifyUser.name,
-            ].map((label, index) => (
+            ].map((label, index, { length }) => (
               <th
                 scope="column"
-                className="bg-gray-350 dark:bg-neutral-600 p-2"
+                className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
+                  index === 0
+                    ? 'rounded-l'
+                    : index + 1 === length
+                    ? 'rounded-r'
+                    : ''
+                }`}
                 key={index}
               >
                 {label}

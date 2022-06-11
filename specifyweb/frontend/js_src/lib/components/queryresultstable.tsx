@@ -405,16 +405,17 @@ export function QueryResultsTable({
         ) : undefined}
       </div>
       <div
+        // TODO: turn this into a reusable table component
         role="table"
         className={`grid-table overflow-auto border-b border-gray-500
-            auto-rows-min
-            ${tableClassName ?? ''}
-            ${
-              hasIdField
-                ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
-                : `grid-cols-[repeat(var(--cols),auto)]`
-            }`}
-        style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
+          auto-rows-min rounded grid-cols-[repeat(var(--columns),auto)]
+          ${tableClassName ?? ''}
+       `}
+        style={
+          {
+            '--columns': fieldSpecs.length + (hasIdField ? 2 : 0),
+          } as React.CSSProperties
+        }
         onScroll={
           showResults && (isFetching || results.length === totalCount)
             ? undefined
@@ -429,14 +430,12 @@ export function QueryResultsTable({
             {hasIdField && (
               <>
                 <TableHeaderCell
-                  key="select-record"
                   fieldSpec={undefined}
                   ariaLabel={commonText('selectRecord')}
                   sortConfig={undefined}
                   onSortChange={undefined}
                 />
                 <TableHeaderCell
-                  key="view-record"
                   fieldSpec={undefined}
                   ariaLabel={commonText('viewRecord')}
                   sortConfig={undefined}
@@ -524,7 +523,7 @@ export const loadingGif = (
   <img
     src="/static/img/specify128spinner.gif"
     alt={commonText('loading')}
-    className="w-20"
+    className="w-20 rounded"
     aria-live="polite"
   />
 );

@@ -47,10 +47,16 @@ function ReasonExplanation({
             adminText('collectionUserRoles'),
             adminText('action'),
             adminText('resource'),
-          ].map((label, index) => (
+          ].map((label, index, { length }) => (
             <div
               role="columnheader"
-              className="bg-gray-350 dark:bg-neutral-600 p-2"
+              className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
+                index === 0
+                  ? 'rounded-l'
+                  : index + 1 === length
+                  ? 'rounded-r'
+                  : ''
+              }`}
               key={index}
             >
               {label}
@@ -94,10 +100,16 @@ function ReasonExplanation({
             schema.models.Collection.label,
             adminText('action'),
             adminText('resource'),
-          ].map((label, index) => (
+          ].map((label, index, { length }) => (
             <div
               role="columnheader"
-              className="bg-gray-350 dark:bg-neutral-600 p-2"
+              className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
+                index === 0
+                  ? 'rounded-l'
+                  : index + 1 === length
+                  ? 'rounded-r'
+                  : ''
+              }`}
               key={index}
             >
               {label}
@@ -242,11 +254,17 @@ function PreviewTables({
           commonText('update'),
           commonText('delete'),
           adminText('table'),
-        ].map((header) => (
+        ].map((header, index, { length }) => (
           <div
             key={header}
             role="columnheader"
-            className="p-2 sticky top-0 bg-[color:var(--form-background)]"
+            className={`p-2 sticky top-0 bg-[color:var(--form-background)] ${
+              index === 0
+                ? 'rounded-l'
+                : index + 1 === length
+                ? 'rounded-r'
+                : ''
+            }`}
           >
             {header}
           </div>
