@@ -193,7 +193,16 @@ export function RenderForm<SCHEMA extends AnySchema>({
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div className={showLoading ? 'relative' : undefined}>
         {showLoading && (
-          <div className="absolute z-10 flex items-center justify-center w-full h-full">
+          <div
+            className={`${
+              /*
+               * If form is not yet visible, the logo should be reserving
+               * some space for itself so as not to overlap with the
+               * form header and the save button
+               */
+              formIsLoaded ? 'absolute' : ''
+            } z-10 flex items-center justify-center w-full h-full`}
+          >
             {loadingGif}
           </div>
         )}
