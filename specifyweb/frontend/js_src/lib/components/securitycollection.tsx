@@ -16,6 +16,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
 import { fetchResource, getResourceViewUrl } from '../resource';
+import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import {
   decompressPolicies,
@@ -34,7 +35,6 @@ import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
-import { schema } from '../schema';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -83,7 +83,7 @@ export function SecurityCollection({
               {
                 headers: { Accept: 'application/json' },
               }
-            ).then(({ data }) =>
+            ).then(async ({ data }) =>
               Promise.all(
                 Object.keys(data)
                   .map((userId) => Number.parseInt(userId))
@@ -260,31 +260,27 @@ export function SecurityCollection({
           <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
             {hasPermission('/permissions/roles', 'read', collection.id) && (
               <section className="flex flex-col gap-1">
-                <div>
-                  <h4 className={className.headerGray}>
-                    {adminText('collectionUserRoles')}
-                  </h4>
-                  {typeof roles === 'object' ? (
-                    <Ul>
-                      {Object.values(roles).map((role) => (
-                        <li key={role.id}>
-                          <Button.LikeLink
-                            onClick={(): void =>
-                              setState({
-                                type: 'RoleState',
-                                role,
-                              })
-                            }
-                          >
-                            {role.name}
-                          </Button.LikeLink>
-                        </li>
-                      ))}
-                    </Ul>
-                  ) : (
-                    commonText('loading')
-                  )}
-                </div>
+                <h4 className="text-xl">{adminText('collectionUserRoles')}</h4>
+                {typeof roles === 'object' ? (
+                  <Ul>
+                    {Object.values(roles).map((role) => (
+                      <li key={role.id}>
+                        <Button.LikeLink
+                          onClick={(): void =>
+                            setState({
+                              type: 'RoleState',
+                              role,
+                            })
+                          }
+                        >
+                          {role.name}
+                        </Button.LikeLink>
+                      </li>
+                    ))}
+                  </Ul>
+                ) : (
+                  commonText('loading')
+                )}
                 <div className="flex gap-2">
                   {hasPermission(
                     '/permissions/roles',
@@ -327,9 +323,7 @@ export function SecurityCollection({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className={className.headerGray}>
-                {adminText('collectionUsers')}
-              </h4>
+              <h4 className="text-xl">{adminText('collectionUsers')}</h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText('none')
