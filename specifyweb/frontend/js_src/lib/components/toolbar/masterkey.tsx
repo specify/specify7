@@ -105,7 +105,7 @@ function ShowKey({
     >
       <div className="grid gap-x-2 grid-cols-[auto_min-content] grid-rows-[min-content_auto]">
         <Label.Generic className="contents">
-          <span className="col-span-2">
+          <span className="col-span-full">
             {commonText('masterKeyFieldLabel')}
           </span>
           <Input.Text

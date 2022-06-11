@@ -350,7 +350,7 @@ function Row({
       </tr>
       {state.type === 'ItemSelection' && (
         <tr>
-          <td className="col-span-7">
+          <td className="col-span-full">
             {Object.entries(state.items).map(([tableName, items]) =>
               items.map(({ id, label }) => (
                 <Button.LikeLink

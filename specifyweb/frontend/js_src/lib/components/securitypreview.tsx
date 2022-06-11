@@ -77,7 +77,7 @@ function ReasonExplanation({
           ))}
           {matching_role_policies.length === 0 && (
             <div role="row">
-              <div role="cell" className="col-span-3 p-2">
+              <div role="cell" className="col-span-full p-2">
                 {adminText('none')}
               </div>
             </div>
@@ -125,7 +125,7 @@ function ReasonExplanation({
           ))}
           {matching_user_policies.length === 0 && (
             <div role="row">
-              <div role="cell" className="col-span-4 p-2">
+              <div role="cell" className="col-span-full p-2">
                 {adminText('none')}
               </div>
             </div>
@@ -180,7 +180,7 @@ function PreviewRow({
         id={id('reason')}
       >
         {typeof view === 'string' && (
-          <div role="cell" className="col-span-5 py-2">
+          <div role="cell" className="col-span-full py-2">
             <ReasonExplanation cell={row[view]} onOpenRole={handleOpenRole} />
           </div>
         )}

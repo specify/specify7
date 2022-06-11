@@ -241,6 +241,7 @@ export function CopyButton({
   const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
   return (
     <Button.Green
+      className="whitespace-nowrap"
       onClick={(): void =>
         void copyTextToClipboard(text).then((): void => {
           handleCopied();

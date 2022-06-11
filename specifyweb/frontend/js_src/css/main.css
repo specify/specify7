@@ -239,10 +239,11 @@
 
   /*
    * Grid-based table implementation for increased flexibility
-   * Does not sacrifice accessibility thanks to [role] attributes
-   * Allows for things like sticky headers and having entire row be a link
+   * Does not sacrifice accessibility thanks to the [role] attributes
+   * Allows for things like sticky headers and having entire row be a link/button
    * You can set column sizes by adding a className like this:
-   *   grid-cols-[repeat(4,_1fr)_auto_auto_min-content_minmax(10rem,_1fr)]
+   *   grid-cols-[repeat(4,1fr)_auto_auto_min-content_minmax(10rem,1fr)]
+   * There is much more flexibility in how columns should be sized.
    */
   .grid-table:is(table, [role~="table"]) {
     @apply grid;
