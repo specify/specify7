@@ -265,6 +265,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 const year = f.parseInt(value);
                 if (typeof year === 'number')
                   setMoment(dayjs(moment).year(year));
+                else setMoment(undefined);
               },
             }
           : {
