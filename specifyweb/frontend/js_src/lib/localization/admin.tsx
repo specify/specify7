@@ -173,10 +173,10 @@ export const adminText = createDictionary({
     'es-es': 'Select user collection access',
   },
   securityPanel: {
-    'en-us': 'Permissions PaneR',
+    'en-us': 'Roles and Permissions',
     'ru-ru': 'Защита',
-    ca: 'Permissions Panel',
-    'es-es': 'Permissions Panel',
+    ca: 'Roles and Permissions',
+    'es-es': 'Roles and Permissions',
   },
   userRoleLibrary: {
     'en-us': 'Institution Role Library',
