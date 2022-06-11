@@ -404,10 +404,9 @@ export function QueryResultsTable({
           </>
         ) : undefined}
       </div>
-      {showResults ? (
-        <div
-          role="table"
-          className={`grid-table overflow-auto border-b border-gray-500
+      <div
+        role="table"
+        className={`grid-table overflow-auto border-b border-gray-500
             auto-rows-min
             ${tableClassName ?? ''}
             ${
@@ -415,101 +414,108 @@ export function QueryResultsTable({
                 ? `grid-cols-[min-content,min-content,repeat(var(--cols),auto)]`
                 : `grid-cols-[repeat(var(--cols),auto)]`
             }`}
-          style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
-          onScroll={
-            isFetching || results.length === totalCount
-              ? undefined
-              : ({ target }): void =>
-                  isScrolledBottom(target as HTMLElement)
-                    ? undefined
-                    : fetchMore()
-          }
-        >
-          <div role="rowgroup">
-            <div role="row">
-              {hasIdField && (
-                <>
-                  <TableHeaderCell
-                    key="select-record"
-                    fieldSpec={undefined}
-                    ariaLabel={commonText('selectRecord')}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                  <TableHeaderCell
-                    key="view-record"
-                    fieldSpec={undefined}
-                    ariaLabel={commonText('viewRecord')}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                </>
-              )}
-              {fieldSpecs.map((fieldSpec, index) => (
+        style={{ '--cols': fieldSpecs.length } as React.CSSProperties}
+        onScroll={
+          showResults && (isFetching || results.length === totalCount)
+            ? undefined
+            : ({ target }): void =>
+                isScrolledBottom(target as HTMLElement)
+                  ? undefined
+                  : fetchMore()
+        }
+      >
+        <div role="rowgroup">
+          <div role="row">
+            {hasIdField && (
+              <>
                 <TableHeaderCell
-                  key={index}
-                  fieldSpec={fieldSpec}
-                  sortConfig={sortConfig?.[index]}
-                  onSortChange={
-                    typeof handleSortChange === 'function'
-                      ? (sortType): void => handleSortChange?.(index, sortType)
-                      : undefined
-                  }
+                  key="select-record"
+                  fieldSpec={undefined}
+                  ariaLabel={commonText('selectRecord')}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
                 />
-              ))}
-            </div>
+                <TableHeaderCell
+                  key="view-record"
+                  fieldSpec={undefined}
+                  ariaLabel={commonText('viewRecord')}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
+                />
+              </>
+            )}
+            {fieldSpecs.map((fieldSpec, index) => (
+              <TableHeaderCell
+                key={index}
+                fieldSpec={fieldSpec}
+                sortConfig={sortConfig?.[index]}
+                onSortChange={
+                  typeof handleSortChange === 'function'
+                    ? (sortType): void => handleSortChange?.(index, sortType)
+                    : undefined
+                }
+              />
+            ))}
           </div>
-          <QueryResults
-            model={model}
-            fieldSpecs={fieldSpecs}
-            hasIdField={hasIdField}
-            results={results}
-            selectedRows={selectedRows}
-            onSelected={(id, isSelected, isShiftClick): void => {
-              /*
-               * If a custom select handler is set, fetch the resource and call
-               * the handler
-               */
-              if (typeof handleSelected === 'function') {
-                loading(
-                  new model.Resource({ id }).fetch().then(handleSelected)
-                );
-                return;
-              }
-
-              /*
-               * If shift/ctrl/cmd key was held during click, toggle all rows
-               * between the current one, and the last selected one
-               */
-              const rowIndex = results.findIndex(
-                (row) => row[queryIdField] === id
-              );
-              const ids = (
-                isShiftClick && typeof lastSelectedRow.current === 'number'
-                  ? Array.from(
-                      {
-                        length:
-                          Math.abs(lastSelectedRow.current - rowIndex) + 1,
-                      },
-                      (_, index) =>
-                        Math.min(lastSelectedRow.current!, rowIndex) + index
-                    )
-                  : [rowIndex]
-              ).map((rowIndex) => results[rowIndex][queryIdField] as number);
-              setSelectedRows(
-                new Set([
-                  ...Array.from(selectedRows).filter(
-                    (id) => isSelected || !ids.includes(id)
-                  ),
-                  ...(isSelected ? ids : []),
-                ])
-              );
-              lastSelectedRow.current = rowIndex;
-            }}
-          />
         </div>
-      ) : undefined}
-      {isFetching || !showResults ? loadingGif : undefined}
+        <div role="rowgroup">
+          {showResults ? (
+            <QueryResults
+              model={model}
+              fieldSpecs={fieldSpecs}
+              hasIdField={hasIdField}
+              results={results}
+              selectedRows={selectedRows}
+              onSelected={(id, isSelected, isShiftClick): void => {
+                /*
+                 * If a custom select handler is set, fetch the resource and call
+                 * the handler
+                 */
+                if (typeof handleSelected === 'function') {
+                  loading(
+                    new model.Resource({ id }).fetch().then(handleSelected)
+                  );
+                  return;
+                }
+
+                /*
+                 * If shift/ctrl/cmd key was held during click, toggle all rows
+                 * between the current one, and the last selected one
+                 */
+                const rowIndex = results.findIndex(
+                  (row) => row[queryIdField] === id
+                );
+                const ids = (
+                  isShiftClick && typeof lastSelectedRow.current === 'number'
+                    ? Array.from(
+                        {
+                          length:
+                            Math.abs(lastSelectedRow.current - rowIndex) + 1,
+                        },
+                        (_, index) =>
+                          Math.min(lastSelectedRow.current!, rowIndex) + index
+                      )
+                    : [rowIndex]
+                ).map((rowIndex) => results[rowIndex][queryIdField] as number);
+                setSelectedRows(
+                  new Set([
+                    ...Array.from(selectedRows).filter(
+                      (id) => isSelected || !ids.includes(id)
+                    ),
+                    ...(isSelected ? ids : []),
+                  ])
+                );
+                lastSelectedRow.current = rowIndex;
+              }}
+            />
+          ) : undefined}
+          {isFetching || !showResults ? (
+            <div role="cell" className="col-span-full">
+              {loadingGif}
+            </div>
+          ) : undefined}
+        </div>
+      </div>
     </Container.Base>
   );
 }

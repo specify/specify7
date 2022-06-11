@@ -291,7 +291,7 @@ export function QueryResults({
     [fieldSpecs, hasIdField]
   );
   return (
-    <div role="rowgroup">
+    <>
       {results.map((result, index) => (
         <QueryResult
           key={index}
@@ -316,6 +316,6 @@ export function QueryResults({
           }
         />
       ))}
-    </div>
+    </>
   );
 }
