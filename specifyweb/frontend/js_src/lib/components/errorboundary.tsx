@@ -375,7 +375,7 @@ export function handleAjaxError(
   if (strict && !isPermissionError)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
-        header={commonText('backEndErrorDialogHeader')}
+        header={commonText('errorBoundaryDialogHeader')}
         onClose={handleClose}
         copiableMessage={copiableMessage}
       >
@@ -403,7 +403,7 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
 
   return (
     <iframe
-      title={commonText('backEndErrorDialogHeader')}
+      title={commonText('errorBoundaryDialogHeader')}
       className="h-full"
       ref={iframeRef}
     />

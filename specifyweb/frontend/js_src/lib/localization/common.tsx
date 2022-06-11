@@ -857,16 +857,24 @@ export const commonText = createDictionary({
   },
   // Error Boundary
   errorBoundaryDialogHeader: {
-    'en-us': 'We are sorry, an error has occurred',
+    'en-us': "Sorry, something's gone a bit wrong",
     'ru-ru': 'Произошла неожиданная ошибка',
-    ca: 'We are sorry, an error has occurred',
-    'es-es': 'We are sorry, an error has occurred',
+    ca: "Sorry, something's gone a bit wrong",
+    'es-es': "Sorry, something's gone a bit wrong",
   },
   errorBoundaryDialogText: {
-    'en-us': 'Please use the web browser to reload the page and try again.',
-    'ru-ru': 'Пожалуйста, обновите страницу и попробуйте еще раз.',
-    ca: 'Please use the web browser to reload the page and try again.',
-    'es-es': 'Please use the web browser to reload the page and try again.',
+    'en-us': `There is an unrecoverable error that will not allow us to safely
+      return to your current window. To avoid corrupting data records, we need
+      to start again from a safe spot--the Home page.`,
+    'ru-ru': `Произошла неисправимая ошибка, которая не позволит нам безопасно
+      вернуться к вашему текущему окну. Чтобы избежать повреждения записей
+      данных, нам нужно начать заново с безопасного места — домашней страницы.`,
+    ca: `There is an unrecoverable error that will not allow us to safely
+      return to your current window. To avoid corrupting data records, we need
+      to start again from a safe spot--the Home page.`,
+    'es-es': `There is an unrecoverable error that will not allow us to safely
+      return to your current window. To avoid corrupting data records, we need
+      to start again from a safe spot--the Home page.`,
   },
   errorBoundaryDialogSecondMessage: {
     'en-us': (email: JSX.Element) => (
@@ -899,12 +907,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Описание ошибки',
     ca: "Missatge d'error",
     'es-es': 'Error Message',
-  },
-  backEndErrorDialogHeader: {
-    'en-us': 'An error occurred communicating with the Specify 7 server.',
-    'ru-ru': 'Произошла ошибка связи с сервером Specify 7.',
-    ca: 'An error occurred communicating with the Specify 7 server.',
-    'es-es': 'An error occurred communicating with the Specify 7 server.',
   },
   // Search
   expressSearch: {
