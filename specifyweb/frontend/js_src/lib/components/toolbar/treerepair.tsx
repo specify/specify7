@@ -93,7 +93,7 @@ export function TreeSelectDialog({
                               Promise.resolve(handleClick(treeName)).then(() =>
                                 typeof confirmationMessage === 'string'
                                   ? setIsFinished()
-                                  : handleCLose()
+                                  : handleClose()
                               )
                             );
                           }}

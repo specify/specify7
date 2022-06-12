@@ -232,6 +232,13 @@ function eventHandlerForToOne(related, field) {
                   Number.parseInt(oldValue) === newValue
                 )
                     options ??= {silent: true};
+                else if(
+                  // Trimming the value shouldn't trigger the unload protect
+                  typeof oldValue === 'string' &&
+                  typeof newValue === 'string' &&
+                  oldValue === newValue.trim()
+                )
+                    options ??= {silent: true};
             }
             // make the keys case insensitive
             var attrs = {};
