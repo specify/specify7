@@ -111,9 +111,11 @@ function eventHandlerForToOne(related, field) {
             delete newResource.attributes.id;
 
             // Don't clone unique fields
-            Object.keys(businessRuleDefs[this.specifyModel.name]?.uniqueIn ?? {})
-              .map(fieldName=>
-                delete newResource.attributes[fieldName.toLowerCase()]
+            Object.entries(businessRuleDefs[this.specifyModel.name]?.uniqueIn ?? {})
+              .map(([fieldName, uniquenessRules])=>
+                 uniquenessRules in schema.domainLevelIds
+                   ? delete newResource.attributes[fieldName.toLowerCase()]
+                   : undefined
               );
 
             newResource.needsSaved = self.needsSaved;
