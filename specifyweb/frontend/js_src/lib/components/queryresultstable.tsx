@@ -170,6 +170,7 @@ function ViewRecords({
 }
 
 /**
+ * Create a record set frm selected records.
  * See also `MakeRecordSetButton`
  */
 function CreateRecordSet({
@@ -212,11 +213,13 @@ function CreateRecordSet({
               type: 0,
               dbTableId: defined(getModel(baseTableName)).tableId,
               /*
-               * Back-end has an exception allowing passing
-               * inline data for record set items
+               * Back-end has an exception for RecordSet table allowing passing
+               * inline data for record set items.
+               * Need to make IDs unique as query may return results with
+               * duplicate IDs (when displaying a -to-many relationship)
                */
               // @ts-expect-error
-              recordSetItems: getIds().map((id) => ({
+              recordSetItems: f.unique(getIds()).map((id) => ({
                 recordId: id,
               })),
             })
@@ -427,6 +430,11 @@ export function QueryResultsTable({
               : 'grid-cols-[repeat(var(--columns),auto)]'
           }
        `}
+        style={
+          {
+            '--columns': fieldSpecs.length,
+          } as React.CSSProperties
+        }
         onScroll={
           showResults && (isFetching || results.length === totalCount)
             ? undefined

@@ -173,6 +173,10 @@ export function ExpressSearchView(): JSX.Element {
               .map(([ajaxUrl, tableResult]) => {
                 let model = defined(getModel(tableResult.definition.root));
                 let idFieldIndex = 0;
+                // TODO: decide if this code is needed
+                // (it is responsible for deciding whether express search on
+                // "Taxon CollectionObject" links out to Taxon records rather
+                // than CollectionObject
                 /*const fieldSpecs = tableResult.definition.fieldSpecs.map(
                   ({ stringId, isRelationship }) =>
                     QueryFieldSpec.fromStringId(stringId, isRelationship)

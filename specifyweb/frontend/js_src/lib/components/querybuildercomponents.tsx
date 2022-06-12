@@ -153,6 +153,7 @@ export function SaveQueryButtons({
 }
 
 /**
+ * Create a Record Set from all query results.
  * See also `CreateRecordSet`
  */
 export function MakeRecordSetButton({
