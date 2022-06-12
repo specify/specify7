@@ -30,10 +30,12 @@ export function TreeSelectDialog({
   title,
   getLink,
   permissionName,
+  confirmationMessage,
 }: {
   readonly onClose: () => void;
   readonly onClick: undefined | ((tree: string) => Promise<void> | void);
   readonly title: string;
+  readonly confirmationMessage?: string;
   readonly getLink: (tree: string) => string;
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
@@ -42,6 +44,7 @@ export function TreeSelectDialog({
     React.useCallback(async () => treeRanksPromise, []),
     true
   );
+  const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (
     <Dialog
@@ -49,57 +52,68 @@ export function TreeSelectDialog({
       header={title}
       onClose={handleClose}
       buttons={
-        <Button.Gray onClick={handleClose}>{commonText('cancel')}</Button.Gray>
+        <Button.Gray onClick={handleClose}>
+          {isFinished ? commonText('close') : commonText('cancel')}
+        </Button.Gray>
       }
     >
-      <nav>
-        <Ul>
-          {getDisciplineTrees()
-            .filter((treeName) =>
-              permissionName === 'repair'
-                ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
-                : hasTreeAccess(treeName, 'read')
-            )
-            .map((treeName) =>
-              f.var(
-                treeRanks[treeName]?.definition as
-                  | SpecifyResource<TaxonTreeDef>
-                  | undefined,
-                (treeDefinition) => (
-                  <li key={treeName}>
-                    <div className="flex gap-2">
-                      <Link.Default
-                        href={getLink(treeName)}
-                        className={`flex-1 ${
-                          typeof handleClick === 'function'
-                            ? className.navigationHandled
-                            : undefined
-                        }`}
-                        onClick={(event): void => {
-                          if (typeof handleClick === 'undefined') return;
-                          event.preventDefault();
-                          loading(
-                            Promise.resolve(handleClick(treeName)).then(
-                              handleClose
-                            )
-                          );
-                        }}
-                        title={treeDefinition?.get('remarks') ?? undefined}
-                      >
-                        <TableIcon name={treeName} tableLabel={false} />
-                        {treeDefinition?.get('name') ??
-                          schema.models[treeName].label}
-                      </Link.Default>
-                      {typeof treeDefinition === 'object' && (
-                        <EditTreeDefinition treeDefinition={treeDefinition} />
-                      )}
-                    </div>
-                  </li>
-                )
+      {isFinished ? (
+        confirmationMessage
+      ) : (
+        <nav>
+          <Ul>
+            {getDisciplineTrees()
+              .filter((treeName) =>
+                permissionName === 'repair'
+                  ? hasPermission(
+                      `/tree/edit/${toLowerCase(treeName)}`,
+                      'repair'
+                    )
+                  : hasTreeAccess(treeName, 'read')
               )
-            )}
-        </Ul>
-      </nav>
+              .map((treeName) =>
+                f.var(
+                  treeRanks[treeName]?.definition as
+                    | SpecifyResource<TaxonTreeDef>
+                    | undefined,
+                  (treeDefinition) => (
+                    <li key={treeName}>
+                      <div className="flex gap-2">
+                        <Link.Default
+                          href={getLink(treeName)}
+                          className={`flex-1 ${
+                            typeof handleClick === 'function'
+                              ? className.navigationHandled
+                              : undefined
+                          }`}
+                          onClick={(event): void => {
+                            if (typeof handleClick === 'undefined') return;
+                            event.preventDefault();
+                            loading(
+                              Promise.resolve(handleClick(treeName)).then(() =>
+                                typeof confirmationMessage === 'string'
+                                  ? setIsFinished()
+                                  : handleCLose()
+                              )
+                            );
+                          }}
+                          title={treeDefinition?.get('remarks') ?? undefined}
+                        >
+                          <TableIcon name={treeName} tableLabel={false} />
+                          {treeDefinition?.get('name') ??
+                            schema.models[treeName].label}
+                        </Link.Default>
+                        {typeof treeDefinition === 'object' && (
+                          <EditTreeDefinition treeDefinition={treeDefinition} />
+                        )}
+                      </div>
+                    </li>
+                  )
+                )
+              )}
+          </Ul>
+        </nav>
+      )}
     </Dialog>
   ) : null;
 }
@@ -127,6 +141,7 @@ function RepairTree({
       onClose={handleClose}
       onClick={handleClick}
       title={commonText('repairTree')}
+      confirmationMessage={commonText('treeRepairComplete')}
       // TODO: handle this sort of thing though the routing library
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })

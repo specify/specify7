@@ -801,6 +801,12 @@ export const commonText = createDictionary({
     ca: 'Repair Tree',
     'es-es': 'Repair Tree',
   },
+  treeRepairComplete: {
+    'en-us': 'Tree repair is complete.',
+    'ru-ru': 'Ремонт дерева завершен.',
+    ca: 'Tree repair is complete.',
+    'es-es': 'Tree repair is complete.',
+  },
   trees: {
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
