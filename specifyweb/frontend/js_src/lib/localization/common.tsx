@@ -1631,10 +1631,10 @@ export const commonText = createDictionary({
     'es-es': 'Clear Browser Cache',
   },
   clearedCacheDialogText: {
-    'en-us': 'Cache has been cleaned. Please reload the page.',
+    'en-us': 'Cache has been cleared. Please reload the page.',
     'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
-    ca: 'Cache has been cleaned. Please reload the page.',
-    'es-es': 'Cache has been cleaned. Please reload the page.',
+    ca: 'Cache has been cleared. Please reload the page.',
+    'es-es': 'Cache has been cleared. Please reload the page.',
   },
   reload: {
     'en-us': 'Reload',
