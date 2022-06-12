@@ -173,7 +173,7 @@ export function ExpressSearchView(): JSX.Element {
               .map(([ajaxUrl, tableResult]) => {
                 let model = defined(getModel(tableResult.definition.root));
                 let idFieldIndex = 0;
-                const fieldSpecs = tableResult.definition.fieldSpecs.map(
+                /*const fieldSpecs = tableResult.definition.fieldSpecs.map(
                   ({ stringId, isRelationship }) =>
                     QueryFieldSpec.fromStringId(stringId, isRelationship)
                 );
@@ -188,7 +188,7 @@ export function ExpressSearchView(): JSX.Element {
                   else if (relationship === relationship.model.idField)
                     model = relationship.model;
                   else throw new Error('Unable to extract relationship');
-                }
+                }*/
 
                 return {
                   model,

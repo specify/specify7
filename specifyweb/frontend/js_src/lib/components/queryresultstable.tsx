@@ -109,8 +109,8 @@ function ViewRecords({
   readonly model: SpecifyModel;
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
-  readonly onFetchMore: (() => void) | undefined;
-  readonly onDelete: (id: number) => void;
+  readonly onFetchMore: ((index: number) => void) | undefined;
+  readonly onDelete: (index: number) => void;
   readonly totalCount: number;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -123,6 +123,13 @@ function ViewRecords({
         : Array.from(selectedRows)
     );
   }, [results, isOpen, selectedRows]);
+
+  const unParseIndex = (index: number): number =>
+    selectedRows.size === 0
+      ? index
+      : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
+          results.findIndex((row) => row[queryIdField] === deletedRecordId)
+        );
 
   return (
     <>
@@ -137,24 +144,14 @@ function ViewRecords({
           defaultIndex={0}
           model={model}
           onAdd={undefined}
-          onDelete={(index): void =>
-            handleDelete(
-              selectedRows.size === 0
-                ? index
-                : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
-                    results.findIndex(
-                      (row) => row[queryIdField] === deletedRecordId
-                    )
-                  )
-            )
-          }
+          onDelete={(index): void => handleDelete(unParseIndex(index))}
           /*
            * TODO: make fetching more efficient when fetching last query item
            *   (don't fetch all intermediate results)
            */
           onSlide={(index): void =>
             index >= ids.length - 1 && selectedRows.size === 0
-              ? handleFetchMore?.()
+              ? handleFetchMore?.(unParseIndex(index))
               : undefined
           }
           dialog="modal"
@@ -326,12 +323,25 @@ export function QueryResultsTable({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [initialTotalCount]);
 
-  function fetchMore(): void {
-    if (!Array.isArray(results) || isFetching) return;
+  function fetchMore(
+    index?: number,
+    currentResults: RA<RA<string | number | null>> | undefined = results
+  ): void {
+    if (
+      !Array.isArray(currentResults) ||
+      isFetching ||
+      currentResults.length === totalCount
+    )
+      return;
     handleFetching();
-    fetchResults(results.length)
-      .then((newResults) => setResults([...results, ...newResults]))
-      .then(handleFetched)
+    fetchResults(currentResults.length)
+      .then((newResults) => [...currentResults, ...newResults])
+      .then((combinedResults): void => {
+        setResults(combinedResults);
+        if (typeof index === 'undefined' || index < combinedResults.length)
+          handleFetched();
+        else fetchMore(index, combinedResults);
+      })
       .catch(crash);
   }
 
@@ -407,15 +417,16 @@ export function QueryResultsTable({
       <div
         // TODO: turn this into a reusable table component
         role="table"
-        className={`grid-table overflow-auto border-b border-gray-500
-          auto-rows-min rounded grid-cols-[repeat(var(--columns),auto)]
+        className={`grid-table overflow-auto
+          auto-rows-min rounded
           ${tableClassName ?? ''}
+          ${showResults ? 'border-b border-gray-500' : ''}
+          ${
+            hasIdField
+              ? 'grid-cols-[min-content_min-content_repeat(var(--columns),auto)]'
+              : 'grid-cols-[repeat(var(--columns),auto)]'
+          }
        `}
-        style={
-          {
-            '--columns': fieldSpecs.length + (hasIdField ? 2 : 0),
-          } as React.CSSProperties
-        }
         onScroll={
           showResults && (isFetching || results.length === totalCount)
             ? undefined
@@ -425,38 +436,40 @@ export function QueryResultsTable({
                   : fetchMore()
         }
       >
-        <div role="rowgroup">
-          <div role="row">
-            {hasIdField && (
-              <>
+        {showResults && (
+          <div role="rowgroup">
+            <div role="row">
+              {hasIdField && (
+                <>
+                  <TableHeaderCell
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('selectRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
+                  />
+                  <TableHeaderCell
+                    fieldSpec={undefined}
+                    ariaLabel={commonText('viewRecord')}
+                    sortConfig={undefined}
+                    onSortChange={undefined}
+                  />
+                </>
+              )}
+              {fieldSpecs.map((fieldSpec, index) => (
                 <TableHeaderCell
-                  fieldSpec={undefined}
-                  ariaLabel={commonText('selectRecord')}
-                  sortConfig={undefined}
-                  onSortChange={undefined}
+                  key={index}
+                  fieldSpec={fieldSpec}
+                  sortConfig={sortConfig?.[index]}
+                  onSortChange={
+                    typeof handleSortChange === 'function'
+                      ? (sortType): void => handleSortChange?.(index, sortType)
+                      : undefined
+                  }
                 />
-                <TableHeaderCell
-                  fieldSpec={undefined}
-                  ariaLabel={commonText('viewRecord')}
-                  sortConfig={undefined}
-                  onSortChange={undefined}
-                />
-              </>
-            )}
-            {fieldSpecs.map((fieldSpec, index) => (
-              <TableHeaderCell
-                key={index}
-                fieldSpec={fieldSpec}
-                sortConfig={sortConfig?.[index]}
-                onSortChange={
-                  typeof handleSortChange === 'function'
-                    ? (sortType): void => handleSortChange?.(index, sortType)
-                    : undefined
-                }
-              />
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div role="rowgroup">
           {showResults ? (
             <QueryResults

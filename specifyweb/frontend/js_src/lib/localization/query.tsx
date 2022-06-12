@@ -115,10 +115,10 @@ export const queryText = createDictionary({
     'es-es': 'Generating Record Set...',
   },
   recordSetCreatedDialogHeader: {
-    'en-us': 'Record set created',
-    'ru-ru': 'Набор объектов созданный',
-    ca: 'Record set created',
-    'es-es': 'Record set created',
+    'en-us': 'Record Set Created',
+    'ru-ru': 'Набор Объектов Созданный',
+    ca: 'Record Set Created',
+    'es-es': 'Record Set Created',
   },
   unableToExportAsKmlDialogHeader: {
     'en-us': 'Unable to export to KML',
