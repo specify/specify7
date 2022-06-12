@@ -81,7 +81,8 @@ export const businessRuleDefs = Object.freeze({
         },
         CollectionObject: {
             uniqueIn: {
-                catalognumber: 'collection'
+                catalognumber: 'collection',
+                guid: 'institution',
             },
             customInit: function(collectionObject) {
                 var ceField = collectionObject.specifyModel.getField('collectingevent');
@@ -273,6 +274,11 @@ export const businessRuleDefs = Object.freeze({
             uniqueIn: {
                 name: 'collection'
             }
+        },
+        SpecifyUser: {
+            uniqueIn: {
+                name: 'institution',
+            },
         },
         RepositoryAgreement: {
             uniqueIn: {
