@@ -1820,7 +1820,8 @@ const WBView = Backbone.View.extend({
         effect()
       );
     const runCleanup = () =>
-      [...effectsCleanup, this.hot.render.bind(this.hot)].forEach(
+      // If WBView.remove() was called, this.hot would be undefined here
+      [...effectsCleanup, this.hot?.render.bind(this.hot)].forEach(
         (effectCleanup) => effectCleanup()
       );
 
@@ -1907,6 +1908,7 @@ const WBView = Backbone.View.extend({
       ),
     });
   },
+  // TODO: disable the button if there is nothing to upload
   upload(event) {
     const mode = $(event.currentTarget).is('.wb-upload')
       ? 'upload'

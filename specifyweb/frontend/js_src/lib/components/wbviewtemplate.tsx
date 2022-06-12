@@ -75,6 +75,7 @@ function WbView({
           {commonText('tools')}
         </Button.Small>
         <span className="flex-1 -ml-1" />
+        {/* This button is here for debugging only */}
         <Button.Small className="wb-show-plan hidden">Show Plan</Button.Small>
         <Link.LikeButton href={`/specify/workbench-plan/${dataSetId}/`}>
           {wbText('dataMapper')}
