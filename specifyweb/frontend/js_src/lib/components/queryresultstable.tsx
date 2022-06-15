@@ -268,6 +268,7 @@ export function QueryResultsTable({
   onSelected: handleSelected,
   onSortChange: handleSortChange,
   createRecordSet,
+  extraButtons,
   tableClassName,
 }: {
   readonly model: SpecifyModel;
@@ -286,6 +287,7 @@ export function QueryResultsTable({
     direction: 'ascending' | 'descending' | undefined
   ) => void;
   readonly createRecordSet: JSX.Element | undefined;
+  readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
@@ -373,6 +375,7 @@ export function QueryResultsTable({
         <div className="flex-1 -ml-2" />
         {hasIdField && Array.isArray(results) && results.length > 0 ? (
           <>
+            {extraButtons}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
@@ -560,6 +563,7 @@ export function QueryResultsWrapper({
   fields,
   recordSetId,
   createRecordSet,
+  extraButtons,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
@@ -570,6 +574,7 @@ export function QueryResultsWrapper({
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
+  readonly extraButtons: JSX.Element;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
@@ -655,6 +660,7 @@ export function QueryResultsWrapper({
           sortConfig: fields.map((field) => field.sortType),
           onSortChange: handleSortChange,
           createRecordSet,
+          extraButtons,
         })
       )
       .catch(crash);
