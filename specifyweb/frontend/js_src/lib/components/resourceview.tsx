@@ -350,7 +350,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           const formattedChildren = (
             <>
               {report}
-              {form(children)}
+              {form(children, 'overflow-y-auto')}
               {typeof deleteButton === 'object' ||
               typeof saveButtonElement === 'object' ||
               typeof extraButtons === 'object' ? (
