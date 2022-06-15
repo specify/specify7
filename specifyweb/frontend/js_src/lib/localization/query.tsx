@@ -175,6 +175,16 @@ export const queryText = createDictionary({
     'es-es': (queryName: string, recordSetName: string) =>
       `Query: "${queryName}" on Record Set: "${recordSetName}"`,
   },
+  treeQueryName: {
+    'en-us': (tableName: string, nodeFullName: string) =>
+      `${tableName} using "${nodeFullName}"`,
+    'ru-ru': (tableName: string, nodeFullName: string) =>
+      `${tableName} с использованием "${nodeFullName}"`,
+    ca: (tableName: string, nodeFullName: string) =>
+      `${tableName} using "${nodeFullName}"`,
+    'es-es': (tableName: string, nodeFullName: string) =>
+      `${tableName} using "${nodeFullName}"`,
+  },
   newButtonDescription: {
     'en-us': 'Add New Field',
     'ru-ru': 'Добавить новое поле',

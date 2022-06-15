@@ -13,6 +13,7 @@ import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { formatTreeRank } from './wbplanviewmappinghelper';
+import { queryText } from './localization/query';
 
 function makeField(
   path: string,
@@ -165,7 +166,11 @@ export async function queryFromTree(
 
   const model = schema.models.CollectionObject;
   const query = createQuery(
-    `${model.label} in ${node.get('fullName') ?? node.get('name')}`,
+    queryText(
+      'treeQueryName',
+      model.label,
+      node.get('fullName') ?? node.get('name')
+    ),
     model
   );
 
