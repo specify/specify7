@@ -162,10 +162,9 @@ export async function format<SCHEMA extends AnySchema>(
   const formatter = formatters.find(
     ({ name }) => name === resolvedFormatterName
   ) ??
-    formatters.find(
-      ({ className, isDefault }) =>
-        className === resource.specifyModel.longName && isDefault
-    ) ?? {
+    formatters
+      .filter(({ className }) => className === resource.specifyModel.longName)
+      .sort(sortFunction(({ isDefault }) => isDefault, true))?.[0] ?? {
       // If formatter does not exist, generate one on the fly
       isDefault: true,
       switchFieldName: undefined,
