@@ -14,6 +14,10 @@ DATABASE_NAME = 'SpecifyDB'
 DATABASE_HOST = ''
 DATABASE_PORT = ''
 
+# Any extra options for the database connection
+# https://docs.djangoproject.com/en/2.2/ref/settings/#options-1
+DATABASE_OPTIONS = {}
+
 # The master user login. This is the MySQL user used to connect to the
 # database. This can be the same as the Specify 6 master user.
 MASTER_NAME = 'MasterUser'
