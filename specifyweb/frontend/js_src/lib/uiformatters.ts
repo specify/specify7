@@ -81,7 +81,7 @@ export const fetchContext =
         return uiFormatters;
       });
 export const getUiFormatters = () =>
-  uiFormatters ?? error('Accessing UI formatters before fetching');
+  uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
 export class UiFormatter {
   public readonly fields: RA<Field>;
@@ -97,19 +97,7 @@ export class UiFormatter {
    * Value or wildcard (placeholders)
    */
   public valueOrWild(): string {
-    return this.fields.map((field) => field.value).join('');
-  }
-
-  /**
-   * Filter out wildcard field (returns only non-default values)
-   */
-  public value(): string {
-    return this.fields
-      .filter(
-        (field) => new RegExp(field.wildRegexp()).exec(field.value) === null
-      )
-      .map((field) => field.value)
-      .join('');
+    return this.fields.map((field) => field.getDefaultValue()).join('');
   }
 
   public parseRegexp(): string {
@@ -192,6 +180,12 @@ abstract class Field {
     return this.canAutonumber()
       ? `${this.wildRegexp()}|${this.valueRegexp()}`
       : this.valueRegexp();
+  }
+
+  public getDefaultValue(): string {
+    return this.value === 'YEAR'
+      ? new Date().getFullYear().toString()
+      : this.value;
   }
 
   public canonicalize(value: string): string {
