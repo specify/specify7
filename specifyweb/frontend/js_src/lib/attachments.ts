@@ -39,16 +39,16 @@ const thumbnailable = new Set([
   'application/pdf',
 ]);
 
-function iconForMimeType(mimetype: string): {
+function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  if (mimetype === 'text/plain')
+  if (mimeType === 'text/plain')
     return { alt: 'text', src: getIcon('text') ?? unknownIcon };
-  if (mimetype === 'text/html')
+  if (mimeType === 'text/html')
     return { alt: 'html', src: getIcon('html') ?? unknownIcon };
 
-  const parts = mimetype.split('/');
+  const parts = mimeType.split('/');
   const type = parts[0];
   const subtype = parts[1];
 

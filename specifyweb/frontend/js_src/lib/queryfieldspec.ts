@@ -106,6 +106,10 @@ export class QueryFieldSpec {
 
     return {
       tableList,
+      /*
+       * TODO: test removing toLowerCase here.
+       *  May fix https://github.com/specify/specify7/issues/724
+       */
       stringId: [tableList, toLowerCase(this.table.name), fieldName].join('.'),
       fieldName,
       isRelFld: this.getField()?.isRelationship === true,
@@ -285,7 +289,7 @@ export class QueryFieldSpec {
         typeof field === 'undefined'
           ? parsedField ??
             // If no field provided, use fullName
-            (fieldSpec.joinPath.slice(-1)[0]?.isRelationship !== false &&
+            (fieldSpec.joinPath.slice(-1)[0]?.isRelationship &&
             fieldSpec.treeRank !== anyTreeRank
               ? defined(fieldSpec.table.getField('fullName'))
               : undefined)

@@ -204,26 +204,20 @@ export class ErrorBoundary extends React.Component<
 }
 
 /**
- * @remarks
- * The stack trace is about 36KB in size!
- * Can reduce it to 23KB by not prettifying the JSON output
+ * The stack trace is about 23KB in size!
  */
 const produceStackTrace = (message: unknown): string =>
-  JSON.stringify(
-    {
-      message,
-      userInformation,
-      systemInformation: getSystemInfo(),
-      schema: removeKey(schema, 'models'),
-      href: window.location.href,
-      tablePermissions: getTablePermissions(),
-      operationPermissions: getOperationPermissions(),
-      remotePrefs,
-      userPreferences: getRawUserPreferences(),
-    },
-    null,
-    '\t'
-  );
+  JSON.stringify({
+    message,
+    userInformation,
+    systemInformation: getSystemInfo(),
+    schema: removeKey(schema, 'models'),
+    href: window.location.href,
+    tablePermissions: getTablePermissions(),
+    operationPermissions: getOperationPermissions(),
+    remotePrefs,
+    userPreferences: getRawUserPreferences(),
+  });
 
 function formatError(
   error: unknown,
