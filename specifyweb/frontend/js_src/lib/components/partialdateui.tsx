@@ -100,6 +100,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
+  const isSettingInitialMoment = React.useRef<boolean>(true);
   React.useEffect(() => {
     // This is needed in case `resource` changes
     setInputValue('');
@@ -109,6 +110,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       resource.set(dateField, getDateInputValue(defaultValue) as never, {
         silent: true,
       });
+
+    isSettingInitialMoment.current = true;
 
     const destructor = resourceOn(
       resource,
@@ -144,27 +147,36 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     };
   }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
 
-  const renderCount = React.useRef(0);
+  const isFirstRender = React.useRef<boolean>(false);
   React.useEffect(() => {
-    renderCount.current = 0;
+    isFirstRender.current = true;
   }, [resource]);
   React.useEffect(() => {
-    renderCount.current += 1;
     /*
      * Don't update the value in the resource on the initial useEffect execution
      * since "moment" is still undefined
      */
-    if (renderCount.current === 1) return;
-
-    // Don't trigger unload protect when setting default value
-    const options = { silent: renderCount.current === 2 };
+    if (typeof moment === 'undefined' && isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    } else if (isSettingInitialMoment.current) {
+      /*
+       * Ignore moment being set for the first time.
+       * If this isn't done, unload protect would be needlessly triggered if
+       * current value in the date field does not exactly match the formatted
+       * value (i.e, happens for timestampModified fields since those include
+       * time, whereas formatted date doesn't)
+       */
+      isSettingInitialMoment.current = false;
+      return;
+    }
 
     if (typeof moment === 'undefined') {
-      resource.set(dateField, null as never, options);
+      resource.set(dateField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
-      resource.set(dateField, value as never, options);
+      resource.set(dateField, value as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else {
       const validationMessage =
