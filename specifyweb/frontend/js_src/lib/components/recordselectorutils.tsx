@@ -685,44 +685,30 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
   const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
-    loading(
-      // Detect duplicate record set item
-      (resource.isNew()
-        ? Promise.resolve(false)
-        : fetchCollection('RecordSetItem', {
-            recordSet: recordSet.id,
-            recordId: resource.id,
-            limit: 1,
-          }).then(({ totalCount }) => totalCount !== 0)
-      ).then((isDuplicate) =>
-        isDuplicate
-          ? handleHasDuplicate()
-          : setItems(({ totalCount, ids } = defaultRecordSetState) => {
-              // If resource is not yet in a context of a record set, make it
-              if (resource.recordsetid !== recordSet.id) {
-                resource.recordsetid = recordSet.id;
-                /*
-                 * For new resources, RecordSetItem would be created by the
-                 * back-end on save. For existing resources have to do that
-                 * manually
-                 */
-                if (!resource.isNew())
-                  loading(
-                    createResource('RecordSetItem', {
-                      recordId: resource.id,
-                      recordSet: recordSet.get('resource_uri'),
-                    })
-                  );
-              }
-              return {
-                totalCount: totalCount + 1,
-                ids: resource.isNew() ? ids : [...ids, resource.id],
-                newResource: resource.isNew() ? resource : undefined,
-                index: totalCount,
-              };
+    setItems(({ totalCount, ids } = defaultRecordSetState) => {
+      // If resource is not yet in a context of a record set, make it
+      if (resource.recordsetid !== recordSet.id) {
+        resource.recordsetid = recordSet.id;
+        /*
+         * For new resources, RecordSetItem would be created by the
+         * back-end on save. For existing resources have to do that
+         * manually
+         */
+        if (!resource.isNew())
+          loading(
+            createResource('RecordSetItem', {
+              recordId: resource.id,
+              recordSet: recordSet.get('resource_uri'),
             })
-      )
-    );
+          );
+      }
+      return {
+        totalCount: totalCount + 1,
+        ids: resource.isNew() ? ids : [...ids, resource.id],
+        newResource: resource.isNew() ? resource : undefined,
+        index: totalCount,
+      };
+    });
 
   return totalCount === 0 && typeof newResource === 'undefined' ? (
     <LoadingScreen />
@@ -748,7 +734,22 @@ export function RecordSet<SCHEMA extends AnySchema>({
           if (typeof newResource === 'object') handleAdd(newResource);
         }}
         onAdd={
-          hasToolPermission('recordSets', 'create') ? handleAdd : undefined
+          hasToolPermission('recordSets', 'create')
+            ? (resource) =>
+                loading(
+                  // Detect duplicate record set item
+                  (resource.isNew()
+                    ? Promise.resolve(false)
+                    : fetchCollection('RecordSetItem', {
+                        recordSet: recordSet.id,
+                        recordId: resource.id,
+                        limit: 1,
+                      }).then(({ totalCount }) => totalCount !== 0)
+                  ).then((isDuplicate) =>
+                    isDuplicate ? handleHasDuplicate() : handleAdd
+                  )
+                )
+            : undefined
         }
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
