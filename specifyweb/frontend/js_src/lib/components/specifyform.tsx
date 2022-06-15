@@ -189,7 +189,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   );
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
-      <div className={showLoading ? 'relative' : undefined}>
+      <div className={`overflow-auto ${showLoading ? 'relative' : ''}`}>
         {showLoading && (
           <div
             className={`${

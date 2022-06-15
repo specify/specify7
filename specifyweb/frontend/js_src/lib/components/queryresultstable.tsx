@@ -547,7 +547,7 @@ export const loadingGif = (
   <img
     src="/static/img/specify128spinner.gif"
     alt={commonText('loading')}
-    className="w-20 rounded"
+    className="hover:animate-hue-rotate w-20 rounded"
     aria-live="polite"
   />
 );
