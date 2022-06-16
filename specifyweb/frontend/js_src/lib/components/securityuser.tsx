@@ -231,7 +231,18 @@ export function SecurityUser({
                   collections={collections}
                   onChange={setCollectionId}
                 />
-                <SetPermissionContext collectionId={collectionId}>
+                <SetPermissionContext
+                  collectionId={collectionId}
+                  fallback={
+                    /*
+                     * Reserve the space for roles, policies and preview when
+                     * changed the collection and the permissions are still
+                     * being fetched. This prevents loss of current scroll
+                     * position
+                     */
+                    <div className="h-screen" />
+                  }
+                >
                   {(): JSX.Element => (
                     <>
                       <CollectionAccess

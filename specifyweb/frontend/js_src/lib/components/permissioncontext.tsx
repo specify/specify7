@@ -17,9 +17,11 @@ import { useAsyncState } from './hooks';
 export function SetPermissionContext({
   collectionId,
   children,
+  fallback,
 }: {
   readonly collectionId: number;
   readonly children: (() => React.ReactNode) | React.ReactNode;
+  readonly fallback?: JSX.Element;
 }): JSX.Element {
   const [fetchedCollection] = useAsyncState(
     React.useCallback(
@@ -34,7 +36,7 @@ export function SetPermissionContext({
         ? typeof children === 'function'
           ? children()
           : children
-        : undefined}
+        : fallback}
     </PermissionContext.Provider>
   );
 }
