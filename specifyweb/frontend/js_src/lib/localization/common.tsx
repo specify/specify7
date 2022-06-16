@@ -1688,11 +1688,11 @@ export const commonText = createDictionary({
     ca: 'Results',
     'es-es': 'Results',
   },
-  copyErrorMessage: {
-    'en-us': 'Copy Error Message',
-    'ru-ru': 'Скопировать Ошибку',
-    ca: 'Copy Error Message',
-    'es-es': 'Copy Error Message',
+  downloadErrorMessage: {
+    'en-us': 'Download Error Message',
+    'ru-ru': 'Скачать ошибку',
+    ca: 'Download Error Message',
+    'es-es': 'Download Error Message',
   },
   copied: {
     'en-us': 'Copied!',

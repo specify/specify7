@@ -19,8 +19,8 @@ import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import { userInformation } from '../userinfo';
 import { Button, Input, Label, Link } from './basic';
-import { CopyButton } from './common';
 import { displayError, legacyLoadingContext } from './contexts';
+import { downloadFile } from './filepicker';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
@@ -77,10 +77,23 @@ function ErrorDialog({
       header={header}
       buttons={
         <>
-          <CopyButton
-            text={copiableMessage}
-            label={commonText('copyErrorMessage')}
-          />
+          <Button.Blue
+            onClick={(): void =>
+              void downloadFile(
+                /*
+                 * Even though the file is in a JSON format, the `.txt` file
+                 * extension is used since `.json` files can't be attached to
+                 * a GitHub issue (I know, that's crazy). Alternative solution
+                 * is to create a `.zip` archive with a `.json` file instead,
+                 * but that would require some giant zipping library.
+                 */
+                `Specify 7 Crash Report - ${new Date().toJSON()}.txt`,
+                copiableMessage
+              )
+            }
+          >
+            {commonText('downloadErrorMessage')}
+          </Button.Blue>
           <span className="flex-1 -ml-2" />
           <Label.ForCheckbox>
             <Input.Checkbox

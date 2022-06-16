@@ -9,6 +9,8 @@ import {ajax} from './ajax';
 import {f} from './functools';
 import {welcomeText} from './localization/welcome';
 
+// TODO: make this type safe
+// TODO: delegate some DOM work to React
 export function makeTreeMap(container) {
   container.classList.add('h-[473px]', 'w-full');
 
