@@ -205,10 +205,10 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         <ResourceView
           resource={resource}
           dialog="nonModal"
-          onSaved={({ newResource }): void => {
+          onSaved={({ newResource, wasChanged }): void => {
             if (typeof newResource === 'object') {
               setResource(newResource);
-              hasChanged.current = true;
+              if (wasChanged) hasChanged.current = true;
             } else handleRefresh();
           }}
           canAddAnother={true}

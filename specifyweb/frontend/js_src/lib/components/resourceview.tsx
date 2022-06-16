@@ -244,6 +244,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     | ((payload: {
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
         readonly wasNew: boolean;
+        readonly wasChanged: boolean;
       }) => void)
     | undefined;
   readonly onDeleted: (() => void) | undefined;
