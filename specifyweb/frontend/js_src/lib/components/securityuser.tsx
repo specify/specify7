@@ -308,7 +308,7 @@ export function SecurityUser({
                 </SetPermissionContext>
                 <LegacyPermissions userResource={userResource} mode={mode} />
               </>,
-              'overflow-y-auto -mx-4 p-4 pt-0 flex-1 gap-8'
+              '-mx-4 p-4 pt-0 flex-1 gap-8'
             )}
             <DataEntry.Footer>
               {changesMade ? (
