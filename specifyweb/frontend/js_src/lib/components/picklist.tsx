@@ -65,7 +65,8 @@ export function PickListComboBox(
     if (
       props.resource.isNew() &&
       typeof props.defaultValue === 'string' &&
-      Array.isArray(props.items)
+      Array.isArray(props.items) &&
+      !Boolean(props.resource.get(props.field.name))
     ) {
       const defaultItem =
         props.items.find(({ value }) => value === props.defaultValue) ??

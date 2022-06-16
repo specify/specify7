@@ -179,10 +179,10 @@ export const adminText = createDictionary({
     'es-es': 'Roles and Permissions',
   },
   userRoleLibrary: {
-    'en-us': 'Institution Role Library',
+    'en-us': 'Role Library',
     'ru-ru': 'Библиотека ролей пользователей:',
-    ca: 'Institution Role Library',
-    'es-es': 'Institution Role Library',
+    ca: 'Role Library',
+    'es-es': 'Role Library',
   },
   userRoles: {
     'en-us': 'User Roles',
