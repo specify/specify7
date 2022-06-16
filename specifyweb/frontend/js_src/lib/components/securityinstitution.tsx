@@ -45,7 +45,7 @@ export function SecurityInstitution({
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<'CreatingRoleState'>
-    | State<'RoleState', { readonly roleId: number | undefined }>
+    | State<'RoleState', { readonly role: Role | NewRole }>
   >({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
@@ -146,7 +146,7 @@ export function SecurityInstitution({
                           onClick={(): void =>
                             setState({
                               type: 'RoleState',
-                              roleId: role.id,
+                              role,
                             })
                           }
                         >
@@ -177,7 +177,7 @@ export function SecurityInstitution({
                       onCreated={(role): void =>
                         setState({
                           type: 'RoleState',
-                          roleId: role.id,
+                          role,
                         })
                       }
                       onClose={(): void =>
@@ -254,16 +254,7 @@ export function SecurityInstitution({
       ) : state.type === 'RoleState' ? (
         typeof libraryRoles === 'object' ? (
           <RoleView
-            role={
-              typeof state.roleId === 'number'
-                ? libraryRoles[state.roleId]
-                : ({
-                    id: undefined,
-                    name: '',
-                    description: '',
-                    policies: [],
-                  } as const)
-            }
+            role={state.role}
             parentName={institution.name ?? schema.models.Institution.label}
             userRoles={undefined}
             onClose={(): void => setState({ type: 'MainState' })}
@@ -276,10 +267,10 @@ export function SecurityInstitution({
               )
             }
             onDelete={(): void =>
-              typeof state.roleId === 'number'
+              typeof state.role.id === 'number'
                 ? loading(
                     ping(
-                      `/permissions/library_role/${state.roleId}/`,
+                      `/permissions/library_role/${state.role.id}/`,
                       {
                         method: 'DELETE',
                       },
@@ -290,7 +281,7 @@ export function SecurityInstitution({
                         handleChangeLibraryRoles(
                           removeKey(
                             libraryRoles,
-                            defined(state.roleId).toString()
+                            defined(state.role.id).toString()
                           )
                         )
                       )

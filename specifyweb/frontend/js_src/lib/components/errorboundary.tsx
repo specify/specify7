@@ -217,7 +217,7 @@ export class ErrorBoundary extends React.Component<
 }
 
 /**
- * The stack trace is about 23KB in size!
+ * The stack trace is about 32KB in size!
  */
 const produceStackTrace = (message: unknown): string =>
   JSON.stringify({

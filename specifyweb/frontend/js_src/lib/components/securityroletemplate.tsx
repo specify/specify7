@@ -111,8 +111,18 @@ export function CreateRole({
                                 'create',
                                 collectionId
                               )
-                                ? Promise.resolve(undefined)
-                                : ajax<BackEndRole>(
+                                ? Promise.resolve({
+                                    ...role,
+                                    id: undefined,
+                                    name: roleName,
+                                  })
+                                : /*
+                                   * If don't have permission to create a role
+                                   * but have permission to copy from the library,
+                                   * must provide libraryRoleId in the request
+                                   * body
+                                   */
+                                  ajax<BackEndRole>(
                                     `/permissions/roles/${collectionId}/`,
                                     {
                                       headers: { Accept: 'application/json' },
@@ -125,12 +135,10 @@ export function CreateRole({
                                     {
                                       expectedResponseCodes: [Http.CREATED],
                                     }
-                                  ).then(({ data }) => data.id)
-                              ).then((roleId) =>
+                                  ).then(({ data }) => data)
+                              ).then((newRole) =>
                                 handleCreated({
-                                  id: roleId,
-                                  name: roleName,
-                                  description: role.description,
+                                  ...newRole,
                                   policies: role.policies,
                                 })
                               )
