@@ -153,7 +153,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, add_header=False, strip_id=False, row_filter=None,
-                 distinct=False):
+                 distinct=False, put_content = False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -167,18 +167,38 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     with open(path, 'w', newline='', encoding='utf-8') as f:
         csv_writer = csv.writer(f)
+        geoc_indx = []
         if add_header:
             header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
+            for idx_counter in range(len(header)):
+                if header[idx_counter].split('.')[-1] in ['latitude1', 'latitude2', 'longitude1', 'longitude2']:
+                    geoc_indx.append(idx_counter + 1)
             if not strip_id and not distinct:
-                header = ['id'] + header
+                header = ['id' if (not put_content) else 'spid'] + header
+            if put_content:
+                header.insert(1, 'contents')
+                header.insert(3, 'img')
+                header.insert(2, 'geoc')
             csv_writer.writerow(header)
 
         for row in query.yield_per(1):
             if row_filter is not None and not row_filter(row): continue
             encoded = [
-                re.sub('\r|\n', ' ', str(f))
-                for f in (row[1:] if strip_id and not distinct else row)
+                re.sub('\r|\n', ' ', str(f)) for f in
+                (row[1:] if strip_id and not distinct else row)
             ]
+            if put_content:
+                content_str = ''
+                geoc_str = ''
+                for idx in geoc_indx:
+                    if idx != None:
+                        geoc_str += encoded[idx]
+                for col_vals in encoded[1:]:
+                    content_str += col_vals
+                encoded.insert(1, content_str)
+                encoded.insert(2, geoc_str)
+
+
             csv_writer.writerow(encoded)
 
     logger.debug('query_to_csv finished')

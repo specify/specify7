@@ -17,6 +17,7 @@ from specifyweb.stored_queries.queryfield import QueryField
 from specifyweb.stored_queries.models import session_context
 from specifyweb.specify import models
 from specifyweb.specify import load_datamodel
+from specifyweb.context.schema_localization import get_schema_localization
 
 logger = logging.getLogger(__name__)
 ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
@@ -256,17 +257,37 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                 empty_str += _
             return empty_str
 
-        def get_solr_query(input_query, datamodel_inst):
-            field_xml = ''
-            table_id = input_query.tableid
-            field_specs = input_query.get_field_specs()
-            temp_table_ = datamodel_inst.get_table_by_id_strict(table_id)
-            query_string_arr_ = list(map(lambda x: x.split('.')[-1],
-                                        [fs.fieldspec.to_stringid() for fs
-                                         in field_specs if
-                                         fs.display]))
-            field_xml += sum_string_list(list(map(lambda x: solr_xml(x,get_solr_type(x,temp_table_.get_field_strict(x).type),True, True,False),query_string_arr_)))
-            return field_xml
+        def get_specify_type(field_spec, datamodel_inst):
+            field_tree_rank = field_spec.fieldspec.tree_rank
+            field_tree_field = field_spec.fieldspec.tree_field
+            field_string_id = field_spec.fieldspec.to_stringid()
+            table_name = field_string_id.split('.')[-2]
+            field_name = field_string_id.split('.')[-1]
+            table_model = datamodel_inst.get_table_strict(table_name)
+            if field_tree_rank == None:
+                if field_name.endswith('NumericDay') or field_name.endswith('NumericMonth') or field_name.endswith('NumericYear'):
+                    return 'java.util.Calendar'
+                else:
+                    field_type = table_model.get_field_strict(field_name).type
+                return field_type
+                #Follow Usual Using Table, and then getting string
+            else:
+                if field_tree_field == None:
+                    return 'java.lang.String'
+                else:
+                    field_type = table_model.get_field_strict(field_tree_field).type
+                    return field_type
+
+        def get_solr_xml_query(input_query, datamodel_inst, solr_data):
+            field_specs = [fs for fs in input_query.get_field_specs() if fs.display]
+            specify_field_type_arr = list(map(lambda x: get_specify_type(x, datamodel_inst), field_specs))
+            field_string_id = [fs.fieldspec.to_stringid() for fs in field_specs]
+            field_name = [field_str.split('.')[-1] for field_str in field_string_id]
+            solr_data_type_list = list(map(lambda x: get_solr_type(x[1], x[0]),zip(specify_field_type_arr,field_name)))
+            solr_xml_arr = list(map(lambda x: solr_xml(x[0], x[1], True, True, False), zip(field_name, solr_data_type_list)))
+            field_xml_return = sum_string_list(solr_xml_arr)
+            field_xml_return += sum_string_list(list(map(lambda x: solr_xml(x[0], x[1], x[2], x[3], x[4]), solr_data)))
+            return field_xml_return
 
         solr_data_type_arr = [
             ['contents', 'text_general', True, False, True],
@@ -276,26 +297,96 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         ]
 
         datamodel_inst = load_datamodel.load_datamodel()
+        field_xml = ''
+
+        def get_term(query_field):
+            term = query_field.term
+            return term
+
+        def json_from_query_field(field_spec, query_field, datamodel_inst, sl, colidx):
+            table_treet_dict = {
+                'geography':'Geographytreedefitem',
+                'geologictimeperiod':'Geologictimeperiodtreedefitem',
+                'lithostrat':'Lithostrattreedefitem',
+                'storage':'Storagetreedefitem',
+                'taxon':'Taxontreedefitem'
+            }
+
+
+            field_tree_rank = field_spec.fieldspec.tree_rank
+
+            field_string_id = field_spec.fieldspec.to_stringid()
+            table_name = field_string_id.split('.')[-2]
+            table_inst = datamodel_inst.get_table_strict(table_name)
+            sp_field_name = field_string_id.split('.')[-1]
+            field_term = query_field.term
+            sp_field_type = get_specify_type(field_spec, datamodel_inst)
+            solr_field_type = get_solr_type(sp_field_name, sp_field_type)
+            concept = field_term
+            colname = concept.split('/')[-1]
+            linkify = sp_field_type == 'java.lang.String' or (sp_field_type == 'text' and not (solr_field_type.startswith('p')))
+            table_title = sl[table_name.lower()]['name']
+
+            if field_tree_rank != None:
+                field_title = field_tree_rank
+                tree_table_name = table_treet_dict[table_name.lower()]
+                field_rank_id = get_obj(models, tree_table_name, field_tree_rank).rankid
+                sp_tree_id = table_name
+                field_width = datamodel_inst.get_table_strict(tree_table_name.lower()).get_field_strict('title').length
+                str_to_add = f'"treeid":"{sp_tree_id}", "treerank":{field_rank_id}'
+                field_desc = field_title
+            else:
+                try:
+                    field_desc = sl[table_name.lower()]['items'][sp_field_name.lower()]['desc']
+                except:
+                    field_desc = sp_field_name
+                try:
+                    field_title = sl[table_name.lower()]['items'][sp_field_name.lower()]['name']
+                except:
+                    field_title = sp_field_name
+
+                try:
+                    field_width = table_inst.get_field_strict(sp_field_name).length
+                except:
+                    field_width = -1
+                str_to_add = ''
+
+            json_line = f'"colname": "{colname}", "solrname": "{sp_field_name}", "solrtype": "{solr_field_type}", "type": "{sp_field_type}", "width": {field_width}, "concept": "{concept}", "concepturl": "http://rs.tdwg.org/dwc/terms/", "sptabletitle": "{table_title}", "spfldtitle" : "{field_title}", "spdescription" : "{field_desc}", "sptable": "{table_name}", "advancedsearch": "true", "linkify":"{str(linkify).lower()}", {str_to_add}, "colidx": {colidx}, "displaycolidx": {colidx}'
+            return '{' + json_line + '}'
+
+        def get_json_str(query, datamodel_inst, sl):
+            query_list = [f for f in query.query_fields if f.field_spec.isDisplay]
+            field_spec_list = [fs for fs in query.get_field_specs() if fs.display]
+            json_str = '[{"colname":"spid", "solrname":"spid", "solrtype":"int"}'
+            for idx, item in enumerate(zip(field_spec_list, query_list)):
+                json_str += f', {json_from_query_field(item[0], item[1], datamodel_inst, sl, idx)}'
+            json_str +=  ',{"colname":"img", "solrname":"img", "solrtype":"string", "title":"image"}]'
+            return json_str
+
+        def get_obj(model_inst, table_name, title):
+            table_inst = getattr(model_inst, table_name)
+            return_obj = list(filter(lambda obj: obj.title == title, table_inst.objects.all()))[0]
+            return return_obj
+
+
         with session_context() as session:
-            field_xml = ''
+            xml_file = ''
             for query in core_stanza.queries:
                 path = os.path.join(output_dir, query.file_name)
                 query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
-                             strip_id=True, row_filter=collect_ids)
-                field_xml += get_solr_query(query, datamodel_inst)
-                logger.warning(f"field xml: {field_xml}")
-            field_xml += sum_string_list(list(map(lambda x: solr_xml(x[0], x[1], x[2], x[3], x[4]), solr_data_type_arr)))
-            with open(os.path.join(output_dir, 'SolrFldSchema.xml'), 'w') as tempfile:
-                tempfile.write(field_xml)
+                             strip_id=False, row_filter=collect_ids, put_content=True, add_header=True)
+                sl = get_schema_localization(collection, 0,"en")
+                #logger.warning(f"TRIAL HERE: {get_obj(models, 'Geographytreedefitem', 'Continent')}")
+                #logger.warning(f"JSON LINE : {get_json_str(query, datamodel_inst, sl)}")
+                xml_file = get_solr_xml_query(query, datamodel_inst, solr_data_type_arr)
 
-            for stanza in extension_stanzas:
-                def filter_ids(row):
-                    return row[stanza.id_field_idx + 1] in core_ids
 
-                for query in stanza.queries:
-                    path = os.path.join(output_dir, query.file_name)
-                    query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
-                                 strip_id=True, row_filter=filter_ids)
+
+        with open(os.path.join(output_dir, 'SolrFldSchema.xml'), 'w') as tempfile:
+            tempfile.write(xml_file)
+
+        with open(os.path.join(output_dir, 'flds.json'), 'w') as tempfile:
+            tempfile.write(get_json_str(query, datamodel_inst, sl))
 
 
         basename = re.sub(r'\.zip$', '', output_file)

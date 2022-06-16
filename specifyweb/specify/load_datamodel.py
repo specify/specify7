@@ -101,7 +101,7 @@ class Table(object):
         for field in self.all_fields:
             if field.name.lower() == fieldname:
                 return field
-        raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
+        raise FieldDoesNotExistError(_("Field '%(field_name)s' not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
                                      _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 
     def get_relationship(self, name: str) -> 'Relationship':
