@@ -204,10 +204,32 @@ export const uploadFile = async (
           () =>
             new schema.models.Attachment.Resource({
               attachmentlocation: data.attachmentlocation,
-              mimetype: file.type,
+              mimetype: fixMimeType(file.type),
               origfilename: file.name,
               isPublic: getPref('attachment.is_public_default'),
             })
         );
       })
     : Promise.resolve(undefined);
+
+/**
+ * A temporary workaround for mimeTypes for `.docx` and `.xlsx` files being
+ * longer than the length limit on the `Attachment.mimeType` field.
+ * See: https://github.com/specify/specify7/issues/1141
+ * TODO: remove this once that issue is fixed
+ */
+function fixMimeType(originalMimeType: string): string {
+  const maxLength = defined(
+    schema.models.Attachment.getLiteralField('mimeType')
+  ).length;
+  if (typeof maxLength === 'undefined' || originalMimeType.length < maxLength)
+    return originalMimeType;
+  else {
+    const mimeType = 'application/octet-stream';
+    console.warn(
+      `Shortened the Attachment mimeType from "${originalMimeType}"` +
+        ` to "${mimeType}" due to length limit`
+    );
+    return mimeType;
+  }
+}
