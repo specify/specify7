@@ -28,7 +28,7 @@ export function Notifications(): JSX.Element {
 
   const notificationCount = notifications?.length ?? 0;
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  const deletingPromise = React.useRef<Promise<void> | undefined>(undefined);
+  const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
   // Close the dialog when all notifications get dismissed
   React.useEffect(() => {
@@ -53,8 +53,8 @@ export function Notifications(): JSX.Element {
        */
       pullInterval *= INTERVAL_MULTIPLIER;
 
-      // Don't fetch while a message is being deleted
-      (deletingPromise.current ?? Promise.resolve())
+      // Don't fetch while a message is being deleted or marked as read
+      (freezeFetchPromise.current ?? Promise.resolve())
         .then(async () =>
           ajax<
             RA<
@@ -151,7 +151,7 @@ export function Notifications(): JSX.Element {
               }))
             );
             if (notifications.length > 0)
-              void ping(
+              freezeFetchPromise.current = ping(
                 '/notifications/mark_read/',
                 {
                   method: 'POST',
@@ -161,7 +161,7 @@ export function Notifications(): JSX.Element {
                   }),
                 },
                 { strict: false }
-              );
+              ).then(() => undefined);
           }}
           buttons={commonText('close')}
           className={{
@@ -174,7 +174,7 @@ export function Notifications(): JSX.Element {
               key={index}
               notification={notification}
               onDelete={(promise): void => {
-                deletingPromise.current = promise;
+                freezeFetchPromise.current = promise;
                 setNotifications(
                   notifications.filter((item) => item !== notification)
                 );
