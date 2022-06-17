@@ -27,7 +27,12 @@ import {
   makeComboBoxQuery,
 } from '../querycomboboxutils';
 import { formatUrl } from '../querystring';
-import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
+import {
+  fetchResource,
+  getResourceApiUrl,
+  idFromUrl,
+  resourceOn,
+} from '../resource';
 import { schema } from '../schema';
 import type { Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
@@ -257,6 +262,22 @@ export function QueryComboBox({
     field?.name,
     undefined
   );
+
+  /**
+   * When resource is saved, a new instance of dependent resources is created.
+   * useResourceValue is listening for that change event, but it only works
+   * with resource URL, not resource object itself. Since the URL of a related
+   * resource does not change on save, QueryComboBox is left displaying a stale
+   * resource.
+   * TODO: get rid of the need for this
+   */
+  const [version, setVersion] = React.useState(0);
+  React.useEffect(
+    () =>
+      resourceOn(resource, 'saved', () => setVersion((version) => version + 1)),
+    [resource]
+  );
+
   // TODO: fetch this from the back-end
   const [formatted] = useAsyncState<{
     readonly label: string;
@@ -305,7 +326,7 @@ export function QueryComboBox({
                       }))
               )
           : { label: commonText('noPermission'), resource: undefined },
-      [value, resource, field, typeSearch]
+      [version, value, resource, field, typeSearch]
     ),
     false
   );
