@@ -311,6 +311,8 @@ function eventHandlerForToOne(related, field) {
                 if (!value) { // TODO: tighten up this check.
                     // the FK is null, or not a URI or inlined resource at any rate
                     field.isDependent() && this.storeDependent(field, null);
+                    this.trigger('change:' + fieldName, this);
+                    this.trigger('change', this);
                     return value;
                 }
 
@@ -318,6 +320,8 @@ function eventHandlerForToOne(related, field) {
                     new relatedModel.Resource(value, {parse: true});
 
                 field.isDependent() && this.storeDependent(field, toOne);
+                this.trigger('change:' + fieldName, this);
+                this.trigger('change', this);
                 return toOne.url();  // the FK as a URI
             case 'zero-to-one':
                 // this actually a one-to-many where the related collection is only a single resource
