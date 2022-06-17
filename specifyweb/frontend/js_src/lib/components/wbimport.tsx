@@ -368,6 +368,11 @@ const fileMimeMapper: IR<FileType> = {
   'text/plain': 'csv',
   'application/vnd.ms-excel': 'xls',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.template': 'xls',
+  'application/vnd.ms-excel.sheet.macroEnabled.12': 'xls',
+  'application/vnd.ms-excel.template.macroEnabled.12': 'xls',
+  'application/vnd.ms-excel.addin.macroEnabled.12': 'xls',
+  'application/vnd.ms-excel.sheet.binary.macroEnabled.12': 'xls',
 };
 
 function ChooseFile(props: { update: HandleAction }) {
