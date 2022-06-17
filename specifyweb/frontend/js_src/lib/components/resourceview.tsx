@@ -59,13 +59,14 @@ export const RESTRICT_ADDING: Set<keyof Tables> = new Set([
 
 /**
  * Like RESTRICT_ADDING, but also restricts cloning
- * That is why "Add another" button is disabled for these tables.
  */
 export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   ...RESTRICT_ADDING,
   // TODO: remove these two after #124 is fixed
   'Permit',
   'RepositoryAgreement',
+  // See https://github.com/specify/specify7/issues/1754
+  'Attachment',
 ]);
 
 export const NO_CLONE: Set<keyof Tables> = new Set([
