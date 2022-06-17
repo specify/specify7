@@ -30,7 +30,7 @@ function predictFullName(resource, options) {
             fullname => ({
                 key: 'tree-structure',
                 valid: true,
-                action() { return resource.set('fullname', fullname); }
+                action() { return resource.set('fullname', fullname, {silent: true}); }
             }),
             error => {
                 if (error === 'bad-tree-structure' && options.reportBadStructure)
