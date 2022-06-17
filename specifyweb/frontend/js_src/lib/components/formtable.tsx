@@ -361,8 +361,11 @@ export function FormTableCollection({
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
     () =>
-      resourceOn(collection, 'add remove sort', () =>
-        setRecords(Array.from(collection.models))
+      resourceOn(
+        collection,
+        'add remove sort',
+        () => setRecords(Array.from(collection.models)),
+        true
       ),
     [collection]
   );
