@@ -384,10 +384,10 @@ export const commonText = createDictionary({
     'es-es': 'Skip to Content',
   },
   goToHomepage: {
-    'en-us': 'Go to homepage',
-    'ru-ru': 'Вернуться на домашнюю страницу',
+    'en-us': 'Go to Home Page',
+    'ru-ru': 'Вернуться на Домашнюю Страницу',
     ca: "Vés a la pàgina d'inici",
-    'es-es': 'Go to homepage',
+    'es-es': 'Go to Home Page',
   },
   currentUser: {
     'en-us': 'Current User',

@@ -746,7 +746,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                         limit: 1,
                       }).then(({ totalCount }) => totalCount !== 0)
                   ).then((isDuplicate) =>
-                    isDuplicate ? handleHasDuplicate() : handleAdd
+                    isDuplicate ? handleHasDuplicate() : handleAdd(resource)
                   )
                 )
             : undefined
