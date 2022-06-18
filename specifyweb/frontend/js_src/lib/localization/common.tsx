@@ -1754,4 +1754,10 @@ export const commonText = createDictionary({
     ca: 'Quantity',
     'es-es': 'Quantity',
   },
+  mostRecentNotificationsTop: {
+    'en-us': '(Ordered from most recent to the oldest.)',
+    'ru-ru': '(В порядке от самого последнего к самому старому.)',
+    ca: '(Ordered from most recent to the oldest.)',
+    'es-es': '(Ordered from most recent to the oldest.)',
+  },
 });

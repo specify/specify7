@@ -169,6 +169,13 @@ export function Notifications(): JSX.Element {
             content: `${dialogClassNames.flexContent} gap-y-3 divide-y divide-gray-500`,
           }}
         >
+          {/*
+           * This message was needed due to date creation for all dates being
+           * makes as "now" due to this bug:
+           * https://github.com/specify/specify7/issues/641
+           * After it is fixed, this message can be removed
+           */}
+          <p>{commonText('mostRecentNotificationsTop')}</p>
           {notifications.map((notification, index) => (
             <NotificationComponent
               key={index}
