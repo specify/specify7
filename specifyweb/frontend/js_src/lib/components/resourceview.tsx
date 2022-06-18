@@ -411,6 +411,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
                       {specifyNetworkBadge}
                     </>
                   )}
+                  {!isSubForm && (
+                    <div className="border-brand-300 w-full -mt-4 border-b-2" />
+                  )}
                 </>
               }
               buttons={

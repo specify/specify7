@@ -158,7 +158,7 @@ function ViewRecords({
           onClose={handleClose}
           onSaved={f.void}
           isDependent={false}
-          title={undefined}
+          title={queryText('queryResults', model.label)}
           mode="edit"
           canAddAnother={false}
           canRemove={false}

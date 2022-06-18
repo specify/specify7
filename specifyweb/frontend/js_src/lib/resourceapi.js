@@ -311,8 +311,6 @@ function eventHandlerForToOne(related, field) {
                 if (!value) { // TODO: tighten up this check.
                     // the FK is null, or not a URI or inlined resource at any rate
                     field.isDependent() && this.storeDependent(field, null);
-                    this.trigger('change:' + fieldName, this);
-                    this.trigger('change', this);
                     return value;
                 }
 

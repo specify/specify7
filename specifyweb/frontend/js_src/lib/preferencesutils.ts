@@ -142,7 +142,7 @@ export function setPref<
   requestPreferencesSync();
 }
 
-// Sync at most every 5s
+// Sync with back-end at most every 5s
 const syncTimeout = 5 * MILLISECONDS;
 let syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
 let isSyncPending = false;

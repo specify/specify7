@@ -443,4 +443,10 @@ export const queryText = createDictionary({
     ca: 'Save Query',
     'es-es': 'Save Query',
   },
+  queryResults: {
+    'en-us': (tableName: string) => `Query Results: ${tableName}`,
+    'ru-ru': (tableName: string) => `Результаты запроса: ${tableName}`,
+    ca: (tableName: string) => `Query Results: ${tableName}`,
+    'es-es': (tableName: string) => `Query Results: ${tableName}`,
+  },
 });
