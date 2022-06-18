@@ -550,7 +550,8 @@ export function QueryComboBox({
             />
             {typeof field === 'undefined' ||
             !field.isRelationship ||
-            !RESTRICT_ADDING.has(field.relatedModel.name) ? (
+            (!RESTRICT_ADDING.has(field.relatedModel.name) &&
+              hasTablePermission(field.relatedModel.name, 'create')) ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
                 disabled={field?.isRelationship !== true}
