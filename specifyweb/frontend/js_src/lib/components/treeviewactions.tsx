@@ -86,21 +86,23 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           disabled={typeof focusedRow === 'undefined'}
         />
       </li>
-      <li className="contents">
-        <EditRecordDialog<SCHEMA>
-          addNew={true}
-          label={commonText('addChild')}
-          nodeId={focusedRow?.nodeId}
-          tableName={tableName}
-          onRefresh={handleRefresh}
-          disabled={
-            typeof focusedRow === 'undefined' ||
-            typeof focusedRow.acceptedId === 'number' ||
-            // Forbid adding children to the lowest rank
-            ranks.slice(-1)[0] === focusedRow.rankId
-          }
-        />
-      </li>
+      {hasTablePermission(tableName, 'create') && (
+        <li className="contents">
+          <EditRecordDialog<SCHEMA>
+            addNew={true}
+            label={commonText('addChild')}
+            nodeId={focusedRow?.nodeId}
+            tableName={tableName}
+            onRefresh={handleRefresh}
+            disabled={
+              typeof focusedRow === 'undefined' ||
+              typeof focusedRow.acceptedId === 'number' ||
+              // Forbid adding children to the lowest rank
+              ranks.slice(-1)[0] === focusedRow.rankId
+            }
+          />
+        </li>
+      )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
           <Button.Small
