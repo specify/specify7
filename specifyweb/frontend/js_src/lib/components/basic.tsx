@@ -500,7 +500,7 @@ export const Input = {
           const initialType = input.type;
           input.type = 'text';
           try {
-            // @ts-expect-error
+            // @ts-expect-error window.clipboardData does not have typings
             const value = (event.clipboardData ?? window.clipboardData).getData(
               'text/plain'
             );

@@ -354,3 +354,12 @@
 .leaflet-control-layers-separator {
   @apply dark:!border-t-neutral-600;
 }
+
+/*
+ * Workaround for https://github.com/Leaflet/Leaflet/issues/6986
+ * This can be removed after updating Leaflet to 1.8.0
+ * TODO: remove this after updating Leaflet
+ */
+.leaflet-container :focus {
+  outline: revert !important;
+}
