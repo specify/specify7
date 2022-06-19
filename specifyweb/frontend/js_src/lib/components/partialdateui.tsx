@@ -32,6 +32,17 @@ const reversePrecision: RR<number, PartialDatePrecision> = {
 };
 export type PartialDatePrecision = keyof typeof precisions;
 
+/**
+ * An ugly workaround for a bug in day.js where any date in the MM/YYYY format is
+ * parsed as an invalid date.
+ */
+function parseMonthYear(value: string): ReturnType<typeof dayjs> | undefined {
+  const parsed = /(\d{2})\D(\d{4})/.exec(value)?.slice(1);
+  if (typeof parsed === 'undefined') return undefined;
+  const [month, year] = parsed.map(f.unary(Number.parseInt));
+  return dayjs(new Date(year, month - 1));
+}
+
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateField,
@@ -92,20 +103,33 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   });
   const { inputRef, validationRef } = useValidation(errors);
 
+  const syncMoment = React.useCallback(
+    (moment: ReturnType<typeof dayjs> | undefined) => {
+      const value = resource.get(dateField) ?? undefined;
+      const newMoment =
+        typeof value === 'undefined'
+          ? undefined
+          : dayjs(value, databaseDateFormat, true);
+
+      return typeof moment === 'undefined' ||
+        typeof newMoment === 'undefined' ||
+        moment.toJSON() !== newMoment.toJSON()
+        ? newMoment
+        : moment;
+    },
+    [resource, dateField]
+  );
+
   // Parsed date object
   const [moment, setMoment] = React.useState<
     ReturnType<typeof dayjs> | undefined
-  >(undefined);
-  const validDate = moment?.isValid() === true ? moment : undefined;
+  >(() => syncMoment(undefined));
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
   const isSettingInitialMoment = React.useRef<boolean>(true);
-  React.useEffect(() => {
-    // This is needed in case `resource` changes
-    setInputValue('');
 
-    // Not sure if this should be disabled if isReadOnly
+  React.useEffect(() => {
     if (typeof defaultValue === 'object' && resource.isNew())
       resource.set(dateField, getDateInputValue(defaultValue) as never, {
         silent: true,
@@ -116,15 +140,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     const destructor = resourceOn(
       resource,
       `change:${dateField}`,
-      (): void => {
-        const value = resource.get(dateField);
-        setInputValue(value ?? '');
-        setMoment(
-          typeof value === 'undefined' || value === null
-            ? undefined
-            : dayjs(value, databaseDateFormat, true)
-        );
-      },
+      () => setMoment(syncMoment),
       true
     );
     const precisionDestructor =
@@ -145,39 +161,38 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       destructor();
       precisionDestructor?.();
     };
-  }, [resource, dateField, precisionField, defaultPrecision, defaultValue]);
+  }, [
+    resource,
+    dateField,
+    precisionField,
+    defaultPrecision,
+    defaultValue,
+    syncMoment,
+  ]);
 
-  const isFirstRender = React.useRef<boolean>(false);
   React.useEffect(() => {
-    isFirstRender.current = true;
-  }, [resource]);
-  React.useEffect(() => {
-    /*
-     * Don't update the value in the resource on the initial useEffect execution
-     * since "moment" is still undefined
-     */
-    if (typeof moment === 'undefined' && isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    } else if (isSettingInitialMoment.current) {
-      /*
-       * Ignore moment being set for the first time.
-       * If this isn't done, unload protect would be needlessly triggered if
-       * current value in the date field does not exactly match the formatted
-       * value (i.e, happens for timestampModified fields since those include
-       * time, whereas formatted date doesn't)
-       */
-      isSettingInitialMoment.current = false;
-      return;
-    }
-
     if (typeof moment === 'undefined') {
       resource.set(dateField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
-      resource.set(dateField, value as never);
+
+      resource.set(dateField, value as never, {
+        /*
+         * Silence the value set on the first run
+         * If this isn't done, unload protect would be needlessly triggered if
+         * current value in the date field does not exactly match the formatted
+         * value (i.e, happens for timestampModified fields since those include
+         * time, whereas formatted date doesn't)
+         */
+        silent: isSettingInitialMoment.current,
+      });
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+
+      if (precision === 'full') setInputValue(moment.format(inputFullFormat));
+      else if (precision === 'month-year')
+        setInputValue(moment.format(inputMonthFormat));
+      else setInputValue(moment.year().toString());
     } else {
       const validationMessage =
         precision === 'full'
@@ -191,42 +206,46 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         validationMessage
       );
     }
-  }, [resource, moment, precision, dateField, precisionField]);
+    isSettingInitialMoment.current = false;
+  }, [
+    resource,
+    moment,
+    precision,
+    dateField,
+    precisionField,
+    inputFullFormat,
+    inputMonthFormat,
+  ]);
 
-  function handleChange(initialValue?: string) {
-    if (isReadOnly) return;
-
+  function handleChange(initialValue?: string): void {
     const input = inputRef.current;
-    if (input === null || precision === 'year') return;
+    if (isReadOnly || input === null) return;
 
     const value = initialValue ?? inputValue.trim();
 
-    if (value === '') {
-      setMoment(undefined);
-      return;
-    }
-    /*
-     * The date would be in this format if browser supports
-     * input[type="date"] or input[type="month"]
-     */
-    const newMoment = dayjs(
-      value,
-      precision === 'full' ? 'YYYY-MM-DD' : 'YYYY-MM',
-      true
+    setMoment(
+      value.length > 0
+        ? (precision === 'month-year' ? parseMonthYear(value) : undefined) ??
+            dayjs(
+              value,
+              /*
+               * The date would be in the first format if browser supports
+               * input[type="date"] or input[type="month"]
+               * The date would be in the second format if browser does not support
+               * those inputs, or on date paste
+               */
+              precision === 'full'
+                ? ['YYYY-MM-DD', fullDateFormat()]
+                : [
+                    ...(precision === 'year' ? ['YYYY'] : []),
+                    'YYYY-MM',
+                    monthFormat(),
+                    fullDateFormat(),
+                  ],
+              true
+            )
+        : undefined
     );
-    if (newMoment.isValid()) setMoment(newMoment);
-    else
-      setMoment(
-        /*
-         * As a fallback, and on manual paste, default to preferred
-         * date format
-         */
-        dayjs(
-          value,
-          precision === 'full' ? fullDateFormat() : monthFormat(),
-          true
-        )
-      );
   }
 
   return (
@@ -272,33 +291,20 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         id={id}
         isReadOnly={isReadOnly}
         forwardRef={validationRef}
+        onValueChange={setInputValue}
+        onDatePaste={handleChange}
+        onBlur={f.zero(handleChange)}
+        value={inputValue}
         {...(precision === 'year'
           ? {
               ...getValidationAttributes(resolveParser({}, { type: 'year' })),
               placeholder: formsText('yearPlaceholder'),
-              // Format parsed date if valid. Else, use raw input
-              value: validDate?.format('YYYY') ?? inputValue,
-              onValueChange: (value): void => {
-                setInputValue(value);
-                const year = f.parseInt(value);
-                if (typeof year === 'number')
-                  setMoment(dayjs(moment).year(year));
-                else setMoment(undefined);
-              },
             }
           : {
-              onValueChange(value): void {
-                setInputValue(value);
-                setMoment(undefined);
-              },
-              onBlur: f.zero(handleChange),
-              onDatePaste: handleChange,
               ...(precision === 'month-year'
                 ? {
                     type: monthType,
                     placeholder: monthFormat(),
-                    // Format parsed date if valid. Else, use raw input
-                    value: validDate?.format(inputMonthFormat) ?? inputValue,
                     title: moment?.format(monthFormat()),
                     ...(monthSupported
                       ? {}
@@ -310,8 +316,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 : {
                     type: dateType,
                     placeholder: fullDateFormat(),
-                    // Format parsed date if valid. Else, use raw input
-                    value: validDate?.format(inputFullFormat) ?? inputValue,
                     title: moment?.format(fullDateFormat()),
                     ...(dateSupported
                       ? {}

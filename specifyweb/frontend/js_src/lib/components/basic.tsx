@@ -489,12 +489,10 @@ export const Input = {
       },
       onPaste(event): void {
         const target = event.target as HTMLInputElement;
+        // Ignore date paste if there is some selected text
+        const hasSelectedRegion = target.selectionEnd !== target.selectionStart;
         // Handle pasting dates into input[type="date"] and [type="month"]
-        if (typeof handleDatePaste === 'function') {
-          if (target.type !== 'date' && target.type !== 'month')
-            throw new Error(
-              'onDatePaste is only available for input[type="date"] and [type="month"]'
-            );
+        if (typeof handleDatePaste === 'function' && !hasSelectedRegion) {
           const input =
             target.tagName === 'INPUT'
               ? target
