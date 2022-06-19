@@ -279,6 +279,7 @@ export function QueryResultsTable({
   ) => Promise<RA<RA<string | number | null>>>;
   readonly totalCount: number;
   readonly fieldSpecs: RA<QueryFieldSpec>;
+  // This is undefined when running query in countOnly mode
   readonly initialData: RA<RA<string | number | null>> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
@@ -532,7 +533,7 @@ export function QueryResultsTable({
               }}
             />
           ) : undefined}
-          {isFetching || !showResults ? (
+          {isFetching || (!showResults && Array.isArray(results)) ? (
             <div role="cell" className="col-span-full">
               {loadingGif}
             </div>
@@ -638,8 +639,8 @@ export function QueryResultsWrapper({
     ).then(({ data }) => data.count);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
-    // Run as count only if there are no visible fields
     const initialData =
+      // Run as count only if there are no visible fields
       queryResource.get('countOnly') === true || displayedFields.length === 0
         ? undefined
         : fetchResults(0);
