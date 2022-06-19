@@ -177,16 +177,16 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
 
-      resource.set(dateField, value as never, {
+      if (isSettingInitialMoment.current)
         /*
-         * Silence the value set on the first run
+         * Don't set the value on the first run
          * If this isn't done, unload protect would be needlessly triggered if
          * current value in the date field does not exactly match the formatted
          * value (i.e, happens for timestampModified fields since those include
          * time, whereas formatted date doesn't)
          */
-        silent: isSettingInitialMoment.current,
-      });
+        isSettingInitialMoment.current = false;
+      else resource.set(dateField, value as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));
@@ -206,7 +206,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         validationMessage
       );
     }
-    isSettingInitialMoment.current = false;
   }, [
     resource,
     moment,
