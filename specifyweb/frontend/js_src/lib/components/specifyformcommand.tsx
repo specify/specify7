@@ -27,28 +27,24 @@ const commandRenderers: {
   GenerateLabel({ id, label, resource }) {
     const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
+    const isDisabled = resource.isNew() || !Boolean(resource.get('id'));
     return hasPermission('/report', 'execute') ? (
       <>
-        <Button.Small id={id} onClick={handleRunReport}>
+        <Button.Small
+          id={id}
+          onClick={handleRunReport}
+          disabled={isDisabled}
+          title={isDisabled ? formsText('saveRecordFirst') : undefined}
+        >
           {label}
         </Button.Small>
         {runReport ? (
-          resource.isNew() || !Boolean(resource.get('id')) ? (
-            <Dialog
-              header={label ?? ''}
-              buttons={commonText('close')}
-              onClose={handleHideReport}
-            >
-              {formsText('reportsCanNotBePrintedDialogText')}
-            </Dialog>
-          ) : (
-            <ReportsView
-              model={resource.specifyModel}
-              resourceId={resource.get('id')}
-              autoSelectSingle={true}
-              onClose={handleHideReport}
-            />
-          )
+          <ReportsView
+            model={resource.specifyModel}
+            resourceId={resource.get('id')}
+            autoSelectSingle={true}
+            onClose={handleHideReport}
+          />
         ) : undefined}
       </>
     ) : null;

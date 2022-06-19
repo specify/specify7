@@ -416,11 +416,11 @@ export const formsText = createDictionary({
       records will NOT be deleted.`,
   },
   // Reports
-  reportsCanNotBePrintedDialogText: {
-    'en-us': 'Reports/Labels cannot be printed in this context.',
-    'ru-ru': 'Отчеты / этикетки не могут быть напечатаны в этом контексте.',
-    ca: 'Reports/Labels cannot be printed in this context.',
-    'es-es': 'Reports/Labels cannot be printed in this context.',
+  saveRecordFirst: {
+    'en-us': 'Save record first',
+    'ru-ru': 'Сначала нужко сохранить запись',
+    ca: 'Save record first',
+    'es-es': 'Save record first',
   },
   reportProblemsDialogTitle: {
     'en-us': 'Problems with report',
