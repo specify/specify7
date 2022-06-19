@@ -252,8 +252,14 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
       typeof handleDelete === 'function'
         ? (source): void =>
             records.length > 0
-              ? handleSlide(clamp(0, index, totalCount - 2), () =>
-                  handleDelete(index, source)
+              ? handleSlide(
+                  clamp(
+                    0,
+                    // New index depends on the direction you came from
+                    index < lastIndexRef.current ? index - 1 : index,
+                    totalCount - 2
+                  ),
+                  () => handleDelete(index, source)
                 )
               : undefined
         : undefined,
