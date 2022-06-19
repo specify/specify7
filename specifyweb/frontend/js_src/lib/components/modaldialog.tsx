@@ -109,10 +109,10 @@ export function Dialog({
   onClose: handleClose,
   onResize: handleResize,
   className: {
-    // Dialog's content is a flexbox
-    content: contentClassName = dialogClassNames.flexContent,
     // Dialog has optimal width
     container: containerClassName = dialogClassNames.normalContainer,
+    // Dialog's content is a flexbox
+    content: contentClassName = dialogClassNames.flexContent,
     // Buttons are right-aligned by default
     buttonContainer: buttonContainerClassName = 'justify-end',
     header: headerClassName = `${className.headerPrimary} text-xl`,
@@ -144,8 +144,8 @@ export function Dialog({
   readonly onClose: (() => void) | undefined;
   readonly onResize?: (element: HTMLElement) => void;
   readonly className?: {
-    readonly content?: string;
     readonly container?: string;
+    readonly content?: string;
     readonly buttonContainer?: string;
     readonly header?: string;
   };

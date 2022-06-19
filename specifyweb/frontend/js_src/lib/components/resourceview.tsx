@@ -396,7 +396,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
               </Container.Center>
             </Container.FullGray>
           );
-        } else
+        } else {
+          /*
+           * Make record selector dialog occupy full height so that the record
+           * navigation buttons don't jump around a lot as you navigate between
+           * records
+           */
+          const isFullHeight =
+            dialog === 'modal' &&
+            typeof headerButtons === 'function' &&
+            !isSubForm;
           return (
             <Dialog
               header={titleOverride ?? title}
@@ -435,6 +444,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 )
               }
               className={{
+                container: `${dialogClassNames.normalContainer} ${
+                  isFullHeight ? 'h-full' : ''
+                }`,
                 content: `${className.formStyles} ${dialogClassNames.flexContent}`,
               }}
               onClose={(): void => {
@@ -463,6 +475,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               )}
             </Dialog>
           );
+        }
       }}
     </BaseResourceView>
   );
@@ -502,7 +515,7 @@ export function ShowResource({
             recordId: resource.id,
           })
             .then(({ records }) =>
-              f.maybe(records[0]?.id, (recordSetItemId) =>
+              f.maybe(records[0]?.id, async (recordSetItemId) =>
                 fetchCollection(
                   'RecordSetItem',
                   {
