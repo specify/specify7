@@ -35,6 +35,14 @@ const getScrollParent = (node: Element | undefined): Element =>
     ? node
     : getScrollParent(node.parentElement ?? undefined);
 
+const itemProps = ensure<Partial<TagProps<'li'>>>()({
+  className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
+      dark:hover:bg-neutral-800 active:bg-brand-100 dark:active:bg-brand-500
+      disabled:cursor-default rounded`,
+  role: 'options',
+  tabIndex: -1,
+} as const);
+
 /**
  * An accessible autocomplete.
  *
@@ -246,14 +254,6 @@ export function Autocomplete<T>({
     }
   }
 
-  const itemProps = ensure<Partial<TagProps<'li'>>>()({
-    className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
-      dark:hover:bg-neutral-800 active:bg-brand-100 dark:active:bg-brand-500
-      disabled:cursor-default rounded`,
-    role: 'options',
-    tabIndex: -1,
-  } as const);
-
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
   const [autoGrowAutoComplete] = usePref(
@@ -297,13 +297,16 @@ export function Autocomplete<T>({
       readonly target: EventTarget | null;
     }): void {
       if (
-        !showList ||
         dataListRef.current === null ||
         input === null ||
         // If it is the list itself that is being scrolled
         target === dataListRef.current
       )
         return;
+      if (!showList) {
+        dataListRef.current.classList.add('sr-only');
+        return;
+      }
 
       const { bottom: inputBottom, top: inputTop } =
         input.getBoundingClientRect();

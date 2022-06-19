@@ -172,6 +172,7 @@ export function PickListComboBox(
             </option>
           )}
           {props.items?.map(({ title, value }) => (
+            // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>
               {title}
             </option>
