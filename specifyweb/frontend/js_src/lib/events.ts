@@ -76,6 +76,7 @@ const blurHandlers = new Map<
 
 export function registerBlurEmitter(
   input: Input,
+  // If this is not provided, native blur event is used as an emitter
   emitter?: (emit: () => void) => () => void
 ): () => void {
   const oldEntry = blurHandlers.get(input);
@@ -92,7 +93,7 @@ export function registerBlurEmitter(
       blurHandlers.delete(input);
       entry.emitterDestructor?.();
     } else if (typeof emitter === 'function')
-      // If there still are listeners, register default emitter
+      // If there are listeners still, register a default emitter
       registerBlurEmitter(input);
     else entry.emitterDestructor?.();
   };

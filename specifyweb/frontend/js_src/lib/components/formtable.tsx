@@ -77,6 +77,31 @@ export function FormTable<SCHEMA extends AnySchema>({
     )
   );
 
+  // When added a new resource, focus that row
+  const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
+    undefined
+  );
+  const handleAddResource =
+    typeof handleAdd === 'function'
+      ? function handleAddResource(resource: SpecifyResource<SCHEMA>): void {
+          setExpandedRecords({ ...isExpanded, [resource.cid]: true });
+          handleAdd(resource);
+          addedResource.current = resource;
+        }
+      : undefined;
+  const rowsRef = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (typeof addedResource.current === 'undefined') return;
+    const resourceIndex = resources.indexOf(addedResource.current);
+    addedResource.current = undefined;
+    if (resourceIndex === -1 || rowsRef.current === null) return;
+    (
+      rowsRef.current.querySelector(
+        `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
+      ) as HTMLElement | null
+    )?.focus();
+  }, [resources]);
+
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
   const header = `${relationship.label} (${resources.length})`;
@@ -173,7 +198,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             </div>
           )}
         </div>
-        <div className="contents" role="rowgroup">
+        <div className="contents" role="rowgroup" ref={rowsRef}>
           {resources.map((resource) => (
             <div className="contents" role="row" key={resource.cid}>
               {isExpanded[resource.cid] ? (
@@ -199,6 +224,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     align="left"
                     visible={true}
                     ariaLabel={undefined}
+                    tabIndex={-1}
                   >
                     <SpecifyForm
                       resource={resource}
@@ -286,7 +312,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       </DataEntry.Grid>
     );
   const addButton =
-    typeof handleAdd === 'function' &&
+    typeof handleAddResource === 'function' &&
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
@@ -300,8 +326,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             : isDependent
             ? (): void => {
                 const resource = new relationship.relatedModel.Resource();
-                setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-                handleAdd?.(resource);
+                handleAddResource(resource);
               }
             : (): void =>
                 setState({
@@ -318,16 +343,14 @@ export function FormTable<SCHEMA extends AnySchema>({
         {addButton}
       </DataEntry.SubFormHeader>
       {children}
-      {state.type === 'SearchState' ? (
+      {state.type === 'SearchState' &&
+      typeof handleAddResource === 'function' ? (
         <SearchDialog
           forceCollection={undefined}
           extraFilters={undefined}
           templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={(resource): void => {
-            setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-            handleAdd?.(resource);
-          }}
+          onSelected={handleAddResource}
         />
       ) : undefined}
     </DataEntry.SubForm>
