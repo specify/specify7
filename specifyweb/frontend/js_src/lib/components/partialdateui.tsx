@@ -73,7 +73,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       monthSupported,
       /*
        * If input[type="date"] or input[type="month"] is not supported,
-       * present the date in a more human readable format
+       * present the date in a more human-readable format
        */
       inputFullFormat: dateSupported ? databaseDateFormat : fullDateFormat(),
       inputMonthFormat: monthSupported ? 'YYYY-MM' : monthFormat(),
@@ -193,13 +193,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     }
   }, [resource, moment, precision, dateField, precisionField]);
 
-  function handleChange() {
+  function handleChange(initialValue?: string) {
     if (isReadOnly) return;
 
     const input = inputRef.current;
     if (input === null || precision === 'year') return;
 
-    const value = inputValue.trim();
+    const value = initialValue ?? inputValue.trim();
 
     if (value === '') {
       setMoment(undefined);
@@ -214,13 +214,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       precision === 'full' ? 'YYYY-MM-DD' : 'YYYY-MM',
       true
     );
-    /*
-     * As a fallback, and on manual paste, default to preferred
-     * date format
-     */
     if (newMoment.isValid()) setMoment(newMoment);
     else
       setMoment(
+        /*
+         * As a fallback, and on manual paste, default to preferred
+         * date format
+         */
         dayjs(
           value,
           precision === 'full' ? fullDateFormat() : monthFormat(),
@@ -250,8 +250,14 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               if (typeof moment === 'undefined') return;
               let newMoment = dayjs(moment);
               if (precision === 'year' || precision === 'month-year')
-                newMoment = newMoment.month(0);
-              if (precision === 'month-year') newMoment = newMoment.date(1);
+                newMoment = newMoment.date(1);
+              if (precision === 'year') newMoment = newMoment.month(0);
+
+              /*
+               * This avoids the following value in the console:
+               * "The specified value does not conform to the required format"
+               */
+              setInputValue('');
 
               setMoment(newMoment);
             }}
@@ -281,11 +287,12 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               },
             }
           : {
-              onBlur: handleChange,
               onValueChange(value): void {
                 setInputValue(value);
                 setMoment(undefined);
               },
+              onBlur: f.zero(handleChange),
+              onDatePaste: handleChange,
               ...(precision === 'month-year'
                 ? {
                     type: monthType,

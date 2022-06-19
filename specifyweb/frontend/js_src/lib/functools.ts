@@ -25,7 +25,7 @@ export const f = {
   /** Create a new version of the passed function that does not accept arguments */
   zero:
     <RETURN>(callback: () => RETURN) =>
-    () =>
+    (): RETURN =>
       callback(),
   id: <T>(value: T): T => value,
   trim: (value: string) => value.trim(),

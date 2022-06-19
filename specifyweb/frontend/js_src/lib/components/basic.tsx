@@ -466,6 +466,7 @@ export const Input = {
     'input',
     {
       onValueChange?: (value: string) => void;
+      onDatePaste?: (value: string) => void;
       readOnly?: never;
       isReadOnly?: boolean;
       children?: undefined;
@@ -474,7 +475,12 @@ export const Input = {
     'Input.Generic',
     'input',
     `${className.notTouchedInput} w-full`,
-    ({ onValueChange, isReadOnly, ...props }) => ({
+    ({
+      onValueChange,
+      onDatePaste: handleDatePaste,
+      isReadOnly,
+      ...props
+    }) => ({
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
@@ -483,8 +489,12 @@ export const Input = {
       },
       onPaste(event): void {
         const target = event.target as HTMLInputElement;
-        // Handle pasting dates into input[type="date"]
-        if (target.type === 'date') {
+        // Handle pasting dates into input[type="date"] and [type="month"]
+        if (typeof handleDatePaste === 'function') {
+          if (target.type !== 'date' && target.type !== 'month')
+            throw new Error(
+              'onDatePaste is only available for input[type="date"] and [type="month"]'
+            );
           const input =
             target.tagName === 'INPUT'
               ? target
@@ -493,18 +503,10 @@ export const Input = {
           input.type = 'text';
           try {
             // @ts-expect-error
-            input.value = (event.clipboardData ?? window.clipboardData).getData(
+            const value = (event.clipboardData ?? window.clipboardData).getData(
               'text/plain'
             );
-            if (typeof onValueChange === 'function') onValueChange(input.value);
-            else if (typeof props.onChange === 'function')
-              props.onChange(
-                event as unknown as React.ChangeEvent<HTMLInputElement>
-              );
-            else
-              console.error('Input does not have an onChange event listener', {
-                event,
-              });
+            handleDatePaste(value);
           } catch (error: unknown) {
             console.error(error);
           }
@@ -512,6 +514,7 @@ export const Input = {
           event.preventDefault();
           input.type = initialType;
         }
+
         props.onPaste?.(event);
       },
       readOnly: isReadOnly,
@@ -699,8 +702,10 @@ const button = (name: string, className: string) =>
   >(name, 'button', className, {
     type: 'button',
   });
-// TODO: if onClick===undefined, button should be disabled, but only if expicily
-//   provided
+/*
+ * TODO: if onClick===undefined, button should be disabled, but only if expicily
+ *   provided
+ */
 export const Button = {
   Simple: button('Button.Simple', className.button),
   /*
