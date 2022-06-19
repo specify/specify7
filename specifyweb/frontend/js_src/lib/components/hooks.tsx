@@ -385,10 +385,10 @@ export function useResourceValue<
   INPUT extends Input = HTMLInputElement
 >(
   resource: SpecifyResource<AnySchema>,
-  // If fieldName is undefined, this behaves pretty much like useValidation()
+  // If fieldName is undefined, this hook behaves pretty much like useValidation()
   fieldName: string | undefined,
-  defaultParser: Parser | undefined,
-  validationMessage?: string | RA<string>
+  // Default parser is usually coming from the form definition
+  defaultParser: Parser | undefined
 ): {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportError?: boolean) => void;
@@ -398,8 +398,7 @@ export function useResourceValue<
   readonly setValidation: (message: string | RA<string>) => void;
   readonly parser: Parser;
 } & ReturnType<typeof useValidation> {
-  const { inputRef, validationRef, setValidation } =
-    useValidation<INPUT>(validationMessage);
+  const { inputRef, validationRef, setValidation } = useValidation<INPUT>();
 
   const [parser, setParser] = React.useState<Parser>({});
 
@@ -524,7 +523,10 @@ export function useResourceValue<
       setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
       ignoreChangeRef.current = true;
       resource.set(field.name, formattedValue as never, {
-        // Don't trigger the save blocker for this trivial change
+        /*
+         * Don't trigger the save blocker for this trivial change
+         * TODO: move this logic into ResourceBase.set
+         */
         silent: formattedValue === null && resource.get(field.name) === '',
       });
       ignoreChangeRef.current = false;

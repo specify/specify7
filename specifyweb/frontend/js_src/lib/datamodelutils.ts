@@ -13,24 +13,10 @@ import { parserFromType } from './uiparse';
 import { relationshipIsToMany } from './wbplanviewmappinghelper';
 
 /**
- * The dataModel types in ./datamodel.ts were generated using this code
- * snippet.
- * After schema changes, uncomment it, run the regenerateSchema() function,
- * paste the content into ./datamodel.js and run Prettier on that file
- */
-`
-import { regenerate } from './tests/updatedatamodel';
-// Call this function from the console once front-end is loaded
-window.regenerateSchema = (): void => {
-  document.body.textContent = regenerate();
-};
-`;
-
-/**
  * Represents a schema for any table
  *
  * @remarks
- * This type is not meant for objects to be created directly of it
+ * This type is not meant for objects to be created directly of it.
  * Instead, use it in place of "any" as a generic argument to
  * SpecifyResource, SpecifyModel, Collection, SerializedResource or
  * SerializedModel when you don't care about a particular table.
