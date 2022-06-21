@@ -21,9 +21,4 @@ class Migration(migrations.Migration):
             name='idtoken',
             field=django_jsonfield_backport.models.JSONField(null=True),
         ),
-        migrations.AlterField(
-            model_name='spuserexternalid',
-            name='providerid',
-            field=models.CharField(max_length=4095),
-        ),
     ]
