@@ -14,6 +14,12 @@ class Spuserexternalid(models.Model):
 
     class Meta:
         db_table = "spuserexternalid"
-        constraints = [
-            models.UniqueConstraint(fields=["provider", "providerid"], name="unique_spuser_external_id")
-        ]
+        #
+        # The following doesn't work in mysql because the providerid
+        # field is too long. I'd rather not shorten it because some
+        # identity providers use pretty long ids. So I'm just going to
+        # not enforce this. MySQL strikes again.
+        #
+        # constraints = [
+        #     models.UniqueConstraint(fields=["provider", "providerid"], name="unique_spuser_external_id")
+        # ]
