@@ -103,13 +103,13 @@ export function makeTreeMap(container) {
 
     $('<p>', {
       title: welcomeText('taxonTilesDescription',thres),
-      class: 'absolute top-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
+      class: 'absolute top-3 left-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
 
     const title = $('<p>', {
-      class: 'absolute bottom-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
+      class: 'absolute top-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .appendTo(div[0])[0]
   });
