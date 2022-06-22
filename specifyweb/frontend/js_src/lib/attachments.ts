@@ -206,6 +206,7 @@ export const uploadFile = async (
               attachmentlocation: data.attachmentlocation,
               mimetype: fixMimeType(file.type),
               origfilename: file.name,
+              title: file.name,
               isPublic: getPref('attachment.is_public_default'),
             })
         );
