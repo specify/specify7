@@ -248,13 +248,13 @@ function TreeView<SCHEMA extends AnyTree>({
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
           overflow-auto shadow-md shadow-gray-500 content-start
-          bg-gradient-to-bl from-[var(--edgeColor)] rounded p-2 pt-0
-          via-[var(--middleColor)] to-[var(--edgeColor)] outline-none`}
+          bg-gradient-to-bl from-[var(--edge-color)] rounded p-2 pt-0
+          via-[var(--middle-color)] to-[var(--edge-color)] outline-none`}
         style={
           {
             '--cols': treeDefinitionItems.length,
-            '--middleColor': `${treeAccentColor}33`,
-            '--edgeColor': `${treeAccentColor}00`,
+            '--middle-color': `${treeAccentColor}33`,
+            '--edge-color': `${treeAccentColor}00`,
           } as React.CSSProperties
         }
         // First role is for screen readers. Second is for styling
