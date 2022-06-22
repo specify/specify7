@@ -49,13 +49,17 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
     (field) => !fieldsToSkip.includes(field.name)
   );
   const filteredFields = baseFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
+    (field) => field.isRequired || (!field.isHidden && !field.isReadOnly)
   );
   const baseRelationships = model.relationships.filter(
-    (field) => !fieldsToSkip.includes(field.name) && field.isDependent()
+    (field) =>
+      field.isRequired ||
+      (!fieldsToSkip.includes(field.name) && field.isDependent())
   );
   const filteredRelationships = baseRelationships.filter(
-    (field) => !field.isHidden && !field.isReadOnly && field.isDependent()
+    (field) =>
+      field.isRequired ||
+      (!field.isHidden && !field.isReadOnly && field.isDependent())
   );
   // Hide hidden fields, unless all fields are hidden
   const fields =
