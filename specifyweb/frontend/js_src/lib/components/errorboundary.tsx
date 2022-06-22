@@ -117,9 +117,7 @@ function ErrorDialog({
           </Button.Red>
           {(canDismiss || process.env.NODE_ENV !== 'production') &&
             typeof handleClose === 'function' && (
-              <Button.Blue onClick={handleClose}>
-                [development] dismiss
-              </Button.Blue>
+              <Button.Blue onClick={handleClose}>[DEV] dismiss</Button.Blue>
             )}
         </>
       }

@@ -16,11 +16,13 @@ import { commonText } from '../../localization/common';
 import { hasPermission, hasTablePermission } from '../../permissions';
 import { schema } from '../../schema';
 import type { BackEndRole } from '../../securityutils';
-import { processPolicies } from '../../securityutils';
+import { policiesToTsv, processPolicies } from '../../securityutils';
 import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
+import { LoadingContext } from '../contexts';
+import { downloadFile } from '../filepicker';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { useAvailableCollections } from '../othercollectionview';
@@ -101,10 +103,24 @@ export function SecurityPanel(): JSX.Element | null {
     false
   );
 
+  const loading = React.useContext(LoadingContext);
+
   // TODO: use a routing library to make navigation easier
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{adminText('securityPanel')}</H2>
+      <div className="flex items-center justify-between">
+        <H2 className="text-2xl">{adminText('securityPanel')}</H2>
+        <Button.Blue
+          className={
+            process.env.NODE_ENV === 'production' ? `hidden` : undefined
+          }
+          onClick={(): void =>
+            loading(downloadFile('Permission Policies.tsv', policiesToTsv()))
+          }
+        >
+          [DEV] Download policy list
+        </Button.Blue>
+      </div>
       <div className="flex flex-1 h-0 gap-4">
         <aside className={className.containerBase}>
           {typeof institution === 'object' && (

@@ -539,3 +539,40 @@ export const getAllActions = (path: string): RA<string> =>
               .flatMap(([_key, actions]) => actions)
           )
       );
+
+/**
+ * Convert registry of policies to a TSV format.
+ * May be used for documentation and development purposes
+ */
+export function policiesToTsv(): string {
+  const iterate = (
+    data: IR<Registry>,
+    path: RA<string> = [],
+    isInstitutional: boolean = false
+  ): RA<RA<string>> =>
+    Object.entries(data).flatMap(([key, entry]) =>
+      key === '%'
+        ? []
+        : Object.keys(entry.children).length > 0
+        ? iterate(
+            entry.children,
+            [...path, entry.label],
+            isInstitutional || entry.isInstitutional
+          )
+        : entry.actions.map((action) => [
+            [...path, entry.label].join(' > '),
+            actionToLabel(action),
+            isInstitutional || entry.isInstitutional
+              ? 'Institution'
+              : 'Collection',
+            entry.groupName,
+          ])
+    );
+
+  return [
+    ['Path', 'Action', 'Scope', 'Group Name'],
+    ...iterate(buildRegistry()),
+  ]
+    .map((row) => row.join('\t'))
+    .join('\n');
+}
