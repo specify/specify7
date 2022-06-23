@@ -137,8 +137,14 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        raise BusinessRuleException('Adding node "{node.fullname}" to synonymized parent "{parent.fullname}".'
-                                    .format(node=node, parent=parent))
+        # This business rule can be overriden by a remote pref.
+        from specifyweb.context.remote_prefs import get_remote_prefs
+        remote_prefs = get_remote_prefs()
+        pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
+        override = re.search(pattern, remote_prefs, re.MULTILINE)
+        if override is None or override.group(1).lower() != "true":
+            raise BusinessRuleException(f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}".')
+
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
