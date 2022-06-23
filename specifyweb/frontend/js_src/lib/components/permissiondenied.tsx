@@ -22,7 +22,7 @@ import type { toolDefinitions } from '../securityutils';
 import {
   actionToLabel,
   partsToResourceName,
-  resourceNameToLabel,
+  resourceNameToLongLabel,
   tableNameToResourceName,
   toolPermissionPrefix,
 } from '../securityutils';
@@ -285,7 +285,7 @@ function FormatPermissionError({
             <tr key={index}>
               {[
                 actionToLabel(action),
-                resourceNameToLabel(resource),
+                resourceNameToLongLabel(resource),
                 <CollectionName
                   collectionId={
                     institutionPermissions.has(resource)

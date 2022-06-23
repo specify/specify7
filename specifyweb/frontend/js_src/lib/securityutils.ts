@@ -99,6 +99,15 @@ export const resourceNameToLabel = (resource: string): string =>
             .label
       ) ?? adminText('resource');
 
+export const resourceNameToLongLabel = (resource: string): string =>
+  f.var(resourceNameToParts(resource), (parts) =>
+    parts
+      .map((_, index) =>
+        resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
+      )
+      .join(' > ')
+  );
+
 /**
  * Convert a part like ['table','locality'] to an array of information for
  * each item
