@@ -261,8 +261,8 @@ function FormatPermissionError({
             {[
               adminText('action'),
               adminText('resource'),
-              schema.models.Collection.name,
-              schema.models.SpecifyUser.name,
+              schema.models.Collection.label,
+              schema.models.SpecifyUser.label,
             ].map((label, index, { length }) => (
               <th
                 scope="column"
