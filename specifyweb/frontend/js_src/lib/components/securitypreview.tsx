@@ -23,11 +23,11 @@ import {
 } from '../securityutils';
 import type { IR, R, RA } from '../types';
 import { filterArray } from '../types';
+import { userInformation } from '../userinfo';
 import { Button, className, Input, Label, Summary, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
 import { useCachedState } from './statecache';
-import { userInformation } from '../userinfo';
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
@@ -317,12 +317,8 @@ function TreeView({
                   <li key={action}>
                     <details>
                       <summary>
-                        <Label.ForCheckbox>
-                          <Input.Checkbox
-                            disabled
-                            checked={rest.allowed}
-                            className="cursor-pointer"
-                          />
+                        <Label.ForCheckbox className="pointer-events-none">
+                          <Input.Checkbox disabled checked={rest.allowed} />
                           {actionToLabel(action)}
                         </Label.ForCheckbox>
                       </summary>
