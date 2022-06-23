@@ -380,23 +380,29 @@ export function SecurityUser({
                   saveRequired={isChanged}
                   onSaved={({ newResource }): void =>
                     loading(
-                      ajax(
-                        `/api/set_agents/${userResource.id}/`,
-                        {
-                          method: 'POST',
-                          headers: {},
-                          body: filterArray(
-                            defined(userAgents).map(({ address }) =>
-                              idFromUrl(address.get('agent') ?? '')
-                            )
-                          ),
-                        },
-                        {
-                          expectedResponseCodes: [
-                            Http.NO_CONTENT,
-                            Http.BAD_REQUEST,
-                          ],
-                        }
+                      (hasPermission('/admin/user/agents', 'update')
+                        ? ajax(
+                            `/api/set_agents/${userResource.id}/`,
+                            {
+                              method: 'POST',
+                              headers: {},
+                              body: filterArray(
+                                defined(userAgents).map(({ address }) =>
+                                  idFromUrl(address.get('agent') ?? '')
+                                )
+                              ),
+                            },
+                            {
+                              expectedResponseCodes: [
+                                Http.NO_CONTENT,
+                                Http.BAD_REQUEST,
+                              ],
+                            }
+                          )
+                        : Promise.resolve({
+                            data: '',
+                            status: Http.NO_CONTENT,
+                          })
                       )
                         .then(({ data, status }) =>
                           status === Http.BAD_REQUEST

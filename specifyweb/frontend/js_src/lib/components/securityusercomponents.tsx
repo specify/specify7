@@ -302,7 +302,11 @@ export function CollectionAccess({
             id={undefined}
             fieldName="agent"
             resource={collectionAddress}
-            mode={mode}
+            mode={
+              mode === 'view' || !hasPermission('/admin/user/agents', 'update')
+                ? 'view'
+                : 'edit'
+            }
             formType="form"
             isRequired={hasCollectionAccess}
             relatedModel={schema.models.Agent}

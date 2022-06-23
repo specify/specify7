@@ -6,6 +6,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
+import { hasPermission } from '../permissions';
 import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
@@ -39,7 +40,7 @@ export function UserAgentsDialog({
   userAgents,
   userId,
   onClose: handleClose,
-  mode,
+  mode: initialMode,
   response: initialResponse,
 }: {
   readonly userAgents: UserAgents | undefined;
@@ -72,6 +73,10 @@ export function UserAgentsDialog({
     true
   );
 
+  const mode =
+    initialMode === 'view' || !hasPermission('/admin/user/agents', 'update')
+      ? 'view'
+      : 'edit';
   const id = useId('user-agents-plugin');
   const loading = React.useContext(LoadingContext);
   return Array.isArray(data) ? (
@@ -81,7 +86,9 @@ export function UserAgentsDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          {mode === 'edit' && (
+            <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          )}
         </>
       }
     >
@@ -93,27 +100,29 @@ export function UserAgentsDialog({
       <Form
         id={id('form')}
         onSubmit={(): void =>
-          loading(
-            ajax(
-              `/api/set_agents/${userId}/`,
-              {
-                method: 'POST',
-                headers: {},
-                body: filterArray(
-                  defined(userAgents).map(({ address }) =>
-                    idFromUrl(address.get('agent') ?? '')
-                  )
-                ),
-              },
-              {
-                expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
-              }
-            ).then(({ data, status }) =>
-              status === Http.NO_CONTENT
-                ? handleClose()
-                : setResponse(JSON.parse(data))
-            )
-          )
+          mode === 'view'
+            ? undefined
+            : loading(
+                ajax(
+                  `/api/set_agents/${userId}/`,
+                  {
+                    method: 'POST',
+                    headers: {},
+                    body: filterArray(
+                      defined(userAgents).map(({ address }) =>
+                        idFromUrl(address.get('agent') ?? '')
+                      )
+                    ),
+                  },
+                  {
+                    expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
+                  }
+                ).then(({ data, status }) =>
+                  status === Http.NO_CONTENT
+                    ? handleClose()
+                    : setResponse(JSON.parse(data))
+                )
+              )
         }
       >
         <Ul>
