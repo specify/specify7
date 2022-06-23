@@ -265,14 +265,14 @@ function SecurityPolicy({
 
 /*
  * TODO: extend the checks for redundant policies and policies that don't have
- *   any effect (i.e, /permissions/user/roles/ update has no effect unless
+ *   any effect (i.e, /permissions/user/roles/ has no effect unless
  *   /permission/roles/ is read)
  */
 export function SecurityPolicies({
   policies,
   isReadOnly,
   onChange: handleChange,
-  header = adminText('policies'),
+  header,
   collapsable,
   scope,
   limitHeight,
@@ -280,7 +280,7 @@ export function SecurityPolicies({
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
-  readonly header?: string;
+  readonly header: string;
   readonly collapsable: boolean;
   readonly scope: PolicyScope;
   readonly limitHeight: boolean;

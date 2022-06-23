@@ -202,7 +202,13 @@ export const adminText = createDictionary({
     ca: 'Table',
     'es-es': 'Table',
   },
-  policies: {
+  rolePolicies: {
+    'en-us': 'Role Permission Policies',
+    'ru-ru': 'Политики',
+    ca: 'Role Permission Policies',
+    'es-es': 'Role Permission Policies',
+  },
+  userPolicies: {
     'en-us': 'User Permission Policies',
     'ru-ru': 'Политики',
     ca: 'User Permission Policies',
@@ -234,12 +240,6 @@ export const adminText = createDictionary({
     ca: 'Note: preview may be out of date.. Save changes to update the preview',
     'es-es':
       'Note: preview may be out of date.. Save changes to update the preview',
-  },
-  userPolicies: {
-    'en-us': 'User policies',
-    'ru-ru': 'Пользовательские политики',
-    ca: 'User policies',
-    'es-es': 'User policies',
   },
   allUsers: {
     'en-us': 'All Users',

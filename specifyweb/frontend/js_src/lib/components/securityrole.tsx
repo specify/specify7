@@ -188,6 +188,7 @@ export function RoleView({
           onChange={(policies): void =>
             setRole(replaceKey(role, 'policies', policies))
           }
+          header={adminText('rolePolicies')}
           isReadOnly={isReadOnly}
           scope="collection"
           collapsable={false}
