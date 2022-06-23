@@ -242,7 +242,7 @@ export function SecurityCollection({
       {state.type === 'MainState' && (
         <>
           <div className="flex gap-2">
-            <h3 className="text-xl">
+            <h3 className="text-2xl">
               {`${schema.models.Collection.label}: ${
                 collection.collectionName ?? ''
               }`}
