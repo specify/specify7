@@ -12,12 +12,17 @@ import { hasPermission, hasTablePermission } from '../permissions';
 import { getResourceViewUrl } from '../resource';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
-import { decompressPolicies, processPolicies } from '../securityutils';
+import {
+  decompressPolicies,
+  policiesToTsv,
+  processPolicies,
+} from '../securityutils';
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
+import { downloadFile } from './filepicker';
 import { useAsyncState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
@@ -196,6 +201,20 @@ export function SecurityInstitution({
                     onUpdateRole={updateRole}
                     onCreateRole={createRole}
                   />
+                  <Button.Blue
+                    className={
+                      process.env.NODE_ENV === 'production'
+                        ? `hidden`
+                        : undefined
+                    }
+                    onClick={(): void =>
+                      loading(
+                        downloadFile('Permission Policies.tsv', policiesToTsv())
+                      )
+                    }
+                  >
+                    [DEV] Download policy list
+                  </Button.Blue>
                 </div>
               </section>
             )}
