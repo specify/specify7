@@ -191,6 +191,9 @@ export function QueryBuilder({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isQueryRunPending, handleNoQueryRunPending]);
 
+  const [isScrolledTop, handleScrollTop, handleScrolledDown] =
+    useBooleanState(true);
+
   return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
@@ -261,6 +264,18 @@ export function QueryBuilder({
                 : queryText('queryTaskTitle', query.name)}
             </H2>
             <span className="flex-1 ml-2" />
+            {/* TODO: make this button visible even for embedded queries */}
+            {!isScrolledTop && (
+              <Button.Small
+                onClick={(): void =>
+                  containerRef.current === null
+                    ? undefined
+                    : smoothScroll(containerRef.current, 0)
+                }
+              >
+                {queryText('editQuery')}
+              </Button.Small>
+            )}
             {state.baseTableName === 'LoanPreparation' && (
               <ProtectedAction resource="/querybuilder/query" action="execute">
                 <ProtectedTable tableName="Loan" action="update">
@@ -323,6 +338,17 @@ export function QueryBuilder({
             ${isEmbedded ? '' : 'px-4 -mx-4'}
           `}
           ref={containerRef}
+          onScroll={(): void =>
+            /*
+             * Dividing by 4 results in button appearing only once user scrolled
+             * 50% past the first half of the page
+             */
+            containerRef.current === null ||
+            containerRef.current.scrollTop <
+              containerRef.current.scrollHeight / 4
+              ? handleScrollTop()
+              : handleScrolledDown()
+          }
         >
           <div className="gap-y-4 snap-start flex flex-col">
             <MappingView

@@ -449,4 +449,10 @@ export const queryText = createDictionary({
     ca: (tableName: string) => `Query Results: ${tableName}`,
     'es-es': (tableName: string) => `Query Results: ${tableName}`,
   },
+  editQuery: {
+    'en-us': 'Edit Query',
+    'ru-ru': 'Редактировать запрос',
+    ca: 'Edit Query',
+    'es-es': 'Edit Query',
+  },
 });
