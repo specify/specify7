@@ -286,7 +286,7 @@ export function SecurityUser({
                                 collectionId
                               )
                             }
-                            header={adminText('userPolicies')}
+                            header={adminText('customUserPolices')}
                             scope="collection"
                             onChange={(policies): void =>
                               typeof userPolicies === 'object'

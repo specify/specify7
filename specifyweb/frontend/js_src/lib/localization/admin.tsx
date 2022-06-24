@@ -196,6 +196,12 @@ export const adminText = createDictionary({
     ca: 'Collection User Roles',
     'es-es': 'Collection User Roles',
   },
+  assignedUserRoles: {
+    'en-us': 'Assigned User Roles',
+    'ru-ru': 'Назначенные роли пользователя',
+    ca: 'Assigned User Roles',
+    'es-es': 'Assigned User Roles',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Таблица',
@@ -213,6 +219,16 @@ export const adminText = createDictionary({
     'ru-ru': 'Политики',
     ca: 'User Permission Policies',
     'es-es': 'User Permission Policies',
+  },
+  customUserPolices: {
+    'en-us':
+      'Custom Collection-level Permissions (applies to this collection only)',
+    'ru-ru': `
+      Пользовательские разрешения на уровне коллекции (применяется только к этой
+      коллекции)`,
+    ca: 'Custom Collection-level Permissions (applies to this collection only)',
+    'es-es':
+      'Custom Collection-level Permissions (applies to this collection only)',
   },
   role: {
     'en-us': 'Role:',
@@ -290,10 +306,10 @@ export const adminText = createDictionary({
     'es-es': 'none',
   },
   collectionAccess: {
-    'en-us': 'Collection Access',
+    'en-us': 'Enable Collection Access',
     'ru-ru': 'Доступ к коллекции',
-    ca: 'Collection Access',
-    'es-es': 'Collection Access',
+    ca: 'Enable Collection Access',
+    'es-es': 'Enable Collection Access',
   },
   createRoleDialogHeader: {
     'en-us': 'Create Role',
@@ -462,10 +478,14 @@ export const adminText = createDictionary({
     'es-es': 'Users will not be deleted, but they would lose this role.',
   },
   institutionPolicies: {
-    'en-us': 'Institution Permission Policies',
-    'ru-ru': 'Глобальная политика',
-    ca: 'Institution Permission Policies',
-    'es-es': 'Institution Permission Policies',
+    'en-us':
+      'Custom Institution-level Permissions (applies to all assigned collections)',
+    'ru-ru': `
+      Пользовательские разрешения на уровне учреждения (применяются ко всем
+      назначенным коллекциям)`,
+    ca: 'Custom Institution-level Permissions (applies to all assigned collections)',
+    'es-es':
+      'Custom Institution-level Permissions (applies to all assigned collections)',
   },
   noAdminsErrorDialogHeader: {
     'en-us': "Can't remove Institution Admin status",
