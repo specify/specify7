@@ -76,6 +76,7 @@ function eventHandlerForToOne(related, field) {
 
             // if initialized with some attributes that include a resource_uri,
             // assume that represents all the fields for the resource
+            // TODO: if dependent resources are not yet fetched, this should be false
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
 
             // the resource needs to be saved if any of its fields change
