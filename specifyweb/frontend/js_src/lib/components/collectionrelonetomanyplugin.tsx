@@ -20,11 +20,11 @@ import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
+import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
-import { LoadingContext } from './contexts';
 
 type Data = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -141,10 +141,14 @@ export function CollectionOneToManyPlugin({
 }: {
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
-}): JSX.Element {
-  const [data, setData] = useAsyncState<Data>(
+}): JSX.Element | null {
+  const [data, setData] = useAsyncState<Data | string>(
     React.useCallback(
-      async () => fetchOtherCollectionData(resource, relationship),
+      async () =>
+        fetchOtherCollectionData(resource, relationship).catch((error) => {
+          console.log(error);
+          return (error as Error).message;
+        }),
       [resource, relationship]
     ),
     false
@@ -167,7 +171,7 @@ export function CollectionOneToManyPlugin({
   >({ type: 'MainState' });
 
   const loading = React.useContext(LoadingContext);
-  return (
+  return typeof data === 'string' ? null : (
     <div className="bg-[color:var(--form-background)] rounded p-2 w-fit">
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
@@ -296,7 +300,7 @@ export function CollectionOneToManyPlugin({
               resource
                 .rgetCollection(`${data.side}SideRels`)
                 .then((collection) => collection.add(toAdd))
-                .then(() => processRelationships([toAdd], data.otherSide))
+                .then(async () => processRelationships([toAdd], data.otherSide))
                 .then((relationships) =>
                   setData({
                     ...data,

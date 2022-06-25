@@ -57,10 +57,10 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
-export function deserializeResource<SCHEMA extends AnySchema>(
+export const deserializeResource = <SCHEMA extends AnySchema>(
   serializedResource: SerializedResource<SCHEMA> | SerializedModel<SCHEMA>
-): SpecifyResource<SCHEMA> {
-  const resource = new schema.models[
+): SpecifyResource<SCHEMA> =>
+  new schema.models[
     /**
      * This assertion, while not required by TypeScript, is needed to fix
      * a typechecking performance issue (it was taking 5s to typecheck this
@@ -70,15 +70,6 @@ export function deserializeResource<SCHEMA extends AnySchema>(
       parseResourceUrl(serializedResource.resource_uri?.toString() ?? '')
     )[0] as SCHEMA['tableName']
   ].Resource(serializedResource);
-  /**
-   * Since serializedResource contains resource_uri, the ResourceBase sets
-   * populated=true. This causes later calls to .fetch() to not fetch the
-   * dependent resources.
-   */
-  // @ts-expect-error Modifying a read-only property
-  resource.populated = false;
-  return resource;
-}
 
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({

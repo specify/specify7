@@ -179,11 +179,13 @@ export class ErrorBoundary extends React.Component<
     error: Error,
     errorInfo: { readonly componentStack: string }
   ): void {
-    // TODO: remove this line once everything is using React.
-    //   That is because unload protect should get removed when component
-    //   is unRendered due to crash (though need to verify that).
-    //   Also, once error bounders are used all over the place, a crash in one
-    //   component should not clear the unload protect for other componets
+    /*
+     * TODO: remove this line once everything is using React.
+     *   That is because unload protect should get removed when component
+     *   is unRendered due to crash (though need to verify that).
+     *   Also, once error bounders are used all over the place, a crash in one
+     *   component should not clear the unload protect for other components
+     */
     clearUnloadProtect();
     console.error(error.toString());
     this.setState({
