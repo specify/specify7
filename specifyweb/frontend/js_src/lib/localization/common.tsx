@@ -1636,12 +1636,6 @@ export const commonText = createDictionary({
     ca: 'Cache has been cleared. Please reload the page.',
     'es-es': 'Cache has been cleared. Please reload the page.',
   },
-  reload: {
-    'en-us': 'Reload',
-    'ru-ru': 'Перезагрузить',
-    ca: 'Reload',
-    'es-es': 'Reload',
-  },
   technicalDocumentation: {
     'en-us': 'Technical Docs',
     'ru-ru': 'Тех. Документы',

@@ -31,8 +31,12 @@ function CacheBuster(): JSX.Element | null {
   return isLoaded === true ? (
     <Dialog
       header={commonText('clearCache')}
-      onClose={(): void => window.location.reload()}
-      buttons={commonText('reload')}
+      /*
+       * Can not simply reload the page here, as that would open the
+       * cache buster dialog again causing a perpetual loop.
+       */
+      onClose={(): void => window.location.assign('/specify/')}
+      buttons={commonText('goToHomepage')}
     >
       {commonText('clearedCacheDialogText')}
     </Dialog>
