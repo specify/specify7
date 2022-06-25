@@ -219,9 +219,7 @@ export function SecurityInstitution({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">
-                {adminText('institutionUserAccounts')}
-              </h4>
+              <h4 className="text-xl">{adminText('institutionUsers')}</h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>

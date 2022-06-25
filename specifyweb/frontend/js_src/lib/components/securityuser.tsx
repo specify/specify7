@@ -17,6 +17,7 @@ import {
   hasTablePermission,
 } from '../permissions';
 import { idFromUrl } from '../resource';
+import { schema } from '../schema';
 import {
   anyResource,
   decompressPolicies,
@@ -169,9 +170,7 @@ export function SecurityUser({
             </DataEntry.Header>
             {form(
               <>
-                {canSetPassword ||
-                canCreateInviteLink ||
-                canSeeInstitutionalPolicies ? (
+                {canSetPassword || canCreateInviteLink ? (
                   <section>
                     <h4 className="text-xl">
                       {adminText('accountSetupOptions')}
@@ -189,38 +188,45 @@ export function SecurityUser({
                           identityProviders={identityProviders}
                         />
                       )}
-                      {canSeeInstitutionalPolicies && (
-                        <SetSuperAdmin
-                          institutionPolicies={institutionPolicies}
-                          isSuperAdmin={isSuperAdmin}
-                          allActions={allActions}
-                          onChange={setInstitutionPolicies}
-                        />
-                      )}
                     </div>
                   </section>
                 ) : undefined}
-                {
-                  /*
-                   * If user is a super admin, they have all policies, so no
-                   * sense in showing them
-                   */
-                  !isSuperAdmin &&
-                    hasDerivedPermission(
-                      '/permissions/institutional_policies/user',
-                      'read'
-                    ) && (
-                      <SecurityPolicies
-                        policies={institutionPolicies}
-                        isReadOnly={!userInformation.isadmin}
-                        scope="institution"
+                {canSeeInstitutionalPolicies && (
+                  <section>
+                    <h4 className="text-xl">
+                      {schema.models.Institution.label}
+                    </h4>
+                    <div className="flex flex-col gap-2">
+                      <SetSuperAdmin
+                        institutionPolicies={institutionPolicies}
+                        isSuperAdmin={isSuperAdmin}
+                        allActions={allActions}
                         onChange={setInstitutionPolicies}
-                        header={adminText('institutionPolicies')}
-                        collapsable={true}
-                        limitHeight
                       />
-                    )
-                }
+                      {
+                        /*
+                         * If user is a super admin, they have all policies, so no
+                         * sense in showing them
+                         */
+                        !isSuperAdmin &&
+                          hasDerivedPermission(
+                            '/permissions/institutional_policies/user',
+                            'read'
+                          ) && (
+                            <SecurityPolicies
+                              policies={institutionPolicies}
+                              isReadOnly={!userInformation.isadmin}
+                              scope="institution"
+                              onChange={setInstitutionPolicies}
+                              header={adminText('institutionPolicies')}
+                              collapsable={true}
+                              limitHeight
+                            />
+                          )
+                      }
+                    </div>
+                  </section>
+                )}
                 {hasPermission('/admin/user/oic_providers', 'read') && (
                   <UserIdentityProviders
                     identityProviders={identityProviders}

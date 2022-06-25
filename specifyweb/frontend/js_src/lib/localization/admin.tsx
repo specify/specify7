@@ -111,17 +111,17 @@ export const adminText = createDictionary({
     ca: 'User Accounts',
     'es-es': 'User Accounts',
   },
-  institutionUserAccounts: {
-    'en-us': 'Institution User Accounts',
+  institutionUsers: {
+    'en-us': 'User Accounts Defined in this Institution',
     'ru-ru': 'Пользователи',
-    ca: 'Institution User Accounts',
-    'es-es': 'Institution User Accounts',
+    ca: 'User Accounts Defined in this Institution',
+    'es-es': 'User Accounts Defined in this Institution',
   },
   collectionUsers: {
-    'en-us': 'Collection User Accounts',
+    'en-us': 'User Accounts Assigned to this Collection',
     'ru-ru': 'Пользователи',
-    ca: 'Collection User Accounts',
-    'es-es': 'Collection User Accounts',
+    ca: 'User Accounts Assigned to this Collection',
+    'es-es': 'User Accounts Assigned to this Collection',
   },
   createResourceDialogHeader: {
     'en-us': 'Create New Resource File',
@@ -173,10 +173,10 @@ export const adminText = createDictionary({
     'es-es': 'Select user collection access',
   },
   securityPanel: {
-    'en-us': 'Roles and Permissions',
-    'ru-ru': 'Защита',
-    ca: 'Roles and Permissions',
-    'es-es': 'Roles and Permissions',
+    'en-us': 'Security and Accounts',
+    'ru-ru': 'Безопасность и аккаунты',
+    ca: 'Security and Accounts',
+    'es-es': 'Security and Accounts',
   },
   userRoleLibrary: {
     'en-us': 'Role Library',
