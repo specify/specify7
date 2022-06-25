@@ -154,40 +154,54 @@ const cellRenderers: {
       false
     );
 
-    return typeof relationship === 'undefined' ? null : hasPathPermission(
+    if (typeof relationship === 'undefined') return null;
+    else if (relationship.type === 'many-to-many') {
+      // ResourceApi does not support .rget() on a many-to-many
+      console.error('Many-to-many relationships are not supported');
+      return null;
+    } else if (
+      hasPathPermission(
         resource.specifyModel.name,
         relationship.relatedModel.name.split('.'),
         'read'
-      ) ? (
-      typeof interactionCollection === 'undefined' ||
-      typeof actualFormType === 'undefined' ? null : interactionCollection ===
-          false || actualFormType === 'form' ? (
-        <SubView
-          mode={mode}
-          isButton={isButton}
-          parentFormType={parentFormType}
-          formType={actualFormType}
-          parentResource={resource}
-          relationship={relationship}
-          viewName={viewName}
-          icon={icon}
-          sortField={sortField}
-        />
-      ) : (
-        <FormTableInteraction
-          mode={mode}
-          collection={interactionCollection}
-          dialog={false}
-          onDelete={undefined}
-          onClose={f.never}
-          sortField={sortField}
-        />
       )
-    ) : (
-      f.log(
+    ) {
+      if (
+        typeof interactionCollection === 'undefined' ||
+        typeof actualFormType === 'undefined'
+      )
+        return null;
+      else if (interactionCollection === false || actualFormType === 'form')
+        return (
+          <SubView
+            mode={mode}
+            isButton={isButton}
+            parentFormType={parentFormType}
+            formType={actualFormType}
+            parentResource={resource}
+            relationship={relationship}
+            viewName={viewName}
+            icon={icon}
+            sortField={sortField}
+          />
+        );
+      else
+        return (
+          <FormTableInteraction
+            mode={mode}
+            collection={interactionCollection}
+            dialog={false}
+            onDelete={undefined}
+            onClose={f.never}
+            sortField={sortField}
+          />
+        );
+    } else {
+      console.log(
         `SubView hidden due to lack of read permissions to ${resource.specifyModel.name}.${relationship.relatedModel.name}`
-      ) ?? null
-    );
+      );
+      return null;
+    }
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
     const form = (
