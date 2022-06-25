@@ -299,6 +299,12 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       if (typeof alias === 'object') field = this.getField(alias.aname);
     }
 
+    // Handle calls like localityModel.getField('Locality.localityName')
+    if (
+      splitName.length > 1 &&
+      splitName[0].toLowerCase() === this.name.toLowerCase()
+    )
+      return this.getField(splitName.slice(1).join('.'));
     if (splitName.length === 1 || typeof field === 'undefined') return field;
     else if (field.isRelationship)
       return defined(field.relatedModel).getField(splitName.slice(1).join('.'));
