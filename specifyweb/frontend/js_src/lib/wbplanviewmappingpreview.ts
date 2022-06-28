@@ -15,6 +15,7 @@ import { defined, filterArray } from './types';
 import {
   anyTreeRank,
   formatTreeRank,
+  getNameFromTreeRankName,
   getNumberFromToManyIndex,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -22,7 +23,7 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide: Set<string> = new Set(['name', 'fullname', 'localityname']);
+const fieldsToHide: Set<string> = new Set(['name', 'fullName', 'localityName']);
 
 /**
  * Use table name alongside field label (if field label consists of a single
@@ -99,7 +100,9 @@ export function generateMappingPathPreview(
     mappingPathSubset([baseTableName, ...mappingPath]);
   const [
     fieldName = camelToHuman(databaseFieldName),
-    tableOrRankName = camelToHuman(databaseTableOrRankName),
+    tableOrRankName = camelToHuman(
+      getNameFromTreeRankName(databaseTableOrRankName)
+    ),
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 

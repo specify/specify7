@@ -117,6 +117,7 @@ export function testWbPlanViewTreePreview(): void {
         ],
         'Exsiccata Reference Work Title',
       ],
+      [['TaxonAttribute', ['taxons', '$Family', 'taxonId']], 'Family ID'],
     ],
     generateMappingPathPreview
   );

@@ -38,6 +38,10 @@ export const valueIsTreeRank = (value: string): boolean =>
 export const getNumberFromToManyIndex = (value: string): number =>
   Number(value.slice(schema.referenceSymbol.length));
 
+/*
+ * TODO: in places where output of this function is displayed to the user,
+ *   make sure to use tree rank title instead of name
+ */
 /**
  * Returns tree rank name from a complete tree rank name
  * (e.x $Kingdom => Kingdom)
