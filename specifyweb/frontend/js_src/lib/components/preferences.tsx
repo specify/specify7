@@ -907,7 +907,15 @@ export const preferenceDefinitions = {
         items: {
           noRestrictionsMode: defineItem<boolean>({
             title: preferencesText('noRestrictionsMode'),
-            description: preferencesText('noRestrictionsModeQueryDescription'),
+            description: (
+              <span>
+                {preferencesText('noRestrictionsModeQueryDescription')}
+                <br />
+                <span className="text-red-500">
+                  {preferencesText('noRestrictionsModeWarning')}
+                </span>
+              </span>
+            ),
             requiresReload: false,
             visible: 'adminsOnly',
             defaultValue: false,
@@ -1079,7 +1087,15 @@ export const preferenceDefinitions = {
           }),
           noRestrictionsMode: defineItem<boolean>({
             title: preferencesText('noRestrictionsMode'),
-            description: preferencesText('noRestrictionsModeWbDescription'),
+            description: (
+              <span>
+                {preferencesText('noRestrictionsModeWbDescription')}
+                <br />
+                <span className="text-red-500">
+                  {preferencesText('noRestrictionsModeWarning')}
+                </span>
+              </span>
+            ),
             requiresReload: false,
             visible: 'adminsOnly',
             defaultValue: false,

@@ -515,16 +515,31 @@ export const preferencesText = createDictionary({
     'es-es': 'No restrictions mode',
   },
   noRestrictionsModeWbDescription: {
-    'en-us': 'Allows uploading data to any field in any table',
-    'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы',
-    ca: 'Allows uploading data to any field in any table',
-    'es-es': 'Allows uploading data to any field in any table',
+    'en-us': 'Allows uploading data to any field in any table.',
+    'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
+    ca: 'Allows uploading data to any field in any table.',
+    'es-es': 'Allows uploading data to any field in any table.',
   },
   noRestrictionsModeQueryDescription: {
-    'en-us': 'Allows querying data from any field in any table',
-    'ru-ru': 'Позволяет видеть данные из любого поля в любой таблице',
-    ca: 'Allows querying data from any field in any table',
-    'es-es': 'Allows querying data from any field in any table',
+    'en-us': 'Allows querying data from any field in any table.',
+    'ru-ru': 'Позволяет видеть данные из любого поля в любой таблице.',
+    ca: 'Allows querying data from any field in any table.',
+    'es-es': 'Allows querying data from any field in any table.',
+  },
+  noRestrictionsModeWarning: {
+    'en-us': `
+      WARNING: enabling this may lead to data loss or database
+      corruption. Please make sure you know what you are doing`,
+    'ru-ru': `
+      ВНИМАНИЕ: включение этого параметра может привести к потере данных или
+      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что
+      делаете`,
+    ca: `
+      WARNING: enabling this may lead to data loss or database
+      corruption. Please make sure you know what you are doing`,
+    'es-es': `
+      WARNING: enabling this may lead to data loss or database
+      corruption. Please make sure you know what you are doing`,
   },
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
