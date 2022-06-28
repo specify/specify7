@@ -40,6 +40,12 @@ export type PreferenceItemComponent<VALUE> = (props: {
   readonly isReadOnly: boolean;
 }) => JSX.Element;
 
+/**
+ * Represents a single preference option
+ *
+ * The concept seems similar to the "Feature Gates" in Firefox:
+ * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
+ */
 export type PreferenceItem<VALUE> = {
   readonly title: string | JSX.Element;
   readonly description?: string | JSX.Element;
