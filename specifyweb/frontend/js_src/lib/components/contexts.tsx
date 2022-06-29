@@ -15,6 +15,10 @@ import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
 ) => void;
+/*
+ * TODO: this is hacky, and it happened at least 2 times that setError was
+ *   undefined. Come up with a cleaner solution
+ */
 export const displayError: typeof setError = (error) => setError(error);
 
 /*

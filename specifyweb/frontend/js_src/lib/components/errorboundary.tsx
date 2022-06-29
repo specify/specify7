@@ -349,7 +349,7 @@ export function handleAjaxError(
 
   const isNotFoundError =
     response.status === Http.NOT_FOUND && process.env.NODE_ENV === 'production';
-  // In production, uncaught 404 errors redirect to the NOT FOUND page
+  // In production, uncaught redirect 404 errors to the NOT FOUND page
   if (isNotFoundError) {
     clearUnloadProtect();
     setCurrentComponent(<NotFoundView />);
@@ -367,18 +367,21 @@ export function handleAjaxError(
     permissionError?.type === 'permissionDenied' &&
     strict;
   if (isPermissionError) {
-    const [errorObject, errorMessage] = formatPermissionsError(
+    const parsed = formatPermissionsError(
       permissionError.responseText,
       response.url
     );
-    displayError(({ onClose: handleClose }) => (
-      <PermissionError error={errorObject} onClose={handleClose} />
-    ));
-    const error = new Error(errorMessage);
-    Object.defineProperty(error, 'handledBy', {
-      value: handleAjaxError,
-    });
-    throw error;
+    if (Array.isArray(parsed)) {
+      const [errorObject, errorMessage] = parsed;
+      displayError(({ onClose: handleClose }) => (
+        <PermissionError error={errorObject} onClose={handleClose} />
+      ));
+      const error = new Error(errorMessage);
+      Object.defineProperty(error, 'handledBy', {
+        value: handleAjaxError,
+      });
+      throw error;
+    }
   }
   const [errorObject, errorMessage, copiableMessage] = formatError(
     error,

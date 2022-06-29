@@ -315,19 +315,28 @@ function FormatPermissionError({
 export function formatPermissionsError(
   response: string,
   url: string
-): Readonly<[errorObject: JSX.Element | undefined, errorMessage: string]> {
+):
+  | Readonly<[errorObject: JSX.Element | undefined, errorMessage: string]>
+  | undefined {
   if (response.length === 0)
     return [undefined, commonText('sessionTimeOutDialogHeader')];
-  const error = (JSON.parse(response) as PermissionErrorSchema)
-    .NoMatchingRuleException;
 
-  return [
-    <FormatPermissionError error={error} url={url} />,
-    [
-      `Permission denied when fetching from ${url}`,
-      `Response: ${JSON.stringify(error, null, '\t')}`,
-    ].join('\n'),
-  ] as const;
+  let parsed: PermissionErrorSchema | undefined = undefined;
+  try {
+    parsed = JSON.parse(response) as PermissionErrorSchema;
+  } catch {}
+
+  const error = parsed?.NoMatchingRuleException;
+
+  if (typeof error === 'object')
+    return [
+      <FormatPermissionError error={error} url={url} />,
+      [
+        `Permission denied when fetching from ${url}`,
+        `Response: ${JSON.stringify(error, null, '\t')}`,
+      ].join('\n'),
+    ] as const;
+  else return undefined;
 }
 
 function CollectionName({

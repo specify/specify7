@@ -32,6 +32,8 @@ export function error(message: string | Error, ...rest: RA<unknown>): never {
  */
 export function breakpoint(): void {
   /* Breakpoint */
+  // TODO: turn this on in development
+  // debugger;
 }
 
 /**
