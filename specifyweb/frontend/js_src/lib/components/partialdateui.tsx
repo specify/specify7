@@ -123,11 +123,16 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   // Parsed date object
   const [moment, setMoment] = React.useState<
     ReturnType<typeof dayjs> | undefined
-  >(() => syncMoment(undefined));
+    /*
+     * Can't set initialState here because it won't be reEvaluated when
+     * the "resource" changes
+     */
+  >(undefined);
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
   const isSettingInitialMoment = React.useRef<boolean>(true);
+  const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
     if (typeof defaultValue === 'object' && resource.isNew())
@@ -136,6 +141,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       });
 
     isSettingInitialMoment.current = true;
+    isInitialized.current = false;
 
     const destructor = resourceOn(
       resource,
@@ -171,6 +177,15 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
+    /*
+     * If resource changes, a new moment is set, but its value won't get
+     * propagated on the first call to this useEffect.
+     * It is demonstrated here: https://codepen.io/maxpatiiuk/pen/oNqNqVN
+     */
+    if (!isInitialized.current) {
+      isInitialized.current = true;
+      return;
+    }
     if (typeof moment === 'undefined') {
       resource.set(dateField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
