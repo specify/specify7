@@ -26,6 +26,7 @@ import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
+import { consoleLog } from './splashscreen';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 
@@ -222,7 +223,7 @@ export class ErrorBoundary extends React.Component<
 }
 
 /**
- * The stack trace is about 32KB in size!
+ * The stack trace is about 83KB in size
  */
 const produceStackTrace = (message: unknown): string =>
   JSON.stringify({
@@ -231,6 +232,9 @@ const produceStackTrace = (message: unknown): string =>
     systemInformation: getSystemInfo(),
     schema: removeKey(schema, 'models'),
     href: window.location.href,
+    consoleLog,
+    // Network log and page load telemetry
+    eventLog: performance.getEntries(),
     tablePermissions: getTablePermissions(),
     operationPermissions: getOperationPermissions(),
     remotePrefs,

@@ -1,5 +1,3 @@
-if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
@@ -7,8 +5,11 @@ import Modal from 'react-modal';
 import type { getEntrypointName } from '../initialcontext';
 import { unlockInitialContext } from '../initialcontext';
 import { commonText } from '../localization/common';
+import type { RA } from '../types';
 import { Contexts } from './contexts';
 import { SetCssVariables } from './preferenceshooks';
+
+if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
 
 export function SplashScreen({
   children,
@@ -47,10 +48,52 @@ export const parseDjangoDump = <T,>(id: string): T =>
     ? JSON.parse(document.getElementById(id)?.textContent ?? '[]')
     : []) as T;
 
+/**
+ * Spy on the calls to these console so that can include all console
+ * messages as part of a crash report
+ */
+const logTypes = [
+  'group',
+  'groupEnd',
+  'groupCollapsed',
+  'log',
+  'warn',
+  'error',
+  'info',
+  'trace',
+] as const;
+export const consoleLog: {
+  readonly message: RA<unknown>;
+  readonly type: typeof logTypes[number];
+  readonly date: string;
+}[] = [];
+
 export function entrypoint(
   name: ReturnType<typeof getEntrypointName>,
   getContent: () => JSX.Element
 ): void {
+  logTypes.forEach((logType) => {
+    // eslint-disable-next-line no-console
+    const defaultFunction = console[logType];
+    // eslint-disable-next-line no-console
+    console[logType] = (...args: RA<unknown>): void => {
+      defaultFunction(...args);
+      consoleLog.push({
+        message: args.map((value) =>
+          typeof value === 'function'
+            ? value.toString()
+            : typeof value === 'undefined'
+            ? 'undefined'
+            : typeof value === 'object'
+            ? JSON.stringify(value, null)
+            : value
+        ),
+        type: logType,
+        date: new Date().toJSON(),
+      });
+    };
+  });
+
   if (process.env.NODE_ENV === 'test') return;
   console.group('Specify App Starting');
   unlockInitialContext(name);
