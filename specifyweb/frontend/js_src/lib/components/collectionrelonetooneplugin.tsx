@@ -15,7 +15,11 @@ export function CollectionOneToOnePlugin({
 }): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(
-      async () => fetchOtherCollectionData(resource, relationship),
+      async () =>
+        fetchOtherCollectionData(resource, relationship).catch((error) => {
+          console.error(error);
+          return undefined;
+        }),
       [resource, relationship]
     ),
     true

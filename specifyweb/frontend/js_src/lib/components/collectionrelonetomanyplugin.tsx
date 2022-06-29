@@ -142,12 +142,12 @@ export function CollectionOneToManyPlugin({
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
 }): JSX.Element | null {
-  const [data, setData] = useAsyncState<Data | string>(
+  const [data, setData] = useAsyncState<Data | false>(
     React.useCallback(
       async () =>
         fetchOtherCollectionData(resource, relationship).catch((error) => {
-          console.log(error);
-          return (error as Error).message;
+          console.error(error);
+          return false;
         }),
       [resource, relationship]
     ),
@@ -171,7 +171,7 @@ export function CollectionOneToManyPlugin({
   >({ type: 'MainState' });
 
   const loading = React.useContext(LoadingContext);
-  return typeof data === 'string' ? null : (
+  return data === false ? null : (
     <div className="bg-[color:var(--form-background)] rounded p-2 w-fit">
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
