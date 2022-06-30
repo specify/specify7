@@ -1855,7 +1855,7 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Button.Green
             onClick={() => {
-              dataset.uploadplan = JSON.parse(textarea.value);
+              dataset.uploadplan = textarea.value.length === 0 ? null : JSON.parse(textarea.value);
               ping(
                 `/api/workbench/dataset/${dataset.id}/`,
                 {
